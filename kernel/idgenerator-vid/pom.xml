@@ -2,36 +2,18 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>org.mosip</groupId>
 		<artifactId>kernel</artifactId>
 		<version>1.0.0.0-SNAPSHOT</version>
 	</parent>
-
-	<artifactId>logger-logback</artifactId>
+	<artifactId>idgenerator-vid</artifactId>
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>${logback.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>${logback.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.mosip</groupId>
 			<artifactId>kernel-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
+
 </project>

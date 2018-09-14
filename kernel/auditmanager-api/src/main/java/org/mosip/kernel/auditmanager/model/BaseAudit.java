@@ -32,10 +32,10 @@ public class BaseAudit implements Serializable {
 	 * Field for immutable universally unique identifier (UUID)
 	 */
 	@Id
-	@Column(name = "UUID", nullable = false, updatable = false)
+	@Column(name = "log_id", nullable = false, updatable = false)
 	private String uuid;
 
-	@Column(name = "CREATED_AT", nullable = false, updatable = false)
+	@Column(name = "log_dtimesz", nullable = false, updatable = false)
 	private OffsetDateTime createdAt; // ,columnDefinition= "TIMESTAMP WITH TIME ZONE"
 
 	/**

@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
  *
  */
 @Entity
-@Table(name = "AUDITEVENTS")
+@Table(name = "audit_log_app", schema = "audit")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
@@ -35,78 +35,77 @@ public class Audit extends BaseAudit {
 	private static final long serialVersionUID = -7791835434727848970L;
 
 	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "EVENT_ID", nullable = false, updatable = false, length = 255)
+	@Size(min = 1, max = 64)
+	@Column(name = "event_id", nullable = false, updatable = false, length = 64)
 	private String eventId;
 
 	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "EVENT_NAME", nullable = false, updatable = false, length = 255)
+	@Size(min = 1, max = 128)
+	@Column(name = "event_name", nullable = false, updatable = false, length = 128)
 	private String eventName;
 
 	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "EVENT_TYPE", nullable = false, updatable = false, length = 255)
+	@Size(min = 1, max = 64)
+	@Column(name = "event_type", nullable = false, updatable = false, length = 64)
 	private String eventType;
 
 	@NotNull
-	@Column(name = "ACTION_TIMESTAMP", nullable = false, updatable = false)
+	@Column(name = "action_dtimesz", nullable = false, updatable = false)
 	private OffsetDateTime actionTimeStamp;
 
 	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "HOST_NAME", nullable = false, updatable = false, length = 255)
+	@Size(min = 1, max = 32)
+	@Column(name = "host_name", nullable = false, updatable = false, length = 32)
 	private String hostName;
 
 	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "HOST_IP", nullable = false, updatable = false, length = 255)
+	@Size(min = 1, max = 16)
+	@Column(name = "host_ip", nullable = false, updatable = false, length = 16)
 	private String hostIp;
 
 	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "APPLICATION_ID", nullable = false, updatable = false, length = 255)
+	@Size(min = 1, max = 64)
+	@Column(name = "app_id", nullable = false, updatable = false, length = 64)
 	private String applicationId;
 
 	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "APPLICATION_NAME", nullable = false, updatable = false, length = 255)
+	@Size(min = 1, max = 128)
+	@Column(name = "app_name", nullable = false, updatable = false, length = 128)
 	private String applicationName;
 
 	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "SESSION_USER_ID", nullable = false, updatable = false, length = 255)
+	@Size(min = 1, max = 64)
+	@Column(name = "session_user_id", nullable = false, updatable = false, length = 64)
 	private String sessionUserId;
 
-	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "SESSION_USER_NAME", nullable = false, updatable = false, length = 255)
+	@Size(max = 128)
+	@Column(name = "session_user_name", updatable = false, length = 128)
 	private String sessionUserName;
 
 	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "ID", nullable = false, updatable = false, length = 255)
+	@Size(min = 1, max = 64)
+	@Column(name = "ref_id", nullable = false, updatable = false, length = 64)
 	private String id;
 
 	@NotNull
-	@Size(min = 1, max = 255)
-	@Column(name = "ID_TYPE", nullable = false, updatable = false, length = 255)
+	@Size(min = 1, max = 64)
+	@Column(name = "ref_id_type", nullable = false, updatable = false, length = 64)
 	private String idType;
 
 	@NotNull
 	@Size(min = 1, max = 255)
-	@Column(name = "CREATED_BY", nullable = false, updatable = false, length = 255)
+	@Column(name = "cr_by", nullable = false, updatable = false, length = 255)
 	private String createdBy;
 
-	@Size(max = 255)
-	@Column(name = "MODULE_NAME", updatable = false, length = 255)
+	@Size(max = 128)
+	@Column(name = "module_name", updatable = false, length = 128)
 	private String moduleName;
 
-	@Size(max = 255)
-	@Column(name = "MODULE_ID", updatable = false, length = 255)
+	@Size(max = 64)
+	@Column(name = "module_id", updatable = false, length = 64)
 	private String moduleId;
 
 	@Size(max = 2048)
-	@Column(name = "DESCRIPTION", updatable = false, length = 2048)
+	@Column(name = "log_desc", updatable = false, length = 2048)
 	private String description;
 }

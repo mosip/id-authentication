@@ -68,10 +68,14 @@
 		<module>core</module>
 		<module>logger-logback</module>
 		<module>dataaccess-hibernate</module>
-		<module>dataaccess-eclipselink</module>
 		<module>auditmanager-api</module>
 		<module>auditmanager-service</module>
-		<module>uingenerator-service</module>
+		<module>idvalidator</module>
+		<module>idgenerator-pid</module>
+		<module>idgenerator-eid</module>
+		<module>idgenerator-vid</module>
+		<module>idgenerator-uin</module>		
+
 	</modules>
 
 	<build>
