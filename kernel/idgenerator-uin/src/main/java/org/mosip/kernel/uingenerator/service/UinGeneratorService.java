@@ -4,7 +4,6 @@
 package org.mosip.kernel.uingenerator.service;
 
 import org.mosip.kernel.uingenerator.dto.UinResponseDto;
-import org.mosip.kernel.uingenerator.exception.UinNotFoundException;
 
 /**
  * @author Dharmesh Khandelwal
@@ -13,6 +12,6 @@ import org.mosip.kernel.uingenerator.exception.UinNotFoundException;
  */
 public interface UinGeneratorService {
 
-	UinResponseDto getId() throws UinNotFoundException;
+	UinResponseDto getUin();
 
 }

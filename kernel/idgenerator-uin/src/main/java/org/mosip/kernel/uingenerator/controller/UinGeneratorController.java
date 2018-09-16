@@ -1,7 +1,6 @@
 package org.mosip.kernel.uingenerator.controller;
 
 import org.mosip.kernel.uingenerator.dto.UinResponseDto;
-import org.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import org.mosip.kernel.uingenerator.service.UinGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UinGeneratorController {
 
 	@Autowired
-	private UinGeneratorService idService;
+	private UinGeneratorService uinGeneratorService;
 
 	@GetMapping(value = "/idgenerator/uin")
-	public ResponseEntity<UinResponseDto> getId() throws UinNotFoundException {
+	public ResponseEntity<UinResponseDto> getUin() {
 
-		UinResponseDto idDto = idService.getId();
+		UinResponseDto idDto = uinGeneratorService.getUin();
 
 		return new ResponseEntity<>(idDto, HttpStatus.OK);
 	}

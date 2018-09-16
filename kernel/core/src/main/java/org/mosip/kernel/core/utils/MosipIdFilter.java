@@ -20,21 +20,22 @@ public class MosipIdFilter {
 	}
 
 	/**
-	 * Number of repeating digits allowed in id. For example if limit is 3, then 111
-	 * is allowed but 1111 is not allowed in id
+	 * Lower bound of number of digits allowed in between two repeating digits in
+	 * id. For example if limit is 2, then 1xxx1, 1xx1 are allowed but 1x1, 11 are
+	 * not allowed in id (x is any digit)
 	 */
 	private static final int REPEATING_LIMIT = 2;
 
 	/**
-	 * Number of digits in sequence allowed in id. For example if limit is 3, then
-	 * 123 is allowed but 1234 is not allowed in id (in both ascending and
-	 * descending order)
+	 * Upper bound of number of digits in sequence allowed in id. For example if
+	 * limit is 3, then 12 is allowed but 123 is not allowed in id (in both
+	 * ascending and descending order)
 	 */
-	private static final int SEQUENCE_LIMIT = 2;
+	private static final int SEQUENCE_LIMIT = 3;
 
 	/**
-	 * Number of digits in repeating block allowed in id. For example if limit is 3,
-	 * then 482xx482 is allowed but 4827xx4827 is not allowed in id (x is any digit)
+	 * Number of digits in repeating block allowed in id. For example if limit is 2,
+	 * then 4xxx4 is allowed but 48xxx48 is not allowed in id (x is any digit)
 	 */
 	private static final int REPEATING_BLOCK_LIMIT = 2;
 
@@ -49,29 +50,26 @@ public class MosipIdFilter {
 	private static final String SEQ_DEC = "9876543210";
 
 	/**
-	 * Regex for matching repeating digits like 111, 1111.<br/>
-	 * If number of allowed repeating digit is 2, then <b>Regex:</b>
-	 * (?=(\d))\1{2,}<br/>
+	 * Regex for matching repeating digits like 11, 1x1, 1xx1, 1xxx1, etc.<br/>
+	 * If repeating digit limit is 2, then <b>Regex:</b> (\d)\d{0,2}\1<br/>
 	 * <b>Explanation:</b><br/>
-	 * <b>Positive Lookahead (?=(\d))</b> — Assert that the Regex below matches<br/>
 	 * <b>1st Capturing Group (\d)</b><br/>
 	 * <b>\d</b> matches a digit (equal to [0-9])<br/>
-	 * <b>\1{2,}</b> matches the same text as most recently matched by the 1st
-	 * capturing group<br/>
-	 * <b>{2,} Quantifier</b> — Matches between 2 and unlimited times, as many times
-	 * as possible, giving back as needed (greedy)
+	 * <b>{0,2} Quantifier</b> — Matches between 0 and 2 times, as many times as
+	 * possible, giving back as needed (greedy)<br/>
+	 * <b>\1</b> matches the same text as most recently matched by the 1st capturing
+	 * group<br/>
 	 */
-	private static final String REPEATING_REGEX = "(?=(\\d))\\1{" + REPEATING_LIMIT + ",}";
+	private static final String REPEATING_REGEX = "(\\d)\\d{0," + (REPEATING_LIMIT - 1) + "}\\1";
 
 	/**
 	 * Regex for matching repeating block of digits like 482xx482, 4827xx4827 (x is
 	 * any digit).<br/>
-	 * If number of allowed repeating block of digit is 2, then <b>Regex:</b>
-	 * (\d{2,}).*?\1<br/>
+	 * If repeating block limit is 3, then <b>Regex:</b> (\d{3,}).*?\1<br/>
 	 * <b>Explanation:</b><br/>
-	 * <b>1st Capturing Group (\d{2,})</b><br/>
-	 * <b>\d{2,}</b> matches a digit (equal to [0-9])<br/>
-	 * <b>{2,}</b> Quantifier — Matches between 2 and unlimited times, as many times
+	 * <b>1st Capturing Group (\d{3,})</b><br/>
+	 * <b>\d{3,}</b> matches a digit (equal to [0-9])<br/>
+	 * <b>{3,}</b> Quantifier — Matches between 3 and unlimited times, as many times
 	 * as possible, giving back as needed (greedy)<br/>
 	 * <b>.*?</b> matches any character (except for line terminators)<br/>
 	 * <b>*?</b> Quantifier — Matches between zero and unlimited times, as few times
@@ -101,7 +99,8 @@ public class MosipIdFilter {
 	 * @return true if the input id is valid
 	 */
 	public static boolean isValidId(String id) {
-		return !(sequenceFilter(id) && regexFilter(id, REPEATING_PATTERN) && regexFilter(id, REPEATING_BLOCK_PATTERN));
+
+		return !(sequenceFilter(id) || regexFilter(id, REPEATING_PATTERN) || regexFilter(id, REPEATING_BLOCK_PATTERN));
 	}
 
 	/**
@@ -114,7 +113,7 @@ public class MosipIdFilter {
 	private static boolean sequenceFilter(String id) {
 		return IntStream.rangeClosed(0, id.length() - SEQUENCE_LIMIT).parallel()
 				.mapToObj(index -> id.subSequence(index, index + SEQUENCE_LIMIT))
-				.anyMatch((idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence)));
+				.anyMatch(idSubSequence -> SEQ_ASC.contains(idSubSequence) || SEQ_DEC.contains(idSubSequence));
 	}
 
 	/**
@@ -130,5 +129,4 @@ public class MosipIdFilter {
 	private static boolean regexFilter(String id, Pattern pattern) {
 		return pattern.matcher(id).find();
 	}
-
 }

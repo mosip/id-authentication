@@ -1,24 +1,26 @@
 package org.mosip.kernel.uingenerator.batch;
 
+import org.mosip.kernel.uingenerator.constants.UinGeneratorConstants;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UinGenReader implements ItemReader<String> {
+public class UinGenerationReader implements ItemReader<String> {
 
-	public UinGenReader() {
+	private boolean shouldRun;
+
+	public UinGenerationReader() {
 		super();
 		this.shouldRun = true;
 	}
-
-	private boolean shouldRun;
 
 	@Override
 	public String read() {
 		if (shouldRun) {
 			shouldRun = false;
-			return "";
+			return UinGeneratorConstants.EMPTY_STRING;
+		} else {
+			return null;
 		}
-		return null;
 	}
 }

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UinDao extends BaseRepository<UinBean, String> {
 	@Query
-	public int countFreeUin(boolean used);
+	public int countFreeUin();
 
 	@Query
-	public UinBean findUnusedUin(boolean used);
+	public UinBean findUnusedUin();
 
 }

@@ -2,6 +2,7 @@ package org.mosip.kernel.uingenerator.service.impl;
 
 import javax.transaction.Transactional;
 
+import org.mosip.kernel.uingenerator.constants.UinGeneratorErrorCodes;
 import org.mosip.kernel.uingenerator.dto.UinResponseDto;
 import org.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import org.mosip.kernel.uingenerator.model.UinBean;
@@ -23,18 +24,17 @@ public class UinGeneratorServiceImpl implements UinGeneratorService {
 	 */
 	@Override
 	@Transactional
-	public UinResponseDto getId() {
-		UinResponseDto dto = new UinResponseDto();
-
-		UinBean uinBean = uinDao.findUnusedUin(false);
-
+	public UinResponseDto getUin() {
+		UinResponseDto uinResponseDto = new UinResponseDto();
+		UinBean uinBean = uinDao.findUnusedUin();
 		if (uinBean != null) {
 			uinBean.setUsed(true);
 			uinDao.save(uinBean);
-			dto.setUin(uinBean.getUin());
+			uinResponseDto.setUin(uinBean.getUin());
 		} else {
-			throw new UinNotFoundException("code","Id not found");
+			throw new UinNotFoundException(UinGeneratorErrorCodes.UIN_NOT_FOUND.getErrorCode(),
+					UinGeneratorErrorCodes.UIN_NOT_FOUND.getErrorMessage());
 		}
-		return dto;
+		return uinResponseDto;
 	}
 }
