@@ -27,9 +27,9 @@ public class MosipIdChecksumTest {
 	
 	@Test
 	public void checksumFailTest() {
-		String id = "1234567890";
+		String id = "1234567891";
 		boolean res = MosipIdChecksum.validateChecksum(id);
-		assertThat(res, is(true));
+		assertThat(res, is(false));
 	}
 
 }

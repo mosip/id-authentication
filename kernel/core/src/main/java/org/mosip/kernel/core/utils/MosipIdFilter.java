@@ -20,13 +20,6 @@ public class MosipIdFilter {
 	}
 
 	/**
-	 * Lower bound of number of digits allowed in between two repeating digits in
-	 * id. For example if limit is 2, then 11 and 1x1 is not allowed in id (x is any
-	 * digit)
-	 */
-	private static final int REPEATING_LIMIT = 2;
-
-	/**
 	 * Upper bound of number of digits in sequence allowed in id. For example if
 	 * limit is 3, then 12 is allowed but 123 is not allowed in id (in both
 	 * ascending and descending order)
@@ -38,6 +31,13 @@ public class MosipIdFilter {
 	 * then 4xxx4 is allowed but 48xxx48 is not allowed in id (x is any digit)
 	 */
 	private static final int REPEATING_BLOCK_LIMIT = 2;
+
+	/**
+	 * Lower bound of number of digits allowed in between two repeating digits in
+	 * id. For example if limit is 2, then 11 and 1x1 is not allowed in id (x is any
+	 * digit)
+	 */
+	private static final int REPEATING_LIMIT = 2;
 
 	/**
 	 * Ascending digits which will be checked for sequence in id
