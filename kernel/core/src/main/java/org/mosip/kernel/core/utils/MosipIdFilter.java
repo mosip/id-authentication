@@ -21,8 +21,8 @@ public class MosipIdFilter {
 
 	/**
 	 * Lower bound of number of digits allowed in between two repeating digits in
-	 * id. For example if limit is 2, then 1xxx1, 1xx1 are allowed but 1x1, 11 are
-	 * not allowed in id (x is any digit)
+	 * id. For example if limit is 2, then 11 and 1x1 is not allowed in id (x is any
+	 * digit)
 	 */
 	private static final int REPEATING_LIMIT = 2;
 
