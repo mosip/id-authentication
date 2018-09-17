@@ -11,11 +11,6 @@ package org.mosip.kernel.dataaccess.constants;
 public class HibernatePersistenceConstants {
 
 	/**
-	 * The string constant mosip package
-	 */
-	public static final String MOSIP_PACKAGE = "org.mosip.*";
-
-	/**
 	 * The string constant jdbc driver
 	 */
 	public static final String JDBC_DRIVER = "javax.persistence.jdbc.driver";
@@ -34,20 +29,6 @@ public class HibernatePersistenceConstants {
 	 * The string constant jdbc user
 	 */
 	public static final String JDBC_USER = "javax.persistence.jdbc.user";
-
-	/**
-	 * The string constant false
-	 */
-	public static final String FALSE = "false";
-	/**
-	 * The string constant utf8
-	 */
-	public static final String UTF8 = "utf8";
-	/**
-	 * The string constant true
-	 */
-	public static final String TRUE = "true";
-
 	/**
 	 * The string constant cache query property
 	 */
@@ -57,17 +38,9 @@ public class HibernatePersistenceConstants {
 	 */
 	public static final String MY_SQL5_DIALECT = "org.hibernate.dialect.MySQL5Dialect";
 	/**
-	 * The string constant update
+	 * The string constant my sql dialect
 	 */
-	public static final String UPDATE = "update";
-	/**
-	 * The string constant jta
-	 */
-	public static final String JTA = "jta";
-	/**
-	 * The string constant hibernate
-	 */
-	public static final String HIBERNATE = "hibernate";
+	public static final String POSTGRESQL_95_DIALECT = "org.hibernate.dialect.PostgreSQL95Dialect";
 	/**
 	 * The string constant for hibernate statistics
 	 */
@@ -112,5 +85,36 @@ public class HibernatePersistenceConstants {
 	 * The string constant for current_session_context_class
 	 */
 	public static final String HIBERNATE_CURRENT_SESSION_CONTEXT = "hibernate.current_session_context_class";
+
+	/**
+	 * The string constant mosip package
+	 */
+	public static final String MOSIP_PACKAGE = "org.mosip.*";
+
+	/**
+	 * The string constant false
+	 */
+	public static final String FALSE = "false";
+	/**
+	 * The string constant utf8
+	 */
+	public static final String UTF8 = "utf8";
+	/**
+	 * The string constant true
+	 */
+	public static final String TRUE = "true";
+
+	/**
+	 * The string constant update
+	 */
+	public static final String UPDATE = "update";
+	/**
+	 * The string constant jta
+	 */
+	public static final String JTA = "jta";
+	/**
+	 * The string constant hibernate
+	 */
+	public static final String HIBERNATE = "hibernate";
 
 }
