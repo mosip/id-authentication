@@ -62,6 +62,9 @@
 
 		<!-- Lombok -->
 		<lombok.version>1.16.18</lombok.version>
+		<!-- Jsch -->
+		<jsch.version>0.1.54</jsch.version>
+		
 	</properties>
 
 	<modules>
@@ -74,7 +77,8 @@
 		<module>idgenerator-pid</module>
 		<module>idgenerator-eid</module>
 		<module>idgenerator-vid</module>
-		<module>idgenerator-uin</module>		
+		<module>idgenerator-uin</module>
+		<module>packet-uploader</module>
 
 	</modules>
 
