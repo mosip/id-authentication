@@ -4,6 +4,7 @@ import java.util.Random;
 
 import org.mosip.kernel.core.spi.idgenerator.MosipEidGenerator;
 import org.mosip.kernel.core.utils.StringUtil;
+import org.mosip.kernel.eidgenerator.constants.EidGeneratorConstants;
 import org.mosip.kernel.eidgenerator.exception.MosipEmptyInputException;
 import org.mosip.kernel.eidgenerator.exception.MosipInputLengthException;
 import org.mosip.kernel.eidgenerator.exception.MosipNullValueException;
@@ -51,15 +52,15 @@ public class EidGenerator implements MosipEidGenerator {
 
 		if (agentId == null || machineId == null) {
 
-			throw new MosipNullValueException("xx", "Null value entered");
+			throw new MosipNullValueException(EidGeneratorConstants.MOSIP_NULL_VALUE_ERROR_CODE.getErrorCode(), EidGeneratorConstants.MOSIP_NULL_VALUE_ERROR_CODE.getErrorMessage());
 		}
 		if (agentId.isEmpty() || machineId.isEmpty()) {
 
-			throw new MosipEmptyInputException("xx", "Empty input entered");
+			throw new MosipEmptyInputException(EidGeneratorConstants.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorCode(), EidGeneratorConstants.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorMessage());
 		}
 		if (agentId.length() < 4 || machineId.length() < 5) {
 
-			throw new MosipInputLengthException("xx", "input length is not sufficient");
+			throw new MosipInputLengthException(EidGeneratorConstants.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorCode(), EidGeneratorConstants.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorMessage());
 		}
 
 	}
