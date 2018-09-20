@@ -11,9 +11,19 @@ import org.mosip.kernel.uingenerator.service.UinGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * This class have function to fetch a unused uin
+ * 
+ * @author Dharmesh Khandelwal
+ * @since 1.0.0
+ *
+ */
 @Service
 public class UinGeneratorServiceImpl implements UinGeneratorService {
 
+	/**
+	 * Field for {@link #uinDao}
+	 */
 	@Autowired
 	UinDao uinDao;
 

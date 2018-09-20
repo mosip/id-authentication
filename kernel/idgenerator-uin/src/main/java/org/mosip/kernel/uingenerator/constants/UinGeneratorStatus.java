@@ -1,7 +1,7 @@
 package org.mosip.kernel.uingenerator.constants;
 
 /**
- * Error Code for Uin generator
+ * Status for Uin generator Job
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0

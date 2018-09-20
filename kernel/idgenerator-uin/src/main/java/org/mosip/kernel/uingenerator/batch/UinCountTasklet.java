@@ -12,19 +12,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+/**
+ * Tasklet that contains function to count number of uins in database
+ * 
+ * @author Dharmesh Khandelwal
+ * @since 1.0.0
+ *
+ */
 @Component
 public class UinCountTasklet implements Tasklet {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(UinCountTasklet.class);
 
+	/**
+	 * Field for {@link #uinDao}
+	 */
 	@Autowired
 	private UinDao uinDao;
 
+	/**
+	 * Long field for uin threshold cocunt
+	 */
 	@Value("${threshold.uin.count}")
 	private long thresholdUINCount;
 
+	/**
+	 * Based on number of free uins in db, checks whether to generate new uins or
+	 * not
+	 * 
+	 * @param contribution
+	 *            Represents a contribution to a StepExecution, buffering changes
+	 *            until they can be applied at a chunk boundary.
+	 * @param chunkContext
+	 *            Context object for data stored for the duration of a chunk
+	 * @return The status
+	 */
 	@Override
-	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 
 		chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext()
 				.put(UinGeneratorConstants.GENERATE_UIN, countFreeUin() < thresholdUINCount);
@@ -33,7 +57,9 @@ public class UinCountTasklet implements Tasklet {
 	}
 
 	/**
-	 * @return
+	 * Count number of free uins in database
+	 * 
+	 * @return the count of free uins
 	 */
 	private long countFreeUin() {
 		long freeUIN = uinDao.countFreeUin();

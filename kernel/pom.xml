@@ -25,6 +25,7 @@
 		<!-- Core -->
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
+		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
 
 		<!-- Miscellaneous -->
 		<javax.el-api.version>3.0.0</javax.el-api.version>

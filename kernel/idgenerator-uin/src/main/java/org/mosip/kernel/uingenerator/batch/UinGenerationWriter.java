@@ -13,16 +13,37 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class have functionality to persists the list of uins in database
+ * 
+ * @author Dharmesh Khandelwal
+ * @since 1.0.0
+ *
+ */
 @Component
 public class UinGenerationWriter implements ItemWriter<List<UinBean>> {
 
+	/**
+	 * The Logger instance
+	 */
 	private static final Logger LOGGER = LoggerFactory.getLogger(UinGenerationWriter.class);
 
+	/**
+	 * Interface used to interact with the persistence context.
+	 */
 	@Autowired
 	private EntityManager entityManager;
 
+	/**
+	 * The main runtime interface between a Java application and Hibernate.
+	 */
 	private Session session;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.batch.item.ItemWriter#write(java.util.List)
+	 */
 	@Override
 	public void write(List<? extends List<UinBean>> uins) {
 		setSession();
@@ -33,6 +54,11 @@ public class UinGenerationWriter implements ItemWriter<List<UinBean>> {
 		LOGGER.info("Persisted generated uins in database");
 	}
 
+	/**
+	 * Persist a uin in database. If that uin already exists than rollback
+	 * 
+	 * @param item
+	 */
 	private void persistUin(UinBean item) {
 		Session currentSession = getSession();
 		if (!currentSession.getTransaction().isActive()) {
@@ -49,11 +75,19 @@ public class UinGenerationWriter implements ItemWriter<List<UinBean>> {
 		}
 	}
 
+	/**
+	 * Function to set {@link #session} from {@link #entityManager}
+	 */
 	private void setSession() {
 		entityManager = entityManager.getEntityManagerFactory().createEntityManager();
 		this.session = entityManager.unwrap(Session.class);
 	}
 
+	/**
+	 * Function to get session
+	 * 
+	 * @return {@link #session}
+	 */
 	private Session getSession() {
 		return session;
 	}
