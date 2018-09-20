@@ -1,0 +1,241 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.mosip</groupId>
+		<artifactId>mosip-root</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>registration</artifactId>
+	<packaging>pom</packaging>
+
+	<name>registration</name>
+	<description>Parent project of MOSIP ID-Registration</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.version>3.7.0</maven.compiler.version>
+
+		<!-- Core -->
+		<spring.version>5.0.4.RELEASE</spring.version>
+
+		<!-- Test & Logging -->
+		<junit.version>4.12</junit.version>
+		<logback.version>1.1.6</logback.version>
+		<slf4j.version>1.7.19</slf4j.version>
+		<mockito.version>1.10.19</mockito.version>
+
+		<!-- Lombok -->
+		<lombok.version>1.16.18</lombok.version>
+
+		<!-- Orika Mapper -->
+		<orika.version>1.4.6</orika.version>
+
+		<!-- Spring version -->
+		<sprin.version>4.3.7.RELEASE</sprin.version>
+
+		<!-- Hibernate version -->
+		<hibernate.version>5.2.9.Final</hibernate.version>
+
+		<!-- Apache Commons DPC2 version -->
+		<apache.commons.dpce.version>2.1.1</apache.commons.dpce.version>
+
+		<!-- Jackson -->
+		<jackson.version>2.2.2</jackson.version>
+	</properties>
+
+	<modules>
+		<module>registration-ui</module>
+		<module>registration-processor</module>
+		<!--<module>id-issuance-dao</module>
+		<module>id-issuance-service</module>-->
+	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Lombok -->
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+				<scope>compile</scope>
+			</dependency>
+			<!-- JUnit -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<!-- Mockito -->
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>${mockito.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.mosip</groupId>
+				<artifactId>kernel-exception</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.mosip</groupId>
+				<artifactId>kernel-utils</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>ma.glasnost.orika</groupId>
+				<artifactId>orika-core</artifactId>
+				<version>${orika.version}</version>
+			</dependency>
+
+			<!-- Spring Context -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<!-- Spring ORM -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-orm</artifactId>
+				<version>${sprin.version}</version>
+			</dependency>
+			<!-- Hibernate 5.2.9 Final -->
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>${hibernate.version}</version>
+			</dependency>
+			<!-- Apache Commons DBCP -->
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-dbcp2</artifactId>
+				<version>${apache.commons.dpce.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mosip</groupId>
+				<artifactId>kernel-utils</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Project-Name>${project.name}</Project-Name>
+							<Project-Version>${project.version}</Project-Version>
+							<Built-By>${user.name}</Built-By>
+							<Built-OS>${os.name}</Built-OS>
+							<Local-Build-Date>${maven.build.timestamp}</Local-Build-Date>
+							<Build-Number>${env.BUILD_NUMBER}</Build-Number>
+							<Build-Date>${env.BUILD_ID}</Build-Date>
+							<Build-URL>${env.BUILD_URL}</Build-URL>
+							<Build-Revision>${env.SVN_REVISION}</Build-Revision>
+							<SCM-Path>${scm.path}</SCM-Path>
+							<SCM-CommittedDate>${scm.committedDate}</SCM-CommittedDate>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Project-Name>${project.name}</Project-Name>
+							<Project-Version>${project.version}</Project-Version>
+							<Built-By>${user.name}</Built-By>
+							<Built-OS>${os.name}</Built-OS>
+							<Local-Build-Date>${maven.build.timestamp}</Local-Build-Date>
+							<Build-Number>${env.BUILD_NUMBER}</Build-Number>
+							<Build-Date>${env.BUILD_ID}</Build-Date>
+							<Build-URL>${env.BUILD_URL}</Build-URL>
+							<Build-Revision>${env.SVN_REVISION}</Build-Revision>
+							<SCM-Path>${scm.path}</SCM-Path>
+							<SCM-CommittedDate>${scm.committedDate}</SCM-CommittedDate>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<skip>false</skip>
+					<useFile>false</useFile>
+					<systemPropertyVariables>
+						<surefire.security.manager>java.lang.SecurityManager</surefire.security.manager>
+					</systemPropertyVariables>
+					<argLine>-Djava.security.properties=/tmp/java.security </argLine>
+					<excludes>
+						<exclude>**/*IntegrationTest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

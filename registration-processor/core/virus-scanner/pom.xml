@@ -7,6 +7,7 @@
 		<groupId>org.mosip</groupId>
 		<artifactId>registration-processor</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>virus-scanner</artifactId>
@@ -32,8 +33,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.mosip</groupId>
-			<artifactId>kernel-exception</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<artifactId>kernel-core</artifactId>
+			<version>1.0.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -57,12 +58,3 @@
 
 
 </project>
-
-
-
-
-
-
-
-
-
