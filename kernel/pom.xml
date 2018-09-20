@@ -21,6 +21,7 @@
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
 		<maven.surefire.plugin.version>2.9</maven.surefire.plugin.version>
 		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
+		<maven.sonar.plugin.version>3.5.0.1254</maven.sonar.plugin.version>
 
 		<!-- Core -->
 		<spring.version>5.0.4.RELEASE</spring.version>
@@ -84,7 +85,41 @@
 
 	</modules>
 
+	<profiles>
+		<profile>
+			<id>LOCAL</id>
+			<properties>
+				<sonar.host.url>
+					http://localhost:9000
+				</sonar.host.url>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+		<profile>
+			<id>DEV</id>
+			<properties>
+				<sonar.host.url>
+					http://myserver:9000
+				</sonar.host.url>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${maven.sonar.plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -114,9 +149,6 @@
 							<Build-Number>${env.BUILD_NUMBER}</Build-Number>
 							<Build-Date>${env.BUILD_ID}</Build-Date>
 							<Build-URL>${env.BUILD_URL}</Build-URL>
-							<Build-Revision>${env.SVN_REVISION}</Build-Revision>
-							<SCM-Path>${scm.path}</SCM-Path>
-							<SCM-CommittedDate>${scm.committedDate}</SCM-CommittedDate>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -140,9 +172,6 @@
 							<Build-Number>${env.BUILD_NUMBER}</Build-Number>
 							<Build-Date>${env.BUILD_ID}</Build-Date>
 							<Build-URL>${env.BUILD_URL}</Build-URL>
-							<Build-Revision>${env.SVN_REVISION}</Build-Revision>
-							<SCM-Path>${scm.path}</SCM-Path>
-							<SCM-CommittedDate>${scm.committedDate}</SCM-CommittedDate>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -179,6 +208,5 @@
 				</executions>
 			</plugin>
 		</plugins>
-
 	</build>
 </project>
