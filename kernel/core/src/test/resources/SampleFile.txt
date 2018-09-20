@@ -1,1 +1,1 @@
-MOSIP
+  MOSIP core

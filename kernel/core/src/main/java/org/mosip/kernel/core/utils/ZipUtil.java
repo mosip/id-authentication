@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +40,37 @@ public class ZipUtil {
 	private ZipUtil() {
 
 	}
+	
+	/**
+	 * Method used for zipping a Byte Array
+	 * 
+	 * @param inputFile
+	 *            pass Byte Array want to zip it
+	 * @param return
+	 *            returned zipped Byte Array
+	 * @throws MosipIOException
+	 *             when file unable to read
+	 * 
+	 */
 
+
+	public static byte[] zipByteArray(byte[] input)throws MosipIOException{
+		String filename="sampleFile";
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    try(ZipOutputStream zos = new ZipOutputStream(baos)){
+	    ZipEntry entry = new ZipEntry(filename);
+	    entry.setSize(input.length);
+	    zos.putNextEntry(entry);
+	    zos.write(input);
+	    }catch (IOException e) {
+			throw new MosipIOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
+		}
+	    return baos.toByteArray();
+	}
+	
+	
+	
 	/**
 	 * Method used for zipping a single file
 	 * 
@@ -55,7 +86,7 @@ public class ZipUtil {
 	 *             when file unable to read
 	 * 
 	 */
-
+	
 	public static boolean zipFile(String inputFile, String outputFile) throws MosipIOException {
 
 		try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(outputFile));
