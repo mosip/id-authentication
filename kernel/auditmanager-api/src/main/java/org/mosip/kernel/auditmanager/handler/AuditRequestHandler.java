@@ -3,7 +3,7 @@ package org.mosip.kernel.auditmanager.handler;
 import org.modelmapper.ModelMapper;
 import org.mosip.kernel.auditmanager.model.Audit;
 import org.mosip.kernel.auditmanager.repository.AuditRepository;
-import org.mosip.kernel.auditmanager.request.AuditRequest;
+import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 import org.mosip.kernel.auditmanager.utils.AuditUtils;
 import org.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +11,14 @@ import org.springframework.stereotype.Service;
 
 /**
  * Implementation of {@link AuditHandler} with function to write
- * {@link AuditRequest}
+ * {@link AuditRequestDto}
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
  */
 @Service
-public class AuditRequestHandler implements AuditHandler<AuditRequest> {
+public class AuditRequestHandler implements AuditHandler<AuditRequestDto> {
 
 	/**
 	 * Field for {@link AuditRepository} having data access operations related to
@@ -41,7 +41,7 @@ public class AuditRequestHandler implements AuditHandler<AuditRequest> {
 	 * core.audit.dto.AuditRequest)
 	 */
 	@Override
-	public boolean writeAudit(AuditRequest auditRequest) {
+	public boolean writeAudit(AuditRequestDto auditRequest) {
 		
 		AuditUtils.validateAuditRequest(auditRequest);
 

@@ -2,13 +2,13 @@ package org.mosip.kernel.auditmanager.builder;
 
 import java.time.OffsetDateTime;
 
-import org.mosip.kernel.auditmanager.request.AuditRequest;
+import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 
 /**
- * The Audit request builder class is used to create new {@link AuditRequest}
- * with {@link AuditRequest#actor}, {@link AuditRequest#action},
- * {@link AuditRequest#origin}, {@link AuditRequest#device},
- * {@link AuditRequest#description} fields
+ * The Audit request builder class is used to create new {@link AuditRequestDto}
+ * with {@link AuditRequestDto#actor}, {@link AuditRequestDto#action},
+ * {@link AuditRequestDto#origin}, {@link AuditRequestDto#device},
+ * {@link AuditRequestDto#description} fields
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
@@ -17,15 +17,15 @@ import org.mosip.kernel.auditmanager.request.AuditRequest;
 public class AuditRequestBuilder {
 
 	/**
-	 * The {@link AuditRequest} instance
+	 * The {@link AuditRequestDto} instance
 	 */
-	private AuditRequest auditRequest = null;
+	private AuditRequestDto auditRequest = null;
 
 	/**
-	 * Instantiate a new {@link AuditRequest}
+	 * Instantiate a new {@link AuditRequestDto}
 	 */
 	public AuditRequestBuilder() {
-		auditRequest = new AuditRequest();
+		auditRequest = new AuditRequestDto();
 	}
 
 	/**
@@ -221,11 +221,11 @@ public class AuditRequestBuilder {
 	}
 
 	/**
-	 * Builds {@link AuditRequest} from {@link AuditRequestBuilder}
+	 * Builds {@link AuditRequestDto} from {@link AuditRequestBuilder}
 	 * 
-	 * @return The {@link AuditRequest}
+	 * @return The {@link AuditRequestDto}
 	 */
-	public AuditRequest build() {
+	public AuditRequestDto build() {
 		return auditRequest;
 	}
 }

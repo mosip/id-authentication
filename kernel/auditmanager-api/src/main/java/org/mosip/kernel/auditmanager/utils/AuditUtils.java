@@ -9,7 +9,7 @@ import javax.validation.ValidatorFactory;
 
 import org.mosip.kernel.auditmanager.constants.AuditErrorCodes;
 import org.mosip.kernel.auditmanager.exception.MosipAuditManagerException;
-import org.mosip.kernel.auditmanager.request.AuditRequest;
+import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 
 /**
  * Utility class for Audit Manager
@@ -28,17 +28,17 @@ public class AuditUtils {
 	}
 
 	/**
-	 * Function to validate {@link AuditRequest}
+	 * Function to validate {@link AuditRequestDto}
 	 * 
 	 * @param auditRequest
 	 *            The audit request
 	 */
-	public static void validateAuditRequest(AuditRequest auditRequest) {
+	public static void validateAuditRequest(AuditRequestDto auditRequest) {
 
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();
 
-		Set<ConstraintViolation<AuditRequest>> violations = validator.validate(auditRequest);
+		Set<ConstraintViolation<AuditRequestDto>> violations = validator.validate(auditRequest);
 
 		if (!violations.isEmpty()) {
 			throw new MosipAuditManagerException(AuditErrorCodes.HANDLEREXCEPTION.getErrorCode(),

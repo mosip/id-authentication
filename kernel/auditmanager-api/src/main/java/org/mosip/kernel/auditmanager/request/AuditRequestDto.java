@@ -1,4 +1,4 @@
-package org.mosip.kernel.auditmanager.dto;
+package org.mosip.kernel.auditmanager.request;
 
 import java.time.OffsetDateTime;
 
@@ -81,4 +81,5 @@ public class AuditRequestDto {
 
 	@Size(max = 2048)
 	private String description;
+
 }

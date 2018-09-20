@@ -1,10 +1,8 @@
 package org.mosip.kernel.auditmanager.service.impl;
 
-import org.modelmapper.ModelMapper;
-import org.mosip.kernel.auditmanager.dto.AuditRequestDto;
 import org.mosip.kernel.auditmanager.dto.AuditResponseDto;
 import org.mosip.kernel.auditmanager.model.Audit;
-import org.mosip.kernel.auditmanager.request.AuditRequest;
+import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 import org.mosip.kernel.auditmanager.service.AuditManagerService;
 import org.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +24,7 @@ public class AuditManagerServiceImpl implements AuditManagerService {
 	 * Field for audit handler
 	 */
 	@Autowired
-	private AuditHandler<AuditRequest> handler;
-
-	/**
-	 * Field for {@link ModelMapper} for performing object mapping
-	 */
-	@Autowired
-	private ModelMapper modelMapper;
+	private AuditHandler<AuditRequestDto> handler;
 
 	/*
 	 * (non-Javadoc)
@@ -43,9 +35,8 @@ public class AuditManagerServiceImpl implements AuditManagerService {
 	 */
 	@Override
 	public AuditResponseDto addAudit(AuditRequestDto auditRequestDto) {
-		AuditRequest auditRequest = modelMapper.map(auditRequestDto, AuditRequest.class);
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		auditResponseDto.setStatus(handler.writeAudit(auditRequest));
+		auditResponseDto.setStatus(handler.writeAudit(auditRequestDto));
 		return auditResponseDto;
 	}
 }

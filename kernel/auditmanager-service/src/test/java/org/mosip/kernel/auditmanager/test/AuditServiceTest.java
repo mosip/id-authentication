@@ -12,9 +12,8 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
-import org.mosip.kernel.auditmanager.dto.AuditRequestDto;
 import org.mosip.kernel.auditmanager.dto.AuditResponseDto;
-import org.mosip.kernel.auditmanager.request.AuditRequest;
+import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 import org.mosip.kernel.auditmanager.service.impl.AuditManagerServiceImpl;
 import org.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,7 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 public class AuditServiceTest {
 	@Mock
-	private AuditHandler<AuditRequest> handler;
+	private AuditHandler<AuditRequestDto> handler;
 	@Mock
 	private ModelMapper modelMapper;
 	@InjectMocks

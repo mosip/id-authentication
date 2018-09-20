@@ -11,6 +11,12 @@ package org.mosip.kernel.dataaccess.constants;
 public class HibernatePersistenceConstants {
 
 	/**
+	 * Private constructor for HibernatePersistenceConstants
+	 */
+	private HibernatePersistenceConstants() {
+	}
+
+	/**
 	 * The string constant jdbc driver
 	 */
 	public static final String JDBC_DRIVER = "javax.persistence.jdbc.driver";
@@ -23,7 +29,7 @@ public class HibernatePersistenceConstants {
 	/**
 	 * The string constant jdbc password
 	 */
-	public static final String JDBC_PASSWORD = "javax.persistence.jdbc.password";
+	public static final String JDBC_PASS = "javax.persistence.jdbc.password";
 
 	/**
 	 * The string constant jdbc user

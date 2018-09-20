@@ -15,7 +15,7 @@ import org.mosip.kernel.auditmanager.exception.MosipAuditManagerException;
 import org.mosip.kernel.auditmanager.handler.AuditRequestHandler;
 import org.mosip.kernel.auditmanager.model.Audit;
 import org.mosip.kernel.auditmanager.repository.AuditRepository;
-import org.mosip.kernel.auditmanager.request.AuditRequest;
+import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -44,7 +44,7 @@ public class AuditEventTest {
 				.setHostName("hostName").setId("id").setIdType("idType").setModuleId("moduleId")
 				.setModuleName("moduleName").setSessionUserId("sessionUserId").setSessionUserName("sessionUserName");
 
-		AuditRequest auditRequest = auditRequestBuilder.build();
+		AuditRequestDto auditRequest = auditRequestBuilder.build();
 		handler.writeAudit(auditRequest);
 
 		assertThat(handler.writeAudit(auditRequestBuilder.build()), is(true));
@@ -63,7 +63,7 @@ public class AuditEventTest {
 				.setModuleId("moduleId").setModuleName("moduleName").setSessionUserId("sessionUserId")
 				.setSessionUserName("sessionUserName");
 
-		AuditRequest auditRequest = auditRequestBuilder.build();
+		AuditRequestDto auditRequest = auditRequestBuilder.build();
 		handler.writeAudit(auditRequest);
 
 	}
