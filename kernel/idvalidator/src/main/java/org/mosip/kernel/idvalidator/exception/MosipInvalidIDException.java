@@ -28,8 +28,8 @@ public class MosipInvalidIDException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public MosipInvalidIDException(MosipIDExceptionCodeConstants errorCode,
-			MosipIDExceptionCodeConstants errorMessage) {
-		super(errorCode.getErrorCode(), errorMessage.getErrorMessage());
+	public MosipInvalidIDException(String errorCode,
+			String errorMessage) {
+       super(errorCode, errorMessage);
 	}
 }
