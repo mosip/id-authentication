@@ -1,5 +1,0 @@
-2018-09-21T18:28:04+05:30 - DEBUG - REGISTRATION - PACKET_CREATION - CREATE - EnrollmentId - ED786878 - Registration Creation had been called
-2018-09-21T18:28:04+05:30 - DEBUG - REGISTRATION - PACKET_CREATION - CREATE - EnrollmentId - ED786878 - Demographic Json created successfully
-2018-09-21T18:28:04+05:30 - DEBUG - REGISTRATION - PACKET_CREATION - CREATE - EnrollmentId - ED786878 - HMAC generateds successfully
-2018-09-21T18:28:04+05:30 - DEBUG - REGISTRATION - PACKET_CREATION - CREATE - EnrollmentId - ED786878 - Registration Packet Meta-Info JSON generated successfully
-2018-09-21T18:28:05+05:30 - DEBUG - REGISTRATION - PACKET_CREATION - CREATE - EnrollmentId - ED786878 - Registration Creation had been ended
