@@ -140,7 +140,7 @@ public class JsonUtilTest {
 	public void testjsonStringToJavaListWithParseException()
 			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
 
-		JsonUtil.jsonStringToJavaList(JsonUtilTestConstants.jsonParserError);
+		JsonUtil.jsonStringToJavaList(JsonUtilTestConstants.jsonParserError2);
 	}
 
 	@Test(expected = MosipJsonMappingException.class)

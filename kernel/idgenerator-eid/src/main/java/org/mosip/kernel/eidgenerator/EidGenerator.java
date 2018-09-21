@@ -52,15 +52,18 @@ public class EidGenerator implements MosipEidGenerator {
 
 		if (agentId == null || machineId == null) {
 
-			throw new MosipNullValueException(EidGeneratorConstants.MOSIP_NULL_VALUE_ERROR_CODE.getErrorCode(), EidGeneratorConstants.MOSIP_NULL_VALUE_ERROR_CODE.getErrorMessage());
+			throw new MosipNullValueException(EidGeneratorConstants.MOSIP_NULL_VALUE_ERROR_CODE.getErrorCode(),
+					EidGeneratorConstants.MOSIP_NULL_VALUE_ERROR_CODE.getErrorMessage());
 		}
 		if (agentId.isEmpty() || machineId.isEmpty()) {
 
-			throw new MosipEmptyInputException(EidGeneratorConstants.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorCode(), EidGeneratorConstants.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorMessage());
+			throw new MosipEmptyInputException(EidGeneratorConstants.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorCode(),
+					EidGeneratorConstants.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorMessage());
 		}
 		if (agentId.length() < 4 || machineId.length() < 5) {
 
-			throw new MosipInputLengthException(EidGeneratorConstants.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorCode(), EidGeneratorConstants.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorMessage());
+			throw new MosipInputLengthException(EidGeneratorConstants.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorCode(),
+					EidGeneratorConstants.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorMessage());
 		}
 
 	}
