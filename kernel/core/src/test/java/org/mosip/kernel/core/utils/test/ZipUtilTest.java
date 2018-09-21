@@ -30,11 +30,13 @@ public class ZipUtilTest {
  
     	    byte[] data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI()));  
     	    byte[] returnedByteArray = ZipUtil.zipByteArray(data);
-    	   String outputFile = System.getProperty("user.dir") + "\\compressedByteArray.zip";   
+    	    String outputFile = System.getProperty("user.dir") + "\\compressedByteArray.zip";   
     	    Files.write(Paths.get(outputFile), returnedByteArray);
     	    File returnFile= new File(outputFile);
         
     	    assertTrue(returnFile.exists());	
+    	    File file = new File(outputFile);
+    		file.delete();
 	}
 
 
