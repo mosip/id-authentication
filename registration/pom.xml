@@ -12,7 +12,7 @@
 	<packaging>pom</packaging>
 
 	<name>registration</name>
-	<description>Parent project of MOSIP ID-Registration</description>
+	<description>Parent project of MOSIP Registration</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,9 +49,9 @@
 	</properties>
 
 	<modules>
-		<module>registration-ui</module>
 		<module>registration-processor</module>
-		<!--<module>id-issuance-dao</module>
+		<module>registration-ui</module>
+		<!-- <module>registration-build</module>
 		<module>id-issuance-service</module>-->
 	</modules>
 
@@ -124,6 +124,26 @@
 			<dependency>
 				<groupId>org.mosip</groupId>
 				<artifactId>kernel-utils</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mosip</groupId>
+				<artifactId>kernel-logging-impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mosip</groupId>
+				<artifactId>kernel-security</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mosip</groupId>
+				<artifactId>kernel-dao-hibernate-impl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mosip</groupId>
+				<artifactId>kernel-audit-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>

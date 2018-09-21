@@ -1,4 +1,4 @@
-package org.mosip.registration.core.impl.devices;
+package org.mosip.registration.processor.core.impl.devices;
 
 public class IrisSPIImpl {
 

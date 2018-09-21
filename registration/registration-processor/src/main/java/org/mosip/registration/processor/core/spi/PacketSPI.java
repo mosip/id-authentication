@@ -1,4 +1,4 @@
-package main.org.mosip.registration.core.spi;
+package org.mosip.registration.processor.core.spi;
 
 public interface PacketSPI {
 

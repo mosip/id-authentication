@@ -1,4 +1,4 @@
-package main.org.mosip.registration.core.impl;
+package org.mosip.registration.processor.core.impl;
 
 public class RegistrationSPIImpl {
 
