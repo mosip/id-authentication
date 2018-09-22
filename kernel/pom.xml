@@ -64,6 +64,8 @@
 		<lombok.version>1.16.18</lombok.version>
 		<!-- Jsch -->
 		<jsch.version>0.1.54</jsch.version>
+		<!--sshd-->
+		<sshd.version>1.4.0</sshd.version>
 		
 	</properties>
 
@@ -79,6 +81,7 @@
 		<module>idgenerator-vid</module>
 		<module>idgenerator-uin</module>
 		<module>packet-uploader</module>
+		<module>packet-server</module>
 
 	</modules>
 

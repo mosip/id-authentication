@@ -39,5 +39,18 @@ public enum MosipSecurityMethod {
 	/**
 	 * <b>TWOFISH</b> symmetric-key block cipher security method with PKCS7 Padding
 	 */
-	TWOFISH_WITH_CBC_AND_PKCS7PADDING
+	TWOFISH_WITH_CBC_AND_PKCS7PADDING,
+	/**
+	 * RSA cryptosystem security method with PKCS1 Padding
+	 */
+	RSA_WITH_PKCS1PADDING, 
+	/**
+	 * RSA cryptosystem security method with OEAP(with MD5) Padding
+	 */
+	RSA_WITH_OAEP_WITH_MD5_AND_MGF1PADDING, 
+	/**
+	 * RSA cryptosystem security method with OEAP(with SHA3 512) Padding
+	 */
+	RSA_WITH_OAEP_WITH_SHA3512_AND_MGF1PADDING; 
+	
 }

@@ -68,6 +68,21 @@ public class MosipEncryptorTest {
 	}
 	
 	@Test
+	public void testPlainRSAPKS1AsymmetricPrivateEncrypt() throws MosipInvalidKeyException, MosipInvalidDataException, NoSuchAlgorithmException {
+	 assertThat(MosipEncryptor.asymmetricPrivateEncrypt(rsaPair.getPrivate().getEncoded(),data, MosipSecurityMethod.RSA_WITH_PKCS1PADDING),isA(byte[].class));
+	}
+	
+	@Test
+	public void testPlainRSAMD5AsymmetricPrivateEncrypt() throws MosipInvalidKeyException, MosipInvalidDataException, NoSuchAlgorithmException {
+		assertThat(MosipEncryptor.asymmetricPrivateEncrypt(rsaPair.getPrivate().getEncoded(),data, MosipSecurityMethod.RSA_WITH_OAEP_WITH_MD5_AND_MGF1PADDING),isA(byte[].class));
+	}
+	
+	@Test
+	public void testPlainRSASHA3512AsymmetricPrivateEncrypt() throws MosipInvalidKeyException, MosipInvalidDataException, NoSuchAlgorithmException {
+     assertThat(MosipEncryptor.asymmetricPrivateEncrypt(rsaPair.getPrivate().getEncoded(),data, MosipSecurityMethod.RSA_WITH_OAEP_WITH_SHA3512_AND_MGF1PADDING),isA(byte[].class));
+	}
+	
+	@Test
 	public void testRSAPKS1AsymmetricPublicEncrypt() throws MosipInvalidKeyException, MosipInvalidDataException, NoSuchAlgorithmException {
      assertThat(MosipEncryptor.asymmetricPublicEncrypt(rsaPair.getPublic().getEncoded(),data, MosipSecurityMethod.HYBRID_RSA_AES_WITH_PKCS1PADDING),isA(byte[].class));
 	}
@@ -80,6 +95,21 @@ public class MosipEncryptorTest {
 	@Test
 	public void testRSASHA3512AsymmetricPublicEncrypt() throws MosipInvalidKeyException, MosipInvalidDataException, NoSuchAlgorithmException {
      assertThat(MosipEncryptor.asymmetricPublicEncrypt(rsaPair.getPublic().getEncoded(),data, MosipSecurityMethod.HYBRID_RSA_AES_WITH_OAEP_WITH_SHA3512_AND_MGF1PADDING),isA(byte[].class));
+	}
+	
+	@Test
+	public void testPlainRSAPKS1AsymmetricPublicEncrypt() throws MosipInvalidKeyException, MosipInvalidDataException, NoSuchAlgorithmException {
+     assertThat(MosipEncryptor.asymmetricPublicEncrypt(rsaPair.getPublic().getEncoded(),data, MosipSecurityMethod.RSA_WITH_PKCS1PADDING),isA(byte[].class));
+	}
+	
+	@Test
+	public void testPlainRSAMD5AsymmetricPublicEncrypt() throws MosipInvalidKeyException, MosipInvalidDataException, NoSuchAlgorithmException {
+     assertThat(MosipEncryptor.asymmetricPublicEncrypt(rsaPair.getPublic().getEncoded(),data, MosipSecurityMethod.RSA_WITH_OAEP_WITH_MD5_AND_MGF1PADDING),isA(byte[].class));
+	}
+	
+	@Test
+	public void testPlainRSASHA3512AsymmetricPublicEncrypt() throws MosipInvalidKeyException, MosipInvalidDataException, NoSuchAlgorithmException {
+     assertThat(MosipEncryptor.asymmetricPublicEncrypt(rsaPair.getPublic().getEncoded(),data, MosipSecurityMethod.RSA_WITH_OAEP_WITH_SHA3512_AND_MGF1PADDING),isA(byte[].class));
 	}
 	
 	
@@ -182,7 +212,7 @@ public class MosipEncryptorTest {
      assertThat(MosipEncryptor.asymmetricPrivateEncrypt(rsaPair.getPrivate().getEncoded(),null, MosipSecurityMethod.HYBRID_RSA_AES_WITH_PKCS1PADDING),isA(byte[].class));
 	}
 	
-	@Test(expected=MosipInvalidKeyException.class)
+	@Test(expected=MosipInvalidDataException.class)
 	public void testRSAPKS1AsymmetricPrivateEncryptInvalidKey() throws MosipInvalidKeyException, MosipInvalidDataException, NoSuchAlgorithmException {
 		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
 		SecureRandom random = new SecureRandom();
