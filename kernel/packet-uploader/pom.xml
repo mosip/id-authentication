@@ -11,21 +11,36 @@
 	</parent>
 
 	<artifactId>packet-uploader</artifactId>
-	
+
 	<packaging>jar</packaging>
 
 	<name>packet-uploader</name>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.mosip</groupId>
 			<artifactId>kernel-core</artifactId>
 			<version>${project.version}</version>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch</artifactId>
 			<version>${jsch.version}</version>
 		</dependency>
+
+		
+		  <dependency>
+            <groupId>org.apache.sshd</groupId>
+            <artifactId>sshd-core</artifactId>
+            <version>1.4.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 </project>

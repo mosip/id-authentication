@@ -20,8 +20,8 @@ public class MosipInvalidSessionException extends BaseUncheckedException{
 		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage(), cause);
 	}
 
-	public MosipInvalidSessionException(PacketUploaderExceptionConstants exceptionConstants) {
-		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage());
+	public MosipInvalidSessionException(PacketUploaderExceptionConstants exceptionConstants,String message) {
+		super(exceptionConstants.getErrorCode(), message);
 	}
 
 }
