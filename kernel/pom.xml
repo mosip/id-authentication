@@ -48,6 +48,7 @@
 		<commons-math3>3.6.1</commons-math3>
 		<commons-lang3>3.7</commons-lang3>
 		<commons-io>2.6</commons-io>
+		<commons-codec>1.10</commons-codec>
 		<guava.version>19.0</guava.version>
 		<seventeam-otp.version>1.0.0</seventeam-otp.version>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
@@ -64,7 +65,7 @@
 		<lombok.version>1.16.18</lombok.version>
 		<!-- Jsch -->
 		<jsch.version>0.1.54</jsch.version>
-		<!--sshd-->
+		<!--sshd server-->
 		<sshd.version>1.4.0</sshd.version>
 		
 	</properties>
