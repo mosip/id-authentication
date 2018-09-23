@@ -8,15 +8,10 @@
 		<artifactId>kernel</artifactId>
 		<version>1.0.0.0-SNAPSHOT</version>
 	</parent>
+
 	<artifactId>packet-server</artifactId>
-
 	<packaging>jar</packaging>
-
 	<name>packet-server</name>
-
-
-
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -30,13 +25,21 @@
 			<version>${sshd.version}</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
 			<version>${spring.boot.version}</version>
+			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${commons-codec}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mosip</groupId>
+			<artifactId>kernel-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 </project>
