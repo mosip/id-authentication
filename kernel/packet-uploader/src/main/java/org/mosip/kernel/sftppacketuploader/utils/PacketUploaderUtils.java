@@ -1,16 +1,16 @@
-package org.mosip.kernel.packetuploader.utils;
+package org.mosip.kernel.sftppacketuploader.utils;
 
 import java.io.File;
 
-import org.mosip.kernel.packetuploader.constants.PacketUploaderConfiguration;
-import org.mosip.kernel.packetuploader.constants.PacketUploaderConstants;
-import org.mosip.kernel.packetuploader.constants.PacketUploaderExceptionConstants;
-import org.mosip.kernel.packetuploader.exceptions.MosipEmptyPathException;
-import org.mosip.kernel.packetuploader.exceptions.MosipIllegalConfigurationException;
-import org.mosip.kernel.packetuploader.exceptions.MosipIllegalIdentityException;
-import org.mosip.kernel.packetuploader.exceptions.MosipNullConfigurationException;
-import org.mosip.kernel.packetuploader.exceptions.MosipNullPathException;
-import org.mosip.kernel.packetuploader.exceptions.MosipPacketSizeException;
+import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderConfiguration;
+import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderConstants;
+import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderExceptionConstants;
+import org.mosip.kernel.sftppacketuploader.exceptions.MosipEmptyPathException;
+import org.mosip.kernel.sftppacketuploader.exceptions.MosipIllegalConfigurationException;
+import org.mosip.kernel.sftppacketuploader.exceptions.MosipIllegalIdentityException;
+import org.mosip.kernel.sftppacketuploader.exceptions.MosipNullConfigurationException;
+import org.mosip.kernel.sftppacketuploader.exceptions.MosipNullPathException;
+import org.mosip.kernel.sftppacketuploader.exceptions.MosipPacketSizeException;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;

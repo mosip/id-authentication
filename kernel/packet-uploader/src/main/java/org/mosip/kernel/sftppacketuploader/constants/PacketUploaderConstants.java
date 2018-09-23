@@ -1,4 +1,4 @@
-package org.mosip.kernel.packetuploader.constants;
+package org.mosip.kernel.sftppacketuploader.constants;
 
 /**
  * Constants for Packet Uploader
@@ -53,7 +53,9 @@ public enum PacketUploaderConstants {
 	 * constructor for this {@link Enum}
 	 * 
 	 * @param key
+	 *            value of {@link #key}
 	 * @param value
+	 *            {@link #value}
 	 */
 	private PacketUploaderConstants(String key, String value) {
 		this.setKey(key);
@@ -61,37 +63,47 @@ public enum PacketUploaderConstants {
 	}
 
 	/**
-	 * 
+	 * value
 	 */
 	private String value;
 	/**
-	 * 
+	 * key
 	 */
 	private String key;
 
 	/**
-	 * @return
+	 * getter for {@link #key}
+	 * 
+	 * @return {@link #key}
 	 */
 	public String getKey() {
 		return key;
 	}
 
 	/**
+	 * setter for {@link #key}
+	 * 
 	 * @param key
+	 *            {@link #key}
 	 */
 	private void setKey(String key) {
 		this.key = key;
 	}
 
 	/**
-	 * @return
+	 * getter for {@link #value}
+	 * 
+	 * @return {@link #value}
 	 */
 	public String getValue() {
 		return value;
 	}
 
 	/**
+	 * setter for {@link #value}
+	 * 
 	 * @param value
+	 *            {@link #value}
 	 */
 	private void setValue(String value) {
 		this.value = value;

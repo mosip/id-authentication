@@ -1,6 +1,6 @@
-package org.mosip.kernel.packetuploader.channel;
+package org.mosip.kernel.sftppacketuploader.channel;
 
-import org.mosip.kernel.packetuploader.constants.PacketUploaderConfiguration;
+import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderConfiguration;
 
 import com.jcraft.jsch.ChannelSftp;
 
@@ -26,7 +26,9 @@ public class SftpChannel {
 	 * Constructor for this class
 	 * 
 	 * @param channelSftp
+	 *            {@link #channelSftp} parameter
 	 * @param configuration
+	 *            {@link #configuration} parameter
 	 */
 	public SftpChannel(ChannelSftp channelSftp, PacketUploaderConfiguration configuration) {
 		this.channelSftp = channelSftp;
@@ -36,7 +38,7 @@ public class SftpChannel {
 	/**
 	 * getter for {@link #configuration}
 	 * 
-	 * @return
+	 * @return {@link #configuration}
 	 */
 	public PacketUploaderConfiguration getConfiguration() {
 		return configuration;
@@ -45,7 +47,7 @@ public class SftpChannel {
 	/**
 	 * getter for {@link #channelSftp}
 	 * 
-	 * @return
+	 * @return {@link #channelSftp}
 	 */
 	public ChannelSftp getChannelSftp() {
 		return channelSftp;

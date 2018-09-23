@@ -1,8 +1,8 @@
-package org.mosip.kernel.packetuploader.exceptions;
+package org.mosip.kernel.sftppacketuploader.exceptions;
 
 import org.mosip.kernel.core.exception.BaseCheckedException;
-import org.mosip.kernel.packetuploader.constants.PacketUploaderConstants;
-import org.mosip.kernel.packetuploader.constants.PacketUploaderExceptionConstants;
+import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderConstants;
+import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderExceptionConstants;
 
 /**
  * Exception to be thrown when Connection is not made with server

@@ -1,4 +1,4 @@
-package org.mosip.kernel.packetuploader.constants;
+package org.mosip.kernel.sftppacketuploader.constants;
 
 /**
  * Packet Uploader Exception Constants
@@ -88,7 +88,9 @@ public enum PacketUploaderExceptionConstants {
 	 * Constructor for this {@link Enum}
 	 * 
 	 * @param errorCode
+	 *            {@link #errorCode}Code
 	 * @param errorMessage
+	 *            {@link #errorMessage}
 	 */
 	PacketUploaderExceptionConstants(String errorCode, String errorMessage) {
 		this.setErrorCode(errorCode);
@@ -98,7 +100,7 @@ public enum PacketUploaderExceptionConstants {
 	/**
 	 * getter for {@link #errorCode}
 	 * 
-	 * @return
+	 * @return {@link #errorCode}
 	 */
 	public String getErrorCode() {
 		return errorCode;
@@ -116,7 +118,7 @@ public enum PacketUploaderExceptionConstants {
 	/**
 	 * getter for {@link #errorMessage}
 	 * 
-	 * @return
+	 * @return {@link #errorMessage}
 	 */
 	public String getErrorMessage() {
 		return errorMessage;
@@ -126,17 +128,18 @@ public enum PacketUploaderExceptionConstants {
 	 * setter for {@link #errorMessage}
 	 * 
 	 * @param errorMessage
+	 *            {@link #errorMessage}
 	 */
 	private void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 
 	/**
-	 * 
+	 * errorCode
 	 */
 	String errorCode;
 	/**
-	 * 
+	 * errorMessage
 	 */
 	String errorMessage;
 }

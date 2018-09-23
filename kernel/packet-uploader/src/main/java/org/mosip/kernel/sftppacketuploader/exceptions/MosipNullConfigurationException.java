@@ -1,7 +1,7 @@
-package org.mosip.kernel.packetuploader.exceptions;
+package org.mosip.kernel.sftppacketuploader.exceptions;
 
 import org.mosip.kernel.core.exception.BaseUncheckedException;
-import org.mosip.kernel.packetuploader.constants.PacketUploaderExceptionConstants;
+import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderExceptionConstants;
 
 /**
  * Exception to be thrown when configuration is null
