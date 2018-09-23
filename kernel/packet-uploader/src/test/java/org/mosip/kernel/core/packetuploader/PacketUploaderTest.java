@@ -29,7 +29,6 @@ import org.mosip.kernel.packetuploader.exceptions.MosipIllegalIdentityException;
 import org.mosip.kernel.packetuploader.exceptions.MosipNullConfigurationException;
 import org.mosip.kernel.packetuploader.exceptions.MosipNullPathException;
 import org.mosip.kernel.packetuploader.exceptions.MosipPacketSizeException;
-import org.mosip.kernel.packetuploader.exceptions.MosipSFTPException;
 import org.mosip.kernel.packetuploader.gateway.PacketUploader;
 import org.springframework.core.io.ClassPathResource;
 
@@ -140,7 +139,7 @@ public class PacketUploaderTest {
 		PacketUploader.upload(channel, tempFile.toString());
 	}
 
-	@Test(expected = MosipSFTPException.class)
+	@Test(expected = MosipPacketSizeException.class)
 	public void testUploadSFTPException() throws IOException, MosipConnectionException {
 		SftpChannel channel = PacketUploader.createSFTPChannel(configuration);
 

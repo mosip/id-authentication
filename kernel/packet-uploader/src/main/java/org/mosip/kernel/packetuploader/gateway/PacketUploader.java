@@ -17,21 +17,28 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
 /**
+ * Mosip packet uploader SFTP GateWay
+ * 
  * @author Urvil Joshi
  * @since 1.0.0
  */
 public class PacketUploader {
 
 	/**
-	 * 
+	 * Constructor for this class
 	 */
 	private PacketUploader() {
 	}
 
 	/**
+	 * this creates and connects SFTP channel based on configutaions
+	 * 
 	 * @param configuration
-	 * @return
+	 *            {@link PacketUploaderConfiguration} provided by user
+	 * @return configured {@link SftpChannel} instance
 	 * @throws MosipConnectionException
+	 *             to be thrown when there is a exception during connection with
+	 *             server
 	 */
 	public static SftpChannel createSFTPChannel(PacketUploaderConfiguration configuration)
 			throws MosipConnectionException {
@@ -55,8 +62,13 @@ public class PacketUploader {
 	}
 
 	/**
+	 * uploades file to server <i>(this method will not create destination folder it
+	 * should be already present)</i>
+	 * 
 	 * @param sftpChannel
+	 *            configured {@link SftpChannel} instance
 	 * @param source
+	 *            path of packet to be uploaded
 	 */
 	public static void upload(SftpChannel sftpChannel, String source) {
 		ChannelSftp channelSftp = sftpChannel.getChannelSftp();
@@ -70,7 +82,10 @@ public class PacketUploader {
 	}
 
 	/**
+	 * this releases the obtained Connection to server
+	 * 
 	 * @param sftpChannel
+	 *            configured {@link SftpChannel} instance
 	 */
 	public static void releaseConnection(SftpChannel sftpChannel) {
 		ChannelSftp channelSftp = sftpChannel.getChannelSftp();
