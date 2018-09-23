@@ -91,6 +91,9 @@ public class AsymmetricProcessor {
 	protected static byte[] process(AsymmetricBlockCipher asymmetricBlockCipher, AsymmetricKeyParameter key,
 			byte[] data, boolean mode) throws MosipInvalidDataException, MosipInvalidKeyException {
 		init(asymmetricBlockCipher, key, mode);
+		if (data == null) {
+			throw new MosipNullDataException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
+		}
 		return processData(asymmetricBlockCipher, data, 0, data.length);
 	}
 
@@ -128,6 +131,9 @@ public class AsymmetricProcessor {
 			throw new MosipInvalidDataException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_LENGTH_EXCEPTION);
 		} catch (NullPointerException e) {
 			throw new MosipNullDataException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
+		} catch (IllegalArgumentException e) {
+			throw new MosipInvalidDataException(
+					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_LENGTH_EXCEPTION);
 		}
 
 	}
