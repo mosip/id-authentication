@@ -41,6 +41,17 @@ public interface FileSystemAdapter<T, U, V> {
 	public T getPacket(String enrolmentId);
 
 	/**
+	 * This method checks whether a file exists in DFS
+	 * 
+	 * @param enrolmentId
+	 *            The enrolment ID for which file needs to be checked
+	 * @param fileName
+	 *            File that needs to checked
+	 * @return True if file is found, false otherwise
+	 */
+	public Boolean checkFileExistence(String enrolmentId, U fileName);
+
+	/**
 	 * This method fetches a file corresponding to an enrolment ID and returns it
 	 * 
 	 * @param enrolmentId

@@ -204,4 +204,16 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 		}
 		return true;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.mosip.registration.processor.filesystem.adapter.FileSystemAdapter#checkFileExistence(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public Boolean checkFileExistence(String enrolmentId, PacketFiles fileName) {
+		boolean result = false;
+		if(getFile(enrolmentId, fileName)!=null) {
+			result = true;
+		}
+		return result;
+	}
 }
