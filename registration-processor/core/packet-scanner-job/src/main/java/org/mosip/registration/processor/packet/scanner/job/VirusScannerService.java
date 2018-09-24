@@ -2,6 +2,9 @@ package org.mosip.registration.processor.packet.scanner.job;
 
 import java.util.Random;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class VirusScannerService {
 
 	private static final Random random = new Random();
