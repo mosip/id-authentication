@@ -32,7 +32,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * @author Manoj SP
  */
 @RestControllerAdvice
-public class IDAuthenticationExceptionHandler extends ResponseEntityExceptionHandler {
+public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private MosipLogger logger;
 
