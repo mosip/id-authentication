@@ -1,6 +1,5 @@
 package org.mosip.auth.core.dto.indauth;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.validation.constraints.Digits;
@@ -19,9 +18,7 @@ import lombok.Data;
  * @author Rakesh Roshan
  */
 @Data
-public class AuthRequestDTO implements Serializable {
-
-	private static final long serialVersionUID = 6239182261277493008L;
+public class AuthRequestDTO {
 
 	@Pattern(regexp = "^[0-9]{10}$", message = "UniqeID size must be 10")
 	@NotNull

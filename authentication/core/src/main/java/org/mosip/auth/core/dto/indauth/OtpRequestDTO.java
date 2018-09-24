@@ -1,6 +1,5 @@
 package org.mosip.auth.core.dto.indauth;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.validation.constraints.Digits;
@@ -17,15 +16,11 @@ import lombok.Data;
  */
 
 @Data
-//@NotNull
-public class OtpRequestDTO implements Serializable {
-
-	private static final long serialVersionUID = 587362391440358285L;
+public class OtpRequestDTO {
 
 	@Pattern(regexp = "^[0-9]{10}", message = "uniqueID validation failed")
 	private String uniqueID;
 
-//	@NotEmpty
 	@NotNull
 	private IDType idType;
 
