@@ -2,6 +2,7 @@ package org.mosip.auth.service.util;
 
 import java.net.URI;
 import java.time.Duration;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
 import javax.validation.Valid;
@@ -9,6 +10,10 @@ import javax.validation.Valid;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.exception.RestServiceException;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
+import org.mosip.kernel.core.logging.MosipLogger;
+import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.core.logging.factory.MosipLogfactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -26,6 +31,19 @@ import reactor.core.publisher.Mono;
  */
 
 public final class RestUtil {
+	// FIXME Update log details
+	private static MosipLogger logger;
+
+	/**
+	 * Initialize logger.
+	 *
+	 * @param idaRollingFileAppender
+	 *            the ida rolling file appender
+	 */
+	@Autowired
+	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
+		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
+	}
 
 	/**
 	 * Instantiates a new rest util.
@@ -49,15 +67,20 @@ public final class RestUtil {
 		Object response;
 		if (request.getTimeout() != null) {
 			try {
-				response = RestUtil.request(request).timeout(Duration.ofSeconds(request.getTimeout()))
-						.onErrorMap(
-								error -> new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT))
+				response = RestUtil.request(request).timeout(Duration.ofSeconds(request.getTimeout())).onErrorMap(
+						TimeoutException.class,
+						error -> new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, error))
 						.block();
 				return (T) response;
 			} catch (RuntimeException e) {
+				logger.error("sessionId", "RestUtil", "requestSync", "RunTimeException - " + e);
 				if (e.getCause().getClass().equals(RestServiceException.class)) {
+					logger.error("sessionId", "RestUtil", "requestSync",
+							"RunTimeException - RestServiceException - CONNECTION_TIMED_OUT - " + e);
 					throw (RestServiceException) e.getCause();
 				} else {
+					logger.error("sessionId", "RestUtil", "requestSync",
+							"RunTimeException - RestServiceException - UNKNOWN_ERROR - " + e);
 					throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
 				}
 			}
@@ -104,19 +127,19 @@ public final class RestUtil {
 		if (request.getParams() != null && request.getPathVariables() == null) {
 			uri = method.uri(builder -> {
 				URI build = builder.queryParams(request.getParams()).build();
-				System.err.println(build);
+				logger.info("sessionId", "RestUtil", "buildRequest", "URI for rest call is : " + build);
 				return build;
 			});
 		} else if (request.getParams() == null && request.getPathVariables() != null) {
 			uri = method.uri(builder -> {
 				URI build = builder.build(request.getPathVariables());
-				System.err.println(build);
+				logger.info("sessionId", "RestUtil", "buildRequest", "URI for rest call is : " + build);
 				return build;
 			});
 		} else {
 			uri = method.uri(builder -> {
 				URI build = builder.build();
-				System.err.println(build);
+				logger.info("sessionId", "RestUtil", "buildRequest", "URI for rest call is : " + build);
 				return build;
 			});
 		}
@@ -127,18 +150,24 @@ public final class RestUtil {
 			exchange = uri.retrieve();
 		}
 
-		monoResponse = exchange
-				.onStatus(HttpStatus::isError, RestUtil::handleStatusError).bodyToMono(request.getResponseType());
+		monoResponse = exchange.onStatus(HttpStatus::isError, RestUtil::handleStatusError)
+				.bodyToMono(request.getResponseType());
 
 		return monoResponse;
 	}
 
 	private static Mono<? extends Throwable> handleStatusError(ClientResponse response) {
 		Mono<?> body = response.body(BodyExtractors.toMono(String.class));
+		logger.error("sessionId", "RestUtil", "status error",
+				"isError - " + response.statusCode() + "   " + response.statusCode().getReasonPhrase());
 		if (response.statusCode().is4xxClientError()) {
+			logger.error("sessionId", "RestUtil", "status error",
+					"is4xxClientError - " + response.statusCode() + "   " + response.statusCode().getReasonPhrase());
 			return body
 					.flatMap(str -> Mono.error(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR)));
 		} else {
+			logger.error("sessionId", "RestUtil", "status error",
+					"is5xxServerError - " + response.statusCode() + "   " + response.statusCode().getReasonPhrase());
 			return body
 					.flatMap(str -> Mono.error(new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR)));
 		}
