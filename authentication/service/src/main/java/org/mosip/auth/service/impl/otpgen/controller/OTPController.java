@@ -5,8 +5,8 @@ import java.util.Date;
 import javax.validation.Valid;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
-import org.mosip.auth.core.dto.indauth.OtpRequestDTO;
-import org.mosip.auth.core.dto.indauth.OtpResponseDTO;
+import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
+import org.mosip.auth.core.dto.otpgen.OtpResponseDTO;
 import org.mosip.auth.core.exception.IdAuthenticationAppException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
 import org.mosip.auth.core.spi.otpgen.facade.OTPFacade;

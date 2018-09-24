@@ -1,14 +1,10 @@
 package org.mosip.auth.service.impl.otpgen.facade;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import org.mosip.auth.core.dto.indauth.IDType;
-import org.mosip.auth.core.dto.indauth.OtpRequestDTO;
+import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
-import org.mosip.auth.core.exception.IdValidationFailedException;
 import org.mosip.auth.core.spi.idauth.service.IdAuthService;
 import org.mosip.auth.core.spi.otpgen.facade.OTPFacade;
 import org.mosip.auth.core.spi.otpgen.service.OTPService;
