@@ -1,5 +1,6 @@
 package org.mosip.auth.service.impl.otpgen.service;
 
+import org.mosip.auth.core.constant.AuditServicesConstants;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.exception.IDDataValidationException;
@@ -12,7 +13,6 @@ import org.mosip.auth.service.factory.AuditRequestFactory;
 import org.mosip.auth.service.factory.RestRequestFactory;
 import org.mosip.auth.service.integration.OTPManager;
 import org.mosip.auth.service.util.RestUtil;
-import org.mosip.kernel.core.audit.utils.AuditUtils;
 import org.mosip.kernel.core.logging.MosipLogger;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.core.logging.factory.MosipLogfactory;
@@ -31,9 +31,6 @@ public class OTPServiceImpl implements OTPService {
 	OTPManager otpManager;
 
 	private MosipLogger LOGGER;
-	
-	@Autowired
-	AuditUtils auditUtils;
 	
 	@Autowired
 	RestRequestFactory restRequestFactory;

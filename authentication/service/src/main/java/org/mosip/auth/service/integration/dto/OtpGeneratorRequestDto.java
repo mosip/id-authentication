@@ -18,5 +18,5 @@ public class OtpGeneratorRequestDto {
 	 */
 	@NotNull
 	@Size(min = 3, max = 255)
-	private String otpKey;
+	private String key;
 }

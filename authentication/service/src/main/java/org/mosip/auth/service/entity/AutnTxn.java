@@ -4,23 +4,29 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 
  * @author Rakesh Roshan
  */
 @Data
-@Table(name = "uin", schema = "ida")
+@Table(name = "autn_txn", schema = "ida")
+@Entity
 public class AutnTxn implements Serializable {
 
 	private static final long serialVersionUID = 7106100772059714728L;
 
+	@Id
 	@NotNull
 	private String id;
 
@@ -40,12 +46,13 @@ public class AutnTxn implements Serializable {
 	@Column(name = "auth_type_code")
 	private String authTypeCode;
 
-	@Pattern(regexp = "[A-Za-z0-9] {16}")
+	@NotNull
+	@Size(max = 16)
 	@Column(name = "status_code")
 	private String statusCode;
 
-	@Pattern(regexp = "[A-Za-z0-9]")
-	@Size(min = 10, max = 256)
+	@NotNull
+	@Size(max = 256)
 	@Column(name = "status_comment")
 	private String statusComment;
 

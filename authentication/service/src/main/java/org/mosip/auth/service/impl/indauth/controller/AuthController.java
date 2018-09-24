@@ -17,7 +17,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -32,7 +31,7 @@ import io.swagger.annotations.ApiResponses;
  */
 
 @RestController
-@RequestMapping(value = "/v0.1/id-usage-service")
+//@RequestMapping(value = "/v0.1/id-usage-service")
 @Api(tags = "Authentication Request")
 public class AuthController {
 	

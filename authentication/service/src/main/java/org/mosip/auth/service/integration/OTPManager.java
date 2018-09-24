@@ -1,14 +1,14 @@
 package org.mosip.auth.service.integration;
 
 import org.mosip.auth.core.constant.RestServicesConstants;
-import org.mosip.auth.core.dto.indauth.OtpGeneratorRequestDto;
-import org.mosip.auth.core.dto.indauth.OtpGeneratorResponseDto;
 import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
 import org.mosip.auth.core.exception.RestServiceException;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
 import org.mosip.auth.service.factory.RestRequestFactory;
 import org.mosip.auth.service.integration.dto.OTPValidateResponseDTO;
+import org.mosip.auth.service.integration.dto.OtpGeneratorRequestDto;
+import org.mosip.auth.service.integration.dto.OtpGeneratorResponseDto;
 import org.mosip.auth.service.util.RestUtil;
 import org.mosip.kernel.core.logging.MosipLogger;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 /**
  * OTPManager handling with OTP-Generation and OTP-Validation.
@@ -48,7 +50,7 @@ public class OTPManager {
 	public String generateOTP(String otpKey) {
 
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		otpGeneratorRequestDto.setOtpKey(otpKey);
+		otpGeneratorRequestDto.setKey(otpKey);
 		OtpGeneratorResponseDto otpGeneratorResponsetDto = null;
 		RestRequestDTO restRequestDTO = null;
 
@@ -60,36 +62,52 @@ public class OTPManager {
 			e.printStackTrace();
 		}
 
+		String response = null;
+
 		try {
 			otpGeneratorResponsetDto = RestUtil.requestSync(restRequestDTO);
+			System.out.println(otpGeneratorResponsetDto);
+
+			response = otpGeneratorResponsetDto.getOtp();
+			System.out.println(response);
+			LOGGER.info("NA", "NA", "NA", "otpGeneratorResponsetDto " + response);
+			if (response == null || response.isEmpty()) {
+				LOGGER.error("NA", "NA", "NA", "OTP is null or empty");
+			} else {
+				LOGGER.error("NA", "NA", "NA", response);
+			}
+
 		} catch (RestServiceException e) {
 			LOGGER.error("NA", "NA", e.getErrorCode(), e.getErrorText());
 		}
 
-		String response = otpGeneratorResponsetDto.getOtp();
-		if (response == null || response.isEmpty()) {
-			LOGGER.error("NA", "NA", "NA", "OTP is null or empty");
-		}
 		return response;
 	}
 
-	public boolean validateOtp(String pinValue, String OtpKey) {
+	public boolean validateOtp(String pinValue, String otpKey) {
 		boolean isValidOtp = false;
 		OTPValidateResponseDTO validResponseDto = new OTPValidateResponseDTO();
 		try {
 			RestRequestDTO restreqdto = restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE,
 					validResponseDto, OTPValidateResponseDTO.class);
 
+			MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+			params.add("key", otpKey);
+			params.add("otp", pinValue);
+			restreqdto.setParams(params);
 			validResponseDto = RestUtil.requestSync(restreqdto);
+			if (validResponseDto != null) {
+				if (validResponseDto.getStatus().equalsIgnoreCase("true")) {
+					isValidOtp = true;
+				}
+			} else {
+				isValidOtp = false;
+			}
 		} catch (RestServiceException | IDDataValidationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (validResponseDto != null) {
-			isValidOtp = true;
-		} else {
-			isValidOtp = false;
-		}
+		
 		return isValidOtp;
 	}
 
