@@ -1,6 +1,5 @@
 package org.mosip.auth.core.dto.otpgen;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 

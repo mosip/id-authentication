@@ -1,6 +1,5 @@
 package org.mosip.auth.core.dto.otpgen;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.validation.constraints.Digits;
@@ -20,7 +19,7 @@ import lombok.Data;
 
 @Data
 //@NotNull
-public class OtpRequestDTO {
+public class OtpRequestDTO  {
 
 	private static final long serialVersionUID = 587362391440358285L;
 
