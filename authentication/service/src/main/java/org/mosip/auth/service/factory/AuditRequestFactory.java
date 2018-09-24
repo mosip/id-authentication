@@ -20,8 +20,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AuditRequestFactory {
-	private static final String HOST_ADDRESS = "127.0.0.1";
-	private static final String HOST_NAME = "localhost";
 	private MosipLogger logger;
 
 	@Autowired
@@ -48,27 +46,26 @@ public class AuditRequestFactory {
 			hostAddress = inetAddress.getHostAddress();
 		} catch (UnknownHostException ex) {
 			logger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(), ex.toString());
-			hostName = HOST_NAME;
-			hostAddress = HOST_ADDRESS;
+			hostName = env.getProperty("audit.defaultHostName");
+			hostAddress = env.getProperty("audit.defaultHostAddress");
 		}
 
-		// TODO
-		request.setEventId("eventId"); //
-		request.setEventName("eventName"); //
-		request.setEventType("eventType"); //
+		request.setEventId("eventId");
+		request.setEventName("eventName");
+		request.setEventType("eventType");
 		request.setActionTimeStamp(OffsetDateTime.now());
 		request.setHostName(hostName);
 		request.setHostIp(hostAddress);
-		request.setApplicationId(env.getProperty("application.id")); // config application.id
-		request.setApplicationName(env.getProperty("application.name")); // config application.name
+		request.setApplicationId(env.getProperty("application.id"));
+		request.setApplicationName(env.getProperty("application.name"));
 		request.setSessionUserId("sessionUserId");
 		request.setSessionUserName("sessionUserName");
 		request.setId("id");
 		request.setIdType("idType");
-		request.setCreatedBy("createdBy"); // system
-		request.setModuleName("moduleName"); // get from constant
-		request.setModuleId(moduleId); // parameter
-		request.setDescription(description); // parameter
+		request.setCreatedBy("createdBy"); //TODO get from system
+		request.setModuleName("moduleName"); //TODO get from constant
+		request.setModuleId(moduleId);
+		request.setDescription(description);
 
 		return request;
 	}
