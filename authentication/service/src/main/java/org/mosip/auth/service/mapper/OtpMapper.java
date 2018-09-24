@@ -1,6 +1,6 @@
 package org.mosip.auth.service.mapper;
 
-import org.mosip.auth.core.dto.indauth.OtpRequestDTO;
+import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
