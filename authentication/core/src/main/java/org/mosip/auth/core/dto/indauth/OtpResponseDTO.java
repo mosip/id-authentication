@@ -22,6 +22,6 @@ public class OtpResponseDTO implements Serializable {
 	private List<AuthError> errorCode;
 	private String txnID;
 	private Date responseTime;
-	private AuthResponseInfo info;
+	//private AuthResponseInfo info;
 
 }

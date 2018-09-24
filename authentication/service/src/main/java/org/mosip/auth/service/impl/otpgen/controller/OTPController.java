@@ -21,7 +21,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -30,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Rakesh Roshan
  */
 @RestController
-@RequestMapping(value = "/v0.1/id-auth/otp-gen")
+//@RequestMapping(value = "/v0.1/id-auth/otp-gen")
 public class OTPController {
 
 	private MosipLogger LOGGER;
@@ -50,7 +49,7 @@ public class OTPController {
 	private void initBinder(WebDataBinder binder) {
 		binder.setValidator(otpRequestValidator);
 	}
-	
+
 	/**
 	 * send OtpRequestDTO request to generate OTP and received OtpResponseDTO as
 	 * output.
@@ -70,6 +69,7 @@ public class OTPController {
 			try {
 				OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 				if (otpFacade.generateOtp(otpRequestDto)) {
+
 					otpResponseDTO.setStatus("OTP_GENERATED");
 					otpResponseDTO.setResponseTime(new Date());
 
@@ -77,12 +77,15 @@ public class OTPController {
 					throw new IdAuthenticationAppException(
 							IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED);
 				}
+				LOGGER.info("sessionId", "NA", "NA", "NA");
 				return otpResponseDTO;
 			} catch (IdAuthenticationBusinessException e) {
 				LOGGER.error("sessionId", e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 			}
+
 		}
 
 	}
+
 }

@@ -11,7 +11,8 @@ import org.springframework.context.annotation.Configuration;
  *
  * @author Loganathan Sekar
  */
-@Configuration
+//TODO
+//@Configuration
 public class FilterConfig {
 	
 	@Bean

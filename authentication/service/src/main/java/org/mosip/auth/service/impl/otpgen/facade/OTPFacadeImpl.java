@@ -1,12 +1,20 @@
 package org.mosip.auth.service.impl.otpgen.facade;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+
 import org.mosip.auth.core.dto.indauth.IDType;
 import org.mosip.auth.core.dto.indauth.OtpRequestDTO;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
+import org.mosip.auth.core.exception.IdValidationFailedException;
 import org.mosip.auth.core.spi.idauth.service.IdAuthService;
 import org.mosip.auth.core.spi.otpgen.facade.OTPFacade;
 import org.mosip.auth.core.spi.otpgen.service.OTPService;
 import org.mosip.auth.core.util.OTPUtil;
+import org.mosip.auth.service.dao.AutnTxnRepository;
+import org.mosip.auth.service.entity.AutnTxn;
 import org.mosip.kernel.core.logging.MosipLogger;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.core.logging.factory.MosipLogfactory;
@@ -29,6 +37,9 @@ public class OTPFacadeImpl implements OTPFacade {
 
 	@Autowired
 	IdAuthService idAuthService;
+	
+	@Autowired
+	AutnTxnRepository autntxnrepository;
 
 	@Autowired
 	private Environment env;
@@ -57,13 +68,13 @@ public class OTPFacadeImpl implements OTPFacade {
 		String refId = null;
 		IDType idType = otpRequestDto.getIdType();
 
+		String uniqueID = otpRequestDto.getUniqueID();
 		try {
 			if (idType.equals(IDType.UIN)) {
-
-				refId = idAuthService.validateUIN(otpRequestDto.getIdType().getType());
+				refId = idAuthService.validateUIN(uniqueID);
 
 			} else if (otpRequestDto.getIdType().equals(IDType.VID)) {
-				refId = idAuthService.validateUIN(otpRequestDto.getIdType().getType());
+				refId = idAuthService.validateVID(uniqueID);
 			}
 
 			LOGGER.info("NA", idType.getType(), "NA", " reference id of ID Type " + idType.getType() + refId);
@@ -72,12 +83,13 @@ public class OTPFacadeImpl implements OTPFacade {
 
 		}
 
-		String productId = env.getProperty("productid");
+//		String productId = env.getProperty("productid");
+		String productid = "IDA";
 		String txnID = otpRequestDto.getTxnID();
 		String auaCode = otpRequestDto.getAuaCode();
-
+		
 		// -- generate OTP key
-		otpKey = OTPUtil.generateKey(productId, refId, txnID, auaCode);
+		otpKey = OTPUtil.generateKey(productid, refId, txnID, auaCode);
 
 		// -- generate OTP
 		try {
@@ -90,10 +102,31 @@ public class OTPFacadeImpl implements OTPFacade {
 		if (otp == null || otp.trim().isEmpty()) {
 			LOGGER.error("NA", "NA", "NA", "generated OTP is: " + otp);
 			isOtpGenerated = false;
+		} else {
+			LOGGER.info("NA", "NA", "NA", "generated OTP is: " + otp);
+			
+			
+			AutnTxn autnTxn = new AutnTxn();
+			autnTxn.setUin(uniqueID);
+			autnTxn.setId(txnID); //TODO check this
+			
+			//TODO check
+			autnTxn.setCrBy("OTP Generate Service");
+			autnTxn.setCrDTimes(new Date());
+			autnTxn.setRequestDTtimes(otpRequestDto.getRequestTime());
+			autnTxn.setResponseDTimes(new Date()); //TODO check this
+			autnTxn.setAuthTypeCode(idType.getType());
+			autnTxn.setRequestTxnId(txnID);
+			autnTxn.setIsActive("y");
+			autnTxn.setStatusCode("OTP_GENERATED"); // TODO
+			autnTxn.setStatusComment("OTP_GENERATED"); // TODO
+			
+			autntxnrepository.saveAndFlush(autnTxn);
 		}
 
 		return isOtpGenerated;
 	}
 
+	
 
 }

@@ -65,12 +65,12 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			if (isValidRequest) {
 				// FIXME audit integration
 				LOGGER.info("SESSION_ID", "validateOtp", "Inside Validate Otp Request",
-						OTPAuthServiceImpl.class.getEnclosingMethod().getName());
+						OTPAuthServiceImpl.class.getName());
 				//FIXME get from property
 				String key = OTPUtil.generateKey("IDA", refId, txnId, TSPCode);
 				// TODO IDA appId should be read from properties file
 				if (!isEmpty(key)) {
-					isOtpValid = otpManager.validateOtp(key, otp);
+					isOtpValid = otpManager.validateOtp(otp, key);
 				} else {
 					LOGGER.debug("SESSSION_ID", "validateOtp", "Inside key Null", getClass().toString());
 					LOGGER.error("SESSSION_ID", "NA", "NA", "Key Invalid");
