@@ -1,18 +1,17 @@
 package org.mosip.auth.service.impl.otpgen.service;
 
-import org.mosip.auth.core.constant.AuditServicesConstants;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
-import org.mosip.auth.core.factory.AuditRequestFactory;
-import org.mosip.auth.core.factory.RestRequestFactory;
 import org.mosip.auth.core.spi.otpgen.service.OTPService;
-import org.mosip.auth.core.util.RestUtil;
 import org.mosip.auth.core.util.dto.AuditRequestDto;
 import org.mosip.auth.core.util.dto.AuditResponseDto;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
+import org.mosip.auth.service.factory.AuditRequestFactory;
+import org.mosip.auth.service.factory.RestRequestFactory;
 import org.mosip.auth.service.integration.OTPManager;
+import org.mosip.auth.service.util.RestUtil;
 import org.mosip.kernel.core.audit.utils.AuditUtils;
 import org.mosip.kernel.core.logging.MosipLogger;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
@@ -70,7 +69,8 @@ public class OTPServiceImpl implements OTPService {
 	}
 
 	public void audit() throws IDDataValidationException  {
-		AuditRequestDto auditRequest = auditRequestFactory.buildRequest(AuditServicesConstants.AUDIT_MANAGER_SERVICE);
+		//TODO Update audit details
+		AuditRequestDto auditRequest = auditRequestFactory.buildRequest("moduleId", "description");
 
 		RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);

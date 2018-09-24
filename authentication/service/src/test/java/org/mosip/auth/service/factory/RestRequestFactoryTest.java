@@ -1,51 +1,60 @@
-/*package org.mosip.auth.service.factory;
+package org.mosip.auth.service.factory;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mosip.auth.core.constant.AuditServicesConstants;
+import org.junit.runners.MethodSorters;
+import org.mockito.InjectMocks;
 import org.mosip.auth.core.constant.RestServicesConstants;
-import org.mosip.auth.core.exception.IdValidationFailedException;
-import org.mosip.auth.core.factory.AuditRequestFactory;
-import org.mosip.auth.core.factory.RestRequestFactory;
+import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.util.dto.AuditRequestDto;
 import org.mosip.auth.core.util.dto.AuditResponseDto;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
-import org.mosip.auth.service.IdAuthenticationApplication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.env.MockEnvironment;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = IdAuthenticationApplication.class)
-@WebAppConfiguration
-@TestPropertySource("classpath:rest-services.properties")
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@RunWith(SpringRunner.class)
+@WebMvcTest
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties" })
 public class RestRequestFactoryTest {
 
-	@Autowired
-	ApplicationContext context;
-
-	@Autowired
-	AuditRequestFactory auditFactory;
-
-	@Autowired
+	@InjectMocks
 	RestRequestFactory restFactory;
 
 	@Autowired
 	ConfigurableEnvironment env;
 
-	// @Test
-	public void testBuildRequest() throws IdValidationFailedException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditServicesConstants.AUDIT_MANAGER_SERVICE);
+	@Autowired
+	MockMvc mockMvc;
+
+	@InjectMocks
+	AuditRequestFactory auditFactory;
+
+	@Before
+	public void before() {
+		ReflectionTestUtils.setField(auditFactory, "env", env);
+		ReflectionTestUtils.setField(restFactory, "env", env);
+	}
+
+	@Test
+	public void testBuildRequest() throws IDDataValidationException {
+		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "desc");
 		auditRequest.setActionTimeStamp(null);
 
 		RestRequestDTO request = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -72,8 +81,8 @@ public class RestRequestFactoryTest {
 
 	}
 
-	@Test
-	public void testBuildRequestEmptyUri() throws IdValidationFailedException {
+	@Test(expected=IDDataValidationException.class)
+	public void testBuildRequestEmptyUri() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
@@ -81,23 +90,23 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditServicesConstants.AUDIT_MANAGER_SERVICE),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
 				AuditResponseDto.class);
 	}
-	
-	@Test
-	public void testBuildRequestNullProperties() throws IdValidationFailedException {
+
+	@Test(expected=IDDataValidationException.class)
+	public void testBuildRequestNullProperties() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditServicesConstants.AUDIT_MANAGER_SERVICE),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
 				AuditResponseDto.class);
 	}
 
-	@Test
-	public void testBuildRequestEmptyHttpMethod() throws IdValidationFailedException {
+	@Test(expected=IDDataValidationException.class)
+	public void testBuildRequestEmptyHttpMethod() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
@@ -105,18 +114,19 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditServicesConstants.AUDIT_MANAGER_SERVICE),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
 				AuditResponseDto.class);
 	}
 
-	@Test
-	public void testBuildRequestEmptyResponseType() throws IdValidationFailedException {
+	@Test(expected=IDDataValidationException.class)
+	public void testBuildRequestEmptyResponseType() throws IDDataValidationException {
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditServicesConstants.AUDIT_MANAGER_SERVICE), null);
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+				null);
 	}
 
 	@Test
-	public void testBuildRequestEmptyTimeout() throws IdValidationFailedException {
+	public void testBuildRequestEmptyTimeout() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
@@ -124,14 +134,14 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditServicesConstants.AUDIT_MANAGER_SERVICE),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
 				AuditResponseDto.class);
-		
-		//TODO Assert response
+
+		// TODO Assert response
 	}
-	
+
 	@Test
-	public void testBuildRequestHeaders() throws IdValidationFailedException {
+	public void testBuildRequestHeaders() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
 		environment.merge(env);
@@ -139,9 +149,8 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditServicesConstants.AUDIT_MANAGER_SERVICE),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
 				AuditResponseDto.class);
 	}
 
 }
-*/

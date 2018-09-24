@@ -1,4 +1,4 @@
-package org.mosip.auth.core.util;
+package org.mosip.auth.service.util;
 
 import java.net.URI;
 import java.time.Duration;

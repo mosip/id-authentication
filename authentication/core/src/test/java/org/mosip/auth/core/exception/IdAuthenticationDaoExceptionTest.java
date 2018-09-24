@@ -4,24 +4,29 @@ import org.junit.Test;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 
 public class IdAuthenticationDaoExceptionTest {
+	
+	@Test(expected=IdAuthenticationDaoException.class)
+	public void IdAuthenticationDaoExceptionDefaultCons() throws IdAuthenticationDaoException {
+		throw new IdAuthenticationDaoException();
+	}
 
 	@Test(expected=IdAuthenticationDaoException.class)
-	public void test1() throws IdAuthenticationDaoException {
+	public void IdAuthenticationDaoException2args() throws IdAuthenticationDaoException {
 		throw new IdAuthenticationDaoException("errorcode", "errormessage");
 	}
 	
 	@Test(expected=IdAuthenticationDaoException.class)
-	public void test2() throws IdAuthenticationDaoException {
+	public void IdAuthenticationDaoException3args() throws IdAuthenticationDaoException {
 		throw new IdAuthenticationDaoException("errorcode", "errormessage", null);
 	}
 	
 	@Test(expected=IdAuthenticationDaoException.class)
-	public void test3() throws IdAuthenticationDaoException {
+	public void IdAuthenticationDaoExceptionEnum() throws IdAuthenticationDaoException {
 		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
 	}
 	
 	@Test(expected=IdAuthenticationDaoException.class)
-	public void test4() throws IdAuthenticationDaoException {
+	public void IdAuthenticationDaoExceptionEnumThrowable() throws IdAuthenticationDaoException {
 		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION, null);
 	}
 

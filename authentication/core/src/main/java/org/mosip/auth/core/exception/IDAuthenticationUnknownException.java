@@ -9,6 +9,7 @@ import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
  */
 public class IDAuthenticationUnknownException extends IdAuthenticationBusinessException {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1970301146105673681L;
 
 	/**
@@ -16,16 +17,6 @@ public class IDAuthenticationUnknownException extends IdAuthenticationBusinessEx
 	 */
 	public IDAuthenticationUnknownException() {
 		super();
-	}
-	
-	/**
-	 * Instantiates a new unknown exception using errorCode and errorMessage.
-	 * 
-	 * @param errorCode
-	 * @param errorMessage
-	 */
-	public IDAuthenticationUnknownException(String errorCode, String errorMessage) {
-		super(errorCode, errorMessage);
 	}
 
 	/**
@@ -35,6 +26,16 @@ public class IDAuthenticationUnknownException extends IdAuthenticationBusinessEx
 	 */
 	public IDAuthenticationUnknownException(IdAuthenticationErrorConstants exceptionConstant) {
 		super(exceptionConstant);
+	}
+	
+	/**
+	 * Instantiates a new unknown exception.
+	 *
+	 * @param exceptionConstant the exception constant
+	 * @param rootCause the root cause
+	 */
+	public IDAuthenticationUnknownException(IdAuthenticationErrorConstants exceptionConstant, Throwable rootCause) {
+		super(exceptionConstant, rootCause);
 	}
 
 }

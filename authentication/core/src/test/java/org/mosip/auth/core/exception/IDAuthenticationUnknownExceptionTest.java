@@ -14,5 +14,10 @@ public class IDAuthenticationUnknownExceptionTest {
 	public void testThrowUnknownExceptionWithParameter() throws IDAuthenticationUnknownException {
 		throw new IDAuthenticationUnknownException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
 	}
+	
+	@Test(expected=IDAuthenticationUnknownException.class)
+	public void testThrowUnknownExceptionWithParameterThrowable() throws IDAuthenticationUnknownException {
+		throw new IDAuthenticationUnknownException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, null);
+	}
 
 }

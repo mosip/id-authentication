@@ -13,6 +13,12 @@ public class IdValidationFailedExceptionTest {
 	AuthRequestDTO authReq = new AuthRequestDTO();
 
 	private Errors errors = new org.springframework.validation.BindException(authReq, "authReq");
+	
+	@Test(expected = IdValidationFailedException.class)
+	public void testDataValidationExceptionDefaultCons() throws IdValidationFailedException {
+		errors.rejectValue(null, "test error", "test error");
+		throw new IdValidationFailedException();
+	}
 
 	@Test(expected = IdValidationFailedException.class)
 	public void testDataValidationException() throws IdValidationFailedException {

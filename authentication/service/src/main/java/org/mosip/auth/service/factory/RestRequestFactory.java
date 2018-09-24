@@ -1,4 +1,4 @@
-package org.mosip.auth.core.factory;
+package org.mosip.auth.service.factory;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -91,7 +91,6 @@ public class RestRequestFactory {
 						headers.add(property.replace(serviceName.concat(".rest.headers."), ""),
 								env.getProperty(property));
 					} else if (property.startsWith(serviceName.concat(".rest.uri.queryparam."))) {
-						System.err.println(env.getProperty(property));
 						paramMap.put(property.replace(serviceName.concat(".rest.uri.queryparam."), ""),
 								Collections.singletonList(env.getProperty(property)));
 					} else if (property.startsWith(serviceName.concat(".rest.uri.pathparam."))) {

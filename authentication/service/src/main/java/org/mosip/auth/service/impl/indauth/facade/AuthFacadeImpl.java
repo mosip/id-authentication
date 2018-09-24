@@ -9,15 +9,15 @@ import org.mosip.auth.core.dto.indauth.IDType;
 import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
 import org.mosip.auth.core.exception.IdValidationFailedException;
-import org.mosip.auth.core.factory.AuditRequestFactory;
-import org.mosip.auth.core.factory.RestRequestFactory;
 import org.mosip.auth.core.spi.idauth.service.IdAuthService;
 import org.mosip.auth.core.spi.indauth.facade.AuthFacade;
 import org.mosip.auth.core.spi.indauth.service.OTPAuthService;
-import org.mosip.auth.core.util.RestUtil;
 import org.mosip.auth.core.util.dto.AuditRequestDto;
 import org.mosip.auth.core.util.dto.AuditResponseDto;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
+import org.mosip.auth.service.factory.AuditRequestFactory;
+import org.mosip.auth.service.factory.RestRequestFactory;
+import org.mosip.auth.service.util.RestUtil;
 import org.mosip.kernel.core.logging.MosipLogger;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.core.logging.factory.MosipLogfactory;
@@ -55,7 +55,8 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setStatus(authFlag);
 		logger.info("sessionId", "IDA", "AuthFacade","authenticateApplicant status : " + authFlag); //FIXME
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditServicesConstants.AUDIT_MANAGER_SERVICE);
+		//TODO Update audit details
+		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "Desc");
 
 		RestRequestDTO restRequest;
 		try {
@@ -90,7 +91,8 @@ public class AuthFacadeImpl implements AuthFacade {
 			String description=authStatus+""; //FIX ME
 			logger.info("sessionId", "IDA", "AuthFacade","authenticateApplicant status : " + authStatus);
 		}
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditServicesConstants.AUDIT_MANAGER_SERVICE);
+		//TODO Update audit details
+		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "Desc");
 
 		RestRequestDTO restRequest;
 		try {
@@ -136,7 +138,8 @@ public class AuthFacadeImpl implements AuthFacade {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID_BUISNESS, e);
 			}
 		}
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditServicesConstants.AUDIT_MANAGER_SERVICE);
+		//TODO Update audit details
+		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "Desc");
 
 		RestRequestDTO restRequest;
 		try {
