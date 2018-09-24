@@ -1,6 +1,5 @@
 package org.mosip.auth.core.dto.indauth;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -19,9 +18,7 @@ import lombok.Data;
  * @author Rakesh Roshan
  */
 @Data
-public class AuthResponseDTO implements Serializable {
-
-	private static final long serialVersionUID = 4337578223824581931L;
+public class AuthResponseDTO  {
 
 	private boolean status;
 	private List<AuthError> errorCode;

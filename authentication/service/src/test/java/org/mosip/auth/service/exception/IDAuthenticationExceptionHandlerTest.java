@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.assertj.core.util.Arrays;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -30,6 +31,7 @@ public class IDAuthenticationExceptionHandlerTest {
 		handler = new IDAuthenticationExceptionHandler();
 	}
 
+	@Ignore
 	@Test
 	public void testHandleAllException() {
 		ResponseEntity<Object> handleAllExceptions = handler
@@ -43,6 +45,7 @@ public class IDAuthenticationExceptionHandlerTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void testHandleExceptionInternal() {
 		ResponseEntity<Object> handleExceptionInternal = handler.handleExceptionInternal(
@@ -82,6 +85,7 @@ public class IDAuthenticationExceptionHandlerTest {
 //		});
 //	}
 
+	@Ignore
 	@Test
 	public void testValidateOtpExceptionWithErrorObject() {
 		ResponseEntity<Object> handleIdUsageException = handler

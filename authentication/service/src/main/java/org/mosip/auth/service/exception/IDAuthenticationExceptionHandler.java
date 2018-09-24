@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import org.mosip.auth.core.dto.indauth.AuthError;
 import org.mosip.auth.core.dto.indauth.AuthResponseDTO;
-import org.mosip.auth.core.dto.indauth.OtpAuthResponseDTO;
 import org.mosip.auth.core.exception.IDAuthenticationUnknownException;
 import org.mosip.auth.core.exception.IdAuthenticationAppException;
 import org.mosip.kernel.core.logging.MosipLogger;
@@ -138,7 +137,7 @@ public class IDAuthenticationExceptionHandler extends ResponseEntityExceptionHan
 	 *            error message object.
 	 * @param request
 	 *            web request
-	 * @return Object of {@link OtpAuthResponseDTO} as response body.
+	 * @return Object .
 	 */
 	@SuppressWarnings("unchecked")
 	private Object buildExceptionResponse(Exception ex, @Nullable String errorCode, @Nullable Object errorMessages,
