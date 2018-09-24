@@ -7,7 +7,7 @@ import java.util.Date;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.dto.indauth.IDType;
-import org.mosip.auth.core.dto.indauth.OtpRequestDTO;
+import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
