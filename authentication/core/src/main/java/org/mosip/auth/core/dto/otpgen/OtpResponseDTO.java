@@ -16,7 +16,7 @@ import lombok.Data;
  */
 
 @Data
-public class OtpResponseDTO implements Serializable {
+public class OtpResponseDTO {
 
 	private static final long serialVersionUID = 8039452517810739329L;
 
