@@ -1,4 +1,4 @@
-package org.mosip.kernel.eidgenerator.exception;
+package org.mosip.kernel.ridgenerator.exception;
 
 import org.mosip.kernel.core.exception.BaseUncheckedException;
 

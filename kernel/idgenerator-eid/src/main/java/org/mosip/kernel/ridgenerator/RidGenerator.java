@@ -1,26 +1,26 @@
-package org.mosip.kernel.eidgenerator;
+package org.mosip.kernel.ridgenerator;
 
 import java.util.Random;
 
-import org.mosip.kernel.core.spi.idgenerator.MosipEidGenerator;
+import org.mosip.kernel.core.spi.idgenerator.MosipRidGenerator;
 import org.mosip.kernel.core.utils.StringUtil;
-import org.mosip.kernel.eidgenerator.constants.EidGeneratorConstants;
-import org.mosip.kernel.eidgenerator.exception.MosipEmptyInputException;
-import org.mosip.kernel.eidgenerator.exception.MosipInputLengthException;
-import org.mosip.kernel.eidgenerator.exception.MosipNullValueException;
+import org.mosip.kernel.ridgenerator.constants.RidGeneratorConstants;
+import org.mosip.kernel.ridgenerator.exception.MosipEmptyInputException;
+import org.mosip.kernel.ridgenerator.exception.MosipInputLengthException;
+import org.mosip.kernel.ridgenerator.exception.MosipNullValueException;
 
 /**
- * This class generates Enrollment ID as per defined policy
+ * This class generates Registration ID as per defined policy
  * 
  * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
-public class EidGenerator implements MosipEidGenerator {
+public class RidGenerator implements MosipRidGenerator {
 
 	public static final Random randomNumberGenerator = new Random();
-	protected String agentEid;
-	protected String machineEid;
+	protected String agentRid;
+	protected String machineRid;
 
 	/*
 	 * (non-Javadoc)
@@ -30,14 +30,14 @@ public class EidGenerator implements MosipEidGenerator {
 	 * lang.String, java.lang.String)
 	 */
 	@Override
-	public String eidGeneration(String agentId, String machineId) {
-		String eid = null;
+	public String ridGeneration(String agentId, String machineId) {
+		String rid = null;
 		checkInput(agentId, machineId);
 		cleanupId(agentId, machineId);
 		int randomDigitEid = randomNumberGen();
 		long currentTimestamp = getCurrTimestamp();
-		eid = appendString(randomDigitEid, currentTimestamp);
-		return eid;
+		rid = appendString(randomDigitEid, currentTimestamp);
+		return rid;
 	}
 
 	/**
@@ -52,18 +52,18 @@ public class EidGenerator implements MosipEidGenerator {
 
 		if (agentId == null || machineId == null) {
 
-			throw new MosipNullValueException(EidGeneratorConstants.MOSIP_NULL_VALUE_ERROR_CODE.getErrorCode(),
-					EidGeneratorConstants.MOSIP_NULL_VALUE_ERROR_CODE.getErrorMessage());
+			throw new MosipNullValueException(RidGeneratorConstants.MOSIP_NULL_VALUE_ERROR_CODE.getErrorCode(),
+					RidGeneratorConstants.MOSIP_NULL_VALUE_ERROR_CODE.getErrorMessage());
 		}
 		if (agentId.isEmpty() || machineId.isEmpty()) {
 
-			throw new MosipEmptyInputException(EidGeneratorConstants.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorCode(),
-					EidGeneratorConstants.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorMessage());
+			throw new MosipEmptyInputException(RidGeneratorConstants.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorCode(),
+					RidGeneratorConstants.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorMessage());
 		}
 		if (agentId.length() < 4 || machineId.length() < 5) {
 
-			throw new MosipInputLengthException(EidGeneratorConstants.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorCode(),
-					EidGeneratorConstants.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorMessage());
+			throw new MosipInputLengthException(RidGeneratorConstants.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorCode(),
+					RidGeneratorConstants.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorMessage());
 		}
 
 	}
@@ -77,8 +77,8 @@ public class EidGenerator implements MosipEidGenerator {
 	 *            input by user
 	 */
 	public void cleanupId(String agentId, String machineId) {
-		agentEid = StringUtil.removeLeftChar(agentId, 4);
-		machineEid = StringUtil.removeLeftChar(machineId, 5);
+		agentRid = StringUtil.removeLeftChar(agentId, 4);
+		machineRid = StringUtil.removeLeftChar(machineId, 5);
 
 	}
 
@@ -102,17 +102,17 @@ public class EidGenerator implements MosipEidGenerator {
 	}
 
 	/**
-	 * This method appends the different strings to generate the EID
+	 * This method appends the different strings to generate the RID
 	 * 
-	 * @param randomDigitEid
+	 * @param randomDigitRid
 	 *            5 digit no. generated
 	 * @param currentTimestamp
 	 *            current timestamp generated
-	 * @return generated EID
+	 * @return generated RID
 	 */
-	public String appendString(int randomDigitEid, long currentTimestamp) {
+	public String appendString(int randomDigitRid, long currentTimestamp) {
 		StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append(agentEid).append(machineEid).append(randomDigitEid).append(currentTimestamp);
+		stringBuilder.append(agentRid).append(machineRid).append(randomDigitRid).append(currentTimestamp);
 		return (stringBuilder.toString().trim());
 	}
 }
