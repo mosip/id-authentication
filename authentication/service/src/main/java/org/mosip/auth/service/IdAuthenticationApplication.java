@@ -40,7 +40,6 @@ public class IdAuthenticationApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		new AuditUtil(auditFactory, restFactory);
 		new RestUtil(idaRollingFileAppender);
-		AuditUtil.audit("moduleId", "description");
 	}
 
 }
