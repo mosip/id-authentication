@@ -52,7 +52,8 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_VID_BUISNESS("IDA-IDMB-VID-402", "Invalid VID"), 
 	AUTHENTICATION_FAILED("IDA-IDMC-AUT-501", "Authentication failed or Invalid UIN/VID"),
 	
-	INCORRECT_IDTYPE("IDA-DTV-IDT-601","INCORRECT IDTYPE");
+	INCORRECT_IDTYPE("IDA-DTV-IDT-601","INCORRECT IDTYPE"),
+	EMPTY_OTP("IDA-DTV-IDT-601","OTP value is empty");
 
 	private final String errorCode;
 	private final String errorMessage;
