@@ -25,22 +25,22 @@ public class UinEntity {
 	String uin;
 
 	@Column(name = "is_active")
-	char isActive;
+	boolean isActive;
 
 	@Column(name = "cr_by")
 	String createdBy;
 
 	@Column(name = "cr_dtimes")
-	Date correctedTime;
+	Date createdOn;
 
 	@Column(name = "upd_by")
 	String updatedBy;
 
 	@Column(name = "upd_dtimes")
-	Date updatedTime;
+	Date updatedOn;
 
 	@Column(name = "is_deleted")
-	char is_deleted;
+	boolean isDeleted;
 
 	@Column(name = "del_dtimes")
 	Date deletedOn;

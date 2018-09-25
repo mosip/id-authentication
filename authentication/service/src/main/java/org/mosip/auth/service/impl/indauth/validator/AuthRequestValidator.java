@@ -52,8 +52,7 @@ public class AuthRequestValidator implements Validator {
 				errors.rejectValue(null, IdAuthenticationErrorConstants.INCORRECT_IDTYPE.getErrorCode(),
 						new Object[] { "idTypeEnum" },
 						env.getProperty("mosip.ida.validation.message.AuthRequest.Idtype"));
-		}
-		
+		}		
 	}
 
 }
