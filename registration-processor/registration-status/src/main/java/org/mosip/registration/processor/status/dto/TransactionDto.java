@@ -105,7 +105,7 @@ public class TransactionDto implements Serializable {
 	 *
 	 * @return the enrolment id
 	 */
-	public String getEnrolmentId() {
+	public String getRegistrationId() {
 		return registrationId;
 	}
 
@@ -115,7 +115,7 @@ public class TransactionDto implements Serializable {
 	 * @param registrationId
 	 *            the new enrolment id
 	 */
-	public void setEnrolmentId(String registrationId) {
+	public void setRegistrationId(String registrationId) {
 		this.registrationId = registrationId;
 	}
 

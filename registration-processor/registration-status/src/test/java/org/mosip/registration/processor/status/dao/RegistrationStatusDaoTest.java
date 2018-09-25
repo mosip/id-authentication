@@ -32,7 +32,7 @@ public class RegistrationStatusDaoTest {
 	public void setup() {
 		registrationStatusEntity = new RegistrationStatusEntity();
 		registrationStatusEntity.setIsActive(true);
-		registrationStatusEntity.setLatestTransactionStatusCode("Sucessful");
+
 		list = new ArrayList<>();
 		list.add(registrationStatusEntity);
 		Mockito.when(registrationStatusRepositary.createQuerySelect(Matchers.any(), Matchers.any())).thenReturn(list);

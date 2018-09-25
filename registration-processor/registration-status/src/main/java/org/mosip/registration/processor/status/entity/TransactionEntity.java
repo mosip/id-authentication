@@ -1,7 +1,6 @@
 package org.mosip.registration.processor.status.entity;
 
 import java.time.LocalDateTime;
-import java.util.Random;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +10,6 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TransactionEntity.
  */
@@ -22,10 +20,6 @@ public class TransactionEntity {
 	/** The id. */
 	@Column(name = "id")
 	@Id
-	private String id;
-
-	/** The transaction id. */
-	@Column(name = "regtrn_id")
 	private String transactionId;
 
 	/** The registration id. */
@@ -108,34 +102,14 @@ public class TransactionEntity {
 	 *            the status code
 	 */
 	public TransactionEntity(String transactionId, String registrationId, String parentid, String trntypecode,
-			String statusCode) {
-		Random random = new Random();
-		id = System.currentTimeMillis() + "" + (random.nextInt(10) * (99 - 10 + 1) + 10);
+			String statusCode, String statusComment) {
 		this.transactionId = transactionId;
 		this.registrationId = registrationId;
 		this.parentid = parentid;
 		this.trntypecode = trntypecode;
 		this.statusCode = statusCode;
+		this.statusComment = statusComment;
 
-	}
-
-	/**
-	 * Get id from transaction table.
-	 * 
-	 * @return the id
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Set id to transaction table.
-	 *
-	 * @param id
-	 *            the new id
-	 */
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	/**

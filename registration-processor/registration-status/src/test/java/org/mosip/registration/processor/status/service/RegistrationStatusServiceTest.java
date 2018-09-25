@@ -9,8 +9,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -60,18 +60,20 @@ public class RegistrationStatusServiceTest {
 
 		registrationStatusEntity = new RegistrationStatusEntity();
 		registrationStatusEntity.setIsActive(true);
-		registrationStatusEntity.setLatestTransactionStatusCode("PACKET_UPLOADED_TO_LANDING_ZONE");
+		registrationStatusEntity.setStatusCode("PACKET_UPLOADED_TO_LANDING_ZONE");
+
 		entities = new ArrayList<>();
 		entities.add(registrationStatusEntity);
 
-		Mockito.when(registrationStatusDao.findById(Matchers.any())).thenReturn(registrationStatusEntity);
+		Mockito.when(registrationStatusDao.findById(ArgumentMatchers.any())).thenReturn(registrationStatusEntity);
 		Mockito.when(registrationStatusDao.findbyfilesByThreshold("PACKET_UPLOADED_TO_LANDING_ZONE", 48))
 				.thenReturn(entities);
 
 		TransactionEntity transactionEntity = new TransactionEntity();
-		transactionEntity.setStatusCode("Successful");
+		transactionEntity.setStatusCode("PACKET_UPLOADED_TO_LANDING_ZONE");
 		transactionEntity.setTransactionId("1001");
-		Mockito.when(transcationStatusService.addRegistrationTransaction(Matchers.any())).thenReturn(transactionEntity);
+		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
+				.thenReturn(transactionEntity);
 
 	}
 
@@ -79,7 +81,7 @@ public class RegistrationStatusServiceTest {
 	public void getRegistrationStatusSuccessTest() {
 
 		RegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getLatestTransactionStatusCode());
+		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getStatusCode());
 
 	}
 
@@ -88,7 +90,7 @@ public class RegistrationStatusServiceTest {
 		DataAccessLayerException exp = new DataAccessLayerException(
 				org.mosip.kernel.dataaccess.constants.HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
-		Mockito.when(registrationStatusDao.findById(Matchers.any())).thenThrow(exp);
+		Mockito.when(registrationStatusDao.findById(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.getRegistrationStatus("1001");
 	}
 
@@ -96,7 +98,7 @@ public class RegistrationStatusServiceTest {
 	public void findbyfilesByThresholdSuccessTest() {
 		List<RegistrationStatusDto> list = registrationStatusService
 				.findbyfilesByThreshold("PACKET_UPLOADED_TO_LANDING_ZONE");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getLatestTransactionStatusCode());
+		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
@@ -114,7 +116,7 @@ public class RegistrationStatusServiceTest {
 
 		registrationStatusService.addRegistrationStatus(registrationStatusDto);
 		RegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getLatestTransactionStatusCode());
+		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
@@ -122,7 +124,7 @@ public class RegistrationStatusServiceTest {
 		DataAccessLayerException exp = new DataAccessLayerException(
 				org.mosip.kernel.dataaccess.constants.HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
-		Mockito.when(registrationStatusDao.save(Matchers.any())).thenThrow(exp);
+		Mockito.when(registrationStatusDao.save(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.addRegistrationStatus(registrationStatusDto);
 	}
 
@@ -131,7 +133,7 @@ public class RegistrationStatusServiceTest {
 		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 		RegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getLatestTransactionStatusCode());
+		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
@@ -140,15 +142,15 @@ public class RegistrationStatusServiceTest {
 				org.mosip.kernel.dataaccess.constants.HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
 
-		Mockito.when(registrationStatusDao.save(Matchers.any())).thenThrow(exp);
+		Mockito.when(registrationStatusDao.save(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 	}
 
 	@Test
 	public void getByStatus() {
-		Mockito.when(registrationStatusDao.getEnrolmentStatusByStatusCode(Matchers.any())).thenReturn(entities);
+		Mockito.when(registrationStatusDao.getEnrolmentStatusByStatusCode(ArgumentMatchers.any())).thenReturn(entities);
 		List<RegistrationStatusDto> list = registrationStatusService.getByStatus("PACKET_UPLOADED_TO_LANDING_ZONE");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getLatestTransactionStatusCode());
+		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
@@ -156,15 +158,15 @@ public class RegistrationStatusServiceTest {
 		DataAccessLayerException exp = new DataAccessLayerException(
 				org.mosip.kernel.dataaccess.constants.HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
-		Mockito.when(registrationStatusDao.getEnrolmentStatusByStatusCode(Matchers.any())).thenThrow(exp);
+		Mockito.when(registrationStatusDao.getEnrolmentStatusByStatusCode(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.getByStatus("PACKET_UPLOADED_TO_LANDING_ZONE");
 	}
 
 	@Test
 	public void getByIds() {
-		Mockito.when(registrationStatusDao.getByIds(Matchers.any())).thenReturn(entities);
+		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
 		List<RegistrationStatusDto> list = registrationStatusService.getByIds("1001,1000");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getLatestTransactionStatusCode());
+		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
@@ -172,7 +174,7 @@ public class RegistrationStatusServiceTest {
 		DataAccessLayerException exp = new DataAccessLayerException(
 				org.mosip.kernel.dataaccess.constants.HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
-		Mockito.when(registrationStatusDao.getByIds(Matchers.any())).thenThrow(exp);
+		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.getByIds("1001,1000");
 	}
 

@@ -46,24 +46,8 @@ public class RegistrationStatusEntity {
 	private String statusComment;
 
 	/** The latest registration transaction id. */
-	@Column(name = "latest_regtrn_id")
+	@Column(name = "latest_trn_id")
 	private String latestRegistrationTransactionId;
-
-	/** The latest transaction type code. */
-	@Column(name = "latest_trn_type_code")
-	private String latestTransactionTypeCode;
-
-	/** The latest transaction status code. */
-	@Column(name = "latest_trn_status_code")
-	private String latestTransactionStatusCode;
-
-	/** The latest transaction language code. */
-	@Column(name = "latest_trn_lang_code")
-	private String latestTransactionLanguageCode;
-
-	/** The latest registration transaction date time. */
-	@Column(name = "latest_regtrn_dtimes")
-	private LocalDateTime latestRegistrationTransactionDateTime;
 
 	/** The is active. */
 	@Column(name = "is_active", nullable = false)
@@ -239,82 +223,6 @@ public class RegistrationStatusEntity {
 	 */
 	public void setLatestRegistrationTransactionId(String latestRegistrationTransactionId) {
 		this.latestRegistrationTransactionId = latestRegistrationTransactionId;
-	}
-
-	/**
-	 * Gets the latest transaction type code.
-	 *
-	 * @return the latest transaction type code
-	 */
-	public String getLatestTransactionTypeCode() {
-		return latestTransactionTypeCode;
-	}
-
-	/**
-	 * Sets the latest transaction type code.
-	 *
-	 * @param latestTransactionTypeCode
-	 *            the new latest transaction type code
-	 */
-	public void setLatestTransactionTypeCode(String latestTransactionTypeCode) {
-		this.latestTransactionTypeCode = latestTransactionTypeCode;
-	}
-
-	/**
-	 * Gets the latest transaction status code.
-	 *
-	 * @return the latest transaction status code
-	 */
-	public String getLatestTransactionStatusCode() {
-		return latestTransactionStatusCode;
-	}
-
-	/**
-	 * Sets the latest transaction status code.
-	 *
-	 * @param latestTransactionStatusCode
-	 *            the new latest transaction status code
-	 */
-	public void setLatestTransactionStatusCode(String latestTransactionStatusCode) {
-		this.latestTransactionStatusCode = latestTransactionStatusCode;
-	}
-
-	/**
-	 * Gets the latest transaction language code.
-	 *
-	 * @return the latest transaction language code
-	 */
-	public String getLatestTransactionLanguageCode() {
-		return latestTransactionLanguageCode;
-	}
-
-	/**
-	 * Sets the latest transaction language code.
-	 *
-	 * @param latestTransactionLanguageCode
-	 *            the new latest transaction language code
-	 */
-	public void setLatestTransactionLanguageCode(String latestTransactionLanguageCode) {
-		this.latestTransactionLanguageCode = latestTransactionLanguageCode;
-	}
-
-	/**
-	 * Gets the latest registration transaction date time.
-	 *
-	 * @return the latest registration transaction date time
-	 */
-	public LocalDateTime getLatestRegistrationTransactionDateTime() {
-		return latestRegistrationTransactionDateTime;
-	}
-
-	/**
-	 * Sets the latest registration transaction date time.
-	 *
-	 * @param latestRegistrationTransactionDateTime
-	 *            the new latest registration transaction date time
-	 */
-	public void setLatestRegistrationTransactionDateTime(LocalDateTime latestRegistrationTransactionDateTime) {
-		this.latestRegistrationTransactionDateTime = latestRegistrationTransactionDateTime;
 	}
 
 	/**

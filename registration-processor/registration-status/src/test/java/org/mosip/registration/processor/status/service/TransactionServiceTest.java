@@ -10,7 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mosip.registration.processor.status.code.TransactionConstants;
+import org.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import org.mosip.registration.processor.status.code.TransactionTypeCode;
 import org.mosip.registration.processor.status.dto.TransactionDto;
 import org.mosip.registration.processor.status.entity.TransactionEntity;
 import org.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
@@ -33,22 +34,22 @@ public class TransactionServiceTest {
 	public void setup() {
 
 		transactionDto = new TransactionDto();
-		transactionDto.setEnrolmentId("1");
+		transactionDto.setRegistrationId("1");
 		transactionDto.setIsActive(true);
 		transactionDto.setLangCode("eng");
 		transactionDto.setParentid(null);
 		transactionDto.setRemarks("Add Enrolment operation");
-		transactionDto.setStatusCode(TransactionConstants.ADD.toString());
+		transactionDto.setStatusCode(TransactionTypeCode.CREATE.toString());
 		transactionDto.setStatusComment("Add Enrolment started");
 		transactionDto.setTransactionId("1");
 
 		transcationEntity = new TransactionEntity();
-		transcationEntity.setId("1");
+		transcationEntity.setTransactionId("1");
 		transcationEntity.setIsActive(true);
 		transcationEntity.setLangCode("eng");
 		transcationEntity.setParentid(null);
 		transcationEntity.setRemarks("Add Enrolment operation");
-		transcationEntity.setStatusCode(TransactionConstants.ADD.toString());
+		transcationEntity.setStatusCode(TransactionTypeCode.CREATE.toString());
 		transcationEntity.setStatusComment("Add Enrolment started");
 		transcationEntity.setTransactionId("1");
 		transcationEntity.setCreatedBy("MOSIP_SYSTEM");
@@ -72,8 +73,9 @@ public class TransactionServiceTest {
 
 	@Test(expected = TransactionTableNotAccessibleException.class)
 	public void addRegistrationTransactionFailureCheck() throws Exception {
-		TransactionTableNotAccessibleException exception = new TransactionTableNotAccessibleException(
-				"Could not add Information to Transaction table");
+		DataAccessLayerException exception = new DataAccessLayerException(
+				org.mosip.kernel.dataaccess.constants.HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+				new Exception());
 		Mockito.when(transactionRepositary.save(ArgumentMatchers.any())).thenThrow(exception);
 		transactionService.addRegistrationTransaction(transactionDto);
 	}

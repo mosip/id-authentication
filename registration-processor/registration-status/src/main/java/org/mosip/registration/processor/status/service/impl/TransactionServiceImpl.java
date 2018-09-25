@@ -27,12 +27,14 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 	}
 
 	private TransactionEntity convertDtoToEntity(TransactionDto dto) {
-		TransactionEntity transcationEntity = new TransactionEntity(dto.getTransactionId(), dto.getEnrolmentId(),
-				dto.getParentid(), dto.getTrntypecode(), dto.getStatusCode());
+		TransactionEntity transcationEntity = new TransactionEntity(dto.getTransactionId(), dto.getRegistrationId(),
+				dto.getParentid(), dto.getTrntypecode(), dto.getStatusCode(), dto.getStatusComment());
 		transcationEntity.setRemarks(dto.getRemarks());
 		transcationEntity.setStatusComment(dto.getStatusComment());
 		transcationEntity.setCreatedBy("MOSIP_SYSTEM");
 		transcationEntity.setLangCode("eng");
+		transcationEntity.setReferenceId(dto.getReferenceId());
+		transcationEntity.setReferenceIdType(dto.getReferenceIdType());
 		return transcationEntity;
 	}
 }
