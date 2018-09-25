@@ -25,7 +25,6 @@ import org.mosip.registration.processor.packet.manager.service.FileManager;
 import org.mosip.registration.processor.packet.scanner.job.VirusScannerService;
 import org.mosip.registration.processor.packet.scanner.job.exception.DFSNotAccessibleException;
 import org.mosip.registration.processor.packet.scanner.job.exception.RetryFolderNotAccessibleException;
-import org.mosip.registration.processor.packet.scanner.job.impl.tasklet.VirusScannerTasklet;
 import org.mosip.registration.processor.status.code.RegistrationStatusCode;
 import org.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import org.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -73,9 +72,9 @@ public class VirusScannerTaskletTest {
 	public void setup() throws Exception {
 
 		RegistrationStatusDto entry = new RegistrationStatusDto();
-		entry.setEnrolmentId("1000.zip");
+		entry.setRegistrationId("1000.zip");
 		entry.setRetryCount(0);
-		entry.setStatus("Landing");
+		entry.setStatusComment("Landing");
 
 		List<RegistrationStatusDto> sample = new ArrayList<RegistrationStatusDto>();
 		sample.add(entry);
