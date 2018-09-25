@@ -18,6 +18,8 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_GENERATE_OTP_REQUEST("IDA-DTV-RQV-001", "Invalid OTP request"),
 	
 	OTP_GENERATION_REQUEST_FAILED("IDA-DTV-RQV-002", "OTP generation request failed"),
+	OTP_REQUEST_FLOODED("IDA-DTV-RQV-006","OTP Generation request is Flooded"),
+	
 	OTP_VALDIATION_REQUEST_FAILED("IDA-DTV-IDV-005", "OTP Validation Request Failed"),
 	OTP_KEY_INVALID("IDA-DTV-IDV-006", "OTP Key is Null or Invalid"),
 	

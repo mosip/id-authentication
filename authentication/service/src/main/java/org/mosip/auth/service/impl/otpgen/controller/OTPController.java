@@ -1,7 +1,5 @@
 package org.mosip.auth.service.impl.otpgen.controller;
 
-import java.util.Date;
-
 import javax.validation.Valid;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
@@ -66,8 +64,8 @@ public class OTPController {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_GENERATE_OTP_REQUEST);
 		} else {
 			try {
-				OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
-				if (otpFacade.generateOtp(otpRequestDto)) {
+				OtpResponseDTO otpResponseDTO = otpFacade.generateOtp(otpRequestDto);
+				/*if (otpFacade.generateOtp(otpRequestDto)) {
 
 					otpResponseDTO.setStatus("OTP_GENERATED");
 					otpResponseDTO.setResponseTime(new Date());
@@ -75,7 +73,7 @@ public class OTPController {
 				} else {
 					throw new IdAuthenticationAppException(
 							IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED);
-				}
+				}*/
 				LOGGER.info("sessionId", "NA", "NA", "NA");
 				return otpResponseDTO;
 			} catch (IdAuthenticationBusinessException e) {

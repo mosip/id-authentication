@@ -11,6 +11,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -29,10 +30,15 @@ import org.mosip.kernel.core.logging.MosipLogger;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.validation.BindingResult;
 
+
+/**
+ * 
+ *
+ * @author Rakesh Roshan
+ */
 @RunWith(MockitoJUnitRunner.class)
-//@RunWith(SpringRunner.class)
 @WebMvcTest(value = OTPController.class, secure = false)
-public class OTPControllerTest1 {
+public class OTPControllerTest {
 
 	@Mock
 	OtpRequestDTO otpRequestDto;
@@ -75,12 +81,13 @@ public class OTPControllerTest1 {
 		assertTrue(violations.isEmpty());
 
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		Mockito.when(otpFacade.generateOtp(otpRequestDto)).thenReturn(isOtpgenerated);
+		Mockito.when(otpFacade.generateOtp(otpRequestDto)).thenReturn(otpResponseDTO);
 		OtpResponseDTO expactedresponse = otpController.generateOTP(otpRequestDto, result);
 
 		assertEquals(otpResponseDTO.getStatus(), expactedresponse.getStatus());
 	}
 
+	
 	@Test(expected = IdAuthenticationAppException.class)
 	public void testBindResultHasError() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 
@@ -91,14 +98,11 @@ public class OTPControllerTest1 {
 
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);
 		assertTrue(violations.isEmpty());
-
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		// Mockito.when(otpController.generateOTP(otpRequestDto,
-		// result)).thenThrow(IdValidationFailedException.class);
 		otpController.generateOTP(otpRequestDto, result);
 		assertEquals(true, result.hasErrors());
 	}
-
+	
 	@Test(expected = IdAuthenticationAppException.class)
 	public void testConstraintVoilation() throws IdAuthenticationAppException {
 		boolean hasError = true;
@@ -112,24 +116,30 @@ public class OTPControllerTest1 {
 		otpController.generateOTP(otpRequestDto, result);
 		assertEquals(true, result.hasErrors());
 	}
-
+	
 	@Test(expected = IdAuthenticationAppException.class)
 	public void testOtpGeneratedIsFalse() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		// Given
 		boolean hasError = false;
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
-		boolean isOtpgenerated = false;
+		 idAuthenticationBusinessException = new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
+					IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage());
+			 idAuthenticationAppException = new IdAuthenticationAppException(
+					IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
+					IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage(),
+					idAuthenticationBusinessException);
 
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);
 		assertTrue(violations.isEmpty());
 
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
-		Mockito.when(otpFacade.generateOtp(otpRequestDto)).thenReturn(isOtpgenerated);
-		Mockito.when(otpController.generateOTP(otpRequestDto, result)).thenThrow(IdValidationFailedException.class);
+		Mockito.when(otpFacade.generateOtp(otpRequestDto)).thenThrow(idAuthenticationBusinessException);
+		Mockito.when(otpController.generateOTP(otpRequestDto, result)).thenThrow(idAuthenticationAppException);
 		otpController.generateOTP(otpRequestDto, result);
 	}
-
+	
 	@Test(expected=IdAuthenticationAppException.class)
 	public void testOtpGenerationHasError() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		// Given
