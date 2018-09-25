@@ -68,6 +68,31 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	}
 
 	/**
+	 * This method stores a packet in DFS
+	 * 
+	 * @param enrolmentId
+	 *            The enrolment ID for the packet
+	 * @param file
+	 *            packet as InputStream
+	 * @return True if packet is stored
+	 */
+	public Boolean storePacket(String enrolmentId, InputStream file) {
+		try {
+			if (!conn.doesBucketExistV2(enrolmentId)) {
+				conn.createBucket(enrolmentId);
+			}
+			this.conn.putObject(enrolmentId, enrolmentId, file, null);
+			LOGGER.debug(LOGDISPLAY, enrolmentId, "uploaded to DFS successfully");
+		} catch (AmazonS3Exception e) {
+			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
+			ExceptionHandler.exceptionHandler(e);
+		} catch (SdkClientException e) {
+			ExceptionHandler.exceptionHandler(e);
+		}
+		return true;
+	}
+
+	/**
 	 * This method stores a File to DFS
 	 * 
 	 * @param enrolmentId
@@ -205,13 +230,16 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.mosip.registration.processor.filesystem.adapter.FileSystemAdapter#checkFileExistence(java.lang.String, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.mosip.registration.processor.filesystem.adapter.FileSystemAdapter#
+	 * checkFileExistence(java.lang.String, java.lang.Object)
 	 */
 	@Override
 	public Boolean checkFileExistence(String enrolmentId, PacketFiles fileName) {
 		boolean result = false;
-		if(getFile(enrolmentId, fileName)!=null) {
+		if (getFile(enrolmentId, fileName) != null) {
 			result = true;
 		}
 		return result;
