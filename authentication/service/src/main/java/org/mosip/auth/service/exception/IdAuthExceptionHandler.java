@@ -1,10 +1,10 @@
 package org.mosip.auth.service.exception;
 
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.mosip.auth.core.dto.indauth.AuthError;
 import org.mosip.auth.core.dto.indauth.AuthResponseDTO;
@@ -153,7 +153,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		List<AuthError> errors = new ArrayList<>();
 
 		if (errorMessages != null)
-			((List<String>) errorMessages).forEach(message -> errors.add(new AuthError(errorCode, (String) message)));
+			((List<String>) errorMessages).parallelStream().map(message -> new AuthError(errorCode, (String) message))
+					.collect(Collectors.toList());
 
 		authResp.setResponseTime(new Date());
 

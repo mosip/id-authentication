@@ -3,7 +3,7 @@ package org.mosip.auth.core.exception;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 
 /**
- * Thrown when an exception occurs uring Rest exchange.
+ * Thrown when an exception occurs using Rest exchange.
  * 
  * @author Manoj SP
  *

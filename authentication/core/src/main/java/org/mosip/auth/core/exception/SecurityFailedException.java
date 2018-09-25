@@ -3,7 +3,7 @@ package org.mosip.auth.core.exception;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 
 /**
- * The Class SecurityFailedException.
+ * The Class SecurityFailedException - Thrown when security check is failed.
  *
  * @author Manoj SP
  */

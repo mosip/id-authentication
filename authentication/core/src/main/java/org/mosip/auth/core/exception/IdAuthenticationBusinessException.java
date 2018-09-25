@@ -5,7 +5,8 @@ import org.mosip.kernel.core.exception.BaseCheckedException;
 import org.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * The base exception for ID Usage which is always associated with an error code.
+ * The base exception for ID Authentication which is always associated with an error code.
+ * This exception is thrown at Service level, usually wrapped with root cause.
  *
  * @author Manoj SP
  */

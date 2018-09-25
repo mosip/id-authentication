@@ -7,7 +7,7 @@ package org.mosip.auth.core.constant;
  */
 public enum RequestType {
 
-	OTP_TRIGGER("otp"), OTP_AUTH("auth");
+	OTP_REQUEST("OTP-REQUEST"), OTP_AUTH("OTP-AUTH"), DEMO_AUTH("DEMO-AUTH"), BIO_AUTH("BIO-AUTH");
 
 	String requestType;
 

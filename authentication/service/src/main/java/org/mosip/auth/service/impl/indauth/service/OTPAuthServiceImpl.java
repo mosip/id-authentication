@@ -14,6 +14,7 @@ import org.mosip.kernel.core.logging.MosipLogger;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.core.logging.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,6 +36,9 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	AuditRequestFactory auditreqfactory;
 
 	private MosipLogger LOGGER;
+
+	@Autowired
+	private Environment env;
 
 	/**
 	 * 
@@ -64,11 +68,9 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			boolean isValidRequest = validateTxnId(txnId, UIN);
 			if (isValidRequest) {
 				// FIXME audit integration
-				LOGGER.info("SESSION_ID", "validateOtp", "Inside Validate Otp Request",
-						OTPAuthServiceImpl.class.getName());
-				//FIXME get from property
-				String key = OTPUtil.generateKey("IDA", refId, txnId, TSPCode);
-				// TODO IDA appId should be read from properties file
+				System.err.println(env.getProperty("application.id"));
+				LOGGER.info("SESSION_ID", "validateOtp", "Inside Validate Otp Request", "");
+				String key = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
 				if (!isEmpty(key)) {
 					isOtpValid = otpManager.validateOtp(otp, key);
 				} else {
@@ -87,7 +89,17 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		return isOtpValid;
 	}
 
-	private boolean validateTxnId(String txnId, String uIN) throws IdAuthenticationBusinessException {
+	/**
+	 * 
+	 * Validates Transaction ID and Unique ID
+	 * 
+	 * @param txnId
+	 * @param uIN
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+
+	public boolean validateTxnId(String txnId, String uIN) throws IdAuthenticationBusinessException {
 		boolean isValidTxn = false;
 		AutnTxn authtxn = autntxnrepository.findByRequestTxnIdAndUin(txnId, uIN);
 		if (authtxn != null) {

@@ -1,6 +1,5 @@
 package org.mosip.auth.core.dto.otpgen;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +15,7 @@ import lombok.Data;
  */
 
 @Data
-public class OtpResponseDTO implements Serializable {
+public class OtpResponseDTO {
 
 	private static final long serialVersionUID = 8039452517810739329L;
 

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * @author Dinesh Karuppiah.T
  */
 
-@Service
+
 public interface OTPAuthService {
 
 	/**

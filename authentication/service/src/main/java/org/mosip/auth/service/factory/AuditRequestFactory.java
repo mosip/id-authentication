@@ -29,6 +29,8 @@ public class AuditRequestFactory {
 
 	@Autowired
 	private Environment env;
+	
+	private InetAddress inetAddress;
 
 	/**
 	 * Builds the request.
@@ -41,7 +43,7 @@ public class AuditRequestFactory {
 		String hostAddress;
 
 		try {
-			InetAddress inetAddress = InetAddress.getLocalHost();
+			inetAddress = InetAddress.getLocalHost();
 			hostName = inetAddress.getHostName();
 			hostAddress = inetAddress.getHostAddress();
 		} catch (UnknownHostException ex) {

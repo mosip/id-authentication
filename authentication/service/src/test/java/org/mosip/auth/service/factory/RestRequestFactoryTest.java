@@ -13,6 +13,7 @@ import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.util.dto.AuditRequestDto;
 import org.mosip.auth.core.util.dto.AuditResponseDto;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
+import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -31,7 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties" })
+@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
 public class RestRequestFactoryTest {
 
 	@InjectMocks
@@ -50,6 +51,17 @@ public class RestRequestFactoryTest {
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
+		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
+		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
+		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
+		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
+		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
+		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
+		mosipRollingFileAppender.setMaxHistory(10);
+		mosipRollingFileAppender.setImmediateFlush(true);
+		mosipRollingFileAppender.setPrudent(true);
+		ReflectionTestUtils.invokeMethod(auditFactory, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(restFactory, "initializeLogger", mosipRollingFileAppender);
 	}
 
 	@Test

@@ -3,7 +3,7 @@ package org.mosip.auth.core.exception;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 
 /**
- * The Class IDDataValidationException.
+ * The Class IDDataValidationException - Thrown when any Data validation error occurs.
  *
  * @author Manoj SP
  */
