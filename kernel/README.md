@@ -1,4 +1,4 @@
-## Parent project of Kernel
+## Parent project of Kernel.
 This folder has all submodules of kernel of Mosip.
 
 ### Sonar
