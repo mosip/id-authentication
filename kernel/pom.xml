@@ -1,0 +1,212 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.mosip</groupId>
+	<artifactId>kernel</artifactId>
+	<version>1.0.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>kernel</name>
+	<description>Parent project of MOSIP Kernel</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.version>3.7.0</maven.compiler.version>
+		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
+		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
+		<maven.surefire.plugin.version>2.9</maven.surefire.plugin.version>
+		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
+		<maven.sonar.plugin.version>3.5.0.1254</maven.sonar.plugin.version>
+
+		<!-- Core -->
+		<spring.version>5.0.4.RELEASE</spring.version>
+		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
+		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
+
+		<!-- Miscellaneous -->
+		<javax.el-api.version>3.0.0</javax.el-api.version>
+		<glassfish.javax.el>2.2.6</glassfish.javax.el>
+		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
+		<jackson.version>2.9.5</jackson.version>
+		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
+		<modelmapper.version>2.1.1</modelmapper.version>
+
+		<!-- Swagger -->
+		<swagger.version>2.9.2</swagger.version>
+
+		<!-- Data Access -->
+		<eclipselink.version>2.5.0</eclipselink.version>
+		<mysql.connector.version>5.1.46</mysql.connector.version>
+		<h2.version>1.4.197</h2.version>
+		<postgresql.version>42.2.2</postgresql.version>
+
+		<!-- For Cache -->
+		<ignite.version>2.3.0</ignite.version>
+
+		<!--For Security -->
+		<bouncycastle.version>1.60</bouncycastle.version>
+
+		<!-- Support tools & utilities -->
+		<commons-math3>3.6.1</commons-math3>
+		<commons-lang3>3.7</commons-lang3>
+		<commons-io>2.6</commons-io>
+		<guava.version>19.0</guava.version>
+		<seventeam-otp.version>1.0.0</seventeam-otp.version>
+		<commons.beanutils.version>1.9.2</commons.beanutils.version>
+		<commons.configuration2.version>2.2</commons.configuration2.version>
+		<jackson.databind>2.9.6</jackson.databind>
+
+		<!-- Test & Logging -->
+		<junit.version>4.12</junit.version>
+		<logback.version>1.2.3</logback.version>
+		<slf4j.version>1.7.19</slf4j.version>
+		<mockito.version>1.10.19</mockito.version>
+
+		<!-- Lombok -->
+		<lombok.version>1.16.18</lombok.version>
+	</properties>
+
+	<modules>
+		<module>core</module>
+		<module>logger-logback</module>
+		<module>dataaccess-hibernate</module>
+		<module>auditmanager-api</module>
+		<module>auditmanager-service</module>
+		<module>idvalidator</module>
+		<module>idgenerator-pid</module>
+		<module>idgenerator-eid</module>
+		<module>idgenerator-vid</module>
+		<module>idgenerator-uin</module>
+
+	</modules>
+
+	<profiles>
+		<profile>
+			<id>LOCAL</id>
+			<properties>
+				<sonar.host.url>
+					http://localhost:9000
+				</sonar.host.url>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+		<profile>
+			<id>DEV</id>
+			<properties>
+				<sonar.host.url>
+					http://myserver:9000
+				</sonar.host.url>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${maven.sonar.plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven.jar.plugin.version}</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Project-Name>${project.name}</Project-Name>
+							<Project-Version>${project.version}</Project-Version>
+							<Built-By>${user.name}</Built-By>
+							<Built-OS>${os.name}</Built-OS>
+							<Local-Build-Date>${maven.build.timestamp}</Local-Build-Date>
+							<Build-Number>${env.BUILD_NUMBER}</Build-Number>
+							<Build-Date>${env.BUILD_ID}</Build-Date>
+							<Build-URL>${env.BUILD_URL}</Build-URL>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${maven.war.plugin.version}</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Project-Name>${project.name}</Project-Name>
+							<Project-Version>${project.version}</Project-Version>
+							<Built-By>${user.name}</Built-By>
+							<Built-OS>${os.name}</Built-OS>
+							<Local-Build-Date>${maven.build.timestamp}</Local-Build-Date>
+							<Build-Number>${env.BUILD_NUMBER}</Build-Number>
+							<Build-Date>${env.BUILD_ID}</Build-Date>
+							<Build-URL>${env.BUILD_URL}</Build-URL>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven.surefire.plugin.version}</version>
+				<configuration>
+					<skip>false</skip>
+					<useFile>false</useFile>
+					<excludes>
+						<exclude>**/*IntegrationTest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${maven.jacoco.plugin.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
