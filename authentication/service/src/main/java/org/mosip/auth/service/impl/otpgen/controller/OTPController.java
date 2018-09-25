@@ -29,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Rakesh Roshan
  */
 @RestController
-//@RequestMapping(value = "/v0.1/id-auth/otp-gen")
 public class OTPController {
 
 	private MosipLogger LOGGER;

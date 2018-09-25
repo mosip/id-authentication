@@ -24,11 +24,11 @@ public class IDAuthenticationExceptionHandlerTest {
 	@Mock
 	private Errors errors;
 
-	private IDAuthenticationExceptionHandler handler;
+	private IdAuthExceptionHandler handler;
 
 	@Before
 	public void setUp() {
-		handler = new IDAuthenticationExceptionHandler();
+		handler = new IdAuthExceptionHandler();
 	}
 
 	@Ignore

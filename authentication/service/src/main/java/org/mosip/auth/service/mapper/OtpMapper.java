@@ -11,10 +11,10 @@ public class OtpMapper {
 
 	MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 
-	public OtpMapper() {
-		mapperFactory.classMap(OtpRequestDTO.class, org.mosip.auth.service.entity.OtpEntity.class).field("uniqueID", "uniqueID").byDefault()
-				.register();
-		mapperFacade = mapperFactory.getMapperFacade();
-	}
+//	public OtpMapper() {
+//		mapperFactory.classMap(OtpRequestDTO.class, org.mosip.auth.service.entity.OtpEntity.class).field("uniqueID", "uniqueID").byDefault()
+//				.register();
+//		mapperFacade = mapperFactory.getMapperFacade();
+//	}
 
 }

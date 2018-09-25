@@ -1,6 +1,5 @@
 package org.mosip.auth.service.exception;
 
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +32,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * @author Manoj SP
  */
 @RestControllerAdvice
-public class IDAuthenticationExceptionHandler extends ResponseEntityExceptionHandler {
+public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private MosipLogger logger;
 
@@ -153,9 +152,9 @@ public class IDAuthenticationExceptionHandler extends ResponseEntityExceptionHan
 
 		List<AuthError> errors = new ArrayList<>();
 
-		if (errorMessages != null) {
-			((List<String>) errorMessages).parallelStream().map(message -> new AuthError(errorCode, (String) message)).collect(Collectors.toList());
-		}
+		if (errorMessages != null)
+			((List<String>) errorMessages).parallelStream().map(message -> new AuthError(errorCode, (String) message))
+					.collect(Collectors.toList());
 
 		authResp.setResponseTime(new Date());
 

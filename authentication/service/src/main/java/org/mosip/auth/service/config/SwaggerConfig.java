@@ -16,9 +16,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @author Dinesh Karuppiah
  */
 
-@Configuration
+@Configuration(value = "ida_swagger_config")
 @EnableSwagger2
-public class IDASwaggerConfig {
+public class SwaggerConfig {
 
 	/**
 	 * 
