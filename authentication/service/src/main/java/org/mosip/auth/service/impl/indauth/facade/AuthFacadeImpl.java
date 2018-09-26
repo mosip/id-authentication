@@ -1,6 +1,5 @@
 package org.mosip.auth.service.impl.indauth.facade;
 
-import org.mosip.auth.core.constant.AuditServicesConstants;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
@@ -17,7 +16,7 @@ import org.mosip.auth.core.util.dto.AuditResponseDto;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
 import org.mosip.auth.service.factory.AuditRequestFactory;
 import org.mosip.auth.service.factory.RestRequestFactory;
-import org.mosip.auth.service.util.RestUtil;
+import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.kernel.core.logging.MosipLogger;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.core.logging.factory.MosipLogfactory;
@@ -26,6 +25,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthFacadeImpl implements AuthFacade {
+	
+	@Autowired
+	RestHelper restHelper;
 	
 	private MosipLogger logger;
 
@@ -66,7 +68,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
 		}
 
-		RestUtil.requestAsync(restRequest);  
+		restHelper.requestAsync(restRequest);  
 		return authResponseDTO;
 	    
 
@@ -103,7 +105,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
 		}
 
-		RestUtil.requestAsync(restRequest);  
+		restHelper.requestAsync(restRequest);  
 		return authStatus;
 	}
 
@@ -150,7 +152,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
 		}
 
-		RestUtil.requestAsync(restRequest);  
+		restHelper.requestAsync(restRequest);  
 		return refId;
 	}
 

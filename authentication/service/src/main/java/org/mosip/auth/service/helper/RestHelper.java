@@ -1,4 +1,4 @@
-package org.mosip.auth.service.util;
+package org.mosip.auth.service.helper;
 
 import java.time.Duration;
 import java.util.concurrent.TimeoutException;
@@ -12,7 +12,9 @@ import org.mosip.auth.core.util.dto.RestRequestDTO;
 import org.mosip.kernel.core.logging.MosipLogger;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.core.logging.factory.MosipLogfactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyExtractors;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,19 +25,22 @@ import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import reactor.core.publisher.Mono;
 
 /**
- * The Class RestUtil - to send/receive HTTP requests and return the response.
+ * The Class RestHelper - to send/receive HTTP requests and return the response.
  *
  * @author Manoj SP
  */
-public final class RestUtil {
+@Component
+public class RestHelper {
 	// TODO Check for response body
-	private static MosipLogger logger;
+	private MosipLogger logger;
 
 	/**
 	 * Instantiates a new rest util.
+	 * @return 
 	 */
-	public RestUtil(MosipRollingFileAppender idaRollingFileAppender) {
-		RestUtil.logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, RestUtil.class);
+	@Autowired
+	public void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
+		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, RestHelper.class);
 	}
 
 	/**
@@ -50,27 +55,27 @@ public final class RestUtil {
 	 *             the rest service exception
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
+	public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
 		Object response;
 		if (request.getTimeout() != null) {
 			try {
-				logger.info("sessionId", "RestUtil", "requestSync", "Request : " + request);
-				response = RestUtil.request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				logger.info("sessionId", "RestUtil", "requestSync", "Response : " + response);
+				logger.info("sessionId", "RestHelper", "requestSync", "Request : " + request);
+				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
+				logger.info("sessionId", "RestHelper", "requestSync", "Response : " + response);
 				return (T) response;
 			} catch (RuntimeException e) {
 				if (e.getCause().getClass().equals(TimeoutException.class)) {
-					logger.error("sessionId", "RestUtil", "requestSync", "Throwing RestServiceException - CONNECTION_TIMED_OUT - " + e.getCause());
+					logger.error("sessionId", "RestHelper", "requestSync", "Throwing RestServiceException - CONNECTION_TIMED_OUT - " + e.getCause());
 					throw new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e);
 				} else {
-					logger.error("sessionId", "RestUtil", "requestSync-RuntimeException", "Throwing RestServiceException - UNKNOWN_ERROR - " + e);
+					logger.error("sessionId", "RestHelper", "requestSync-RuntimeException", "Throwing RestServiceException - UNKNOWN_ERROR - " + e);
 					throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
 				}
 			}
 		} else {
-			logger.info("sessionId", "RestUtil", "requestSync", "Request : " + request);
-			response = RestUtil.request(request).block();
-			logger.info("sessionId", "RestUtil", "requestSync", "Response : " + response);
+			logger.info("sessionId", "RestHelper", "requestSync", "Request : " + request);
+			response = request(request).block();
+			logger.info("sessionId", "RestHelper", "requestSync", "Response : " + response);
 			return (T) response;
 		}
 	}
@@ -82,11 +87,11 @@ public final class RestUtil {
 	 *            the request
 	 * @return the supplier
 	 */
-	public static Supplier<?> requestAsync(@Valid RestRequestDTO request) {
-		logger.info("sessionId", "RestUtil", "requestAsync", "Request : " + request);
-		Mono<?> sendRequest = RestUtil.request(request);
+	public Supplier<?> requestAsync(@Valid RestRequestDTO request) {
+		logger.info("sessionId", "RestHelper", "requestAsync", "Request : " + request);
+		Mono<?> sendRequest = request(request);
 		sendRequest.subscribe();
-		logger.info("sessionId", "RestUtil", "requestAsync", "Request subscribed");
+		logger.info("sessionId", "RestHelper", "requestAsync", "Request subscribed");
 		return () -> sendRequest.block();
 	}
 
@@ -97,7 +102,7 @@ public final class RestUtil {
 	 *            the request
 	 * @return the mono
 	 */
-	private static Mono<?> request(RestRequestDTO request) {
+	private Mono<?> request(RestRequestDTO request) {
 		WebClient webClient;
 		Mono<?> monoResponse;
 		RequestBodySpec uri;
@@ -125,7 +130,7 @@ public final class RestUtil {
 			exchange = uri.retrieve();
 		}
 
-		monoResponse = exchange.onStatus(HttpStatus::isError, RestUtil::handleStatusError)
+		monoResponse = exchange.onStatus(HttpStatus::isError, this::handleStatusError)
 				.bodyToMono(request.getResponseType());
 
 		return monoResponse;
@@ -138,15 +143,15 @@ public final class RestUtil {
 	 *            the response
 	 * @return the mono<? extends throwable>
 	 */
-	private static Mono<? extends Throwable> handleStatusError(ClientResponse response) {
+	private Mono<? extends Throwable> handleStatusError(ClientResponse response) {
 		Mono<?> body = response.body(BodyExtractors.toMono(String.class));
-		logger.error("sessionId", "RestUtil", "handleStatusError", "Status error : " + response.statusCode() + " " + response.statusCode().getReasonPhrase());
+		logger.error("sessionId", "RestHelper", "handleStatusError", "Status error : " + response.statusCode() + " " + response.statusCode().getReasonPhrase());
 		if (response.statusCode().is4xxClientError()) {
-			logger.error("sessionId", "RestUtil", "handleStatusError", "Status error - returning RestServiceException - CLIENT_ERROR");
+			logger.error("sessionId", "RestHelper", "handleStatusError", "Status error - returning RestServiceException - CLIENT_ERROR");
 			return body.flatMap(
 					responseBody -> Mono.error(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR)));
 		} else {
-			logger.error("sessionId", "RestUtil", "handleStatusError", "Status error - returning RestServiceException - SERVER_ERROR");
+			logger.error("sessionId", "RestHelper", "handleStatusError", "Status error - returning RestServiceException - SERVER_ERROR");
 			return body.flatMap(
 					responseBody -> Mono.error(new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR)));
 		}

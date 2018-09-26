@@ -19,7 +19,7 @@ import org.mosip.auth.service.entity.UinEntity;
 import org.mosip.auth.service.entity.VIDEntity;
 import org.mosip.auth.service.factory.AuditRequestFactory;
 import org.mosip.auth.service.factory.RestRequestFactory;
-import org.mosip.auth.service.util.RestUtil;
+import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.kernel.core.logging.MosipLogger;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.core.logging.factory.MosipLogfactory;
@@ -33,6 +33,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class IdAuthServiceImpl implements IdAuthService {
+	
+	@Autowired
+	private RestHelper restHelper;
 	
 	private MosipLogger logger;
 
@@ -80,7 +83,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
 		}
 
-		RestUtil.requestAsync(restRequest);  
+		restHelper.requestAsync(restRequest);  
 
 		return refId;
 	}
@@ -127,7 +130,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
 		}
 
-		RestUtil.requestAsync(restRequest);  
+		restHelper.requestAsync(restRequest);  
 
 		return refId;
 	}

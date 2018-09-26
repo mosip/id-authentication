@@ -7,14 +7,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mosip.auth.core.dto.indauth.PinDTO;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
-import org.mosip.auth.service.config.LogConfig;
 import org.mosip.auth.service.factory.RestRequestFactory;
+import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.auth.service.integration.dto.OTPValidateResponseDTO;
 import org.mosip.auth.service.integration.dto.OtpGeneratorResponseDto;
-import org.mosip.auth.service.util.RestUtil;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -47,6 +45,9 @@ import reactor.ipc.netty.http.server.HttpServer;
 @TestPropertySource(value= {"classpath:rest-services.properties", "classpath:log.properties"})
 public class ValidateOtpRequestTest {
 	
+	@InjectMocks
+	RestHelper restHelper;
+	
 	@Autowired
 	MockMvc mvc;
 	
@@ -67,6 +68,7 @@ public class ValidateOtpRequestTest {
 	public void before() {
 		restfactory = new RestRequestFactory();
 		ReflectionTestUtils.setField(restfactory, "env", env);
+		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		
 		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
 		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
@@ -83,8 +85,7 @@ public class ValidateOtpRequestTest {
 		ReflectionTestUtils.invokeMethod(otpManager, "initializeLogger", mosipRollingFileAppender);
 
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restfactory);
-		
-		new RestUtil(mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
 	}
 
 	/**
