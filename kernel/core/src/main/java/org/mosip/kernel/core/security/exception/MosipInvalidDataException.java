@@ -25,13 +25,10 @@ public class MosipInvalidDataException extends BaseCheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param errorCode
-	 *            unique exception code
-	 * @param errorMessage
-	 *            exception message
+	 * @param exceptionCodeConstants
+	 *            exception code constant
 	 */
-	public MosipInvalidDataException(MosipSecurityExceptionCodeConstants errorCode,
-			MosipSecurityExceptionCodeConstants errorMessage) {
-		super(errorCode.getValue(), errorMessage.getValue());
+	public MosipInvalidDataException(MosipSecurityExceptionCodeConstants exceptionCodeConstants) {
+		super(exceptionCodeConstants.getErrorCode(), exceptionCodeConstants.getErrorMessage());
 	}
 }

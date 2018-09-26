@@ -63,10 +63,19 @@ public class MosipDecryptor {
 			return MosipRSA.hybridRsaAesWithOAEPWithSHA3512AndMGF1Padding(SecurityUtil.bytesToPrivateKey(privateKey),
 					data, false);
 
+		case RSA_WITH_PKCS1PADDING:
+			return MosipRSA.rsaWithPKCS1Padding(SecurityUtil.bytesToPrivateKey(privateKey), data, false);
+
+		case RSA_WITH_OAEP_WITH_MD5_AND_MGF1PADDING:
+			return MosipRSA.rsaWithOAEPWithMD5AndMGF1Padding(SecurityUtil.bytesToPrivateKey(privateKey), data, false);
+
+		case RSA_WITH_OAEP_WITH_SHA3512_AND_MGF1PADDING:
+			return MosipRSA.rsaWithOAEPWithSHA3512AndMGF1Padding(SecurityUtil.bytesToPrivateKey(privateKey), data,
+					false);
+
 		default:
 			throw new MosipNoSuchAlgorithmException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_METHOD_EXCEPTION_MESSAGE);
+					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION);
 		}
 	}
 
@@ -99,11 +108,18 @@ public class MosipDecryptor {
 		case HYBRID_RSA_AES_WITH_OAEP_WITH_SHA3512_AND_MGF1PADDING:
 			return MosipRSA.hybridRsaAesWithOAEPWithSHA3512AndMGF1Padding(SecurityUtil.bytesToPublicKey(publicKey),
 					data, false);
+		case RSA_WITH_PKCS1PADDING:
+			return MosipRSA.rsaWithPKCS1Padding(SecurityUtil.bytesToPublicKey(publicKey), data, false);
+
+		case RSA_WITH_OAEP_WITH_MD5_AND_MGF1PADDING:
+			return MosipRSA.rsaWithOAEPWithMD5AndMGF1Padding(SecurityUtil.bytesToPublicKey(publicKey), data, false);
+
+		case RSA_WITH_OAEP_WITH_SHA3512_AND_MGF1PADDING:
+			return MosipRSA.rsaWithOAEPWithSHA3512AndMGF1Padding(SecurityUtil.bytesToPublicKey(publicKey), data, false);
 
 		default:
 			throw new MosipNoSuchAlgorithmException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_METHOD_EXCEPTION_MESSAGE);
+					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION);
 		}
 	}
 
@@ -137,8 +153,7 @@ public class MosipDecryptor {
 
 		default:
 			throw new MosipNoSuchAlgorithmException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_METHOD_EXCEPTION_MESSAGE);
+					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION);
 		}
 	}
 
