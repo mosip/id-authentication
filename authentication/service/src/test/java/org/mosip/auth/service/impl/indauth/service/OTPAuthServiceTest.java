@@ -1,241 +1,226 @@
 package org.mosip.auth.service.impl.indauth.service;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-
+import static org.junit.Assert.assertTrue;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
+import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
 import org.mosip.auth.core.dto.indauth.PinDTO;
 import org.mosip.auth.core.dto.indauth.PinType;
-import org.mosip.auth.core.spi.indauth.service.OTPAuthService;
-import org.mosip.auth.service.dao.UinRepository;
+import org.mosip.auth.core.exception.IDDataValidationException;
+import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
+import org.mosip.auth.service.IdAuthenticationApplication;
+import org.mosip.auth.service.dao.AutnTxnRepository;
+import org.mosip.auth.service.entity.AutnTxn;
 import org.mosip.auth.service.entity.UinEntity;
 import org.mosip.auth.service.integration.OTPManager;
-import org.mosip.auth.service.integration.dto.OTPValidateResponseDTO;
-import org.mosip.auth.service.integration.dto.OtpGeneratorResponseDto;
+import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.HttpHandler;
-import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.reactive.function.server.RequestPredicates;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.context.WebApplicationContext;
 
-import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.HttpResources;
-import reactor.ipc.netty.http.server.HttpServer;
 
-@Ignore
+/**
+ * 
+ * @author Dinesh Karuppiah
+ */
+//@RunWith(MockitoJUnitRunner.class)
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@WebMvcTest
+@TestPropertySource(value = { "classpath:rest-services.properties", "classpath:log.properties" })
 public class OTPAuthServiceTest {
 
-	@Autowired
-	OTPAuthServiceImpl otpauthserviceimpl;
-
-	@Autowired
-	OTPManager otpmanager;
+	@InjectMocks
+	private OTPAuthServiceImpl authserviceimpl;
 
 	private PinDTO pindto = new PinDTO();
 
-	@Mock
-	private UinRepository repository;
-
 	@Autowired
-	private OTPAuthService otpauthservice;
+	Environment env;
+
+	@Mock
+	private AutnTxnRepository repository;
 
 	UinEntity uinentity = new UinEntity();
 
-	@BeforeClass
-	public static void beforeClass() {
-		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/otpmanager/otps"),
-				request -> ServerResponse.status(HttpStatus.OK).body(
-						Mono.just(new OTPValidateResponseDTO("True", "OTP Validation Successful")),
-						OTPValidateResponseDTO.class));
-		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-		HttpServer.create(8083).start(adapter).installShutdownHook();
+	@Mock
+	OTPManager otpmanager;
 
-		RouterFunction<?> functionSuccess1 = RouterFunctions.route(RequestPredicates.GET("/otpmanager/otps"),
-				request -> {
-					OtpGeneratorResponseDto data = new OtpGeneratorResponseDto();
-					data.setOtp("123456");
-					return ServerResponse.status(HttpStatus.OK).body(Mono.just(data), OtpGeneratorResponseDto.class);
-				});
-		HttpHandler httpHandler1 = RouterFunctions.toHttpHandler(functionSuccess1);
-		ReactorHttpHandlerAdapter adapter1 = new ReactorHttpHandlerAdapter(httpHandler1);
-		HttpServer.create(8082).start(adapter1).installShutdownHook();
-		System.err.println("started server");
+	@Before
+	public void before() {
+		ReflectionTestUtils.setField(authserviceimpl, "env", env);
+		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
+		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
+		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
+		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
+		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
+		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
+		mosipRollingFileAppender.setMaxHistory(10);
+		mosipRollingFileAppender.setImmediateFlush(true);
+		mosipRollingFileAppender.setPrudent(true);
+		ReflectionTestUtils.invokeMethod(authserviceimpl, "initializeLogger", mosipRollingFileAppender);
 	}
 
+	private AuthRequestDTO otpAuthRequestDTO = new AuthRequestDTO();
+
+	/**
+	 * To close the http resources
+	 */
 	@AfterClass
 	public static void afterClass() {
 		HttpResources.reset();
 	}
 
-	@Test
-	public void TestEmpty() {
-		String otpval = "";
-		boolean value = otpauthserviceimpl.isEmpty(otpval);
-		assertEquals(true, value);
+	/**
+	 * method to test IDDatavalidation Exception for IDA
+	 * 
+	 * @throws IdAuthenticationBusinessException
+	 */
+	@Test(expected = IDDataValidationException.class)
+	public void Test_InvalidTxnId() throws IdAuthenticationBusinessException {
+		Mockito.when(repository.findByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+		authserviceimpl.validateTxnId("", "");
 	}
 
-	@Test
-	public void TestEmtpyString() {
-		String otpval = " ";
-		boolean value = otpauthserviceimpl.isEmpty(otpval);
-		assertEquals(true, value);
-	}
+	/**
+	 * To test the Transaction id with UIN
+	 * 
+	 * @throws IdAuthenticationBusinessException
+	 */
 
 	@Test
-	public void TestNull() {
-		String otpval = null;
-		boolean value = otpauthserviceimpl.isEmpty(otpval);
-		assertEquals(true, value);
+	public void Test_validTxnId() throws IdAuthenticationBusinessException {
+		AutnTxn autntxn = new AutnTxn();
+		autntxn.setRequestTxnId("TXN001");
+		Mockito.when(repository.findByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(autntxn);
+		assertTrue(authserviceimpl.validateTxnId("232323", "234234"));
 	}
 
-	@Test
-	public void TestisNotEmptyorNull() {
-		String otpval = "1211212";
-		assertFalse(otpauthserviceimpl.isEmpty(otpval));
-	}
+	/**
+	 * To Test the Value id null
+	 * 
+	 */
 
 	@Test
-	public void TestvalidOtpValidation() {
-		pindto = new PinDTO();
-		pindto.setPinValue("12345");
+	public void TestisEmpty_withNull() {
+		String txnId = null;
+		assertTrue(authserviceimpl.isEmpty(txnId));
+	}
+
+	/**
+	 * To test the Value is Empty
+	 */
+	@Test
+	public void TestisEmpty_withEmpty() {
+		String txnId = "";
+		assertTrue(authserviceimpl.isEmpty(txnId));
+	}
+
+	/**
+	 * To test the value with empty
+	 */
+	@Test
+	public void TestisEmpty_withEmptyString() {
+		String txnId = "  ";
+		assertTrue(authserviceimpl.isEmpty(txnId));
+	}
+
+	/**
+	 * To test Valid Transaction-id
+	 */
+
+	@Test
+	public void TestisEmpty_withValidString() {
+		String txnId = "TXN00001";
+		assertFalse(authserviceimpl.isEmpty(txnId));
+	}
+
+	/**
+	 * Validate the OTP Request
+	 * 
+	 * @throws IdAuthenticationBusinessException
+	 */
+
+	@Test
+	public void TestValidateOtp_ValidRequest() throws IdAuthenticationBusinessException {
+		AutnTxn autntxn = new AutnTxn();
+		autntxn.setRequestTxnId("TXN001");
+		Mockito.when(repository.findByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(autntxn);
+		otpAuthRequestDTO.setTxnID("1234567890");
+		otpAuthRequestDTO.setAuaCode("ASA000000011");
+		otpAuthRequestDTO.setTxnID("TXN00001");
+		otpAuthRequestDTO.setUniqueID("1134034024034");
+		otpAuthRequestDTO.setAuaCode("AUA0001");
+		PinDTO pindto = new PinDTO();
 		pindto.setPinType(PinType.OTP);
-		String Uin = "123456789";
-		String id = "12345";
-		UinEntity uinentity = new UinEntity();
-		uinentity.setId(id);
-		uinentity.setUin(Uin);
-		Mockito.when(repository.findByUin(Mockito.anyString())).thenReturn(uinentity);
-		UinEntity uinEntity = repository.findByUin(Uin);
-		assertEquals("12345", uinEntity.getId());
+		pindto.setPinValue("23232323");
+		otpAuthRequestDTO.setPinDTO(pindto);
+		assertFalse(authserviceimpl.validateOtp(otpAuthRequestDTO, "45345435345"));
 	}
 
-//	@Test
-//	public void ValidOtpRequest() throws IdAuthenticationBusinessException {
-//		pindto = new PinDTO();
-//		pindto.setPinType(PinType.OTP);
-//		pindto.setPinValue("12345");
-//		String UIN = "1234567890";
-//		boolean value = otpauthservice.validateOtp(pindto, UIN);
-//		assertEquals(true, value);
-//	}
+	/**
+	 * 
+	 * Throw Custom IdAuthenticationBusinessException class
+	 * 
+	 * @throws IdAuthenticationBusinessException
+	 */
 
-//	@Test
-//	public void InValidOtpRequest() throws IdAuthenticationBusinessException {
-//		pindto = null;
-//		String UIN = null;
-//		boolean value = otpauthservice.validateOtp(pindto, UIN);
-//		assertEquals(false, value);
-//	}
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInvalidValidateOtp() throws IdAuthenticationBusinessException {
+		OTPAuthServiceImpl authservice = Mockito.mock(OTPAuthServiceImpl.class);
+		Mockito.when(authservice.validateOtp(Mockito.any(), Mockito.anyString())).thenThrow(
+				new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_INVALID_VALIDATEOTP_REQUEST));
+		otpAuthRequestDTO.setTxnID("1234567890");
+		otpAuthRequestDTO.setAuaCode("ASA000000011");
+		otpAuthRequestDTO.setTxnID("TXN00001");
+		otpAuthRequestDTO.setUniqueID("1134034024034");
+		otpAuthRequestDTO.setAuaCode("AUA0001");
+		PinDTO pindto = new PinDTO();
+		pindto.setPinType(PinType.OTP);
+		pindto.setPinValue("23232323");
+		otpAuthRequestDTO.setPinDTO(pindto);
+		authservice.validateOtp(otpAuthRequestDTO, "");
+	}
 
-//	@Test
-//	public void TestValidateOtp() {
-//		pindto = new PinDTO();
-//		PinType pintype = null;
-//		pindto.setPinType(pintype);
-//		pindto.setPinValue(null);
-//		String UIN = "";
-//		assertFalse(otpauthserviceimpl.validateOtpArgs(pindto, UIN));
-//	}
+	/**
+	 * Test auth service with validate OTP
+	 * 
+	 * @throws IdAuthenticationBusinessException
+	 */
 
-//	@Test
-//	public void TestValidateOTP_PindtoNull() {
-//		pindto = null;
-//		String UIN = "";
-//		assertFalse(otpauthserviceimpl.validateOtpArgs(pindto, UIN));
-//	}
-
-//	@Test
-//	public void TestValidateOtp_ValidPinDto() {
-//		pindto = new PinDTO();
-//		PinType pintype = PinType.OTP;
-//		pindto.setPinType(pintype);
-//		pindto.setPinValue("12345");
-//		String UIN = "";
-//		assertFalse(otpauthserviceimpl.validateOtpArgs(pindto, UIN));
-//	}
-
-//	@Test
-//	public void TestValidateOtp_pindtonull() {
-//		pindto = null;
-//		String UIN = "123456789";
-//		assertFalse(otpauthserviceimpl.validateOtpArgs(pindto, UIN));
-//	}
-
-//	@Test
-//	public void TestValidateOtp_ValidUIN() {
-//		pindto = new PinDTO();
-//		String UIN = "123456789";
-//		assertFalse(otpauthserviceimpl.validateOtpArgs(pindto, UIN));
-//	}
-//
-//	@Test
-//	public void TestValidateOtp_InValidPintype() {
-//		pindto = new PinDTO();
-//		pindto.setPinType(PinType.OTP);
-//		pindto.setPinValue("");
-//		String UIN = "123456789";
-//		assertFalse(otpauthserviceimpl.validateOtpArgs(pindto, UIN));
-//	}
-
-//	@Test
-//	public void TestValidateOtp_ValidArgs() {
-//		pindto = new PinDTO();
-//		pindto.setPinType(PinType.OTP);
-//		pindto.setPinValue("12345");
-//		String UIN = "123456789";
-//		assertTrue(otpauthserviceimpl.validateOtpArgs(pindto, UIN));
-//	}
-
-//	@Test // TODO throw invalid refid
-//	public void TestGetOtpKey_UINNull() {
-//		String UIN = null;
-//		String value = otpauthserviceimpl.fetchOtpKey(UIN);
-//	}
-
-//	@Test // TODO throw invalid refid
-//	public void TestGetOtpKey_UINisEmpty() {
-//		String UIN = "";
-//		String value = otpauthserviceimpl.fetchOtpKey(UIN);
-//	}
-
-//	@Test
-//	public void TestValidFetchOtpKey() {
-//		String UIN = "1234567890";
-//		String Uin = "123456789";
-//		String id = "12345";
-//		UinEntity uinentity = new UinEntity();
-//		uinentity.setId(id);
-//		uinentity.setUin(Uin);
-//		Mockito.when(repository.findByUin(Mockito.anyString())).thenReturn(uinentity);
-//		String value = otpauthserviceimpl.fetchOtpKey(UIN);
-//		System.out.println(value);
-//	}
-
-//	@Test
-//	public void TestGetOtpKey_RefidNull() {
-//		String refid = null;
-//		Optional<String> value = otpauthserviceimpl.getOtpKey(refid);
-////		assertNull(value.get());
-//	}
-//
-//	@Test
-//	public void TestGetOtpKey_Refidvalid() {
-//		String refid = "";
-//		Optional<String> value = otpauthserviceimpl.getOtpKey(refid);
-//	}
+	@Ignore
+	@Test(expected = IDDataValidationException.class)
+	public void TEst_isEMptynull() throws IdAuthenticationBusinessException {
+		OTPAuthServiceImpl authservice = Mockito.mock(OTPAuthServiceImpl.class);
+		Mockito.when(authservice.isEmpty(Mockito.any())).thenReturn(true);
+		otpAuthRequestDTO.setTxnID("1234567890");
+		otpAuthRequestDTO.setAuaCode("ASA000000011");
+		otpAuthRequestDTO.setTxnID("TXN00001");
+		otpAuthRequestDTO.setUniqueID("1134034024034");
+		otpAuthRequestDTO.setAuaCode("AUA0001");
+		PinDTO pindto = new PinDTO();
+		pindto.setPinType(PinType.OTP);
+		pindto.setPinValue("23232323");
+		otpAuthRequestDTO.setPinDTO(pindto);
+		authservice.validateOtp(otpAuthRequestDTO, "34545");
+	}
 
 }

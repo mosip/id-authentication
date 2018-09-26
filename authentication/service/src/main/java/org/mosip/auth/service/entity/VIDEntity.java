@@ -34,7 +34,7 @@ public class VIDEntity {
 	private Date expiryDate;
 
 	@Column(name = "is_active")
-	private char isActive;
+	private boolean isActive;
 
 	@Column(name = "cr_by")
 	private String correctedBy ;         
@@ -46,10 +46,10 @@ public class VIDEntity {
 	private char updatedBy;
 
 	@Column(name = "upd_dtimes")
-	private Date updatedDate;
+	private Date updatedOn;
 
 	@Column(name = "is_deleted")
-	private char  isDeleted;
+	private boolean  isDeleted;
 	
 	@Column(name = "del_dtimes")
 	private Date deletedOn;

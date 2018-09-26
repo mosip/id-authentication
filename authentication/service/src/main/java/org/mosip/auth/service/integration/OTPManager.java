@@ -1,5 +1,6 @@
 package org.mosip.auth.service.integration;
 
+import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
@@ -67,9 +68,7 @@ public class OTPManager {
 		try {
 			otpGeneratorResponsetDto = RestUtil.requestSync(restRequestDTO);
 			System.out.println(otpGeneratorResponsetDto);
-
 			response = otpGeneratorResponsetDto.getOtp();
-			System.out.println(response);
 			LOGGER.info("NA", "NA", "NA", "otpGeneratorResponsetDto " + response);
 			if (response == null || response.isEmpty()) {
 				LOGGER.error("NA", "NA", "NA", "OTP is null or empty");
@@ -84,36 +83,40 @@ public class OTPManager {
 		return response;
 	}
 
-	public boolean validateOtp(String pinValue, String otpKey) {
+	/**
+	 * Validate method for OTP Validation
+	 * 
+	 * @param pinValue
+	 * @param otpKey
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
+
+	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
 		boolean isValidOtp = false;
 		OTPValidateResponseDTO validResponseDto = new OTPValidateResponseDTO();
 		try {
+			System.err.println("restRequestFactory  " + restRequestFactory);
 			RestRequestDTO restreqdto = restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE,
-					validResponseDto, OTPValidateResponseDTO.class);
-
+					null, OTPValidateResponseDTO.class);
 			MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 			params.add("key", otpKey);
 			params.add("otp", pinValue);
 			restreqdto.setParams(params);
+
+			System.err.println(restreqdto);
 			validResponseDto = RestUtil.requestSync(restreqdto);
-			if (validResponseDto != null) {
-				if (validResponseDto.getStatus().equalsIgnoreCase("true")) {
-					isValidOtp = true;
-				}
-			} else {
-				isValidOtp = false;
+			if (validResponseDto.getStatus().equalsIgnoreCase("true")) {
+				isValidOtp = true;
+				LOGGER.info("validateOtp", "Inside Validate OTP", "NA", "NA");
 			}
 		} catch (RestServiceException | IDDataValidationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_OTPVALIDATION_REQUEST_FAILED,
+					e);
 		}
-		
-		return isValidOtp;
-	}
 
-	public String keyGeneration(String refId) {
-		// TODO Auto-generated method stub
-		return null;
+		return isValidOtp;
 	}
 
 }

@@ -3,7 +3,7 @@ package org.mosip.auth.core.exception;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 
 /**
- * The Class AuthenticationFailedException.
+ * The Class AuthenticationFailedException - Exception thrown when Authentication of user is failed.
  *
  * @author Manoj SP
  */

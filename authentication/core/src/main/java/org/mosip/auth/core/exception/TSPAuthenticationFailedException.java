@@ -3,7 +3,7 @@ package org.mosip.auth.core.exception;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 
 /**
- * The Class TSPAuthenticationFailedException.
+ * The Class TSPAuthenticationFailedException - Thrown when TSP authentication is failed.
  *
  * @author Manoj SP
  */

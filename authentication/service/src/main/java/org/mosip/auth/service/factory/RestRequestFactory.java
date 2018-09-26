@@ -9,6 +9,9 @@ import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
+import org.mosip.kernel.core.logging.MosipLogger;
+import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.core.logging.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.AbstractEnvironment;
@@ -35,6 +38,19 @@ public class RestRequestFactory {
 	@Autowired
 	private Environment env;
 
+	private MosipLogger logger;
+
+	/**
+	 * Initialize logger.
+	 *
+	 * @param idaRollingFileAppender
+	 *            the ida rolling file appender
+	 */
+	@Autowired
+	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
+		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
+	}
+
 	/**
 	 * Builds the request.
 	 *
@@ -45,7 +61,8 @@ public class RestRequestFactory {
 	 * @param returnType
 	 *            the return type
 	 * @return the rest request DTO
-	 * @throws IDDataValidationException 
+	 * @throws IDDataValidationException
+	 *             the ID data validation exception
 	 */
 	public RestRequestDTO buildRequest(RestServicesConstants restService, @Nullable Object requestBody,
 			Class<?> returnType) throws IDDataValidationException {
@@ -63,12 +80,18 @@ public class RestRequestFactory {
 		if (checkIfEmptyOrWhiteSpace(uri)) {
 			request.setUri(uri);
 		} else {
+			// FIXME Update logger details
+			logger.error("sessionId", "buildRequest", "uri",
+					"throwing IDDataValidationException - uri is empty or whitespace" + uri);
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_URI);
 		}
 
 		if (checkIfEmptyOrWhiteSpace(httpMethod)) {
 			request.setHttpMethod(HttpMethod.valueOf(httpMethod));
 		} else {
+			// FIXME Update logger details
+			logger.error("sessionId", "buildRequest", "httpMethod",
+					"throwing IDDataValidationException - INVALID_HTTP_METHOD" + httpMethod);
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_HTTP_METHOD);
 		}
 
@@ -79,6 +102,9 @@ public class RestRequestFactory {
 		if (returnType != null) {
 			request.setResponseType(returnType);
 		} else {
+			// FIXME Update logger details
+			logger.error("sessionId", "buildRequest", "returnType",
+					"throwing IDDataValidationException - INVALID_RETURN_TYPE" + returnType);
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_RETURN_TYPE);
 		}
 

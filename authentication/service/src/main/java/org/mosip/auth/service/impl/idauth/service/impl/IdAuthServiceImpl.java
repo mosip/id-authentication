@@ -58,7 +58,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 		UinEntity uinEntity = uinRepository.findByUin(UIN);
 		if (null != uinEntity) {
 
-			if (uinEntity.getIsActive() == 'Y') {
+			if (uinEntity.isActive()) {
 				refId = uinEntity.getId();
 			} else {
 				// TODO log error
@@ -90,14 +90,14 @@ public class IdAuthServiceImpl implements IdAuthService {
 		VIDEntity vidEntity = vidRepository.getOne(vid);
 		if (null != vidEntity) {
 
-			if (vidEntity.getIsActive() == 'Y') {
+			if (vidEntity.isActive()) {
 				Date currentDate = new Date();
 				if (vidEntity.getExpiryDate().before(currentDate)) {
 					refId = vidEntity.getId();
 					Optional<UinEntity> uinEntityOpt = uinRepository.findById(refId);
 					if (uinEntityOpt.isPresent()) {
 						UinEntity uinEntity = uinEntityOpt.get();
-						if (uinEntity.getIsActive() != 'Y') {
+						if (uinEntity.isActive()) {
 							throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_UIN);
 						}
 					} else {

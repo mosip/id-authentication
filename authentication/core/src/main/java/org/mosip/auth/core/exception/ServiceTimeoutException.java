@@ -3,7 +3,7 @@ package org.mosip.auth.core.exception;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 
 /**
- * The Class ServiceTimeoutException.
+ * The Class ServiceTimeoutException - Thrown when service is timed out.
  *
  * @author Manoj SP
  */

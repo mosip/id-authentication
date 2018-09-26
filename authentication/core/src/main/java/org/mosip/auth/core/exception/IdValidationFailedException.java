@@ -5,7 +5,7 @@ import org.mosip.kernel.core.exception.BaseCheckedException;
 import org.springframework.validation.Errors;
 
 /**
- * Exception thrown when a validation error occurs.
+ * Exception thrown when UID/VIN is invalid.
  *
  * @author Manoj SP
  */
