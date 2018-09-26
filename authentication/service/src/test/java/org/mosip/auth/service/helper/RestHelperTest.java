@@ -1,4 +1,4 @@
-package org.mosip.auth.service.util;
+package org.mosip.auth.service.helper;
 
 import static org.junit.Assert.assertTrue;
 
@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.exception.RestServiceException;
@@ -21,8 +22,10 @@ import org.mosip.auth.core.util.dto.AuditResponseDto;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
 import org.mosip.auth.service.factory.AuditRequestFactory;
 import org.mosip.auth.service.factory.RestRequestFactory;
+import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
@@ -57,11 +60,13 @@ import reactor.ipc.netty.tcp.BlockingNettyContext;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
+@AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
-public class RestUtilTest {
+public class RestHelperTest {
 	
-	RestUtil restUtil;
+	@InjectMocks
+	RestHelper restHelper;
 	
 	@Autowired
 	Environment environment;
@@ -91,7 +96,7 @@ public class RestUtilTest {
 		mosipRollingFileAppender.setMaxHistory(10);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
-		restUtil = new RestUtil(mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.setField(auditFactory, "env", environment);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 	}
@@ -145,7 +150,7 @@ public class RestUtilTest {
 		restRequest.setTimeout(100);
 
 		AuditResponseDto response = null;
-		response = RestUtil.requestSync(restRequest);
+		response = restHelper.requestSync(restRequest);
 
 		assertTrue(response.isStatus());
 
@@ -191,7 +196,7 @@ public class RestUtilTest {
 		restRequest.setParams(params);
 
 		AuditResponseDto response = null;
-		response = RestUtil.requestSync(restRequest);
+		response = restHelper.requestSync(restRequest);
 
 		assertTrue(response.isStatus());
 
@@ -236,7 +241,7 @@ public class RestUtilTest {
 		restRequest.setPathVariables(params);
 
 		AuditResponseDto response = null;
-		response = RestUtil.requestSync(restRequest);
+		response = restHelper.requestSync(restRequest);
 
 		assertTrue(response.isStatus());
 
@@ -270,7 +275,7 @@ public class RestUtilTest {
 
 		restRequest.setTimeout(1);
 
-		RestUtil.requestSync(restRequest);
+		restHelper.requestSync(restRequest);
 	}
 
 	/**
@@ -291,7 +296,7 @@ public class RestUtilTest {
 		restRequest.setTimeout(null);
 
 		AuditResponseDto response = null;
-		response = RestUtil.requestSync(restRequest);
+		response = restHelper.requestSync(restRequest);
 
 		assertTrue(response.isStatus());
 	}
@@ -310,8 +315,8 @@ public class RestUtilTest {
 
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
-
-		RestUtil.requestAsync(restRequest);
+System.err.println(auditRequest);
+		restHelper.requestAsync(restRequest);
 	}
 
 	/**
@@ -329,7 +334,7 @@ public class RestUtilTest {
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
-		AuditResponseDto response = (AuditResponseDto) RestUtil.requestAsync(restRequest).get();
+		AuditResponseDto response = (AuditResponseDto) restHelper.requestAsync(restRequest).get();
 
 		assertTrue(response.isStatus());
 	}
@@ -351,7 +356,7 @@ public class RestUtilTest {
 
 		restRequest.setHeaders(null);
 
-		RestUtil.requestAsync(restRequest);
+		restHelper.requestAsync(restRequest);
 	}
 
 	/**
@@ -367,7 +372,7 @@ public class RestUtilTest {
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, null,
 				AuditResponseDto.class);
 
-		RestUtil.requestAsync(restRequest);
+		restHelper.requestAsync(restRequest);
 	}
 
 	/**
@@ -400,7 +405,7 @@ public class RestUtilTest {
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
-		RestUtil.requestSync(restRequest);
+		restHelper.requestSync(restRequest);
 	}
 
 	/**
@@ -431,6 +436,6 @@ public class RestUtilTest {
 		RestRequestDTO restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
-		RestUtil.requestSync(restRequest);
+		restHelper.requestSync(restRequest);
 	}
 }

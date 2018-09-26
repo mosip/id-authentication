@@ -7,10 +7,10 @@ import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
 import org.mosip.auth.core.exception.RestServiceException;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
 import org.mosip.auth.service.factory.RestRequestFactory;
+import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.auth.service.integration.dto.OTPValidateResponseDTO;
 import org.mosip.auth.service.integration.dto.OtpGeneratorRequestDto;
 import org.mosip.auth.service.integration.dto.OtpGeneratorResponseDto;
-import org.mosip.auth.service.util.RestUtil;
 import org.mosip.kernel.core.logging.MosipLogger;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.core.logging.factory.MosipLogfactory;
@@ -28,6 +28,9 @@ import org.springframework.util.MultiValueMap;
  */
 @Component
 public class OTPManager {
+	
+	@Autowired
+	private RestHelper restHelper;
 
 	@Autowired
 	RestRequestFactory restRequestFactory;
@@ -66,7 +69,7 @@ public class OTPManager {
 		String response = null;
 
 		try {
-			otpGeneratorResponsetDto = RestUtil.requestSync(restRequestDTO);
+			otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
 			System.out.println(otpGeneratorResponsetDto);
 			response = otpGeneratorResponsetDto.getOtp();
 			LOGGER.info("NA", "NA", "NA", "otpGeneratorResponsetDto " + response);
@@ -105,7 +108,7 @@ public class OTPManager {
 			restreqdto.setParams(params);
 
 			System.err.println(restreqdto);
-			validResponseDto = RestUtil.requestSync(restreqdto);
+			validResponseDto = restHelper.requestSync(restreqdto);
 			if (validResponseDto.getStatus().equalsIgnoreCase("true")) {
 				isValidOtp = true;
 				LOGGER.info("validateOtp", "Inside Validate OTP", "NA", "NA");

@@ -10,8 +10,8 @@ import org.mosip.auth.core.util.dto.AuditResponseDto;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
 import org.mosip.auth.service.factory.AuditRequestFactory;
 import org.mosip.auth.service.factory.RestRequestFactory;
+import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.auth.service.integration.OTPManager;
-import org.mosip.auth.service.util.RestUtil;
 import org.mosip.kernel.core.logging.MosipLogger;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.core.logging.factory.MosipLogfactory;
@@ -26,6 +26,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class OTPServiceImpl implements OTPService {
+	
+	@Autowired
+	private RestHelper restHelper;
 
 	@Autowired
 	OTPManager otpManager;
@@ -78,6 +81,6 @@ public class OTPServiceImpl implements OTPService {
 		RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);
 
-		RestUtil.requestAsync(restRequest); 
+		restHelper.requestAsync(restRequest); 
 	}
 }

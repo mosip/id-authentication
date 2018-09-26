@@ -1,12 +1,15 @@
-package org.mosip.auth.service.util;
+package org.mosip.auth.service.helper;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.service.factory.AuditRequestFactory;
 import org.mosip.auth.service.factory.RestRequestFactory;
+import org.mosip.auth.service.helper.AuditHelper;
+import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -27,15 +30,21 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
-public class AuditUtilTest {
+public class AuditHelperTest {
+	
+	@Mock
+	RestHelper restHelper;
+	
+	@InjectMocks
+	AuditHelper auditHelper;
 	
     @Autowired
     MockMvc mockMvc;
 	
-    @InjectMocks
+    @Mock
 	AuditRequestFactory auditFactory;
 	
-    @InjectMocks
+    @Mock
 	RestRequestFactory restFactory;
     
     @Autowired
@@ -52,8 +61,6 @@ public class AuditUtilTest {
 		mosipRollingFileAppender.setMaxHistory(10);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
-		new RestUtil(mosipRollingFileAppender);
-		new AuditUtil(auditFactory, restFactory);
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(auditFactory, "initializeLogger", mosipRollingFileAppender);
@@ -62,7 +69,7 @@ public class AuditUtilTest {
 	@Test
 	public void testAuditUtil() throws IDDataValidationException {
 		System.err.println(auditFactory);
-		AuditUtil.audit("moduleId", "description");
+		auditHelper.audit("moduleId", "description");
 	}
 
 }
