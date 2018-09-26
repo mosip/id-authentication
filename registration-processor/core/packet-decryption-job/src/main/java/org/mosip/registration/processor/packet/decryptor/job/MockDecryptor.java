@@ -38,15 +38,11 @@ public class MockDecryptor {
 	
 	
 	public static void main(String[] args) throws ClassNotFoundException   {
-		InputStream prkstream = null;
+		
 		InputStream instream = null;
 		OutputStream outstream=null;
 		try {
-			prkstream = new FileInputStream(new File(PRIVATE_KEY));
-		
-		byte[] prikey=new byte[prkstream.available()];
-		prkstream.read(prikey);
-		prkstream.close();
+			
 		
 		instream= new FileInputStream(new File(DATA));
 		byte[] in=new byte[instream.available()];
