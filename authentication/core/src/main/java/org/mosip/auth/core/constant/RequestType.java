@@ -25,7 +25,7 @@ public enum RequestType {
 	 * 
 	 * @return requestType
 	 */
-	String getRequestType() {
+	public String getRequestType() {
 		return requestType;
 	}
 

@@ -14,11 +14,9 @@ import org.mosip.auth.core.dto.otpgen.OtpResponseDTO;
 import org.mosip.auth.core.spi.otpgen.service.OTPService;
 import org.mosip.auth.service.dao.AutnTxnRepository;
 import org.mosip.kernel.core.utils.datetime.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
@@ -46,8 +44,8 @@ public class OTPFacadeImplTest {
 	AutnTxnRepository autntxnrepository;
 	@Mock
 	Date date;
-	@Mock
-	 DateUtil dateUtil ;
+	//@Mock
+	// DateUtil dateUtil ;
 
 	@InjectMocks
 	OTPFacadeImpl otpFacadeImpl;
