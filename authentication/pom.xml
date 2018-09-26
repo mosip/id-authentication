@@ -94,6 +94,12 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${maven.jacoco.version}</version>
+				<configuration>
+				<excludes>
+					<exclude>org/mosip/auth/service/filter/**</exclude>
+					<exclude>org/mosip/auth/service/config/**</exclude>
+				</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>

@@ -1,6 +1,7 @@
 package org.mosip.auth.service.impl.indauth.validator;
 
-import org.assertj.core.util.Arrays;
+import java.util.Arrays;
+
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
 import org.mosip.auth.core.dto.indauth.IDType;
