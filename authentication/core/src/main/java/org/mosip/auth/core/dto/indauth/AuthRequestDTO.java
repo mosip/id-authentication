@@ -51,7 +51,7 @@ public class AuthRequestDTO  {
 	@PastOrPresent(message = "{mosip.ida.validation.message.AuthRequest.date}")
 	private Date requestTime;
 
-	@Pattern(regexp = "^[A-Za-z0-9]{10}$", message = "{mosip.ida.validation.message.AuthRequest.asaLicenseKey}")
+	//@Pattern(regexp = "^[A-Za-z0-9]{10}$", message = "{mosip.ida.validation.message.AuthRequest.asaLicenseKey}")
 	private String asaLicenseKey;
 
 	

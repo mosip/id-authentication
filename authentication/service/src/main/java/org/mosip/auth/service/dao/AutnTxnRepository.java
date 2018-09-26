@@ -1,5 +1,8 @@
 package org.mosip.auth.service.dao;
 
+import java.util.Date;
+import java.util.List;
+
 import org.mosip.auth.service.entity.AutnTxn;
 import org.mosip.kernel.core.dao.repository.BaseRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +24,7 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @param UIN
 	 * @return
 	 */
-	public AutnTxn findByRequestTxnIdAndUin(String TxnId, String UIN);
+	public List<AutnTxn> findAllByRequestTxnIdAndUin(String TxnId, String UIN);
 
 	/**
 	 * Obtain the List of all request_dTtimes for particular UIN(uniqueId)
@@ -44,8 +47,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	// @Query("Select count(txn.requestDTtimes) from ida.autn_txn txn where
 	// txn.responseDTimes>=:responseDTimes and txn.responseDTimes<=:nowTime and
 	// txn.uin=:UIN")
-	@Query("Select count(txn.request_dtimes) from ida.autn_txn txn where txn.request_dtimes <= :otpRequestDTime and txn.request_dtimes >= :oneMinuteBeforeTime and txn.uin=:UIN")
-	public int countRequestDTime(@Param("otpRequestDTime") String otpRequestDTime,
-			@Param("oneMinuteBeforeTime") String oneMinuteBeforeTime, @Param("UIN") String UIN);
+	@Query("Select count(requestDTtimes) from AutnTxn  where requestDTtimes <= :otpRequestDTime and request_dtimes >= :oneMinuteBeforeTime and uin=:UIN")
+	public int countRequestDTime(@Param("otpRequestDTime") Date otpRequestDTime,
+			@Param("oneMinuteBeforeTime") Date oneMinuteBeforeTime, @Param("UIN") String UIN);
 
 }

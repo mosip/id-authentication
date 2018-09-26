@@ -23,6 +23,5 @@ public class OtpResponseDTO {
 	private List<AuthError> errorCode;
 	private String txnID;
 	private Date responseTime;
-	//private AuthResponseInfo info;
 
 }

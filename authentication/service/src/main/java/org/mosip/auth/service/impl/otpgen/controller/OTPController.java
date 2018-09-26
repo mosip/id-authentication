@@ -65,15 +65,6 @@ public class OTPController {
 		} else {
 			try {
 				OtpResponseDTO otpResponseDTO = otpFacade.generateOtp(otpRequestDto);
-				/*if (otpFacade.generateOtp(otpRequestDto)) {
-
-					otpResponseDTO.setStatus("OTP_GENERATED");
-					otpResponseDTO.setResponseTime(new Date());
-
-				} else {
-					throw new IdAuthenticationAppException(
-							IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED);
-				}*/
 				LOGGER.info("sessionId", "NA", "NA", "NA");
 				return otpResponseDTO;
 			} catch (IdAuthenticationBusinessException e) {

@@ -101,7 +101,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	public boolean validateTxnId(String txnId, String uIN) throws IdAuthenticationBusinessException {
 		boolean isValidTxn = false;
-		AutnTxn authtxn = autntxnrepository.findByRequestTxnIdAndUin(txnId, uIN);
+		AutnTxn authtxn = autntxnrepository.findAllByRequestTxnIdAndUin(txnId, uIN).get(0);
 		if (authtxn != null) {
 			// FIXME audit integration
 			isValidTxn = true;
