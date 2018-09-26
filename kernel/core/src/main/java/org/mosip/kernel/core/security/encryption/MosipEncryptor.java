@@ -50,6 +50,7 @@ public class MosipEncryptor {
 	 */
 	public static byte[] asymmetricPrivateEncrypt(byte[] privateKey, byte[] data,
 			MosipSecurityMethod mosipSecurityMethod) throws MosipInvalidDataException, MosipInvalidKeyException {
+		SecurityUtil.checkMethod(mosipSecurityMethod);
 		switch (mosipSecurityMethod) {
 
 		case HYBRID_RSA_AES_WITH_PKCS1PADDING:
@@ -96,6 +97,7 @@ public class MosipEncryptor {
 	 */
 	public static byte[] asymmetricPublicEncrypt(byte[] publicKey, byte[] data, MosipSecurityMethod mosipSecurityMethod)
 			throws MosipInvalidDataException, MosipInvalidKeyException {
+		SecurityUtil.checkMethod(mosipSecurityMethod);
 		switch (mosipSecurityMethod) {
 
 		case HYBRID_RSA_AES_WITH_PKCS1PADDING:
@@ -141,6 +143,7 @@ public class MosipEncryptor {
 	 */
 	public static byte[] symmetricEncrypt(byte[] key, byte[] data, MosipSecurityMethod mosipSecurityMethod)
 			throws MosipInvalidDataException, MosipInvalidKeyException {
+		SecurityUtil.checkMethod(mosipSecurityMethod);
 		switch (mosipSecurityMethod) {
 
 		case AES_WITH_CBC_AND_PKCS7PADDING:

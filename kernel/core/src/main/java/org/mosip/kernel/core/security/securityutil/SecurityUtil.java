@@ -13,8 +13,10 @@ import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 import org.mosip.kernel.core.security.constants.MosipSecurityExceptionCodeConstants;
+import org.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import org.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import org.mosip.kernel.core.security.exception.MosipNullKeyException;
+import org.mosip.kernel.core.security.exception.MosipNullMethodException;
 
 /**
  * Utility class for security
@@ -77,5 +79,14 @@ public class SecurityUtil {
 			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION);
 		}
 		return keyParameter;
+	}
+	
+	/** this method verifies mosip security method
+	 * @param mosipSecurityMethod mosipSecurityMethod given by user
+	 */
+	public static void checkMethod(MosipSecurityMethod mosipSecurityMethod) {
+		if(mosipSecurityMethod==null) {
+			throw new MosipNullMethodException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_METHOD_EXCEPTION);
+		}
 	}
 }
