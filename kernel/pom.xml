@@ -88,7 +88,6 @@
 		<module>idgenerator-eid</module>
 		<module>idgenerator-vid</module>
 		<module>idgenerator-uin</module>
-		<module>idgenerator-uin</module>
 		<module>packet-uploader-sftp</module>
 		<module>packet-uploader-http</module>
 		<module>packet-server</module>
