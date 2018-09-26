@@ -1,10 +1,12 @@
 package org.mosip.auth.service.impl.otpgen.facade;
 
+import java.net.Authenticator.RequestorType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
+import org.mosip.auth.core.constant.RequestType;
 import org.mosip.auth.core.dto.indauth.AuthError;
 import org.mosip.auth.core.dto.indauth.IDType;
 import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
@@ -165,7 +167,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		autnTxn.setCrDTimes(new Date());
 		autnTxn.setRequestDTtimes(otpRequestDto.getRequestTime());
 		autnTxn.setResponseDTimes(new Date()); // TODO check this
-		autnTxn.setAuthTypeCode(idType.getType());
+		autnTxn.setAuthTypeCode(RequestType.OTP_REQUEST.getRequestType());
 		autnTxn.setRequestTxnId(txnID);
 		autnTxn.setIsActive("y");
 		autnTxn.setStatusCode("OTP_GENERATED"); // TODO
