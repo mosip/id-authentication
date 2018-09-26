@@ -13,7 +13,7 @@ import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.util.dto.AuditRequestDto;
 import org.mosip.auth.core.util.dto.AuditResponseDto;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
-import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.ConfigurableEnvironment;

@@ -3,7 +3,7 @@ package org.mosip.auth.service.dao;
 import java.util.Optional;
 
 import org.mosip.auth.service.entity.UinEntity;
-import org.mosip.kernel.core.dao.repository.BaseRepository;
+import org.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository

@@ -2,6 +2,7 @@ package org.mosip.auth.service.impl.otpgen.facade;
 
 import java.util.Date;
 
+import org.assertj.core.util.DateUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +14,6 @@ import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.mosip.auth.core.dto.otpgen.OtpResponseDTO;
 import org.mosip.auth.core.spi.otpgen.service.OTPService;
 import org.mosip.auth.service.dao.AutnTxnRepository;
-import org.mosip.kernel.core.utils.datetime.DateUtil;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
@@ -61,7 +61,9 @@ public class OTPFacadeImplTest {
 		otpRequestDto = getOtpRequestDTO();
 		String uniqueID = otpRequestDto.getUniqueID();
 		Date requestTime = otpRequestDto.getRequestTime();
-		Date addMinutesInOtpRequestDTime = DateUtil.addMinutes(requestTime, -1);
+		Date addMinutesInOtpRequestDTime = new Date();
+		//TODO Integrate with kernel DateUtil
+				//DateUtil.addMinutes(requestTime, -1);
 
 		// MockitoAnnotations.initMocks(this);
 

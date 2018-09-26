@@ -16,6 +16,7 @@
 	<description>Maven project of MOSIP ID-Authentication Service</description>
 
 	<properties>
+		<kernel.hibernate.version>1.0.0.0-SNAPSHOT</kernel.hibernate.version>
 		<commons.codec.version>1.11</commons.codec.version>
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -28,6 +29,7 @@
 		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 		<jackson.version>2.9.5</jackson.version>
+		<postgresql.version>42.2.2</postgresql.version>
 	</properties>
 
 	<dependencies>
@@ -47,6 +49,11 @@
 			<version>${lombok.version}</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
 	<!-- 	<dependency>
 			<groupId>org.mosip</groupId>
 			<artifactId>kernel-exception</artifactId>
@@ -62,16 +69,26 @@
 			<artifactId>kernel-utils</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency> -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.mosip</groupId>
 			<artifactId>kernel-dao-interface</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mosip</groupId>
+			<artifactId>kernel-dao-hibernate-impl</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency> -->
+		<dependency>
+			<groupId>org.mosip</groupId>
+			<artifactId>dataaccess-hibernate</artifactId>
+			<version>${kernel.hibernate.version}</version>
+		</dependency>
+		<!-- <dependency>
+			<groupId>org.mosip</groupId>
 			<artifactId>kernel-audit-service</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>

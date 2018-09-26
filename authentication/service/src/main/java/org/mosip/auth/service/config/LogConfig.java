@@ -1,6 +1,6 @@
 package org.mosip.auth.service.config;
 
-import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

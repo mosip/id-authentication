@@ -17,9 +17,9 @@ import org.mosip.auth.core.util.dto.RestRequestDTO;
 import org.mosip.auth.service.factory.AuditRequestFactory;
 import org.mosip.auth.service.factory.RestRequestFactory;
 import org.mosip.auth.service.helper.RestHelper;
-import org.mosip.kernel.core.logging.MosipLogger;
-import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
-import org.mosip.kernel.core.logging.factory.MosipLogfactory;
+import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -2,8 +2,6 @@ package org.mosip.auth.service.impl.indauth.service;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
 
@@ -23,9 +21,9 @@ import org.mosip.auth.service.entity.VIDEntity;
 import org.mosip.auth.service.factory.AuditRequestFactory;
 import org.mosip.auth.service.factory.RestRequestFactory;
 import org.mosip.auth.service.impl.idauth.service.impl.IdAuthServiceImpl;
-import org.mosip.kernel.core.logging.MosipLogger;
-import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
-import org.mosip.kernel.core.logging.factory.MosipLogfactory;
+import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;

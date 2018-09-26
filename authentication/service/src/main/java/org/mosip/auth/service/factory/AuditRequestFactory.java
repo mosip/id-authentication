@@ -5,9 +5,9 @@ import java.net.UnknownHostException;
 import java.time.OffsetDateTime;
 
 import org.mosip.auth.core.util.dto.AuditRequestDto;
-import org.mosip.kernel.core.logging.MosipLogger;
-import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
-import org.mosip.kernel.core.logging.factory.MosipLogfactory;
+import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,5 @@
 package org.mosip.auth.service.impl.otpgen.facade;
 
-import java.net.Authenticator.RequestorType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,10 +17,9 @@ import org.mosip.auth.core.spi.otpgen.service.OTPService;
 import org.mosip.auth.core.util.OTPUtil;
 import org.mosip.auth.service.dao.AutnTxnRepository;
 import org.mosip.auth.service.entity.AutnTxn;
-import org.mosip.kernel.core.logging.MosipLogger;
-import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
-import org.mosip.kernel.core.logging.factory.MosipLogfactory;
-import org.mosip.kernel.core.utils.datetime.DateUtil;
+import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -132,7 +130,9 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * @return
 	 */
 	private String formateDate(Date date, String pattern) {
-		return DateUtil.formatDate(date, pattern);
+		// TODO Integrate with kernel DateUtil
+		// return DateUtil.formatDate(date, pattern);
+		return "";
 	}
 
 	/**
@@ -145,7 +145,9 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * @return
 	 */
 	private Date addMinites(Date date, int minute) {
-		return DateUtil.addMinutes(date, minute);
+		// return DateUtil.addMinutes(date, minute);
+		// TODO Integrate with kernel DateUtil
+		return new Date();
 	}
 
 	/**

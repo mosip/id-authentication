@@ -3,7 +3,6 @@ package org.mosip.auth.service.impl.idauth.service.impl;
 import java.util.Date;
 import java.util.Optional;
 
-import org.mosip.auth.core.constant.AuditServicesConstants;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.exception.IDDataValidationException;
@@ -20,9 +19,9 @@ import org.mosip.auth.service.entity.VIDEntity;
 import org.mosip.auth.service.factory.AuditRequestFactory;
 import org.mosip.auth.service.factory.RestRequestFactory;
 import org.mosip.auth.service.helper.RestHelper;
-import org.mosip.kernel.core.logging.MosipLogger;
-import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
-import org.mosip.kernel.core.logging.factory.MosipLogfactory;
+import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

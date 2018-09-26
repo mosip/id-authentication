@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.mosip.auth.service.entity.AutnTxn;
-import org.mosip.kernel.core.dao.repository.BaseRepository;
+import org.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -17,12 +17,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 
+	
 	/**
 	 * Obtain all Authentication Transaction for particular TxnId and UIN.
 	 * 
 	 * @param TxnId
 	 * @param UIN
 	 * @return
+	 * 
 	 */
 	public List<AutnTxn> findAllByRequestTxnIdAndUin(String TxnId, String UIN);
 

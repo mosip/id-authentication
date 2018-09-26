@@ -14,7 +14,7 @@ import org.mosip.auth.service.factory.RestRequestFactory;
 import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.auth.service.integration.dto.OTPValidateResponseDTO;
 import org.mosip.auth.service.integration.dto.OtpGeneratorResponseDto;
-import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;

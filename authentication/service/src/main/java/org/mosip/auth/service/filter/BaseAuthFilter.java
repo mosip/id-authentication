@@ -21,7 +21,7 @@ import javax.validation.groups.Default;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.exception.IdAuthenticationAppException;
-import org.mosip.kernel.core.logging.MosipLogger;
+import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

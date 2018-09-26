@@ -5,16 +5,18 @@ import javax.validation.Valid;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.mosip.auth.core.dto.otpgen.OtpResponseDTO;
+import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.exception.IdAuthenticationAppException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
 import org.mosip.auth.core.spi.otpgen.facade.OTPFacade;
+import org.mosip.auth.core.util.DataValidationUtil;
 import org.mosip.auth.service.impl.otpgen.validator.OTPRequestValidator;
-import org.mosip.kernel.core.logging.MosipLogger;
-import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
-import org.mosip.kernel.core.logging.factory.MosipLogfactory;
+import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,23 +59,26 @@ public class OTPController {
 	 * @throws IdAuthenticationAppException
 	 */
 	@PostMapping(path = "/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, BindingResult result)
+	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, Errors errors)
 			throws IdAuthenticationAppException {
-
-		if (result.hasErrors()) {
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_GENERATE_OTP_REQUEST);
+		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
+		if (errors.hasErrors()) {
+			try {
+				DataValidationUtil.validate(errors);
+			} catch (IDDataValidationException e) {
+				LOGGER.error("sessionId", null, null, e.getErrorText());
+				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+			}
 		} else {
 			try {
-				OtpResponseDTO otpResponseDTO = otpFacade.generateOtp(otpRequestDto);
+				otpResponseDTO = otpFacade.generateOtp(otpRequestDto);
 				LOGGER.info("sessionId", "NA", "NA", "NA");
-				return otpResponseDTO;
 			} catch (IdAuthenticationBusinessException e) {
 				LOGGER.error("sessionId", e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 			}
-
 		}
-
+		return otpResponseDTO;
 	}
 
 }

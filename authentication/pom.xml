@@ -58,7 +58,7 @@
 			<id>DEV</id>
 			<properties>
 				<sonar.host.url>
-					http://13.67.91.2
+					http://13.67.91.2:9000
 				</sonar.host.url>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
