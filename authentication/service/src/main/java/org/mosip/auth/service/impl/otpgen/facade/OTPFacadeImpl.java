@@ -55,9 +55,10 @@ public class OTPFacadeImpl implements OTPFacade {
 	}
 
 	/**
+	 * Obtained OTP.
 	 * 
-	 * @param otpKey
-	 * @return
+	 * @param otpRequestDto
+	 * @return otpResponseDTO
 	 * @throws IdAuthenticationBusinessException
 	 */
 	@Override
@@ -67,12 +68,6 @@ public class OTPFacadeImpl implements OTPFacade {
 		String otpKey = null;
 		String otp = null;
 
-		List<AuthError> authErrors = new ArrayList<AuthError>();
-		AuthError authError = new AuthError();
-		authError.setErrorCode(IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode());
-		authError.setErrorMessage(IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage());
-		authErrors.add(authError);
-
 		IDType idType = otpRequestDto.getIdType();
 		String refId = getRefId(otpRequestDto);
 		String productid = env.getProperty("application.id");
@@ -81,29 +76,28 @@ public class OTPFacadeImpl implements OTPFacade {
 
 		if (isOtpFlooded(otpRequestDto)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
-		}
-
-		otpKey = OTPUtil.generateKey(productid, refId, txnID, auaCode);
-
-		try {
-			otp = otpService.generateOtp(otpKey);
-		} catch (IdAuthenticationBusinessException e) {
-			LOGGER.error("", idType.getType(), e.getErrorCode(), e.getErrorText());
-		}
-		if (otp == null || otp.trim().isEmpty()) {
-			LOGGER.error("NA", "NA", "NA", "generated OTP is: " + otp);
-			otpResponseDTO.setStatus("OTP_GENERATED_FAILED");
-			otpResponseDTO.setErrorCode(authErrors);
-			otpResponseDTO.setTxnID(txnID);
-			otpResponseDTO.setResponseTime(new Date());
 		} else {
-			LOGGER.info("NA", "NA", "NA", "generated OTP is: " + otp);
-			otpResponseDTO.setStatus("OTP_GENERATED");
-			otpResponseDTO.setTxnID(txnID);
-			otpResponseDTO.setResponseTime(new Date());
-			saveAutnTxn(otpRequestDto);
-		}
+			otpKey = OTPUtil.generateKey(productid, refId, txnID, auaCode);
 
+			try {
+				otp = otpService.generateOtp(otpKey);
+			} catch (IdAuthenticationBusinessException e) {
+				LOGGER.error("", idType.getType(), e.getErrorCode(), e.getErrorText());
+			}
+			if (otp == null || otp.trim().isEmpty()) {
+				LOGGER.error("NA", "NA", "NA", "generated OTP is: " + otp);
+				otpResponseDTO.setStatus("OTP_GENERATED_FAILED");
+				otpResponseDTO.setErrorCode(getAuthErrors());
+				otpResponseDTO.setTxnID(txnID);
+				otpResponseDTO.setResponseTime(new Date());
+			} else {
+				LOGGER.info("NA", "NA", "NA", "generated OTP is: " + otp);
+				otpResponseDTO.setStatus("OTP_GENERATED");
+				otpResponseDTO.setTxnID(txnID);
+				otpResponseDTO.setResponseTime(new Date());
+				saveAutnTxn(otpRequestDto);
+			}
+		}
 		return otpResponseDTO;
 	}
 
@@ -142,6 +136,15 @@ public class OTPFacadeImpl implements OTPFacade {
 		return DateUtil.formatDate(date, pattern);
 	}
 
+	/**
+	 * Adds a number of minutes(positive/negative) to a date returning a new Date
+	 * object. Add positive, date increase in minutes. Add negative, date reduce in
+	 * minutes.
+	 * 
+	 * @param date
+	 * @param minute
+	 * @return
+	 */
 	private Date addMinites(Date date, int minute) {
 		return DateUtil.addMinutes(date, minute);
 	}
@@ -199,4 +202,18 @@ public class OTPFacadeImpl implements OTPFacade {
 		return refId;
 	}
 
+	/**
+	 * Authentication Errors.
+	 * 
+	 * @return List<AuthError>
+	 */
+	private List<AuthError> getAuthErrors() {
+		List<AuthError> authErrors = new ArrayList<AuthError>();
+		AuthError authError = new AuthError();
+		authError.setErrorCode(IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode());
+		authError.setErrorMessage(IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage());
+		authErrors.add(authError);
+
+		return authErrors;
+	}
 }

@@ -38,10 +38,10 @@ public class OTPRequestValidator implements Validator {
 
 		validator.validate(otpRequestDto, errors);
 		//FIXME
-		/*if (!isTimestampValid(otpRequestDto.getRequestTime())) {
+		if (!isTimestampValid(otpRequestDto.getRequestTime())) {
 			errors.rejectValue("requestTime", IdAuthenticationErrorConstants.EXPIRED_OTP_REQUEST_TIME.getErrorCode(),
 					IdAuthenticationErrorConstants.EXPIRED_OTP_REQUEST_TIME.getErrorMessage());
-		}*/
+		}
 
 		if (!otpRequestDto.getIdType().UIN.getType().equals(IDType.UIN.getType())
 				|| !otpRequestDto.getIdType().VID.getType().equals(IDType.VID.getType())) {
@@ -53,7 +53,17 @@ public class OTPRequestValidator implements Validator {
 	}
 
 	private boolean isTimestampValid(Date timestamp) {
-		Date reqTime = timestamp;
+		
+		int minutes1 = timestamp.getMinutes();
+		int minutes2 = new Date().getMinutes();
+		
+		if ((minutes2-minutes1)>=20) {
+			return false;
+		}else {
+			return true;
+		}
+		
+		/*Date reqTime = timestamp;
 		Instant reqTimeInstance = reqTime.toInstant();
 		Instant now = Instant.now();
 
@@ -61,7 +71,7 @@ public class OTPRequestValidator implements Validator {
 			return true;
 		} else {
 			return false;
-		}
+		}*/
 
 	}
 }

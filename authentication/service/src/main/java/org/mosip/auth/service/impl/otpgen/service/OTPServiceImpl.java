@@ -1,6 +1,5 @@
 package org.mosip.auth.service.impl.otpgen.service;
 
-import org.mosip.auth.core.constant.AuditServicesConstants;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.exception.IDDataValidationException;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Service;
  * Service implementation of OtpTriggerService.
  * 
  * @author Rakesh Roshan
+ * @author Dineshkaruppiah Thiagarajan
  */
 @Service
 public class OTPServiceImpl implements OTPService {
@@ -43,6 +43,12 @@ public class OTPServiceImpl implements OTPService {
 		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
 
+	/**
+	 * 
+	 * @param otpKey
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
 	@Override
 	public String generateOtp(String otpKey) throws IdAuthenticationBusinessException {
 		String otp = null;

@@ -1,6 +1,7 @@
 package org.mosip.auth.core.dto.indauth;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,10 +13,9 @@ import lombok.Setter;
  * 
  * @author Rakesh Roshan
  */
-@Setter
-@Getter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class AuthError {
 
 	/**
