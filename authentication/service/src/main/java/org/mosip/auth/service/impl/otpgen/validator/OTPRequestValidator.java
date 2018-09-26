@@ -54,24 +54,11 @@ public class OTPRequestValidator implements Validator {
 
 	private boolean isTimestampValid(Date timestamp) {
 		
-		int minutes1 = timestamp.getMinutes();
-		int minutes2 = new Date().getMinutes();
-		
-		if ((minutes2-minutes1)>=20) {
-			return false;
-		}else {
-			return true;
-		}
-		
-		/*Date reqTime = timestamp;
+		Date reqTime = timestamp;
 		Instant reqTimeInstance = reqTime.toInstant();
 		Instant now = Instant.now();
 
-		if (Duration.between(reqTimeInstance, now).get(ChronoUnit.MINUTES) < 20) {
-			return true;
-		} else {
-			return false;
-		}*/
+		return Duration.between(reqTimeInstance, now).toMinutes() < 20;
 
 	}
 }

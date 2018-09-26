@@ -10,8 +10,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,22 +24,28 @@ import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.mosip.auth.core.dto.otpgen.OtpResponseDTO;
 import org.mosip.auth.core.exception.IdAuthenticationAppException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
-import org.mosip.auth.core.exception.IdValidationFailedException;
 import org.mosip.auth.core.spi.otpgen.facade.OTPFacade;
 import org.mosip.kernel.core.logging.MosipLogger;
+import org.mosip.kernel.core.logging.appenders.MosipRollingFileAppender;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindingResult;
 
-
 /**
- * 
+ * Test functionality 
  *
  * @author Rakesh Roshan
  */
 @RunWith(MockitoJUnitRunner.class)
 @WebMvcTest(value = OTPController.class, secure = false)
+@TestPropertySource(value = "classpath:log.properties")
 public class OTPControllerTest {
 
+	/** Mock the objects */
+	@Mock
+	Environment env;
 	@Mock
 	OtpRequestDTO otpRequestDto;
 	@Mock
@@ -57,10 +63,26 @@ public class OTPControllerTest {
 	@Mock
 	IdAuthenticationAppException idAuthenticationAppException;
 
+	/** inject the mocked object */
 	@InjectMocks
 	OTPController otpController;
 
 	private static Validator validator;
+
+	@Before
+	public void before() {
+		/*MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
+		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
+		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
+		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
+		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
+		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
+		mosipRollingFileAppender.setMaxHistory(10);
+		mosipRollingFileAppender.setImmediateFlush(true);
+		mosipRollingFileAppender.setPrudent(true);
+		
+		ReflectionTestUtils.invokeMethod(otpController, "initializeLogger", mosipRollingFileAppender);*/
+	}
 
 	@BeforeClass
 	public static void setUp() {
@@ -72,7 +94,6 @@ public class OTPControllerTest {
 
 		// Given
 		boolean hasError = false;
-		boolean isOtpgenerated = true;
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
 		date = new Date();
@@ -87,7 +108,6 @@ public class OTPControllerTest {
 		assertEquals(otpResponseDTO.getStatus(), expactedresponse.getStatus());
 	}
 
-	
 	@Test(expected = IdAuthenticationAppException.class)
 	public void testBindResultHasError() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 
@@ -102,7 +122,7 @@ public class OTPControllerTest {
 		otpController.generateOTP(otpRequestDto, result);
 		assertEquals(true, result.hasErrors());
 	}
-	
+
 	@Test(expected = IdAuthenticationAppException.class)
 	public void testConstraintVoilation() throws IdAuthenticationAppException {
 		boolean hasError = true;
@@ -116,20 +136,20 @@ public class OTPControllerTest {
 		otpController.generateOTP(otpRequestDto, result);
 		assertEquals(true, result.hasErrors());
 	}
-	
+
 	@Test(expected = IdAuthenticationAppException.class)
 	public void testOtpGeneratedIsFalse() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		// Given
 		boolean hasError = false;
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
-		 idAuthenticationBusinessException = new IdAuthenticationBusinessException(
-					IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
-					IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage());
-			 idAuthenticationAppException = new IdAuthenticationAppException(
-					IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
-					IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage(),
-					idAuthenticationBusinessException);
+		idAuthenticationBusinessException = new IdAuthenticationBusinessException(
+				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
+				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage());
+		idAuthenticationAppException = new IdAuthenticationAppException(
+				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
+				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage(),
+				idAuthenticationBusinessException);
 
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);
 		assertTrue(violations.isEmpty());
@@ -139,17 +159,17 @@ public class OTPControllerTest {
 		Mockito.when(otpController.generateOTP(otpRequestDto, result)).thenThrow(idAuthenticationAppException);
 		otpController.generateOTP(otpRequestDto, result);
 	}
-	
-	@Test(expected=IdAuthenticationAppException.class)
+
+	@Test(expected = IdAuthenticationAppException.class)
 	public void testOtpGenerationHasError() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		// Given
 		boolean hasError = false;
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
-		 idAuthenticationBusinessException = new IdAuthenticationBusinessException(
+		idAuthenticationBusinessException = new IdAuthenticationBusinessException(
 				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
 				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage());
-		 idAuthenticationAppException = new IdAuthenticationAppException(
+		idAuthenticationAppException = new IdAuthenticationAppException(
 				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
 				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage(),
 				idAuthenticationBusinessException);

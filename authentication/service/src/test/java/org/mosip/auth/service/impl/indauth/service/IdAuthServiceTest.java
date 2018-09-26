@@ -37,6 +37,7 @@ import org.springframework.test.util.ReflectionTestUtils;
  * @author Arun Bose
  */
 
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Ignore

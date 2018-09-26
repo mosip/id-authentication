@@ -86,13 +86,13 @@ public class OTPFacadeImpl implements OTPFacade {
 			}
 			if (otp == null || otp.trim().isEmpty()) {
 				LOGGER.error("NA", "NA", "NA", "generated OTP is: " + otp);
-				otpResponseDTO.setStatus("OTP_GENERATED_FAILED");
+				otpResponseDTO.setStatus("N");
 				otpResponseDTO.setErrorCode(getAuthErrors());
 				otpResponseDTO.setTxnID(txnID);
 				otpResponseDTO.setResponseTime(new Date());
 			} else {
 				LOGGER.info("NA", "NA", "NA", "generated OTP is: " + otp);
-				otpResponseDTO.setStatus("OTP_GENERATED");
+				otpResponseDTO.setStatus("Y");
 				otpResponseDTO.setTxnID(txnID);
 				otpResponseDTO.setResponseTime(new Date());
 				saveAutnTxn(otpRequestDto);
@@ -113,12 +113,9 @@ public class OTPFacadeImpl implements OTPFacade {
 		boolean isOtpFlooded = false;
 		String uniqueID = otpRequestDto.getUniqueID();
 		Date requestTime = otpRequestDto.getRequestTime();
-		String pattern = env.getProperty("date.format.pattern");
-		String formatedRequestDTime = formateDate(requestTime, pattern);
 		Date addMinutesInOtpRequestDTime = addMinites(requestTime, -1);
-		String oneMinBeforeRequestDTime = formateDate(addMinutesInOtpRequestDTime, pattern);
 
-		if (autntxnrepository.countRequestDTime(formatedRequestDTime, oneMinBeforeRequestDTime, uniqueID) > 3) {
+		if (autntxnrepository.countRequestDTime(requestTime, addMinutesInOtpRequestDTime, uniqueID) > 3) {
 			isOtpFlooded = true;
 		}
 		return isOtpFlooded;
@@ -158,12 +155,10 @@ public class OTPFacadeImpl implements OTPFacade {
 		String uniqueID = otpRequestDto.getUniqueID();
 		String txnID = otpRequestDto.getTxnID();
 		IDType idType = otpRequestDto.getIdType();
-		// String pattern = env.getProperty("date.format.pattern");
-		// String requestDate = formateDate(otpRequestDto.getRequestTime(), pattern);
 
 		AutnTxn autnTxn = new AutnTxn();
 		autnTxn.setUin(uniqueID);
-		autnTxn.setId(txnID); // TODO check this
+		autnTxn.setId(String.valueOf(new Date().getTime())); // TODO check this
 
 		// TODO check
 		autnTxn.setCrBy("OTP Generate Service");
