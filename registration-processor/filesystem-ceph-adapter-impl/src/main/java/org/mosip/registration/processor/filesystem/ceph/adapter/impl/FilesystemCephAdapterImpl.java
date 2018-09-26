@@ -34,6 +34,8 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemCephAdapterImpl.class);
 
 	private static final String LOGDISPLAY = "{} - {} - {} - {}";
+	
+	private static final String SUCCESS_UPLOAD_MESSAGE = "uploaded to DFS successfully";
 
 	/**
 	 * Constructor to get Connection to CEPH instance
@@ -57,7 +59,7 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 				conn.createBucket(enrolmentId);
 			}
 			this.conn.putObject(enrolmentId, enrolmentId, filePath);
-			LOGGER.debug(LOGDISPLAY, enrolmentId, "uploaded to DFS successfully");
+			LOGGER.debug(LOGDISPLAY, enrolmentId, SUCCESS_UPLOAD_MESSAGE);
 		} catch (AmazonS3Exception e) {
 			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);
@@ -76,13 +78,14 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	 *            packet as InputStream
 	 * @return True if packet is stored
 	 */
+	@Override
 	public Boolean storePacket(String enrolmentId, InputStream file) {
 		try {
 			if (!conn.doesBucketExistV2(enrolmentId)) {
 				conn.createBucket(enrolmentId);
 			}
 			this.conn.putObject(enrolmentId, enrolmentId, file, null);
-			LOGGER.debug(LOGDISPLAY, enrolmentId, "uploaded to DFS successfully");
+			LOGGER.debug(LOGDISPLAY, enrolmentId, SUCCESS_UPLOAD_MESSAGE);
 		} catch (AmazonS3Exception e) {
 			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);
@@ -106,7 +109,7 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	private boolean storeFile(String enrolmentId, String fileName, InputStream file) {
 		try {
 			this.conn.putObject(enrolmentId, fileName, file, null);
-			LOGGER.debug(LOGDISPLAY, enrolmentId, fileName, "uploaded to DFS successfully");
+			LOGGER.debug(LOGDISPLAY, enrolmentId, fileName, SUCCESS_UPLOAD_MESSAGE);
 		} catch (AmazonS3Exception e) {
 			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
 			ExceptionHandler.exceptionHandler(e);

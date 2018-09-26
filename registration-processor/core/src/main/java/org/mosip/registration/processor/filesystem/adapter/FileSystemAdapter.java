@@ -31,6 +31,17 @@ public interface FileSystemAdapter<T, U, V> {
 	public V storePacket(String enrolmentId, File filePath);
 
 	/**
+	 * This method stores the packet corresponding to an enrolment ID
+	 * 
+	 * @param enrolmentId
+	 *            The enrolmentId
+	 * @param file
+	 *            Packet which needs to be stored
+	 * @return True If the packet is stored successfully
+	 */
+	public V storePacket(String enrolmentId, T file);
+
+	/**
 	 * This method fetches the packet corresponding to an enrolment ID and returns
 	 * it
 	 * 
