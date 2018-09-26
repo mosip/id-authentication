@@ -2,6 +2,10 @@ package org.mosip.auth.service.impl.indauth.service;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -96,7 +100,9 @@ public class OTPAuthServiceTest {
 	 */
 	@Test(expected = IDDataValidationException.class)
 	public void Test_InvalidTxnId() throws IdAuthenticationBusinessException {
-		Mockito.when(repository.findByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
+		autntxnList.add(null);
+		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(autntxnList);
 		authserviceimpl.validateTxnId("", "");
 	}
 
@@ -110,7 +116,10 @@ public class OTPAuthServiceTest {
 	public void Test_validTxnId() throws IdAuthenticationBusinessException {
 		AutnTxn autntxn = new AutnTxn();
 		autntxn.setRequestTxnId("TXN001");
-		Mockito.when(repository.findByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(autntxn);
+		
+		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
+		autntxnList.add(autntxn);
+		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(autntxnList);
 		assertTrue(authserviceimpl.validateTxnId("232323", "234234"));
 	}
 
@@ -163,7 +172,9 @@ public class OTPAuthServiceTest {
 	public void TestValidateOtp_ValidRequest() throws IdAuthenticationBusinessException {
 		AutnTxn autntxn = new AutnTxn();
 		autntxn.setRequestTxnId("TXN001");
-		Mockito.when(repository.findByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(autntxn);
+		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
+		autntxnList.add(autntxn);
+		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(autntxnList);
 		otpAuthRequestDTO.setTxnID("1234567890");
 		otpAuthRequestDTO.setAuaCode("ASA000000011");
 		otpAuthRequestDTO.setTxnID("TXN00001");

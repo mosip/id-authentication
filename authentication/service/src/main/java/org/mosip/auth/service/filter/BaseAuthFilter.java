@@ -21,6 +21,7 @@ import javax.validation.groups.Default;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.exception.IdAuthenticationAppException;
+import org.mosip.kernel.core.logging.MosipLogger;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,6 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Loganathan Sekar
  */
 public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> implements Filter {
+	
+	private MosipLogger logger;
 
 	private static final String EMPTY_JSON_OBJ_STRING = "{}";
 	private static final Validator javaxValidator = Validation.buildDefaultValidatorFactory().getValidator();
@@ -45,6 +48,7 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		System.err.println("Entered filter");
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				(HttpServletRequest) request);
 		try {

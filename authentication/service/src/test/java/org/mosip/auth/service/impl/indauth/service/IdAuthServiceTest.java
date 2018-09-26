@@ -40,7 +40,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 @Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Ignore
 public class IdAuthServiceTest {
 	private MosipLogger logger;
 
