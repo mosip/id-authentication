@@ -13,7 +13,7 @@ import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderExceptionCons
 public class MosipIllegalIdentityException extends BaseUncheckedException {
 
 	/**
-	 * constant id for serialization
+	 * Constant id for serialization
 	 */
 	private static final long serialVersionUID = -7665593898258210837L;
 

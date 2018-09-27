@@ -19,6 +19,7 @@ import org.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import org.mosip.kernel.core.security.exception.MosipNoSuchAlgorithmException;
 import org.mosip.kernel.core.security.exception.MosipNullDataException;
 import org.mosip.kernel.core.security.exception.MosipNullKeyException;
+import org.mosip.kernel.core.security.exception.MosipNullMethodException;
 
 public class MosipEncryptorTest {
 
@@ -284,10 +285,15 @@ public class MosipEncryptorTest {
 	@Test(expected = MosipInvalidDataException.class)
 	public void testRSAPKS1AsymmetricPrivateEncryptDataLength()
 			throws MosipInvalidKeyException, MosipInvalidDataException, NoSuchAlgorithmException {
-		
-		
-		assertThat(MosipEncryptor.asymmetricPrivateEncrypt(rsaPair.getPrivate().getEncoded(), new byte[10000],
+	assertThat(MosipEncryptor.asymmetricPrivateEncrypt(rsaPair.getPrivate().getEncoded(), new byte[10000],
 				MosipSecurityMethod.RSA_WITH_PKCS1PADDING), isA(byte[].class));
+	}
+	
+	@Test(expected = MosipNullMethodException.class)
+	public void testRSAPKS1AsymmetricPrivateEncryptNullMethod()
+			throws MosipInvalidKeyException, MosipInvalidDataException, NoSuchAlgorithmException {
+	assertThat(MosipEncryptor.asymmetricPrivateEncrypt(rsaPair.getPrivate().getEncoded(), new byte[10000],
+				null), isA(byte[].class));
 	}
 
 

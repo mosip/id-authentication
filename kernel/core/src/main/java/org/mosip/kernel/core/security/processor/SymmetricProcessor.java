@@ -36,18 +36,18 @@ public class SymmetricProcessor {
 	 * Symmetric Encryption/Decryption processor
 	 * 
 	 * @param blockCipher
-	 *            Initialized Symmetric block cipher
+	 *            initialized Symmetric block cipher
 	 * @param key
-	 *            Key for encryption/decryption
+	 *            key for encryption/decryption
 	 * @param data
-	 *            Data for encryption/decryption
+	 *            data for encryption/decryption
 	 * @param mode
-	 *            If true process mode is Encrypt ,else process mode is Decrypt
+	 *            if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 * @throws MosipInvalidDataException
-	 *             If data is not valid(length or form)
+	 *             if data is not valid(length or form)
 	 * @throws MosipInvalidKeyException
-	 *             If key is not valid (length or form)
+	 *             if key is not valid (length or form)
 	 */
 	protected static byte[] process(BlockCipher blockCipher, byte[] key, byte[] data, boolean mode)
 			throws MosipInvalidKeyException, MosipInvalidDataException {

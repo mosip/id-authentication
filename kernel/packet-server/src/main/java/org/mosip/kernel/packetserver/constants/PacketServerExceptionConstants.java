@@ -11,15 +11,17 @@ public enum PacketServerExceptionConstants {
 	/**
 	 * {@link #MOSIP_PUBLIC_KEY_EXCEPTION} exception constant
 	 */
-	MOSIP_PUBLIC_KEY_EXCEPTION("cerrorcode", "cannot read public key"),
+	MOSIP_PUBLIC_KEY_EXCEPTION("KER-FTM-FTP-001", "cannot read public key"),
 	/**
 	 * {@link #MOSIP_INVALID_SPEC_EXCEPTION} exception constant
 	 */
-	MOSIP_INVALID_SPEC_EXCEPTION("eerrorcode", "public key is does not have valid spec"),
+	MOSIP_INVALID_SPEC_EXCEPTION("KER-FTM-FTP-002",
+			"public key is does not have valid spec"),
 	/**
 	 * {@link #MOSIP_ILLEGAL_STATE_EXCEPTION} exception constant
 	 */
-	MOSIP_ILLEGAL_STATE_EXCEPTION("ferrorcode", "server went into illegal state");
+	MOSIP_ILLEGAL_STATE_EXCEPTION("KER-FTM-FTP-003",
+			"server went into illegal state");
 
 	/**
 	 * Constructor for this {@link Enum}
@@ -41,7 +43,7 @@ public enum PacketServerExceptionConstants {
 	}
 
 	/**
-	 * getter for {@link #errorCode}
+	 * Getter for {@link #errorCode}
 	 * 
 	 * @return {@link #errorCode}
 	 */
@@ -50,16 +52,17 @@ public enum PacketServerExceptionConstants {
 	}
 
 	/**
-	 * setter for {@link #errorCode}
+	 * Setter for {@link #errorCode}
 	 * 
-	 * @param errorCode {@link #errorCode}
+	 * @param errorCode
+	 *            {@link #errorCode}
 	 */
 	private void setErrorCode(String errorCode) {
 		this.errorCode = errorCode;
 	}
 
 	/**
-	 * getter for {@link #errorMessage}
+	 * Getter for {@link #errorMessage}
 	 * 
 	 * @return {@link #errorMessage}
 	 */
@@ -68,7 +71,7 @@ public enum PacketServerExceptionConstants {
 	}
 
 	/**
-	 * setter for {@link #errorMessage}
+	 * Setter for {@link #errorMessage}
 	 * 
 	 * @param errorMessage
 	 */
@@ -77,11 +80,11 @@ public enum PacketServerExceptionConstants {
 	}
 
 	/**
-	 * error Code for Exception
+	 * Error Code for Exception
 	 */
 	String errorCode;
 	/**
-	 * error Message for Exception
+	 * Error Message for Exception
 	 */
 	String errorMessage;
 }

@@ -17,23 +17,28 @@ import org.mosip.kernel.logger.exception.MosipXMLConfigurationParseException;
  */
 public class LoggerUtils {
 	/**
-	 * 
+	 * COnstructor for this class
 	 */
 	private LoggerUtils() {
 	}
 
 	/**
+	 * Unmarshall object from XML file
+	 * 
 	 * @param file
+	 *            XML file provided by user
 	 * @param clazz
-	 * @return
+	 *            clazz whose object is to be extracted
+	 * @return unmarshalled object
 	 */
-	public static Object unmarshell(File file, Class<?> clazz) {
+	public static Object unmarshall(File file, Class<?> clazz) {
 		try {
 			JAXBContext context = JAXBContext.newInstance(clazz);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			return unmarshaller.unmarshal(file);
 		} catch (JAXBException e) {
-			throw new MosipXMLConfigurationParseException(LogExeptionCodeConstants.MOSIPCONFIGURATIONXMLPARSE,
+			throw new MosipXMLConfigurationParseException(
+					LogExeptionCodeConstants.MOSIPCONFIGURATIONXMLPARSE,
 					LogExeptionCodeConstants.MOSIPCONFIGURATIONXMLPARSEMESSAGE);
 		}
 

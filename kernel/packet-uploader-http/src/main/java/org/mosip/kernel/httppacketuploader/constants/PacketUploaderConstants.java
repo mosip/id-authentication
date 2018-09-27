@@ -28,12 +28,12 @@ public enum PacketUploaderConstants {
 	}
 
 	/**
-	 * value of constants
+	 * Value of constants
 	 */
 	private String value;
 
 	/**
-	 * getter for {@link #value}
+	 * Getter for {@link #value}
 	 * 
 	 * @return {@link #value}
 	 */
@@ -42,7 +42,7 @@ public enum PacketUploaderConstants {
 	}
 
 	/**
-	 * setter for {@link #value}
+	 * Setter for {@link #value}
 	 * 
 	 * @param value
 	 *            {@link #value}

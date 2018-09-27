@@ -12,7 +12,7 @@ import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderExceptionCons
 public class MosipPacketSizeException extends BaseUncheckedException {
 
 	/**
-	 * constant id for serialization
+	 * Constant id for serialization
 	 */
 	private static final long serialVersionUID = 3585613514626311385L;
 

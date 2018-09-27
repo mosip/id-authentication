@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -34,7 +33,7 @@ public class PacketUploaderIOExceptionTest {
 	public void uploadIOException() throws IOException, Exception {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet.zip").getFile().toPath()));
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isBadRequest())
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
 				.andExpect(jsonPath("$.code", isA(String.class)));
 	}
 

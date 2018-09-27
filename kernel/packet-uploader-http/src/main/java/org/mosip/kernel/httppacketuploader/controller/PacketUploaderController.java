@@ -26,7 +26,7 @@ public class PacketUploaderController {
 	PacketUploaderService service;
 
 	/**
-	 * mapped method to upload packet
+	 * Mapped method to upload packet
 	 * 
 	 * @param packet
 	 *            packet to upload

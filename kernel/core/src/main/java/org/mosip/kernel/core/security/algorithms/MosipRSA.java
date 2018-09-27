@@ -36,16 +36,16 @@ public class MosipRSA extends AsymmetricProcessor {
 	 * Hybrid RSA Engine Initialization with PKCS1Padding
 	 * 
 	 * @param key
-	 *            Key for encryption/decryption
+	 *            key for encryption/decryption
 	 * @param data
-	 *            Data for encryption/decryption
+	 *            data for encryption/decryption
 	 * @param mode
-	 *            If true process mode is Encrypt ,else process mode is Decrypt
+	 *            if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 * @throws MosipInvalidDataException
-	 *             If data is not valid in length,corrupted
+	 *             if data is not valid in length,corrupted
 	 * @throws MosipInvalidKeyException
-	 *             If key is not valid in length,corrupted and wrong
+	 *             if key is not valid in length,corrupted and wrong
 	 */
 	public static byte[] hybridRsaAesWithPKCS1Padding(AsymmetricKeyParameter key, byte[] data, boolean mode)
 			throws MosipInvalidDataException, MosipInvalidKeyException {

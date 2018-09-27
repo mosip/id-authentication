@@ -1,9 +1,12 @@
 package org.mosip.kernel.core.utils.exception;
+
 import org.mosip.kernel.core.exception.BaseCheckedException;
+
 /**
- * HashUtilException class  wraps the Java BaseCheckedException class to 
- * provide checkedexception code for HashUtil
- * @version 1.0   14 August 2018
+ * HashUtilException class wraps the Java BaseCheckedException class to provide
+ * checkedexception code for HashUtil
+ * 
+ * @version 1.0 14 August 2018
  * @author Jyoti Prakash Nayak
  */
 public class MosipHashUtilException extends BaseCheckedException {
