@@ -41,17 +41,28 @@ public class JsonUtilTest {
 		assertThat(JsonUtil.javaObjectToJsonFile(car, file.getAbsolutePath()), is(true));
 	}
 
-	// @Test(expected=MosipIOException.class)
+	// @Test(expected = MosipJsonMappingException.class)
 	public void testJavaObjectToJsonFileWithJsonMappingException()
 			throws MosipJsonGenerationException, MosipJsonMappingException, MosipIOException {
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("sampleParse.json").getFile());
 
-		JsonUtil.javaObjectToJsonFile(car, JsonUtilTestConstants.jsonCarArray2);
+		JsonUtil.javaObjectToJsonFile(car, file.getAbsolutePath());
 	}
 
 	@Test
 	public void testJavaObjectToJsonString() throws MosipJsonProcessingException {
-		assertThat(JsonUtil.javaObjectToJsonString(car).contains("Black"), is(true));
+		String jsonString = JsonUtil.javaObjectToJsonString(car);
+		// System.out.println(jsonString);
+		jsonString = jsonString.replaceAll("\r", "");// \r and \n
+		assertThat(jsonString.contains("Black"), is(true));
 
+	}
+
+	// @Test(expected = MosipJsonProcessingException.class)
+	public void testJavaObjectToJsonStringWithProcessingException() throws MosipJsonProcessingException {
+
+		JsonUtil.javaObjectToJsonString(ParentCar2.class);
 	}
 
 	@Test
@@ -117,7 +128,7 @@ public class JsonUtilTest {
 	public void testjsonFiletoJavaObjectWithParseException()
 			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
 		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("sampleParse2.json").getFile());
+		File file = new File(classLoader.getResource("sampleParse.json").getFile());
 
 		JsonUtil.jsonFileToJavaObject(SampleClass.class, file.getAbsolutePath());
 	}
@@ -143,11 +154,11 @@ public class JsonUtilTest {
 		JsonUtil.jsonToJacksonJson(JsonUtilTestConstants.jsonCarArray2, "");
 	}
 
-	// @Test(expected = MosipJsonParseException.class)
+	@Test(expected = MosipJsonParseException.class)
 	public void testjsonStringToJavaListWithParseException()
 			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
 
-		JsonUtil.jsonStringToJavaList("{'id':1,'name':'John'}");
+		JsonUtil.jsonStringToJavaList(JsonUtilTestConstants.jsonParserError2);
 	}
 
 	@Test(expected = MosipJsonMappingException.class)
