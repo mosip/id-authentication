@@ -132,7 +132,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * @return
 	 */
 	private Date addMinites(Date date, int minute) {
-		 return DateUtil.addMinutes(date, minute);
+		return DateUtil.addMinutes(date, minute);
 	}
 
 	/**
@@ -167,21 +167,31 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * 
 	 * @param otpRequestDto
 	 * @return
+	 * @throws IdAuthenticationBusinessException
 	 */
-	private String getRefId(OtpRequestDTO otpRequestDto) {
+	private String getRefId(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
 		String refId = null;
 		IdType idType = otpRequestDto.getIdType();
 		String uniqueID = otpRequestDto.getUniqueID();
-		try {
-			if (idType.equals(IdType.UIN)) {
+		if (idType.equals(IdType.UIN)) {
+			try {
 				refId = idAuthService.validateUIN(uniqueID);
-			} else if (otpRequestDto.getIdType().equals(IdType.VID)) {
-				refId = idAuthService.validateVID(uniqueID);
+
+			} catch (IdAuthenticationBusinessException e) {
+				LOGGER.error("", idType.getType(), e.getErrorCode(), e.getErrorText());
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN);
 			}
-			LOGGER.info("NA", idType.getType(), "NA", " reference id of ID Type " + idType.getType() + refId);
-		} catch (IdAuthenticationBusinessException e) {
-			LOGGER.error("", idType.getType(), e.getErrorCode(), e.getErrorText());
+
+		} else if (otpRequestDto.getIdType().equals(IdType.VID)) {
+			try {
+				refId = idAuthService.validateVID(uniqueID);
+			} catch (IdAuthenticationBusinessException e) {
+				LOGGER.error("", idType.getType(), e.getErrorCode(), e.getErrorText());
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN);
+			}
 		}
+		LOGGER.info("NA", idType.getType(), "NA", " reference id of ID Type " + idType.getType() + refId);
+
 		return refId;
 	}
 
