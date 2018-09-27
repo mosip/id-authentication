@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthFacadeImpl implements AuthFacade {
 	
+	private static final String DEFAULT_SESSION_ID = "sessionId";
+
 	@Autowired
 	RestHelper restHelper;
 	
@@ -56,7 +58,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		boolean authFlag = processAuthType(authRequestDTO, refId);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		authResponseDTO.setStatus(authFlag);
-		logger.info("sessionId", "IDA", "AuthFacade","authenticateApplicant status : " + authFlag); //FIXME
+		logger.info(DEFAULT_SESSION_ID, "IDA", "AuthFacade","authenticateApplicant status : " + authFlag); //FIXME
 		//TODO Update audit details
 		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "Desc");
 
@@ -90,7 +92,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		if (authRequestDTO.getAuthType().getOtp()) {
 			authStatus = otpService.validateOtp(authRequestDTO, refId);
 			// TODO log authStatus - authType, response
-			logger.info("sessionId", "IDA", "AuthFacade","authenticateApplicant status : " + authStatus);
+			logger.info(DEFAULT_SESSION_ID, "IDA", "AuthFacade","authenticateApplicant status : " + authStatus);
 		}
 		//TODO Update audit details
 		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "Desc");
@@ -100,7 +102,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 					AuditResponseDto.class);
 		} catch (IDDataValidationException e) {
-			logger.error("sessionId", null, null, e.getErrorText());
+			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
 		}
 
@@ -147,7 +149,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 					AuditResponseDto.class);
 		} catch (IDDataValidationException e) {
-			logger.error("sessionId", null, null, e.getErrorText());
+			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
 		}
 
