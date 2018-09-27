@@ -28,14 +28,31 @@ public class ZipUtilTest {
 	@Test
 	public void zipByteArray() throws MosipFileNotFoundException, MosipIOException, IOException, URISyntaxException {
  
-    	    byte[] data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI()));  
-    	    byte[] returnedByteArray = ZipUtil.zipByteArray(data);
+    	    byte[] data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI())); 
+    	    byte[] returnedzippedByteArray = ZipUtil.zipByteArray(data);
     	    String outputFile = System.getProperty("user.dir") + "\\compressedByteArray.zip";   
-    	    Files.write(Paths.get(outputFile), returnedByteArray);
+    	    Files.write(Paths.get(outputFile), returnedzippedByteArray);
     	    File returnFile= new File(outputFile);
         
     	    assertTrue(returnFile.exists());	
     	    File file = new File(outputFile);
+    		file.delete();
+	}
+	
+	
+	@Test
+	public void unzipByteArray() throws MosipFileNotFoundException, MosipIOException, IOException, URISyntaxException {
+ 
+    	    byte[] data = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("SampleFile.txt").toURI())); 
+    	    byte[] returnedzippedByteArray = ZipUtil.zipByteArray(data);
+    	    String finalPath = System.getProperty("user.dir") + "\\src\\final.txt";
+    	      
+    	    byte[] returnedunzipByteArray =ZipUtil.unzipByteArray(returnedzippedByteArray);
+    	    Files.write(Paths.get(finalPath), returnedunzipByteArray);
+    	    File returnFile= new File(finalPath);
+        
+    	    assertTrue(returnFile.exists());	
+    	    File file = new File(finalPath);
     		file.delete();
 	}
 
