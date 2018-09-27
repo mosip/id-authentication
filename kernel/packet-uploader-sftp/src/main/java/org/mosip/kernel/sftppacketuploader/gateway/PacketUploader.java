@@ -39,6 +39,7 @@ public class PacketUploader {
 	 * @throws MosipConnectionException
 	 *             to be thrown when there is a exception during connection with
 	 *             server
+	 * @throws JSchException 
 	 */
 	public static SftpChannel createSFTPChannel(PacketUploaderConfiguration configuration)
 			throws MosipConnectionException {

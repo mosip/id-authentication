@@ -31,16 +31,16 @@ public class MosipAES extends SymmetricProcessor {
 	 * AES Engine Initialization with PKCS7Padding
 	 * 
 	 * @param key
-	 *            Key for encryption/decryption
+	 *            key for encryption/decryption
 	 * @param data
-	 *            Data for encryption/decryption
+	 *            data for encryption/decryption
 	 * @param mode
-	 *            If true process mode is Encrypt ,else process mode is Decrypt
+	 *            if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 * @throws MosipInvalidDataException
-	 *             If data is not valid in length,corrupted
+	 *             if data is not valid in length,corrupted
 	 * @throws MosipInvalidKeyException
-	 *             If key is not valid in length,corrupted and wrong
+	 *             if key is not valid in length,corrupted and wrong
 	 */
 	public static byte[] aesWithCBCandPKCS7Padding(byte[] key, byte[] data, boolean mode)
 			throws MosipInvalidDataException, MosipInvalidKeyException {

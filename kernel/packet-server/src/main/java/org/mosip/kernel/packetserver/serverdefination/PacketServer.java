@@ -53,22 +53,22 @@ public class PacketServer {
 	private SshServer server;
 
 	/**
-	 * host name
+	 * Host name for server
 	 */
 	@Value("${packetserver.host}")
 	private String host;
 	/**
-	 * port number
+	 * Port Number
 	 */
 	@Value("${packetserver.port}")
 	private int port;
 	/**
-	 * public key for private key authentication
+	 * Public key for private key authentication
 	 */
 	@Value("${packetserver.publicKey}")
 	private String publicKey;
 	/**
-	 * host key file name
+	 * Host key file name
 	 */
 	@Value("${packetserver.keyPairGenerator}")
 	private String hostKeyFileName;
@@ -78,18 +78,18 @@ public class PacketServer {
 	@Value("${packetserver.sftpRemoteDirectory}")
 	private String sftpRemoteDirectory;
 	/**
-	 * username for authentication
+	 * Username for authentication
 	 */
 	@Value("${packetserver.username}")
 	private String username;
 	/**
-	 * password for authentication
+	 * Password for authentication
 	 */
 	@Value("${packetserver.password}")
 	private String password;
 
 	/**
-	 * this will initialize all variables from property file after application
+	 * This will initialize all variables from property file after application
 	 * starts
 	 */
 	@EventListener(ApplicationReadyEvent.class)
@@ -98,21 +98,27 @@ public class PacketServer {
 		PublicKey allowed = loadAllowedKey();
 		this.server.setHost(host);
 		this.server.setPort(port);
-		this.server.setKeyPairProvider(new SimpleGeneratorHostKeyProvider(new File(hostKeyFileName)));
-		this.server.setSubsystemFactories(Collections.<NamedFactory<Command>>singletonList(new SftpSubsystemFactory()));
-		this.server.setFileSystemFactory(new VirtualFileSystemFactory(new File(sftpRemoteDirectory).toPath()));
+		this.server.setKeyPairProvider(
+				new SimpleGeneratorHostKeyProvider(new File(hostKeyFileName)));
+		this.server.setSubsystemFactories(
+				Collections.<NamedFactory<Command>>singletonList(
+						new SftpSubsystemFactory()));
+		this.server.setFileSystemFactory(new VirtualFileSystemFactory(
+				new File(sftpRemoteDirectory).toPath()));
 		this.server.setCommandFactory(new ScpCommandFactory());
 		List<NamedFactory<UserAuth>> userAuthFactories = new ArrayList<>();
 		userAuthFactories.add(new UserAuthPasswordFactory());
 		userAuthFactories.add(new UserAuthPublicKeyFactory());
 		this.server.setUserAuthFactories(userAuthFactories);
-		this.server.setPasswordAuthenticator((user, key, session) -> key.equals(password) && user.equals(username));
-		this.server.setPublickeyAuthenticator((user, key, session) -> key.equals(allowed) && user.equals(username));
+		this.server.setPasswordAuthenticator((user, key,
+				session) -> key.equals(password) && user.equals(username));
+		this.server.setPublickeyAuthenticator((user, key,
+				session) -> key.equals(allowed) && user.equals(username));
 		this.start();
 	}
 
 	/**
-	 * this will fetch allowed public key for public key authentication
+	 * This will fetch allowed public key for public key authentication
 	 * 
 	 * @return allowed {@link PublicKey}
 	 * @throws NoSuchAlgorithmException
@@ -122,38 +128,42 @@ public class PacketServer {
 	 */
 	private PublicKey loadAllowedKey() {
 		byte[] keyBytes = packetUtils.getFileBytes(publicKey);
-		X509EncodedKeySpec spec = new X509EncodedKeySpec(Base64.decodeBase64(keyBytes));
+		X509EncodedKeySpec spec = new X509EncodedKeySpec(
+				Base64.decodeBase64(keyBytes));
 		PublicKey key = null;
 		try {
 			KeyFactory kf = KeyFactory.getInstance("RSA");
 			key = kf.generatePublic(spec);
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-			throw new MosipInvalidSpecException(PacketServerExceptionConstants.MOSIP_INVALID_SPEC_EXCEPTION);
+			throw new MosipInvalidSpecException(
+					PacketServerExceptionConstants.MOSIP_INVALID_SPEC_EXCEPTION);
 		}
 		return key;
 	}
 
 	/**
-	 * this starts the server
+	 * This starts the server
 	 */
 	public void start() {
 		try {
 			this.server.start();
 		} catch (IOException e) {
-			throw new MosipIllegalStateException(PacketServerExceptionConstants.MOSIP_ILLEGAL_STATE_EXCEPTION,
+			throw new MosipIllegalStateException(
+					PacketServerExceptionConstants.MOSIP_ILLEGAL_STATE_EXCEPTION,
 					e.getCause());
 		}
 	}
 
 	/**
-	 * this stops the server when context will be closed
+	 * This stops the server when context will be closed
 	 */
 	@EventListener(ContextClosedEvent.class)
 	public void stop() {
 		try {
 			server.stop(false);
 		} catch (IOException e) {
-			throw new MosipIllegalStateException(PacketServerExceptionConstants.MOSIP_ILLEGAL_STATE_EXCEPTION,
+			throw new MosipIllegalStateException(
+					PacketServerExceptionConstants.MOSIP_ILLEGAL_STATE_EXCEPTION,
 					e.getCause());
 		}
 	}

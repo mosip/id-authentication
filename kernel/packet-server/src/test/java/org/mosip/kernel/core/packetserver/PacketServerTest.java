@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 
 @TestPropertySource("classpath:/test-configuration.properties")
-@SpringBootTest(classes = { PacketServer.class, PacketUtils.class })
+@SpringBootTest(classes = {PacketServer.class, PacketUtils.class})
 public class PacketServerTest {
 
 	@Autowired
