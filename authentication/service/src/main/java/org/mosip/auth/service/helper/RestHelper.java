@@ -94,7 +94,7 @@ public class RestHelper {
 	 *            the request
 	 * @return the supplier
 	 */
-	public Supplier<?> requestAsync(@Valid RestRequestDTO request) {
+	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
 		logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
 		Mono<?> sendRequest = request(request);
 		sendRequest.subscribe();
