@@ -3,7 +3,7 @@ package org.mosip.kernel.core.utils.exception;
 import org.mosip.kernel.core.exception.BaseCheckedException;
 
 /**
- * @author  Priya Soni
+ * @author Priya Soni
  * @author Sidhant Agarwal
  *
  */

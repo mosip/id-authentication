@@ -26,7 +26,7 @@ import org.mosip.kernel.logger.constants.LogExeptionCodeConstants;
 public class FileNameNotProvided extends BaseUncheckedException {
 
 	/**
-	 * unique id for serialization
+	 * Unique id for serialization
 	 */
 	private static final long serialVersionUID = 105555532L;
 
@@ -36,7 +36,8 @@ public class FileNameNotProvided extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public FileNameNotProvided(LogExeptionCodeConstants errorCode, LogExeptionCodeConstants errorMessage) {
+	public FileNameNotProvided(LogExeptionCodeConstants errorCode,
+			LogExeptionCodeConstants errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 

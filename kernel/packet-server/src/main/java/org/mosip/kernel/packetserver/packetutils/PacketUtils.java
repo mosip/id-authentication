@@ -25,16 +25,16 @@ public class PacketUtils {
 	}
 
 	/**
-	 * file start signature
+	 * File start signature
 	 */
 	private static final String FILE_START = "-----BEGIN RSA PUBLIC KEY-----";
 	/**
-	 * file end signature
+	 * File end signature
 	 */
 	private static final String FILE_STOP = "-----END RSA PUBLIC KEY-----";
 
 	/**
-	 * converts a RSA public key to byte array
+	 * Converts a RSA public key to byte array
 	 * 
 	 * @param fileLocation
 	 *            location of file
@@ -43,12 +43,15 @@ public class PacketUtils {
 	public byte[] getFileBytes(String fileLocation) {
 		String key = null;
 		try {
-			key = FileCopyUtils.copyToString(new FileReader(new ClassPathResource(fileLocation).getFile()));
+			key = FileCopyUtils.copyToString(new FileReader(
+					new ClassPathResource(fileLocation).getFile()));
 		} catch (IOException e) {
-			throw new MosipPublicKeyException(PacketServerExceptionConstants.MOSIP_PUBLIC_KEY_EXCEPTION);
+			throw new MosipPublicKeyException(
+					PacketServerExceptionConstants.MOSIP_PUBLIC_KEY_EXCEPTION);
 		}
 
-		return key.replaceAll(FILE_START, "").replaceAll(FILE_STOP, "").getBytes();
+		return key.replaceAll(FILE_START, "").replaceAll(FILE_STOP, "")
+				.getBytes();
 	}
 
 }

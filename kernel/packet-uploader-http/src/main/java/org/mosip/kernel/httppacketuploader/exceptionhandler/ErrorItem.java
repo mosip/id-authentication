@@ -24,7 +24,7 @@ public class ErrorItem {
 	private String message;
 
 	/**
-	 * getter for {@link #code}s
+	 * Getter for {@link #code}s
 	 * 
 	 * @return {@link #code}
 	 */
@@ -32,7 +32,7 @@ public class ErrorItem {
 		return code;
 	}
 
-	/**
+	/** Setter for {@link #code}
 	 * @param code
 	 *            {@link #code}
 	 */
@@ -41,7 +41,7 @@ public class ErrorItem {
 	}
 
 	/**
-	 * getter for {@link #message}
+	 * Getter for {@link #message}
 	 * 
 	 * @return {@link #message}
 	 */
@@ -50,7 +50,7 @@ public class ErrorItem {
 	}
 
 	/**
-	 * setter {@link ForAbstractMethod} {@link #message}
+	 * Setter {@link ForAbstractMethod} {@link #message}
 	 * 
 	 * @param message
 	 *            {@link #message}

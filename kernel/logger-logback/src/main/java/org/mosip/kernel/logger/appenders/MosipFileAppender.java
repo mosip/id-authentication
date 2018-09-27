@@ -27,7 +27,8 @@ public class MosipFileAppender {
 	 */
 	private String appenderName;
 	/**
-	 * It ensures that logging events are immediately written out;with default true
+	 * It ensures that logging events are immediately written out;with default
+	 * true
 	 */
 	private boolean immediateFlush = MosipConfigurationDefaults.DEFAULTIMMEDIATEFLUSH;
 	/**
@@ -58,7 +59,7 @@ public class MosipFileAppender {
 	 * Setter for appenderName
 	 * 
 	 * @param appenderName
-	 *            Name of the appender
+	 *            name of the appender
 	 */
 	@XmlAttribute
 	public void setAppenderName(String appenderName) {
@@ -78,8 +79,8 @@ public class MosipFileAppender {
 	 * Setter for immediateFlush
 	 * 
 	 * @param immediateFlush
-	 *            It ensures that logging events are immediately written out;with
-	 *            default true
+	 *            it ensures that logging events are immediately written
+	 *            out;with default true
 	 */
 	@XmlElement
 	public void setImmediateFlush(boolean immediateFlush) {
@@ -99,8 +100,8 @@ public class MosipFileAppender {
 	 * Setter for fileName
 	 * 
 	 * @param fileName
-	 *            Name of File in which logs will be written;<b>Mandatory field to
-	 *            pass</b>
+	 *            name of File in which logs will be written;<b>Mandatory field
+	 *            to pass</b>
 	 */
 	@XmlElement
 	public void setFileName(String fileName) {
@@ -120,7 +121,7 @@ public class MosipFileAppender {
 	 * Setter for append
 	 * 
 	 * @param append
-	 *            Append in current file;with default true
+	 *            append in current file;with default true
 	 */
 	@XmlElement
 	public void setAppend(boolean append) {
@@ -140,10 +141,10 @@ public class MosipFileAppender {
 	 * Setter for prudent
 	 * 
 	 * @param prudent
-	 *            FileAppender will safely write to the specified file if true,even
-	 *            in the presence of other FileAppender instances running in
-	 *            different JVMs, potentially running on different hosts; with
-	 *            default false
+	 *            fileAppender will safely write to the specified file if
+	 *            true,even in the presence of other FileAppender instances
+	 *            running in different JVMs, potentially running on different
+	 *            hosts; with default false
 	 */
 	@XmlElement
 	public void setPrudent(boolean prudent) {
