@@ -92,8 +92,11 @@
 				<version>${maven.jacoco.version}</version>
 				<configuration>
 				<excludes>
+					<exclude>**/constant/**</exclude>
+					<exclude>**/config/**</exclude>
+					<exclude>**/dto/**</exclude>
+					<exclude>org/mosip/auth/service/*.class</exclude>
 					<exclude>org/mosip/auth/service/filter/**</exclude>
-					<exclude>org/mosip/auth/service/config/**</exclude>
 				</excludes>
 				</configuration>
 				<executions>

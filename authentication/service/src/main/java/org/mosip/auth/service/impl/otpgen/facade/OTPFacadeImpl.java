@@ -7,7 +7,7 @@ import java.util.List;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RequestType;
 import org.mosip.auth.core.dto.indauth.AuthError;
-import org.mosip.auth.core.dto.indauth.IDType;
+import org.mosip.auth.core.dto.indauth.IdType;
 import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.mosip.auth.core.dto.otpgen.OtpResponseDTO;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
@@ -69,7 +69,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		String otpKey = null;
 		String otp = null;
 
-		IDType idType = otpRequestDto.getIdType();
+		IdType idType = otpRequestDto.getIdType();
 		String refId = getRefId(otpRequestDto);
 		String productid = env.getProperty("application.id");
 		String txnID = otpRequestDto.getTxnID();
@@ -143,7 +143,6 @@ public class OTPFacadeImpl implements OTPFacade {
 	private void saveAutnTxn(OtpRequestDTO otpRequestDto) {
 		String uniqueID = otpRequestDto.getUniqueID();
 		String txnID = otpRequestDto.getTxnID();
-		IDType idType = otpRequestDto.getIdType();
 
 		AutnTxn autnTxn = new AutnTxn();
 		autnTxn.setUin(uniqueID);
@@ -171,12 +170,12 @@ public class OTPFacadeImpl implements OTPFacade {
 	 */
 	private String getRefId(OtpRequestDTO otpRequestDto) {
 		String refId = null;
-		IDType idType = otpRequestDto.getIdType();
+		IdType idType = otpRequestDto.getIdType();
 		String uniqueID = otpRequestDto.getUniqueID();
 		try {
-			if (idType.equals(IDType.UIN)) {
+			if (idType.equals(IdType.UIN)) {
 				refId = idAuthService.validateUIN(uniqueID);
-			} else if (otpRequestDto.getIdType().equals(IDType.VID)) {
+			} else if (otpRequestDto.getIdType().equals(IdType.VID)) {
 				refId = idAuthService.validateVID(uniqueID);
 			}
 			LOGGER.info("NA", idType.getType(), "NA", " reference id of ID Type " + idType.getType() + refId);

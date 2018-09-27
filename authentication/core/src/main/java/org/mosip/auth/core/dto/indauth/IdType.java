@@ -13,16 +13,14 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * 
  * @author Rakesh Roshan
  */
-public enum IDType {
+public enum IdType {
 
 	UIN("D"), VID("V");
-	
-
 
 	/**
 	 * Value that indicates that default id.
 	 */
-	public static final IDType DEFAULT_ID_TYPE = IDType.UIN;
+	public static final IdType DEFAULT_ID_TYPE = IdType.UIN;
 
 	private String type;
 
@@ -30,7 +28,7 @@ public enum IDType {
 	 * 
 	 * @param type
 	 */
-	private IDType(String type) {
+	private IdType(String type) {
 		this.type = type;
 	}
 
@@ -55,7 +53,7 @@ public enum IDType {
 	 * @param type
 	 * @return IDType
 	 */
-	public static Optional<IDType> getIDType(String type) {
+	public static Optional<IdType> getIDType(String type) {
 		return Stream.of(values()).filter(t -> t.getType().equals(type))
 				                                .findAny();
 

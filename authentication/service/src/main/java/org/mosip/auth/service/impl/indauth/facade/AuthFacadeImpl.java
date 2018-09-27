@@ -4,7 +4,7 @@ import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
 import org.mosip.auth.core.dto.indauth.AuthResponseDTO;
-import org.mosip.auth.core.dto.indauth.IDType;
+import org.mosip.auth.core.dto.indauth.IdType;
 import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
 import org.mosip.auth.core.exception.IdValidationFailedException;
@@ -87,10 +87,9 @@ public class AuthFacadeImpl implements AuthFacade {
 			throws IdAuthenticationBusinessException {
 		boolean authStatus = false;
 
-		if (authRequestDTO.getAuthType().getOtpAuth()) {
+		if (authRequestDTO.getAuthType().getOtp()) {
 			authStatus = otpService.validateOtp(authRequestDTO, refId);
 			// TODO log authStatus - authType, response
-			String description=authStatus+""; //FIX ME
 			logger.info("sessionId", "IDA", "AuthFacade","authenticateApplicant status : " + authStatus);
 		}
 		//TODO Update audit details
@@ -124,9 +123,9 @@ public class AuthFacadeImpl implements AuthFacade {
 	public String processIdType(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
 		String refId = null;
 		String reqType = authRequestDTO.getIdType().getType();
-		if (reqType.equals(IDType.UIN.getType())) {
+		if (reqType.equals(IdType.UIN.getType())) {
 			try {
-				refId = idAuthService.validateUIN(authRequestDTO.getUniqueID());
+				refId = idAuthService.validateUIN(authRequestDTO.getId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText()); //FIX ME
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN_BUISNESS, e);
@@ -134,7 +133,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		} else {
 
 			try {
-				refId = idAuthService.validateVID(authRequestDTO.getUniqueID());
+				refId = idAuthService.validateVID(authRequestDTO.getId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText());//FIX ME
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID_BUISNESS, e);

@@ -53,9 +53,10 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_UIN_BUISNESS("IDA-IDMB-UIN-401", "Invalid UIN"),
 	INVALID_VID_BUISNESS("IDA-IDMB-VID-402", "Invalid VID"), 
 	AUTHENTICATION_FAILED("IDA-IDMC-AUT-501", "Authentication failed or Invalid UIN/VID"),
-	
+	INVALID_UIN_VID("IDA-IDMB-IDT-602", "Invalid UIN/VID"),
 	INCORRECT_IDTYPE("IDA-DTV-IDT-601","INCORRECT IDTYPE"),
-	EMPTY_OTP("IDA-DTV-IDT-601","OTP value is empty");
+	EMPTY_OTP("IDA-DTV-IDT-601","OTP value is empty"), 
+	SERVICE_NOT_AVAILABLE("IDA-RST-SRV-001", "Service is not available");
 
 	private final String errorCode;
 	private final String errorMessage;

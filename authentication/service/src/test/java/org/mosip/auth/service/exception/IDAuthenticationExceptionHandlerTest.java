@@ -37,7 +37,7 @@ public class IDAuthenticationExceptionHandlerTest {
 		ResponseEntity<Object> handleAllExceptions = handler
 				.handleAllExceptions(new RuntimeException("Runtime Exception"), null);
 		AuthResponseDTO response = (AuthResponseDTO) handleAllExceptions.getBody();
-		List<AuthError> errorCode = response.getErrorCode();
+		List<AuthError> errorCode = response.getErr();
 		errorCode.forEach(e -> {
 			assertEquals("IDA-DTV-IDV-004", e.getErrorCode());
 			assertEquals("Unknown error occured", e.getErrorMessage());
@@ -53,7 +53,7 @@ public class IDAuthenticationExceptionHandlerTest {
 				Arrays.asList(new String[] { "Media type is not supported" }), null, HttpStatus.EXPECTATION_FAILED,
 				null);
 		AuthResponseDTO response = (AuthResponseDTO) handleExceptionInternal.getBody();
-		List<AuthError> errorCode = response.getErrorCode();
+		List<AuthError> errorCode = response.getErr();
 		errorCode.forEach(e -> {
 			assertEquals("Http Media Type Not Supported Exception", e.getErrorCode());
 			assertEquals("Media type is not supported", e.getErrorMessage());
@@ -91,7 +91,7 @@ public class IDAuthenticationExceptionHandlerTest {
 		ResponseEntity<Object> handleIdUsageException = handler
 				.handleExceptionInternal(new AsyncRequestTimeoutException(), null, null, null, null);
 		AuthResponseDTO response = (AuthResponseDTO) handleIdUsageException.getBody();
-		List<AuthError> errorCode = response.getErrorCode();
+		List<AuthError> errorCode = response.getErr();
 		errorCode.forEach(e -> {
 			assertEquals("IDA-DTV-IDV-004", e.getErrorCode());
 			assertEquals("Unknown error occured", e.getErrorMessage());

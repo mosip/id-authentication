@@ -2,11 +2,10 @@ package org.mosip.auth.service.impl.otpgen.validator;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
-import org.mosip.auth.core.dto.indauth.IDType;
+import org.mosip.auth.core.dto.indauth.IdType;
 import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,8 +42,8 @@ public class OTPRequestValidator implements Validator {
 					IdAuthenticationErrorConstants.EXPIRED_OTP_REQUEST_TIME.getErrorMessage());
 		}
 
-		if (!otpRequestDto.getIdType().UIN.getType().equals(IDType.UIN.getType())
-				|| !otpRequestDto.getIdType().VID.getType().equals(IDType.VID.getType())) {
+		if (!otpRequestDto.getIdType().UIN.getType().equals(IdType.UIN.getType())
+				|| !otpRequestDto.getIdType().VID.getType().equals(IdType.VID.getType())) {
 
 			errors.rejectValue("idType", IdAuthenticationErrorConstants.INVALID_IDTYPE.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_IDTYPE.getErrorMessage());

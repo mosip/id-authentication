@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
-import org.mosip.auth.core.dto.indauth.IDType;
+import org.mosip.auth.core.dto.indauth.IdType;
 import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.mosip.auth.core.dto.otpgen.OtpResponseDTO;
 import org.mosip.auth.core.exception.IdAuthenticationAppException;
@@ -192,7 +192,7 @@ public class OTPControllerTest {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setAsaLicenseKey("1234567890");
 		otpRequestDto.setAuaCode("1234567890");
-		otpRequestDto.setIdType(IDType.UIN);
+		otpRequestDto.setIdType(IdType.UIN);
 		// otpRequestDto.setRequestTime(new Date());
 		otpRequestDto.setTxnID("1234567890");
 		otpRequestDto.setUniqueID("1234567890");

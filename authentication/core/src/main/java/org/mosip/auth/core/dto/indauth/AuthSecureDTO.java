@@ -1,7 +1,5 @@
 package org.mosip.auth.core.dto.indauth;
 
-import java.io.Serializable;
-
 import lombok.Data;
 
 /**
@@ -10,13 +8,8 @@ import lombok.Data;
  */
 
 @Data
-public class AuthSecureDTO implements Serializable {
+public class AuthSecureDTO {
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
 	private String sessionKey;
 	
 	private String publicKeyCert;

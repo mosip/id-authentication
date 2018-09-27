@@ -2,7 +2,6 @@ package org.mosip.auth.service.impl.otpgen.facade;
 
 import java.util.Date;
 
-import org.assertj.core.util.DateUtil;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -10,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mosip.auth.core.dto.indauth.IDType;
+import org.mosip.auth.core.dto.indauth.IdType;
 import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.mosip.auth.core.dto.otpgen.OtpResponseDTO;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
@@ -162,7 +161,7 @@ public class OTPFacadeImplTest {
 	@Test
 	public void testGetRefIdForVID() {
 		String uniqueID = otpRequestDto.getUniqueID();
-		otpRequestDto.setIdType(IDType.VID);
+		otpRequestDto.setIdType(IdType.VID);
 		ReflectionTestUtils.invokeMethod(idAuthService, "validateVID", uniqueID);
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
 		
@@ -186,7 +185,7 @@ public class OTPFacadeImplTest {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setAsaLicenseKey("1234567890");
 		otpRequestDto.setAuaCode("1234567890");
-		otpRequestDto.setIdType(IDType.UIN);
+		otpRequestDto.setIdType(IdType.UIN);
 
 		// otpRequestDto.setRequestTime(new Date(Long.valueOf("2018-09-24
 		// 12:06:28.501")));

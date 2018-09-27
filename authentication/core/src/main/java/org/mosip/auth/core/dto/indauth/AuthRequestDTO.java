@@ -1,6 +1,5 @@
 package org.mosip.auth.core.dto.indauth;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.validation.constraints.Digits;
@@ -21,14 +20,12 @@ import lombok.Data;
 @Data
 public class AuthRequestDTO  {
 
-	private static final long serialVersionUID = 6239182261277493008L;
-
-	@Pattern(regexp = "^[0-9]{10}$", message = "{mosip.ida.validation.message.authRequest.uniqueId}")
-	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.uniqueId.notNull}")
-	private String uniqueID;
+	@Pattern(regexp = "^[0-9]{10}$", message = "{mosip.ida.validation.message.AuthRequest.id}")
+	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.id.notNull}")
+	private String id;
 
 	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.idType.notNull}")
-	private IDType idType;
+	private IdType idType;
 
 	/**
 	 * The value of the field or property must be a number within a specified range.
@@ -36,25 +33,24 @@ public class AuthRequestDTO  {
 	 * number, and the {@code fraction} element specifies the maximum fractional
 	 * digits for the number.
 	 */
-	@Digits(fraction = 1, integer = 1, message = "{mosip.ida.validation.message.AuthRequest.version}")
-	private String version;
+	@Digits(fraction = 1, integer = 1, message = "{mosip.ida.validation.message.AuthRequest.ver}")
+	private String ver;
 
-	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.auaCode.notNull}")
+	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.muaCode.notNull}")
 	@Pattern(regexp = "^[A-Za-z0-9]*$")
-	@Size(min = 10, message = "{mosip.ida.validation.message.AuthRequest.auaCode}")
-	private String auaCode;
+	@Size(min = 10, message = "{mosip.ida.validation.message.AuthRequest.muaCode}")
+	private String muaCode;
 
 	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.txnId.notNull}")
 	@Pattern(regexp = "^[A-Za-z0-9]{10}", message = "{mosip.ida.validation.message.AuthRequest.txnId}")
 	private String txnID;
 
 	@PastOrPresent(message = "{mosip.ida.validation.message.AuthRequest.date}")
-	private Date requestTime;
+	private Date reqTime;
 
 	//@Pattern(regexp = "^[A-Za-z0-9]{10}$", message = "{mosip.ida.validation.message.AuthRequest.asaLicenseKey}")
-	private String asaLicenseKey;
+	private String msaLicenseKey;
 
-	
 	private String hmac;
 	
 	private String data;
