@@ -28,18 +28,18 @@ import org.springframework.util.MultiValueMap;
  */
 @Component
 public class OTPManager {
-	
+
 	@Autowired
 	private RestHelper restHelper;
 
 	@Autowired
 	RestRequestFactory restRequestFactory;
 
-	private MosipLogger LOGGER;
+	private MosipLogger logger;
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
+		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
 
 	/**
@@ -51,38 +51,24 @@ public class OTPManager {
 	 * @return String(otp)
 	 * @throws IdAuthenticationBusinessException
 	 */
-	public String generateOTP(String otpKey) {
-
+	public String generateOTP(String otpKey) throws IdAuthenticationBusinessException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		otpGeneratorRequestDto.setKey(otpKey);
 		OtpGeneratorResponseDto otpGeneratorResponsetDto = null;
 		RestRequestDTO restRequestDTO = null;
-
+		String response = null;
 		try {
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
 					otpGeneratorRequestDto, OtpGeneratorResponseDto.class);
-		} catch (IDDataValidationException e) {
-			LOGGER.error("NA", "NA", e.getErrorCode(), e.getErrorText());
-			e.printStackTrace();
-		}
 
-		String response = null;
-
-		try {
 			otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
-			System.out.println(otpGeneratorResponsetDto);
 			response = otpGeneratorResponsetDto.getOtp();
-			LOGGER.info("NA", "NA", "NA", "otpGeneratorResponsetDto " + response);
-			if (response == null || response.isEmpty()) {
-				LOGGER.error("NA", "NA", "NA", "OTP is null or empty");
-			} else {
-				LOGGER.error("NA", "NA", "NA", response);
-			}
-
-		} catch (RestServiceException e) {
-			LOGGER.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+			logger.info("NA", "NA", "NA", "otpGeneratorResponsetDto " + response);
+		} catch (RestServiceException | IDDataValidationException e) {
+			logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.KERNEL_OTP_GENERATION_REQUEST_FAILED, e);
 		}
-
 		return response;
 	}
 
@@ -94,7 +80,6 @@ public class OTPManager {
 	 * @return
 	 * @throws IdAuthenticationBusinessException
 	 */
-
 	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
 		boolean isValidOtp = false;
 		OTPValidateResponseDTO validResponseDto = new OTPValidateResponseDTO();
@@ -109,14 +94,13 @@ public class OTPManager {
 			validResponseDto = restHelper.requestSync(restreqdto);
 			if (validResponseDto.getStatus().equalsIgnoreCase("true")) {
 				isValidOtp = true;
-				LOGGER.info("validateOtp", "Inside Validate OTP", "NA", "NA");
+				logger.info("validateOtp", "Inside Validate OTP", "NA", "NA");
 			}
 		} catch (RestServiceException | IDDataValidationException e) {
-			LOGGER.error("NA", "NA", e.getErrorCode(), e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_OTPVALIDATION_REQUEST_FAILED,
-					e);
+			logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+			throw new IdAuthenticationBusinessException(
+					IdAuthenticationErrorConstants.KERNEL_OTP_VALIDATION_REQUEST_FAILED, e);
 		}
-
 		return isValidOtp;
 	}
 

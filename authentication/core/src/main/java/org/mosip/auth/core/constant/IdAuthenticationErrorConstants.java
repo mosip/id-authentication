@@ -35,26 +35,10 @@ public enum IdAuthenticationErrorConstants {
 	ID_MAPPING_FAILED("IDA-IDV-101", "VID is not present or not matched"),	
 	INVALID_IDTYPE("IDA-IDV-102","Invalid Id-Type"),
 	INVALID_OTP_KEY("IDA-OTA-101", "Key is Null or Invalid"),
+	KERNEL_OTP_VALIDATION_REQUEST_FAILED("IDA-OTA-102", "Kernel Validate OTP request failed"),
+	KERNEL_OTP_GENERATION_REQUEST_FAILED("IDA-OTA-103", "Kernel Generate OTP request failed"),
 	
-	//INVALID_GENERATE_OTP_REQUEST("IDA-DTV-RQV-001", "Invalid OTP request"),
-	//OTP_GENERATION_REQUEST_FAILED("IDA-DTV-RQV-002", "OTP generation request failed"),
-	//OTP_REQUEST_FLOODED("IDA-DTV-RQV-006","OTP Generation request is Flooded"),
-	
-	OTP_VALDIATION_REQUEST_FAILED("IDA-DTV-IDV-005", "OTP Validation Request Failed"),
-	OTP_KEY_INVALID("IDA-DTV-IDV-006", "OTP Key is Null or Invalid"),
-	
-	//EXPIRED_OTP_REQUEST_TIME("IDA-DTV-RQV-005","OTP requested time expired"),
-	
-	//REFID_INVALID("IDA-DTV-IDV-008", "Reference ID is Null or Invalid"),
-	//UIN_INVALID("IDA-DTV-IDV-009", "UIN is Null or Invalid"), 
-	
-	//TXNID_INVALID("IDA-DTV-IDV-010", "Transaction ID is Null or Invalid"),
-	//TEMPID_INVALID("IDA-DTV-RQV-003", "Temporavary ID is Null or Invalid"),
-	
-	ID_INVALID_VALIDATEOTP_REQUEST("IDA-DTV-ARV-001", "Invalid Validate OTP request"),
-	ID_OTPVALIDATION_REQUEST_FAILED("IDA-DTV-ARV-001", "Validate OTP request failed"),
-	INVALID_AUTH_REQUEST("IDA-DTV-RQV-101", "Invalid Auth Request"),
-	UNKNOWN_ERROR("IDA-DTV-IDV-004", "Unknown error occured"),
+	// Rest Helper Error Constants
 	INVALID_URI("IDA-RST-DTV-001", "URI should not be empty"),
 	INVALID_HTTP_METHOD("IDA-RST-DTV-002", "httpMethod is empty or invalid"),
 	INVALID_RETURN_TYPE("IDA-RST-DTV-003", "returnType is empty"),
@@ -63,6 +47,29 @@ public enum IdAuthenticationErrorConstants {
 	CLIENT_ERROR("IDA-RST-UTL-001", "4XX - Client Error occured"),
 	SERVER_ERROR("IDA-RST-UTL-002", "5XX - Server Error occured"),
 	CONNECTION_TIMED_OUT("IDA-RST-UTL-003", "Connection timed out"), 
+	
+	//INVALID_GENERATE_OTP_REQUEST("IDA-DTV-RQV-001", "Invalid OTP request"),
+	//OTP_GENERATION_REQUEST_FAILED("IDA-DTV-RQV-002", "OTP generation request failed"),
+	//OTP_REQUEST_FLOODED("IDA-DTV-RQV-006","OTP Generation request is Flooded"),
+	
+	
+	
+	//OTP_KEY_INVALID("IDA-DTV-IDV-006", "OTP Key is Null or Invalid"),
+	
+	//EXPIRED_OTP_REQUEST_TIME("IDA-DTV-RQV-005","OTP requested time expired"),
+	
+	//REFID_INVALID("IDA-DTV-IDV-008", "Reference ID is Null or Invalid"),
+	//UIN_INVALID("IDA-DTV-IDV-009", "UIN is Null or Invalid"), 
+	
+	//TXNID_INVALID("IDA-DTV-IDV-010", "Transaction ID is Null or Invalid"),
+	//TEMPID_INVALID("IDA-DTV-RQV-003", "Temporavary ID is Null or Invalid"),
+	OTP_VALDIATION_REQUEST_FAILED("IDA-DTV-IDV-005", "OTP Validation Request Failed"),
+	
+	ID_INVALID_VALIDATEOTP_REQUEST("IDA-DTV-ARV-001", "Invalid Validate OTP request"),
+	
+	INVALID_AUTH_REQUEST("IDA-DTV-RQV-101", "Invalid Auth Request"),
+	UNKNOWN_ERROR("IDA-DTV-IDV-004", "Unknown error occured"),
+	
 	
 	//INVALID_UIN_BUISNESS("IDA-IDMB-UIN-401", "Invalid UIN"),
 	//INVALID_VID_BUISNESS("IDA-IDMB-VID-402", "Invalid VID"), 

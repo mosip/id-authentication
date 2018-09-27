@@ -1,5 +1,7 @@
 package org.mosip.auth.service.impl.otpgen.facade;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
@@ -71,22 +73,24 @@ public class OTPFacadeImpl implements OTPFacade {
 		if (isOtpFlooded(otpRequestDto)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
-			otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getAuaCode());
+			otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
 			try {
 				otp = otpService.generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
 				LOGGER.error("", otpRequestDto.getIdType().getType(), e.getErrorCode(), e.getErrorText());
 			}
 		}
+		LOGGER.info("SessionID", "NA", "generated OTP", otp); 
+		
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		if (otp == null || otp.trim().isEmpty()) {
-			LOGGER.error("NA", "NA", "NA", "generated OTP is: " + otp);
-			// TODO Throw exception
+			LOGGER.error("SessionId", "NA", "NA", "generated OTP is: " + otp);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		} else {
 			LOGGER.info("NA", "NA", "NA", "generated OTP is: " + otp);
 			otpResponseDTO.setStatus("Y");
 			otpResponseDTO.setTxnID(txnID);
-			otpResponseDTO.setResponseTime(new Date());
+			otpResponseDTO.setResponseTime(formateDate(new Date(), env.getProperty("date.format.pattern")));
 			// TODO Date format to be included
 			saveAutnTxn(otpRequestDto);
 		}
@@ -102,7 +106,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	 */
 	private boolean isOtpFlooded(OtpRequestDTO otpRequestDto) {
 		boolean isOtpFlooded = false;
-		String uniqueID = otpRequestDto.getUniqueID();
+		String uniqueID = otpRequestDto.getId();
 		Date requestTime = otpRequestDto.getReqTime();
 		Date addMinutesInOtpRequestDTime = addMinites(requestTime, -1);
 
@@ -125,13 +129,25 @@ public class OTPFacadeImpl implements OTPFacade {
 		return DateUtil.addMinutes(date, minute);
 	}
 
+	private Date formateDate(Date date, String formate) {
+		Date formatedDate = new Date();
+		String formatDate = DateUtil.formatDate(date, formate);
+		try {
+			formatedDate = new SimpleDateFormat(formate).parse(formatDate);
+			return formatedDate;
+		} catch (ParseException e) {
+			LOGGER.error("SessionID", "ParseException", e.getMessage(), "Date formate parse Exception");
+		}
+		return formatedDate;
+	}
+
 	/**
 	 * Save the input Request to trigger OTP.
 	 * 
 	 * @param otpRequestDto
 	 */
 	private void saveAutnTxn(OtpRequestDTO otpRequestDto) {
-		String uniqueID = otpRequestDto.getUniqueID();
+		String uniqueID = otpRequestDto.getId();
 		String txnID = otpRequestDto.getTxnID();
 
 		AutnTxn autnTxn = new AutnTxn();
@@ -162,7 +178,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	private String getRefId(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
 		String refId = null;
 		IdType idType = otpRequestDto.getIdType();
-		String uniqueID = otpRequestDto.getUniqueID();
+		String uniqueID = otpRequestDto.getId();
 		if (idType.equals(IdType.UIN)) {
 			try {
 				refId = idAuthService.validateUIN(uniqueID);

@@ -8,14 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mosip.auth.core.dto.indauth.IdType;
 import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.mosip.auth.core.dto.otpgen.OtpResponseDTO;
-import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
 import org.mosip.auth.core.spi.idauth.service.IdAuthService;
 import org.mosip.auth.core.spi.otpgen.service.OTPService;
-import org.mosip.auth.core.util.OTPUtil;
 import org.mosip.auth.service.dao.AutnTxnRepository;
 import org.mosip.auth.service.entity.AutnTxn;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
@@ -116,7 +113,7 @@ public class OTPFacadeImplTest {
 
 	@Test
 	public void testIsOtpFlooded_False() {
-		String uniqueID = otpRequestDto.getUniqueID();
+		String uniqueID = otpRequestDto.getId();
 		Date requestTime = otpRequestDto.getReqTime();
 		Date addMinutesInOtpRequestDTime = new Date();
 		//TODO Integrate with kernel DateUtil
@@ -151,7 +148,7 @@ public class OTPFacadeImplTest {
 	@Ignore
 	@Test
 	public void testGetRefIdForUIN() {
-		String uniqueID = otpRequestDto.getUniqueID();
+		String uniqueID = otpRequestDto.getId();
 		ReflectionTestUtils.invokeMethod(idAuthService, "validateUIN", uniqueID);
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
 		
@@ -160,7 +157,7 @@ public class OTPFacadeImplTest {
 	@Ignore
 	@Test
 	public void testGetRefIdForVID() {
-		String uniqueID = otpRequestDto.getUniqueID();
+		String uniqueID = otpRequestDto.getId();
 		otpRequestDto.setIdType(IdType.VID);
 		ReflectionTestUtils.invokeMethod(idAuthService, "validateVID", uniqueID);
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
@@ -183,16 +180,16 @@ public class OTPFacadeImplTest {
 
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
-		otpRequestDto.setAsaLicenseKey("1234567890");
-		otpRequestDto.setAuaCode("1234567890");
+		otpRequestDto.setMsaLicenseKey("1234567890");
+		otpRequestDto.setMuaCode("1234567890");
 		otpRequestDto.setIdType(IdType.UIN);
 
 		// otpRequestDto.setRequestTime(new Date(Long.valueOf("2018-09-24
 		// 12:06:28.501")));
 		otpRequestDto.setReqTime(new Date());
 		otpRequestDto.setTxnID("1234567890");
-		otpRequestDto.setUniqueID("1234567890");
-		otpRequestDto.setVersion("1.0");
+		otpRequestDto.setId("1234567890");
+		otpRequestDto.setVer("1.0");
 
 		return otpRequestDto;
 	}
