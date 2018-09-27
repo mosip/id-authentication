@@ -67,13 +67,13 @@ public class AuthController {
 	 */
 
 	@PostMapping(path = "/authRequest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Aurthenticate Request", response = IdAuthenticationAppException.class)
+	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
 	public AuthResponseDTO authenticateApplication(@Validated @RequestBody AuthRequestDTO authrequestdto,
 			Errors errors) throws IdAuthenticationAppException {
-		AuthResponseDTO authResponsedto = null;
 
+		AuthResponseDTO authResponsedto = null;
 			try {
 				DataValidationUtil.validate(errors);
 				authResponsedto=authFacade.authenticateApplicant(authrequestdto);

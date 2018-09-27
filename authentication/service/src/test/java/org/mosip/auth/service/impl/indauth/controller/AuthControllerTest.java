@@ -1,232 +1,118 @@
-/*package org.mosip.auth.service.impl.indauth.controller;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Date;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+package org.mosip.auth.service.impl.indauth.controller;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mosip.auth.core.dto.indauth.AuthResponseInfo;
-import org.mosip.auth.core.dto.indauth.AuthTypeDTO;
-import org.mosip.auth.core.dto.indauth.IDType;
-import org.mosip.auth.core.dto.indauth.OtpTriggerRequestDTO;
-import org.mosip.auth.core.dto.indauth.OtpTriggerResponseDTO;
+import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
+import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
+import org.mosip.auth.core.dto.indauth.AuthResponseDTO;
 import org.mosip.auth.core.exception.IdAuthenticationAppException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
-import org.mosip.auth.core.exception.IdValidationFailedException;
-import org.mosip.auth.core.spi.otpgen.service.OTPService;
-import org.mosip.auth.service.dao.OtpRepository;
-import org.mosip.auth.service.entity.OtpEntity;
-import org.mosip.auth.service.exception.IDAuthenticationExceptionHandler;
-import org.mosip.auth.service.impl.otpgen.controller.OTPController;
-import org.mosip.auth.service.impl.otpgen.service.OTPServiceImpl;
-import org.mosip.auth.service.impl.otpgen.validator.OTPRequestValidator;
+import org.mosip.auth.service.dao.UinRepository;
+import org.mosip.auth.service.factory.AuditRequestFactory;
+import org.mosip.auth.service.factory.RestRequestFactory;
+import org.mosip.auth.service.helper.RestHelper;
+import org.mosip.auth.service.impl.indauth.facade.AuthFacadeImpl;
+import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+/**
+ * This code tests the AuthController 
+ * @author Arun Bose
+ */
 
-@Ignore
 @RunWith(SpringRunner.class)
-@WebMvcTest(value = OTPController.class, secure = false)
+@WebMvcTest
+@ContextConfiguration(classes= {TestContext.class, WebApplicationContext.class})
+@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
 public class AuthControllerTest {
-
+	
 	@Mock
-	WebDataBinder binder;
-
+	RestHelper restHelper;
+	
 	@Autowired
-	private MockMvc mockMvc;
-
+	Environment env;
+	
+	@InjectMocks
+	private RestRequestFactory  restFactory;
+	
+	@InjectMocks
+	private AuditRequestFactory auditFactory;
+	
 	@Mock
-	OTPService otpservice;
+	private AuthFacadeImpl authFacade;
 
+	@InjectMocks
+	private AuthController authController;
+	
+
+
+	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
+	
 	@Mock
-	OTPRequestValidator otpvalidator;
-
-	@Mock
-	OTPController otpcontroller;
-
-	@MockBean
-	OTPServiceImpl otpserviceimpl;
-
-	@MockBean
-	OtpRepository otprepository;
-
-	static Validator validator;
-	private String Uniqueid = "0000000001";
-	private String tempid = "TMP0000001";
-	private String txnID = "TXN0000001";
-	OtpTriggerRequestDTO otptriggerreqdto = new OtpTriggerRequestDTO();
-	OtpTriggerResponseDTO otptriggerresdto = new OtpTriggerResponseDTO();
-	Errors errors;
-
+	private UinRepository uinRepository;
+	
 	@Before
-	public void setUp() {
-		mockMvc = MockMvcBuilders.standaloneSetup(OTPController.class).setValidator(otpvalidator)
-				.setControllerAdvice(IDAuthenticationExceptionHandler.class).build();
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		validator = factory.getValidator();
+	public void before() {
+		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
+		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
+		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
+		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
+		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
+		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
+		mosipRollingFileAppender.setMaxHistory(10);
+		mosipRollingFileAppender.setImmediateFlush(true);
+		mosipRollingFileAppender.setPrudent(true);
+		//ReflectionTestUtils.setField(authController, "env", env);
+		ReflectionTestUtils.setField(auditFactory, "env", env);
+		ReflectionTestUtils.setField(restFactory, "env", env);
+		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(auditFactory, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(authController, "initializeLogger", mosipRollingFileAppender);
 	}
-
-	@Test
-	public void TestInvalidOtpTriggerReequestDto() {
-		otptriggerreqdto = new OtpTriggerRequestDTO();
-		otptriggerreqdto.setUniqueID("3432143214321412341324");
+	
+	/*
+	 * 
+	 * Errors in the AuthRequestValidator is handled here and exception is thrown
+	 */
+	@Test(expected=IdAuthenticationAppException.class)
+	public void showRequestValidator() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		AuthRequestDTO authReqDTO=new AuthRequestDTO();
+		Errors error = new BindException(authReqDTO, "authReqDTO");
+		error.rejectValue("id", "errorCode", "defaultMessage");
+		authController.authenticateApplication(authReqDTO, error);
 		
-
 	}
-
-	@Ignore
-	@Test(expected = IdValidationFailedException.class)
-	public void TestInValidTriggerOtp() throws IdValidationFailedException, IdAuthenticationAppException {
-		Mockito.when(otpcontroller.triggerOTP(otptriggerreqdto, errors)).thenThrow(IdValidationFailedException.class);
-		otpcontroller.triggerOTP(otptriggerreqdto, errors);
-		assertEquals(true, errors.hasErrors());
+	
+	@Test(expected=IdAuthenticationAppException.class)
+	public void authenticationFailed() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		AuthRequestDTO authReqDTO=new AuthRequestDTO();
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO)).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INACTIVE_UIN));
+		authController.authenticateApplication(authReqDTO, error);
+		
 	}
-
-	@Ignore
+  
 	@Test
-	public void TestValidTriggerOtp() throws IdValidationFailedException, IdAuthenticationAppException {
-		otptriggerresdto = new OtpTriggerResponseDTO();
-		otptriggerresdto.setErrorCode(null);
-		AuthResponseInfo authresinfo = new AuthResponseInfo();
-		authresinfo.setApiVersion("1.0");
-		authresinfo.setMaskedEmailId("validmail@test.com");
-		authresinfo.setRequestTimeStamp(new Date());
-		authresinfo.setUid(IDType.UIN);
-		otptriggerresdto.setInfo(authresinfo);
-		otptriggerresdto.setStatus("Success");
-		otptriggerresdto.setTxnID(txnID);
-		otptriggerresdto.setResponseTime(new Date());
-		Mockito.when(otpcontroller.triggerOTP(otptriggerreqdto, errors)).thenReturn(otptriggerresdto);
-		OtpTriggerResponseDTO finalotptriggerresdto = otpcontroller.triggerOTP(otptriggerreqdto, errors);
-		assertEquals("Success", finalotptriggerresdto.getStatus());
+	public void authenticationSuccess() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		AuthRequestDTO authReqDTO=new AuthRequestDTO();
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO)).thenReturn(new AuthResponseDTO());
+		authController.authenticateApplication(authReqDTO, error);
+		
 	}
 
-	@Ignore
-	@Test
-	public void TestValidOTPService() throws IdAuthenticationBusinessException {
-//		Mockito.when(otpservice.IsOtpTriggered(otptriggerreqdto)).thenReturn(true);
-//		boolean triggerflag = otpservice.IsOtpTriggered(otptriggerreqdto);
-//		assertEquals(true, triggerflag);
-	}
-
-	@Ignore
-	@Test
-	public void TestInvalidOTPTriggerRequest() {
-		OtpTriggerRequestDTO otpauthreqdto = new OtpTriggerRequestDTO();
-		otpauthreqdto.setUniqueID("232434242534321432");
-		Set<ConstraintViolation<OtpTriggerRequestDTO>> violations = validator.validate(otpauthreqdto);
-		assertTrue(!violations.isEmpty());
-	}
-
-	@Ignore
-	@Test
-	public void TestValidOTPTriggerRequest() throws Exception {
-		OtpTriggerRequestDTO otpauthreqdto = new OtpTriggerRequestDTO();
-		AuthTypeDTO authtypedto = new AuthTypeDTO();
-		IDType idtype = IDType.UIN;
-		otpauthreqdto.setAsaLicenseKey("TST0000001");
-		otpauthreqdto.setAuaCode("AUA001");
-//		otpauthreqdto.setIdType(idtype);
-		authtypedto.setBioAuth(true);
-		authtypedto.setOtpAuth(true);
-		authtypedto.setPaAuth(true);
-		authtypedto.setPiAuth(true);
-		authtypedto.setPinAuth(true);
-//		otpauthreqdto.setRequestedAuth(authtypedto);
-		otpauthreqdto.setRequestTime(new Date());
-		otpauthreqdto.setTxnID("000001");
-		otpauthreqdto.setUniqueID("0000000001");
-		otpauthreqdto.setVersion("1.0");
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonvalue = mapper.writeValueAsString(otpauthreqdto);
-		Mockito.when(otpservice.IsOtpTriggered(otpauthreqdto)).thenReturn(true);
-	}
-
-	@Ignore
-	@Test
-	public void TestUniqueIDNull() {
-		Mockito.when(otprepository.findByUniqueID(Uniqueid)).thenReturn(null);
-		OtpEntity tmpentity = otprepository.findByUniqueID(Uniqueid);
-		assertEquals(null, tmpentity);
-	}
-
-	@Ignore
-	@Test
-	public void TestValidUniqueID() {
-		OtpEntity entity = new OtpEntity();
-		entity.setId(1);
-		entity.setTempID(tempid);
-		entity.setUniqueID(Uniqueid);
-		Mockito.when(otprepository.findByUniqueID(Uniqueid)).thenReturn(entity);
-		OtpEntity tmpentity = otprepository.findByUniqueID(Uniqueid);
-		assertEquals(Uniqueid, tmpentity.getUniqueID());
-	}
-
-	@Ignore
-	@Test
-	public void TestInvalidUniqueID() {
-		String invalidUniqueID = "INV0000001";
-		OtpEntity entity = new OtpEntity();
-		entity.setId(1);
-		entity.setTempID(tempid);
-		entity.setUniqueID(Uniqueid);
-		Mockito.when(otprepository.findByUniqueID(Uniqueid)).thenReturn(entity);
-		OtpEntity tmpentity = otprepository.findByUniqueID(Uniqueid);
-		assertNotSame(invalidUniqueID, tmpentity.getUniqueID());
-	}
-
-	@Ignore
-	@Test
-	public void TestTempIDNull() {
-		Mockito.when(otprepository.findByTempID(tempid)).thenReturn(null);
-		OtpEntity tmpentity = otprepository.findByTempID(tempid);
-		assertEquals(null, tmpentity);
-	}
-
-	@Ignore
-	@Test
-	public void TestTempIdInvalid() {
-		String invalidTempid = "INV0000001";
-		OtpEntity entity = new OtpEntity();
-		entity.setId(1);
-		entity.setTempID(tempid);
-		entity.setUniqueID(Uniqueid);
-		Mockito.when(otprepository.findByTempID(tempid)).thenReturn(entity);
-		OtpEntity tmpentity = otprepository.findByTempID(tempid);
-		assertNotSame(invalidTempid, tmpentity.getTempID());
-	}
-
-	@Ignore
-	@Test
-	public void TestValidTempId() {
-		OtpEntity entity = new OtpEntity();
-		entity.setId(1);
-		entity.setTempID(tempid);
-		entity.setUniqueID(Uniqueid);
-		Mockito.when(otprepository.findByTempID(Uniqueid)).thenReturn(entity);
-		OtpEntity tmpentity = otprepository.findByTempID(Uniqueid);
-		assertEquals(tempid, tmpentity.getTempID());
-	}
 
 }
-*/

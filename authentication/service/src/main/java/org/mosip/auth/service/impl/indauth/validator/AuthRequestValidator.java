@@ -85,9 +85,13 @@ public class AuthRequestValidator implements Validator {
 			PinType pinType = pinDTO.getType();
 			if (null!=pinDTO.getType() &&pinType.getType().equals(PinType.OTP.getType())) {
 				String otpValue = pinDTO.getValue();
-				if (null == otpValue) {
+				if (otpValue == null) {
 					errors.rejectValue("pinDTO", IdAuthenticationErrorConstants.EMPTY_OTP.getErrorCode(),
 							env.getProperty("mosip.ida.validation.message.AuthRequest.OTP.empty"));
+				}
+				else if (!(otpValue.length() == 6)) {
+					errors.rejectValue("pinDTO", IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
+							env.getProperty("mosip.ida.validation.message.AuthRequest.OTP.length"));
 				}
 
 			} else {
