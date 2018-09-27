@@ -104,8 +104,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		mosipLogger.error(DEFAULT_SESSION_ID, "Spring MVC Exception", ex.getClass().getName(),
 				ex.toString() + "Error message Object : "
-						+ Optional.ofNullable(errorMessage.toString()).orElseGet(() -> "null") + "\nStatus returned: "
-						+ Optional.ofNullable(status.toString()).orElseGet(() -> "null"));
+						+ Optional.ofNullable(errorMessage).orElseGet(() -> "null").toString() + "\nStatus returned: "
+						+ Optional.ofNullable(status).orElseGet(() -> HttpStatus.INTERNAL_SERVER_ERROR).toString());
 
 		return new ResponseEntity<>(buildExceptionResponse(ex, ex.getMessage(), errorMessage, request),
 				HttpStatus.INTERNAL_SERVER_ERROR);
