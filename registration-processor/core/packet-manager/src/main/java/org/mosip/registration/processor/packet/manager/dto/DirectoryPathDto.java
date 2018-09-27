@@ -8,6 +8,6 @@ package org.mosip.registration.processor.packet.manager.dto;
  */
 public enum DirectoryPathDto {
 
-	LANDING_ZONE, VIRUS_SCAN, VIRUS_SCAN_RETRY
+	LANDING_ZONE, VIRUS_SCAN, VIRUS_SCAN_RETRY,FTP_ZONE
 
 }

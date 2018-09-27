@@ -15,8 +15,9 @@ public class PacketReceiverConfig {
 
 	@Bean
 	public Docket packetUploaderApis() {
-		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("org.mosip.registration.processor.packet.receiver.controller"))
+		return new Docket(DocumentationType.SWAGGER_2).groupName("Packet Receiver").select()
+				.apis(RequestHandlerSelectors
+						.basePackage("org.mosip.registration.processor.packet.receiver.controller"))
 				.paths(PathSelectors.ant("/v0.1/registration-processor/packet-receiver/*")).build();
 	}
 

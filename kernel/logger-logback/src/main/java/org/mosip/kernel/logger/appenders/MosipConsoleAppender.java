@@ -6,6 +6,10 @@
  */
 package org.mosip.kernel.logger.appenders;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.mosip.kernel.logger.constants.MosipConfigurationDefaults;
 
 /**
@@ -14,6 +18,7 @@ import org.mosip.kernel.logger.constants.MosipConfigurationDefaults;
  * @author Urvil Joshi
  * @since 1.0.0
  */
+@XmlRootElement
 public class MosipConsoleAppender {
 
 	/**
@@ -45,6 +50,7 @@ public class MosipConsoleAppender {
 	 * @param appenderName
 	 *            Name of the Appender
 	 */
+	@XmlAttribute
 	public void setAppenderName(String appenderName) {
 		this.appenderName = appenderName;
 	}
@@ -65,6 +71,7 @@ public class MosipConsoleAppender {
 	 *            It ensures that logging events are immediately written out; with
 	 *            default true
 	 */
+	@XmlElement
 	public void setImmediateFlush(boolean immediateFlush) {
 		this.immediateFlush = immediateFlush;
 	}
@@ -85,6 +92,7 @@ public class MosipConsoleAppender {
 	 *            Target of Logging either System.out or System.err; default target
 	 *            is System.out.
 	 */
+	@XmlElement
 	public void setTarget(String target) {
 		this.target = target;
 	}

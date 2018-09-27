@@ -45,14 +45,12 @@ public class SecurityUtil {
 		try {
 			keyParameter = PrivateKeyFactory.createKey(privateKey);
 		} catch (NullPointerException e) {
-			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION_MESSAGE);
+			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION);
 		} catch (ClassCastException e) {
-			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ASYMMETRIC_PRIVATE_KEY_EXCEPTION_MESSAGE);
+			throw new MosipInvalidKeyException(
+					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ASYMMETRIC_PRIVATE_KEY_EXCEPTION);
 		} catch (IOException e) {
-			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION_MESSAGE);
+			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION);
 		}
 		return keyParameter;
 	}
@@ -71,14 +69,12 @@ public class SecurityUtil {
 		try {
 			keyParameter = PublicKeyFactory.createKey(publicKey);
 		} catch (NullPointerException e) {
-			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION_MESSAGE);
+			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION);
 		} catch (IllegalArgumentException e) {
-			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ASYMMETRIC_PUBLIC_KEY_EXCEPTION_MESSAGE);
+			throw new MosipInvalidKeyException(
+					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ASYMMETRIC_PUBLIC_KEY_EXCEPTION);
 		} catch (IOException e) {
-			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION_MESSAGE);
+			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION);
 		}
 		return keyParameter;
 	}

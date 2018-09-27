@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +23,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.mosip.registration.processor.filesystem.adapter.FileSystemAdapter;
 import org.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import org.mosip.registration.processor.packet.manager.service.FileManager;
-import org.mosip.registration.processor.packet.scanner.job.VirusScannerService;
 import org.mosip.registration.processor.packet.scanner.job.exception.DFSNotAccessibleException;
 import org.mosip.registration.processor.packet.scanner.job.exception.RetryFolderNotAccessibleException;
-import org.mosip.registration.processor.packet.scanner.job.impl.tasklet.VirusScannerTasklet;
 import org.mosip.registration.processor.status.code.RegistrationStatusCode;
 import org.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import org.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import org.mosip.registration.processor.status.service.RegistrationStatusService;
+import org.mosip.kernel.virus.scanner.service.VirusScannerService;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -59,7 +59,7 @@ public class VirusScannerTaskletTest {
 	private FileSystemAdapter<InputStream, ?, Boolean> adapter;
 
 	@Mock
-	private VirusScannerService virusScanner;
+	private VirusScannerService<Boolean, String> virusScanner;
 
 	@MockBean
 	StepContribution stepContribution;
@@ -73,9 +73,9 @@ public class VirusScannerTaskletTest {
 	public void setup() throws Exception {
 
 		RegistrationStatusDto entry = new RegistrationStatusDto();
-		entry.setEnrolmentId("1000.zip");
+		entry.setRegistrationId("1000.zip");
 		entry.setRetryCount(0);
-		entry.setStatus("Landing");
+		entry.setStatusComment("Landing");
 
 		List<RegistrationStatusDto> sample = new ArrayList<RegistrationStatusDto>();
 		sample.add(entry);
@@ -89,8 +89,7 @@ public class VirusScannerTaskletTest {
 	@Test
 	public void testSuccessfulVirusScanSendToDfs() throws Exception {
 
-		Mockito.when(virusScanner.result(anyString())).thenReturn(Boolean.FALSE);
-		Mockito.doReturn(Boolean.TRUE).when(adapter).storePacket(anyString(), any());
+		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.FALSE);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 
 		RepeatStatus output = virusScannerTasklet.execute(stepContribution, chunkContext);
@@ -101,10 +100,8 @@ public class VirusScannerTaskletTest {
 	@Test
 	public void testVirusScanFailureMoveToRetry() throws Exception {
 
-		Mockito.when(virusScanner.result(anyString())).thenReturn(Boolean.TRUE);
+		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
-		Mockito.doNothing().when(fileManager).copy(anyString(), any(), any());
-		Mockito.doNothing().when(fileManager).cleanUpFile(any(), any(), anyString());
 
 		RepeatStatus output = virusScannerTasklet.execute(stepContribution, chunkContext);
 
@@ -143,8 +140,8 @@ public class VirusScannerTaskletTest {
 		final Appender mockAppender = mock(Appender.class);
 		root.addAppender(mockAppender);
 
-		Mockito.when(virusScanner.result(anyString())).thenReturn(Boolean.FALSE);
-		Mockito.doThrow(DFSNotAccessibleException.class).when(adapter).storePacket(anyString(), any());
+		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
+		Mockito.doThrow(DFSNotAccessibleException.class).when(adapter).storePacket(anyString(), any(File.class));
 
 		virusScannerTasklet.execute(stepContribution, chunkContext);
 
@@ -167,7 +164,7 @@ public class VirusScannerTaskletTest {
 		final Appender mockAppender = mock(Appender.class);
 		root.addAppender(mockAppender);
 
-		Mockito.when(virusScanner.result(anyString())).thenReturn(Boolean.TRUE);
+		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.FALSE);
 		Mockito.doThrow(RetryFolderNotAccessibleException.class).when(fileManager).copy(anyString(), any(), any());
 
 		virusScannerTasklet.execute(stepContribution, chunkContext);

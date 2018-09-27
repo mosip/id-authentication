@@ -146,6 +146,9 @@ public class FilesystemCephAdapterImplTest {
 		this.dfsAdapter.unpackPacket(checkEnrolmentId);
 		int noOfextractedFiles = this.client.listObjects(this.checkEnrolmentId).getObjectSummaries().size();
 		assertEquals(5, noOfextractedFiles);
+		//check file exists test
+		boolean findResult = this.dfsAdapter.checkFileExistence(checkEnrolmentId, PacketFiles.BIOMETRICS);
+		assertEquals(true, findResult);
 		//Get file test
 		InputStream file = this.dfsAdapter.getFile(checkEnrolmentId, PacketFiles.DEMOGRAPHICS);
 		assertNotNull(file);
