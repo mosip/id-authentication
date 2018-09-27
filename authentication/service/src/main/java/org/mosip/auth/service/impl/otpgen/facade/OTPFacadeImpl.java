@@ -18,6 +18,7 @@ import org.mosip.auth.core.util.OTPUtil;
 import org.mosip.auth.service.dao.AutnTxnRepository;
 import org.mosip.auth.service.entity.AutnTxn;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.core.utils.DateUtil;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,20 +123,6 @@ public class OTPFacadeImpl implements OTPFacade {
 	}
 
 	/**
-	 * Convert Date in ISO date and time format. ISO
-	 * format:yyyy-MM-dd'T'HH:mm:ss.SSSZ
-	 * 
-	 * @param date
-	 * @param pattern
-	 * @return
-	 */
-	private String formateDate(Date date, String pattern) {
-		// TODO Integrate with kernel DateUtil
-		// return DateUtil.formatDate(date, pattern);
-		return "";
-	}
-
-	/**
 	 * Adds a number of minutes(positive/negative) to a date returning a new Date
 	 * object. Add positive, date increase in minutes. Add negative, date reduce in
 	 * minutes.
@@ -145,9 +132,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * @return
 	 */
 	private Date addMinites(Date date, int minute) {
-		// return DateUtil.addMinutes(date, minute);
-		// TODO Integrate with kernel DateUtil
-		return new Date();
+		 return DateUtil.addMinutes(date, minute);
 	}
 
 	/**
