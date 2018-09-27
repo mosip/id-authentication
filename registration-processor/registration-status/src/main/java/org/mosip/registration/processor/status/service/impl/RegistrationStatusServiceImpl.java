@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import org.mosip.kernel.auditmanager.request.AuditRequest;
+import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 import org.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import org.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import org.mosip.registration.processor.status.code.AuditLogTempConstant;
@@ -42,7 +42,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	private AuditRequestBuilder auditRequestBuilder;
 
 	@Autowired
-	private AuditHandler<AuditRequest> auditHandler;
+	private AuditHandler<AuditRequestDto> auditHandler;
 
 	@Override
 	public RegistrationStatusDto getRegistrationStatus(String registrationId) {
@@ -89,8 +89,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
 			}
 
-			AuditRequest auditRequest = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequest);
+			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
+			auditHandler.writeAudit(auditRequestDto);
 
 		}
 	}
@@ -140,8 +140,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
 			}
 
-			AuditRequest auditRequest = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequest);
+			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
+			auditHandler.writeAudit(auditRequestDto);
 
 		}
 	}
@@ -198,8 +198,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
 			}
 
-			AuditRequest auditRequest = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequest);
+			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
+			auditHandler.writeAudit(auditRequestDto);
 
 		}
 	}
@@ -260,8 +260,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
 			}
 
-			AuditRequest auditRequest = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequest);
+			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
+			auditHandler.writeAudit(auditRequestDto);
 
 		}
 	}
@@ -311,8 +311,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
 			}
 
-			AuditRequest auditRequest = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequest);
+			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
+			auditHandler.writeAudit(auditRequestDto);
 
 		}
 	}
@@ -365,8 +365,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
 			}
 
-			AuditRequest auditRequest = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequest);
+			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
+			auditHandler.writeAudit(auditRequestDto);
 
 		}
 	}
