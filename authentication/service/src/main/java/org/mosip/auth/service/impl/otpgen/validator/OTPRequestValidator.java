@@ -2,7 +2,6 @@ package org.mosip.auth.service.impl.otpgen.validator;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
