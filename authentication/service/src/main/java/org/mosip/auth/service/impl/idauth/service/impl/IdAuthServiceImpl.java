@@ -113,7 +113,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 					Optional<UinEntity> uinEntityOpt = uinRepository.findById(refId);
 					doValidateUIN(uinEntityOpt);
 				} else {
-					throw new IdValidationFailedException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
+					throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
 				}
 			} else {
 				// TODO log error

@@ -18,9 +18,20 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_OTP("IDA-OTP-006", "OTP is invalid"),
 	INVALID_TXN_ID("IDA-OTP-007", "Input txnID does not match txnID of OTP Request"),
 	
-	ID_VERIFICATION_FAILED_EXCEPTION("IDA-DTV-IDV-001", "Invalid UIN"),
-	ID_MAPPING_FAILED_EXCEPTION("IDA-DTV-IDV-002", "VID is not present or not matched"),
-	ID_EXPIRED_EXCEPTION("IDA-DTV-IDV-003", "Expired VID is expired"),
+	
+	//To be discussed with BA
+	OTP_NOT_PRESENT("IDA-OTP-008", "OTP is not present in request"),
+	
+	// To be discussed with BA
+	INVALID_UIN("IDA-IDV-001", "Invalid UIN"),
+	INACTIVE_UIN("IDA-IDV-002", "Inactive UIN"),
+	INVALID_VID("IDA-IDV-003", "Invalid VID"),
+	EXPIRED_VID("IDA-IDV-004", "Expired VID"), // Not referenced
+	INACTIVE_VID("IDA-IDV-005", "Inactive VID"),
+	
+	//ID_VERIFICATION_FAILED_EXCEPTION("IDA-DTV-IDV-001", "Invalid UIN"),
+	ID_MAPPING_FAILED("IDA-IDV-101", "VID is not present or not matched"),
+	
 	
 	INVALID_IDTYPE("IDA-DTV-IDV-005","Invalid Id-Type"),
 	INVALID_GENERATE_OTP_REQUEST("IDA-DTV-RQV-001", "Invalid OTP request"),
@@ -52,12 +63,9 @@ public enum IdAuthenticationErrorConstants {
 	SERVER_ERROR("IDA-RST-UTL-002", "5XX - Server Error occured"),
 	CONNECTION_TIMED_OUT("IDA-RST-UTL-003", "Connection timed out"), 
 	
-	INVALID_UIN("IDA-IDM-UIN-301", "Invalid UIN"),
-	INACTIVE_UIN("IDA-IDM-UIN-302", "Inactive UIN"),
 	
-	INVALID_VID("IDA-IDM-VID-303", "Invalid VID"),
-	EXPIRED_VID("IDA-IDM-VID-304", "Expired VID"),
-	INACTIVE_VID("IDA-IDM-VID-302", "Inactive VID"),
+	
+	
 	
 	INVALID_UIN_BUISNESS("IDA-IDMB-UIN-401", "Invalid UIN"),
 	INVALID_VID_BUISNESS("IDA-IDMB-VID-402", "Invalid VID"), 

@@ -22,12 +22,12 @@ public class IdAuthenticationBusinessExceptionTest {
 	
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void IdAuthenticationBusinessExceptionEnum() throws IdAuthenticationBusinessException {
-		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
+		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 	}
 	
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void IdAuthenticationBusinessExceptionEnumThrowable() throws IdAuthenticationBusinessException {
-		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION, null);
+		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
 	}
 
 }

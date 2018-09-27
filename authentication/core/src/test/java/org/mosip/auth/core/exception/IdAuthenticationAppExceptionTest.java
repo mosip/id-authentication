@@ -22,12 +22,12 @@ public class IdAuthenticationAppExceptionTest {
 	
 	@Test(expected=IdAuthenticationAppException.class)
 	public void IdAuthenticationAppExceptionConstant() throws IdAuthenticationAppException {
-		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
+		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 	}
 	
 	@Test(expected=IdAuthenticationAppException.class)
 	public void IdAuthenticationAppExceptionConstantThrowable() throws IdAuthenticationAppException {
-		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION, null);
+		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
 	}
 
 }

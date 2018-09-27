@@ -7,12 +7,12 @@ public class SecurityFailedExceptionTest {
 
 	@Test(expected=SecurityFailedException.class)
 	public void SecurityFailedExceptionEnum() throws SecurityFailedException {
-		throw new SecurityFailedException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
+		throw new SecurityFailedException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 	}
 	
 	@Test(expected=SecurityFailedException.class)
 	public void SecurityFailedExceptionEnumThrowable() throws SecurityFailedException {
-		throw new SecurityFailedException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION, null);
+		throw new SecurityFailedException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
 	}
 	
 	@Test(expected=SecurityFailedException.class)
