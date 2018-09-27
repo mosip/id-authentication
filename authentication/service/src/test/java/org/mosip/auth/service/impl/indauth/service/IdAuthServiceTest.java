@@ -20,14 +20,21 @@ import org.mosip.auth.service.entity.UinEntity;
 import org.mosip.auth.service.entity.VIDEntity;
 import org.mosip.auth.service.factory.AuditRequestFactory;
 import org.mosip.auth.service.factory.RestRequestFactory;
+import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.auth.service.impl.idauth.service.impl.IdAuthServiceImpl;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * This class tests the IdAuthServiceImpl.java
@@ -35,21 +42,25 @@ import org.springframework.test.util.ReflectionTestUtils;
  * @author Arun Bose
  */
 
-@Ignore
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@WebMvcTest
+@ContextConfiguration(classes= {TestContext.class, WebApplicationContext.class})
+@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
 public class IdAuthServiceTest {
 	private MosipLogger logger;
 
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
-
-	@Autowired
-	private RestRequestFactory  restFactory;
+	@Mock
+	RestHelper restHelper;
 	
 	@Autowired
+	Environment env;
+	
+	
+
+	@InjectMocks
+	private RestRequestFactory  restFactory;
+	
+	@InjectMocks
 	private AuditRequestFactory auditFactory;
 	
 	@Mock
@@ -63,6 +74,21 @@ public class IdAuthServiceTest {
 	
 	@Before
 	public void before() {
+		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
+		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
+		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
+		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
+		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
+		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
+		mosipRollingFileAppender.setMaxHistory(10);
+		mosipRollingFileAppender.setImmediateFlush(true);
+		mosipRollingFileAppender.setPrudent(true);
+       
+		ReflectionTestUtils.setField(auditFactory, "env", env);
+		ReflectionTestUtils.setField(restFactory, "env", env);
+		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(auditFactory, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "auditFactory", auditFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "logger", logger);
@@ -201,7 +227,7 @@ public class IdAuthServiceTest {
 		VIDEntity vidEntity = new VIDEntity();
 		vidEntity.setRefId("1234");
 		vidEntity.setActive(true);
-		vidEntity.setExpiryDate(new Date(2019, 1, 1));
+		vidEntity.setExpiryDate(new Date(01/01/2019));
 		UinEntity uinEntity=new UinEntity();
 		uinEntity.setActive(true);
 		Optional<UinEntity> uinEntityopt= Optional.of(uinEntity);
