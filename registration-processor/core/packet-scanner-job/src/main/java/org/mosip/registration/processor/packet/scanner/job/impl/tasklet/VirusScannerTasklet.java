@@ -9,6 +9,7 @@ import org.mosip.kernel.virus.scanner.service.VirusScannerService;
 import org.mosip.registration.processor.filesystem.adapter.FileSystemAdapter;
 import org.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import org.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.ConnectionUnavailableException;
+import org.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import org.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import org.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
 import org.mosip.registration.processor.packet.manager.service.FileManager;
@@ -58,7 +59,7 @@ public class VirusScannerTasklet implements Tasklet {
 	@Autowired
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
-	private FileSystemAdapter<InputStream, ?, Boolean> adapter = new FilesystemCephAdapterImpl();
+	private FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter = new FilesystemCephAdapterImpl();
 
 	private static final String RETRY_FOLDER_NOT_ACCESSIBLE = "The Retry Folder set by the System"
 			+ " is not accessible";
