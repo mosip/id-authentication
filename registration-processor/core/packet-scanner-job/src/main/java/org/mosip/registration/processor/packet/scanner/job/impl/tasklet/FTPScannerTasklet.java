@@ -123,7 +123,7 @@ public class FTPScannerTasklet implements Tasklet {
 			Stream<Path> deletepath = Files.walk(Paths.get(filepath));
 			deletepath.filter(Files::isDirectory).forEach(filepathName -> {
 				File file = new File(filepathName.toString());
-				if (file.isDirectory() && (file.getName() != new File(filepath).getName())) {
+				if (file.isDirectory() && !(file.getName().equalsIgnoreCase(new File(filepath).getName()))) {
 					if (file.list().length == 0) {
 						file.delete();
 					}
