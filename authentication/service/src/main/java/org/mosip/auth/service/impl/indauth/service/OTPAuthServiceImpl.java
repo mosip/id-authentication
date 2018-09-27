@@ -1,5 +1,7 @@
 package org.mosip.auth.service.impl.indauth.service;
 
+import java.util.List;
+
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
 import org.mosip.auth.core.exception.IDDataValidationException;
@@ -101,8 +103,8 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	public boolean validateTxnId(String txnId, String uIN) throws IdAuthenticationBusinessException {
 		boolean isValidTxn = false;
-		AutnTxn authtxn = autntxnrepository.findAllByRequestTxnIdAndUin(txnId, uIN).get(0);
-		if (authtxn != null) {
+		List<AutnTxn> authtxns = autntxnrepository.findAllByRequestTxnIdAndUin(txnId, uIN);
+		if (authtxns != null && authtxns.size() > 0 && authtxns.get(0) != null) {
 			// FIXME audit integration
 			isValidTxn = true;
 		} else {
