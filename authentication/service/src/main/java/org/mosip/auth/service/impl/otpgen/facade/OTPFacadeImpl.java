@@ -1,12 +1,9 @@
 package org.mosip.auth.service.impl.otpgen.facade;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RequestType;
-import org.mosip.auth.core.dto.indauth.AuthError;
 import org.mosip.auth.core.dto.indauth.IdType;
 import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.mosip.auth.core.dto.otpgen.OtpResponseDTO;
@@ -64,40 +61,34 @@ public class OTPFacadeImpl implements OTPFacade {
 	 */
 	@Override
 	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
-
-		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		String otpKey = null;
 		String otp = null;
 
-		IdType idType = otpRequestDto.getIdType();
 		String refId = getRefId(otpRequestDto);
 		String productid = env.getProperty("application.id");
 		String txnID = otpRequestDto.getTxnID();
-		String auaCode = otpRequestDto.getAuaCode();
 
 		if (isOtpFlooded(otpRequestDto)) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_FLOODING_ERROR);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
-			otpKey = OTPUtil.generateKey(productid, refId, txnID, auaCode);
-
+			otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getAuaCode());
 			try {
 				otp = otpService.generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
-				LOGGER.error("", idType.getType(), e.getErrorCode(), e.getErrorText());
+				LOGGER.error("", otpRequestDto.getIdType().getType(), e.getErrorCode(), e.getErrorText());
 			}
-			if (otp == null || otp.trim().isEmpty()) {
-				LOGGER.error("NA", "NA", "NA", "generated OTP is: " + otp);
-				otpResponseDTO.setStatus("N");
-				otpResponseDTO.setErrorCode(getAuthErrors());
-				otpResponseDTO.setTxnID(txnID);
-				otpResponseDTO.setResponseTime(new Date());
-			} else {
-				LOGGER.info("NA", "NA", "NA", "generated OTP is: " + otp);
-				otpResponseDTO.setStatus("Y");
-				otpResponseDTO.setTxnID(txnID);
-				otpResponseDTO.setResponseTime(new Date());
-				saveAutnTxn(otpRequestDto);
-			}
+		}
+		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
+		if (otp == null || otp.trim().isEmpty()) {
+			LOGGER.error("NA", "NA", "NA", "generated OTP is: " + otp);
+			// TODO Throw exception
+		} else {
+			LOGGER.info("NA", "NA", "NA", "generated OTP is: " + otp);
+			otpResponseDTO.setStatus("Y");
+			otpResponseDTO.setTxnID(txnID);
+			otpResponseDTO.setResponseTime(new Date());
+			// TODO Date format to be included
+			saveAutnTxn(otpRequestDto);
 		}
 		return otpResponseDTO;
 	}
@@ -110,7 +101,6 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * @return
 	 */
 	private boolean isOtpFlooded(OtpRequestDTO otpRequestDto) {
-
 		boolean isOtpFlooded = false;
 		String uniqueID = otpRequestDto.getUniqueID();
 		Date requestTime = otpRequestDto.getReqTime();
@@ -146,7 +136,7 @@ public class OTPFacadeImpl implements OTPFacade {
 
 		AutnTxn autnTxn = new AutnTxn();
 		autnTxn.setUin(uniqueID);
-		autnTxn.setId(String.valueOf(new Date().getTime())); // TODO check this
+		autnTxn.setId(String.valueOf(new Date().getTime())); // FIXME
 
 		// TODO check
 		autnTxn.setCrBy("OTP Generate Service");
@@ -156,8 +146,8 @@ public class OTPFacadeImpl implements OTPFacade {
 		autnTxn.setAuthTypeCode(RequestType.OTP_REQUEST.getRequestType());
 		autnTxn.setRequestTxnId(txnID);
 		autnTxn.setIsActive("y");
-		autnTxn.setStatusCode("OTP_GENERATED"); // TODO
-		autnTxn.setStatusComment("OTP_GENERATED"); // TODO
+		autnTxn.setStatusCode("OTP_GENERATED"); // FIXME
+		autnTxn.setStatusComment("OTP_GENERATED"); // FIXME
 
 		autntxnrepository.saveAndFlush(autnTxn);
 	}
@@ -195,18 +185,4 @@ public class OTPFacadeImpl implements OTPFacade {
 		return refId;
 	}
 
-	/**
-	 * Authentication Errors.
-	 * 
-	 * @return List<AuthError>
-	 */
-	private List<AuthError> getAuthErrors() {
-		List<AuthError> authErrors = new ArrayList<AuthError>();
-		AuthError authError = new AuthError();
-		authError.setErrorCode(IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode());
-		authError.setErrorMessage(IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage());
-		authErrors.add(authError);
-
-		return authErrors;
-	}
 }

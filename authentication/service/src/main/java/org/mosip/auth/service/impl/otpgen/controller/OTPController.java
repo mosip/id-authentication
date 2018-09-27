@@ -33,7 +33,9 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class OTPController {
 
-	private MosipLogger LOGGER;
+	private static final String DEAFULT_SESSION_ID = "sessionId";
+
+	private MosipLogger logger;
 
 	@Autowired
 	OTPFacade otpFacade;
@@ -43,7 +45,7 @@ public class OTPController {
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
+		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
 
 	@InitBinder
@@ -68,15 +70,15 @@ public class OTPController {
 			try {
 				DataValidationUtil.validate(errors);
 			} catch (IDDataValidationException e) {
-				LOGGER.error("sessionId", null, null, e.getErrorText());
+				logger.error(DEAFULT_SESSION_ID, null, null, e.getErrorText());
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 			}
 		} else {
 			try {
 				otpResponseDTO = otpFacade.generateOtp(otpRequestDto);
-				LOGGER.info("sessionId", "NA", "NA", "NA");
+				logger.info(DEAFULT_SESSION_ID, "NA", "NA", "NA");
 			} catch (IdAuthenticationBusinessException e) {
-				LOGGER.error("sessionId", e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+				logger.error(DEAFULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 			}
 		}

@@ -145,11 +145,11 @@ public class OTPControllerTest {
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
 		idAuthenticationBusinessException = new IdAuthenticationBusinessException(
-				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
-				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage());
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage());
 		idAuthenticationAppException = new IdAuthenticationAppException(
-				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
-				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage(),
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage(),
 				idAuthenticationBusinessException);
 
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);
@@ -168,11 +168,11 @@ public class OTPControllerTest {
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
 		idAuthenticationBusinessException = new IdAuthenticationBusinessException(
-				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
-				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage());
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage());
 		idAuthenticationAppException = new IdAuthenticationAppException(
-				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorCode(),
-				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED.getErrorMessage(),
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage(),
 				idAuthenticationBusinessException);
 
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);

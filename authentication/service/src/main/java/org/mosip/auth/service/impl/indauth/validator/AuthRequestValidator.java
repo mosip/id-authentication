@@ -5,6 +5,8 @@ import java.util.Arrays;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
 import org.mosip.auth.core.dto.indauth.IdType;
+import org.mosip.auth.core.dto.indauth.PinDTO;
+import org.mosip.auth.core.dto.indauth.PinType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -47,13 +49,57 @@ public class AuthRequestValidator implements Validator {
 		validator.validate(authRequest, errors);
 		
 		IdType idTypeEnum = authRequest.getIdType();
-		if (idTypeEnum != null) {
-			anyIdTypePresent = true;
-			if (!Arrays.asList(IdType.values()).contains(idTypeEnum))
-				errors.rejectValue(null, IdAuthenticationErrorConstants.INCORRECT_IDTYPE.getErrorCode(),
-						new Object[] { "idTypeEnum" },
-						env.getProperty("mosip.ida.validation.message.AuthRequest.Idtype"));
-		}		
+//		if (idTypeEnum != null) {
+//			anyIdTypePresent = true;
+//			if (!Arrays.asList(IdType.values()).contains(idTypeEnum))
+//				errors.rejectValue(null, IdAuthenticationErrorConstants.INCORRECT_IDTYPE.getErrorCode(),
+//						new Object[] { "idTypeEnum" },
+//						env.getProperty("mosip.ida.validation.message.AuthRequest.Idtype"));
+//		}
+		boolean remainingAuthType = authRequest.getAuthType().getBio() || authRequest.getAuthType().getAd()
+				|| authRequest.getAuthType().getPin() || authRequest.getAuthType().getId();
+		if (remainingAuthType) {
+			errors.rejectValue(null, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					env.getProperty("mosip.ida.validation.message.AuthRequest.unsupportedAuthtype"));
+		}
+
+		else if (authRequest.getAuthType().getOtp()) {
+			checkOTPAuth(authRequest, errors);
+
+		} else {
+			errors.rejectValue(null, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					env.getProperty("mosip.ida.validation.message.AuthRequest.NoAuthtype"));
+
+		}
+	}
+	/*
+	 * 
+	 * This method checks for the otp authorisation parameters to be present.
+	 * 
+	 */
+
+	public void checkOTPAuth(AuthRequestDTO authRequest, Errors errors) {
+
+		PinDTO pinDTO = authRequest.getPinDTO();
+		if (null != pinDTO) {
+			PinType pinType = pinDTO.getType();
+			if (null!=pinDTO.getType() &&pinType.getType().equals(PinType.OTP.getType())) {
+				String otpValue = pinDTO.getValue();
+				if (null == otpValue) {
+					errors.rejectValue("pinDTO", IdAuthenticationErrorConstants.EMPTY_OTP.getErrorCode(),
+							env.getProperty("mosip.ida.validation.message.AuthRequest.OTP.empty"));
+				}
+
+			} else {
+				errors.rejectValue("pinDTO",IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
+						env.getProperty("mosip.ida.validation.message.AuthRequest.OTP"));
+			}
+		} else {
+			//FIXME
+                errors.rejectValue(IdAuthenticationErrorConstants.EMPTY_OTP.getErrorCode(),
+					env.getProperty("mosip.ida.validation.message.AuthRequest.PinType"));
+		}
+
 	}
 
 }

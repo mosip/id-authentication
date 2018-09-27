@@ -28,6 +28,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class OTPAuthServiceImpl implements OTPAuthService {
 
+	private static final String METHOD_VALIDATE_OTP = "validateOtp";
+
+	private static final String DEAFULT_SESSSION_ID = "sessionID";
+
 	@Autowired
 	OTPManager otpManager;
 
@@ -37,7 +41,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Autowired
 	AuditRequestFactory auditreqfactory;
 
-	private MosipLogger LOGGER;
+	private MosipLogger logger;
 
 	@Autowired
 	private Environment env;
@@ -49,7 +53,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
+		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
 
 	/**
@@ -70,20 +74,19 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			boolean isValidRequest = validateTxnId(txnId, UIN);
 			if (isValidRequest) {
 				// FIXME audit integration
-				System.err.println(env.getProperty("application.id"));
-				LOGGER.info("SESSION_ID", "validateOtp", "Inside Validate Otp Request", "");
+				logger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
 				String key = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
 				if (!isEmpty(key)) {
 					isOtpValid = otpManager.validateOtp(otp, key);
 				} else {
-					LOGGER.debug("SESSSION_ID", "validateOtp", "Inside key Null", getClass().toString());
-					LOGGER.error("SESSSION_ID", "NA", "NA", "Key Invalid");
-					throw new IDDataValidationException(IdAuthenticationErrorConstants.KEY_INVALID);
+					logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside key Null", getClass().toString());
+					logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
+					throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY);
 				}
 			}
 		} catch (IdAuthenticationBusinessException e) {
-			LOGGER.debug("SESSSION_ID", "validateOtp", "Inside Invalid Request", getClass().toString());
-			LOGGER.error("SESSSION_ID", "NA", "NA", "Arguments Invalid");
+			logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Request", getClass().toString());
+			logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Arguments Invalid");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_VALDIATION_REQUEST_FAILED,
 					e);
 		}

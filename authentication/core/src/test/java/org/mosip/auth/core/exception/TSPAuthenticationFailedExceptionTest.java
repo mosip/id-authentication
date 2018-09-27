@@ -12,12 +12,12 @@ public class TSPAuthenticationFailedExceptionTest {
 	
 	@Test(expected=TSPAuthenticationFailedException.class)
 	public void TSPAuthenticationFailedExceptionEnum() throws TSPAuthenticationFailedException {
-		throw new TSPAuthenticationFailedException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
+		throw new TSPAuthenticationFailedException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 	}
 	
 	@Test(expected=TSPAuthenticationFailedException.class)
 	public void TSPAuthenticationFailedExceptionEnumThrowable() throws TSPAuthenticationFailedException {
-		throw new TSPAuthenticationFailedException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION, null);
+		throw new TSPAuthenticationFailedException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
 	}
 
 }

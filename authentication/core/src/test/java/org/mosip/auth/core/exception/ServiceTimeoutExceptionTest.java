@@ -12,12 +12,12 @@ public class ServiceTimeoutExceptionTest {
 
 	@Test(expected=ServiceTimeoutException.class)
 	public void ServiceTimeoutExceptionEnum() throws ServiceTimeoutException {
-		throw new ServiceTimeoutException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
+		throw new ServiceTimeoutException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 	}
 	
 	@Test(expected=ServiceTimeoutException.class)
 	public void ServiceTimeoutExceptionEnumThrowable() throws ServiceTimeoutException {
-		throw new ServiceTimeoutException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION, null);
+		throw new ServiceTimeoutException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
 	}
 
 }

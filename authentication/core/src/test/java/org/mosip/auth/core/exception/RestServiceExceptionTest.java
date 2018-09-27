@@ -12,12 +12,12 @@ public class RestServiceExceptionTest {
 
 	@Test(expected=RestServiceException.class)
 	public void testRestServiceException() throws RestServiceException {
-		throw new RestServiceException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
+		throw new RestServiceException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 	}
 	
 	@Test(expected=RestServiceException.class)
 	public void testRestServiceExceptionThrowable() throws RestServiceException {
-		throw new RestServiceException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION, null);
+		throw new RestServiceException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
 	}
 
 }

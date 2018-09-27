@@ -22,12 +22,12 @@ public class IdAuthenticationDaoExceptionTest {
 	
 	@Test(expected=IdAuthenticationDaoException.class)
 	public void IdAuthenticationDaoExceptionEnum() throws IdAuthenticationDaoException {
-		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
+		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 	}
 	
 	@Test(expected=IdAuthenticationDaoException.class)
 	public void IdAuthenticationDaoExceptionEnumThrowable() throws IdAuthenticationDaoException {
-		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION, null);
+		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
 	}
 
 }

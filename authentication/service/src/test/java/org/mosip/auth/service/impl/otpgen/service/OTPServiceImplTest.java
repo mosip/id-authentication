@@ -76,7 +76,7 @@ public class OTPServiceImplTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testGenerateOtpExpactedException() throws IdAuthenticationBusinessException {
 		IdAuthenticationBusinessException e = new IdAuthenticationBusinessException(
-				IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED);
+				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		String otpKey1 = "12345";
 		String otpKey2 = "12345";
 		String otp = null;

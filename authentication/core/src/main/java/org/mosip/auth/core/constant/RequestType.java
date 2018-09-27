@@ -9,15 +9,15 @@ public enum RequestType {
 
 	OTP_REQUEST("OTP-REQUEST"), OTP_AUTH("OTP-AUTH"), DEMO_AUTH("DEMO-AUTH"), BIO_AUTH("BIO-AUTH");
 
-	String requestType;
+	String type;
 
 	/**
 	 * Initialize RequestType enum with requestType value.
 	 * 
 	 * @param requestType
 	 */
-	RequestType(String requestType) {
-		this.requestType = requestType;
+	RequestType(String type) {
+		this.type = type;
 	}
 
 	/**
@@ -26,7 +26,7 @@ public enum RequestType {
 	 * @return requestType
 	 */
 	public String getRequestType() {
-		return requestType;
+		return type;
 	}
 
 }

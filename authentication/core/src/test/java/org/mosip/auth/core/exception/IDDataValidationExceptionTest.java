@@ -12,12 +12,12 @@ public class IDDataValidationExceptionTest {
 
 	@Test(expected=IDDataValidationException.class)
 	public void testIDDataValidationException() throws IDDataValidationException {
-		throw new IDDataValidationException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
+		throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 	}
 	
 	@Test(expected=IDDataValidationException.class)
 	public void testIDDataValidationExceptionThrowable() throws IDDataValidationException {
-		throw new IDDataValidationException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION, null);
+		throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, null);
 	}
 
 }

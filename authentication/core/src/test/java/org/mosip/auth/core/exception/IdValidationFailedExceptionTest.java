@@ -33,12 +33,12 @@ public class IdValidationFailedExceptionTest {
 	
 	@Test(expected = IdValidationFailedException.class)
 	public void testDataValidationException1() throws IdValidationFailedException {
-		throw new IdValidationFailedException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION, new Throwable());
+		throw new IdValidationFailedException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT, new Throwable());
 	}
 
 	@Test(expected = IdValidationFailedException.class)
 	public void testDataValidationExceptionWithErrors1() throws IdValidationFailedException {
-		throw new IdValidationFailedException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
+		throw new IdValidationFailedException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 	}
 
 }
