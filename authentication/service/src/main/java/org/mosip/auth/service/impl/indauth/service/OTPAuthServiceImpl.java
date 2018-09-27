@@ -81,7 +81,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 				} else {
 					logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside key Null", getClass().toString());
 					logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
-					throw new IDDataValidationException(IdAuthenticationErrorConstants.KEY_INVALID);
+					throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY);
 				}
 			}
 		} catch (IdAuthenticationBusinessException e) {

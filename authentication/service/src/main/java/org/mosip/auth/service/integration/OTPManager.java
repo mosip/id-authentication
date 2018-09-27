@@ -99,7 +99,6 @@ public class OTPManager {
 		boolean isValidOtp = false;
 		OTPValidateResponseDTO validResponseDto = new OTPValidateResponseDTO();
 		try {
-			System.err.println("restRequestFactory  " + restRequestFactory);
 			RestRequestDTO restreqdto = restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE,
 					null, OTPValidateResponseDTO.class);
 			MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -107,7 +106,6 @@ public class OTPManager {
 			params.add("otp", pinValue);
 			restreqdto.setParams(params);
 
-			System.err.println(restreqdto);
 			validResponseDto = restHelper.requestSync(restreqdto);
 			if (validResponseDto.getStatus().equalsIgnoreCase("true")) {
 				isValidOtp = true;

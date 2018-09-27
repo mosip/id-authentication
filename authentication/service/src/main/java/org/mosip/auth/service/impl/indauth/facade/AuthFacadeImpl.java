@@ -130,7 +130,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				refId = idAuthService.validateUIN(authRequestDTO.getId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText()); //FIX ME
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN_BUISNESS, e);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 			}
 		} else {
 
@@ -138,7 +138,7 @@ public class AuthFacadeImpl implements AuthFacade {
 				refId = idAuthService.validateVID(authRequestDTO.getId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText());//FIX ME
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID_BUISNESS, e);
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
 		}
 		//TODO Update audit details

@@ -109,7 +109,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 			if (vidEntity.isActive()) {
 				Date currentDate = new Date();
 				if (vidEntity.getExpiryDate().before(currentDate)) {
-					refId = vidEntity.getId();
+					refId = vidEntity.getRefId();
 					Optional<UinEntity> uinEntityOpt = uinRepository.findById(refId);
 					doValidateUIN(uinEntityOpt);
 				} else {
@@ -128,7 +128,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	private void doValidateUIN(Optional<UinEntity> uinEntityOpt) throws IdValidationFailedException {
 		if (uinEntityOpt.isPresent()) {
 			UinEntity uinEntity = uinEntityOpt.get();
-			if (uinEntity.isActive()) {
+			if (!uinEntity.isActive()) {
 				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_UIN);
 			}
 		} else {

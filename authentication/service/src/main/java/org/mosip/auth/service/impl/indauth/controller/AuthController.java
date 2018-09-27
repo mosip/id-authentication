@@ -8,6 +8,7 @@ import org.mosip.auth.core.exception.IdAuthenticationAppException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
 import org.mosip.auth.core.spi.indauth.facade.AuthFacade;
 import org.mosip.auth.core.util.DataValidationUtil;
+import org.mosip.auth.service.impl.indauth.validator.AuthRequestValidator;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,9 +42,17 @@ public class AuthController {
 		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
 	
+	@Autowired
+	private AuthRequestValidator authRequestValidator;
+	
 	
 	@Autowired
 	private AuthFacade authFacade;
+	
+	@InitBinder
+	private void initBinder(WebDataBinder binder) {
+		binder.setValidator(authRequestValidator);
+	}
 
 	/**
 	 * authenticateRequest - method to authenticate request
@@ -63,23 +74,19 @@ public class AuthController {
 			Errors errors) throws IdAuthenticationAppException {
 		AuthResponseDTO authResponsedto = null;
 
-		if (errors.hasErrors()) {
 			try {
 				DataValidationUtil.validate(errors);
+				authResponsedto=authFacade.authenticateApplicant(authrequestdto);
 			} catch (IDDataValidationException e) {
 				logger.error("sessionId", null, null, e.getErrorText());
 				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+			}catch (IdAuthenticationBusinessException e) {
+					logger.error("sessionId", null, null, e.getErrorText());
+					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
+				}
 				
-			}
-		}
-		else {
-			try {
-				authResponsedto=authFacade.authenticateApplicant(authrequestdto);
-			} catch (IdAuthenticationBusinessException e) {
-				logger.error("sessionId", null, null, e.getErrorText());
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
-			}
-		  }
+			
+		  
 
 		return authResponsedto;
 
