@@ -21,21 +21,21 @@ public class PridGenerationException extends BaseUncheckedException {
 	 */
 	public PridGenerationException() {
 		super();
-		
+
 	}
 
 	/**
 	 * Constructor the initialize PreIdGenerationException
 	 * 
-	 * @param errorCode for this exception
+	 * @param errorCode
+	 *            for this exception
 	 * 
-	 * @param errorMessage for this exception
+	 * @param errorMessage
+	 *            for this exception
 	 */
 	public PridGenerationException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
-		
+
 	}
-	
-	
 
 }
