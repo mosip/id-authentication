@@ -117,7 +117,7 @@ public class OTPFacadeImplTest {
 	@Test
 	public void testIsOtpFlooded_False() {
 		String uniqueID = otpRequestDto.getUniqueID();
-		Date requestTime = otpRequestDto.getRequestTime();
+		Date requestTime = otpRequestDto.getReqTime();
 		Date addMinutesInOtpRequestDTime = new Date();
 		//TODO Integrate with kernel DateUtil
 				//DateUtil.addMinutes(requestTime, -1);
@@ -136,7 +136,7 @@ public class OTPFacadeImplTest {
 	@Test
 	public void testAddMinute() {
 		//otpRequestDto = getOtpRequestDTO();
-		Date requestTime = otpRequestDto.getRequestTime();
+		Date requestTime = otpRequestDto.getReqTime();
 		//ReflectionTestUtils.setField(otpFacadeImpl, "DateUtil", DateUtil.class);
 		//ReflectionTestUtils.invokeMethod(DateUtil, "formateDate", requestTime,-1);
 		//ReflectionTestUtils.invokeMethod(otpFacadeImpl, "formateDate", requestTime,-1);
@@ -189,7 +189,7 @@ public class OTPFacadeImplTest {
 
 		// otpRequestDto.setRequestTime(new Date(Long.valueOf("2018-09-24
 		// 12:06:28.501")));
-		otpRequestDto.setRequestTime(new Date());
+		otpRequestDto.setReqTime(new Date());
 		otpRequestDto.setTxnID("1234567890");
 		otpRequestDto.setUniqueID("1234567890");
 		otpRequestDto.setVersion("1.0");

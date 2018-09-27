@@ -109,7 +109,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			isValidTxn = true;
 		} else {
 			// FIXME audit integration
-			throw new IDDataValidationException(IdAuthenticationErrorConstants.TXNID_INVALID);
+			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 		}
 		return isValidTxn;
 	}

@@ -76,7 +76,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		String auaCode = otpRequestDto.getAuaCode();
 
 		if (isOtpFlooded(otpRequestDto)) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_FLOODING_ERROR);
 		} else {
 			otpKey = OTPUtil.generateKey(productid, refId, txnID, auaCode);
 
@@ -113,7 +113,7 @@ public class OTPFacadeImpl implements OTPFacade {
 
 		boolean isOtpFlooded = false;
 		String uniqueID = otpRequestDto.getUniqueID();
-		Date requestTime = otpRequestDto.getRequestTime();
+		Date requestTime = otpRequestDto.getReqTime();
 		Date addMinutesInOtpRequestDTime = addMinites(requestTime, -1);
 
 		if (autntxnrepository.countRequestDTime(requestTime, addMinutesInOtpRequestDTime, uniqueID) > 3) {
@@ -151,7 +151,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		// TODO check
 		autnTxn.setCrBy("OTP Generate Service");
 		autnTxn.setCrDTimes(new Date());
-		autnTxn.setRequestDTtimes(otpRequestDto.getRequestTime());
+		autnTxn.setRequestDTtimes(otpRequestDto.getReqTime());
 		autnTxn.setResponseDTimes(new Date()); // TODO check this
 		autnTxn.setAuthTypeCode(RequestType.OTP_REQUEST.getRequestType());
 		autnTxn.setRequestTxnId(txnID);
