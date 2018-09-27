@@ -69,7 +69,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		String txnID = otpRequestDto.getTxnID();
 
 		if (isOtpFlooded(otpRequestDto)) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_FLOODING_ERROR);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
 			otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getAuaCode());
 			try {

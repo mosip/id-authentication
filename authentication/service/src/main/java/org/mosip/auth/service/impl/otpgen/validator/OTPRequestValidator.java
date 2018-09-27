@@ -38,8 +38,8 @@ public class OTPRequestValidator implements Validator {
 		validator.validate(otpRequestDto, errors);
 		//FIXME
 		if (!isTimestampValid(otpRequestDto.getReqTime())) {
-			errors.rejectValue("requestTime", IdAuthenticationErrorConstants.EXPIRED_OTP_REQUEST_TIME.getErrorCode(),
-					IdAuthenticationErrorConstants.EXPIRED_OTP_REQUEST_TIME.getErrorMessage());
+			errors.rejectValue("requestTime", IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 		}
 
 		if (!otpRequestDto.getIdType().UIN.getType().equals(IdType.UIN.getType())
