@@ -41,28 +41,13 @@ public class JsonUtilTest {
 		assertThat(JsonUtil.javaObjectToJsonFile(car, file.getAbsolutePath()), is(true));
 	}
 
-	// @Test(expected = MosipJsonMappingException.class)
-	public void testJavaObjectToJsonFileWithJsonMappingException()
-			throws MosipJsonGenerationException, MosipJsonMappingException, MosipIOException {
-		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("sampleParse.json").getFile());
-
-		JsonUtil.javaObjectToJsonFile(car, file.getAbsolutePath());
-	}
-
 	@Test
 	public void testJavaObjectToJsonString() throws MosipJsonProcessingException {
 		String jsonString = JsonUtil.javaObjectToJsonString(car);
-		// System.out.println(jsonString);
+
 		jsonString = jsonString.replaceAll("\r", "");// \r and \n
 		assertThat(jsonString.contains("Black"), is(true));
 
-	}
-
-	// @Test(expected = MosipJsonProcessingException.class)
-	public void testJavaObjectToJsonStringWithProcessingException() throws MosipJsonProcessingException {
-
-		JsonUtil.javaObjectToJsonString(ParentCar2.class);
 	}
 
 	@Test
