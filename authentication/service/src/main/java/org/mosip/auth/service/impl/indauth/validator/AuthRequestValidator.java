@@ -48,7 +48,7 @@ public class AuthRequestValidator implements Validator {
 		
 		validator.validate(authRequest, errors);
 		
-		IdType idTypeEnum = authRequest.getIdType();
+//		IdType idTypeEnum = authRequest.getIdType();
 //		if (idTypeEnum != null) {
 //			anyIdTypePresent = true;
 //			if (!Arrays.asList(IdType.values()).contains(idTypeEnum))
