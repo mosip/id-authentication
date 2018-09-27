@@ -9,12 +9,12 @@ import org.mosip.kernel.core.spi.idgenerator.MosipIdGenerator;
 import org.mosip.kernel.core.utils.MosipIdChecksum;
 import org.mosip.kernel.core.utils.MosipIdFilter;
 import org.mosip.kernel.vidgenerator.cache.VidCacheManager;
-import org.mosip.kernel.vidgenerator.constants.VIDErrorCodes;
-import org.mosip.kernel.vidgenerator.constants.VIdGeneratorConstants;
+import org.mosip.kernel.vidgenerator.constants.VidErrorCodes;
+import org.mosip.kernel.vidgenerator.constants.VidGeneratorConstants;
 import org.mosip.kernel.vidgenerator.dao.VidDao;
 import org.mosip.kernel.vidgenerator.exception.InValidUinException;
-import org.mosip.kernel.vidgenerator.exception.VIDGenerationFailedException;
-import org.mosip.kernel.vidgenerator.model.VId;
+import org.mosip.kernel.vidgenerator.exception.VidGenerationFailedException;
+import org.mosip.kernel.vidgenerator.model.Vid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,96 +28,76 @@ import org.springframework.stereotype.Service;
  * @since 1.0.0
  *
  */
-
 @Service
 public class VidGenerator implements MosipIdGenerator<String> {
-
-	/**
-	 * The logger instance
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(VidGenerator.class);
-
 	@Autowired
 	VidDao vidDao;
-
 	@Autowired
 	VidCacheManager vidCacheManager;
-
 	/**
 	 * VId Validity in hour
 	 */
 	@Value("${kernel.vid.validity-in-hr}")
-	private int vIdValidityHr;
-
+	private int vidValidityHr;
 	/**
 	 * The length of the VId
 	 */
 	@Value("${kernel.vid.length}")
 	private int vidLength;
-
 	private static final RandomDataGenerator RANDOM_DATA_GENERATOR = new RandomDataGenerator();
+
+
+
+
 
 	/**
 	 * Generates a Vid and map it against the input Uin
 	 * 
 	 * @param uin
 	 *            The requested uin
-	 * @return a Vid
+	 * @return a vid
 	 */
 	public String generateId(String uin) {
-
 		String generatedVid = null;
-
 		if (uin == null) {
-			throw new InValidUinException(VIDErrorCodes.INVALID_UIN.getErrorCode(),
-					VIDErrorCodes.INVALID_UIN.getErrorMessage());
-		} else {
-			if (vidCacheManager.containsUin(uin)) {
-				VId existingVId = vidCacheManager.findByUin(uin);
-				long existingVIdCreatedAt = existingVId.getCreatedAt();
-				if (existingVIdCreatedAt > (System.currentTimeMillis()
-						- vIdValidityHr * VIdGeneratorConstants.MILLIS_IN_HR)) {
-					LOGGER.info("If Vid not expired");
-					return existingVId.getVid();
-				} else {
-					LOGGER.info("If Vid expired");
-					generatedVid = getUniqueVid();
-					long currentTimestamp = System.currentTimeMillis();
-
-					existingVId.setVid(generatedVid);
-					existingVId.setCreatedAt(currentTimestamp);
-
-					try {
-						vidDao.save(existingVId);
-						vidCacheManager.saveOrUpdate(existingVId);
-					} catch (Exception e) {
-						throw new VIDGenerationFailedException(VIDErrorCodes.VID_GENERATION_FAILED.getErrorCode(),
-								VIDErrorCodes.VID_GENERATION_FAILED.getErrorMessage());
-					}
-
-				}
-			} else {
-				LOGGER.info("If UIn is InValid");
-				generatedVid = getUniqueVid();
-				VId newVid = new VId();
-				long currentTimestamp = System.currentTimeMillis();
-
-				newVid.setUin(uin);
-				newVid.setVid(generatedVid);
-				newVid.setCreatedAt(currentTimestamp);
-				try {
-					vidDao.save(newVid);
-					vidCacheManager.saveOrUpdate(newVid);
-				} catch (Exception e) {
-					throw new VIDGenerationFailedException(VIDErrorCodes.VID_GENERATION_FAILED.getErrorCode(),
-							VIDErrorCodes.VID_GENERATION_FAILED.getErrorMessage());
-				}
+			throw new InValidUinException(VidErrorCodes.INVALID_UIN.getErrorCode(), VidErrorCodes.INVALID_UIN.getErrorMessage());
+		}
+		if (vidCacheManager.containsUin(uin)) {
+			Vid existingVId = vidCacheManager.findByUin(uin);
+			long existingVIdCreatedAt = existingVId.getCreatedAt();
+			if (existingVIdCreatedAt > (System.currentTimeMillis() - vidValidityHr * VidGeneratorConstants.MILLIS_IN_HR)) {
+				return existingVId.getId();
 			}
-
+			generatedVid = getUniqueVid();
+			long currentTimestamp = System.currentTimeMillis();
+			existingVId.setId(generatedVid);
+			existingVId.setCreatedAt(currentTimestamp);
+			try {
+				vidDao.save(existingVId);
+				vidCacheManager.saveOrUpdate(existingVId);
+			} catch (Exception e) {
+				throw new VidGenerationFailedException(VidErrorCodes.VID_GENERATION_FAILED.getErrorCode(), VidErrorCodes.VID_GENERATION_FAILED.getErrorMessage());
+			}
+		} else {
+			generatedVid = getUniqueVid();
+			Vid newVid = new Vid();
+			long currentTimestamp = System.currentTimeMillis();
+			newVid.setUin(uin);
+			newVid.setId(generatedVid);
+			newVid.setCreatedAt(currentTimestamp);
+			try {
+				vidDao.save(newVid);
+				vidCacheManager.saveOrUpdate(newVid);
+			} catch (Exception e) {
+				throw new VidGenerationFailedException(VidErrorCodes.VID_GENERATION_FAILED.getErrorCode(), VidErrorCodes.VID_GENERATION_FAILED.getErrorMessage());
+			}
 		}
 		return generatedVid;
-
 	}
+
+
+
+
 
 	/**
 	 * Generates a unique Vid
@@ -132,10 +112,13 @@ public class VidGenerator implements MosipIdGenerator<String> {
 			} else {
 				unique = true;
 			}
-
 		}
 		return generatedVid;
 	}
+
+
+
+
 
 	/**
 	 * Generates Id
@@ -143,15 +126,18 @@ public class VidGenerator implements MosipIdGenerator<String> {
 	@Override
 	public String generateId() {
 		int generatedIdLength = vidLength - 1;
-		long lowerBound = Long.parseLong(
-				VIdGeneratorConstants.TWO + StringUtils.repeat(VIdGeneratorConstants.ZERO, generatedIdLength - 1));
-		long upperBound = Long.parseLong(StringUtils.repeat(VIdGeneratorConstants.NINE, generatedIdLength));
+		long lowerBound = Long.parseLong(VidGeneratorConstants.TWO + StringUtils.repeat(VidGeneratorConstants.ZERO, generatedIdLength - 1));
+		long upperBound = Long.parseLong(StringUtils.repeat(VidGeneratorConstants.NINE, generatedIdLength));
 		String generatedVID = generateVId(generatedIdLength, lowerBound, upperBound);
 		while (!MosipIdFilter.isValidId(generatedVID)) {
 			generatedVID = generateId();
 		}
 		return generatedVID;
 	}
+
+
+
+
 
 	/**
 	 * Generates a id and then generate checksum
@@ -169,6 +155,10 @@ public class VidGenerator implements MosipIdGenerator<String> {
 		String verhoeffDigit = MosipIdChecksum.generateChecksumDigit(String.valueOf(generatedID));
 		return appendChecksum(generatedIdLength, generatedID, verhoeffDigit);
 	}
+
+
+
+
 
 	/**
 	 * Appends a checksum to generated id

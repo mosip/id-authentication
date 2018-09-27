@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-
 /**
  * @author M1043226
  * @since 1.0.0
@@ -20,41 +19,48 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class VidGeneratorTest {
-	
 	@Value("${kernel.vid.length}")
 	private int vidLength;
-
 	@Autowired
 	VidGenerator vidGenerator;
-	
-	@Test
-	public void generateIdLengthTest() {
-		String result = vidGenerator.generateId("89078997897893");
-		assertEquals(vidLength, result.length());
 
+
+
+
+
+	@Test(expected = InValidUinException.class)
+	public void UinNotValidExceptionTest() {
+		String uin = null;
+		vidGenerator.generateId(uin);
 	}
-	
+
+
+
+
+
 	@Test
 	public void generateIdNullTest() {
 		String result = vidGenerator.generateId("89078997897893");
 		assertNotNull(result);
-
 	}
-	
+
+
+
+
+
+	@Test
+	public void generateIdLengthTest() {
+		String result = vidGenerator.generateId("89078997897893");
+		assertEquals(vidLength, result.length());
+	}
+
+
+
+
+
 	@Test
 	public void existingVidTest() {
 		String result = vidGenerator.generateId("89078997897884");
 		assertNotNull(result);
-
 	}
-	
-	
-	@Test(expected = InValidUinException.class)
-	public void UinNotValidExceptionTest() {
-			String uin = null;
-			vidGenerator.generateId(uin);
-
-	}
-	
-	
 }

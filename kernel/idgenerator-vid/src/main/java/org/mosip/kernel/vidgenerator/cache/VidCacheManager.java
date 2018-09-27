@@ -1,6 +1,6 @@
 package org.mosip.kernel.vidgenerator.cache;
 
-import org.mosip.kernel.vidgenerator.model.VId;
+import org.mosip.kernel.vidgenerator.model.Vid;
 
 /**
  * @author M1043226
@@ -9,9 +9,9 @@ import org.mosip.kernel.vidgenerator.model.VId;
  */
 public interface VidCacheManager {
 
-	public VId findByUin(String uin);
+	public Vid findByUin(String uin);
 
-	public boolean saveOrUpdate(VId vid);
+	public boolean saveOrUpdate(Vid vid);
 
 	public boolean containsUin(String uin);
 

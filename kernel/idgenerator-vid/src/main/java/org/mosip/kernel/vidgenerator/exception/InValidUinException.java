@@ -10,11 +10,14 @@ import org.mosip.kernel.core.exception.BaseUncheckedException;
  *
  */
 public class InValidUinException extends BaseUncheckedException {
-
 	/**
 	 * The generated serial version id
 	 */
 	private static final long serialVersionUID = 1L;
+
+
+
+
 
 	/**
 	 * Constructor initialize InValidUinException

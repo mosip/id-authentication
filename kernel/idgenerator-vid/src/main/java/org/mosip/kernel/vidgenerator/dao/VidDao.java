@@ -1,6 +1,6 @@
 package org.mosip.kernel.vidgenerator.dao;
 
-import org.mosip.kernel.vidgenerator.model.VId;
+import org.mosip.kernel.vidgenerator.model.Vid;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +12,5 @@ import org.springframework.stereotype.Repository;
  *
  */
 @Repository
-public interface VidDao extends JpaRepository<VId, String> {
-
+public interface VidDao extends JpaRepository<Vid, String> {
 }
