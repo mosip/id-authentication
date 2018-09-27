@@ -1,16 +1,22 @@
 package org.mosip.registration.processor.packet.scanner.job.impl.tasklet;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.mosip.kernel.virus.scanner.service.VirusScannerService;
 import org.mosip.registration.processor.filesystem.adapter.FileSystemAdapter;
 import org.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
+import org.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.ConnectionUnavailableException;
 import org.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
+import org.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
 import org.mosip.registration.processor.packet.manager.service.FileManager;
-import org.mosip.registration.processor.packet.scanner.job.VirusScannerService;
+import org.mosip.registration.processor.packet.scanner.job.exception.RetryFolderNotAccessibleException;
+import org.mosip.registration.processor.packet.scanner.job.exception.VirusScanFailedException;
 import org.mosip.registration.processor.status.code.RegistrationStatusCode;
 import org.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import org.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import org.mosip.registration.processor.status.service.RegistrationStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,23 +32,25 @@ import org.springframework.stereotype.Component;
 /**
  * The Class VirusScannerTasklet.
  *
- * @author M1039303
+ * @author Mukul Puspam
  */
 @Component
 public class VirusScannerTasklet implements Tasklet {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(LandingZoneScannerTasklet.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(VirusScannerTasklet.class);
+
+	private static final String USER = "MOSIP_SYSTEM";
 
 	private static final String LOGDISPLAY = "{} - {}";
 
 	@Autowired
 	private Environment env;
 
-	@Autowired
-	private VirusScannerService virusScannerService;
-
 	@Value("${packet.ext}")
 	private String extention;
+
+	@Autowired
+	VirusScannerService<Boolean, String> virusScannerService;
 
 	@Autowired
 	FileManager<DirectoryPathDto, InputStream> fileManager;
@@ -73,7 +81,7 @@ public class VirusScannerTasklet implements Tasklet {
 		try {
 			registrationStatusDtoList = registrationStatusService
 					.getByStatus(RegistrationStatusCode.PACKET_FOR_VIRUS_SCAN.toString());
-		} catch (Exception e) {
+		} catch (TablenotAccessibleException e) {
 			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
 			return RepeatStatus.FINISHED;
 		}
@@ -81,34 +89,23 @@ public class VirusScannerTasklet implements Tasklet {
 		for (RegistrationStatusDto entry : registrationStatusDtoList) {
 
 			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN.toString()) + File.separator
-					+ getFileName(entry.getEnrolmentId());
+					+ getFileName(entry.getRegistrationId());
 			File file = new File(filepath);
-			boolean infected = false;
+			boolean isClean = false;
 
 			try {
-				infected = virusScan(filepath);
-				if (infected) {
-					sendToRetry(entry);
-				} else {
+				isClean = virusScannerService.scanFile(filepath);
+				if (isClean) {
 					sendToDFS(file, entry);
+				} else {
+					sendToRetry(entry);
 				}
-			} catch (Exception e) {
+			} catch (VirusScanFailedException e) {
 				LOGGER.error(LOGDISPLAY, VIRUS_SCAN_FAILED, e);
 			}
 
 		}
 		return RepeatStatus.FINISHED;
-	}
-
-	/**
-	 * Random method for Virus scan for now.
-	 *
-	 * @param filepath
-	 *            the filepath
-	 * @return true, if successful
-	 */
-	private boolean virusScan(String filepath) {
-		return virusScannerService.result(filepath);
 	}
 
 	/**
@@ -121,13 +118,16 @@ public class VirusScannerTasklet implements Tasklet {
 		try {
 			if (entry.getRetryCount() == null)
 				entry.setRetryCount(0);
-			fileManager.copy(entry.getEnrolmentId(), DirectoryPathDto.VIRUS_SCAN, DirectoryPathDto.VIRUS_SCAN_RETRY);
+			fileManager.copy(entry.getRegistrationId(), DirectoryPathDto.VIRUS_SCAN, DirectoryPathDto.VIRUS_SCAN_RETRY);
 			entry.setRetryCount(entry.getRetryCount() + 1);
-			entry.setStatus(RegistrationStatusCode.PACKET_FOR_VIRUS_SCAN_RETRY.toString());
+			entry.setStatusCode(RegistrationStatusCode.PACKET_FOR_VIRUS_SCAN_RETRY.toString());
+			entry.setStatusComment("packet is in status PACKET_FOR_VIRUS_SCAN_RETRY");
+			entry.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(entry);
 			fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN, DirectoryPathDto.VIRUS_SCAN_RETRY,
-					entry.getEnrolmentId());
-			LOGGER.info(LOGDISPLAY, entry.getEnrolmentId(), "File is infected. It has been sent" + " to RETRY_FOLDER.");
+					entry.getRegistrationId());
+			LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),
+					"File is infected. It has been sent" + " to RETRY_FOLDER.");
 		} catch (Exception e) {
 			LOGGER.error(LOGDISPLAY, RETRY_FOLDER_NOT_ACCESSIBLE, e);
 		}
@@ -147,9 +147,11 @@ public class VirusScannerTasklet implements Tasklet {
 		filename = filename.substring(0, filename.lastIndexOf('.'));
 		try {
 			adapter.storePacket(filename, file);
-			entry.setStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString());
+			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString());
+			entry.setStatusComment("packet is in status PACKET_UPLOADED_TO_DFS");
+			entry.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(entry);
-			LOGGER.info(LOGDISPLAY, entry.getEnrolmentId(),
+			LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),
 					"File is successfully scanned. " + "It has been sent to DFS.");
 		} catch (Exception e) {
 			LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e);

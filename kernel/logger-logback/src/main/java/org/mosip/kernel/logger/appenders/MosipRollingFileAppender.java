@@ -5,6 +5,9 @@
  */
 package org.mosip.kernel.logger.appenders;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.mosip.kernel.logger.constants.MosipConfigurationDefaults;
 
 /**RollingFile appender for Mosip 
@@ -12,6 +15,7 @@ import org.mosip.kernel.logger.constants.MosipConfigurationDefaults;
  * @author Urvil Joshi
  * @since 1.0.0
  */
+@XmlRootElement
 public class MosipRollingFileAppender extends MosipFileAppender {
 
 	/**
@@ -57,6 +61,7 @@ public class MosipRollingFileAppender extends MosipFileAppender {
 	 *            date-and-time pattern as specified by the
 	 *            java.text.SimpleDateFormat class;<b>Mandatory field to pass</b>
 	 */
+	@XmlElement
 	public void setFileNamePattern(String fileNamePattern) {
 		this.fileNamePattern = fileNamePattern;
 	}
@@ -78,6 +83,7 @@ public class MosipRollingFileAppender extends MosipFileAppender {
 	 *            asynchronously deleting older files;default this restriction will
 	 *            not apply
 	 */
+	@XmlElement
 	public void setMaxHistory(int maxHistory) {
 		this.maxHistory = maxHistory;
 	}
@@ -99,6 +105,7 @@ public class MosipRollingFileAppender extends MosipFileAppender {
 	 *            deleted asynchronously when the total size cap is exceeded;default
 	 *            this restriction will not apply
 	 */
+	@XmlElement
 	public void setTotalCap(String totalCap) {
 		this.totalCap = totalCap;
 	}
@@ -119,6 +126,7 @@ public class MosipRollingFileAppender extends MosipFileAppender {
 	 *            Limit the size of each log file;default this restriction will not
 	 *            apply
 	 */
+	@XmlElement
 	public void setMaxFileSize(String maxFileSize) {
 		this.maxFileSize = maxFileSize;
 	}

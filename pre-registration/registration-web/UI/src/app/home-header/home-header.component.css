@@ -1,0 +1,9 @@
+.button{
+    padding: 0 0px;
+  }
+  .spacer {
+    flex: 1 1 auto;
+  }
+  .mat-toolbar{
+    height: 110px !important;
+  }

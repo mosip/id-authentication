@@ -29,6 +29,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 	@Value("${packet.ext}")
 	private String extention;
+	
+	@Value("${FTP_ZONE}")
+	private String path;
 
 	@Autowired
 	private Environment env;
@@ -151,5 +154,47 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		}
 
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.mosip.idissuance.packet.manager.service.FileManager#getCurrentDirectory()
+	 */
+		@Override
+		public String getCurrentDirectory() {
+			return path;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * @see org.mosip.idissuance.packet.manager.service.FileManager#cleanUpFile(java.lang.Object, java.lang.Object, java.lang.String, java.lang.String)
+		 */
+		@Override
+		public void cleanUpFile(DirectoryPathDto srcFolderLoc, DirectoryPathDto destFolderLoc, String fileName,
+				String childFolderName) {
+			boolean fileExistsInDestination = false;
+			boolean fileExistsInSource = false;
+			try {
+
+				fileExistsInDestination = (boolean) checkIfFileExists(destFolderLoc, fileName);
+				if (fileExistsInDestination) {
+
+					fileExistsInSource = (boolean) checkIfFileExists(srcFolderLoc, childFolderName + File.separator+ fileName);
+					if (fileExistsInSource) {
+						delete(srcFolderLoc, childFolderName + File.separator + fileName);
+					} else {
+						throw new FileNotFoundInSourceException(FILE_NOT_FOUND_IN_SOURCE);
+
+					}
+				} else {
+					throw new FileNotFoundInDestinationException(FILE_NOT_FOUND_IN_DESTINATION);
+
+				}
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+				throw new FilePathNotAccessibleException(FILE_PATH_NOT_ACCESSIBLE);
+
+			}
+
+		}
 
 }

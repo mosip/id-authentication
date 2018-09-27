@@ -5,6 +5,7 @@
 *.ear
 hs_err_pid*
 target/
+META-INF/
 .springBeans
 .metadata
 .factorypath

@@ -1,0 +1,42 @@
+<app-header></app-header>
+<div class="parent">
+    <mat-card class="cardstyle">
+    <mat-card-actions>
+      <div>
+          <mat-card-header class="head">
+              <mat-card-title><h3>Enter contact details to Login</h3></mat-card-title>
+           </mat-card-header>
+        <div class="col-75">
+          <input type="text" maxlength="128" placeholder="Email or Phone Number" [(formControl)]="userLoginPref" required/>
+        </div>
+        <div class="button">
+          <button mat-raised-button color="primary" (click)="generateOTP()">Send OTP</button>
+        </div>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+
+<!-- <app-header></app-header>
+<div class="container-fluid">
+  <div class="row">
+    <form class="login-form col-xs-offset-5 col-lg-offset-5 col-sm-offset-5 col-md-offset-5">
+      <div class="row">
+        <h4><b>Enter contact details to Login.</b></h4>
+      </div>
+      <div class="row">
+        <mat-form-field class="login-full-width  input-group mb-3">
+          <div >
+            <input  placeholder="Email or Phone Number" [(ngModel)]="userLoginPref" required/>
+          </div>
+        </mat-form-field>
+      </div>
+      <div class="row otp">
+        <button class="col-xs-4 " mat-raised-button color="primary" (click)="generateOTP()">
+          <div> Generate OTP </div>
+        </button>
+      </div>
+    </form>
+  </div>
+</div> -->
