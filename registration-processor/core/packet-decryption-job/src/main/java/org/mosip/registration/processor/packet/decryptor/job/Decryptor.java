@@ -39,7 +39,7 @@ public class Decryptor {
 	
 	private  byte[] sessionKey;
 	private  byte[] encryptedData;
-	@Value("private.key.location")
+@Value("${private.key.location}")
 	private   String privateKey;
 	
 	
