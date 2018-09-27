@@ -6,7 +6,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import org.mosip.auth.core.dto.indauth.IDType;
+import org.mosip.auth.core.dto.indauth.IdType;
 
 import lombok.Data;
 
@@ -28,7 +28,7 @@ public class OtpRequestDTO  {
 
 //	@NotEmpty
 	@NotNull
-	private IDType idType;
+	private IdType idType;
 
 	@Digits(fraction = 1, integer = 1)
 	private String version;

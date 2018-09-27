@@ -172,13 +172,13 @@ public class OTPAuthServiceTest {
 		autntxnList.add(autntxn);
 		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(autntxnList);
 		otpAuthRequestDTO.setTxnID("1234567890");
-		otpAuthRequestDTO.setAuaCode("ASA000000011");
+		otpAuthRequestDTO.setMuaCode("ASA000000011");
 		otpAuthRequestDTO.setTxnID("TXN00001");
-		otpAuthRequestDTO.setUniqueID("1134034024034");
-		otpAuthRequestDTO.setAuaCode("AUA0001");
+		otpAuthRequestDTO.setId("1134034024034");
+		otpAuthRequestDTO.setMuaCode("AUA0001");
 		PinDTO pindto = new PinDTO();
-		pindto.setPinType(PinType.OTP);
-		pindto.setPinValue("23232323");
+		pindto.setType(PinType.OTP);
+		pindto.setValue("23232323");
 		otpAuthRequestDTO.setPinDTO(pindto);
 		assertFalse(authserviceimpl.validateOtp(otpAuthRequestDTO, "45345435345"));
 	}
@@ -196,13 +196,13 @@ public class OTPAuthServiceTest {
 		Mockito.when(authservice.validateOtp(Mockito.any(), Mockito.anyString())).thenThrow(
 				new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_INVALID_VALIDATEOTP_REQUEST));
 		otpAuthRequestDTO.setTxnID("1234567890");
-		otpAuthRequestDTO.setAuaCode("ASA000000011");
+		otpAuthRequestDTO.setMuaCode("ASA000000011");
 		otpAuthRequestDTO.setTxnID("TXN00001");
-		otpAuthRequestDTO.setUniqueID("1134034024034");
-		otpAuthRequestDTO.setAuaCode("AUA0001");
+		otpAuthRequestDTO.setId("1134034024034");
+		otpAuthRequestDTO.setMuaCode("AUA0001");
 		PinDTO pindto = new PinDTO();
-		pindto.setPinType(PinType.OTP);
-		pindto.setPinValue("23232323");
+		pindto.setType(PinType.OTP);
+		pindto.setValue("23232323");
 		otpAuthRequestDTO.setPinDTO(pindto);
 		authservice.validateOtp(otpAuthRequestDTO, "");
 	}
@@ -219,13 +219,13 @@ public class OTPAuthServiceTest {
 		OTPAuthServiceImpl authservice = Mockito.mock(OTPAuthServiceImpl.class);
 		Mockito.when(authservice.isEmpty(Mockito.any())).thenReturn(true);
 		otpAuthRequestDTO.setTxnID("1234567890");
-		otpAuthRequestDTO.setAuaCode("ASA000000011");
+		otpAuthRequestDTO.setMuaCode("ASA000000011");
 		otpAuthRequestDTO.setTxnID("TXN00001");
-		otpAuthRequestDTO.setUniqueID("1134034024034");
-		otpAuthRequestDTO.setAuaCode("AUA0001");
+		otpAuthRequestDTO.setId("1134034024034");
+		otpAuthRequestDTO.setMuaCode("AUA0001");
 		PinDTO pindto = new PinDTO();
-		pindto.setPinType(PinType.OTP);
-		pindto.setPinValue("23232323");
+		pindto.setType(PinType.OTP);
+		pindto.setValue("23232323");
 		otpAuthRequestDTO.setPinDTO(pindto);
 		authservice.validateOtp(otpAuthRequestDTO, "34545");
 	}

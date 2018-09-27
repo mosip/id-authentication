@@ -8,7 +8,8 @@ import lombok.Data;
 public class PinDTO {
 
 	@NotNull
-	private String pinValue;
+	private String value;
+	
 	@NotNull
-	private PinType pinType;
+	private PinType type;
 }

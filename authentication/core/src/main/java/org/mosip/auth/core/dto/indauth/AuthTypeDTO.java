@@ -9,14 +9,14 @@ import lombok.Data;
 @Data
 public class AuthTypeDTO {
 
-	private Boolean piAuth;
+	private Boolean id;
+	
+	private Boolean ad;
 
-	private Boolean paAuth;
+	private Boolean pin;
 
-	private Boolean pinAuth;
+	private Boolean bio;
 
-	private Boolean bioAuth;
-
-	private Boolean otpAuth;
+	private Boolean otp;
 
 }

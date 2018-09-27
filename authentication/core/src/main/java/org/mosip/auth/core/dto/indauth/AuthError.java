@@ -2,9 +2,7 @@ package org.mosip.auth.core.dto.indauth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * {@code AuthError} is the sub-class of {@link RuntimeException}. Purpose of
@@ -17,11 +15,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthError {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -411323366730664228L;
 
 	/**
 	 * contain the errorcode i.e numeric like 100,101 etc.
