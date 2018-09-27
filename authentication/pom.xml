@@ -20,7 +20,7 @@
 		<maven.swagger.version>2.9.2</maven.swagger.version>
 		<orika.version>1.5.2</orika.version>
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
-		<maven.sonar.version>3.5.0.1254</maven.sonar.version>
+		<maven.sonar.version>3.2</maven.sonar.version>
 		<junit.version>4.12</junit.version>
 	</properties>
 
@@ -59,6 +59,17 @@
 			<properties>
 				<sonar.host.url>
 					http://13.67.91.2:9000
+				</sonar.host.url>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+		<profile>
+			<id>LOCAL</id>
+			<properties>
+				<sonar.host.url>
+					http://172.25.166.136:9000
 				</sonar.host.url>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
