@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * The {@code AuthController} used to handle all the authentication requests
@@ -60,7 +61,7 @@ public class AuthController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
 	public AuthResponseDTO authenticateApplication(@Validated @RequestBody AuthRequestDTO authrequestdto,
-			Errors errors) throws IdAuthenticationAppException {
+			@ApiIgnore Errors errors) throws IdAuthenticationAppException {
 		AuthResponseDTO authResponsedto = null;
 
 		if (errors.hasErrors()) {

@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import springfox.documentation.annotations.ApiIgnore;
+
 /**
  * The {@code OTPAuthController} use to send request to generate otp.
  * 
@@ -59,7 +61,7 @@ public class OTPController {
 	 * @throws IdAuthenticationAppException
 	 */
 	@PostMapping(path = "/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, Errors errors)
+	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors)
 			throws IdAuthenticationAppException {
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		if (errors.hasErrors()) {
