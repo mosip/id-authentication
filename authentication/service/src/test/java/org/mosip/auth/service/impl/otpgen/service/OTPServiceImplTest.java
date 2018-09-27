@@ -3,6 +3,7 @@ package org.mosip.auth.service.impl.otpgen.service;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -44,7 +45,11 @@ public class OTPServiceImplTest {
 
 	@InjectMocks
 	private OTPServiceImpl otpServiceImpl;
+	
+	@Mock
+	private OTPServiceImpl otpServiceImplmock;
 
+	
 	@Before
 	public void before() {
 		// otpRequestDto = getOtpRequestDTO();
@@ -62,6 +67,7 @@ public class OTPServiceImplTest {
 		ReflectionTestUtils.invokeMethod(otpServiceImpl, "initializeLogger", mosipRollingFileAppender);
 	}
 
+	
 	@Test
 	public void testGenerateOtp() throws IdAuthenticationBusinessException {
 		String otpKey = "12345";
@@ -73,6 +79,7 @@ public class OTPServiceImplTest {
 		assertEquals(otp, expactedOtp);
 	}
 
+	
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testGenerateOtpExpactedException() throws IdAuthenticationBusinessException {
 		IdAuthenticationBusinessException e = new IdAuthenticationBusinessException(
@@ -84,7 +91,6 @@ public class OTPServiceImplTest {
 		Mockito.when(otpManager.generateOTP(otpKey1)).thenReturn(otp);
 		Mockito.when(otpServiceImpl.generateOtp(otpKey1)).thenThrow(e);
 		String expactedOtp = otpServiceImpl.generateOtp(otpKey1);
-		// assertEquals(otp, expactedOtp);
 	}
 	
 	@Test
@@ -94,7 +100,6 @@ public class OTPServiceImplTest {
 		
 		String otp = null;
 
-		//Mockito.when(otpManager.generateOTP(otpKey)).thenReturn(otp);
 		Mockito.when(otpServiceImpl.generateOtp(otpKey)).thenReturn(otp);
 		String expactedOtp = otpServiceImpl.generateOtp(otpKey);
 		assertEquals(otp, expactedOtp);
