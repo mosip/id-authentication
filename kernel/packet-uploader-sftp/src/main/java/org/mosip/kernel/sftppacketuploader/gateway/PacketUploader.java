@@ -31,7 +31,7 @@ public class PacketUploader {
 	}
 
 	/**
-	 * this creates and connects SFTP channel based on configutaions
+	 * This creates and connects SFTP channel based on configutaions
 	 * 
 	 * @param configuration
 	 *            {@link PacketUploaderConfiguration} provided by user
@@ -39,7 +39,6 @@ public class PacketUploader {
 	 * @throws MosipConnectionException
 	 *             to be thrown when there is a exception during connection with
 	 *             server
-	 * @throws JSchException 
 	 */
 	public static SftpChannel createSFTPChannel(PacketUploaderConfiguration configuration)
 			throws MosipConnectionException {
@@ -63,7 +62,7 @@ public class PacketUploader {
 	}
 
 	/**
-	 * uploades file to server <i>(this method will not create destination folder it
+	 * Uploades file to server <i>(this method will not create destination folder it
 	 * should be already present)</i>
 	 * 
 	 * @param sftpChannel
@@ -83,7 +82,7 @@ public class PacketUploader {
 	}
 
 	/**
-	 * this releases the obtained Connection to server
+	 * This releases the obtained Connection to server
 	 * 
 	 * @param sftpChannel
 	 *            configured {@link SftpChannel} instance

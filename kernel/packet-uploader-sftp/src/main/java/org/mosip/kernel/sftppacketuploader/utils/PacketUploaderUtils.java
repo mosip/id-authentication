@@ -24,13 +24,13 @@ import com.jcraft.jsch.Session;
  */
 public class PacketUploaderUtils {
 	/**
-	 * constructor for this class
+	 * Constructor for this class
 	 */
 	private PacketUploaderUtils() {
 	}
 
 	/**
-	 * this configures session with given configuration
+	 * This configures session with given configuration
 	 * 
 	 * @param jsch
 	 *            {@link JSch} instance
@@ -57,7 +57,7 @@ public class PacketUploaderUtils {
 	}
 
 	/**
-	 * this adds private key as identity
+	 * This adds private key as identity
 	 * 
 	 * @param jsch
 	 *            {@link JSch} instance
@@ -78,7 +78,7 @@ public class PacketUploaderUtils {
 	}
 
 	/**
-	 * validation method for packetPath
+	 * Validation method for packetPath
 	 * 
 	 * @param packetPath
 	 *            path of packet to upload
@@ -97,7 +97,7 @@ public class PacketUploaderUtils {
 	}
 
 	/**
-	 * validation method for configurations
+	 * Validation method for configurations
 	 * 
 	 * @param configuration
 	 *            {@link PacketUploaderConfiguration} provided by user
@@ -128,7 +128,7 @@ public class PacketUploaderUtils {
 	}
 
 	/**
-	 * validation method for Keys
+	 * Validation method for Keys
 	 * 
 	 * @param configuration
 	 *            {@link PacketUploaderConfiguration} provided by user
