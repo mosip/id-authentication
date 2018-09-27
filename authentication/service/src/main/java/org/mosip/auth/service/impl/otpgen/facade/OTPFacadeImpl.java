@@ -85,7 +85,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		if (otp == null || otp.trim().isEmpty()) {
 			LOGGER.error("SessionId", "NA", "NA", "generated OTP is: " + otp);
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		} else {
 			LOGGER.info("NA", "NA", "NA", "generated OTP is: " + otp);
 			otpResponseDTO.setStatus("Y");
