@@ -23,17 +23,17 @@ public class OtpRequestDTO  {
 	private static final long serialVersionUID = 587362391440358285L;
 
 	@Pattern(regexp = "^[0-9]{10}", message = "uniqueID validation failed")
-	private String uniqueID;
+	private String id;
 
 //	@NotEmpty
 	@NotNull
 	private IdType idType;
 
 	@Digits(fraction = 1, integer = 1)
-	private String version;
+	private String ver;
 
 	@Pattern(regexp = "^[A-Z0-9]{10}")
-	private String auaCode;
+	private String muaCode;
 
 	@Pattern(regexp = "^[A-Z0-9]{10}")
 	private String txnID;
@@ -42,6 +42,6 @@ public class OtpRequestDTO  {
 	private Date reqTime;
 
 	@Pattern(regexp = "^[A-Z0-9]{10}")
-	private String asaLicenseKey;
+	private String msaLicenseKey;
 
 }

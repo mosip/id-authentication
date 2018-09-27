@@ -73,7 +73,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		if (isOtpFlooded(otpRequestDto)) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED);
 		} else {
-			otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getAuaCode());
+			otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
 			try {
 				otp = otpService.generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
@@ -106,7 +106,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	 */
 	private boolean isOtpFlooded(OtpRequestDTO otpRequestDto) {
 		boolean isOtpFlooded = false;
-		String uniqueID = otpRequestDto.getUniqueID();
+		String uniqueID = otpRequestDto.getId();
 		Date requestTime = otpRequestDto.getReqTime();
 		Date addMinutesInOtpRequestDTime = addMinites(requestTime, -1);
 
@@ -137,7 +137,6 @@ public class OTPFacadeImpl implements OTPFacade {
 			return formatedDate;
 		} catch (ParseException e) {
 			LOGGER.error("SessionID", "ParseException", e.getMessage(), "Date formate parse Exception");
-			e.printStackTrace();
 		}
 		return formatedDate;
 	}
@@ -148,7 +147,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * @param otpRequestDto
 	 */
 	private void saveAutnTxn(OtpRequestDTO otpRequestDto) {
-		String uniqueID = otpRequestDto.getUniqueID();
+		String uniqueID = otpRequestDto.getId();
 		String txnID = otpRequestDto.getTxnID();
 
 		AutnTxn autnTxn = new AutnTxn();
@@ -179,7 +178,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	private String getRefId(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
 		String refId = null;
 		IdType idType = otpRequestDto.getIdType();
-		String uniqueID = otpRequestDto.getUniqueID();
+		String uniqueID = otpRequestDto.getId();
 		if (idType.equals(IdType.UIN)) {
 			try {
 				refId = idAuthService.validateUIN(uniqueID);
