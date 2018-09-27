@@ -17,10 +17,9 @@ public enum IdAuthenticationErrorConstants {
 	EXPIRED_OTP("IDA-OTP-005", "OTP has expired"),
 	INVALID_OTP("IDA-OTP-006", "OTP is invalid"),
 	INVALID_TXN_ID("IDA-OTP-007", "Input txnID does not match txnID of OTP Request"),
-	
-	
-	//To be discussed with BA
-	OTP_NOT_PRESENT("IDA-OTP-008", "OTP is not present in request"),
+	INVALID_AUTH_REQUEST_TIMESTAMP("IDA-OTP-008","Request received at MOSIP <x> hrs/min post the initiation at TSP"),
+	OTP_NOT_PRESENT("IDA-OTP-009", "Missing OTP value"),
+	REQUEST_PROCESSING_ERROR("IDA-OTP-010", "Request could not be processed. Please try again"),
 	
 	// To be discussed with BA
 	INVALID_UIN("IDA-IDV-001", "Invalid UIN"),
@@ -30,10 +29,9 @@ public enum IdAuthenticationErrorConstants {
 	INACTIVE_VID("IDA-IDV-005", "Inactive VID"),
 	
 	//ID_VERIFICATION_FAILED_EXCEPTION("IDA-DTV-IDV-001", "Invalid UIN"),
-	ID_MAPPING_FAILED("IDA-IDV-101", "VID is not present or not matched"),
+	ID_MAPPING_FAILED("IDA-IDV-101", "VID is not present or not matched"),	
+	INVALID_IDTYPE("IDA-IDV-102","Invalid Id-Type"),
 	
-	
-	INVALID_IDTYPE("IDA-DTV-IDV-005","Invalid Id-Type"),
 	INVALID_GENERATE_OTP_REQUEST("IDA-DTV-RQV-001", "Invalid OTP request"),
 	
 	OTP_GENERATION_REQUEST_FAILED("IDA-DTV-RQV-002", "OTP generation request failed"),

@@ -65,7 +65,7 @@ public class OTPServiceImpl implements OTPService {
 			if (otp == null || otp.trim().isEmpty()) {
 				LOGGER.error("NA", "NA", "NA", "generated OTP is: " + otp);
 				throw new IdAuthenticationBusinessException(
-						IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED);
+						IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 			}
 			
 			LOGGER.info("NA", "NA", "NA", " generated OTP is: " + otp);
