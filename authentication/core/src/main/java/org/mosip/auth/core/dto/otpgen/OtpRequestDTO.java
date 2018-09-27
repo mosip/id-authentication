@@ -18,7 +18,6 @@ import lombok.Data;
  */
 
 @Data
-//@NotNull
 public class OtpRequestDTO  {
 
 	private static final long serialVersionUID = 587362391440358285L;
@@ -40,7 +39,7 @@ public class OtpRequestDTO  {
 	private String txnID;
 
 //	@DateTimeFormat(pattern = "dd/MM/YY")
-	private Date requestTime;
+	private Date reqTime;
 
 	@Pattern(regexp = "^[A-Z0-9]{10}")
 	private String asaLicenseKey;

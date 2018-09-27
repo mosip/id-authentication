@@ -10,6 +10,14 @@ package org.mosip.auth.core.constant;
  *
  */
 public enum IdAuthenticationErrorConstants {
+	PHONE_EMAIL_NOT_REGISTERED("IDA-OTP-001", "Phone no and e-mail not registered. Individual has to register and try again"),
+	INVALID_OTP_REQUEST_TIMESTAMP("", "Request received at MOSIP 20 min post the initiation at TSP"),
+	OTP_FLOODING_ERROR("IDA-OTP-003", "Innumerous OTP requests received"),
+	OTP_GENERATION_FAILED("IDA-OTP-004","Could not generate/send OTP"),
+	EXPIRED_OTP("IDA-OTP-005", "OTP has expired"),
+	INVALID_OTP("IDA-OTP-006", "OTP is invalid"),
+	INVALID_TXN_ID("IDA-OTP-007", "Input txnID does not match txnID of OTP Request"),
+	
 	ID_VERIFICATION_FAILED_EXCEPTION("IDA-DTV-IDV-001", "Invalid UIN"),
 	ID_MAPPING_FAILED_EXCEPTION("IDA-DTV-IDV-002", "VID is not present or not matched"),
 	ID_EXPIRED_EXCEPTION("IDA-DTV-IDV-003", "Expired VID is expired"),
@@ -26,8 +34,9 @@ public enum IdAuthenticationErrorConstants {
 	EXPIRED_OTP_REQUEST_TIME("IDA-DTV-RQV-005","OTP requested time expired"),
 	
 	REFID_INVALID("IDA-DTV-IDV-008", "Reference ID is Null or Invalid"),
-	UIN_INVALID("IDA-DTV-IDV-009", "UIN is Null or Invalid"), KEY_INVALID("IDA-DTV-IDV-010", "Key is Null or Invalid"),
-	TXNID_INVALID("IDA-DTV-IDV-010", "Transaction ID is Null or Invalid"),
+	//UIN_INVALID("IDA-DTV-IDV-009", "UIN is Null or Invalid"), 
+	KEY_INVALID("IDA-DTV-IDV-010", "Key is Null or Invalid"),
+	//TXNID_INVALID("IDA-DTV-IDV-010", "Transaction ID is Null or Invalid"),
 	TEMPID_INVALID("IDA-DTV-RQV-003", "Temporavary ID is Null or Invalid"),
 	DATA_VALIDATION_FAILED("IDA-DTV-RQV-004", "Demographic data is incorrect"),
 	ID_INVALID_VALIDATEOTP_REQUEST("IDA-DTV-ARV-001", "Invalid Validate OTP request"),
