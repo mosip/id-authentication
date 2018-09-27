@@ -6,4 +6,6 @@ public interface PacketScannerJob<T> {
 
 	T virusScannerJob();
 
+	T ftpScannerJob();
+
 }

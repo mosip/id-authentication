@@ -10,6 +10,7 @@ import org.mosip.registration.processor.packet.receiver.exception.FileSizeExceed
 import org.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import org.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import org.mosip.registration.processor.status.code.RegistrationStatusCode;
+import org.mosip.registration.processor.status.code.RegistrationType;
 import org.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import org.mosip.registration.processor.status.service.RegistrationStatusService;
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PacketReceiverServiceImpl implements PacketReceiverService<MultipartFile, Boolean> {
 
 	private final Logger logger = LoggerFactory.getLogger(PacketReceiverServiceImpl.class);
+	private static final String USER = "MOSIP_SYSTEM";
 
 	@Value("${file.extension}")
 	private String fileExtension;
@@ -52,13 +54,20 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 		if (!(file.getOriginalFilename().endsWith(getFileExtension()))) {
 			throw new PacketNotValidException(RegistrationStatusCode.INVALID_PACKET_FORMAT.toString());
 		} else {
-			String enrolmentId = file.getOriginalFilename().split("\\.")[0];
-			if (!(isDuplicatePacket(enrolmentId))) {
+			String registrationId = file.getOriginalFilename().split("\\.")[0];
+			if (!(isDuplicatePacket(registrationId))) {
 				try {
 					fileManager.put(file.getOriginalFilename(), file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
 					RegistrationStatusDto dto = new RegistrationStatusDto();
-					dto.setEnrolmentId(enrolmentId);
-					dto.setStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+					dto.setRegistrationId(registrationId);
+					dto.setRegistrationType(RegistrationType.NEW.toString());
+					dto.setReferenceRegistrationId(null);
+					dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+					dto.setLangCode("eng");
+					dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_LANDING_ZONE status");
+					dto.setIsActive(true);
+					dto.setCreatedBy(USER);
+					dto.setIsDeleted(false);
 					registrationStatusService.addRegistrationStatus(dto);
 					storageFlag = true;
 				} catch (IOException e) {

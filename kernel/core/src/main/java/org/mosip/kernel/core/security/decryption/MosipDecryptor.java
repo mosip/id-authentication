@@ -37,19 +37,20 @@ public class MosipDecryptor {
 	 * Asymmetric Decrypt with private key
 	 * 
 	 * @param privateKey
-	 *            Key for decryption
+	 *            key for decryption
 	 * @param data
-	 *            Data for decryption
+	 *            data for decryption
 	 * @param mosipSecurityMethod
 	 *            {@link MosipSecurityMethod} for processing
 	 * @return Processed array
 	 * @throws MosipInvalidDataException
-	 *             If data is not valid in length,corrupted
+	 *             if data is not valid in length,corrupted
 	 * @throws MosipInvalidKeyException
-	 *             If key is not valid in length,corrupted and wrong
+	 *             if key is not valid in length,corrupted and wrong
 	 */
 	public static byte[] asymmetricPrivateDecrypt(byte[] privateKey, byte[] data,
 			MosipSecurityMethod mosipSecurityMethod) throws MosipInvalidDataException, MosipInvalidKeyException {
+		SecurityUtil.checkMethod(mosipSecurityMethod);
 		switch (mosipSecurityMethod) {
 
 		case HYBRID_RSA_AES_WITH_PKCS1PADDING:
@@ -63,10 +64,19 @@ public class MosipDecryptor {
 			return MosipRSA.hybridRsaAesWithOAEPWithSHA3512AndMGF1Padding(SecurityUtil.bytesToPrivateKey(privateKey),
 					data, false);
 
+		case RSA_WITH_PKCS1PADDING:
+			return MosipRSA.rsaWithPKCS1Padding(SecurityUtil.bytesToPrivateKey(privateKey), data, false);
+
+		case RSA_WITH_OAEP_WITH_MD5_AND_MGF1PADDING:
+			return MosipRSA.rsaWithOAEPWithMD5AndMGF1Padding(SecurityUtil.bytesToPrivateKey(privateKey), data, false);
+
+		case RSA_WITH_OAEP_WITH_SHA3512_AND_MGF1PADDING:
+			return MosipRSA.rsaWithOAEPWithSHA3512AndMGF1Padding(SecurityUtil.bytesToPrivateKey(privateKey), data,
+					false);
+
 		default:
 			throw new MosipNoSuchAlgorithmException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_METHOD_EXCEPTION_MESSAGE);
+					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION);
 		}
 	}
 
@@ -74,19 +84,20 @@ public class MosipDecryptor {
 	 * Asymmetric Decrypt with public key
 	 * 
 	 * @param publicKey
-	 *            Key for decryption
+	 *            key for decryption
 	 * @param data
-	 *            Data for decryption
+	 *            data for decryption
 	 * @param mosipSecurityMethod
 	 *            {@link MosipSecurityMethod} for processing
 	 * @return Processed array
 	 * @throws MosipInvalidDataException
-	 *             If data is not valid in length,corrupted
+	 *             if data is not valid in length,corrupted
 	 * @throws MosipInvalidKeyException
-	 *             If key is not valid in length,corrupted and wrong
+	 *             if key is not valid in length,corrupted and wrong
 	 */
 	public static byte[] asymmetricPublicDecrypt(byte[] publicKey, byte[] data, MosipSecurityMethod mosipSecurityMethod)
 			throws MosipInvalidDataException, MosipInvalidKeyException {
+		SecurityUtil.checkMethod(mosipSecurityMethod);
 		switch (mosipSecurityMethod) {
 
 		case HYBRID_RSA_AES_WITH_PKCS1PADDING:
@@ -99,11 +110,18 @@ public class MosipDecryptor {
 		case HYBRID_RSA_AES_WITH_OAEP_WITH_SHA3512_AND_MGF1PADDING:
 			return MosipRSA.hybridRsaAesWithOAEPWithSHA3512AndMGF1Padding(SecurityUtil.bytesToPublicKey(publicKey),
 					data, false);
+		case RSA_WITH_PKCS1PADDING:
+			return MosipRSA.rsaWithPKCS1Padding(SecurityUtil.bytesToPublicKey(publicKey), data, false);
+
+		case RSA_WITH_OAEP_WITH_MD5_AND_MGF1PADDING:
+			return MosipRSA.rsaWithOAEPWithMD5AndMGF1Padding(SecurityUtil.bytesToPublicKey(publicKey), data, false);
+
+		case RSA_WITH_OAEP_WITH_SHA3512_AND_MGF1PADDING:
+			return MosipRSA.rsaWithOAEPWithSHA3512AndMGF1Padding(SecurityUtil.bytesToPublicKey(publicKey), data, false);
 
 		default:
 			throw new MosipNoSuchAlgorithmException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_METHOD_EXCEPTION_MESSAGE);
+					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION);
 		}
 	}
 
@@ -111,19 +129,20 @@ public class MosipDecryptor {
 	 * Symmetric Decrypt with key
 	 * 
 	 * @param key
-	 *            Key for decryption
+	 *            key for decryption
 	 * @param data
-	 *            Data for decryption
+	 *            data for decryption
 	 * @param mosipSecurityMethod
 	 *            {@link MosipSecurityMethod} for processing
 	 * @return Processed array
 	 * @throws MosipInvalidDataException
-	 *             If data is not valid in length,corrupted
+	 *             if data is not valid in length,corrupted
 	 * @throws MosipInvalidKeyException
-	 *             If key is not valid in length,corrupted and wrong
+	 *             if key is not valid in length,corrupted and wrong
 	 */
 	public static byte[] symmetricDecrypt(byte[] key, byte[] data, MosipSecurityMethod mosipSecurityMethod)
 			throws MosipInvalidDataException, MosipInvalidKeyException {
+		SecurityUtil.checkMethod(mosipSecurityMethod);
 		switch (mosipSecurityMethod) {
 
 		case AES_WITH_CBC_AND_PKCS7PADDING:
@@ -137,8 +156,7 @@ public class MosipDecryptor {
 
 		default:
 			throw new MosipNoSuchAlgorithmException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_METHOD_EXCEPTION_MESSAGE);
+					MosipSecurityExceptionCodeConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION);
 		}
 	}
 

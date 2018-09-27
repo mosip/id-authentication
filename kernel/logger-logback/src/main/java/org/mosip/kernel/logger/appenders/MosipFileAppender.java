@@ -5,6 +5,11 @@
  */
 package org.mosip.kernel.logger.appenders;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 import org.mosip.kernel.logger.constants.MosipConfigurationDefaults;
 
 /**
@@ -13,6 +18,8 @@ import org.mosip.kernel.logger.constants.MosipConfigurationDefaults;
  * @author Urvil Joshi
  * @since 1.0.0
  */
+@XmlRootElement
+@XmlSeeAlso(MosipRollingFileAppender.class)
 public class MosipFileAppender {
 
 	/**
@@ -20,7 +27,8 @@ public class MosipFileAppender {
 	 */
 	private String appenderName;
 	/**
-	 * It ensures that logging events are immediately written out;with default true
+	 * It ensures that logging events are immediately written out;with default
+	 * true
 	 */
 	private boolean immediateFlush = MosipConfigurationDefaults.DEFAULTIMMEDIATEFLUSH;
 	/**
@@ -51,8 +59,9 @@ public class MosipFileAppender {
 	 * Setter for appenderName
 	 * 
 	 * @param appenderName
-	 *            Name of the appender
+	 *            name of the appender
 	 */
+	@XmlAttribute
 	public void setAppenderName(String appenderName) {
 		this.appenderName = appenderName;
 	}
@@ -70,9 +79,10 @@ public class MosipFileAppender {
 	 * Setter for immediateFlush
 	 * 
 	 * @param immediateFlush
-	 *            It ensures that logging events are immediately written out;with
-	 *            default true
+	 *            it ensures that logging events are immediately written
+	 *            out;with default true
 	 */
+	@XmlElement
 	public void setImmediateFlush(boolean immediateFlush) {
 		this.immediateFlush = immediateFlush;
 	}
@@ -90,9 +100,10 @@ public class MosipFileAppender {
 	 * Setter for fileName
 	 * 
 	 * @param fileName
-	 *            Name of File in which logs will be written;<b>Mandatory field to
-	 *            pass</b>
+	 *            name of File in which logs will be written;<b>Mandatory field
+	 *            to pass</b>
 	 */
+	@XmlElement
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
@@ -110,8 +121,9 @@ public class MosipFileAppender {
 	 * Setter for append
 	 * 
 	 * @param append
-	 *            Append in current file;with default true
+	 *            append in current file;with default true
 	 */
+	@XmlElement
 	public void setAppend(boolean append) {
 		this.append = append;
 	}
@@ -129,11 +141,12 @@ public class MosipFileAppender {
 	 * Setter for prudent
 	 * 
 	 * @param prudent
-	 *            FileAppender will safely write to the specified file if true,even
-	 *            in the presence of other FileAppender instances running in
-	 *            different JVMs, potentially running on different hosts; with
-	 *            default false
+	 *            fileAppender will safely write to the specified file if
+	 *            true,even in the presence of other FileAppender instances
+	 *            running in different JVMs, potentially running on different
+	 *            hosts; with default false
 	 */
+	@XmlElement
 	public void setPrudent(boolean prudent) {
 		this.prudent = prudent;
 	}

@@ -20,6 +20,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 /**
  * The Class LandingZoneScannerTasklet.
  *
@@ -29,9 +30,11 @@ import org.springframework.stereotype.Component;
 public class LandingZoneScannerTasklet implements Tasklet {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(LandingZoneScannerTasklet.class);
-	
+
+	private static final String USER = "MOSIP_SYSTEM";
+
 	private static final String LOGDISPLAY = "{} - {}";
-	
+
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
@@ -40,56 +43,62 @@ public class LandingZoneScannerTasklet implements Tasklet {
 
 	private static final String VIRUS_SCAN_NOT_ACCESSIBLE = "The Virus Scan Path set by the System is not accessible";
 	private static final String ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status table is not accessible";
+
 	/**
-     * Executes LandingZoneScannerTasklet to move registration packet from the landing zone to virus scan folder
-     *
-     * @param StepContribution arg0
-     * @param ChunkContext arg1
-     * @return RepeatStatus
-     * @throws Exception
-     *
-     */
+	 * Executes LandingZoneScannerTasklet to move registration packet from the
+	 * landing zone to virus scan folder
+	 *
+	 * @param StepContribution
+	 *            arg0
+	 * @param ChunkContext
+	 *            arg1
+	 * @return RepeatStatus
+	 * @throws Exception
+	 *
+	 */
 	@Override
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
-		
+
 		List<RegistrationStatusDto> getEnrols = new ArrayList<>();
 		try {
-			
+
 			getEnrols = this.registrationStatusService
 					.findbyfilesByThreshold(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
 
 			if (!(getEnrols.isEmpty())) {
 				getEnrols.forEach(dto -> {
 					try {
-						
-						this.filemanager.copy(dto.getEnrolmentId(), DirectoryPathDto.LANDING_ZONE,
+
+						this.filemanager.copy(dto.getRegistrationId(), DirectoryPathDto.LANDING_ZONE,
 								DirectoryPathDto.VIRUS_SCAN);
-						if(this.filemanager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN, dto.getEnrolmentId())) {
-						
-							dto.setStatus(RegistrationStatusCode.PACKET_FOR_VIRUS_SCAN.toString());
+						if (this.filemanager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN, dto.getRegistrationId())) {
+
+							dto.setStatusCode(RegistrationStatusCode.PACKET_FOR_VIRUS_SCAN.toString());
+							dto.setStatusComment("packet is in status packet for virus scan");
+							dto.setUpdatedBy(USER);
 							this.registrationStatusService.updateRegistrationStatus(dto);
-						
-						this.filemanager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN,
-								dto.getEnrolmentId());
-						
-						LOGGER.info(LOGDISPLAY,dto.getEnrolmentId(),"moved successfully to virus scan.");
+
+							this.filemanager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN,
+									dto.getRegistrationId());
+
+							LOGGER.info(LOGDISPLAY, dto.getRegistrationId(), "moved successfully to virus scan.");
 						}
-					} catch ( TablenotAccessibleException e) {
-						
-						LOGGER.error(LOGDISPLAY,ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE,e);
-					}catch (IOException | FileNotFoundInDestinationException  e) {
-						
-						LOGGER.error(LOGDISPLAY,VIRUS_SCAN_NOT_ACCESSIBLE, e);
+					} catch (TablenotAccessibleException e) {
+
+						LOGGER.error(LOGDISPLAY, ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE, e);
+					} catch (IOException | FileNotFoundInDestinationException e) {
+
+						LOGGER.error(LOGDISPLAY, VIRUS_SCAN_NOT_ACCESSIBLE, e);
 					}
 
 				});
 			} else if (getEnrols.isEmpty()) {
-				
+
 				LOGGER.info("There are currently no files to be moved");
 			}
 		} catch (TablenotAccessibleException e) {
-			
-			LOGGER.error(LOGDISPLAY,ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE, e);
+
+			LOGGER.error(LOGDISPLAY, ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE, e);
 		}
 		return RepeatStatus.FINISHED;
 	}

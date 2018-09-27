@@ -17,7 +17,7 @@ import org.mosip.kernel.logger.constants.LogExeptionCodeConstants;
  */
 public class MosipIllegalArgumentException extends BaseUncheckedException {
 	/**
-	 * unique id for serialization
+	 * Unique id for serialization
 	 */
 	private static final long serialVersionUID = 105555532L;
 
@@ -27,7 +27,8 @@ public class MosipIllegalArgumentException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public MosipIllegalArgumentException(LogExeptionCodeConstants errorCode, LogExeptionCodeConstants errorMessage) {
+	public MosipIllegalArgumentException(LogExeptionCodeConstants errorCode,
+			LogExeptionCodeConstants errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 }

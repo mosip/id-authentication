@@ -8,7 +8,7 @@ import org.mosip.kernel.core.exception.BaseUncheckedException;
  * @author Omsaieswar Mulakaluri
  * @since 1.0.0
  */
-public class MosipNoSuchAlgorithmException extends BaseUncheckedException{
+public class MosipNoSuchAlgorithmException extends BaseUncheckedException {
 
 	/** Serializable version Id. */
 	private static final long serialVersionUID = 1L;
@@ -25,5 +25,5 @@ public class MosipNoSuchAlgorithmException extends BaseUncheckedException{
 		super(arg0, arg1, arg2);
 
 	}
-	
+
 }

@@ -22,7 +22,6 @@ import org.mockito.Mockito;
 import org.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import org.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
 import org.mosip.registration.processor.packet.manager.service.FileManager;
-import org.mosip.registration.processor.packet.scanner.job.impl.tasklet.LandingZoneScannerTasklet;
 import org.mosip.registration.processor.status.code.RegistrationStatusCode;
 import org.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import org.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -40,8 +39,6 @@ import ch.qos.logback.core.Appender;
 
 @RunWith(SpringRunner.class)
 public class LandingZoneScannerTaskletTest {
-
-	
 
 	@InjectMocks
 	LandingZoneScannerTasklet landingZoneToVirusScanTasklet;
@@ -64,8 +61,20 @@ public class LandingZoneScannerTaskletTest {
 
 	@Before
 	public void setup() {
-		dto1 = new RegistrationStatusDto("1001", "landingZone", 0, null, null);
-		dto2 = new RegistrationStatusDto("1002", "landingZone", 0, null, null);
+		dto1 = new RegistrationStatusDto();
+		dto1.setRegistrationId("1001");
+		dto1.setStatusComment("landingZone");
+		dto1.setRetryCount(0);
+		dto1.setCreateDateTime(null);
+		dto1.setUpdateDateTime(null);
+
+		dto2 = new RegistrationStatusDto();
+		dto2.setRegistrationId("1002");
+		dto2.setStatusComment("landingZone");
+		dto2.setRetryCount(0);
+		dto2.setCreateDateTime(null);
+		dto2.setUpdateDateTime(null);
+
 		list = new ArrayList<RegistrationStatusDto>();
 	}
 
@@ -78,8 +87,7 @@ public class LandingZoneScannerTaskletTest {
 				.thenReturn(list);
 		Mockito.doNothing().when(filemanager).copy(any(String.class), any(DirectoryPathDto.class),
 				any(DirectoryPathDto.class));
-		Mockito.when(filemanager.checkIfFileExists(any(DirectoryPathDto.class), any(String.class))).
-				thenReturn(true);
+		Mockito.when(filemanager.checkIfFileExists(any(DirectoryPathDto.class), any(String.class))).thenReturn(true);
 		Mockito.doNothing().when(filemanager).cleanUpFile(any(DirectoryPathDto.class), any(DirectoryPathDto.class),
 				any(String.class));
 
@@ -100,7 +108,6 @@ public class LandingZoneScannerTaskletTest {
 		Mockito.when(registrationStatusService
 				.findbyfilesByThreshold(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString()))
 				.thenReturn(list);
-		
 
 		RepeatStatus status = landingZoneToVirusScanTasklet.execute(stepContribution, chunkContext);
 		Assert.assertEquals(RepeatStatus.FINISHED, status);
@@ -112,7 +119,7 @@ public class LandingZoneScannerTaskletTest {
 			}
 		}));
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void registrationStatusServiceFindingEntitiesfailureTest() throws Exception {
@@ -122,8 +129,8 @@ public class LandingZoneScannerTaskletTest {
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 
-		
-		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService).findbyfilesByThreshold(any(String.class));
+		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
+				.findbyfilesByThreshold(any(String.class));
 
 		landingZoneToVirusScanTasklet.execute(stepContribution, chunkContext);
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
@@ -133,7 +140,6 @@ public class LandingZoneScannerTaskletTest {
 						.contains("The Enrolment Status table is not accessible");
 			}
 		}));
-		
 
 	}
 
@@ -151,11 +157,11 @@ public class LandingZoneScannerTaskletTest {
 				.thenReturn(list);
 		Mockito.doNothing().when(filemanager).copy(any(String.class), any(DirectoryPathDto.class),
 				any(DirectoryPathDto.class));
-		Mockito.when(filemanager.checkIfFileExists(any(DirectoryPathDto.class), any(String.class))).
-		thenReturn(true);
+		Mockito.when(filemanager.checkIfFileExists(any(DirectoryPathDto.class), any(String.class))).thenReturn(true);
 		Mockito.doNothing().when(filemanager).cleanUpFile(any(DirectoryPathDto.class), any(DirectoryPathDto.class),
 				any(String.class));
-		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService).updateRegistrationStatus(any(RegistrationStatusDto.class));
+		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
+				.updateRegistrationStatus(any(RegistrationStatusDto.class));
 		landingZoneToVirusScanTasklet.execute(stepContribution, chunkContext);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
@@ -187,8 +193,8 @@ public class LandingZoneScannerTaskletTest {
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
-				return ((LoggingEvent) argument).getFormattedMessage().
-						contains("The Virus Scan Path set by the System is not accessible");
+				return ((LoggingEvent) argument).getFormattedMessage()
+						.contains("The Virus Scan Path set by the System is not accessible");
 			}
 		}));
 	}
@@ -207,21 +213,21 @@ public class LandingZoneScannerTaskletTest {
 				.thenReturn(list);
 		Mockito.doNothing().when(filemanager).copy(any(String.class), any(DirectoryPathDto.class),
 				any(DirectoryPathDto.class));
-		Mockito.when(filemanager.checkIfFileExists(any(DirectoryPathDto.class), any(String.class))).
-		thenReturn(true);
-		Mockito.doThrow(FileNotFoundInDestinationException.class).when(filemanager).cleanUpFile(any(DirectoryPathDto.class),
-				any(DirectoryPathDto.class), any(String.class));
+		Mockito.when(filemanager.checkIfFileExists(any(DirectoryPathDto.class), any(String.class))).thenReturn(true);
+		Mockito.doThrow(FileNotFoundInDestinationException.class).when(filemanager)
+				.cleanUpFile(any(DirectoryPathDto.class), any(DirectoryPathDto.class), any(String.class));
 
 		landingZoneToVirusScanTasklet.execute(stepContribution, chunkContext);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
-				return ((LoggingEvent) argument).getFormattedMessage().
-						contains("The Virus Scan Path set by the System is not accessible");
+				return ((LoggingEvent) argument).getFormattedMessage()
+						.contains("The Virus Scan Path set by the System is not accessible");
 			}
 		}));
 	}
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void CheckifExistsfailureTest() throws Exception {
@@ -236,16 +242,16 @@ public class LandingZoneScannerTaskletTest {
 				.thenReturn(list);
 		Mockito.doNothing().when(filemanager).copy(any(String.class), any(DirectoryPathDto.class),
 				any(DirectoryPathDto.class));
-		Mockito.doThrow(FileNotFoundInDestinationException.class).when(filemanager).checkIfFileExists(any(DirectoryPathDto.class),
-				 any(String.class));
+		Mockito.doThrow(FileNotFoundInDestinationException.class).when(filemanager)
+				.checkIfFileExists(any(DirectoryPathDto.class), any(String.class));
 
 		landingZoneToVirusScanTasklet.execute(stepContribution, chunkContext);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
-				return ((LoggingEvent) argument).getFormattedMessage().
-						contains("The Virus Scan Path set by the System is not accessible");
+				return ((LoggingEvent) argument).getFormattedMessage()
+						.contains("The Virus Scan Path set by the System is not accessible");
 			}
 		}));
 	}

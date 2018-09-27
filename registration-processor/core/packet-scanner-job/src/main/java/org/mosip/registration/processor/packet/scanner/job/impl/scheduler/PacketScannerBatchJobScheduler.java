@@ -29,6 +29,8 @@ public class PacketScannerBatchJobScheduler {
 
 	private static final String LOGDISPLAY = "{} - {} - {}";
 	
+	private static final String JOB_STATUS = "Job's status" ;
+	
 	@Autowired
 	private JobLauncher jobLauncher;
 
@@ -37,6 +39,9 @@ public class PacketScannerBatchJobScheduler {
 
 	@Autowired
 	private Job virusScannerJob;
+	
+	@Autowired
+	private Job ftpScannerJob;
 
 	/**
 	 * landingZoneScannerJobScheduler runs the landingZoneScannerJob as per given cron schedule 
@@ -49,7 +54,7 @@ public class PacketScannerBatchJobScheduler {
 		try {
 			JobExecution jobExecution = jobLauncher.run(landingZoneScannerJob, jobParameters);
 			
-			LOGGER.info(LOGDISPLAY,"Job's status ", jobExecution.getId(),jobExecution.getStatus());
+			LOGGER.info(LOGDISPLAY,JOB_STATUS, jobExecution.getId(),jobExecution.getStatus());
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
 			LOGGER.error(LOGDISPLAY,"landingZoneScannerJobScheduler failed to execute", e);
@@ -66,10 +71,27 @@ public class PacketScannerBatchJobScheduler {
 
 		try {
 			JobExecution jobExecution = jobLauncher.run(virusScannerJob, jobParameters);
-			LOGGER.info(LOGDISPLAY,"Job's status " , jobExecution.getId() , jobExecution.getStatus());
+			LOGGER.info(LOGDISPLAY,JOB_STATUS , jobExecution.getId() , jobExecution.getStatus());
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
 			LOGGER.error(LOGDISPLAY,"virusScannerJobScheduler failed to execute", e);
+		}
+	}
+	
+	/**
+	 * ftpJobScheduler runs the ftpJobScheduler as per given cron schedule 
+	 */
+	@Scheduled(cron = "${ftp.cron.job.schedule}")
+	public void ftpJobScheduler() {
+		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+				.toJobParameters();
+
+		try {
+			JobExecution jobExecution = jobLauncher.run(ftpScannerJob, jobParameters);
+			LOGGER.info(LOGDISPLAY,JOB_STATUS , jobExecution.getId() , jobExecution.getStatus());
+		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
+				| JobParametersInvalidException e) {
+			LOGGER.error(LOGDISPLAY,"ftpJobScheduler failed to execute", e);
 		}
 	}
 
