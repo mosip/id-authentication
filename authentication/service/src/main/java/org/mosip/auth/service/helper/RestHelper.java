@@ -31,6 +31,7 @@ import reactor.core.publisher.Mono;
  */
 @Component
 public class RestHelper {
+	private static final String METHOD_REQUEST_SYNC = "requestSync";
 	private static final String METHOD_HANDLE_STATUS_ERROR = "handleStatusError";
 	private static final String PREFIX_RESPONSE = "Response : ";
 	private static final String PREFIX_REQUEST = "Request : ";
@@ -65,13 +66,13 @@ public class RestHelper {
 		Object response;
 		if (request.getTimeout() != null) {
 			try {
-				logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync", PREFIX_REQUEST + request);
+				logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync", PREFIX_RESPONSE + response);
+				logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_RESPONSE + response);
 				return (T) response;
 			} catch (RuntimeException e) {
 				if (e.getCause().getClass().equals(TimeoutException.class)) {
-					logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync", "Throwing RestServiceException - CONNECTION_TIMED_OUT - " + e.getCause());
+					logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, "Throwing RestServiceException - CONNECTION_TIMED_OUT - " + e.getCause());
 					throw new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e);
 				} else {
 					logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync-RuntimeException", "Throwing RestServiceException - UNKNOWN_ERROR - " + e);
@@ -79,9 +80,9 @@ public class RestHelper {
 				}
 			}
 		} else {
-			logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync", PREFIX_REQUEST + request);
+			logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 			response = request(request).block();
-			logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync", PREFIX_RESPONSE + response);
+			logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_RESPONSE + response);
 			return (T) response;
 		}
 	}
@@ -149,8 +150,8 @@ public class RestHelper {
 	 *            the response
 	 * @return the mono<? extends throwable>
 	 */
-	private Mono<? extends Throwable> handleStatusError(ClientResponse response) {
-		Mono<?> body = response.body(BodyExtractors.toMono(String.class));
+	private Mono<Throwable> handleStatusError(ClientResponse response) {
+		Mono<String> body = response.body(BodyExtractors.toMono(String.class));
 		logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, "Status error : " + response.statusCode() + " " + response.statusCode().getReasonPhrase());
 		if (response.statusCode().is4xxClientError()) {
 			logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, "Status error - returning RestServiceException - CLIENT_ERROR");
