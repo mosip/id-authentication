@@ -33,6 +33,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class IdAuthServiceImpl implements IdAuthService {
 	
+	private static final String DEFAULT_SESSION_ID = "sessionId";
+
 	@Autowired
 	private RestHelper restHelper;
 	
@@ -71,6 +73,12 @@ public class IdAuthServiceImpl implements IdAuthService {
 		}
 
 		//TODO Update audit details
+		auditData();  
+
+		return refId;
+	}
+
+	private void auditData() throws IdAuthenticationBusinessException {
 		AuditRequestDto auditRequest = auditFactory.buildRequest("moduleId", "description");
 
 		RestRequestDTO restRequest;
@@ -78,16 +86,22 @@ public class IdAuthServiceImpl implements IdAuthService {
 			restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 					AuditResponseDto.class);
 		} catch (IDDataValidationException e) {
-			logger.error("sessionId", null, null, e.getErrorText());
+			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
 		}
 
-		restHelper.requestAsync(restRequest);  
+		restHelper.requestAsync(restRequest);
+	}
+
+	public String validateVID(String vid) throws IdAuthenticationBusinessException {
+		String refId = doValidateVIDEntity(vid);
+		
+		auditData();  
 
 		return refId;
 	}
 
-	public String validateVID(String vid) throws IdAuthenticationBusinessException {
+	private String doValidateVIDEntity(String vid) throws IdValidationFailedException {
 		String refId = null;
 		VIDEntity vidEntity = vidRepository.getOne(vid);
 		if (null != vidEntity) {
@@ -97,15 +111,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 				if (vidEntity.getExpiryDate().before(currentDate)) {
 					refId = vidEntity.getId();
 					Optional<UinEntity> uinEntityOpt = uinRepository.findById(refId);
-					if (uinEntityOpt.isPresent()) {
-						UinEntity uinEntity = uinEntityOpt.get();
-						if (uinEntity.isActive()) {
-							throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_UIN);
-						}
-					} else {
-						throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
-					}
-
+					doValidateUIN(uinEntityOpt);
 				} else {
 					throw new IdValidationFailedException(IdAuthenticationErrorConstants.ID_EXPIRED_EXCEPTION);
 				}
@@ -116,31 +122,18 @@ public class IdAuthServiceImpl implements IdAuthService {
 		} else {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_VID);
 		}
-		
-		//TODO Update audit details
-		AuditRequestDto auditRequest = auditFactory.buildRequest("moduleId", "description");
-
-		RestRequestDTO restRequest;
-		try {
-			restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-					AuditResponseDto.class);
-		} catch (IDDataValidationException e) {
-			logger.error("sessionId", null, null, e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
-		}
-
-		restHelper.requestAsync(restRequest);  
-
 		return refId;
 	}
 
-	/*
-	 * public String getRefId(String UIN) { String refId = null; try { UinEntity
-	 * uinEntity = uinRepository.findByUin(UIN); if (uinEntity != null) { refId =
-	 * uinEntity.getId(); } else { throw new
-	 * IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN); } }
-	 * catch (Exception e) { // throw connection exception }
-	 * 
-	 * return refId; }
-	 */
+	private void doValidateUIN(Optional<UinEntity> uinEntityOpt) throws IdValidationFailedException {
+		if (uinEntityOpt.isPresent()) {
+			UinEntity uinEntity = uinEntityOpt.get();
+			if (uinEntity.isActive()) {
+				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_UIN);
+			}
+		} else {
+			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
+		}
+	}
+
 }

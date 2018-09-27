@@ -35,11 +35,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
-	private MosipLogger logger;
+	private static final String EVENT_EXCEPTION = "Exception";
+	private static final String DEFAULT_SESSION_ID = "sessionId";
+	private MosipLogger LOGGER;
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
+		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
 
 	/**
@@ -54,15 +56,15 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
 
-		logger.debug("sessionId", "Exception", "Entered handleAllExceptions",
+		LOGGER.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Entered handleAllExceptions",
 				"Handling exception :" + ex.getClass().toString());
 
-		logger.error("sessionId", "Exception", ex.getClass().getName(),
+		LOGGER.error(DEFAULT_SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(),
 				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.INTERNAL_SERVER_ERROR);
 
 		IDAuthenticationUnknownException unknownException = new IDAuthenticationUnknownException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
 
-		logger.debug("sessionId", "Exception", "Changing exception",
+		LOGGER.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Changing exception",
 				"Returing exception as " + ex.getClass().toString());
 
 		return new ResponseEntity<>(buildExceptionResponse(unknownException, 
@@ -96,10 +98,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-		logger.debug("sessionId", "Exception", "Entered handleExceptionInternal",
+		LOGGER.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Entered handleExceptionInternal",
 				"Handling exception :" + ex.getClass().toString());
 
-		logger.error("sessionId", "Spring MVC Exception", ex.getClass().getName(),
+		LOGGER.error(DEFAULT_SESSION_ID, "Spring MVC Exception", ex.getClass().getName(),
 				ex.toString() + "Error message Object : "
 						+ Optional.ofNullable(errorMessage.toString()).orElseGet(() -> "null") + "\nStatus returned: "
 						+ Optional.ofNullable(status.toString()).orElseGet(() -> "null"));
@@ -120,10 +122,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(IdAuthenticationAppException.class)
 	protected ResponseEntity<Object> handleIdAppException(IdAuthenticationAppException ex, WebRequest request) {
 
-		logger.debug("sessionId", "IdUsageException", "Entered handleIdUsageException",
+		LOGGER.debug(DEFAULT_SESSION_ID, "IdAuthenticationAppException", "Entered handleIdUsageException",
 				"Handling exception :" + ex.getClass().toString());
 
-		logger.error("sessionId", "IdUsageException", ex.getErrorCode(),
+		LOGGER.error(DEFAULT_SESSION_ID, "IdAuthenticationAppException", ex.getErrorCode(),
 				ex.toString() + "\n Status returned: " + HttpStatus.INTERNAL_SERVER_ERROR);
 
 		List<String> errorMessage = new ArrayList<>();
@@ -149,7 +151,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	private Object buildExceptionResponse(Exception ex, @Nullable String errorCode, @Nullable Object errorMessages,
 			WebRequest request) {
 
-		logger.debug("sessionId", "Building exception response", "Entered buildExceptionResponse",
+		LOGGER.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				"Handling exception :" + ex.getClass().toString());
 
 		AuthResponseDTO authResp = new AuthResponseDTO();
@@ -166,7 +168,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		authResp.setResTime(new Date());
 
 
-		logger.error("sessionId", "Response", ex.getClass().getName(), authResp.toString());
+		LOGGER.error(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), authResp.toString());
 
 		return authResp;
 	}
