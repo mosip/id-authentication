@@ -56,7 +56,7 @@ public class OTPServiceImpl implements OTPService {
 	public String generateOtp(String otpKey) throws IdAuthenticationBusinessException {
 		String otp = null;
 
-		if (otpKey.isEmpty() || otpKey.length() == 0 || otpKey == null) {
+		if (otpKey == null || otpKey.trim().isEmpty()) {
 			return null;
 
 		} else {
