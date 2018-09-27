@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import org.mosip.kernel.auditmanager.request.AuditRequestDto;
+import org.mosip.kernel.auditmanager.request.AuditRequest;
 import org.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import org.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import org.mosip.registration.processor.status.dao.RegistrationStatusDao;
@@ -58,7 +58,7 @@ public class RegistrationStatusServiceTest {
 	private AuditRequestBuilder auditRequestBuilder;
 
 	@Mock
-	private AuditHandler<AuditRequestDto> auditHandler;
+	private AuditHandler<AuditRequest> auditHandler;
 
 	@Before
 	public void setup()
@@ -88,7 +88,7 @@ public class RegistrationStatusServiceTest {
 
 		Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		AuditRequestDto auditRequest1 = new AuditRequestDto();
+		AuditRequest auditRequest1 = new AuditRequest();
 
 		Field f = RegistrationStatusServiceImpl.class.getDeclaredField("auditRequestBuilder");
 		f.setAccessible(true);
