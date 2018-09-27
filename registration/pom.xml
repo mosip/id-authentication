@@ -2,14 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.mosip</groupId>
-		<artifactId>mosip-root</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
-
+	<groupId>org.mosip</groupId>
 	<artifactId>registration</artifactId>
 	<packaging>pom</packaging>
+	<version>1.0.0.0-SNAPSHOT</version>
 
 	<name>registration</name>
 	<description>Parent project of MOSIP Registration</description>
@@ -49,10 +45,8 @@
 	</properties>
 
 	<modules>
-		<module>registration-processor</module>
+		<module>registration-service</module>
 		<module>registration-ui</module>
-		<!-- <module>registration-build</module>
-		<module>id-issuance-service</module>-->
 	</modules>
 
 	<dependencyManagement>
@@ -79,7 +73,7 @@
 				<scope>test</scope>
 			</dependency>
 
-			<dependency>
+			<!-- <dependency>
 				<groupId>org.mosip</groupId>
 				<artifactId>kernel-exception</artifactId>
 				<version>${project.version}</version>
@@ -88,6 +82,12 @@
 			<dependency>
 				<groupId>org.mosip</groupId>
 				<artifactId>kernel-utils</artifactId>
+				<version>${project.version}</version>
+			</dependency> -->
+			
+			<dependency>
+				<groupId>org.mosip</groupId>
+				<artifactId>kernel-core</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 
@@ -121,31 +121,41 @@
 				<artifactId>commons-dbcp2</artifactId>
 				<version>${apache.commons.dpce.version}</version>
 			</dependency>
-			<dependency>
+			<!-- <dependency>
 				<groupId>org.mosip</groupId>
 				<artifactId>kernel-utils</artifactId>
 				<version>${project.version}</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>org.mosip</groupId>
-				<artifactId>kernel-logging-impl</artifactId>
+				<artifactId>logger-logback</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
+			<!-- <dependency>
 				<groupId>org.mosip</groupId>
 				<artifactId>kernel-security</artifactId>
 				<version>${project.version}</version>
-			</dependency>
+			</dependency> -->
 			<dependency>
 				<groupId>org.mosip</groupId>
-				<artifactId>kernel-dao-hibernate-impl</artifactId>
+				<artifactId>dataaccess-hibernate</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mosip</groupId>
-				<artifactId>kernel-audit-api</artifactId>
+				<artifactId>auditmanager-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>10.13.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derbyclient</artifactId>
+			<version>10.13.1.1</version>
+		</dependency>
 		</dependencies>
 	</dependencyManagement>
 
