@@ -73,6 +73,7 @@
 		<module>core/packet-manager</module>
 		<module>core/virus-scanner</module>
 		<module>core/packet-scanner-job</module>
+		<module>core/packet-decryption-job</module>
   </modules>
 
 	<build>

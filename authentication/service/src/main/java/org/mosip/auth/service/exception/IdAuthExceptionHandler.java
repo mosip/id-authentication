@@ -153,10 +153,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		if (errorMessages != null) {
 			List<AuthError> errors = ((List<String>) errorMessages).parallelStream().map(message -> new AuthError(errorCode, (String) message))
 					.collect(Collectors.toList());
-			authResp.setErrorCode(errors);
+			authResp.setErr(errors);
 		}
 
-		authResp.setResponseTime(new Date());
+		authResp.setResTime(new Date());
 
 
 		logger.error("sessionId", "Response", ex.getClass().getName(), authResp.toString());

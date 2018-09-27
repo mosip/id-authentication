@@ -7,7 +7,7 @@ import java.util.List;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RequestType;
 import org.mosip.auth.core.dto.indauth.AuthError;
-import org.mosip.auth.core.dto.indauth.IDType;
+import org.mosip.auth.core.dto.indauth.IdType;
 import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.mosip.auth.core.dto.otpgen.OtpResponseDTO;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
@@ -18,6 +18,7 @@ import org.mosip.auth.core.util.OTPUtil;
 import org.mosip.auth.service.dao.AutnTxnRepository;
 import org.mosip.auth.service.entity.AutnTxn;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.core.utils.DateUtil;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +69,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		String otpKey = null;
 		String otp = null;
 
-		IDType idType = otpRequestDto.getIdType();
+		IdType idType = otpRequestDto.getIdType();
 		String refId = getRefId(otpRequestDto);
 		String productid = env.getProperty("application.id");
 		String txnID = otpRequestDto.getTxnID();
@@ -122,20 +123,6 @@ public class OTPFacadeImpl implements OTPFacade {
 	}
 
 	/**
-	 * Convert Date in ISO date and time format. ISO
-	 * format:yyyy-MM-dd'T'HH:mm:ss.SSSZ
-	 * 
-	 * @param date
-	 * @param pattern
-	 * @return
-	 */
-	private String formateDate(Date date, String pattern) {
-		// TODO Integrate with kernel DateUtil
-		// return DateUtil.formatDate(date, pattern);
-		return "";
-	}
-
-	/**
 	 * Adds a number of minutes(positive/negative) to a date returning a new Date
 	 * object. Add positive, date increase in minutes. Add negative, date reduce in
 	 * minutes.
@@ -145,9 +132,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * @return
 	 */
 	private Date addMinites(Date date, int minute) {
-		// return DateUtil.addMinutes(date, minute);
-		// TODO Integrate with kernel DateUtil
-		return new Date();
+		 return DateUtil.addMinutes(date, minute);
 	}
 
 	/**
@@ -158,7 +143,6 @@ public class OTPFacadeImpl implements OTPFacade {
 	private void saveAutnTxn(OtpRequestDTO otpRequestDto) {
 		String uniqueID = otpRequestDto.getUniqueID();
 		String txnID = otpRequestDto.getTxnID();
-		IDType idType = otpRequestDto.getIdType();
 
 		AutnTxn autnTxn = new AutnTxn();
 		autnTxn.setUin(uniqueID);
@@ -186,12 +170,12 @@ public class OTPFacadeImpl implements OTPFacade {
 	 */
 	private String getRefId(OtpRequestDTO otpRequestDto) {
 		String refId = null;
-		IDType idType = otpRequestDto.getIdType();
+		IdType idType = otpRequestDto.getIdType();
 		String uniqueID = otpRequestDto.getUniqueID();
 		try {
-			if (idType.equals(IDType.UIN)) {
+			if (idType.equals(IdType.UIN)) {
 				refId = idAuthService.validateUIN(uniqueID);
-			} else if (otpRequestDto.getIdType().equals(IDType.VID)) {
+			} else if (otpRequestDto.getIdType().equals(IdType.VID)) {
 				refId = idAuthService.validateVID(uniqueID);
 			}
 			LOGGER.info("NA", idType.getType(), "NA", " reference id of ID Type " + idType.getType() + refId);

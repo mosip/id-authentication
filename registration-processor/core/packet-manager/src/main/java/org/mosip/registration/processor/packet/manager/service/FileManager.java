@@ -53,4 +53,26 @@ public interface FileManager<D, F> {
 	 * @return boolean depending on cleanup is successful or not
 	 */
 	public void cleanUpFile(D srcFolderLoc, D destFolderLoc, String fileName);
+	
+	/**
+	 * Check if file exists in source and destination and cleanup.
+	 *
+	 * @param srcFolderLoc
+	 *                source directory
+	 * @param destFolderLoc
+	 *                destination directory
+	 * @param fileName
+	 *            name of the file to be cleaned up
+	 * @param parentPath
+	 *            name of the child folder to be cleaned up
+	 * @return boolean depending on cleanup is successful or not
+	 */
+	public void cleanUpFile(D srcFolderLoc, D destFolderLoc, String fileName, String childPath);
+	
+	/**
+	 * Get current directory location.
+	 *
+	 * @return FTP_ZONE path
+	 */
+	public String getCurrentDirectory();
 }

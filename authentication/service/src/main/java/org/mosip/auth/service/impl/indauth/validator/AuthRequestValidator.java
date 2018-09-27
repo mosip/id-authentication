@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
-import org.mosip.auth.core.dto.indauth.IDType;
+import org.mosip.auth.core.dto.indauth.IdType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -46,10 +46,10 @@ public class AuthRequestValidator implements Validator {
 		
 		validator.validate(authRequest, errors);
 		
-		IDType idTypeEnum = authRequest.getIdType();
+		IdType idTypeEnum = authRequest.getIdType();
 		if (idTypeEnum != null) {
 			anyIdTypePresent = true;
-			if (!Arrays.asList(IDType.values()).contains(idTypeEnum))
+			if (!Arrays.asList(IdType.values()).contains(idTypeEnum))
 				errors.rejectValue(null, IdAuthenticationErrorConstants.INCORRECT_IDTYPE.getErrorCode(),
 						new Object[] { "idTypeEnum" },
 						env.getProperty("mosip.ida.validation.message.AuthRequest.Idtype"));

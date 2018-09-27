@@ -31,6 +31,17 @@ public interface FileSystemAdapter<T, U, V> {
 	public V storePacket(String enrolmentId, File filePath);
 
 	/**
+	 * This method stores the packet corresponding to an enrolment ID
+	 * 
+	 * @param enrolmentId
+	 *            The enrolmentId
+	 * @param file
+	 *            Packet which needs to be stored
+	 * @return True If the packet is stored successfully
+	 */
+	public V storePacket(String enrolmentId, T file);
+
+	/**
 	 * This method fetches the packet corresponding to an enrolment ID and returns
 	 * it
 	 * 
@@ -39,6 +50,17 @@ public interface FileSystemAdapter<T, U, V> {
 	 * @return The packet in specified format
 	 */
 	public T getPacket(String enrolmentId);
+
+	/**
+	 * This method checks whether a file exists in DFS
+	 * 
+	 * @param enrolmentId
+	 *            The enrolment ID for which file needs to be checked
+	 * @param fileName
+	 *            File that needs to checked
+	 * @return True if file is found, false otherwise
+	 */
+	public Boolean checkFileExistence(String enrolmentId, U fileName);
 
 	/**
 	 * This method fetches a file corresponding to an enrolment ID and returns it

@@ -21,9 +21,9 @@ import lombok.Data;
 public class AuthResponseDTO  {
 
 	private boolean status;
-	private List<AuthError> errorCode;
+	private List<AuthError> err;
 	private String txnID;
-	private Date responseTime;
+	private Date resTime;
 	private AuthResponseInfo info;
 
 }

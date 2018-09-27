@@ -2,55 +2,83 @@ package org.mosip.registration.processor.status.dao;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mosip.registration.processor.status.dao.RegistrationStatusDao;
+import org.mockito.InjectMocks;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mosip.registration.processor.status.code.RegistrationStatusCode;
 import org.mosip.registration.processor.status.entity.RegistrationStatusEntity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mosip.registration.processor.status.repositary.RegistrationStatusRepositary;
 
-@RunWith(SpringRunner.class)
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@RunWith(MockitoJUnitRunner.class)
 public class RegistrationStatusDaoTest {
 
-	@Autowired
-	private TestEntityManager testEntityManager;
+	private RegistrationStatusEntity registrationStatusEntity;
+	private List<RegistrationStatusEntity> list;
 
-	@Autowired
-	private RegistrationStatusDao registrationStatusDao;
+	@InjectMocks
+	RegistrationStatusDao registrationStatusDao = new RegistrationStatusDao();
+	@Mock
+	RegistrationStatusRepositary registrationStatusRepositary;
+
+	@Before
+	public void setup() {
+		registrationStatusEntity = new RegistrationStatusEntity();
+		registrationStatusEntity.setIsActive(true);
+
+		list = new ArrayList<>();
+		list.add(registrationStatusEntity);
+		Mockito.when(registrationStatusRepositary.createQuerySelect(Matchers.any(), Matchers.any())).thenReturn(list);
+		Mockito.when(registrationStatusRepositary.save(Matchers.any())).thenReturn(registrationStatusEntity);
+	}
 
 	@Test
-	public void DAOCheck() {
-		RegistrationStatusEntity registrationStatusEntity = new RegistrationStatusEntity("100898",
-				"PACKET_UPLOADED_TO_LANDING_ZONE", 0);
+	public void findbyfilesByThresholdTest() {
+		List<RegistrationStatusEntity> rEntityList = registrationStatusDao
+				.findbyfilesByThreshold(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString(), 48);
+		assertEquals(list, rEntityList);
+	}
 
-		testEntityManager.persist(registrationStatusEntity);
-		testEntityManager.flush();
+	@Test
+	public void getEnrolmentStatusByStatusCodeTest() {
+		List<RegistrationStatusEntity> rEntityList = registrationStatusDao
+				.getEnrolmentStatusByStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+		assertEquals(list, rEntityList);
+	}
 
-		assertEquals("The registration status should be fetched successfully", true,
-				registrationStatusDao.existsById("100898"));
+	@Test
+	public void getByIds() {
+		List<String> idList = new ArrayList<>();
+		idList.add("1000.zip");
+		List<RegistrationStatusEntity> rEntityList = registrationStatusDao.getByIds(idList);
+		assertEquals(list, rEntityList);
+	}
+
+	@Test
+	public void findByIdTest() {
+		RegistrationStatusEntity rEntity = registrationStatusDao.findById("1000.zip");
+		assertEquals(registrationStatusEntity, rEntity);
 
 	}
 
 	@Test
-	public void addDAOCheck() {
-		RegistrationStatusEntity registrationStatusEntity = new RegistrationStatusEntity("1008",
-				"PACKET_UPLOADED_TO_LANDING_ZONE", 0);
-
-		registrationStatusDao.save(registrationStatusEntity);
-		Optional<RegistrationStatusEntity> output = registrationStatusDao.findById("1008");
-
-		assertEquals("The registration status should get addded successfully", "1008", output.get().getEnrolmentId());
-		assertEquals("The registration status should get addded successfully", "PACKET_UPLOADED_TO_LANDING_ZONE",
-				output.get().getStatus());
+	public void save() {
+		RegistrationStatusEntity rEntity = registrationStatusDao.save(registrationStatusEntity);
+		assertEquals(registrationStatusEntity, rEntity);
 
 	}
 
+	@Test
+	public void update() {
+		RegistrationStatusEntity rEntity = registrationStatusDao.update(registrationStatusEntity);
+		assertEquals(registrationStatusEntity, rEntity);
+
+	}
 }

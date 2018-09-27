@@ -23,22 +23,22 @@ public class AuthResponseInfo {
 	/**
 	 * Type of user ID either UIN or VID
 	 */
-	private IDType uid;
+	private IdType idType;
 	/**
 	 * 
 	 */
-	private Date requestTimeStamp;
+	private Date reqTime;
 	/**
 	 * 
 	 */
-	private String apiVersion;
+	private String ver;
 	/**
 	 * masked mobile(i.e XXXXXXX123) number where send OTP
 	 */
-	private String maskedMobileNumber;
+	private String maskedMobile;
 	/**
 	 * masked email id(raXXXXXXXXXan@xyz.com) where send OTP
 	 */
-	private String maskedEmailId;
+	private String maskedEmail;
 
 }
