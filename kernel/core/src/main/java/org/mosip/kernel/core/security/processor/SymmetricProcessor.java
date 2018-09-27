@@ -55,28 +55,24 @@ public class SymmetricProcessor {
 		try {
 			cipher.init(mode, new KeyParameter(key));
 		} catch (NullPointerException e) {
-			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION_MESSAGE);
+			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_KEY_EXCEPTION);
 		} catch (IllegalArgumentException e) {
-			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_SIZE_EXCEPTION_MESSAGE);
+			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_SIZE_EXCEPTION);
 		}
 		byte[] output = null;
 		try {
 			output = new byte[cipher.getOutputSize(data.length)];
 		} catch (NullPointerException e) {
-			throw new MosipNullDataException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION_MESSAGE);
+			throw new MosipNullDataException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
 		}
 		int processedBytes = cipher.processBytes(data, 0, data.length, output, 0);
 		try {
 			cipher.doFinal(output, processedBytes);
 		} catch (InvalidCipherTextException e) {
-			throw new MosipInvalidDataException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION_MESSAGE);
+			throw new MosipInvalidDataException(
+					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION);
 		} catch (DataLengthException e) {
-			throw new MosipInvalidDataException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_SIZE_EXCEPTION_MESSAGE);
+			throw new MosipInvalidDataException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_SIZE_EXCEPTION);
 		}
 		return output;
 	}

@@ -1,0 +1,18 @@
+<mat-toolbar color="basic">
+    <mat-toolbar-row>
+        <span class="spacer">Pre-Issuance-ID</span>
+        <button mat-raised-button color="primary" (click)="logout()">Logout</button>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+            <span class="spacer"></span>
+            <app-language-selection></app-language-selection>
+        <div style="padding: 0 0 0 10%">
+            {{username}}
+        </div>
+
+    </mat-toolbar-row>
+    <mat-toolbar-row >
+            <span class="spacer"></span>
+        <a routerLink="/login">Update</a>
+    </mat-toolbar-row>
+</mat-toolbar>

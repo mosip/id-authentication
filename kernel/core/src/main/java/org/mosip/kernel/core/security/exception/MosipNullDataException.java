@@ -25,14 +25,11 @@ public class MosipNullDataException extends BaseUncheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param errorCode
-	 *            unique exception code
-	 * @param errorMessage
-	 *            exception message
+	 * @param exceptionCodeConstants
+	 *            exception code constant
 	 */
-	public MosipNullDataException(MosipSecurityExceptionCodeConstants errorCode,
-			MosipSecurityExceptionCodeConstants errorMessage) {
-		super(errorCode.getValue(), errorMessage.getValue());
+	public MosipNullDataException(MosipSecurityExceptionCodeConstants exceptionCodeConstants) {
+		super(exceptionCodeConstants.getErrorCode(), exceptionCodeConstants.getErrorMessage());
 	}
 
 }

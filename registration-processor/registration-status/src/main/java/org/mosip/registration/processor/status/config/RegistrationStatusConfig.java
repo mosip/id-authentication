@@ -14,8 +14,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class RegistrationStatusConfig {
 
 	@Bean
-	public Docket packetUploaderApis() {
-		return new Docket(DocumentationType.SWAGGER_2).select()
+	public Docket registrationStatusBean() {
+		return new Docket(DocumentationType.SWAGGER_2).groupName("Registration status").select()
 				.apis(RequestHandlerSelectors.basePackage("org.mosip.registration.processor.status.controller"))
 				.paths(PathSelectors.ant("/v0.1/registration-processor/registration-status/*")).build();
 	}

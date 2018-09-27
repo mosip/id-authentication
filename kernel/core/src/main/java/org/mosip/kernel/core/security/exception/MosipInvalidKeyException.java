@@ -28,13 +28,10 @@ public class MosipInvalidKeyException extends BaseCheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param errorCode
-	 *            unique exception code
-	 * @param errorMessage
-	 *            exception message
+	 * @param exceptionCodeConstants
+	 *            exception code constant
 	 */
-	public MosipInvalidKeyException(MosipSecurityExceptionCodeConstants errorCode,
-			MosipSecurityExceptionCodeConstants errorMessage) {
-		super(errorCode.getValue(), errorMessage.getValue());
+	public MosipInvalidKeyException(MosipSecurityExceptionCodeConstants exceptionCodeConstants) {
+		super(exceptionCodeConstants.getErrorCode(), exceptionCodeConstants.getErrorMessage());
 	}
 }

@@ -1,0 +1,24 @@
+.parent {
+    text-align: center; 
+    padding: 5% 25% ;
+}
+.cardstyle{
+    text-align: center;
+     padding: 0% 17% ;
+}
+.but{
+    display: inline-block; 
+    padding: 2% 2%;
+}
+.col-75 {
+    width: 85%;
+    padding: 0% 8% ;
+}
+
+input[type=text] {
+    width: 50%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}

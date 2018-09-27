@@ -55,10 +55,9 @@ public class AsymmetricProcessor {
 	 * @throws MosipInvalidKeyException
 	 *             If key is not valid (length or form)
 	 */
-	protected static byte[] process(AsymmetricBlockCipher asymmetricBlockCipher, AsymmetricKeyParameter key,
+	protected static byte[] processHybrid(AsymmetricBlockCipher asymmetricBlockCipher, AsymmetricKeyParameter key,
 			byte[] data, boolean mode) throws MosipInvalidDataException, MosipInvalidKeyException {
-		Security.addProvider(new BouncyCastleProvider());
-		asymmetricBlockCipher.init(mode, key);
+		init(asymmetricBlockCipher, key, mode);
 		int blockSize = asymmetricBlockCipher.getInputBlockSize();
 		byte[] symmetricKey = null;
 		byte[] output = null;
@@ -89,6 +88,20 @@ public class AsymmetricProcessor {
 		return output;
 	}
 
+	protected static byte[] process(AsymmetricBlockCipher asymmetricBlockCipher, AsymmetricKeyParameter key,
+			byte[] data, boolean mode) throws MosipInvalidDataException, MosipInvalidKeyException {
+		init(asymmetricBlockCipher, key, mode);
+		if (data == null) {
+			throw new MosipNullDataException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
+		}
+		return processData(asymmetricBlockCipher, data, 0, data.length);
+	}
+
+	private static void init(AsymmetricBlockCipher asymmetricBlockCipher, AsymmetricKeyParameter key, boolean mode) {
+		Security.addProvider(new BouncyCastleProvider());
+		asymmetricBlockCipher.init(mode, key);
+	}
+
 	/**
 	 * Encryption/Decryption processor for Asymmetric Cipher
 	 * 
@@ -110,17 +123,17 @@ public class AsymmetricProcessor {
 		try {
 			return asymmetricBlockCipher.processBlock(data, start, end);
 		} catch (InvalidCipherTextException e) {
-			throw new MosipInvalidDataException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION_MESSAGE);
+			throw new MosipInvalidDataException(
+					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION);
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipInvalidDataException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_EXCEPTION_MESSAGE);
+			throw new MosipInvalidDataException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_EXCEPTION);
 		} catch (DataLengthException e) {
-			throw new MosipInvalidKeyException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_EXCEPTION_LARGER_KEY_MESSAGE);
+			throw new MosipInvalidDataException(MosipSecurityExceptionCodeConstants.MOSIP_INVALID_LENGTH_EXCEPTION);
 		} catch (NullPointerException e) {
-			throw new MosipNullDataException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION,
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION_MESSAGE);
+			throw new MosipNullDataException(MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
+		} catch (IllegalArgumentException e) {
+			throw new MosipInvalidDataException(
+					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_LENGTH_EXCEPTION);
 		}
 
 	}
