@@ -8,6 +8,8 @@ import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.dto.indauth.IdType;
 import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -20,10 +22,14 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
  * @author Rakesh Roshan
  */
 @Component
+@PropertySource("classpath:application-local.properties")
 public class OTPRequestValidator implements Validator {
 
 	@Autowired
 	private SpringValidatorAdapter validator;
+
+	@Autowired
+	Environment env;
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -36,7 +42,7 @@ public class OTPRequestValidator implements Validator {
 		OtpRequestDTO otpRequestDto = (OtpRequestDTO) target;
 
 		validator.validate(otpRequestDto, errors);
-		//FIXME
+		// FIXME
 		if (!isTimestampValid(otpRequestDto.getReqTime())) {
 			errors.rejectValue("requestTime", IdAuthenticationErrorConstants.EXPIRED_OTP_REQUEST_TIME.getErrorCode(),
 					IdAuthenticationErrorConstants.EXPIRED_OTP_REQUEST_TIME.getErrorMessage());
@@ -52,12 +58,13 @@ public class OTPRequestValidator implements Validator {
 	}
 
 	private boolean isTimestampValid(Date timestamp) {
-		
+
 		Date reqTime = timestamp;
 		Instant reqTimeInstance = reqTime.toInstant();
 		Instant now = Instant.now();
 
-		return Duration.between(reqTimeInstance, now).toMinutes() < 20;
+		return Duration.between(reqTimeInstance, now).toMinutes() < env.getProperty("requestdate.received.in.max.time",
+				Integer.class);
 
 	}
 }

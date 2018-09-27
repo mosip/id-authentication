@@ -1,5 +1,7 @@
 package org.mosip.auth.service.impl.otpgen.facade;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
@@ -78,15 +80,17 @@ public class OTPFacadeImpl implements OTPFacade {
 				LOGGER.error("", otpRequestDto.getIdType().getType(), e.getErrorCode(), e.getErrorText());
 			}
 		}
+		LOGGER.info("SessionID", "NA", "generated OTP", otp); 
+		
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		if (otp == null || otp.trim().isEmpty()) {
-			LOGGER.error("NA", "NA", "NA", "generated OTP is: " + otp);
-			// TODO Throw exception
+			LOGGER.error("SessionId", "NA", "NA", "generated OTP is: " + otp);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_REQUEST_FAILED);
 		} else {
 			LOGGER.info("NA", "NA", "NA", "generated OTP is: " + otp);
 			otpResponseDTO.setStatus("Y");
 			otpResponseDTO.setTxnID(txnID);
-			otpResponseDTO.setResponseTime(new Date());
+			otpResponseDTO.setResponseTime(formateDate(new Date(), env.getProperty("date.format.pattern")));
 			// TODO Date format to be included
 			saveAutnTxn(otpRequestDto);
 		}
@@ -123,6 +127,19 @@ public class OTPFacadeImpl implements OTPFacade {
 	 */
 	private Date addMinites(Date date, int minute) {
 		return DateUtil.addMinutes(date, minute);
+	}
+
+	private Date formateDate(Date date, String formate) {
+		Date formatedDate = new Date();
+		String formatDate = DateUtil.formatDate(date, formate);
+		try {
+			formatedDate = new SimpleDateFormat(formate).parse(formatDate);
+			return formatedDate;
+		} catch (ParseException e) {
+			LOGGER.error("SessionID", "ParseException", e.getMessage(), "Date formate parse Exception");
+			e.printStackTrace();
+		}
+		return formatedDate;
 	}
 
 	/**
