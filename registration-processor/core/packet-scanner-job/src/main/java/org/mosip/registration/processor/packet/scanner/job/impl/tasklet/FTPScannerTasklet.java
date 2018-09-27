@@ -40,8 +40,7 @@ public class FTPScannerTasklet implements Tasklet {
 	@Autowired
 	protected PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
 
-	// @Autowired
-	// private AuditHandler handler;
+
 
 	private static final String FTP_NOT_ACCESSIBLE = "The FTP Path set by the System is not accessible";
 	private static final String DUPLICATE_UPLOAD = "Duplicate file uploading to landing zone";
@@ -61,24 +60,7 @@ public class FTPScannerTasklet implements Tasklet {
 	@Override
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
 
-		// AuditRequestBuilder ftpaudit = new AuditRequestBuilder()
-		// .setActionTimeStamp(OffsetDateTime.now())
-		// .setApplicationId("DEMO-SCH-001")
-		// .setApplicationName("Demo Application")
-		// .setCreatedBy("")
-		// .setDescription("FTPScanner job started")
-		// .setEventId("ENR-SVR-100")
-		// .setEventName("")
-		// .setEventType("")
-		// .setHostIp("hostIp")
-		// .setHostName("hostName")
-		// .setId("NA")
-		// .setIdType("NA")
-		// .setModuleId("")
-		// .setModuleName("")
-		// .setSessionUserId("997824c5-qe11-zaf0-66826-2t64c4c5b0bb")
-		// .setSessionUserName("");
-		// handler.writeAudit(ftpaudit.build());
+		
 
 		String filepath = this.filemanager.getCurrentDirectory();
 		Stream<Path> paths = Files.walk(Paths.get(filepath));
@@ -123,9 +105,13 @@ public class FTPScannerTasklet implements Tasklet {
 			Stream<Path> deletepath = Files.walk(Paths.get(filepath));
 			deletepath.filter(Files::isDirectory).forEach(filepathName -> {
 				File file = new File(filepathName.toString());
-				if (file.isDirectory() && !(file.getName().equalsIgnoreCase(new File(filepath).getName()))) {
-					if (file.list().length == 0) {
-						file.delete();
+				if (file.isDirectory() && !(file.getName().equalsIgnoreCase(new File(filepath).getName())) &&  (file.list().length == 0)) {
+					try {
+						Files.delete(file.toPath());
+					} catch (IOException e) {
+						FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(FTP_NOT_ACCESSIBLE, e);
+						LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
+								ftpNotAccessibleException);
 					}
 				}
 			});

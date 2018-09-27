@@ -1,19 +1,15 @@
 package org.mosip.registration.processor.packet.scanner.job.impl.tasklet;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 import org.mosip.kernel.virus.scanner.service.VirusScannerService;
 import org.mosip.registration.processor.filesystem.adapter.FileSystemAdapter;
 import org.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
-import org.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.ConnectionUnavailableException;
 import org.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import org.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
-import org.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
 import org.mosip.registration.processor.packet.manager.service.FileManager;
-import org.mosip.registration.processor.packet.scanner.job.exception.RetryFolderNotAccessibleException;
 import org.mosip.registration.processor.packet.scanner.job.exception.VirusScanFailedException;
 import org.mosip.registration.processor.status.code.RegistrationStatusCode;
 import org.mosip.registration.processor.status.dto.RegistrationStatusDto;
