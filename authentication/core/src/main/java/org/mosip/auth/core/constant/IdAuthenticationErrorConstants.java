@@ -32,7 +32,7 @@ public enum IdAuthenticationErrorConstants {
 	ID_MAPPING_FAILED("IDA-IDV-101", "VID is not present or not matched"),	
 	INVALID_IDTYPE("IDA-IDV-102","Invalid Id-Type"),
 	
-	INVALID_GENERATE_OTP_REQUEST("IDA-DTV-RQV-001", "Invalid OTP request"),
+	//INVALID_GENERATE_OTP_REQUEST("IDA-DTV-RQV-001", "Invalid OTP request"),
 	
 	OTP_GENERATION_REQUEST_FAILED("IDA-DTV-RQV-002", "OTP generation request failed"),
 	OTP_REQUEST_FLOODED("IDA-DTV-RQV-006","OTP Generation request is Flooded"),
@@ -60,10 +60,6 @@ public enum IdAuthenticationErrorConstants {
 	CLIENT_ERROR("IDA-RST-UTL-001", "4XX - Client Error occured"),
 	SERVER_ERROR("IDA-RST-UTL-002", "5XX - Server Error occured"),
 	CONNECTION_TIMED_OUT("IDA-RST-UTL-003", "Connection timed out"), 
-	
-	
-	
-	
 	
 	INVALID_UIN_BUISNESS("IDA-IDMB-UIN-401", "Invalid UIN"),
 	INVALID_VID_BUISNESS("IDA-IDMB-VID-402", "Invalid VID"), 
