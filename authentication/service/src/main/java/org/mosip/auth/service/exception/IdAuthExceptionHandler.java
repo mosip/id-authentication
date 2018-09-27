@@ -1,10 +1,12 @@
 package org.mosip.auth.service.exception;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.dto.indauth.AuthError;
 import org.mosip.auth.core.dto.indauth.AuthResponseDTO;
 import org.mosip.auth.core.exception.IDAuthenticationUnknownException;
@@ -58,13 +60,16 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		logger.error("sessionId", "Exception", ex.getClass().getName(),
 				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.INTERNAL_SERVER_ERROR);
 
-		IDAuthenticationUnknownException unknownException = new IDAuthenticationUnknownException();
+		IDAuthenticationUnknownException unknownException = new IDAuthenticationUnknownException(IdAuthenticationErrorConstants.UNKNOWN_ERROR);
 
 		logger.debug("sessionId", "Exception", "Changing exception",
 				"Returing exception as " + ex.getClass().toString());
 
-		return new ResponseEntity<>(buildExceptionResponse(unknownException, unknownException.getErrorCode(),
-				unknownException.getErrorTexts(), request), HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(buildExceptionResponse(unknownException, 
+				unknownException.getErrorCode(),
+				unknownException.getErrorTexts(), 
+				request), 
+				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	/**
@@ -113,7 +118,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return ResponseEntity containing error response object and http status.
 	 */
 	@ExceptionHandler(IdAuthenticationAppException.class)
-	protected ResponseEntity<Object> handleIdUsageException(IdAuthenticationAppException ex, WebRequest request) {
+	protected ResponseEntity<Object> handleIdAppException(IdAuthenticationAppException ex, WebRequest request) {
 
 		logger.debug("sessionId", "IdUsageException", "Entered handleIdUsageException",
 				"Handling exception :" + ex.getClass().toString());
@@ -121,7 +126,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		logger.error("sessionId", "IdUsageException", ex.getErrorCode(),
 				ex.toString() + "\n Status returned: " + HttpStatus.INTERNAL_SERVER_ERROR);
 
-		return new ResponseEntity<>(buildExceptionResponse(ex, ex.getErrorCode(), ex.getErrorTexts(), request),
+		List<String> errorMessage = new ArrayList<>();
+		errorMessage.add(ex.getErrorText());
+		return new ResponseEntity<>(buildExceptionResponse(ex, ex.getErrorCode(), errorMessage, request),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
