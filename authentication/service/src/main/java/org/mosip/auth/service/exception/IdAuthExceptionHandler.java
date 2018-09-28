@@ -171,6 +171,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		mosipLogger.error(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), authResp.toString());
 
+		System.err.println("exit auth controller");
 		return authResp;
 	}
 }
