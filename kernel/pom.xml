@@ -87,10 +87,12 @@
 		<module>idgenerator-prid</module>
 		<module>idgenerator-eid</module>
 		<module>idgenerator-vid</module>
-		<module>idgenerator-uin</module>
 		<module>packet-uploader-sftp</module>
 		<module>packet-uploader-http</module>
 		<module>packet-server</module>
+		<module>idgenerator-uin</module>
+		<module>otpmanager-api</module>		
+		<module>otpmanager-service</module>	
 
 	</modules>
 
@@ -126,6 +128,37 @@
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>${maven.sonar.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.9</version>
+					<configuration>
+						<skip>false</skip>
+						<useFile>false</useFile>
+						<excludes>
+							<exclude>**/*IntegrationTest.java</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.1</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>report</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
