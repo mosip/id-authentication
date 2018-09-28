@@ -156,7 +156,8 @@ public class RSAKeyGeneratorImpl implements RSAKeyGenerator {
 		} catch (IOException ioException) {
 			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(),
 					REG_IO_ERROR_CODE.getErrorMessage(), ioException);
-		}
+		} 
+		
 		BigInteger mod = null;
 		try {
 			// get public key modulus value
@@ -227,6 +228,7 @@ public class RSAKeyGeneratorImpl implements RSAKeyGenerator {
 			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(),
 					REG_IO_ERROR_CODE.getErrorMessage(), ioException);
 		}
+		
 		BigInteger mod = null;
 		try {
 			// get private key modulus value

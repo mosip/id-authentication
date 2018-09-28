@@ -14,9 +14,9 @@ import org.mockito.Mock;
 import org.mockito.exceptions.misusing.MissingMethodInvocationException;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.mosip.registration.config.SpringConfiguration;
 import org.mosip.registration.consts.RegConstants;
 import org.mosip.registration.service.packet.encryption.rsa.RSAEncryption;
+import org.mosip.registration.test.config.SpringConfiguration;
 import org.mosip.registration.test.util.rsa.RSADecryption;
 import org.springframework.beans.factory.annotation.Autowired;
 

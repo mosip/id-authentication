@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.mosip.registration.config.SpringConfiguration;
 import org.mosip.registration.consts.RegConstants;
+import org.mosip.registration.test.config.SpringConfiguration;
 import org.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 

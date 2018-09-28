@@ -25,12 +25,12 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.junit.Test;
-import org.mosip.registration.config.SpringConfiguration;
 import org.mosip.registration.consts.RegConstants;
 import org.mosip.registration.dto.EnrollmentDTO;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.service.PacketCreationService;
 import org.mosip.registration.service.PacketEncryptionService;
+import org.mosip.registration.test.config.SpringConfiguration;
 import org.mosip.registration.test.util.aes.AESDecryption;
 import org.mosip.registration.test.util.datastub.DataProvider;
 import org.mosip.registration.test.util.rsa.RSADecryption;

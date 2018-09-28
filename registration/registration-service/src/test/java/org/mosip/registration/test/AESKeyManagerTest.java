@@ -7,8 +7,8 @@ import java.util.LinkedList;
 import static java.lang.System.currentTimeMillis;
 
 import org.junit.Test;
-import org.mosip.registration.config.SpringConfiguration;
 import org.mosip.registration.exception.RegBaseCheckedException;
+import org.mosip.registration.test.config.SpringConfiguration;
 import org.mosip.registration.util.keymanager.AESKeyManager;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -3,9 +3,9 @@ package org.mosip.registration.test;
 import java.util.List;
 
 import org.junit.Test;
-import org.mosip.registration.config.SpringConfiguration;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.service.packet.encryption.aes.AESSeedGenerator;
+import org.mosip.registration.test.config.SpringConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertNotNull;

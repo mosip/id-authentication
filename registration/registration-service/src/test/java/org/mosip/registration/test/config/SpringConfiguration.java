@@ -1,4 +1,4 @@
-package org.mosip.registration.config;
+package org.mosip.registration.test.config;
 
 import org.junit.runner.RunWith;
 import org.mosip.registration.config.AppConfig;
