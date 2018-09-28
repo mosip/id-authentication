@@ -3,7 +3,8 @@ package org.mosip.kernel.core.utils.constants;
 public enum ZipUtilConstants {
 		FILE_NOT_FOUND_ERROR_CODE("COK-UTL-ZUN-001", "File Not Found"), 
 		IO_ERROR_CODE("COK-UTL-ZUN-002","Interrupted IO Operation"), 
-		NULL_POINTER_ERROR_CODE("COK-UTL-ZUN-003", "Null Reference found");
+		NULL_POINTER_ERROR_CODE("COK-UTL-ZUN-003", "Null Reference found"),
+	    DATA_FORMATE_ERROR_CODE("COK-UTL-ZUN-004","Attempting to unzip file that is not zipped");
 
 	
 	/**  Error code. */

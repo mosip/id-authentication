@@ -12,16 +12,20 @@ import org.mosip.kernel.packetserver.constants.PacketServerExceptionConstants;
 public class MosipPublicKeyException extends BaseUncheckedException {
 
 	/**
-	 * unique id for serialization
+	 * Unique id for serialization
 	 */
 	private static final long serialVersionUID = -8867318998929810105L;
 
 	/**
+	 * Constructor for this class
+	 * 
 	 * @param exceptionConstants
 	 *            exception code constant
 	 */
-	public MosipPublicKeyException(PacketServerExceptionConstants exceptionConstants) {
-		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage());
+	public MosipPublicKeyException(
+			PacketServerExceptionConstants exceptionConstants) {
+		super(exceptionConstants.getErrorCode(),
+				exceptionConstants.getErrorMessage());
 	}
 
 }

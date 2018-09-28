@@ -6,13 +6,18 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.mosip.kernel.core.utils.exception.MosipDataFormatException;
 import org.mosip.kernel.core.utils.exception.MosipFileNotFoundException;
 import org.mosip.kernel.core.utils.exception.MosipNullPointerException;
 import org.mosip.kernel.core.utils.constants.ZipUtilConstants;
@@ -39,7 +44,90 @@ public class ZipUtil {
 	private ZipUtil() {
 
 	}
+	
+	/**
+	 * Method used for zipping a Byte Array
+	 * 
+	 * @param input
+	 *            pass Byte Array want to zip it
+	 * @param return
+	 *            returned zipped Byte Array
+	 * @throws MosipIOException
+	 *             when file unable to read
+	 * 
+	 */
+	public static byte[] zipByteArray(byte[] input)throws MosipIOException{
+	    byte[] byReturn = null;
+	    Deflater oDeflate = new Deflater(Deflater.DEFLATED, false);
+	    oDeflate.setInput(input);
+	    oDeflate.finish();
+	    try (ByteArrayOutputStream oZipStream = new ByteArrayOutputStream()){
+	   
+	      while (! oDeflate.finished() ){
+	        byte[] byRead = new byte[1024];
+	        int iBytesRead = oDeflate.deflate(byRead);
+	        if (iBytesRead == byRead.length){
+	          oZipStream.write(byRead);
+	        }
+	        else {
+	          oZipStream.write(byRead, 0, iBytesRead);
+	        }
+	      }
+	      oDeflate.end();
+	      byReturn = oZipStream.toByteArray();
+	    }catch (IOException e) {
+			throw new MosipIOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
+		}
+	   
+	    return byReturn;
+	  }
+	
+	/**
+	 * Method used for unzipping a zipped Byte Array
+	 * 
+	 * @param input
+	 *            pass zipped Byte Array want to unzip it
+	 * @param return
+	 *            returned unzipped Byte Array
+	 * @throws MosipIOException
+	 *             when file unable to read
+	 * @throws DataFormatException
+	 *             Attempting to unzip file that is not zipped
+	 */
+	
+	 public static byte[] unzipByteArray(byte[] input)
+	           throws MosipIOException, IOException  {
+	    byte[] byReturn = null;
 
+	    Inflater oInflate = new Inflater(false);
+	    oInflate.setInput(input);
+
+	    try(ByteArrayOutputStream oZipStream = new ByteArrayOutputStream()){
+	      while (! oInflate.finished() ){
+	        byte[] byRead = new byte[1024];
+	        int iBytesRead = oInflate.inflate(byRead);
+	        if (iBytesRead == byRead.length){
+	          oZipStream.write(byRead);
+	        }
+	        else {
+	          oZipStream.write(byRead, 0, iBytesRead);
+	        }
+	      }
+	      byReturn = oZipStream.toByteArray();
+	    }
+	    catch (DataFormatException e){
+	    	throw new MosipDataFormatException(ZipUtilConstants.DATA_FORMATE_ERROR_CODE.getErrorCode(),
+					ZipUtilConstants.DATA_FORMATE_ERROR_CODE.getMessage(), e.getCause());
+	    }catch (IOException e) {
+			throw new MosipIOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
+		}
+	    
+	    return byReturn;
+	  }
+	
+	
 	/**
 	 * Method used for zipping a single file
 	 * 
@@ -55,7 +143,7 @@ public class ZipUtil {
 	 *             when file unable to read
 	 * 
 	 */
-
+	
 	public static boolean zipFile(String inputFile, String outputFile) throws MosipIOException {
 
 		try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(outputFile));

@@ -3,7 +3,7 @@ package org.mosip.registration.processor.status.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class RegistrationStatusDto.
  */
