@@ -5,7 +5,6 @@
 package org.mosip.kernel.idvalidator.exception;
 
 import org.mosip.kernel.core.exception.BaseUncheckedException;
-import org.mosip.kernel.idvalidator.uinvalidator.constants.MosipIDExceptionCodeConstants;
 
 /**
  * {@link Exception} to be thrown when ID is invalid
@@ -28,8 +27,9 @@ public class MosipInvalidIDException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public MosipInvalidIDException(String errorCode,
-			String errorMessage) {
-       super(errorCode, errorMessage);
+	public MosipInvalidIDException(String errorCode, String errorMessage) {
+
+		super(errorCode, errorMessage);
+
 	}
 }

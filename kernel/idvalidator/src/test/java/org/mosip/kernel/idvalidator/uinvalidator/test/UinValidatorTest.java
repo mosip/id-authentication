@@ -26,6 +26,13 @@ public class UinValidatorTest {
 		String id = "426789089018";
 		assertEquals(true, uinValidator.validateId(id));
 	}
+	
+	@Test(expected = MosipInvalidIDException.class)
+	public void testNull() throws MosipInvalidIDException {
+
+		String id = null;
+		uinValidator.validateId(id);
+	}
 
 	@Test(expected = MosipInvalidIDException.class)
 	public void testFistDigitOne() throws MosipInvalidIDException {
@@ -68,6 +75,8 @@ public class UinValidatorTest {
 		String id = "426789089123";
 		uinValidator.validateId(id);
 	}
+	
+	
 
 	@Test(expected = MosipInvalidIDException.class)
 	public void testAlphanumeric() throws MosipInvalidIDException {

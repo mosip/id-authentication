@@ -41,7 +41,9 @@ public class UinValidator implements MosipIdValidator<String> {
 	 *             If entered UIN contain Zero or One as first Digit.
 	 */
 	private static final int len = 12;
-	private static final String alphaRegex = "\\d{12}";
+
+	private static final String alphanumRegex = "\\d{12}";
+
 	private static final char charZero = '0';
 	private static final char charOne = '1';
 
@@ -63,14 +65,18 @@ public class UinValidator implements MosipIdValidator<String> {
 		 */
 		if (id.length() != len) {
 			throw new MosipInvalidIDException(MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorCode(),
-					MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorCode());
+
+					MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorMessage());
+
 		}
 		/**
 		 * 
 		 * Validation for the UIN should not contain any alphanumeric characters
 		 * 
 		 */
-		if (!Pattern.matches(alphaRegex, id)) {
+
+		if (!Pattern.matches(alphanumRegex, id)) {
+
 			throw new MosipInvalidIDException(MosipIDExceptionCodeConstants.UIN_VAL_INVALID_DIGITS.getErrorCode(),
 					MosipIDExceptionCodeConstants.UIN_VAL_INVALID_DIGITS.getErrorMessage());
 		}
@@ -99,8 +105,10 @@ public class UinValidator implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (MosipIdFilter.isValidId(id)) {
+
 			throw new MosipInvalidIDException(
 					MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
+
 					MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
 		}
 

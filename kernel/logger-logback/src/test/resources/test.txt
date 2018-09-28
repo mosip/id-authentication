@@ -1,0 +1,4 @@
+2018-09-28T07:49:46+05:30 - INFO  - sessionid - idType - id - description
+2018-09-28T07:49:46+05:30 - ERROR - sessionid - idType - id - description
+2018-09-28T07:49:46+05:30 - WARN  - sessionid - idType - id - description
+2018-09-28T07:49:47+05:30 - DEBUG - sessionid - idType - id - description
