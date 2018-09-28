@@ -18,7 +18,7 @@ import org.mosip.kernel.logger.constants.LogExeptionCodeConstants;
  */
 public class MosipIlligalStateException extends BaseUncheckedException {
 	/**
-	 * unique id for serialization
+	 * Unique id for serialization
 	 */
 	private static final long serialVersionUID = 105555532L;
 
@@ -28,7 +28,8 @@ public class MosipIlligalStateException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public MosipIlligalStateException(LogExeptionCodeConstants errorCode, LogExeptionCodeConstants errorMessage) {
+	public MosipIlligalStateException(LogExeptionCodeConstants errorCode,
+			LogExeptionCodeConstants errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 }

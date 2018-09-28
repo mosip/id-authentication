@@ -12,7 +12,7 @@ import org.mosip.kernel.packetserver.constants.PacketServerExceptionConstants;
 public class MosipInvalidSpecException extends BaseUncheckedException {
 
 	/**
-	 * unique id for serialization
+	 * Unique id for serialization
 	 */
 	private static final long serialVersionUID = 518734974933227166L;
 
@@ -22,7 +22,9 @@ public class MosipInvalidSpecException extends BaseUncheckedException {
 	 * @param exceptionConstants
 	 *            exception code constant
 	 */
-	public MosipInvalidSpecException(PacketServerExceptionConstants exceptionConstants) {
-		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage());
+	public MosipInvalidSpecException(
+			PacketServerExceptionConstants exceptionConstants) {
+		super(exceptionConstants.getErrorCode(),
+				exceptionConstants.getErrorMessage());
 	}
 }

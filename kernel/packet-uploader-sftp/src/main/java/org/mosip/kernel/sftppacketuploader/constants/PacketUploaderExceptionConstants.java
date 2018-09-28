@@ -79,7 +79,7 @@ public enum PacketUploaderExceptionConstants {
 	MOSIP_PACKET_SIZE_EXCEPTION("adadadasdasdas", "packet size should be less than 5 MB and greater than 0 Byte");
 
 	/**
-	 * 
+	 * Constructor for this enum
 	 */
 	private PacketUploaderExceptionConstants() {
 	}
@@ -98,7 +98,7 @@ public enum PacketUploaderExceptionConstants {
 	}
 
 	/**
-	 * getter for {@link #errorCode}
+	 * Getter for {@link #errorCode}
 	 * 
 	 * @return {@link #errorCode}
 	 */
@@ -107,7 +107,7 @@ public enum PacketUploaderExceptionConstants {
 	}
 
 	/**
-	 * setter for {@link #errorCode}
+	 * Setter for {@link #errorCode}
 	 * 
 	 * @param errorCode
 	 */
@@ -116,7 +116,7 @@ public enum PacketUploaderExceptionConstants {
 	}
 
 	/**
-	 * getter for {@link #errorMessage}
+	 * Getter for {@link #errorMessage}
 	 * 
 	 * @return {@link #errorMessage}
 	 */
@@ -125,7 +125,7 @@ public enum PacketUploaderExceptionConstants {
 	}
 
 	/**
-	 * setter for {@link #errorMessage}
+	 * Setter for {@link #errorMessage}
 	 * 
 	 * @param errorMessage
 	 *            {@link #errorMessage}
@@ -135,11 +135,11 @@ public enum PacketUploaderExceptionConstants {
 	}
 
 	/**
-	 * errorCode
+	 * ErrorCode
 	 */
 	String errorCode;
 	/**
-	 * errorMessage
+	 * ErrorMessage
 	 */
 	String errorMessage;
 }

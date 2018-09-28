@@ -19,7 +19,7 @@ import org.mosip.kernel.logger.constants.LogExeptionCodeConstants;
 public class ImplementationNotFound extends BaseUncheckedException {
 
 	/**
-	 * unique id for serialization
+	 * Unique id for serialization
 	 */
 	private static final long serialVersionUID = 105555533L;
 
@@ -29,7 +29,8 @@ public class ImplementationNotFound extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public ImplementationNotFound(LogExeptionCodeConstants errorCode, LogExeptionCodeConstants errorMessage) {
+	public ImplementationNotFound(LogExeptionCodeConstants errorCode,
+			LogExeptionCodeConstants errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 

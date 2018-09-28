@@ -1,7 +1,7 @@
 package org.mosip.kernel.core.utils.exception;
 
 /**
- * @author  Priya Soni
+ * @author Priya Soni
  *
  */
 public class MosipUnsupportedEncodingException extends MosipIOException {

@@ -2,6 +2,7 @@ package org.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import org.mosip.kernel.auditmanager.request.AuditRequestDto;
+import org.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import org.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import org.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import org.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -50,8 +54,15 @@ public class RegistrationStatusServiceTest {
 	@Mock
 	private RegistrationStatusDao registrationStatusDao;
 
+	@Mock
+	private AuditRequestBuilder auditRequestBuilder;
+
+	@Mock
+	private AuditHandler<AuditRequestDto> auditHandler;
+
 	@Before
-	public void setup() {
+	public void setup()
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		registrationStatusDto = new RegistrationStatusDto();
 		registrationStatusDto.setIsActive(true);
 		registrationStatusDto.setStatusCode("PACKET_UPLOADED_TO_LANDING_ZONE");
@@ -74,6 +85,17 @@ public class RegistrationStatusServiceTest {
 		transactionEntity.setTransactionId("1001");
 		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
 				.thenReturn(transactionEntity);
+
+		Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
+		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		AuditRequestDto auditRequest1 = new AuditRequestDto();
+
+		Field f = RegistrationStatusServiceImpl.class.getDeclaredField("auditRequestBuilder");
+		f.setAccessible(true);
+		f.set(registrationStatusService, auditRequestBuilder);
+		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+		f1.setAccessible(true);
+		f1.set(auditRequestBuilder, auditRequest1);
 
 	}
 

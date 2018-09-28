@@ -20,7 +20,7 @@ import org.mosip.kernel.logger.constants.LogExeptionCodeConstants;
 public class PatternSyntaxExeption extends BaseUncheckedException {
 
 	/**
-	 * unique id for serialization
+	 * Unique id for serialization
 	 */
 	private static final long serialVersionUID = 105555531L;
 
@@ -30,7 +30,8 @@ public class PatternSyntaxExeption extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public PatternSyntaxExeption(LogExeptionCodeConstants errorCode, LogExeptionCodeConstants errorMessage) {
+	public PatternSyntaxExeption(LogExeptionCodeConstants errorCode,
+			LogExeptionCodeConstants errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 

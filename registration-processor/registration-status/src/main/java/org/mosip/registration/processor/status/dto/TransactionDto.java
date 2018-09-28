@@ -2,7 +2,7 @@ package org.mosip.registration.processor.status.dto;
 
 import java.io.Serializable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class TransactionDto.
  */

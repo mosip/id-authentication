@@ -11,12 +11,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "file")
 public class PacketFileStorageProperties {
 	/**
-	 * upload directory for this application
+	 * Upload directory for this application
 	 */
 	private String uploadDir;
 
 	/**
-	 * getter for {@link #uploadDir}
+	 * Getter for {@link #uploadDir}
 	 * 
 	 * @return {@link #uploadDir}
 	 */
@@ -25,7 +25,7 @@ public class PacketFileStorageProperties {
 	}
 
 	/**
-	 * setter for {@link #uploadDir}
+	 * Setter for {@link #uploadDir}
 	 * 
 	 * @param uploadDir
 	 *            {@link #uploadDir}

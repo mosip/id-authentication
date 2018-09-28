@@ -22,7 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class PacketUploaderHttpApplication {
 
 	/**
-	 * main method to run spring boot application
+	 * Main method to run spring boot application
 	 * 
 	 * @param args
 	 *            params
