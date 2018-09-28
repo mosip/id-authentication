@@ -62,6 +62,7 @@
 
 		<!-- Lombok -->
 		<lombok.version>1.16.18</lombok.version>
+
 	</properties>
 
 	<modules>
@@ -74,7 +75,9 @@
 		<module>idgenerator-pid</module>
 		<module>idgenerator-eid</module>
 		<module>idgenerator-vid</module>
-		<module>idgenerator-uin</module>		
+		<module>idgenerator-uin</module>
+		<module>otpmanager-api</module>		
+		<module>otpmanager-service</module>	
 
 	</modules>
 
