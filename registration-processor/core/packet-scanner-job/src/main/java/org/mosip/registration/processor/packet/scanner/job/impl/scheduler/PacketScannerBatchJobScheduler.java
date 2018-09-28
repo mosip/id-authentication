@@ -29,6 +29,8 @@ public class PacketScannerBatchJobScheduler {
 
 	private static final String LOGDISPLAY = "{} - {} - {}";
 	
+	private static final String JOB_STATUS = "Job's status" ;
+	
 	@Autowired
 	private JobLauncher jobLauncher;
 
@@ -52,7 +54,7 @@ public class PacketScannerBatchJobScheduler {
 		try {
 			JobExecution jobExecution = jobLauncher.run(landingZoneScannerJob, jobParameters);
 			
-			LOGGER.info(LOGDISPLAY,"Job's status ", jobExecution.getId(),jobExecution.getStatus());
+			LOGGER.info(LOGDISPLAY,JOB_STATUS, jobExecution.getId(),jobExecution.getStatus());
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
 			LOGGER.error(LOGDISPLAY,"landingZoneScannerJobScheduler failed to execute", e);
@@ -69,7 +71,7 @@ public class PacketScannerBatchJobScheduler {
 
 		try {
 			JobExecution jobExecution = jobLauncher.run(virusScannerJob, jobParameters);
-			LOGGER.info(LOGDISPLAY,"Job's status " , jobExecution.getId() , jobExecution.getStatus());
+			LOGGER.info(LOGDISPLAY,JOB_STATUS , jobExecution.getId() , jobExecution.getStatus());
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
 			LOGGER.error(LOGDISPLAY,"virusScannerJobScheduler failed to execute", e);
@@ -86,7 +88,7 @@ public class PacketScannerBatchJobScheduler {
 
 		try {
 			JobExecution jobExecution = jobLauncher.run(ftpScannerJob, jobParameters);
-			LOGGER.info(LOGDISPLAY,"Job's status " , jobExecution.getId() , jobExecution.getStatus());
+			LOGGER.info(LOGDISPLAY,JOB_STATUS , jobExecution.getId() , jobExecution.getStatus());
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
 			LOGGER.error(LOGDISPLAY,"ftpJobScheduler failed to execute", e);

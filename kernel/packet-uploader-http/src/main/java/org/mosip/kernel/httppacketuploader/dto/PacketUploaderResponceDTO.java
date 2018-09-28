@@ -8,16 +8,16 @@ package org.mosip.kernel.httppacketuploader.dto;
  */
 public class PacketUploaderResponceDTO {
 	/**
-	 * name of uploaded file
+	 * Name of uploaded file
 	 */
 	private String fileName;
 	/**
-	 * size of uploaded file in bytes
+	 * Size of uploaded file in bytes
 	 */
 	private long fileSizeInBytes;
 
 	/**
-	 * getter for {@link #fileName}
+	 * Setter for {@link #fileName}
 	 * 
 	 * @return {@link #fileName}
 	 */
@@ -26,7 +26,7 @@ public class PacketUploaderResponceDTO {
 	}
 
 	/**
-	 * setter for {@link #fileName}
+	 * Setter for {@link #fileName}
 	 * 
 	 * @param fileName
 	 *            {@link #fileName}
@@ -36,7 +36,7 @@ public class PacketUploaderResponceDTO {
 	}
 
 	/**
-	 * getter for {@link #fileSizeInBytes}
+	 * Getter for {@link #fileSizeInBytes}
 	 * 
 	 * @return {@link #fileSizeInBytes}
 	 */
@@ -58,7 +58,7 @@ public class PacketUploaderResponceDTO {
 	}
 
 	/**
-	 * setter for {@link #fileSizeInBytes}
+	 * Setter for {@link #fileSizeInBytes}
 	 * 
 	 * @param fileSizeInBytes
 	 *            {@link #fileSizeInBytes}

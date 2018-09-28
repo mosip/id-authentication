@@ -25,6 +25,4 @@ public class MosipUnsupportedCharsetException extends BaseUncheckedException {
 		super(errorCode, errorMessage, rootCause);
 	}
 
-
-
 }

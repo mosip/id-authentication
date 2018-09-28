@@ -11,24 +11,24 @@ public enum PacketUploaderExceptionConstants {
 	/**
 	 * {@link #MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION} exception constant
 	 */
-	MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION("maerrorcode", "file name is a non empty directory"),
+	MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION("KER-FTM-FTP-004", "file name is a non empty directory"),
 	/**
 	 * {@link #MOSIP_SECURITY_FILE_LOCATION_EXCEPTION} exception constant
 	 */
-	MOSIP_SECURITY_FILE_LOCATION_EXCEPTION("mberrorcode",
+	MOSIP_SECURITY_FILE_LOCATION_EXCEPTION("KER-FTM-FTP-005",
 			"file location does not exist and cannot be created permission denied"),
 	/**
 	 * {@link #MOSIP_IO_FILE_EXCEPTION} exception constant
 	 */
-	MOSIP_IO_FILE_EXCEPTION("mcerrorcode", "exception occure while reading and writing file"),
+	MOSIP_IO_FILE_EXCEPTION("KER-FTM-FTP-006", "exception occure while reading and writing file"),
 	/**
 	 * {@link #MOSIP_INVALID_FILE_NAME_EXCEPTION} exception constant
 	 */
-	MOSIP_INVALID_FILE_NAME_EXCEPTION("mcderrorcode", "invalid filename contains .."),
+	MOSIP_INVALID_FILE_NAME_EXCEPTION("KER-FTM-FTP-007", "invalid filename contains .."),
 	/**
 	 * {@link #MOSIP_PACKET_SIZE_EXCEPTION} exception constant
 	 */
-	MOSIP_PACKET_SIZE_EXCEPTION("adadadasdasdas", "packet size should be less than 5 MB and greater than 0");
+	MOSIP_PACKET_SIZE_EXCEPTION("KER-FTM-FTP-008", "packet size should be less than 5 MB and greater than 0");
 
 	/**
 	 * Constructor for this {@link Enum}
@@ -50,7 +50,7 @@ public enum PacketUploaderExceptionConstants {
 	}
 
 	/**
-	 * getter for {@link #errorCode}
+	 * Getter for {@link #errorCode}
 	 * 
 	 * @return {@link #errorCode}
 	 */
@@ -59,7 +59,7 @@ public enum PacketUploaderExceptionConstants {
 	}
 
 	/**
-	 * setter for {@link #errorCode}
+	 * Setter for {@link #errorCode}
 	 * 
 	 * @param errorCode
 	 *            {@link #errorCode}
@@ -69,7 +69,7 @@ public enum PacketUploaderExceptionConstants {
 	}
 
 	/**
-	 * getter for {@link #errorMessage}
+	 * Getter for {@link #errorMessage}
 	 * 
 	 * @return {@link #errorMessage}
 	 */
@@ -78,7 +78,7 @@ public enum PacketUploaderExceptionConstants {
 	}
 
 	/**
-	 * setter for {@link #errorMessage}
+	 * Setter for {@link #errorMessage}
 	 * 
 	 * @param errorMessage
 	 *            {@link #errorMessage}
@@ -88,11 +88,11 @@ public enum PacketUploaderExceptionConstants {
 	}
 
 	/**
-	 * error Code for Exception
+	 * Error Code for Exception
 	 */
 	String errorCode;
 	/**
-	 * error Message for Exception
+	 * Error Message for Exception
 	 */
 	String errorMessage;
 }

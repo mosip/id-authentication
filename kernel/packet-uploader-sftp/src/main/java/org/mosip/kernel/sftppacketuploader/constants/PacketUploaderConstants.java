@@ -8,11 +8,11 @@ package org.mosip.kernel.sftppacketuploader.constants;
  */
 public enum PacketUploaderConstants {
 	/**
-	 * check strictly for host or not
+	 * Check strictly for host or not
 	 */
 	STR_STRICT_HOST_KEY_CHECKING("StrictHostKeyChecking", "no"),
 	/**
-	 * channel type
+	 * Channel type
 	 */
 	STR_SFTP("sftp"),
 	/**
@@ -41,7 +41,7 @@ public enum PacketUploaderConstants {
 	PORT_MAX("65535");
 
 	/**
-	 * getter for {@link #value}
+	 * Getter for {@link #value}
 	 * 
 	 * @param value
 	 */
@@ -50,7 +50,7 @@ public enum PacketUploaderConstants {
 	}
 
 	/**
-	 * constructor for this {@link Enum}
+	 * Constructor for this {@link Enum}
 	 * 
 	 * @param key
 	 *            value of {@link #key}
@@ -63,16 +63,16 @@ public enum PacketUploaderConstants {
 	}
 
 	/**
-	 * value
+	 * Value of constants
 	 */
 	private String value;
 	/**
-	 * key
+	 * Key of constants
 	 */
 	private String key;
 
 	/**
-	 * getter for {@link #key}
+	 * Getter for {@link #key}
 	 * 
 	 * @return {@link #key}
 	 */
@@ -81,7 +81,7 @@ public enum PacketUploaderConstants {
 	}
 
 	/**
-	 * setter for {@link #key}
+	 * Setter for {@link #key}
 	 * 
 	 * @param key
 	 *            {@link #key}
@@ -91,7 +91,7 @@ public enum PacketUploaderConstants {
 	}
 
 	/**
-	 * getter for {@link #value}
+	 * Getter for {@link #value}
 	 * 
 	 * @return {@link #value}
 	 */
@@ -100,7 +100,7 @@ public enum PacketUploaderConstants {
 	}
 
 	/**
-	 * setter for {@link #value}
+	 * Setter for {@link #value}
 	 * 
 	 * @param value
 	 *            {@link #value}

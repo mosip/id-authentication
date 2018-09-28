@@ -60,7 +60,7 @@ public class PacketUploaderExceptionTest {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet.zip").getFile().toPath()));
 		when(service.storePacket(packet)).thenThrow(MosipDirectoryNotEmpty.class);
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isBadRequest())
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
 				.andExpect(jsonPath("$.code", isA(String.class)));
 	}
 
@@ -69,7 +69,7 @@ public class PacketUploaderExceptionTest {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet.zip").getFile().toPath()));
 		when(service.storePacket(packet)).thenThrow(MosipPacketLocationSecurity.class);
-		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isBadRequest())
+		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
 				.andExpect(jsonPath("$.code", isA(String.class)));
 	}
 
