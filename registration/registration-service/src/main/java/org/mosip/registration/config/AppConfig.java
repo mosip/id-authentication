@@ -25,7 +25,7 @@ import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 @Import({HibernateDaoConfig.class, AuditConfig.class})
 @EnableJpaRepositories(basePackages = "org.mosip.registration", repositoryBaseClass = HibernateRepositoryImpl.class)
 @ComponentScan("org.mosip.registration")
-@PropertySource("springConfig.properties")
+@PropertySource("application.properties")
 public class AppConfig {
 	
 	@Autowired
