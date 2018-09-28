@@ -5,9 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * entity class for VId generator
@@ -20,8 +18,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "vid", schema = "ids")
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class Vid {
 
 	/**

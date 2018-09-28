@@ -15,8 +15,6 @@ import org.mosip.kernel.vidgenerator.dao.VidDao;
 import org.mosip.kernel.vidgenerator.exception.InValidUinException;
 import org.mosip.kernel.vidgenerator.exception.VidGenerationFailedException;
 import org.mosip.kernel.vidgenerator.model.Vid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
