@@ -130,7 +130,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				ex.toString() + "\n Status returned: " + HttpStatus.INTERNAL_SERVER_ERROR);
 
 		List<String> errorMessage = new ArrayList<>();
-		errorMessage.add(ex.getErrorText());
+		errorMessage.add(ex.getErrorTexts().get(0));
 		return new ResponseEntity<>(buildExceptionResponse(ex, ex.getErrorCode(), errorMessage, request),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
@@ -171,7 +171,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		mosipLogger.error(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), authResp.toString());
 
-		System.err.println("exit auth controller");
 		return authResp;
 	}
 }
