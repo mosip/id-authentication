@@ -13,6 +13,6 @@
 	<packaging>jar</packaging>
 	
 	<name>registration-ui</name>
-	<description>Maven project of MOSIP ID-Issuance Service</description>
+	<description>Maven project of MOSIP Registration UI</description>
 	
 </project>
