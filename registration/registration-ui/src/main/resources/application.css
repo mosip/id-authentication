@@ -1,0 +1,74 @@
+.root {
+    -fx-font-size: 14.0px;
+    -fx-font-family: sans-serif;
+    -fx-background-color: #ffffff;
+}
+
+#anchor-pane {
+	-fx-background-color: #f8f9fa;
+}
+
+#hbox {
+	-fx-background-color: #ffffff;
+}
+
+#header-section {
+    -fx-alignment: left;
+    -fx-padding: 10.0 10.0 10.0 10.0;
+    -fx-border-width: 1.0;
+    -fx-border-color: #dee2e6 transparent transparent transparent;
+    -fx-background-color: #dee2e6;
+}
+
+.content {
+    -fx-wrap-text: true;
+    -fx-font-size: 16.0px;
+}
+
+#content-section {
+    -fx-padding: 10.0 20.0 10.0 20.0;
+    -fx-wrap-text: true;
+}
+
+#content-header {
+    -fx-font-size: 18.0px;
+    -fx-padding: 0.0 0.0 10.0 0.0;
+}
+
+#footer-section {
+    -fx-alignment: center;
+    -fx-padding: 10.0 10.0 10.0 10.0;
+    -fx-border-width: 1.0;
+    -fx-border-color: #E8E8E8 transparent transparent transparent;
+    -fx-background-color: #dee2e6;
+}
+
+#common-hbox{
+	-fx-border-width: 1.0;
+	-fx-border-color: black;
+}
+
+#commonHeader {
+    -fx-background-color: #d9d9d9;
+}
+
+#commonImage{
+	-fx-background-color:#b3b3b3;
+}
+
+#headerImage{
+	-fx-background-color:transparent;
+}
+
+#mainBox{
+	-fx-border-width: 1.0;
+	-fx-border-color: black;
+}
+
+#optionLayout{
+	-fx-background-color:#f2f2f2;
+}
+
+#registrationData{
+	-fx-wrap-text: true;
+}

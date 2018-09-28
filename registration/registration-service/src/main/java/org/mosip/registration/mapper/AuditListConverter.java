@@ -24,9 +24,6 @@ public class AuditListConverter extends CustomConverter<List<AuditDTO>, List<Aud
 			
 			Audit audit=new Audit();
 			audit.setEventId(auditDTO.getEventId());
-			//audit.setEventId(auditDTO.getEventId());
-			audit.setEndTimestamp(auditDTO.getEndTimestamp());
-			audit.setStartTimestamp(auditDTO.getStartTimestamp());
 			auditList.add(audit);
 			
 			

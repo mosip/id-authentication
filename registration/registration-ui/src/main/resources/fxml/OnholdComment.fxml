@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="309.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mosip.registration.controller.OnHoldController">
+   <children>
+      <SplitPane dividerPositions="0.1498371335504886" orientation="VERTICAL" prefHeight="309.0" prefWidth="410.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="12.0" prefWidth="408.0">
+               <children>
+                  <Label layoutX="113.0" layoutY="7.0" prefHeight="21.0" prefWidth="182.0" text="Reason for On Hold">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Label layoutX="14.0" layoutY="50.0" prefHeight="27.0" prefWidth="88.0" text="Reason    :" />
+                  <ComboBox fx:id="onHoldComboBox" layoutX="102.0" layoutY="44.0" prefHeight="39.0" prefWidth="292.0" promptText="Select" />
+                  <Button fx:id="submit" layoutX="165.0" layoutY="177.0" mnemonicParsing="false" onAction="#updatePacketStatus" text="Submit" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

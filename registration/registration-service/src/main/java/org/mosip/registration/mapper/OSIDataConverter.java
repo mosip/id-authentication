@@ -1,10 +1,9 @@
 package org.mosip.registration.mapper;
 
-import org.mosip.registration.dto.PacketDTO;
+import org.mosip.registration.dto.RegistrationDTO;
 import org.mosip.registration.dto.json.metadata.OSIData;
 
 import ma.glasnost.orika.CustomConverter;
-import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
 
 /**
@@ -14,15 +13,13 @@ import ma.glasnost.orika.metadata.Type;
  * @since 1.0.0
  *
  */
-public class OSIDataConverter extends CustomConverter<PacketDTO, OSIData> {
-
-	
+public class OSIDataConverter extends CustomConverter<RegistrationDTO, OSIData> {
 
 	/* (non-Javadoc)
 	 * @see ma.glasnost.orika.Converter#convert(java.lang.Object, ma.glasnost.orika.metadata.Type)
 	 */
 	@Override
-	public OSIData convert(PacketDTO source, Type<? extends OSIData> destinationType) {
+	public OSIData convert(RegistrationDTO source, Type<? extends OSIData> destinationType) {
 		String introducerType = source.getOsiDataDTO().getIntroducerType();
 		OSIData osiData = new OSIData();
 		osiData.setOperatorUIN(source.getOsiDataDTO().getOperatorUIN());
@@ -60,7 +57,7 @@ public class OSIDataConverter extends CustomConverter<PacketDTO, OSIData> {
 
 		// HOF
 		if (introducerType.equalsIgnoreCase("hof")) {
-			osiData.setIntroducerUIN(source.getDemographicDTO().getHofUIN());
+			osiData.setIntroducerUIN(source.getDemographicDTO().getHOFUIN());
 			if (source.getBiometricDTO().getHofBiometricDTO() != null) {
 				osiData.setIntroducerFingerprintName(source.getBiometricDTO().getHofBiometricDTO()
 						.getFingerprintDetailsDTO().get(0).getFingerType());

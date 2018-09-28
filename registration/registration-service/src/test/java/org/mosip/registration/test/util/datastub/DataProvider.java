@@ -4,17 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import org.mosip.registration.dto.AuditDTO;
-import org.mosip.registration.dto.EnrollmentDTO;
-import org.mosip.registration.dto.EnrollmentMetaDataDTO;
 import org.mosip.registration.dto.OSIDataDTO;
-import org.mosip.registration.dto.PacketDTO;
-import org.mosip.registration.dto.PacketMetaDataDTO;
+import org.mosip.registration.dto.RegistrationDTO;
+import org.mosip.registration.dto.RegistrationMetaDataDTO;
 import org.mosip.registration.dto.biometric.BiometricDTO;
 import org.mosip.registration.dto.biometric.BiometricInfoDTO;
 import org.mosip.registration.dto.biometric.ExceptionFingerprintDetailsDTO;
@@ -26,6 +26,7 @@ import org.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import org.mosip.registration.dto.demographic.DemographicDTO;
 import org.mosip.registration.dto.demographic.DemographicInfoDTO;
 import org.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import org.mosip.registration.util.kernal.RIDGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -43,37 +44,16 @@ public class DataProvider {
 		return bytesArray;
 	}
 
-	public static EnrollmentDTO getEnrollmentDTO() throws IOException, URISyntaxException {
-		EnrollmentDTO enrollmentDTO = new EnrollmentDTO();
-		enrollmentDTO.setPacketDTO(DataProvider.getPacketDTO());
-		enrollmentDTO.setEnrollmentMetaDataDTO(DataProvider.getEnrollmentMetaDataDTO());
-		return enrollmentDTO;
-
-	}
-
-	private static EnrollmentMetaDataDTO getEnrollmentMetaDataDTO() {
-		EnrollmentMetaDataDTO enrollmentMetaDataDTO = new EnrollmentMetaDataDTO();
-		enrollmentMetaDataDTO.setMachineId("D4-6D-6D-30-21-86");
-		/*enrollmentMetaDataDTO.setPacketStatus("Approved");
-		enrollmentMetaDataDTO.setApproverName("Balaji");
-		enrollmentMetaDataDTO.setApproverId("5678910ABC");
-		Date date=new Date();
-		enrollmentMetaDataDTO.setApprovedDate(date.getDate());
-		enrollmentMetaDataDTO.setCheckSum(CheckSumUtil.checkSumMap);
-		enrollmentMetaDataDTO.setComments("Registration approved");*/
-		return enrollmentMetaDataDTO;
-	}
-
-	private static PacketDTO getPacketDTO() throws IOException, URISyntaxException {
-		PacketDTO packetDTO = new PacketDTO();
-		packetDTO.setAuditDTOs(DataProvider.getAuditDTOs());
-		packetDTO.setOsiDataDTO(DataProvider.getOsiDataDTO());
-		packetDTO.setPacketMetaDataDTO(DataProvider.getPacketMetaDataDTO());
-		packetDTO.setPreEnrollmentId("PEN1345T");
-		packetDTO.setEnrollmentID("ED786878");
-		packetDTO.setDemographicDTO(DataProvider.getDemographicDTO());
-		packetDTO.setBiometricDTO(DataProvider.getBiometricDTO());
-		return packetDTO;
+	public static RegistrationDTO getPacketDTO() throws IOException, URISyntaxException {
+		RegistrationDTO registrationDTO = new RegistrationDTO();
+		registrationDTO.setAuditDTOs(DataProvider.getAuditDTOs());
+		registrationDTO.setOsiDataDTO(DataProvider.getOsiDataDTO());
+		registrationDTO.setRegistrationMetaDataDTO(DataProvider.getPacketMetaDataDTO());
+		registrationDTO.setPreRegistrationId("PEN1345T");
+		registrationDTO.setRegistrationId(RIDGenerator.nextRID());
+		registrationDTO.setDemographicDTO(DataProvider.getDemographicDTO());
+		registrationDTO.setBiometricDTO(DataProvider.getBiometricDTO());
+		return registrationDTO;
 	}
 
 	private static BiometricDTO getBiometricDTO() throws IOException, URISyntaxException {
@@ -229,8 +209,8 @@ public class DataProvider {
 	private static DemographicDTO getDemographicDTO() throws IOException, URISyntaxException {
 		DemographicDTO demographicDTO = new DemographicDTO();
 		demographicDTO.setApplicantDocumentDTO(DataProvider.setApplicantDocumentDTO());
-		demographicDTO.setHofEnrollmentID("HOF00233ID");
-		demographicDTO.setHofUIN("HOF003");
+		demographicDTO.setHOFRegistrationId("HOF00233ID");
+		demographicDTO.setHOFUIN("HOF003");
 		demographicDTO.setIntroducerUIN("INT001");
 		demographicDTO.setDemoInLocalLang(DataProvider.getDemoInLocalLang());
 		demographicDTO.setDemoInUserLang(DataProvider.getDemoInUserLang());
@@ -311,13 +291,13 @@ public class DataProvider {
 		return docdetailsList;
 	}
 
-	private static PacketMetaDataDTO getPacketMetaDataDTO() {
-		PacketMetaDataDTO packetMetaDataDTO = new PacketMetaDataDTO();
-		packetMetaDataDTO.setApplicationCategory("Regular");
-		packetMetaDataDTO.setApplicationType("New Enrolment");
-		packetMetaDataDTO.setGeoLatitudeLoc(13.0049);
-		packetMetaDataDTO.setGeoLongitudeLoc(80.24492);
-		return packetMetaDataDTO;
+	private static RegistrationMetaDataDTO getPacketMetaDataDTO() {
+		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
+		registrationMetaDataDTO.setApplicationCategory("Regular");
+		registrationMetaDataDTO.setApplicationType("New Enrolment");
+		registrationMetaDataDTO.setGeoLatitudeLoc(13.0049);
+		registrationMetaDataDTO.setGeoLongitudeLoc(80.24492);
+		return registrationMetaDataDTO;
 	}
 
 	private static OSIDataDTO getOsiDataDTO() {
@@ -334,16 +314,154 @@ public class DataProvider {
 
 	private static List<AuditDTO> getAuditDTOs() {
 		LinkedList<AuditDTO> auditDTOList = new LinkedList<AuditDTO>();
+		OffsetDateTime dateTime = OffsetDateTime.now();
 		AuditDTO audit = new AuditDTO();
-		audit.setApplicationID("2343243");
-		audit.setEndTimestamp("Thu Jan 23 00:10:00 IST 1992");
-		audit.setStartTimestamp("Thu Jan 23 00:10:00 IST 1992");
-		audit.setEventId("e101");
+		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
+		audit.setCreatedAt(dateTime);
+		audit.setEventId("1");
+		audit.setEventName("Capture Demographic Data");
+		audit.setEventType("Data Capture");
+		audit.setActionTimeStamp(dateTime);
+		audit.setHostName("localHost");
+		audit.setHostIp("localhost");
+		audit.setApplicationId("1");
+		audit.setApplicationName("Registration-UI");
+		audit.setSessionUserId("12345");
+		audit.setSessionUserName("Officer");
+		audit.setId("1");
+		audit.setIdType("registration");
+		audit.setCreatedBy("Officer");
+		audit.setModuleId("1");
+		audit.setModuleName("New Registration");
+		audit.setDescription("Caputured demographic data");
 		auditDTOList.add(audit);
-		audit.setApplicationID("3343543");
-		audit.setEndTimestamp("Fri Jan 27 00:10:00 IST 1992");
-		audit.setStartTimestamp("Mon Jan 23 00:10:00 IST 1996");
-		audit.setEventId("e105");
+		
+		audit = new AuditDTO();
+		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
+		audit.setCreatedAt(dateTime);
+		audit.setEventId("1");
+		audit.setEventName("Capture Left Iris");
+		audit.setEventType("Iris Capture");
+		audit.setActionTimeStamp(dateTime);
+		audit.setHostName("localHost");
+		audit.setHostIp("localhost");
+		audit.setApplicationId("1");
+		audit.setApplicationName("Registration-UI");
+		audit.setSessionUserId("12345");
+		audit.setSessionUserName("Officer");
+		audit.setId("1");
+		audit.setIdType("registration");
+		audit.setCreatedBy("Officer");
+		audit.setModuleId("1");
+		audit.setModuleName("New Registration");
+		audit.setDescription("Caputured left iris");
+		auditDTOList.add(audit);
+		
+		audit = new AuditDTO();
+		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
+		audit.setCreatedAt(dateTime);
+		audit.setEventId("1");
+		audit.setEventName("Capture Right Iris");
+		audit.setEventType("Iris Capture");
+		audit.setActionTimeStamp(dateTime);
+		audit.setHostName("localHost");
+		audit.setHostIp("localhost");
+		audit.setApplicationId("1");
+		audit.setApplicationName("Registration-UI");
+		audit.setSessionUserId("12345");
+		audit.setSessionUserName("Officer");
+		audit.setId("1");
+		audit.setIdType("registration");
+		audit.setCreatedBy("Officer");
+		audit.setModuleId("1");
+		audit.setModuleName("New Registration");
+		audit.setDescription("Caputured right iris");
+		auditDTOList.add(audit);
+		
+		audit = new AuditDTO();
+		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
+		audit.setCreatedAt(dateTime);
+		audit.setEventId("1");
+		audit.setEventName("Capture Right Palm");
+		audit.setEventType("Palm Capture");
+		audit.setActionTimeStamp(dateTime);
+		audit.setHostName("localHost");
+		audit.setHostIp("localhost");
+		audit.setApplicationId("1");
+		audit.setApplicationName("Registration-UI");
+		audit.setSessionUserId("12345");
+		audit.setSessionUserName("Officer");
+		audit.setId("1");
+		audit.setIdType("registration");
+		audit.setCreatedBy("Officer");
+		audit.setModuleId("1");
+		audit.setModuleName("New Registration");
+		audit.setDescription("Caputured Right Palm");
+		auditDTOList.add(audit);
+		
+		audit = new AuditDTO();
+		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
+		audit.setCreatedAt(dateTime);
+		audit.setEventId("1");
+		audit.setEventName("Capture Left Palm");
+		audit.setEventType("Palm Capture");
+		audit.setActionTimeStamp(dateTime);
+		audit.setHostName("localHost");
+		audit.setHostIp("localhost");
+		audit.setApplicationId("1");
+		audit.setApplicationName("Registration-UI");
+		audit.setSessionUserId("12345");
+		audit.setSessionUserName("Officer");
+		audit.setId("1");
+		audit.setIdType("registration");
+		audit.setCreatedBy("Officer");
+		audit.setModuleId("1");
+		audit.setModuleName("New Registration");
+		audit.setDescription("Caputured Left Palm");
+		auditDTOList.add(audit);
+		
+		audit = new AuditDTO();
+		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
+		audit.setCreatedAt(dateTime);
+		audit.setEventId("1");
+		audit.setEventName("Capture Right Thumb");
+		audit.setEventType("Thumb Capture");
+		audit.setActionTimeStamp(dateTime);
+		audit.setHostName("localHost");
+		audit.setHostIp("localhost");
+		audit.setApplicationId("1");
+		audit.setApplicationName("Registration-UI");
+		audit.setSessionUserId("12345");
+		audit.setSessionUserName("Officer");
+		audit.setId("1");
+		audit.setIdType("registration");
+		audit.setCreatedBy("Officer");
+		audit.setModuleId("1");
+		audit.setModuleName("New Registration");
+		audit.setDescription("Caputured Right Thumb");
+		auditDTOList.add(audit);
+		
+		audit = new AuditDTO();
+		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
+		audit.setCreatedAt(dateTime);
+		audit.setEventId("1");
+		audit.setEventName("Capture Left Thumb");
+		audit.setEventType("Thumb Capture");
+		audit.setActionTimeStamp(dateTime);
+		audit.setHostName("localHost");
+		audit.setHostIp("localhost");
+		audit.setApplicationId("1");
+		audit.setApplicationName("Registration-UI");
+		audit.setSessionUserId("12345");
+		audit.setSessionUserName("Officer");
+		audit.setId("1");
+		audit.setIdType("registration");
+		audit.setCreatedBy("Officer");
+		audit.setModuleId("1");
+		audit.setModuleName("New Registration");
+		audit.setDescription("Caputured Left Thumb");
+		auditDTOList.add(audit);
+		
 		return auditDTOList;
 	}
 

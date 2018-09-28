@@ -1,20 +1,23 @@
 package org.mosip.registration.service;
 
-import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import org.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
+import org.mosip.registration.config.AuditFactory;
+import org.mosip.registration.constants.AppModuleEnum;
+import org.mosip.registration.constants.AuditEventEnum;
+import org.mosip.registration.constants.RegConstants;
 import org.mosip.registration.constants.RegProcessorExceptionCode;
-import org.mosip.registration.dto.EnrollmentDTO;
+import org.mosip.registration.constants.RegProcessorExceptionEnum;
+import org.mosip.registration.dto.RegistrationDTO;
 import org.mosip.registration.dto.json.demo.Demographic;
+import org.mosip.registration.dto.json.metadata.Audit;
 import org.mosip.registration.dto.json.metadata.HashSequence;
+import org.mosip.registration.dto.json.metadata.OSIData;
 import org.mosip.registration.dto.json.metadata.PacketInfo;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.exception.RegBaseUncheckedException;
@@ -23,14 +26,14 @@ import org.mosip.registration.util.hmac.HMACGeneration;
 import org.mosip.registration.util.zip.ZipCreationManager;
 import org.mosip.kernel.core.utils.exception.MosipJsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import static org.mosip.kernel.core.utils.JsonUtil.javaObjectToJsonString;
 import static org.mosip.registration.constants.RegConstants.DEMOGRPAHIC_JSON_NAME;
-import static org.mosip.registration.constants.RegConstants.HASHING_JSON_NAME;
-import static org.mosip.registration.constants.RegConstants.PACKET_META_JSON_NAME;
-import static org.mosip.registration.mapper.CustomObjectMapper.mapperFacade;
+import static org.mosip.registration.mapper.CustomObjectMapper.mapperFacade;import static org.mosip.registration.constants.RegConstants.APPLICATION_ID;
+import static org.mosip.registration.constants.RegConstants.APPLICATION_NAME; 
+import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+
 
 /**
  * Class for creating the Resident Registration
@@ -42,79 +45,87 @@ import static org.mosip.registration.mapper.CustomObjectMapper.mapperFacade;
 @Component
 public class PacketCreationService {
 
-	@Autowired
-	@Qualifier("registrationAuditBuilder")
-	private AuditRequestBuilder auditRequestBuilder;
-	@Autowired
-	private AuditHandler auditHandler;
 	private static MosipLogger LOGGER;
+
 	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
+	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
+		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
 	}
-	
+
+	/**
+	 * Instance of {@code AuditFactory}
+	 */
+	@Autowired
+	private AuditFactory auditFactory;
+
 	/**
 	 * Creates the packet
 	 * 
-	 * @param enrollmentDTO
+	 * @param registrationDTO
 	 *            the enrollment data for which packet has to be created
 	 * @throws RegBaseCheckedException
 	 */
-	public byte[] create(EnrollmentDTO enrollmentDTO) throws RegBaseCheckedException {
-		LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", "EnrollmentId", enrollmentDTO.getPacketDTO().getEnrollmentID(), "Registration Creation had been called");
+	public byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException {
+		LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Registration Creation had been called");
 		try {
-			// TODO : add Log and Audit
-			// TODO: Add for Registration Creation Starts
-
-			// TODO: Add JSON Conversion - Audit and Log
+			// Map object to store the byte array of JSON objects namely Demographic, HMAC,
+			// Packet Meta-Data and Audit
 			Map<String, byte[]> jsonsMap = new HashMap<>();
 
-			jsonsMap.put(
-					DEMOGRPAHIC_JSON_NAME, javaObjectToJsonString(mapperFacade
-									.map(enrollmentDTO.getPacketDTO().getDemographicDTO(), Demographic.class))
-							.getBytes());
-			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", "EnrollmentId", enrollmentDTO.getPacketDTO().getEnrollmentID(), "Demographic Json created successfully");
+			// Generating Demographic JSON as byte array
+			jsonsMap.put(DEMOGRPAHIC_JSON_NAME,
+					javaObjectToJsonString(
+							mapperFacade.map(registrationDTO.getDemographicDTO(), Demographic.class))
+									.getBytes());
+			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "Demographic Json created successfully");
+			auditFactory.audit(AuditEventEnum.PACKET_DEMO_JSON_CREATED, AppModuleEnum.PACKET_CREATOR,
+					"Demographic JSON created successfully", "refId", "refIdType");
 
-			// TODO: Add HMAC generation - Audit and Log
-			LinkedList<String> hmacApplicantSequence = new LinkedList<>();
-			LinkedList<String> hmacHOFSequence = new LinkedList<>();
-			LinkedList<String> hmacIntroducerSequence = new LinkedList<>();
+			// Generating HMAC File as byte array
+			HashSequence hashSequence = new HashSequence(new LinkedList<>(), new LinkedList<>(), new LinkedList<>());
+			jsonsMap.put(RegConstants.HASHING_JSON_NAME, HMACGeneration.generatePacketDTOHash(
+					registrationDTO, jsonsMap.get(DEMOGRPAHIC_JSON_NAME), hashSequence));
+			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "HMAC File generated successfully");
+			auditFactory.audit(AuditEventEnum.PACKET_HMAC_FILE_CREATED, AppModuleEnum.PACKET_CREATOR,
+					"Packet HMAC File created successfully", "refId", "refIdType");
 
-			jsonsMap.put(HASHING_JSON_NAME,
-					HMACGeneration.generatePacketDtoHash(enrollmentDTO.getPacketDTO(),
-							jsonsMap.get(DEMOGRPAHIC_JSON_NAME), hmacApplicantSequence, hmacHOFSequence,
-							hmacIntroducerSequence));
-			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", "EnrollmentId", enrollmentDTO.getPacketDTO().getEnrollmentID(), "HMAC generateds successfully");
-
-			// TODO : Add Audit and Log
-			PacketInfo packetInfo = mapperFacade.map(enrollmentDTO, PacketInfo.class);
-			HashSequence hashSequence = new HashSequence();
-			hashSequence.setApplicant(hmacApplicantSequence);
-			hashSequence.setHof(hmacHOFSequence);
-			hashSequence.setIntroducer(hmacIntroducerSequence);
+			// Generating Packet Meta-Info JSON as byte array
+			PacketInfo packetInfo = mapperFacade.map(registrationDTO, PacketInfo.class);
 			packetInfo.setHashSequence(hashSequence);
 			packetInfo.setCheckSumMap(CheckSumUtil.checkSumMap);
-			jsonsMap.put(PACKET_META_JSON_NAME, javaObjectToJsonString(packetInfo).getBytes());
-			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", "EnrollmentId", enrollmentDTO.getPacketDTO().getEnrollmentID(), "Registration Packet Meta-Info JSON generated successfully");
-			
-			// Creating zip file for AES Encryption
-			// TODO: Add Log and Audit for zip file creation before AES encryption
-			auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId("applicationId")
-			.setApplicationName("applicationName").setCreatedBy("createdBy").setDescription("description")
-			.setEventId("eventId").setEventName("eventName").setEventType("eventType").setHostIp("hostIp")
-			.setHostName("hostName").setId("id").setIdType("idType").setModuleId("moduleId")
-			.setModuleName("moduleName").setSessionUserId("sessionUserId").setSessionUserName("sessionUserName");
-			
-			AuditRequestDto auditRequest = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequest);
-			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", "EnrollmentId", enrollmentDTO.getPacketDTO().getEnrollmentID(), "Registration Creation had been ended");
-			return ZipCreationManager.createPacket(enrollmentDTO, jsonsMap);
-		} catch (MosipJsonProcessingException e) {
-			// TODO Auto-generated catch block
-			throw new RegBaseCheckedException("", "");
-		} catch (RegBaseUncheckedException uncheckedException) {
+			packetInfo.setOsiData(mapperFacade.convert(registrationDTO, OSIData.class, "osiDataConverter"));
+			jsonsMap.put(RegConstants.PACKET_META_JSON_NAME, javaObjectToJsonString(packetInfo).getBytes());
+			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "Registration Packet Meta-Info JSON generated successfully");
+			auditFactory.audit(AuditEventEnum.PACKET_META_JSON_CREATED, AppModuleEnum.PACKET_CREATOR,
+					"Packet Meta-Data JSON created successfully", "refId", "refIdType");
+
+			// Generating Audit JSON as byte array
+			jsonsMap.put(RegConstants.AUDIT_JSON_FILE,
+					javaObjectToJsonString(
+							mapperFacade.mapAsList(registrationDTO.getAuditDTOs(), Audit.class))
+									.getBytes());
+			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "Registration Packet Meta-Info JSON generated successfully");
+			auditFactory.audit(AuditEventEnum.PACKET_META_JSON_CREATED, AppModuleEnum.PACKET_CREATOR,
+					"Packet Meta-Data JSON created successfully", "refId", "refIdType");
+
+			// Creating in-memory zip file for Packet Encryption
+			byte[] packetZipBytes = ZipCreationManager.createPacket(registrationDTO, jsonsMap);
+			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "Registration Creation had been ended");
+			auditFactory.audit(AuditEventEnum.PACKET_INTERNAL_ZIP, AppModuleEnum.PACKET_CREATOR,
+					"Packet Internal Zip File created successfully", "refId", "refIdType");
+			return packetZipBytes;
+		} catch (MosipJsonProcessingException mosipJsonProcessingException) {
+			throw new RegBaseCheckedException(RegProcessorExceptionEnum.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
+					RegProcessorExceptionEnum.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
+		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegProcessorExceptionCode.PACKET_CREATION_EXCEPTION,
-					uncheckedException.getMessage());
+					runtimeException.toString());
 		}
 	}
 

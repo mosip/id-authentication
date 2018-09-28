@@ -13,6 +13,7 @@ import org.mosip.kernel.auditmanager.config.AuditConfig;
 import org.mosip.kernel.dataaccess.config.impl.HibernateDaoConfig;
 import org.mosip.kernel.dataaccess.repository.impl.HibernateRepositoryImpl;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Spring Configuration class for Registration-Processor Module
@@ -23,15 +24,15 @@ import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
  */
 @Configuration
 @Import({HibernateDaoConfig.class, AuditConfig.class})
-@EnableJpaRepositories(basePackages = "org.mosip.registration", repositoryBaseClass = HibernateRepositoryImpl.class)
-@ComponentScan("org.mosip.registration")
-@PropertySource("application.properties")
+@EnableJpaRepositories(basePackages = "org.mosip.registration.", repositoryBaseClass = HibernateRepositoryImpl.class)
+@ComponentScan("org.mosip.registration.")
+@PropertySource({"application.properties", "config.properties"})
 public class AppConfig {
 	
 	@Autowired
 	private Environment environment;
 	
-	@Bean(name = "idaRollingFileAppender")
+	@Bean(name = "mosipRollingFileAppender")
 	public MosipRollingFileAppender getFileAppender() {
 		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
 		mosipRollingFileAppender.setAppenderName(environment.getProperty("log4j.appender.Appender"));
@@ -47,12 +48,9 @@ public class AppConfig {
 
 	}
 	
-	@Bean(name = "registrationAuditBuilder")
-	public AuditRequestBuilder getAuditRequestBuilder() {
-		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		auditRequestBuilder.setApplicationId(environment.getProperty("auditBuilder.applicationId"))
-		.setApplicationName(environment.getProperty("auditBuilder.applicationName"));
-
-		return auditRequestBuilder;
+	@Bean
+	public RestTemplate getRestTemplate(){
+		return new RestTemplate();
 	}
+	
 }

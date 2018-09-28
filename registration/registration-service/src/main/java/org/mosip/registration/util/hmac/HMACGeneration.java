@@ -4,12 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.mosip.kernel.core.utils.HMACUtil;
-import org.mosip.registration.dto.PacketDTO;
+import org.mosip.registration.dto.RegistrationDTO;
 import org.mosip.registration.dto.biometric.BiometricDTO;
 import org.mosip.registration.dto.biometric.BiometricInfoDTO;
 import org.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import org.mosip.registration.dto.demographic.DemographicDTO;
 import org.mosip.registration.dto.demographic.DocumentDetailsDTO;
+import org.mosip.registration.dto.json.metadata.HashSequence;
 
 /**
  * Hash generation for packet DTO
@@ -24,47 +25,42 @@ public class HMACGeneration {
 	public static LinkedList<String> hmacIntroducerSequence = new LinkedList<>();
 
 	/**
-	 * * Generates hash for packet Dto and Demographic json file which includes
-	 * biometric, demographic and enrollmentId
+	 * * Generates hash for registration Dto and Demographic json file which includes
+	 * biometric, demographic and registration Id
 	 * 
-	 * @param packetDTO
+	 * @param registrationDTO
 	 *            has to be hash updation
 	 * @param demographicJsonBytes
 	 *            has to be hash updation
-	 * @param hmacApplicantSequence
-	 *            contains the applicant HMAC Sequence
-	 * @param hmacHOFSequence
-	 *            contains the hof HMAC Sequence
-	 * @param hmacIntroducerSequence
-	 *            contains the introducer HMAC Sequence
+	 * @param hashSequence
+	 *            contains the hash Sequence
 	 * 
 	 * @return hash byte array
 	 */
-	public static byte[] generatePacketDtoHash(final PacketDTO packetDTO, final byte[] demographicJsonBytes,
-			LinkedList<String> hmacApplicantSequence, LinkedList<String> hmacHOFSequence,
-			LinkedList<String> hmacIntroducerSequence) {
+	public static byte[] generatePacketDTOHash(final RegistrationDTO registrationDTO, final byte[] demographicJsonBytes,
+			HashSequence hashSequence) {
 
-		HMACGeneration.hmacApplicantSequence = hmacApplicantSequence;
-		HMACGeneration.hmacHOFSequence = hmacHOFSequence;
-		HMACGeneration.hmacIntroducerSequence = hmacIntroducerSequence;
+		HMACGeneration.hmacApplicantSequence = hashSequence.getApplicant();
+		HMACGeneration.hmacHOFSequence = hashSequence.getHof();
+		HMACGeneration.hmacIntroducerSequence = hashSequence.getIntroducer();
 
 		// generates packet biometric hash which may includes applicant, hof and
 		// introducer
-		if (packetDTO.getBiometricDTO() != null) {
-			generatesPacketBiometricsHash(packetDTO.getBiometricDTO());
+		if (registrationDTO.getBiometricDTO() != null) {
+			generatesPacketBiometricsHash(registrationDTO.getBiometricDTO());
 		}
 
 		// Demographic json hash
 		generateHash(demographicJsonBytes, "DemographicJson", hmacApplicantSequence);
 
 		// generates demographic hash
-		if (packetDTO.getDemographicDTO() != null) {
-			generateDemographicHash(packetDTO.getDemographicDTO());
+		if (registrationDTO.getDemographicDTO() != null) {
+			generateDemographicHash(registrationDTO.getDemographicDTO());
 		}
 
 		// generates enrollment id hash
-		if (packetDTO.getEnrollmentID() != null) {
-			generateHash(packetDTO.getEnrollmentID().getBytes(), "applicantEnrollmentId", hmacApplicantSequence);
+		if (registrationDTO.getRegistrationId() != null) {
+			generateHash(registrationDTO.getRegistrationId().getBytes(), "applicantRegistrationId", hmacApplicantSequence);
 		}
 
 		// generated hash
@@ -137,8 +133,8 @@ public class HMACGeneration {
 			generateApplicantDocumentHash(demographicDTO.getApplicantDocumentDTO(), hmacApplicantSequence);
 		}
 		// generates hofUIN hash
-		if (demographicDTO.getHofUIN() != null) {
-			generateHash(demographicDTO.getHofUIN().getBytes(), "hofUIN", hmacHOFSequence);
+		if (demographicDTO.getHOFUIN() != null) {
+			generateHash(demographicDTO.getHOFUIN().getBytes(), "hofUIN", hmacHOFSequence);
 		}
 		// generates introducerUIN hash
 		if (demographicDTO.getIntroducerUIN() != null) {

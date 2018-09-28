@@ -1,19 +1,20 @@
 package org.mosip.registration.mapper;
 
-import org.mosip.registration.dto.EnrollmentDTO;
-import org.mosip.registration.dto.EnrollmentMetaDataDTO;
+import java.time.OffsetDateTime;
+
+import org.mosip.registration.dto.RegistrationDTO;
 import org.mosip.registration.dto.demographic.AddressDTO;
 import org.mosip.registration.dto.demographic.DemographicDTO;
 import org.mosip.registration.dto.demographic.DemographicInfoDTO;
 import org.mosip.registration.dto.json.demo.Address;
 import org.mosip.registration.dto.json.demo.Demographic;
 import org.mosip.registration.dto.json.demo.DemographicInfo;
-import org.mosip.registration.dto.json.enrollmentmeta.EnrollmentMetaDataInfo;
 import org.mosip.registration.dto.json.metadata.PacketInfo;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.converter.ConverterFactory;
+import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.ConfigurableMapper;
 
 /**
@@ -38,6 +39,8 @@ public class CustomObjectMapper extends ConfigurableMapper {
 	@Override
 	public void configure(MapperFactory mapperFactory) {
 		ConverterFactory converterFactory = mapperFactory.getConverterFactory();
+		converterFactory.registerConverter(new PassThroughConverter(OffsetDateTime.class));
+
 		converterFactory.registerConverter("auditListConverter", new AuditListConverter());
 		converterFactory.registerConverter("osiDataConverter", new OSIDataConverter());
 
@@ -55,67 +58,61 @@ public class CustomObjectMapper extends ConfigurableMapper {
 		mapperFactory.classMap(AddressDTO.class, Address.class).byDefault().register();
 
 		mapperFactory.classMap(DemographicDTO.class, Demographic.class).exclude("applicantDocument")
-				.exclude("hofEnrollmentID").exclude("hofUIN").exclude("introducerUIN").byDefault().register();
-
-		mapperFactory.classMap(EnrollmentMetaDataDTO.class, EnrollmentMetaDataInfo.class).exclude("hashSequence")
-				.exclude("checkSum").mapNulls(true).byDefault().register();
+				.exclude("hofRegistrationId").exclude("hofUIN").exclude("introducerUIN").byDefault().register();
 
 		// packetInfo
-		mapperFactory.classMap(EnrollmentDTO.class, PacketInfo.class)
+		mapperFactory.classMap(RegistrationDTO.class, PacketInfo.class)
 
 				// 1photograph
-				.field("packetDTO.demographicDTO.applicantDocumentDTO.photoName", "photograph.photographName")
+				.field("demographicDTO.applicantDocumentDTO.photoName", "photograph.photographName")
 
-				.field("packetDTO.demographicDTO.applicantDocumentDTO.hasExceptionPhoto",
-						"photograph.hasExceptionPhoto")
+				.field("demographicDTO.applicantDocumentDTO.hasExceptionPhoto", "photograph.hasExceptionPhoto")
 
-				.field("packetDTO.demographicDTO.applicantDocumentDTO.exceptionPhotoName",
-						"photograph.exceptionPhotoName")
+				.field("demographicDTO.applicantDocumentDTO.exceptionPhotoName", "photograph.exceptionPhotoName")
 
 				// 2.BiometricData
 
 				// i)FingerPrints
-				.fieldMap("packetDTO.biometricDTO.applicantBiometricDTO.fingerprintDetailsDTO",
+				.fieldMap("biometricDTO.applicantBiometricDTO.fingerprintDetailsDTO",
 						"biometericData.fingerprintData.fingerprints")
 				.converter("applicantFingerprintListConverter").aToB().add()
-				.field("packetDTO.biometricDTO.applicantBiometricDTO.numOfFingerPrintRetry",
+				.field("biometricDTO.applicantBiometricDTO.numOfFingerPrintRetry",
 						"biometericData.fingerprintData.numRetry")
-				.fieldMap("packetDTO.biometricDTO.applicantBiometricDTO.exceptionFingerprintDetailsDTO",
+				.fieldMap("biometricDTO.applicantBiometricDTO.exceptionFingerprintDetailsDTO",
 						"biometericData.fingerprintData.exceptionFingerprints")
 				.converter("applicantExceptionFingerPrintListConverter").aToB().add()
 
 				// ii) Iris
-				.fieldMap("packetDTO.biometricDTO.applicantBiometricDTO.irisDetailsDTO", "biometericData.irisData.iris")
+				.fieldMap("biometricDTO.applicantBiometricDTO.irisDetailsDTO", "biometericData.irisData.iris")
 				.converter("applicantIrisListConverter").aToB().add()
-				.field("packetDTO.biometricDTO.applicantBiometricDTO.numOfIrisRetry",
-						"biometericData.irisData.numRetry")
-				.fieldMap("packetDTO.biometricDTO.applicantBiometricDTO.exceptionIrisDetailsDTO",
+				.field("biometricDTO.applicantBiometricDTO.numOfIrisRetry", "biometericData.irisData.numRetry")
+				.fieldMap("biometricDTO.applicantBiometricDTO.exceptionIrisDetailsDTO",
 						"biometericData.irisData.exceptionIris")
 				.converter("applicantExceptionIrisConverter").aToB().add()
 
 				// 3.Document
 
-				.fieldMap("packetDTO.demographicDTO.applicantDocumentDTO.documentDetailsDTO",
-						"document.documentDetails")
+				.fieldMap("demographicDTO.applicantDocumentDTO.documentDetailsDTO", "document.documentDetails")
 				.converter("applicantDocumentListConverter").aToB().add()
-				.field("packetDTO.demographicDTO.applicantDocumentDTO.acknowledgeReceiptName",
-						"document.enrollmentAckCopy")
+				.field("demographicDTO.applicantDocumentDTO.acknowledgeReceiptName", "document.registrationAckCopy")
 				// 4.MetaData
-				.field("packetDTO.packetMetaDataDTO.geoLatitudeLoc", "metaData.geoLocation.latitude")
-				.field("packetDTO.packetMetaDataDTO.geoLongitudeLoc", "metaData.geoLocation.longitude")
-				.field("packetDTO.preEnrollmentId", "metaData.preEnrollmentId")
-				.field("packetDTO.enrollmentID", "metaData.enrollmentId")
-				.field("packetDTO.packetMetaDataDTO.applicationType", "metaData.applicationType")
-				.field("packetDTO.packetMetaDataDTO.applicationCategory", "metaData.applicationCategory")
+				.field("registrationMetaDataDTO.geoLatitudeLoc", "metaData.geoLocation.latitude")
+				.field("registrationMetaDataDTO.geoLongitudeLoc", "metaData.geoLocation.longitude")
+				.field("preRegistrationId", "metaData.preRegistrationId")
+				.field("registrationId", "metaData.registrationId")
+				.field("registrationMetaDataDTO.applicationType", "metaData.applicationType")
+				.field("registrationMetaDataDTO.applicationCategory", "metaData.applicationCategory")
 				// 5.OSI
-				.fieldMap("packetDTO", "osiData").converter("osiDataConverter").aToB().add()
+				// .fieldMap("registrationDTO",
+				// "osiData").converter("osiDataConverter").aToB().add()
 
 				// 6.HashSequence
 				// After custom object mapping activity completed, retrieved packet info then
 				// assign hash sequence
 
 				// 7.Audit
-				.fieldMap("packetDTO.auditDTOs", "audit").converter("auditListConverter").aToB().add()
+				// .fieldMap("packetDTO.auditDTOs",
+				// "audit").converter("auditListConverter").aToB().add()
 
 				// 8.CheckSum
 				// After custom object mapping activity completed, retrieved packet info then

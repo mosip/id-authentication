@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mosip.registration.controller.LoginOTPController">
+	<children>
+		<Label layoutX="106.0" layoutY="92.0" text="Registration Login">
+			
+			
+		</Label>
+		<TextField fx:id="eoUsername" layoutX="167.0" layoutY="208.0" promptText="EO Username" />
+		<Button fx:id="submit" disable="true" layoutX="300.0" layoutY="314.0" mnemonicParsing="false" onAction="#validateUser" text="Submit" />
+		<Button fx:id="getOTP" layoutX="168.0" layoutY="314.0" mnemonicParsing="false" onAction="#generateOtp" text="Get OTP" />
+		<Button fx:id="resend" layoutX="167.0" layoutY="314.0" mnemonicParsing="false" onAction="#generateOtp" text="Resend OTP" visible="false" />
+		<PasswordField fx:id="otp" layoutX="167.0" layoutY="253.0" promptText="Enter OTP" />
+		<Label fx:id="otpValidity" layoutX="160.0" layoutY="353.0" prefHeight="18.0" prefWidth="136.0" text="otp_validity_in_mins" />
+	</children>
+</AnchorPane>

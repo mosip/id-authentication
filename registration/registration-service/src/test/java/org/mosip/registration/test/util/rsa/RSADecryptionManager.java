@@ -11,11 +11,7 @@ import org.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 import org.mosip.registration.util.rsa.keygenerator.impl.RSAKeyGeneratorImpl;
 
 public class RSADecryptionManager {
-
-//	static PropertyFileReader propertyFileReader;
-//	RSADecryptionManager(PropertyFileReader propertyFileReader){
-//		RSADecryptionManager.propertyFileReader=propertyFileReader;
-//	}
+	
 	static RSAKeyGenerator rsaKeyGenerator = new RSAKeyGeneratorImpl();
 	static RSADecryption rsaDecryption = new RSADecryptionImpl();
 

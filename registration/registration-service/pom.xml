@@ -81,11 +81,38 @@
 			<groupId>org.mosip</groupId>
 			<artifactId>auditmanager-api</artifactId>
 		</dependency>
-		<!-- <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-logging-impl</artifactId> 
-			</dependency> <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-security</artifactId> 
-			</dependency> <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-dao-hibernate-impl</artifactId> 
-			</dependency> <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-audit-api</artifactId> 
-			</dependency> -->
+		<!-- FTP Packet Upload -->
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.54</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+
+		</dependency>
 	</dependencies>
 
 	<build>

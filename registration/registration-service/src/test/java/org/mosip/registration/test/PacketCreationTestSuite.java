@@ -2,18 +2,23 @@ package org.mosip.registration.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.mosip.registration.test.dao.impl.RegTransactionDAOTest;
+import org.mosip.registration.test.dao.impl.RegistrationDAOTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-	AESEncryptionTest.class,
 	AESKeyManagerTest.class,
 	AESSeedGeneratorTest.class,
-	PacketZipCreatorAPITest.class,
+	HMACGenerationTest.class,
+	PacketCreationManagerTest.class,
+	PacketHandlerAPITest.class,
 	PacketLocalStorageTest.class,
-	RSAEncryptionTest.class,
+	PacketZipCreatorAPITest.class,
 	RSAEncryptionManagerTest.class,
+	RSAEncryptionTest.class,
 	RSAKeyGenerationTest.class,
-	PacketHandlerAPITest.class})
+	RegistrationDAOTest.class,
+	RegTransactionDAOTest.class})
 public class PacketCreationTestSuite {
 	
 }

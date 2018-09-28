@@ -1,121 +1,100 @@
 package org.mosip.registration.test;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static java.util.Arrays.copyOfRange;
-import static org.mosip.registration.constants.RegConstants.AES_KEY_CIPHER_SPLITTER;
-import static org.mosip.registration.constants.RegConstants.PACKET_STORE_DATE_FORMAT;
-import static org.mosip.registration.constants.RegConstants.PACKET_STORE_LOCATION;
-import static org.mosip.registration.constants.RegConstants.PACKET_UNZIP_LOCATION;
-import static org.mosip.registration.constants.RegConstants.ZIP_FILE_EXTENSION;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mosip.registration.constants.RegConstants;
-import org.mosip.registration.dto.EnrollmentDTO;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.mosip.registration.config.AuditFactory;
+import org.mosip.registration.constants.AppModuleEnum;
+import org.mosip.registration.constants.AuditEventEnum;
+import org.mosip.registration.constants.RegProcessorExceptionEnum;
+import org.mosip.registration.dto.RegistrationDTO;
+import org.mosip.registration.dto.ResponseDTO;
 import org.mosip.registration.exception.RegBaseCheckedException;
+import org.mosip.registration.exception.RegBaseUncheckedException;
+import org.mosip.registration.service.packet.PacketHandlerService;
 import org.mosip.registration.service.PacketCreationService;
 import org.mosip.registration.service.PacketEncryptionService;
-import org.mosip.registration.test.config.SpringConfiguration;
-import org.mosip.registration.test.util.aes.AESDecryption;
-import org.mosip.registration.test.util.datastub.DataProvider;
-import org.mosip.registration.test.util.rsa.RSADecryption;
-import org.mosip.registration.util.reader.PropertyFileReader;
-import org.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.util.ReflectionTestUtils;
 
-public class PacketHandlerAPITest extends SpringConfiguration {
+public class PacketHandlerAPITest {
+	@Rule
+	public MockitoRule mockitoRule = MockitoJUnit.rule();
+	@InjectMocks
+	private PacketHandlerService packetHandlerService;
+	@Mock
+	private PacketCreationService packetCreationManager;
+	@Mock
+	private PacketEncryptionService packetEncryptionManager;
+	@Mock
+	private AuditFactory auditFactory;
+	@Mock
+	private MosipRollingFileAppender mosipRollingFileAppender;
+	@Mock
+	private MosipLogger logger;
+	ResponseDTO mockedSuccessResponse;
 
-	@Autowired
-	private PacketCreationService packetCreationService;
-	@Autowired
-	private PacketEncryptionService packetEncryptionService;
-	@Autowired
-	private RSADecryption rsaDecryption;
-	@Autowired
-	private AESDecryption aesDecryption;
-	@Autowired
-	private RSAKeyGenerator rsaKeyGenerator;
-	private byte[] sessionKey;
-	private byte[] encryptedData;
-
-	@Test
-	public void testHandle() throws URISyntaxException, IOException, RegBaseCheckedException, InvalidKeyException,
-			NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException,
-			InvalidAlgorithmParameterException {
-		EnrollmentDTO enrollmentDTO = DataProvider.getEnrollmentDTO();
-		byte[] zippedPacket = packetCreationService.create(enrollmentDTO);
-		String enrollmentId = enrollmentDTO.getPacketDTO().getEnrollmentID();
-		packetEncryptionService.encrypt(enrollmentDTO, zippedPacket);
-
-		// Decryption
-		String dateInString = new SimpleDateFormat(PropertyFileReader.getPropertyValue(PACKET_STORE_DATE_FORMAT))
-				.format(new Date());
-		String inputZipPath = PropertyFileReader.getPropertyValue(PACKET_STORE_LOCATION) + File.separator + dateInString
-				+ File.separator + enrollmentId + ZIP_FILE_EXTENSION;
-		String outputZip = PropertyFileReader.getPropertyValue(PACKET_UNZIP_LOCATION) + File.separator + dateInString;
-		
-		FileInputStream fileInputStream = new FileInputStream(new File(inputZipPath));
-		BufferedInputStream bufferedInputStream = new BufferedInputStream(fileInputStream);
-
-		byte[] rsaEncryptedData = new byte[bufferedInputStream.available()];
-		bufferedInputStream.read(rsaEncryptedData);
-		bufferedInputStream.close();
-
-		splitKeyEncryptedData(rsaEncryptedData);
-
-		byte[] rsaDecryptedData = rsaDecryption.decryptRsaEncryptedBytes(sessionKey,
-				rsaKeyGenerator.readPrivatekey(RegConstants.RSA_PRIVATE_KEY_FILE));
-		byte[] aesDecryptedData = aesDecryption.decrypt(encryptedData, rsaDecryptedData);
-		
-		File outputDir = new File(outputZip);
-		if(!outputDir.exists()) {
-			outputDir.mkdir();
-		}
-
-		BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(
-				outputZip + File.separator + enrollmentId + ZIP_FILE_EXTENSION));
-		bufferedOutputStream.write(aesDecryptedData);
-		bufferedOutputStream.flush();
-		bufferedOutputStream.close();
+	@Before
+	public void initialize() {
+		mockedSuccessResponse = new ResponseDTO();
+		//mockedSuccessResponse.setCode("0000");
+		//mockedSuccessResponse.setMessage("Success");
+		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class),
+				Mockito.any(AppModuleEnum.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 
-	private void splitKeyEncryptedData(final byte[] encryptedDataWithKey) {
+	@Test
+	public void testHandle() throws RegBaseCheckedException {
+		ReflectionTestUtils.setField(packetHandlerService, "LOGGER", logger);
+		
+		Mockito.when(packetCreationManager.create(Mockito.any(RegistrationDTO.class))).thenReturn("Packet Creation".getBytes());
+		Mockito.when(
+				packetEncryptionManager.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
+				.thenReturn(mockedSuccessResponse);
+		Assert.assertSame(mockedSuccessResponse, packetHandlerService.handle(new RegistrationDTO()));
+	}
 
-		// Split the Key and Encrypted Data
-		String keySplitter = PropertyFileReader.getPropertyValue(AES_KEY_CIPHER_SPLITTER);
-		int keyDemiliterIndex = 0;
-		final int cipherKeyandDataLength = encryptedDataWithKey.length;
-		final int keySplitterLength = keySplitter.length();
+	@Test
+	public void testCreationException() throws RegBaseCheckedException {
+		ReflectionTestUtils.setField(packetHandlerService, "LOGGER", logger);
 
-		final byte keySplitterFirstByte = keySplitter.getBytes()[0];
-		for (; keyDemiliterIndex < cipherKeyandDataLength; keyDemiliterIndex++) {
-			if (encryptedDataWithKey[keyDemiliterIndex] == keySplitterFirstByte) {
-				final String keySplit = new String(
-						copyOfRange(encryptedDataWithKey, keyDemiliterIndex, keyDemiliterIndex + keySplitterLength));
-				if (keySplitter.equals(keySplit)) {
-					break;
-				}
-			}
-		}
+		Mockito.when(packetCreationManager.create(Mockito.any(RegistrationDTO.class))).thenReturn(null);
+		ResponseDTO actualResponse = packetHandlerService.handle(new RegistrationDTO());
+		Assert.assertEquals(RegProcessorExceptionEnum.REG_PACKET_CREATION_ERROR_CODE.getErrorCode(),
+				actualResponse.getErrorResponseDTOs().get(0).getCode());
+	}
 
-		this.sessionKey = copyOfRange(encryptedDataWithKey, 0, keyDemiliterIndex);
-		this.encryptedData = copyOfRange(encryptedDataWithKey, keyDemiliterIndex + keySplitterLength,
-				cipherKeyandDataLength);
+	@SuppressWarnings("unchecked")
+	@Test(expected = NullPointerException.class)
+	public void testHandlerException() throws RegBaseCheckedException {
+		ReflectionTestUtils.setField(packetHandlerService, "LOGGER", logger);
+
+		Mockito.when(packetCreationManager.create(Mockito.any(RegistrationDTO.class)))
+				.thenThrow(RegBaseUncheckedException.class);
+		Mockito.when(
+				packetEncryptionManager.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
+				.thenReturn(mockedSuccessResponse);
+		packetHandlerService.handle(new RegistrationDTO());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected = NullPointerException.class)
+	public void testHandlerChkException() throws RegBaseCheckedException {
+		ReflectionTestUtils.setField(packetHandlerService, "LOGGER", logger);
+
+		Mockito.when(packetCreationManager.create(Mockito.any(RegistrationDTO.class)))
+				.thenThrow(RegBaseCheckedException.class);
+		Mockito.when(
+				packetEncryptionManager.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
+				.thenReturn(mockedSuccessResponse);
+		packetHandlerService.handle(new RegistrationDTO());
 	}
 
 }
