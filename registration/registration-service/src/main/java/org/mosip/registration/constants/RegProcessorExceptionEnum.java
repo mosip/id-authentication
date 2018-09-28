@@ -1,4 +1,4 @@
-package org.mosip.registration.consts;
+package org.mosip.registration.constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

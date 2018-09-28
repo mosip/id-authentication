@@ -3,8 +3,8 @@ package org.mosip.registration.service.packet.encryption.aes.impl;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.mosip.registration.consts.RegConstants;
-import org.mosip.registration.consts.RegProcessorExceptionCode;
+import org.mosip.registration.constants.RegConstants;
+import org.mosip.registration.constants.RegProcessorExceptionCode;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.exception.RegBaseUncheckedException;
 import org.mosip.registration.service.packet.encryption.aes.AESSeedGenerator;

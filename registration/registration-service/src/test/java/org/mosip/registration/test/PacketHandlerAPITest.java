@@ -14,18 +14,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static java.util.Arrays.copyOfRange;
-import static org.mosip.registration.consts.RegConstants.AES_KEY_CIPHER_SPLITTER;
-import static org.mosip.registration.consts.RegConstants.PACKET_STORE_DATE_FORMAT;
-import static org.mosip.registration.consts.RegConstants.PACKET_STORE_LOCATION;
-import static org.mosip.registration.consts.RegConstants.PACKET_UNZIP_LOCATION;
-import static org.mosip.registration.consts.RegConstants.ZIP_FILE_EXTENSION;
+import static org.mosip.registration.constants.RegConstants.AES_KEY_CIPHER_SPLITTER;
+import static org.mosip.registration.constants.RegConstants.PACKET_STORE_DATE_FORMAT;
+import static org.mosip.registration.constants.RegConstants.PACKET_STORE_LOCATION;
+import static org.mosip.registration.constants.RegConstants.PACKET_UNZIP_LOCATION;
+import static org.mosip.registration.constants.RegConstants.ZIP_FILE_EXTENSION;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.junit.Test;
-import org.mosip.registration.consts.RegConstants;
+import org.mosip.registration.constants.RegConstants;
 import org.mosip.registration.dto.EnrollmentDTO;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.service.PacketCreationService;

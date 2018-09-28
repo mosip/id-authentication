@@ -6,7 +6,7 @@ import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
-import org.mosip.registration.consts.RegProcessorExceptionCode;
+import org.mosip.registration.constants.RegProcessorExceptionCode;
 import org.mosip.registration.dto.EnrollmentDTO;
 import org.mosip.registration.dto.ResponseDTO;
 import org.mosip.registration.exception.RegBaseCheckedException;
@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_PACKET_CREATION_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_PACKET_CREATION_ERROR_CODE;
 
 import java.time.OffsetDateTime;
 

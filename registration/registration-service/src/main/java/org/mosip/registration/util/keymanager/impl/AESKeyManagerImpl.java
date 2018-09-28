@@ -1,8 +1,8 @@
 package org.mosip.registration.util.keymanager.impl;
 
-import static org.mosip.registration.consts.RegConstants.AES_KEY_MANAGER_ALG;
-import static org.mosip.registration.consts.RegConstants.AES_KEY_SEED_LENGTH;
-import static org.mosip.registration.consts.RegConstants.AES_SESSION_KEY_LENGTH;
+import static org.mosip.registration.constants.RegConstants.AES_KEY_MANAGER_ALG;
+import static org.mosip.registration.constants.RegConstants.AES_KEY_SEED_LENGTH;
+import static org.mosip.registration.constants.RegConstants.AES_SESSION_KEY_LENGTH;
 import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.security.NoSuchAlgorithmException;
@@ -13,8 +13,8 @@ import java.util.List;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-import org.mosip.registration.consts.RegProcessorExceptionCode;
-import org.mosip.registration.consts.RegProcessorExceptionEnum;
+import org.mosip.registration.constants.RegProcessorExceptionCode;
+import org.mosip.registration.constants.RegProcessorExceptionEnum;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.exception.RegBaseUncheckedException;
 import org.mosip.registration.util.keymanager.AESKeyManager;

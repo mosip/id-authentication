@@ -1,4 +1,4 @@
-package org.mosip.registration.consts;
+package org.mosip.registration.constants;
 
 public class RegProcessorExceptionCode {
 

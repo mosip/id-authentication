@@ -1,13 +1,13 @@
 package org.mosip.registration.util.store;
 
-import static org.mosip.registration.consts.RegConstants.ZIP_FILE_EXTENSION;
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_IO_EXCEPTION;
+import static org.mosip.registration.constants.RegConstants.ZIP_FILE_EXTENSION;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_IO_EXCEPTION;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 
 import org.mosip.kernel.core.utils.exception.MosipIOException;
-import org.mosip.registration.consts.RegProcessorExceptionCode;
+import org.mosip.registration.constants.RegProcessorExceptionCode;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.exception.RegBaseUncheckedException;
 import org.mosip.kernel.core.utils.FileUtil;

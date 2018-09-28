@@ -8,15 +8,15 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static java.io.File.separator;
-import static org.mosip.registration.consts.RegConstants.IMAGE_TYPE;
-import static org.mosip.registration.consts.RegConstants.JSON_FILE_EXTENSION;
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_IO_EXCEPTION;
+import static org.mosip.registration.constants.RegConstants.IMAGE_TYPE;
+import static org.mosip.registration.constants.RegConstants.JSON_FILE_EXTENSION;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_IO_EXCEPTION;
 
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
-import org.mosip.registration.consts.RegConstants;
-import org.mosip.registration.consts.RegProcessorExceptionCode;
+import org.mosip.registration.constants.RegConstants;
+import org.mosip.registration.constants.RegProcessorExceptionCode;
 import org.mosip.registration.dto.EnrollmentDTO;
 import org.mosip.registration.dto.PacketDTO;
 import org.mosip.registration.dto.biometric.BiometricInfoDTO;

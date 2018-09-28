@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.mosip.registration.consts.RegConstants;
+import org.mosip.registration.constants.RegConstants;
 import org.mosip.registration.exception.RegBaseUncheckedException;
 import org.mosip.registration.service.packet.encryption.rsa.RSAEncryption;
 import org.mosip.registration.service.packet.encryption.rsa.RSAEncryptionManager;
@@ -20,7 +20,7 @@ import org.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.mockito.Mockito.when;
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
 
 public class RSAEncryptionManagerTest extends SpringConfiguration {
 

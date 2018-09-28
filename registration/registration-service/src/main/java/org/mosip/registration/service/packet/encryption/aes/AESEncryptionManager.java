@@ -12,7 +12,7 @@ import org.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import org.mosip.kernel.core.security.encryption.MosipEncryptor;
 import org.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import org.mosip.kernel.core.security.exception.MosipInvalidKeyException;
-import org.mosip.registration.consts.RegProcessorExceptionCode;
+import org.mosip.registration.constants.RegProcessorExceptionCode;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.exception.RegBaseUncheckedException;
 import org.mosip.registration.service.packet.encryption.rsa.RSAEncryptionManager;

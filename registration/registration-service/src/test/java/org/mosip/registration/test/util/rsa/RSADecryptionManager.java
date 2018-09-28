@@ -1,10 +1,10 @@
 package org.mosip.registration.test.util.rsa;
 
-import static org.mosip.registration.consts.RegConstants.RSA_PRIVATE_KEY_FILE;
+import static org.mosip.registration.constants.RegConstants.RSA_PRIVATE_KEY_FILE;
 
 import java.security.PrivateKey;
 
-import org.mosip.registration.consts.RegConstants;
+import org.mosip.registration.constants.RegConstants;
 import org.mosip.registration.test.util.rsa.impl.RSADecryptionImpl;
 import org.mosip.registration.util.reader.PropertyFileReader;
 import org.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;

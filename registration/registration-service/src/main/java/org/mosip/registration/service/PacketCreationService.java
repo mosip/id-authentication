@@ -11,7 +11,7 @@ import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
-import org.mosip.registration.consts.RegProcessorExceptionCode;
+import org.mosip.registration.constants.RegProcessorExceptionCode;
 import org.mosip.registration.dto.EnrollmentDTO;
 import org.mosip.registration.dto.json.demo.Demographic;
 import org.mosip.registration.dto.json.metadata.HashSequence;
@@ -27,9 +27,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import static org.mosip.kernel.core.utils.JsonUtil.javaObjectToJsonString;
-import static org.mosip.registration.consts.RegConstants.DEMOGRPAHIC_JSON_NAME;
-import static org.mosip.registration.consts.RegConstants.HASHING_JSON_NAME;
-import static org.mosip.registration.consts.RegConstants.PACKET_META_JSON_NAME;
+import static org.mosip.registration.constants.RegConstants.DEMOGRPAHIC_JSON_NAME;
+import static org.mosip.registration.constants.RegConstants.HASHING_JSON_NAME;
+import static org.mosip.registration.constants.RegConstants.PACKET_META_JSON_NAME;
 import static org.mosip.registration.mapper.CustomObjectMapper.mapperFacade;
 
 /**

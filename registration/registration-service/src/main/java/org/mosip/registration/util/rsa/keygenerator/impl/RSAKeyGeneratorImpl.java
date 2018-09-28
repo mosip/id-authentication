@@ -1,10 +1,10 @@
 package org.mosip.registration.util.rsa.keygenerator.impl;
 
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_CLASS_NOT_FOUND_ERROR_CODE;
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_FILE_NOT_FOUND_ERROR_CODE;
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_INVALID_KEY_SPEC_ERROR_CODE;
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_IO_ERROR_CODE;
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_CLASS_NOT_FOUND_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_FILE_NOT_FOUND_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_INVALID_KEY_SPEC_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_IO_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +24,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 
-import org.mosip.registration.consts.RegConstants;
+import org.mosip.registration.constants.RegConstants;
 import org.mosip.registration.exception.RegBaseUncheckedException;
 import org.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 import org.springframework.stereotype.Component;

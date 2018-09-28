@@ -11,17 +11,17 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.mosip.registration.consts.RegProcessorExceptionCode;
-import org.mosip.registration.consts.RegProcessorExceptionEnum;
+import org.mosip.registration.constants.RegProcessorExceptionCode;
+import org.mosip.registration.constants.RegProcessorExceptionEnum;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.exception.RegBaseUncheckedException;
 import org.mosip.registration.service.packet.encryption.aes.AESEncryption;
 import org.springframework.stereotype.Component;
 
 import static java.lang.System.arraycopy;
-import static org.mosip.registration.consts.RegConstants.AES_CIPHER_ALG;
-import static org.mosip.registration.consts.RegConstants.AES_KEY_CIPHER_SPLITTER;
-import static org.mosip.registration.consts.RegConstants.AES_KEY_MANAGER_ALG;
+import static org.mosip.registration.constants.RegConstants.AES_CIPHER_ALG;
+import static org.mosip.registration.constants.RegConstants.AES_KEY_CIPHER_SPLITTER;
+import static org.mosip.registration.constants.RegConstants.AES_KEY_MANAGER_ALG;
 import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 /**

@@ -1,9 +1,9 @@
 package org.mosip.registration.test;
 
-import static org.mosip.registration.consts.RegConstants.DEMOGRPAHIC_JSON_NAME;
-import static org.mosip.registration.consts.RegConstants.ENROLLMENT_META_JSON_NAME;
-import static org.mosip.registration.consts.RegConstants.HASHING_JSON_NAME;
-import static org.mosip.registration.consts.RegConstants.PACKET_META_JSON_NAME;
+import static org.mosip.registration.constants.RegConstants.DEMOGRPAHIC_JSON_NAME;
+import static org.mosip.registration.constants.RegConstants.ENROLLMENT_META_JSON_NAME;
+import static org.mosip.registration.constants.RegConstants.HASHING_JSON_NAME;
+import static org.mosip.registration.constants.RegConstants.PACKET_META_JSON_NAME;
 
 import java.io.File;
 import java.io.FileOutputStream;

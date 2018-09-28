@@ -1,10 +1,10 @@
 package org.mosip.registration.service.packet.encryption.rsa.impl;
 
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_BAD_PADDING_ERROR_CODE;
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_ILLEGAL_BLOCK_SIZE_ERROR_CODE;
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_INVALID_KEY_ERROR_CODE;
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
-import static org.mosip.registration.consts.RegProcessorExceptionEnum.REG_NO_SUCH_PADDING_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_BAD_PADDING_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_ILLEGAL_BLOCK_SIZE_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_INVALID_KEY_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
+import static org.mosip.registration.constants.RegProcessorExceptionEnum.REG_NO_SUCH_PADDING_ERROR_CODE;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -15,7 +15,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import org.mosip.registration.consts.RegConstants;
+import org.mosip.registration.constants.RegConstants;
 import org.mosip.registration.exception.RegBaseUncheckedException;
 import org.mosip.registration.service.packet.encryption.rsa.RSAEncryption;
 import org.springframework.stereotype.Component;

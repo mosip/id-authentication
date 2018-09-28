@@ -1,7 +1,7 @@
 package org.mosip.registration.test.util.aes.impl;
 
-import static org.mosip.registration.consts.RegConstants.AES_CIPHER_ALG;
-import static org.mosip.registration.consts.RegConstants.AES_KEY_MANAGER_ALG;
+import static org.mosip.registration.constants.RegConstants.AES_CIPHER_ALG;
+import static org.mosip.registration.constants.RegConstants.AES_KEY_MANAGER_ALG;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;

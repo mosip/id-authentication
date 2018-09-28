@@ -5,7 +5,7 @@ import java.net.SocketException;
 import java.util.Collections;
 import java.util.List;
 
-import org.mosip.registration.consts.RegProcessorExceptionEnum;
+import org.mosip.registration.constants.RegProcessorExceptionEnum;
 import org.mosip.registration.exception.RegBaseCheckedException;
 
 /**

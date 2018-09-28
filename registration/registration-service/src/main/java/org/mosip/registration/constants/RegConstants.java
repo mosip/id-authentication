@@ -1,4 +1,4 @@
-package org.mosip.registration.consts;
+package org.mosip.registration.constants;
 
 import java.util.HashMap;
 import java.util.Map;

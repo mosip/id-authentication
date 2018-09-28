@@ -2,7 +2,7 @@ package org.mosip.registration.service.packet.encryption.rsa;
 
 import java.security.PublicKey;
 
-import org.mosip.registration.consts.RegConstants;
+import org.mosip.registration.constants.RegConstants;
 import org.mosip.registration.service.packet.encryption.rsa.impl.RSAEncryptionImpl;
 import org.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 import org.mosip.registration.util.rsa.keygenerator.impl.RSAKeyGeneratorImpl;

@@ -1,11 +1,11 @@
 package org.mosip.registration.dao.impl;
 
-import static org.mosip.registration.consts.RegConstants.PACKET_STORE_LOCATION;
+import static org.mosip.registration.constants.RegConstants.PACKET_STORE_LOCATION;
 
 import java.util.Date;
 import java.util.List;
 
-import org.mosip.registration.consts.RegProcessorExceptionCode;
+import org.mosip.registration.constants.RegProcessorExceptionCode;
 import org.mosip.registration.dao.RegistrationDAO;
 import org.mosip.registration.entity.Registration;
 import org.mosip.registration.exception.RegBaseCheckedException;

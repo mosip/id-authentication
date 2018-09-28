@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.mosip.kernel.core.exception.BaseUncheckedException;
-import org.mosip.registration.consts.RegConstants;
+import org.mosip.registration.constants.RegConstants;
 
 /**
  * @author Balaji Sridharan

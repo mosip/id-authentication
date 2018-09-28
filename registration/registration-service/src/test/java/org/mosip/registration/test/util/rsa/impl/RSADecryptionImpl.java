@@ -1,6 +1,6 @@
 package org.mosip.registration.test.util.rsa.impl;
 
-import static org.mosip.registration.consts.RegConstants.RSA_ALG;
+import static org.mosip.registration.constants.RegConstants.RSA_ALG;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -11,7 +11,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import org.mosip.registration.consts.RegConstants;
+import org.mosip.registration.constants.RegConstants;
 import org.mosip.registration.test.util.rsa.RSADecryption;
 import org.mosip.registration.util.reader.PropertyFileReader;
 import org.springframework.stereotype.Component;
