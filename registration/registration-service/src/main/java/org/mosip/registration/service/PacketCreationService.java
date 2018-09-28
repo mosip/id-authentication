@@ -1,4 +1,4 @@
-package org.mosip.registration.service.packet.creation;
+package org.mosip.registration.service;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ import static org.mosip.registration.mapper.CustomObjectMapper.mapperFacade;
  *
  */
 @Component
-public class PacketCreationManager {
+public class PacketCreationService {
 
 	@Autowired
 	@Qualifier("registrationAuditBuilder")

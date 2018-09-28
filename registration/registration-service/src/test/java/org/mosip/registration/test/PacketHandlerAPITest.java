@@ -29,8 +29,8 @@ import org.mosip.registration.config.SpringConfiguration;
 import org.mosip.registration.consts.RegConstants;
 import org.mosip.registration.dto.EnrollmentDTO;
 import org.mosip.registration.exception.RegBaseCheckedException;
-import org.mosip.registration.service.packet.creation.PacketCreationManager;
-import org.mosip.registration.service.packet.encryption.PacketEncryptionManager;
+import org.mosip.registration.service.PacketCreationService;
+import org.mosip.registration.service.PacketEncryptionService;
 import org.mosip.registration.test.util.aes.AESDecryption;
 import org.mosip.registration.test.util.datastub.DataProvider;
 import org.mosip.registration.test.util.rsa.RSADecryption;
@@ -41,9 +41,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class PacketHandlerAPITest extends SpringConfiguration {
 
 	@Autowired
-	private PacketCreationManager packetCreationManager;
+	private PacketCreationService packetCreationService;
 	@Autowired
-	private PacketEncryptionManager packetEncryptionManager;
+	private PacketEncryptionService packetEncryptionService;
 	@Autowired
 	private RSADecryption rsaDecryption;
 	@Autowired
@@ -58,9 +58,9 @@ public class PacketHandlerAPITest extends SpringConfiguration {
 			NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException,
 			InvalidAlgorithmParameterException {
 		EnrollmentDTO enrollmentDTO = DataProvider.getEnrollmentDTO();
-		byte[] zippedPacket = packetCreationManager.create(enrollmentDTO);
+		byte[] zippedPacket = packetCreationService.create(enrollmentDTO);
 		String enrollmentId = enrollmentDTO.getPacketDTO().getEnrollmentID();
-		packetEncryptionManager.encrypt(enrollmentDTO, zippedPacket);
+		packetEncryptionService.encrypt(enrollmentDTO, zippedPacket);
 
 		// Decryption
 		String dateInString = new SimpleDateFormat(PropertyFileReader.getPropertyValue(PACKET_STORE_DATE_FORMAT))

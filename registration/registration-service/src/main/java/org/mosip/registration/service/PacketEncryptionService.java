@@ -1,4 +1,4 @@
-package org.mosip.registration.service.packet.encryption;
+package org.mosip.registration.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -27,7 +27,7 @@ import static org.mosip.kernel.core.utils.DateUtil.formatDate;
 import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 @Component
-public class PacketEncryptionManager {
+public class PacketEncryptionService {
 
 	/**
 	 * Class to encrypt the data using AES Algorithm

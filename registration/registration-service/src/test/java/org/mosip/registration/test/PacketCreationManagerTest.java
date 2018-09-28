@@ -6,7 +6,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.mosip.registration.config.SpringConfiguration;
-import org.mosip.registration.service.packet.creation.PacketCreationManager;
+import org.mosip.registration.service.PacketCreationService;
 import org.mosip.registration.util.hmac.HMACGeneration;
 import org.mosip.registration.util.zip.ZipCreationManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class PacketCreationManagerTest extends SpringConfiguration {
 	@Mock
 	private HMACGeneration hMACGeneration;
 	@Autowired
-	private PacketCreationManager packetCreationManager;
+	private PacketCreationService packetCreationService;
 
 	@Test
 	public void testCreatePacket() {
@@ -34,7 +34,7 @@ public class PacketCreationManagerTest extends SpringConfiguration {
 		// TODO
 		//when(JSONUtil..convert(enrollmentDTO)).thenReturn(jsonMap);
 		when(zipCreationManager.zipPacket(enrollmentDTO, jsonMap)).thenReturn(packetData);
-		byte[] actualPacketData = packetCreationManager.create(enrollmentDTO);
+		byte[] actualPacketData = packetCreationService.create(enrollmentDTO);
 		assertArrayEquals(packetData, actualPacketData);*/
 	}
 

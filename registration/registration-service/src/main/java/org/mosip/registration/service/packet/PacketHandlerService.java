@@ -10,8 +10,8 @@ import org.mosip.registration.consts.RegProcessorExceptionCode;
 import org.mosip.registration.dto.EnrollmentDTO;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.response.Response;
-import org.mosip.registration.service.packet.creation.PacketCreationManager;
-import org.mosip.registration.service.packet.encryption.PacketEncryptionManager;
+import org.mosip.registration.service.PacketCreationService;
+import org.mosip.registration.service.PacketEncryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -28,19 +28,19 @@ import java.time.OffsetDateTime;
  *
  */
 @Component
-public class PacketHandlerAPI {
+public class PacketHandlerService {
 
 	/**
 	 * Class to create the packet data
 	 */
 	@Autowired
-	private PacketCreationManager packetCreationManager;
+	private PacketCreationService packetCreationService;
 
 	/**
 	 * Class to encrypt the packet data
 	 */
 	@Autowired
-	private PacketEncryptionManager packetEncryptionManager;
+	private PacketEncryptionService packetEncryptionService;
 	private static MosipLogger LOGGER;
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
@@ -66,12 +66,12 @@ public class PacketHandlerAPI {
 			// packetValidationManager.validate(enrollmentDTO);
 
 			// 2. create packet
-			byte[] zipData = packetCreationManager.create(enrollmentDTO);
+			byte[] zipData = packetCreationService.create(enrollmentDTO);
 
 			// 3.encrypt packet
 			if (zipData != null && zipData.length > 0) {
 				LOGGER.debug("REGISTRATION - PACKET_HANDLER - CREATE", "EnrollmentId", "id", "Registration Packet had been created successfully");
-				return packetEncryptionManager.encrypt(enrollmentDTO, zipData);
+				return packetEncryptionService.encrypt(enrollmentDTO, zipData);
 			} else {
 				LOGGER.debug("REGISTRATION - PACKET_HANDLER - CREATE", "EnrollmentId", "id", "Error in creating Registration Packet");
 				response = new Response();
