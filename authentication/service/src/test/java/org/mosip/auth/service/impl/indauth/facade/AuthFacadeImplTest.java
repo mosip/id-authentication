@@ -13,7 +13,6 @@ import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
 import org.mosip.auth.core.dto.indauth.AuthResponseDTO;
 import org.mosip.auth.core.dto.indauth.AuthTypeDTO;
 import org.mosip.auth.core.dto.indauth.IdType;
-import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
 import org.mosip.auth.core.exception.IdValidationFailedException;
 import org.mosip.auth.service.factory.AuditRequestFactory;
@@ -34,44 +33,41 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * The class validates AuthFacadeImpl
- * 
  * @author Arun Bose
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties",
-		"classpath:log.properties" })
+@ContextConfiguration(classes= {TestContext.class, WebApplicationContext.class})
+@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
 public class AuthFacadeImplTest {
 	@Mock
 	RestHelper restHelper;
-
+	
 	@Autowired
 	Environment env;
+	
+	/*@InjectMocks
+	private MosipLogger logger;*/
 
-	/*
-	 * @InjectMocks private MosipLogger logger;
-	 */
-
-	/*
-	 * @InjectMocks MosipRollingFileAppender idaRollingFileAppender;
-	 */
+	/*@InjectMocks
+	MosipRollingFileAppender idaRollingFileAppender;*/
 
 	@InjectMocks
-	private RestRequestFactory restFactory;
-
+	private RestRequestFactory  restFactory;
+	
 	@InjectMocks
 	private AuditRequestFactory auditFactory;
-
+	
 	@InjectMocks
 	private AuthFacadeImpl authFacadeImpl;
-
+	
 	@Mock
 	private IdAuthServiceImpl idAuthServiceImpl;
-
+	
 	@Mock
 	private OTPAuthServiceImpl otpAuthServiceImpl;
 
+	
 	@Before
 	public void before() {
 		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
@@ -91,139 +87,128 @@ public class AuthFacadeImplTest {
 		ReflectionTestUtils.setField(authFacadeImpl, "auditFactory", auditFactory);
 		ReflectionTestUtils.setField(authFacadeImpl, "restFactory", restFactory);
 	}
-
+	
+	
 	/*
-	 * This class tests the authenticateApplicant method where it checks the IdType
-	 * and AuthType
+	 * This class tests the authenticateApplicant method where it checks the  IdType and AuthType
 	 * 
 	 */
-
+	
 	@Test
 	public void authenticateApplicantTest() throws IdAuthenticationBusinessException {
-		String refId = "1234";
-		boolean authStatus = false;
-		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		String refId="1234";
+		boolean authStatus=false;
+		AuthResponseDTO authResponseDTO=new AuthResponseDTO();
 		authResponseDTO.setStatus(false);
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
 		authRequestDTO.setIdType(IdType.UIN);
 		authRequestDTO.setId("1234567");
-		authRequestDTO.setTxnID("12345");
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		AuthTypeDTO authTypeDTO=new AuthTypeDTO();
 		authTypeDTO.setOtp(true);
 		authRequestDTO.setAuthType(authTypeDTO);
 		Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenReturn(refId);
 		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, refId)).thenReturn(authStatus);
 		AuthResponseDTO authenticateApplicant = authFacadeImpl.authenticateApplicant(authRequestDTO);
-
-	}
-
+		assertEquals(authenticateApplicant.toString(),authResponseDTO.toString());
+	
+    }
+	
+	
 	/*
-	 * This class tests the processAuthType (OTP) method where otp validation failed
+	 * This class tests the processAuthType  (OTP)   method where otp validation failed
 	 * 
 	 */
 	@Test
-	public void processAuthTypeTestFail() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authType = new AuthTypeDTO();
+	public void processAuthTypeTestFail() throws IdAuthenticationBusinessException{
+		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
+		AuthTypeDTO authType=new AuthTypeDTO();
 		authRequestDTO.setAuthType(authType);
 		authRequestDTO.getAuthType().setOtp(false);
-		boolean authStatus = authFacadeImpl.processAuthType(authRequestDTO, Mockito.any());
-		assertEquals(authStatus, false);
-	}
-
+		boolean authStatus=authFacadeImpl.processAuthType(authRequestDTO, Mockito.any());
+		assertEquals(authStatus,false);
+    }
+	 
+	
 	/*
-	 * This class tests the processAuthType (OTP) method where otp validation gets
-	 * successful
+	 * This class tests the processAuthType  (OTP)   method where otp validation gets successful
 	 * 
 	 */
-
+	
 	@Test
-	public void processAuthTypeTestSuccess() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+	public void processAuthTypeTestSuccess() throws IdAuthenticationBusinessException{
+		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
+		AuthTypeDTO authTypeDTO=new AuthTypeDTO();
 		authTypeDTO.setOtp(true);
 		authRequestDTO.setAuthType(authTypeDTO);
-		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, "1242")).thenReturn(true);
-		boolean authStatus = authFacadeImpl.processAuthType(authRequestDTO, "1242");
-		assertEquals(authStatus, true);
-	}
-
+		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO,"1242")).thenReturn(true);
+		boolean authStatus=authFacadeImpl.processAuthType(authRequestDTO, "1242");
+		assertEquals(authStatus,true);
+    }
+	
 	/*
-	 * This class tests the processIdtype where UIN is passed and gets successful
+	 * This class tests the processIdtype  where UIN is passed and gets successful
 	 * 
 	 */
 	@Test
-	public void processIdtypeUINSuccess() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+	public void processIdtypeUINSuccess() throws IdAuthenticationBusinessException{
+		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
 		authRequestDTO.setIdType(IdType.UIN);
-		String refId = "1234";
+		String refId="1234";
 		Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenReturn(refId);
-		String referenceId = authFacadeImpl.processIdType(authRequestDTO);
-		assertEquals(referenceId, refId);
-	}
-
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void testException() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-		authTypeDTO.setOtp(true);
-		authRequestDTO.setAuthType(authTypeDTO);
-		RestRequestFactory rest = Mockito.mock(RestRequestFactory.class);
-		OTPAuthServiceImpl otpAuth = Mockito.mock(OTPAuthServiceImpl.class);
-		Mockito.when(rest.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
-				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
-		Mockito.when(otpAuth.validateOtp(Mockito.any(), Mockito.any())).thenReturn(true);
-		ReflectionTestUtils.setField(authFacadeImpl, "restFactory", rest);
-		ReflectionTestUtils.setField(authFacadeImpl, "otpService", otpAuth);
-		authFacadeImpl.processAuthType(authRequestDTO, "123");
-	}
-
+		String referenceId=authFacadeImpl.processIdType(authRequestDTO);
+		assertEquals(referenceId,refId);
+    }
+	
 	/*
-	 * This class tests the processIdtype where VID is passed and gets successful
+	 * This class tests the processIdtype  where VID is passed and gets successful
 	 * 
 	 */
 	@Test
-	public void processIdtypeVIDSuccess() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+     public void processIdtypeVIDSuccess() throws IdAuthenticationBusinessException{
+		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
 		authRequestDTO.setIdType(IdType.VID);
-		String refId = "1234";
+		String refId="1234";
 		Mockito.when(idAuthServiceImpl.validateVID(Mockito.any())).thenReturn(refId);
-		String referenceId = authFacadeImpl.processIdType(authRequestDTO);
-		assertEquals(referenceId, refId);
-	}
-
+		String referenceId=authFacadeImpl.processIdType(authRequestDTO);
+		assertEquals(referenceId,refId);
+    }
+	
 	/*
-	 * This class tests the processIdtype where UIN is passed and gets failed
+	 * This class tests the processIdtype  where UIN is passed and gets failed
 	 * 
 	 */
-
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void processIdtypeUINFailed() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void processIdtypeUINFailed() throws IdAuthenticationBusinessException{
+		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
 		authRequestDTO.setIdType(IdType.UIN);
-		String refId = "1234";
-		IdValidationFailedException idException = new IdValidationFailedException(
-				IdAuthenticationErrorConstants.INVALID_UIN);
+		String refId="1234";
+		IdValidationFailedException idException =new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
 		Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenThrow(idException);
-		String referenceId = authFacadeImpl.processIdType(authRequestDTO);
-		// assertEquals(referenceId,refId);
-	}
-
+		String referenceId=authFacadeImpl.processIdType(authRequestDTO);
+		//assertEquals(referenceId,refId);
+    }
+	
+	
 	/*
-	 * This class tests the processIdtype where VID is passed and gets failed
+	 * This class tests the processIdtype  where VID is passed and gets failed
 	 * 
 	 */
-
-	@Test(expected = IdAuthenticationBusinessException.class)
-	public void processIdtypeVIDFailed() throws IdAuthenticationBusinessException {
-		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+	
+	@Test(expected=IdAuthenticationBusinessException.class)
+    public void processIdtypeVIDFailed() throws IdAuthenticationBusinessException{
+		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
 		authRequestDTO.setIdType(IdType.VID);
-		String refId = "1234";
-		IdValidationFailedException idException = new IdValidationFailedException(
-				IdAuthenticationErrorConstants.INVALID_VID);
+		String refId="1234";
+		IdValidationFailedException idException =new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_VID);
 		Mockito.when(idAuthServiceImpl.validateVID(Mockito.any())).thenThrow(idException);
 		authFacadeImpl.processIdType(authRequestDTO);
-
-	}
-
-}
+		
+   }
+	
+	
+	
+	
+	
+}	
+	

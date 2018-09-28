@@ -16,7 +16,6 @@ import org.mosip.auth.service.factory.AuditRequestFactory;
 import org.mosip.auth.service.factory.RestRequestFactory;
 import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.auth.service.impl.indauth.facade.AuthFacadeImpl;
-import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
