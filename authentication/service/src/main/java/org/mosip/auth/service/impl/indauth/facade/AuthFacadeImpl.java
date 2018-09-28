@@ -1,5 +1,7 @@
 package org.mosip.auth.service.impl.indauth.facade;
 
+import java.util.Date;
+
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
@@ -57,6 +59,8 @@ public class AuthFacadeImpl implements AuthFacade {
 		String refId = processIdType(authRequestDTO);
 		boolean authFlag = processAuthType(authRequestDTO, refId);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		authResponseDTO.setTxnID(authRequestDTO.getTxnID());
+		authResponseDTO.setResTime(new Date());
 		authResponseDTO.setStatus(authFlag);
 		logger.info(DEFAULT_SESSION_ID, "IDA", "AuthFacade","authenticateApplicant status : " + authFlag); //FIXME
 		//TODO Update audit details
