@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest(classes = OtpmanagerServiceApplication.class)
-public class GeneratorExceptionTest {
+public class ExceptionTest {
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -36,7 +36,7 @@ public class GeneratorExceptionTest {
 	private OtpValidatorServiceImpl validatorService;
 
 	@Test
-	public void throwMosipOtpInvalidArgumentExceptionHandlerWhenKeyNull() throws Exception {
+	public void testForExceptionWhenKeyIsNull() throws Exception {
 		when(service.getOtp(Mockito.any())).thenThrow(MosipOtpInvalidArgumentExceptionHandler.class);
 		String json = "{\"key\":null}";
 		mockMvc.perform(post("/otpmanager/otps").contentType(MediaType.APPLICATION_JSON).content(json))
@@ -45,11 +45,10 @@ public class GeneratorExceptionTest {
 	}
 
 	@Test
-	public void throwMosipOtpInvalidArgument() throws Exception {
+	public void testForExceptionWhenKeyLengthInvalid() throws Exception {
 		when(validatorService.validateOtp(Mockito.any(), Mockito.any()))
 				.thenThrow(MosipOtpInvalidArgumentExceptionHandler.class);
 		mockMvc.perform(get("/otpmanager/otps?key=sa&otp=3212").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable());
 	}
-
 }

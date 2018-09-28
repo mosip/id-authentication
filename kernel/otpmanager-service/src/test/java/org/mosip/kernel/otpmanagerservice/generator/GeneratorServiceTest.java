@@ -31,7 +31,7 @@ public class GeneratorServiceTest {
 	private OtpGeneratorServiceImpl service;
 
 	@Test
-	public void test() throws Exception {
+	public void testWhenKeyFreezed() throws Exception {
 		LocalDateTime validationTime = LocalDateTime.now().minus(1, ChronoUnit.MINUTES);
 		OtpGeneratorRequestDto otpDto = new OtpGeneratorRequestDto();
 		OtpGeneratorResponseDto responseDto = new OtpGeneratorResponseDto();
@@ -48,7 +48,7 @@ public class GeneratorServiceTest {
 	}
 
 	@Test
-	public void testTwo() throws Exception {
+	public void testWhenBlockedUser() throws Exception {
 		OtpGeneratorRequestDto otpDto = new OtpGeneratorRequestDto();
 		OtpGeneratorResponseDto responseDto = new OtpGeneratorResponseDto();
 		responseDto.setOtp("null");

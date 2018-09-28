@@ -30,7 +30,7 @@ public class ValidatorServiceTest {
 	private OtpValidatorServiceImpl service;
 
 	@Test
-	public void test() throws Exception {
+	public void testWhenOtpUnusedandZeroAttemptCount() throws Exception {
 		String key = "testKey";
 		String otp = "1234";
 		OtpEntity entity = new OtpEntity();
@@ -45,16 +45,16 @@ public class ValidatorServiceTest {
 	}
 
 	@Test(expected = MosipOtpInvalidArgumentExceptionHandler.class)
-	public void testTwo() throws Exception {
+	public void testForException() throws Exception {
 		String key = "testKey";
 		String otp = "1234";
 		given(repository.findById(OtpEntity.class, key)).willReturn(null);
 		service.validateOtp(key, otp);
 		verify(repository, times(1)).findById(OtpEntity.class, key);
 	}
-	
+
 	@Test
-	public void testThree() throws Exception {
+	public void testWhenOTPUnusedAndLastAttemptCount() throws Exception {
 		String key = "testKey";
 		String otp = "1234";
 		OtpEntity entity = new OtpEntity();
@@ -67,9 +67,9 @@ public class ValidatorServiceTest {
 		service.validateOtp(key, otp);
 		verify(repository, times(1)).findById(OtpEntity.class, key);
 	}
-	
+
 	@Test
-	public void testFour() throws Exception {
+	public void testWhenKeyFreezedForSameOTP() throws Exception {
 		String key = "testKey";
 		String otp = "1234";
 		OtpEntity entity = new OtpEntity();
@@ -77,14 +77,14 @@ public class ValidatorServiceTest {
 		entity.setKeyId(key);
 		entity.setNumOfAttempt(0);
 		entity.setOtpStatus("KEY_FREEZED");
-		entity.setValidationTime(LocalDateTime.now().minus(4,ChronoUnit.MINUTES));
+		entity.setValidationTime(LocalDateTime.now().minus(4, ChronoUnit.MINUTES));
 		given(repository.findById(OtpEntity.class, key)).willReturn(entity);
 		service.validateOtp(key, otp);
 		verify(repository, times(1)).findById(OtpEntity.class, key);
 	}
-	
+
 	@Test
-	public void testFive() throws Exception {
+	public void testWhenKeyFreezedForDifferentOTP() throws Exception {
 		String key = "testKey";
 		String otp = "1234";
 		OtpEntity entity = new OtpEntity();
@@ -92,10 +92,9 @@ public class ValidatorServiceTest {
 		entity.setKeyId(key);
 		entity.setNumOfAttempt(0);
 		entity.setOtpStatus("KEY_FREEZED");
-		entity.setValidationTime(LocalDateTime.now().minus(4,ChronoUnit.MINUTES));
+		entity.setValidationTime(LocalDateTime.now().minus(4, ChronoUnit.MINUTES));
 		given(repository.findById(OtpEntity.class, key)).willReturn(entity);
 		service.validateOtp(key, otp);
 		verify(repository, times(1)).findById(OtpEntity.class, key);
 	}
-
 }
