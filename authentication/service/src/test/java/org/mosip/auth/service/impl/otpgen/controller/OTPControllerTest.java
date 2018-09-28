@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.dto.indauth.IdType;
 import org.mosip.auth.core.dto.otpgen.OtpRequestDTO;
@@ -27,9 +26,13 @@ import org.mosip.auth.core.exception.IdAuthenticationAppException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
 import org.mosip.auth.core.spi.otpgen.facade.OTPFacade;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindingResult;
 
 /**
@@ -37,13 +40,14 @@ import org.springframework.validation.BindingResult;
  *
  * @author Rakesh Roshan
  */
-@RunWith(MockitoJUnitRunner.class)
-@WebMvcTest(value = OTPController.class, secure = false)
+@RunWith(SpringRunner.class)
+@SpringBootTest
+//@WebMvcTest(value = OTPController.class, secure = false)
 @TestPropertySource(value = "classpath:log.properties")
 public class OTPControllerTest {
 
 	/** Mock the objects */
-	@Mock
+	@Autowired
 	Environment env;
 	@Mock
 	OtpRequestDTO otpRequestDto;
@@ -70,7 +74,7 @@ public class OTPControllerTest {
 
 	@Before
 	public void before() {
-		/*MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
+		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
 		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
 		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
 		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
@@ -79,8 +83,7 @@ public class OTPControllerTest {
 		mosipRollingFileAppender.setMaxHistory(10);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
-		
-		ReflectionTestUtils.invokeMethod(otpController, "initializeLogger", mosipRollingFileAppender);*/
+		ReflectionTestUtils.invokeMethod(otpController, "initializeLogger", mosipRollingFileAppender);
 	}
 
 	@BeforeClass
