@@ -13,9 +13,9 @@ import org.mosip.registration.consts.RegConstants;
 import org.mosip.registration.consts.RegProcessorExceptionCode;
 import org.mosip.registration.dao.RegistrationDAO;
 import org.mosip.registration.dto.EnrollmentDTO;
+import org.mosip.registration.dto.ResponseDTO;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.exception.RegBaseUncheckedException;
-import org.mosip.registration.response.Response;
 import org.mosip.registration.service.packet.encryption.aes.AESEncryptionManager;
 import org.mosip.registration.util.store.StorageManager;
 import org.mosip.kernel.core.utils.exception.MosipIOException;
@@ -54,7 +54,7 @@ public class PacketEncryptionService {
 	 * @return encrypted data as byte array
 	 * @throws RegBaseCheckedException
 	 */
-	public Response encrypt(final EnrollmentDTO enrollmentDTO, final byte[] packetZipData)
+	public ResponseDTO encrypt(final EnrollmentDTO enrollmentDTO, final byte[] packetZipData)
 			throws RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - ENCRPTION", "EnrollmentId", enrollmentDTO.getPacketDTO().getEnrollmentID(), "Packet encryption had been started");
 		try {
@@ -80,11 +80,11 @@ public class PacketEncryptionService {
 			LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - ENCRPTION", "EnrollmentId", enrollmentDTO.getPacketDTO().getEnrollmentID(), "Encrypted Packet persisted");
 
 			LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - ENCRPTION", "EnrollmentId", enrollmentDTO.getPacketDTO().getEnrollmentID(), "Packet encryption had been ended");
-			// Return the Response Object
-			Response response = new Response();
-			response.setCode("0000");
-			response.setMessage("Success");
-			return response;
+			// Return the ResponseDTO Object
+			ResponseDTO responseDTO = new ResponseDTO();
+			responseDTO.setCode("0000");
+			responseDTO.setMessage("Success");
+			return responseDTO;
 		} catch (MosipIOException e) {
 			// TODO Auto-generated catch block
 			throw new RegBaseCheckedException("", "");

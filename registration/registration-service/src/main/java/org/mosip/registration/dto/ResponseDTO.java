@@ -1,11 +1,11 @@
-package org.mosip.registration.response;
+package org.mosip.registration.dto;
 
 import java.util.Map;
 
 import lombok.Data;
 
 @Data
-public class Response {
+public class ResponseDTO {
 
 	private String code;
 	private String message;

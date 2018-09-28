@@ -8,8 +8,8 @@ import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.mosip.registration.consts.RegProcessorExceptionCode;
 import org.mosip.registration.dto.EnrollmentDTO;
+import org.mosip.registration.dto.ResponseDTO;
 import org.mosip.registration.exception.RegBaseCheckedException;
-import org.mosip.registration.response.Response;
 import org.mosip.registration.service.PacketCreationService;
 import org.mosip.registration.service.PacketEncryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,11 +56,11 @@ public class PacketHandlerService {
 	 * Method to create the packet data and encrypt the same
 	 * 
 	 * @param enrollmentDTO
-	 * @return the {@link Response} object
+	 * @return the {@link ResponseDTO} object
 	 */
-	public Response handle(EnrollmentDTO enrollmentDTO) {
+	public ResponseDTO handle(EnrollmentDTO enrollmentDTO) {
 		LOGGER.debug("REGISTRATION - PACKET_HANDLER - CREATE", "EnrollmentId", "id", "Registration Handler had been called");
-		Response response = null;
+		ResponseDTO responseDTO = null;
 		try {
 			// TODO: 1. Registration validation - To be implemented
 			// packetValidationManager.validate(enrollmentDTO);
@@ -74,10 +74,10 @@ public class PacketHandlerService {
 				return packetEncryptionService.encrypt(enrollmentDTO, zipData);
 			} else {
 				LOGGER.debug("REGISTRATION - PACKET_HANDLER - CREATE", "EnrollmentId", "id", "Error in creating Registration Packet");
-				response = new Response();
+				responseDTO = new ResponseDTO();
 				
-				response.setCode(REG_PACKET_CREATION_ERROR_CODE.getErrorCode());
-				response.setMessage(REG_PACKET_CREATION_ERROR_CODE.getErrorMessage());
+				responseDTO.setCode(REG_PACKET_CREATION_ERROR_CODE.getErrorCode());
+				responseDTO.setMessage(REG_PACKET_CREATION_ERROR_CODE.getErrorMessage());
 			}
 			auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId("applicationId")
 			.setApplicationName("applicationName").setCreatedBy("createdBy").setDescription("description")
@@ -90,12 +90,12 @@ public class PacketHandlerService {
 		} catch (RegBaseCheckedException exception) {
 			// TODO : Added the Log error for audit
 			// TODO: Add for the general debug log
-			response = new Response();
+			responseDTO = new ResponseDTO();
 			
-			response.setCode(RegProcessorExceptionCode.IDIS_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
-			response.setMessage(exception.getErrorText());
+			responseDTO.setCode(RegProcessorExceptionCode.IDIS_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
+			responseDTO.setMessage(exception.getErrorText());
 		}
 		LOGGER.debug("REGISTRATION - PACKET_HANDLER - CREATE", "EnrollmentId", "id", "Registration Handler had been ended");
-		return response;
+		return responseDTO;
 	}
 }
