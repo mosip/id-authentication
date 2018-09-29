@@ -12,7 +12,7 @@ import org.mosip.kernel.otpmanagerapi.constants.OtpErrorConstants;
 import org.mosip.kernel.otpmanagerapi.exception.MosipResourceNotFoundException;
 import org.mosip.kernel.otpmanagerapi.generator.OtpGeneratorImpl;
 
-public class OtpmanagerApiApplicationTests {
+public class OtpmanagerApiApplicationTest {
 
 	@Test
 	public void generateOtpFromApiTest() {

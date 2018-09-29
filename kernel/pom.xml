@@ -74,7 +74,6 @@
 		<jsch.version>0.1.54</jsch.version>
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
-
 	</properties>
 
 	<modules>
@@ -93,7 +92,6 @@
 		<module>idgenerator-uin</module>
 		<module>otpmanager-api</module>
 		<module>otpmanager-service</module>
-
 	</modules>
 
 	<profiles>
@@ -101,7 +99,7 @@
 			<id>LOCAL</id>
 			<properties>
 				<sonar.host.url>
-					http://localhost:9000
+					http://localhost:9010
 				</sonar.host.url>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
@@ -112,7 +110,7 @@
 			<id>DEV</id>
 			<properties>
 				<sonar.host.url>
-					http://myserver:9000
+					http://mosipsonarserver:9000
 				</sonar.host.url>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
@@ -120,46 +118,22 @@
 			</properties>
 		</profile>
 	</profiles>
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<pluginManagement>
 			<plugins>
-				<plugin>
-					<groupId>org.sonarsource.scanner.maven</groupId>
-					<artifactId>sonar-maven-plugin</artifactId>
-					<version>${maven.sonar.plugin.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.9</version>
-					<configuration>
-						<skip>false</skip>
-						<useFile>false</useFile>
-						<excludes>
-							<exclude>**/*IntegrationTest.java</exclude>
-						</excludes>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.1</version>
-					<executions>
-						<execution>
-							<goals>
-								<goal>prepare-agent</goal>
-							</goals>
-						</execution>
-						<execution>
-							<id>report</id>
-							<phase>prepare-package</phase>
-							<goals>
-								<goal>report</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -245,6 +219,11 @@
 							</goals>
 						</execution>
 					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${maven.sonar.plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
