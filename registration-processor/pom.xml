@@ -2,9 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.mosip</groupId>
+	<parent>
+		<groupId>org.mosip</groupId>
+		<artifactId>mosip-root</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
 	<artifactId>registration-processor</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -70,10 +73,8 @@
    		<module>registration-status</module>
 		<module>filesystem-ceph-adapter-impl</module>
 		<module>core</module>
-		<module>core/packet-manager</module>
-		<module>core/virus-scanner</module>
-		<module>core/packet-scanner-job</module>
-		<module>core/packet-decryption-job</module>
+		<module>packet-manager-impl</module>
+    	<module>jobs</module>
   </modules>
 
 	<build>

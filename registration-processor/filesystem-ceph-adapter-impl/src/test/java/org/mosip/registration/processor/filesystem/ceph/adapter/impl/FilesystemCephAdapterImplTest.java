@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mosip.registration.processor.filesystem.adapter.FileSystemAdapter;
+import org.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import org.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import org.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
 import org.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
