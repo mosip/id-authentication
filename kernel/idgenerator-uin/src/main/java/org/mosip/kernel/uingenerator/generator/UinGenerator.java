@@ -113,4 +113,9 @@ public class UinGenerator implements MosipIdGenerator<Set<UinBean>> {
 		uinStringBuilder.setLength(uinLength);
 		return uinStringBuilder.insert(0, generatedID).insert(generatedIdLength, verhoeffDigit).toString().trim();
 	}
+
+	@Override
+	public Set<UinBean> generateId(Set<UinBean> uin) {
+		throw new UnsupportedOperationException();
+	}
 }
