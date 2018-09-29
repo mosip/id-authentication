@@ -17,5 +17,6 @@ public interface MosipIdGenerator<T> {
 	 * @return The generated id
 	 */
 	T generateId();
+	T generateId(T uin);
 
 }

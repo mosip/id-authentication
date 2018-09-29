@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.mosip.registration.processor.filesystem.adapter.FileSystemAdapter;
+import org.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import org.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.handler.ExceptionHandler;
 import org.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
 import org.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
@@ -34,7 +34,7 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemCephAdapterImpl.class);
 
 	private static final String LOGDISPLAY = "{} - {} - {} - {}";
-	
+
 	private static final String SUCCESS_UPLOAD_MESSAGE = "uploaded to DFS successfully";
 
 	/**

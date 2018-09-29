@@ -17,6 +17,7 @@ import org.mosip.registration.processor.status.code.RegistrationStatusCode;
 import org.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import org.mosip.registration.processor.status.repositary.RegistrationStatusRepositary;
 
+@SuppressWarnings("deprecation")
 @RunWith(MockitoJUnitRunner.class)
 public class RegistrationStatusDaoTest {
 
