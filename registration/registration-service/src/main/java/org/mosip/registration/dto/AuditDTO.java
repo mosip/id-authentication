@@ -10,24 +10,24 @@ import java.time.OffsetDateTime;
  *
  */
 public class AuditDTO extends BaseDTO {
-	private String uuid;
-	private OffsetDateTime createdAt;
-	private String eventId;
-	private String eventName;
-	private String eventType;
-	private OffsetDateTime actionTimeStamp;
-	private String hostName;
-	private String hostIp;
-	private String applicationId;
-	private String applicationName;
-	private String sessionUserId;
-	private String sessionUserName;
-	private String id;
-	private String idType;
-	private String createdBy;
-	private String moduleName;
-	private String moduleId;
-	private String description;
+	protected String uuid;
+	protected OffsetDateTime createdAt;
+	protected String eventId;
+	protected String eventName;
+	protected String eventType;
+	protected OffsetDateTime actionTimeStamp;
+	protected String hostName;
+	protected String hostIp;
+	protected String applicationId;
+	protected String applicationName;
+	protected String sessionUserId;
+	protected String sessionUserName;
+	protected String id;
+	protected String idType;
+	protected String createdBy;
+	protected String moduleName;
+	protected String moduleId;
+	protected String description;
 
 	/**
 	 * @return the uuid

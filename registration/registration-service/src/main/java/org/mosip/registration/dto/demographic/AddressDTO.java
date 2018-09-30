@@ -8,11 +8,11 @@ import org.mosip.registration.dto.BaseDTO;
  * @since 1.0.0
  */
 public class AddressDTO extends BaseDTO {
-	private String line1;
-	private String line2;
-	private String city;
-	private String state;
-	private String country;
+	protected String line1;
+	protected String line2;
+	protected String city;
+	protected String state;
+	protected String country;
 
 	/**
 	 * @return the line1

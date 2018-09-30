@@ -10,10 +10,10 @@ import org.mosip.registration.dto.BaseDTO;
  */
 public class DocumentDetailsDTO extends BaseDTO {
 	private byte[] document;
-	private String documentName;
-	private String documentCategory;
-	private String documentOwner;
-	private String documentType;
+	protected String documentName;
+	protected String documentCategory;
+	protected String documentOwner;
+	protected String documentType;
 
 	/**
 	 * @return the document

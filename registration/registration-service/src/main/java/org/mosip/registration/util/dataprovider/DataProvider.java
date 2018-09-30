@@ -313,155 +313,43 @@ public class DataProvider {
 	}
 
 	private static List<AuditDTO> getAuditDTOs() {
-		LinkedList<AuditDTO> auditDTOList = new LinkedList<AuditDTO>();
-		OffsetDateTime dateTime = OffsetDateTime.now();
-		AuditDTO audit = new AuditDTO();
-		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
-		audit.setCreatedAt(dateTime);
-		audit.setEventId("1");
-		audit.setEventName("Capture Demographic Data");
-		audit.setEventType("Data Capture");
-		audit.setActionTimeStamp(dateTime);
-		audit.setHostName(RegConstants.LOCALHOST);
-		audit.setHostIp(RegConstants.LOCALHOST);
-		audit.setApplicationId("1");
-		audit.setApplicationName("Registration-UI");
-		audit.setSessionUserId("12345");
-		audit.setSessionUserName("Officer");
-		audit.setId("1");
-		audit.setIdType("registration");
-		audit.setCreatedBy("Officer");
-		audit.setModuleId("1");
-		audit.setModuleName("New Registration");
-		audit.setDescription("Caputured demographic data");
-		auditDTOList.add(audit);
-
-		audit = new AuditDTO();
-		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
-		audit.setCreatedAt(dateTime);
-		audit.setEventId("1");
-		audit.setEventName("Capture Left Iris");
-		audit.setEventType("Iris Capture");
-		audit.setActionTimeStamp(dateTime);
-		audit.setHostName(RegConstants.LOCALHOST);
-		audit.setHostIp(RegConstants.LOCALHOST);
-		audit.setApplicationId("1");
-		audit.setApplicationName("Registration-UI");
-		audit.setSessionUserId("12345");
-		audit.setSessionUserName("Officer");
-		audit.setId("1");
-		audit.setIdType("registration");
-		audit.setCreatedBy("Officer");
-		audit.setModuleId("1");
-		audit.setModuleName("New Registration");
-		audit.setDescription("Caputured left iris");
-		auditDTOList.add(audit);
-
-		audit = new AuditDTO();
-		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
-		audit.setCreatedAt(dateTime);
-		audit.setEventId("1");
-		audit.setEventName("Capture Right Iris");
-		audit.setEventType("Iris Capture");
-		audit.setActionTimeStamp(dateTime);
-		audit.setHostName(RegConstants.LOCALHOST);
-		audit.setHostIp(RegConstants.LOCALHOST);
-		audit.setApplicationId("1");
-		audit.setApplicationName("Registration-UI");
-		audit.setSessionUserId("12345");
-		audit.setSessionUserName("Officer");
-		audit.setId("1");
-		audit.setIdType("registration");
-		audit.setCreatedBy("Officer");
-		audit.setModuleId("1");
-		audit.setModuleName("New Registration");
-		audit.setDescription("Caputured right iris");
-		auditDTOList.add(audit);
-
-		audit = new AuditDTO();
-		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
-		audit.setCreatedAt(dateTime);
-		audit.setEventId("1");
-		audit.setEventName("Capture Right Palm");
-		audit.setEventType("Palm Capture");
-		audit.setActionTimeStamp(dateTime);
-		audit.setHostName(RegConstants.LOCALHOST);
-		audit.setHostIp(RegConstants.LOCALHOST);
-		audit.setApplicationId("1");
-		audit.setApplicationName("Registration-UI");
-		audit.setSessionUserId("12345");
-		audit.setSessionUserName("Officer");
-		audit.setId("1");
-		audit.setIdType("registration");
-		audit.setCreatedBy("Officer");
-		audit.setModuleId("1");
-		audit.setModuleName("New Registration");
-		audit.setDescription("Caputured Right Palm");
-		auditDTOList.add(audit);
-
-		audit = new AuditDTO();
-		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
-		audit.setCreatedAt(dateTime);
-		audit.setEventId("1");
-		audit.setEventName("Capture Left Palm");
-		audit.setEventType("Palm Capture");
-		audit.setActionTimeStamp(dateTime);
-		audit.setHostName(RegConstants.LOCALHOST);
-		audit.setHostIp(RegConstants.LOCALHOST);
-		audit.setApplicationId("1");
-		audit.setApplicationName("Registration-UI");
-		audit.setSessionUserId("12345");
-		audit.setSessionUserName("Officer");
-		audit.setId("1");
-		audit.setIdType("registration");
-		audit.setCreatedBy("Officer");
-		audit.setModuleId("1");
-		audit.setModuleName("New Registration");
-		audit.setDescription("Caputured Left Palm");
-		auditDTOList.add(audit);
-
-		audit = new AuditDTO();
-		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
-		audit.setCreatedAt(dateTime);
-		audit.setEventId("1");
-		audit.setEventName("Capture Right Thumb");
-		audit.setEventType("Thumb Capture");
-		audit.setActionTimeStamp(dateTime);
-		audit.setHostName(RegConstants.LOCALHOST);
-		audit.setHostIp(RegConstants.LOCALHOST);
-		audit.setApplicationId("1");
-		audit.setApplicationName("Registration-UI");
-		audit.setSessionUserId("12345");
-		audit.setSessionUserName("Officer");
-		audit.setId("1");
-		audit.setIdType("registration");
-		audit.setCreatedBy("Officer");
-		audit.setModuleId("1");
-		audit.setModuleName("New Registration");
-		audit.setDescription("Caputured Right Thumb");
-		auditDTOList.add(audit);
-
-		audit = new AuditDTO();
-		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
-		audit.setCreatedAt(dateTime);
-		audit.setEventId("1");
-		audit.setEventName("Capture Left Thumb");
-		audit.setEventType("Thumb Capture");
-		audit.setActionTimeStamp(dateTime);
-		audit.setHostName(RegConstants.LOCALHOST);
-		audit.setHostIp(RegConstants.LOCALHOST);
-		audit.setApplicationId("1");
-		audit.setApplicationName("Registration-UI");
-		audit.setSessionUserId("12345");
-		audit.setSessionUserName("Officer");
-		audit.setId("1");
-		audit.setIdType("registration");
-		audit.setCreatedBy("Officer");
-		audit.setModuleId("1");
-		audit.setModuleName("New Registration");
-		audit.setDescription("Caputured Left Thumb");
-		auditDTOList.add(audit);
+		LinkedList<AuditDTO> auditDTOList = new LinkedList<>();
+		
+		
+		addAuditDTOToList(auditDTOList, "Capture Demographic Data", "Data Capture", "Caputured demographic data");
+		addAuditDTOToList(auditDTOList, "Capture Left Iris", "Iris Capture", "Caputured left iris");
+		addAuditDTOToList(auditDTOList, "Capture Right Iris", "Iris Capture", "Caputured right iris");
+		addAuditDTOToList(auditDTOList, "Capture Right Palm", "Palm Capture", "Caputured Right Palm");
+		addAuditDTOToList(auditDTOList, "Capture Left Palm", "Palm Capture", "Caputured Left Palm");
+		addAuditDTOToList(auditDTOList, "Capture Right Thumb", "Thumb Capture", "Caputured Right Thumb");
+		addAuditDTOToList(auditDTOList, "Capture Left Thumb", "Thumb Capture", "Caputured Left Thumb");
 
 		return auditDTOList;
+	}
+	
+	private static void addAuditDTOToList(List<AuditDTO> auditDTOList,String eventName, String eventType,String description) {
+		OffsetDateTime dateTime = OffsetDateTime.now();
+		
+		AuditDTO audit = new AuditDTO();
+		
+		audit.setUuid(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
+		audit.setCreatedAt(dateTime);
+		audit.setEventId("1");
+		audit.setEventName(eventName);
+		audit.setEventType(eventType);
+		audit.setActionTimeStamp(dateTime);
+		audit.setHostName(RegConstants.LOCALHOST);
+		audit.setHostIp(RegConstants.LOCALHOST);
+		audit.setApplicationId("1");
+		audit.setApplicationName("Registration-UI");
+		audit.setSessionUserId("12345");
+		audit.setSessionUserName("Officer");
+		audit.setId("1");
+		audit.setIdType("registration");
+		audit.setCreatedBy("Officer");
+		audit.setModuleId("1");
+		audit.setModuleName("New Registration");
+		audit.setDescription(description);
+		auditDTOList.add(audit);
 	}
 }

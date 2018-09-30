@@ -10,10 +10,10 @@ import org.mosip.registration.dto.BaseDTO;
  */
 public class FingerprintDetailsDTO extends BaseDTO {
 	private byte[] fingerPrint;
-	private String fingerPrintName;
-	private double qualityScore;
-	private boolean isForceCaptured;
-	private String fingerType;
+	protected String fingerPrintName;
+	protected double qualityScore;
+	protected boolean isForceCaptured;
+	protected String fingerType;
 
 	/**
 	 * @return the fingerPrint

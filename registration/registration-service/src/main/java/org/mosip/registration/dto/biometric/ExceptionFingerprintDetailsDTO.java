@@ -9,10 +9,10 @@ import org.mosip.registration.dto.BaseDTO;
  * @since 1.0.0
  */
 public class ExceptionFingerprintDetailsDTO extends BaseDTO {
-	private String missingFinger;
-	private String exceptionDescription;
+	protected String missingFinger;
+	protected String exceptionDescription;
 	// Permanent or Temporary
-	private String exceptionType;
+	protected String exceptionType;
 
 	/**
 	 * @return the missingFinger

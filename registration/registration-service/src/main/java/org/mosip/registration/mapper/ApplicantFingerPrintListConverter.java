@@ -26,7 +26,7 @@ public class ApplicantFingerPrintListConverter
 		source.forEach((fingerprintDetailsDTO) -> {
 
 			Fingerprints fingerprints=new Fingerprints();
-			fingerprints.setFingerprintImageName(fingerprintDetailsDTO.getFingerPrintName());
+			fingerprints.setFingerPrintName(fingerprintDetailsDTO.getFingerPrintName());
 			fingerprints.setQualityScore(fingerprintDetailsDTO.getQualityScore());
 			fingerprints.setForceCaptured(fingerprintDetailsDTO.isForceCaptured());
 			fingerprints.setFingerType(fingerprintDetailsDTO.getFingerType());

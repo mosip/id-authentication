@@ -18,16 +18,11 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(schema="master", name = "TEMPLATE")
-public class Template implements Serializable{
+public class Template {
 
-	/**
-	 * Auto-Generated Serial Version Id
-	 */
-	private static final long serialVersionUID = 3104734873630845462L;
 	@Id
 	private String id;
 	private String name;
-	private String descr;
 	private String file_format_code;
 	private String model;
 	private String file_txt;
@@ -35,6 +30,7 @@ public class Template implements Serializable{
 	private String module_name;
 	private String template_typ_code;
 	private String lang_code;
+	private String descr;
 	@Column(name="is_active")
 	@Type(type= "true_false")
 	private boolean isActive;
@@ -44,6 +40,57 @@ public class Template implements Serializable{
 	private Date upd_dtimes;
 	private boolean is_deleted;
 	private Date del_dtimes;
+	
+	public boolean isActive() {
+		return isActive;
+	}
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+	public String getCr_by() {
+		return cr_by;
+	}
+	public void setCr_by(String cr_by) {
+		this.cr_by = cr_by;
+	}
+	public Date getCr_dtimes() {
+		return cr_dtimes;
+	}
+	public void setCr_dtimes(Date cr_dtimes) {
+		this.cr_dtimes = cr_dtimes;
+	}
+	public String getUpd_by() {
+		return upd_by;
+	}
+	public void setUpd_by(String upd_by) {
+		this.upd_by = upd_by;
+	}
+	public Date getUpd_dtimes() {
+		return upd_dtimes;
+	}
+	public void setUpd_dtimes(Date upd_dtimes) {
+		this.upd_dtimes = upd_dtimes;
+	}
+	public boolean isIs_deleted() {
+		return is_deleted;
+	}
+	public void setIs_deleted(boolean is_deleted) {
+		this.is_deleted = is_deleted;
+	}
+	public Date getDel_dtimes() {
+		return del_dtimes;
+	}
+	public void setDel_dtimes(Date del_dtimes) {
+		this.del_dtimes = del_dtimes;
+	}
+	
+	public String getDescr() {
+		return descr;
+	}
+
+	public void setDescr(String descr) {
+		this.descr = descr;
+	}
 	
 	public String getId() {
 		return id;
@@ -66,20 +113,6 @@ public class Template implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-
-
-
-	public String getDescr() {
-		return descr;
-	}
-
-
-
-	public void setDescr(String descr) {
-		this.descr = descr;
-	}
-
-
 
 	public String getFile_format_code() {
 		return file_format_code;
@@ -162,87 +195,6 @@ public class Template implements Serializable{
 	public void setLang_code(String lang_code) {
 		this.lang_code = lang_code;
 	}
-
-
-	public boolean isActive() {
-		return isActive;
-	}
-
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
-
-	public String getCr_by() {
-		return cr_by;
-	}
-
-
-
-	public void setCr_by(String cr_by) {
-		this.cr_by = cr_by;
-	}
-
-
-
-	public Date getCr_dtimes() {
-		return cr_dtimes;
-	}
-
-
-
-	public void setCr_dtimes(Date cr_dtimes) {
-		this.cr_dtimes = cr_dtimes;
-	}
-
-
-
-	public String getUpd_by() {
-		return upd_by;
-	}
-
-
-
-	public void setUpd_by(String upd_by) {
-		this.upd_by = upd_by;
-	}
-
-
-
-	public Date getUpd_dtimes() {
-		return upd_dtimes;
-	}
-
-
-
-	public void setUpd_dtimes(Date upd_dtimes) {
-		this.upd_dtimes = upd_dtimes;
-	}
-
-
-
-	public boolean isIs_deleted() {
-		return is_deleted;
-	}
-
-
-
-	public void setIs_deleted(boolean is_deleted) {
-		this.is_deleted = is_deleted;
-	}
-
-
-
-	public Date getDel_dtimes() {
-		return del_dtimes;
-	}
-
-
-
-	public void setDel_dtimes(Date del_dtimes) {
-		this.del_dtimes = del_dtimes;
-	}
-
-
 
 	@Override
 	public String toString() {

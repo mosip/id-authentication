@@ -11,14 +11,14 @@ import org.mosip.registration.dto.BaseDTO;
  * @since 1.0.0
  */
 public class DemographicInfoDTO extends BaseDTO {
-	private String fullName;
-	private Date dateOfBirth;
-	private String gender;
-	private AddressDTO addressDTO;
-	private String emailId;
-	private String mobile;
-	private String languageCode;
-	private boolean isChild;
+	protected String fullName;
+	protected Date dateOfBirth;
+	protected String gender;
+	protected AddressDTO addressDTO;
+	protected String emailId;
+	protected String mobile;
+	protected String languageCode;
+	protected boolean isChild;
 
 	/**
 	 * @return the fullName

@@ -10,10 +10,10 @@ import org.mosip.registration.dto.BaseDTO;
  */
 public class IrisDetailsDTO extends BaseDTO {
 	private byte[] iris;
-	private String irisName;
-	private double qualityScore;
-	private boolean isForceCaptured;
-	private String irisType;
+	protected String irisName;
+	protected double qualityScore;
+	protected boolean isForceCaptured;
+	protected String irisType;
 
 	/**
 	 * @return the iris
