@@ -41,7 +41,6 @@ public class RSAEncryptionManagerTest extends SpringConfiguration {
 			// Generate key pair generator
 			keyPairGenerator = KeyPairGenerator.getInstance("RSA");
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
-			System.out.println("algorithm exception");
 			throw new RegBaseUncheckedException(REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
 					REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), noSuchAlgorithmException);
 		}

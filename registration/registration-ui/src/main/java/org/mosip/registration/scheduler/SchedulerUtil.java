@@ -3,9 +3,9 @@ package org.mosip.registration.scheduler;
 import static org.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static org.mosip.registration.constants.RegConstants.APPLICATION_NAME;
 import static org.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_SHEDULER_ARG_EXCEPTION;
-import static org.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_SHEDULER_NULLPOINTER_EXCEPTION;
 import static org.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_SHEDULER_STATE_EXCEPTION;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
@@ -17,6 +17,7 @@ import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.mosip.registration.audit.AuditFactory;
+import org.mosip.registration.constants.RegistrationUIExceptionCode;
 import org.mosip.registration.context.SessionContext;
 import org.mosip.registration.controller.BaseController;
 import org.mosip.registration.controller.RegistrationAppInitialization;
@@ -54,7 +55,7 @@ public class SchedulerUtil {
 		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
 	}
 
-	public static long startTime = System.currentTimeMillis();
+	private static long startTime = System.currentTimeMillis();
 	private static long refreshTime;
 	private static long sessionTimeOut;
 	private static Alert alert;
@@ -78,14 +79,9 @@ public class SchedulerUtil {
 		alert = new Alert(AlertType.WARNING);
 		LOGGER.debug("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 				"Timer has been called " + new SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()));
-		// auditFactory.audit(UI_SCHEDULER_STARTED, UI_SCHEDULER, "Scheduler utility has
-		// been started at " + new
-		// SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()), "", "");
 		timer = new Timer("Timer");
-		System.out.println("Refresh time " + SessionContext.getInstance().getRefreshedLoginTime());
 		refreshTime = TimeUnit.SECONDS.toMillis(SessionContext.getInstance().getRefreshedLoginTime());
 		sessionTimeOut = TimeUnit.SECONDS.toMillis(SessionContext.getInstance().getIdealTime());
-		System.out.println(refreshTime + "   " + sessionTimeOut);
 		startTimerForSession();
 	}
 
@@ -96,7 +92,7 @@ public class SchedulerUtil {
 	 * 
 	 * @throws RegistrationBaseCheckedException
 	 */
-	private static void startTimerForSession() throws RegBaseCheckedException, RegBaseUncheckedException {
+	private static void startTimerForSession() throws RegBaseCheckedException {
 		try {
 			TimerTask task = new TimerTask() {
 				public void run() {
@@ -124,29 +120,30 @@ public class SchedulerUtil {
 							timer.cancel();
 							// to clear the session object
 							SessionContext.getInstance().destroySession();
-							content = BaseController.load(getClass().getResource("/fxml/RegistrationLogin.fxml"));
-							String loginModeFXMLpath = "/fxml/LoginWithCredentials.fxml";
-							AnchorPane loginType = BaseController.load(getClass().getResource(loginModeFXMLpath));
-							content.setCenter(loginType);
-							RegistrationAppInitialization.scene.setRoot(content);
+							try {
+								content = BaseController.load(getClass().getResource("/fxml/RegistrationLogin.fxml"));
+								String loginModeFXMLpath = "/fxml/LoginWithCredentials.fxml";
+								AnchorPane loginType = BaseController.load(getClass().getResource(loginModeFXMLpath));
+								content.setCenter(loginType);
+							} catch (IOException ioException) {
+								LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+							}
+							
+							RegistrationAppInitialization.getScene().setRoot(content);
 						}
 					});
 				}
 			};
 			timer.schedule(task, 1000, findPeriod(refreshTime, sessionTimeOut));
-		} catch (IllegalArgumentException illegalArgumentException) {
+		}catch (IllegalArgumentException illegalArgumentException) {
 			throw new RegBaseCheckedException(REG_UI_SHEDULER_ARG_EXCEPTION.getErrorCode(),
 					REG_UI_SHEDULER_ARG_EXCEPTION.getErrorMessage());
 		} catch (IllegalStateException illegalStateException) {
 			throw new RegBaseCheckedException(REG_UI_SHEDULER_STATE_EXCEPTION.getErrorCode(),
 					REG_UI_SHEDULER_STATE_EXCEPTION.getErrorMessage());
-		} catch (NullPointerException nullPointerException) {
-			throw new RegBaseCheckedException(REG_UI_SHEDULER_NULLPOINTER_EXCEPTION.getErrorCode(),
-					REG_UI_SHEDULER_NULLPOINTER_EXCEPTION.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
-			// throw new
-			// RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_SHEDULER_RUNTIME_EXCEPTION,
-			// runtimeException.getMessage());
+			throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_SHEDULER_RUNTIME_EXCEPTION,
+			runtimeException.getMessage());
 		}
 	}
 
@@ -169,8 +166,6 @@ public class SchedulerUtil {
 	 * To show the warning alert to user about session expire
 	 */
 	private static void alert() {
-		// if (alert == null)
-
 		alert.setTitle("TIMEOUT");
 		alert.setHeaderText("You've been quite for a while.");
 		alert.setContentText("Would you like to continue, please click ok.");
@@ -178,4 +173,9 @@ public class SchedulerUtil {
 			res = alert.showAndWait();
 		}
 	}
+	
+	public static void setCurrentTimeToStartTime() {
+		startTime = System.currentTimeMillis();
+	}
+	
 }

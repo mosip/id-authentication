@@ -35,9 +35,6 @@ public class AckReceiptController extends BaseController implements Initializabl
 	
 	private RegistrationDTO registrationData;
 	private Writer stringWriter;
-	
-	
-	
 
 	@FXML
 	private WebView webView;
@@ -90,8 +87,7 @@ public class AckReceiptController extends BaseController implements Initializabl
         String acknowledgementReceiptName = registrationData.getRegistrationId().replaceAll("[^0-9]", "")+"_Ack";
         
         registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(acknowledgementReceiptName);
-        ResponseDTO responseDTO = packetHandlerService.handle(registrationData);
-        System.out.println(responseDTO);
+        packetHandlerService.handle(registrationData);
         
         generateAlert("Success",AlertType.INFORMATION, "Packet Created Successfully!");
 	}

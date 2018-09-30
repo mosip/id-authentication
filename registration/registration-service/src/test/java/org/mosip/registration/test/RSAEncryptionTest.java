@@ -65,7 +65,6 @@ public class RSAEncryptionTest extends SpringConfiguration {
 	public void NoAlgorithmTest() {
 
 		when(RegConstants.RSA_ALG).thenReturn("NORSA");
-		System.out.println(RegConstants.RSA_ALG);
 		rsaEncryption.encrypt("aesEncryptedBytes".getBytes(), publicKey);
 	}
 

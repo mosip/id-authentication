@@ -2,8 +2,9 @@ package org.mosip.registration.controller;
 
 import static org.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static org.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static org.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_NULLPOINTER_EXCEPTION;
+import static org.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 import org.mosip.kernel.core.spi.logging.MosipLogger;
@@ -38,19 +39,19 @@ public class RegistrationAppInitialization extends Application {
 		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
 	}
 
-	public static ApplicationContext applicationContext;
-	
+	private static ApplicationContext applicationContext;
+
 	/*
 	 * Load the initial screen by getting values form the database. Maintaining the
 	 * same Stage for all the scenes.
 	 */
-	public static Scene scene;
-	
+	private static Scene scene;
+
 	@Override
 	public void start(Stage primaryStage) throws RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
-				APPLICATION_ID,
-				"Login screen initilization " + new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
+				APPLICATION_ID, "Login screen initilization "
+						+ new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
 		BaseController.stage = primaryStage;
 		primaryStage = BaseController.getStage();
@@ -64,7 +65,7 @@ public class RegistrationAppInitialization extends Application {
 				loginModeFXMLpath = "/fxml/LoginWithOTP.fxml";
 				AnchorPane loginType = BaseController.load(getClass().getResource(loginModeFXMLpath));
 				loginRoot.setCenter(loginType);
-			} else if (loginMode.equals("PWD")) {
+			} else if (loginMode.equals(RegistrationUIConstants.LOGIN_METHOD_PWORD)) {
 				loginModeFXMLpath = "/fxml/LoginWithCredentials.fxml";
 				AnchorPane loginType = BaseController.load(getClass().getResource(loginModeFXMLpath));
 				loginRoot.setCenter(loginType);
@@ -77,17 +78,17 @@ public class RegistrationAppInitialization extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-		} catch (NullPointerException nullPointerException) {
-			throw new RegBaseCheckedException(REG_UI_LOGIN_NULLPOINTER_EXCEPTION.getErrorCode(),
-					REG_UI_LOGIN_NULLPOINTER_EXCEPTION.getErrorMessage());
+		} catch (IOException ioException) {
+			throw new RegBaseCheckedException(REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
+					REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_LOGIN_LOADER_EXCEPTION,
-					runtimeException.getMessage());
+					runtimeException.getMessage(), runtimeException);
 		}
 
 		LOGGER.debug("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
-				APPLICATION_ID,
-				"Login screen loaded" + new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
+				APPLICATION_ID, "Login screen loaded"
+						+ new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
 	}
 
@@ -96,8 +97,16 @@ public class RegistrationAppInitialization extends Application {
 		applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 		launch(args);
 		LOGGER.debug("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
-				APPLICATION_ID,
-				"Application Initilization" + new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
+				APPLICATION_ID, "Application Initilization"
+						+ new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
+	}
+
+	public static ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
+	public static Scene getScene() {
+		return scene;
 	}
 }

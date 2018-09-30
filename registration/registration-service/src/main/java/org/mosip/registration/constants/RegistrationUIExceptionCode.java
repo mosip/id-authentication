@@ -23,4 +23,5 @@ public class RegistrationUIExceptionCode {
 	public static final String REG_UI_HOMEPAGE_LOADER_EXCEPTION = REG_UI_CODE + "ROC-003";
 	public static final String REG_UI_SHEDULER_RUNTIME_EXCEPTION = REG_UI_CODE + "SHE-004";
 	public static final String REG_UI_BASE_CNTRLR_IO_EXCEPTION = REG_UI_CODE+"BAS-005";
+	public static final String REG_UI_VIEW_ACK_FORM_IO_EXCEPTION = REG_UI_CODE+"VAF-006";
 }

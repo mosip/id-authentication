@@ -28,7 +28,7 @@ public class CustomObjectMapper extends ConfigurableMapper {
 	/**
 	 * Instance of MapperFacade for object mapping
 	 */
-	public static MapperFacade mapperFacade = new CustomObjectMapper();
+	public static final MapperFacade MAPPER_FACADE = new CustomObjectMapper();
 
 	/**
 	 * Method to configure the Orika Mapper for object conversions

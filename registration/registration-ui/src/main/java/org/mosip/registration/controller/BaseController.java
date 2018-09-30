@@ -31,19 +31,18 @@ public class BaseController {
 
 	@Autowired
 	private LoginServiceImpl loginServiceImpl;
-	
+
 	public static final UserDTO userDTO = new UserDTO();
-	
+
 	@Value("${TIME_OUT_INTERVAL:30}")
 	private long timeoutInterval;
 
 	@Value("${IDEAL_TIME}")
 	private long idealTime;
-	
+
 	@Value("${REFRESHED_LOGIN_TIME}")
 	private long refreshedLoginTime;
 
-	
 	protected static Stage stage;
 
 	/**
@@ -55,29 +54,22 @@ public class BaseController {
 		EventHandler<Event> event = new EventHandler<Event>() {
 			@Override
 			public void handle(Event event) {
-				// TODO Auto-generated method stub
-				SchedulerUtil.startTime = System.currentTimeMillis();
+				SchedulerUtil.setCurrentTimeToStartTime();
 			}
 		};
 		stage.addEventHandler(EventType.ROOT, event);
 		return stage;
 	}
-	
-	public static <T> T load(URL url) {
-		try {
-			FXMLLoader loader = new FXMLLoader(url);
-			loader.setControllerFactory(RegistrationAppInitialization.applicationContext::getBean);
-			return loader.load();
-		} catch (IOException ioException) {
-			//throw new RegBaseCheckedException(RegistrationUIExceptionCode.REG_UI_BASE_CNTRLR_IO_EXCEPTION, "Unable to load FXML", ioException);
-			ioException.printStackTrace();
-		}
-		return null;
+
+	public static <T> T load(URL url) throws IOException {
+		FXMLLoader loader = new FXMLLoader(url);
+		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
+		return loader.load();
 	}
-	
+
 	/**
-	
-	 /* Alert creation with specified title, header, and context
+	 * 
+	 * /* Alert creation with specified title, header, and context
 	 * 
 	 * @param title
 	 *            alert title
@@ -136,14 +128,14 @@ public class BaseController {
 
 	protected void setSessionContext(String userId) {
 		Map<String, String> userDetail = loginServiceImpl.getUserDetail(userId);
-		
+
 		userDTO.setUsername(userDetail.get("name"));
 		userDTO.setUserId(userId);
 		userDTO.setCenterId(userDetail.get(RegistrationUIConstants.CENTER_ID));
 		userDTO.setCenterLocation(loginServiceImpl.getCenterName(userDetail.get(RegistrationUIConstants.CENTER_ID)));
-		
+
 		SessionContext sessionContext = SessionContext.getInstance();
-		
+
 		sessionContext.setLoginTime(new Date());
 		sessionContext.setRefreshedLoginTime(refreshedLoginTime);
 		sessionContext.setIdealTime(timeoutInterval);
@@ -151,7 +143,8 @@ public class BaseController {
 		SessionContext.UserContext userContext = sessionContext.getUserContext();
 		userContext.setUserId(userId);
 		userContext.setName(userDetail.get("name"));
-		userContext.setRegistrationCenterDetailDTO(loginServiceImpl.getRegistrationCenterDetails(userDetail.get(RegistrationUIConstants.CENTER_ID)));
+		userContext.setRegistrationCenterDetailDTO(
+				loginServiceImpl.getRegistrationCenterDetails(userDetail.get(RegistrationUIConstants.CENTER_ID)));
 		userContext.setRoles(loginServiceImpl.getRoles(userId));
 	}
 

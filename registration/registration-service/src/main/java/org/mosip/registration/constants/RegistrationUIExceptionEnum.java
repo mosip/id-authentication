@@ -9,16 +9,15 @@ package org.mosip.registration.constants;
  */
 public enum RegistrationUIExceptionEnum {
 		
-	REG_UI_SHEDULER_ARG_EXCEPTION("REG-UI-SHE-001", "IllegalArgumentException"),
-	REG_UI_SHEDULER_STATE_EXCEPTION("REG-UI-SHE-002", "IllegalStateException"),
-	REG_UI_SHEDULER_NULLPOINTER_EXCEPTION("REG-UI-SHE-003", "NULL POINTER Exception"),
-	REG_UI_SHEDULER_IOEXCEPTION_EXCEPTION("REG-UI-SHE-004", "FXML NOT FOUND"),
-	REG_UI_LOGIN_NULLPOINTER_EXCEPTION("REG-UI-SHE-005", "NullPointerException"),
-	REG_UI_LOGIN_RESOURCE_EXCEPTION("REG-UI-SHE-007", "ResourceAccessException"),
-	REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION("REG-UI-SHE-008", "Initial Login Screen NullPointerException"),
-	REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION("REG-UI-SHE-009", "Login Screen NullPointerException"),
-	REG_UI_HOMEPAGE_NULLPOINTER_EXCEPTION("REG-UI-SHE-012", "Home Screen NullPointerException"),
-	REG_ACK_TEMPLATE_IO_EXCEPTION("REG-UI-SHE-013","Exception while writing acknowledgement image into OutputStream");
+	REG_UI_SHEDULER_ARG_EXCEPTION("REG-UI-SHE-001", "Please verify the argument passed"),
+	REG_UI_SHEDULER_STATE_EXCEPTION("REG-UI-SHE-002", "The state not found"),
+	REG_UI_SHEDULER_IOEXCEPTION_EXCEPTION("REG-UI-SHE-004", "Unable to load the screen"),
+	REG_UI_LOGIN_IO_EXCEPTION("REG-UI-SHE-005", "IO Exception"),
+	REG_UI_LOGIN_RESOURCE_EXCEPTION("REG-UI-SHE-007", "Unable to load the Resource"),
+	REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION("REG-UI-SHE-008", "Unable to Initial Login Screen"),
+	REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION("REG-UI-SHE-009", "Unable to load the Login Screen"),
+	REG_UI_HOMEPAGE_IO_EXCEPTION("REG-UI-SHE-012", "Unable to load the Home Screen"),
+	REG_ACK_TEMPLATE_IO_EXCEPTION("REG-UI-SHE-013","Unable to write the image file");
 	
 
 	private final String errorCode;

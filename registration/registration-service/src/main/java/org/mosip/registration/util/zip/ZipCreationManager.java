@@ -182,7 +182,7 @@ public class ZipCreationManager {
 		if (checkNotNull(applicantDocumentDTO.getDocumentDetailsDTO())) {
 			for (DocumentDetailsDTO documentDetailsDTO : applicantDocumentDTO.getDocumentDetailsDTO()) {
 				writeFileToZip(
-						folderName + RegConstants.DOCUMENT_TYPES_MAP
+						folderName + RegConstants.getDocumentTypesMap()
 								.get(documentDetailsDTO.getDocumentCategory().toLowerCase()) + RegConstants.DOC_TYPE,
 						documentDetailsDTO.getDocument(), zipOutputStream);
 			}
@@ -208,7 +208,7 @@ public class ZipCreationManager {
 		if (checkNotNull(biometricDTO.getFingerprintDetailsDTO())) {
 			for (FingerprintDetailsDTO fingerprintDetailsDTO : biometricDTO.getFingerprintDetailsDTO()) {
 				writeFileToZip(
-						folderName + RegConstants.FINGERPRINT_IMAGE_NAMES_MAP
+						folderName + RegConstants.getFingerPrintImageNamesMap()
 								.get(fingerprintDetailsDTO.getFingerType().toLowerCase()) + IMAGE_TYPE,
 						fingerprintDetailsDTO.getFingerPrint(), zipOutputStream);
 			}
@@ -218,7 +218,7 @@ public class ZipCreationManager {
 		if (checkNotNull(biometricDTO.getIrisDetailsDTO())) {
 			for (IrisDetailsDTO irisDetailsDTO : biometricDTO.getIrisDetailsDTO()) {
 				writeFileToZip(
-						folderName + RegConstants.IRIS_IMAGE_NAMES_MAP.get(irisDetailsDTO.getIrisType().toLowerCase())
+						folderName + RegConstants.getIrisimageNamesMap().get(irisDetailsDTO.getIrisType().toLowerCase())
 								+ IMAGE_TYPE,
 						irisDetailsDTO.getIris(), zipOutputStream);
 			}

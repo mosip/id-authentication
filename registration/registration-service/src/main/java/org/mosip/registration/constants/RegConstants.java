@@ -69,17 +69,17 @@ public class RegConstants {
 	/**
 	 * Specifies the names for storing the finger print images in zip file
 	 */
-	public static final Map<String, String> FINGERPRINT_IMAGE_NAMES_MAP = new HashMap<>();
+	private static final Map<String, String> FINGERPRINT_IMAGE_NAMES_MAP = new HashMap<>();
 
 	/**
 	 * Specifies the names for storing the iris images in zip file
 	 */
-	public static final Map<String, String> IRIS_IMAGE_NAMES_MAP = new HashMap<>();
+	private static final Map<String, String> IRIS_IMAGE_NAMES_MAP = new HashMap<>();
 
 	/**
 	 * Specifies the names for storing the documents in zip file
 	 */
-	public static final Map<String, String> DOCUMENT_TYPES_MAP = new HashMap<>();
+	private static final Map<String, String> DOCUMENT_TYPES_MAP = new HashMap<>();
 
 	/**
 	 * Specifies the format for storing the Registration Acknowledgement
@@ -170,5 +170,16 @@ public class RegConstants {
 	public static  final String LOGIN_INVALID_USERNAME="Unable To Login";
 	public static  final String LOGIN_INVALID_OTP="Unable To Login";
 	public static  final String GENERATED_OTP="Generated OTP : ";
+	
+	public static Map<String, String> getFingerPrintImageNamesMap() {
+		return FINGERPRINT_IMAGE_NAMES_MAP;
+	}
 
+	public static Map<String, String> getIrisimageNamesMap() {
+		return IRIS_IMAGE_NAMES_MAP;
+	}
+	
+	public static Map<String, String> getDocumentTypesMap() {
+		return DOCUMENT_TYPES_MAP;
+	}
 }

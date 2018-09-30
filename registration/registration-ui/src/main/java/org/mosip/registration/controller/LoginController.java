@@ -4,6 +4,7 @@ import static org.mosip.registration.constants.RegConstants.URL;
 import static org.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION;
 import static org.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION;
 
+import java.io.IOException;
 import java.util.Map;
 
 import org.mosip.kernel.core.utils.HMACUtil;
@@ -13,6 +14,7 @@ import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.exception.RegBaseUncheckedException;
 import org.mosip.registration.scheduler.SchedulerUtil;
 import org.mosip.registration.service.LoginServiceImpl;
+import org.mosip.registration.ui.constants.RegistrationUIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -106,9 +108,9 @@ public class LoginController extends BaseController {
 				}
 				
 				if (serverStatus || offlineStatus) {
-					SessionContext.getInstance().getMapObject().values().remove("PWD");
+					SessionContext.getInstance().getMapObject().values().remove(RegistrationUIConstants.LOGIN_METHOD_PWORD);
 					if (SessionContext.getInstance().getMapObject().size() > 0) {
-						if (SessionContext.getInstance().getMapObject().get("2").equals("OTP")) {
+						if (SessionContext.getInstance().getMapObject().get("2").equals(RegistrationUIConstants.OTP)) {
 							BorderPane pane = (BorderPane) ((Node)event.getSource()).getParent().getParent();
 							AnchorPane loginType = BaseController.load(getClass().getResource("/fxml/LoginWithOTP.fxml"));
 							pane.setCenter(loginType);
@@ -121,12 +123,12 @@ public class LoginController extends BaseController {
 				}
 
 			}
-		} catch (NullPointerException nullPointerException) {
+		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorCode(),
-					REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+					REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage(), ioException);
 		} catch (RuntimeException runtimeException) {
-//			throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_LOGIN_SCREEN_LOADER_EXCEPTION,
-//					runtimeException.getMessage());
+			throw new RegBaseUncheckedException(REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorCode(),
+					REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage(), runtimeException);
 		}
 
 	}

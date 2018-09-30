@@ -7,7 +7,7 @@ public class RegistrationUIConstants {
 	}
 
 	//Login
-	public static final String PWD = "PWD";	
+	public static final String LOGIN_METHOD_PWORD = "PWD";	
 	public static final String OTP = "OTP";	
 	public static final String USERNAME_FIELD_EMPTY="Please Enter UserName";
 	public static final String OTP_FIELD_EMPTY="Please Enter OTP";

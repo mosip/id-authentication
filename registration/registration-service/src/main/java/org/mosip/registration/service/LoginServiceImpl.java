@@ -1,5 +1,9 @@
 package org.mosip.registration.service;
 
+import static org.mosip.registration.constants.RegConstants.APPLICATION_ID;
+import static org.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -8,10 +12,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.core.utils.JsonUtil;
 import org.mosip.kernel.core.utils.exception.MosipIOException;
 import org.mosip.kernel.core.utils.exception.MosipJsonMappingException;
 import org.mosip.kernel.core.utils.exception.MosipJsonParseException;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.mosip.registration.constants.RegConstants;
 import org.mosip.registration.dto.ErrorResponseDTO;
 import org.mosip.registration.dto.OtpGeneratorRequestDto;
@@ -42,6 +49,13 @@ import lombok.val;
 
 @Service
 public class LoginServiceImpl implements LoginService {
+
+	private static MosipLogger LOGGER;
+
+	@Autowired
+	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
+		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
+	}
 
 	/**
 	 * serviceDelegateUtil which processes the HTTPRequestDTO requests
@@ -82,7 +96,7 @@ public class LoginServiceImpl implements LoginService {
 				.findByRegistrationUserPasswordID(registrationUserPasswordID);
 
 		return (hashPassword.equals(registrationUserPassword.get(0).getRegistrationUserPasswordID().getPwd()));
-		
+
 	}
 
 	@Override
@@ -106,7 +120,7 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
 		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository.findById(centerId);
-		
+
 		RegistrationCenterDetailDTO registrationCenterDetailDTO = new RegistrationCenterDetailDTO();
 		if (registrationCenter.isPresent()) {
 			registrationCenterDetailDTO.setRegistrationCenterCode(registrationCenter.get().getName());
@@ -154,14 +168,15 @@ public class LoginServiceImpl implements LoginService {
 				otpGeneratorResponseDto = (OtpGeneratorResponseDto) serviceDelegateUtil
 						.post(RegConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDto);
 			} catch (RegBaseCheckedException e) {
-				responseDTO = getErrorResponse(responseDTO, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
+				getErrorResponse(responseDTO, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
 			}
 		} catch (HttpClientErrorException httpClientErrorException) {
 			try {
 				otpGeneratorResponseDto = (OtpGeneratorResponseDto) JsonUtil.jsonStringToJavaObject(
 						OtpGeneratorResponseDto.class, httpClientErrorException.getResponseBodyAsString());
-			} catch (MosipJsonParseException  | MosipJsonMappingException | MosipIOException exception) {
-				//TODO: Need to replace with log error
+			} catch (MosipJsonParseException | MosipJsonMappingException | MosipIOException exception) {
+				LOGGER.error("REGISTRATION - LOGIN_SERVICE - GET OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), exception.getMessage());
 			}
 			responseDTO = getErrorResponse(responseDTO, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
 
@@ -180,7 +195,7 @@ public class LoginServiceImpl implements LoginService {
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 
 		} else {
-			responseDTO = getErrorResponse(responseDTO, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
+			getErrorResponse(responseDTO, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
 		}
 
 		return responseDTO;
@@ -211,24 +226,18 @@ public class LoginServiceImpl implements LoginService {
 				otpValidatorResponseDto = (OtpValidatorResponseDto) serviceDelegateUtil.get(SERVICE_NAME,
 						requestParamMap);
 			} catch (RegBaseCheckedException e) {
-				responseDTO = getErrorResponse(responseDTO, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+				getErrorResponse(responseDTO, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
 
 			}
 		} catch (HttpClientErrorException httpClientErrorException) {
 			try {
 				otpValidatorResponseDto = (OtpValidatorResponseDto) JsonUtil.jsonStringToJavaObject(
 						OtpValidatorResponseDto.class, httpClientErrorException.getResponseBodyAsString());
-			} catch (MosipJsonParseException mosipJsonParseException) {
-				mosipJsonParseException.printStackTrace();
-			} catch (MosipJsonMappingException mosipJsonMappingException) {
-				// TODO Auto-generated catch block
-				mosipJsonMappingException.printStackTrace();
-			} catch (MosipIOException mosipIOException) {
-				// TODO Auto-generated catch block
-				mosipIOException.printStackTrace();
+			} catch (MosipJsonParseException | MosipJsonMappingException | MosipIOException exception) {
+				LOGGER.error("REGISTRATION - LOGIN_SERVICE - GET OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), exception.getMessage());
 			}
-			responseDTO = getErrorResponse(responseDTO, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
-
+			getErrorResponse(responseDTO, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
 		}
 
 		if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus().equalsIgnoreCase("true")) {
@@ -242,9 +251,7 @@ public class LoginServiceImpl implements LoginService {
 			successResponseDTO.setOtherAttributes(otherAttributes);
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 		} else {
-
-			responseDTO = getErrorResponse(responseDTO, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
-
+			getErrorResponse(responseDTO, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
 		}
 
 		return responseDTO;
@@ -262,14 +269,14 @@ public class LoginServiceImpl implements LoginService {
 	 */
 	private ResponseDTO getErrorResponse(ResponseDTO responseDTO, final String message) {
 		// Create list of Error Response
-		LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<ErrorResponseDTO>();
+		LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
 
 		// Error response
 		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 
 		errorResponseDTO.setCode(RegConstants.ALERT_ERROR);
 		errorResponseDTO.setMessage(message);
-		Map<String, Object> otherAttributes = new HashMap<String, Object>();
+		Map<String, Object> otherAttributes = new HashMap<>();
 		otherAttributes.put(RegConstants.OTP_VALIDATOR_RESPONSE_DTO, null);
 
 		errorResponseDTOs.add(errorResponseDTO);

@@ -30,7 +30,8 @@ import org.springframework.stereotype.Component;
 
 import static org.mosip.kernel.core.utils.JsonUtil.javaObjectToJsonString;
 import static org.mosip.registration.constants.RegConstants.DEMOGRPAHIC_JSON_NAME;
-import static org.mosip.registration.mapper.CustomObjectMapper.mapperFacade;import static org.mosip.registration.constants.RegConstants.APPLICATION_ID;
+import static org.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
+import static org.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static org.mosip.registration.constants.RegConstants.APPLICATION_NAME; 
 import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
@@ -76,7 +77,7 @@ public class PacketCreationService {
 			// Generating Demographic JSON as byte array
 			jsonsMap.put(DEMOGRPAHIC_JSON_NAME,
 					javaObjectToJsonString(
-							mapperFacade.map(registrationDTO.getDemographicDTO(), Demographic.class))
+							MAPPER_FACADE.map(registrationDTO.getDemographicDTO(), Demographic.class))
 									.getBytes());
 			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), "Demographic Json created successfully");
@@ -93,10 +94,10 @@ public class PacketCreationService {
 					"Packet HMAC File created successfully", "refId", "refIdType");
 
 			// Generating Packet Meta-Info JSON as byte array
-			PacketInfo packetInfo = mapperFacade.map(registrationDTO, PacketInfo.class);
+			PacketInfo packetInfo = MAPPER_FACADE.map(registrationDTO, PacketInfo.class);
 			packetInfo.setHashSequence(hashSequence);
-			packetInfo.setCheckSumMap(CheckSumUtil.CHECKSUM_MAP);
-			packetInfo.setOsiData(mapperFacade.convert(registrationDTO, OSIData.class, "osiDataConverter"));
+			packetInfo.setCheckSumMap(CheckSumUtil.getCheckSumMap());
+			packetInfo.setOsiData(MAPPER_FACADE.convert(registrationDTO, OSIData.class, "osiDataConverter"));
 			jsonsMap.put(RegConstants.PACKET_META_JSON_NAME, javaObjectToJsonString(packetInfo).getBytes());
 			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), "Registration Packet Meta-Info JSON generated successfully");
@@ -106,7 +107,7 @@ public class PacketCreationService {
 			// Generating Audit JSON as byte array
 			jsonsMap.put(RegConstants.AUDIT_JSON_FILE,
 					javaObjectToJsonString(
-							mapperFacade.mapAsList(registrationDTO.getAuditDTOs(), Audit.class))
+							MAPPER_FACADE.mapAsList(registrationDTO.getAuditDTOs(), Audit.class))
 									.getBytes());
 			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), "Registration Packet Meta-Info JSON generated successfully");

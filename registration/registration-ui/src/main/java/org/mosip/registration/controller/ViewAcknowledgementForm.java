@@ -2,8 +2,14 @@ package org.mosip.registration.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import org.mosip.registration.constants.RegistrationUIExceptionCode;
 import org.mosip.registration.dto.RegistrationApprovalUiDto;
+import org.mosip.registration.exception.RegBaseCheckedException;
+import org.mosip.registration.exception.RegBaseUncheckedException;
+import org.mosip.registration.ui.constants.RegistrationUIConstants;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -28,16 +34,21 @@ public class ViewAcknowledgementForm extends TableCell<RegistrationApprovalUiDto
 	final HBox mainHolder = new HBox();
 	final DoubleProperty buttonY = new SimpleDoubleProperty();
 
-	ViewAcknowledgementForm(final Stage stage, final TableView<RegistrationApprovalUiDto> table) {
-
+	ViewAcknowledgementForm(final TableView<RegistrationApprovalUiDto> table) {
 		paddedButton.setPadding(new Insets(3));
 		paddedButton.getChildren().add(link);
 		mainHolder.getChildren().add(paddedButton);
+
 		link.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent actionEvent) {
 				table.getSelectionModel().select(getTableRow().getIndex());
-				showAck(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath());
+				try {
+					showAck(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath());
+				} catch (IOException ioException) {
+					throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_VIEW_ACK_FORM_IO_EXCEPTION,
+							"Unable to view the acknowledgemnt form", ioException);
+				}
 			}
 		});
 	}
@@ -51,21 +62,17 @@ public class ViewAcknowledgementForm extends TableCell<RegistrationApprovalUiDto
 		}
 	}
 
-	private static void showAck(String acknowledmentFormFileName) {
+	private static void showAck(String acknowledmentFormFileName) throws IOException {
 		Stage primaryStage = new Stage();
-		try {
-			primaryStage.setTitle("Acknowlegement Form");
-			FileInputStream file = new FileInputStream(new File(acknowledmentFormFileName));
-			ImageView imageView = new ImageView(new Image(file));
+		FileInputStream file = new FileInputStream(new File(acknowledmentFormFileName));
+		primaryStage.setTitle("Acknowlegement Form");
+		ImageView imageView = new ImageView(new Image(file));
 
-			HBox hbox = new HBox(imageView);
+		HBox hbox = new HBox(imageView);
 
-			Scene scene = new Scene(hbox, 800, 600);
-			primaryStage.setScene(scene);
-			primaryStage.show();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Scene scene = new Scene(hbox, 800, 600);
+		primaryStage.setScene(scene);
+		primaryStage.show();
 	}
 
 }

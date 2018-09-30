@@ -1,10 +1,17 @@
 package org.mosip.registration.controller;
 
+import static org.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.mosip.registration.constants.RegistrationUIExceptionCode;
+import org.mosip.registration.constants.RegistrationUIExceptionEnum;
 import org.mosip.registration.dto.RegistrationApprovalUiDto;
+import org.mosip.registration.exception.RegBaseCheckedException;
+import org.mosip.registration.exception.RegBaseUncheckedException;
 import org.mosip.registration.service.RegistrationApprovalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -81,7 +88,8 @@ public class RegistrationApprovalController extends BaseController implements In
 		residentName.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("name"));
 		operatorId.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("operatorId"));
 		operatorName.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("operatorName"));
-		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("acknowledgementFormPath"));
+		acknowledgementFormPath.setCellValueFactory(
+				new PropertyValueFactory<RegistrationApprovalUiDto, String>("acknowledgementFormPath"));
 
 		expand.setCellFactory(
 				new Callback<TableColumn<RegistrationApprovalUiDto, Boolean>, TableCell<RegistrationApprovalUiDto, Boolean>>() {
@@ -89,13 +97,13 @@ public class RegistrationApprovalController extends BaseController implements In
 					@Override
 					public TableCell<RegistrationApprovalUiDto, Boolean> call(
 							TableColumn<RegistrationApprovalUiDto, Boolean> col) {
-						
-						return new ViewAcknowledgementForm(BaseController.stage, table);
+
+						return new ViewAcknowledgementForm(table);
 					}
 				});
-	
+
 		Pagination();
-		
+
 		approvalBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
 		rejectionBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
 		onHoldBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
@@ -116,17 +124,17 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		if (registration.packetUpdateStatus(regData.getId(), "A", "mahesh123", "", "mahesh123")) {
 			listData = registration.getAllEnrollments();
-			generateAlert("Status",AlertType.INFORMATION,"Registration Approved successfully..");
+			generateAlert("Status", AlertType.INFORMATION, "Registration Approved successfully..");
 			Pagination();
-		}else {
-			generateAlert("Status",AlertType.INFORMATION,"");
+		} else {
+			generateAlert("Status", AlertType.INFORMATION, "");
 		}
 
 	}
 
 	void Pagination() {
 		listData = registration.getAllEnrollments();
-		if(listData.size() != 0) {
+		if (listData.size() != 0) {
 			int pageCount = 0;
 			if (listData.size() % itemsPerPage == 0) {
 				pageCount = (listData.size() / itemsPerPage);
@@ -141,47 +149,47 @@ public class RegistrationApprovalController extends BaseController implements In
 			rejectionBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
 			onHoldBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
 			table.setPlaceholder(new Label("No Packets for approval"));
-		} 
-		
+		}
+
 	}
-	
-	public void rejectPacket(ActionEvent event) {
-		RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 
-		Stage primarystage = new Stage();
+	public void rejectPacket(ActionEvent event) throws RegBaseCheckedException {
 		try {
+			RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
+			Stage primarystage = new Stage();
 			AnchorPane rejectRoot = BaseController.load(getClass().getResource("/fxml/RejectionComment.fxml"));
-			RejectionController rejectionController = (RejectionController)RegistrationAppInitialization.applicationContext.getBean("rejectionController");
+			RejectionController rejectionController = (RejectionController) RegistrationAppInitialization
+					.getApplicationContext().getBean("rejectionController");
 
-			rejectionController.initData(regData.getId(),primarystage);
+			rejectionController.initData(regData.getId(), primarystage);
 			Scene scene = new Scene(rejectRoot);
 			primarystage.setScene(scene);
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
 			Pagination();
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException ioException) {
+			throw new RegBaseCheckedException(RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
+					RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
 		}
-		
 	}
 
-	public void onHoldPacket(ActionEvent event) {
-		RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
-		Stage primarystage = new Stage();
+	public void onHoldPacket(ActionEvent event) throws RegBaseCheckedException {
 		try {
+			RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
+			Stage primarystage = new Stage();
 			AnchorPane holdRoot = BaseController.load(getClass().getResource("/fxml/OnholdComment.fxml"));
-			OnHoldController onHoldController = (OnHoldController)RegistrationAppInitialization.applicationContext.getBean("onHoldController");
+			OnHoldController onHoldController = (OnHoldController) RegistrationAppInitialization.getApplicationContext()
+					.getBean("onHoldController");
 
-			onHoldController.initData(regData.getId(),primarystage);
+			onHoldController.initData(regData.getId(), primarystage);
 			Scene scene = new Scene(holdRoot);
 			primarystage.setScene(scene);
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
 			Pagination();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException ioException) {
+			throw new RegBaseCheckedException(RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
+					RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
 		}
 	}
-
 }
