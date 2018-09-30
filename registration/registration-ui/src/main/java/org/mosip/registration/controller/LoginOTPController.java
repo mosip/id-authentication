@@ -8,9 +8,9 @@ import org.mosip.registration.dto.ErrorResponseDTO;
 import org.mosip.registration.dto.ResponseDTO;
 import org.mosip.registration.dto.SuccessResponseDTO;
 import org.mosip.registration.exception.RegBaseCheckedException;
+import org.mosip.registration.scheduler.SchedulerUtil;
 import org.mosip.registration.service.LoginServiceImpl;
-import org.mosip.registration.util.constants.RegistrationConstants;
-import org.mosip.registration.util.scheduler.SchedulerUtil;
+import org.mosip.registration.ui.constants.RegistrationUIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -98,21 +98,21 @@ import javafx.scene.layout.BorderPane;
 					
 					// Generate alert to show OTP
 					SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(successResponseDTO.getCode()),
-							RegistrationConstants.OTP_INFO_MESSAGE, successResponseDTO.getMessage());
+					generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(successResponseDTO.getCode()),
+							RegistrationUIConstants.OTP_INFO_MESSAGE, successResponseDTO.getMessage());
 
 				} else if(responseDTO.getErrorResponseDTOs() != null){
 					// Generate Alert to show INVALID USERNAME
 					ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(errorResponseDTO.getCode()),
-							RegistrationConstants.OTP_INFO_MESSAGE, errorResponseDTO.getMessage());
+					generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(errorResponseDTO.getCode()),
+							RegistrationUIConstants.OTP_INFO_MESSAGE, errorResponseDTO.getMessage());
 
 				}
 
 			} else {
 				// Generate Alert to show username field was empty
-				generateAlert( RegistrationConstants.LOGIN_ALERT_TITLE,AlertType.valueOf(RegistrationConstants.ALERT_ERROR),RegistrationConstants.OTP_INFO_MESSAGE,
-						RegistrationConstants.USERNAME_FIELD_EMPTY);
+				generateAlert( RegistrationUIConstants.LOGIN_ALERT_TITLE,AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),RegistrationUIConstants.OTP_INFO_MESSAGE,
+						RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 
 			}
 		}
@@ -156,21 +156,20 @@ import javafx.scene.layout.BorderPane;
 						}					
 					} else {
 						// Generate invalid otp alert
-						ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-						errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(errorResponseDTO.getCode()),
-								RegistrationConstants.LOGIN_FAILURE,errorResponseDTO.getMessage());
+						 ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+						generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(errorResponseDTO.getCode()),
+								RegistrationUIConstants.LOGIN_FAILURE,errorResponseDTO.getMessage());
 					}
 				}
 				
 				
 
 			} else if(eoUsername.getText().length() ==3) {
-				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-						RegistrationConstants.OTP_INFO_MESSAGE, RegistrationConstants.USERNAME_FIELD_ERROR);
+				generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+						RegistrationUIConstants.OTP_INFO_MESSAGE, RegistrationUIConstants.USERNAME_FIELD_ERROR);
 			} else {
-				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-						RegistrationConstants.OTP_INFO_MESSAGE, RegistrationConstants.OTP_FIELD_EMPTY);
+				generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+						RegistrationUIConstants.OTP_INFO_MESSAGE, RegistrationUIConstants.OTP_FIELD_EMPTY);
 			}
 
 		}

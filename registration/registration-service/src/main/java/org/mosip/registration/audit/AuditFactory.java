@@ -1,10 +1,11 @@
-package org.mosip.registration.config;
+package org.mosip.registration.audit;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.OffsetDateTime;
 
 import org.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 import org.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import org.mosip.registration.constants.AppModuleEnum;
 import org.mosip.registration.constants.AuditEventEnum;
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.stereotype.Service;
 
-import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;;
+import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 /**
  * Class to Audit the events of Registration.
@@ -30,7 +31,7 @@ import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyV
 public class AuditFactory {
 
 	@Autowired
-	private AuditHandler auditHandler;
+	private AuditHandler<AuditRequestDto> auditHandler;
 
 	/**
 	 * Static method to audit the events across Registration Processor Module.
@@ -75,12 +76,12 @@ public class AuditFactory {
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
 				.setApplicationId(getPropertyValue(RegConstants.APPLICATION_ID))
-				.setApplicationName(getPropertyValue(RegConstants.APPLICATION_NAME)).setCreatedBy("createdBy")
+				.setApplicationName(getPropertyValue(RegConstants.APPLICATION_NAME)).setCreatedBy(RegConstants.CREATED_BY)
 				.setDescription(auditDescription).setEventId(auditEventEnum.getId())
 				.setEventName(auditEventEnum.getName()).setEventType(auditEventEnum.getType()).setHostIp(hostIP)
 				.setHostName(hostName).setId(refId).setIdType(refIdType).setModuleId(appModuleEnum.getId())
-				.setModuleName(appModuleEnum.getName()).setSessionUserId("sessionUserId")
-				.setSessionUserName("sessionUserName");
+				.setModuleName(appModuleEnum.getName()).setSessionUserId(RegConstants.SESSION_USER_ID)
+				.setSessionUserName(RegConstants.SESSION_USER_NAME);
 		auditHandler.writeAudit(auditRequestBuilder.build());
 	}
 }

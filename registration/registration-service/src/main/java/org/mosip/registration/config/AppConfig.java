@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import org.mosip.kernel.auditmanager.config.AuditConfig;
 import org.mosip.kernel.dataaccess.config.impl.HibernateDaoConfig;
 import org.mosip.kernel.dataaccess.repository.impl.HibernateRepositoryImpl;

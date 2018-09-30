@@ -11,7 +11,7 @@ import java.util.List;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
-import org.mosip.registration.config.AuditFactory;
+import org.mosip.registration.audit.AuditFactory;
 import org.mosip.registration.constants.AppModuleEnum;
 import org.mosip.registration.constants.AuditEventEnum;
 import org.mosip.registration.constants.RegProcessorExceptionCode;
@@ -101,7 +101,7 @@ public class PacketHandlerService {
 			auditFactory.audit(AuditEventEnum.PACKET_INTERNAL_ERROR, AppModuleEnum.PACKET_HANDLER,
 					"Internal error while creating packet", "registration reference id", "123456");
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setCode(RegProcessorExceptionCode.IDIS_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
+			errorResponseDTO.setCode(RegProcessorExceptionCode.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
 			errorResponseDTO.setMessage(exception.getErrorText());
 			List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
 			errorResponseDTOs.add(errorResponseDTO);
@@ -110,14 +110,12 @@ public class PacketHandlerService {
 			auditFactory.audit(AuditEventEnum.PACKET_INTERNAL_ERROR, AppModuleEnum.PACKET_HANDLER,
 					"Internal error while creating packet", "registration reference id", "123456");
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setCode(RegProcessorExceptionCode.IDIS_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
+			errorResponseDTO.setCode(RegProcessorExceptionCode.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
 			errorResponseDTO.setMessage(uncheckedException.getErrorText());
 			List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
 			errorResponseDTOs.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
-		} finally {
-			registrationDTO = null;
-		}
+		} 
 		LOGGER.debug("REGISTRATION - PACKET_HANDLER - CREATE", getPropertyValue(APPLICATION_NAME),
 				getPropertyValue(APPLICATION_ID), "Registration Handler had been ended");
 		return responseDTO;

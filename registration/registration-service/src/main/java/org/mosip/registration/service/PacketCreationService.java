@@ -7,7 +7,7 @@ import java.util.Map;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
-import org.mosip.registration.config.AuditFactory;
+import org.mosip.registration.audit.AuditFactory;
 import org.mosip.registration.constants.AppModuleEnum;
 import org.mosip.registration.constants.AuditEventEnum;
 import org.mosip.registration.constants.RegConstants;
@@ -95,7 +95,7 @@ public class PacketCreationService {
 			// Generating Packet Meta-Info JSON as byte array
 			PacketInfo packetInfo = mapperFacade.map(registrationDTO, PacketInfo.class);
 			packetInfo.setHashSequence(hashSequence);
-			packetInfo.setCheckSumMap(CheckSumUtil.checkSumMap);
+			packetInfo.setCheckSumMap(CheckSumUtil.CHECKSUM_MAP);
 			packetInfo.setOsiData(mapperFacade.convert(registrationDTO, OSIData.class, "osiDataConverter"));
 			jsonsMap.put(RegConstants.PACKET_META_JSON_NAME, javaObjectToJsonString(packetInfo).getBytes());
 			LOGGER.debug("REGISTRATION - PACKET_CREATION - CREATE", getPropertyValue(APPLICATION_NAME),

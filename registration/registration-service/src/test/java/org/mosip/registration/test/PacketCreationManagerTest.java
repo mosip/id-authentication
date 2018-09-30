@@ -16,7 +16,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
-import org.mosip.registration.config.AuditFactory;
+import org.mosip.registration.audit.AuditFactory;
 import org.mosip.registration.constants.AppModuleEnum;
 import org.mosip.registration.constants.AuditEventEnum;
 import org.mosip.registration.constants.RegConstants;

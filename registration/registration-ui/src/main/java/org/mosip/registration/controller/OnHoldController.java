@@ -53,9 +53,7 @@ public class OnHoldController extends BaseController implements Initializable{
 	public void updatePacketStatus(ActionEvent event) {
 		
 		if(registration.packetUpdateStatus(regId, "H","mahesh123", 
-				onHoldComboBox.getSelectionModel()
-								.getSelectedItem()
-								.toString(), "mahesh123")) {
+				onHoldComboBox.getSelectionModel().getSelectedItem(), "mahesh123")) {
 		generateAlert("Status",AlertType.INFORMATION,"Registration moved to On Hold.");
 		submit.disableProperty().set(true);
 		registrationController.Pagination();

@@ -16,11 +16,11 @@ public class RegistrationUIExceptionCode {
 		
 	}
 
-	private static String REG_UI_CODE = "REG-UI";
+	private static final String REG_UI_CODE = "REG-UI";
 	
-	public static String REG_UI_LOGIN_LOADER_EXCEPTION = REG_UI_CODE + "RAI-001";
-	public static String REG_UI_LOGIN_SCREEN_LOADER_EXCEPTION = REG_UI_CODE +"LC-002";
-	public static String REG_UI_HOMEPAGE_LOADER_EXCEPTION = REG_UI_CODE + "ROC-003";
-	public static String REG_UI_SHEDULER_RUNTIME_EXCEPTION = REG_UI_CODE + "SHE-004";
-	
+	public static final String REG_UI_LOGIN_LOADER_EXCEPTION = REG_UI_CODE + "RAI-001";
+	public static final String REG_UI_LOGIN_SCREEN_LOADER_EXCEPTION = REG_UI_CODE +"LC-002";
+	public static final String REG_UI_HOMEPAGE_LOADER_EXCEPTION = REG_UI_CODE + "ROC-003";
+	public static final String REG_UI_SHEDULER_RUNTIME_EXCEPTION = REG_UI_CODE + "SHE-004";
+	public static final String REG_UI_BASE_CNTRLR_IO_EXCEPTION = REG_UI_CODE+"BAS-005";
 }

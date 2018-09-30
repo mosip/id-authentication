@@ -7,7 +7,7 @@ import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyV
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
-import org.mosip.registration.config.AuditFactory;
+import org.mosip.registration.audit.AuditFactory;
 import org.mosip.registration.constants.AppModuleEnum;
 import org.mosip.registration.constants.AuditEventEnum;
 import org.mosip.registration.constants.RegProcessorExceptionCode;

@@ -149,7 +149,6 @@ public class ServiceDelegateUtil {
 
 		// URI creation
 		String url = environment.getProperty(serviceName + "." + RegConstants.SERVICE_URL);
-		UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(url);
 		URI uri = getUri(null, url);
 
 		// RequestType

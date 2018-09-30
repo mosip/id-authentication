@@ -1,11 +1,11 @@
 package org.mosip.registration.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.mosip.registration.dto.RegistrationCenterDetailDTO;
 import org.mosip.registration.dto.ResponseDTO;
+import org.mosip.registration.exception.RegBaseCheckedException;
 
 public interface LoginService {
 
@@ -13,7 +13,7 @@ public interface LoginService {
 
 	boolean validateUserPassword(String userId, String hashPassword);
 
-	HashMap<String, String> getUserDetail(String userId);
+	Map<String, String> getUserDetail(String userId);
 
 	String getCenterName(String centerId);
 

@@ -83,18 +83,15 @@ public class SessionContext {
 		return mapObject;
 	}
 
-	public  void setMapObject(Map<String, Object> mapObject) {
+	public void setMapObject(Map<String, Object> mapObject) {
 		this.mapObject = mapObject;
 	}
 
-	public void destroySession() {
+	public static void destroySession() {
 		sessionContext = null;
 	}
 
 	public class UserContext {
-
-		
-		
 		private String userId;
 		private String name;
 		private RegistrationCenterDetailDTO registrationCenterDetailDTO;
@@ -105,10 +102,6 @@ public class SessionContext {
 		private UserContext() {
 
 		}
-
-//		private static UserContext getInstance() {
-//			return userContext == null ? new UContext() : userContext;
-//		}
 
 		public String getUserId() {
 			return userId;

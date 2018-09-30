@@ -12,13 +12,15 @@ import java.util.Map;
  */
 public class RegConstants {
 	
+	public static final String PROOF_OF_RESIDENT = "ProofOfResident";
 	/**
-	 * The constructor
+	 * private constructor
 	 */
 	private RegConstants() {
 		
 	}
 
+	public static final String EMPTY = "";
 	public static final String CONSTANTS_FILE_NAME = "constants.properties";
 
 	public static final String AES_KEY_MANAGER_ALG = "AES_KEY_MANAGER_ALG";
@@ -48,6 +50,7 @@ public class RegConstants {
 	public static final String ENROLLMENT_META_DATA_FILE_NAME = "ENROLLMENT_META_DATA_FILE_NAME";
 	public static final String JSON_FILE_EXTENSION = ".json";
 	public static final String TIME_STAMP_FORMAT = "TIME_STAMP_FORMAT";
+	public static final String LOCALHOST = "localhost";
 
 	// Testing
 	public static final String PACKET_UNZIP_LOCATION = "PACKET_UNZIP_LOCATION";
@@ -56,27 +59,27 @@ public class RegConstants {
 	/**
 	 * Specifies the Image type for storing the images in zip file
 	 */
-	public final static String IMAGE_TYPE = ".jpg";
+	public static final String IMAGE_TYPE = ".jpg";
 
 	/**
 	 * Specifies the Document type for storing the documents in zip file
 	 */
-	public final static String DOC_TYPE = ".jpg";
+	public static final String DOC_TYPE = ".jpg";
 
 	/**
 	 * Specifies the names for storing the finger print images in zip file
 	 */
-	public final static Map<String, String> FINGERPRINT_IMAGE_NAMES_MAP = new HashMap<>();
+	public static final Map<String, String> FINGERPRINT_IMAGE_NAMES_MAP = new HashMap<>();
 
 	/**
 	 * Specifies the names for storing the iris images in zip file
 	 */
-	public final static Map<String, String> IRIS_IMAGE_NAMES_MAP = new HashMap<>();;
+	public static final Map<String, String> IRIS_IMAGE_NAMES_MAP = new HashMap<>();
 
 	/**
 	 * Specifies the names for storing the documents in zip file
 	 */
-	public final static Map<String, String> DOCUMENT_TYPES_MAP = new HashMap<>();
+	public static final Map<String, String> DOCUMENT_TYPES_MAP = new HashMap<>();
 
 	/**
 	 * Specifies the format for storing the Registration Acknowledgement
@@ -109,60 +112,63 @@ public class RegConstants {
 		DOCUMENT_TYPES_MAP.put("proofofaddress", "ProofOfAddress");
 		DOCUMENT_TYPES_MAP.put("poi", "ProofOfIdentity");
 		DOCUMENT_TYPES_MAP.put("proofofidentity", "ProofOfIdentity");
-		DOCUMENT_TYPES_MAP.put("por", "ProofOfResident");
-		DOCUMENT_TYPES_MAP.put("proofofresident", "ProofOfResident");
-		DOCUMENT_TYPES_MAP.put("proofofresidenty", "ProofOfResident");
+		DOCUMENT_TYPES_MAP.put("por", PROOF_OF_RESIDENT);
+		DOCUMENT_TYPES_MAP.put("proofofresident", PROOF_OF_RESIDENT);
+		DOCUMENT_TYPES_MAP.put("proofofresidenty", PROOF_OF_RESIDENT);
 	}
 
 	// Constants for Registration ID Generator - will be removed after Kernel
 	// Integration
-	public static String AGENCY_CODE = "2018";
-	public static String STATION_NUMBER = "78213";
-	public static String RID_DATE_FORMAT = "dd/MM/yyyy/HH/mm/ss";
+	public static final String AGENCY_CODE = "2018";
+	public static final String STATION_NUMBER = "78213";
+	public static final String RID_DATE_FORMAT = "dd/MM/yyyy/HH/mm/ss";
 
 	// Audit & Logger - Constants
-	public static String APPLICATION_ID = "applicationId";
-	public static String APPLICATION_NAME = "applicationName";
+	public static final String APPLICATION_ID = "applicationId";
+	public static final String APPLICATION_NAME = "applicationName";
 
 	// Default Host IP Address and Name for Audit Logs
-	public static String HOST_IP = "host.hostIP";
-	public static String HOST_NAME = "host.hostName";
+	public static final String HOST_IP = "host.hostIP";
+	public static final String HOST_NAME = "host.hostName";
+	public static final String CREATED_BY = "createdBy";
+	public static final String SESSION_USER_ID = "sessionUserId";
+	public static final String SESSION_USER_NAME = "sessionUserName";
 	
 	//OnlineConnectivity check
-	public static String URL = "http://localhost:8080/getTokenId";
+	public static final String URL = "http://localhost:8080/getTokenId";
 	
-	public static String OTP_GENERATOR_SERVICE_NAME="otp_generator";
-	public static String USERNAME_KEY="key";
-	public static String OTP_GENERATED="otp";
-	public static String OTP_VALIDATOR_SERVICE_NAME="otp_validator";
-	public static String OTP_GENERATION_SUCCESS_MESSAGE="Generated OTP is : ";
-	public static String OTP_VALIDATION_SUCCESS_MESSAGE="OTP validation Successful";
-	public static String OTP_GENERATION_ERROR_MESSAGE="Please Enter Valid Username ";
-	public static String OTP_VALIDATION_ERROR_MESSAGE="Please Enter Valid OTP";
-	public static String OTP_GENERATOR_RESPONSE_DTO="otpGeneratorResponseDTO";
-	public static String OTP_VALIDATOR_RESPONSE_DTO="otpValidatorResponseDTO";
-	public static String OTP_INFO_MESSAGE="OTP Login Information";
+	public static final String OTP_GENERATOR_SERVICE_NAME="otp_generator";
+	public static final String USERNAME_KEY="key";
+	public static final String OTP_GENERATED="otp";
+	public static final String OTP_VALIDATOR_SERVICE_NAME="otp_validator";
+	public static final String OTP_GENERATION_SUCCESS_MESSAGE="Generated OTP is : ";
+	public static final String OTP_VALIDATION_SUCCESS_MESSAGE="OTP validation Successful";
+	public static final String OTP_GENERATION_ERROR_MESSAGE="Please Enter Valid Username ";
+	public static final String OTP_VALIDATION_ERROR_MESSAGE="Please Enter Valid OTP";
+	public static final String OTP_GENERATOR_RESPONSE_DTO="otpGeneratorResponseDTO";
+	public static final String OTP_VALIDATOR_RESPONSE_DTO="otpValidatorResponseDTO";
+	public static final String OTP_INFO_MESSAGE="OTP Login Information";
 	
-	public static String ALERT_INFORMATION="INFORMATION";
-	public static String ALERT_ERROR="ERROR";
-	public static String ALERT_WARNING="WARNING";
+	public static final String ALERT_INFORMATION="INFORMATION";
+	public static final String ALERT_ERROR="ERROR";
+	public static final String ALERT_WARNING="WARNING";
 	
 
 	
 	//api related constant values
-	public static  String HTTPMETHOD="service.httpmethod";
-	public static  String SERVICE_URL="service.url";
-	public static String HEADERS="service.headers";
-	public static  String RESPONSE_TYPE="service.responseType";
-	public static  String REQUEST_TYPE="service.requestType";
-	public static  String AUTH_HEADER="service.authheader";
-	public static  String AUTH_REQUIRED="service.authrequired";
-	public static String AUTH_TYPE = "BASIC";
+	public static  final String HTTPMETHOD="service.httpmethod";
+	public static  final String SERVICE_URL="service.url";
+	public static  final String HEADERS="service.headers";
+	public static  final String RESPONSE_TYPE="service.responseType";
+	public static  final String REQUEST_TYPE="service.requestType";
+	public static  final String AUTH_HEADER="service.authheader";
+	public static  final String AUTH_REQUIRED="service.authrequired";
+	public static  final String AUTH_TYPE = "BASIC";
 	
 	//Alert Related Details
-	public static String LOGIN_ALERT_TITLE="LOGIN ALERT";
-	public static String LOGIN_INVALID_USERNAME="Unable To Login";
-	public static String LOGIN_INVALID_OTP="Unable To Login";
-	public static String GENERATED_OTP="Generated OTP : ";
+	public static  final String LOGIN_ALERT_TITLE="LOGIN ALERT";
+	public static  final String LOGIN_INVALID_USERNAME="Unable To Login";
+	public static  final String LOGIN_INVALID_OTP="Unable To Login";
+	public static  final String GENERATED_OTP="Generated OTP : ";
 
 }

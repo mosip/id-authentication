@@ -1,6 +1,5 @@
 package org.mosip.registration.entity;
 
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 import javax.persistence.Column;
@@ -16,12 +15,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(schema="reg", name = "user_role")
-public class RegistrationUserRole implements Serializable{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1796237645444922366L;
+public class RegistrationUserRole {
 	@EmbeddedId
 	RegistrationUserRoleID registrationUserRoleID;
 	

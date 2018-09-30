@@ -11,8 +11,8 @@ import org.mosip.registration.context.SessionContext;
 import org.mosip.registration.dto.UserDTO;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.exception.RegBaseUncheckedException;
+import org.mosip.registration.scheduler.SchedulerUtil;
 import org.mosip.registration.service.LoginServiceImpl;
-import org.mosip.registration.util.scheduler.SchedulerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -61,7 +61,6 @@ public class LoginController extends BaseController {
 		try {
 			Map<String, Object> userLoginMode = loginServiceImpl.getModesOfLogin();
 			SessionContext.getInstance().setMapObject(userLoginMode);
-			System.out.println(SessionContext.getInstance().getMapObject().entrySet());
 			if (userLoginMode.size() > 0) {
 				loginMode = userLoginMode.get("1").toString();
 			}
@@ -89,7 +88,7 @@ public class LoginController extends BaseController {
 				errorMsg.setText("Please enter UserName and Password.");
 			} else {
 				errorMsg.setVisible(false);
-				String hashPassword = "";
+				String hashPassword = null;
 				//password hashing
 				
 				if (!(password.getText().isEmpty())) {
@@ -102,7 +101,6 @@ public class LoginController extends BaseController {
 				
 				boolean offlineStatus = false;
 				boolean  serverStatus = getConnectionCheck(userObj);
-				System.out.println(serverStatus);
 				if(serverStatus == false) {
 					offlineStatus = loginServiceImpl.validateUserPassword(userId.getText(), hashPassword);
 				}

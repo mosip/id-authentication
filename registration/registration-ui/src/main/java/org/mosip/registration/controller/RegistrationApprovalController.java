@@ -102,7 +102,8 @@ public class RegistrationApprovalController extends BaseController implements In
 	}
 
 	private Node createPage(int pageIndex) {
-		int fromindex = 0, toindex = 0;
+		int fromindex = 0;
+		int toindex = 0;
 		fromindex = pageIndex * itemsPerPage;
 		toindex = Math.min(fromindex + itemsPerPage, listData.size());
 		table.setItems(FXCollections.observableArrayList(listData.subList(fromindex, toindex)));
@@ -114,7 +115,6 @@ public class RegistrationApprovalController extends BaseController implements In
 		RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 
 		if (registration.packetUpdateStatus(regData.getId(), "A", "mahesh123", "", "mahesh123")) {
-			System.out.println("Success!! Recored updated successfully..");
 			listData = registration.getAllEnrollments();
 			generateAlert("Status",AlertType.INFORMATION,"Registration Approved successfully..");
 			Pagination();

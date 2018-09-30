@@ -103,34 +103,26 @@ public class RSAKeyGeneratorImpl implements RSAKeyGenerator {
 	 * com.mindtree.mosip.utility.rsa.keygenerator.RSAKeyGenerator#saveKeyFile(java.
 	 * lang.String, java.math.BigInteger, java.math.BigInteger)
 	 */
-	@SuppressWarnings("resource")
 	public void saveKey(String filePath, BigInteger modulus, BigInteger exponent) {
-		FileOutputStream fileoutputStream = null;
-		ObjectOutputStream objectOutputStream = null;
-		try {
-			// initialize file in which to save key file
-			File directory = new File(filePath.substring(0, filePath.lastIndexOf("/")));
-			if (!directory.exists()) {
-				directory.mkdir();
-			}
-			File file = new File(filePath);
-			fileoutputStream = new FileOutputStream(file);
-		} catch (FileNotFoundException fileNotFoundException) {
-			throw new RegBaseUncheckedException(REG_FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
-					REG_FILE_NOT_FOUND_ERROR_CODE.getErrorMessage(), fileNotFoundException);
+		File directory = new File(filePath.substring(0, filePath.lastIndexOf('/')));
+		if (!directory.exists()) {
+			directory.mkdir();
 		}
 
-		try {
-			objectOutputStream = new ObjectOutputStream(fileoutputStream);
+		try (FileOutputStream fileoutputStream = new FileOutputStream(new File(filePath));
+				ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileoutputStream);) {
 
-			// write key modulus value
 			objectOutputStream.writeObject(modulus);
 			// write key exponent value
 			objectOutputStream.writeObject(exponent);
+		} catch (FileNotFoundException fileNotFoundException) {
+			throw new RegBaseUncheckedException(REG_FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
+					REG_FILE_NOT_FOUND_ERROR_CODE.getErrorMessage(), fileNotFoundException);
 		} catch (IOException ioException) {
-			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(),
-					REG_IO_ERROR_CODE.getErrorMessage(), ioException);
+			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(), REG_IO_ERROR_CODE.getErrorMessage(),
+					ioException);
 		}
+
 	}
 
 	/*
@@ -140,61 +132,39 @@ public class RSAKeyGeneratorImpl implements RSAKeyGenerator {
 	 * com.mindtree.mosip.utility.rsa.keygenerator.RSAKeyGenerator#readPublickey(
 	 * java.lang.String)
 	 */
-	@SuppressWarnings("resource")
 	public PublicKey readPublickey(String publicKeyFile) {
-		FileInputStream fileInputStream = null;
-		ObjectInputStream objectInputStream = null;
-		try {
-			// initialize file in which to get publickey
-			fileInputStream = new FileInputStream(new File(publicKeyFile).getAbsolutePath());
+		BigInteger mod = null;
+		BigInteger exp = null;
+
+		KeyFactory keyFactory = null;
+		PublicKey publicKey = null;
+
+		try (FileInputStream fileInputStream = new FileInputStream(new File(publicKeyFile).getAbsolutePath());
+				ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);) {
+			mod = (BigInteger) objectInputStream.readObject();
+			exp = (BigInteger) objectInputStream.readObject();
+
+			// Re-Generate RSAPublicKeySpec with obtained modulus and exponent value
+			RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(mod, exp);
+
+			// initialize key factory with specified algorithm
+			keyFactory = KeyFactory.getInstance(RegConstants.RSA_ALG);
+
+			// get public key
+			publicKey = keyFactory.generatePublic(rsaPublicKeySpec);
+
 		} catch (FileNotFoundException fileNotFoundException) {
 			throw new RegBaseUncheckedException(REG_FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					REG_FILE_NOT_FOUND_ERROR_CODE.getErrorMessage(), fileNotFoundException);
-		}
-		try {
-			objectInputStream = new ObjectInputStream(fileInputStream);
 		} catch (IOException ioException) {
-			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(),
-					REG_IO_ERROR_CODE.getErrorMessage(), ioException);
-		} 
-		
-		BigInteger mod = null;
-		try {
-			// get public key modulus value
-			mod = (BigInteger) objectInputStream.readObject();
+			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(), REG_IO_ERROR_CODE.getErrorMessage(),
+					ioException);
 		} catch (ClassNotFoundException classNotFoundException) {
 			throw new RegBaseUncheckedException(REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorMessage(), classNotFoundException);
-		} catch (IOException ioException) {
-			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(),
-					REG_IO_ERROR_CODE.getErrorMessage(), ioException);
-		}
-		BigInteger exp = null;
-		try {
-			// get public key exponent value
-			exp = (BigInteger) objectInputStream.readObject();
-		} catch (ClassNotFoundException classNotFoundException) {
-			throw new RegBaseUncheckedException(REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorCode(),
-					REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorMessage(), classNotFoundException);
-		} catch (IOException ioException) {
-			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(),
-					REG_IO_ERROR_CODE.getErrorMessage(), ioException);
-		}
-
-		// Re-Generate RSAPublicKeySpec with obtained modulus and exponent value
-		RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(mod, exp);
-		KeyFactory keyFactory = null;
-		try {
-			// initialize key factory with specified algorithm
-			keyFactory = KeyFactory.getInstance(RegConstants.RSA_ALG);
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			throw new RegBaseUncheckedException(REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
 					REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), noSuchAlgorithmException);
-		}
-		PublicKey publicKey = null;
-		try {
-			// get public key
-			publicKey = keyFactory.generatePublic(rsaPublicKeySpec);
 		} catch (InvalidKeySpecException invalidKeySpecException) {
 			throw new RegBaseUncheckedException(REG_INVALID_KEY_SPEC_ERROR_CODE.getErrorCode(),
 					REG_INVALID_KEY_SPEC_ERROR_CODE.getErrorMessage(), invalidKeySpecException);
@@ -212,60 +182,38 @@ public class RSAKeyGeneratorImpl implements RSAKeyGenerator {
 	 */
 	@SuppressWarnings("resource")
 	public PrivateKey readPrivatekey(String privateKeyFile) {
-		FileInputStream fileInputStream = null;
-		ObjectInputStream objectInputStream = null;
-		try {
-			// initialize file in which to get privatekey
+		BigInteger mod = null;
+		BigInteger exp = null;
 
-			fileInputStream = new FileInputStream(new File(privateKeyFile).getAbsolutePath());
+		KeyFactory keyFactory = null;
+		PrivateKey privateKey = null;
+
+		try (FileInputStream fileInputStream = new FileInputStream(new File(privateKeyFile).getAbsolutePath());
+				ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);) {
+			mod = (BigInteger) objectInputStream.readObject();
+			exp = (BigInteger) objectInputStream.readObject();
+
+			// Re-Generate RSAPublicKeySpec with obtained modulus and exponent value
+			RSAPrivateKeySpec rsaPrivateKeySpec = new RSAPrivateKeySpec(mod, exp);
+
+			// initialize key factory with specified algorithm
+			keyFactory = KeyFactory.getInstance(RegConstants.RSA_ALG);
+
+			// get public key
+			privateKey = keyFactory.generatePrivate(rsaPrivateKeySpec);
+
 		} catch (FileNotFoundException fileNotFoundException) {
 			throw new RegBaseUncheckedException(REG_FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					REG_FILE_NOT_FOUND_ERROR_CODE.getErrorMessage(), fileNotFoundException);
-		}
-		try {
-			objectInputStream = new ObjectInputStream(fileInputStream);
 		} catch (IOException ioException) {
-			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(),
-					REG_IO_ERROR_CODE.getErrorMessage(), ioException);
-		}
-		
-		BigInteger mod = null;
-		try {
-			// get private key modulus value
-
-			mod = (BigInteger) objectInputStream.readObject();
+			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(), REG_IO_ERROR_CODE.getErrorMessage(),
+					ioException);
 		} catch (ClassNotFoundException classNotFoundException) {
 			throw new RegBaseUncheckedException(REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorMessage(), classNotFoundException);
-		} catch (IOException ioException) {
-			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(),
-					REG_IO_ERROR_CODE.getErrorMessage(), ioException);
-		}
-		BigInteger exp = null;
-		try {
-			// get private key exponent value
-
-			exp = (BigInteger) objectInputStream.readObject();
-		} catch (ClassNotFoundException classNotFoundException) {
-			throw new RegBaseUncheckedException(REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorCode(),
-					REG_CLASS_NOT_FOUND_ERROR_CODE.getErrorMessage(), classNotFoundException);
-		} catch (IOException ioException) {
-			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(),
-					REG_IO_ERROR_CODE.getErrorMessage(), ioException);
-		}
-
-		// Re-Generate RSAPrivateKeySpec with obtained modulus and exponent values
-		RSAPrivateKeySpec rsaPrivateKeySpec = new RSAPrivateKeySpec(mod, exp);
-		KeyFactory keyFactory = null;
-		try {
-			keyFactory = KeyFactory.getInstance(RegConstants.RSA_ALG);
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			throw new RegBaseUncheckedException(REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
 					REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), noSuchAlgorithmException);
-		}
-		PrivateKey privateKey = null;
-		try {
-			privateKey = keyFactory.generatePrivate(rsaPrivateKeySpec);
 		} catch (InvalidKeySpecException invalidKeySpecException) {
 			throw new RegBaseUncheckedException(REG_INVALID_KEY_SPEC_ERROR_CODE.getErrorCode(),
 					REG_INVALID_KEY_SPEC_ERROR_CODE.getErrorMessage(), invalidKeySpecException);

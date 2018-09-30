@@ -23,8 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.mockito.Mockito.when;
 
 public class RSAEncryptionTest extends SpringConfiguration {	
-	@Mock
 	RegConstants regConstants;
+	
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Autowired

@@ -19,10 +19,14 @@ import org.mosip.registration.dto.json.metadata.HashSequence;
  * @since 1.0.0
  */
 public class HMACGeneration {
+	
+	private HMACGeneration() {
+		
+	}
 
-	public static LinkedList<String> hmacApplicantSequence = new LinkedList<>();
-	public static LinkedList<String> hmacHOFSequence = new LinkedList<>();
-	public static LinkedList<String> hmacIntroducerSequence = new LinkedList<>();
+	private static LinkedList<String> hmacApplicantSequence;
+	private static LinkedList<String> hmacHOFSequence;
+	private static LinkedList<String> hmacIntroducerSequence;
 
 	/**
 	 * * Generates hash for registration Dto and Demographic json file which includes
@@ -40,9 +44,9 @@ public class HMACGeneration {
 	public static byte[] generatePacketDTOHash(final RegistrationDTO registrationDTO, final byte[] demographicJsonBytes,
 			HashSequence hashSequence) {
 
-		HMACGeneration.hmacApplicantSequence = hashSequence.getApplicant();
-		HMACGeneration.hmacHOFSequence = hashSequence.getHof();
-		HMACGeneration.hmacIntroducerSequence = hashSequence.getIntroducer();
+		hmacApplicantSequence = hashSequence.getApplicant();
+		hmacHOFSequence = hashSequence.getHof();
+		hmacIntroducerSequence = hashSequence.getIntroducer();
 
 		// generates packet biometric hash which may includes applicant, hof and
 		// introducer
@@ -101,9 +105,9 @@ public class HMACGeneration {
 	 */
 	private static void generateBiometricInfoHash(final BiometricInfoDTO biometricInfoDTO,
 			LinkedList<String> hashOrder) {
-		// hash for fingerprints
+		// hash for finger prints
 		if (biometricInfoDTO.getFingerprintDetailsDTO() != null) {
-			biometricInfoDTO.getFingerprintDetailsDTO().forEach((fingerprintDetailsDTO) -> {
+			biometricInfoDTO.getFingerprintDetailsDTO().forEach(fingerprintDetailsDTO -> {
 				if (fingerprintDetailsDTO != null)
 					generateHash(fingerprintDetailsDTO.getFingerPrint(), fingerprintDetailsDTO.getFingerPrintName(),
 							hashOrder);
@@ -111,7 +115,7 @@ public class HMACGeneration {
 		}
 		// hash for iris
 		if (biometricInfoDTO.getIrisDetailsDTO() != null) {
-			biometricInfoDTO.getIrisDetailsDTO().forEach((irisDetailsDTO) -> {
+			biometricInfoDTO.getIrisDetailsDTO().forEach(irisDetailsDTO -> {
 				if (irisDetailsDTO != null)
 					generateHash(irisDetailsDTO.getIris(), irisDetailsDTO.getIrisName(), hashOrder);
 			});
@@ -161,7 +165,7 @@ public class HMACGeneration {
 
 		// for documents hash
 		if (documentDetailsDTOList != null) {
-			documentDetailsDTOList.forEach((document) -> {
+			documentDetailsDTOList.forEach(document -> {
 				if (document != null)
 					generateHash(document.getDocument(), document.getDocumentName(), hashOrder);
 			});

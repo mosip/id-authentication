@@ -1,6 +1,5 @@
 package org.mosip.registration.entity;
 
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 import javax.persistence.Column;
@@ -24,12 +23,8 @@ import lombok.Data;
 @Entity
 @Table(schema="REG", name="REGISTRATION_TRANSACTION")
 @Data
-public class RegistrationTransaction implements Serializable {
+public class RegistrationTransaction {
 
-	/**
-	 * Auto-Generated Serial Version Id
-	 */
-	private static final long serialVersionUID = 3504279571852674128L;
 	@Id
 	@Column(name="ID", length=32, nullable=false, updatable=false)
 	@GeneratedValue(generator="system-uuid")

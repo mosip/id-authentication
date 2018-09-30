@@ -1,6 +1,5 @@
 package org.mosip.registration.entity;
 
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 import javax.persistence.Column;
@@ -15,14 +14,9 @@ import lombok.Data;
 @Data
 @Entity
 @Table(schema = "reg", name = "app_login_method")
-public class RegistrationAppLoginMethod implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3736399382452183756L;
-
+public class RegistrationAppLoginMethod {
 	@EmbeddedId
-	RegistrationAppLoginMethodID pk_applm_usr_id;
+	private RegistrationAppLoginMethodID pk_applm_usr_id;
 
 	@Column(name = "method_seq", nullable = true, updatable = false)
 	private int methodSeq;

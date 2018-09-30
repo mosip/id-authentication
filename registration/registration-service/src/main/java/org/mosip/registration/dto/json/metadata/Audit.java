@@ -2,6 +2,13 @@ package org.mosip.registration.dto.json.metadata;
 
 import java.time.OffsetDateTime;
 
+/**
+ * This class is to capture the time duration for each event
+ * 
+ * @author Dinesh Asokan
+ * @since 1.0.0
+ *
+ */
 public class Audit {
 	private String uuid;
 	private OffsetDateTime createdAt;
@@ -291,5 +298,5 @@ public class Audit {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 }
+

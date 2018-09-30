@@ -38,6 +38,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import lombok.val;
+
 @Service
 public class LoginServiceImpl implements LoginService {
 
@@ -45,26 +47,28 @@ public class LoginServiceImpl implements LoginService {
 	 * serviceDelegateUtil which processes the HTTPRequestDTO requests
 	 */
 	@Autowired
-	ServiceDelegateUtil serviceDelegateUtil;
+	private ServiceDelegateUtil serviceDelegateUtil;
 	@Autowired
-	RegistrationAppLoginRepository registrationAppLoginRepository;
+	private RegistrationAppLoginRepository registrationAppLoginRepository;
 	@Autowired
-	RegistrationUserPasswordRepository registrationUserPasswordRepository;
+	private RegistrationUserPasswordRepository registrationUserPasswordRepository;
 	@Autowired
-	RegistrationUserDetailRepository registrationUserDetailRepository;
+	private RegistrationUserDetailRepository registrationUserDetailRepository;
 	@Autowired
-	RegistrationCenterRepository registrationCenterRepository;
+	private RegistrationCenterRepository registrationCenterRepository;
 	@Autowired
-	RegistrationUserRoleRepository registrationUserRoleRepository;
+	private RegistrationUserRoleRepository registrationUserRoleRepository;
 
 	@Override
 	public Map<String, Object> getModesOfLogin() {
 		List<RegistrationAppLoginMethod> loginList = registrationAppLoginRepository
 				.findByIsActiveTrueOrderByMethodSeq();
-		Map<String, Object> loginModes = new LinkedHashMap<String, Object>();
-		for (int mode = 0; mode < loginList.size(); mode++) {
-			loginModes.put("" + loginList.get(mode).getMethodSeq(),
-					loginList.get(mode).getPk_applm_usr_id().getLoginMethod());
+
+		Map<String, Object> loginModes = new LinkedHashMap<>();
+
+		for (RegistrationAppLoginMethod registrationAppLoginMethod : loginList) {
+			loginModes.put(String.valueOf(registrationAppLoginMethod.getMethodSeq()),
+					registrationAppLoginMethod.getPk_applm_usr_id().getLoginMethod());
 		}
 		return loginModes;
 	}
@@ -77,19 +81,16 @@ public class LoginServiceImpl implements LoginService {
 		List<RegistrationUserPassword> registrationUserPassword = registrationUserPasswordRepository
 				.findByRegistrationUserPasswordID(registrationUserPasswordID);
 
-		if (hashPassword.equals(registrationUserPassword.get(0).getRegistrationUserPasswordID().getPwd())) {
-			return true;
-		} else {
-			return false;
-		}
+		return (hashPassword.equals(registrationUserPassword.get(0).getRegistrationUserPasswordID().getPwd()));
+		
 	}
 
 	@Override
-	public HashMap<String, String> getUserDetail(String userId) {
+	public Map<String, String> getUserDetail(String userId) {
 		List<RegistrationUserDetail> registrationUserDetail = registrationUserDetailRepository
 				.findByIdAndIsActiveTrue(userId);
-		LinkedHashMap<String, String> userDetails = new LinkedHashMap<String, String>();
-		if (registrationUserDetail.size() > 0) {
+		LinkedHashMap<String, String> userDetails = new LinkedHashMap<>();
+		if (!registrationUserDetail.isEmpty()) {
 			userDetails.put("name", registrationUserDetail.get(0).getName());
 			userDetails.put("centerId", registrationUserDetail.get(0).getCntrId());
 		}
@@ -99,25 +100,28 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	public String getCenterName(String centerId) {
 		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository.findById(centerId);
-		return registrationCenter.get().getName();
+		return registrationCenter.isPresent() ? registrationCenter.get().getName() : RegConstants.EMPTY;
 	}
 
 	@Override
 	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
 		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository.findById(centerId);
+		
 		RegistrationCenterDetailDTO registrationCenterDetailDTO = new RegistrationCenterDetailDTO();
-		registrationCenterDetailDTO.setRegistrationCenterCode(registrationCenter.get().getId());
-		registrationCenterDetailDTO.setAddrLine1(registrationCenter.get().getAddrLine1());
-		registrationCenterDetailDTO.setAddrLine2(registrationCenter.get().getAddrLine2());
-		registrationCenterDetailDTO.setAddrLine3(registrationCenter.get().getAddrLine3());
-		registrationCenterDetailDTO.setLocLine1(registrationCenter.get().getLocLine1());
-		registrationCenterDetailDTO.setLocLine2(registrationCenter.get().getLocLine2());
-		registrationCenterDetailDTO.setLocLine3(registrationCenter.get().getLocLine3());
-		registrationCenterDetailDTO.setLocLine4(registrationCenter.get().getLocLine4());
-		registrationCenterDetailDTO.setCountry(registrationCenter.get().getCountry());
-		registrationCenterDetailDTO.setLatitude(registrationCenter.get().getLatitude());
-		registrationCenterDetailDTO.setLongitude(registrationCenter.get().getLongitude());
-		registrationCenterDetailDTO.setPincode(registrationCenter.get().getPincode());
+		if (registrationCenter.isPresent()) {
+			registrationCenterDetailDTO.setRegistrationCenterCode(registrationCenter.get().getName());
+			registrationCenterDetailDTO.setAddrLine1(registrationCenter.get().getAddrLine1());
+			registrationCenterDetailDTO.setAddrLine2(registrationCenter.get().getAddrLine2());
+			registrationCenterDetailDTO.setAddrLine3(registrationCenter.get().getAddrLine3());
+			registrationCenterDetailDTO.setLocLine1(registrationCenter.get().getLocLine1());
+			registrationCenterDetailDTO.setLocLine2(registrationCenter.get().getLocLine2());
+			registrationCenterDetailDTO.setLocLine3(registrationCenter.get().getLocLine3());
+			registrationCenterDetailDTO.setLocLine4(registrationCenter.get().getLocLine4());
+			registrationCenterDetailDTO.setCountry(registrationCenter.get().getCountry());
+			registrationCenterDetailDTO.setLatitude(registrationCenter.get().getLatitude());
+			registrationCenterDetailDTO.setLongitude(registrationCenter.get().getLongitude());
+			registrationCenterDetailDTO.setPincode(registrationCenter.get().getPincode());
+		}
 		return registrationCenterDetailDTO;
 	}
 
@@ -156,14 +160,8 @@ public class LoginServiceImpl implements LoginService {
 			try {
 				otpGeneratorResponseDto = (OtpGeneratorResponseDto) JsonUtil.jsonStringToJavaObject(
 						OtpGeneratorResponseDto.class, httpClientErrorException.getResponseBodyAsString());
-			} catch (MosipJsonParseException e) {
-
-			} catch (MosipJsonMappingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (MosipIOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (MosipJsonParseException  | MosipJsonMappingException | MosipIOException exception) {
+				//TODO: Need to replace with log error
 			}
 			responseDTO = getErrorResponse(responseDTO, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
 
@@ -172,7 +170,8 @@ public class LoginServiceImpl implements LoginService {
 		if (otpGeneratorResponseDto != null) {
 			successResponseDTO = new SuccessResponseDTO();
 			successResponseDTO.setCode(RegConstants.ALERT_INFORMATION);
-			successResponseDTO.setMessage(RegConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpGeneratorResponseDto.getOtp());
+			successResponseDTO
+					.setMessage(RegConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpGeneratorResponseDto.getOtp());
 
 			Map<String, Object> otherAttributes = new HashMap<String, Object>();
 			otherAttributes.put(RegConstants.OTP_GENERATOR_RESPONSE_DTO, otpGeneratorResponseDto);
@@ -190,8 +189,7 @@ public class LoginServiceImpl implements LoginService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.mosip.registration.service.login.LoginService#validateOTP(java.
+	 * @see org.mosip.registration.service.login.LoginService#validateOTP(java.
 	 * lang.String, java.lang.String)
 	 */
 	@Override
@@ -220,20 +218,20 @@ public class LoginServiceImpl implements LoginService {
 			try {
 				otpValidatorResponseDto = (OtpValidatorResponseDto) JsonUtil.jsonStringToJavaObject(
 						OtpValidatorResponseDto.class, httpClientErrorException.getResponseBodyAsString());
-			} catch (MosipJsonParseException e) {
-
-			} catch (MosipJsonMappingException e) {
+			} catch (MosipJsonParseException mosipJsonParseException) {
+				mosipJsonParseException.printStackTrace();
+			} catch (MosipJsonMappingException mosipJsonMappingException) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (MosipIOException e) {
+				mosipJsonMappingException.printStackTrace();
+			} catch (MosipIOException mosipIOException) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				mosipIOException.printStackTrace();
 			}
 			responseDTO = getErrorResponse(responseDTO, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
 
 		}
 
-		if (otpValidatorResponseDto.getStatus().equalsIgnoreCase("true")) {
+		if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus().equalsIgnoreCase("true")) {
 
 			// Create Success Response
 			successResponseDTO = new SuccessResponseDTO();

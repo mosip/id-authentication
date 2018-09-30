@@ -44,15 +44,6 @@ public class VelocityPDFGenerator {
 	 *         written into a StringWriter and returned
 	 */
 	public Writer generateTemplate(File templateFile, RegistrationDTO registration) {
-
-		// for storing the fingerprint type and its respective quality score
-		// (ranking-wise)
-		HashMap<String, Integer> fingersQuality = new HashMap<>();
-
-		// int array to store the total count of fingerprints and total count of irises
-		// captured
-		int[] fingersAndIrises = new int[2];
-
 		// to get the velocity template
 		VelocityEngine vel = new VelocityEngine();
 		/*
@@ -112,7 +103,7 @@ public class VelocityPDFGenerator {
 		velocityContext.put("imagesource", "data:image/jpg;base64," + encodedBytes);
 
 		// get the quality ranking for fingerprints of the applicant
-		fingersQuality = getFingerPrintQualityRanking(registration);
+		HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
 		for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
 			if (entry.getValue() != 0) {
 				// display rank of quality for the captured fingerprints
@@ -124,7 +115,7 @@ public class VelocityPDFGenerator {
 		}
 
 		// get the total count of fingerprints captured and irises captured
-		fingersAndIrises = getFingersAndIrisCount(registration);
+		int[] fingersAndIrises = getFingersAndIrisCount(registration);
 		velocityContext.put("BiometricsCaptured",
 				fingersAndIrises[0] + " fingers and " + fingersAndIrises[1] + " Iris(es)");
 
@@ -146,9 +137,7 @@ public class VelocityPDFGenerator {
 		List<ExceptionIrisDetailsDTO> exceptionIris = registration.getBiometricDTO().getApplicantBiometricDTO()
 				.getExceptionIrisDetailsDTO();
 
-		int[] fingersAndIrisCount = new int[] { 10 - exceptionFingers.size(), 2 - exceptionIris.size() };
-
-		return fingersAndIrisCount;
+		return new int[] { 10 - exceptionFingers.size(), 2 - exceptionIris.size() };
 	}
 
 	/**
@@ -177,30 +166,34 @@ public class VelocityPDFGenerator {
 			fingersQuality.put(availableFinger.getFingerType(), (double) availableFinger.getQualityScore());
 		}
 
-		Object[] a = fingersQuality.entrySet().toArray();
-		Arrays.sort(a, new Comparator<Object>() {
+		Object[] fingerQualitykeys = fingersQuality.entrySet().toArray();
+		Arrays.sort(fingerQualitykeys, new Comparator<Object>() {
 			/*
 			 * (non-Javadoc)
 			 * 
 			 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 			 */
-			public int compare(Object o1, Object o2) {
-				return ((Map.Entry<String, Double>) o2).getValue()
-						.compareTo(((Map.Entry<String, Double>) o1).getValue());
+			public int compare(Object fingetPrintQuality1, Object fingetPrintQuality2) {
+				return ((Map.Entry<String, Double>) fingetPrintQuality2).getValue()
+						.compareTo(((Map.Entry<String, Double>) fingetPrintQuality1).getValue());
 			}
 		});
+		
+		
 		LinkedHashMap<String, Double> fingersQualitySorted = new LinkedHashMap<>();
-		for (Object e : a) {
-			String finger = ((Map.Entry<String, Double>) e).getKey();
-			double quality = ((Map.Entry<String, Double>) e).getValue();
+		for (Object fingerPrintQualityKey : fingerQualitykeys) {
+			String finger = ((Map.Entry<String, Double>) fingerPrintQualityKey).getKey();
+			double quality = ((Map.Entry<String, Double>) fingerPrintQualityKey).getValue();
 			fingersQualitySorted.put(finger, quality);
 		}
+		
+		
 		HashMap<String, Integer> fingersQualityRanking = new HashMap<>();
 		int rank = 1;
-		double prev = -1;
+		double prev = 1.0;
 		for (Map.Entry<String, Double> entry : fingersQualitySorted.entrySet()) {
 			if (entry.getValue() != 0) {
-				if (entry.getValue() == prev || prev == -1) {
+				if (Double.compare(entry.getValue(), prev) ==  0 || Double.compare(prev, 1.0) == 0) {
 					fingersQualityRanking.put(entry.getKey(), rank);
 				} else {
 					fingersQualityRanking.put(entry.getKey(), ++rank);

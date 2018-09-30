@@ -51,9 +51,7 @@ public class RejectionController extends BaseController implements Initializable
 
 	public void packetUpdateStatus(ActionEvent event) {
 		if(registration.packetUpdateStatus(regId, "I","mahesh123", 
-				rejectionComboBox.getSelectionModel()
-								.getSelectedItem()
-								.toString(), "mahesh123")) {
+				rejectionComboBox.getSelectionModel().getSelectedItem(), "mahesh123")) {
 		generateAlert("Status", AlertType.INFORMATION, "Packet Rejected Successfully..");
 		submit.disableProperty().set(true);
 		registrationController.Pagination();

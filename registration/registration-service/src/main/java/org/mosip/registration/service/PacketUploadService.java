@@ -45,10 +45,9 @@ public class PacketUploadService {
 	}
 
 	public Boolean updateStatus(List<File> uploadedPackets) {
-		List<String> fileNames = new ArrayList<>();
 		List<RegistrationTransaction> registrationTransactions = new ArrayList<>();
 		PacketUtil packetUtil = new PacketUtil();
-		fileNames = packetUtil.getPacketNames(uploadedPackets);
+		List<String> fileNames = packetUtil.getPacketNames(uploadedPackets);
 		for(String packetName: fileNames) {
 			updateRegStatus(packetName);
 		}

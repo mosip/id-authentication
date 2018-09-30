@@ -13,6 +13,7 @@ import org.mosip.registration.config.AppConfig;
 import org.mosip.registration.constants.RegistrationUIExceptionCode;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.exception.RegBaseUncheckedException;
+import org.mosip.registration.ui.constants.RegistrationUIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -38,25 +39,23 @@ public class RegistrationAppInitialization extends Application {
 	}
 
 	public static ApplicationContext applicationContext;
-	public static Scene scene;
-
-	LoginController loginController;
-
+	
 	/*
 	 * Load the initial screen by getting values form the database. Maintaining the
 	 * same Stage for all the scenes.
 	 */
-
+	public static Scene scene;
+	
 	@Override
 	public void start(Stage primaryStage) throws RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID,
-				"Login screen initilization " + new SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()));
+				"Login screen initilization " + new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
 		BaseController.stage = primaryStage;
 		primaryStage = BaseController.getStage();
 
-		loginController = applicationContext.getBean(LoginController.class);
+		LoginController loginController = applicationContext.getBean(LoginController.class);
 		String loginMode = loginController.loadInitialScreen();
 		String loginModeFXMLpath = null;
 		try {
@@ -88,7 +87,7 @@ public class RegistrationAppInitialization extends Application {
 
 		LOGGER.debug("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID,
-				"Login screen loaded" + new SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()));
+				"Login screen loaded" + new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
 	}
 
@@ -98,7 +97,7 @@ public class RegistrationAppInitialization extends Application {
 		launch(args);
 		LOGGER.debug("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID,
-				"Application Initilization" + new SimpleDateFormat("HH:mm:ss").format(System.currentTimeMillis()));
+				"Application Initilization" + new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
 	}
 }

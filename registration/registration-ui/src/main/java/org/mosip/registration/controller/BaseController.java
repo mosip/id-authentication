@@ -4,11 +4,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
-import org.mosip.registration.dto.UserDTO;
+import org.mosip.registration.constants.RegConstants;
+import org.mosip.registration.constants.RegistrationUIExceptionCode;
 import org.mosip.registration.context.SessionContext;
+import org.mosip.registration.dto.UserDTO;
+import org.mosip.registration.exception.RegBaseCheckedException;
+import org.mosip.registration.scheduler.SchedulerUtil;
 import org.mosip.registration.service.LoginServiceImpl;
-import org.mosip.registration.util.scheduler.SchedulerUtil;
+import org.mosip.registration.ui.constants.RegistrationUIConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -25,21 +30,21 @@ import javafx.stage.Stage;
 public class BaseController {
 
 	@Autowired
-	LoginServiceImpl loginServiceImpl;
+	private LoginServiceImpl loginServiceImpl;
 	
-	static UserDTO userDTO = new UserDTO();
+	public static final UserDTO userDTO = new UserDTO();
 	
 	@Value("${TIME_OUT_INTERVAL:30}")
-	long TIMEOUTINTERVAL;
+	private long timeoutInterval;
 
 	@Value("${IDEAL_TIME}")
-	long IDEALTIME;
+	private long idealTime;
 	
 	@Value("${REFRESHED_LOGIN_TIME}")
-	long REFRESHED_LOGIN_TIME;
+	private long refreshedLoginTime;
 
 	
-	public static Stage stage;
+	protected static Stage stage;
 
 	/**
 	 * Adding events to the stage
@@ -51,7 +56,6 @@ public class BaseController {
 			@Override
 			public void handle(Event event) {
 				// TODO Auto-generated method stub
-				//System.out.println("Each evnet notified in Base Controller " + event.getEventType());
 				SchedulerUtil.startTime = System.currentTimeMillis();
 			}
 		};
@@ -65,8 +69,10 @@ public class BaseController {
 			loader.setControllerFactory(RegistrationAppInitialization.applicationContext::getBean);
 			return loader.load();
 		} catch (IOException ioException) {
-			throw new RuntimeException(ioException);
+			//throw new RegBaseCheckedException(RegistrationUIExceptionCode.REG_UI_BASE_CNTRLR_IO_EXCEPTION, "Unable to load FXML", ioException);
+			ioException.printStackTrace();
 		}
+		return null;
 	}
 	
 	/**
@@ -129,24 +135,23 @@ public class BaseController {
 	}
 
 	protected void setSessionContext(String userId) {
-		HashMap<String, String> userDetail = loginServiceImpl.getUserDetail(userId);
+		Map<String, String> userDetail = loginServiceImpl.getUserDetail(userId);
 		
 		userDTO.setUsername(userDetail.get("name"));
 		userDTO.setUserId(userId);
-		userDTO.setCenterId(userDetail.get("centerId"));
-		userDTO.setCenterLocation(loginServiceImpl.getCenterName(userDetail.get("centerId")));
+		userDTO.setCenterId(userDetail.get(RegistrationUIConstants.CENTER_ID));
+		userDTO.setCenterLocation(loginServiceImpl.getCenterName(userDetail.get(RegistrationUIConstants.CENTER_ID)));
 		
 		SessionContext sessionContext = SessionContext.getInstance();
 		
 		sessionContext.setLoginTime(new Date());
-		sessionContext.setRefreshedLoginTime(REFRESHED_LOGIN_TIME);
-		sessionContext.setIdealTime(TIMEOUTINTERVAL);
-		sessionContext.setTimeoutInterval(IDEALTIME);
-		System.out.println("REFRESHED_LOGIN_TIME--@@@@@@@@@@@@@"+sessionContext.getRefreshedLoginTime());
+		sessionContext.setRefreshedLoginTime(refreshedLoginTime);
+		sessionContext.setIdealTime(timeoutInterval);
+		sessionContext.setTimeoutInterval(idealTime);
 		SessionContext.UserContext userContext = sessionContext.getUserContext();
 		userContext.setUserId(userId);
 		userContext.setName(userDetail.get("name"));
-		userContext.setRegistrationCenterDetailDTO(loginServiceImpl.getRegistrationCenterDetails(userDetail.get("centerId")));
+		userContext.setRegistrationCenterDetailDTO(loginServiceImpl.getRegistrationCenterDetails(userDetail.get(RegistrationUIConstants.CENTER_ID)));
 		userContext.setRoles(loginServiceImpl.getRoles(userId));
 	}
 

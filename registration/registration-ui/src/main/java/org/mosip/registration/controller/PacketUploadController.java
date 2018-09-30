@@ -89,12 +89,12 @@ public class PacketUploadController extends BaseController {
 			List<File> verifiedPackets = new ArrayList<>();
 			try {
 				verifiedPackets = handleUpload(packetdto);
-				if (verifiedPackets.size() > 0) {
+				if (!verifiedPackets.isEmpty()) {
 					generateAlert("INFO", AlertType.INFORMATION, "Packets Uploaded Successfully");
 					displayData(populateTableData(verifiedPackets));
 				}
-			} catch (RegBaseCheckedException e) {
-				generateAlert("Error", Alert.AlertType.ERROR, e.getErrorText().toString());
+			} catch (RegBaseCheckedException regBaseCheckedException) {
+				generateAlert("Error", Alert.AlertType.ERROR, regBaseCheckedException.getErrorText());
 			}
 		} else {
 			generateAlert("INFO", Alert.AlertType.INFORMATION, "UserName and Password Mismatch");

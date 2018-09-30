@@ -1,4 +1,4 @@
-package org.mosip.registration.util.scheduler;
+package org.mosip.registration.scheduler;
 
 import static org.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static org.mosip.registration.constants.RegConstants.APPLICATION_NAME;
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.mosip.kernel.logger.factory.MosipLogfactory;
-import org.mosip.registration.config.AuditFactory;
+import org.mosip.registration.audit.AuditFactory;
 import org.mosip.registration.context.SessionContext;
 import org.mosip.registration.controller.BaseController;
 import org.mosip.registration.controller.RegistrationAppInitialization;
@@ -109,8 +109,7 @@ public class SchedulerUtil {
 							LOGGER.debug("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 									"The time task alert is called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
-							alert();
-							if (res != null && res.isPresent()) {
+							if (res.isPresent()) {
 								if (res.get().getText().equals("OK")) {
 									startTime = System.currentTimeMillis();
 									alert.close();

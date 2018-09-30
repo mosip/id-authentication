@@ -1,6 +1,6 @@
 package org.mosip.registration.dto.json.metadata;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class PacketInfo {
 
@@ -10,7 +10,7 @@ public class PacketInfo {
 	private MetaData metaData;
 	private OSIData osiData;
 	private HashSequence hashSequence;
-	private HashMap<String, String> checkSumMap;
+	private Map<String, String> checkSumMap;
 
 	/**
 	 * @return the photograph
@@ -105,7 +105,7 @@ public class PacketInfo {
 	/**
 	 * @return the checkSumMap
 	 */
-	public HashMap<String, String> getCheckSumMap() {
+	public Map<String, String> getCheckSumMap() {
 		return checkSumMap;
 	}
 
@@ -113,7 +113,7 @@ public class PacketInfo {
 	 * @param checkSumMap
 	 *            the checkSumMap to set
 	 */
-	public void setCheckSumMap(HashMap<String, String> checkSumMap) {
+	public void setCheckSumMap(Map<String, String> checkSumMap) {
 		this.checkSumMap = checkSumMap;
 	}
 }

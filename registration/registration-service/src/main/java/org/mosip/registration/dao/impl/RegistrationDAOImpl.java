@@ -85,7 +85,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
 			registrationTxn.setTrnTypeCode(RegTranType.CREATED.getCode());
 			registrationTxn.setLangCode("ENG");
-			registrationTxn.setIsActive(new Boolean(true));
+			registrationTxn.setIsActive(true);
 			registrationTxn.setStatusCode(RegClientStatusCode.CREATED.getCode());
 			registrationTxn.setCrBy("mosip");
 			registrationTxn.setCrDtime(time);
@@ -121,7 +121,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		RegistrationTransaction registrationTxn = new RegistrationTransaction();
 		registrationTxn.setTrnTypeCode(RegTranType.UPDATED.getCode());
 		registrationTxn.setLangCode("ENG");
-		registrationTxn.setIsActive(new Boolean(true));
+		registrationTxn.setIsActive(true);
 		registrationTxn.setStatusCode(clientStatusCode);
 		registrationTxn.setStatusComment(statusComments);
 		registrationTxn.setCrBy(updBy);

@@ -1,6 +1,5 @@
 package org.mosip.registration.entity;
 
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -26,13 +25,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(schema="REG", name = "REGISTRATION")
-public class Registration implements Serializable {
-
-	/**
-	 * Generated serial version id
-	 */
-	private static final long serialVersionUID = 2163134932981912223L;
-	
+public class Registration {
 	@Id
 	@Column(name="ID", length=28, nullable=false, updatable=false)
 	private String id;
@@ -98,6 +91,6 @@ public class Registration implements Serializable {
 
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="REG_ID")
-	List<RegistrationTransaction> registrationTransaction;
+	private List<RegistrationTransaction> registrationTransaction;
 	
 }

@@ -44,7 +44,7 @@ public class RegistrationOfficerPacketController extends BaseController{
 	VelocityPDFGenerator velocityGenerator;
 	
 	
-	public void createPacket(ActionEvent event) throws RegBaseCheckedException, IOException, URISyntaxException{
+	public void createPacket(ActionEvent event) throws RegBaseCheckedException {
 		
 		try {
 			RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
@@ -62,7 +62,7 @@ public class RegistrationOfficerPacketController extends BaseController{
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
-		} catch (IOException | URISyntaxException e) {
+		} catch (RegBaseCheckedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

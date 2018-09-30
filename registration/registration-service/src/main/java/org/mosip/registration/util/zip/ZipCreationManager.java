@@ -171,11 +171,8 @@ public class ZipCreationManager {
 			final ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
 		List<FingerprintDetailsDTO> fingerprintDetailsDTOs = supervisorBio.getFingerprintDetailsDTO();
 
-		if (checkNotNull(fingerprintDetailsDTOs)) {
-			for (FingerprintDetailsDTO fingerPrint : fingerprintDetailsDTOs) {
-				writeFileToZip(fileName + IMAGE_TYPE, fingerPrint.getFingerPrint(), zipOutputStream);
-				break;
-			}
+		if (!fingerprintDetailsDTOs.isEmpty()) {
+				writeFileToZip(fileName + IMAGE_TYPE, fingerprintDetailsDTOs.get(0).getFingerPrint(), zipOutputStream);
 		}
 	}
 

@@ -9,9 +9,17 @@ package org.mosip.registration.constants;
  */
 public enum RegClientStatusCode {
 
-	CREATED("R"), CORRECTION("C"), UIN_UPDATE("U"), UIN_LOST("L"),
-	UPLOADED_SUCCESSFULLY("P"), META_INFO_SYN_SERVER("S"), DELETED("D"),
-	APPROVED("A"), REJECTED("I"), ON_HOLD("H"), PACKET_ERROR("E");
+	CREATED("R"), 
+	CORRECTION("C"), 
+	UIN_UPDATE("U"), 
+	UIN_LOST("L"),
+	UPLOADED_SUCCESSFULLY("P"), 
+	META_INFO_SYN_SERVER("S"), 
+	DELETED("D"),
+	APPROVED("A"), 
+	REJECTED("I"), 
+	ON_HOLD("H"), 
+	PACKET_ERROR("E");
 
 	/**
 	 * @param code
