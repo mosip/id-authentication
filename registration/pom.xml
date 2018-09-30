@@ -13,6 +13,8 @@
 	<description>Parent project of MOSIP Registration</description>
 
 	<properties>
+		<maven.jacoco.version>0.8.2</maven.jacoco.version>
+		<maven.sonar.version>3.5.0.1254</maven.sonar.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -209,51 +211,15 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.1.0</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-						<manifestEntries>
-							<Project-Name>${project.name}</Project-Name>
-							<Project-Version>${project.version}</Project-Version>
-							<Built-By>${user.name}</Built-By>
-							<Built-OS>${os.name}</Built-OS>
-							<Local-Build-Date>${maven.build.timestamp}</Local-Build-Date>
-							<Build-Number>${env.BUILD_NUMBER}</Build-Number>
-							<Build-Date>${env.BUILD_ID}</Build-Date>
-							<Build-URL>${env.BUILD_URL}</Build-URL>
-							<Build-Revision>${env.SVN_REVISION}</Build-Revision>
-							<SCM-Path>${scm.path}</SCM-Path>
-							<SCM-CommittedDate>${scm.committedDate}</SCM-CommittedDate>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<skip>false</skip>
-					<useFile>false</useFile>
-					<systemPropertyVariables>
-						<surefire.security.manager>java.lang.SecurityManager</surefire.security.manager>
-					</systemPropertyVariables>
-					<argLine>-Djava.security.properties=/tmp/java.security </argLine>
-					<excludes>
-						<exclude>**/*IntegrationTest.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.1</version>
+				<version>${maven.jacoco.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>**/*IntegrationTest.java</exclude>
+						<exclude> org/mosip/registration/controller/**</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -267,35 +233,31 @@
 							<goal>report</goal>
 						</goals>
 					</execution>
-					<execution>
-						<id>post-unit-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
 				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.sonarsource.scanner.maven</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.5.0.1254</version>
+				<version>${maven.sonar.version}</version>
 			</plugin>
 		</plugins>
 	</build>
 	<profiles>
-        <profile>
-            <id>sonar</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <!-- Optional URL to server. Default value is http://localhost:9000 -->
-                <sonar.host.url>
-                  http://13.67.91.2:9000
-                </sonar.host.url>
-            </properties>
-        </profile>
-     </profiles>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- Optional URL to server. Default value is http://localhost:9000 -->
+				<sonar.host.url>
+					http://13.67.91.2:9000
+				</sonar.host.url>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>
