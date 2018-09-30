@@ -7,7 +7,6 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class RegistrationUserPasswordID implements Serializable {
-
 	/**
 	 * 
 	 */

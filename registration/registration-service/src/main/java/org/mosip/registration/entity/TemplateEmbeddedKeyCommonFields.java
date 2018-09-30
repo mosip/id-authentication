@@ -4,21 +4,23 @@ import java.io.Serializable;
 
 import javax.persistence.Embeddable;
 
+
 /**
- * Composite Key for TemplateFileFormat entity
+ * Composite Key for TemplateType entity
  * 
  * @author Himaja Dhanyamraju
  * @since 1.0.0
  */
-@Embeddable
-public class TemplateFileFormatPK implements Serializable{
 
+@Embeddable
+public class TemplateEmbeddedKeyCommonFields implements Serializable {
 	/**
-	 * Auto-Generated Serial Version Id
+	 * 
 	 */
-	private static final long serialVersionUID = -2629307370834461628L;
-	private String code;
-	private String lang_code;
+	private static final long serialVersionUID = 1L;
+	
+	protected String code;
+	protected String lang_code;
 	
 	public String getCode() {
 		return code;
@@ -32,6 +34,4 @@ public class TemplateFileFormatPK implements Serializable{
 	public void setLang_code(String lang_code) {
 		this.lang_code = lang_code;
 	}
-	
-	
 }

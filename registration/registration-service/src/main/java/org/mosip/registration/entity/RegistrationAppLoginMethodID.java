@@ -7,11 +7,11 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class RegistrationAppLoginMethodID implements Serializable {
-
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	@Column(name = "app_id", length = 64, nullable = false, updatable = false)
 	private String appId;
 	@Column(name = "login_method", length = 64, nullable = false, updatable = false)

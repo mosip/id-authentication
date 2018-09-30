@@ -12,8 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 import lombok.Data;
 
 /**
@@ -25,7 +23,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(schema="REG", name = "REGISTRATION")
-public class Registration {
+public class Registration extends RegistrationCommonFields {
 	@Id
 	@Column(name="ID", length=28, nullable=false, updatable=false)
 	private String id;
@@ -73,18 +71,7 @@ public class Registration {
 	private String latestTrnStatusCode;
 	@Column(name="LATEST_REGTRN_DTIMES", nullable=true, updatable=true)
 	private OffsetDateTime latestRegTrnTimestamp;
-	@Column(name="IS_ACTIVE", nullable=false, updatable=true)
-	@Type(type= "true_false")
-	private Boolean isActive;
-	@Column(name="CR_BY", length=32, nullable=false, updatable=true)
-	private String crBy;
-	@Column(name="CR_DTIMES", nullable=false, updatable=true)
-	private OffsetDateTime crDtime;
-	@Column(name="UPD_BY", length=32, nullable=true, updatable=true)
-	private String updBy;
-	@Column(name="UPD_DTIMES", nullable=true, updatable=false)
-	private OffsetDateTime updDtimes;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "CR_BY", referencedColumnName = "Id",insertable=false,updatable=false)
 	private RegistrationUserDetail userdetail;

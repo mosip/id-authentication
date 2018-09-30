@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(schema="reg", name = "center")
-public class RegistrationCenter {
+public class RegistrationCenter extends RegistrationCommonFields {
 	@Id
 	@Column(name="id", length=64, nullable=false, updatable=false)
 	private String id;
@@ -44,17 +44,6 @@ public class RegistrationCenter {
 	private String pincode;
 	@Column(name="lang_code", length=3, nullable=false, updatable=false)
 	private String langCode;
-	@Column(name="is_active", nullable=false, updatable=false)
-	@Type(type= "true_false")
-	private boolean isActive;
-	@Column(name="cr_by", length=24, nullable=false, updatable=false)
-	private String crBy;
-	@Column(name="cr_dtimes", nullable=false, updatable=false)
-	private OffsetDateTime crDtimes;
-	@Column(name="upd_by", length=24, nullable=true, updatable=false)
-	private String updBy;
-	@Column(name="upd_dtimes", nullable=true, updatable=false)
-	private OffsetDateTime updDtimes;
 	@Column(name="is_deleted", nullable=true, updatable=false)
 	@Type(type= "true_false")
 	private boolean isDeleted;

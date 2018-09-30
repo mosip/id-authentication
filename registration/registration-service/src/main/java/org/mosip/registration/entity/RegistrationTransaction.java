@@ -1,7 +1,5 @@
 package org.mosip.registration.entity;
 
-import java.time.OffsetDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import lombok.Data;
 
@@ -23,7 +20,7 @@ import lombok.Data;
 @Entity
 @Table(schema="REG", name="REGISTRATION_TRANSACTION")
 @Data
-public class RegistrationTransaction {
+public class RegistrationTransaction extends RegistrationCommonFields {
 
 	@Id
 	@Column(name="ID", length=32, nullable=false, updatable=false)
@@ -44,16 +41,4 @@ public class RegistrationTransaction {
 	private String langCode;
 	@Column(name="STATUS_COMMENT", length=1024, nullable=true, updatable=true)
 	private String statusComment;
-	@Column(name="IS_ACTIVE", nullable=true, updatable=true)
-	@Type(type= "true_false")
-	private Boolean isActive;
-	@Column(name="CR_BY", length=32, nullable=false, updatable=true)
-	private String crBy;
-	@Column(name="CR_DTIMES", nullable=false, updatable=true)
-	private OffsetDateTime crDtime;
-	@Column(name="UPD_BY", length=32, nullable=true, updatable=true)
-	private String updBy;
-	@Column(name="UPD_DTIMES", nullable=true, updatable=false)
-	private OffsetDateTime updDtimes;
-	
 }

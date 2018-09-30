@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(schema="reg", name = "user_detail")
-public class RegistrationUserDetail {	
+public class RegistrationUserDetail extends RegistrationCommonFields {	
 	@Id
 	@Column(name="id", length=64, nullable=false, updatable=false)
 	private String id;
@@ -32,17 +32,7 @@ public class RegistrationUserDetail {
 	private OffsetDateTime lastLoginDtimes;
 	@Column(name="last_login_method", length=64, nullable=true, updatable=false)
 	private String lastLoginMethod;
-	@Column(name="is_active", nullable=false, updatable=false)
-	@Type(type= "true_false")
-	private boolean isActive;
-	@Column(name="cr_by", length=24, nullable=false, updatable=false)
-	private String crBy;
-	@Column(name="cr_dtimes", nullable=false, updatable=false)
-	private OffsetDateTime crDtimes;
-	@Column(name="upd_by", length=24, nullable=true, updatable=false)
-	private String updBy;
-	@Column(name="upd_dtimes", nullable=true, updatable=false)
-	private OffsetDateTime updDtimes;
+	
 	@Column(name="is_deleted", nullable=false, updatable=false)
 	@Type(type= "true_false")
 	private boolean isDeleted;
