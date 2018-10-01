@@ -17,6 +17,7 @@ import org.mosip.kernel.otpmanagerservice.exceptionhandler.MosipOtpInvalidArgume
  * validation.
  * 
  * @author Sagar Mahapatra
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */

@@ -4,11 +4,12 @@ package org.mosip.kernel.otpmanagerservice.constants;
  * This enum provides all the constants identified for OTP errors.
  * 
  * @author Sagar Mahapatra
+ * @author Ritesh Sinha
  * @version 1.0.0
  *
  */
 public enum OtpErrorConstants {
-	OTP_GEN_ILLEGAL_KEY_INPUT("KER-OTG-001","Key can't be empty, null, or length more than 4 and less than 255."),
+	OTP_GEN_ILLEGAL_KEY_INPUT("KER-OTG-001","Key can't be empty, null, and length should be in the range of 3-255."),
 	OTP_GEN_RESOURCE_NOT_FOUND("KER-OTG-002", "Required resource is not found. The properties file name may be entered wrong."),
 	OTP_VAL_INVALID_KEY_INPUT("KER-OTV-001","Key can't be empty or null."),
 	OTP_VAL_ILLEGAL_KEY_INPUT("KER-OTV-002","Length of key should be in the range of 3-255."),

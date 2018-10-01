@@ -3,6 +3,7 @@ package org.mosip.kernel.otpmanagerservice.dto;
 /**
  * The DTO class for OTP Generation response.
  * 
+ * @author Ritesh Sinha
  * @author Sagar Mahapatra
  * @since 1.0.0
  * 
