@@ -7,7 +7,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.mosip.kernel.core.spi.dataaccess.config.BaseDaoConfig;
-import org.mosip.kernel.dataaccess.constants.HibernatePersistenceConstants;
+import org.mosip.kernel.dataaccess.constant.HibernatePersistenceConstants;
 import org.mosip.kernel.dataaccess.repository.impl.HibernateRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

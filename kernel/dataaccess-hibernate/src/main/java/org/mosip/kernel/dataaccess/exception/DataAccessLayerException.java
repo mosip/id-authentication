@@ -1,7 +1,7 @@
 package org.mosip.kernel.dataaccess.exception;
 
 import org.mosip.kernel.core.exception.BaseUncheckedException;
-import org.mosip.kernel.dataaccess.constants.HibernateErrorCodes;
+import org.mosip.kernel.dataaccess.constant.HibernateErrorCodes;
 
 /**
  * Custom class for DataAccessLayerException

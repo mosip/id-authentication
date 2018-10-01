@@ -5,11 +5,11 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.mosip.kernel.uingenerator.constants.UinGeneratorConstants;
-import org.mosip.kernel.uingenerator.constants.UinGeneratorErrorCodes;
-import org.mosip.kernel.uingenerator.constants.UinGeneratorStatus;
+import org.mosip.kernel.uingenerator.constant.UinGeneratorConstants;
+import org.mosip.kernel.uingenerator.constant.UinGeneratorErrorCodes;
+import org.mosip.kernel.uingenerator.constant.UinGeneratorStatus;
+import org.mosip.kernel.uingenerator.entity.UinEntity;
 import org.mosip.kernel.uingenerator.exception.UinGenerationJobException;
-import org.mosip.kernel.uingenerator.model.UinBean;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
@@ -174,7 +174,7 @@ public class UinBatchConfig extends DefaultBatchConfigurer {
 	 * @return The uin generator step
 	 */
 	private Step uinGeneratorStep() {
-		return stepBuilderFactory.get(UinGeneratorConstants.UIN_GENERATOR_STEP).<String, List<UinBean>>chunk(1)
+		return stepBuilderFactory.get(UinGeneratorConstants.UIN_GENERATOR_STEP).<String, List<UinEntity>>chunk(1)
 				.reader(reader()).processor(uinGenProcessor).writer(uinGenWriter).build();
 	}
 

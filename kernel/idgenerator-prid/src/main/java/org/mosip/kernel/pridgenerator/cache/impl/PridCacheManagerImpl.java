@@ -7,8 +7,8 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 
 import org.mosip.kernel.pridgenerator.cache.PridCacheManager;
-import org.mosip.kernel.pridgenerator.dao.PridGenRepository;
-import org.mosip.kernel.pridgenerator.model.Prid;
+import org.mosip.kernel.pridgenerator.entity.Prid;
+import org.mosip.kernel.pridgenerator.repository.PridRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PridCacheManagerImpl implements PridCacheManager {
 	@Autowired
-	private PridGenRepository pridGenRepository;
+	private PridRepository pridGenRepository;
 	Set<String> prids = new HashSet<>();
 
 

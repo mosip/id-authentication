@@ -1,6 +1,6 @@
 package org.mosip.kernel.vidgenerator.cache;
 
-import org.mosip.kernel.vidgenerator.model.Vid;
+import org.mosip.kernel.vidgenerator.entity.Vid;
 
 /**
  * @author M1043226

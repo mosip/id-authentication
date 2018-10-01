@@ -9,10 +9,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mosip.kernel.uingenerator.dto.UinResponseDto;
+import org.mosip.kernel.uingenerator.entity.UinEntity;
 import org.mosip.kernel.uingenerator.exception.UinGenerationJobException;
 import org.mosip.kernel.uingenerator.exception.UinNotFoundException;
-import org.mosip.kernel.uingenerator.model.UinBean;
-import org.mosip.kernel.uingenerator.repository.UinDao;
+import org.mosip.kernel.uingenerator.repository.UinRepository;
 import org.mosip.kernel.uingenerator.service.impl.UinGeneratorServiceImpl;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -24,7 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 public class UinGeneratorServiceTest {
 	@Mock
-	private UinDao uinDao;
+	private UinRepository uinRepository;
 
 	@InjectMocks
 	private UinGeneratorServiceImpl uinGeneratorServiceImpl;
@@ -32,14 +32,14 @@ public class UinGeneratorServiceTest {
 	@Test
 	public void auditServiceTest() {
 
-		UinBean uinBean = new UinBean();
+		UinEntity uinBean = new UinEntity();
 		uinBean.setUin("1029384756");
 		uinBean.setUsed(false);
 		UinResponseDto uinResponseDto = new UinResponseDto();
 		uinResponseDto.setUin(uinBean.getUin());
 
-		when(uinDao.findUnusedUin()).thenReturn(uinBean);
-		when(uinDao.save(uinBean)).thenReturn(uinBean);
+		when(uinRepository.findUnusedUin()).thenReturn(uinBean);
+		when(uinRepository.save(uinBean)).thenReturn(uinBean);
 
 		assertThat(uinGeneratorServiceImpl.getUin(), is(uinResponseDto));
 	}
@@ -47,9 +47,9 @@ public class UinGeneratorServiceTest {
 	@Test(expected = UinNotFoundException.class)
 	public void auditServiceExceptionTest() {
 
-		UinBean uinBean = null;
+		UinEntity uinBean = null;
 
-		when(uinDao.findUnusedUin()).thenReturn(uinBean);
+		when(uinRepository.findUnusedUin()).thenReturn(uinBean);
 		uinGeneratorServiceImpl.getUin();
 
 	}
@@ -57,7 +57,7 @@ public class UinGeneratorServiceTest {
 	@Test(expected = UinGenerationJobException.class)
 	public void auditServiceBatchExceptionTest() {
 
-		when(uinDao.findUnusedUin()).thenThrow(new UinGenerationJobException("code", "message"));
+		when(uinRepository.findUnusedUin()).thenThrow(new UinGenerationJobException("code", "message"));
 		uinGeneratorServiceImpl.getUin();
 
 	}

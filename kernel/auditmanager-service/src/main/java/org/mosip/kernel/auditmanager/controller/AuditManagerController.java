@@ -3,7 +3,7 @@ package org.mosip.kernel.auditmanager.controller;
 import javax.validation.Valid;
 
 import org.mosip.kernel.auditmanager.dto.AuditResponseDto;
-import org.mosip.kernel.auditmanager.model.Audit;
+import org.mosip.kernel.auditmanager.entity.Audit;
 import org.mosip.kernel.auditmanager.request.AuditRequestDto;
 import org.mosip.kernel.auditmanager.service.AuditManagerService;
 import org.springframework.beans.factory.annotation.Autowired;

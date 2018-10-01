@@ -5,14 +5,14 @@ import java.util.ResourceBundle;
 
 import org.mosip.kernel.core.spi.otpmanager.OtpGenerator;
 import org.mosip.kernel.otpmanagerapi.generator.OtpGeneratorImpl;
-import org.mosip.kernel.otpmanagerservice.constants.OtpExpiryConstants;
-import org.mosip.kernel.otpmanagerservice.constants.OtpStatusConstants;
+import org.mosip.kernel.otpmanagerservice.constant.OtpExpiryConstants;
+import org.mosip.kernel.otpmanagerservice.constant.OtpStatusConstants;
 import org.mosip.kernel.otpmanagerservice.dto.OtpGeneratorRequestDto;
 import org.mosip.kernel.otpmanagerservice.dto.OtpGeneratorResponseDto;
 import org.mosip.kernel.otpmanagerservice.entity.OtpEntity;
 import org.mosip.kernel.otpmanagerservice.repository.OtpRepository;
 import org.mosip.kernel.otpmanagerservice.service.OtpGeneratorService;
-import org.mosip.kernel.otpmanagerservice.utils.OtpManagerUtils;
+import org.mosip.kernel.otpmanagerservice.util.OtpManagerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

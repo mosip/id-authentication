@@ -8,7 +8,7 @@ import static org.mockito.Mockito.mock;
 import org.junit.Test;
 
 import org.mosip.kernel.core.spi.otpmanager.OtpGenerator;
-import org.mosip.kernel.otpmanagerapi.constants.OtpErrorConstants;
+import org.mosip.kernel.otpmanagerapi.constant.OtpErrorConstants;
 import org.mosip.kernel.otpmanagerapi.exception.MosipResourceNotFoundException;
 import org.mosip.kernel.otpmanagerapi.generator.OtpGeneratorImpl;
 

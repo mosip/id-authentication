@@ -1,7 +1,7 @@
 package org.mosip.kernel.httppacketuploader.exception;
 
 import org.mosip.kernel.core.exception.BaseUncheckedException;
-import org.mosip.kernel.httppacketuploader.constants.PacketUploaderExceptionConstants;
+import org.mosip.kernel.httppacketuploader.constant.PacketUploaderExceptionConstants;
 /**
  * Exception to be thrown when a io exception occur 
  * 

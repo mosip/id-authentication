@@ -1,10 +1,10 @@
 package org.mosip.kernel.auditmanager.handler;
 
 import org.modelmapper.ModelMapper;
-import org.mosip.kernel.auditmanager.model.Audit;
+import org.mosip.kernel.auditmanager.entity.Audit;
 import org.mosip.kernel.auditmanager.repository.AuditRepository;
 import org.mosip.kernel.auditmanager.request.AuditRequestDto;
-import org.mosip.kernel.auditmanager.utils.AuditUtils;
+import org.mosip.kernel.auditmanager.util.AuditUtils;
 import org.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

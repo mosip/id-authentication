@@ -6,9 +6,9 @@ import java.util.ResourceBundle;
 import org.kamranzafar.otp.provider.TOTPProvider;
 
 import org.mosip.kernel.core.spi.otpmanager.OtpGenerator;
-import org.mosip.kernel.otpmanagerapi.constants.OtpCryptoConstants;
-import org.mosip.kernel.otpmanagerapi.constants.OtpErrorConstants;
-import org.mosip.kernel.otpmanagerapi.constants.OtpPropertyConstants;
+import org.mosip.kernel.otpmanagerapi.constant.OtpCryptoConstants;
+import org.mosip.kernel.otpmanagerapi.constant.OtpErrorConstants;
+import org.mosip.kernel.otpmanagerapi.constant.OtpPropertyConstants;
 import org.mosip.kernel.otpmanagerapi.exception.MosipResourceNotFoundException;
 
 /**

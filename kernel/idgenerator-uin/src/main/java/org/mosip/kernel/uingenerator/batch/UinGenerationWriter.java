@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
 import org.hibernate.Session;
-import org.mosip.kernel.uingenerator.model.UinBean;
+import org.mosip.kernel.uingenerator.entity.UinEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class UinGenerationWriter implements ItemWriter<List<UinBean>> {
+public class UinGenerationWriter implements ItemWriter<List<UinEntity>> {
 
 	/**
 	 * The Logger instance
@@ -45,7 +45,7 @@ public class UinGenerationWriter implements ItemWriter<List<UinBean>> {
 	 * @see org.springframework.batch.item.ItemWriter#write(java.util.List)
 	 */
 	@Override
-	public void write(List<? extends List<UinBean>> uins) {
+	public void write(List<? extends List<UinEntity>> uins) {
 		setSession();
 		LOGGER.info("Persisting generated uins in database");
 
@@ -59,7 +59,7 @@ public class UinGenerationWriter implements ItemWriter<List<UinBean>> {
 	 * 
 	 * @param item
 	 */
-	private void persistUin(UinBean item) {
+	private void persistUin(UinEntity item) {
 		Session currentSession = getSession();
 		if (!currentSession.getTransaction().isActive()) {
 			currentSession.getTransaction().begin();

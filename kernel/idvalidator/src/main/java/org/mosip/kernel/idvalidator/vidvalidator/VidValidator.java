@@ -6,8 +6,8 @@ package org.mosip.kernel.idvalidator.vidvalidator;
 import java.util.regex.Pattern;
 
 import org.mosip.kernel.core.spi.idvalidator.MosipIdValidator;
-import org.mosip.kernel.core.utils.MosipIdChecksum;
-import org.mosip.kernel.core.utils.MosipIdFilter;
+import org.mosip.kernel.core.util.ChecksumUtils;
+import org.mosip.kernel.core.util.IdFilterUtils;
 import org.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
 import org.mosip.kernel.idvalidator.vidvalidator.constants.MosipVidExceptionCodeConstants;
 
@@ -104,7 +104,7 @@ public class VidValidator implements MosipIdValidator<String> {
 		 * The VID should not have repeated block of numbers for more than 2 digits
 		 * 
 		 */
-		if (!MosipIdFilter.isValidId(id)) {
+		if (!IdFilterUtils.isValidId(id)) {
 			throw new MosipInvalidIDException(
 					MosipVidExceptionCodeConstants.VID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
 					MosipVidExceptionCodeConstants.VID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
@@ -116,7 +116,7 @@ public class VidValidator implements MosipIdValidator<String> {
 		 * verifying the checksum
 		 * 
 		 */
-		if (!MosipIdChecksum.validateChecksum(id)) {
+		if (!ChecksumUtils.validateChecksum(id)) {
 			throw new MosipInvalidIDException(MosipVidExceptionCodeConstants.VID_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
 					MosipVidExceptionCodeConstants.VID_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
 		}

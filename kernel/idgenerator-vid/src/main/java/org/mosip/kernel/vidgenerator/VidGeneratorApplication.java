@@ -17,7 +17,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class VidGeneratorApplication implements CommandLineRunner {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(VidGeneratorApplication.class);
 	@Autowired
 	VidGenerator vidGenerator;
 
@@ -27,6 +26,6 @@ public class VidGeneratorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		LOGGER.info("\n\n Generated VID : " + vidGenerator.generateId("890789978978") + "\n\n");
+		System.out.println("\n\n Generated VID : " + vidGenerator.generateId("890789978978") + "\n\n");
 	}
 }

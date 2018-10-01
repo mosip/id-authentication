@@ -4,8 +4,8 @@ package org.mosip.kernel.idvalidator.pridvalidator;
 import java.util.regex.Pattern;
 
 import org.mosip.kernel.core.spi.idvalidator.MosipIdValidator;
-import org.mosip.kernel.core.utils.MosipIdChecksum;
-import org.mosip.kernel.core.utils.MosipIdFilter;
+import org.mosip.kernel.core.util.ChecksumUtils;
+import org.mosip.kernel.core.util.IdFilterUtils;
 import org.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
 import org.mosip.kernel.idvalidator.pridvalidator.constants.MosipPridExceptionConstants;
 
@@ -102,7 +102,7 @@ public class PridValidator implements MosipIdValidator<String> {
 		 * 
 		 */
 
-		if (!MosipIdFilter.isValidId(id)) {
+		if (!IdFilterUtils.isValidId(id)) {
 			throw new MosipInvalidIDException(
 					MosipPridExceptionConstants.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
 					MosipPridExceptionConstants.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
@@ -115,7 +115,7 @@ public class PridValidator implements MosipIdValidator<String> {
 		 * 
 		 */
 
-		if (!MosipIdChecksum.validateChecksum(id)) {
+		if (!ChecksumUtils.validateChecksum(id)) {
 			throw new MosipInvalidIDException(MosipPridExceptionConstants.PRID_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
 					MosipPridExceptionConstants.PRID_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
 		}

@@ -3,7 +3,7 @@
  */
 package org.mosip.kernel.auditmanager.repository;
 
-import org.mosip.kernel.auditmanager.model.Audit;
+import org.mosip.kernel.auditmanager.entity.Audit;
 import org.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 
 /**

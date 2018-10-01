@@ -1,7 +1,7 @@
 package org.mosip.kernel.packetserver.exception;
 
 import org.mosip.kernel.core.exception.BaseUncheckedException;
-import org.mosip.kernel.packetserver.constants.PacketServerExceptionConstants;
+import org.mosip.kernel.packetserver.constant.PacketServerExceptionConstants;
 
 /**
  * Exception to be thrown when a server goes to illegal state

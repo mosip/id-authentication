@@ -1,12 +1,12 @@
 package org.mosip.kernel.sftppacketuploader.gateway;
 
 import org.mosip.kernel.sftppacketuploader.channel.SftpChannel;
-import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderConfiguration;
-import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderConstants;
-import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderExceptionConstants;
-import org.mosip.kernel.sftppacketuploader.exceptions.MosipConnectionException;
-import org.mosip.kernel.sftppacketuploader.exceptions.MosipNoSessionException;
-import org.mosip.kernel.sftppacketuploader.exceptions.MosipSFTPException;
+import org.mosip.kernel.sftppacketuploader.constant.PacketUploaderConfiguration;
+import org.mosip.kernel.sftppacketuploader.constant.PacketUploaderConstants;
+import org.mosip.kernel.sftppacketuploader.constant.PacketUploaderExceptionConstants;
+import org.mosip.kernel.sftppacketuploader.exception.MosipConnectionException;
+import org.mosip.kernel.sftppacketuploader.exception.MosipNoSessionException;
+import org.mosip.kernel.sftppacketuploader.exception.MosipSFTPException;
 import org.mosip.kernel.sftppacketuploader.utils.PacketUploaderUtils;
 
 import com.jcraft.jsch.Channel;

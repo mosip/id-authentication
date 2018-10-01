@@ -8,7 +8,7 @@
 package org.mosip.kernel.logger.exception;
 
 import org.mosip.kernel.core.exception.BaseUncheckedException;
-import org.mosip.kernel.logger.constants.LogExeptionCodeConstants;
+import org.mosip.kernel.logger.constant.LogExeptionCodeConstants;
 
 /**
  * Exception to be thrown when date format in filename pattern is wrong

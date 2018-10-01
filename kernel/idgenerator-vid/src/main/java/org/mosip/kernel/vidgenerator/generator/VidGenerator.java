@@ -8,15 +8,15 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.mosip.kernel.core.spi.idgenerator.MosipIdGenerator;
-import org.mosip.kernel.core.utils.MosipIdChecksum;
-import org.mosip.kernel.core.utils.MosipIdFilter;
+import org.mosip.kernel.core.util.ChecksumUtils;
+import org.mosip.kernel.core.util.IdFilterUtils;
 import org.mosip.kernel.vidgenerator.cache.VidCacheManager;
-import org.mosip.kernel.vidgenerator.constants.VidErrorCodes;
-import org.mosip.kernel.vidgenerator.constants.VidGeneratorConstants;
-import org.mosip.kernel.vidgenerator.dao.VidDao;
+import org.mosip.kernel.vidgenerator.constant.VidErrorCodes;
+import org.mosip.kernel.vidgenerator.constant.VidGeneratorConstants;
+import org.mosip.kernel.vidgenerator.entity.Vid;
 import org.mosip.kernel.vidgenerator.exception.InValidUinException;
 import org.mosip.kernel.vidgenerator.exception.VidGenerationFailedException;
-import org.mosip.kernel.vidgenerator.model.Vid;
+import org.mosip.kernel.vidgenerator.repository.VidRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class VidGenerator implements MosipIdGenerator<String> {
 	@Autowired
-	VidDao vidDao;
+	VidRepository vidRepository;
 	@Autowired
 	VidCacheManager vidCacheManager;
 	/**
@@ -91,7 +91,7 @@ public class VidGenerator implements MosipIdGenerator<String> {
 			existingVId.setId(generatedVid);
 			existingVId.setCreatedAt(currentTimestamp);
 			try {
-				vidDao.save(existingVId);
+				vidRepository.save(existingVId);
 				vidCacheManager.saveOrUpdate(existingVId);
 			} catch (Exception e) {
 				throw new VidGenerationFailedException(VidErrorCodes.VID_GENERATION_FAILED.getErrorCode(),
@@ -105,7 +105,7 @@ public class VidGenerator implements MosipIdGenerator<String> {
 			newVid.setId(generatedVid);
 			newVid.setCreatedAt(currentTimestamp);
 			try {
-				vidDao.save(newVid);
+				vidRepository.save(newVid);
 				vidCacheManager.saveOrUpdate(newVid);
 			} catch (Exception e) {
 				throw new VidGenerationFailedException(VidErrorCodes.VID_GENERATION_FAILED.getErrorCode(),
@@ -138,7 +138,7 @@ public class VidGenerator implements MosipIdGenerator<String> {
 
 	private String generateVid() {
 		String generatedVid = generateRandomId(generatedIdLength, lowerBound, upperBound);
-		while (!MosipIdFilter.isValidId(generatedVid)) {
+		while (!IdFilterUtils.isValidId(generatedVid)) {
 			generatedVid = generateVid();
 		}
 		return generatedVid;
@@ -157,7 +157,7 @@ public class VidGenerator implements MosipIdGenerator<String> {
 	 */
 	private String generateRandomId(int generatedIdLength, long lowerBound, long upperBound) {
 		Long generatedID = RANDOM_DATA_GENERATOR.nextSecureLong(lowerBound, upperBound);
-		String verhoeffDigit = MosipIdChecksum.generateChecksumDigit(String.valueOf(generatedID));
+		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(String.valueOf(generatedID));
 		return appendChecksum(generatedIdLength, generatedID, verhoeffDigit);
 	}
 

@@ -3,8 +3,8 @@ package org.mosip.kernel.idvalidator.uinvalidator;
 import java.util.regex.Pattern;
 
 import org.mosip.kernel.core.spi.idvalidator.MosipIdValidator;
-import org.mosip.kernel.core.utils.MosipIdChecksum;
-import org.mosip.kernel.core.utils.MosipIdFilter;
+import org.mosip.kernel.core.util.ChecksumUtils;
+import org.mosip.kernel.core.util.IdFilterUtils;
 import org.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
 import org.mosip.kernel.idvalidator.uinvalidator.constants.MosipIDExceptionCodeConstants;
 
@@ -104,7 +104,7 @@ public class UinValidator implements MosipIdValidator<String> {
 		 * The UIN should not have repeated block of numbers for more than 2 digits
 		 * 
 		 */
-		if (MosipIdFilter.isValidId(id)) {
+		if (IdFilterUtils.isValidId(id)) {
 
 			throw new MosipInvalidIDException(
 					MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
@@ -119,7 +119,7 @@ public class UinValidator implements MosipIdValidator<String> {
 		 * Validate the UIN by verifying the checksum
 		 * 
 		 */
-		if (!MosipIdChecksum.validateChecksum(id)) {
+		if (!ChecksumUtils.validateChecksum(id)) {
 			throw new MosipInvalidIDException(MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
 					MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
 		}

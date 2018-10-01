@@ -16,7 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class PridGeneratorApplication implements CommandLineRunner {
-	private static final Logger LOGGER = LoggerFactory.getLogger(PridGeneratorApplication.class);
+
 	@Autowired
 	PridGenerator pridGenerator;
 
@@ -26,6 +26,6 @@ public class PridGeneratorApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		LOGGER.info("\n\n Generated PRID : " + pridGenerator.generateId() + "\n\n");
+		System.out.println("\n\n Generated PRID : " + pridGenerator.generateId() + "\n\n");
 	}
 }

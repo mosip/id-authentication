@@ -8,13 +8,13 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 import org.mosip.kernel.httppacketuploader.config.PacketFileStorageProperties;
-import org.mosip.kernel.httppacketuploader.constants.PacketUploaderExceptionConstants;
+import org.mosip.kernel.httppacketuploader.constant.PacketUploaderExceptionConstants;
 import org.mosip.kernel.httppacketuploader.dto.PacketUploaderResponceDTO;
 import org.mosip.kernel.httppacketuploader.exception.MosipDirectoryNotEmpty;
 import org.mosip.kernel.httppacketuploader.exception.MosipIOException;
 import org.mosip.kernel.httppacketuploader.exception.MosipPacketLocationSecurity;
 import org.mosip.kernel.httppacketuploader.service.PacketUploaderService;
-import org.mosip.kernel.httppacketuploader.utils.PacketUploaderUtils;
+import org.mosip.kernel.httppacketuploader.util.PacketUploaderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

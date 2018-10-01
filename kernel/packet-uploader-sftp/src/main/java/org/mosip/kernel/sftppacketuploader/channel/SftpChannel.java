@@ -1,6 +1,6 @@
 package org.mosip.kernel.sftppacketuploader.channel;
 
-import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderConfiguration;
+import org.mosip.kernel.sftppacketuploader.constant.PacketUploaderConfiguration;
 
 import com.jcraft.jsch.ChannelSftp;
 

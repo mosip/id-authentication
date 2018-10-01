@@ -1,6 +1,6 @@
 package org.mosip.kernel.otpmanagerservice.controller;
 
-import org.mosip.kernel.otpmanagerservice.constants.OtpStatusConstants;
+import org.mosip.kernel.otpmanagerservice.constant.OtpStatusConstants;
 import org.mosip.kernel.otpmanagerservice.dto.OtpValidatorResponseDto;
 import org.mosip.kernel.otpmanagerservice.service.OtpValidatorService;
 

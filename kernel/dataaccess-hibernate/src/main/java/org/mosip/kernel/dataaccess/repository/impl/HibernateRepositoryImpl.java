@@ -12,8 +12,8 @@ import javax.persistence.criteria.CriteriaQuery;
 
 import org.hibernate.HibernateException;
 import org.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
-import org.mosip.kernel.dataaccess.constants.HibernateErrorCodes;
-import org.mosip.kernel.dataaccess.constants.HibernatePersistenceConstants;
+import org.mosip.kernel.dataaccess.constant.HibernateErrorCodes;
+import org.mosip.kernel.dataaccess.constant.HibernatePersistenceConstants;
 import org.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;

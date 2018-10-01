@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.mosip.kernel.otpmanagerservice.constants.OtpStatusConstants;
+import org.mosip.kernel.otpmanagerservice.constant.OtpStatusConstants;
 
 /**
  * The entity class for OTP.

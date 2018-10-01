@@ -1,7 +1,7 @@
 package org.mosip.kernel.uingenerator.batch;
 
-import org.mosip.kernel.uingenerator.constants.UinGeneratorConstants;
-import org.mosip.kernel.uingenerator.repository.UinDao;
+import org.mosip.kernel.uingenerator.constant.UinGeneratorConstants;
+import org.mosip.kernel.uingenerator.repository.UinRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -28,7 +28,7 @@ public class UinCountTasklet implements Tasklet {
 	 * Field for {@link #uinDao}
 	 */
 	@Autowired
-	private UinDao uinDao;
+	private UinRepository uinDao;
 
 	/**
 	 * Long field for uin threshold cocunt

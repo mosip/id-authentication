@@ -12,12 +12,12 @@
 
 package org.mosip.kernel.logger.impl;
 
-import org.mosip.kernel.core.spi.logging.MosipLogger;
-import org.mosip.kernel.logger.appenders.MosipConsoleAppender;
-import org.mosip.kernel.logger.appenders.MosipFileAppender;
-import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
-import org.mosip.kernel.logger.constants.LogExeptionCodeConstants;
-import org.mosip.kernel.logger.constants.MosipConfigurationDefaults;
+import org.mosip.kernel.core.spi.logger.MosipLogger;
+import org.mosip.kernel.logger.appender.MosipConsoleAppender;
+import org.mosip.kernel.logger.appender.MosipFileAppender;
+import org.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import org.mosip.kernel.logger.constant.LogExeptionCodeConstants;
+import org.mosip.kernel.logger.constant.MosipConfigurationDefaults;
 import org.mosip.kernel.logger.exception.ClassNameNotFoundException;
 import org.mosip.kernel.logger.exception.EmptyPatternException;
 import org.mosip.kernel.logger.exception.FileNameNotProvided;

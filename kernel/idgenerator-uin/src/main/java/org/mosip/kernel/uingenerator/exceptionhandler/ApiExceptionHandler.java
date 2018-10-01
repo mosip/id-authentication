@@ -1,6 +1,6 @@
 package org.mosip.kernel.uingenerator.exceptionhandler;
 
-import org.mosip.kernel.uingenerator.constants.UinGeneratorErrorCodes;
+import org.mosip.kernel.uingenerator.constant.UinGeneratorErrorCodes;
 import org.mosip.kernel.uingenerator.exception.UinNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

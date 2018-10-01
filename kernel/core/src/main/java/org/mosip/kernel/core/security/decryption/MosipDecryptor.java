@@ -16,7 +16,7 @@ import org.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import org.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import org.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import org.mosip.kernel.core.security.exception.MosipNoSuchAlgorithmException;
-import org.mosip.kernel.core.security.securityutil.SecurityUtil;
+import org.mosip.kernel.core.security.util.SecurityUtil;
 
 /**
  * Factory class for Mosip Decryptor

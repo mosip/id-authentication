@@ -6,10 +6,10 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.mosip.kernel.core.spi.idgenerator.MosipIdGenerator;
-import org.mosip.kernel.core.utils.MosipIdChecksum;
-import org.mosip.kernel.core.utils.MosipIdFilter;
-import org.mosip.kernel.uingenerator.constants.UinGeneratorConstants;
-import org.mosip.kernel.uingenerator.model.UinBean;
+import org.mosip.kernel.core.util.ChecksumUtils;
+import org.mosip.kernel.core.util.IdFilterUtils;
+import org.mosip.kernel.uingenerator.constant.UinGeneratorConstants;
+import org.mosip.kernel.uingenerator.entity.UinEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class UinGenerator implements MosipIdGenerator<Set<UinBean>> {
+public class UinGenerator implements MosipIdGenerator<Set<UinEntity>> {
 
 	/**
 	 * The logger instance
@@ -61,18 +61,18 @@ public class UinGenerator implements MosipIdGenerator<Set<UinBean>> {
 	 * @see org.mosip.kernel.core.spi.idgenerator.MosipIdGenerator#generateId()
 	 */
 	@Override
-	public Set<UinBean> generateId() {
+	public Set<UinEntity> generateId() {
 
 		int generatedIdLength = uinLength - 1;
-		Set<UinBean> uins = new HashSet<>();
+		Set<UinEntity> uins = new HashSet<>();
 		long upperBound = Long.parseLong(StringUtils.repeat(UinGeneratorConstants.NINE, generatedIdLength));
 		long lowerBound = Long.parseLong(
 				UinGeneratorConstants.TWO + StringUtils.repeat(UinGeneratorConstants.ZERO, generatedIdLength - 1));
 		LOGGER.info("Generating {} uins ", uinsCount);
 		while (uins.size() < uinsCount) {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);
-			if (MosipIdFilter.isValidId(generatedUIN)) {
-				UinBean uinBean = new UinBean(generatedUIN, false);
+			if (IdFilterUtils.isValidId(generatedUIN)) {
+				UinEntity uinBean = new UinEntity(generatedUIN, false);
 				uins.add(uinBean);
 			}
 		}
@@ -93,7 +93,7 @@ public class UinGenerator implements MosipIdGenerator<Set<UinBean>> {
 	 */
 	private String generateSingleId(int generatedIdLength, long lowerBound, long upperBound) {
 		Long generatedID = RANDOM_DATA_GENERATOR.nextSecureLong(lowerBound, upperBound);
-		String verhoeffDigit = MosipIdChecksum.generateChecksumDigit(String.valueOf(generatedID));
+		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(String.valueOf(generatedID));
 		return appendChecksum(generatedIdLength, generatedID, verhoeffDigit);
 	}
 
@@ -115,7 +115,7 @@ public class UinGenerator implements MosipIdGenerator<Set<UinBean>> {
 	}
 
 	@Override
-	public Set<UinBean> generateId(Set<UinBean> uin) {
+	public Set<UinEntity> generateId(Set<UinEntity> uin) {
 		throw new UnsupportedOperationException();
 	}
 }

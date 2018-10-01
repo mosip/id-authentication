@@ -1,6 +1,6 @@
 package org.mosip.kernel.httppacketuploader.exceptionhandler;
 
-import org.mosip.kernel.httppacketuploader.constants.PacketUploaderExceptionConstants;
+import org.mosip.kernel.httppacketuploader.constant.PacketUploaderExceptionConstants;
 import org.mosip.kernel.httppacketuploader.exception.MosipDirectoryNotEmpty;
 import org.mosip.kernel.httppacketuploader.exception.MosipIOException;
 import org.mosip.kernel.httppacketuploader.exception.MosipInvalidFileName;

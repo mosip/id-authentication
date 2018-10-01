@@ -12,15 +12,15 @@ package org.mosip.kernel.logger.factory;
 
 import java.io.File;
 
-import org.mosip.kernel.core.spi.logging.MosipLogger;
-import org.mosip.kernel.logger.appenders.MosipConsoleAppender;
-import org.mosip.kernel.logger.appenders.MosipFileAppender;
-import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
-import org.mosip.kernel.logger.constants.LogExeptionCodeConstants;
-import org.mosip.kernel.logger.constants.MosipLoggerMethod;
+import org.mosip.kernel.core.spi.logger.MosipLogger;
+import org.mosip.kernel.logger.appender.MosipConsoleAppender;
+import org.mosip.kernel.logger.appender.MosipFileAppender;
+import org.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import org.mosip.kernel.logger.constant.LogExeptionCodeConstants;
+import org.mosip.kernel.logger.constant.MosipLoggerMethod;
 import org.mosip.kernel.logger.exception.ImplementationNotFound;
 import org.mosip.kernel.logger.impl.MosipLogback;
-import org.mosip.kernel.logger.utils.LoggerUtils;
+import org.mosip.kernel.logger.util.LoggerUtils;
 
 /**
  * Factory class for mosip

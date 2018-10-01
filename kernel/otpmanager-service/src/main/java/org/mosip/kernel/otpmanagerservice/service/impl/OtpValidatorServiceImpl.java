@@ -7,17 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.mosip.kernel.otpmanagerservice.constants.OtpErrorConstants;
-import org.mosip.kernel.otpmanagerservice.constants.OtpExpiryConstants;
-import org.mosip.kernel.otpmanagerservice.constants.OtpStatusConstants;
-import org.mosip.kernel.otpmanagerservice.constants.SqlQueryConstants;
+import org.mosip.kernel.otpmanagerservice.constant.OtpErrorConstants;
+import org.mosip.kernel.otpmanagerservice.constant.OtpExpiryConstants;
+import org.mosip.kernel.otpmanagerservice.constant.OtpStatusConstants;
+import org.mosip.kernel.otpmanagerservice.constant.SqlQueryConstants;
 import org.mosip.kernel.otpmanagerservice.entity.OtpEntity;
 import org.mosip.kernel.otpmanagerservice.exceptionhandler.MosipErrors;
 import org.mosip.kernel.otpmanagerservice.exceptionhandler.MosipOtpInvalidArgumentExceptionHandler;
 import org.mosip.kernel.otpmanagerservice.repository.OtpRepository;
 import org.mosip.kernel.otpmanagerservice.service.OtpValidatorService;
-import org.mosip.kernel.otpmanagerservice.utils.OtpManagerUtils;
-
+import org.mosip.kernel.otpmanagerservice.util.OtpManagerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

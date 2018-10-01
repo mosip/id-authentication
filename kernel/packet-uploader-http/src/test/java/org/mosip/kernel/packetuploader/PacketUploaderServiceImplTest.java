@@ -14,7 +14,7 @@ import org.mockito.Mock;
 import org.mosip.kernel.httppacketuploader.config.PacketFileStorageProperties;
 import org.mosip.kernel.httppacketuploader.dto.PacketUploaderResponceDTO;
 import org.mosip.kernel.httppacketuploader.service.impl.PacketUploaderServiceImpl;
-import org.mosip.kernel.httppacketuploader.utils.PacketUploaderUtils;
+import org.mosip.kernel.httppacketuploader.util.PacketUploaderUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;

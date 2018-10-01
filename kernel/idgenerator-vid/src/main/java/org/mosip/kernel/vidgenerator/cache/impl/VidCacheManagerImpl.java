@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.mosip.kernel.vidgenerator.cache.VidCacheManager;
-import org.mosip.kernel.vidgenerator.dao.VidDao;
-import org.mosip.kernel.vidgenerator.model.Vid;
+import org.mosip.kernel.vidgenerator.entity.Vid;
+import org.mosip.kernel.vidgenerator.repository.VidRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class VidCacheManagerImpl implements VidCacheManager {
 	@Autowired
-	VidDao vidDao;
+	VidRepository vidDao;
 	Map<String, Vid> uinVidMap = new HashMap<>();
 	Map<String, Long> vidTimeStampMap = new HashMap<>();
 	List<Vid> vids = new ArrayList<>();

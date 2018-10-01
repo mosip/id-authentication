@@ -5,14 +5,14 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.mosip.kernel.core.spi.idgenerator.MosipIdGenerator;
-import org.mosip.kernel.core.utils.MosipIdChecksum;
-import org.mosip.kernel.core.utils.MosipIdFilter;
+import org.mosip.kernel.core.util.ChecksumUtils;
+import org.mosip.kernel.core.util.IdFilterUtils;
 import org.mosip.kernel.pridgenerator.cache.PridCacheManager;
-import org.mosip.kernel.pridgenerator.constants.PridGeneratorConstants;
-import org.mosip.kernel.pridgenerator.constants.PridGeneratorErrorCodes;
-import org.mosip.kernel.pridgenerator.dao.PridGenRepository;
+import org.mosip.kernel.pridgenerator.constant.PridGeneratorConstants;
+import org.mosip.kernel.pridgenerator.constant.PridGeneratorErrorCodes;
+import org.mosip.kernel.pridgenerator.entity.Prid;
 import org.mosip.kernel.pridgenerator.exception.PridGenerationException;
-import org.mosip.kernel.pridgenerator.model.Prid;
+import org.mosip.kernel.pridgenerator.repository.PridRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -30,7 +30,7 @@ public class PridGenerator implements MosipIdGenerator<String> {
 	@Value("${mosip.kernel.prid.length}")
 	private int pridLength;
 	@Autowired
-	private PridGenRepository pridGenRepository;
+	private PridRepository pridRepository;
 	@Autowired
 	private PridCacheManager pridCacheManager;
 
@@ -72,7 +72,7 @@ public class PridGenerator implements MosipIdGenerator<String> {
 		prid.setId(generatedPrid);
 		prid.setCreatedAt(currentTimestamp);
 		try {
-			pridGenRepository.save(prid);
+			pridRepository.save(prid);
 			pridCacheManager.add(prid.getId());
 			return generatedPrid;
 		} catch (Exception e) {
@@ -83,7 +83,7 @@ public class PridGenerator implements MosipIdGenerator<String> {
 
 	private String generatePrid() {
 		String generatedPrid = generateRandomId(generatedIdLength, lowerBound, upperBound);
-		while (!MosipIdFilter.isValidId(generatedPrid)) {
+		while (!IdFilterUtils.isValidId(generatedPrid)) {
 			generatedPrid = generatePrid();
 		}
 		return generatedPrid;
@@ -102,7 +102,7 @@ public class PridGenerator implements MosipIdGenerator<String> {
 	 */
 	private String generateRandomId(int generatedIdLength, long lowerBound, long upperBound) {
 		Long generatedID = RANDOM_DATA_GENERATOR.nextSecureLong(lowerBound, upperBound);
-		String verhoeffDigit = MosipIdChecksum.generateChecksumDigit(String.valueOf(generatedID));
+		String verhoeffDigit = ChecksumUtils.generateChecksumDigit(String.valueOf(generatedID));
 		return appendChecksum(generatedIdLength, generatedID, verhoeffDigit);
 	}
 

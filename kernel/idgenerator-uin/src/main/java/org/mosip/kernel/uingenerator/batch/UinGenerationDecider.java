@@ -1,7 +1,7 @@
 package org.mosip.kernel.uingenerator.batch;
 
-import org.mosip.kernel.uingenerator.constants.UinGeneratorConstants;
-import org.mosip.kernel.uingenerator.constants.UinGeneratorStatus;
+import org.mosip.kernel.uingenerator.constant.UinGeneratorConstants;
+import org.mosip.kernel.uingenerator.constant.UinGeneratorStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.job.flow.FlowExecutionStatus;

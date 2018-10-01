@@ -1,6 +1,6 @@
 package org.mosip.kernel.auditmanager.exceptionhandler;
 
-import org.mosip.kernel.auditmanager.constants.AuditErrorCodes;
+import org.mosip.kernel.auditmanager.constant.AuditErrorCodes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

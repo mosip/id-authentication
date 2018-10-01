@@ -1,6 +1,6 @@
 package org.mosip.kernel.uingenerator.batch;
 
-import org.mosip.kernel.uingenerator.constants.UinGeneratorConstants;
+import org.mosip.kernel.uingenerator.constant.UinGeneratorConstants;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.stereotype.Component;
 
