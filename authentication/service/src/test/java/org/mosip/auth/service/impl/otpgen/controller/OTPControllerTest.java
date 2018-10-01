@@ -30,20 +30,22 @@ import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
- * Test functionality 
+ * Test functionality
  *
  * @author Rakesh Roshan
  */
-@Ignore //FIXME
 @RunWith(SpringRunner.class)
 @SpringBootTest
-//@WebMvcTest(value = OTPController.class, secure = false)
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @TestPropertySource(value = "classpath:log.properties")
 public class OTPControllerTest {
 
