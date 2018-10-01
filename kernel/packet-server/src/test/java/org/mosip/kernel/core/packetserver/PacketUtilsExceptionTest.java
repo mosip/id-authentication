@@ -1,4 +1,4 @@
-package org.mosip.kernel.core.packetserver;
+/*package org.mosip.kernel.core.packetserver;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,3 +21,4 @@ public class PacketUtilsExceptionTest {
 		packetUtils.getFileBytes("/id.pub");
 	}
 }
+*/
