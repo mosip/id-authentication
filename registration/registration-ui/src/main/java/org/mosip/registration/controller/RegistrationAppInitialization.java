@@ -26,6 +26,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+/**
+ * Class for initializing the application
+ * 
+ * @author Sravya Surampalli
+ * @since 1.0.0
+ *
+ */
+
 @Component
 public class RegistrationAppInitialization extends Application {
 

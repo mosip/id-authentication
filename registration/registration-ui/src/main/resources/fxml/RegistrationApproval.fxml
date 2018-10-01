@@ -9,15 +9,15 @@
 
 <AnchorPane prefHeight="590.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mosip.registration.controller.RegistrationApprovalController">
 	<children>
-		<Pagination fx:id="pagination" layoutX="25.0" layoutY="107.0" prefHeight="464.0" prefWidth="850.0" />
-		<TableView fx:id="table" layoutX="52.0" layoutY="116.0" prefHeight="381.0" prefWidth="800.0">
+		<Pagination fx:id="pagination" layoutX="25.0" layoutY="107.0" prefHeight="330.0" prefWidth="850.0" />
+		<TableView fx:id="table" layoutX="52.0" layoutY="116.0" prefHeight="250.0" prefWidth="800.0">
 			<columns>
 				<TableColumn fx:id="expand" minWidth="0.0" prefWidth="134.0" resizable="false" text="Acknowledgement Form" />
 				<TableColumn fx:id="id" prefWidth="170.0" text="Registration ID" />
 				<TableColumn fx:id="type" prefWidth="100.0" text="Type" />
 				<TableColumn fx:id="residentName" prefWidth="133.0" text="Resident Name" />
-				<TableColumn fx:id="operatorId" minWidth="0.0" prefWidth="133.0" text="Operator ID" />
-				<TableColumn fx:id="operatorName" minWidth="0.0" prefWidth="135.0" resizable="false" text="Operator Name" />
+				<TableColumn fx:id="operatorId" minWidth="0.0" prefWidth="140.0" text="Operator ID" />
+				<TableColumn fx:id="operatorName" minWidth="0.0" prefWidth="140.0" resizable="false" text="Operator Name" />
             <TableColumn fx:id="acknowledgementFormPath" minWidth="0.0" prefWidth="0.0" resizable="false" text="Operator Name" visible="false" />
 			</columns>
 		</TableView>

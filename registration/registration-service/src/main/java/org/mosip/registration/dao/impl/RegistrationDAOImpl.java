@@ -1,9 +1,15 @@
 package org.mosip.registration.dao.impl;
 
+import static org.mosip.registration.constants.RegConstants.APPLICATION_ID;
+import static org.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+
 import java.io.File;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.mosip.kernel.core.spi.logging.MosipLogger;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
@@ -22,10 +28,6 @@ import org.mosip.registration.repositories.RegistrationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
-import static org.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static org.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-
 /**
  * The implementation class of {@link RegistrationDAO}.
  *
@@ -33,6 +35,7 @@ import static org.mosip.registration.constants.RegConstants.APPLICATION_NAME;
  * @since 1.0.0
  */
 @Repository
+@Transactional
 public class RegistrationDAOImpl implements RegistrationDAO {
 
 	/** The registration repository. */

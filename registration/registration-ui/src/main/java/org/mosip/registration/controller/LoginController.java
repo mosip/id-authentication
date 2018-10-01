@@ -31,6 +31,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 
+/**
+ * Class for loading Login screen with Username and password
+ * 
+ * @author Sravya Surampalli
+ * @since 1.0.0
+ *
+ */
+
 @Controller
 public class LoginController extends BaseController {	
 
@@ -82,7 +90,7 @@ public class LoginController extends BaseController {
 	 * @return String loginMode
 	 * @throws RegBaseCheckedException 
 	 */
-	public void validateCredentials(ActionEvent event) throws RegBaseCheckedException, RegBaseUncheckedException {
+	public void validateCredentials(ActionEvent event) throws RegBaseCheckedException {
 		try {
 
 			if (userId.getText().isEmpty() && password.getText().isEmpty()) {

@@ -1,6 +1,7 @@
 package org.mosip.registration.util.dataprovider;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.OffsetDateTime;
@@ -43,7 +44,13 @@ public class DataProvider {
 		filePath = "/dataprovider".concat(filePath);
 
 		try {
-			return Files.readAllBytes(Paths.get(filePath));
+			InputStream file = DataProvider.class.getClass().getResourceAsStream(filePath);
+			byte[] bytesArray = new byte[(int) file.available()];
+			file.read(bytesArray);
+			file.close();
+
+			return bytesArray;
+			//return Files.readAllBytes(Paths.get(filePath));
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(RegProcessorExceptionCode.SERVICE_DATA_PROVIDER_UTIL,
 					"Unable to read the Image bytes", ioException);
@@ -278,11 +285,11 @@ public class DataProvider {
 		documentDetailsDTO.setDocumentType("passport");
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
-		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setDocumentName("ResidenceCopy");
-		documentDetailsDTO.setDocumentCategory("poA");
-		documentDetailsDTO.setDocumentOwner("self");
-		documentDetailsDTO.setDocumentType("passport");
+		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
+		documentDetailsResidenceDTO.setDocumentName("ResidenceCopy");
+		documentDetailsResidenceDTO.setDocumentCategory("poA");
+		documentDetailsResidenceDTO.setDocumentOwner("self");
+		documentDetailsResidenceDTO.setDocumentType("passport");
 
 		docdetailsList.add(documentDetailsDTO);
 		docdetailsList.add(documentDetailsResidenceDTO);
