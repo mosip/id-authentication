@@ -7,6 +7,7 @@ import org.mosip.kernel.core.exception.BaseUncheckedException;
 /**
  * Class to handle exceptions for invalid OTP validation inputs.
  * 
+ * @author Ritesh Sinha
  * @author Sagar Mahapatra
  * @since 1.0.0
  * 

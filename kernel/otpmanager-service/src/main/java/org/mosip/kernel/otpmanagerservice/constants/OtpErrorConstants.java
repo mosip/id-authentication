@@ -4,6 +4,7 @@ package org.mosip.kernel.otpmanagerservice.constants;
  * This enum provides all the constants identified for OTP errors.
  * 
  * @author Sagar Mahapatra
+ * @author Ritesh Sinha
  * @version 1.0.0
  *
  */

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * This class provides controller methods for OTP generation.
  * 
  * @author Sagar Mahapatra
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */

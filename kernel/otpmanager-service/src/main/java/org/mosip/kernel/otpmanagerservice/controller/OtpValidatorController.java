@@ -27,11 +27,13 @@ public class OtpValidatorController {
 	OtpValidatorService otpValidatorService;
 
 	/**
+	 * This method validates the OTP against a key.
+	 * 
 	 * @param key
-	 *            The key against which the OTP needs to be validated.
+	 *            the key against which the OTP needs to be validated.
 	 * @param otp
-	 *            The OTP to be validated.
-	 * @return The validation status as DTO response.
+	 *            the OTP to be validated.
+	 * @return the validation status as DTO response.
 	 */
 	@GetMapping(value = "/otpmanager/otps")
 	public ResponseEntity<OtpValidatorResponseDto> validateOtp(@RequestParam String key, @RequestParam String otp) {

@@ -10,12 +10,13 @@ import javax.persistence.Table;
 /**
  * The entity class for OTP.
  * 
+ * @author Ritesh Sinha
  * @author Sagar Mahapatra
  * @since 1.0.0
  *
  */
 @Entity
-@Table(name = "otp_data")
+@Table(name = "otp_data",schema="otp")
 public class OtpEntity {
 	/**
 	 * The variable that holds the unique ID.
