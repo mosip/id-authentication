@@ -9,6 +9,7 @@ import org.mosip.kernel.vidgenerator.generator.VidGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -18,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@TestPropertySource("classpath:/test.application.properties")
 public class VidGeneratorTest {
 	@Value("${mosip.kernel.vid.length}")
 	private int vidLength;

@@ -8,6 +8,7 @@ import org.mosip.kernel.pridgenerator.generator.PridGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@TestPropertySource("classpath:/test.application.properties")
 public class PridGeneratorTest {
 	@Value("${mosip.kernel.prid.length}")
 	private int pridLength;
