@@ -14,15 +14,13 @@
 
 	<properties>
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
-		<maven.sonar.version>3.5.0.1254</maven.sonar.version>
+		<!-- <maven.sonar.version>3.5.0.1254</maven.sonar.version> -->
+		<maven.sonar.version>3.2</maven.sonar.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.version>3.7.0</maven.compiler.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
-
-		<!-- Core -->
-		<spring.version>5.0.4.RELEASE</spring.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -37,7 +35,7 @@
 		<orika.version>1.4.6</orika.version>
 
 		<!-- Spring version -->
-		<sprin.version>4.3.7.RELEASE</sprin.version>
+		<spring.version>5.0.6.RELEASE</spring.version>
 
 		<!-- Hibernate version -->
 		<hibernate.version>5.2.9.Final</hibernate.version>
@@ -79,11 +77,6 @@
 				<scope>test</scope>
 			</dependency>
 
-			<!-- <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-exception</artifactId> 
-				<version>${project.version}</version> </dependency> <dependency> <groupId>org.mosip</groupId> 
-				<artifactId>kernel-utils</artifactId> <version>${project.version}</version> 
-				</dependency> -->
-
 			<dependency>
 				<groupId>org.mosip</groupId>
 				<artifactId>kernel-core</artifactId>
@@ -96,17 +89,11 @@
 				<version>${orika.version}</version>
 			</dependency>
 
-			<!-- Spring Context -->
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
 			<!-- Spring ORM -->
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-orm</artifactId>
-				<version>${sprin.version}</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<!-- Hibernate 5.2.9 Final -->
 			<dependency>
@@ -157,7 +144,7 @@
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-web</artifactId>
-				<version>4.3.11.RELEASE</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
@@ -260,7 +247,8 @@
 			<properties>
 				<!-- Optional URL to server. Default value is http://localhost:9000 -->
 				<sonar.host.url>
-					http://13.67.91.2:9000
+					<!-- http://13.67.91.2:9000 -->
+					 http://172.25.166.136:9000
 				</sonar.host.url>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec

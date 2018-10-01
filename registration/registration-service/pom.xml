@@ -28,36 +28,29 @@
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 		</dependency>
-
-		<!-- <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-exception</artifactId> 
-			</dependency> <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-utils</artifactId> 
-			</dependency> -->
 		<dependency>
 			<groupId>org.mosip</groupId>
 			<artifactId>kernel-core</artifactId>
 		</dependency>
+		
 
 		<dependency>
 			<groupId>ma.glasnost.orika</groupId>
 			<artifactId>orika-core</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
+		<!-- <dependency> <groupId>org.springframework</groupId> <artifactId>spring-context</artifactId> 
+			</dependency> -->
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>${jackson.version}</version>
 		</dependency>
 
 		<!-- Apache Commons DBCP -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-dbcp2</artifactId>
-			<version>${apache.commons.dpce.version}</version>
 		</dependency>
 
 		<!-- Apache Derby -->
@@ -104,7 +97,6 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
