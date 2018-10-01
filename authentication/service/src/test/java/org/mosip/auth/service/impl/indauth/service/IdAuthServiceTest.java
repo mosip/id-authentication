@@ -94,7 +94,7 @@ public class IdAuthServiceTest {
 		ReflectionTestUtils.setField(idAuthServiceImpl, "logger", logger);
 	}
 
-	/*
+	/**
 	 * This method throws IdValidationFailedException when UinEntity is null
 	 * 
 	 * 
@@ -106,7 +106,7 @@ public class IdAuthServiceTest {
 		idAuthServiceImpl.validateUIN(uin);
 	}
 
-	/*
+	/**
 	 * This method throws IdValidationFailedException when UinEntity is not null but
 	 * UIN is inactive
 	 * 
@@ -120,7 +120,7 @@ public class IdAuthServiceTest {
 		idAuthServiceImpl.validateUIN(uin);
      }
 
-	/*
+	/**
 	 * This method throws IdValidationFailedException when UinEntity is not null but
 	 * UIN is active
 	 * 
@@ -137,7 +137,7 @@ public class IdAuthServiceTest {
         assertEquals(refId, uinEntity.getId());
 	}
 	
-	/*
+	/**
 	 * This method throws IdValidationFailedException when VIDEntity is null 
 	 * 
 	 */
@@ -162,7 +162,7 @@ public class IdAuthServiceTest {
 		idAuthServiceImpl.validateVID(vid);
 	}
 	
-	/*
+	/**
 	 * This method throws IdValidationFailedException when VIDEntity is not null but
 	 * VID is active but validity expired
 	 * 
@@ -178,7 +178,7 @@ public class IdAuthServiceTest {
 	}
 	
 	
-	/*
+	/**
 	 * This method throws IdValidationFailedException when VIDEntity is not null but
 	 * VID is active  and checks for refId in UIN and failed.
 	 * 
@@ -196,7 +196,7 @@ public class IdAuthServiceTest {
 	}
 	
 	
-	/*
+	/**
 	 * This method throws IdValidationFailedException when VIDEntity is not null but
 	 * VID is active  and checks for refId in UIN and UIN is inactive.
 	 * 
@@ -216,7 +216,7 @@ public class IdAuthServiceTest {
 	}
 	
 	
-	/*
+	/**
 	 * This method throws IdValidationFailedException when VIDEntity is not null but
 	 * VID is active  and checks for refId in UIN and returns refId
 	 * 
@@ -232,9 +232,6 @@ public class IdAuthServiceTest {
 		uinEntity.setActive(true);
 		Optional<UinEntity> uinEntityopt= Optional.of(uinEntity);
 		System.err.println(uinEntityopt.isPresent());
-//		UinRepository uinMock=Mockito.mock(UinRepository.class);
-//		Mockito.when(uinMock.findById(Mockito.anyString())).thenReturn(uinEntityopt);
-//		System.err.println(uinMock.findById("refId").get());
 		Mockito.when(uinRepository.findById(Mockito.any())).thenReturn(uinEntityopt);
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
 		

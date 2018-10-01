@@ -25,38 +25,54 @@ import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 /**
- * The class validates the UIN and VID
- * 
+ * The class validates the UIN and VID.
+ *
  * @author Arun Bose
  */
 @Service
 public class IdAuthServiceImpl implements IdAuthService {
 	
+	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
+	/** The rest helper. */
 	@Autowired
 	private RestHelper restHelper;
 	
+	/** The logger. */
 	private MosipLogger logger;
 
+	/**
+	 * Initialize logger.
+	 *
+	 * @param idaRollingFileAppender the ida rolling file appender
+	 */
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
 		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
 
+	/** The rest factory. */
 	@Autowired
 	private RestRequestFactory  restFactory;
 	
+	/** The audit factory. */
 	@Autowired
 	private AuditRequestFactory auditFactory;
 	
+	/** The uin repository. */
 	@Autowired
 	private UinRepository uinRepository;
 
+	/** The vid repository. */
 	@Autowired
 	private VIDRepository vidRepository;
 
+	/* (non-Javadoc)
+	 * @see org.mosip.auth.core.spi.idauth.service.IdAuthService#validateUIN(java.lang.String)
+	 */
 	public String validateUIN(String UIN) throws IdAuthenticationBusinessException {
 		String refId = null;
 		UinEntity uinEntity = uinRepository.findByUin(UIN);
@@ -78,6 +94,11 @@ public class IdAuthServiceImpl implements IdAuthService {
 		return refId;
 	}
 
+	/**
+	 * Audit data.
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
 	private void auditData() throws IdAuthenticationBusinessException {
 		AuditRequestDto auditRequest = auditFactory.buildRequest("moduleId", "description");
 
@@ -93,6 +114,9 @@ public class IdAuthServiceImpl implements IdAuthService {
 		restHelper.requestAsync(restRequest);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mosip.auth.core.spi.idauth.service.IdAuthService#validateVID(java.lang.String)
+	 */
 	public String validateVID(String vid) throws IdAuthenticationBusinessException {
 		String refId = doValidateVIDEntity(vid);
 		
@@ -101,6 +125,13 @@ public class IdAuthServiceImpl implements IdAuthService {
 		return refId;
 	}
 
+	/**
+	 * Do validate VID entity and checks for the expiry date.
+	 *
+	 * @param vid the vid
+	 * @return the string
+	 * @throws IdValidationFailedException the id validation failed exception
+	 */
 	private String doValidateVIDEntity(String vid) throws IdValidationFailedException {
 		String refId = null;
 		VIDEntity vidEntity = vidRepository.getOne(vid);
@@ -125,6 +156,12 @@ public class IdAuthServiceImpl implements IdAuthService {
 		return refId;
 	}
 
+	/**
+	 * Do validate UIN and checks whether it is active.
+	 *
+	 * @param uinEntityOpt the uin entity opt
+	 * @throws IdValidationFailedException the id validation failed exception
+	 */
 	private void doValidateUIN(Optional<UinEntity> uinEntityOpt) throws IdValidationFailedException {
 		if (uinEntityOpt.isPresent()) {
 			UinEntity uinEntity = uinEntityOpt.get();

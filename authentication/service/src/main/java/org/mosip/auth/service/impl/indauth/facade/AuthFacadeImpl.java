@@ -1,3 +1,6 @@
+/*
+ * 
+ */
 package org.mosip.auth.service.impl.indauth.facade;
 
 import java.util.Date;
@@ -25,6 +28,10 @@ import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * This class provides the implementation of AuthFacade
+ * @author Arun Bose
+ */
 @Service
 public class AuthFacadeImpl implements AuthFacade {
 	
@@ -52,6 +59,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private AuditRequestFactory auditFactory;
 
+	/**
+	 * Process the authorisation type and authorisation response is returned
+	 * 
+	 * @param authRequestDTO
+	 * @throws IdAuthenticationBusinessException
+	 */
+	
 	@Override
 	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO)
 			throws IdAuthenticationBusinessException {
@@ -66,15 +80,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		//TODO Update audit details
 		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "Desc");
 
-		RestRequestDTO restRequest;
-		try {
-			restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-					AuditResponseDto.class);
-		} catch (IDDataValidationException e) {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
-		}
-
-		restHelper.requestAsync(restRequest);  
+		auditData(); 
 		return authResponseDTO;
 	    
 
@@ -99,18 +105,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			logger.info(DEFAULT_SESSION_ID, "IDA", "AuthFacade","authenticateApplicant status : " + authStatus);
 		}
 		//TODO Update audit details
-		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "Desc");
-
-		RestRequestDTO restRequest;
-		try {
-			restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-					AuditResponseDto.class);
-		} catch (IDDataValidationException e) {
-			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
-		}
-
-		restHelper.requestAsync(restRequest);  
+		auditData();  
 		return authStatus;
 	}
 
@@ -146,7 +141,12 @@ public class AuthFacadeImpl implements AuthFacade {
 			}
 		}
 		//TODO Update audit details
-		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "Desc");
+		auditData();
+		return refId;
+	}
+ 
+	private void auditData() throws IdAuthenticationBusinessException {
+		AuditRequestDto auditRequest = auditFactory.buildRequest("moduleId", "description");
 
 		RestRequestDTO restRequest;
 		try {
@@ -157,8 +157,6 @@ public class AuthFacadeImpl implements AuthFacade {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
 		}
 
-		restHelper.requestAsync(restRequest);  
-		return refId;
+		restHelper.requestAsync(restRequest);
 	}
-
 }

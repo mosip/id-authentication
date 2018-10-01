@@ -31,8 +31,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+// TODO: Auto-generated Javadoc
 /**
- * The class validates AuthFacadeImpl
+ * The class validates AuthFacadeImpl.
+ *
  * @author Arun Bose
  */
 @RunWith(SpringRunner.class)
@@ -40,9 +42,12 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration(classes= {TestContext.class, WebApplicationContext.class})
 @TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
 public class AuthFacadeImplTest {
+	
+	/** The rest helper. */
 	@Mock
 	RestHelper restHelper;
 	
+	/** The env. */
 	@Autowired
 	Environment env;
 	
@@ -52,22 +57,30 @@ public class AuthFacadeImplTest {
 	/*@InjectMocks
 	MosipRollingFileAppender idaRollingFileAppender;*/
 
+	/** The rest factory. */
 	@InjectMocks
 	private RestRequestFactory  restFactory;
 	
+	/** The audit factory. */
 	@InjectMocks
 	private AuditRequestFactory auditFactory;
 	
+	/** The auth facade impl. */
 	@InjectMocks
 	private AuthFacadeImpl authFacadeImpl;
 	
+	/** The id auth service impl. */
 	@Mock
 	private IdAuthServiceImpl idAuthServiceImpl;
 	
+	/** The otp auth service impl. */
 	@Mock
 	private OTPAuthServiceImpl otpAuthServiceImpl;
 
 	
+	/**
+	 * Before.
+	 */
 	@Before
 	public void before() {
 		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
@@ -89,9 +102,10 @@ public class AuthFacadeImplTest {
 	}
 	
 	
-	/*
-	 * This class tests the authenticateApplicant method where it checks the  IdType and AuthType
-	 * 
+	/**
+	 * This class tests the authenticateApplicant method where it checks the  IdType and AuthType.
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	
 	@Test
@@ -112,9 +126,10 @@ public class AuthFacadeImplTest {
 	}
 	
 	
-	/*
-	 * This class tests the processAuthType  (OTP)   method where otp validation failed
-	 * 
+	/**
+	 * This class tests the processAuthType  (OTP)   method where otp validation failed.
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Test
 	public void processAuthTypeTestFail() throws IdAuthenticationBusinessException{
@@ -127,9 +142,10 @@ public class AuthFacadeImplTest {
     }
 	 
 	
-	/*
-	 * This class tests the processAuthType  (OTP)   method where otp validation gets successful
-	 * 
+	/**
+	 * This class tests the processAuthType  (OTP)   method where otp validation gets successful.
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	
 	@Test
@@ -143,9 +159,10 @@ public class AuthFacadeImplTest {
 		assertEquals(authStatus,true);
     }
 	
-	/*
-	 * This class tests the processIdtype  where UIN is passed and gets successful
-	 * 
+	/**
+	 * This class tests the processIdtype  where UIN is passed and gets successful.
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Test
 	public void processIdtypeUINSuccess() throws IdAuthenticationBusinessException{
@@ -157,9 +174,10 @@ public class AuthFacadeImplTest {
 		assertEquals(referenceId,refId);
     }
 	
-	/*
-	 * This class tests the processIdtype  where VID is passed and gets successful
-	 * 
+	/**
+	 * This class tests the processIdtype  where VID is passed and gets successful.
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Test
      public void processIdtypeVIDSuccess() throws IdAuthenticationBusinessException{
@@ -171,9 +189,10 @@ public class AuthFacadeImplTest {
 		assertEquals(referenceId,refId);
     }
 	
-	/*
-	 * This class tests the processIdtype  where UIN is passed and gets failed
-	 * 
+	/**
+	 * This class tests the processIdtype  where UIN is passed and gets failed.
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	
 	@Test(expected=IdAuthenticationBusinessException.class)
@@ -188,9 +207,10 @@ public class AuthFacadeImplTest {
     }
 	
 	
-	/*
-	 * This class tests the processIdtype  where VID is passed and gets failed
-	 * 
+	/**
+	 * This class tests the processIdtype  where VID is passed and gets failed.
+	 *
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	
 	@Test(expected=IdAuthenticationBusinessException.class)

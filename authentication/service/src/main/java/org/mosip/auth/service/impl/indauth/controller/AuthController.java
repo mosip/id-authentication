@@ -77,6 +77,7 @@ public class AuthController {
 
 			try {
 				DataValidationUtil.validate(errors);
+				
 				authResponsedto=authFacade.authenticateApplicant(authrequestdto);
 			} catch (IDDataValidationException e) {
 				logger.error("sessionId", null, null, e.getErrorText());
