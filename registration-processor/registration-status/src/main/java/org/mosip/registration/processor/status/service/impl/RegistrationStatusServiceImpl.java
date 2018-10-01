@@ -54,50 +54,25 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		} catch (DataAccessLayerException e) {
 
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
-		} finally {
+		} finally { 
+			String description="";
 			if (isTransactionSuccessful) {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--getRegistrationStatus Success")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--getRegistrationStatus Success";
+				
+				
 			} else {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--getRegistrationStatus Failure")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--getRegistrationStatus Failure";
+				
 			}
 
-			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequestDto);
-
+			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
+					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
 		}
 	}
 
 	@Override
 	public List<RegistrationStatusDto> findbyfilesByThreshold(String statusCode) {
-		boolean isTransactionSuccessful = false;
+		boolean isTransactionSuccessful  = false;
 		try {
 			List<RegistrationStatusEntity> entities = registrationStatusDao.findbyfilesByThreshold(statusCode,
 					getThreshholdTime());
@@ -106,43 +81,19 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
+			String description="";
 			if (isTransactionSuccessful) {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--findbyfilesByThreshold Success")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--findbyfilesByThreshold Success";
+				
+				
 			} else {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--findbyfilesByThreshold Failure")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--findbyfilesByThreshold Failure";
+				
 			}
 
-			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequestDto);
-
+			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
+					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
+			
 		}
 	}
 
@@ -153,7 +104,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		registrationStatusDto.setLatestRegistrationTransactionId(transactionId);
 		try {
 			RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
-			registrationStatusDao.save(entity);
+			registrationStatusDao.save(entity); 
 			isTransactionSuccessful = true;
 			TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
 					null, TransactionTypeCode.CREATE.toString(), "Added registration status record",
@@ -164,42 +115,17 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Could not add Information to table", e);
 		} finally {
+			String description="";
 			if (isTransactionSuccessful) {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--addRegistrationStatus Success")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--addRegistrationStatus Success";
+	
 			} else {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--addRegistrationStatus Failure")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--addRegistrationStatus Failure";
+				
 			}
-
-			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequestDto);
+			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
+					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
+		
 
 		}
 	}
@@ -225,50 +151,25 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Could not update Information to table", e);
-		} finally {
+		} finally { 
+			String description="";
 			if (isTransactionSuccessful) {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--updateRegistrationStatus Success")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--updateRegistrationStatus Success";
+	
 			} else {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--updateRegistrationStatus Failure")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--updateRegistrationStatus Failure";
+				
 			}
-
-			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequestDto);
+			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
+					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
+			
 
 		}
 	}
 
 	@Override
 	public List<RegistrationStatusDto> getByStatus(String status) {
-		boolean isTransactionSuccessful = false;
+		boolean isTransactionSuccessful = false; 
 		try {
 			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
 					.getEnrolmentStatusByStatusCode(status);
@@ -277,42 +178,17 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
+			String description="";
 			if (isTransactionSuccessful) {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--getByStatus Success")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--getByStatus Success";
+	
 			} else {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--getByStatus Failure")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--getByStatus Failure";
+				
 			}
-
-			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequestDto);
+			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
+					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
+			
 
 		}
 	}
@@ -331,43 +207,17 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
+			String description="";
 			if (isTransactionSuccessful) {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--getByIds Success")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--getByIds Success";
+	
 			} else {
-				auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-						.setApplicationId(AuditLogTempConstant.APPLICATION_ID.toString())
-						.setApplicationName(AuditLogTempConstant.APPLICATION_NAME.toString())
-						.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-						.setDescription("description--getByIds Failure")
-						.setEventId(AuditLogTempConstant.EVENT_ID.toString())
-						.setEventName(AuditLogTempConstant.EVENT_NAME.toString())
-						.setEventType(AuditLogTempConstant.EVENT_TYPE.toString())
-						.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-						.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-						.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-						.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-						.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-						.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-						.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+				description="description--getByIds Failure";
+				
 			}
-
-			AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-			auditHandler.writeAudit(auditRequestDto);
-
+			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
+					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
+			
 		}
 	}
 
@@ -434,6 +284,26 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 
 	public String generateId() {
 		return UUID.randomUUID().toString();
+	}
+	public void createAuditRequestBuilder(String applicationId,String applicationName,String description,String eventId,String eventName,String eventType){
+		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
+		.setApplicationId(applicationId)
+		.setApplicationName(applicationName)
+		.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
+		.setDescription(description)
+		.setEventId(eventId)
+		.setEventName(eventName)
+		.setEventType(eventType)
+		.setHostIp(AuditLogTempConstant.HOST_IP.toString())
+		.setHostName(AuditLogTempConstant.HOST_NAME.toString())
+		.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
+		.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
+		.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
+		.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
+		.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+		
+        AuditRequestDto auditRequestDto = auditRequestBuilder.build();
+		auditHandler.writeAudit(auditRequestDto);
 	}
 
 }

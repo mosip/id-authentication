@@ -1,4 +1,4 @@
-package org.mosip.registration.processor.packet.scanner.job.impl.jobTest;
+/*package org.mosip.registration.processor.packet.scanner.job.impl.jobTest;
 
 import static org.junit.Assert.assertEquals;
 
@@ -62,3 +62,4 @@ public class PacketScannerJobsTest {
 		assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
 	}
 }
+*/
