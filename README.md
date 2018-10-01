@@ -1,2 +1,2 @@
-# mosip.io
+# mosip
 Source code of MOSIP
