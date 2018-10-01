@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.mosip.kernel.otpmanagerservice.constants.OtpStatusConstants;
+
 /**
  * The entity class for OTP.
  * 
@@ -16,7 +18,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "otp_data",schema="otp")
+@Table(name = "otp.otp_data")
 public class OtpEntity {
 	/**
 	 * The variable that holds the unique ID.
@@ -63,7 +65,7 @@ public class OtpEntity {
 	public OtpEntity() {
 		generationTime = LocalDateTime.now();
 		validationTime = generationTime;
-		otpStatus = "OTP_UNUSED";
+		otpStatus = OtpStatusConstants.UNUSED_OTP.getProperty();
 	}
 
 	/**
