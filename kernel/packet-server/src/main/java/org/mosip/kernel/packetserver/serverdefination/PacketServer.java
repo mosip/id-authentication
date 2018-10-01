@@ -93,7 +93,7 @@ public class PacketServer {
 	 * starts
 	 */
 	@EventListener(ApplicationReadyEvent.class)
-	public void afterPropertiesSet() {
+	private void afterPropertiesSet() {
 		this.server = SshServer.setUpDefaultServer();
 		PublicKey allowed = loadAllowedKey();
 		this.server.setHost(host);
@@ -144,7 +144,7 @@ public class PacketServer {
 	/**
 	 * This starts the server
 	 */
-	public void start() {
+	private void start() {
 		try {
 			this.server.start();
 		} catch (IOException e) {
@@ -158,7 +158,7 @@ public class PacketServer {
 	 * This stops the server when context will be closed
 	 */
 	@EventListener(ContextClosedEvent.class)
-	public void stop() {
+	private void stop() {
 		try {
 			server.stop(false);
 		} catch (IOException e) {
