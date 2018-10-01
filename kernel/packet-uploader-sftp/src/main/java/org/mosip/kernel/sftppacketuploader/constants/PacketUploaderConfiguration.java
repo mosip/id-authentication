@@ -11,38 +11,38 @@ package org.mosip.kernel.sftppacketuploader.constants;
 public class PacketUploaderConfiguration {
 
 	/**
-	 * host name/IP of server
+	 * Host name/IP of server
 	 */
 	private String host;
 	/**
-	 * port no of server
+	 * Port no of server
 	 */
 	private int port;
 	/**
-	 * username for authentication
+	 * Username for authentication
 	 */
 	private String user;
 	/**
-	 * privateKey for authentication <i> Only open SSH format are Supported </i> <b>
-	 * ppk not Supported</b>
+	 * PrivateKey for authentication <i> Only open SSH format are Supported </i>
+	 * <b> ppk not Supported</b>
 	 */
 	private String privateKeyFileName;
 	/**
-	 * pass phrase for private key, null if no encryption is there
+	 * Pass phrase for private key, null if no encryption is there
 	 */
 	private String privateKeyPassphrase;
 	/**
-	 * password for authenticaation
+	 * Password for authenticaation
 	 */
 	private String password;
 	/**
-	 * SFTP Remote directory <i> Directory should be present method will not creare
-	 * directory on remote side</i>
+	 * SFTP Remote directory <i> Directory should be present method will not
+	 * creare directory on remote side</i>
 	 */
 	private String sftpRemoteDirectory;
 
 	/**
-	 * getter for {@link #host}
+	 * Getter for {@link #host}
 	 * 
 	 * @return {@link #host}
 	 */
@@ -51,7 +51,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * setter for {@link #host}
+	 * Setter for {@link #host}
 	 * 
 	 * @param host
 	 *            {@link #host}
@@ -61,7 +61,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * getter for {@link #port}
+	 * Getter for {@link #port}
 	 * 
 	 * @return {@link #port}
 	 */
@@ -70,7 +70,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * setter for {@link #port}
+	 * Setter for {@link #port}
 	 * 
 	 * @param port
 	 *            {@link #port}
@@ -80,7 +80,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * getter for {@link #user}
+	 * Getter for {@link #user}
 	 * 
 	 * @return {@link #user}
 	 */
@@ -89,7 +89,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * setter for {@link #user}
+	 * Setter for {@link #user}
 	 * 
 	 * @param user
 	 *            {@link #user}
@@ -99,7 +99,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * getter for {@link #privateKeyFileName}
+	 * Getter for {@link #privateKeyFileName}
 	 * 
 	 * @return {@link #privateKeyFileName}
 	 */
@@ -108,7 +108,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * setter for {@link #privateKeyFileName}
+	 * Setter for {@link #privateKeyFileName}
 	 * 
 	 * @param privateKeyFileName
 	 *            {@link #privateKeyFileName}
@@ -118,7 +118,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * getter for {@link #privateKeyPassphrase}
+	 * Getter for {@link #privateKeyPassphrase}
 	 * 
 	 * @return {@link #privateKeyPassphrase}
 	 */
@@ -127,7 +127,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * setter for {@link #privateKeyPassphrase}
+	 * Setter for {@link #privateKeyPassphrase}
 	 * 
 	 * @param privateKeyPassphrase
 	 *            {@link #privateKeyPassphrase}
@@ -137,7 +137,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * getter for {@link #password}
+	 * Getter for {@link #password}
 	 * 
 	 * @return {@link #password}
 	 */
@@ -146,7 +146,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * setter for {@link #password}
+	 * Setter for {@link #password}
 	 * 
 	 * @param password
 	 *            {@link #password}
@@ -156,7 +156,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * getter for {@link #sftpRemoteDirectory}
+	 * Getter for {@link #sftpRemoteDirectory}
 	 * 
 	 * @return {@link #sftpRemoteDirectory}
 	 */
@@ -165,7 +165,7 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
-	 * setter for {@link #sftpRemoteDirectory}
+	 * Setter for {@link #sftpRemoteDirectory}
 	 * 
 	 * @param sftpRemoteDirectory
 	 *            {@link #sftpRemoteDirectory}
@@ -181,6 +181,8 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
+	 * Constructor for this class
+	 * 
 	 * @param host
 	 *            {@link #host} host name or IP
 	 * @param port
@@ -188,15 +190,16 @@ public class PacketUploaderConfiguration {
 	 * @param user
 	 *            {@link #user} username
 	 * @param privateKeyFileName
-	 *            {@link #privateKeyFileName} privateKey File Name <b>Should be Open
-	 *            SSh Format</b>
+	 *            {@link #privateKeyFileName} privateKey File Name <b>Should be
+	 *            Open SSh Format</b>
 	 * @param privateKeyPassphrase
 	 *            {@link #privateKeyPassphrase} password for private key
 	 * @param sftpRemoteDirectory
 	 *            {@link #sftpRemoteDirectory} remote directory location
 	 */
-	public PacketUploaderConfiguration(String host, int port, String user, String privateKeyFileName,
-			String privateKeyPassphrase, String sftpRemoteDirectory) {
+	public PacketUploaderConfiguration(String host, int port, String user,
+			String privateKeyFileName, String privateKeyPassphrase,
+			String sftpRemoteDirectory) {
 		this.host = host;
 		this.port = port;
 		this.user = user;
@@ -206,6 +209,8 @@ public class PacketUploaderConfiguration {
 	}
 
 	/**
+	 * Constructor for this class
+	 * 
 	 * @param host
 	 *            {@link #host} host name or IP
 	 * @param port
@@ -217,8 +222,8 @@ public class PacketUploaderConfiguration {
 	 * @param sftpRemoteDirectory
 	 *            {@link #sftpRemoteDirectory} remote directory location
 	 */
-	public PacketUploaderConfiguration(String host, int port, String user, String password,
-			String sftpRemoteDirectory) {
+	public PacketUploaderConfiguration(String host, int port, String user,
+			String password, String sftpRemoteDirectory) {
 		this.host = host;
 		this.port = port;
 		this.user = user;

@@ -12,7 +12,7 @@ import org.mosip.kernel.httppacketuploader.constants.PacketUploaderExceptionCons
 public class MosipDirectoryNotEmpty extends BaseUncheckedException {
 
 	/**
-	 * unique id for serialization
+	 * Unique id for serialization
 	 */
 	private static final long serialVersionUID = -381238520404127950L;
 

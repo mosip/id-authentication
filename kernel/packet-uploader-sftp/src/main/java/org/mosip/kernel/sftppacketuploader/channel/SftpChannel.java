@@ -36,7 +36,7 @@ public class SftpChannel {
 	}
 
 	/**
-	 * getter for {@link #configuration}
+	 * Getter for {@link #configuration}
 	 * 
 	 * @return {@link #configuration}
 	 */
@@ -45,7 +45,7 @@ public class SftpChannel {
 	}
 
 	/**
-	 * getter for {@link #channelSftp}
+	 * Getter for {@link #channelSftp}
 	 * 
 	 * @return {@link #channelSftp}
 	 */

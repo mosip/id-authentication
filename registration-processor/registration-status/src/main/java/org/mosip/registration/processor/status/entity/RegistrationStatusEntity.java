@@ -11,7 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Component;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class RegistrationStatusEntity.
  */

@@ -3,8 +3,8 @@ package org.mosip.registration.processor.packet.receiver.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import org.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
-import org.mosip.registration.processor.packet.manager.service.FileManager;
 import org.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import org.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
 import org.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;

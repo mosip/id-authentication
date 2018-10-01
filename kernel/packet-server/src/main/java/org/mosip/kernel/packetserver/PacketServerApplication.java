@@ -14,14 +14,16 @@ import org.springframework.context.annotation.PropertySource;
  * @since 1.0.0
  */
 @SpringBootApplication
-@PropertySource(value = { "classpath:packet-server-configuration.properties" })
-@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
+@PropertySource(value = {"classpath:packet-server-configuration.properties"})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,
+		HibernateJpaAutoConfiguration.class})
 public class PacketServerApplication {
 
 	/**
 	 * main method which runs the server
 	 * 
-	 * @param args params
+	 * @param args
+	 *            params
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(PacketServerApplication.class, args);

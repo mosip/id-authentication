@@ -12,7 +12,7 @@ import org.mosip.kernel.sftppacketuploader.constants.PacketUploaderExceptionCons
 public class MosipEmptyPathException extends BaseUncheckedException {
 
 	/**
-	 * constant id for serialization
+	 * Constant id for serialization
 	 */
 	private static final long serialVersionUID = -4601559589099809931L;
 

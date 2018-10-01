@@ -17,5 +17,12 @@ public interface MosipIdGenerator<T> {
 	 * @return The generated id
 	 */
 	T generateId();
+	
+/**
+ * Function to generate an Id for provided UIN
+ * @param uin
+ * @return
+ */
+	T generateId(T uin);
 
 }

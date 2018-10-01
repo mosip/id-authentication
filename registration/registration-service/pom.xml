@@ -1,0 +1,112 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.mosip</groupId>
+		<artifactId>registration</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>registration-service</artifactId>
+	<name>registration-service</name>
+	<description>Maven project of MOSIP Registration Service</description>
+
+	<dependencies>
+		<!-- Lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<!-- JUnit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<!-- Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+		</dependency>
+
+		<!-- <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-exception</artifactId> 
+			</dependency> <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-utils</artifactId> 
+			</dependency> -->
+		<dependency>
+			<groupId>org.mosip</groupId>
+			<artifactId>kernel-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>ma.glasnost.orika</groupId>
+			<artifactId>orika-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+
+		<!-- Apache Commons DBCP -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>${apache.commons.dpce.version}</version>
+		</dependency>
+
+		<!-- Apache Derby -->
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derbyclient</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mosip</groupId>
+			<artifactId>logger-logback</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mosip</groupId>
+			<artifactId>dataaccess-hibernate</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mosip</groupId>
+			<artifactId>auditmanager-api</artifactId>
+		</dependency>
+		<!-- <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-logging-impl</artifactId> 
+			</dependency> <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-security</artifactId> 
+			</dependency> <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-dao-hibernate-impl</artifactId> 
+			</dependency> <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-audit-api</artifactId> 
+			</dependency> -->
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

@@ -12,18 +12,23 @@ import org.mosip.kernel.packetserver.constants.PacketServerExceptionConstants;
 public class MosipIllegalStateException extends BaseUncheckedException {
 
 	/**
-	 * unique id for serialization
+	 * Unique id for serialization
 	 */
 	private static final long serialVersionUID = 1384978616401586334L;
 
 	/**
+	 * Constructor for this class
+	 * 
 	 * @param exceptionConstants
 	 *            exception code constant
 	 * @param cause
 	 *            cause of exception
 	 */
-	public MosipIllegalStateException(PacketServerExceptionConstants exceptionConstants, Throwable cause) {
-		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage(), cause);
+	public MosipIllegalStateException(
+			PacketServerExceptionConstants exceptionConstants,
+			Throwable cause) {
+		super(exceptionConstants.getErrorCode(),
+				exceptionConstants.getErrorMessage(), cause);
 	}
 
 }

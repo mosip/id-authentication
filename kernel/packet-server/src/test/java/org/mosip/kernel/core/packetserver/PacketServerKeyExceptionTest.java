@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 
 @TestPropertySource("classpath:/test-configuration.properties")
-@SpringBootTest(classes = { PacketServer.class, PacketUtils.class })
+@SpringBootTest(classes = {PacketServer.class, PacketUtils.class})
 public class PacketServerKeyExceptionTest {
 
 	@Mock
@@ -26,8 +26,9 @@ public class PacketServerKeyExceptionTest {
 
 	@Test(expected = MosipInvalidSpecException.class)
 	public void testInvalidSpec() throws IOException {
-		doThrow(new MosipInvalidSpecException(PacketServerExceptionConstants.MOSIP_INVALID_SPEC_EXCEPTION))
-				.when(packetServer).afterPropertiesSet();
+		doThrow(new MosipInvalidSpecException(
+				PacketServerExceptionConstants.MOSIP_INVALID_SPEC_EXCEPTION))
+						.when(packetServer).afterPropertiesSet();
 		packetServer.afterPropertiesSet();
 	}
 

@@ -35,7 +35,7 @@ public class PacketUploaderExceptionHandler {
 				PacketUploaderExceptionConstants.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION.getErrorMessage());
 		error.setCode(
 				PacketUploaderExceptionConstants.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION.getErrorCode());
-		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class PacketUploaderExceptionHandler {
 		ErrorItem error = new ErrorItem();
 		error.setMessage(PacketUploaderExceptionConstants.MOSIP_IO_FILE_EXCEPTION.getErrorMessage());
 		error.setCode(PacketUploaderExceptionConstants.MOSIP_IO_FILE_EXCEPTION.getErrorCode());
-		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class PacketUploaderExceptionHandler {
 		ErrorItem error = new ErrorItem();
 		error.setMessage(PacketUploaderExceptionConstants.MOSIP_SECURITY_FILE_LOCATION_EXCEPTION.getErrorMessage());
 		error.setCode(PacketUploaderExceptionConstants.MOSIP_SECURITY_FILE_LOCATION_EXCEPTION.getErrorCode());
-		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	/**
