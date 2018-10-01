@@ -66,32 +66,30 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Override
 	public boolean validateOtp(AuthRequestDTO authreqdto, String refId) throws IdAuthenticationBusinessException {
 		boolean isOtpValid = false;
-		try {
-			String txnId = authreqdto.getTxnID();
-			String UIN = authreqdto.getId();
-			String TSPCode = authreqdto.getMuaCode();
-			String otp = authreqdto.getPinDTO().getValue();
-			boolean isValidRequest = validateTxnId(txnId, UIN);
-			if (isValidRequest) {
-				// FIXME audit integration
-				logger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
-				String key = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
-				if (!isEmpty(key)) {
-					isOtpValid = otpManager.validateOtp(otp, key);
-				} else {
-					logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside key Null", getClass().toString());
-					logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
-					throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY);
-				}
-			}else {
-				//TODO 
+//		try {
+		String txnId = authreqdto.getTxnID();
+		String UIN = authreqdto.getId();
+		String TSPCode = authreqdto.getMuaCode();
+		String otp = authreqdto.getPinDTO().getValue();
+		boolean isValidRequest = validateTxnId(txnId, UIN);
+		if (isValidRequest) {
+			// FIXME audit integration
+			logger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
+			String key = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
+			if (!isEmpty(key)) {
+				isOtpValid = otpManager.validateOtp(otp, key);
+			} else {
+				logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside key Null", getClass().toString());
+				logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
+				throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY);
 			}
-		} catch (IdAuthenticationBusinessException e) {
-			logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Request", getClass().toString());
-			logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Arguments Invalid");
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_VALDIATION_REQUEST_FAILED,
-					e);
 		}
+//		} catch (IdAuthenticationBusinessException e) {
+//			logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Request", getClass().toString());
+//			logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Arguments Invalid");
+//			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_VALDIATION_REQUEST_FAILED,
+//					e);
+//		}
 
 		return isOtpValid;
 	}

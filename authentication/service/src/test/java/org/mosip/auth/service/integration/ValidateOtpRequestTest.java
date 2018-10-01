@@ -1,23 +1,36 @@
 package org.mosip.auth.service.integration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
+import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.dto.indauth.PinDTO;
+import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
+import org.mosip.auth.core.exception.IdValidationFailedException;
+import org.mosip.auth.core.exception.RestServiceException;
+import org.mosip.auth.core.util.dto.RestRequestDTO;
 import org.mosip.auth.service.factory.RestRequestFactory;
 import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.auth.service.integration.dto.OTPValidateResponseDTO;
-import org.mosip.auth.service.integration.dto.OtpGeneratorResponseDto;
+import org.mosip.auth.service.integration.dto.OtpValidateRequestDTO;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
@@ -33,8 +46,11 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import reactor.core.publisher.Mono;
+import reactor.ipc.netty.http.HttpResources;
 import reactor.ipc.netty.http.server.HttpServer;
+import reactor.ipc.netty.tcp.BlockingNettyContext;
 
 /**
  * 
@@ -43,20 +59,21 @@ import reactor.ipc.netty.http.server.HttpServer;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@TestPropertySource(value= {"classpath:rest-services.properties", "classpath:log.properties"})
-@Ignore
+@TestPropertySource(value = { "classpath:rest-services.properties", "classpath:log.properties" })
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ValidateOtpRequestTest {
-	
+
 	@InjectMocks
 	RestHelper restHelper;
-	
+
 	@Autowired
 	MockMvc mvc;
-	
+
 	@Autowired
 	Environment env;
 
-	private RestRequestFactory restfactory;
+	@Mock
+	RestRequestFactory restfactory;
 
 	@InjectMocks
 	OTPManager otpManager;
@@ -65,14 +82,15 @@ public class ValidateOtpRequestTest {
 	PinDTO pindto;
 
 	private OTPValidateResponseDTO otpvalidateresponsedto;
-	
+
+	static BlockingNettyContext server;
+
 	@Before
 	public void before() {
 		System.err.println(restHelper);
 		restfactory = new RestRequestFactory();
 		ReflectionTestUtils.setField(restfactory, "env", env);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
-		
 		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
 		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
 		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
@@ -82,11 +100,8 @@ public class ValidateOtpRequestTest {
 		mosipRollingFileAppender.setMaxHistory(10);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
-
 		ReflectionTestUtils.invokeMethod(restfactory, "initializeLogger", mosipRollingFileAppender);
-		
 		ReflectionTestUtils.invokeMethod(otpManager, "initializeLogger", mosipRollingFileAppender);
-
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restfactory);
 		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
 	}
@@ -104,18 +119,19 @@ public class ValidateOtpRequestTest {
 						OTPValidateResponseDTO.class));
 		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-		HttpServer.create(8080).start(adapter).installShutdownHook();
+		server = HttpServer.create(8083).start(adapter);
+		server.installShutdownHook();
+		System.err.println("Server Started");
+	}
 
-		RouterFunction<?> functionSuccess1 = RouterFunctions.route(RequestPredicates.GET("/otpmanager/otps"),
-				request -> {
-					OtpGeneratorResponseDto data = new OtpGeneratorResponseDto();
-					data.setOtp("123456");
-					return ServerResponse.status(HttpStatus.OK).body(Mono.just(data), OtpGeneratorResponseDto.class);
-				});
-		HttpHandler httpHandler1 = RouterFunctions.toHttpHandler(functionSuccess1);
-		ReactorHttpHandlerAdapter adapter1 = new ReactorHttpHandlerAdapter(httpHandler1);
-		HttpServer.create(8086).start(adapter1).installShutdownHook();
-		System.err.println("started server");
+	/**
+	 * To down the Server
+	 */
+
+	@AfterClass
+	public static void afterClass() {
+		server.shutdown();
+		HttpResources.reset();
 	}
 
 	/**
@@ -123,8 +139,40 @@ public class ValidateOtpRequestTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
+
 	@Test
 	public void Test() throws IdAuthenticationBusinessException {
-		assertEquals(true, otpManager.validateOtp("12345", "23232"));
+		assertEquals(false, otpManager.validateOtp("12345", "23232"));
 	}
+
+	@Test
+	public void TestValidOTPValidate() throws RestServiceException, IdAuthenticationBusinessException {
+
+		OtpValidateRequestDTO otpValidateRequestDTO = new OtpValidateRequestDTO();
+		otpValidateRequestDTO.setKey("12345");
+		otpValidateRequestDTO.setOtp("12323");
+		RestRequestDTO requestdto = new RestRequestDTO();
+		requestdto.setUri("http://localhost:8083/otpmanager/otps");
+		requestdto.setHttpMethod(HttpMethod.POST);
+		requestdto.setRequestBody(otpValidateRequestDTO);
+		requestdto.setResponseType(OTPValidateResponseDTO.class);
+		OTPValidateResponseDTO otpValidateResponseDTO = restHelper.requestSync(requestdto);
+		assertEquals("True", otpValidateResponseDTO.getStatus());
+	}
+
+	@Test(expected = RestServiceException.class)
+	public void zTest_InvalidvalidateOTP() throws RestServiceException, IdAuthenticationBusinessException {
+		OtpValidateRequestDTO otpValidateRequestDTO = new OtpValidateRequestDTO();
+		otpValidateRequestDTO.setKey("12345");
+		otpValidateRequestDTO.setOtp("12323");
+		RestRequestDTO requestdto = new RestRequestDTO();
+		requestdto.setUri("http://localhost:8085/otpmanager/otps");
+		requestdto.setHttpMethod(HttpMethod.POST);
+		requestdto.setRequestBody(otpValidateRequestDTO);
+		requestdto.setResponseType(OTPValidateResponseDTO.class);
+		requestdto.setTimeout(1);
+		OTPValidateResponseDTO otpValidateResponseDTO = restHelper.requestSync(requestdto);
+		otpManager.validateOtp("2323", "2323");
+	}
+
 }

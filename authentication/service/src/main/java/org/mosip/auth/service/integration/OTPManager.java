@@ -1,5 +1,7 @@
 package org.mosip.auth.service.integration;
 
+import java.util.Optional;
+
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.exception.IDDataValidationException;
@@ -36,6 +38,8 @@ public class OTPManager {
 	RestRequestFactory restRequestFactory;
 
 	private MosipLogger logger;
+
+	private OTPValidateResponseDTO otpvalidateresponsedto;
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
@@ -82,7 +86,6 @@ public class OTPManager {
 	 */
 	public boolean validateOtp(String pinValue, String otpKey) throws IdAuthenticationBusinessException {
 		boolean isValidOtp = false;
-		OTPValidateResponseDTO validResponseDto = new OTPValidateResponseDTO();
 		try {
 			RestRequestDTO restreqdto = restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE,
 					null, OTPValidateResponseDTO.class);
@@ -90,12 +93,9 @@ public class OTPManager {
 			params.add("key", otpKey);
 			params.add("otp", pinValue);
 			restreqdto.setParams(params);
-
-			validResponseDto = restHelper.requestSync(restreqdto);
-			if (validResponseDto.getStatus().equalsIgnoreCase("true")) {
-				isValidOtp = true;
-				logger.info("validateOtp", "Inside Validate OTP", "NA", "NA");
-			}
+			otpvalidateresponsedto = restHelper.requestSync(restreqdto);
+			isValidOtp = Optional.ofNullable(otpvalidateresponsedto).map(OTPValidateResponseDTO::getStatus)
+					.filter(status -> status.equalsIgnoreCase("true")).isPresent();
 		} catch (RestServiceException | IDDataValidationException e) {
 			logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(
