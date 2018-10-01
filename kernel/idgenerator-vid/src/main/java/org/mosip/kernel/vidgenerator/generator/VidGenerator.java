@@ -136,7 +136,7 @@ public class VidGenerator implements MosipIdGenerator<String> {
 	 * Generates Id
 	 */
 
-	public String generateVid() {
+	private String generateVid() {
 		String generatedVid = generateRandomId(generatedIdLength, lowerBound, upperBound);
 		while (!MosipIdFilter.isValidId(generatedVid)) {
 			generatedVid = generateVid();

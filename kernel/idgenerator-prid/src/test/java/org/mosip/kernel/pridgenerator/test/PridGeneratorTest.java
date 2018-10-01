@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class PridGeneratorTest {
-	@Value("${kernel.prid.length}")
+	@Value("${mosip.kernel.prid.length}")
 	private int pridLength;
 	@Autowired
 	private PridGenerator pridGenerator;
@@ -31,7 +31,7 @@ public class PridGeneratorTest {
 
 	@Test
 	public void notNullTest() {
-		assertNotNull(pridGenerator.generatePrid());
+		assertNotNull(pridGenerator.generateId());
 	}
 
 
@@ -40,6 +40,6 @@ public class PridGeneratorTest {
 
 	@Test
 	public void pridDigitTest() {
-		assertEquals(pridLength, pridGenerator.generatePrid().length());
+		assertEquals(pridLength, pridGenerator.generateId().length());
 	}
 }

@@ -81,7 +81,7 @@ public class PridGenerator implements MosipIdGenerator<String> {
 		}
 	}
 
-	public String generatePrid() {
+	private String generatePrid() {
 		String generatedPrid = generateRandomId(generatedIdLength, lowerBound, upperBound);
 		while (!MosipIdFilter.isValidId(generatedPrid)) {
 			generatedPrid = generatePrid();
