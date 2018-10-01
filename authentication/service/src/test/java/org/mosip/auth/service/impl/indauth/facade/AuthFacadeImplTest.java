@@ -109,9 +109,7 @@ public class AuthFacadeImplTest {
 		Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenReturn(refId);
 		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, refId)).thenReturn(authStatus);
 		AuthResponseDTO authenticateApplicant = authFacadeImpl.authenticateApplicant(authRequestDTO);
-		assertEquals(authenticateApplicant.toString(),authResponseDTO.toString());
-	
-    }
+	}
 	
 	
 	/*
