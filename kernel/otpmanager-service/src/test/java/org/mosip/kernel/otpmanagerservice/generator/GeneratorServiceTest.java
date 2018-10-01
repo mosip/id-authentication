@@ -18,11 +18,13 @@ import org.mosip.kernel.otpmanagerservice.repository.OtpRepository;
 import org.mosip.kernel.otpmanagerservice.service.impl.OtpGeneratorServiceImpl;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
+@TestPropertySource("classpath:/test.application.properties")
 public class GeneratorServiceTest {
 	@Mock
 	private OtpRepository repository;
