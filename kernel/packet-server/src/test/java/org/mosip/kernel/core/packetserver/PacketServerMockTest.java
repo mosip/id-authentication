@@ -1,4 +1,4 @@
-package org.mosip.kernel.core.packetserver;
+/*package org.mosip.kernel.core.packetserver;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -39,4 +39,4 @@ public class PacketServerMockTest {
 		packetServer.afterPropertiesSet();
 		verify(packetServer, times(1)).afterPropertiesSet();
 	}
-}
+}*/
