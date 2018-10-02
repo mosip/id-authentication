@@ -1,4 +1,4 @@
-package org.mosip.kernel.core.packetuploader.gateway;
+package io.mosip.kernel.core.packetuploader.gateway;
 
 import java.io.File;
 
