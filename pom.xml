@@ -14,11 +14,14 @@
 	<description>Parent project to build MOSIP</description>
 
 	<modules>
-		<module>authentication</module>
 		<module>kernel</module>
 		<module>pre-registration</module>
 		<module>registration</module>
 		<module>registration-processor</module>
+		<module>authentication</module>
+		<module>admin</module>
+		<module>config</module>
+		<module>launcher</module>
 	</modules>
 
 </project>
