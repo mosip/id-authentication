@@ -89,7 +89,7 @@ public class PacketDecryptorTaskletTest {
 		root.addAppender(mockAppender);
 		
 		Mockito.when(registrationStatusService
-				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString()))
+				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString()))
 				.thenReturn(list);
 		
 		Mockito.doNothing().when(adapter).unpackPacket(any(String.class));
@@ -125,7 +125,7 @@ public class PacketDecryptorTaskletTest {
 		root.addAppender(mockAppender);
 		
 		Mockito.when(registrationStatusService
-				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString()))
+				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString()))
 				.thenReturn(list);
 		
 		Mockito.doNothing().when(adapter).unpackPacket(any(String.class));
@@ -155,7 +155,7 @@ public class PacketDecryptorTaskletTest {
 		root.addAppender(mockAppender);
 		
 		Mockito.when(registrationStatusService
-				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString()))
+				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString()))
 				.thenReturn(list);		
 		
 		RepeatStatus status = packetDecryptorTasklet.execute(stepContribution, chunkContext);
@@ -181,7 +181,7 @@ public class PacketDecryptorTaskletTest {
 		root.addAppender(mockAppender);
 		
 		Mockito.when(registrationStatusService
-				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString()))
+				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString()))
 				.thenReturn(list);
 		
 		Mockito.doNothing().when(adapter).unpackPacket(any(String.class));
@@ -238,7 +238,7 @@ public class PacketDecryptorTaskletTest {
 		root.addAppender(mockAppender);
 		
 		Mockito.when(registrationStatusService
-				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString()))
+				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString()))
 				.thenReturn(list);
 		
 		Mockito.doThrow(SdkClientException.class).when(adapter).unpackPacket(any(String.class));
@@ -266,7 +266,7 @@ public class PacketDecryptorTaskletTest {
 		root.addAppender(mockAppender);
 		
 		Mockito.when(registrationStatusService
-				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString()))
+				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString()))
 				.thenReturn(list);
 		
 		Mockito.doThrow(IOException.class).when(adapter).unpackPacket(any(String.class));

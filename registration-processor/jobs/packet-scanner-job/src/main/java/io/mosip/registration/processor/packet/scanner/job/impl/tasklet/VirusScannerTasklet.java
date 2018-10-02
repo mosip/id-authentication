@@ -78,7 +78,7 @@ public class VirusScannerTasklet implements Tasklet {
 		List<RegistrationStatusDto> registrationStatusDtoList = null;
 		try {
 			registrationStatusDtoList = registrationStatusService
-					.getByStatus(RegistrationStatusCode.PACKET_FOR_VIRUS_SCAN.toString());
+					.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
 		} catch (TablenotAccessibleException e) {
 			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
 			return RepeatStatus.FINISHED;
@@ -118,7 +118,7 @@ public class VirusScannerTasklet implements Tasklet {
 				entry.setRetryCount(0);
 			fileManager.copy(entry.getRegistrationId(), DirectoryPathDto.VIRUS_SCAN, DirectoryPathDto.VIRUS_SCAN_RETRY);
 			entry.setRetryCount(entry.getRetryCount() + 1);
-			entry.setStatusCode(RegistrationStatusCode.PACKET_FOR_VIRUS_SCAN_RETRY.toString());
+			entry.setStatusCode(RegistrationStatusCode.VIRUS_SCAN_FAILED.toString());
 			entry.setStatusComment("packet is in status PACKET_FOR_VIRUS_SCAN_RETRY");
 			entry.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(entry);
@@ -145,7 +145,7 @@ public class VirusScannerTasklet implements Tasklet {
 		filename = filename.substring(0, filename.lastIndexOf('.'));
 		try {
 			adapter.storePacket(filename, file);
-			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString());
+			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 			entry.setStatusComment("packet is in status PACKET_UPLOADED_TO_DFS");
 			entry.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(entry);

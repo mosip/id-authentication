@@ -57,7 +57,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 		
 		try {
 		dtolist=registrationStatusService.getByStatus(
-				RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString());
+				RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 		
 		if (!(dtolist.isEmpty())) {
 			dtolist.forEach(dto -> {
@@ -76,8 +76,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 						
 						adapter.unpackPacket(dto.getRegistrationId());
 						
-						dto.setStatusCode(RegistrationStatusCode.
-								DECRYPTED_PACKET_STORED_IN_DFS.toString());
+						dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_SUCCESSFUL.toString());
 						registrationStatusService.updateRegistrationStatus(dto);
 						
 						
