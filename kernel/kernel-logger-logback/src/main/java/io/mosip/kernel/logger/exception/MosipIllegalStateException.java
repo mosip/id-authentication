@@ -17,7 +17,7 @@ import io.mosip.kernel.logger.constant.LogExeptionCodeConstants;
  * @author Urvil Joshi
  * @since 1.0.0
  */
-public class MosipIlligalStateException extends BaseUncheckedException {
+public class MosipIllegalStateException extends BaseUncheckedException {
 	/**
 	 * Unique id for serialization
 	 */
@@ -29,7 +29,7 @@ public class MosipIlligalStateException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public MosipIlligalStateException(LogExeptionCodeConstants errorCode,
+	public MosipIllegalStateException(LogExeptionCodeConstants errorCode,
 			LogExeptionCodeConstants errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}

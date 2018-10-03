@@ -18,7 +18,7 @@ import io.mosip.kernel.logger.constant.LogExeptionCodeConstants;
  * @author Urvil Joshi
  * @since 1.0.0
  */
-public class PatternSyntaxExeption extends BaseUncheckedException {
+public class PatternSyntaxException extends BaseUncheckedException {
 
 	/**
 	 * Unique id for serialization
@@ -31,7 +31,7 @@ public class PatternSyntaxExeption extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public PatternSyntaxExeption(LogExeptionCodeConstants errorCode,
+	public PatternSyntaxException(LogExeptionCodeConstants errorCode,
 			LogExeptionCodeConstants errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}

@@ -23,9 +23,9 @@ import io.mosip.kernel.logger.exception.EmptyPatternException;
 import io.mosip.kernel.logger.exception.FileNameNotProvided;
 import io.mosip.kernel.logger.exception.ImplementationNotFound;
 import io.mosip.kernel.logger.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.logger.exception.MosipIlligalStateException;
+import io.mosip.kernel.logger.exception.MosipIllegalStateException;
 import io.mosip.kernel.logger.exception.MosipXMLConfigurationParseException;
-import io.mosip.kernel.logger.exception.PatternSyntaxExeption;
+import io.mosip.kernel.logger.exception.PatternSyntaxException;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 public class MosipLogfactoryTest {
@@ -421,7 +421,7 @@ public class MosipLogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	@Test(expected = PatternSyntaxExeption.class)
+	@Test(expected = PatternSyntaxException.class)
 	public void testGetMosipDefaultFileLoggerNameWithRollingWrongFilePattern() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -436,7 +436,7 @@ public class MosipLogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	@Test(expected = PatternSyntaxExeption.class)
+	@Test(expected = PatternSyntaxException.class)
 	public void testGetMosipDefaultFileLoggerNameWithRollingWrongFileNamePattern() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -465,7 +465,7 @@ public class MosipLogfactoryTest {
 				.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, "");
 	}
 
-	@Test(expected = MosipIlligalStateException.class)
+	@Test(expected = MosipIllegalStateException.class)
 	public void testGetMosipDefaultFileLoggerNameWithRollingIllegalState() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -507,7 +507,7 @@ public class MosipLogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	@Test(expected = PatternSyntaxExeption.class)
+	@Test(expected = PatternSyntaxException.class)
 	public void testGetMosipDefaultFileLoggerNameWithRollingNotIConstraintsException() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
