@@ -1,4 +1,4 @@
-package io.mosip.kernel.packetserver.serverdefination;
+package io.mosip.kernel.packetserver.serverdefinition;
 
 import java.io.File;
 import java.io.IOException;

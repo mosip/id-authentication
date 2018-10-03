@@ -18,6 +18,13 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -25,19 +32,12 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.amazonaws.SdkClientException;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.decryptor.job.Decryptor;
+import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
+import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
 import io.mosip.registration.processor.packet.decryptor.job.tasklet.PacketDecryptorTasklet;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
-import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
-import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 @RunWith(SpringRunner.class)
 public class PacketDecryptorTaskletTest {
@@ -72,7 +72,7 @@ public class PacketDecryptorTaskletTest {
 	public void setup() {
 		dto =  new RegistrationStatusDto();
 		dto.setRegistrationId("1001");
-		dto.setStatusCode("PACKET_UPLOADED_TO_DFS");
+		dto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
 		dto.setRetryCount(0);
 		list = new ArrayList<RegistrationStatusDto>();
 	}
@@ -115,7 +115,7 @@ public class PacketDecryptorTaskletTest {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void decryptionFailureTest() throws Exception {
+	public void nullPacketTest() throws Exception {
 		
 		list.add(dto);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
@@ -140,7 +140,46 @@ public class PacketDecryptorTaskletTest {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
 				return ((ILoggingEvent) argument).getFormattedMessage()
-						.contains("Packet could not be  decrypted");
+						.contains(" Packet is null and could not be  decrypted ");
+			}
+		}));
+	}
+	@SuppressWarnings("unchecked")
+	@Test
+	public void decryptionFailureTest() throws Exception {
+		
+		list.add(dto);
+		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
+				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+		final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
+		when(mockAppender.getName()).thenReturn("MOCK");
+		root.addAppender(mockAppender);
+		
+		Mockito.when(registrationStatusService
+				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString()))
+				.thenReturn(list);
+		
+		Mockito.doNothing().when(adapter).unpackPacket(any(String.class));
+		
+		Mockito.when(adapter.getPacket(any(String.class))).thenReturn(stream);
+
+			
+		
+		PacketDecryptionFailureException exception = new PacketDecryptionFailureException(
+				PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
+				PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorMessage(), 
+				new IOException());
+		
+		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenThrow(exception);	
+		
+		RepeatStatus status = packetDecryptorTasklet.execute(stepContribution, chunkContext);
+		Assert.assertEquals(RepeatStatus.FINISHED, status);
+		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
+			@Override
+			public boolean matches(final ILoggingEvent argument) {
+				return ((ILoggingEvent) argument).getFormattedMessage()
+						.contains(PacketDecryptionFailureExceptionConstant.
+								MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorMessage());
 			}
 		}));
 	}
@@ -226,33 +265,7 @@ public class PacketDecryptorTaskletTest {
 			}
 		}));
 	}
-	@SuppressWarnings("unchecked")
-	@Test
-	public void AmazonClientExceptionTest() throws Exception {
-		
-		list.add(dto);
-		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
-				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-		final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
-		when(mockAppender.getName()).thenReturn("MOCK");
-		root.addAppender(mockAppender);
-		
-		Mockito.when(registrationStatusService
-				.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString()))
-				.thenReturn(list);
-		
-		Mockito.doThrow(SdkClientException.class).when(adapter).unpackPacket(any(String.class));
-		
-		RepeatStatus status = packetDecryptorTasklet.execute(stepContribution, chunkContext);
-		Assert.assertEquals(RepeatStatus.FINISHED, status);
-		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
-			@Override
-			public boolean matches(final ILoggingEvent argument) {
-				return ((ILoggingEvent) argument).getFormattedMessage()
-						.contains("The DFS Path set by the System is not accessible");
-			}
-		}));
-	}
+	
 	
 	@SuppressWarnings("unchecked")
 	@Test
