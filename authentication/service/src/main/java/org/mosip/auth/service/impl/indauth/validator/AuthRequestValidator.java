@@ -1,7 +1,5 @@
 package org.mosip.auth.service.impl.indauth.validator;
 
-import java.util.Arrays;
-
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
 import org.mosip.auth.core.dto.indauth.IdType;
@@ -48,7 +46,7 @@ public class AuthRequestValidator implements Validator {
 		
 		validator.validate(authRequest, errors);
 		
-		IdType idTypeEnum = authRequest.getIdType();
+//		IdType idTypeEnum = authRequest.getIdType();
 //		if (idTypeEnum != null) {
 //			anyIdTypePresent = true;
 //			if (!Arrays.asList(IdType.values()).contains(idTypeEnum))
