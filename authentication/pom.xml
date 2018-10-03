@@ -22,7 +22,7 @@
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
 		<maven.sonar.version>3.2</maven.sonar.version>
 		<junit.version>4.12</junit.version>
-		<sonar.exclusions>**/constant/**,**/config/**,**/dto/**,**org/mosip/auth/service/filter/**,**org/mosip/auth/service/entity/**</sonar.exclusions>
+		<sonar.exclusions>**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/service/entity/**</sonar.exclusions>
 	</properties>
 
 	<modules>
@@ -107,8 +107,8 @@
 					<exclude>**/constant/**</exclude>
 					<exclude>**/config/**</exclude>
 					<exclude>**/dto/**</exclude>
-					<exclude>org/mosip/auth/service/*.class</exclude>
-					<exclude>org/mosip/auth/service/filter/**</exclude>
+					<exclude>io/mosip/authentication/service/*.class</exclude>
+					<exclude>io/mosip/authentication/service/filter/**</exclude>
 				</excludes>
 				</configuration>
 				<executions>

@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.indauth.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -21,6 +22,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.service.entity.UinEntity;
@@ -31,7 +35,6 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.idauth.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 /**
@@ -42,25 +45,23 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes= {TestContext.class, WebApplicationContext.class})
-@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties",
+		"classpath:log.properties" })
 public class IdAuthServiceTest {
-	private MosipLogger logger;
 
 	@Mock
 	RestHelper restHelper;
-	
+
 	@Autowired
 	Environment env;
-	
-	
 
 	@InjectMocks
-	private RestRequestFactory  restFactory;
-	
+	private RestRequestFactory restFactory;
+
 	@InjectMocks
 	private AuditRequestFactory auditFactory;
-	
+
 	@Mock
 	private VIDRepository vidRepository;
 
@@ -69,7 +70,7 @@ public class IdAuthServiceTest {
 
 	@Mock
 	private UinRepository uinRepository;
-	
+
 	@Before
 	public void before() {
 		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
@@ -81,7 +82,7 @@ public class IdAuthServiceTest {
 		mosipRollingFileAppender.setMaxHistory(10);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
-       
+
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
@@ -89,7 +90,7 @@ public class IdAuthServiceTest {
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "auditFactory", auditFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
-		ReflectionTestUtils.setField(idAuthServiceImpl, "logger", logger);
+		//ReflectionTestUtils.setField(idAuthServiceImpl, "logger", logger);
 	}
 
 	/**
@@ -116,7 +117,7 @@ public class IdAuthServiceTest {
 		uinEntity.setActive(false);
 		Mockito.when(uinRepository.findByUin(uin)).thenReturn(uinEntity);
 		idAuthServiceImpl.validateUIN(uin);
-     }
+	}
 
 	/**
 	 * This method throws IdValidationFailedException when UinEntity is not null but
@@ -131,12 +132,12 @@ public class IdAuthServiceTest {
 		uinEntity.setId("12345");
 		Mockito.when(uinRepository.findByUin(Mockito.anyString())).thenReturn(uinEntity);
 		String refId = null;
-        refId = idAuthServiceImpl.validateUIN(uin);
-        assertEquals(refId, uinEntity.getId());
+		refId = idAuthServiceImpl.validateUIN(uin);
+		assertEquals(refId, uinEntity.getId());
 	}
-	
+
 	/**
-	 * This method throws IdValidationFailedException when VIDEntity is null 
+	 * This method throws IdValidationFailedException when VIDEntity is null
 	 * 
 	 */
 	@Test(expected = IdValidationFailedException.class)
@@ -145,7 +146,7 @@ public class IdAuthServiceTest {
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(null);
 		idAuthServiceImpl.validateVID(vid);
 	}
-	
+
 	/*
 	 * This method throws IdValidationFailedException when VIDEntity is not null but
 	 * VID is inactive
@@ -159,7 +160,7 @@ public class IdAuthServiceTest {
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
 		idAuthServiceImpl.validateVID(vid);
 	}
-	
+
 	/**
 	 * This method throws IdValidationFailedException when VIDEntity is not null but
 	 * VID is active but validity expired
@@ -174,49 +175,46 @@ public class IdAuthServiceTest {
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
 		idAuthServiceImpl.validateVID(vid);
 	}
-	
-	
+
 	/**
 	 * This method throws IdValidationFailedException when VIDEntity is not null but
-	 * VID is active  and checks for refId in UIN and failed.
+	 * VID is active and checks for refId in UIN and failed.
 	 * 
 	 */
-	@Test(expected=IdValidationFailedException.class)
+	@Test(expected = IdValidationFailedException.class)
 	public void testValidateRef() throws IdAuthenticationBusinessException {
 		String vid = "1234567890";
 		VIDEntity vidEntity = new VIDEntity();
 		vidEntity.setActive(true);
 		vidEntity.setExpiryDate(new Date(2019, 1, 1));
-		UinEntity uinEntity=null;
+		UinEntity uinEntity = null;
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
 		Mockito.when(uinRepository.findById(Mockito.anyString())).thenReturn(Optional.ofNullable(uinEntity));
 		idAuthServiceImpl.validateVID(vid);
 	}
-	
-	
+
 	/**
 	 * This method throws IdValidationFailedException when VIDEntity is not null but
-	 * VID is active  and checks for refId in UIN and UIN is inactive.
+	 * VID is active and checks for refId in UIN and UIN is inactive.
 	 * 
 	 */
-	@Test(expected=IdValidationFailedException.class)
+	@Test(expected = IdValidationFailedException.class)
 	public void testValidateUINInactiveForVID() throws IdAuthenticationBusinessException {
 		String vid = "1234567890";
 		VIDEntity vidEntity = new VIDEntity();
 		vidEntity.setActive(true);
 		vidEntity.setExpiryDate(new Date());
-		UinEntity uinEntity=new UinEntity();
+		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(false);
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
 		Mockito.when(uinRepository.findById(Mockito.any())).thenReturn(Optional.of(uinEntity));
 		idAuthServiceImpl.validateVID(vid);
-		
+
 	}
-	
-	
+
 	/**
 	 * This method throws IdValidationFailedException when VIDEntity is not null but
-	 * VID is active  and checks for refId in UIN and returns refId
+	 * VID is active and checks for refId in UIN and returns refId
 	 * 
 	 */
 	@Test
@@ -225,18 +223,33 @@ public class IdAuthServiceTest {
 		VIDEntity vidEntity = new VIDEntity();
 		vidEntity.setRefId("1234");
 		vidEntity.setActive(true);
-		vidEntity.setExpiryDate(new Date(01/01/2019));
-		UinEntity uinEntity=new UinEntity();
+		vidEntity.setExpiryDate(new Date(01 / 01 / 2019));
+		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(true);
-		Optional<UinEntity> uinEntityopt= Optional.of(uinEntity);
+		Optional<UinEntity> uinEntityopt = Optional.of(uinEntity);
 		System.err.println(uinEntityopt.isPresent());
 		Mockito.when(uinRepository.findById(Mockito.any())).thenReturn(uinEntityopt);
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
-		
+
 		ReflectionTestUtils.setField(idAuthServiceImpl, "uinRepository", uinRepository);
 		System.err.println(uinRepository.findById("refId").get());
-		String refId=idAuthServiceImpl.validateVID(vid);
-		assertEquals(vidEntity.getRefId(),refId );
-		
+		String refId = idAuthServiceImpl.validateVID(vid);
+		assertEquals(vidEntity.getRefId(), refId);
+
+	}
+
+	@Test(expected=IdAuthenticationBusinessException.class)
+	public void TestAuditData() throws Throwable {
+		RestRequestFactory restfactory = Mockito.mock(RestRequestFactory.class);
+		Mockito.when(restfactory.buildRequest(Mockito.any(RestServicesConstants.class), Mockito.any(), Mockito.any()))
+				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
+		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restfactory);
+		try {
+		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "auditData");
+		} catch (UndeclaredThrowableException e) {
+			throw e.getUndeclaredThrowable();
+			
+		}
+
 	}
 }
