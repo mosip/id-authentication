@@ -2,6 +2,9 @@ package org.mosip.registration.test.dao.impl;
 
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,6 +63,15 @@ public class RegTransactionDAOTest {
 		ReflectionTestUtils.setField(regTransactionDAOImpl, "LOGGER", logger);
 		when(regTransactionRepository.create(Mockito.any(RegistrationTransaction.class))).thenThrow(new RuntimeException());
 		regTransactionDAOImpl.save("file");
+	}
+	
+	@Test
+	public void insertPacketTransDetailsTest() {
+		ReflectionTestUtils.setField(regTransactionDAOImpl, "LOGGER", logger);
+		List<RegistrationTransaction> packetListnew = new ArrayList<RegistrationTransaction>();
+		packetListnew.add(new RegistrationTransaction());
+		when(regTransactionRepository.saveAll(Mockito.anyListOf(RegistrationTransaction.class))).thenReturn(packetListnew);
+		regTransactionDAOImpl.insertPacketTransDetails(packetListnew);
 	}
 
 }

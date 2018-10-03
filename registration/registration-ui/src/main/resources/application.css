@@ -13,7 +13,6 @@
 }
 
 #header-section {
-    -fx-alignment: left;
     -fx-padding: 10.0 10.0 10.0 10.0;
     -fx-border-width: 1.0;
     -fx-border-color: #dee2e6 transparent transparent transparent;

@@ -55,6 +55,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 	@Autowired
 	private VelocityPDFGenerator velocityGenerator;
 
+	/**
+	 * Creating Packet and displaying acknowledgement form
+	 */
 	public void createPacket(ActionEvent event) throws RegBaseCheckedException {
 
 		try {
@@ -82,6 +85,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 		}
 	}
 
+	/**
+	 * Approve, Reject and Hold packets
+	 */
 	public void approvePacket(ActionEvent event) {
 		try {
 			Button button = (Button) event.getSource();
@@ -102,6 +108,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 		}
 	}
 
+	/**
+	 * Uploading packets to FTP server
+	 */
 	public void uploadPacket(ActionEvent event) {
 		try {
 			uploadRoot = BaseController.load(getClass().getResource("/fxml/FTPLogin.fxml"));

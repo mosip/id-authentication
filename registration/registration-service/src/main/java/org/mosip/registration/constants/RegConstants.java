@@ -182,4 +182,29 @@ public class RegConstants {
 	public static Map<String, String> getDocumentTypesMap() {
 		return DOCUMENT_TYPES_MAP;
 	}
+	
+	/** Velocity Template Generator Constants */
+	public static final String RESOURCE_LOADER = "file";
+	public static final String FILE_RESOURCE_LOADER_CLASS = "file.resource.loader.class";
+	public static final String FILE_RESOURCE_LOADER_PATH = "file.resource.loader.path";
+	public static final String TEMPLATE_REGISTRATION_ID = "RegId";
+	public static final String TEMPLATE_DATE_FORMAT = "dd/MM/yyyy";
+	public static final String TEMPLATE_DATE = "Date";
+	public static final String TEMPLATE_FULL_NAME = "FullName";
+	public static final String TEMPLATE_DOB = "DOB";
+	public static final String TEMPLATE_GENDER = "Gender";
+	public static final String TEMPLATE_ADDRESS_LINE1 = "AddressLine1";
+	public static final String TEMPLATE_ADDRESS_LINE2 = "AddressLine2";
+	public static final String TEMPLATE_CITY = "City";
+	public static final String TEMPLATE_STATE = "State";
+	public static final String TEMPLATE_COUNTRY = "Country";
+	public static final String TEMPLATE_MOBILE = "Mobile";
+	public static final String TEMPLATE_EMAIL = "Email";
+	public static final String TEMPLATE_DOCUMENTS = "Documents";
+	public static final String TEMPLATE_OPERATOR_NAME = "OperatorName";
+	public static final String TEMPLATE_IMAGE_SOURCE = "imagesource";
+	public static final String TEMPLATE_IMAGE_ENCODING = "data:image/jpg;base64,";
+	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
+	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "BiometricsCaptured";
+	
 }

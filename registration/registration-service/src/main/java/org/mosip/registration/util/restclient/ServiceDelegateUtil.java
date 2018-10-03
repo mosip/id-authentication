@@ -1,9 +1,16 @@
 package org.mosip.registration.util.restclient;
 
+import static org.mosip.registration.constants.RegConstants.APPLICATION_ID;
+import static org.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
 
+import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.mosip.registration.constants.RegConstants;
 import org.mosip.registration.constants.RegProcessorExceptionCode;
 import org.mosip.registration.constants.RegProcessorExceptionEnum;
@@ -16,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -35,30 +43,47 @@ public class ServiceDelegateUtil {
 	@Autowired
 	Environment environment;
 
-	
-	/** Prepare GET request
+	private static MosipLogger LOGGER;
+
+	@Autowired
+	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
+		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
+	}
+
+	/**
+	 * Prepare GET request
 	 * 
 	 * @param serviceName
 	 *            service to be invoked
 	 * @param requestParams
 	 *            parameters along with url
-	 * @return  Object requiredType of object response Body
+	 * @return Object requiredType of object response Body
 	 * @throws RegBaseCheckedException
+	 *             generalised exception with errorCode and errorMessage
 	 * @throws HttpClientErrorException
+	 *             when client error exception from server
+	 * @throws HttpServerErrorException
+	 *             when server exception from server
 	 */
 	public Object get(String serviceName, Map<String, String> requestParams)
 			throws RegBaseCheckedException, HttpClientErrorException {
 
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Get method has been called");
+
 		Object responseBody = null;
 		RequestHTTPDTO requestDto = null;
-        try {
-		requestDto = prepareGETRequest(serviceName, requestParams);
-        } catch (RegBaseCheckedException baseCheckedException) {
+		try {
+			requestDto = prepareGETRequest(serviceName, requestParams);
+
+		} catch (RegBaseCheckedException baseCheckedException) {
 			throw new RegBaseCheckedException(RegProcessorExceptionEnum.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorCode(),
 					RegProcessorExceptionEnum.REG_SERVICE_DELEGATE_UTIL_CODE.getErrorMessage());
 		}
-		
+
 		responseBody = restClientUtil.invoke(requestDto);
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Get method has been ended");
 
 		return responseBody;
 
@@ -71,12 +96,17 @@ public class ServiceDelegateUtil {
 	 *            service to be invoked
 	 * @param object
 	 *            request type
-	 * @return  Object requiredType of object response Body
+	 * @return Object requiredType of object response Body
 	 * @throws RegBaseCheckedException
 	 *             generalised exception with errorCode and errorMessage
 	 * @throws HttpClientErrorException
+	 *             when client error exception from server
+	 * @throws HttpServerErrorException
+	 *             when server exception from server
 	 */
 	public Object post(String serviceName, Object object) throws RegBaseCheckedException, HttpClientErrorException {
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), " post method called");
 
 		RequestHTTPDTO requestDto;
 		Object responseBody = null;
@@ -88,6 +118,8 @@ public class ServiceDelegateUtil {
 		}
 
 		responseBody = restClientUtil.invoke(requestDto);
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "post method ended");
 
 		return responseBody;
 	}
@@ -105,6 +137,9 @@ public class ServiceDelegateUtil {
 	 */
 	private RequestHTTPDTO prepareGETRequest(final String serviceName, final Map<String, String> requestParams)
 			throws RegBaseCheckedException {
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Prepare Get request method called");
+
 		// DTO need to to be prepared
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 
@@ -114,6 +149,8 @@ public class ServiceDelegateUtil {
 		// URI creation
 		String url = environment.getProperty(serviceName + "." + RegConstants.SERVICE_URL);
 		URI uri = getUri(requestParams, url);
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "get uri method called");
 
 		// ResponseType
 		String responseClassName = environment.getProperty(serviceName + "." + RegConstants.RESPONSE_TYPE);
@@ -127,6 +164,9 @@ public class ServiceDelegateUtil {
 
 		requestHTTPDTO.setClazz(responseClass);
 		requestHTTPDTO.setUri(uri);
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Prepare Get request method ended");
+
 		return requestHTTPDTO;
 	}
 
@@ -137,10 +177,12 @@ public class ServiceDelegateUtil {
 	 *            request type
 	 * @return RequestHTTPDTO requestHTTPDTO with required data
 	 * @throws RegBaseCheckedException
-	 * @throws ClassNotFoundException
 	 */
 	private RequestHTTPDTO preparePOSTRequest(final String serviceName, final Object object)
 			throws RegBaseCheckedException {
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Prepare post request method called");
+
 		// DTO need to to be prepared
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 
@@ -150,6 +192,8 @@ public class ServiceDelegateUtil {
 		// URI creation
 		String url = environment.getProperty(serviceName + "." + RegConstants.SERVICE_URL);
 		URI uri = getUri(null, url);
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "get uri method called");
 
 		// RequestType
 		String requestClassName = environment.getProperty(serviceName + "." + RegConstants.REQUEST_TYPE);
@@ -163,6 +207,8 @@ public class ServiceDelegateUtil {
 
 		requestHTTPDTO.setUri(uri);
 		requestHTTPDTO.setClazz(requestClass);
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Prepare post request method ended");
 
 		return requestHTTPDTO;
 
@@ -239,7 +285,19 @@ public class ServiceDelegateUtil {
 		}
 	}
 
+	/**
+	 * @param requestHTTPDTO
+	 *            create requestedHTTPDTO
+	 * @param serviceName
+	 *            service name to be called
+	 * @param object
+	 *            object to be included in HTTP entities
+	 * @return
+	 */
 	private RequestHTTPDTO prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object object) {
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), " prepare request method  called");
+
 		// HTTP headers
 		HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -249,6 +307,8 @@ public class ServiceDelegateUtil {
 		// Headers
 		String headers = environment.getProperty(serviceName + "." + RegConstants.HEADERS);
 		setHeaders(httpHeaders, headers);
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), " set Headers method called");
 
 		// AuthHeader
 		String authHeader = environment.getProperty(serviceName + "." + RegConstants.AUTH_HEADER);
@@ -257,6 +317,8 @@ public class ServiceDelegateUtil {
 		Boolean authRequired = Boolean.valueOf(environment.getProperty(serviceName + "." + RegConstants.AUTH_REQUIRED));
 
 		setAuthHeaders(httpHeaders, authRequired, authHeader, null);
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), " set Auth Headers  method  called");
 
 		// HTTP entity
 		@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -264,6 +326,9 @@ public class ServiceDelegateUtil {
 
 		requestHTTPDTO.setHttpMethod(httpMethod);
 		requestHTTPDTO.setHttpEntity(httpEntity);
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), " prepare request method  called");
+
 		return requestHTTPDTO;
 
 	}

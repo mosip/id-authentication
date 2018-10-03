@@ -1,5 +1,6 @@
 package org.mosip.registration.entity;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -14,13 +15,22 @@ import javax.persistence.Table;
 @Table(schema="master", name = "TEMPLATE_TYPE")
 public class TemplateType extends TemplateCommonFields {
 	@EmbeddedId
-	private TemplateEmbeddedKeyCommonFields pk_tmplt_code;
+	@Column(name="pk_tmplt_code")
+	private TemplateEmbeddedKeyCommonFields pkTmpltCode;
 
-	public TemplateEmbeddedKeyCommonFields getPk_tmplt_code() {
-		return pk_tmplt_code;
+	/**
+	 * @return the pkTmpltCode
+	 */
+	public TemplateEmbeddedKeyCommonFields getPkTmpltCode() {
+		return pkTmpltCode;
 	}
 
-	public void setPk_tmplt_code(TemplateEmbeddedKeyCommonFields pk_tmplt_code) {
-		this.pk_tmplt_code = pk_tmplt_code;
+	/**
+	 * @param pkTmpltCode the pkTmpltCode to set
+	 */
+	public void setPkTmpltCode(TemplateEmbeddedKeyCommonFields pkTmpltCode) {
+		this.pkTmpltCode = pkTmpltCode;
 	}
+
+	
 }

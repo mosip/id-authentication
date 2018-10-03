@@ -66,4 +66,24 @@ public interface RegistrationDAO {
 	boolean upload(Object object);
 
 	List<String> view(String zipFileName);
+	
+	/**
+	 * 
+	 * This method is used to get the Packet details using the Id.
+	 * 
+	 * @param packetNames
+	 * @return
+	 */
+	
+	List<Registration> getRegistrationById(List<String> packetNames);
+	
+	/**
+	 * 
+	 * This method is used to update the registration status in the Registration table.
+	 * 
+	 * @param regId
+	 * @return
+	 */
+	
+	Registration updateRegStatus(String regId);
 }

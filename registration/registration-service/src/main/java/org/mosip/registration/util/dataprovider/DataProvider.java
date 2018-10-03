@@ -2,8 +2,6 @@ package org.mosip.registration.util.dataprovider;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,11 +44,10 @@ public class DataProvider {
 		try {
 			InputStream file = DataProvider.class.getClass().getResourceAsStream(filePath);
 			byte[] bytesArray = new byte[(int) file.available()];
-			file.read(bytesArray);
+			int count = file.read(bytesArray);
 			file.close();
 
 			return bytesArray;
-			//return Files.readAllBytes(Paths.get(filePath));
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(RegProcessorExceptionCode.SERVICE_DATA_PROVIDER_UTIL,
 					"Unable to read the Image bytes", ioException);

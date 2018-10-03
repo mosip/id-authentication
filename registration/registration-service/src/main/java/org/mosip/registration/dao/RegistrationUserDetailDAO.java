@@ -2,10 +2,21 @@ package org.mosip.registration.dao;
 
 import java.util.Map;
 
-import org.springframework.stereotype.Repository;
+/**
+ * DAO class for RegistrationUserDetail
+ * 
+ * @author Sravya Surampalli
+ * @since 1.0.0
+ *
+ */
 
-@Repository
 public interface RegistrationUserDetailDAO {
+	
+	/**
+	 * This method is used to get the User Details
+	 * 
+	 * @return Map of User deatils
+	 */
 	
 	public Map<String,String> getUserDetail(String userId);
 

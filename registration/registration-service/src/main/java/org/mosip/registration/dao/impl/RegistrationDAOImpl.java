@@ -111,6 +111,11 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	@Override
 	public Registration updateStatus(String id, String clientStatusCode, String approverUsrId,
 			String statusComments, String updBy) {
+		try {
+		LOGGER.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Packet updation has been started");
+
+		
 		OffsetDateTime timestamp = OffsetDateTime.now();
 		Registration registration = registrationRepository.getOne(id);
 
@@ -131,24 +136,36 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		registrationTxn.setCrDtime(timestamp);
 		registrationTransaction.add(registrationTxn);
 
+		LOGGER.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Packet updation has been ended");
 		return registrationRepository.update(registration);
-	}
+	} catch (RuntimeException runtimeException) {
+		throw new RegBaseUncheckedException(RegProcessorExceptionCode.PACKET_UPDATE_STATUS,
+				runtimeException.toString());
+	}	}
 
 	/* (non-Javadoc)
 	 * @see org.mosip.registration.dao.RegistrationDAO#getEnrollmentByStatus(java.lang.String)
 	 */
 	@Override
 	public List<Registration> getEnrollmentByStatus(String status) {
-		return registrationRepository.findByclientStatusCode(status);
-	}
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Retriving packets based on status");
+		return registrationRepository.findByclientStatusCode(status);	}
 
 	/* (non-Javadoc)
 	 * @see org.mosip.registration.dao.RegistrationDAO#approvalList()
 	 */
 	@Override
 	public List<Registration> approvalList() {
-		return registrationRepository.findByclientStatusCode("R");
-	}
+		LOGGER.debug("REGISTRATION - CREATED_STATUS - REGISTRATION_DAO", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Retriving packets based on created status");
+		try {
+		return registrationRepository.findByclientStatusCode(RegClientStatusCode.CREATED.getCode());
+		}catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(RegProcessorExceptionCode.PACKET_RETRIVE_STATUS,
+					runtimeException.toString());
+		}	}
 
 	/* (non-Javadoc)
 	 * @see org.mosip.registration.dao.RegistrationDAO#upload(java.lang.Object)
@@ -166,6 +183,26 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	public List<String> view(String zipFileName) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public List<Registration> getRegistrationById(List<String> packetNames) {
+		LOGGER.debug("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", 
+				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), 
+				"got the packet details by id");
+		return registrationRepository.findByIdIn(packetNames);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.mosip.registration.dao.RegistrationDAO#updateRegStatus(java.lang.String)
+	 */
+	public Registration updateRegStatus(String regId) {
+		LOGGER.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", 
+				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), 
+				"Updating the packet details in the Registation table");
+		Registration reg = registrationRepository.getOne(regId);
+		reg.setClientStatusCode("P");
+		return registrationRepository.update(reg);
 	}
 
 }

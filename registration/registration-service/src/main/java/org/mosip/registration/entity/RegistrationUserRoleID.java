@@ -4,11 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 
+/**
+ * Composite key for RegistrationUserRole entity 
+ * 
+ * @author Sravya Surampalli
+ * @since 1.0.0
+ */
 public class RegistrationUserRoleID implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8072043172665654382L;
 	
 	@Column(name="usr_id", length=64, nullable=false, updatable=false)
@@ -17,7 +20,6 @@ public class RegistrationUserRoleID implements Serializable{
 	private String roleCode;
 	@Column(name="lang_code", length=3, nullable=false, updatable=false)
 	private String langCode;
-
 
 	public String getUsrId() {
 		return usrId;

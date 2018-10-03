@@ -1,5 +1,6 @@
 package org.mosip.registration.entity;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -14,13 +15,20 @@ import javax.persistence.Table;
 @Table(schema="master", name = "TEMPLATE_FILE_FORMAT")
 public class TemplateFileFormat extends TemplateCommonFields {
 	@EmbeddedId
-	private TemplateEmbeddedKeyCommonFields pk_tfft_code;
-	
-	public TemplateEmbeddedKeyCommonFields getPk_tfft_code() {
-		return pk_tfft_code;
+	@Column(name="pk_tfft_code")
+	private TemplateEmbeddedKeyCommonFields pkTfftCode;
+
+	/**
+	 * @return the pkTfftCode
+	 */
+	public TemplateEmbeddedKeyCommonFields getPkTfftCode() {
+		return pkTfftCode;
 	}
 
-	public void setPk_tfft_code(TemplateEmbeddedKeyCommonFields pk_tfft_code) {
-		this.pk_tfft_code = pk_tfft_code;
+	/**
+	 * @param pkTfftCode the pkTfftCode to set
+	 */
+	public void setPkTfftCode(TemplateEmbeddedKeyCommonFields pkTfftCode) {
+		this.pkTfftCode = pkTfftCode;
 	}
 }

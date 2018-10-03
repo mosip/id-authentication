@@ -1,8 +1,11 @@
 package org.mosip.registration.test.dao.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -84,5 +87,24 @@ public class RegistrationDAOTest {
 		when(registrationRepository.create(Mockito.any(Registration.class))).thenThrow(RegBaseUncheckedException.class);
 		registrationDAOImpl.save("file", "Invalid");
 	}
-
+	
+	@Test
+	public void getRegistrationByIdTest() {
+		ReflectionTestUtils.setField(registrationDAOImpl, "LOGGER", logger);
+		
+		List<Registration> packetLists = new ArrayList<>();
+		packetLists.add(new Registration());
+		when(registrationRepository.findByIdIn(Mockito.anyListOf(String.class))).thenReturn(packetLists);
+		List<String> packetNames=new ArrayList<>();
+		registrationDAOImpl.getRegistrationById(packetNames);
+	}
+	
+	@Test
+	public void updateRegStatusTest() {
+		ReflectionTestUtils.setField(registrationDAOImpl, "LOGGER", logger);
+		Registration updatedPacket=new Registration();
+		Mockito.when(registrationRepository.getOne(Mockito.anyString())).thenReturn(updatedPacket);
+		registrationDAOImpl.updateRegStatus("111111");
+		assertEquals("P", updatedPacket.getClientStatusCode());
+	}
 }

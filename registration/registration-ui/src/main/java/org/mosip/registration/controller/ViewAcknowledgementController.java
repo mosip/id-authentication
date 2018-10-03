@@ -2,14 +2,20 @@ package org.mosip.registration.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.mosip.kernel.core.spi.logging.MosipLogger;
+import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
+import org.mosip.kernel.logger.factory.MosipLogfactory;
 import org.mosip.registration.constants.RegistrationUIExceptionCode;
 import org.mosip.registration.dto.RegistrationApprovalUiDto;
-import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.exception.RegBaseUncheckedException;
-import org.mosip.registration.ui.constants.RegistrationUIConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static org.mosip.registration.constants.RegConstants.APPLICATION_ID;
+import static org.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -27,14 +33,36 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class ViewAcknowledgementForm extends TableCell<RegistrationApprovalUiDto, Boolean> {
+/**
+*
+*{@code ViewAckFormController} is the controller class to view the acknowledgement form
+* @author Mahesh Kumar
+*/
+public class ViewAcknowledgementController extends TableCell<RegistrationApprovalUiDto, Boolean> {
+	/**
+	 * Instance of {@link MosipLogger}
+	 */
+	private static MosipLogger LOGGER;
+
+	@Autowired
+	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
+		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
+	}
 	final Hyperlink link = new Hyperlink("Click Here");
 
 	final VBox paddedButton = new VBox();
 	final HBox mainHolder = new HBox();
 	final DoubleProperty buttonY = new SimpleDoubleProperty();
 
-	ViewAcknowledgementForm(final TableView<RegistrationApprovalUiDto> table) {
+	/**
+	 * constructor for {@code ViewAckFormController} controller
+	 * @param stage
+	 * @param table
+	 */
+	public ViewAcknowledgementController(final TableView<RegistrationApprovalUiDto> table) {
+		LOGGER.debug("REGISTRATION - VIEW-ACK - REGISTRATION",
+				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "view ack form constructor has been started");
+
 		paddedButton.setPadding(new Insets(3));
 		paddedButton.getChildren().add(link);
 		mainHolder.getChildren().add(paddedButton);
@@ -62,7 +90,14 @@ public class ViewAcknowledgementForm extends TableCell<RegistrationApprovalUiDto
 		}
 	}
 
+	/**
+	 * {@code showAck} method is to view acknowledge form
+	 * @param acknowledmentFormFileName
+	 */
 	private static void showAck(String acknowledmentFormFileName) throws IOException {
+		LOGGER.debug("REGISTRATION - VIEW-ACK - REGISTRATION_VIEW-ACK_CONTROLLER",
+				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "view ack form has been started");
+
 		Stage primaryStage = new Stage();
 		FileInputStream file = new FileInputStream(new File(acknowledmentFormFileName));
 		primaryStage.setTitle("Acknowlegement Form");
@@ -73,6 +108,10 @@ public class ViewAcknowledgementForm extends TableCell<RegistrationApprovalUiDto
 		Scene scene = new Scene(hbox, 800, 600);
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		
+		LOGGER.debug("REGISTRATION - VIEW-ACK - REGISTRATION_VIEW-ACK_CONTROLLER",
+				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "view ack form has been ended");
+
 	}
 
 }

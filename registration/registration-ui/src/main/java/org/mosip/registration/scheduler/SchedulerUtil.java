@@ -42,6 +42,10 @@ import javafx.scene.layout.BorderPane;
 // TODO Audit has to be implemented
 // TODO Unit Test Testing
 // TODO Code Coverage
+/**
+ * @author M1046559
+ *
+ */
 @Component
 public class SchedulerUtil {
 
@@ -60,7 +64,7 @@ public class SchedulerUtil {
 	private static long sessionTimeOut;
 	private static Alert alert;
 	private static Timer timer;
-	private static Optional<ButtonType> res;
+	private static Optional<ButtonType> res = Optional.empty();
 
 	@FXML
 	private static BorderPane content;
@@ -105,21 +109,21 @@ public class SchedulerUtil {
 							LOGGER.debug("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 									"The time task alert is called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
-							if (res.isPresent()) {
-								if (res.get().getText().equals("OK")) {
+							alert();
+							if (res.isPresent())
+								if(res.get().getText().equals("OK")) {
 									startTime = System.currentTimeMillis();
 									alert.close();
-									res = null;
+									res = Optional.empty();
 								}
-							}
 						} else if ((endTime - startTime) >= sessionTimeOut) {
 							LOGGER.debug("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID,
 									"The time task login called at interval of seconds "
 											+ TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
 							alert.close();
-							timer.cancel();
+							stopScheduler();
 							// to clear the session object
-							SessionContext.getInstance().destroySession();
+							SessionContext.destroySession();
 							try {
 								content = BaseController.load(getClass().getResource("/fxml/RegistrationLogin.fxml"));
 								String loginModeFXMLpath = "/fxml/LoginWithCredentials.fxml";
@@ -177,5 +181,13 @@ public class SchedulerUtil {
 	public static void setCurrentTimeToStartTime() {
 		startTime = System.currentTimeMillis();
 	}
+	/**
+	 * stop the scheduler
+	 */
+	public static void stopScheduler() {
+		if (timer != null) {
+			timer.cancel();
+		}
+	} 
 	
 }

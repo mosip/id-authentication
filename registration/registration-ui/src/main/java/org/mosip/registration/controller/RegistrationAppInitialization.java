@@ -33,7 +33,6 @@ import javafx.stage.Stage;
  * @since 1.0.0
  *
  */
-
 @Component
 public class RegistrationAppInitialization extends Application {
 
@@ -66,16 +65,14 @@ public class RegistrationAppInitialization extends Application {
 
 		LoginController loginController = applicationContext.getBean(LoginController.class);
 		String loginMode = loginController.loadInitialScreen();
-		String loginModeFXMLpath = null;
+		
 		try {
 			BorderPane loginRoot = BaseController.load(getClass().getResource("/fxml/RegistrationLogin.fxml"));
-			if (loginMode.equals("OTP")) {
-				loginModeFXMLpath = "/fxml/LoginWithOTP.fxml";
-				AnchorPane loginType = BaseController.load(getClass().getResource(loginModeFXMLpath));
+			if (loginMode.equals(RegistrationUIConstants.OTP)) {
+				AnchorPane loginType = BaseController.load(getClass().getResource("/fxml/LoginWithOTP.fxml"));
 				loginRoot.setCenter(loginType);
 			} else if (loginMode.equals(RegistrationUIConstants.LOGIN_METHOD_PWORD)) {
-				loginModeFXMLpath = "/fxml/LoginWithCredentials.fxml";
-				AnchorPane loginType = BaseController.load(getClass().getResource(loginModeFXMLpath));
+				AnchorPane loginType = BaseController.load(getClass().getResource("/fxml/LoginWithCredentials.fxml"));
 				loginRoot.setCenter(loginType);
 			}
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();

@@ -35,6 +35,9 @@ public class RegistrationOfficerController extends BaseController implements Ini
 	@FXML
 	VBox mainBox;	
 	
+	/**
+	 * Building Home screen on Login success
+	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		try {	
@@ -50,10 +53,10 @@ public class RegistrationOfficerController extends BaseController implements Ini
 			RegistrationAppInitialization.getScene().getStylesheets().add(loader.getResource("application.css").toExternalForm());
 			
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - OFFICER_PACKET_LAYOUT", getPropertyValue(APPLICATION_NAME),
+			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT", getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), ioException.getMessage());
 		} catch (RuntimeException runtimeException) {
-			LOGGER.error("REGISTRATION - OFFICER_PACKET_LAYOUT - VIEW", getPropertyValue(APPLICATION_NAME),
+			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT - VIEW", getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), runtimeException.getMessage());
 		}
 	}	

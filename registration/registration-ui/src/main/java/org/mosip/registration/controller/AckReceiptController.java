@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 
 import org.mosip.registration.constants.RegConstants;
 import org.mosip.registration.dto.RegistrationDTO;
-import org.mosip.registration.dto.ResponseDTO;
 import org.mosip.registration.exception.RegBaseCheckedException;
 import org.mosip.registration.service.packet.PacketHandlerService;
 import org.springframework.beans.factory.annotation.Autowired;

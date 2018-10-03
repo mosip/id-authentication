@@ -34,5 +34,7 @@ public class RegProcessorExceptionCode {
 	public static final String LOGIN_SERVICE = REG_SERVICE_CODE + "IPD-214";
 	public static final String SERVICE_DELEGATE_UTIL = REG_SERVICE_CODE + "IPD-215";
 	public static final String SERVICE_DATA_PROVIDER_UTIL = REG_SERVICE_CODE + "DPU-216";
+	public static final String PACKET_UPDATE_STATUS=REG_SERVICE_CODE+"RDI-217";
+	public static final String PACKET_RETRIVE_STATUS=REG_SERVICE_CODE+"RDI-218";
 
 }

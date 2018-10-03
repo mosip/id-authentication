@@ -14,61 +14,66 @@ public class TemplateCommonFields {
 	@Column(name="is_active")
 	@Type(type= "true_false")
 	protected boolean isActive;
-	protected String cr_by;
-	protected Date cr_dtimes;
-	protected String upd_by;
-	protected Date upd_dtimes;
-	protected boolean is_deleted;
-	protected Date del_dtimes;
+	@Column(name="cr_by")
+	protected String crBy;
+	@Column(name="cr_dtimes")
+	protected Date crDtimes;
+	@Column(name="upd_by")
+	protected String updBy;
+	@Column(name="upd_dtimes")
+	protected Date updDtimes;
+	@Column(name="is_deleted")
+	protected boolean isDeleted;
+	@Column(name="del_dtimes")
+	protected Date delDtimes;
 	
+	public String getDescr() {
+		return descr;
+	}
+	public void setDescr(String descr) {
+		this.descr = descr;
+	}
 	public boolean isActive() {
 		return isActive;
 	}
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
 	}
-	public String getCr_by() {
-		return cr_by;
+	public String getCrBy() {
+		return crBy;
 	}
-	public void setCr_by(String cr_by) {
-		this.cr_by = cr_by;
+	public void setCrBy(String crBy) {
+		this.crBy = crBy;
 	}
-	public Date getCr_dtimes() {
-		return cr_dtimes;
+	public Date getCrDtimes() {
+		return crDtimes;
 	}
-	public void setCr_dtimes(Date cr_dtimes) {
-		this.cr_dtimes = cr_dtimes;
+	public void setCrDtimes(Date crDtimes) {
+		this.crDtimes = crDtimes;
 	}
-	public String getUpd_by() {
-		return upd_by;
+	public String getUpdBy() {
+		return updBy;
 	}
-	public void setUpd_by(String upd_by) {
-		this.upd_by = upd_by;
+	public void setUpdBy(String updBy) {
+		this.updBy = updBy;
 	}
-	public Date getUpd_dtimes() {
-		return upd_dtimes;
+	public Date getUpdDtimes() {
+		return updDtimes;
 	}
-	public void setUpd_dtimes(Date upd_dtimes) {
-		this.upd_dtimes = upd_dtimes;
+	public void setUpdDtimes(Date updDtimes) {
+		this.updDtimes = updDtimes;
 	}
-	public boolean isIs_deleted() {
-		return is_deleted;
+	public boolean isDeleted() {
+		return isDeleted;
 	}
-	public void setIs_deleted(boolean is_deleted) {
-		this.is_deleted = is_deleted;
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
 	}
-	public Date getDel_dtimes() {
-		return del_dtimes;
+	public Date getDelDtimes() {
+		return delDtimes;
 	}
-	public void setDel_dtimes(Date del_dtimes) {
-		this.del_dtimes = del_dtimes;
+	public void setDelDtimes(Date delDtimes) {
+		this.delDtimes = delDtimes;
 	}
 	
-	public String getDescr() {
-		return descr;
-	}
-
-	public void setDescr(String descr) {
-		this.descr = descr;
-	}
 }

@@ -158,20 +158,28 @@ public class LoginOTPController extends BaseController implements Initializable 
 				if (responseDTO != null) {
 					if (responseDTO.getSuccessResponseDTO() != null) {
 
-						SessionContext.getInstance().getMapObject().values().remove("OTP");
-						if (SessionContext.getInstance().getMapObject().size() > 0) {
-							if (SessionContext.getInstance().getMapObject().get("2")
-									.equals(RegistrationUIConstants.LOGIN_METHOD_PWORD)) {
-								BorderPane pane = (BorderPane) ((Node) event.getSource()).getParent().getParent();
-								AnchorPane loginType = BaseController
-										.load(getClass().getResource("/fxml/LoginWithCredentials.fxml"));
-								pane.setCenter(loginType);
+						int counter = 0;
+						if(SessionContext.getInstance().getMapObject() != null) {
+							counter = (int) SessionContext.getInstance().getMapObject().get("sequence");
+							counter++;
+							if(SessionContext.getInstance().getMapObject().containsKey(""+counter)) {
+								String mode = SessionContext.getInstance().getMapObject().get(""+counter).toString();
+								if (mode.equals(RegistrationUIConstants.LOGIN_METHOD_PWORD)) {
+										BorderPane pane = (BorderPane) ((Node)event.getSource()).getParent().getParent();
+										AnchorPane loginType = BaseController.load(getClass().getResource("/fxml/LoginWithCredentials.fxml"));
+										pane.setCenter(loginType);							
+								}
+							} else {
+								setSessionContext(userDTO.getUserId());
+								schedulerUtil.startSchedulerUtil();
+								BaseController.load(getClass().getResource("/fxml/RegistrationOfficerLayout.fxml"));
 							}
 						} else {
 							setSessionContext(userDTO.getUserId());
 							schedulerUtil.startSchedulerUtil();
 							BaseController.load(getClass().getResource("/fxml/RegistrationOfficerLayout.fxml"));
 						}
+
 					} else {
 						// Generate invalid otp alert
 						ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
