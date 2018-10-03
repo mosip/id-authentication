@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.mosip</groupId>
-		<artifactId>mosip-root</artifactId>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>registration</artifactId>
@@ -45,7 +45,7 @@
 
 		<!-- Jackson -->
 		<jackson.version>2.2.2</jackson.version>
-		<mosip.core.kernel.version>1.0.0.0-SNAPSHOT</mosip.core.kernel.version>
+		<mosip.core.kernel.version>1.0.0-SNAPSHOT</mosip.core.kernel.version>
 	</properties>
 
 	<modules>
@@ -78,7 +78,7 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.mosip</groupId>
+				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-core</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
@@ -107,23 +107,23 @@
 				<artifactId>commons-dbcp2</artifactId>
 				<version>${apache.commons.dpce.version}</version>
 			</dependency>
-			<!-- <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-utils</artifactId> 
+			<!-- <dependency> <groupId>io.mosip</groupId> <artifactId>kernel-utils</artifactId> 
 				<version>${project.version}</version> </dependency> -->
 			<dependency>
-				<groupId>org.mosip</groupId>
-				<artifactId>logger-logback</artifactId>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-logger-logback</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
-			<!-- <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-security</artifactId> 
+			<!-- <dependency> <groupId>io.mosip</groupId> <artifactId>kernel-security</artifactId> 
 				<version>${project.version}</version> </dependency> -->
 			<dependency>
-				<groupId>org.mosip</groupId>
-				<artifactId>dataaccess-hibernate</artifactId>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-dataaccess-hibernate</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.mosip</groupId>
-				<artifactId>auditmanager-api</artifactId>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-auditmanager-api</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 			<dependency>
@@ -247,8 +247,8 @@
 			<properties>
 				<!-- Optional URL to server. Default value is http://localhost:9000 -->
 				<sonar.host.url>
-					<!-- http://13.67.91.2:9000 -->
-					 http://172.25.166.136:9000
+					http://13.67.91.2:9000
+					 <!-- http://172.25.166.136:9000 -->
 				</sonar.host.url>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec

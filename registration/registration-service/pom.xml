@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.mosip</groupId>
+		<groupId>io.mosip</groupId>
 		<artifactId>registration</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
@@ -29,7 +29,7 @@
 			<artifactId>mockito-all</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.mosip</groupId>
+			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
 		</dependency>
 		
@@ -63,16 +63,16 @@
 			<artifactId>derbyclient</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.mosip</groupId>
-			<artifactId>logger-logback</artifactId>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-logger-logback</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.mosip</groupId>
-			<artifactId>dataaccess-hibernate</artifactId>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-dataaccess-hibernate</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.mosip</groupId>
-			<artifactId>auditmanager-api</artifactId>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auditmanager-api</artifactId>
 		</dependency>
 		<!-- FTP Packet Upload -->
 		<dependency>

@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="309.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mosip.registration.controller.RejectionController">
+<AnchorPane prefHeight="309.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RejectionController">
    <children>
       <SplitPane dividerPositions="0.18892508143322476" orientation="VERTICAL" prefHeight="309.0" prefWidth="410.0">
         <items>
