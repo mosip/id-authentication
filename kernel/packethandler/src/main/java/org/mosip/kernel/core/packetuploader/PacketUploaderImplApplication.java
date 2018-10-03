@@ -1,4 +1,4 @@
-package org.mosip.kernel.core.packetuploader;
+package io.mosip.kernel.core.packetuploader;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

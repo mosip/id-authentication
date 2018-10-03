@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>org.mosip</groupId>
+	<groupId>io.mosip</groupId>
 	<artifactId>mosip-root</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -14,11 +14,14 @@
 	<description>Parent project to build MOSIP</description>
 
 	<modules>
-		<module>authentication</module>
 		<module>kernel</module>
 		<module>pre-registration</module>
 		<module>registration</module>
 		<module>registration-processor</module>
+		<module>authentication</module>
+		<module>admin</module>
+		<module>config</module>
+		<module>launcher</module>
 	</modules>
 
 </project>
