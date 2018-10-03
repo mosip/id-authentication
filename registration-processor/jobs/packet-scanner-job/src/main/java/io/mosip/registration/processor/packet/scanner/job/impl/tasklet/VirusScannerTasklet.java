@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
-import org.mosip.kernel.virus.scanner.service.VirusScannerService;
+import io.mosip.kernel.virus.scanner.service.VirusScannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
