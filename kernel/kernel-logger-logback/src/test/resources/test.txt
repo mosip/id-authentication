@@ -66,3 +66,7 @@
 2018-10-03T00:04:37+05:30 - ERROR - sessionid - idType - id - description
 2018-10-03T00:04:37+05:30 - WARN  - sessionid - idType - id - description
 2018-10-03T00:04:38+05:30 - DEBUG - sessionid - idType - id - description
+2018-10-03T12:41:27+05:30 - INFO  - sessionid - idType - id - description
+2018-10-03T12:41:27+05:30 - ERROR - sessionid - idType - id - description
+2018-10-03T12:41:27+05:30 - WARN  - sessionid - idType - id - description
+2018-10-03T12:41:30+05:30 - DEBUG - sessionid - idType - id - description
