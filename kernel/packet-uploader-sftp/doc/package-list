@@ -1,5 +1,0 @@
-org.mosip.kernel.sftppacketuploader.channel
-org.mosip.kernel.sftppacketuploader.constants
-org.mosip.kernel.sftppacketuploader.exceptions
-org.mosip.kernel.sftppacketuploader.gateway
-org.mosip.kernel.sftppacketuploader.utils
