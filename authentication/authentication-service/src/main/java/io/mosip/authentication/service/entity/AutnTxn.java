@@ -12,6 +12,8 @@ import javax.validation.constraints.Size;
 import lombok.Data;
 
 /**
+ * This class mapped with table "autn_txn" and used by {@link AutnTxnRepository}
+ * to fetch records.
  * 
  * @author Rakesh Roshan
  */
