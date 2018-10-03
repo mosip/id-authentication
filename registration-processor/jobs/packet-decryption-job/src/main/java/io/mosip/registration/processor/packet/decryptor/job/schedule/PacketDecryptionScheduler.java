@@ -16,6 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+/**
+ * Scheduler class for Packet Decryption job
+ * @author Jyoti Prakash Nayak
+ *
+ */
 @Component
 @EnableScheduling
 public class PacketDecryptionScheduler {
@@ -43,7 +48,7 @@ public class PacketDecryptionScheduler {
 			LOGGER.info(LOGDISPLAY,"Job's status ", jobExecution.getId(),jobExecution.getStatus());
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
-			LOGGER.error(LOGDISPLAY,"landingZoneScannerJobScheduler failed to execute", e);
+			LOGGER.error(LOGDISPLAY,"packetDecryptorJobScheduler failed to execute", e);
 		}
 	}
 }
