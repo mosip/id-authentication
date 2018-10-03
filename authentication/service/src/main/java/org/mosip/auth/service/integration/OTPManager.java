@@ -32,7 +32,7 @@ import org.springframework.util.MultiValueMap;
 public class OTPManager {
 
 	@Autowired
-	private RestHelper restHelper;
+	RestHelper restHelper;
 
 	@Autowired
 	RestRequestFactory restRequestFactory;

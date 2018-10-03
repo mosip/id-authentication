@@ -27,7 +27,9 @@ import org.mosip.auth.service.integration.OTPManager;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestPropertySource;
@@ -38,7 +40,7 @@ import org.springframework.web.context.WebApplicationContext;
 import reactor.ipc.netty.http.HttpResources;
 
 /**
- *   
+ * 
  * @author Dinesh Karuppiah
  */
 //@RunWith(MockitoJUnitRunner.class)
@@ -98,7 +100,8 @@ public class OTPAuthServiceTest {
 	public void Test_InvalidTxnId() throws IdAuthenticationBusinessException {
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		autntxnList.add(null);
-		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(autntxnList);
+		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(autntxnList);
 		authserviceimpl.validateTxnId("", "");
 	}
 
@@ -112,10 +115,11 @@ public class OTPAuthServiceTest {
 	public void Test_validTxnId() throws IdAuthenticationBusinessException {
 		AutnTxn autntxn = new AutnTxn();
 		autntxn.setRequestTxnId("TXN001");
-		
+
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		autntxnList.add(autntxn);
-		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(autntxnList);
+		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(autntxnList);
 		assertTrue(authserviceimpl.validateTxnId("232323", "234234"));
 	}
 
@@ -170,7 +174,8 @@ public class OTPAuthServiceTest {
 		autntxn.setRequestTxnId("TXN001");
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		autntxnList.add(autntxn);
-		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString())).thenReturn(autntxnList);
+		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(autntxnList);
 		otpAuthRequestDTO.setTxnID("1234567890");
 		otpAuthRequestDTO.setMuaCode("ASA000000011");
 		otpAuthRequestDTO.setTxnID("TXN00001");
@@ -229,5 +234,19 @@ public class OTPAuthServiceTest {
 		otpAuthRequestDTO.setPinDTO(pindto);
 		authservice.validateOtp(otpAuthRequestDTO, "34545");
 	}
+
+	@Test(expected = IDDataValidationException.class)
+	public void TestInvalidKey() throws IdAuthenticationBusinessException {
+		MockEnvironment mockenv = new MockEnvironment();
+		mockenv.merge(((AbstractEnvironment) mockenv));
+		mockenv.setProperty("application.id", "");
+		ReflectionTestUtils.setField(authserviceimpl, "env", mockenv);
+		AuthRequestDTO authreqdto = new AuthRequestDTO();
+		PinDTO pinDTO = new PinDTO();
+		pinDTO.setValue("");
+		authreqdto.setPinDTO(pinDTO);
+		authserviceimpl.validateOtp(authreqdto, "");
+	}
+
 
 }

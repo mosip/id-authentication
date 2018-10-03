@@ -1,6 +1,7 @@
 package org.mosip.auth.service.impl.indauth.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.dto.indauth.AuthRequestDTO;
@@ -66,7 +67,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Override
 	public boolean validateOtp(AuthRequestDTO authreqdto, String refId) throws IdAuthenticationBusinessException {
 		boolean isOtpValid = false;
-//		try {
 		String txnId = authreqdto.getTxnID();
 		String UIN = authreqdto.getId();
 		String TSPCode = authreqdto.getMuaCode();
@@ -75,21 +75,16 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		if (isValidRequest) {
 			// FIXME audit integration
 			logger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
-			String key = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
-			if (!isEmpty(key)) {
-				isOtpValid = otpManager.validateOtp(otp, key);
-			} else {
-				logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside key Null", getClass().toString());
-				logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
-				throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY);
-			}
+			String OtpKey = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
+			String key = Optional.ofNullable(OtpKey)
+					.orElseThrow(() -> new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
+			isOtpValid = otpManager.validateOtp(otp, key);
+		} else {
+			logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID", getClass().toString());
+			logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
+			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
+			
 		}
-//		} catch (IdAuthenticationBusinessException e) {
-//			logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Request", getClass().toString());
-//			logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Arguments Invalid");
-//			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_VALDIATION_REQUEST_FAILED,
-//					e);
-//		}
 
 		return isOtpValid;
 	}
@@ -112,7 +107,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			isValidTxn = true;
 		} else {
 			// FIXME audit integration
-			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
+			isValidTxn = false;
 		}
 		return isValidTxn;
 	}

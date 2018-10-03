@@ -83,7 +83,7 @@ public class ValidateOtpRequestTest {
 
 	private OTPValidateResponseDTO otpvalidateresponsedto;
 
-	static BlockingNettyContext server;
+//	static BlockingNettyContext server;
 
 	@Before
 	public void before() {
@@ -106,72 +106,56 @@ public class ValidateOtpRequestTest {
 		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
 	}
 
-	/**
-	 * To Configure the HTTP resources to Validate OTP
-	 * 
-	 */
-
-	@BeforeClass
-	public static void beforeClass() {
-		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/otpmanager/otps"),
-				request -> ServerResponse.status(HttpStatus.OK).body(
-						Mono.just(new OTPValidateResponseDTO("True", "OTP Validation Successful")),
-						OTPValidateResponseDTO.class));
-		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-		server = HttpServer.create(8083).start(adapter);
-		server.installShutdownHook();
-		System.err.println("Server Started");
-	}
-
-	/**
-	 * To down the Server
-	 */
-
-	@AfterClass
-	public static void afterClass() {
-		server.shutdown();
-		HttpResources.reset();
-	}
+//	/**
+//	 * To Configure the HTTP resources to Validate OTP
+//	 * 
+//	 */
+//
+//	@BeforeClass
+//	public static void beforeClass() {
+//		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/otpmanager/otps"),
+//				request -> ServerResponse.status(HttpStatus.OK).body(
+//						Mono.just(new OTPValidateResponseDTO("True", "OTP Validation Successful")),
+//						OTPValidateResponseDTO.class));
+//		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
+//		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
+//		server = HttpServer.create(8083).start(adapter);
+//		server.installShutdownHook();
+//		System.err.println("Server Started");
+//	}
 
 	/**
 	 * Test OTP Validation with key and OTP on Core-kernal
 	 * 
 	 * @throws IdAuthenticationBusinessException
+	 * @throws RestServiceException
 	 */
 
 	@Test
-	public void Test() throws IdAuthenticationBusinessException {
-		assertEquals(false, otpManager.validateOtp("12345", "23232"));
+	public void Test() throws IdAuthenticationBusinessException, RestServiceException {
+		OTPValidateResponseDTO otpValidateResponseDTO = new OTPValidateResponseDTO();
+		otpValidateResponseDTO.setStatus("true");
+		otpValidateResponseDTO.setMessage("OTP Validated Successfully");
+		RestHelper helper = Mockito.mock(RestHelper.class);
+		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class))).thenReturn(otpValidateResponseDTO);
+		RestRequestDTO requestDTO = new RestRequestDTO();
+		RestRequestFactory restreqfactory = Mockito.mock(RestRequestFactory.class);
+		Mockito.when(
+				restreqfactory.buildRequest(Mockito.any(RestServicesConstants.class), Mockito.any(), Mockito.any()))
+				.thenReturn(requestDTO);
+		otpManager.restHelper = helper;
+		otpManager.restRequestFactory = restreqfactory;
+		assertEquals(true, otpManager.validateOtp("12345", "23232"));
 	}
 
-	@Test
-	public void TestValidOTPValidate() throws RestServiceException, IdAuthenticationBusinessException {
+	
 
-		OtpValidateRequestDTO otpValidateRequestDTO = new OtpValidateRequestDTO();
-		otpValidateRequestDTO.setKey("12345");
-		otpValidateRequestDTO.setOtp("12323");
-		RestRequestDTO requestdto = new RestRequestDTO();
-		requestdto.setUri("http://localhost:8083/otpmanager/otps");
-		requestdto.setHttpMethod(HttpMethod.POST);
-		requestdto.setRequestBody(otpValidateRequestDTO);
-		requestdto.setResponseType(OTPValidateResponseDTO.class);
-		OTPValidateResponseDTO otpValidateResponseDTO = restHelper.requestSync(requestdto);
-		assertEquals("True", otpValidateResponseDTO.getStatus());
-	}
-
-	@Test(expected = RestServiceException.class)
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void zTest_InvalidvalidateOTP() throws RestServiceException, IdAuthenticationBusinessException {
-		OtpValidateRequestDTO otpValidateRequestDTO = new OtpValidateRequestDTO();
-		otpValidateRequestDTO.setKey("12345");
-		otpValidateRequestDTO.setOtp("12323");
-		RestRequestDTO requestdto = new RestRequestDTO();
-		requestdto.setUri("http://localhost:8085/otpmanager/otps");
-		requestdto.setHttpMethod(HttpMethod.POST);
-		requestdto.setRequestBody(otpValidateRequestDTO);
-		requestdto.setResponseType(OTPValidateResponseDTO.class);
-		requestdto.setTimeout(1);
-		OTPValidateResponseDTO otpValidateResponseDTO = restHelper.requestSync(requestdto);
+		RestHelper helper = Mockito.mock(RestHelper.class);
+		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class)))
+				.thenThrow(new RestServiceException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
+		ReflectionTestUtils.setField(otpManager, "restHelper", helper);
 		otpManager.validateOtp("2323", "2323");
 	}
 
