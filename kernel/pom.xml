@@ -1,15 +1,20 @@
-
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.mosip</groupId>
-	<artifactId>kernel</artifactId>
-	<version>1.0.0.0-SNAPSHOT</version>
+<!-- <parent>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent> -->
+     <version>1.0.0-SNAPSHOT</version>    
+
+	<groupId>io.mosip.kernel</groupId>
+	<artifactId>kernel-parent</artifactId>
 	<packaging>pom</packaging>
 
-	<name>kernel</name>
 	<description>Parent project of MOSIP Kernel</description>
 
 	<properties>
@@ -77,21 +82,24 @@
 	</properties>
 
 	<modules>
-		<module>core</module>
-		<module>logger-logback</module>
-		<module>dataaccess-hibernate</module>
-		<module>auditmanager-api</module>
-		<module>auditmanager-service</module>
-		<module>idvalidator</module>
-		<module>idgenerator-prid</module>
-		<module>idgenerator-eid</module>
-		<module>idgenerator-vid</module>
-		<module>packet-uploader-sftp</module>
-		<module>packet-uploader-http</module>
-		<module>packet-server</module>
-		<module>idgenerator-uin</module>
-		<module>otpmanager-api</module>
-		<module>otpmanager-service</module>
+		<module>kernel-core</module>
+		<module>kernel-logger-logback</module>
+		<module>kernel-dataaccess-hibernate</module>
+		<module>kernel-auditmanager-api</module>
+		<module>kernel-auditmanager-service</module>
+		<module>kernel-idvalidator</module>
+		<module>kernel-idgenerator-prid</module>
+		<module>kernel-idgenerator-rid</module>
+		<module>kernel-idgenerator-vid</module>
+		<module>kernel-packetuploader-sftp</module>
+		<module>kernel-packetuploader-http</module>
+		<module>kernel-packetserver-sftp</module>
+		<module>kernel-idgenerator-uin</module>
+		<module>kernel-otpmanager-api</module>
+		<module>kernel-otpmanager-service</module>
+		<module>kernel-validator</module>
+		<module>kernel-virusscanner-clamav</module>
+		
 	</modules>
 
 	<profiles>
