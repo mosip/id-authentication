@@ -35,13 +35,13 @@ import org.springframework.stereotype.Service;
 public class OTPFacadeImpl implements OTPFacade {
 
 	@Autowired
-	OTPService otpService;
+	private OTPService otpService;
 
 	@Autowired
-	IdAuthService idAuthService;
+	private IdAuthService idAuthService;
 
 	@Autowired
-	AutnTxnRepository autntxnrepository;
+	private AutnTxnRepository autntxnrepository;
 
 	@Autowired
 	private Environment env;

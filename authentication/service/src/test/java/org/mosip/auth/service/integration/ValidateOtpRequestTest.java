@@ -1,13 +1,9 @@
 package org.mosip.auth.service.integration;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -17,23 +13,16 @@ import org.mockito.Mockito;
 import org.mosip.auth.core.constant.IdAuthenticationErrorConstants;
 import org.mosip.auth.core.constant.RestServicesConstants;
 import org.mosip.auth.core.dto.indauth.PinDTO;
-import org.mosip.auth.core.exception.IDDataValidationException;
 import org.mosip.auth.core.exception.IdAuthenticationBusinessException;
-import org.mosip.auth.core.exception.IdValidationFailedException;
 import org.mosip.auth.core.exception.RestServiceException;
 import org.mosip.auth.core.util.dto.RestRequestDTO;
 import org.mosip.auth.service.factory.RestRequestFactory;
 import org.mosip.auth.service.helper.RestHelper;
 import org.mosip.auth.service.integration.dto.OTPValidateResponseDTO;
-import org.mosip.auth.service.integration.dto.OtpValidateRequestDTO;
 import org.mosip.kernel.logger.appenders.MosipRollingFileAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.HttpHandler;
-import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestPropertySource;
@@ -41,16 +30,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.reactive.function.server.RequestPredicates;
-import org.springframework.web.reactive.function.server.RouterFunction;
-import org.springframework.web.reactive.function.server.RouterFunctions;
-import org.springframework.web.reactive.function.server.ServerResponse;
-
-import io.netty.handler.codec.http.HttpResponseStatus;
-import reactor.core.publisher.Mono;
-import reactor.ipc.netty.http.HttpResources;
-import reactor.ipc.netty.http.server.HttpServer;
-import reactor.ipc.netty.tcp.BlockingNettyContext;
 
 /**
  * 
@@ -143,8 +122,9 @@ public class ValidateOtpRequestTest {
 		Mockito.when(
 				restreqfactory.buildRequest(Mockito.any(RestServicesConstants.class), Mockito.any(), Mockito.any()))
 				.thenReturn(requestDTO);
-		otpManager.restHelper = helper;
-		otpManager.restRequestFactory = restreqfactory;
+		ReflectionTestUtils.setField(otpManager, "restHelper", helper);
+		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restreqfactory);
+
 		assertEquals(true, otpManager.validateOtp("12345", "23232"));
 	}
 

@@ -48,8 +48,8 @@ public class OTPRequestValidator implements Validator {
 					IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
 		}
 
-		if (!otpRequestDto.getIdType().UIN.getType().equals(IdType.UIN.getType())
-				|| !otpRequestDto.getIdType().VID.getType().equals(IdType.VID.getType())) {
+		if (!IdType.UIN.getType().equals(IdType.UIN.getType())
+				|| !IdType.VID.getType().equals(IdType.VID.getType())) {
 
 			errors.rejectValue("idType", IdAuthenticationErrorConstants.INVALID_IDTYPE.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_IDTYPE.getErrorMessage());

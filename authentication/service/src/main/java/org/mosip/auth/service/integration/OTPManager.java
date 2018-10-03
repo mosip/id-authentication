@@ -32,10 +32,10 @@ import org.springframework.util.MultiValueMap;
 public class OTPManager {
 
 	@Autowired
-	RestHelper restHelper;
+	private RestHelper restHelper;
 
 	@Autowired
-	RestRequestFactory restRequestFactory;
+	private RestRequestFactory restRequestFactory;
 
 	private MosipLogger logger;
 
