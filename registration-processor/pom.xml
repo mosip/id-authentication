@@ -58,7 +58,9 @@
 		<!-- DFS adapter -->
 		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
-
+		<!-- Vert.x -->
+		<vertx.version>3.5.3</vertx.version>
+		
 	</properties>
 	
 	<dependencyManagement>
