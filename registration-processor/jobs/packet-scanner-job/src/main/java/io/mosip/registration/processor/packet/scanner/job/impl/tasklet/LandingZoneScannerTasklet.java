@@ -74,7 +74,7 @@ public class LandingZoneScannerTasklet implements Tasklet {
 								DirectoryPathDto.VIRUS_SCAN);
 						if (this.filemanager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN, dto.getRegistrationId())) {
 
-							dto.setStatusCode(RegistrationStatusCode.PACKET_FOR_VIRUS_SCAN.toString());
+							dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
 							dto.setStatusComment("packet is in status packet for virus scan");
 							dto.setUpdatedBy(USER);
 							this.registrationStatusService.updateRegistrationStatus(dto);

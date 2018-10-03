@@ -79,7 +79,7 @@ public class VirusScannerTaskletTest {
 		List<RegistrationStatusDto> sample = new ArrayList<RegistrationStatusDto>();
 		sample.add(entry);
 
-		Mockito.when(registrationStatusService.getByStatus(RegistrationStatusCode.PACKET_FOR_VIRUS_SCAN.toString()))
+		Mockito.when(registrationStatusService.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()))
 				.thenReturn(sample);
 		Mockito.when(env.getProperty(DirectoryPathDto.VIRUS_SCAN.toString())).thenReturn("/resources/Disk/sde");
 
