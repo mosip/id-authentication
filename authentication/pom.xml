@@ -3,9 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>org.mosip</groupId>
+	<parent>
+		<groupId>io.mosip</groupId>
+		<artifactId>mosip-root</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	
 	<artifactId>authentication</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<name>id-authentication</name>
@@ -22,7 +26,7 @@
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
 		<maven.sonar.version>3.2</maven.sonar.version>
 		<junit.version>4.12</junit.version>
-		<sonar.exclusions>**/constant/**,**/config/**,**/dto/**,**org/mosip/auth/service/filter/**,**org/mosip/auth/service/entity/**</sonar.exclusions>
+		<sonar.exclusions>**/constant/**,**/config/**,**/dto/**,**org/mosip/auth/service/filter/**,**org/mosip/auth/service/entity/**,**org/mosip/auth/service/IdAuthenticationApplication**</sonar.exclusions>
 	</properties>
 
 	<modules>
@@ -107,7 +111,7 @@
 					<exclude>**/constant/**</exclude>
 					<exclude>**/config/**</exclude>
 					<exclude>**/dto/**</exclude>
-					<exclude>org/mosip/auth/service/*.class</exclude>
+					<!-- <exclude>org/mosip/auth/service/*.class</exclude> -->
 					<exclude>org/mosip/auth/service/filter/**</exclude>
 				</excludes>
 				</configuration>
