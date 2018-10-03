@@ -21,3 +21,4 @@ tmp/
 local.properties
 .loadpath
 .DS_Store
+test.txt

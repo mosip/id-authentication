@@ -14,6 +14,6 @@ public class Prid {
 	@Id
 	@Column(name = "id", unique = true, nullable = false, updatable = false, length = 14)
 	private String id;
-	@Column(name = "createdAt")
+	@Column(name = "created_at")
 	private long createdAt;
 }
