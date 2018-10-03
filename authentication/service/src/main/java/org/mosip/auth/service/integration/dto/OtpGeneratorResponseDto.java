@@ -3,7 +3,9 @@ package org.mosip.auth.service.integration.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The DTO class for OTP generation response.
@@ -13,6 +15,8 @@ import lombok.Data;
 
 @Data
 @NotNull
+@AllArgsConstructor
+@NoArgsConstructor
 public class OtpGeneratorResponseDto {
 
 	/**
