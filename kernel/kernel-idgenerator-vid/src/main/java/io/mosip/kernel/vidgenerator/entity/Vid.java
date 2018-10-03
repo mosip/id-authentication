@@ -36,7 +36,7 @@ public class Vid {
 	/**
 	 * Field for created time of vid
 	 */
-	@Column(name = "createdAt")
+	@Column(name = "created_at")
 	private long createdAt;
 
 }

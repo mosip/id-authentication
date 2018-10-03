@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception;
 
 
-import org.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.utils.IISPlatformErrorCodes;
 

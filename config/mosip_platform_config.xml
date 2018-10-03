@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mosip_config xsi:schemaLocation="http://www.mosip.io/v01 mosip_config_schema.xsd ">
+	<modules>
+		<module id="Pre-Registration"
+			description="This module helps Individuals to pre-enrol and save time during registration"
+			required="yes">
+			<components>
+				<component id="Login" required="yes">
+					<features>
+						<feature id="password_auth" required="yes" />
+						<feature id="otp_auth" required="yes" />
+					</features>
+				</component>
+
+				<component id="IndividualRegistration" required="yes">
+					<features>
+						<feature id="demo_data_capture" />
+						<feature id="poa_doc_upload" />
+						<feature id="poi_doc_upload" required="no" />
+					</features>
+				</component>
+
+				<component id="GroupRegistration">
+					<features>
+						<feature id="DemoDataCapture" />
+						<feature id="HOFValidator" />
+						<feature id="poa_doc_upload" />
+						<feature id="poi_doc_upload" />
+					</features>
+				</component>
+
+				<component id="CalendarAvailability" required="no">
+					<features>
+						<feature id="nearest_center" />
+						<feature id="map_display" />
+					</features>
+				</component>
+
+				<component id="Booking" required="no">
+					<features>
+						<feature id="Book"></feature>
+					</features>
+				</component>
+				<component id="Acknowledgement" required="yes">
+					<features>
+						<feature id="PdfAcknowledgement" />
+					</features>
+				</component>
+				<component id="Notification" required="yes">
+					<features>
+						<feature id="notify_sms" />
+						<feature id="notify_email" />
+						<feature id="notify_snailmail" />
+					</features>
+				</component>
+			</components>
+		</module>
+
+		<module id="Registration"
+			description="This module helps registration Officers to enrol people for a digital ID">
+			<component id="registration">
+				<features>
+					<feature id="demo_data_capture">
+					</feature>
+					<feature id="poa_doc_upload" />
+					<feature id="poi_doc_upload" />
+					<feature id="fingerprint_capture" required="no" />
+					<feature id="iris_capture" required="yes" />
+				</features>
+			</component>
+			<component id="data_sync">
+				<features>
+					<feature id="pre_registration_data_sync" />
+					<feature id="master_data_sync" />
+				</features>
+			</component>
+			<component id="id_object_upload">
+				<features>
+					<feature id="object_creator" />
+					<feature id="object_uploader" />
+				</features>
+			</component>
+		</module>
+
+
+		<module id="RegistrationProcessor"
+			description="This module processes the registration information captured and uploaded by the enrolment_client module">
+			<component id="pre-processor">
+				<features>
+					<feature id="registration_object_scanner" />
+					<feature id="virus_scanner" />
+				</features>
+			</component>
+			<component id="validator">
+				<features>
+					<feature id="reg_info_structure_validator" />
+					<feature id="OSIValidator" />
+				</features>
+			</component>
+			<component id="dedupe">
+				<feature id="demo-dedupe" />
+				<feature id="fingerprint-dedupe" />
+			</component>
+			<component id="post-processor">
+				<features>
+					<feature id="UINGenerator" />
+					<feature id="minutiae-extractor" />
+					<features id="auth-data-extractor" />
+				</features>
+			</component>
+			<component id="Notification" required="yes">
+				<features>
+					<feature id="notify_sms" />
+					<feature id="notify_email" />
+				</features>
+			</component>
+			<component id="Print" required="yes">
+				<features>
+					<feature id="print-message-generator" />
+					<feature id="print-message-sender" />
+				</features>
+			</component>
+		</module>
+
+		<module id="authentication">
+			<components>
+				<component id="tsp_authentication">
+					<feature id="authentication"/>
+					<feature id="authorization"/>										
+				</component>
+				<component id="IDAuthentication">
+					<feature id="phonetic_demo_auth"/>
+					<feature id="demo_auth"/>
+					<feature id="fingerprint_auth"/>
+				</component>
+				<component id="AuthAudit" required="yes">
+				<features>
+					<feature id="audit" />					
+				</features>
+			</component>
+				<component id="Notification" required="yes">
+				<features>
+					<feature id="notify_sms" />
+					<feature id="notify_email" />
+				</features>
+			</component>
+			</components>
+		</module>
+
+		<module id="administration"/>
+
+		<module id="dashboard"/>
+	</modules>
+</mosip_config>
