@@ -14,6 +14,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
@@ -23,6 +24,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.PacketManagerApp;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
+import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
+import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInSourceException;
+import io.mosip.registration.processor.packet.manager.service.impl.FileManagerImpl;
 
 /**
  * @author M1022006
@@ -35,6 +39,9 @@ public class CleanUpServiceTest {
 
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
+
+	@Mock
+	private FileManagerImpl fileManagerImpl;
 
 	private File file;
 
@@ -62,6 +69,62 @@ public class CleanUpServiceTest {
 		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
 		assertFalse(exists);
 
+	}
+
+	@Test(expected = FileNotFoundInDestinationException.class)
+	public void cleanUpFileDestinationFailureCheck() throws IOException {
+
+		String fileName = "Destination.zip";
+		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
+		fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn);
+
+	}
+
+	@Test(expected = FileNotFoundInSourceException.class)
+	public void cleanUpFileSourceFailureCheck() throws IOException {
+
+		String fileName = "1002.zip";
+		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
+		fileManager.put(fileName, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
+
+		fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn);
+
+	}
+
+	@Test
+	public void cleanUpFileChildSuccessCheck() throws IOException {
+		String childFileName = file.getName();
+		String fileNameWithoutExtn = FilenameUtils.removeExtension(childFileName);
+		fileManager.put("child" + File.separator + childFileName, new FileInputStream(file),
+				DirectoryPathDto.LANDING_ZONE);
+		fileManager.put(childFileName, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
+		fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn,
+				"child");
+
+		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.LANDING_ZONE,
+				"child" + File.separator + childFileName);
+		assertFalse(exists);
+
+	}
+
+	@Test(expected = FileNotFoundInDestinationException.class)
+	public void cleanUpFileChildDestinationFailureCheck() throws IOException {
+
+		String fileName = "Destination.zip";
+		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
+		fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn,
+				"child");
+	}
+
+	@Test(expected = FileNotFoundInSourceException.class)
+	public void cleanUpFileChildSourceFailureCheck() throws IOException {
+
+		String fileName = "1002.zip";
+		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
+		fileManager.put(fileName, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
+
+		fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn,
+				"child");
 	}
 
 }
