@@ -53,8 +53,6 @@ public class OTPAuthServiceTest {
 	@InjectMocks
 	private OTPAuthServiceImpl authserviceimpl;
 
-	private PinDTO pindto = new PinDTO();
-
 	@Autowired
 	Environment env;
 
@@ -96,13 +94,13 @@ public class OTPAuthServiceTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void Test_InvalidTxnId() throws IdAuthenticationBusinessException {
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		autntxnList.add(null);
 		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(autntxnList);
-		authserviceimpl.validateTxnId("", "");
+		assertFalse(authserviceimpl.validateTxnId("", ""));
 	}
 
 	/**
