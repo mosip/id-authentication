@@ -1,6 +1,0 @@
-org.mosip.kernel.logger.appenders
-org.mosip.kernel.logger.constants
-org.mosip.kernel.logger.exception
-org.mosip.kernel.logger.factory
-org.mosip.kernel.logger.impl
-org.mosip.kernel.logger.utils

@@ -1,8 +1,8 @@
-package org.mosip.kernel.core.packetuploader.configuration;
+package io.mosip.kernel.core.packetuploader.configuration;
 
 import java.io.File;
 
-import org.mosip.kernel.core.packetuploader.exceptions.MosipIllegalArgumentException;
+import io.mosip.kernel.core.packetuploader.exceptions.MosipIllegalArgumentException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

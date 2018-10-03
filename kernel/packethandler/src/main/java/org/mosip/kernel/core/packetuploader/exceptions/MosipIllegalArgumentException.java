@@ -1,6 +1,6 @@
-package org.mosip.kernel.core.packetuploader.exceptions;
+package io.mosip.kernel.core.packetuploader.exceptions;
 
-import org.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 public class MosipIllegalArgumentException extends BaseUncheckedException {
 
