@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import io.mosip.registration.processor.status.code.SyncStatus;
 import io.mosip.registration.processor.status.code.SyncType;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SyncRegistrationDto.
  *
@@ -21,7 +20,7 @@ public class SyncRegistrationDto implements Serializable {
 	private static final long serialVersionUID = -3922338139042373367L;
 
 	/** The Sync registration id. */
-	private String SyncRegistrationId;
+	private String syncRegistrationId;
 
 	/** The registration id. */
 	private String registrationId;
@@ -58,12 +57,19 @@ public class SyncRegistrationDto implements Serializable {
 	
 	/** The deleted date time. */
 	private LocalDateTime deletedDateTime;
+	
+	/**
+	 * Instantiates a new sync registration dto.
+	 */
+	public SyncRegistrationDto() {
+		super();
+	}
 
 	/**
 	 * Instantiates a new sync registration dto.
 	 *
-	 * @param SyncRegistrationId the sync registration id
-	 * @param parentId            the parent id
+	 * @param registrationId the registration id
+	 * @param parentRegistrationId the parent registration id
 	 * @param syncType            the sync type
 	 * @param synchStatus            the synch status
 	 */
@@ -80,7 +86,7 @@ public class SyncRegistrationDto implements Serializable {
 	 * @return the sync registration id
 	 */
 	public String getSyncRegistrationId() {
-		return SyncRegistrationId;
+		return syncRegistrationId;
 	}
 
 	/**
@@ -89,7 +95,7 @@ public class SyncRegistrationDto implements Serializable {
 	 * @param syncRegistrationId the new sync registration id
 	 */
 	public void setSyncRegistrationId(String syncRegistrationId) {
-		SyncRegistrationId = syncRegistrationId;
+		this.syncRegistrationId = syncRegistrationId;
 	}
 
 	/**
