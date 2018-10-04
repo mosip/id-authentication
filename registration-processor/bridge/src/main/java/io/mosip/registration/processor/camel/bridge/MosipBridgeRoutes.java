@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.bridge;
+package io.mosip.registration.processor.camel.bridge;
 
 /**
  * @author Mukul Puspam
@@ -6,16 +6,14 @@ package io.mosip.registration.processor.core.bridge;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 
-import io.mosip.registration.processor.core.bridge.address.MessageBusAddress;
-import io.mosip.registration.processor.core.bridge.processor.BatchRequestProcessor;
-import io.mosip.registration.processor.core.bridge.processor.BiometricValidationProcessor;
-import io.mosip.registration.processor.core.bridge.processor.DemographicValidationProcessor;
-import io.mosip.registration.processor.core.bridge.processor.RetryProcessor;
-import io.mosip.registration.processor.core.bridge.processor.StructureValidationProcessor;
-import io.mosip.registration.processor.core.bridge.statuscode.StatusCodes;
-import io.mosip.registration.processor.core.bridge.util.BridgeUtil;
-
-
+import io.mosip.registration.processor.camel.bridge.processor.BatchRequestProcessor;
+import io.mosip.registration.processor.camel.bridge.processor.BiometricValidationProcessor;
+import io.mosip.registration.processor.camel.bridge.processor.DemographicValidationProcessor;
+import io.mosip.registration.processor.camel.bridge.processor.RetryProcessor;
+import io.mosip.registration.processor.camel.bridge.processor.StructureValidationProcessor;
+import io.mosip.registration.processor.camel.bridge.statuscode.StatusCodes;
+import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
+import io.mosip.registration.processor.core.messagebus.MessageBusAddress;
 
 /**
  * The Class MosipBridgeRoutes.

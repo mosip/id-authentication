@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.bridge.processor;
+package io.mosip.registration.processor.camel.bridge.processor;
 /**
  * @author Mukul Puspam
  */
@@ -8,9 +8,9 @@ import org.apache.camel.Processor;
 import io.vertx.core.json.JsonObject;
 
 /**
- * The Class DemographicValidationProcessor.
+ * The Class RetryProcessor.
  */
-public class DemographicValidationProcessor implements Processor {
+public class RetryProcessor implements Processor {
 
 	/* (non-Javadoc)
 	 * @see org.apache.camel.Processor#process(org.apache.camel.Exchange)
@@ -18,10 +18,10 @@ public class DemographicValidationProcessor implements Processor {
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		JsonObject json = (JsonObject) exchange.getIn().getBody();
-		boolean isValid = json.getBoolean("validDemographic");
+		String status = json.getString("status");
 
-		System.out.println("DemographicValidationProcessor: " + isValid);
-		exchange.getIn().setHeader("hasValidDemographic", isValid);
-
+		System.out.println("RetryProcessor: " + status);
+		exchange.getIn().setHeader("packetStatus", status);
 	}
+
 }

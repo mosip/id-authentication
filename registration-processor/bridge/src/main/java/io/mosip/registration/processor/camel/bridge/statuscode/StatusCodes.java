@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.bridge.statuscode;
+package io.mosip.registration.processor.camel.bridge.statuscode;
 
 public enum StatusCodes {
 	FOR_STRUCTURE_VALIDATION, 

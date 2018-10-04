@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.bridge.processor;
+package io.mosip.registration.processor.camel.bridge.processor;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;

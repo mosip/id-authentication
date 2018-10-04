@@ -1,11 +1,11 @@
-package io.mosip.registration.processor.core.bridge;
+package io.mosip.registration.processor.camel.bridge;
 /**
  * @author Mukul Puspam
  */
 import org.apache.camel.CamelContext;
 
-import io.mosip.registration.processor.core.bridge.address.MessageBusAddress;
-import io.mosip.registration.processor.core.bridge.util.BridgeUtil;
+import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
+import io.mosip.registration.processor.core.messagebus.MessageBusAddress;
 import io.vertx.camel.CamelBridgeOptions;
 import io.vertx.camel.InboundMapping;
 import io.vertx.camel.OutboundMapping;
