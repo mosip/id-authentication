@@ -32,7 +32,7 @@
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
-		<spring-cloud.version>Finchley.SR1</spring-cloud.version>
+		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
 		<!-- Miscellaneous -->
 		<javax.el-api.version>3.0.0</javax.el-api.version>
