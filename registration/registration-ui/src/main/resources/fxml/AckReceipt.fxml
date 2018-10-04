@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="664.0" prefWidth="818.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mosip.registration.controller.AckReceiptController">
+<AnchorPane prefHeight="664.0" prefWidth="818.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.AckReceiptController">
 	<children>
 		<WebView fx:id="webView" layoutX="4.0" layoutY="5.0" prefHeight="610.0" />
 		<Button layoutX="379.0" layoutY="617.0" mnemonicParsing="false" onAction="#saveReceipt" text="Save" />
