@@ -18,7 +18,7 @@ import io.mosip.kernel.otpmanagerservice.constant.OtpStatusConstants;
  *
  */
 @Entity
-@Table(name = "otp.otp_data")
+@Table(name = "otp_data")
 public class OtpEntity {
 	/**
 	 * The variable that holds the unique ID.

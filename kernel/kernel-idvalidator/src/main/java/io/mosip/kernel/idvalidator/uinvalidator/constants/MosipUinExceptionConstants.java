@@ -10,7 +10,7 @@ package io.mosip.kernel.idvalidator.uinvalidator.constants;
  * @since 1.0.0
  */
 
-public enum MosipIDExceptionCodeConstants {
+public enum MosipUinExceptionConstants {
 	
 	UIN_VAL_INVALID_NULL("1111111111", "Entered UIN should not be empty or null."),
 	UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE("222222222", "Entered UIN should not contain any sequential and repeated block of number for 2 or more than two digits"), 
@@ -36,7 +36,7 @@ public enum MosipIDExceptionCodeConstants {
 	 * @param errorMessage
 	 *            the error message.
 	 */
-	MosipIDExceptionCodeConstants(String errorCode, String errorMessage) {
+	MosipUinExceptionConstants(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}
