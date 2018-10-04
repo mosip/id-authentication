@@ -42,8 +42,8 @@ public class RegConstants {
 	public static final String HASHING_ALG = "SHA-256";
 	// RSA
 	public static final String RSA_ALG = "RSA";
-	public static final String RSA_PUBLIC_KEY_FILE = "D:/Key Store/public.key";
-	public static final String RSA_PRIVATE_KEY_FILE = "D:/Key Store/private.key";
+	public static final String RSA_PUBLIC_KEY_FILE = "../Key_Store/public.key";
+	public static final String RSA_PRIVATE_KEY_FILE = "../Key_Store/private.key";
 	public static final String RSA_CIPHER_ALG = "RSA/ECB/PKCS1Padding";
 	public static final String PACKET_STORE_DATE_FORMAT = "PACKET_STORE_DATE_FORMAT";
 	public static final String PACKET_ZIP_FILE_NAME = "PACKET_ZIP_FILE_NAME";
