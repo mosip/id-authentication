@@ -1,18 +1,9 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.constants.RegistrationUIExceptionCode;
 import io.mosip.registration.dto.RegistrationApprovalUiDto;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -38,15 +29,6 @@ import javafx.stage.Stage;
 * @author Mahesh Kumar
 */
 public class ViewAcknowledgementController extends TableCell<RegistrationApprovalUiDto, Boolean> {
-	/**
-	 * Instance of {@link MosipLogger}
-	 */
-	private static MosipLogger LOGGER;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
 	final Hyperlink link = new Hyperlink("Click Here");
 
 	final VBox paddedButton = new VBox();
@@ -103,9 +85,6 @@ public class ViewAcknowledgementController extends TableCell<RegistrationApprova
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		
-		LOGGER.debug("REGISTRATION - VIEW-ACK - REGISTRATION_VIEW-ACK_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "view ack form has been ended");
-
 	}
 
 }

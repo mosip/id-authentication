@@ -8,12 +8,12 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.constants.RegClientStatusCode;
 import io.mosip.registration.constants.RegProcessorExceptionCode;
 import io.mosip.registration.dao.RegTransactionDAO;
@@ -81,7 +81,28 @@ public class RegTransactionDAOImpl implements RegTransactionDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
+	public RegistrationTransaction buildRegTrans(String regId) {
+		LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO",
+				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				"Packet encryption had been ended");
+
+		OffsetDateTime time = OffsetDateTime.now();
+		RegistrationTransaction regTransaction = new RegistrationTransaction();
+		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
+		regTransaction.setRegId(regId);
+		regTransaction.setTrnTypeCode(RegClientStatusCode.CREATED.getCode());
+		regTransaction.setStatusCode(RegClientStatusCode.CREATED.getCode());
+		regTransaction.setCrBy("mosip");
+		regTransaction.setCrDtime(time);
+
+		LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO",
+				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				"Packet encryption had been ended");
+
+		return regTransaction;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -91,8 +112,9 @@ public class RegTransactionDAOImpl implements RegTransactionDAO {
 	 */
 	public List<RegistrationTransaction> insertPacketTransDetails(
 			List<RegistrationTransaction> registrationTransactions) {
-		LOGGER.debug("REGISTRATION - INSERT_PACKET_TRANSACTION_DETAILS - REG_TRANSACTION_DAO", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Inserting the packet status details in the transaction table");
+		LOGGER.debug("REGISTRATION - INSERT_PACKET_TRANSACTION_DETAILS - REG_TRANSACTION_DAO",
+				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				"Inserting the packet status details in the transaction table");
 		return regTransactionRepository.saveAll(registrationTransactions);
 	}
 }

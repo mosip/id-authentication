@@ -94,14 +94,10 @@ public class PacketUploadService {
 			registrationDAO.updateRegStatus(packetName);
 		}
 
-		try {
 			for (String id : fileNames) {
-				registrationTransactions.add(regTransactionDAO.save(id));
+				registrationTransactions.add(regTransactionDAO.buildRegTrans(id));
 			}
 			regTransactionDAO.insertPacketTransDetails(registrationTransactions);
-		} catch (RegBaseCheckedException e) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.CREATE_PACKET_ENTITY, e.toString());
-		}
 		return true;
 
 	}

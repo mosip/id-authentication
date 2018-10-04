@@ -67,6 +67,13 @@ public class RegTransactionDAOTest {
 	}
 	
 	@Test
+	public void testBuildRegTrans() {
+		ReflectionTestUtils.setField(regTransactionDAOImpl, "LOGGER", logger);
+		when(regTransactionRepository.create(Mockito.any(RegistrationTransaction.class))).thenReturn(new RegistrationTransaction());
+		regTransactionDAOImpl.buildRegTrans("11111");
+	}
+	
+	@Test
 	public void insertPacketTransDetailsTest() {
 		ReflectionTestUtils.setField(regTransactionDAOImpl, "LOGGER", logger);
 		List<RegistrationTransaction> packetListnew = new ArrayList<RegistrationTransaction>();

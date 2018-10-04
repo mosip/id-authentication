@@ -60,4 +60,6 @@ public interface RegTransactionDAO {
 	 * @return
 	 */
 	List<RegistrationTransaction> insertPacketTransDetails(List<RegistrationTransaction> registrationTransactions);
+	
+	 RegistrationTransaction buildRegTrans(String regId);
 }
