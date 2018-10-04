@@ -1,4 +1,4 @@
-package io.mosip.core.keysupplier.utils;
+package io.mosip.kernel.keysupplier.utils;
 
 /**
  * @author Urvil Joshi

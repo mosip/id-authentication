@@ -1,4 +1,4 @@
-package io.mosip.core.keysupplier.controller;
+package io.mosip.kernel.keysupplier.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 

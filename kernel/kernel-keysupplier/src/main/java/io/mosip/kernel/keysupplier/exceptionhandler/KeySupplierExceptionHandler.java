@@ -1,4 +1,4 @@
-package io.mosip.core.keysupplier.exceptionhandler;
+package io.mosip.kernel.keysupplier.exceptionhandler;
 
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 

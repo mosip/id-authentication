@@ -1,8 +1,8 @@
-package io.mosip.core.keysupplier.service;
+package io.mosip.kernel.keysupplier.service;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.core.keysupplier.dto.AsymmetricResponceDto;
+import io.mosip.kernel.keysupplier.dto.AsymmetricResponceDto;
 
 /**
  * @author Urvil Joshi

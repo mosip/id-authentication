@@ -1,4 +1,4 @@
-package io.mosip.core.keysupplier.exceptionhandler;
+package io.mosip.kernel.keysupplier.exceptionhandler;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

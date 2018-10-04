@@ -1,4 +1,4 @@
-package io.mosip.core.keysupplier.controller;
+package io.mosip.kernel.keysupplier.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.core.keysupplier.dto.AsymmetricResponceDto;
-import io.mosip.core.keysupplier.service.AsymmetricKeySupplierService;
+import io.mosip.kernel.keysupplier.dto.AsymmetricResponceDto;
+import io.mosip.kernel.keysupplier.service.AsymmetricKeySupplierService;
 
 /**
  * @author Urvil Joshi

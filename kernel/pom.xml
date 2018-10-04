@@ -79,6 +79,8 @@
 		<jsch.version>0.1.54</jsch.version>
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
+		<!-- jwt -->
+		<jwt.version>3.4.0</jwt.version>
 	</properties>
 
 	<modules>

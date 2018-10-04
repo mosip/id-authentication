@@ -1,13 +1,16 @@
-package io.mosip.core.keysupplier.service.impl;
+package io.mosip.kernel.keysupplier.service.impl;
 
-import io.mosip.core.keysupplier.dto.AsymmetricResponceDto;
-import io.mosip.core.keysupplier.service.AsymmetricKeySupplierService;
+import org.springframework.stereotype.Service;
+
+import io.mosip.kernel.keysupplier.dto.AsymmetricResponceDto;
+import io.mosip.kernel.keysupplier.service.AsymmetricKeySupplierService;
 
 /**
  * @author Urvil Joshi
  *
  * @Since 1.0.0
  */
+@Service
 public class AsymmetricKeySupplierServiceImpl implements AsymmetricKeySupplierService {
 
 	@Override

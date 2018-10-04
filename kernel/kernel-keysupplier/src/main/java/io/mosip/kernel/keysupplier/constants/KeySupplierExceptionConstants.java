@@ -1,4 +1,4 @@
-package io.mosip.core.keysupplier.constants;
+package io.mosip.kernel.keysupplier.constants;
 
 /**
  * @author Urvil Joshi
