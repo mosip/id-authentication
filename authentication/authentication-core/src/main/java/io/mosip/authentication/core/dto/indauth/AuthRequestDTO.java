@@ -20,12 +20,11 @@ import lombok.Data;
 @Data
 public class AuthRequestDTO  {
 
-	@Pattern(regexp = "^[0-9]{10}$", message = "{mosip.ida.validation.message.AuthRequest.id}")
 	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.id.notNull}")
 	private String id;
 
 	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.idType.notNull}")
-	private IdType idType;
+	private String idType;
 
 	/**
 	 * The value of the field or property must be a number within a specified range.

@@ -124,7 +124,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	public String processIdType(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
 		String refId = null;
-		String reqType = authRequestDTO.getIdType().getType();
+		String reqType = authRequestDTO.getIdType();
 		if (reqType.equals(IdType.UIN.getType())) {
 			try {
 				refId = idAuthService.validateUIN(authRequestDTO.getId());
