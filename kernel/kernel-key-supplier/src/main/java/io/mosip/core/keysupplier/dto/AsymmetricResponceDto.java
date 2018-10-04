@@ -1,5 +1,5 @@
 package io.mosip.core.keysupplier.dto;
 
-public class AsymmetricRequestDto {
+public class AsymmetricResponceDto {
 
 }

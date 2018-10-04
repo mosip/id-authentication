@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @Since 1.0.0
  */
-@RestController
+@RestController(value="/asymmetric")
 public class AsymmetricKeySupplierController {
 
+	
 	
  
  
