@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.status.service.impl;
 
-import org.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

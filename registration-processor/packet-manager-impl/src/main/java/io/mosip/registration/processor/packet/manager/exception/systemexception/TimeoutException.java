@@ -3,7 +3,7 @@ package io.mosip.registration.processor.packet.manager.exception.systemexception
 
 
 
-import org.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatformErrorCodes;
 

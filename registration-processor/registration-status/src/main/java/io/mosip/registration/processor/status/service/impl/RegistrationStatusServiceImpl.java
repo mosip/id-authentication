@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import org.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import org.mosip.kernel.auditmanager.request.AuditRequestDto;
-import org.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import org.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

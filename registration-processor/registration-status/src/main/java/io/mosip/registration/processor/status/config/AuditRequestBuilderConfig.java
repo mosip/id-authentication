@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.status.config;
 
-import org.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

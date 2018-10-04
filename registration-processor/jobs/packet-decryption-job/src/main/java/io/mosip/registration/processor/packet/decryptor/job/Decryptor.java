@@ -23,23 +23,26 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.apache.commons.io.IOUtils;
-import org.mosip.kernel.core.security.constants.MosipSecurityMethod;
-import org.mosip.kernel.core.security.decryption.MosipDecryptor;
-import org.mosip.kernel.core.security.exception.MosipInvalidDataException;
-import org.mosip.kernel.core.security.exception.MosipInvalidKeyException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
+import io.mosip.kernel.core.security.decryption.MosipDecryptor;
+import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
+import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
+import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
+import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
+/**
+ * Decryptor class for packet decryption
+ * @author Jyoti Prakash Nayak
+ *
+ */
 @Component
 public class Decryptor {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Decryptor.class);
-
-	private static final String LOGDISPLAY = "{} - {}";
-	
 	private  byte[] sessionKey;
 	private  byte[] encryptedData;
-@Value("${private.key.location}")
+	@Value("${private.key.location}")
 	private   String privateKey;
 	
 	
@@ -47,9 +50,10 @@ public class Decryptor {
 	/**random method for decryption
 	 * @param encryptedPacket
 	 * @param registrationId
-	 * @return
+	 * @return decrypted packet data in InputStream
+	 * @throws PacketDecryptionFailureException 
 	 */
-	public InputStream decrypt(InputStream encryptedPacket, String registrationId) {
+	public InputStream decrypt(InputStream encryptedPacket, String registrationId) throws PacketDecryptionFailureException {
 		
 		InputStream outstream=null;
 		try {
@@ -70,16 +74,25 @@ public class Decryptor {
 		
 		
 		
-		} catch (IOException | MosipInvalidDataException | MosipInvalidKeyException e) {
+		} catch (IOException | MosipInvalidDataException | MosipInvalidKeyException  e) {
 			
-			LOGGER.error(LOGDISPLAY, e);
+			throw new PacketDecryptionFailureException(
+					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
+					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorMessage(), e);
 		}
 		return outstream;
 	}
 
 
 
-	private byte[] decryptRsaEncryptedBytes(final byte[] rsaEncryptedBytes,final PrivateKey privateKey) {
+	/**
+	 * Method to decrypt the encrypted AEs session key
+	 * @param rsaEncryptedBytes encypted AES session key
+	 * @param privateKey private key to decrypt AES session key
+	 * @return AES session key
+	 * @throws PacketDecryptionFailureException 
+	 */
+	private byte[] decryptRsaEncryptedBytes(final byte[] rsaEncryptedBytes,final PrivateKey privateKey) throws PacketDecryptionFailureException {
 		
 		Cipher encryptCipher = null;
 		 byte[] rsaDecryptedBytes=null;	
@@ -92,7 +105,9 @@ public class Decryptor {
 		        	rsaDecryptedBytes= encryptCipher.doFinal(rsaEncryptedBytes);
 				} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
 					
-					LOGGER.error(LOGDISPLAY, e);
+					throw new PacketDecryptionFailureException(
+							PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
+							PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorMessage(), e);
 				}
 					        		        					
 				return rsaDecryptedBytes;
@@ -100,18 +115,25 @@ public class Decryptor {
 
 
 
-	private PrivateKey readPrivatekey(String registrationId) {
+	/**
+	 * Method to read private key from private key file
+	 * @param registrationId registarion id of the packet
+	 * @return private key 
+	 * @throws PacketDecryptionFailureException 
+	 */
+	private PrivateKey readPrivatekey(String registrationId) throws PacketDecryptionFailureException {
 		FileInputStream fileInputStream = null;
-		ObjectInputStream objectInputStream = null;
 		PrivateKey rprivateKey=null;
 		try {
-			fileInputStream = new FileInputStream(new File(privateKey+"/"+registrationId+"/private.key"));
+			fileInputStream = new FileInputStream(new File(privateKey+registrationId+"/private.key"));
 		} catch (FileNotFoundException e) {
 			
-			LOGGER.error(LOGDISPLAY, e);
+			throw new PacketDecryptionFailureException(
+					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
+					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorMessage(), e);
 		}
-		try {
-			objectInputStream = new ObjectInputStream(fileInputStream);
+		try(ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);) {
+			
 			BigInteger mod = (BigInteger) objectInputStream.readObject();
 			BigInteger exp = (BigInteger) objectInputStream.readObject();
 
@@ -120,10 +142,12 @@ public class Decryptor {
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 			 rprivateKey = keyFactory.generatePrivate(rsaPrivateKeySpec);
 
-			objectInputStream.close();
+			
 		} catch (IOException | ClassNotFoundException | NoSuchAlgorithmException | InvalidKeySpecException e) {
 			
-			LOGGER.error(LOGDISPLAY, e);
+			throw new PacketDecryptionFailureException(
+					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
+					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorMessage(), e);
 		}
 		
 		return rprivateKey;
@@ -131,6 +155,10 @@ public class Decryptor {
 
 
 
+	/**
+	 * Method to separate encrypted data and encrypted AES session key in encrypted packet
+	 * @param encryptedDataWithKey encrypted packet containing encrypted data and encrypted AES session key
+	 */
 	private void splitKeyEncryptedData(final byte[] encryptedDataWithKey) {
 		// Split the Key and Encrypted Data
 				String keySplitter = "#KEY_SPLITTER#";

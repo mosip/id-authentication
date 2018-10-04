@@ -117,7 +117,7 @@ public class AsymmetricProcessor {
 	 */
 	protected static byte[] process(AsymmetricBlockCipher asymmetricBlockCipher,
 			AsymmetricKeyParameter key, byte[] data, boolean mode)
-			throws MosipInvalidDataException {
+			throws MosipInvalidDataException, MosipInvalidKeyException {
 		init(asymmetricBlockCipher, key, mode);
 		if (data == null) {
 			throw new MosipNullDataException(
@@ -162,7 +162,7 @@ public class AsymmetricProcessor {
 	private static byte[] processData(
 			AsymmetricBlockCipher asymmetricBlockCipher, byte[] data, int start,
 			int end)
-			throws MosipInvalidDataException {
+			throws MosipInvalidDataException, MosipInvalidKeyException {
 		try {
 			return asymmetricBlockCipher.processBlock(data, start, end);
 		} catch (InvalidCipherTextException e) {
@@ -180,6 +180,9 @@ public class AsymmetricProcessor {
 		} catch (IllegalArgumentException e) {
 			throw new MosipInvalidDataException(
 					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_LENGTH_EXCEPTION);
+		}catch (ArithmeticException e) {
+			throw new MosipInvalidKeyException(
+					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION);
 		}
 
 	}
