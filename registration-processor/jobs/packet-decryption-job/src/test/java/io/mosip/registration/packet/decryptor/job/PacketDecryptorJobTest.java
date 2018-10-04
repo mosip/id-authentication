@@ -1,5 +1,5 @@
 package io.mosip.registration.packet.decryptor.job;
-/*package org.mosip.registration.packet.decryptor.job;
+/*package io.mosip.registration.packet.decryptor.job;
 
 import static org.junit.Assert.assertEquals;
 
@@ -7,9 +7,9 @@ import static org.junit.Assert.assertEquals;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mosip.registration.processor.packet.decryptor.job.PacketDecryptorJobApplication;
-import org.mosip.registration.processor.packet.decryptor.job.config.PacketDecryptorBatchConfig;
-import org.mosip.registration.processor.packet.decryptor.job.tasklet.PacketDecryptorTasklet;
+import io.mosip.registration.processor.packet.decryptor.job.PacketDecryptorJobApplication;
+import io.mosip.registration.processor.packet.decryptor.job.config.PacketDecryptorBatchConfig;
+import io.mosip.registration.processor.packet.decryptor.job.tasklet.PacketDecryptorTasklet;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;

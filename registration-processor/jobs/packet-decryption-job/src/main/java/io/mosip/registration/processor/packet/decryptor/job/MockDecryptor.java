@@ -23,10 +23,10 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-import org.mosip.kernel.core.security.constants.MosipSecurityMethod;
-import org.mosip.kernel.core.security.decryption.MosipDecryptor;
-import org.mosip.kernel.core.security.exception.MosipInvalidDataException;
-import org.mosip.kernel.core.security.exception.MosipInvalidKeyException;
+import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
+import io.mosip.kernel.core.security.decryption.MosipDecryptor;
+import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
+import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 
 public class MockDecryptor {
 	private static byte[] sessionKey;

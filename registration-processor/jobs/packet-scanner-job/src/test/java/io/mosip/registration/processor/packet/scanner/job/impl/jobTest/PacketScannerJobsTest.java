@@ -1,13 +1,13 @@
-/*package org.mosip.registration.processor.packet.scanner.job.impl.jobTest;
+/*package io.mosip.registration.processor.packet.scanner.job.impl.jobTest;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mosip.registration.processor.packet.scanner.job.PacketScannerApplication;
-import org.mosip.registration.processor.packet.scanner.job.impl.PacketScannerBatchJobConfig;
-import org.mosip.registration.processor.packet.scanner.job.impl.tasklet.LandingZoneScannerTasklet;
-import org.mosip.registration.processor.packet.scanner.job.impl.tasklet.VirusScannerTasklet;
+import io.mosip.registration.processor.packet.scanner.job.PacketScannerApplication;
+import io.mosip.registration.processor.packet.scanner.job.impl.PacketScannerBatchJobConfig;
+import io.mosip.registration.processor.packet.scanner.job.impl.tasklet.LandingZoneScannerTasklet;
+import io.mosip.registration.processor.packet.scanner.job.impl.tasklet.VirusScannerTasklet;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;

@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.packet.scanner.job.exception;
 
-import org.mosip.kernel.core.exception.BaseUncheckedException;
+import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 import io.mosip.registration.processor.packet.scanner.job.exception.utils.PacketScannerErrorCodes;
 

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>io.mosip</groupId>
-		<artifactId>mosip-root</artifactId>
+		<artifactId>mosip-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>registration-processor</artifactId>
@@ -55,7 +57,7 @@
 		<mockito.version>1.10.19</mockito.version>
 		<powermock.module.junit4.version>1.7.4</powermock.module.junit4.version>
 		<powermock.api.mockito.version>1.7.4</powermock.api.mockito.version>
-		
+
 		<!-- DFS adapter -->
 		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
@@ -64,7 +66,7 @@
 		<vertx.version>3.5.3</vertx.version>
 		
 	</properties>
-	
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -79,12 +81,12 @@
 
 	<modules>
 		<module>packet-receiver</module>
-   		<module>registration-status</module>
+		<module>registration-status</module>
 		<module>filesystem-ceph-adapter-impl</module>
 		<module>core</module>
 		<module>packet-manager-impl</module>
-    	<module>jobs</module>
-  </modules>
+		<module>jobs</module>
+	</modules>
 
 	<build>
 		<pluginManagement>
