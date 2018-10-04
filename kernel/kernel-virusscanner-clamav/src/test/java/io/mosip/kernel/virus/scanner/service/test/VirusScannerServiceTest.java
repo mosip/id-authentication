@@ -25,16 +25,16 @@ import xyz.capybara.clamav.exceptions.ClamavException;
  * @author Mukul Puspam
  *
  */
-//@RunWith(MockitoJUnitRunner.class)
-//@TestPropertySource({ "classpath:application.properties" })
+@RunWith(MockitoJUnitRunner.class)
+@TestPropertySource({ "classpath:application.properties" })
 public class VirusScannerServiceTest {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-	//@Mock
+	@Mock
 	ClamavClient clamavClient;
 
-	//@InjectMocks
+	@InjectMocks
 	private VirusScannerService<Boolean, String> virusScannerService = new VirusScannerServiceImpl() {
 		@Override
 		public void createConnection() {
@@ -47,7 +47,7 @@ public class VirusScannerServiceTest {
 	private ScanResult virusFound;
 	private ScanResult virusNotFound;
 
-	//@Before
+	@Before
 	public void setup() {
 		ClassLoader classLoader = getClass().getClassLoader();
 		file = new File(classLoader.getResource("files/0000.zip").getFile());
@@ -56,28 +56,28 @@ public class VirusScannerServiceTest {
 		virusFound = new ScanResult(Status.VIRUS_FOUND);
 	}
 
-	//@Test
+	@Test
 	public void infectedFileCheck() throws ClamavException{
 			Mockito.when(clamavClient.scan(file.toPath())).thenReturn(virusFound);
 			Boolean result = virusScannerService.scanFile(file.getAbsolutePath());
 			assertEquals(Boolean.FALSE, result);
 	}
 
-	//@Test
+	@Test
 	public void nonInfectedFileCheck() throws ClamavException{
 			Mockito.when(clamavClient.scan(file.toPath())).thenReturn(virusNotFound);
 			Boolean result = virusScannerService.scanFile(file.getAbsolutePath());
 			assertEquals(Boolean.TRUE, result);
 	}
 
-	//@Test
+	@Test
 	public void infectedFolderCheck() throws ClamavException{
 			Mockito.when(clamavClient.scan(folder.toPath(), false)).thenReturn(virusFound);
 			Boolean result = virusScannerService.scanFolder(folder.getAbsolutePath());
 			assertEquals(Boolean.FALSE, result);
 	}
 
-	//@Test
+	@Test
 	public void nonInfectedFolderCheck() throws ClamavException{
 			Mockito.when(clamavClient.scan(folder.toPath(), false)).thenReturn(virusNotFound);
 			Boolean result = virusScannerService.scanFolder(folder.getAbsolutePath());
