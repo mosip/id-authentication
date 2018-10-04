@@ -25,6 +25,9 @@ public class SyncRegistrationDto implements Serializable {
 	/** The registration id. */
 	private String registrationId;
 	
+	/** The registration type. */
+	private String registrationType;
+	
 	/** The parent registration id. */
 	private String parentRegistrationId;
 	
@@ -114,6 +117,24 @@ public class SyncRegistrationDto implements Serializable {
 	 */
 	public void setRegistrationId(String registrationId) {
 		this.registrationId = registrationId;
+	}
+
+	/**
+	 * Gets the registration type.
+	 *
+	 * @return the registration type
+	 */
+	public String getRegistrationType() {
+		return registrationType;
+	}
+
+	/**
+	 * Sets the registration type.
+	 *
+	 * @param registrationType the new registration type
+	 */
+	public void setRegistrationType(String registrationType) {
+		this.registrationType = registrationType;
 	}
 
 	/**
