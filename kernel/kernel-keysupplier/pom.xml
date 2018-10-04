@@ -10,9 +10,9 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>kernel-key-supplier</artifactId>
+	<artifactId>kernel-keysupplier</artifactId>
 	<packaging>jar</packaging>
-	<name>kernel-key-supplier</name>
+	<name>kernel-keysupplier</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
