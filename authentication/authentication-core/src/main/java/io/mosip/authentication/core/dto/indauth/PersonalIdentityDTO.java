@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 
+ * This class give the info of individual with match strategy and match value.
  *
  * @author Rakesh Roshan
  */

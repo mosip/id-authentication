@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 
+ * This class is used for match address based on match strategy and match value.
  *
  * @author Rakesh Roshan
  */

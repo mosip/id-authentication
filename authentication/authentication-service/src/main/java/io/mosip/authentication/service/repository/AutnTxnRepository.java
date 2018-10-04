@@ -11,7 +11,7 @@ import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 
 /**
- * This class module is to store OTP requested attributes in Table "autn_txn".
+ * This is a repository class  for entity {@link AutnTxn}.
  * 
  * @author Rakesh Roshan
  */

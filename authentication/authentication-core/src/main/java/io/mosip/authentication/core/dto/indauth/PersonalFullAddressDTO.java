@@ -5,7 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 
+ * This class is used for match complete address with 100% of match strategy and
+ * match value.
  *
  * @author Rakesh Roshan
  */

@@ -5,7 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 
+ * Factory class for {@link PersonalIdentityDTO}, {@link PersonalAddressDTO} and
+ * {@link PersonalFullAddressDTO}
  *
  * @author Rakesh Roshan
  */
