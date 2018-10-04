@@ -81,4 +81,18 @@ public class RegTransactionDAOImpl implements RegTransactionDAO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.mosip.registration.dao.RegTransactionDAO#insertPacketTransDetails(java.
+	 * util.List)
+	 */
+	public List<RegistrationTransaction> insertPacketTransDetails(
+			List<RegistrationTransaction> registrationTransactions) {
+		LOGGER.debug("REGISTRATION - INSERT_PACKET_TRANSACTION_DETAILS - REG_TRANSACTION_DAO", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Inserting the packet status details in the transaction table");
+		return regTransactionRepository.saveAll(registrationTransactions);
+	}
 }

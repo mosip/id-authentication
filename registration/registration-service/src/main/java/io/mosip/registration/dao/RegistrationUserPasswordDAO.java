@@ -1,9 +1,20 @@
 package io.mosip.registration.dao;
 
-import org.springframework.stereotype.Repository;
+/**
+ * DAO class for RegistrationUserPassword
+ * 
+ * @author Sravya Surampalli
+ * @since 1.0.0
+ *
+ */
 
-@Repository
 public interface RegistrationUserPasswordDAO {
+	
+	/**
+	 * This method is used to get the User credentials
+	 * 
+	 * @return String 
+	 */
 	
 	public String getPassword(String userId, String hashPassword);
 

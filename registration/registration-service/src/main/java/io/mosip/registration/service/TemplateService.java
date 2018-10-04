@@ -46,9 +46,9 @@ public class TemplateService {
 		// template_file_format_code
 		for (Template template : templates) {
 			for (TemplateType type : templateTypes) {
-				if (template.getLang_code().equals(type.getPk_tmplt_code().getLang_code())) {
+				if (template.getLangCode().equals(type.getPkTmpltCode().getLangCode())) {
 					for (TemplateFileFormat fileFormat : templateFileFormats) {
-						if (template.getLang_code().equals(fileFormat.getPk_tfft_code().getLang_code())) {
+						if (template.getLangCode().equals(fileFormat.getPkTfftCode().getLangCode())) {
 							ackTemplate = template;
 						}
 					}
@@ -71,7 +71,7 @@ public class TemplateService {
 
 		try (FileWriter fileWriter = new FileWriter(ackTemplate)) {
 			// check if file exist, otherwise create the file before writing
-			fileWriter.write(template.getFile_txt());
+			fileWriter.write(template.getFileTxt());
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(REG_TEMPLATE_IO_EXCEPTION.getErrorCode(),
 					REG_TEMPLATE_IO_EXCEPTION.getErrorMessage());

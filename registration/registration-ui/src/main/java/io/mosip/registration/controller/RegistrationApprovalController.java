@@ -1,6 +1,8 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION;
+import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.io.IOException;
 import java.net.URL;
@@ -10,6 +12,9 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.constants.RegistrationUIExceptionCode;
 import io.mosip.registration.constants.RegistrationUIExceptionEnum;
 import io.mosip.registration.dto.RegistrationApprovalUiDto;
@@ -35,49 +40,107 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+/**
+ *{@code RegistrationApprovalController} is the controller class for Registration approval.
+ *
+ * @author Mahesh Kumar
+ */
 @Controller
 public class RegistrationApprovalController extends BaseController implements Initializable {
 
-	RegistrationApprovalUiDto list;
-
+	/**
+	 * Instance of {@link MosipLogger}
+	 */
+	private static MosipLogger LOGGER;
+	
 	@Autowired
-	RegistrationApprovalService registration;
+	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
+		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
+	}
+	/**
+	 * object for Registration approval service class
+	 */
+	@Autowired
+	private RegistrationApprovalService registration;
 
+	/**
+	 *Table to display the created packets 
+	 */
 	@FXML
-	TableView<RegistrationApprovalUiDto> table;
+	private TableView<RegistrationApprovalUiDto> table;
+	/**
+	 * Registration Id column in the table
+	 */
 	@FXML
-	TableColumn<RegistrationApprovalUiDto, String> id;
+	private TableColumn<RegistrationApprovalUiDto, String> id;
+	/**
+	 * Type/Status column of the Registration Packet in the table
+	 */
 	@FXML
-	TableColumn<RegistrationApprovalUiDto, String> type;
+	private TableColumn<RegistrationApprovalUiDto, String> type;
+	/**
+	 * Individual name column in the table
+	 */
 	@FXML
-	TableColumn<RegistrationApprovalUiDto, String> residentName;
+	private TableColumn<RegistrationApprovalUiDto, String> residentName;
+	/**
+	 * OperatorId column in the table
+	 */
 	@FXML
-	TableColumn<RegistrationApprovalUiDto, String> operatorId;
+	private TableColumn<RegistrationApprovalUiDto, String> operatorId;
+	/**
+	 * Operator Name column in the table
+	 */
 	@FXML
-	TableColumn<RegistrationApprovalUiDto, String> operatorName;
+	private TableColumn<RegistrationApprovalUiDto, String> operatorName;
+	/**
+	 * Column Expand the roe of the table and display acknowledgement form
+	 */
 	@FXML
-	TableColumn<RegistrationApprovalUiDto, Boolean> expand;
+	private TableColumn<RegistrationApprovalUiDto, Boolean> expand;
+	/**
+	 * Acknowledgement form column in the table
+	 */
 	@FXML
-	TableColumn<RegistrationApprovalUiDto, String> acknowledgementFormPath;
+	private TableColumn<RegistrationApprovalUiDto, String> acknowledgementFormPath;
+	/**
+	 * Pagination for the table
+	 */
 	@FXML
-	Pagination pagination;
-
+	private Pagination pagination;
+	/**
+	 * Button for approval
+	 */
 	@FXML
-	Button approvalBtn;
+	private Button approvalBtn;
+	/**
+	 * Button for rejection
+	 */
 	@FXML
-	Button rejectionBtn;
+	private Button rejectionBtn;
+	/**
+	 * Button for on hold
+	 */
 	@FXML
-	Button onHoldBtn;
+	private Button onHoldBtn;
 
 	int itemsPerPage = 1;
 	List<RegistrationApprovalUiDto> listData = null;
 
+	/* (non-Javadoc)
+	 * @see javafx.fxml.Initializable#initialize(java.net.URL, java.util.ResourceBundle)
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_APPROVAL_CONTROLLER", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Page loading has been started");
 
 		reloadTableView();
 	}
 
+	/**
+	 * Method to reload table
+	 */
 	public void reloadTableView() {
 		approvalBtn.disableProperty().set(true);
 		rejectionBtn.disableProperty().set(true);
@@ -98,11 +161,11 @@ public class RegistrationApprovalController extends BaseController implements In
 					public TableCell<RegistrationApprovalUiDto, Boolean> call(
 							TableColumn<RegistrationApprovalUiDto, Boolean> col) {
 
-						return new ViewAcknowledgementForm(table);
+						return new ViewAcknowledgementController(table);
 					}
 				});
 
-		Pagination();
+		tablePagination();
 
 		approvalBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
 		rejectionBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
@@ -118,21 +181,34 @@ public class RegistrationApprovalController extends BaseController implements In
 		return table;
 	}
 
+	/**
+	 * Event method for Approving packet
+	 * @param event
+	 */
 	public void approvePacket(ActionEvent event) {
-
+		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Packet updation has been started");
+		
 		RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 
 		if (registration.packetUpdateStatus(regData.getId(), "A", "mahesh123", "", "mahesh123")) {
 			listData = registration.getAllEnrollments();
 			generateAlert("Status", AlertType.INFORMATION, "Registration Approved successfully..");
-			Pagination();
+			tablePagination();
 		} else {
 			generateAlert("Status", AlertType.INFORMATION, "");
 		}
-
+		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Packet updation has been ended");
 	}
 
-	void Pagination() {
+	/**
+	 * {@code Pagination} method is used for paginating packet data
+	 * 
+	 */
+	public void tablePagination() {
+		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Pagination has been started");
 		listData = registration.getAllEnrollments();
 		if (listData.size() != 0) {
 			int pageCount = 0;
@@ -150,11 +226,20 @@ public class RegistrationApprovalController extends BaseController implements In
 			onHoldBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
 			table.setPlaceholder(new Label("No Packets for approval"));
 		}
-
+		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Pagination has been ended");
 	}
 
+	/**
+	 * Event method for packet Rejection 
+	 * @param event
+	 * @throws RegBaseCheckedException
+	 */
 	public void rejectPacket(ActionEvent event) throws RegBaseCheckedException {
 		try {
+			LOGGER.debug("REGISTRATION - REJECTION_PACKET - REGISTRATION", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "Rejection of packet has been started");
+			
 			RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 			Stage primarystage = new Stage();
 			AnchorPane rejectRoot = BaseController.load(getClass().getResource("/fxml/RejectionComment.fxml"));
@@ -166,15 +251,28 @@ public class RegistrationApprovalController extends BaseController implements In
 			primarystage.setScene(scene);
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
-			Pagination();
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
 					RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_LOGIN_LOADER_EXCEPTION,
+					runtimeException.getMessage());
 		}
+		LOGGER.debug("REGISTRATION - REJECTION_PACKET - REGISTRATION", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Rejection of packet has been ended");
+
 	}
 
+	/**
+	 * Event method for OnHolding Packet
+	 * @param event
+	 * @throws RegBaseCheckedException
+	 */
 	public void onHoldPacket(ActionEvent event) throws RegBaseCheckedException {
 		try {
+			LOGGER.debug("REGISTRATION - ONHOLD_PACKET - REGISTRATION", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "OnHold of packet has been started");
+			
 			RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 			Stage primarystage = new Stage();
 			AnchorPane holdRoot = BaseController.load(getClass().getResource("/fxml/OnholdComment.fxml"));
@@ -186,10 +284,15 @@ public class RegistrationApprovalController extends BaseController implements In
 			primarystage.setScene(scene);
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
-			Pagination();
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
 					RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
-		}
+		}catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_LOGIN_LOADER_EXCEPTION,
+					runtimeException.getMessage());
+		} 
+		LOGGER.debug("REGISTRATION - ONHOLD_PACKET - REGISTRATION", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "OnHold of packet has been ended");
+	
 	}
 }

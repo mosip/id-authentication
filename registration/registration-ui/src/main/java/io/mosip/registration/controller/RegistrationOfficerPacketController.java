@@ -8,12 +8,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.TemplateService;
@@ -56,6 +56,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 	@Autowired
 	private VelocityPDFGenerator velocityGenerator;
 
+	/**
+	 * Creating Packet and displaying acknowledgement form
+	 */
 	public void createPacket(ActionEvent event) throws RegBaseCheckedException {
 
 		try {
@@ -83,6 +86,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 		}
 	}
 
+	/**
+	 * Approve, Reject and Hold packets
+	 */
 	public void approvePacket(ActionEvent event) {
 		try {
 			Button button = (Button) event.getSource();
@@ -103,6 +109,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 		}
 	}
 
+	/**
+	 * Uploading packets to FTP server
+	 */
 	public void uploadPacket(ActionEvent event) {
 		try {
 			uploadRoot = BaseController.load(getClass().getResource("/fxml/FTPLogin.fxml"));

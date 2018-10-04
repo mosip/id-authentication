@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import io.mosip.registration.util.dataprovider.DataProvider;
 import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.constants.RegProcessorExceptionCode;
 import io.mosip.registration.dto.AuditDTO;
@@ -46,11 +47,10 @@ public class DataProvider {
 		try {
 			InputStream file = DataProvider.class.getClass().getResourceAsStream(filePath);
 			byte[] bytesArray = new byte[(int) file.available()];
-			file.read(bytesArray);
+			int count = file.read(bytesArray);
 			file.close();
 
 			return bytesArray;
-			//return Files.readAllBytes(Paths.get(filePath));
 		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(RegProcessorExceptionCode.SERVICE_DATA_PROVIDER_UTIL,
 					"Unable to read the Image bytes", ioException);

@@ -2,8 +2,10 @@ package io.mosip.registration.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+
 import io.mosip.registration.test.dao.impl.RegTransactionDAOTest;
 import io.mosip.registration.test.dao.impl.RegistrationDAOTest;
+
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

@@ -52,4 +52,12 @@ public interface RegTransactionDAO {
 	 * @return the list of object
 	 */
 	List<String> view(String id);
+	
+	/**
+	 * This method is used to insert the packet details to the transaction table.
+	 * 
+	 * @param registrationTransactions
+	 * @return
+	 */
+	List<RegistrationTransaction> insertPacketTransDetails(List<RegistrationTransaction> registrationTransactions);
 }

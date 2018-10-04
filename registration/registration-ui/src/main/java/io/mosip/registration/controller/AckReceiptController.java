@@ -10,12 +10,12 @@ import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
+import io.mosip.registration.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.PacketHandlerService;
 import javafx.embed.swing.SwingFXUtils;

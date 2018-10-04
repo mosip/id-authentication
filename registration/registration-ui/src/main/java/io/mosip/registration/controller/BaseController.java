@@ -3,18 +3,15 @@ package io.mosip.registration.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
+import io.mosip.registration.controller.RegistrationAppInitialization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
-import io.mosip.registration.constants.RegConstants;
-import io.mosip.registration.constants.RegistrationUIExceptionCode;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.UserDTO;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginServiceImpl;
 import io.mosip.registration.ui.constants.RegistrationUIConstants;
@@ -26,6 +23,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
+/**
+ * Base class for all controllers
+ * 
+ * @author Sravya Surampalli
+ * @since 1.0.0
+ *
+ */
 @PropertySource("classpath:registration.properties")
 public class BaseController {
 
@@ -42,9 +46,9 @@ public class BaseController {
 
 	@Value("${REFRESHED_LOGIN_TIME}")
 	private long refreshedLoginTime;
-
+	
 	protected static Stage stage;
-
+	
 	/**
 	 * Adding events to the stage
 	 * 
@@ -61,6 +65,11 @@ public class BaseController {
 		return stage;
 	}
 
+	/**
+	 * Loading FXML files along with beans 
+	 * 
+	 * @return
+	 */
 	public static <T> T load(URL url) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url);
 		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
@@ -126,7 +135,13 @@ public class BaseController {
 
 	}
 
+	/**
+	 * Setting values for Session context and User context
+	 * 
+	 * @return
+	 */
 	protected void setSessionContext(String userId) {
+		
 		Map<String, String> userDetail = loginServiceImpl.getUserDetail(userId);
 
 		userDTO.setUsername(userDetail.get("name"));
@@ -146,6 +161,7 @@ public class BaseController {
 		userContext.setRegistrationCenterDetailDTO(
 				loginServiceImpl.getRegistrationCenterDetails(userDetail.get(RegistrationUIConstants.CENTER_ID)));
 		userContext.setRoles(loginServiceImpl.getRoles(userId));
+		
 	}
 
 }

@@ -4,13 +4,14 @@ import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
 import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.core.util.JsonUtils;
@@ -19,11 +20,12 @@ import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
 import io.mosip.kernel.core.util.exception.MosipJsonParseException;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-
 import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.dao.RegistrationAppLoginDAO;
+import io.mosip.registration.dao.RegistrationCenterDAO;
+import io.mosip.registration.dao.RegistrationUserDetailDAO;
+import io.mosip.registration.dao.RegistrationUserPasswordDAO;
+import io.mosip.registration.dao.RegistrationUserRoleDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDto;
 import io.mosip.registration.dto.OtpGeneratorResponseDto;
@@ -31,22 +33,16 @@ import io.mosip.registration.dto.OtpValidatorResponseDto;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.entity.RegistrationAppLoginMethod;
-import io.mosip.registration.entity.RegistrationCenter;
-import io.mosip.registration.entity.RegistrationUserDetail;
-import io.mosip.registration.entity.RegistrationUserPassword;
-import io.mosip.registration.entity.RegistrationUserPasswordID;
-import io.mosip.registration.entity.RegistrationUserRole;
-import io.mosip.registration.entity.RegistrationUserRoleID;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.repositories.RegistrationAppLoginRepository;
-import io.mosip.registration.repositories.RegistrationCenterRepository;
-import io.mosip.registration.repositories.RegistrationUserDetailRepository;
-import io.mosip.registration.repositories.RegistrationUserPasswordRepository;
-import io.mosip.registration.repositories.RegistrationUserRoleRepository;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
-import lombok.val;
 
+/**
+ * Class for implementing login service
+ * 
+ * @author Sravya Surampalli
+ * @since 1.0.0
+ *
+ */
 @Service
 public class LoginServiceImpl implements LoginService {
 
@@ -62,228 +58,349 @@ public class LoginServiceImpl implements LoginService {
 	 */
 	@Autowired
 	private ServiceDelegateUtil serviceDelegateUtil;
+	
+	/**
+	 * Class to retrieve the Login Details from DB
+	 */	
 	@Autowired
-	private RegistrationAppLoginRepository registrationAppLoginRepository;
+	private RegistrationAppLoginDAO registrationAppLoginDAO;
+		
+	/**
+	 * Class to retrieve the Registration Officer Credentials from DB
+	 */	
 	@Autowired
-	private RegistrationUserPasswordRepository registrationUserPasswordRepository;
+	private RegistrationUserPasswordDAO registrationUserPasswordDAO;
+	
+	/**
+	 * Class to retrieve the Registration Officer Details from DB
+	 */	
 	@Autowired
-	private RegistrationUserDetailRepository registrationUserDetailRepository;
+	private RegistrationUserDetailDAO registrationUserDetailDAO;
+	
+	/**
+	 * Class to retrieve the Registration Center details from DB
+	 */
 	@Autowired
-	private RegistrationCenterRepository registrationCenterRepository;
+	private RegistrationCenterDAO registrationCenterDAO;
+	
+	/**
+	 * Class to retrieve the Registration Officer roles from DB
+	 */
 	@Autowired
-	private RegistrationUserRoleRepository registrationUserRoleRepository;
+	private RegistrationUserRoleDAO registrationUserRoleDAO;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.mosip.registration.service.login.LoginService#getModesOfLogin()
+	 */
 	@Override
-	public Map<String, Object> getModesOfLogin() {
-		List<RegistrationAppLoginMethod> loginList = registrationAppLoginRepository
-				.findByIsActiveTrueOrderByMethodSeq();
-
-		Map<String, Object> loginModes = new LinkedHashMap<>();
-
-		for (RegistrationAppLoginMethod registrationAppLoginMethod : loginList) {
-			loginModes.put(String.valueOf(registrationAppLoginMethod.getMethodSeq()),
-					registrationAppLoginMethod.getPk_applm_usr_id().getLoginMethod());
-		}
-		return loginModes;
+	public Map<String,Object> getModesOfLogin() {
+		//Retrieve Login information
+		return registrationAppLoginDAO.getModesOfLogin();
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.mosip.registration.service.login.LoginService#validateUserPassword(
+	 * java.lang.String,java.lang.String)
+	 */
 	@Override
 	public boolean validateUserPassword(String userId, String hashPassword) {
-		RegistrationUserPasswordID registrationUserPasswordID = new RegistrationUserPasswordID();
-		registrationUserPasswordID.setUsrId(userId);
-		registrationUserPasswordID.setPwd(hashPassword);
-		List<RegistrationUserPassword> registrationUserPassword = registrationUserPasswordRepository
-				.findByRegistrationUserPasswordID(registrationUserPasswordID);
-
-		return (hashPassword.equals(registrationUserPassword.get(0).getRegistrationUserPasswordID().getPwd()));
-
-	}
-
-	@Override
-	public Map<String, String> getUserDetail(String userId) {
-		List<RegistrationUserDetail> registrationUserDetail = registrationUserDetailRepository
-				.findByIdAndIsActiveTrue(userId);
-		LinkedHashMap<String, String> userDetails = new LinkedHashMap<>();
-		if (!registrationUserDetail.isEmpty()) {
-			userDetails.put("name", registrationUserDetail.get(0).getName());
-			userDetails.put("centerId", registrationUserDetail.get(0).getCntrId());
+		//Validating Registration Officer Credentials
+		if( hashPassword.equals(registrationUserPasswordDAO.getPassword(userId, hashPassword))) {
+			return true;
+		}  else {
+			return false;
 		}
-		return userDetails;
-	}
+	}	
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.mosip.registration.service.login.LoginService#getUserDetail(java.lang.String)
+	 */
 	@Override
-	public String getCenterName(String centerId) {
-		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository.findById(centerId);
-		return registrationCenter.isPresent() ? registrationCenter.get().getName() : RegConstants.EMPTY;
-	}
-
-	@Override
-	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
-		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository.findById(centerId);
-
-		RegistrationCenterDetailDTO registrationCenterDetailDTO = new RegistrationCenterDetailDTO();
-		if (registrationCenter.isPresent()) {
-			registrationCenterDetailDTO.setRegistrationCenterCode(registrationCenter.get().getName());
-			registrationCenterDetailDTO.setAddrLine1(registrationCenter.get().getAddrLine1());
-			registrationCenterDetailDTO.setAddrLine2(registrationCenter.get().getAddrLine2());
-			registrationCenterDetailDTO.setAddrLine3(registrationCenter.get().getAddrLine3());
-			registrationCenterDetailDTO.setLocLine1(registrationCenter.get().getLocLine1());
-			registrationCenterDetailDTO.setLocLine2(registrationCenter.get().getLocLine2());
-			registrationCenterDetailDTO.setLocLine3(registrationCenter.get().getLocLine3());
-			registrationCenterDetailDTO.setLocLine4(registrationCenter.get().getLocLine4());
-			registrationCenterDetailDTO.setCountry(registrationCenter.get().getCountry());
-			registrationCenterDetailDTO.setLatitude(registrationCenter.get().getLatitude());
-			registrationCenterDetailDTO.setLongitude(registrationCenter.get().getLongitude());
-			registrationCenterDetailDTO.setPincode(registrationCenter.get().getPincode());
-		}
-		return registrationCenterDetailDTO;
-	}
-
-	@Override
-	public List<String> getRoles(String userId) {
-		RegistrationUserRoleID registrationUserRoleID = new RegistrationUserRoleID();
-		registrationUserRoleID.setUsrId(userId);
-		List<RegistrationUserRole> registrationUserRoles = registrationUserRoleRepository
-				.findByRegistrationUserRoleID(registrationUserRoleID);
-		List<String> roles = new ArrayList<String>();
-		for (int role = 0; role < registrationUserRoles.size(); role++) {
-			roles.add(registrationUserRoles.get(role).getRegistrationUserRoleID().getRoleCode());
-		}
-		return roles;
-	}
-
-	@Override
-	public ResponseDTO getOTP(final String key) {
-
-		ResponseDTO responseDTO = new ResponseDTO();
-		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
-		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
-
-		SuccessResponseDTO successResponseDTO = null;
-
-		otpGeneratorRequestDto.setKey(key);
-
-		try {
-			try {
-				otpGeneratorResponseDto = (OtpGeneratorResponseDto) serviceDelegateUtil
-						.post(RegConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDto);
-			} catch (RegBaseCheckedException e) {
-				getErrorResponse(responseDTO, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
-			}
-		} catch (HttpClientErrorException httpClientErrorException) {
-			try {
-				otpGeneratorResponseDto = (OtpGeneratorResponseDto) JsonUtils.jsonStringToJavaObject(
-						OtpGeneratorResponseDto.class, httpClientErrorException.getResponseBodyAsString());
-			} catch (MosipJsonParseException | MosipJsonMappingException | MosipIOException exception) {
-				LOGGER.error("REGISTRATION - LOGIN_SERVICE - GET OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), exception.getMessage());
-			}
-			responseDTO = getErrorResponse(responseDTO, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
-
-		}
-
-		if (otpGeneratorResponseDto != null) {
-			successResponseDTO = new SuccessResponseDTO();
-			successResponseDTO.setCode(RegConstants.ALERT_INFORMATION);
-			successResponseDTO
-					.setMessage(RegConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpGeneratorResponseDto.getOtp());
-
-			Map<String, Object> otherAttributes = new HashMap<String, Object>();
-			otherAttributes.put(RegConstants.OTP_GENERATOR_RESPONSE_DTO, otpGeneratorResponseDto);
-
-			successResponseDTO.setOtherAttributes(otherAttributes);
-			responseDTO.setSuccessResponseDTO(successResponseDTO);
-
-		} else {
-			getErrorResponse(responseDTO, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
-		}
-
-		return responseDTO;
+	public Map<String,String> getUserDetail(String userId) {
+		//Retrieving Registration Officer details
+		return registrationUserDetailDAO.getUserDetail(userId);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.service.login.LoginService#validateOTP(java.
-	 * lang.String, java.lang.String)
+	 * @see org.mosip.registration.service.login.LoginService#getCenterName(java.lang.String)
+	 */
+	@Override
+	public String getCenterName(String centerId) {
+		//Retrieving Registration Center name
+		return registrationCenterDAO.getCenterName(centerId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.mosip.registration.service.login.LoginService#getRegistrationCenterDetails(java.lang.String)
+	 */
+	@Override
+	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
+		//Retrieving Registration Center details
+		return registrationCenterDAO.getRegistrationCenterDetails(centerId); 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.mosip.registration.service.login.LoginService#getRoles(java.lang.String)
+	 */
+	@Override
+	public List<String> getRoles(String userId){
+		//Retrieving User roles
+		return registrationUserRoleDAO.getRoles(userId);
+	}
+	
+	public String getBlockedUserCheck(String userId) {
+		return registrationUserDetailDAO.getBlockedUserCheck(userId);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.mosip.registration.service.LoginService#getOTP(java.lang.String)
+	 */
+	@Override
+	public ResponseDTO getOTP(final String key) {
+		LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Get OTP method called");
+
+		// Create Response to return to UI layer
+		ResponseDTO response = new ResponseDTO();
+		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
+		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
+
+		List<ErrorResponseDTO> errorResponses = null;
+		SuccessResponseDTO successResponse = null;
+
+		//prepare otpGeneratorRequestDto with specified key(EO Username) obtained from UI
+		otpGeneratorRequestDto.setKey(key);
+
+		try {
+			try {
+				
+				//obtain otpGeneratorResponseDto from serviceDelegateUtil
+				otpGeneratorResponseDto = (OtpGeneratorResponseDto) serviceDelegateUtil
+						.post(RegConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDto);
+			} catch (RegBaseCheckedException e) {
+				
+				//create Error Response
+				response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), "Error Response created");
+
+			}
+		} catch (HttpClientErrorException httpClientErrorException) {
+			try {
+				//obtain otpGeneratorResponseDto from JsonUtil
+				otpGeneratorResponseDto = (OtpGeneratorResponseDto) JsonUtils.jsonStringToJavaObject(
+						OtpGeneratorResponseDto.class, httpClientErrorException.getResponseBodyAsString());
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), "JSON conversion completed");
+
+			} catch (MosipJsonParseException e) {
+				//create Error Response
+				response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), "Error Response created");
+
+
+			} catch (MosipJsonMappingException e) {
+				//create Error Response
+				response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), "Error Response created");
+
+
+			} catch (MosipIOException e) {
+				//create Error Response
+				response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), "Error Response created");
+
+
+			}
+			//create Error Response
+			response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
+			LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "Error Response created");
+
+		}
+
+		if (otpGeneratorResponseDto != null) {
+			//create Success Response			
+			successResponse = new SuccessResponseDTO();
+			successResponse.setCode(RegConstants.ALERT_INFORMATION);
+			successResponse.setMessage(RegConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpGeneratorResponseDto.getOtp());
+
+			Map<String, Object> otherAttributes = new HashMap<String, Object>();
+			otherAttributes.put(RegConstants.OTP_GENERATOR_RESPONSE_DTO, otpGeneratorResponseDto);
+
+			successResponse.setOtherAttributes(otherAttributes);
+			response.setSuccessResponseDTO(successResponse);
+			LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "Success Response created");
+
+
+		} else {
+			//create Error Response
+			response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
+			LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "Error Response created");
+
+		}
+		LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Get OTP method ended");
+
+
+		return response;
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see org.mosip.registration.service.LoginService#validateOTP(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public ResponseDTO validateOTP(final String key, final String otp) {
+		
+		LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Validation of OTP called");
 
-		// Create Response
-		ResponseDTO responseDTO = new ResponseDTO();
-		SuccessResponseDTO successResponseDTO;
+
+		// Create Response to Return to UI layer
+		ResponseDTO response = new ResponseDTO();
+		List<ErrorResponseDTO> errorResponses = null;
+		SuccessResponseDTO successResponse;
 		OtpValidatorResponseDto otpValidatorResponseDto = null;
 
 		// Validator response service api creation
 		final String SERVICE_NAME = RegConstants.OTP_VALIDATOR_SERVICE_NAME;
+		
+		//prepare request params to pass through URI
 		Map<String, String> requestParamMap = new HashMap<String, String>();
 		requestParamMap.put(RegConstants.USERNAME_KEY, key);
 		requestParamMap.put(RegConstants.OTP_GENERATED, otp);
 
 		try {
 			try {
+				//Obtain otpValidatorResponseDto from service delegate util
 				otpValidatorResponseDto = (OtpValidatorResponseDto) serviceDelegateUtil.get(SERVICE_NAME,
 						requestParamMap);
 			} catch (RegBaseCheckedException e) {
-				getErrorResponse(responseDTO, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+				//Create Error response
+				response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), "Error Response Created");
+
 
 			}
 		} catch (HttpClientErrorException httpClientErrorException) {
 			try {
+				//obtain otpValidatorResponseDto through JSON Util
 				otpValidatorResponseDto = (OtpValidatorResponseDto) JsonUtils.jsonStringToJavaObject(
 						OtpValidatorResponseDto.class, httpClientErrorException.getResponseBodyAsString());
-			} catch (MosipJsonParseException | MosipJsonMappingException | MosipIOException exception) {
-				LOGGER.error("REGISTRATION - LOGIN_SERVICE - GET OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), exception.getMessage());
+			} catch (MosipJsonParseException e) {
+
+				//Create Error response
+				response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), "Error Response Created");
+
+			} catch (MosipJsonMappingException e) {
+				//Create Error response
+				response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), "Error Response Created");
+
+
+			} catch (MosipIOException e) {
+				//Create Error response
+				response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), "Error Response Created");
+
+
 			}
-			getErrorResponse(responseDTO, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+			//Create Error response
+			response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+			LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "Error Response Created");
+
+
 		}
+		if(otpValidatorResponseDto!=null) {
+			if(otpValidatorResponseDto.getStatus()!=null) {
+				if (otpValidatorResponseDto.getStatus().equalsIgnoreCase("true")) {
 
-		if (otpValidatorResponseDto != null && otpValidatorResponseDto.getStatus().equalsIgnoreCase("true")) {
+					// Create Success Response
+					successResponse = new SuccessResponseDTO();
+					successResponse.setCode(RegConstants.ALERT_INFORMATION);
+					successResponse.setMessage(RegConstants.OTP_VALIDATION_SUCCESS_MESSAGE);
+					Map<String, Object> otherAttributes = new HashMap<String, Object>();
+					otherAttributes.put(RegConstants.OTP_VALIDATOR_RESPONSE_DTO, otpValidatorResponseDto);
+					successResponse.setOtherAttributes(otherAttributes);
+					response.setSuccessResponseDTO(successResponse);
+					LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+							getPropertyValue(APPLICATION_ID), "Success Response Created");
 
-			// Create Success Response
-			successResponseDTO = new SuccessResponseDTO();
-			successResponseDTO.setCode(RegConstants.ALERT_INFORMATION);
-			successResponseDTO.setMessage(RegConstants.OTP_VALIDATION_SUCCESS_MESSAGE);
-			Map<String, Object> otherAttributes = new HashMap<String, Object>();
-			otherAttributes.put(RegConstants.OTP_VALIDATOR_RESPONSE_DTO, otpValidatorResponseDto);
-			successResponseDTO.setOtherAttributes(otherAttributes);
-			responseDTO.setSuccessResponseDTO(successResponseDTO);
+				} else {
+
+					//Create Error response
+					response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+					LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+							getPropertyValue(APPLICATION_ID), "Error Response Created");
+
+				}
+			} else {
+
+				//Create Error response
+				response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+						getPropertyValue(APPLICATION_ID), "Error Response Created");
+
+			}
 		} else {
-			getErrorResponse(responseDTO, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
-		}
 
-		return responseDTO;
+			//Create Error response
+			response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+			LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "Error Response Created");
+
+		}
+		
+		LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Validation of OTP ended");
+
+		return response;
+
 
 	}
 
-	/**
-	 * creation of Error Response
-	 * 
-	 * @param responseDTO
-	 *            response need to be created
-	 * @param message
-	 *            message to be stored in the response
-	 * @return Response response
-	 */
-	private ResponseDTO getErrorResponse(ResponseDTO responseDTO, final String message) {
+	
+	private ResponseDTO getErrorResponse(ResponseDTO response, final String message) {
 		// Create list of Error Response
-		LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
+		LinkedList<ErrorResponseDTO> errorResponses = new LinkedList<ErrorResponseDTO>();
 
 		// Error response
-		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 
-		errorResponseDTO.setCode(RegConstants.ALERT_ERROR);
-		errorResponseDTO.setMessage(message);
-		Map<String, Object> otherAttributes = new HashMap<>();
+		errorResponse.setCode(RegConstants.ALERT_ERROR);
+		errorResponse.setMessage(message);
+		Map<String, Object> otherAttributes = new HashMap<String, Object>();
 		otherAttributes.put(RegConstants.OTP_VALIDATOR_RESPONSE_DTO, null);
 
-		errorResponseDTOs.add(errorResponseDTO);
+		errorResponses.add(errorResponse);
 
 		// Assing list of error responses to response
-		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
-		return responseDTO;
+		response.setErrorResponseDTOs(errorResponses);
+		return response;
 
 	}
 }

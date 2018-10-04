@@ -2,11 +2,23 @@ package io.mosip.registration.dao;
 
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
+/**
+ * DAO class for RegistrationUserRole
+ * 
+ * @author Sravya Surampalli
+ * @since 1.0.0
+ *
+ */
 
-@Repository
 public interface RegistrationUserRoleDAO {
+	
+	/**
+	 * This method is used to get the Registration User Roles
+	 * 
+	 * @return List of roles
+	 */
 	
 	public List<String> getRoles(String userId);
 	
 }
+

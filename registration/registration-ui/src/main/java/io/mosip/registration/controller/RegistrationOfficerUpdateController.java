@@ -3,13 +3,14 @@ package io.mosip.registration.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import io.mosip.registration.controller.BaseController;
 import org.springframework.stereotype.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
 @Controller
-public class RegistrationOfficerUpdateController extends BaseController{
+public class RegistrationOfficerUpdateController extends BaseController {
 
 	@FXML
 	private Label scanDate;
@@ -23,7 +24,10 @@ public class RegistrationOfficerUpdateController extends BaseController{
 	@FXML
 	private Label downloadDate;
 	
-	public void initialize() throws Exception {
+	/**
+	 * Mapping dates to corresponding fields
+	 */
+	public void initialize() {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyy hh:mm:ss");
 		updateDate.setText(sdf.format(new Date()));
 		syncDate.setText(sdf.format(new Date()));
