@@ -12,12 +12,12 @@ package io.mosip.kernel.idvalidator.uinvalidator.constants;
 
 public enum MosipUinExceptionConstants {
 	
-	UIN_VAL_INVALID_NULL("1111111111", "Entered UIN should not be empty or null."),
-	UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE("222222222", "Entered UIN should not contain any sequential and repeated block of number for 2 or more than two digits"), 
-	UIN_VAL_ILLEGAL_LENGTH("333333333", "Entered UIN length should be 12 digit."), 
-	UIN_VAL_INVALID_DIGITS("44444444", "Entered UIN should not contain any alphanumeric characters."), 
-	UIN_VAL_ILLEGAL_CHECKSUM("6666666666", "Entered UIN should match checksum."),
-	UIN_VAL_INVALID_ZERO_ONE("7777777777", "Entered UIN should not contain Zero or One as first Digit.");
+	UIN_VAL_INVALID_NULL("COK-IDV-UIN-001" , "Entered UIN should not be Empty or Null."),
+	UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE("COK-IDV-UIN-002", "Entered UIN should not contain any sequential and repeated block of number for 2 or more than two digits"), 
+	UIN_VAL_ILLEGAL_LENGTH("COK-IDV-UIN-003", "Entered UIN length should be 12 digit."), 
+	UIN_VAL_INVALID_DIGITS("COK-IDV-UIN-004", "Entered UIN should not contain any alphanumeric characters."), 
+	UIN_VAL_ILLEGAL_CHECKSUM("COK-IDV-UIN-005", "Entered UIN should match checksum."),
+	UIN_VAL_INVALID_ZERO_ONE("COK-IDV-UIN-006", "Entered UIN should not contain Zero or One as first digit.");
 	/**
 	 * This variable holds the error code.
 	 */
@@ -60,5 +60,4 @@ public enum MosipUinExceptionConstants {
 	}
 
 }
-
 
