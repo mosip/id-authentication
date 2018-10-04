@@ -16,6 +16,7 @@
 	<description>Maven project of MOSIP ID-Authentication Service</description>
 
 	<properties>
+		<kernel.core.version>1.0.0-SNAPSHOT</kernel.core.version>
 		<kernel.hibernate.version>1.0.0-SNAPSHOT</kernel.hibernate.version>
 		<commons.codec.version>1.11</commons.codec.version>
 		<!-- Test & Logging -->
@@ -109,6 +110,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idvalidator</artifactId>
+			<version>${kernel.core.version}</version>
 		</dependency>
 	</dependencies>
 </project>

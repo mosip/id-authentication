@@ -117,7 +117,7 @@ public class AuthFacadeImplTest {
 		AuthResponseDTO authResponseDTO=new AuthResponseDTO();
 		authResponseDTO.setStatus(false);
 		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
-		authRequestDTO.setIdType(IdType.UIN);
+		authRequestDTO.setIdType(IdType.UIN.getType());
 		authRequestDTO.setId("1234567");
 		AuthTypeDTO authTypeDTO=new AuthTypeDTO();
 		authTypeDTO.setOtp(true);
@@ -169,7 +169,7 @@ public class AuthFacadeImplTest {
 	@Test
 	public void processIdtypeUINSuccess() throws IdAuthenticationBusinessException{
 		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
-		authRequestDTO.setIdType(IdType.UIN);
+		authRequestDTO.setIdType(IdType.UIN.getType());
 		String refId="1234";
 		Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenReturn(refId);
 		String referenceId=authFacadeImpl.processIdType(authRequestDTO);
@@ -184,7 +184,7 @@ public class AuthFacadeImplTest {
 	@Test
      public void processIdtypeVIDSuccess() throws IdAuthenticationBusinessException{
 		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
-		authRequestDTO.setIdType(IdType.VID);
+		authRequestDTO.setIdType(IdType.VID.getType());
 		String refId="1234";
 		Mockito.when(idAuthServiceImpl.validateVID(Mockito.any())).thenReturn(refId);
 		String referenceId=authFacadeImpl.processIdType(authRequestDTO);
@@ -200,7 +200,7 @@ public class AuthFacadeImplTest {
 	@Test(expected=IdAuthenticationBusinessException.class)
 	public void processIdtypeUINFailed() throws IdAuthenticationBusinessException{
 		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
-		authRequestDTO.setIdType(IdType.UIN);
+		authRequestDTO.setIdType(IdType.UIN.getType());
 		String refId="1234";
 		IdValidationFailedException idException =new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
 		Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenThrow(idException);
@@ -218,7 +218,7 @@ public class AuthFacadeImplTest {
 	@Test(expected=IdAuthenticationBusinessException.class)
     public void processIdtypeVIDFailed() throws IdAuthenticationBusinessException{
 		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
-		authRequestDTO.setIdType(IdType.VID);
+		authRequestDTO.setIdType(IdType.VID.getType());
 		String refId="1234";
 		IdValidationFailedException idException =new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_VID);
 		Mockito.when(idAuthServiceImpl.validateVID(Mockito.any())).thenThrow(idException);
