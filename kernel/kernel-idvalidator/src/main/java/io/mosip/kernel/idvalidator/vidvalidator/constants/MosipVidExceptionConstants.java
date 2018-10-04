@@ -1,6 +1,6 @@
 package io.mosip.kernel.idvalidator.vidvalidator.constants;
 
-public enum MosipVidExceptionCodeConstants {
+public enum MosipVidExceptionConstants {
 	
 	VID_VAL_INVALID_NULL("KER-IDV-VID-001", "Entered VID should not be empty or null."),
 	VID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE("KER-IDV-VID-002", "Entered VID should not contain any sequential and repeated block of number for 2 or more than two digits"), 
@@ -28,7 +28,7 @@ public enum MosipVidExceptionCodeConstants {
 	 * @param errorMessage
 	 *            the error message.
 	 */
-	MosipVidExceptionCodeConstants(String errorCode, String errorMessage) {
+	MosipVidExceptionConstants(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}

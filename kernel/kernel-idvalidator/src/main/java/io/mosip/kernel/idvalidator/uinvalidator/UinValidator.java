@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package io.mosip.kernel.idvalidator.uinvalidator;
 
 import java.util.regex.Pattern;
@@ -5,9 +8,8 @@ import java.util.regex.Pattern;
 import io.mosip.kernel.core.spi.idvalidator.MosipIdValidator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
-
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.uinvalidator.constants.MosipIDExceptionCodeConstants;
+import io.mosip.kernel.idvalidator.uinvalidator.constants.MosipUinExceptionConstants;
 
 /**
  * Test class for validate the Given UIN in String format
@@ -18,6 +20,23 @@ import io.mosip.kernel.idvalidator.uinvalidator.constants.MosipIDExceptionCodeCo
  */
 
 public class UinValidator implements MosipIdValidator<String> {
+
+	/**
+	 * The length of the uin
+	 */
+	private static final int UIN_LEN = 12;
+	/**
+	 * Field for numerical numbers regex
+	 */
+	private static final String APLHA_REGEX = "\\d{12}";
+	/**
+	 * Field for zero digit
+	 */
+	private static final char CHAR_ZERO = '0';
+	/**
+	 * Field for one digit
+	 */
+	private static final char CHAR_ONE = '1';
 
 	/**
 	 * Method used for Validate UIN against acceptance Criteria
@@ -41,12 +60,6 @@ public class UinValidator implements MosipIdValidator<String> {
 	 * @throws MosipInvalidIDException
 	 *             If entered UIN contain Zero or One as first Digit.
 	 */
-	private static final int len = 12;
-
-	private static final String alphanumRegex = "\\d{12}";
-
-	private static final char charZero = '0';
-	private static final char charOne = '1';
 
 	public boolean validateId(String id) {
 
@@ -56,39 +69,35 @@ public class UinValidator implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (id == null) {
-			throw new MosipInvalidIDException(MosipIDExceptionCodeConstants.UIN_VAL_INVALID_NULL.getErrorCode(),
-					MosipIDExceptionCodeConstants.UIN_VAL_INVALID_NULL.getErrorMessage());
+			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_INVALID_NULL.getErrorCode(),
+					MosipUinExceptionConstants.UIN_VAL_INVALID_NULL.getErrorMessage());
 		}
 		/**
 		 * 
 		 * Check the Length of the UIN, It Should be 12 Digit
 		 * 
 		 */
-		if (id.length() != len) {
-			throw new MosipInvalidIDException(MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorCode(),
-
-					MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorMessage());
-
+		if (id.length() != UIN_LEN) {
+			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorCode(),
+					MosipUinExceptionConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorCode());
 		}
 		/**
 		 * 
 		 * Validation for the UIN should not contain any alphanumeric characters
 		 * 
 		 */
-
-		if (!Pattern.matches(alphanumRegex, id)) {
-
-			throw new MosipInvalidIDException(MosipIDExceptionCodeConstants.UIN_VAL_INVALID_DIGITS.getErrorCode(),
-					MosipIDExceptionCodeConstants.UIN_VAL_INVALID_DIGITS.getErrorMessage());
+		if (!Pattern.matches(APLHA_REGEX, id)) {
+			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_INVALID_DIGITS.getErrorCode(),
+					MosipUinExceptionConstants.UIN_VAL_INVALID_DIGITS.getErrorMessage());
 		}
 		/**
 		 * 
 		 * Validation for the UIN should not contain '0' or '1' as the first digit.
 		 * 
 		 */
-		if (id.charAt(0) == charZero || id.charAt(0) == charOne) {
-			throw new MosipInvalidIDException(MosipIDExceptionCodeConstants.UIN_VAL_INVALID_ZERO_ONE.getErrorCode(),
-					MosipIDExceptionCodeConstants.UIN_VAL_INVALID_ZERO_ONE.getErrorMessage());
+		if (id.charAt(0) == CHAR_ZERO || id.charAt(0) == CHAR_ONE) {
+			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_INVALID_ZERO_ONE.getErrorCode(),
+					MosipUinExceptionConstants.UIN_VAL_INVALID_ZERO_ONE.getErrorMessage());
 		}
 
 		/**
@@ -106,11 +115,9 @@ public class UinValidator implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (IdFilterUtils.isValidId(id)) {
-
 			throw new MosipInvalidIDException(
-					MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
-
-					MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
+					MosipUinExceptionConstants.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
+					MosipUinExceptionConstants.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
 		}
 
 		/**
@@ -121,8 +128,8 @@ public class UinValidator implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (!ChecksumUtils.validateChecksum(id)) {
-			throw new MosipInvalidIDException(MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
-					MosipIDExceptionCodeConstants.UIN_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
+			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
+					MosipUinExceptionConstants.UIN_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
 		}
 		/**
 		 * 
