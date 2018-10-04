@@ -1,10 +1,6 @@
-package io.mosip.registration.processor.core.bridge.address;
+package io.mosip.registration.processor.core.messagebus;
 
 public class MessageBusAddress {
-	
-	private MessageBusAddress() {
-		
-	}
 	public static final String BATCH_BUS = "batch-bus";
 	public static final String STRUCTURE_BUS_IN = "structure-bus-in";
 	public static final String STRUCTURE_BUS_OUT = "structure-bus-out";

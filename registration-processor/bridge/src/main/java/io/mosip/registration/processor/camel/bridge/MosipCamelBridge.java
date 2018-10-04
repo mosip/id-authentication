@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.bridge;
+package io.mosip.registration.processor.camel.bridge;
 /**
  * @author Mukul Puspam
  */
@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
 
-import io.mosip.registration.processor.core.bridge.address.MessageBusAddress;
+import io.mosip.registration.processor.core.messagebus.MessageBusAddress;
 import io.vertx.camel.CamelBridge;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.logging.Logger;

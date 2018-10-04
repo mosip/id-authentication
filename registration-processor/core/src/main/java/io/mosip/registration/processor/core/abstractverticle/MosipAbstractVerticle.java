@@ -3,7 +3,7 @@ package io.mosip.registration.processor.core.abstractverticle;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import io.mosip.registration.processor.core.bridge.address.MessageBusAddress;
+import io.mosip.registration.processor.core.messagebus.MessageBusAddress;
 import io.mosip.registration.processor.core.spi.eventbus.EventBusManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;

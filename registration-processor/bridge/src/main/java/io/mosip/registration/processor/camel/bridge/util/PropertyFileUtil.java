@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.bridge.util;
+package io.mosip.registration.processor.camel.bridge.util;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

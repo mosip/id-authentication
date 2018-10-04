@@ -1,6 +1,6 @@
-package io.mosip.registration.processor.core.bridge.util;
+package io.mosip.registration.processor.camel.bridge.util;
 
-import io.mosip.registration.processor.core.bridge.MosipCamelBridge;
+import io.mosip.registration.processor.camel.bridge.MosipCamelBridge;
 
 public class BridgeUtil {
 
