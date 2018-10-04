@@ -34,8 +34,8 @@ import io.mosip.kernel.logger.exception.ClassNameNotFoundException;
 import io.mosip.kernel.logger.exception.EmptyPatternException;
 import io.mosip.kernel.logger.exception.FileNameNotProvided;
 import io.mosip.kernel.logger.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.logger.exception.MosipIlligalStateException;
-import io.mosip.kernel.logger.exception.PatternSyntaxExeption;
+import io.mosip.kernel.logger.exception.MosipIllegalStateException;
+import io.mosip.kernel.logger.exception.PatternSyntaxException;
 
 /**
  * Logback implementation class for mosip
@@ -145,7 +145,7 @@ public class MosipLogback implements MosipLogger {
 			timeBasedRollingPolicy
 					.setMaxHistory(mosipRollingFileAppender.getMaxHistory());
 			if (mosipRollingFileAppender.getFileNamePattern().contains("%i")) {
-				throw new PatternSyntaxExeption(
+				throw new PatternSyntaxException(
 						LogExeptionCodeConstants.PATTERNSYNTAXEXCEPTION,
 						LogExeptionCodeConstants.PATTERNSYNTAXEXCEPTIONMESSAGENOTI);
 			}
@@ -256,13 +256,13 @@ public class MosipLogback implements MosipLogger {
 					LogExeptionCodeConstants.EMPTYPATTERNEXCEPTION,
 					LogExeptionCodeConstants.EMPTYPATTERNEXCEPTIONMESSAGEEMPTY);
 		else if (!rollingFileAppender.getFileNamePattern().contains("%d"))
-			throw new PatternSyntaxExeption(
+			throw new PatternSyntaxException(
 					LogExeptionCodeConstants.PATTERNSYNTAXEXCEPTION,
 					LogExeptionCodeConstants.PATTERNSYNTAXEXCEPTIONMESSAGED);
 		else if (!rollingFileAppender.getMaxFileSize().isEmpty()
 				&& rollingFileAppender.getMaxFileSize() != null
 				&& !rollingFileAppender.getFileNamePattern().contains("%i"))
-			throw new PatternSyntaxExeption(
+			throw new PatternSyntaxException(
 					LogExeptionCodeConstants.PATTERNSYNTAXEXCEPTION,
 					LogExeptionCodeConstants.PATTERNSYNTAXEXCEPTIONMESSAGEI);
 		else if (rollingFileAppender.getFileName() == null)
@@ -281,7 +281,7 @@ public class MosipLogback implements MosipLogger {
 			try {
 				return new MosipLogback(rollingFileAppender, name);
 			} catch (IllegalStateException e) {
-				throw new MosipIlligalStateException(
+				throw new MosipIllegalStateException(
 						LogExeptionCodeConstants.MOSIPILLEGALSTATEEXCEPTION,
 						LogExeptionCodeConstants.MOSIPILLEGALSTATEEXCEPTIONMESSAGE);
 			} catch (IllegalArgumentException e) {

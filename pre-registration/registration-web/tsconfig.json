@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES3",
+    "module": "CommonJS",
+    "moduleResolution": "classic",
+    "strict": true
+  },
+  "compileOnSave": false
+}

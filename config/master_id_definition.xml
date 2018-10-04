@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mosip-id_definition>
+	<pre-registration_id required="yes" type="integer" maxlength="16"/>
+	
+	<name required="yes">
+		<firstname required="yes" type="string" maxlength="15"/>
+		<givenname required="yes" type="string" maxlength="15"/>
+		<middlename required="yes" type="string" maxlength="15"/>
+		<middleinitial required="no" type="string" maxlength="3"/>
+		<lastname required="yes" type="string" mexlength="15"/>		
+		<surname required="no" type="string" maxlength="15"/>
+		<forename required="no" type="string" maxlength="15"/>
+	</name>
+	
+	<dateofbirth required="yes" type="string" format="dd/mm/yyyy"/>
+	
+	<gender required="yes" type="string"/>
+	
+	<address required="yes">
+		<addressline1 required="yes" type="string" maxlength="20"/>
+		<addressline2 required="yes" type="string" maxlength="20"/>
+		<addressline3 required="yes" type="string" maxlength="20"/>
+		<location required="yes" ref="location_hierarchy"/>
+	</address>
+	
+	<location_hierarchy id="Location_hierarchy">
+		<value isRoot="true">country</value>
+		<value parent="country">region</value>
+		<value parent="region">province</value>
+		<value parent="region">prefecture</value>		
+		<value parent="province,prefecture">town</value>
+		<value parent="province,prefecture">city</value>
+		<value parent="province,prefecture">village</value>	
+		<value parent="city,town,village">postal_code</value>	
+	</location_hierarchy>
+	
+	<contact required="yes">
+		<mobile required="no" optional="yes" type="number" format="xx-xxxx-xxxx" maxlength="10"/>
+		<email required="yes" type="string" maxlength="20"/>
+	</contact>
+	
+	<applicanttype required="yes" type="string"/>
+	
+	<proofofidentity required="yes">
+		<prooftype required="yes" type="string"/>
+		<proofformat required="yes" type="string"/>
+	</proofofidentity>
+	
+	<proofofaddress required="yes">
+		<prooftype required="yes" type="string"/>
+		<proofformat required="yes" type="string"/>
+	</proofofaddress>	
+	
+	<proofofrelationship required="yes">
+		<prooftype required="yes" type="string"/>
+		<proofformat required="yes" type="string"/>
+	</proofofrelationship>
+		
+	<fingerprint required="yes">
+		<leftpalm required="yes"/>
+    	<rightpalm required="yes"/>
+    	<leftthumb required="yes"/>
+    	<rightthumb required="yes"/>
+    	<quality required="yes"/>
+    	<threshold required="yes"/>
+	</fingerprint>
+	
+	<iris required="yes">
+		<lefteye required="yes"/>
+    	<righteye required="yes"/>    
+    	<threshold required="yes"/>	
+	</iris>
+	
+	<face required="no">
+		<threshold required="yes"/>	
+		<quality required="yes"/>	
+	</face>
+</mosip-id_definition>
