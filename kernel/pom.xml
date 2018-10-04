@@ -98,7 +98,7 @@
 		<module>kernel-otpmanager-api</module>
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-validator</module>
-		<module>kernel-virusscanner-clamav</module>
+		<!-- <module>kernel-virusscanner-clamav</module> -->
 		
 	</modules>
 
