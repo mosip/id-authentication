@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="309.0" prefWidth="410.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RejectionController">
+   <children>
+      <SplitPane dividerPositions="0.18892508143322476" orientation="VERTICAL" prefHeight="309.0" prefWidth="410.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Label layoutX="113.0" layoutY="13.0" prefHeight="27.0" prefWidth="182.0" text="Reason for Rejection">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Label layoutX="14.0" layoutY="50.0" prefHeight="27.0" prefWidth="88.0" text="Reason    :" />
+                  <ComboBox fx:id="rejectionComboBox" layoutX="102.0" layoutY="44.0" prefHeight="39.0" prefWidth="292.0" promptText="Select" />
+                  <Button fx:id="rejectionSubmit" layoutX="165.0" layoutY="177.0" mnemonicParsing="false" onAction="#packetUpdateStatus" text="Submit" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
