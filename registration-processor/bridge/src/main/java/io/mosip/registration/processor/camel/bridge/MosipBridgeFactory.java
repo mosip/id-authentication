@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.bridge;
+package io.mosip.registration.processor.camel.bridge;
 /**
  * @author Mukul Puspam
  */
