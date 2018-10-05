@@ -28,7 +28,7 @@ public class SyncRegistrationEntity {
 	/** The Sync registration id. */
 	@Column(name = "id", nullable = false)
 	@Id
-	private String SyncRegistrationId;
+	private String syncRegistrationId;
 
 
 	/** The registration id. */
@@ -105,7 +105,7 @@ public class SyncRegistrationEntity {
 	 * @return the sync registration id
 	 */
 	public String getSyncRegistrationId() {
-		return SyncRegistrationId;
+		return syncRegistrationId;
 	}
 
 	/**
@@ -114,7 +114,7 @@ public class SyncRegistrationEntity {
 	 * @param syncRegistrationId the new sync registration id
 	 */
 	public void setSyncRegistrationId(String syncRegistrationId) {
-		SyncRegistrationId = syncRegistrationId;
+		this.syncRegistrationId = syncRegistrationId;
 	}
 
 	/**
