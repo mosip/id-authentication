@@ -32,14 +32,14 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	@Autowired
 	private SyncRegistrationDao syncRegistrationDao;
 
-
 	private static final String COULD_NOT_GET = "Could not get Information from table";
-	
+
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
 
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
+
 	/**
 	 * Instantiates a new sync registration service impl.
 	 */
@@ -53,9 +53,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		boolean isTransactionSuccessful = false;
 		try {
 			for (SyncRegistrationDto syncRegistrationDto : syncResgistrationdto) {
-				if (!isPresent(syncRegistrationDto.getRegistrationId())) {
 					list.add(convertEntityToDto(syncRegistrationDao.save(convertDtoToEntity(syncRegistrationDto))));
-				}
 			}
 			isTransactionSuccessful = true;
 			return list;
@@ -78,11 +76,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 	@Override
 	public boolean isPresent(String syncResgistrationId) {
-		return syncRegistrationDao.findById(syncResgistrationId)!=null;
+		return syncRegistrationDao.findById(syncResgistrationId) != null;
 	}
-	
 
-	
 	/**
 	 * Convert entity to dto.
 	 *
@@ -93,7 +89,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	@SuppressWarnings("unused")
 	private List<SyncRegistrationDto> convertEntityToDto(List<SyncRegistrationEntity> entities) {
 		List<SyncRegistrationDto> ents = new ArrayList<>();
-		for(SyncRegistrationEntity entity: entities) {
+		for (SyncRegistrationEntity entity : entities) {
 			ents.add(convertEntityToDto(entity));
 		}
 		return ents;
@@ -108,7 +104,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	 */
 	private List<SyncRegistrationEntity> convertDtoToEntity(List<SyncRegistrationDto> entities) {
 		List<SyncRegistrationEntity> ents = new ArrayList<>();
-		for(SyncRegistrationDto entity: entities) {
+		for (SyncRegistrationDto entity : entities) {
 			ents.add(convertDtoToEntity(entity));
 		}
 		return ents;
@@ -124,7 +120,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		syncRegistrationDto.setStatusCode(entity.getStatusCode());
 		syncRegistrationDto.setSyncRegistrationId(entity.getSyncRegistrationId());
 		syncRegistrationDto.setStatusComment(entity.getStatusComment());
-		
+
 		syncRegistrationDto.setCreatedBy(entity.getCreatedBy());
 		syncRegistrationDto.setCreateDateTime(entity.getCreateDateTime());
 		syncRegistrationDto.setUpdatedBy(entity.getUpdatedBy());
@@ -143,7 +139,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		syncRegistrationEntity.setStatusCode(dto.getStatusCode());
 		syncRegistrationEntity.setSyncRegistrationId(dto.getSyncRegistrationId());
 		syncRegistrationEntity.setStatusComment(dto.getStatusComment());
-		
+
 		syncRegistrationEntity.setCreatedBy(dto.getCreatedBy());
 		syncRegistrationEntity.setCreateDateTime(dto.getCreateDateTime());
 		syncRegistrationEntity.setUpdatedBy(dto.getUpdatedBy());
@@ -151,25 +147,21 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		syncRegistrationEntity.setDeletedDateTime(dto.getDeletedDateTime());
 		return syncRegistrationEntity;
 	}
-	
-	public void createAuditRequestBuilder(String applicationId,String applicationName,String description,String eventId,String eventName,String eventType){
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-		.setApplicationId(applicationId)
-		.setApplicationName(applicationName)
-		.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-		.setDescription(description)
-		.setEventId(eventId)
-		.setEventName(eventName)
-		.setEventType(eventType)
-		.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-		.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-		.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-		.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-		.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-		.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-		.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
-		
-        AuditRequestDto auditRequestDto = auditRequestBuilder.build();
+
+	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,
+			String eventId, String eventName, String eventType) {
+		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
+				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
+				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
+				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
+				.setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(AuditLogTempConstant.ID.toString())
+				.setIdType(AuditLogTempConstant.ID_TYPE.toString())
+				.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
+				.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
+				.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
+				.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+
+		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
 		auditHandler.writeAudit(auditRequestDto);
 	}
 }
