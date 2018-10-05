@@ -70,7 +70,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Override
 	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO)
 			throws IdAuthenticationBusinessException {
-		// TODO Auto-generated method stub
 		String refId = processIdType(authRequestDTO);
 		boolean authFlag = processAuthType(authRequestDTO, refId);
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
@@ -78,8 +77,6 @@ public class AuthFacadeImpl implements AuthFacade {
 		authResponseDTO.setResTime(new Date());
 		authResponseDTO.setStatus(authFlag);
 		logger.info(DEFAULT_SESSION_ID, "IDA", "AuthFacade","authenticateApplicant status : " + authFlag); //FIXME
-		//TODO Update audit details
-		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "Desc");
 
 		auditData(); 
 		return authResponseDTO;
