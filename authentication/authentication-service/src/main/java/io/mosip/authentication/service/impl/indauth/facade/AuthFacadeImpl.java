@@ -97,7 +97,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			throws IdAuthenticationBusinessException {
 		boolean authStatus = false;
 
-		if (authRequestDTO.getAuthType().getOtp()) {
+		if (authRequestDTO.getAuthType().isOtp()) {
 			authStatus = otpService.validateOtp(authRequestDTO, refId);
 			// TODO log authStatus - authType, response
 			logger.info(DEFAULT_SESSION_ID, "IDA", "AuthFacade","authenticateApplicant status : " + authStatus);

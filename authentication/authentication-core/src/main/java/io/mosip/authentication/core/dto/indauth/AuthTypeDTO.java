@@ -11,18 +11,18 @@ import lombok.Data;
 public class AuthTypeDTO {
 
 	/** For id  Authentication */
-	private Boolean id;
+	private boolean id;
 	
 	/** For address  Authentication */
-	private Boolean ad;
+	private boolean ad;
 
 	/** For pin  Authentication */
-	private Boolean pin;
+	private boolean pin;
 
 	/** For biometric  Authentication */
-	private Boolean bio;
+	private boolean bio;
 
 	/** For otp  Authentication */
-	private Boolean otp;
+	private boolean otp;
 
 }

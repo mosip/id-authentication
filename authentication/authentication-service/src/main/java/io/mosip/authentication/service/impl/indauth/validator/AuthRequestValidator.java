@@ -100,15 +100,15 @@ public class AuthRequestValidator implements Validator {
 					env.getProperty("mosip.ida.validation.message.AuthRequest.Idtype"));
 		}
 
-		boolean remainingAuthType = authRequest.getAuthType().getBio() || authRequest.getAuthType().getAd()
-				|| authRequest.getAuthType().getPin() || authRequest.getAuthType().getId();
+		boolean remainingAuthType = authRequest.getAuthType().isBio() || authRequest.getAuthType().isAd()
+				|| authRequest.getAuthType().isPin() || authRequest.getAuthType().isId();
 		if (remainingAuthType) {
 			mosipLogger.error("sessionId", "AuthRequestValidator", "validate()", "INVALID_AUTH_REQUEST - remainingAuthType is true");
 			errors.rejectValue("authType", IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					env.getProperty("mosip.ida.validation.message.AuthRequest.unsupportedAuthtype"));
 		}
 
-		else if (authRequest.getAuthType().getOtp()) {
+		else if (authRequest.getAuthType().isOtp()) {
 			checkOTPAuth(authRequest, errors);
 
 		} else {
