@@ -14,10 +14,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PersonalAddressDTO {
 
-	private String addressLine1;
-	private String addressLine2;
-	private String addressLine3;
+	/** Address line 1 of the individual */
+	private String addrLine1;
+
+	/** Address line 2 of the individual */
+	private String addrLine2;
+
+	/** Address line 3 of the individual */
+	private String addrLine;
+
+	/** Registered state of the individual */
 	private String state;
+
+	/** Registered country of the individual */
 	private String country;
+
+	/** Registered pinCode of the individual */
 	private String pinCode;
 }
