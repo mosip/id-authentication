@@ -225,7 +225,18 @@
 				<configuration>
 					<excludes>
 						<exclude>**/*IntegrationTest.java</exclude>
-						<exclude> org/mosip/registration/controller/**</exclude>
+						<exclude>io/mosip/registration/controller/**</exclude>
+						<exclude>io/mosip/registration/scheduler/**</exclude>
+						<exclude>io/mosip/registration/constants/**</exclude>
+						<exclude>io/mosip/registration/config/**</exclude>
+						<exclude>io/mosip/registration/entity/**</exclude>
+						<exclude>io/mosip/registration/dto/**</exclude>
+						<exclude>io/mosip/registration/context/**</exclude>
+						<exclude>io/mosip/registration/service/packet/encryption/rsa/**</exclude>
+						<exclude>io/mosip/registration/util/dataprovider/**</exclude>
+						<exclude>io/mosip/registration/util/rsa/**</exclude>
+						<exclude>io/mosip/registration/util/kernel/**</exclude>
+						<exclude>io/mosip/registration/util/checksum/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>
