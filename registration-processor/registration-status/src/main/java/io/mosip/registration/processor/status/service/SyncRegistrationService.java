@@ -33,6 +33,6 @@ public interface SyncRegistrationService<T> {
 	 *            the sync resgistrationdto
 	 * @return true, if is present
 	 */
-	public boolean isPresent(T syncResgistrationdto);
+	public boolean isPresent(String syncResgistrationId);
 
 }

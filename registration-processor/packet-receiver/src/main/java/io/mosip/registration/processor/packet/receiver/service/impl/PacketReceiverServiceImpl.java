@@ -20,6 +20,7 @@ import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
 @Component
 public class PacketReceiverServiceImpl implements PacketReceiverService<MultipartFile, Boolean> {
@@ -35,6 +36,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
+	
+	@Autowired
+	private SyncRegistrationService syncRegistrationService;
 
 	@Autowired
 	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
@@ -48,6 +52,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 */
 	@Override
 	public Boolean storePacket(MultipartFile file) {
+		
+		
 		boolean storageFlag = false;
 		if (file.getSize() > getMaxFileSize()) {
 			throw new FileSizeExceedException(RegistrationStatusCode.PACKET_SIZE_GREATER_THAN_LIMIT.name());
@@ -56,6 +62,10 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 			throw new PacketNotValidException(RegistrationStatusCode.INVALID_PACKET_FORMAT.toString());
 		} else {
 			String registrationId = file.getOriginalFilename().split("\\.")[0];
+			if(!syncRegistrationService.isPresent(registrationId)) {
+				logger.info("Registration Packet is Not yet sync in Sync table");
+				return false;
+			}
 			if (!(isDuplicatePacket(registrationId))) {
 				try {
 					fileManager.put(file.getOriginalFilename(), file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
