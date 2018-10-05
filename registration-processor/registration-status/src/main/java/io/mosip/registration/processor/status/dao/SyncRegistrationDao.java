@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.status.dao;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,33 +60,6 @@ public class SyncRegistrationDao {
 	public SyncRegistrationEntity save(SyncRegistrationEntity syncRegistrationEntity) {
 
 		return syncRegistrationRepository.save(syncRegistrationEntity);
-	}
-
-
-	/**
-	 * Update.
-	 *
-	 * @param syncRegistrationEntity the sync registration entity
-	 * @return the sync registration entity
-	 */
-	public SyncRegistrationEntity update(SyncRegistrationEntity syncRegistrationEntity) {
-
-		return syncRegistrationRepository.save(syncRegistrationEntity);
-	}
-
-	/**
-	 * Adds the registrations.
-	 *
-	 * @param syncRegistrationEntityList the sync registration entity list
-	 * @return the list
-	 */
-	public List<SyncRegistrationEntity> addRegistrations(List<SyncRegistrationEntity> syncRegistrationEntityList) {
-		List<SyncRegistrationEntity> syncList = new ArrayList<>();
-		for(SyncRegistrationEntity synEntity: syncRegistrationEntityList) {
-			SyncRegistrationEntity syncRegistrationEntity = syncRegistrationRepository.save(synEntity);
-			syncList.add(syncRegistrationEntity);
-		}
-		return syncList;
 	}
 
 
