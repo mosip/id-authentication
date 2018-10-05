@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.core.packet.dto;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import lombok.Data;

@@ -1,6 +1,8 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
 /**
+ * This class lists down the addresses to be used in Registration process
+ * 
  * @author Pranav Kumar
  * 
  * @author Mukul Puspam
@@ -11,7 +13,8 @@ public class MessageBusAddress {
 	private String address;
 
 	/**
-	 * @param address The bus address
+	 * @param address
+	 *            The bus address
 	 */
 	private MessageBusAddress(String address) {
 		this.address = address;
