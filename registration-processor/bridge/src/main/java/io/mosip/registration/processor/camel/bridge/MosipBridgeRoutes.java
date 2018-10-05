@@ -13,7 +13,7 @@ import io.mosip.registration.processor.camel.bridge.processor.RetryProcessor;
 import io.mosip.registration.processor.camel.bridge.processor.StructureValidationProcessor;
 import io.mosip.registration.processor.camel.bridge.statuscode.StatusCodes;
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
-import io.mosip.registration.processor.core.messagebus.MessageBusAddress;
+import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 
 /**
  * The Class MosipBridgeRoutes.
@@ -38,35 +38,35 @@ public class MosipBridgeRoutes extends RouteBuilder {
 	@Override
 	public void configure() throws Exception {
 
-		errorHandler(deadLetterChannel(BridgeUtil.getEndpoint(MessageBusAddress.ERROR)));
+		errorHandler(deadLetterChannel(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress())));
 
-		from(BridgeUtil.getEndpoint(MessageBusAddress.BATCH_BUS)).process(validateBatchRequest).choice()
+		from(BridgeUtil.getEndpoint(MessageBusAddress.BATCH_BUS.getAddress())).process(validateBatchRequest).choice()
 				.when(header("isValidEid").isEqualTo(true))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN))
-				.when(header("isValidEid").isEqualTo(false)).to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN.getAddress()))
+				.when(header("isValidEid").isEqualTo(false)).to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress()));
 
-		from(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_OUT)).process(validateStructure).choice()
+		from(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_OUT.getAddress())).process(validateStructure).choice()
 				.when(header("hasValidStructure").isEqualTo(true))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN))
-				.when(header("hasValidStructure").isEqualTo(false)).to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
+				.when(header("hasValidStructure").isEqualTo(false)).to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress()));
 
-		from(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_OUT)).process(validateDemographic).choice()
+		from(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_OUT.getAddress())).process(validateDemographic).choice()
 				.when(header("hasValidDemographic").isEqualTo(true))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.BIOMETRIC_BUS_IN))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.BIOMETRIC_BUS_IN.getAddress()))
 				.when(header("hasValidDemographic").isEqualTo(false))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress()));
 
-		from(BridgeUtil.getEndpoint(MessageBusAddress.BIOMETRIC_BUS_OUT)).process(validateBiometric).choice()
-				.when(header("hasValidBiometric").isEqualTo(true)).to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR))
-				.when(header("hasValidBiometric").isEqualTo(false)).to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
+		from(BridgeUtil.getEndpoint(MessageBusAddress.BIOMETRIC_BUS_OUT.getAddress())).process(validateBiometric).choice()
+				.when(header("hasValidBiometric").isEqualTo(true)).to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress()))
+				.when(header("hasValidBiometric").isEqualTo(false)).to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress()));
 
-		from(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS)).process(retryProcess).choice()
+		from(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS.getAddress())).process(retryProcess).choice()
 				.when(header("packetStatus").isEqualTo(StatusCodes.FOR_STRUCTURE_VALIDATION.toString()))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN.getAddress()))
 				.when(header("packetStatus").isEqualTo(StatusCodes.FOR_DEMOGRAPHIC_VALIDATION.toString()))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
 				.when(header("packetStatus").isEqualTo(StatusCodes.FOR_BIOMETRIC_VALIDATION.toString()))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.BIOMETRIC_BUS_IN));
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.BIOMETRIC_BUS_IN.getAddress()));
 
 	}
 

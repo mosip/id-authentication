@@ -1,14 +1,10 @@
 package io.mosip.registration.processor.camel.bridge;
-/**
- * @author Mukul Puspam
- */
-
 import java.util.concurrent.ExecutionException;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
 
-import io.mosip.registration.processor.core.messagebus.MessageBusAddress;
+import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.vertx.camel.CamelBridge;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.logging.Logger;
@@ -39,7 +35,7 @@ public class MosipCamelBridge extends AbstractVerticle {
 	@Override
 	public void start() throws Exception {
 
-		vertx.eventBus().consumer(MessageBusAddress.ERROR, message -> {
+		vertx.eventBus().consumer(MessageBusAddress.ERROR.getAddress(), message -> {
 			log.error("ERROR while doing operation >> " + message.body());
 		});
 		CamelContext camelContext = new DefaultCamelContext();
