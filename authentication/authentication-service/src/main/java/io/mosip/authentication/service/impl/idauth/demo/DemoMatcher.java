@@ -17,6 +17,8 @@ public class DemoMatcher {
 		if(input.getDemoMatchType().getAllowedMatchingStrategy().contains(input.getMatchStrategyType())) {
 			String reqName = (String) input.getDemoMatchType().getDemoInfo().getInfo(demoDTO);
 			String entityName = (String) input.getDemoMatchType().getEntityInfo().getInfo(demoEntity);
+			//MatchUtil.do(reqName, entityName);
+			//if(utilResult >= input.mt) { return matchoutput true; }
 		}
 		return null;
 	}
