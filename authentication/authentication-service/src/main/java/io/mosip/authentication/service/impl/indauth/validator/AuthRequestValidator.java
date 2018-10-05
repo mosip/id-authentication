@@ -19,7 +19,6 @@ import io.mosip.kernel.idvalidator.vidvalidator.VidValidator;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 
-// TODO: Auto-generated Javadoc
 /**
  * 
  * This class validates the parameters for Authorisation Request.
@@ -32,6 +31,12 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 @Component
 public class AuthRequestValidator implements Validator {
 	
+	private static final String VALIDATE_CHECK_OTP_AUTH = "validate -> checkOTPAuth";
+	private static final String PIN_DTO = "pinDTO";
+	private static final String VALIDATE = "validate";
+	private static final String AUTH_REQUEST_VALIDATOR = "AuthRequestValidator";
+	private static final String SESSION_ID = "sessionId";
+
 	private MosipLogger mosipLogger;
 
 	@Autowired
@@ -79,23 +84,21 @@ public class AuthRequestValidator implements Validator {
 				UinValidator uinValidator = new UinValidator();
 				uinValidator.validateId(authRequest.getId());
 			} catch (MosipInvalidIDException e) {
-				mosipLogger.error("sessionId", "AuthRequestValidator", "validate()", "MosipInvalidIDException - " + e);
-				// FIXME switch for other errocodes thrown in MosipInvalidIDException
+				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
 				errors.rejectValue("id", IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
-						env.getProperty("mosip.ida.validation.message.AuthRequest.id"));
+						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
 			}
 		} else if (idType.equals(IdType.VID.getType())) {
 			try {
 				VidValidator vidValidator = new VidValidator();
 				vidValidator.validateId(authRequest.getId());
 			} catch (MosipInvalidIDException e) {
-				mosipLogger.error("sessionId", "AuthRequestValidator", "validate()", "MosipInvalidIDException - " + e);
-				// FIXME switch for other errocodes thrown in MosipInvalidIDException
+				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
 				errors.rejectValue("id", IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
-						env.getProperty("mosip.ida.validation.message.AuthRequest.id"));
+						IdAuthenticationErrorConstants.INVALID_VID.getErrorMessage());
 			}
 		} else {
-			mosipLogger.error("sessionId", "AuthRequestValidator", "validate()", "INCORRECT_IDTYPE - " + idType);
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "INCORRECT_IDTYPE - " + idType);
 			errors.rejectValue("idType", IdAuthenticationErrorConstants.INCORRECT_IDTYPE.getErrorCode(),
 					env.getProperty("mosip.ida.validation.message.AuthRequest.Idtype"));
 		}
@@ -103,7 +106,7 @@ public class AuthRequestValidator implements Validator {
 		boolean remainingAuthType = authRequest.getAuthType().isBio() || authRequest.getAuthType().isAd()
 				|| authRequest.getAuthType().isPin() || authRequest.getAuthType().isId();
 		if (remainingAuthType) {
-			mosipLogger.error("sessionId", "AuthRequestValidator", "validate()", "INVALID_AUTH_REQUEST - remainingAuthType is true");
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "INVALID_AUTH_REQUEST - remainingAuthType is true");
 			errors.rejectValue("authType", IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					env.getProperty("mosip.ida.validation.message.AuthRequest.unsupportedAuthtype"));
 		}
@@ -112,7 +115,7 @@ public class AuthRequestValidator implements Validator {
 			checkOTPAuth(authRequest, errors);
 
 		} else {
-			mosipLogger.error("sessionId", "AuthRequestValidator", "validate()", "INVALID_AUTH_REQUEST - No auth type found");
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "INVALID_AUTH_REQUEST - No auth type found");
 			errors.rejectValue("authType", IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					env.getProperty("mosip.ida.validation.message.AuthRequest.NoAuthtype"));
 
@@ -135,20 +138,19 @@ public class AuthRequestValidator implements Validator {
 			if (null != pinDTO.getType() && pinType.getType().equals(PinType.OTP.getType())) {
 				String otpValue = pinDTO.getValue();
 				if (otpValue != null && otpValue.length() != 6) {
-					mosipLogger.error("sessionId", "AuthRequestValidator", "validate() -> checkOTPAuth()", "INVALID_OTP - length mismatch");
-					errors.rejectValue("pinDTO", IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
+					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH, "INVALID_OTP - length mismatch");
+					errors.rejectValue(PIN_DTO, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
 							IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage());
 				}
 
 			} else {
-				mosipLogger.error("sessionId", "AuthRequestValidator", "validate() -> checkOTPAuth()", "INVALID_OTP - pinType is not OTP");
-				errors.rejectValue("pinDTO", IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
+				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH, "INVALID_OTP - pinType is not OTP");
+				errors.rejectValue(PIN_DTO, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
 						env.getProperty("mosip.ida.validation.message.AuthRequest.OTP"));
 			}
 		} else {
-			// FIXME
-			mosipLogger.error("sessionId", "AuthRequestValidator", "validate() -> checkOTPAuth()", "EMPTY_OTP - OTP is empty");
-			errors.rejectValue("pinDTO", IdAuthenticationErrorConstants.EMPTY_OTP.getErrorCode(),
+			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH, "EMPTY_OTP - OTP is empty");
+			errors.rejectValue(PIN_DTO, IdAuthenticationErrorConstants.EMPTY_OTP.getErrorCode(),
 					env.getProperty("mosip.ida.validation.message.AuthRequest.PinType"));
 		}
 

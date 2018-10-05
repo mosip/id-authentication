@@ -2,16 +2,12 @@ package io.mosip.authentication.service.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 @Configuration
-@PropertySource(value = { "classpath:log.properties" })
-@ComponentScan(basePackages = "org.mosip.auth")
 public class LogConfig {
 
 	@Autowired

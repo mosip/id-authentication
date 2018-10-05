@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
@@ -33,7 +32,6 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
  *
  */
 @Component
-@PropertySource("classpath:rest-services.properties")
 public class RestRequestFactory {
 
 	private static final String DEFAULT_SESSION_ID = "sessionId";

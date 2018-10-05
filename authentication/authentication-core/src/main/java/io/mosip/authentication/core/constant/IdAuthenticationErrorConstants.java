@@ -22,9 +22,9 @@ public enum IdAuthenticationErrorConstants {
 	REQUEST_PROCESSING_ERROR("IDA-OTA-010", "Request could not be processed. Please try again"),
 	
 	// To be discussed with BA
-	INVALID_UIN("IDA-IDV-001", "Invalid UIN"),
+	INVALID_UIN("IDA-MLC-002", "Invalid UIN"),
 	INACTIVE_UIN("IDA-IDV-002", "Inactive UIN"),
-	INVALID_VID("IDA-IDV-003", "Invalid VID"),
+	INVALID_VID("IDA-MLC-004", "Invalid VID"),
 	EXPIRED_VID("IDA-IDV-004", "Expired VID"), // Not referenced
 	INACTIVE_VID("IDA-IDV-005", "Inactive VID"),
 	AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),

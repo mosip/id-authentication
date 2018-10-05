@@ -123,7 +123,7 @@ public class OTPFacadeImplTest {
 	@Test
 	public void testGetRefIdForVID() {
 		String uniqueID = otpRequestDto.getId();
-		otpRequestDto.setIdType(IdType.VID);
+		otpRequestDto.setIdType(IdType.VID.getType());
 		String actualrefid=ReflectionTestUtils.invokeMethod(idAuthService, "validateVID", uniqueID);
 		String expactedRefId=ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
 		
@@ -151,7 +151,7 @@ public class OTPFacadeImplTest {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setMsaLicenseKey("1234567890");
 		otpRequestDto.setMuaCode("1234567890");
-		otpRequestDto.setIdType(IdType.UIN);
+		otpRequestDto.setIdType(IdType.UIN.getType());
 
 		// otpRequestDto.setReqTime(new Date(Long.valueOf("2018-09-2412:06:28.501")));
 		otpRequestDto.setReqTime(new Date());

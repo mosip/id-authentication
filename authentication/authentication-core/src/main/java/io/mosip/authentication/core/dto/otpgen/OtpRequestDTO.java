@@ -6,7 +6,6 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import io.mosip.authentication.core.dto.indauth.IdType;
 import lombok.Data;
 
 /**
@@ -19,14 +18,10 @@ import lombok.Data;
 @Data
 public class OtpRequestDTO  {
 
-	private static final long serialVersionUID = 587362391440358285L;
-
-	@Pattern(regexp = "^[0-9]{10}", message = "uniqueID validation failed")
 	private String id;
 
-//	@NotEmpty
 	@NotNull
-	private IdType idType;
+	private String idType;
 
 	@Digits(fraction = 1, integer = 1)
 	private String ver;
@@ -37,7 +32,6 @@ public class OtpRequestDTO  {
 	@Pattern(regexp = "^[A-Z0-9]{10}")
 	private String txnID;
 
-//	@DateTimeFormat(pattern = "dd/MM/YY")
 	private Date reqTime;
 
 	@Pattern(regexp = "^[A-Z0-9]{10}")

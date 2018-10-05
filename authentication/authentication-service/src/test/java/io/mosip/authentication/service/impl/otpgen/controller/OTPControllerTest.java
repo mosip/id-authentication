@@ -200,7 +200,7 @@ public class OTPControllerTest {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setMsaLicenseKey("1234567890");
 		otpRequestDto.setMuaCode("1234567890");
-		otpRequestDto.setIdType(IdType.UIN);
+		otpRequestDto.setIdType(IdType.UIN.getType());
 		// otpRequestDto.setRequestTime(new Date());
 		otpRequestDto.setTxnID("1234567890");
 		otpRequestDto.setId("1234567890");
