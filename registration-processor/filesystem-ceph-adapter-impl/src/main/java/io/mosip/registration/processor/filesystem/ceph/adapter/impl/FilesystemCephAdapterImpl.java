@@ -150,10 +150,10 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	 * java.lang.Object)
 	 */
 	@Override
-	public InputStream getFile(String enrolmentId, PacketFiles fileName) {
+	public InputStream getFile(String enrolmentId, String fileName) {
 		S3Object object = null;
 		try {
-			object = this.conn.getObject(new GetObjectRequest(enrolmentId, fileName.name()));
+			object = this.conn.getObject(new GetObjectRequest(enrolmentId, fileName));
 			LOGGER.debug(LOGDISPLAY, enrolmentId, fileName, "fetched from DFS");
 		} catch (AmazonS3Exception e) {
 			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
@@ -221,9 +221,9 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	 * java.lang.Object)
 	 */
 	@Override
-	public Boolean deleteFile(String enrolmentId, PacketFiles fileName) {
+	public Boolean deleteFile(String enrolmentId, String fileName) {
 		try {
-			this.conn.deleteObject(enrolmentId, fileName.name());
+			this.conn.deleteObject(enrolmentId, fileName);
 			LOGGER.debug(LOGDISPLAY, enrolmentId, fileName, "deleted from DFS successfully");
 		} catch (AmazonS3Exception e) {
 			LOGGER.error(LOGDISPLAY, e.getStatusCode(), e.getErrorCode(), e.getErrorMessage());
@@ -241,7 +241,7 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	 * checkFileExistence(java.lang.String, java.lang.Object)
 	 */
 	@Override
-	public Boolean checkFileExistence(String enrolmentId, PacketFiles fileName) {
+	public Boolean checkFileExistence(String enrolmentId, String fileName) {
 		boolean result = false;
 		if (getFile(enrolmentId, fileName) != null) {
 			result = true;
