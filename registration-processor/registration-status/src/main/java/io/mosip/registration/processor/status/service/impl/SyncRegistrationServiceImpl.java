@@ -3,21 +3,28 @@
  */
 package io.mosip.registration.processor.status.service.impl;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
+import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
 /**
  * The Class SyncRegistrationServiceImpl.
  *
- * @author M1047487
+ * @author M1048399
  */
 @Component
 public class SyncRegistrationServiceImpl implements SyncRegistrationService<SyncRegistrationDto> {
@@ -28,6 +35,11 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 	private static final String COULD_NOT_GET = "Could not get Information from table";
 	
+	@Autowired
+	private AuditRequestBuilder auditRequestBuilder;
+
+	@Autowired
+	private AuditHandler<AuditRequestDto> auditHandler;
 	/**
 	 * Instantiates a new sync registration service impl.
 	 */
@@ -38,14 +50,30 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	@Override
 	public List<SyncRegistrationDto> sync(List<SyncRegistrationDto> syncResgistrationdto) {
 		List<SyncRegistrationDto> list = new ArrayList<>();
-			
-			for(SyncRegistrationDto syncRegistrationDto: syncResgistrationdto) {
-				if(!isPresent(syncRegistrationDto.getRegistrationId())) {
+		boolean isTransactionSuccessful = false;
+		try {
+			for (SyncRegistrationDto syncRegistrationDto : syncResgistrationdto) {
+				if (!isPresent(syncRegistrationDto.getRegistrationId())) {
 					list.add(convertEntityToDto(syncRegistrationDao.save(convertDtoToEntity(syncRegistrationDto))));
 				}
 			}
-			
-		return list;
+			isTransactionSuccessful = true;
+			return list;
+		} catch (DataAccessLayerException e) {
+			throw new TablenotAccessibleException(COULD_NOT_GET, e);
+		} finally {
+			String description = "";
+			if (isTransactionSuccessful) {
+				description = "description--sync Success";
+			} else {
+				description = "description--sync Failure";
+			}
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
+		}
+
 	}
 
 	@Override
@@ -122,5 +150,26 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		syncRegistrationEntity.setUpdateDateTime(dto.getUpdateDateTime());
 		syncRegistrationEntity.setDeletedDateTime(dto.getDeletedDateTime());
 		return syncRegistrationEntity;
+	}
+	
+	public void createAuditRequestBuilder(String applicationId,String applicationName,String description,String eventId,String eventName,String eventType){
+		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
+		.setApplicationId(applicationId)
+		.setApplicationName(applicationName)
+		.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
+		.setDescription(description)
+		.setEventId(eventId)
+		.setEventName(eventName)
+		.setEventType(eventType)
+		.setHostIp(AuditLogTempConstant.HOST_IP.toString())
+		.setHostName(AuditLogTempConstant.HOST_NAME.toString())
+		.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
+		.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
+		.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
+		.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
+		.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+		
+        AuditRequestDto auditRequestDto = auditRequestBuilder.build();
+		auditHandler.writeAudit(auditRequestDto);
 	}
 }
