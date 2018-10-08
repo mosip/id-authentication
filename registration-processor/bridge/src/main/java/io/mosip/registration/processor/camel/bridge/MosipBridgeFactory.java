@@ -29,7 +29,7 @@ public class MosipBridgeFactory {
 		Vertx.clusteredVertx(options, vertx -> {
 			if (vertx.succeeded()) {
 				vertx.result().deployVerticle(MosipCamelBridge.class.getName(),
-						new DeploymentOptions().setHa(true));
+						new DeploymentOptions().setHa(true).setWorker(true));
 			} else
 				log.error("Failed: " + vertx.cause());
 		});
