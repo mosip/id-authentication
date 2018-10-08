@@ -14,6 +14,7 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
+import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -53,20 +54,19 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Override
 	public Boolean storePacket(MultipartFile file) {
 		
-		
+		String registrationId = file.getOriginalFilename().split("\\.")[0];
+		if(!syncRegistrationService.isPresent(registrationId)) {
+			
+			logger.info("Registration Packet is Not yet sync in Sync table");
+			throw new PacketNotSyncException(RegistrationStatusCode.PACKET_NOT_YET_SYNC.name());
+		}
 		boolean storageFlag = false;
 		if (file.getSize() > getMaxFileSize()) {
 			throw new FileSizeExceedException(RegistrationStatusCode.PACKET_SIZE_GREATER_THAN_LIMIT.name());
 		}
 		if (!(file.getOriginalFilename().endsWith(getFileExtension()))) {
 			throw new PacketNotValidException(RegistrationStatusCode.INVALID_PACKET_FORMAT.toString());
-		} else {
-			String registrationId = file.getOriginalFilename().split("\\.")[0];
-			if(!syncRegistrationService.isPresent(registrationId)) {
-				logger.info("Registration Packet is Not yet sync in Sync table");
-				return false;
-			}
-			if (!(isDuplicatePacket(registrationId))) {
+		} else if (!(isDuplicatePacket(registrationId))) {
 				try {
 					fileManager.put(file.getOriginalFilename(), file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
 					RegistrationStatusDto dto = new RegistrationStatusDto();
@@ -87,7 +87,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 			} else {
 				throw new DuplicateUploadRequestException(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());
 			}
-		}
 		return storageFlag;
 	}
 

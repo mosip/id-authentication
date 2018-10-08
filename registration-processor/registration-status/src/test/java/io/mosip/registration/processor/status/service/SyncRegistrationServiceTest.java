@@ -1,19 +1,21 @@
 package io.mosip.registration.processor.status.service;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
+import io.mosip.registration.processor.status.code.SyncStatus;
+import io.mosip.registration.processor.status.code.SyncType;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
@@ -42,6 +44,8 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto.setRegistrationId("1001");
 		syncRegistrationDto.setParentRegistrationId("");
 		syncRegistrationDto.setIsActive(true);
+		syncRegistrationDto.setStatusCode(SyncStatus.INITIATED.name());
+		syncRegistrationDto.setRegistrationType(SyncType.NEW.name());
 		
 		syncRegistrationEntity = new SyncRegistrationEntity();
 		syncRegistrationEntity.setRegistrationId("1001");
@@ -60,6 +64,6 @@ public class SyncRegistrationServiceTest {
 		//Mockito.when(syncRegistrationDao.save(ArgumentMatchers.any())).thenReturn(syncRegistrationEntity);
 		List<SyncRegistrationDto>  syncRegDtoList = syncRegistrationService.sync(entities);
 		System.out.println(syncRegDtoList);
-		//System.out.println("Testing");
+		assertEquals("INITIATED", syncRegDtoList.get(0).getStatusCode());
 	}
 }
