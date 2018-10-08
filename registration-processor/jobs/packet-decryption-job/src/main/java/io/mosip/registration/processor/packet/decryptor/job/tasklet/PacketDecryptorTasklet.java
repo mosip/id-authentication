@@ -124,6 +124,14 @@ public class PacketDecryptorTasklet implements Tasklet {
 	 * @throws PacketDecryptionFailureException
 	 */
 	private void decyptpacket(RegistrationStatusDto dto) throws IOException, PacketDecryptionFailureException {
+		try {
+			packetArchiver.archivePacket(dto.getRegistrationId());
+		} catch (UnableToAccessPathException e) {
+			LOGGER.error(LOGDISPLAY, e.getErrorCode(), e.getMessage(), e.getCause());
+		} catch (PacketNotFoundException ex) {
+			LOGGER.error(LOGDISPLAY, ex.getErrorCode(), ex.getMessage(), ex.getCause());
+		}
+
 		adapter.unpackPacket(dto.getRegistrationId());
 
 		InputStream encryptedPacket = adapter.getPacket(dto.getRegistrationId());
@@ -147,14 +155,6 @@ public class PacketDecryptorTasklet implements Tasklet {
 
 			LOGGER.info(LOGDISPLAY, dto.getRegistrationId(),
 					" Packet decrypted and extracted encrypted files stored in DFS.");
-
-			try {
-				packetArchiver.archivePacket(dto.getRegistrationId());
-			} catch (UnableToAccessPathException e) {
-				LOGGER.error(LOGDISPLAY, e.getErrorCode(), e.getMessage(), e.getCause());
-			} catch (PacketNotFoundException ex) {
-				LOGGER.error(LOGDISPLAY, ex.getErrorCode(), ex.getMessage(), ex.getCause());
-			}
 
 		} else {
 			encryptedPacket.close();

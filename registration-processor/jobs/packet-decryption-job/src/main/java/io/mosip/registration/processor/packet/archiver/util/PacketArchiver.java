@@ -43,7 +43,7 @@ public class PacketArchiver {
 
 		if (encryptedpacket != null) {
 			try {
-				filemanager.put(registrationId, encryptedpacket, DirectoryPathDto.ARCHIVE_LOCATION);
+				filemanager.put(getFileName(registrationId), encryptedpacket, DirectoryPathDto.ARCHIVE_LOCATION);
 				description = "description--The file is successfully copied to VM";
 			} catch (IOException e) {
 				description = "description--Unable to access the File path";
@@ -59,7 +59,7 @@ public class PacketArchiver {
 						AuditLogTempConstant.EVENT_TYPE.toString());
 			}
 		} else {
-
+			description = "description--Packet not found in DFS";
 			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
 					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
 					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
@@ -67,16 +67,19 @@ public class PacketArchiver {
 			throw new PacketNotFoundException(PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorCode(),
 					PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorMessage());
 		}
-		if (filemanager.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION, registrationId)) {
-
-			filesystemCephAdapterImpl.deletePacket(registrationId);
-
-			description = "description--The file is successfully deleted from DFS";
-			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());
-		}
+		/*
+		 * if (filemanager.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION,
+		 * registrationId)) { try {
+		 * filesystemCephAdapterImpl.deletePacket(registrationId); description =
+		 * "description--The file is successfully deleted from DFS"; } catch (Exception
+		 * e) { description = "Packet not deleted from DFS"; } finally {
+		 * 
+		 * createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+		 * AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+		 * AuditLogTempConstant.EVENT_ID.toString(),
+		 * AuditLogTempConstant.EVENT_TYPE.toString(),
+		 * AuditLogTempConstant.EVENT_TYPE.toString()); } }
+		 */
 	}
 
 	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,
@@ -94,6 +97,10 @@ public class PacketArchiver {
 
 		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
 		auditHandler.writeAudit(auditRequestDto);
+	}
+
+	public String getFileName(String id) {
+		return id + ".zip";
 	}
 
 }
