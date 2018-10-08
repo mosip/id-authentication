@@ -95,20 +95,6 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		return ents;
 	}
 
-	/**
-	 * Convert dto to entity.
-	 *
-	 * @param entities
-	 *            the entities
-	 * @return the list
-	 */
-	private List<SyncRegistrationEntity> convertDtoToEntity(List<SyncRegistrationDto> entities) {
-		List<SyncRegistrationEntity> ents = new ArrayList<>();
-		for (SyncRegistrationDto entity : entities) {
-			ents.add(convertDtoToEntity(entity));
-		}
-		return ents;
-	}
 
 	private SyncRegistrationDto convertEntityToDto(SyncRegistrationEntity entity) {
 		SyncRegistrationDto syncRegistrationDto = new SyncRegistrationDto();
