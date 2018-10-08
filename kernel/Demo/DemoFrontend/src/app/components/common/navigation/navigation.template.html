@@ -1,0 +1,18 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+  <div class="sidebar-collapse">
+    <ul class="nav metismenu" id="side-menu">
+      <li class="nav-header">
+        <div class="dropdown profile-element">
+          <div data-toggle="dropdown" class="dropdown-toggle" >
+                        <span class="block m-t-xs"> <strong class="font-bold">User</strong> </span>
+
+          </div>
+        </div>
+      </li>
+      <li [ngClass]="{active: activeRoute('page4')}">
+        <a [routerLink]="['/enroll']"><i class="fa fa-dashboard"></i> <span class="nav-label">Demo</span> </a>
+      </li>
+    </ul>
+
+  </div>
+</nav>

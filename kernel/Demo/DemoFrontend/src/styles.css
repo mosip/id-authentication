@@ -1,0 +1,188 @@
+body #wrapper {
+  background-color: #ededed;
+}
+
+.navbar-static-side {
+  z-index: 2001;
+  position: fixed;
+  width: 220px;
+}
+
+.navbar-default {
+  background-color: transparent;
+  border-color: #2f4050;
+}
+
+#side-menu>li>a,
+.nav.nav-second-level>li>a {
+  color: #586b7d;
+}
+
+.nav>li>a,
+.welcome-message {
+  color: #edf6ff;
+}
+
+.nav>li>a {
+  color: #a7b1c2;
+  font-weight: 600;
+  padding: 14px 20px 14px 25px;
+}
+
+.nav>li>a {
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+}
+
+#wrapper {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.nav>li.active {
+  background: #dbdbdb;
+}
+
+.nav>li>a:hover,
+.nav>li>a:focus {
+  background: initial;
+}
+
+.nav {
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+ul,
+ol {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.nav-header {
+  background-color: #23c6c8;
+}
+
+.nav>li {
+  position: relative;
+  display: block;
+}
+
+#page-wrapper {
+  min-height: 733px;
+}
+
+#page-wrapper {
+  padding: 0 15px;
+  margin: 0 0 0 220px;
+  position: relative !important;
+}
+
+.navbar-static-top {
+  background: #305357;
+  position: fixed;
+  width: calc(100% - 218px);
+}
+
+.navbar-static-top {
+  z-index: 1000;
+}
+
+.navbar {
+  min-height: 50px;
+}
+
+.nav>li>a i {
+  margin-right: 6px;
+}
+
+.nav>li>a,
+.welcome-message {
+  color: #edf6ff;
+}
+
+.nav.navbar-right>li>a {
+  color: #999c9e;
+}
+
+.nav.navbar-top-links a {
+  font-size: 14px;
+}
+
+.navbar-top-links li a {
+  padding: 20px 10px;
+  min-height: 50px;
+}
+
+.nav>li>a {
+  color: #a7b1c2;
+  font-weight: 600;
+  padding: 14px 20px 14px 25px;
+}
+
+.nav>li>a {
+  position: relative;
+  display: block;
+  padding: 15px 15px;
+}
+
+.navbar-top-links li:last-child {
+  margin-right: 25px;
+}
+
+.navbar-top-links li:last-child {
+  margin-right: 40px;
+}
+
+.navbar-top-links li {
+  display: inline-block;
+}
+
+#page-wrapper {
+  background: #fffbf8;
+}
+
+.nav>li {
+  position: relative;
+  display: block;
+}
+
+.nav-header {
+  padding: 30px 25px 30px 25px;
+}
+
+.nav-header {
+  background-color: #23c6c8;
+}
+
+.nav>li {
+  position: relative;
+  display: block;
+}
+
+.page-heading {
+  position: fixed;
+  z-index: 100;
+  padding: 0;
+  margin-top: 50px;
+  border: none;
+  background: rgb(242, 242, 242);
+  width: 100%;
+}
+
+.wrapper-content {
+  margin-top: 125px;
+  padding: 30px 15px;
+}
+
+.footer {
+  background: none repeat scroll 0 0 white;
+  border-top: 1px solid #e7eaec;
+  bottom: 0;
+  left: 0;
+  padding: 10px 20px;
+  position: absolute;
+  right: 0;
+}
