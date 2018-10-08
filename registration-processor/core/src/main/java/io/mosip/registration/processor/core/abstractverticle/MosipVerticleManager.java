@@ -3,11 +3,18 @@ package io.mosip.registration.processor.core.abstractverticle;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.MosipIOException;
+import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
+import io.mosip.kernel.core.util.exception.MosipJsonParseException;
+import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
 import io.mosip.registration.processor.core.spi.eventbus.EventBusManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.spi.cluster.ClusterManager;
@@ -27,7 +34,7 @@ import io.vertx.spi.cluster.ignite.IgniteClusterManager;
  */
 public abstract class MosipVerticleManager extends AbstractVerticle
 		implements EventBusManager<MosipEventBus, MessageBusAddress> {
-	
+
 	private Logger logger = LoggerFactory.getLogger(MosipVerticleManager.class);
 
 	/*
@@ -48,13 +55,13 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 			if (result.succeeded()) {
 				result.result().deployVerticle(verticleName.getName(), new DeploymentOptions().setHa(true));
 				eventBus.complete(result.result());
-				logger.debug(verticleName+" deployed successfully");
+				logger.debug(verticleName + " deployed successfully");
 			}
 		});
 		try {
 			mosipEventBus = new MosipEventBus(eventBus.get());
 		} catch (InterruptedException | ExecutionException e) {
-			logger.error("Exception in deploying verticle"+e.getMessage());
+			logger.error("Exception in deploying verticle" + e.getMessage());
 		}
 		return mosipEventBus;
 	}
@@ -70,9 +77,11 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 			MessageBusAddress toAddress) {
 		Vertx vertx = mosipEventBus.getEventbus();
 		vertx.eventBus().consumer(fromAddress.getAddress(), msg -> {
-			logger.debug("received from "+fromAddress.toString()+msg.body());
+			logger.debug("received from " + fromAddress.toString() + msg.body());
 			vertx.executeBlocking(future -> {
-				Object result = process(msg.body());
+				JsonObject jsonObject = (JsonObject) msg.body();
+				MessageDTO messageDTO = jsonObject.mapTo(MessageDTO.class);
+				MessageDTO result = (MessageDTO) process(messageDTO);
 				future.complete();
 				send(mosipEventBus, toAddress, result);
 			}, res -> {
@@ -91,10 +100,11 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	 * @param message
 	 *            The message that needs to be sent
 	 */
-	public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, Object message) {
+	public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
 		Vertx vertx = mosipEventBus.getEventbus();
-		vertx.eventBus().send(toAddress.getAddress(), message);
-		logger.debug("sent to "+toAddress.toString()+" message "+message.toString());
+		JsonObject jsonObject = JsonObject.mapFrom(message);
+		vertx.eventBus().send(toAddress.getAddress(), jsonObject);
+		logger.debug("sent to " + toAddress.toString() + " message " + jsonObject);
 	}
 
 	/**
@@ -106,9 +116,11 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	public void consume(MosipEventBus mosipEventBus, MessageBusAddress fromAddress) {
 		Vertx vertx = mosipEventBus.getEventbus();
 		vertx.eventBus().consumer(fromAddress.getAddress(), message -> {
-			logger.debug("received from "+fromAddress.toString()+" message "+message.body());
+			logger.debug("received from " + fromAddress.toString() + " message " + message.body());
 			vertx.executeBlocking(future -> {
-				process(message.body());
+				JsonObject jsonObject = (JsonObject) message.body();
+				MessageDTO messageDTO = jsonObject.mapTo(MessageDTO.class);
+				process(messageDTO);
 				future.complete();
 			}, res -> {
 				if (!res.succeeded()) {

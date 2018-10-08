@@ -1,7 +1,4 @@
 package io.mosip.registration.processor.camel.bridge;
-/**
- * @author Mukul Puspam
- */
 
 import java.util.concurrent.ExecutionException;
 

@@ -1,7 +1,5 @@
 package io.mosip.registration.processor.camel.bridge;
-/**
- * @author Mukul Puspam
- */
+
 import org.apache.camel.CamelContext;
 
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;

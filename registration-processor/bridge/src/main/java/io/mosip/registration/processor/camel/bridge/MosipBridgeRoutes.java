@@ -1,8 +1,5 @@
 package io.mosip.registration.processor.camel.bridge;
 
-/**
- * @author Mukul Puspam
- */
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 

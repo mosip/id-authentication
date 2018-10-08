@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.amazonaws.SdkClientException;
 
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
@@ -35,6 +36,9 @@ public class PacketDecryptorTasklet implements Tasklet {
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
 	private FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter = new FilesystemCephAdapterImpl();
+
+	private DecryptionMessageSender decryptionMessageSender = new DecryptionMessageSender();
+
 	@Autowired
 	private Decryptor decryptor;
 
@@ -74,8 +78,11 @@ public class PacketDecryptorTasklet implements Tasklet {
 							LOGGER.info(LOGDISPLAY, dto.getRegistrationId(),
 									" Packet decrypted and extracted encrypted files stored in DFS.");
 
-							DecryptionMessageSender decryptionMessageSender = new DecryptionMessageSender();
-							decryptionMessageSender.sendMessage(dto.getRegistrationId());
+							MessageDTO messageDTO = new MessageDTO();
+
+							messageDTO.setRid(dto.getRegistrationId());
+
+							decryptionMessageSender.sendMessage(messageDTO);
 
 							LOGGER.info(LOGDISPLAY, dto.getRegistrationId(), "Packet sent for structure validation");
 

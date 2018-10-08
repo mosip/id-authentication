@@ -1,7 +1,5 @@
 package io.mosip.registration.processor.camel.bridge.processor;
-/**
- * @author Mukul Puspam
- */
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 
@@ -9,10 +7,15 @@ import io.vertx.core.json.JsonObject;
 
 /**
  * The Class BiometricValidationProcessor.
+ * 
+ * @author Mukul Puspam
+ * @since 0.0.1
  */
 public class BiometricValidationProcessor implements Processor {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.apache.camel.Processor#process(org.apache.camel.Exchange)
 	 */
 	@Override

@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * @author Mukul Puspam
+ *
+ */
 public class PropertyFileUtil {
 
 	public static String getProperty(Class<?> clazz, String fileName, String key) {
