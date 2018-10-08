@@ -101,9 +101,9 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				}finally {
 					String description = "";
 					if (isTransactionSuccessful) {
-						description = "description--sync Success";
+						description = "description--packet-receiver Success";
 					} else {
-						description = "description--sync Failure";
+						description = "description--packet-receiver Failure";
 					}
 					createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
 							AuditLogTempConstant.APPLICATION_NAME.toString(), description,
@@ -121,7 +121,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	}
 
 	public long getMaxFileSize() {
-		return (this.maxFileSize * 1024 * 1024);
+		return this.maxFileSize * 1024L * 1024;
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 * @return
 	 */
 	private Boolean isDuplicatePacket(String enrolmentId) {
-		return (registrationStatusService.getRegistrationStatus(enrolmentId) != null);
+		return registrationStatusService.getRegistrationStatus(enrolmentId) != null;
 	}
 	
 	private void createAuditRequestBuilder(String applicationId, String applicationName, String description,
