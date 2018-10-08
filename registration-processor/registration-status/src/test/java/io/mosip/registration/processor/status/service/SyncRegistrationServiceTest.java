@@ -92,9 +92,11 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto.setCreatedBy("MOSIP_SYSTEM");
 
 		syncRegistrationEntity = new SyncRegistrationEntity();
-		syncRegistrationEntity.setRegistrationId("1001");
-		syncRegistrationEntity.setParentRegistrationId("1002");
+		syncRegistrationEntity.setSyncRegistrationId("1001");
+		syncRegistrationEntity.setRegistrationId("1002");
+		syncRegistrationEntity.setLangCode("eng");
 		syncRegistrationEntity.setIsActive(true);
+		syncRegistrationEntity.setCreatedBy("MOSIP_SYSTEM");
 
 		entities.add(syncRegistrationDto);
 
@@ -124,7 +126,8 @@ public class SyncRegistrationServiceTest {
 	 */
 	@Test
 	public void getSyncRegistrationStatusSuccessTest() {
-		syncRegistrationService.sync(entities);
+		 List<SyncRegistrationDto> result = syncRegistrationService.sync(entities);
+		 assertEquals(entities.get(0).getRegistrationId(), result.get(0).getRegistrationId());
 	}
 
 	/**

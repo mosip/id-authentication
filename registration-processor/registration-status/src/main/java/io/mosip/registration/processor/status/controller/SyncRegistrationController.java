@@ -54,7 +54,7 @@ public class SyncRegistrationController {
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the Synchronizing Registration Entity") })
-	public ResponseEntity<List<SyncRegistrationDto>> syncRegistrationController(
+	public ResponseEntity<List<SyncRegistrationDto>> sync(
 			@RequestBody(required = true) List<SyncRegistrationDto> syncRegistrationDto) {
 		List<SyncRegistrationDto> syncRegistrationDtoResponse = syncRegistrationService.sync(syncRegistrationDto);
 		return ResponseEntity.status(HttpStatus.OK).body(syncRegistrationDtoResponse);
