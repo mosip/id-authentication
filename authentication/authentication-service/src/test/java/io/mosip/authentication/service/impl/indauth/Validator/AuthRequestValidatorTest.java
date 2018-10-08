@@ -45,7 +45,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @TestPropertySource(value = { "classpath:ValidationMessages.properties", "classpath:audit.properties",
 		"classpath:rest-services.properties", "classpath:log.properties" })
-
 public class AuthRequestValidatorTest {
 
 	@Mock
