@@ -25,11 +25,11 @@ public class AuthResponseInfo {
 	 */
 	private IdType idType;
 	/**
-	 * 
+	 * Request Time
 	 */
 	private Date reqTime;
 	/**
-	 * 
+	 * Version
 	 */
 	private String ver;
 	/**

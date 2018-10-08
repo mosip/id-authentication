@@ -1,5 +1,8 @@
 package io.mosip.authentication.core.dto.indauth;
 
+import io.mosip.authentication.core.spi.idauth.demo.PersonalAddressDTO;
+import io.mosip.authentication.core.spi.idauth.demo.PersonalFullAddressDTO;
+import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,10 +19,14 @@ import lombok.NoArgsConstructor;
 public class DemoDTO {
 
 	/**
-	 * International Language Code indicating the primary language (ISO-639-1) –
-	 * default primary language code
+	 * Primary language.
 	 */
 	private String langPri;
+
+	/**
+	 * Secondary language.
+	 */
+	private String langSec;
 
 	/** PersonalIdentityDTO gives individual identity details */
 	private PersonalIdentityDTO personalIdentityDTO;
