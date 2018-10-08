@@ -35,8 +35,8 @@ o	Find registration status by time threshold on creation date time.
 -	Handle exceptions in using custom Exception handler and send correct response to client.
 -	Audit the entire transaction.
 
-![Download script for registration table](https://github.com/mosip/mosip/tree/DEV/design/registration-processor/_scripts/regprc-registration_v003.zip)
-![Download script for registration_transaction table](https://github.com/mosip/mosip/tree/DEV/design/registration-processor/_scripts/regprc-registration_transaction_v003.zip)
+[Download script for registration table](https://github.com/mosip/mosip/tree/DEV/design/registration-processor/_scripts/regprc-registration_v003.zip)
+[Download script for registration_transaction table](https://github.com/mosip/mosip/tree/DEV/design/registration-processor/_scripts/regprc-registration_transaction_v003.zip)
 
 **Class Diagram**
 ![Registration status class diagram](_images/registration_status_class_diagram.png)
