@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.idauth.demo;
+package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.Optional;
 import java.util.stream.Stream;

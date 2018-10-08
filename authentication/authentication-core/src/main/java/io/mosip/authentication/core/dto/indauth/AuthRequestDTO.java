@@ -60,7 +60,12 @@ public class AuthRequestDTO  {
 	
 	private AuthSecureDTO key;
 	
-	private PinDTO pinDTO;
+	private PersonalIdentityDataDTO personalDataDTO;
+	
+	private PinDTO pinDTO;//FIX IT
+	
+	
+	
 	
 
 }

@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.spi.indauth.demo;
+package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
 
