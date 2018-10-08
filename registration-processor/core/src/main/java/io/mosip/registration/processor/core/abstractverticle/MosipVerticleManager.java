@@ -2,18 +2,11 @@ package io.mosip.registration.processor.core.abstractverticle;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
-import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
-import io.mosip.kernel.core.util.exception.MosipJsonParseException;
-import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
 import io.mosip.registration.processor.core.spi.eventbus.EventBusManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
-import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -33,7 +26,7 @@ import io.vertx.spi.cluster.ignite.IgniteClusterManager;
  *
  */
 public abstract class MosipVerticleManager extends AbstractVerticle
-		implements EventBusManager<MosipEventBus, MessageBusAddress> {
+		implements EventBusManager<MosipEventBus, MessageBusAddress, MessageDTO> {
 
 	private Logger logger = LoggerFactory.getLogger(MosipVerticleManager.class);
 
