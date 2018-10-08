@@ -5,6 +5,11 @@ import org.springframework.context.annotation.Configuration;
 
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 
+/**
+ * The Class AuditRequestConfig.
+ * 
+ * @author M1039285
+ */
 @Configuration
 public class AuditRequestConfig {
 

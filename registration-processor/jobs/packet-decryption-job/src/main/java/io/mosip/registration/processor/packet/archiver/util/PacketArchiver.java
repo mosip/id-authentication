@@ -21,20 +21,41 @@ import io.mosip.registration.processor.packet.archiver.util.exception.constant.U
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 
+/**
+ * The Class PacketArchiver.
+ * 
+ * @author M1039285
+ */
 @Component
 public class PacketArchiver {
 
+	/** The audit request builder. */
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
 
+	/** The audit handler. */
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
 
+	/** The filesystem ceph adapter impl. */
 	private FileSystemAdapter<InputStream, PacketFiles, Boolean> filesystemCephAdapterImpl = new FilesystemCephAdapterImpl();
 
+	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
+	/**
+	 * Archive packet.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws UnableToAccessPathException
+	 *             the unable to access path exception
+	 * @throws PacketNotFoundException
+	 *             the packet not found exception
+	 */
 	public void archivePacket(String registrationId)
 			throws IOException, UnableToAccessPathException, PacketNotFoundException {
 		String description = "failure";
@@ -67,21 +88,25 @@ public class PacketArchiver {
 			throw new PacketNotFoundException(PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorCode(),
 					PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorMessage());
 		}
-		/*
-		 * if (filemanager.checkIfFileExists(DirectoryPathDto.ARCHIVE_LOCATION,
-		 * registrationId)) { try {
-		 * filesystemCephAdapterImpl.deletePacket(registrationId); description =
-		 * "description--The file is successfully deleted from DFS"; } catch (Exception
-		 * e) { description = "Packet not deleted from DFS"; } finally {
-		 * 
-		 * createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-		 * AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-		 * AuditLogTempConstant.EVENT_ID.toString(),
-		 * AuditLogTempConstant.EVENT_TYPE.toString(),
-		 * AuditLogTempConstant.EVENT_TYPE.toString()); } }
-		 */
+
 	}
 
+	/**
+	 * Creates the audit request builder.
+	 *
+	 * @param applicationId
+	 *            the application id
+	 * @param applicationName
+	 *            the application name
+	 * @param description
+	 *            the description
+	 * @param eventId
+	 *            the event id
+	 * @param eventName
+	 *            the event name
+	 * @param eventType
+	 *            the event type
+	 */
 	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,
 			String eventId, String eventName, String eventType) {
 		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
@@ -99,6 +124,13 @@ public class PacketArchiver {
 		auditHandler.writeAudit(auditRequestDto);
 	}
 
+	/**
+	 * Gets the file name.
+	 *
+	 * @param id
+	 *            the id
+	 * @return the file name
+	 */
 	public String getFileName(String id) {
 		return id + ".zip";
 	}
