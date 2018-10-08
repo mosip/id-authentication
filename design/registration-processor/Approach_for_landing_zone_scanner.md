@@ -34,10 +34,13 @@ The key solution considerations are
 
 
 **Process Flow**
+
 ![Landing zone scanner Process flow](_images/landing_zone_scanner_process_flow.png)
 
 **Class Diagram**
+
 ![Landing zone scanner class diagram](_images/packet_receiver_class_diagram.png)
 
 **Sequence Diagram**
+
 ![Landing zone scanner sequence diagram](_images/packet_receiver_seq_diagram.png)
