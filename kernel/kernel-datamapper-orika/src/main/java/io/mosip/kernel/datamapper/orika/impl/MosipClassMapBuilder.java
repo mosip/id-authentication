@@ -4,69 +4,88 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mosip.kernel.core.spi.datamapper.MosipDataMapper;
-import io.mosip.kernel.datamapper.orika.fieldmapper.DataField;
+import io.mosip.kernel.datamapper.orika.fieldmapper.ExcludeDataField;
+import io.mosip.kernel.datamapper.orika.fieldmapper.IncludeDataField;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.metadata.ClassMapBuilder;
 
 public class MosipClassMapBuilder {
-	
+
+	private MapperFactory mapperFactory = null;
+
 	private Class<?> source;
 	private Class<?> destination;
-	private List<DataField> fields;
-	private List<String> excludedFields;
-	
+	private List<IncludeDataField> includeFields;
+	private List<ExcludeDataField> excludeFields;
+
+	private boolean mapClassNull = true;
+
 	public MosipClassMapBuilder() {
-		fields = new ArrayList<>();
-		excludedFields = new ArrayList<>();
+		includeFields = new ArrayList<>();
+		excludeFields = new ArrayList<>();
+		mapperFactory = new DefaultMapperFactory.Builder().build();
 	}
-	
+
+	public MosipClassMapBuilder(boolean mapClassNull) {
+		this();
+		this.mapClassNull = mapClassNull;
+		mapperFactory = new DefaultMapperFactory.Builder().mapNulls(this.mapClassNull).build();
+	}
+
 	public MosipClassMapBuilder mapClass(Class<?> source, Class<?> destination) {
 		this.source = source;
 		this.destination = destination;
 		return this;
 	}
-	
-	public MosipClassMapBuilder mapField(String sourceField, String destinationField) {
-		fields.add(new DataField(sourceField, destinationField));
+
+	public MosipClassMapBuilder mapFieldInclude(String sourceField, String destinationField) {
+		includeFields.add(new IncludeDataField(sourceField, destinationField, true));
 		return this;
 	}
-	
-	public MosipClassMapBuilder excludeField(String sourceField) {
-		excludedFields.add(sourceField);
+
+	public MosipClassMapBuilder mapFieldInclude(String sourceField, String destinationField,
+			boolean mapIncludeFieldNull) {
+		if (!mapIncludeFieldNull) {
+			includeFields.add(new IncludeDataField(sourceField, destinationField, mapIncludeFieldNull));
+		} else {
+			this.mapFieldInclude(sourceField, destinationField);
+		}
 		return this;
 	}
-	
-	public MosipDataMapper build() {
-		
-		MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-		
+
+	public MosipClassMapBuilder mapFieldExclude(String sourceField) {
+		excludeFields.add(new ExcludeDataField(sourceField, true));
+		return this;
+	}
+
+	public MosipClassMapBuilder mapFieldExclude(String sourceField, boolean mapExcludeFieldNull) {
+		if (!mapExcludeFieldNull) {
+			excludeFields.add(new ExcludeDataField(sourceField, mapExcludeFieldNull));
+		} else {
+			this.mapFieldExclude(sourceField);
+		}
+		return this;
+	}
+
+	public MosipDataMapper configure() {
+
 		ClassMapBuilder<?, ?> builder = mapperFactory.classMap(this.source, this.destination);
-		
-		for(String excludedField : excludedFields) {
-			builder.exclude(excludedField);
+
+		for (ExcludeDataField excludedField : excludeFields) {
+			builder.exclude(excludedField.getSourceField()).mapNulls(excludedField.isMapExcludeFieldNull());
 		}
-		
-		for(DataField dataField : fields) {
-			builder.field(dataField.getSourceField(), dataField.getDestinationField());
+
+		for (IncludeDataField includedField : includeFields) {
+			builder.field(includedField.getSourceField(), includedField.getDestinationField())
+					.mapNulls(includedField.isMapIncludeFieldNull());
 		}
-		
+
 		builder.byDefault().register();
-		
+
 		MapperFacade mapper = mapperFactory.getMapperFacade();
-		
+
 		return new MosipDataMapperImpl(mapper);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-

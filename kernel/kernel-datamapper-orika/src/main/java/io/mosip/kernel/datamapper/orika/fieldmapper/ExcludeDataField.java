@@ -7,9 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DataField {
-	
+public class ExcludeDataField {
+
 	private String sourceField;
-	private String destinationField;
-	
+	private boolean mapExcludeFieldNull;
 }
