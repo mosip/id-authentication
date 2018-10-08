@@ -32,6 +32,7 @@
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.batch.version>4.0.1.RELEASE</spring.batch.version>
+		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
 		<!-- Miscellaneous -->
 		<javax.el-api.version>3.0.0</javax.el-api.version>
@@ -99,6 +100,7 @@
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-validator</module>
 		<module>kernel-virusscanner-clamav</module>
+		<module>kernel-config-server</module>
 		
 	</modules>
 

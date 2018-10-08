@@ -44,8 +44,9 @@ public class ServiceNotAvailableExceptionTest {
 
 	@Before
 	public void setup() throws Exception {
-		file = new File("C:/Users/M1039303/Desktop/disk/sdc/1001.zip");
-		folder = new File("C:/Users/M1039303/Desktop/disk/sdc");
+		ClassLoader classLoader = getClass().getClassLoader();
+		file = new File(classLoader.getResource("files/0000.zip").getFile());
+		folder = new File(classLoader.getResource("files").getFile());
 	}
 
 	@Test(expected = ServerNotAccessibleException.class)
