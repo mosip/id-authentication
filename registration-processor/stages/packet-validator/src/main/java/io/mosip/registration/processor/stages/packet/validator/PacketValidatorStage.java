@@ -8,12 +8,14 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.MosipIOException;
 import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
 import io.mosip.kernel.core.util.exception.MosipJsonParseException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.packet.dto.HashSequence;
@@ -26,7 +28,6 @@ import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -34,6 +35,7 @@ import io.vertx.core.logging.LoggerFactory;
  * @author M1022006
  *
  */
+@Service
 public class PacketValidatorStage extends MosipVerticleManager {
 
 	private static Logger log = LoggerFactory.getLogger(PacketValidatorStage.class);
@@ -50,62 +52,10 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
-	public static void main(String args[]) {
+	public void deployVerticle() {
 		PacketValidatorStage packetValidatorStage = new PacketValidatorStage();
 		MosipEventBus mosipEventBus = packetValidatorStage.getEventBus(PacketValidatorStage.class);
 		packetValidatorStage.consume(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN);
-	}
-
-	@Override
-	public Object process(Object object) {
-		JsonObject jsonObject = (JsonObject) object;
-		String registrationId = jsonObject.getString("rid");
-		JsonObject jsonObjectValidated = new JsonObject();
-
-		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PACKET_META_INFO);
-		try {
-			fileManager.put(PACKET_META_INFO, packetMetaInfoStream, DirectoryPathDto.TEMP);
-			PacketInfo packetInfo = (PacketInfo) JsonUtils.jsonFileToJavaObject(PacketInfo.class,
-					DirectoryPathDto.TEMP.toString());
-			fileManager.cleanUpFile(DirectoryPathDto.TEMP, DirectoryPathDto.TEMP, registrationId);
-			boolean isFilesValidated = filesValidation(registrationId, packetInfo);
-			RegistrationStatusDto registrationStatusDto = registrationStatusService
-					.getRegistrationStatus(registrationId);
-			if (isFilesValidated) {
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.FILE_VALIDATION_SUCCESSFULL.toString());
-				registrationStatusDto.setStatusComment("packet is in status File Validation Successful");
-
-			} else {
-				registrationStatusDto.setRetryCount(registrationStatusDto.getRetryCount() + 1);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.FILE_VALIDATION_FAILED.toString());
-				registrationStatusDto.setStatusComment("packet is in status");
-
-			}
-			registrationStatusDto.setUpdatedBy(USER);
-			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			if (isFilesValidated) {
-
-				boolean isCheckSumValidated = false;
-				// To do checksum validation and update the status
-				if (isCheckSumValidated) {
-					jsonObjectValidated.put("validStructure", isCheckSumValidated);
-				} else {
-					jsonObjectValidated.put("validStructure", isCheckSumValidated);
-				}
-
-			} else {
-				jsonObjectValidated.put("validStructure", isFilesValidated);
-			}
-
-		} catch (MosipJsonParseException | MosipJsonMappingException | MosipIOException | IOException e) {
-			log.error("Structural validation Failed", e);
-			// To do set values for DTO retry
-		} catch (Exception ex) {
-			log.error("Structural validation Failed", ex);
-			// To do set values for DTO retry
-		}
-
-		return jsonObjectValidated;
 	}
 
 	public boolean filesValidation(String registrationId, PacketInfo packetInfo) {
@@ -189,6 +139,55 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 		}
 		return isIntroducerValidated;
+	}
+
+	@Override
+	public MessageDTO process(MessageDTO object) {
+
+		String registrationId = object.getRid();
+
+		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PACKET_META_INFO);
+		try {
+			fileManager.put(PACKET_META_INFO, packetMetaInfoStream, DirectoryPathDto.TEMP);
+			PacketInfo packetInfo = (PacketInfo) JsonUtils.jsonFileToJavaObject(PacketInfo.class,
+					DirectoryPathDto.TEMP.toString());
+			fileManager.cleanUpFile(DirectoryPathDto.TEMP, DirectoryPathDto.TEMP, registrationId);
+			boolean isFilesValidated = filesValidation(registrationId, packetInfo);
+			RegistrationStatusDto registrationStatusDto = registrationStatusService
+					.getRegistrationStatus(registrationId);
+			if (isFilesValidated) {
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FILE_VALIDATION_SUCCESSFULL.toString());
+				registrationStatusDto.setStatusComment("packet is in status File Validation Successful");
+
+			} else {
+				registrationStatusDto.setRetryCount(registrationStatusDto.getRetryCount() + 1);
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.FILE_VALIDATION_FAILED.toString());
+				registrationStatusDto.setStatusComment("packet is in status");
+
+			}
+			registrationStatusDto.setUpdatedBy(USER);
+			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
+			if (isFilesValidated) {
+
+				boolean isCheckSumValidated = false;
+				// To do checksum validation and update the status
+				object.setIsValid(isCheckSumValidated);
+
+			} else {
+				object.setIsValid(isFilesValidated);
+			}
+
+		} catch (MosipJsonParseException | MosipJsonMappingException | MosipIOException | IOException e) {
+			log.error("Structural validation Failed", e);
+			object.setRetry(object.getRetry() + 1);
+			// To do set values for DTO retry
+		} catch (Exception ex) {
+			log.error("Structural validation Failed", ex);
+			object.setRetry(object.getRetry() + 1);
+			// To do set values for DTO retry
+		}
+
+		return object;
 	}
 
 }
