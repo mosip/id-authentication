@@ -3,7 +3,6 @@ package io.mosip.registration.processor.status.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,11 +98,24 @@ public class SyncRegistrationControllerTest {
 	 * @throws Exception the exception
 	 */
 	@Test
-	public void testCreationOfANewProjectSucceeds() throws Exception {
+	public void syncRegistrationControllerSuccessTest() throws Exception {
 
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(list);
 		mockMvc.perform(post("/v0.1/registration-processor/registration-status/sync").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(arrayToJson)).andExpect(status().isOk());
+	}
+	
+	/**
+	 * Sync registration controller failure check.
+	 *
+	 * @throws Exception the exception
+	 */
+	@Test
+	public void syncRegistrationControllerFailureTest() throws Exception {
+
+		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(list);
+		mockMvc.perform(post("/v0.1/registration-processor/registration-status/sync").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 	}
 
 }
