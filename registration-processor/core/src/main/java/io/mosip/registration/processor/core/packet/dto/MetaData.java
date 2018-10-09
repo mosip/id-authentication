@@ -6,7 +6,8 @@ import lombok.Data;
 public class MetaData {
 	private GeoLocation geoLocation;
 	private String applicationType;
-	private String applicationCategory;
-	private String preEnrollmentId;
-	private String enrollmentId;
+	private String registrationCategory;
+	private String preRegistrationId;
+	private String registrationId;
+	private String registrationIdHash;
 }
