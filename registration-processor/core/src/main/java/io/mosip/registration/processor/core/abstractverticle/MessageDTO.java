@@ -8,6 +8,7 @@ public class MessageDTO {
 
 	private String rid;
 	private Boolean isValid;
+	private String address;
 	private Integer retry;
 
 	public String getRid() {
@@ -26,6 +27,14 @@ public class MessageDTO {
 		this.isValid = isValid;
 	}
 
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
 	public Integer getRetry() {
 		return retry;
 	}
@@ -36,7 +45,7 @@ public class MessageDTO {
 
 	@Override
 	public String toString() {
-		return "MessageDTO [rid=" + rid + ", isValid=" + isValid + ", retry=" + retry + "]";
+		return "MessageDTO [rid=" + rid + ", isValid=" + isValid + ", address=" + address +", retry=" + retry + "]";
 	}
 	
 
