@@ -60,6 +60,8 @@
 	<modules>
 		<module>registration-web-service</module>
 		<module>registration-web</module>
+		<module>registration</module>
+		<module>core</module>
 	</modules>
 
 	<build>

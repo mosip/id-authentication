@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.mosip.registration.code.RegistrationCode;
 import io.mosip.registration.dto.ApplicationDto;
 import io.mosip.registration.dto.RegistrationDto;
+import io.mosip.registration.dto.ResponseDto;
 import io.mosip.registration.helper.ApplicationHelper;
 import io.mosip.registration.service.RegistrationService;
 import io.swagger.annotations.Api;
@@ -36,8 +37,10 @@ public class RegistrationController {
 	@ApiOperation(value = "Save form data", response = RegistrationCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully saved"),
 			@ApiResponse(code = 400, message = "Unable to save the Registration Entity") })
-	public ResponseEntity<List<RegistrationDto>> register(@RequestBody(required = true) ApplicationDto applications) {
-		applicationHelper.Helper(applications);
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+	public ResponseEntity<List<ResponseDto>> register(@RequestBody(required = true) ApplicationDto applications) {
+		List<ResponseDto> response=applicationHelper.Helper(applications);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
+//		applicationHelper.test("479548729071");
+//		return null;
 	}
 }

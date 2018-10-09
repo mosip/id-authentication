@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 
 /**
@@ -28,6 +29,7 @@ import lombok.Setter;
 @Getter
 @Setter@NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class RegistrationEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */
@@ -49,6 +51,10 @@ public class RegistrationEntity implements Serializable {
 	/** The firstname */
 	@Column(name = "forename")
 	private String forename;	
+	
+	/** The isPrimary */
+	@Column(name = "isPrimary")
+	private Boolean isPrimary;	
 	
 	/** The givenname */
 	@Column(name = "givenname")
@@ -171,23 +177,6 @@ public class RegistrationEntity implements Serializable {
 	@Column(name = "del_dtimesz")
 	@UpdateTimestamp
 	private LocalDateTime deletedDateTime;
-
-	@Override
-	public String toString() {
-		return "RegistrationEntity [preRegistrationId=" + preRegistrationId + ", groupId=" + groupId + ", firstname="
-				+ firstname + ", forename=" + forename + ", givenname=" + givenname + ", middlename=" + middlename
-				+ ", middleinitial=" + middleinitial + ", lastname=" + lastname + ", surname=" + surname
-				+ ", familyname=" + familyname + ", fullname=" + fullname + ", genderCode=" + genderCode
-				+ ", parentFullName=" + parentFullName + ", parentRefIdType=" + parentRefIdType + ", parentRefId="
-				+ parentRefId + ", dob=" + dob + ", age=" + age + ", addrLine1=" + addrLine1 + ", addrLine2="
-				+ addrLine2 + ", addrLine3=" + addrLine3 + ", locationCode=" + locationCode + ", mobile=" + mobile
-				+ ", email=" + email + ", applicantType=" + applicantType + ", nationalid=" + nationalid
-				+ ", statusCode=" + statusCode + ", langCode=" + langCode + ", createdBy=" + createdBy
-				+ ", createDateTime=" + createDateTime + ", updatedBy=" + updatedBy + ", updateDateTime="
-				+ updateDateTime + ", isDeleted=" + isDeleted + ", deletedDateTime=" + deletedDateTime + "]";
-	}
-	
-	
 	
 
 }

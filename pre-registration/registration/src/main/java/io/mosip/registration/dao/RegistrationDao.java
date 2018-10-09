@@ -81,20 +81,27 @@ public class RegistrationDao {
 	public RegistrationEntity findById(String groupId) {
 		Map<String, Object> params = new HashMap<>();
 		String className = RegistrationEntity.class.getSimpleName();
+		
+		System.out.println("class name "+className);
 
 		String alias = RegistrationEntity.class.getName().toLowerCase().substring(0, 1);
+		
+		System.out.println("alias "+alias);
 
-		String queryStr = SELECT_DISTINCT + alias + FROM + className + EMPTY_STRING + alias + WHERE + alias
-				+ ".registrationId=:registrationId" + EMPTY_STRING + AND + EMPTY_STRING + alias + ISACTIVE_COLON
-				+ ISACTIVE + EMPTY_STRING + AND + EMPTY_STRING + alias + ISDELETED_COLON + ISDELETED;
+		String queryStr = SELECT_DISTINCT + " * " + FROM + "prereg.applicant_demographic" + EMPTY_STRING + WHERE 
+				+ "group_Id=:groupId";
 
-		params.put("registrationId", groupId);
-		params.put(ISACTIVE, Boolean.TRUE);
-		params.put(ISDELETED, Boolean.FALSE);
+		
+		System.out.println("query "+queryStr);
 
+		params.put("groupId", groupId);
+		
 		List<RegistrationEntity> registrationEntityList = registrationRepositary
 				.createQuerySelect(queryStr, params);
 
+		
+	//	List<RegistrationEntity> registrationEntityList = registrationRepositary.findBygroupId(groupId);
+		System.out.println("list------- "+registrationEntityList.get(0));
 		return !registrationEntityList.isEmpty() ? registrationEntityList.get(0) : null;
 	}
 

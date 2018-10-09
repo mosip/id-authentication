@@ -19,9 +19,10 @@ import io.mosip.registration.dto.AddressDto;
 import io.mosip.registration.dto.ContactDto;
 import io.mosip.registration.dto.NameDto;
 import io.mosip.registration.dto.RegistrationDto;
+import io.mosip.registration.dto.ResponseDto;
 import io.mosip.registration.entity.RegistrationEntity;
-import io.mosip.registration.exception.TablenotAccessibleException;
 import io.mosip.registration.service.RegistrationService;
+import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.core.generator.MosipGroupIdGenerator;
 
 @Component
@@ -40,10 +41,10 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private MosipPridGenerator<String> pridGenerator;
-	
+
 	@Autowired
 	private MosipGroupIdGenerator<String> groupIdGenerator;
 
@@ -59,24 +60,33 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	}
 
 	@Override
-	public void addRegistration(RegistrationDto registrationDto) {
-
-//      RegistrationEntity entity= modelMapper.map(registrationDto,RegistrationEntity.class);
+	public ResponseDto addRegistration(RegistrationDto registrationDto,String type) {
 		RegistrationEntity entity = convertDtoToEntity(registrationDto);
+		ResponseDto response= new ResponseDto();
 
 		 if(registrationDto.getPreRegistrationId().isEmpty()) {
 			 
-			 if(registrationDto.getIsPrimary()) {
-				   String prid= pridGenerator.generateId();
-				   groupID= groupIdGenerator.generateGroupId();
-				   entity.setPreRegistrationId(prid);
-				   entity.setGroupId(groupID); 
-			 }
+			 if(type.equalsIgnoreCase("Family")) {
+				 if(registrationDto.getIsPrimary()) {
+					 String prid= pridGenerator.generateId();
+					   groupID= groupIdGenerator.generateGroupId();
+					   entity.setPreRegistrationId(prid);
+					   entity.setGroupId(groupID); 
+				 }
 			 else {
 				   String prid= pridGenerator.generateId();
 				   entity.setPreRegistrationId(prid);
 				   entity.setGroupId(groupID);
 			 }
+			 }
+				 else {
+					 if(type.equalsIgnoreCase("Friends")) {
+							 String prid= pridGenerator.generateId();
+							   groupID= groupIdGenerator.generateGroupId();
+							   entity.setPreRegistrationId(prid);
+							   entity.setGroupId(groupID); 
+				 }
+				 }
 			 try {
 				 registrationDao.save(entity);
 			 } catch (DataAccessLayerException e) {
@@ -98,12 +108,22 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 		// AuditLogTempConstant.EVENT_ID.toString(),
 		// AuditLogTempConstant.EVENT_TYPE.toString(),
 		// AuditLogTempConstant.EVENT_TYPE.toString());
+		 
+		 
+		 response.setPrId(entity.getPreRegistrationId());
+		 response.setCreateDateTime(entity.getCreateDateTime());
+		 response.setCreatedBy(entity.getCreatedBy());
+		 response.setGroupId(entity.getGroupId());
+		 response.setIsPrimary(entity.getIsPrimary());
+		 response.setUpdateDateTime(entity.getUpdateDateTime());
+		 response.setUpdatedBy(entity.getUpdatedBy());
+		 return response;
 
 	}
 
 	@Override
 	public void updateRegistration(RegistrationDto registrationDto) {
-		
+
 		createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
 				AuditLogTempConstant.APPLICATION_NAME.toString(), "", AuditLogTempConstant.EVENT_ID.toString(),
 				AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
@@ -112,18 +132,6 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 
 	public int getThreshholdTime() {
 		return this.getThreshholdTime();
-	}
-	
-	public String generateGroupId() {
-		Random r= new Random();
-		int value = r.nextInt(1000000);
-		return Integer.toString(value);
-	}
-	
-	public String generatePid() {
-		Random r= new Random();
-		int value = r.nextInt(10000);
-		return Integer.toString(value);
 	}
 
 	public String generateId() {
@@ -141,13 +149,15 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 		registrationEntity.setCreatedBy(dto.getCreatedBy());
 		registrationEntity.setDeletedDateTime(dto.getDeletedDateTime());
 		registrationEntity.setDob(dto.getDob());
+		registrationEntity.setPreRegistrationId(dto.getPreRegistrationId());
+		registrationEntity.setGroupId(dto.getGroupId());
 		registrationEntity.setEmail(dto.getContact().getEmail());
 		registrationEntity.setFamilyname(dto.getName().getFamilyname());
 		registrationEntity.setFirstname(dto.getName().getFirstname());
 		registrationEntity.setForename(dto.getName().getForename());
 		registrationEntity.setGenderCode(dto.getGenderCode());
 		registrationEntity.setGivenname(dto.getName().getGivenname());
-//		registrationEntity.setGroupId(dto.getGroupId());
+		registrationEntity.setIsPrimary(dto.getIsPrimary());
 		registrationEntity.setIsDeleted(dto.getIsDeleted());
 		registrationEntity.setLangCode(dto.getLangCode());
 		registrationEntity.setLastname(dto.getName().getLastname());
@@ -157,20 +167,19 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 		registrationEntity.setMobile(dto.getContact().getMobile());
 		registrationEntity.setParentFullName(dto.getParentFullName());
 		registrationEntity.setParentRefId(dto.getParentRefId());
-//		registrationEntity.setPreRegistrationId(dto.getPreRegistrationId());
 		registrationEntity.setStatusCode(dto.getStatusCode());
 		registrationEntity.setSurname(dto.getName().getSurname());
 		registrationEntity.setUpdateDateTime(dto.getUpdateDateTime());
 		registrationEntity.setUpdatedBy(dto.getUpdatedBy());
 		return registrationEntity;
 	}
-	
+
 	private RegistrationDto convertToDTO(RegistrationEntity entity) {
-		RegistrationDto regDto= new RegistrationDto();
-		NameDto nameDto= new NameDto();
-		ContactDto contactDto= new ContactDto();
-		AddressDto addrDto= new AddressDto();
-		
+		RegistrationDto regDto = new RegistrationDto();
+		NameDto nameDto = new NameDto();
+		ContactDto contactDto = new ContactDto();
+		AddressDto addrDto = new AddressDto();
+
 		nameDto.setFamilyname(entity.getFamilyname());
 		nameDto.setFirstname(entity.getFirstname());
 		nameDto.setForename(entity.getForename());
@@ -180,19 +189,19 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 		nameDto.setMiddleinitial(entity.getMiddleinitial());
 		nameDto.setMiddlename(entity.getMiddlename());
 		nameDto.setSurname(entity.getSurname());
-		
+
 		contactDto.setEmail(entity.getEmail());
 		contactDto.setMobile(entity.getMobile());
-		
+
 		addrDto.setAddrLine1(entity.getAddrLine1());
 		addrDto.setAddrLine2(entity.getAddrLine2());
 		addrDto.setAddrLine3(entity.getAddrLine3());
 		addrDto.setLocationCode(entity.getLocationCode());
-		
+
 		regDto.setAddress(addrDto);
 		regDto.setContact(contactDto);
 		regDto.setName(nameDto);
-		
+
 		regDto.setAge(entity.getAge());
 		regDto.setApplicantType(entity.getApplicantType());
 		regDto.setCreateDateTime(entity.getCreateDateTime());
@@ -201,16 +210,17 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 		regDto.setDob(entity.getDob());
 		regDto.setGenderCode(entity.getGenderCode());
 		regDto.setGroupId(entity.getGroupId());
-        regDto.setNationalid(entity.getNationalid());
-        regDto.setParentFullName(entity.getParentFullName());
-        regDto.setParentRefId(entity.getParentRefId());
-        regDto.setParentRefIdType(entity.getParentRefIdType());
-        regDto.setPreRegistrationId(entity.getPreRegistrationId());
-        regDto.setStatusCode(entity.getStatusCode());
-        regDto.setUpdateDateTime(entity.getUpdateDateTime());
-        regDto.setUpdatedBy(entity.getUpdatedBy());
+		regDto.setNationalid(entity.getNationalid());
+		regDto.setParentFullName(entity.getParentFullName());
+		regDto.setParentRefId(entity.getParentRefId());
+		regDto.setParentRefIdType(entity.getParentRefIdType());
+		regDto.setPreRegistrationId(entity.getPreRegistrationId());
+		regDto.setStatusCode(entity.getStatusCode());
+		regDto.setUpdateDateTime(entity.getUpdateDateTime());
+		regDto.setUpdatedBy(entity.getUpdatedBy());
+		regDto.setIsPrimary(entity.getIsPrimary());
 		return regDto;
-		
+
 	}
 
 	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,

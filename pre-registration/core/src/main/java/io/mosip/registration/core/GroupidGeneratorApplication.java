@@ -17,18 +17,13 @@ import io.mosip.registration.core.generator.MosipGroupIdGenerator;
 
 @SpringBootApplication
 @ComponentScan(basePackages="io.mosip.*")
-@PropertySource({"classpath:application.properties"})
-public class GroupidGeneratorApplication implements CommandLineRunner {
+@PropertySource({"classpath:core-application.properties"})
+public class GroupidGeneratorApplication {
 
 	@Autowired
 	private MosipGroupIdGenerator<String> groupIdGenerator;
 
 	public static void main(String[] args) {
 		SpringApplication.run(GroupidGeneratorApplication.class, args);
-	}
-
-	@Override
-	public void run(String... args) throws Exception {
-		System.out.println("\n\n Generated Groupid : " + groupIdGenerator.generateGroupId() + "\n\n");
 	}
 }
