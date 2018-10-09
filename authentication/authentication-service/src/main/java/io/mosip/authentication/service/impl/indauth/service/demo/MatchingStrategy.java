@@ -5,9 +5,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.MatchStrategyTy
 public interface MatchingStrategy {
 
 	MatchStrategyType getType();
-	
-	int getDefaultMatchValue();
-	
+
 	MatchFunction getMatchFunction();
-	
+
 }
