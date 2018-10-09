@@ -102,7 +102,6 @@
 		<module>kernel-validator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-keygenerator</module>
-		
 	</modules>
 
 	<profiles>
