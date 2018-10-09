@@ -53,21 +53,21 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
 	public void deployVerticle() {
-		PacketValidatorStage packetValidatorStage = new PacketValidatorStage();
-		MosipEventBus mosipEventBus = packetValidatorStage.getEventBus(PacketValidatorStage.class);
-		packetValidatorStage.consume(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN);
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
+		this.consume(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN);
 	}
 
 	public boolean filesValidation(String registrationId, PacketInfo packetInfo) {
 		boolean filesValidated = false;
 
 		HashSequence hashSequence = packetInfo.getHashSequence();
-		if (validateApplicant(registrationId, hashSequence.getApplicant())
-				&& validateHOF(registrationId, hashSequence.getHof())
-				&& validateIntroducer(registrationId, hashSequence.getIntroducer())
-				&& validateApplicantPhoto(registrationId, packetInfo)) {
-			filesValidated = true;
-		}
+		/*
+		 * if (validateApplicant(registrationId, hashSequence.getApplicant()) &&
+		 * validateHOF(registrationId, hashSequence.getHof()) &&
+		 * validateIntroducer(registrationId, hashSequence.getIntroducer()) &&
+		 * validateApplicantPhoto(registrationId, packetInfo)) { filesValidated = true;
+		 * }
+		 */
 
 		return filesValidated;
 
@@ -83,7 +83,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	public boolean validateApplicant(String registrationId, List<String> applicant) {
 		boolean isApplicantValidated = false;
-		for (String applicantFile : applicant) {
+		/*for (String applicantFile : applicant) {
 			String fileName = "";
 			if (PacketFiles.LEFTEYE.name().equals(applicantFile)) {
 				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.APPLICANT.name() + PacketFiles.LEFTEYE.name();
@@ -99,32 +99,13 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			// To do for residence copy
 			isApplicantValidated = adapter.checkFileExistence(registrationId, fileName);
 
-		}
+		}*/
 		return isApplicantValidated;
-	}
-
-	public boolean validateHOF(String registrationId, List<String> hof) {
-		boolean isHOFValidated = false;
-		for (String hofFile : hof) {
-			String fileName = "";
-			if (PacketFiles.LEFTEYE.name().equals(hofFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.HOF.name() + PacketFiles.LEFTEYE.name();
-			} else if (PacketFiles.LEFTTHUMB.name().equals(hofFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.HOF.name() + PacketFiles.LEFTTHUMB.name();
-			} else if (PacketFiles.RIGHTEYE.name().equals(hofFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.HOF.name() + PacketFiles.RIGHTEYE.name();
-			} else if (PacketFiles.RIGHTTHUMB.name().equals(hofFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.HOF.name() + PacketFiles.RIGHTTHUMB.name();
-			}
-			isHOFValidated = adapter.checkFileExistence(registrationId, fileName);
-
-		}
-		return isHOFValidated;
 	}
 
 	public boolean validateIntroducer(String registrationId, List<String> introducer) {
 		boolean isIntroducerValidated = false;
-		for (String introducerFile : introducer) {
+		/*for (String introducerFile : introducer) {
 			String fileName = "";
 			if (PacketFiles.LEFTEYE.name().equals(introducerFile)) {
 				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.APPLICANT.name() + PacketFiles.LEFTEYE.name();
@@ -137,7 +118,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			}
 			isIntroducerValidated = adapter.checkFileExistence(registrationId, fileName);
 
-		}
+		}*/
 		return isIntroducerValidated;
 	}
 
