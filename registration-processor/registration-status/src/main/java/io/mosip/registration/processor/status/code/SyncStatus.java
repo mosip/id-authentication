@@ -12,6 +12,8 @@ public enum SyncStatus {
 
 	INITIATED, 
 	PROCESSING,
-	COMPLETED;
+	COMPLETED,
+	PRE_SYNC,
+	POST_SYNC;
 
 }

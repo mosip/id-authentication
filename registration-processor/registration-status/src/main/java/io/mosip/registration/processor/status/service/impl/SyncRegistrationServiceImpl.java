@@ -32,7 +32,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	@Autowired
 	private SyncRegistrationDao syncRegistrationDao;
 
-	private static final String COULD_NOT_GET = "Could not get Information from table";
+	private static final String COULD_NOT_GET_INFO = "Could not get Information from table";
 
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
@@ -58,14 +58,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			isTransactionSuccessful = true;
 			return list;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(COULD_NOT_GET, e);
+			throw new TablenotAccessibleException(COULD_NOT_GET_INFO, e);
 		} finally {
-			String description = "";
-			if (isTransactionSuccessful) {
-				description = "description--sync Success";
-			} else {
-				description = "description--sync Failure";
-			}
+			String description = isTransactionSuccessful?"description--sync Success":"description--sync Failure";
 			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
 					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
 					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),

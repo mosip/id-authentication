@@ -10,8 +10,11 @@ package io.mosip.registration.processor.status.code;
  */
 public enum SyncType {
 
-	NEW,
+	NEW_REGISTRATION,
 	CORRECTION,
-	UPDATE;
+	UPDATE_UIN,
+	LOST_UIN,
+	ACTIVATE_UIN,
+	DEACTIVATE_UIN;
 
 }
