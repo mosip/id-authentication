@@ -2,12 +2,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import io.mosip.authentication.core.util.MatcherUtil;
 
-/**
- * 
- * @author Dinesh Karuppiah
- */
-
-public enum NameMatchingStrategy implements MatchingStrategy {
+public enum AddressMatchingStrategy implements MatchingStrategy {
 
 	EXACT(MatchStrategyType.EXACT, (reqInfo, entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
@@ -17,27 +12,19 @@ public enum NameMatchingStrategy implements MatchingStrategy {
 		} else {
 			return 0;
 		}
-	}), PARTIAL(MatchStrategyType.PARTIAL, (reqInfo, entityInfo) -> {
-		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
-			return MatcherUtil.doPartialMatch(refInfoName, entityInfoName);
-		} else {
-			return 0;
-		}
-	}), PHONETICS(MatchStrategyType.PHONETICS, (reqInfo, entityInfo) -> 0);
+	});
 
 	private final MatchFunction matchFunction;
 
 	private final MatchStrategyType matchStrategyType;
 
 	/**
-	 * Constructor for Name Matching Strategy
+	 * Constructor for Address Matching Strategy
 	 * 
 	 * @param matchStrategyType
 	 * @param matchFunction
 	 */
-	private NameMatchingStrategy(MatchStrategyType matchStrategyType, MatchFunction matchFunction) {
+	private AddressMatchingStrategy(MatchStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
@@ -51,5 +38,4 @@ public enum NameMatchingStrategy implements MatchingStrategy {
 	public MatchFunction getMatchFunction() {
 		return matchFunction;
 	}
-
 }

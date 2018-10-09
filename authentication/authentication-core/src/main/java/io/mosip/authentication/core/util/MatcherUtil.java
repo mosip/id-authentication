@@ -31,8 +31,7 @@ public final class MatcherUtil {
 		List<String> refInfoList = split(reqInfo);
 		List<String> entityInfoList = split(entityInfo);
 
-		if (refInfoList.size() == entityInfoList.size() && allMatch(refInfoList, entityInfoList)
-				&& fetchNotMatchedList(refInfoList, entityInfoList).isEmpty()) {
+		if (refInfoList.size() == entityInfoList.size() && allMatch(refInfoList, entityInfoList)) {
 			matchvalue = 100;
 		}
 		return matchvalue;
@@ -111,20 +110,6 @@ public final class MatcherUtil {
 
 	private static List<String> split(String str) {
 		return Stream.of(str.toLowerCase().split("\\s+")).filter(s -> s.length() > 0).collect(Collectors.toList());
-	}
-
-	/**
-	 * filters the refInfoList and compares with entityInfo List and return Not
-	 * matched values as List
-	 * 
-	 * @param refInfoList
-	 * @param entityInfoList
-	 * @return
-	 */
-
-	private static List<String> fetchNotMatchedList(List<String> refInfoList, List<String> entityInfoList) {
-		return refInfoList.parallelStream().filter(value -> !entityInfoList.contains(value))
-				.collect(Collectors.toList());
 	}
 
 	/**
