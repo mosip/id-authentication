@@ -107,7 +107,7 @@
 			<id>LOCAL</id>
 			<properties>
 				<sonar.host.url>
-					http://localhost:9010
+					http://localhost:9000
 				</sonar.host.url>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
@@ -118,7 +118,7 @@
 			<id>DEV</id>
 			<properties>
 				<sonar.host.url>
-					http://mosipsonarserver:9000
+					http://13.67.91.2:9000
 				</sonar.host.url>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec

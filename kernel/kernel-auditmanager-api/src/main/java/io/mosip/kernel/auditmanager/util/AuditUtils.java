@@ -44,5 +44,6 @@ public class AuditUtils {
 			throw new MosipAuditManagerException(AuditErrorCodes.HANDLEREXCEPTION.getErrorCode(),
 					AuditErrorCodes.HANDLEREXCEPTION.getErrorMessage());
 		}
+		factory.close();
 	}
 }

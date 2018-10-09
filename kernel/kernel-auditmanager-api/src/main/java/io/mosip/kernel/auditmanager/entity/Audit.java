@@ -51,7 +51,7 @@ public class Audit extends BaseAudit {
 
 	@NotNull
 	@Column(name = "action_dtimesz", nullable = false, updatable = false)
-	private OffsetDateTime actionTimeStamp;
+	private transient OffsetDateTime actionTimeStamp;
 
 	@NotNull
 	@Size(min = 1, max = 32)
