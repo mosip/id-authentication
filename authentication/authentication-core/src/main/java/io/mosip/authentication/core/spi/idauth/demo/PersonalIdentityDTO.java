@@ -43,7 +43,6 @@ public class PersonalIdentityDTO {
 	 * 100 and it is used only when matching strategy (ms attribute) is “P” (Partial
 	 * match).
 	 */
-	//@Pattern(regexp = "^([0-9]?[1-9]$ | ^(100)$")
 	@Min(1)
 	@Max(100)
 	private int mtPri;
@@ -53,7 +52,6 @@ public class PersonalIdentityDTO {
 	 * value is 1 to 100 and it is used only when matching strategy (ms attribute)
 	 * is “P” (Partial match).
 	 */
-	//@Pattern(regexp = "^([0-9]?[1-9]$ | ^(100)$")
 	@Min(1)
 	@Max(100)
 	private int mtSec;
@@ -70,7 +68,8 @@ public class PersonalIdentityDTO {
 	private String dobType; // TODO
 
 	/** Age of the individual. Should be between 0 and 150. */
-	@Pattern(regexp = "^(0?[0-9]|[1-9][0-9]|1[0-4][0-9]|150)$")
+	@Min(1)
+	@Max(150)
 	private Integer age;
 
 	/** phone */

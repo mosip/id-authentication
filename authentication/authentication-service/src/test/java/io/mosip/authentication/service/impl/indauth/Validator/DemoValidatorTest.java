@@ -1,5 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.Validator;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -26,10 +29,12 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
+import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalAddressDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalFullAddressDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDataDTO;
+import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.service.impl.indauth.validator.DemoValidator;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
@@ -97,7 +102,8 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(auth, "setAd", false);
 		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
 
-		// ReflectionTestUtils.invokeMethod(demoValidator, "fullAddressValidation",authRequestdto, errors);
+		// ReflectionTestUtils.invokeMethod(demoValidator,
+		// "fullAddressValidation",authRequestdto, errors);
 
 		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", authRequestdto, errors);
 	}
