@@ -73,11 +73,11 @@ public class PersonalIdentityDTO {
 	private Integer age;
 
 	/** phone */
-	@Pattern(regexp = "^([0-9]{10}$")
+	@Pattern(regexp = "^([0-9]{10}$)")
 	private String phone; // TODO
 
 	/** Registered e-mail ID of the individual */
-	@Pattern(regexp = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+	@Pattern(regexp = "^[\\_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
 	private String email;
 
 }
