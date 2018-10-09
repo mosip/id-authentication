@@ -63,7 +63,7 @@ public class DemoValidator implements Validator {
 		// address validation
 		completeAddressValidation(authRequestdto, errors);
 
-		// PID validation: age phone, dob
+		// PID validation
 		personalIdentityValidation(authRequestdto, errors);
 
 	}
@@ -83,10 +83,11 @@ public class DemoValidator implements Validator {
 					"Address and Full address are mutually exclusive");
 			errors.reject(IdAuthenticationErrorConstants.AD_FAD_MUTUALLY_EXCULUSIVE.getErrorCode(),
 					IdAuthenticationErrorConstants.AD_FAD_MUTUALLY_EXCULUSIVE.getErrorMessage());
-		} else {
+		} else if (authRequestdto.getAuthType().isFad()) {
 			fullAddressValidation(authRequestdto, errors);
-			addressValidation(authRequestdto, errors);
 
+		} else if (authRequestdto.getAuthType().isAd()) {
+			addressValidation(authRequestdto, errors);
 		}
 	}
 
@@ -101,11 +102,23 @@ public class DemoValidator implements Validator {
 	private void fullAddressValidation(AuthRequestDTO authRequestdto, Errors errors) {
 
 		if (authRequestdto.getAuthType().isFad()) {
+
+			String primaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangPri();
+			String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
+
+			if (primaryLanguage == null && secondaryLanguage == null) {
+				mosipLogger.error("SessionID56", "personalFullAddressDTO",
+						"Select one of language for Full Address Validation",
+						"Atleast select one of language-type for full address");
+				errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
+			}
+
 			PersonalFullAddressDTO personalFullAddressDTO = authRequestdto.getPersonalDataDTO().getDemoDTO()
 					.getPersonalFullAddressDTO();
 
-			String primaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangPri();
-			if (primaryLanguage != null && personalFullAddressDTO.getAddrPri() == null) {
+			if (primaryLanguage != null && (personalFullAddressDTO.getAddrPri() == null
+					&& personalFullAddressDTO.getMsPri() == null && personalFullAddressDTO.getMtPri() == null)) {
 
 				mosipLogger.error("SessionID12", "personal Full Address",
 						"Full Address Validation for primary language",
@@ -115,8 +128,8 @@ public class DemoValidator implements Validator {
 
 			}
 
-			String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
-			if (secondaryLanguage != null && personalFullAddressDTO.getAddrSec() == null) {
+			if (secondaryLanguage != null && (personalFullAddressDTO.getAddrSec() == null
+					&& personalFullAddressDTO.getMsSec() == null && personalFullAddressDTO.getMtSec() == null)) {
 
 				mosipLogger.error("SessionID34", "personal Full Address",
 						"Full Address Validation for secondary language",
@@ -125,11 +138,6 @@ public class DemoValidator implements Validator {
 						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST_SEC.getErrorMessage());
 			}
 
-		} else {
-			mosipLogger.error("SessionID56", "personalFullAddressDTO", "Select one of type for Full Address Validation",
-					"Atleast select one of language for full address");
-			errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
 		}
 	}
 
@@ -148,6 +156,15 @@ public class DemoValidator implements Validator {
 					.getPersonalAddressDTO();
 
 			String primaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangPri();
+			String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
+
+			if (primaryLanguage == null && secondaryLanguage == null) {
+				mosipLogger.error("SessionID635837", "Personal Address", "Address Validation for secondary language",
+						"At least one attribute of  address should be present");
+				errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
+			}
+
 			if (primaryLanguage != null && (personalAddressDTO.getAddrLine1Pri() == null
 					&& personalAddressDTO.getAddrLine2Pri() == null && personalAddressDTO.getAddrLine3Pri() == null
 					&& personalAddressDTO.getCountryPri() == null && personalAddressDTO.getPinCodePri() == null)) {
@@ -159,7 +176,7 @@ public class DemoValidator implements Validator {
 						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST_PRI.getErrorMessage());
 
 			}
-			String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
+
 			if (secondaryLanguage != null && (personalAddressDTO.getAddrLine1Sec() == null
 					&& personalAddressDTO.getAddrLine2Sec() == null && personalAddressDTO.getAddrLine3Sec() == null
 					&& personalAddressDTO.getCountrySec() == null && personalAddressDTO.getPinCodeSec() == null)) {
@@ -171,12 +188,6 @@ public class DemoValidator implements Validator {
 						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST_SEC.getErrorMessage());
 
 			}
-		} else {
-
-			mosipLogger.error("SessionID635837", "Personal Address", "Address Validation for secondary language",
-					"At least one attribute of  address should be present");
-			errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
 		}
 	}
 
@@ -192,7 +203,7 @@ public class DemoValidator implements Validator {
 
 		if (authRequestdto.getAuthType().isPi()) {
 
-			// TODO integrate with CK
+			// TODO dobType integrate with CK
 
 			if (personalIdentityDTO.getDob() != null) {
 				try {
@@ -216,6 +227,7 @@ public class DemoValidator implements Validator {
 						IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION_PRI.getErrorMessage());
 
 			}
+
 			String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
 			if (personalIdentityDTO.getNameSec() != null && secondaryLanguage == null) {
 				mosipLogger.error("SessionID", "Personal identity", "personal info for secondary language",

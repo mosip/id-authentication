@@ -19,6 +19,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
+import io.mosip.authentication.service.impl.indauth.validator.DemoValidator;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
@@ -35,35 +36,36 @@ import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 public class AuthController {
-	
+
 	private MosipLogger logger;
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
 		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
-	
+
 	@Autowired
 	private AuthRequestValidator authRequestValidator;
-	
-	
+	@Autowired
+	DemoValidator demoValidator;
+
 	@Autowired
 	private AuthFacade authFacade;
-	
+
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
-		binder.setValidator(authRequestValidator);
+		// binder.setValidator(authRequestValidator);
+		binder.addValidators(authRequestValidator, demoValidator);
 	}
 
 	/**
 	 * authenticateRequest - method to authenticate request
 	 * 
 	 * 
-	 * @param authrequestdto
-	 *            - Authenticate Request
+	 * @param authrequestdto - Authenticate Request
 	 * @param errors
 	 * @return AuthResponseDTO
-	 * @throws IdAuthenticationAppException 
+	 * @throws IdAuthenticationAppException
 	 * @throws ValidateOTPException
 	 */
 
@@ -75,20 +77,17 @@ public class AuthController {
 			@ApiIgnore Errors errors) throws IdAuthenticationAppException {
 		AuthResponseDTO authResponsedto = null;
 
-			try {
-				DataValidationUtil.validate(errors);
-				
-				authResponsedto=authFacade.authenticateApplicant(authrequestdto);
-			} catch (IDDataValidationException e) {
-				logger.error("sessionId", null, null, e.getErrorText());
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-			}catch (IdAuthenticationBusinessException e) {
-					logger.error("sessionId", null, null, e.getErrorText());
-					throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
-				}
-				
-			
-		  
+		try {
+			DataValidationUtil.validate(errors);
+
+			authResponsedto = authFacade.authenticateApplicant(authrequestdto);
+		} catch (IDDataValidationException e) {
+			logger.error("sessionId", null, null, e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+		} catch (IdAuthenticationBusinessException e) {
+			logger.error("sessionId", null, null, e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
+		}
 
 		return authResponsedto;
 

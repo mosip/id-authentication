@@ -83,8 +83,8 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_ADDRESS_REQUEST_SEC("IDA-AD-RQV-003", "At least one attribute of address should be present for secondary language"),
 	AD_FAD_MUTUALLY_EXCULUSIVE("IDA-AD-RQV-003", "Full Address and Address are mutually exclusive"),
 	INVALID_PERSONAL_INFORMATION("IDA-PRSNL-RQV-001", "Atleat one valid attribute should be present"),
-	INVALID_PERSONAL_INFORMATION_PRI("IDA-PRSNL-RQV-001","Atleast one valid attribute should be present for primay language"),
-	INVALID_PERSONAL_INFORMATION_SEC("IDA-PRSNL-RQV-002","Atleast one valid attribute should be present for secondary language"),
+	INVALID_PERSONAL_INFORMATION_PRI("IDA-PRSNL-RQV-001","Primary Language code (langPri) should be present"),
+	INVALID_PERSONAL_INFORMATION_SEC("IDA-PRSNL-RQV-002","Primary Language code (langSec) should be present"),
 	INVALID_DOB_YEAR("IDA-DOB-RQV-001","DOB year should not excedded from current year");
 	
 	

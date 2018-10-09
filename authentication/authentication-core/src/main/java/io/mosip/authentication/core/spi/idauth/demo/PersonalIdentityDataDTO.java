@@ -25,12 +25,12 @@ public class PersonalIdentityDataDTO {
 	private Date requestTimestamp;
 
 	/** Factory class for demographic details */
-	private DemoDTO demodto;
+	private DemoDTO demoDTO;
 
 	/** BioDTO for {@link BioType} */
-	private BioDTO biodto;
+	private BioDTO bioDTO;
 
 	/** PinDTO for {@link PinType} */
-	private PinDTO pindto;
+	private PinDTO pinDTO;
 
 }

@@ -62,7 +62,7 @@ public class PersonalIdentityDTO {
 	@Pattern(regexp = "^([M|F|T])$")
 	private String gender;
 
-	/** Date of Birth of the individual. */
+	/** Date of Birth of the individual of Pattern "yyyy-MM-dd". */
 	@Pattern(regexp = "^([0-9]{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$")
 	private String dob;
 
@@ -71,7 +71,7 @@ public class PersonalIdentityDTO {
 
 	/** Age of the individual. Should be between 0 and 150. */
 	@Pattern(regexp = "^(0?[0-9]|[1-9][0-9]|1[0-4][0-9]|150)$")
-	private int age;
+	private Integer age;
 
 	/** phone */
 	@Pattern(regexp = "^([0-9]{10}$")

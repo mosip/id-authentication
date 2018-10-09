@@ -8,6 +8,7 @@ import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDataDTO;
 import lombok.Data;
 
 /**
