@@ -1,22 +1,31 @@
 package io.mosip.registration.processor.packet.decryptor.job.messagesender;
 
+import org.springframework.stereotype.Service;
+
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 
+@Service
 public class DecryptionMessageSender extends MosipVerticleManager {
 	
+	private MosipEventBus mosipEventBus;
+	
+	private void getEventBus() {
+		if(this.mosipEventBus == null) {
+			mosipEventBus = this.getEventBus(this.getClass());
+		}
+	}
+	
 	public void sendMessage(MessageDTO message) {
-		DecryptionMessageSender decryptionMessageSender = new DecryptionMessageSender();
-		MosipEventBus mosipEventBus = decryptionMessageSender.getEventBus(DecryptionMessageSender.class);
-		decryptionMessageSender.send(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, message);
+		getEventBus();
+		this.send(this.mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, message);
 	}
 
 	@Override
-	public Object process(Object object) {
+	public MessageDTO process(MessageDTO object) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }
