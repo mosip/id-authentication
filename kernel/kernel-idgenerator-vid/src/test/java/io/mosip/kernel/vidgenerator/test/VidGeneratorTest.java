@@ -21,7 +21,6 @@ import io.mosip.kernel.vidgenerator.exception.InValidUinException;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource("classpath:/test.application.properties")
 public class VidGeneratorTest {
 	@Value("${mosip.kernel.vid.length}")
 	private int vidLength;
