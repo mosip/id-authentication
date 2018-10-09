@@ -6,6 +6,6 @@ import lombok.Data;
 public class Iris {
 	private String irisImageName;
 	private double qualityScore;
-	private boolean isForceCaptured;
+	private Boolean forceCaptured;
 	private String irisType;
 }
