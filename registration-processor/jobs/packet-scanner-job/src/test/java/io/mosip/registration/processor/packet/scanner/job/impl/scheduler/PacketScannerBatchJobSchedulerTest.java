@@ -1,4 +1,4 @@
-/*package io.mosip.registration.processor.packet.scanner.job.impl.scheduler;
+package io.mosip.registration.processor.packet.scanner.job.impl.scheduler;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -151,4 +151,3 @@ public class PacketScannerBatchJobSchedulerTest {
 	}
 
 }
-*/

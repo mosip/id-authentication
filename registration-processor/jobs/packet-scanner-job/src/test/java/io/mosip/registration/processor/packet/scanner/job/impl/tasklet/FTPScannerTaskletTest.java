@@ -67,19 +67,7 @@ public class FTPScannerTaskletTest {
 	public void setup() {
 
 		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("1000.zip").getFile());
-		this.directoryPath = classLoader.getResource("FTP").getPath().toString().substring(1,
-				classLoader.getResource("FTP").getPath().toString().length());
-		try {
-
-			this.mockMultipartFile = new MockMultipartFile("file", "1000.zip", "mixed/multipart",
-					new FileInputStream(file));
-		} catch (FileNotFoundException e) {
-
-		} catch (IOException e) {
-
-		}
-
+		this.directoryPath = classLoader.getResource("FTP").getPath().toString();
 	}
 
 	@Test
