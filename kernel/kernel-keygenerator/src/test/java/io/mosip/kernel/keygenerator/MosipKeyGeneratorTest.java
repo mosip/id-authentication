@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 
 import io.mosip.kernel.keygenerator.asymmetrickeypair.MosipAsymmetricKeyPair;
+
 public class MosipKeyGeneratorTest {
 
 	@Test

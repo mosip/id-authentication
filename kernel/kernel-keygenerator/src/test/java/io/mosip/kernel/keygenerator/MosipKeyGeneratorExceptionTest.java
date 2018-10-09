@@ -13,14 +13,13 @@ import io.mosip.kernel.keygenerator.exception.MosipNoSuchAlgorithmException;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(MosipKeyGenerator.class)
 public class MosipKeyGeneratorExceptionTest {
-	
+
 	@Test(expected = MosipNoSuchAlgorithmException.class)
 	public void testGetAsymmetricKeyException() {
-        PowerMockito.mockStatic(MosipKeyGenerator.class);
+		PowerMockito.mockStatic(MosipKeyGenerator.class);
 		when(MosipKeyGenerator.getAsymmetricKey()).thenThrow(
 				new MosipNoSuchAlgorithmException(KeyGeneratorExceptionConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION));
 		MosipKeyGenerator.getAsymmetricKey();
 	}
-
 
 }

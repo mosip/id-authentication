@@ -30,7 +30,7 @@ public class MosipKeyGenerator {
 	 * @return generated symmetric key
 	 */
 	public static byte[] getSymmetricKey() {
-		KeyGenerator generator=KeyGeneratorUtils.getKeyGenerator(KeyGeneratorConfig.SYMMETRIC_ALGORITHM);
+		KeyGenerator generator = KeyGeneratorUtils.getKeyGenerator(KeyGeneratorConfig.SYMMETRIC_ALGORITHM);
 		return generator.generateKey().getEncoded();
 	}
 
