@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +18,13 @@ import io.mosip.kernel.otpmanagerservice.constant.SqlQueryConstants;
 import io.mosip.kernel.otpmanagerservice.entity.OtpEntity;
 import io.mosip.kernel.otpmanagerservice.exceptionhandler.MosipErrors;
 import io.mosip.kernel.otpmanagerservice.exceptionhandler.MosipOtpInvalidArgumentExceptionHandler;
+import io.mosip.kernel.otpmanagerservice.exceptionhandler.MosipResourceNotFoundExceptionHandler;
 import io.mosip.kernel.otpmanagerservice.repository.OtpRepository;
 import io.mosip.kernel.otpmanagerservice.service.OtpValidatorService;
 import io.mosip.kernel.otpmanagerservice.util.OtpManagerUtils;
 
 /**
- * This class provides the implementation for the methods of OtpGeneratorService
+ * This class provides the implementation for the methods of OtpValidatorService
  * interface.
  * 
  * @author Sagar Mahapatra
@@ -77,9 +79,15 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 		int attemptCount = otpResponse.getNumOfAttempt();
 
 		// Creating ResourceBundle object to read data from properties file.
-		ResourceBundle resource = ResourceBundle
-				.getBundle(OtpExpiryConstants.OTP_PROPERTIES_FILE_NAME.getStringProperty());
-
+		ResourceBundle resource;
+		try {
+			resource = ResourceBundle.getBundle(OtpExpiryConstants.OTP_PROPERTIES_FILE_NAME.getStringProperty());
+		} catch (MissingResourceException exception) {
+			List<MosipErrors> validationErrorsList = new ArrayList<>();
+			validationErrorsList.add(new MosipErrors(OtpErrorConstants.OTP_VAL_RESOURCE_NOT_FOUND.getErrorCode(),
+					OtpErrorConstants.OTP_VAL_RESOURCE_NOT_FOUND.getErrorMessage()));
+			throw new MosipResourceNotFoundExceptionHandler(validationErrorsList);
+		}
 		// This variable holds the number of validation attempts allowed.
 		int numberOfValidationAttemptsAllowed = Integer
 				.parseInt(resource.getString(OtpExpiryConstants.ALLOWED_NUMBER_OF_ATTEMPTS.getStringProperty()));

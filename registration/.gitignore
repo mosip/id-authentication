@@ -22,3 +22,6 @@ local.properties
 *.zip
 *.logs
 *.ucls
+*.useq
+/Key_Store/
+/Packet_Store/

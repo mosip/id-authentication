@@ -2,24 +2,24 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.mosip</groupId>
-		<artifactId>mosip-root</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
-	<artifactId>registration</artifactId>
+	<!-- <parent> <groupId>io.mosip</groupId> <artifactId>mosip-parent</artifactId> 
+		<version>1.0.0-SNAPSHOT</version> </parent> -->
+	<groupId>io.mosip.registration</groupId>
+	<version>1.0.0-SNAPSHOT</version>
+	<artifactId>registration-parent</artifactId>
 	<packaging>pom</packaging>
 	<name>registration</name>
 	<description>Parent project of MOSIP Registration</description>
 
 	<properties>
+		<maven.jacoco.version>0.8.2</maven.jacoco.version>
+		<javafx.version>2.2</javafx.version>
+		<maven.sonar.version>3.2</maven.sonar.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.version>3.7.0</maven.compiler.version>
-
-		<!-- Core -->
-		<spring.version>5.0.4.RELEASE</spring.version>
+		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -34,7 +34,7 @@
 		<orika.version>1.4.6</orika.version>
 
 		<!-- Spring version -->
-		<sprin.version>4.3.7.RELEASE</sprin.version>
+		<spring.version>5.0.6.RELEASE</spring.version>
 
 		<!-- Hibernate version -->
 		<hibernate.version>5.2.9.Final</hibernate.version>
@@ -43,8 +43,13 @@
 		<apache.commons.dpce.version>2.1.1</apache.commons.dpce.version>
 
 		<!-- Jackson -->
-		<jackson.version>2.2.2</jackson.version>
-		<mosip.core.kernel.version>1.0.0.0-SNAPSHOT</mosip.core.kernel.version>
+		<jackson.version>2.8.8</jackson.version>
+		<jackson.mapper.asl.version>1.7.1</jackson.mapper.asl.version>
+
+		<mosip.core.kernel.version>1.0.0-SNAPSHOT</mosip.core.kernel.version>
+		<!-- Derby Version -->
+		<apache.derby.version>10.13.1.1</apache.derby.version>
+
 	</properties>
 
 	<modules>
@@ -76,13 +81,8 @@
 				<scope>test</scope>
 			</dependency>
 
-			<!-- <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-exception</artifactId> 
-				<version>${project.version}</version> </dependency> <dependency> <groupId>org.mosip</groupId> 
-				<artifactId>kernel-utils</artifactId> <version>${project.version}</version> 
-				</dependency> -->
-
 			<dependency>
-				<groupId>org.mosip</groupId>
+				<groupId>io.mosip.kernel</groupId>
 				<artifactId>kernel-core</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
@@ -93,17 +93,11 @@
 				<version>${orika.version}</version>
 			</dependency>
 
-			<!-- Spring Context -->
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-context</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
 			<!-- Spring ORM -->
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-orm</artifactId>
-				<version>${sprin.version}</version>
+				<version>${spring.version}</version>
 			</dependency>
 			<!-- Hibernate 5.2.9 Final -->
 			<dependency>
@@ -117,35 +111,64 @@
 				<artifactId>commons-dbcp2</artifactId>
 				<version>${apache.commons.dpce.version}</version>
 			</dependency>
-			<!-- <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-utils</artifactId> 
+			<!-- <dependency> <groupId>io.mosip</groupId> <artifactId>kernel-utils</artifactId> 
 				<version>${project.version}</version> </dependency> -->
 			<dependency>
-				<groupId>org.mosip</groupId>
-				<artifactId>logger-logback</artifactId>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-logger-logback</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
-			<!-- <dependency> <groupId>org.mosip</groupId> <artifactId>kernel-security</artifactId> 
+			<!-- <dependency> <groupId>io.mosip</groupId> <artifactId>kernel-security</artifactId> 
 				<version>${project.version}</version> </dependency> -->
 			<dependency>
-				<groupId>org.mosip</groupId>
-				<artifactId>dataaccess-hibernate</artifactId>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-dataaccess-hibernate</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.mosip</groupId>
-				<artifactId>auditmanager-api</artifactId>
+				<groupId>io.mosip.kernel</groupId>
+				<artifactId>kernel-auditmanager-api</artifactId>
 				<version>${mosip.core.kernel.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.derby</groupId>
 				<artifactId>derby</artifactId>
-				<version>10.13.1.1</version>
+				<version>${apache.derby.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.derby</groupId>
 				<artifactId>derbyclient</artifactId>
-				<version>10.13.1.1</version>
+				<version>${apache.derby.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>2.9.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
+			<dependency>
+				<groupId>org.codehaus.jackson</groupId>
+				<artifactId>jackson-mapper-asl</artifactId>
+				<version>${jackson.mapper.asl.version}</version>
+			</dependency>
+			
+			<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>javafx</artifactId>
+			<version>${javafx.version}</version>
+			<systemPath>${project.basedir}/src/main/resources/fx_lib/jfxrt.jar</systemPath>
+			<scope>system</scope>
+		</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -159,6 +182,14 @@
 				<configuration>
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
+				<configuration>
+					<aggregate>true</aggregate>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -188,51 +219,15 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.1.0</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-						</manifest>
-						<manifestEntries>
-							<Project-Name>${project.name}</Project-Name>
-							<Project-Version>${project.version}</Project-Version>
-							<Built-By>${user.name}</Built-By>
-							<Built-OS>${os.name}</Built-OS>
-							<Local-Build-Date>${maven.build.timestamp}</Local-Build-Date>
-							<Build-Number>${env.BUILD_NUMBER}</Build-Number>
-							<Build-Date>${env.BUILD_ID}</Build-Date>
-							<Build-URL>${env.BUILD_URL}</Build-URL>
-							<Build-Revision>${env.SVN_REVISION}</Build-Revision>
-							<SCM-Path>${scm.path}</SCM-Path>
-							<SCM-CommittedDate>${scm.committedDate}</SCM-CommittedDate>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<skip>false</skip>
-					<useFile>false</useFile>
-					<systemPropertyVariables>
-						<surefire.security.manager>java.lang.SecurityManager</surefire.security.manager>
-					</systemPropertyVariables>
-					<argLine>-Djava.security.properties=/tmp/java.security </argLine>
-					<excludes>
-						<exclude>**/*IntegrationTest.java</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.1</version>
+				<version>${maven.jacoco.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>**/*IntegrationTest.java</exclude>
+						<exclude> org/mosip/registration/controller/**</exclude>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -246,16 +241,32 @@
 							<goal>report</goal>
 						</goals>
 					</execution>
-					<execution>
-						<id>post-unit-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>${maven.sonar.version}</version>
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>sonar</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- Optional URL to server. Default value is http://localhost:9000 -->
+				<sonar.host.url>
+					http://13.67.91.2:9000
+					<!-- http://172.25.166.136:9000 -->
+				</sonar.host.url>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>

@@ -36,7 +36,7 @@ public class BaseAudit implements Serializable {
 	private String uuid;
 
 	@Column(name = "log_dtimesz", nullable = false, updatable = false)
-	private OffsetDateTime createdAt; // ,columnDefinition= "TIMESTAMP WITH TIME ZONE"
+	private transient OffsetDateTime createdAt; // ,columnDefinition= "TIMESTAMP WITH TIME ZONE"
 
 	/**
 	 * Constructor to initialize {@link BaseAudit} with uuid and timestamp

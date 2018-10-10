@@ -15,7 +15,8 @@ public enum OtpErrorConstants {
 	OTP_VAL_ILLEGAL_KEY_INPUT("KER-OTV-002","Length of key should be in the range of 3-255."),
 	OTP_VAL_INVALID_OTP_INPUT("KER-OTV-003","OTP can't be empty or null."),
 	OTP_VAL_ILLEGAL_OTP_INPUT("KER-OTV-004","OTP consists of only numeric characters. No other characters is allowed."),
-	OTP_VAL_KEY_NOT_FOUND("KER-OTV-005","Validation can't be performed against this key. Generate OTP first.");
+	OTP_VAL_KEY_NOT_FOUND("KER-OTV-005","Validation can't be performed against this key. Generate OTP first."),
+	OTP_VAL_RESOURCE_NOT_FOUND("KER-OTV-006", "Required resource is not found. The properties file name may be entered wrong.");
 	/**
 	 * The error code.
 	 */
