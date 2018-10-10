@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.code.FormType;
+import io.mosip.registration.core.generator.MosipGroupIdGenerator;
 import io.mosip.registration.dao.RegistrationDao;
 import io.mosip.registration.dto.ApplicationDto;
 import io.mosip.registration.dto.RegistrationDto;
@@ -23,64 +25,68 @@ public class ApplicationHelper {
 
 	@Autowired
 	RegistrationDao dao;
-	
+
+	@Autowired
+	private MosipGroupIdGenerator<String> groupIdGenerator;
+
 	public List<ResponseDto> Helper(ApplicationDto applications) {
-        boolean isFamily=false;
-        int age = 0;
+		boolean isFamily = false;
+		int age = 0;
+		String groupId = "";
 		List<ResponseDto> response = new ArrayList<>();
 		int noOfApplications = applications.getApplications().size();
 		if (noOfApplications == 1) {
-			// indivudual
-			response.add(registrationService.addRegistration(applications.getApplications().get(0),"Indivudual"));
-		} 
-		else if(noOfApplications>1) {
-            for(int i=0;i<noOfApplications;i++) {
-            	if(applications.getApplications().get(i).getIsPrimary()) {
-            		isFamily=true;
-            		age=applications.getApplications().get(i).getAge();
-            	}
-            }
-            if(isFamily) {
-            	if(age>=18) {
-            	for (RegistrationDto registartion : applications.getApplications()) {
-            	response.add(registrationService.addRegistration(registartion,"Family"));
-            	}
-            	}
-            	else {
-    				throw new PrimaryValidationFailed("Age criteria doesnot meet");
-    			}
-            }
-            else {
-            	for (RegistrationDto registartion : applications.getApplications()) {
-    				response.add(registrationService.addRegistration(registartion,"Friends"));
-    			}
-            }
 			
+			// indivudual
+			if(applications.getApplications().get(0).getAge()>=18) {
+
+			if (applications.getApplications().get(0).getGroupId().isEmpty()) {
+				groupId = groupIdGenerator.generateGroupId();
+			} else {
+				groupId = applications.getApplications().get(0).getGroupId();
+			}
+			response.add(registrationService.addRegistration(applications.getApplications().get(0), groupId));
+			}
+			else {
+				throw new PrimaryValidationFailed("Age criteria doesnot meet");
+			}
+		} else if (noOfApplications > 1) {
+			for (int i = 0; i < noOfApplications; i++) {
+				if (applications.getApplications().get(i).getIsPrimary()) {
+					isFamily = true;
+					age = applications.getApplications().get(i).getAge();
+				}
+			}
+			if (isFamily) {
+				if (age >= 18) {
+					if (applications.getApplications().get(0).getGroupId().isEmpty()) {
+						groupId = groupIdGenerator.generateGroupId();
+					} else {
+						groupId = applications.getApplications().get(0).getGroupId();
+					}
+					for (RegistrationDto registartion : applications.getApplications()) {
+
+						response.add(registrationService.addRegistration(registartion, groupId));
+					}
+				} else {
+					throw new PrimaryValidationFailed("Age criteria doesnot meet");
+				}
+			} else {
+				if (applications.getApplications().get(0).getGroupId().isEmpty()) {
+					groupId = groupIdGenerator.generateGroupId();
+				} else {
+					groupId = applications.getApplications().get(0).getGroupId();
+				}
+				for (RegistrationDto registartion : applications.getApplications()) {
+					response.add(registrationService.addRegistration(registartion, groupId));
+				}
+			}
+
 		}
-		
-//		else if (applications.getApplications().get(0).getIsPrimary()) {
-//			// group with family
-//			if (applications.getApplications().get(0).getAge() >= 18) {
-//				for (RegistrationDto registartion : applications.getApplications()) {
-//
-//					response.add(registrationService.addRegistration(registartion));
-//				}
-//			} else {
-//				throw new PrimaryValidationFailed("Age criteria doesnot meet");
-//			}
-//
-//		} else {
-//			// group with friends
-//
-//			for (RegistrationDto registartion : applications.getApplications()) {
-//				response.add(registrationService.addRegistration(registartion));
-//			}
-//		}
 
 		return response;
 	}
 
-	
 	public void test(String id) {
 		dao.findById(id);
 	}

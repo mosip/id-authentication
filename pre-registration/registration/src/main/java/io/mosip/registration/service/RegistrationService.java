@@ -10,7 +10,7 @@ public interface RegistrationService<T, U> {
 
 	public U getRegistration(T userId);
 
-	public ResponseDto addRegistration(U registrationDto, String Type);
+	public ResponseDto addRegistration(U registrationDto, String groupId);
 
 	public void updateRegistration(U registrationDto);
 

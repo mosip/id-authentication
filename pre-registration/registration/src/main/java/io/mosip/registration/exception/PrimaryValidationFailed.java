@@ -12,10 +12,10 @@ public class PrimaryValidationFailed extends BaseUncheckedException {
 	}
 
 	public PrimaryValidationFailed(String message) {
-		super(RegistrationErrorCodes.IIS_EPU_ATU_REGISTRATION_TABLE_NOTACCESSIBLE, message);
+		super(RegistrationErrorCodes.AGE_CRITERIA_DOESNOT_MET , message);
 	}
 
 	public PrimaryValidationFailed(String message, Throwable cause) {
-		super(RegistrationErrorCodes.IIS_EPU_ATU_REGISTRATION_TABLE_NOTACCESSIBLE + EMPTY_SPACE, message, cause);
+		super(RegistrationErrorCodes.AGE_CRITERIA_DOESNOT_MET  + EMPTY_SPACE, message, cause);
 	}
 }

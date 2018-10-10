@@ -14,6 +14,7 @@ import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.core.spi.idgenerator.MosipPridGenerator;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.code.AuditLogTempConstant;
+import io.mosip.registration.code.FormType;
 import io.mosip.registration.dao.RegistrationDao;
 import io.mosip.registration.dto.AddressDto;
 import io.mosip.registration.dto.ContactDto;
@@ -45,11 +46,6 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	@Autowired
 	private MosipPridGenerator<String> pridGenerator;
 
-	@Autowired
-	private MosipGroupIdGenerator<String> groupIdGenerator;
-
-	private String groupID;
-
 	@Override
 	public RegistrationDto getRegistration(String userID) {
 
@@ -60,66 +56,45 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	}
 
 	@Override
-	public ResponseDto addRegistration(RegistrationDto registrationDto,String type) {
+	public ResponseDto addRegistration(RegistrationDto registrationDto, String groupId) {
 		RegistrationEntity entity = convertDtoToEntity(registrationDto);
-		ResponseDto response= new ResponseDto();
+		ResponseDto response = new ResponseDto();
 
-		 if(registrationDto.getPreRegistrationId().isEmpty()) {
-			 
-			 if(type.equalsIgnoreCase("Family")) {
-				 if(registrationDto.getIsPrimary()) {
-					 String prid= pridGenerator.generateId();
-					   groupID= groupIdGenerator.generateGroupId();
-					   entity.setPreRegistrationId(prid);
-					   entity.setGroupId(groupID); 
-				 }
-			 else {
-				   String prid= pridGenerator.generateId();
-				   entity.setPreRegistrationId(prid);
-				   entity.setGroupId(groupID);
-			 }
-			 }
-				 else {
-					 if(type.equalsIgnoreCase("Friends")) {
-							 String prid= pridGenerator.generateId();
-							   groupID= groupIdGenerator.generateGroupId();
-							   entity.setPreRegistrationId(prid);
-							   entity.setGroupId(groupID); 
-				 }
-				 }
-			 try {
-				 registrationDao.save(entity);
-			 } catch (DataAccessLayerException e) {
-					throw new TablenotAccessibleException("Could not add Information to table", e);
-				} 
-		  
-		 }
-		 else
-		 {			 
-			 try {
-				 registrationDao.save(entity);
-			 } catch (DataAccessLayerException e) {
-					throw new TablenotAccessibleException("Could not add Information to table", e);
-				} 
-		 }
-		
+		if (registrationDto.getPreRegistrationId().isEmpty()) {
+			String prid = pridGenerator.generateId();
+			entity.setPreRegistrationId(prid);
+			entity.setGroupId(groupId);
+			try {
+				registrationDao.save(entity);
+			} catch (DataAccessLayerException e) {
+				throw new TablenotAccessibleException("Could not add Information to table", e);
+			}
+
+		} else {
+			try {
+				registrationDao.save(entity);
+			} catch (DataAccessLayerException e) {
+				throw new TablenotAccessibleException("Could not add Information to table", e);
+			}
+		}
+
 		// createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
 		// AuditLogTempConstant.APPLICATION_NAME.toString(), "",
 		// AuditLogTempConstant.EVENT_ID.toString(),
 		// AuditLogTempConstant.EVENT_TYPE.toString(),
 		// AuditLogTempConstant.EVENT_TYPE.toString());
-		 
-		 
-		 response.setPrId(entity.getPreRegistrationId());
-		 response.setCreateDateTime(entity.getCreateDateTime());
-		 response.setCreatedBy(entity.getCreatedBy());
-		 response.setGroupId(entity.getGroupId());
-		 response.setIsPrimary(entity.getIsPrimary());
-		 response.setUpdateDateTime(entity.getUpdateDateTime());
-		 response.setUpdatedBy(entity.getUpdatedBy());
-		 return response;
+
+		response.setPrId(entity.getPreRegistrationId());
+		response.setCreateDateTime(entity.getCreateDateTime());
+		response.setCreatedBy(entity.getCreatedBy());
+		response.setGroupId(entity.getGroupId());
+		response.setIsPrimary(entity.getIsPrimary());
+		response.setUpdateDateTime(entity.getUpdateDateTime());
+		response.setUpdatedBy(entity.getUpdatedBy());
+		return response;
 
 	}
+
 
 	@Override
 	public void updateRegistration(RegistrationDto registrationDto) {
