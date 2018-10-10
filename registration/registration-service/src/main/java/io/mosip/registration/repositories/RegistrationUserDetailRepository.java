@@ -15,13 +15,13 @@ import io.mosip.registration.entity.RegistrationUserDetail;
  *
  */
 @Repository
-public interface RegistrationUserDetailRepository extends BaseRepository<RegistrationUserDetail, String>{
-	
+public interface RegistrationUserDetailRepository extends BaseRepository<RegistrationUserDetail, String> {
+
 	/**
 	 * This method returns the list of {@link RegistrationUserDetail} based on id
 	 * 
 	 * @param id
-	 * 		  the registration user id	
+	 *            the registration user id
 	 * @return the list of {@link RegistrationUserDetail}
 	 */
 

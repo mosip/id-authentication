@@ -6,7 +6,7 @@ import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.registration.entity.RegistrationUserPassword;
-import io.mosip.registration.entity.RegistrationUserPasswordID;
+import io.mosip.registration.entity.RegistrationUserPasswordId;
 
 /**
  * The repository interface for {@link RegistrationUserPassword} entity
@@ -16,15 +16,17 @@ import io.mosip.registration.entity.RegistrationUserPasswordID;
  *
  */
 @Repository
-public interface RegistrationUserPasswordRepository extends BaseRepository<RegistrationUserPassword, RegistrationUserPasswordID> {
-	
+public interface RegistrationUserPasswordRepository
+		extends BaseRepository<RegistrationUserPassword, RegistrationUserPasswordId> {
+
 	/**
-	 * This method returns the list of {@link RegistrationUserPassword} based on registrationUserPasswordID
+	 * This method returns the list of {@link RegistrationUserPassword} based on
+	 * registrationUserPasswordID
 	 * 
 	 * @param registrationUserPasswordID
-	 * 		  the registration user password composite key	
+	 *            the registration user password composite key
 	 * @return the list of {@link RegistrationUserPassword}
 	 */
 
-	List<RegistrationUserPassword> findByRegistrationUserPasswordID(RegistrationUserPasswordID registrationUserPasswordID);
+	List<RegistrationUserPassword> findByRegistrationUserPasswordIdUsrId(String usrId);
 }

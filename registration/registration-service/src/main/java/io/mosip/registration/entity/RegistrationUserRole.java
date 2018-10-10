@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import io.mosip.registration.entity.RegistrationCommonFields;
-import io.mosip.registration.entity.RegistrationUserRoleID;
+import io.mosip.registration.entity.RegistrationUserRoleId;
 
 /**
  * RegistrationUserRole entity details
@@ -14,17 +14,25 @@ import io.mosip.registration.entity.RegistrationUserRoleID;
  * @since 1.0.0
  */
 @Entity
-@Table(schema="reg", name = "user_role")
+@Table(schema = "reg", name = "user_role")
 public class RegistrationUserRole extends RegistrationCommonFields {
+
 	@EmbeddedId
-	RegistrationUserRoleID registrationUserRoleID;
+	RegistrationUserRoleId registrationUserRoleId;
 
-	public RegistrationUserRoleID getRegistrationUserRoleID() {
-		return registrationUserRoleID;
+	/**
+	 * @return the registrationUserRoleId
+	 */
+	public RegistrationUserRoleId getRegistrationUserRoleId() {
+		return registrationUserRoleId;
 	}
 
-	public void setRegistrationUserRoleID(RegistrationUserRoleID registrationUserRoleID) {
-		this.registrationUserRoleID = registrationUserRoleID;
+	/**
+	 * @param registrationUserRoleId
+	 *            the registrationUserRoleId to set
+	 */
+	public void setRegistrationUserRoleId(RegistrationUserRoleId registrationUserRoleId) {
+		this.registrationUserRoleId = registrationUserRoleId;
 	}
-	
+
 }

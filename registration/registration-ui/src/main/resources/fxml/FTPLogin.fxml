@@ -12,7 +12,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane prefHeight="582.0" prefWidth="577.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.PacketUploadController">
+<BorderPane fx:id="uploadPacketRoot" prefHeight="582.0" prefWidth="577.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.PacketUploadController">
 	<left>
 		<AnchorPane prefHeight="411.0" prefWidth="577.0">
 			<BorderPane.margin>

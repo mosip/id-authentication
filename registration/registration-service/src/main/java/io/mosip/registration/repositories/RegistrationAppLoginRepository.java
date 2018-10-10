@@ -6,7 +6,7 @@ import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.registration.entity.RegistrationAppLoginMethod;
-import io.mosip.registration.entity.RegistrationAppLoginMethodID;
+import io.mosip.registration.entity.RegistrationAppLoginMethodId;
 
 /**
  * The repository interface for {@link RegistrationAppLoginMethod} entity
@@ -16,10 +16,12 @@ import io.mosip.registration.entity.RegistrationAppLoginMethodID;
  *
  */
 @Repository
-public interface RegistrationAppLoginRepository extends BaseRepository<RegistrationAppLoginMethod, RegistrationAppLoginMethodID>{
-	
+public interface RegistrationAppLoginRepository
+		extends BaseRepository<RegistrationAppLoginMethod, RegistrationAppLoginMethodId> {
+
 	/**
-	 * This method returns the list of {@link RegistrationAppLoginMethod} based on status
+	 * This method returns the list of {@link RegistrationAppLoginMethod} based on
+	 * status
 	 * 
 	 * @return the list of {@link RegistrationAppLoginMethod}
 	 */

@@ -11,11 +11,11 @@ package io.mosip.registration.dao;
 public interface RegistrationUserPasswordDAO {
 	
 	/**
-	 * This method is used to get the User credentials
+	 * This method is used to get and validate the User credentials
 	 * 
-	 * @return String 
+	 * @return boolean 
 	 */
 	
-	public String getPassword(String userId, String hashPassword);
+	public boolean getPassword(String userId, String hashPassword);
 
 }

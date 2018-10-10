@@ -25,4 +25,8 @@ public class RegistrationUIConstants {
 	public static final String USERNAME_FIELD_ERROR="Please Enter Valid Username";
 	public static final String CENTER_ID = "centerId";
 	public static final String HH_MM_SS = "HH:mm:ss";
+
+	//Authorization Info
+	public static final String AUTHORIZATION_ALERT_TITLE = "Authorization Alert";
+	public static final String AUTHORIZATION_INFO_MESSAGE = "Authorization Information";
 }

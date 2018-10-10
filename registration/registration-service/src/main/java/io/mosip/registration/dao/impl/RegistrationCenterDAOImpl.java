@@ -1,10 +1,17 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.RegistrationCenter;
@@ -18,46 +25,55 @@ import io.mosip.registration.repositories.RegistrationCenterRepository;
  */
 @Repository
 public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
-	
+
+	/**
+	 * Instance of LOGGER
+	 */
+	private static MosipLogger LOGGER;
+
+	@Autowired
+	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
+		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
+	}
+
 	/** The registrationCenter repository. */
 	@Autowired
 	private RegistrationCenterRepository registrationCenterRepository;
-	
-	/* (non-Javadoc)
-	 * @see org.mosip.registration.dao.RegistrationCenterDAO#getCenterName(java.lang.String)
-	 */
-	public String getCenterName(String centerId) {
-		
-		String centerName = "";
-		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository.findById(centerId);
-		if(registrationCenter.isPresent()) {
-			centerName = registrationCenter.get().getCenterName();
-		}
-		
-		return centerName;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.mosip.registration.dao.RegistrationCenterDAO#getRegistrationCenterDetails(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.mosip.registration.dao.RegistrationCenterDAO#getRegistrationCenterDetails
+	 * (java.lang.String)
 	 */
 	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
-		
-		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository.findById(centerId); 
+
+		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Fetching Registration Center details");
+
+		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository
+				.findByRegistrationCenterIdCenterIdAndIsActiveTrue(centerId);
 		RegistrationCenterDetailDTO registrationCenterDetailDTO = new RegistrationCenterDetailDTO();
-		if(registrationCenter.isPresent()) {
-			registrationCenterDetailDTO.setRegistrationCenterCode(registrationCenter.get().getCenterId());
+		if (registrationCenter.isPresent()) {
+			registrationCenterDetailDTO
+					.setRegistrationCenterId(registrationCenter.get().getRegistrationCenterId().getCenterId());
+			registrationCenterDetailDTO.setRegistrationCenterName(registrationCenter.get().getCenterName());
+			registrationCenterDetailDTO.setRegsitrationCenterTypeCode(registrationCenter.get().getCntrTypCode());
 			registrationCenterDetailDTO.setRegistrationCenterAddrLine1(registrationCenter.get().getAddrLine1());
 			registrationCenterDetailDTO.setRegistrationCenterAddrLine2(registrationCenter.get().getAddrLine2());
 			registrationCenterDetailDTO.setRegistrationCenterAddrLine3(registrationCenter.get().getAddrLine3());
-			registrationCenterDetailDTO.setRegistrationCenterLocLine1(registrationCenter.get().getLocLine1());
-			registrationCenterDetailDTO.setRegistrationCenterLocLine2(registrationCenter.get().getLocLine2());
-			registrationCenterDetailDTO.setRegistrationCenterLocLine3(registrationCenter.get().getLocLine3());
-			registrationCenterDetailDTO.setRegistrationCenterLocLine4(registrationCenter.get().getLocLine4());
-			registrationCenterDetailDTO.setRegistrationCenterCountry(registrationCenter.get().getCountry());
-			registrationCenterDetailDTO.setRegistrationCenterLatitude(registrationCenter.get().getLatitude());
-			registrationCenterDetailDTO.setRegistrationCenterLongitude(registrationCenter.get().getLongitude());
-			registrationCenterDetailDTO.setRegistrationCenterPincode(registrationCenter.get().getPincode());
+			registrationCenterDetailDTO.setRegistrationLatitude(registrationCenter.get().getLatitude());
+			registrationCenterDetailDTO.setRegistrationLongitude(registrationCenter.get().getLongitude());
+			registrationCenterDetailDTO.setRegistrationCenterLocationCode(registrationCenter.get().getLocationCode());
+			registrationCenterDetailDTO
+					.setRegistrationCenterNumberOfStations(registrationCenter.get().getNumberOfStations());
+			registrationCenterDetailDTO.setRegistrationCenterWorkingHours(registrationCenter.get().getWorkingHours());
 		}
+
+		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", getPropertyValue(APPLICATION_NAME),
+				getPropertyValue(APPLICATION_ID), "Registration Center details fetched successfulyy");
+
 		return registrationCenterDetailDTO;
 	}
 

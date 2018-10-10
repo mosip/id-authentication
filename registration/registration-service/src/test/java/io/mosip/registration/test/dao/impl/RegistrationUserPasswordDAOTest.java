@@ -1,8 +1,16 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -10,57 +18,113 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import io.mosip.kernel.core.util.HMACUtils;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.dao.impl.RegistrationUserPasswordDAOImpl;
 import io.mosip.registration.entity.RegistrationUserPassword;
-import io.mosip.registration.entity.RegistrationUserPasswordID;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationUserPasswordRepository;
 
 public class RegistrationUserPasswordDAOTest {
-	
+
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
-	
+
+	@Mock
+	private MosipLogger logger;
+	private MosipRollingFileAppender mosipRollingFileAppender;
+
 	@InjectMocks
 	private RegistrationUserPasswordDAOImpl registrationUserPassworDAOImpl;
-	
+
 	@Mock
 	private RegistrationUserPasswordRepository registrationUserPasswordRepository;
+
 	
-	@Test 
+	@Before
+	public void initialize() {
+		mosipRollingFileAppender = new MosipRollingFileAppender();
+		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
+		mosipRollingFileAppender.setFileName("logs");
+		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
+		mosipRollingFileAppender.setMaxFileSize("1MB");
+		mosipRollingFileAppender.setTotalCap("10MB");
+		mosipRollingFileAppender.setMaxHistory(10);
+		mosipRollingFileAppender.setImmediateFlush(true);
+		mosipRollingFileAppender.setPrudent(true);
+		
+		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
+		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
+		ReflectionTestUtils.invokeMethod(registrationUserPassworDAOImpl, "initializeLogger", mosipRollingFileAppender);
+	}
+	
+	@Test
 	public void validateUserPasswordSuccessTest() {
-		RegistrationUserPasswordID registrationUserPasswordID = new RegistrationUserPasswordID();
-		String password = "mosip";
-		byte[] bytePassword = password.getBytes();
-		String hashPassword = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytePassword));
-		registrationUserPasswordID.setUsrId("mosip");
-		registrationUserPasswordID.setPwd(hashPassword);
+
+		ReflectionTestUtils.setField(registrationUserPassworDAOImpl, "LOGGER", logger);
+		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString());
+
 		List<RegistrationUserPassword> registrationUserPasswordList = new ArrayList<RegistrationUserPassword>();
-		RegistrationUserPassword registrationUserPassword = new RegistrationUserPassword();		
-		registrationUserPassword.setRegistrationUserPasswordID(registrationUserPasswordID);
+		RegistrationUserPassword registrationUserPassword = new RegistrationUserPassword();
+		registrationUserPassword.setPwd("Sravya");
 		registrationUserPasswordList.add(registrationUserPassword);
-		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordID(Mockito.anyObject())).thenReturn(registrationUserPasswordList);
-		
-		registrationUserPassworDAOImpl.getPassword("mosip", "E2E488ECAF91897D71BEAC2589433898414FEEB140837284C690DFC26707B262");
+		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordIdUsrId(Mockito.anyString()))
+				.thenReturn(registrationUserPasswordList);
+		assertFalse(registrationUserPasswordList.isEmpty());
+		String userData = registrationUserPasswordList.get(0).getPwd();
+		assertNotNull(userData);
+		assertEquals("Sravya", userData);
+		boolean result = true;
+		boolean res;
+		res = registrationUserPassworDAOImpl.getPassword("mosip", "Sravya");
+		assertEquals(result, res);
 	}
-	
-	@Test 
+
+	@Test
+	public void validateUserPasswordTest() {
+
+		ReflectionTestUtils.setField(registrationUserPassworDAOImpl, "LOGGER", logger);
+		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString());
+
+		List<RegistrationUserPassword> registrationUserPasswordList = new ArrayList<RegistrationUserPassword>();
+		RegistrationUserPassword registrationUserPassword = new RegistrationUserPassword();
+		registrationUserPassword.setPwd(null);
+		registrationUserPasswordList.add(registrationUserPassword);
+		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordIdUsrId(Mockito.anyString()))
+				.thenReturn(registrationUserPasswordList);
+		assertFalse(registrationUserPasswordList.isEmpty());
+		String userData = registrationUserPasswordList.get(0).getPwd();
+		assertNull(userData);
+		assertEquals(null, userData);
+		boolean result = false;
+		boolean res;
+		res = registrationUserPassworDAOImpl.getPassword("mosip", null);
+		assertEquals(result, res);
+	}
+
+	@Test
 	public void validateUserPasswordFailureTest() {
-		RegistrationUserPasswordID registrationUserPasswordID = new RegistrationUserPasswordID();
-		String password = "mosip";
-		byte[] bytePassword = password.getBytes();
-		String hashPassword = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytePassword));
-		registrationUserPasswordID.setUsrId("mosip");
-		registrationUserPasswordID.setPwd(hashPassword);
+
+		ReflectionTestUtils.setField(registrationUserPassworDAOImpl, "LOGGER", logger);
+		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString());
+
 		List<RegistrationUserPassword> registrationUserPasswordList = new ArrayList<RegistrationUserPassword>();
-		RegistrationUserPassword registrationUserPassword = new RegistrationUserPassword();		
-		registrationUserPassword.setRegistrationUserPasswordID(registrationUserPasswordID);
-		registrationUserPasswordList.add(registrationUserPassword);
-		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordID(Mockito.anyObject())).thenReturn(registrationUserPasswordList);
-		
-		registrationUserPassworDAOImpl.getPassword("mosip", "E2E488ECAF91897D71BEAC2589433898414FEEB1408372");
+
+		// registrationUserPasswordList.add(registrationUserPassword);
+		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordIdUsrId(Mockito.anyString()))
+				.thenReturn(registrationUserPasswordList);
+
+		assertTrue(registrationUserPasswordList.isEmpty());
+		boolean result = false;
+		boolean res;
+		res = registrationUserPassworDAOImpl.getPassword("mosip", "Sravya");
+		assertEquals(result, res);
 	}
-	
 
 }

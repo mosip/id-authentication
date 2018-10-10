@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="590.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationApprovalController">
+<AnchorPane fx:id="approveRegistrationRoot" prefHeight="590.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationApprovalController">
 	<children>
 		<Pagination fx:id="pagination" layoutX="25.0" layoutY="107.0" prefHeight="330.0" prefWidth="850.0" />
 		<TableView fx:id="table" layoutX="52.0" layoutY="116.0" prefHeight="250.0" prefWidth="800.0">

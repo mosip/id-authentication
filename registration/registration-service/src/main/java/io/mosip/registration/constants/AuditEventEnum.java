@@ -24,7 +24,16 @@ public enum AuditEventEnum {
 	PACKET_META_JSON_CREATED("PKT_MDJ", "Packet Meta Data JSON", "Packet Meta-Data JSON created successfully"),
 	PACKET_AUDIT_JSON_CREATED("PKT_AUD", "Packet Audit JSON", "Packet Audit JSON created successfully"),
 	PACKET_AES_ENCRYPTED("PKT_AES", "AES Encrypted","Packet Encrypted Sucessfully"),
-	UI_SCHEDULER_STARTED("PKT_SCH", "Scheduler","Scheduler started Sucessfully");
+	UI_SCHEDULER_STARTED("PKT_SCH", "Scheduler","Scheduler started Sucessfully"),
+	//Login and User related
+	LOGIN_MODES_FETCH("LGN_MOD","Login Modes","Fetching Login Modes"),
+	USER_STATUS_FETCH("USR_STS","User Status","Fetching User Status"),
+	VALIDATE_USER_CRED("VLD_USR","Validate User","Validating User credentials"),
+	FETCH_USR_DET("USR_DTL","User Detail","Fetching User Details"),
+	FETCH_CNTR_NAME("CNT_NME","Center Name","Fetching Center Name"),
+	FETCH_CNTR_DET("CNT_DET","Center Details","Fetching Center Details"),
+	FETCH_USR_ROLE("USR_RLE","User Roles","Fetching User Roles"),
+	FETCH_SCR_AUTH("SCR_ATH","Screen AUthorization","Fetching screens to be authorized");
 	
 	/**
 	 * The constructor

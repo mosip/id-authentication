@@ -3,9 +3,9 @@ package io.mosip.registration.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
-import io.mosip.registration.controller.RegistrationAppInitialization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -46,9 +46,9 @@ public class BaseController {
 
 	@Value("${REFRESHED_LOGIN_TIME}")
 	private long refreshedLoginTime;
-	
+
 	protected static Stage stage;
-	
+
 	/**
 	 * Adding events to the stage
 	 * 
@@ -66,7 +66,7 @@ public class BaseController {
 	}
 
 	/**
-	 * Loading FXML files along with beans 
+	 * Loading FXML files along with beans
 	 * 
 	 * @return
 	 */
@@ -137,31 +137,54 @@ public class BaseController {
 
 	/**
 	 * Setting values for Session context and User context
-	 * 
-	 * @return
 	 */
 	protected void setSessionContext(String userId) {
-		
+
 		Map<String, String> userDetail = loginServiceImpl.getUserDetail(userId);
 
 		userDTO.setUsername(userDetail.get("name"));
 		userDTO.setUserId(userId);
-		userDTO.setCenterId(userDetail.get(RegistrationUIConstants.CENTER_ID));
-		userDTO.setCenterLocation(loginServiceImpl.getCenterName(userDetail.get(RegistrationUIConstants.CENTER_ID)));
+		userDTO.setCenterId(userDetail.get(RegistrationUIConstants.CENTER_ID));		
 
 		SessionContext sessionContext = SessionContext.getInstance();
 
 		sessionContext.setLoginTime(new Date());
 		sessionContext.setRefreshedLoginTime(refreshedLoginTime);
-		sessionContext.setIdealTime(timeoutInterval);
-		sessionContext.setTimeoutInterval(idealTime);
+		sessionContext.setIdealTime(idealTime);
+		sessionContext.setTimeoutInterval(timeoutInterval);
 		SessionContext.UserContext userContext = sessionContext.getUserContext();
 		userContext.setUserId(userId);
 		userContext.setName(userDetail.get("name"));
+		userContext.setRoles(loginServiceImpl.getRoles(userId));
 		userContext.setRegistrationCenterDetailDTO(
 				loginServiceImpl.getRegistrationCenterDetails(userDetail.get(RegistrationUIConstants.CENTER_ID)));
-		userContext.setRoles(loginServiceImpl.getRoles(userId));
 		
+		userDTO.setCenterLocation(userContext.getRegistrationCenterDetailDTO().getRegistrationCenterName());
+		
+		String userRole = "";
+		if (!userContext.getRoles().isEmpty()) {
+			userRole = userContext.getRoles().get(0);
+		}
+		userContext.setAuthorizationDTO(loginServiceImpl.getScreenAuthorizationDetails(userRole));
+
+	}
+
+	/**
+	 * Validating Id for Screen Authorization
+	 * 
+	 * @param screenId
+	 *            the screenId
+	 * @return boolean
+	 */
+	protected boolean validateScreenAuthorization(String screenId) {
+		List<String> authList = SessionContext.getInstance().getUserContext().getAuthorizationDTO()
+				.getAuthorizationScreenId();
+
+		boolean result = false;
+		if (authList != null) {
+			result = authList.contains(screenId);
+		}
+		return result;
 	}
 
 }

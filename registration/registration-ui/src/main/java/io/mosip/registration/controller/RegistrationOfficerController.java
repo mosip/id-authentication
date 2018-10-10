@@ -20,6 +20,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+/**
+ * Class for Home Page 
+ * 
+ * @author Sravya Surampalli
+ * @since 1.0.0
+ *
+ */
 @Component
 public class RegistrationOfficerController extends BaseController implements Initializable {
 	/**
@@ -31,27 +38,33 @@ public class RegistrationOfficerController extends BaseController implements Ini
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
 		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
 	}
-	
+
 	@FXML
-	VBox mainBox;	
-	
+	VBox mainBox;
+
 	/**
 	 * Building Home screen on Login success
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		try {	
+		try {
+
+			LOGGER.debug("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT", getPropertyValue(APPLICATION_NAME),
+					getPropertyValue(APPLICATION_ID), "Constructing Registration Home Page");
+
 			HBox headerRoot = BaseController.load(getClass().getResource("/fxml/Header.fxml"));
 			mainBox.getChildren().add(headerRoot);
 			AnchorPane updateRoot = BaseController.load(getClass().getResource("/fxml/UpdateLayout.fxml"));
 			mainBox.getChildren().add(updateRoot);
-			AnchorPane optionRoot = BaseController.load(getClass().getResource("/fxml/RegistrationOfficerPacketLayout.fxml"));
+			AnchorPane optionRoot = BaseController
+					.load(getClass().getResource("/fxml/RegistrationOfficerPacketLayout.fxml"));
 			mainBox.getChildren().add(optionRoot);
-			
-			RegistrationAppInitialization.getScene().setRoot(mainBox);			
-			ClassLoader loader = Thread.currentThread().getContextClassLoader(); 
-			RegistrationAppInitialization.getScene().getStylesheets().add(loader.getResource("application.css").toExternalForm());
-			
+
+			RegistrationAppInitialization.getScene().setRoot(mainBox);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			RegistrationAppInitialization.getScene().getStylesheets()
+					.add(loader.getResource("application.css").toExternalForm());
+
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT", getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), ioException.getMessage());
@@ -59,7 +72,5 @@ public class RegistrationOfficerController extends BaseController implements Ini
 			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT - VIEW", getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), runtimeException.getMessage());
 		}
-	}	
+	}
 }
-
-	

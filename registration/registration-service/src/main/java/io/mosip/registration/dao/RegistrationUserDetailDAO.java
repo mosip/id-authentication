@@ -20,7 +20,13 @@ public interface RegistrationUserDetailDAO {
 	
 	public Map<String,String> getUserDetail(String userId);
 	
-	public String getBlockedUserCheck(String userId);
+	/**
+	 * This method is used to check the user status
+	 * 
+	 * @return String user status
+	 */
+	
+	public String getUserStatus(String userId);
 
 }
 

@@ -68,9 +68,10 @@ public class RegistrationAppInitialization extends Application {
 
 		LoginController loginController = applicationContext.getBean(LoginController.class);
 		String loginMode = loginController.loadInitialScreen();
-		
+
 		try {
 			BorderPane loginRoot = BaseController.load(getClass().getResource("/fxml/RegistrationLogin.fxml"));
+
 			if (loginMode.equals(RegistrationUIConstants.OTP)) {
 				AnchorPane loginType = BaseController.load(getClass().getResource("/fxml/LoginWithOTP.fxml"));
 				loginRoot.setCenter(loginType);
@@ -78,6 +79,7 @@ public class RegistrationAppInitialization extends Application {
 				AnchorPane loginType = BaseController.load(getClass().getResource("/fxml/LoginWithCredentials.fxml"));
 				loginRoot.setCenter(loginType);
 			}
+
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			scene = new Scene(loginRoot, 950, 630);
 			scene.getStylesheets().add(loader.getResource("application.css").toExternalForm());

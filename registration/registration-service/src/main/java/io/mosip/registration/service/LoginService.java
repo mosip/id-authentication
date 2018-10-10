@@ -3,6 +3,7 @@ package io.mosip.registration.service;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 
@@ -14,7 +15,7 @@ import io.mosip.registration.dto.ResponseDTO;
  *
  */
 public interface LoginService {
-	
+
 	/**
 	 * get login modes
 	 * 
@@ -23,12 +24,21 @@ public interface LoginService {
 	Map<String, Object> getModesOfLogin();
 
 	/**
+	 * validating userstatus
+	 * 
+	 * @param userId
+	 *            entered userId
+	 * @return String userstatus
+	 */
+	String getUserStatus(String userId);
+
+	/**
 	 * validating user credentials
 	 * 
 	 * @param userId
-	 * 		  entered userId
+	 *            entered userId
 	 * @param hashPassword
-	 * 		  entered password with hashing		
+	 *            entered password with hashing
 	 * @return boolean true or false
 	 */
 	boolean validateUserPassword(String userId, String hashPassword);
@@ -37,25 +47,16 @@ public interface LoginService {
 	 * fetching user details
 	 * 
 	 * @param userId
-	 * 		  entered userId 		
+	 *            entered userId
 	 * @return map with user details
 	 */
 	Map<String, String> getUserDetail(String userId);
 
 	/**
-	 * fetching registration center name
-	 * 
-	 * @param centerId
-	 * 		  centerId corresponding to entered userId
-	 * @return String center name
-	 */
-	String getCenterName(String centerId);
-
-	/**
 	 * fetching registration center details
 	 * 
 	 * @param centerId
-	 * 		  centerId corresponding to entered userId
+	 *            centerId corresponding to entered userId
 	 * @return RegistrationCenterDetailDTO center details
 	 */
 	RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId);
@@ -64,12 +65,19 @@ public interface LoginService {
 	 * fetching registration user roles
 	 * 
 	 * @param userId
-	 * 		  entered userId 		
-	 * @return List of user roles
+	 *            entered userId
+	 * @return String userRole
 	 */
 	List<String> getRoles(String userId);
-	
-	String getBlockedUserCheck(String userId);
+
+	/**
+	 * fetching registration screen authorization details
+	 * 
+	 * @param userId
+	 *            entered userId
+	 * @return AuthorizationDTO authorization details
+	 */
+	AuthorizationDTO getScreenAuthorizationDetails(String userId);
 
 	/**
 	 * get otp
@@ -79,7 +87,6 @@ public interface LoginService {
 	 * @return Response success or Error
 	 */
 	public ResponseDTO getOTP(String key);
-
 
 	/**
 	 * OTP validation entered by user
