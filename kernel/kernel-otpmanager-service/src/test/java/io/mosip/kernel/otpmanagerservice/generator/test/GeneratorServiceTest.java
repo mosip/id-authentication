@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanagerservice.generator;
+package io.mosip.kernel.otpmanagerservice.generator.test;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;

@@ -34,16 +34,21 @@ public class AuditUtils {
 	 *            The audit request
 	 */
 	public static void validateAuditRequest(AuditRequestDto auditRequest) {
+		ValidatorFactory factory = null;
+		try {
+			factory = Validation.buildDefaultValidatorFactory();
+			Validator validator = factory.getValidator();
 
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
+			Set<ConstraintViolation<AuditRequestDto>> violations = validator.validate(auditRequest);
 
-		Set<ConstraintViolation<AuditRequestDto>> violations = validator.validate(auditRequest);
-
-		if (!violations.isEmpty()) {
-			throw new MosipAuditManagerException(AuditErrorCodes.HANDLEREXCEPTION.getErrorCode(),
-					AuditErrorCodes.HANDLEREXCEPTION.getErrorMessage());
+			if (!violations.isEmpty()) {
+				throw new MosipAuditManagerException(AuditErrorCodes.HANDLEREXCEPTION.getErrorCode(),
+						AuditErrorCodes.HANDLEREXCEPTION.getErrorMessage());
+			}
+		} finally {
+			if (factory != null) {
+				factory.close();
+			}
 		}
-		factory.close();
 	}
 }

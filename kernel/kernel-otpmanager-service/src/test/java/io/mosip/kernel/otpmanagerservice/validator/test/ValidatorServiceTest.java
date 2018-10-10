@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanagerservice.validator;
+package io.mosip.kernel.otpmanagerservice.validator.test;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;

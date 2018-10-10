@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanagerapi.generator;
+package io.mosip.kernel.otpmanagerservice.generator;
 
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -6,11 +6,10 @@ import java.util.ResourceBundle;
 import org.kamranzafar.otp.provider.TOTPProvider;
 
 import io.mosip.kernel.core.spi.otpmanager.OtpGenerator;
-
-import io.mosip.kernel.otpmanagerapi.constant.OtpCryptoConstants;
-import io.mosip.kernel.otpmanagerapi.constant.OtpErrorConstants;
-import io.mosip.kernel.otpmanagerapi.constant.OtpPropertyConstants;
-import io.mosip.kernel.otpmanagerapi.exception.MosipResourceNotFoundException;
+import io.mosip.kernel.otpmanagerservice.constant.OtpCryptoConstants;
+import io.mosip.kernel.otpmanagerservice.constant.OtpErrorConstants;
+import io.mosip.kernel.otpmanagerservice.constant.OtpPropertyConstants;
+import io.mosip.kernel.otpmanagerservice.exception.MosipResourceNotFoundException;
 
 /**
  * This class provides the implementation for OTP Generation.

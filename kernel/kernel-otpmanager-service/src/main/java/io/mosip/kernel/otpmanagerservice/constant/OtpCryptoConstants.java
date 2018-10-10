@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanagerapi.constant;
+package io.mosip.kernel.otpmanagerservice.constant;
 
 /**
  * This enum defines the constants that holds the crypto properties.

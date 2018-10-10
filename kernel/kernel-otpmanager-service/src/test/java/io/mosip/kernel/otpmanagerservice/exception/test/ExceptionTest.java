@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanagerservice.exception;
+package io.mosip.kernel.otpmanagerservice.exception.test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;

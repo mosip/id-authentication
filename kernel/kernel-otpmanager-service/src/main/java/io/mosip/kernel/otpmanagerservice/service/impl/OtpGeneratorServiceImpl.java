@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.spi.otpmanager.OtpGenerator;
-import io.mosip.kernel.otpmanagerapi.generator.OtpGeneratorImpl;
 import io.mosip.kernel.otpmanagerservice.constant.OtpErrorConstants;
 import io.mosip.kernel.otpmanagerservice.constant.OtpExpiryConstants;
 import io.mosip.kernel.otpmanagerservice.constant.OtpStatusConstants;
@@ -19,6 +18,7 @@ import io.mosip.kernel.otpmanagerservice.dto.OtpGeneratorResponseDto;
 import io.mosip.kernel.otpmanagerservice.entity.OtpEntity;
 import io.mosip.kernel.otpmanagerservice.exceptionhandler.MosipErrors;
 import io.mosip.kernel.otpmanagerservice.exceptionhandler.MosipResourceNotFoundExceptionHandler;
+import io.mosip.kernel.otpmanagerservice.generator.OtpGeneratorImpl;
 import io.mosip.kernel.otpmanagerservice.repository.OtpRepository;
 import io.mosip.kernel.otpmanagerservice.service.OtpGeneratorService;
 import io.mosip.kernel.otpmanagerservice.util.OtpManagerUtils;

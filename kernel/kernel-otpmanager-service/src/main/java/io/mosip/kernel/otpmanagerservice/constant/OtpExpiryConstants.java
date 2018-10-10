@@ -9,7 +9,7 @@ package io.mosip.kernel.otpmanagerservice.constant;
  *
  */
 public enum OtpExpiryConstants {
-	OTP_PROPERTIES_FILE_NAME("otp-service"), OTP_EXPIRY_TIME_LIMIT("mosip.otp.expiry.time"), USER_FREEZE_DURATION(
+	OTP_PROPERTIES_FILE_NAME("otp"), OTP_EXPIRY_TIME_LIMIT("mosip.otp.expiry.time"), USER_FREEZE_DURATION(
 			"mosip.key.freeze.time"), ALLOWED_NUMBER_OF_ATTEMPTS(
 					"mosip.validation.attempt.count"), DEFAULT_NUM_OF_ATTEMPT(0);
 
