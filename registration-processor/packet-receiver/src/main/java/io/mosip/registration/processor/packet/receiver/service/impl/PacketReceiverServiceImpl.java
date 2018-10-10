@@ -58,7 +58,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 			String registrationId = file.getOriginalFilename().split("\\.")[0];
 			if (!(isDuplicatePacket(registrationId))) {
 				try {
-					fileManager.put(file.getOriginalFilename(), file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
+					fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
+
 					RegistrationStatusDto dto = new RegistrationStatusDto();
 					dto.setRegistrationId(registrationId);
 					dto.setRegistrationType(RegistrationType.NEW.toString());
