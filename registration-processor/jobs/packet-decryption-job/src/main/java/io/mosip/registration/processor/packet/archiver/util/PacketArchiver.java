@@ -64,7 +64,7 @@ public class PacketArchiver {
 
 		if (encryptedpacket != null) {
 			try {
-				filemanager.put(getFileName(registrationId), encryptedpacket, DirectoryPathDto.ARCHIVE_LOCATION);
+				filemanager.put(registrationId, encryptedpacket, DirectoryPathDto.ARCHIVE_LOCATION);
 				description = "description--The file is successfully copied to VM";
 			} catch (IOException e) {
 				description = "description--Unable to access the File path";
@@ -122,17 +122,6 @@ public class PacketArchiver {
 
 		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
 		auditHandler.writeAudit(auditRequestDto);
-	}
-
-	/**
-	 * Gets the file name.
-	 *
-	 * @param id
-	 *            the id
-	 * @return the file name
-	 */
-	public String getFileName(String id) {
-		return id + ".zip";
 	}
 
 }

@@ -30,7 +30,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 	@Value("${packet.ext}")
 	private String extention;
-	
+
 	@Value("${FTP_ZONE}")
 	private String path;
 
@@ -58,7 +58,8 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	 */
 	@Override
 	public void put(String fileName, InputStream file, DirectoryPathDto workingDirectory) throws IOException {
-		File destinationDirectory = new File(env.getProperty(workingDirectory.toString()) + File.separator + fileName);
+		File destinationDirectory = new File(
+				env.getProperty(workingDirectory.toString()) + File.separator + getFileName(fileName));
 		FileUtils.copyToFile(file, destinationDirectory);
 	}
 
@@ -155,47 +156,53 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		}
 
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see io.mosip.idissuance.packet.manager.service.FileManager#getCurrentDirectory()
+	 * 
+	 * @see
+	 * io.mosip.idissuance.packet.manager.service.FileManager#getCurrentDirectory()
 	 */
-		@Override
-		public String getCurrentDirectory() {
-			return path;
-		}
+	@Override
+	public String getCurrentDirectory() {
+		return path;
+	}
 
-		/*
-		 * (non-Javadoc)
-		 * @see io.mosip.idissuance.packet.manager.service.FileManager#cleanUpFile(java.lang.Object, java.lang.Object, java.lang.String, java.lang.String)
-		 */
-		@Override
-		public void cleanUpFile(DirectoryPathDto srcFolderLoc, DirectoryPathDto destFolderLoc, String fileName,
-				String childFolderName) {
-			boolean fileExistsInDestination = false;
-			boolean fileExistsInSource = false;
-			try {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.idissuance.packet.manager.service.FileManager#cleanUpFile(java.lang.
+	 * Object, java.lang.Object, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void cleanUpFile(DirectoryPathDto srcFolderLoc, DirectoryPathDto destFolderLoc, String fileName,
+			String childFolderName) {
+		boolean fileExistsInDestination = false;
+		boolean fileExistsInSource = false;
+		try {
 
-				fileExistsInDestination = (boolean) checkIfFileExists(destFolderLoc, fileName);
-				if (fileExistsInDestination) {
+			fileExistsInDestination = (boolean) checkIfFileExists(destFolderLoc, fileName);
+			if (fileExistsInDestination) {
 
-					fileExistsInSource = (boolean) checkIfFileExists(srcFolderLoc, childFolderName + File.separator+ fileName);
-					if (fileExistsInSource) {
-						delete(srcFolderLoc, childFolderName + File.separator + fileName);
-					} else {
-						throw new FileNotFoundInSourceException(FILE_NOT_FOUND_IN_SOURCE);
-
-					}
+				fileExistsInSource = (boolean) checkIfFileExists(srcFolderLoc,
+						childFolderName + File.separator + fileName);
+				if (fileExistsInSource) {
+					delete(srcFolderLoc, childFolderName + File.separator + fileName);
 				} else {
-					throw new FileNotFoundInDestinationException(FILE_NOT_FOUND_IN_DESTINATION);
+					throw new FileNotFoundInSourceException(FILE_NOT_FOUND_IN_SOURCE);
 
 				}
-			} catch (IOException e) {
-				logger.error(e.getMessage());
-				throw new FilePathNotAccessibleException(FILE_PATH_NOT_ACCESSIBLE);
+			} else {
+				throw new FileNotFoundInDestinationException(FILE_NOT_FOUND_IN_DESTINATION);
 
 			}
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+			throw new FilePathNotAccessibleException(FILE_PATH_NOT_ACCESSIBLE);
 
 		}
+
+	}
 
 }
