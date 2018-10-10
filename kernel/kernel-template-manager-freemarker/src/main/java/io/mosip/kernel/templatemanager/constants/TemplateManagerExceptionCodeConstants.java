@@ -1,16 +1,17 @@
 package io.mosip.kernel.templatemanager.constants;
 
 /**
+ * exception constants for template manager
  * 
  * @author Abhishek Kumar
  * @since 2018-10-3
  * @version 1.0.0
  */
 public enum TemplateManagerExceptionCodeConstants {
-	TEMPLATE_NOT_FOUND("1111111111", "Template resource Could Not Found."), TEMPLATE_PARSING("333333333",
-			"exception occurs during template processing"), TEMPLATE_CONFIGURATION_INVALID_DIR("22222222",
-					"Invalid template resource directory"),
-	TEMPLATE_WRITER_EXCEPTION("5555555","an exception occurs during writing to the writer");
+	TEMPLATE_NOT_FOUND("KER-TEM-005", "Template resource not found"), TEMPLATE_PARSING("KER-TEM-004",
+			"Exception occured during template processing"), TEMPLATE_CONFIGURATION_INVALID_DIR("KER-TEM-002",
+					"Invalid template resource directory"), TEMPLATE_WRITER_EXCEPTION("KER-TEM-003",
+							"An exception occurs during writing to the writer");
 	/**
 	 * This variable holds the error code.
 	 */
@@ -22,7 +23,7 @@ public enum TemplateManagerExceptionCodeConstants {
 	private String errorMessage;
 
 	/**
-	 * Constructor for TemplateManagerConstants Enum.
+	 * Constructor for MosipTemplateManagerExceptionCodeConstants Enum.
 	 * 
 	 * @param errorCode
 	 *            the error code.

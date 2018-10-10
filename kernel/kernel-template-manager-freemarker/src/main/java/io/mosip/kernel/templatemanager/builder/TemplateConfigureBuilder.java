@@ -12,7 +12,14 @@ import io.mosip.kernel.templatemanager.constants.TemplateManagerExceptionCodeCon
 import io.mosip.kernel.templatemanager.exception.TemplateConfigurationException;
 import io.mosip.kernel.templatemanager.impl.TemplateManagerImpl;
 import lombok.Getter;
-
+/**
+ * TemplateConfigureBuilder will build the @See {@link MosipTemplateManager}
+ * with the configuration either custom or default.
+ * 
+ * @author Abhishek Kumar
+ * @since 2018-10-5
+ * @version 1.0.0
+ */
 @Getter
 public class TemplateConfigureBuilder {
 	private static final String FILE = "file";
@@ -21,27 +28,47 @@ public class TemplateConfigureBuilder {
 	private String templatePath = ".";
 	private boolean cache = true;
 	private String defaultEncoding = "UTF-8";
-
+	
+	/**
+	 * method for overriding the resourceloader, default is file and classpath
+	 * 
+	 * @param resourceLoader
+	 */
 	public TemplateConfigureBuilder resourceLoader(String resourceLoader) {
 		this.resourceLoader = resourceLoader;
 		return this;
 	}
-
+	/**
+	 * method for overriding the template location
+	 * 
+	 * @param templatePath
+	 */
 	public TemplateConfigureBuilder resourcePath(String templatePath) {
 		this.templatePath = templatePath;
 		return this;
 	}
 
+	/**
+	 * method to disable or enable cache
+	 * @param cache
+	 */
 	public TemplateConfigureBuilder enableCache(boolean cache) {
 		this.cache = cache;
 		return this;
 	}
-
+	/**
+	 * method for setting up encoding type 
+	 * @param defaultEncoding
+	 * @return
+	 */
 	public TemplateConfigureBuilder encodingType(String defaultEncoding) {
 		this.defaultEncoding = defaultEncoding;
 		return this;
 	}
-
+	/**
+	 * method to build the @see {@link MosipTemplateManager} with required configuration
+	 * @return {@link MosipTemplateManager}
+	 */
 	public MosipTemplateManager build() {
 		Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
 		configuration.setDefaultEncoding(defaultEncoding);

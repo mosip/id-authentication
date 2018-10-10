@@ -27,26 +27,49 @@ public class TemplateConfigureBuilder {
 	private boolean cache = Boolean.TRUE;
 	private String defaultEncoding = StandardCharsets.UTF_8.name();
 
+	/**
+	 * method for overriding the resourceloader, default is file and classpath
+	 * 
+	 * @param resourceLoader
+	 */
 	public TemplateConfigureBuilder resourceLoader(String resourceLoader) {
 		this.resourceLoader = resourceLoader;
 		return this;
 	}
 
+	/**
+	 * method for overriding the template location
+	 * 
+	 * @param templatePath
+	 */
 	public TemplateConfigureBuilder resourcePath(String templatePath) {
 		this.templatePath = templatePath;
 		return this;
 	}
 
+	/**
+	 * method to disable or enable cache
+	 * @param cache
+	 */
 	public TemplateConfigureBuilder enableCache(boolean cache) {
 		this.cache = cache;
 		return this;
 	}
-
+	
+	/**
+	 * method for setting up encoding type 
+	 * @param defaultEncoding
+	 * @return
+	 */
 	public TemplateConfigureBuilder encodingType(String defaultEncoding) {
 		this.defaultEncoding = defaultEncoding;
 		return this;
 	}
 
+	/**
+	 * method to build the @see {@link MosipTemplateManager} with required configuration
+	 * @return {@link MosipTemplateManager}
+	 */
 	public MosipTemplateManager build() {
 		final Properties properties = new Properties();
 		properties.put(RuntimeConstants.INPUT_ENCODING, defaultEncoding);

@@ -22,13 +22,14 @@ import io.mosip.kernel.templatemanager.exception.TemplateParsingException;
 import io.mosip.kernel.templatemanager.exception.TemplateResourceNotFoundException;
 
 /**
- * Mosip Template Manager wrap the template with values and return back
+ * Implementation of @See {@link MosipTemplateManager} which uses Apache Freemarker
+ * Template Engine internaly. TemplateManagerImpl will merge the template with
+ * values.
  * 
  * @author Abhishek Kumar
- * @since 2018-10-03
  * @version 1.0
+ * @since 2018-10-01
  */
-
 public class TemplateManagerImpl implements MosipTemplateManager {
 	private Configuration configuration;
 
@@ -37,6 +38,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	}
 
 	/**
+	 * method to merge template , where template content will be pass as inputSteam
 	 * @param data
 	 *            as InputStream
 	 * @param values
@@ -48,8 +50,9 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 		Reader reader = null;
 		Template template = null;
 		StringWriter writer = new StringWriter();
-		Objects.requireNonNull(data, NullParamMessageConstant.TEMPLATE_INPUT_STREAM.getMessage());
-		Objects.requireNonNull(values, NullParamMessageConstant.TEMPLATE_VALUES.getMessage());
+		
+		Objects.requireNonNull(data, NullParamMessageConstant.TEMPLATE_INPUT_STREAM.getMessage()); //data null check
+		Objects.requireNonNull(values, NullParamMessageConstant.TEMPLATE_VALUES.getMessage());//values null check
 			try {
 				reader = new InputStreamReader(data);
 				template = new Template("template", reader, configuration);
@@ -67,9 +70,9 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	}
 
 	/**
-	 * This merge method will merge template with values with default encoding UTF-8
+	 * method will merge template with values with default encoding UTF-8
 	 * 
-	 * @param templateName
+	 * @param templateName 
 	 * @param writer
 	 * @param values
 	 *            as Map
@@ -81,6 +84,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	}
 
 	/**
+	 * method will merge template with values with provided encoding type
 	 * @param templateName
 	 * @param writer
 	 * @param values
@@ -90,6 +94,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	@Override
 	public boolean merge(String templateName, Writer writer, Map<String, Object> values, String encodingType) {
 		boolean result = false;
+		//Null Checks
 		Objects.requireNonNull(templateName, NullParamMessageConstant.TEMPATE_NAME.getMessage());
 		Objects.requireNonNull(writer, NullParamMessageConstant.WRITER.getMessage());
 		Objects.requireNonNull(encodingType, NullParamMessageConstant.ENCODING_TYPE.getMessage());

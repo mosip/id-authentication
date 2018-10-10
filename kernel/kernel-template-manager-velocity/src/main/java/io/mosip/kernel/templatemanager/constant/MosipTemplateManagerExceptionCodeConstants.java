@@ -1,9 +1,16 @@
 package io.mosip.kernel.templatemanager.constant;
-
+/**
+ * exception constants for template manager
+ * 
+ * @author Abhishek Kumar
+ * @since 2018-10-08
+ * @version 1.0.0
+ */
 public enum MosipTemplateManagerExceptionCodeConstants {
-    TEMPLATE_NOT_FOUND("1111111111", "Template resource Could Not Found."),
-    TEMPLATE_PARSING("333333333", "Template resource of any type  has a syntax or other error."), 
-    TEMPLATE_INVALID_REFERENCE("44444444", "Reference method in template could not be invoked.");
+    TEMPLATE_NOT_FOUND("KER-TEM-005", "Template resource not found"),
+    TEMPLATE_PARSING("KER-TEM-004", "Exception occured during template processing"), 
+    TEMPLATE_INVALID_REFERENCE("KER-TEM-001", "Reference method in template could not be invoked");
+	
     /**
     * This variable holds the error code.
     */
@@ -15,7 +22,7 @@ public enum MosipTemplateManagerExceptionCodeConstants {
     private String errorMessage;
 
     /**
-    * Constructor for UINErrorConstants Enum.
+    * Constructor for MosipTemplateManagerExceptionCodeConstants Enum.
     * 
      * @param errorCode
     *            the error code.

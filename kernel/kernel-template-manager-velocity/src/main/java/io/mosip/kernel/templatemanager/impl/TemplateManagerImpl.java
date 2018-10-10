@@ -41,16 +41,21 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	}
 
 	/**
+	 * Method to merge template , where template content will be pass as inputSteam
 	 * 
 	 * @param template
-	 *            as InputStream
+	 *            as InputStream for template content
+	 *            template content should be in the form of InputStream
 	 * @param values
 	 *            as Map
+	 *            values should be pass as Map<String,Object> 
 	 * @return template as InputStream
+	 * 		merged given template content and values
 	 * 
 	 */
 	public InputStream mergeTemplate(InputStream template, Map<String, Object> values) {
 		StringWriter writer = new StringWriter();
+		//logging tag name
 		String logTag = "templateManager-mergeTemplate";
 		Objects.requireNonNull(template, NullParamMessageConstant.TEMPLATE_INPUT_STREAM.getMessage());
 		Objects.requireNonNull(values, NullParamMessageConstant.TEMPLATE_VALUES.getMessage());
@@ -79,25 +84,31 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	}
 
 	/**
-	 * this method will merge template using default UTF-8 encoding
+	 * Method to merge template using default UTF-8 encoding
 	 * 
-	 * @param templateName
-	 * @param writer
+	 * @param templateName as String
+	 * @param writer 
 	 * @param values
-	 *            as Map
+	 *           as Map
+	 *            values should be pass as Map<String,Object> 
 	 * @return boolean
+	 *   return true if successfully merged given template and values
 	 */
 	public boolean merge(String templateName, final Writer writer, Map<String, Object> values) {
 		return merge(templateName, writer, values, DEFAULT_ENCODING_TYPE);
 	}
 
 	/**
+	 * Method to merge template using provided encoding type
 	 * 
-	 * @param templatePath
+	 * @param templateName
+	 *            as String
 	 * @param writer
 	 * @param values
+	 *            as Map
 	 * @param encodingType
-	 * @return boolean
+	 *            as String
+	 * @return boolean return true if successfully merged given template and values
 	 */
 	public boolean merge(String templateName, Writer writer, Map<String, Object> values, final String encodingType) {
 		boolean result = false;
@@ -110,6 +121,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 		Objects.requireNonNull(values, NullParamMessageConstant.TEMPLATE_VALUES.getMessage());
 		try {
 			template = velocityEngine.getTemplate(templateName, encodingType);
+			// create context by using provided map of values
 			context = TemplateManagerUtil.bindInputToContext(values);
 			template.merge(context, writer);
 			result = true;

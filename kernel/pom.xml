@@ -99,7 +99,8 @@
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-validator</module>
 		<module>kernel-virusscanner-clamav</module>
-		
+		<module>kernel-template-manager-velocity</module>
+		<module>kernel-template-manager-freemarker</module>
 	</modules>
 
 	<profiles>

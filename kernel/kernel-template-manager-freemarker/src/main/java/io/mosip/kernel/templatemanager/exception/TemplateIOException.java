@@ -12,7 +12,11 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 public class TemplateIOException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = 1051626838113273809L;
-
+	/**
+	 * constructor for setting error code and message
+	 * @param errorCode
+	 * @param errorMessage
+	 */
 	public TemplateIOException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}

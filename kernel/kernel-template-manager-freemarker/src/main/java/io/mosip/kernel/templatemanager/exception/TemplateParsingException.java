@@ -16,7 +16,11 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 public class TemplateParsingException extends BaseUncheckedException{
 
 	private static final long serialVersionUID = 1368132089641129425L;
-
+	/**
+	 * constructor for setting error code and message
+	 * @param errorCode
+	 * @param errorMessage
+	 */
 	public TemplateParsingException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}

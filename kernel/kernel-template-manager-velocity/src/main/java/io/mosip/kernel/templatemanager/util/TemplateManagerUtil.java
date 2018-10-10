@@ -15,7 +15,7 @@ public class TemplateManagerUtil {
 	private TemplateManagerUtil() {
 	}
 	/**
-	 * 
+	 * method to bind the map of values into VelocityContext
 	 * @param values
 	 * @return VelocityContext
 	 */
