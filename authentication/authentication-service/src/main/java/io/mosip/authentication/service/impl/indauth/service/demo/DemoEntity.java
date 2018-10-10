@@ -14,65 +14,41 @@ public class DemoEntity {
 
 	//FIX ME annotate columns for all fields.
 	private String uinRefId;
-
-	private String firstName;
-
-	private String forename;
-
-	private String givenname;
-
-	private String middlename;
-
-	private String middleinitial;
-
-	private String lastname;
-
-	private String surname;
-
-	private String familyname;
-
-	private String fullname;
-
-	private String genderCode;
-
-	private String parentFullName;
-
-	private String parentRefIdType;
-
-	private String parentRefId;
-
-	private Date dob;
-
-	private int age;
-
-	private String addressLine1;
-
-	private String addressLine2;
-
-	private String addressLine3;
-
-	private String locationCode;
-
-	private String mobile;
-
-	private String email;
-
-	private String applicantType;
-
-	private String nationalId;
-
-	private String statusCode;
-
-	private String langCode;
-
-	private boolean isActive;
-
-	private String correctedBy;
-
-	private Date correctedOn;
-
-	private String updatedBy;
-
-	private Date updatedOn;
 	
+	private String lang1Code;
+
+	private String lang1Name;
+
+    private String lang1Gender;
+
+	private String lang1DobType;
+
+	private String lang1Email;
+
+	private String lang1Age;
+
+	private Date lang1Dob;
+
+	private String lang1Mobile;
+
+	private String lang1AddressLine1;
+
+	private String lang1AddressLine2;
+
+	private String lang1AddressLine3;
+	
+	private String lang1LocLine1;
+	
+	private String lang1LocLine2;
+	
+	private String lang1LocLine3;
+	
+	private String lang1LocLine4;
+	
+	private String 	lang1Country;
+	
+	private String lang1PinCode;
+	
+
+		
 }

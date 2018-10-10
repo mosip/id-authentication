@@ -6,14 +6,35 @@ import java.util.stream.Collectors;
 
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
 
+// TODO: Auto-generated Javadoc
+/**
+ * @author Arun Bose
+ * The Class DemoMatcher.
+ */
 public class DemoMatcher {
 	
+	/**
+	 * Match demo data.
+	 *
+	 * @param demoDTO the demo DTO
+	 * @param demoEntity the demo entity
+	 * @param matchInput the match input
+	 * @return the list
+	 */
 	public List<MatchOutput> matchDemoData(DemoDTO demoDTO,DemoEntity demoEntity,List<MatchInput> matchInput){
 		return matchInput.parallelStream()
 				.map(input -> matchType(demoDTO, demoEntity, input))
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * Match type.
+	 *
+	 * @param demoDTO the demo DTO
+	 * @param demoEntity the demo entity
+	 * @param input the input
+	 * @return the match output
+	 */
 	private MatchOutput matchType(DemoDTO demoDTO, DemoEntity demoEntity, MatchInput input) {
 		Optional<MatchStrategyType> matchStrategyType = MatchStrategyType.getMatchStrategyType(input.getMatchStrategyType());
 		if(matchStrategyType.isPresent() ) {
@@ -25,12 +46,9 @@ public class DemoMatcher {
 				Object entityInfo = input.getDemoMatchType().getEntityInfo().getInfo(demoEntity);
 				MatchFunction matchFunction = strategy.getMatchFunction();
 				int mtOut = matchFunction.doMatch(reqInfo, entityInfo);
-				
-				return new MatchOutput();
-				
-				//MatchUtil.do(reqName, entityName);
-				//if(utilResult >= input.mt) { return matchoutput true; }
-			}
+				boolean matchOutput=mtOut>=input.getMatchValue();
+				return new MatchOutput(mtOut,matchOutput,input.getMatchStrategyType(),input.getDemoMatchType());
+	       }
 		}
 		return null;
 	}
