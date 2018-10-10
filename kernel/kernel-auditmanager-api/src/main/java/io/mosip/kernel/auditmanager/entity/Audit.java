@@ -29,11 +29,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Audit extends BaseAudit {
 
-	/**
-	 * Generated serial version id
-	 */
-	private static final long serialVersionUID = -7791835434727848970L;
-
 	@NotNull
 	@Size(min = 1, max = 64)
 	@Column(name = "event_id", nullable = false, updatable = false, length = 64)
@@ -51,7 +46,7 @@ public class Audit extends BaseAudit {
 
 	@NotNull
 	@Column(name = "action_dtimesz", nullable = false, updatable = false)
-	private transient OffsetDateTime actionTimeStamp;
+	private OffsetDateTime actionTimeStamp;
 
 	@NotNull
 	@Size(min = 1, max = 32)
