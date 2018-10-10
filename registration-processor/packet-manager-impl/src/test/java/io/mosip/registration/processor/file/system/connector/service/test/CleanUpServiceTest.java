@@ -63,8 +63,8 @@ public class CleanUpServiceTest {
 	public void cleanUpFileSuccessCheck() throws IOException {
 		String fileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileName, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
-		fileManager.put(fileName, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
 		fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn);
 		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
 		assertFalse(exists);
@@ -95,9 +95,9 @@ public class CleanUpServiceTest {
 	public void cleanUpFileChildSuccessCheck() throws IOException {
 		String childFileName = file.getName();
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(childFileName);
-		fileManager.put("child" + File.separator + childFileName, new FileInputStream(file),
+		fileManager.put("child" + File.separator + fileNameWithoutExtn, new FileInputStream(file),
 				DirectoryPathDto.LANDING_ZONE);
-		fileManager.put(childFileName, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
 		fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn,
 				"child");
 

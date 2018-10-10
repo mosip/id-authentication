@@ -23,7 +23,6 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.PacketManagerApp;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 
-
 /**
  * @author M1022006
  *
@@ -33,17 +32,15 @@ import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 @TestPropertySource({"classpath:application.properties"})
 public class FileManagerTest {
 
-
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
 
 	private File file;
-	
+
 	private Environment env = mock(Environment.class);
-	
+
 	@Autowired
 	private Environment testEnvironment;
-
 
 	@Before
 	public void setUp() throws Exception {
@@ -56,14 +53,13 @@ public class FileManagerTest {
 	@Test
 	public void getPutAndIfFileExistsAndCopyMethodCheck() throws IOException {
 		String fileName = file.getName();
-		String fileNameWithoutExtn=FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileName, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
-		boolean exists=fileManager.checkIfFileExists(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
+		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
+		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
 		assertTrue(exists);
 		fileManager.copy(fileNameWithoutExtn, DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN);
-		boolean fileExists=fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn);
+		boolean fileExists = fileManager.checkIfFileExists(DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn);
 		assertTrue(fileExists);
 	}
-	
 
 }
