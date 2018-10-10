@@ -239,8 +239,8 @@ public class TemplatemanagerTest {
 	public void testMergeTemplate() throws IOException {
 		String template = "test.ftl";
 		StringWriter writer = new StringWriter();
-
-		templateManager.merge(template, writer, valuesMap, "UTF-8");
+		boolean result = templateManager.merge(template, writer, valuesMap, "UTF-8");
+		assertTrue(result);
 	}
 
 	@Test(expected = NullPointerException.class)
