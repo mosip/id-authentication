@@ -29,6 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.processor.packet.receiver.controller.PacketReceiverController;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
+import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
+import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
 @SuppressWarnings("unused")
 @RunWith(SpringRunner.class)
@@ -41,6 +43,9 @@ public class PacketReceiverControllerTest {
 	@MockBean
 	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService;
 
+	@MockBean
+	private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
+	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private MockMultipartFile mockMultipartFile, duplicateFile, invalidPacket;
@@ -96,6 +101,30 @@ public class PacketReceiverControllerTest {
 
 		this.mockMvc.perform(MockMvcRequestBuilders
 				.multipart("/v0.1/registration-processor/packet-receiver/registrationpackets").file(this.duplicateFile))
+				.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void packetNotSyncSuccessTest() throws Exception {
+
+		logger.debug("Packet Not Sync success test case");
+
+		Mockito.when(syncRegistrationService.isPresent("1000")).thenReturn(true);
+		this.mockMvc.perform(
+				MockMvcRequestBuilders.multipart("/v0.1/registration-processor/packet-receiver/registrationpackets")
+						.file(this.mockMultipartFile))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void packetNotSyncFailureTest() throws Exception {
+
+		logger.debug("Packet Not Sync failure test case");
+
+		Mockito.when(packetReceiverService.storePacket(this.mockMultipartFile)).thenReturn(false);
+		Mockito.when(syncRegistrationService.isPresent("0000")).thenReturn(false);
+		this.mockMvc.perform(MockMvcRequestBuilders
+				.multipart("/v0.1/registration-processor/packet-receiver/registrationpackets").file(this.mockMultipartFile))
 				.andExpect(status().isBadRequest());
 	}
 

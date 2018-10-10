@@ -109,6 +109,7 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationEntity.setCreatedBy("MOSIP");
 		syncRegistrationEntity.setUpdatedBy("MOSIP");
 
+
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
