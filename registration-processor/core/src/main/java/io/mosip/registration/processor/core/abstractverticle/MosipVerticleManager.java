@@ -2,6 +2,9 @@ package io.mosip.registration.processor.core.abstractverticle;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import io.mosip.registration.processor.core.abstractverticle.exception.DeploymentFailureException;
+import io.mosip.registration.processor.core.abstractverticle.exception.errorcodes.AbstractVerticleErrorCodes;
 import io.mosip.registration.processor.core.spi.eventbus.EventBusManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
@@ -19,9 +22,7 @@ import io.vertx.spi.cluster.ignite.IgniteClusterManager;
  * This class provides functionalities to be used by MOSIP verticles.
  * 
  * @author Pranav Kumar
- * 
  * @author Mukul Puspam
- * 
  * @since 0.0.1
  *
  */
@@ -38,7 +39,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	 * (java.lang.Class)
 	 */
 	@Override
-	public MosipEventBus getEventBus(Class<?> verticleName) {
+	public MosipEventBus getEventBus(Class<?> verticleName){
 		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
 		MosipEventBus mosipEventBus = null;
 		ClusterManager clusterManager = new IgniteClusterManager();
@@ -50,11 +51,18 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 				eventBus.complete(result.result());
 				logger.debug(verticleName + " deployed successfully");
 			}
+			else {
+				throw new DeploymentFailureException(AbstractVerticleErrorCodes.IIS_EPU_ATU_DEPLOYMENT_FAILURE);
+			}
 		});
 		try {
 			mosipEventBus = new MosipEventBus(eventBus.get());
-		} catch (InterruptedException | ExecutionException e) {
-			logger.error("Exception in deploying verticle" + e.getMessage());
+		} catch (InterruptedException e) {
+			
+			
+		}
+		catch(ExecutionException e) {
+			
 		}
 		return mosipEventBus;
 	}
@@ -74,7 +82,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 			vertx.executeBlocking(future -> {
 				JsonObject jsonObject = (JsonObject) msg.body();
 				MessageDTO messageDTO = jsonObject.mapTo(MessageDTO.class);
-				MessageDTO result = (MessageDTO) process(messageDTO);
+				MessageDTO result = process(messageDTO);
 				future.complete();
 				send(mosipEventBus, toAddress, result);
 			}, res -> {

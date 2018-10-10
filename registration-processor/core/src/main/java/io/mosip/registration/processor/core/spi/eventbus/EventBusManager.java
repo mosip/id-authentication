@@ -15,10 +15,36 @@ package io.mosip.registration.processor.core.spi.eventbus;
  */
 public interface EventBusManager<T, U, V> {
 
-	public T getEventBus(Class<?> instance);
+	/**
+	 * This method returns the EventBus instance for the provided class
+	 * 
+	 * @param instance
+	 *            The class for which eventBus is needed
+	 * @return The EventBus instance
+	 * @throws InterruptedException 
+	 */
+	public T getEventBus(Class<?> clazz);
 
+	/**
+	 * This method consumes a message from an address, processes it and forwards the
+	 * message to next given address
+	 * 
+	 * @param eventBus
+	 *            The Eventbus instance for communication
+	 * @param fromAddress
+	 *            The address from which message is to be consumed
+	 * @param toAddress
+	 *            The address to which message needs to be sent
+	 */
 	public void consumeAndSend(T eventBus, U fromAddress, U toAddress);
 
+	/**
+	 * This method processes on the supplied object and returns the modified object
+	 * 
+	 * @param object
+	 *            The object for processing
+	 * @return The modified object after processing
+	 */
 	public V process(V object);
 
 }

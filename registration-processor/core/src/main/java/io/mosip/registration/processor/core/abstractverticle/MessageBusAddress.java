@@ -1,11 +1,11 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
 /**
- * This class lists down the addresses to be used in Registration process
+ * This class contains the address values to be used in Registration process
  * 
  * @author Pranav Kumar
- * 
  * @author Mukul Puspam
+ * @since 0.0.1
  *
  */
 public class MessageBusAddress {

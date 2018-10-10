@@ -87,6 +87,7 @@
 		<module>packet-manager-impl</module>
 		<module>jobs</module>
 		<module>packet-meta-info</module>
+		<module>bridge</module>
 	</modules>
 
 	<build>

@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.core.spi.eventbus;
 
 /**
- * Declares the Eventbus.
+ * This class declares the Eventbus.
  * 
  * @param <T>
  *            The type of underlying Eventbus
@@ -12,6 +12,11 @@ package io.mosip.registration.processor.core.spi.eventbus;
  */
 public interface MosipEventbusFactory<T> {
 
+	/**
+	 * This method returns the Eventbus instance
+	 * 
+	 * @return Eventbus instance
+	 */
 	public T getEventbus();
 
 }

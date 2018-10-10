@@ -23,10 +23,10 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Connec
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
 /**
- * @author Pranav Kumar
+ * This class is CEPH implementation for MOSIP Packet Store
  * 
+ * @author Pranav Kumar
  * @since 0.0.1
- *
  */
 public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream, PacketFiles, Boolean> {
 

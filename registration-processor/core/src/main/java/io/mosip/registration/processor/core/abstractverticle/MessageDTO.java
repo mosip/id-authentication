@@ -1,7 +1,10 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
 /**
+ * This class contains parameters for communication between MOSIP stages
+ * 
  * @author Pranav Kumar
+ * @since 0.0.1
  *
  */
 public class MessageDTO {
@@ -45,8 +48,7 @@ public class MessageDTO {
 
 	@Override
 	public String toString() {
-		return "MessageDTO [rid=" + rid + ", isValid=" + isValid + ", address=" + address +", retry=" + retry + "]";
+		return "MessageDTO [rid=" + rid + ", isValid=" + isValid + ", address=" + address + ", retry=" + retry + "]";
 	}
-	
 
 }
