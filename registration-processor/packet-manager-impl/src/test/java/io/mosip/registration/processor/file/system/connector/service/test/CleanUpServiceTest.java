@@ -85,7 +85,7 @@ public class CleanUpServiceTest {
 
 		String fileName = "1002.zip";
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileName, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
 
 		fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn);
 
@@ -121,7 +121,7 @@ public class CleanUpServiceTest {
 
 		String fileName = "1002.zip";
 		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
-		fileManager.put(fileName, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
 
 		fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn,
 				"child");

@@ -28,25 +28,24 @@ import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatfor
 public class BadGatewayExceptionTest {
 
 	private static final String BADGATEWAY_EXCEPTION = "This is a BadGateway exception";
-	
+
 	@MockBean
 	private FileManager<DirectoryPathDto, File> fileManager;
-	
+
 	private File file;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
 		file = new File(classLoader.getResource("1001.zip").getFile());
-		
 
 	}
 
 	@Test
 	public void TestBadGatewayException() throws FileNotFoundException, IOException {
-		String fileName = "sample.zip";
+		String fileName = "sample";
 		BadGatewayException ex = new BadGatewayException(BADGATEWAY_EXCEPTION);
-		
+
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
 		try {

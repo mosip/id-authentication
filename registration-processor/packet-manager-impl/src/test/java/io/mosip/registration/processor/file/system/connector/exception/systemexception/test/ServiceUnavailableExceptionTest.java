@@ -34,7 +34,7 @@ public class ServiceUnavailableExceptionTest {
 
 	@Test
 	public void TestServiceUnavailableException() throws IOException {
-		String fileName = "sample.zip";
+		String fileName = "sample";
 		ServiceUnavailableException ex = new ServiceUnavailableException(SERVICE_UNAVAILABLE_EXCEPTION);
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
