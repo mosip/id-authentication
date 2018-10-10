@@ -1,11 +1,8 @@
 package io.mosip.kernel.templatemanager;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -241,7 +238,7 @@ public class TemplatemanagerTest {
 	@Test
 	public void testMergeTemplate() throws IOException {
 		String template = "test.ftl";
-		FileWriter writer = new FileWriter(new File("637.ftl"));
+		StringWriter writer = new StringWriter();
 
 		templateManager.merge(template, writer, valuesMap, "UTF-8");
 	}
@@ -267,6 +264,5 @@ public class TemplatemanagerTest {
 		Mockito.doThrow(IOException.class).when(mockWriter).write(Mockito.anyString());
 		templateManager.merge("test.ftl", mockWriter, valuesMap);
 	}
-	
-	
+
 }
