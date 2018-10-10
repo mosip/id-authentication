@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
 		log.error(errorDetails.getErrorcode(), e.getCause());
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@ExceptionHandler(PacketNotSyncException.class)
 	public ResponseEntity<ExceptionJSONInfo> handleFileSizeExceedException(final PacketNotSyncException e,
 			WebRequest request) {
@@ -66,7 +66,6 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 
-	
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<ExceptionJSONInfo> handleTablenotAccessibleException(final TablenotAccessibleException e,
 			WebRequest request) {
