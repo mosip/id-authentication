@@ -61,27 +61,27 @@ return fullAddress;
 	
 	/** The addr line1 pri. */
 	ADDR_LINE1_PRI(setOf(NameMatchingStrategy.EXACT),
-			demo->demo.getPersonalAddressDTO().getAddrLine(), 
+			demo->demo.getPersonalAddressDTO().getAddrLine1Pri(), 
 			entity ->entity.getLang1Email()),
 	
 	/** The addr line2 pri. */
 	ADDR_LINE2_PRI(setOf(NameMatchingStrategy.EXACT),
-			demo->demo.getPersonalAddressDTO().getAddrLine1(), 
+			demo->demo.getPersonalAddressDTO().getAddrLine2Pri(), 
 			entity ->entity.getLang1Email()),
 	
 	/** The addr line3 pri. */
 	ADDR_LINE3_PRI(setOf(NameMatchingStrategy.EXACT),
-			demo->demo.getPersonalAddressDTO().getAddrLine2(), 
+			demo->demo.getPersonalAddressDTO().getAddrLine3Pri(), 
 			entity ->entity.getLang1Email()),
 	
 	/** The country pri. */
 	COUNTRY_PRI(setOf(NameMatchingStrategy.EXACT),
-			demo->demo.getPersonalAddressDTO().getCountry(), 
+			demo->demo.getPersonalAddressDTO().getCountryPri(), 
 			entity ->entity.getLang1Email()),
 	
 	/** The pincode pri. */
 	PINCODE_PRI(setOf(NameMatchingStrategy.EXACT),
-			demo->demo.getPersonalAddressDTO().getPinCode(), 
+			demo->demo.getPersonalAddressDTO().getPinCodePri(), 
 			entity ->entity.getLang1Email());
 	
 
