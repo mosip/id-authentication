@@ -12,14 +12,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.stereotype.Component;
 
 /**
  * The Class SyncRegistrationEntity.
  *
  * @author M1047487
  */
-@Component
 @Entity
 @Table(name = "registration_list", schema = "regprc")
 public class SyncRegistrationEntity {
@@ -89,7 +87,6 @@ public class SyncRegistrationEntity {
 
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
-	@UpdateTimestamp
 	private LocalDateTime deletedDateTime;
 	
 	/**

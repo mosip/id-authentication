@@ -4,10 +4,8 @@
 package io.mosip.registration.processor.status.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
-import io.mosip.registration.processor.status.code.SyncStatus;
-import io.mosip.registration.processor.status.code.SyncType;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * The Class SyncRegistrationDto.
@@ -19,48 +17,32 @@ public class SyncRegistrationDto implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -3922338139042373367L;
 
-	/** The Sync registration id. */
-	private String syncRegistrationId;
-
 	/** The registration id. */
 	private String registrationId;
-	
-	/** The registration type. */
-	private String registrationType;
-	
+
+	/** The sync type dto. */
+	private SyncTypeDto syncTypeDto;
+
 	/** The parent registration id. */
 	private String parentRegistrationId;
-	
-	/** The status code. */
-	private String statusCode;
-	
+
+	/** The sync status dto. */
+	private SyncStatusDto syncStatusDto;
+
 	/** The status comment. */
 	private String statusComment;
-	
+
 	/** The lang code. */
 	private String langCode;
-	
+
 	/** The is active. */
+	@ApiModelProperty(hidden = true)
 	private Boolean isActive;
-	
-	/** The created by. */
-	private String createdBy;
-	
-	/** The create date time. */
-	private LocalDateTime createDateTime;
-	
-	/** The updated by. */
-	private String updatedBy;
-	
-	/** The update date time. */
-	private LocalDateTime updateDateTime;
-	
+
 	/** The is deleted. */
+	@ApiModelProperty(hidden = true)
 	private Boolean isDeleted;
-	
-	/** The deleted date time. */
-	private LocalDateTime deletedDateTime;
-	
+
 	/**
 	 * Instantiates a new sync registration dto.
 	 */
@@ -71,34 +53,28 @@ public class SyncRegistrationDto implements Serializable {
 	/**
 	 * Instantiates a new sync registration dto.
 	 *
-	 * @param registrationId the registration id
-	 * @param parentRegistrationId the parent registration id
-	 * @param syncType            the sync type
-	 * @param synchStatus            the synch status
+	 * @param registrationId
+	 *            the registration id
+	 * @param syncTypeDto
+	 *            the sync type dto
+	 * @param parentRegistrationId
+	 *            the parent registration id
+	 * @param syncStatusDto
+	 *            the sync status dto
+	 * @param statusComment
+	 *            the status comment
+	 * @param langCode
+	 *            the lang code
 	 */
-	public SyncRegistrationDto(String registrationId, String parentRegistrationId, SyncType syncType, SyncStatus synchStatus) {
-
+	public SyncRegistrationDto(String registrationId, SyncTypeDto syncTypeDto, String parentRegistrationId,
+			SyncStatusDto syncStatusDto, String statusComment, String langCode) {
+		super();
 		this.registrationId = registrationId;
+		this.syncTypeDto = syncTypeDto;
 		this.parentRegistrationId = parentRegistrationId;
-
-	}
-
-	/**
-	 * Gets the sync registration id.
-	 *
-	 * @return the sync registration id
-	 */
-	public String getSyncRegistrationId() {
-		return syncRegistrationId;
-	}
-
-	/**
-	 * Sets the sync registration id.
-	 *
-	 * @param syncRegistrationId the new sync registration id
-	 */
-	public void setSyncRegistrationId(String syncRegistrationId) {
-		this.syncRegistrationId = syncRegistrationId;
+		this.syncStatusDto = syncStatusDto;
+		this.statusComment = statusComment;
+		this.langCode = langCode;
 	}
 
 	/**
@@ -113,28 +89,11 @@ public class SyncRegistrationDto implements Serializable {
 	/**
 	 * Sets the registration id.
 	 *
-	 * @param registrationId the new registration id
+	 * @param registrationId
+	 *            the new registration id
 	 */
 	public void setRegistrationId(String registrationId) {
 		this.registrationId = registrationId;
-	}
-
-	/**
-	 * Gets the registration type.
-	 *
-	 * @return the registration type
-	 */
-	public String getRegistrationType() {
-		return registrationType;
-	}
-
-	/**
-	 * Sets the registration type.
-	 *
-	 * @param registrationType the new registration type
-	 */
-	public void setRegistrationType(String registrationType) {
-		this.registrationType = registrationType;
 	}
 
 	/**
@@ -149,28 +108,11 @@ public class SyncRegistrationDto implements Serializable {
 	/**
 	 * Sets the parent registration id.
 	 *
-	 * @param parentRegistrationId the new parent registration id
+	 * @param parentRegistrationId
+	 *            the new parent registration id
 	 */
 	public void setParentRegistrationId(String parentRegistrationId) {
 		this.parentRegistrationId = parentRegistrationId;
-	}
-
-	/**
-	 * Gets the status code.
-	 *
-	 * @return the status code
-	 */
-	public String getStatusCode() {
-		return statusCode;
-	}
-
-	/**
-	 * Sets the status code.
-	 *
-	 * @param statusCode the new status code
-	 */
-	public void setStatusCode(String statusCode) {
-		this.statusCode = statusCode;
 	}
 
 	/**
@@ -185,7 +127,8 @@ public class SyncRegistrationDto implements Serializable {
 	/**
 	 * Sets the status comment.
 	 *
-	 * @param statusComment the new status comment
+	 * @param statusComment
+	 *            the new status comment
 	 */
 	public void setStatusComment(String statusComment) {
 		this.statusComment = statusComment;
@@ -203,7 +146,8 @@ public class SyncRegistrationDto implements Serializable {
 	/**
 	 * Sets the lang code.
 	 *
-	 * @param langCode the new lang code
+	 * @param langCode
+	 *            the new lang code
 	 */
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
@@ -221,82 +165,49 @@ public class SyncRegistrationDto implements Serializable {
 	/**
 	 * Sets the checks if is active.
 	 *
-	 * @param isActive the new checks if is active
+	 * @param isActive
+	 *            the new checks if is active
 	 */
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
 
 	/**
-	 * Gets the created by.
+	 * Gets the sync type dto.
 	 *
-	 * @return the created by
+	 * @return the sync type dto
 	 */
-	public String getCreatedBy() {
-		return createdBy;
+	public SyncTypeDto getSyncTypeDto() {
+		return syncTypeDto;
 	}
 
 	/**
-	 * Sets the created by.
+	 * Sets the sync type dto.
 	 *
-	 * @param createdBy the new created by
+	 * @param syncTypeDto
+	 *            the new sync type dto
 	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
+	public void setSyncTypeDto(SyncTypeDto syncTypeDto) {
+		this.syncTypeDto = syncTypeDto;
 	}
 
 	/**
-	 * Gets the creates the date time.
+	 * Gets the sync status dto.
 	 *
-	 * @return the creates the date time
+	 * @return the sync status dto
 	 */
-	public LocalDateTime getCreateDateTime() {
-		return createDateTime;
+	public SyncStatusDto getSyncStatusDto() {
+		return syncStatusDto;
 	}
 
 	/**
-	 * Sets the creates the date time.
+	 * Sets the sync status dto.
 	 *
-	 * @param createDateTime the new creates the date time
+	 * @param syncStatusDto
+	 *            the new sync status dto
 	 */
-	public void setCreateDateTime(LocalDateTime createDateTime) {
-		this.createDateTime = createDateTime;
-	}
-
-	/**
-	 * Gets the updated by.
-	 *
-	 * @return the updated by
-	 */
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
-
-	/**
-	 * Sets the updated by.
-	 *
-	 * @param updatedBy the new updated by
-	 */
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-
-	/**
-	 * Gets the update date time.
-	 *
-	 * @return the update date time
-	 */
-	public LocalDateTime getUpdateDateTime() {
-		return updateDateTime;
-	}
-
-	/**
-	 * Sets the update date time.
-	 *
-	 * @param updateDateTime the new update date time
-	 */
-	public void setUpdateDateTime(LocalDateTime updateDateTime) {
-		this.updateDateTime = updateDateTime;
+	public void setSyncStatusDto(SyncStatusDto syncStatusDto) {
+		this.syncStatusDto = syncStatusDto;
 	}
 
 	/**
@@ -311,28 +222,11 @@ public class SyncRegistrationDto implements Serializable {
 	/**
 	 * Sets the checks if is deleted.
 	 *
-	 * @param isDeleted the new checks if is deleted
+	 * @param isDeleted
+	 *            the new checks if is deleted
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
-	}
-
-	/**
-	 * Gets the deleted date time.
-	 *
-	 * @return the deleted date time
-	 */
-	public LocalDateTime getDeletedDateTime() {
-		return deletedDateTime;
-	}
-
-	/**
-	 * Sets the deleted date time.
-	 *
-	 * @param deletedDateTime the new deleted date time
-	 */
-	public void setDeletedDateTime(LocalDateTime deletedDateTime) {
-		this.deletedDateTime = deletedDateTime;
 	}
 
 }

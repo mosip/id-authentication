@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController
 @RequestMapping("/v0.1/registration-processor/registration-status")
-@Api(tags = "Status Handler")
+@Api(tags = "Sync Registration")
 public class SyncRegistrationController {
 
 	@Autowired
@@ -43,7 +43,7 @@ public class SyncRegistrationController {
 	}
 
 	/**
-	 * Sync.
+	 * Sync registration controller.
 	 *
 	 * @param syncRegistrationDto
 	 *            the sync registration dto
@@ -52,8 +52,7 @@ public class SyncRegistrationController {
 	@PostMapping(path = "/sync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the synchronizing registration entity", response = RegistrationStatusCode.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched"),
-			@ApiResponse(code = 400, message = "Unable to fetch the Synchronizing Registration Entity") })
+			@ApiResponse(code = 200, message = "Synchronizing Registration Entity successfully fetched") })
 	public ResponseEntity<List<SyncRegistrationDto>> syncRegistrationController(
 			@RequestBody(required = true) List<SyncRegistrationDto> syncRegistrationDto) {
 		List<SyncRegistrationDto> syncRegistrationDtoResponse = syncRegistrationService.sync(syncRegistrationDto);

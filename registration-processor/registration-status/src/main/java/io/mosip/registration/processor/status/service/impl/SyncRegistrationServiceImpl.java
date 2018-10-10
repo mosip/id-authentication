@@ -3,6 +3,7 @@
  */
 package io.mosip.registration.processor.status.service.impl;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,12 @@ import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
+import io.mosip.registration.processor.status.dto.SyncStatusDto;
+import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
+import io.mosip.registration.processor.status.utilities.RegistrationUtility;
 
 /**
  * The Class SyncRegistrationServiceImpl.
@@ -29,10 +33,11 @@ import io.mosip.registration.processor.status.service.SyncRegistrationService;
 @Component
 public class SyncRegistrationServiceImpl implements SyncRegistrationService<SyncRegistrationDto> {
 
+	private static final String TABLE_NOT_ACCESSIBLE = "Could not fetch data from table";
+	private static final String CREATED_BY = "MOSIP";
+
 	@Autowired
 	private SyncRegistrationDao syncRegistrationDao;
-
-	private static final String COULD_NOT_GET = "Could not get Information from table";
 
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
@@ -48,24 +53,37 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	}
 
 	@Override
-	public List<SyncRegistrationDto> sync(List<SyncRegistrationDto> syncResgistrationdto) {
+	public List<SyncRegistrationDto> sync(List<SyncRegistrationDto> resgistrationDtos) {
+
 		List<SyncRegistrationDto> list = new ArrayList<>();
+
 		boolean isTransactionSuccessful = false;
 		try {
-			for (SyncRegistrationDto syncRegistrationDto : syncResgistrationdto) {
-					list.add(convertEntityToDto(syncRegistrationDao.save(convertDtoToEntity(syncRegistrationDto))));
+			for (SyncRegistrationDto registrationDto : resgistrationDtos) {
+				SyncRegistrationEntity existingSyncRegistration = findByRegistrationId(
+						registrationDto.getRegistrationId());
+				SyncRegistrationEntity syncRegistration;
+				if (existingSyncRegistration != null) {
+					// update sync registration record
+					syncRegistration = convertDtoToEntity(registrationDto);
+					syncRegistration.setSyncRegistrationId(existingSyncRegistration.getSyncRegistrationId());
+					syncRegistration.setCreateDateTime(existingSyncRegistration.getCreateDateTime());
+					syncRegistration = syncRegistrationDao.update(syncRegistration);
+				} else {
+					// first time sync registration
+					syncRegistration = convertDtoToEntity(registrationDto);
+					syncRegistration.setSyncRegistrationId(RegistrationUtility.generateId());
+					syncRegistration = syncRegistrationDao.save(syncRegistration);
+				}
+				list.add(convertEntityToDto(syncRegistration));
 			}
 			isTransactionSuccessful = true;
 			return list;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(COULD_NOT_GET, e);
+			throw new TablenotAccessibleException(TABLE_NOT_ACCESSIBLE, e);
 		} finally {
-			String description = "";
-			if (isTransactionSuccessful) {
-				description = "description--sync Success";
-			} else {
-				description = "description--sync Failure";
-			}
+
+			String description = isTransactionSuccessful ? "description--sync Success" : "description--sync Failure";
 			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
 					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
 					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
@@ -75,26 +93,13 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	}
 
 	@Override
-	public boolean isPresent(String syncResgistrationId) {
-		return syncRegistrationDao.findById(syncResgistrationId) != null;
+	public boolean isPresent(String registrationId) {
+		return findByRegistrationId(registrationId) != null;
 	}
 
-	/**
-	 * Convert entity to dto.
-	 *
-	 * @param entities
-	 *            the entities
-	 * @return the list
-	 */
-	@SuppressWarnings("unused")
-	private List<SyncRegistrationDto> convertEntityToDto(List<SyncRegistrationEntity> entities) {
-		List<SyncRegistrationDto> ents = new ArrayList<>();
-		for (SyncRegistrationEntity entity : entities) {
-			ents.add(convertEntityToDto(entity));
-		}
-		return ents;
+	private SyncRegistrationEntity findByRegistrationId(String registrationId) {
+		return syncRegistrationDao.findById(registrationId);
 	}
-
 
 	private SyncRegistrationDto convertEntityToDto(SyncRegistrationEntity entity) {
 		SyncRegistrationDto syncRegistrationDto = new SyncRegistrationDto();
@@ -103,34 +108,31 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		syncRegistrationDto.setIsDeleted(entity.getIsDeleted());
 		syncRegistrationDto.setLangCode(entity.getLangCode());
 		syncRegistrationDto.setParentRegistrationId(entity.getParentRegistrationId());
-		syncRegistrationDto.setStatusCode(entity.getStatusCode());
-		syncRegistrationDto.setSyncRegistrationId(entity.getSyncRegistrationId());
 		syncRegistrationDto.setStatusComment(entity.getStatusComment());
+		syncRegistrationDto.setSyncStatusDto(SyncStatusDto.valueOf(entity.getStatusCode()));
+		syncRegistrationDto.setSyncTypeDto(SyncTypeDto.valueOf(entity.getRegistrationType()));
 
-		syncRegistrationDto.setCreatedBy(entity.getCreatedBy());
-		syncRegistrationDto.setCreateDateTime(entity.getCreateDateTime());
-		syncRegistrationDto.setUpdatedBy(entity.getUpdatedBy());
-		syncRegistrationDto.setUpdateDateTime(entity.getUpdateDateTime());
-		syncRegistrationDto.setDeletedDateTime(entity.getDeletedDateTime());
 		return syncRegistrationDto;
 	}
 
 	private SyncRegistrationEntity convertDtoToEntity(SyncRegistrationDto dto) {
 		SyncRegistrationEntity syncRegistrationEntity = new SyncRegistrationEntity();
 		syncRegistrationEntity.setRegistrationId(dto.getRegistrationId());
-		syncRegistrationEntity.setIsActive(dto.getIsActive());
-		syncRegistrationEntity.setIsDeleted(dto.getIsDeleted());
+		syncRegistrationEntity.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : Boolean.TRUE);
+		syncRegistrationEntity.setIsDeleted(dto.getIsDeleted() != null ? dto.getIsDeleted() : Boolean.FALSE);
 		syncRegistrationEntity.setLangCode(dto.getLangCode());
 		syncRegistrationEntity.setParentRegistrationId(dto.getParentRegistrationId());
-		syncRegistrationEntity.setStatusCode(dto.getStatusCode());
-		syncRegistrationEntity.setSyncRegistrationId(dto.getSyncRegistrationId());
 		syncRegistrationEntity.setStatusComment(dto.getStatusComment());
+		syncRegistrationEntity.setStatusCode(dto.getSyncStatusDto().toString());
+		syncRegistrationEntity.setRegistrationType(dto.getSyncTypeDto().toString());
+		syncRegistrationEntity.setCreatedBy(CREATED_BY);
+		syncRegistrationEntity.setUpdatedBy(CREATED_BY);
+		if (syncRegistrationEntity.getIsDeleted()) {
+			syncRegistrationEntity.setDeletedDateTime(LocalDateTime.now());
+		} else {
+			syncRegistrationEntity.setDeletedDateTime(null);
+		}
 
-		syncRegistrationEntity.setCreatedBy(dto.getCreatedBy());
-		syncRegistrationEntity.setCreateDateTime(dto.getCreateDateTime());
-		syncRegistrationEntity.setUpdatedBy(dto.getUpdatedBy());
-		syncRegistrationEntity.setUpdateDateTime(dto.getUpdateDateTime());
-		syncRegistrationEntity.setDeletedDateTime(dto.getDeletedDateTime());
 		return syncRegistrationEntity;
 	}
 

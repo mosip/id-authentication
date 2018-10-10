@@ -6,10 +6,10 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
 import io.mosip.registration.processor.status.repositary.SyncRegistrationRepository;
-
 
 /**
  * The Class SyncRegistrationDao.
@@ -50,11 +50,11 @@ public class SyncRegistrationDao {
 	/** The Constant ISDELETED_COLON. */
 	public static final String ISDELETED_COLON = ".isDeleted=:";
 
-
 	/**
 	 * Save.
 	 *
-	 * @param syncRegistrationEntity the sync registration entity
+	 * @param syncRegistrationEntity
+	 *            the sync registration entity
 	 * @return the sync registration entity
 	 */
 	public SyncRegistrationEntity save(SyncRegistrationEntity syncRegistrationEntity) {
@@ -62,11 +62,23 @@ public class SyncRegistrationDao {
 		return syncRegistrationRepository.save(syncRegistrationEntity);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param syncRegistrationEntity
+	 *            the sync registration entity
+	 * @return the sync registration entity
+	 */
+	public SyncRegistrationEntity update(SyncRegistrationEntity syncRegistrationEntity) {
+
+		return syncRegistrationRepository.save(syncRegistrationEntity);
+	}
 
 	/**
 	 * Find by id.
 	 *
-	 * @param registrationId the registration id
+	 * @param registrationId
+	 *            the registration id
 	 * @return the sync registration entity
 	 */
 	public SyncRegistrationEntity findById(String registrationId) {
@@ -83,12 +95,10 @@ public class SyncRegistrationDao {
 		params.put(ISACTIVE, Boolean.TRUE);
 		params.put(ISDELETED, Boolean.FALSE);
 
-		List<SyncRegistrationEntity> syncRegistrationEntityList = syncRegistrationRepository
-				.createQuerySelect(queryStr, params);
+		List<SyncRegistrationEntity> syncRegistrationEntityList = syncRegistrationRepository.createQuerySelect(queryStr,
+				params);
 
-		return !syncRegistrationEntityList.isEmpty() ? syncRegistrationEntityList.get(0) : null;
+		return !CollectionUtils.isEmpty(syncRegistrationEntityList) ? syncRegistrationEntityList.get(0) : null;
 	}
-
-
 
 }

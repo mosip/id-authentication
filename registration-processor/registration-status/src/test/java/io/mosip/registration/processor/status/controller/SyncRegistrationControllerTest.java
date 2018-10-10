@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,10 +45,6 @@ public class SyncRegistrationControllerTest {
 	/** The mock mvc. */
 	private MockMvc mockMvc;
 
-	/** The sync registration controller. */
-	@InjectMocks
-	SyncRegistrationController syncRegistrationController = new SyncRegistrationController();
-
 	/** The sync registration service. */
 	@MockBean
 	SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
@@ -58,9 +53,9 @@ public class SyncRegistrationControllerTest {
 	@MockBean
 	SyncRegistrationDto syncRegistrationDto;
 
-	/** The wac. */
+	/** The webApplicationContext. */
 	@Autowired
-	private WebApplicationContext wac;
+	private WebApplicationContext webApplicationContext;
 	
 	/** The list. */
 	private List<SyncRegistrationDto> list;
@@ -79,17 +74,15 @@ public class SyncRegistrationControllerTest {
 		list = new ArrayList<>();
 		SyncRegistrationDto syncRegistrationDto = new SyncRegistrationDto();
         syncRegistrationDto = new SyncRegistrationDto();
-        syncRegistrationDto.setSyncRegistrationId("1001");
         syncRegistrationDto.setRegistrationId("1002");
         syncRegistrationDto.setLangCode("eng");
         syncRegistrationDto.setIsActive(true);
-        syncRegistrationDto.setCreatedBy("MOSIP_SYSTEM");
 		list.add(syncRegistrationDto);
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		arrayToJson = objectMapper.writeValueAsString(list);
 		
-		mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+		mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
 	}
 
 	/**
