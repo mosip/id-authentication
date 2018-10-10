@@ -6,16 +6,16 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 
 	EXACT(MatchStrategyType.EXACT, (reqInfo, entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
+			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
+			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
 			return MatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
 			return 0;
 		}
 	}), PARTIAL(MatchStrategyType.PARTIAL, (reqInfo, entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
+			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
+			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
 			return MatcherUtil.doPartialMatch(refInfoName, entityInfoName);
 		} else {
 			return 0;
