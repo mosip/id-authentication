@@ -99,7 +99,7 @@
 		<module>kernel-validator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-config-server</module>
-
+        <module>kernel-notification-sms</module>
 	</modules>
 
 	<profiles>
