@@ -15,7 +15,7 @@ public enum DemoMatchType {
 	
   /** The addr pri. */
   //FIX this 
-	ADDR_PRI(setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
+	ADDR_PRI(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL),
 			demo->demo.getPersonalFullAddressDTO().getAddrPri(), 
 			entity -> {
 				String fullAddress=entity.getLang1AddressLine1()+" "+entity.getLang1AddressLine2()+" "+entity.getLang1AddressLine3()+
@@ -29,27 +29,28 @@ return fullAddress;
 			demo -> demo.getPersonalIdentityDTO().getNamePri(), entity -> entity.getLang1Name()),
 	
 	/** The gender. */
-	GENDER(setOf(GenderMatchingStrategy.EXACT),
+	//FIXME THIS All enums for matching strategy
+	GENDER(setOf(NameMatchingStrategy.EXACT),
 			demo->demo.getPersonalIdentityDTO().getGender(), 
 			entity ->entity.getLang1Gender()),
 	
 	/** The age. */
-	AGE(setOf(AgeMatchingStrategy.EXACT),
+	AGE(setOf(NameMatchingStrategy.EXACT),
 			demo->demo.getPersonalIdentityDTO().getAge(), 
 			entity ->entity.getLang1Age()),
 	
 	/** The dob. */
-	DOB(setOf(DOBMatchingStrategy.EXACT),
+	DOB(setOf(NameMatchingStrategy.EXACT),
 			demo->demo.getPersonalIdentityDTO().getDob(), 
 			entity ->entity.getLang1Dob()),
 	
 	/** The mobile. */
-	MOBILE(setOf(PhoneNoMatchingStrategy.EXACT),
+	MOBILE(setOf(NameMatchingStrategy.EXACT),
 			demo->demo.getPersonalIdentityDTO().getPhone(), 
 			entity ->entity.getLang1Mobile()),
 	
 	/** The email. */
-	EMAIL(setOf(EmailMatchingStrategy.EXACT),
+	EMAIL(setOf(NameMatchingStrategy.EXACT),
 			demo->demo.getPersonalIdentityDTO().getEmail(), 
 			entity ->entity.getLang1Email()),
 	
