@@ -45,7 +45,7 @@ public class PersonalIdentityDTO {
 	 */
 	@Min(1)
 	@Max(100)
-	private int mtPri;
+	private Integer mtPri;
 
 	/**
 	 * mtSec(Match Threshold or MatchValue) in Secondary or Local language. Valid
@@ -54,7 +54,7 @@ public class PersonalIdentityDTO {
 	 */
 	@Min(1)
 	@Max(100)
-	private int mtSec;
+	private Integer mtSec;
 
 	/** Gender acceptable values are M- Male, F-Female, T- Transgender */
 	@Pattern(regexp = "^([M|F|T])$")

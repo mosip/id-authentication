@@ -44,11 +44,6 @@ return fullAddress;
 			demo->demo.getPersonalIdentityDTO().getDob(), 
 			entity ->entity.getLang1Dob()),
 	
-	/** The dob type. */
-	DOB_TYPE(setOf(NameMatchingStrategy.EXACT),
-			demo->demo.getPersonalIdentityDTO().getDobType(), 
-			entity ->entity.getLang1DobType()),
-	
 	/** The mobile. */
 	MOBILE(setOf(NameMatchingStrategy.EXACT),
 			demo->demo.getPersonalIdentityDTO().getPhone(), 
@@ -124,7 +119,7 @@ return fullAddress;
 	 *
 	 * @return the demo info
 	 */
-	public DemoDTOInfoFetcher getDemoInfo() {
+	public DemoDTOInfoFetcher getDemoInfoFetcher() {
 		return demoInfo;
 	}
 
@@ -133,7 +128,7 @@ return fullAddress;
 	 *
 	 * @return the entity info
 	 */
-	public DemoEntityInfoFetcher getEntityInfo() {
+	public DemoEntityInfoFetcher getEntityInfoFetcher() {
 		return entityInfo;
 	}
 

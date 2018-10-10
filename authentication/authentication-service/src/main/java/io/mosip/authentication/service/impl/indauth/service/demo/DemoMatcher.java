@@ -21,8 +21,8 @@ public class DemoMatcher {
 	 * @param matchInput the match input
 	 * @return the list
 	 */
-	public List<MatchOutput> matchDemoData(DemoDTO demoDTO,DemoEntity demoEntity,List<MatchInput> matchInput){
-		return matchInput.parallelStream()
+	public List<MatchOutput> matchDemoData(DemoDTO demoDTO,DemoEntity demoEntity,List<MatchInput> listMatchInputs){
+		return listMatchInputs.parallelStream()
 				.map(input -> matchType(demoDTO, demoEntity, input))
 				.collect(Collectors.toList());
 	}
@@ -36,17 +36,22 @@ public class DemoMatcher {
 	 * @return the match output
 	 */
 	private MatchOutput matchType(DemoDTO demoDTO, DemoEntity demoEntity, MatchInput input) {
-		Optional<MatchStrategyType> matchStrategyType = MatchStrategyType.getMatchStrategyType(input.getMatchStrategyType());
+		String matchStrategyTypeStr = input.getMatchStrategyType();
+		if(matchStrategyTypeStr == null) {
+			matchStrategyTypeStr = MatchStrategyType.EXACT.getType();
+		}
+
+		Optional<MatchStrategyType> matchStrategyType = MatchStrategyType.getMatchStrategyType(matchStrategyTypeStr);
 		if(matchStrategyType.isPresent() ) {
 			MatchStrategyType strategyType = matchStrategyType.get();
 			Optional<MatchingStrategy> matchingStrategy = input.getDemoMatchType().getAllowedMatchingStrategy(strategyType);
 			if(matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();
-				Object reqInfo =  input.getDemoMatchType().getDemoInfo().getInfo(demoDTO);
-				Object entityInfo = input.getDemoMatchType().getEntityInfo().getInfo(demoEntity);
+				Object reqInfo =  input.getDemoMatchType().getDemoInfoFetcher().getInfo(demoDTO);
+				Object entityInfo = input.getDemoMatchType().getEntityInfoFetcher().getInfo(demoEntity);
 				MatchFunction matchFunction = strategy.getMatchFunction();
 				int mtOut = matchFunction.doMatch(reqInfo, entityInfo);
-				boolean matchOutput=mtOut>=input.getMatchValue();
+				boolean matchOutput = mtOut >= input.getMatchValue();
 				return new MatchOutput(mtOut,matchOutput,input.getMatchStrategyType(),input.getDemoMatchType());
 	       }
 		}
