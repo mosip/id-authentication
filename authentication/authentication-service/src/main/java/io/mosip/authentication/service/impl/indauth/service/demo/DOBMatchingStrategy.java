@@ -1,26 +1,39 @@
-/**
- * 
- */
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import io.mosip.authentication.core.util.MatcherUtil;
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
- * @author M1047395
+ * @author Sanjay Murali
  *
  */
 public enum DOBMatchingStrategy implements MatchingStrategy {
 	
 	EXACT(MatchStrategyType.EXACT, (reqInfo, entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
-			//TODO string to date conversion
-			return MatcherUtil.doExactMatch((Date) reqInfo,(Date) entityInfo);
-		} else {
-			return 0;
-		}
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date reqInfoDate = null;
+			Date entityInfoDate = null;
+			try {
+				reqInfoDate = sdf.parse((String) reqInfo);
+				entityInfoDate = sdf.parse((String) entityInfo);
+				return MatcherUtil.doExactMatch(reqInfoDate,entityInfoDate);
+			} catch (ParseException e) {
+				//Fix Me
+				return 0;
+			}
+		} 
+		return 0;
 	});
+	
 	
 	private final MatchFunction matchFunction;
 

@@ -93,7 +93,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			mosipLogger.info("NA", "NA", "NA", "generated OTP is: " + otp);
 			otpResponseDTO.setStatus("Y");
 			otpResponseDTO.setTxnID(txnID);
-			otpResponseDTO.setResponseTime(formateDate(new Date(), env.getProperty("date.format.pattern")));
+			otpResponseDTO.setResponseTime(formateDate(new Date(), env.getProperty("datetime.pattern")));
 			// TODO Date format to be included
 			saveAutnTxn(otpRequestDto);
 		}
