@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
-import io.mosip.registration.processor.status.repositary.SyncRegistrationRepository;
+import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 
 /**
  * The Class SyncRegistrationDao.
@@ -21,7 +21,7 @@ public class SyncRegistrationDao {
 
 	/** The registration sync status. */
 	@Autowired
-	SyncRegistrationRepository syncRegistrationRepository;
+	RegistrationRepositary<SyncRegistrationEntity, String> syncRegistrationRepository;
 
 	/** The Constant AND. */
 	public static final String AND = "AND";

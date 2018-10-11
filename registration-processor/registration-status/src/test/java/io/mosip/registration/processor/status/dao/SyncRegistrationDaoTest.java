@@ -18,7 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.mosip.registration.processor.status.dto.SyncStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
 import io.mosip.registration.processor.status.entity.SyncRegistrationEntity;
-import io.mosip.registration.processor.status.repositary.SyncRegistrationRepository;
+import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 
 /**
  * The Class SyncRegistrationDaoTest.
@@ -34,7 +34,7 @@ public class SyncRegistrationDaoTest {
 
 	/** The sync registration repository. */
 	@Mock
-	SyncRegistrationRepository syncRegistrationRepository;
+	RegistrationRepositary<SyncRegistrationEntity, String> syncRegistrationRepository;
 
 	/** The sync registration entity. */
 	private SyncRegistrationEntity syncRegistrationEntity;
@@ -50,11 +50,11 @@ public class SyncRegistrationDaoTest {
 		syncRegistrationEntityList = new ArrayList<>();
 
 		syncRegistrationEntity = new SyncRegistrationEntity();
-		syncRegistrationEntity.setSyncRegistrationId("0c326dc2-ac54-4c2a-98b4-b0c620f1661f");
+		syncRegistrationEntity.setId("0c326dc2-ac54-4c2a-98b4-b0c620f1661f");
 		syncRegistrationEntity.setRegistrationId("1001");
 		syncRegistrationEntity.setRegistrationType(SyncTypeDto.NEW_REGISTRATION.toString());
 		syncRegistrationEntity.setParentRegistrationId("1234");
-		syncRegistrationEntity.setStatusCode(SyncStatusDto.INITIATED.toString());
+		syncRegistrationEntity.setStatusCode(SyncStatusDto.PRE_SYNC.toString());
 		syncRegistrationEntity.setStatusComment("NEW");
 		syncRegistrationEntity.setLangCode("eng");
 		syncRegistrationEntity.setIsActive(true);
@@ -80,14 +80,14 @@ public class SyncRegistrationDaoTest {
 	public void saveTest() {
 		SyncRegistrationEntity syncRegistrationEntityResult = syncRegistrationDao.save(syncRegistrationEntity);
 		assertEquals("Verifing Registration Id after saving in DB. Expected value is 1001",
-				syncRegistrationEntity.getSyncRegistrationId(), syncRegistrationEntityResult.getSyncRegistrationId());
+				syncRegistrationEntity.getId(), syncRegistrationEntityResult.getId());
 	}
 
 	@Test
 	public void updateTest() {
 		SyncRegistrationEntity syncRegistrationEntityResult = syncRegistrationDao.update(syncRegistrationEntity);
 		assertEquals("Verifing Registration Id after Updating in DB. Expected value is 1001",
-				syncRegistrationEntity.getSyncRegistrationId(), syncRegistrationEntityResult.getSyncRegistrationId());
+				syncRegistrationEntity.getId(), syncRegistrationEntityResult.getId());
 	}
 
 	/**

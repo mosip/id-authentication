@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiModelProperty;
  * The Class SyncRegistrationDto.
  *
  * @author M1047487
+ * @author Girish Yarru
  */
 public class SyncRegistrationDto implements Serializable {
 
@@ -21,13 +22,13 @@ public class SyncRegistrationDto implements Serializable {
 	private String registrationId;
 
 	/** The sync type dto. */
-	private SyncTypeDto syncTypeDto;
+	private SyncTypeDto syncType;
 
 	/** The parent registration id. */
 	private String parentRegistrationId;
 
 	/** The sync status dto. */
-	private SyncStatusDto syncStatusDto;
+	private SyncStatusDto syncStatus;
 
 	/** The status comment. */
 	private String statusComment;
@@ -70,9 +71,9 @@ public class SyncRegistrationDto implements Serializable {
 			SyncStatusDto syncStatusDto, String statusComment, String langCode) {
 		super();
 		this.registrationId = registrationId;
-		this.syncTypeDto = syncTypeDto;
+		this.syncType = syncTypeDto;
 		this.parentRegistrationId = parentRegistrationId;
-		this.syncStatusDto = syncStatusDto;
+		this.syncStatus = syncStatusDto;
 		this.statusComment = statusComment;
 		this.langCode = langCode;
 	}
@@ -177,8 +178,8 @@ public class SyncRegistrationDto implements Serializable {
 	 *
 	 * @return the sync type dto
 	 */
-	public SyncTypeDto getSyncTypeDto() {
-		return syncTypeDto;
+	public SyncTypeDto getSyncType() {
+		return syncType;
 	}
 
 	/**
@@ -187,8 +188,8 @@ public class SyncRegistrationDto implements Serializable {
 	 * @param syncTypeDto
 	 *            the new sync type dto
 	 */
-	public void setSyncTypeDto(SyncTypeDto syncTypeDto) {
-		this.syncTypeDto = syncTypeDto;
+	public void setSyncType(SyncTypeDto syncTypeDto) {
+		this.syncType = syncTypeDto;
 	}
 
 	/**
@@ -196,8 +197,8 @@ public class SyncRegistrationDto implements Serializable {
 	 *
 	 * @return the sync status dto
 	 */
-	public SyncStatusDto getSyncStatusDto() {
-		return syncStatusDto;
+	public SyncStatusDto getSyncStatus() {
+		return syncStatus;
 	}
 
 	/**
@@ -206,8 +207,8 @@ public class SyncRegistrationDto implements Serializable {
 	 * @param syncStatusDto
 	 *            the new sync status dto
 	 */
-	public void setSyncStatusDto(SyncStatusDto syncStatusDto) {
-		this.syncStatusDto = syncStatusDto;
+	public void setSyncStatus(SyncStatusDto syncStatusDto) {
+		this.syncStatus = syncStatusDto;
 	}
 
 	/**

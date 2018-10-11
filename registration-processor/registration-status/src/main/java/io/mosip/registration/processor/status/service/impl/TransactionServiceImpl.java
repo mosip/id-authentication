@@ -1,20 +1,20 @@
 package io.mosip.registration.processor.status.service.impl;
 
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
 import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
-import io.mosip.registration.processor.status.repositary.TransactionRepositary;
+import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 import io.mosip.registration.processor.status.service.TransactionService;
 
 @Service
 public class TransactionServiceImpl implements TransactionService<TransactionDto> {
 
 	@Autowired
-	TransactionRepositary transactionRepositary;
+	RegistrationRepositary<TransactionEntity, String> transactionRepositary;
 
 	@Override
 	public TransactionEntity addRegistrationTransaction(TransactionDto transactionStatusDto) {

@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -20,62 +19,49 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name = "registration_list", schema = "regprc")
-public class SyncRegistrationEntity {
-
-
-	/** The Sync registration id. */
-	@Column(name = "id", nullable = false)
-	@Id
-	private String syncRegistrationId;
-
+public class SyncRegistrationEntity extends BaseRegistrationEntity{
 
 	/** The registration id. */
 	@Column(name = "reg_id", nullable = false)
 	private String registrationId;
-	
 
 	/** The registration type. */
 	@Column(name = "reg_type")
 	private String registrationType;
 
-
 	/** The parent registration id. */
 	@Column(name = "parent_reg_id")
 	private String parentRegistrationId;
-	
 
 	/** The status code. */
 	@Column(name = "status_code")
 	private String statusCode;
-	
 
 	/** The status comment. */
 	@Column(name = "status_comment")
 	private String statusComment;
-	
 
 	/** The lang code. */
 	@Column(name = "lang_code", nullable = false)
 	private String langCode;
-	
 
 	/** The is active. */
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;
-	
+
 	/** The created by. */
 	@Column(name = "cr_by", nullable = false)
 	private String createdBy;
-	
+
 	/** The create date time. */
 	@Column(name = "cr_dtimes", nullable = false)
 	@CreationTimestamp
 	private LocalDateTime createDateTime;
-	
+
 	/** The updated by. */
 	@Column(name = "upd_by")
 	private String updatedBy;
-	
+
 	/** The update date time. */
 	@Column(name = "upd_dtimes")
 	@UpdateTimestamp
@@ -88,7 +74,7 @@ public class SyncRegistrationEntity {
 	/** The deleted date time. */
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedDateTime;
-	
+
 	/**
 	 * Instantiates a new sync registration entity.
 	 */
@@ -96,23 +82,6 @@ public class SyncRegistrationEntity {
 		super();
 	}
 
-	/**
-	 * Gets the sync registration id.
-	 *
-	 * @return the sync registration id
-	 */
-	public String getSyncRegistrationId() {
-		return syncRegistrationId;
-	}
-
-	/**
-	 * Sets the sync registration id.
-	 *
-	 * @param syncRegistrationId the new sync registration id
-	 */
-	public void setSyncRegistrationId(String syncRegistrationId) {
-		this.syncRegistrationId = syncRegistrationId;
-	}
 
 	/**
 	 * Gets the registration id.
@@ -126,7 +95,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the registration id.
 	 *
-	 * @param registrationId the new registration id
+	 * @param registrationId
+	 *            the new registration id
 	 */
 	public void setRegistrationId(String registrationId) {
 		this.registrationId = registrationId;
@@ -144,7 +114,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the registration type.
 	 *
-	 * @param registrationType the new registration type
+	 * @param registrationType
+	 *            the new registration type
 	 */
 	public void setRegistrationType(String registrationType) {
 		this.registrationType = registrationType;
@@ -162,7 +133,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the parent registration id.
 	 *
-	 * @param parentRegistrationId the new parent registration id
+	 * @param parentRegistrationId
+	 *            the new parent registration id
 	 */
 	public void setParentRegistrationId(String parentRegistrationId) {
 		this.parentRegistrationId = parentRegistrationId;
@@ -180,7 +152,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the status code.
 	 *
-	 * @param statusCode the new status code
+	 * @param statusCode
+	 *            the new status code
 	 */
 	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
@@ -198,7 +171,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the status comment.
 	 *
-	 * @param statusComment the new status comment
+	 * @param statusComment
+	 *            the new status comment
 	 */
 	public void setStatusComment(String statusComment) {
 		this.statusComment = statusComment;
@@ -216,7 +190,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the lang code.
 	 *
-	 * @param langCode the new lang code
+	 * @param langCode
+	 *            the new lang code
 	 */
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
@@ -234,7 +209,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the checks if is active.
 	 *
-	 * @param isActive the new checks if is active
+	 * @param isActive
+	 *            the new checks if is active
 	 */
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
@@ -252,7 +228,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the created by.
 	 *
-	 * @param createdBy the new created by
+	 * @param createdBy
+	 *            the new created by
 	 */
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
@@ -270,7 +247,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the creates the date time.
 	 *
-	 * @param createDateTime the new creates the date time
+	 * @param createDateTime
+	 *            the new creates the date time
 	 */
 	public void setCreateDateTime(LocalDateTime createDateTime) {
 		this.createDateTime = createDateTime;
@@ -288,7 +266,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the updated by.
 	 *
-	 * @param updatedBy the new updated by
+	 * @param updatedBy
+	 *            the new updated by
 	 */
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
@@ -306,7 +285,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the update date time.
 	 *
-	 * @param updateDateTime the new update date time
+	 * @param updateDateTime
+	 *            the new update date time
 	 */
 	public void setUpdateDateTime(LocalDateTime updateDateTime) {
 		this.updateDateTime = updateDateTime;
@@ -324,7 +304,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the checks if is deleted.
 	 *
-	 * @param isDeleted the new checks if is deleted
+	 * @param isDeleted
+	 *            the new checks if is deleted
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
@@ -342,7 +323,8 @@ public class SyncRegistrationEntity {
 	/**
 	 * Sets the deleted date time.
 	 *
-	 * @param deletedDateTime the new deleted date time
+	 * @param deletedDateTime
+	 *            the new deleted date time
 	 */
 	public void setDeletedDateTime(LocalDateTime deletedDateTime) {
 		this.deletedDateTime = deletedDateTime;

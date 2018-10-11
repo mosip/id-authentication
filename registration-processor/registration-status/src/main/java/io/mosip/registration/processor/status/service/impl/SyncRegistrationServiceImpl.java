@@ -29,6 +29,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationUtility;
  * The Class SyncRegistrationServiceImpl.
  *
  * @author M1048399
+ * @author M1048219
  */
 @Component
 public class SyncRegistrationServiceImpl implements SyncRegistrationService<SyncRegistrationDto> {
@@ -66,13 +67,13 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				if (existingSyncRegistration != null) {
 					// update sync registration record
 					syncRegistration = convertDtoToEntity(registrationDto);
-					syncRegistration.setSyncRegistrationId(existingSyncRegistration.getSyncRegistrationId());
+					syncRegistration.setId(existingSyncRegistration.getId());
 					syncRegistration.setCreateDateTime(existingSyncRegistration.getCreateDateTime());
 					syncRegistration = syncRegistrationDao.update(syncRegistration);
 				} else {
 					// first time sync registration
 					syncRegistration = convertDtoToEntity(registrationDto);
-					syncRegistration.setSyncRegistrationId(RegistrationUtility.generateId());
+					syncRegistration.setId(RegistrationUtility.generateId());
 					syncRegistration = syncRegistrationDao.save(syncRegistration);
 				}
 				list.add(convertEntityToDto(syncRegistration));
@@ -109,8 +110,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		syncRegistrationDto.setLangCode(entity.getLangCode());
 		syncRegistrationDto.setParentRegistrationId(entity.getParentRegistrationId());
 		syncRegistrationDto.setStatusComment(entity.getStatusComment());
-		syncRegistrationDto.setSyncStatusDto(SyncStatusDto.valueOf(entity.getStatusCode()));
-		syncRegistrationDto.setSyncTypeDto(SyncTypeDto.valueOf(entity.getRegistrationType()));
+		syncRegistrationDto.setSyncStatus(SyncStatusDto.valueOf(entity.getStatusCode()));
+		syncRegistrationDto.setSyncType(SyncTypeDto.valueOf(entity.getRegistrationType()));
 
 		return syncRegistrationDto;
 	}
@@ -123,8 +124,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		syncRegistrationEntity.setLangCode(dto.getLangCode());
 		syncRegistrationEntity.setParentRegistrationId(dto.getParentRegistrationId());
 		syncRegistrationEntity.setStatusComment(dto.getStatusComment());
-		syncRegistrationEntity.setStatusCode(dto.getSyncStatusDto().toString());
-		syncRegistrationEntity.setRegistrationType(dto.getSyncTypeDto().toString());
+		syncRegistrationEntity.setStatusCode(dto.getSyncStatus().toString());
+		syncRegistrationEntity.setRegistrationType(dto.getSyncType().toString());
 		syncRegistrationEntity.setCreatedBy(CREATED_BY);
 		syncRegistrationEntity.setUpdatedBy(CREATED_BY);
 		if (syncRegistrationEntity.getIsDeleted()) {

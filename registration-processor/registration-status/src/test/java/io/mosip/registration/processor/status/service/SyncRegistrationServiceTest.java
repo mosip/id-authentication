@@ -90,16 +90,16 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationDto.setIsDeleted(false);
 		syncRegistrationDto.setParentRegistrationId("1234");
 		syncRegistrationDto.setStatusComment("NEW");
-		syncRegistrationDto.setSyncStatusDto(SyncStatusDto.INITIATED);
-		syncRegistrationDto.setSyncTypeDto(SyncTypeDto.NEW_REGISTRATION);
+		syncRegistrationDto.setSyncStatus(SyncStatusDto.PRE_SYNC);
+		syncRegistrationDto.setSyncType(SyncTypeDto.NEW_REGISTRATION);
 		entities.add(syncRegistrationDto);
 
 		syncRegistrationEntity = new SyncRegistrationEntity();
-		syncRegistrationEntity.setSyncRegistrationId("0c326dc2-ac54-4c2a-98b4-b0c620f1661f");
+		syncRegistrationEntity.setId("0c326dc2-ac54-4c2a-98b4-b0c620f1661f");
 		syncRegistrationEntity.setRegistrationId(syncRegistrationDto.getRegistrationId());
-		syncRegistrationEntity.setRegistrationType(syncRegistrationDto.getSyncTypeDto().toString());
+		syncRegistrationEntity.setRegistrationType(syncRegistrationDto.getSyncType().toString());
 		syncRegistrationEntity.setParentRegistrationId(syncRegistrationDto.getParentRegistrationId());
-		syncRegistrationEntity.setStatusCode(syncRegistrationDto.getSyncStatusDto().toString());
+		syncRegistrationEntity.setStatusCode(syncRegistrationDto.getSyncStatus().toString());
 		syncRegistrationEntity.setStatusComment(syncRegistrationDto.getStatusComment());
 		syncRegistrationEntity.setLangCode(syncRegistrationDto.getLangCode());
 		syncRegistrationEntity.setIsActive(syncRegistrationDto.getIsActive());
