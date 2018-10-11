@@ -31,6 +31,7 @@
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 		<jackson.version>2.9.5</jackson.version>
 		<postgresql.version>42.2.2</postgresql.version>
+		<commons.lang.version>2.4</commons.lang.version>
 	</properties>
 
 	<dependencies>
@@ -122,6 +123,11 @@
 			<version>1.0</version>
 			<scope>system</scope>
 			<systemPath>${basedir}/src/lib/MANTRA.MFS100.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons.lang.version}</version>
 		</dependency>
 	</dependencies>
 	<build>

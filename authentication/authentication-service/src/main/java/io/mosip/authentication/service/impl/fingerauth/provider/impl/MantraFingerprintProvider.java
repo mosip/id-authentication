@@ -37,10 +37,7 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 				//TODO Check for Quality and Nfiq
 				fpDevice.StopCapture();
 				fpDevice.Uninit();
-				for(byte value : fingerData.WSQImage()) {
-					System.out.print(value);
-				}
-				return Optional.of(fingerData.WSQImage());
+				return Optional.ofNullable(fingerData.WSQImage());
 			} else {
 				// log "Capture failed : " + fpDevice.GetLastError());
 				fpDevice.StopCapture();
