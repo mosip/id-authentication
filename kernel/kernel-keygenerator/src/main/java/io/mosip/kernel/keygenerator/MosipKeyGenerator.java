@@ -4,8 +4,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 
 import javax.crypto.KeyGenerator;
-
-import io.mosip.kernel.keygenerator.asymmetrickeypair.MosipAsymmetricKeyPair;
+import javax.crypto.SecretKey;
 import io.mosip.kernel.keygenerator.config.KeyGeneratorConfig;
 import io.mosip.kernel.keygenerator.utils.KeyGeneratorUtils;
 
@@ -29,9 +28,9 @@ public class MosipKeyGenerator {
 	 * 
 	 * @return generated symmetric key
 	 */
-	public static byte[] getSymmetricKey() {
+	public static SecretKey getSymmetricKey() {
 		KeyGenerator generator = KeyGeneratorUtils.getKeyGenerator(KeyGeneratorConfig.SYMMETRIC_ALGORITHM);
-		return generator.generateKey().getEncoded();
+		return generator.generateKey();
 	}
 
 	/**
@@ -39,10 +38,10 @@ public class MosipKeyGenerator {
 	 * 
 	 * @return {@link MosipAsymmetricKeyPair} which contain public nad private key
 	 */
-	public static MosipAsymmetricKeyPair getAsymmetricKey() {
+	public static KeyPair getAsymmetricKey() {
 		KeyPairGenerator generator = KeyGeneratorUtils.getKeyPairGenerator(KeyGeneratorConfig.ASYMMETRIC_ALGORITHM);
-		KeyPair rsaPair = generator.generateKeyPair();
-		return new MosipAsymmetricKeyPair(rsaPair.getPublic().getEncoded(), rsaPair.getPrivate().getEncoded());
+		return generator.generateKeyPair();
+		
 	}
 
 }
