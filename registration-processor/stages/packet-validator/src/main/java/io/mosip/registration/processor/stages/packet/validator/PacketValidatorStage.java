@@ -3,6 +3,7 @@
  */
 package io.mosip.registration.processor.stages.packet.validator;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -10,18 +11,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
-import io.mosip.kernel.core.util.exception.MosipJsonParseException;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.packet.dto.BiometricSequence;
+import io.mosip.registration.processor.core.packet.dto.DemographicSequence;
 import io.mosip.registration.processor.core.packet.dto.HashSequence;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -54,118 +54,183 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
-		this.consume(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN);
+		this.consumeAndSend(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, MessageBusAddress.STRUCTURE_BUS_OUT);
 	}
 
 	public boolean filesValidation(String registrationId, PacketInfo packetInfo) {
 		boolean filesValidated = false;
 
 		HashSequence hashSequence = packetInfo.getHashSequence();
-		/*
-		 * if (validateApplicant(registrationId, hashSequence.getApplicant()) &&
-		 * validateHOF(registrationId, hashSequence.getHof()) &&
-		 * validateIntroducer(registrationId, hashSequence.getIntroducer()) &&
-		 * validateApplicantPhoto(registrationId, packetInfo)) { filesValidated = true;
-		 * }
-		 */
+		filesValidated = validateHashSequence(registrationId, hashSequence);
 
 		return filesValidated;
 
 	}
 
-	public boolean validateApplicantPhoto(String registrationId, PacketInfo packetInfo) {
-		boolean isPhotovalidated = false;
-		isPhotovalidated = adapter.checkFileExistence(registrationId, PacketFiles.DEMOGRAPHIC.name()
-				+ PacketFiles.APPLICANT.name() + packetInfo.getPhotograph().getPhotographName());
+	private boolean validateHashSequence(String registrationId, HashSequence hashSequence) {
+		boolean isHashSequenceValidated = false;
 
-		return isPhotovalidated;
+		if (validateBiometricSequence(registrationId, hashSequence.getBiometricSequence())
+				&& validateDemographicSequence(registrationId, hashSequence.getDemographicSequence())) {
+			isHashSequenceValidated = true;
+		}
+
+		return isHashSequenceValidated;
 	}
 
-	public boolean validateApplicant(String registrationId, List<String> applicant) {
-		boolean isApplicantValidated = false;
-		/*for (String applicantFile : applicant) {
+	private boolean validateDemographicSequence(String registrationId, DemographicSequence demographicSequence) {
+		boolean isDemographicSequenceValidated = false;
+		for (String applicantFile : demographicSequence.getApplicant()) {
 			String fileName = "";
-			if (PacketFiles.LEFTEYE.name().equals(applicantFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.APPLICANT.name() + PacketFiles.LEFTEYE.name();
-			} else if (PacketFiles.LEFTTHUMB.name().equals(applicantFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.APPLICANT.name() + PacketFiles.LEFTTHUMB.name();
-			} else if (PacketFiles.RIGHTEYE.name().equals(applicantFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.APPLICANT.name() + PacketFiles.RIGHTEYE.name();
-			} else if (PacketFiles.RIGHTTHUMB.name().equals(applicantFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.APPLICANT.name() + PacketFiles.RIGHTTHUMB.name();
-			} else if (PacketFiles.DEMOGRAPHICINFO.name().equals(applicantFile)) {
-				fileName = PacketFiles.DEMOGRAPHIC.name() + PacketFiles.DEMOGRAPHICINFO.name();
+			if (PacketFiles.APPLICANTPHOTO.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
+						+ File.separator + PacketFiles.APPLICANTPHOTO.name();
+			} else if (PacketFiles.REGISTRATIONACKNOWLDEGEMENT.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
+						+ File.separator + PacketFiles.REGISTRATIONACKNOWLDEGEMENT.name();
+			} else if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.DEMOGRAPHICINFO.name();
+			} else if (PacketFiles.PROOFOFADDRESS.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
+						+ File.separator + PacketFiles.PROOFOFADDRESS.name();
+			} else if (PacketFiles.APPLICANTEXCEPTIONPHOTO.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
+						+ File.separator + PacketFiles.APPLICANTEXCEPTIONPHOTO.name();
 			}
-			// To do for residence copy
-			isApplicantValidated = adapter.checkFileExistence(registrationId, fileName);
+			isDemographicSequenceValidated = adapter.checkFileExistence(registrationId, fileName);
 
-		}*/
-		return isApplicantValidated;
+			if (!isDemographicSequenceValidated) {
+				break;
+			}
+		}
+
+		return isDemographicSequenceValidated;
 	}
 
-	public boolean validateIntroducer(String registrationId, List<String> introducer) {
+	private boolean validateBiometricSequence(String registrationId, BiometricSequence biometricSequence) {
+
+		boolean isBiometricSequenceValidated = false;
+
+		if (validateBiometricApplicant(registrationId, biometricSequence.getApplicant())
+				&& validateBiometricIntroducer(registrationId, biometricSequence.getIntroducer())) {
+			isBiometricSequenceValidated = true;
+		}
+
+		return isBiometricSequenceValidated;
+	}
+
+	private boolean validateBiometricIntroducer(String registrationId, List<String> introducer) {
 		boolean isIntroducerValidated = false;
-		/*for (String introducerFile : introducer) {
+
+		for (String applicantFile : introducer) {
 			String fileName = "";
-			if (PacketFiles.LEFTEYE.name().equals(introducerFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.APPLICANT.name() + PacketFiles.LEFTEYE.name();
-			} else if (PacketFiles.LEFTTHUMB.name().equals(introducerFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.APPLICANT.name() + PacketFiles.LEFTTHUMB.name();
-			} else if (PacketFiles.RIGHTEYE.name().equals(introducerFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.APPLICANT.name() + PacketFiles.RIGHTEYE.name();
-			} else if (PacketFiles.RIGHTTHUMB.name().equals(introducerFile)) {
-				fileName = PacketFiles.BIOMETRIC.name() + PacketFiles.APPLICANT.name() + PacketFiles.RIGHTTHUMB.name();
+			if (PacketFiles.LEFTEYE.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.BIOMETRIC.name() + File.separator + PacketFiles.INTRODUCER.name()
+						+ File.separator + PacketFiles.LEFTEYE.name();
+			} else if (PacketFiles.RIGHTEYE.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.BIOMETRIC.name() + File.separator + PacketFiles.INTRODUCER.name()
+						+ File.separator + PacketFiles.RIGHTEYE.name();
+			} else if (PacketFiles.LEFTTHUMB.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.BIOMETRIC.name() + File.separator + PacketFiles.INTRODUCER.name()
+						+ File.separator + PacketFiles.LEFTTHUMB.name();
+			} else if (PacketFiles.RIGHTTHUMB.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.BIOMETRIC.name() + File.separator + PacketFiles.INTRODUCER.name()
+						+ File.separator + PacketFiles.RIGHTTHUMB.name();
 			}
 			isIntroducerValidated = adapter.checkFileExistence(registrationId, fileName);
 
-		}*/
+			if (!isIntroducerValidated) {
+				break;
+			}
+		}
 		return isIntroducerValidated;
+	}
+
+	private boolean validateBiometricApplicant(String registrationId, List<String> applicant) {
+		boolean isApplicantValidated = false;
+
+		for (String applicantFile : applicant) {
+			String fileName = "";
+			if (PacketFiles.LEFTEYE.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.BIOMETRIC.name() + File.separator + PacketFiles.APPLICANT.name() + File.separator
+						+ PacketFiles.LEFTEYE.name();
+			} else if (PacketFiles.RIGHTEYE.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.BIOMETRIC.name() + File.separator + PacketFiles.APPLICANT.name() + File.separator
+						+ PacketFiles.RIGHTEYE.name();
+			} else if (PacketFiles.LEFTPALM.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.BIOMETRIC.name() + File.separator + PacketFiles.APPLICANT.name() + File.separator
+						+ PacketFiles.LEFTPALM.name();
+			} else if (PacketFiles.RIGHTPALM.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.BIOMETRIC.name() + File.separator + PacketFiles.APPLICANT.name() + File.separator
+						+ PacketFiles.RIGHTPALM.name();
+			} else if (PacketFiles.BOTHTHUMBS.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.BIOMETRIC.name() + File.separator + PacketFiles.APPLICANT.name() + File.separator
+						+ PacketFiles.BOTHTHUMBS.name();
+			}
+			isApplicantValidated = adapter.checkFileExistence(registrationId, fileName);
+
+			if (!isApplicantValidated) {
+				break;
+			}
+		}
+		return isApplicantValidated;
 	}
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
-
+		object.setAddress(MessageBusAddress.STRUCTURE_BUS_IN);
 		String registrationId = object.getRid();
 
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PACKET_META_INFO);
 		try {
-			fileManager.put(PACKET_META_INFO, packetMetaInfoStream, DirectoryPathDto.TEMP);
-			PacketInfo packetInfo = (PacketInfo) JsonUtils.jsonFileToJavaObject(PacketInfo.class,
-					DirectoryPathDto.TEMP.toString());
-			fileManager.cleanUpFile(DirectoryPathDto.TEMP, DirectoryPathDto.TEMP, registrationId);
-			boolean isFilesValidated = filesValidation(registrationId, packetInfo);
+
+			JsonUtil jsonUtil = new JsonUtil();
+			PacketInfo packetInfo = (PacketInfo) jsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+					PacketInfo.class);
+
 			RegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(registrationId);
+			boolean isFilesValidated = filesValidation(registrationId, packetInfo);
+			boolean isCheckSumValidated = false;
 			if (isFilesValidated) {
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.FILE_VALIDATION_SUCCESSFULL.toString());
-				registrationStatusDto.setStatusComment("packet is in status File Validation Successful");
+
+				// To do call checksum validation and assign to isCheckSumValidated
+				isCheckSumValidated = true;
+				if (!isCheckSumValidated) {
+					registrationStatusDto.setStatusComment("Packet checkSum validation failure");
+				}
 
 			} else {
-				registrationStatusDto.setRetryCount(registrationStatusDto.getRetryCount() + 1);
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.FILE_VALIDATION_FAILED.toString());
-				registrationStatusDto.setStatusComment("packet is in status");
+				registrationStatusDto.setStatusComment("Packet files validation failure");
+
+			}
+			if (isFilesValidated && isCheckSumValidated) {
+				object.setIsValid(Boolean.TRUE);
+				registrationStatusDto
+						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_SUCCESSFULL.toString());
+
+			} else {
+				object.setIsValid(Boolean.FALSE);
+				if (registrationStatusDto.getRetryCount() == null) {
+					registrationStatusDto.setRetryCount(0);
+				} else {
+					registrationStatusDto.setRetryCount(registrationStatusDto.getRetryCount() + 1);
+				}
+
+				registrationStatusDto
+						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_FAILED.toString());
 
 			}
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-			if (isFilesValidated) {
 
-				boolean isCheckSumValidated = false;
-				// To do checksum validation and update the status
-				object.setIsValid(isCheckSumValidated);
-
-			} else {
-				object.setIsValid(isFilesValidated);
-			}
-
-		} catch (MosipJsonParseException | MosipJsonMappingException | MosipIOException | IOException e) {
+		} catch (IOException e) {
 			log.error("Structural validation Failed", e);
-			object.setRetry(object.getRetry() + 1);
-			// To do set values for DTO retry
+			object.setInternalError(Boolean.TRUE);
+
 		} catch (Exception ex) {
 			log.error("Structural validation Failed", ex);
-			object.setRetry(object.getRetry() + 1);
-			// To do set values for DTO retry
+			object.setInternalError(Boolean.TRUE);
 		}
 
 		return object;
