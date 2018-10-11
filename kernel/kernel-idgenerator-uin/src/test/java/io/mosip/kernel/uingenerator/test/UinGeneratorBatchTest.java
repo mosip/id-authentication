@@ -14,10 +14,9 @@ import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.uingenerator.UinGeneratorApp;
+import io.mosip.kernel.uingenerator.UinGeneratorBootApplication;
 import io.mosip.kernel.uingenerator.batch.UinBatchConfig;
 
 /**
@@ -26,8 +25,7 @@ import io.mosip.kernel.uingenerator.batch.UinBatchConfig;
  *
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { UinGeneratorApp.class, SingleJobLauncherTestUtils.class, UinBatchConfig.class })
-@TestPropertySource("classpath:/test.application.properties")
+@SpringBootTest(classes = { UinGeneratorBootApplication.class, SingleJobLauncherTestUtils.class, UinBatchConfig.class })
 public class UinGeneratorBatchTest {
 
 	@Autowired
