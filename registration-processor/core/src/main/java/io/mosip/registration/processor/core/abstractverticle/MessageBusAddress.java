@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
+import java.io.Serializable;
+
 /**
  * This class contains the address values to be used in Registration process
  * 
@@ -8,7 +10,15 @@ package io.mosip.registration.processor.core.abstractverticle;
  * @since 0.0.1
  *
  */
-public class MessageBusAddress {
+public class MessageBusAddress implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public MessageBusAddress() {
+	}
 
 	private String address;
 
@@ -16,7 +26,7 @@ public class MessageBusAddress {
 	 * @param address
 	 *            The bus address
 	 */
-	private MessageBusAddress(String address) {
+	public MessageBusAddress(String address) {
 		this.address = address;
 	}
 
@@ -25,6 +35,10 @@ public class MessageBusAddress {
 	 */
 	public String getAddress() {
 		return this.address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	public static final MessageBusAddress BATCH_BUS = new MessageBusAddress("batch-bus");

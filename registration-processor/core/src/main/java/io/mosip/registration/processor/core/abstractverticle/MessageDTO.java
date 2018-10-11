@@ -1,5 +1,7 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
+import java.io.Serializable;
+
 /**
  * This class contains parameters for communication between MOSIP stages
  * 
@@ -7,13 +9,21 @@ package io.mosip.registration.processor.core.abstractverticle;
  * @since 0.0.1
  *
  */
-public class MessageDTO {
+public class MessageDTO implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	public MessageDTO() {
+		// TODO Auto-generated constructor stub
+	}
 	private String rid;
 	private Boolean isValid;
 	private Boolean internalError;
 
-	private MessageBusAddress address;
+	private MessageBusAddress messageBusAddress;
 
 	private Integer retryCount;
 
@@ -49,18 +59,18 @@ public class MessageDTO {
 		this.retryCount = retryCount;
 	}
 
-	public void setAddress(MessageBusAddress address) {
-		this.address = address;
+	public void setMessageBusAddress(MessageBusAddress messageBusAddress) {
+		this.messageBusAddress = messageBusAddress;
 	}
 
-	public MessageBusAddress getAddress() {
-		return address;
+	public MessageBusAddress getMessageBusAddress() {
+		return messageBusAddress;
 	}
 
 	@Override
 	public String toString() {
-		return "MessageDTO [rid=" + rid + ", isValid=" + isValid + ", address=" + address + ", retryCount=" + retryCount
-				+ ", internalError=" + internalError + "]";
+		return "MessageDTO [rid=" + rid + ", isValid=" + isValid + ", internalError=" + internalError
+				+ ", messageBusAddress=" + messageBusAddress + ", retryCount=" + retryCount + "]";
 	}
-
+	
 }
