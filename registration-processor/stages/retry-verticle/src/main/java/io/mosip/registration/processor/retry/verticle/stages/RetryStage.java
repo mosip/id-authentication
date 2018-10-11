@@ -9,23 +9,24 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 
 @Component
 public class RetryStage extends MosipVerticleManager {
-	//TODO - Add class and method level comments
+	
+	private MosipEventBus mosipEventBus;
+
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
-		this.consume(mosipEventBus, MessageBusAddress.RETRY_BUS);
+		this.mosipEventBus = this.getEventBus(this.getClass());
+		this.consume(this.mosipEventBus, MessageBusAddress.RETRY_BUS);
 
 	}
 
 	@Override
 	public MessageDTO process(MessageDTO dto) {
-		int retrycount = (dto.getRetryCount()==null)?0:dto.getRetryCount()+1;
+		int retrycount = (dto.getRetryCount() == null) ? 0 : dto.getRetryCount() + 1;
 		dto.setRetryCount(retrycount);
-		//TODO - This threshold for retry needs be read from properties file
-		if(dto.getRetryCount()<5) {
-			this.send(this.getEventBus(this.getClass()), dto.getAddress(), dto);
-		}
-		else {
-			this.send(this.getEventBus(this.getClass()), MessageBusAddress.ERROR, dto);
+		// TODO - This threshold for retry needs be read from properties file
+		if (dto.getRetryCount() < 5) {
+			this.send(this.mosipEventBus, dto.getMessageBusAddress(), dto);
+		} else {
+			this.send(this.mosipEventBus, MessageBusAddress.ERROR, dto);
 		}
 		return null;
 	}

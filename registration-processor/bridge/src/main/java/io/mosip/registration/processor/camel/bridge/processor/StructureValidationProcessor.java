@@ -23,6 +23,7 @@ public class StructureValidationProcessor implements Processor {
 	@Override
 	public void process(Exchange exchange) throws Exception {
 		JsonObject json = (JsonObject) exchange.getIn().getBody();
+		System.out.println("From processor "+json);
 		boolean isValid = json.getBoolean(MessageEnum.IS_VALID.getParameter());
 		boolean internalError = json.getBoolean(MessageEnum.INTERNAL_ERROR.getParameter());
 		exchange.getIn().setHeader(MessageEnum.IS_VALID.getParameter(), isValid);
