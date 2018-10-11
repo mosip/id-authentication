@@ -73,4 +73,9 @@ public class MantraFingerprintProviderTest {
 		Optional<Map<?, ?>> segmentFingerprint = fp.segmentFingerprint(new byte[10]);
 		assertFalse(segmentFingerprint.isPresent());
 	}
+	
+	@Test
+	public void testOnPreview() {
+		fp.OnPreview(null);
+	}
 }
