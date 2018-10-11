@@ -161,14 +161,14 @@
 				<artifactId>jackson-mapper-asl</artifactId>
 				<version>${jackson.mapper.asl.version}</version>
 			</dependency>
-			
+
 			<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>javafx</artifactId>
-			<version>${javafx.version}</version>
-			<systemPath>${project.basedir}/src/main/resources/fx_lib/jfxrt.jar</systemPath>
-			<scope>system</scope>
-		</dependency>
+				<groupId>com.oracle</groupId>
+				<artifactId>javafx</artifactId>
+				<version>${javafx.version}</version>
+				<systemPath>${project.basedir}/src/main/resources/fx_lib/jfxrt.jar</systemPath>
+				<scope>system</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -251,22 +251,43 @@
 		</plugins>
 	</build>
 	<profiles>
+		<!-- <profile> <id>sonar</id> <activation> <activeByDefault>true</activeByDefault> 
+			</activation> <properties> Optional URL to server. Default value is http://localhost:9000 
+			<sonar.host.url> http://13.67.91.2:9000 http://172.25.166.136:9000 </sonar.host.url> 
+			<sonar.jacoco.reportPaths> target/jacoco.exec </sonar.jacoco.reportPaths> 
+			</properties> </profile> -->
 		<profile>
-			<id>sonar</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
+			<id>DEV</id>
 			<properties>
-				<!-- Optional URL to server. Default value is http://localhost:9000 -->
-				<sonar.host.url>
-					http://13.67.91.2:9000
-					<!-- http://172.25.166.136:9000 -->
-				</sonar.host.url>
+				<sonar.host.url>http://13.76.43.109:9000</sonar.host.url>
+				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				<sonar.projectName>MOSIP Parent Module-DEV</sonar.projectName>
+				<sonar.projectVersion>master</sonar.projectVersion>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
 			</properties>
 		</profile>
+		<profile>
+			<id>LOCAL</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<sonar.host.url>http://13.67.91.2:9000</sonar.host.url>
+				<sonar.login>5006c6fd96284f6545a4101fb5b1369374265c0f</sonar.login>
+				<sonar.projectName>MOSIP Parent Module-Local</sonar.projectName>
+				<sonar.projectVersion>master</sonar.projectVersion>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+
 	</profiles>
 
 </project>

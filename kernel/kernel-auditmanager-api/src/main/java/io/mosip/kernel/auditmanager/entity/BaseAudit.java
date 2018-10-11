@@ -1,6 +1,5 @@
 package io.mosip.kernel.auditmanager.entity;
 
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -21,12 +20,7 @@ import lombok.Data;
 @MappedSuperclass
 @Data
 @AllArgsConstructor
-public class BaseAudit implements Serializable {
-
-	/**
-	 * Generated serial version id
-	 */
-	private static final long serialVersionUID = -1499777760652041150L;
+public class BaseAudit {
 
 	/**
 	 * Field for immutable universally unique identifier (UUID)
@@ -36,7 +30,7 @@ public class BaseAudit implements Serializable {
 	private String uuid;
 
 	@Column(name = "log_dtimesz", nullable = false, updatable = false)
-	private transient OffsetDateTime createdAt; // ,columnDefinition= "TIMESTAMP WITH TIME ZONE"
+	private OffsetDateTime createdAt; // ,columnDefinition= "TIMESTAMP WITH TIME ZONE"
 
 	/**
 	 * Constructor to initialize {@link BaseAudit} with uuid and timestamp
