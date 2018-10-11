@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,15 +26,12 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
-import io.mosip.authentication.service.factory.AuditRequestFactory;
-import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
 public class RestRequestFactoryTest {
 
 	@InjectMocks

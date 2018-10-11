@@ -21,7 +21,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
@@ -43,11 +42,9 @@ import reactor.ipc.netty.http.HttpResources;
  * 
  * @author Dinesh Karuppiah
  */
-//@RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@TestPropertySource(value = { "classpath:rest-services.properties", "classpath:log.properties" })
 public class OTPAuthServiceTest {
 
 	@InjectMocks

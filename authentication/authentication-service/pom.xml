@@ -116,6 +116,13 @@
 			<artifactId>kernel-idvalidator</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>Mantra</groupId>
+			<artifactId>MFS100</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/lib/MANTRA.MFS100.jar</systemPath>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

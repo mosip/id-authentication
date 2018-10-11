@@ -14,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
@@ -25,7 +24,6 @@ import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.service.entity.AutnTxn;
-import io.mosip.authentication.service.impl.otpgen.facade.OTPFacadeImpl;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
@@ -38,7 +36,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource(value = { "classpath:log.properties" })
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class OTPFacadeImplTest {
 

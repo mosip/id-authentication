@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,7 +28,6 @@ import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.integration.dto.OTPValidateResponseDTO;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
@@ -40,7 +38,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@TestPropertySource(value = { "classpath:rest-services.properties", "classpath:log.properties" })
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ValidateOtpRequestTest {
 
