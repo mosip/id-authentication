@@ -12,10 +12,8 @@ public class MessageDTO {
 	private String rid;
 	private Boolean isValid;
 	private Boolean internalError;
-	
 
 	private MessageBusAddress address;
-	
 
 	private Integer retryCount;
 
@@ -54,13 +52,15 @@ public class MessageDTO {
 	public void setAddress(MessageBusAddress address) {
 		this.address = address;
 	}
+
 	public MessageBusAddress getAddress() {
 		return address;
 	}
+
 	@Override
 	public String toString() {
-		return "MessageDTO [rid=" + rid + ", isValid=" + isValid + 
-				", address=" + address + ", retryCount=" + retryCount + ", internalError=" + internalError +"]";
+		return "MessageDTO [rid=" + rid + ", isValid=" + isValid + ", address=" + address + ", retryCount=" + retryCount
+				+ ", internalError=" + internalError + "]";
 	}
 
 }

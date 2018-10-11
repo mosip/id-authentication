@@ -10,6 +10,10 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.ignite.IgniteClusterManager;
 
+/**
+ * @author Mukul Puspam
+ *
+ */
 public class MosipBridgeFactory {
 
 	static Logger log = LoggerFactory.getLogger(MosipBridgeFactory.class);

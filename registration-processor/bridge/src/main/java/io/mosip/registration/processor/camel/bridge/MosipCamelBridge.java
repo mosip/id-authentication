@@ -1,4 +1,5 @@
 package io.mosip.registration.processor.camel.bridge;
+
 import java.util.concurrent.ExecutionException;
 
 import org.apache.camel.CamelContext;
@@ -12,24 +13,32 @@ import io.vertx.core.logging.LoggerFactory;
 
 /**
  * The Class MosipCamelBridge.
+ * 
+ * @author Mukul Puspam
+ * @since 0.0.1
  */
 public class MosipCamelBridge extends AbstractVerticle {
-	
+
 	/** The log. */
 	static Logger log = LoggerFactory.getLogger(MosipCamelBridge.class);
 
 	/**
 	 * The main method.
 	 *
-	 * @param args the arguments
-	 * @throws InterruptedException the interrupted exception
-	 * @throws ExecutionException the execution exception
+	 * @param args
+	 *            the arguments
+	 * @throws InterruptedException
+	 *             the interrupted exception
+	 * @throws ExecutionException
+	 *             the execution exception
 	 */
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		MosipBridgeFactory.getEventBus();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.vertx.core.AbstractVerticle#start()
 	 */
 	@Override

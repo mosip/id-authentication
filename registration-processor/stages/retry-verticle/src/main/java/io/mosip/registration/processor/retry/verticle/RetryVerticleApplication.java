@@ -10,13 +10,17 @@ import io.mosip.registration.processor.retry.verticle.stages.RetryStage;
 
 @SpringBootApplication
 public class RetryVerticleApplication {
-@Autowired
-RetryStage retrySatge;
-	
+
+	// TODO - Add the class level and method level comments
+	//TODO - Change the name of the project and artifact to "retry-stage"
+
+	@Autowired
+	RetryStage retrySatge;
+
 	public static void main(String[] args) {
 		SpringApplication.run(RetryVerticleApplication.class, args);
 	}
-	
+
 	@PostConstruct
 	void deployVerticle() {
 		retrySatge.deployVerticle();

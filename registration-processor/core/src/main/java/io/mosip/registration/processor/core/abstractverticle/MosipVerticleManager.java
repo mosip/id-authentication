@@ -55,6 +55,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 				throw new DeploymentFailureException(AbstractVerticleErrorCodes.IIS_EPU_ATU_DEPLOYMENT_FAILURE);
 			}
 		});
+		//TODO - Handle these exceptions
 		try {
 			mosipEventBus = new MosipEventBus(eventBus.get());
 		} catch (InterruptedException e) {
