@@ -37,7 +37,7 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@TestPropertySource(value = { "classpath:application-local.properties", "classpath:log.properties" })
+@TestPropertySource(value = { "classpath:log.properties" })
 public class DemoValidatorTest {
 
 	@Autowired

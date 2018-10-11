@@ -59,7 +59,7 @@ public class DemoValidator implements Validator {
 		DemoDTO demodto = authRequestdto.getPersonalDataDTO().getDemoDTO();
 
 		// javax.validator constraint validation
-		validator.validate(demodto, errors);
+		//validator.validate(demodto, errors);
 		// address validation
 		completeAddressValidation(authRequestdto, errors);
 
@@ -243,7 +243,7 @@ public class DemoValidator implements Validator {
 	private void dobValidation(AuthRequestDTO authRequestdto, Errors errors) throws ParseException {
 
 		String pidob = authRequestdto.getPersonalDataDTO().getDemoDTO().getPersonalIdentityDTO().getDob();
-		SimpleDateFormat formatter = new SimpleDateFormat(env.getProperty("dob.date.time.pattern"));
+		SimpleDateFormat formatter = new SimpleDateFormat(env.getProperty("date.pattern"));
 		Date dob = formatter.parse(pidob);
 		Instant instantDob = dob.toInstant();
 
