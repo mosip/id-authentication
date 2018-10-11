@@ -33,6 +33,7 @@ import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDataDTO;
 import io.mosip.authentication.service.impl.indauth.validator.DemoValidator;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
+
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })

@@ -71,7 +71,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 				if (pid.getMsPri() != null && pid.getMsPri().equals(MatchStrategyType.PARTIAL.getType())) {
 					matchValue = pid.getMtPri();
 					if (null == matchValue) {
-						matchValue = Integer.parseInt(environment.getProperty("default.match.value"));
+						matchValue = Integer.parseInt(environment.getProperty("demo.default.match.value"));
 					}
 				}
 
@@ -99,6 +99,12 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 
 			if (null != pid.getPhone()) {
 				MatchInput matchInput = new MatchInput(DemoMatchType.MOBILE, MatchStrategyType.EXACT.getType(),
+						DEFAULT_EXACT_MATCH_VALUE);
+				listMatchInputs.add(matchInput);
+			}
+
+			if (null != pid.getGender()) {
+				MatchInput matchInput = new MatchInput(DemoMatchType.GENDER, MatchStrategyType.EXACT.getType(),
 						DEFAULT_EXACT_MATCH_VALUE);
 				listMatchInputs.add(matchInput);
 			}
@@ -166,17 +172,18 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
 		PersonalFullAddressDTO fad = authRequestDTO.getPersonalDataDTO().getDemoDTO().getPersonalFullAddressDTO();
 		if (null != fad) {
-			if (fad.getMsPri() != null && fad.getMsPri().equals(MatchStrategyType.PARTIAL.getType())) {
-				matchValue = fad.getMtPri();
-				if (null == matchValue) {
-					matchValue = Integer.parseInt(environment.getProperty("default.match.value"));
+			if (null != fad.getAddrPri()) {
+				if (fad.getMsPri() != null && fad.getMsPri().equals(MatchStrategyType.PARTIAL.getType())) {
+					matchValue = fad.getMtPri();
+					if (null == matchValue) {
+						matchValue = Integer.parseInt(environment.getProperty("demo.default.match.value"));
+					}
+
+					// TODO add it for secondary language
 				}
-
-				// TODO add it for secondary language
+				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_PRI, fad.getMsPri(), matchValue);
+				listMatchInputs.add(matchInput);
 			}
-			MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_PRI, fad.getMsPri(), matchValue);
-			listMatchInputs.add(matchInput);
-
 		}
 		return listMatchInputs;
 	}
