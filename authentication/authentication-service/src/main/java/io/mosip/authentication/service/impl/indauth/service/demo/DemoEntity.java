@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -13,6 +14,7 @@ import lombok.Data;
 public class DemoEntity {
 
 	//FIX ME annotate columns for all fields.
+	@Id
 	private String uinRefId;
 	
 	private String lang1Code;
