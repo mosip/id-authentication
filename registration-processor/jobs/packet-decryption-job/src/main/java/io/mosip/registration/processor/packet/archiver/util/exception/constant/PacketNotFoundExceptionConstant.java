@@ -8,7 +8,7 @@ package io.mosip.registration.processor.packet.archiver.util.exception.constant;
 public enum PacketNotFoundExceptionConstant {
 
 	/** The packet not found error. */
-	PACKET_NOT_FOUND_ERROR("RER-ARC-001", "Packet Not Found in DFS");
+	PACKET_NOT_FOUND_ERROR("RER-ARC-001", "Packet Not Found in Packet Store");
 
 	/** The error code. */
 	public final String errorCode;
