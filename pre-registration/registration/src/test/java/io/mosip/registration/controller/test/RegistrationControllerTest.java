@@ -37,8 +37,10 @@ import io.mosip.registration.dto.ContactDto;
 import io.mosip.registration.dto.NameDto;
 import io.mosip.registration.dto.RegistrationDto;
 import io.mosip.registration.dto.ResponseDto;
+import io.mosip.registration.dto.ViewRegistrationResponseDto;
 import io.mosip.registration.exception.PrimaryValidationFailed;
 import io.mosip.registration.helper.ApplicationHelper;
+import io.mosip.registration.service.RegistrationService;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(RegistrationController.class)
@@ -46,7 +48,8 @@ public class RegistrationControllerTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
-	
+	@MockBean
+	private RegistrationService registrationService;
 	@MockBean
 	private ApplicationHelper helper;
 	
@@ -114,7 +117,7 @@ public class RegistrationControllerTest {
 //	}
 	
 	
-	@Test
+	/*@Test
 	public void FailureSave() throws Exception {
 		logger.info("----------Unsuccessful save of application-------");		
         ObjectMapper mapperObj = new ObjectMapper();
@@ -134,6 +137,44 @@ public class RegistrationControllerTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(jsonStr);
 		mockMvc.perform(requestBuilder).andExpect(status().isBadRequest());
+	}
+	
+	*/
+	
+	
+	@Test
+	public void getAllApplicationTest() throws Exception  {
+
+		String userId = "9988905333";
+		ViewRegistrationResponseDto responseDto = new ViewRegistrationResponseDto();
+		List<ViewRegistrationResponseDto> response = new ArrayList<ViewRegistrationResponseDto>();
+		responseDto.setGroup_id("1234");
+		responseDto.setFirstname("rupika");
+		responseDto.setNoOfRecords(1);
+		responseDto.setStatus_code("draft");
+		responseDto.setUpd_dtimesz("2018-10-08 00:00:00");
+		response.add(responseDto);
+
+		Mockito.when(registrationService.getApplicationDetails(Mockito.anyString())).thenReturn(response);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/Applications/")
+				.param("userId", userId);
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void getApplicationStatusTest() throws Exception {
+		String groupId = "1234";
+		Map<String, String> response = new HashMap<String, String>();
+		response.put("1234", "12245");
+
+		Mockito.when(registrationService.getApplicationStatus(Mockito.anyString())).thenReturn(response);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/ApplicationStatus/")
+				.param("groupId", groupId);
+
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 
 }

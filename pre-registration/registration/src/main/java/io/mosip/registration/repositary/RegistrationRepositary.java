@@ -11,11 +11,21 @@ import io.mosip.registration.entity.RegistrationEntity;
 
 @Repository("registrationRepository")
 public interface RegistrationRepositary extends BaseRepository<RegistrationEntity, String> {
-
-	public List<RegistrationEntity>  findBygroupId(String groupId);
 	
 	public static final String record = "SELECT prereg_id FROM prereg.applicant_demographic WHERE group_id= :groupId";
-
+	public static final String countRec = "SELECT DISTINCT group_id  FROM prereg.applicant_demographic where userid=:userId";
+	
+	
 	@Query(value = record, nativeQuery = true)
 	List<String> findBygroupIds(@Param("groupId") String groupId);
+	
+	
+	public List<RegistrationEntity>  findBygroupId(String groupId);
+	
+	public List<RegistrationEntity> findByuserId(String userId);
+
+	@Query(value = countRec, nativeQuery = true)
+	public List<String> noOfGroupIds(@Param("userId") String userId);
+
+	
 }

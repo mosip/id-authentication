@@ -1,6 +1,7 @@
 package io.mosip.registration.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -39,6 +40,7 @@ public class RegistrationEntity implements Serializable {
 	@Column(name = "prereg_id", nullable = false)
 	@Id
 	private String preRegistrationId;
+	private String userId;
 	
 	/** The group id. */
 	@Column(name = "group_id", nullable = false)
@@ -158,7 +160,7 @@ public class RegistrationEntity implements Serializable {
 	/** The create date time. */
 	@Column(name = "cr_dtimesz")
 	@CreationTimestamp
-	private LocalDateTime createDateTime;
+	private Timestamp createDateTime;
 
 	/** The updated by. */
 	@Column(name = "upd_by")
@@ -167,7 +169,7 @@ public class RegistrationEntity implements Serializable {
 	/** The update date time. */
 	@Column(name = "upd_dtimesz")
 	@UpdateTimestamp
-	private LocalDateTime updateDateTime;
+	private Timestamp updateDateTime;
 
 	/** The is deleted. */
 	@Column(name = "is_deleted")

@@ -1,8 +1,13 @@
 package io.mosip.registration.service.impl;
 
+import java.sql.Timestamp;
 import java.time.OffsetDateTime;
-import java.util.Random;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +19,19 @@ import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.core.spi.idgenerator.MosipPridGenerator;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.code.AuditLogTempConstant;
-import io.mosip.registration.code.FormType;
+import io.mosip.registration.core.exceptions.TablenotAccessibleException;
+import io.mosip.registration.core.generator.MosipGroupIdGenerator;
 import io.mosip.registration.dao.RegistrationDao;
 import io.mosip.registration.dto.AddressDto;
 import io.mosip.registration.dto.ContactDto;
 import io.mosip.registration.dto.NameDto;
 import io.mosip.registration.dto.RegistrationDto;
 import io.mosip.registration.dto.ResponseDto;
+import io.mosip.registration.dto.ViewRegistrationResponseDto;
 import io.mosip.registration.entity.RegistrationEntity;
+import io.mosip.registration.exception.utils.RegistrationErrorCodes;
+import io.mosip.registration.repositary.RegistrationRepositary;
 import io.mosip.registration.service.RegistrationService;
-import io.mosip.registration.core.exceptions.TablenotAccessibleException;
-import io.mosip.registration.core.generator.MosipGroupIdGenerator;
 
 @Component
 public class RegistrationServiceImpl implements RegistrationService<String, RegistrationDto> {
@@ -46,6 +53,17 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	@Autowired
 	private MosipPridGenerator<String> pridGenerator;
 
+	@Autowired
+	private MosipGroupIdGenerator<String> groupIdGenerator;
+
+	private String groupID;
+
+	/**
+	 * Field for {@link #RegistrationRepositary}
+	 */
+	@Autowired
+	private RegistrationRepositary registrationRepositary;
+
 	@Override
 	public RegistrationDto getRegistration(String userID) {
 
@@ -56,14 +74,31 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	}
 
 	@Override
-	public ResponseDto addRegistration(RegistrationDto registrationDto, String groupId) {
+	public ResponseDto addRegistration(RegistrationDto registrationDto, String type) {
 		RegistrationEntity entity = convertDtoToEntity(registrationDto);
 		ResponseDto response = new ResponseDto();
 
 		if (registrationDto.getPreRegistrationId().isEmpty()) {
-			String prid = pridGenerator.generateId();
-			entity.setPreRegistrationId(prid);
-			entity.setGroupId(groupId);
+
+			if (type.equalsIgnoreCase("Family")) {
+				if (registrationDto.getIsPrimary()) {
+					String prid = pridGenerator.generateId();
+					groupID = groupIdGenerator.generateGroupId();
+					entity.setPreRegistrationId(prid);
+					entity.setGroupId(groupID);
+				} else {
+					String prid = pridGenerator.generateId();
+					entity.setPreRegistrationId(prid);
+					entity.setGroupId(groupID);
+				}
+			} else {
+				if (type.equalsIgnoreCase("Friends")) {
+					String prid = pridGenerator.generateId();
+					groupID = groupIdGenerator.generateGroupId();
+					entity.setPreRegistrationId(prid);
+					entity.setGroupId(groupID);
+				}
+			}
 			try {
 				registrationDao.save(entity);
 			} catch (DataAccessLayerException e) {
@@ -94,7 +129,6 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 		return response;
 
 	}
-
 
 	@Override
 	public void updateRegistration(RegistrationDto registrationDto) {
@@ -213,6 +247,93 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 
 		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
 		auditHandler.writeAudit(auditRequestDto);
+	}
+
+	/**
+	 * This Method is used to fetch all the applications created by User
+	 * 
+	 * @param userId
+	 *            pass a userId through which user has logged in which can be either
+	 *            email Id or phone number
+	 * @return List of groupIds
+	 * 
+	 */
+	@Override
+	public List<ViewRegistrationResponseDto> getApplicationDetails(String userId) throws TablenotAccessibleException {
+
+		List<ViewRegistrationResponseDto> response = new ArrayList<ViewRegistrationResponseDto>();
+
+		int minCreateDateIndex = 0;
+
+		try {
+			List<String> groupIds = registrationRepositary.noOfGroupIds(userId);
+
+			for (int j = 0; j < groupIds.size(); j++) {
+				ViewRegistrationResponseDto responseDto = new ViewRegistrationResponseDto();
+
+				List<RegistrationEntity> groupIdDetails = registrationRepositary.findBygroupId(groupIds.get(j));
+				Timestamp maxDate = groupIdDetails.stream().map(RegistrationEntity::getUpdateDateTime)
+						.max(Date::compareTo).get();
+				Timestamp minDate = groupIdDetails.stream().map(RegistrationEntity::getCreateDateTime)
+						.min(Date::compareTo).get();
+
+				responseDto.setUpd_dtimesz(maxDate.toString());
+				responseDto.setNoOfRecords(groupIdDetails.size());
+				for (int i = 0; i < groupIdDetails.size(); i++) {
+
+					if (groupIdDetails.get(i).getStatusCode().equalsIgnoreCase("Draft")) {
+						responseDto.setStatus_code("Draft");
+
+					} else {
+						responseDto.setStatus_code(groupIdDetails.get(0).getStatusCode());
+					}
+
+					if (groupIdDetails.get(i).getCreateDateTime().equals(minDate)) {
+						minCreateDateIndex = i;
+
+					}
+					responseDto.setGroup_id(groupIdDetails.get(i).getGroupId());
+					if (groupIdDetails.get(i).getIsPrimary() == true) {
+						responseDto.setFirstname(groupIdDetails.get(i).getFirstname());
+					} else {
+						responseDto.setFirstname(groupIdDetails.get(minCreateDateIndex).getFirstname());
+					}
+
+				}
+
+				response.add(responseDto);
+			}
+		} catch (DataAccessLayerException e) {
+
+			throw new TablenotAccessibleException(RegistrationErrorCodes.REGISTRATION_TABLE_NOTACCESSIBLE, e);
+
+		}
+
+		return response;
+	}
+
+	/**
+	 * This Method is used to fetch status of particular groupId
+	 * 
+	 * @param groupId
+	 * @return Map which will contain all PreRegistraton Ids in the group and status
+	 * 
+	 * 
+	 */
+	@Override
+	public Map<String, String> getApplicationStatus(String groupId) throws TablenotAccessibleException {
+
+		List<RegistrationEntity> details = new ArrayList<>();
+		try {
+			details = registrationRepositary.findBygroupId(groupId);
+		} catch (DataAccessLayerException e) {
+
+			throw new TablenotAccessibleException(RegistrationErrorCodes.REGISTRATION_TABLE_NOTACCESSIBLE, e);
+		}
+		Map<String, String> response = details.stream()
+				.collect(Collectors.toMap(RegistrationEntity::getPreRegistrationId, RegistrationEntity::getStatusCode));
+
+		return response;
 	}
 
 }

@@ -1,6 +1,7 @@
 package io.mosip.registration.dto;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -29,13 +30,13 @@ public class ResponseDto implements Serializable {
 	private String createdBy;
 
 	/** The create date time. */
-	private LocalDateTime createDateTime;
+	private Timestamp createDateTime;
 
 	/** The updated by. */
 	private String updatedBy;
 
 	/** The update date time. */
-	private LocalDateTime updateDateTime;
+	private Timestamp updateDateTime;
 
 
 }
