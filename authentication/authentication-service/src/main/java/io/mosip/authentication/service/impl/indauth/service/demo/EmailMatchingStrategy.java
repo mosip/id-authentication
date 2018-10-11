@@ -1,12 +1,9 @@
-/**
- * 
- */
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import io.mosip.authentication.core.util.MatcherUtil;
 
 /**
- * @author M1047395
+ * @author Sanjay Murali
  *
  */
 public enum EmailMatchingStrategy implements MatchingStrategy {
