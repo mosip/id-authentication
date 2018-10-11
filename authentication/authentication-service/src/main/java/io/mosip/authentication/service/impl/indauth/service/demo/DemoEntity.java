@@ -25,7 +25,7 @@ public class DemoEntity {
 
 	private String lang1Email;
 
-	private String lang1Age;
+	private Integer lang1Age;
 
 	private Date lang1Dob;
 

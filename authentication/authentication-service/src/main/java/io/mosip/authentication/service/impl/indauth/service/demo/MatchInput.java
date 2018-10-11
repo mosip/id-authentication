@@ -25,7 +25,7 @@ public class MatchInput {
 	private String matchStrategyType;
 	
 	/** The match value. */
-	private int matchValue;
+	private Integer matchValue;
 
 	
 	
