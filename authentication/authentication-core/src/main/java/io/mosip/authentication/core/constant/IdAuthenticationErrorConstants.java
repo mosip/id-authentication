@@ -85,8 +85,11 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_PERSONAL_INFORMATION("IDA-PRSNL-RQV-001", "Atleat one valid attribute should be present"),
 	INVALID_PERSONAL_INFORMATION_PRI("IDA-PRSNL-RQV-001","Primary Language code (langPri) should be present"),
 	INVALID_PERSONAL_INFORMATION_SEC("IDA-PRSNL-RQV-002","Primary Language code (langSec) should be present"),
-	INVALID_DOB_YEAR("IDA-DOB-RQV-001","DOB year should not excedded from current year");
+	INVALID_DOB_YEAR("IDA-DOB-RQV-001","DOB year should not excedded from current year"),
 	
+	// Request date time
+	INVALID_REQUEST_TIME_FORMAT("IDA-DTTM_FRMT-001","Invalid Date time format"),
+	INVALID_REQUEST_TIME_OUT("IDA-RQV-TMOUT-001","Request should be reached within 24Hrs");
 	
 	private final String errorCode;
 	private final String errorMessage;

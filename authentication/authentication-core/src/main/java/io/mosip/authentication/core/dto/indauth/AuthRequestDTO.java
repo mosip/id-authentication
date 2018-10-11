@@ -45,8 +45,9 @@ public class AuthRequestDTO  {
 	@Pattern(regexp = "^[A-Za-z0-9]{10}", message = "{mosip.ida.validation.message.AuthRequest.txnId}")
 	private String txnID;
 
+	// The value of the field or property must be a date or time in the past or present.
 	@PastOrPresent(message = "{mosip.ida.validation.message.AuthRequest.date}")
-	private Date reqTime;
+	private String reqTime;
 
 	//@Pattern(regexp = "^[A-Za-z0-9]{10}$", message = "{mosip.ida.validation.message.AuthRequest.asaLicenseKey}")
 	private String msaLicenseKey;
