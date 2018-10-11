@@ -2,6 +2,7 @@ package io.mosip.kernel.uingenerator;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Main class of Uin Generator Application. This will run batch job to generate
@@ -12,8 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
-public class UinGeneratorApp {
-
+@ComponentScan(basePackages = "io.mosip.*")
+public class UinGeneratorBootApplication {
 	/**
 	 * Function to run the Uin generator application
 	 * 
@@ -21,6 +22,6 @@ public class UinGeneratorApp {
 	 *            The arguments to pass will executing the main function
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(UinGeneratorApp.class, args);
+		SpringApplication.run(UinGeneratorBootApplication.class, args);
 	}
 }
