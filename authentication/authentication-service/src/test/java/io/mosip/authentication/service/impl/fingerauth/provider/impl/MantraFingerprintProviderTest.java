@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.fingerauth.provider.impl;
 
 import static org.junit.Assert.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -61,13 +62,15 @@ public class MantraFingerprintProviderTest {
 	@Test
 	public void testCaptureFail() {
 		Mockito.when(fpDevice.IsConnected()).thenReturn(false);
-		Mockito.when(fpDevice.Init()).thenReturn(0);
-		Mockito.when(fpDevice.GetLastError()).thenReturn("");
-		Mockito.when(fpDevice.AutoCapture(Mockito.any(FingerData.class), Mockito.anyInt(), Mockito.anyBoolean(), Mockito.anyBoolean()))
-		.thenReturn(0);
 		ReflectionTestUtils.setField(fpDevice, "deviceInfo", info);
 		ReflectionTestUtils.setField(fp, "fpDevice", fpDevice);
 		Optional<byte[]> captureFingerprint = fp.captureFingerprint(0, 0);
 		assertFalse(captureFingerprint.isPresent());
+	}
+	
+	@Test
+	public void testSegmentFingerprint() {
+		Optional<Map<?, ?>> segmentFingerprint = fp.segmentFingerprint(new byte[10]);
+		assertFalse(segmentFingerprint.isPresent());
 	}
 }
