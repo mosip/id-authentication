@@ -35,6 +35,7 @@ The key solution considerations are
 
 
 **Process Flow Diagram**
+
 ![Virus scanner process flow diagram](_images/virus_scanner_process_flow.png)
 
 **Class Diagram**
