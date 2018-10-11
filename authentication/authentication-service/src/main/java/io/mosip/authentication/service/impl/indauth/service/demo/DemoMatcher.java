@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
+
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
 
 // TODO: Auto-generated Javadoc
@@ -11,6 +13,7 @@ import io.mosip.authentication.core.dto.indauth.DemoDTO;
  * @author Arun Bose
  * The Class DemoMatcher.
  */
+@Component
 public class DemoMatcher {
 	
 	/**
