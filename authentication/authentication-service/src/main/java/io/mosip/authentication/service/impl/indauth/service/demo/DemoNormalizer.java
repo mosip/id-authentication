@@ -1,25 +1,18 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-
 /**
  * Generic class to normalize individual name, address.
  *
  * @author Rakesh Roshan
  */
-@PropertySource(value = { "classpath:application-local.properties" })
 public final class DemoNormalizer {
 
-	@Autowired
-	static Environment env;
 
-	private static final String REGEX_SPECIAL_CHARACTERS = env.getProperty("Normalizer.special.characters");
-	private static final String REGEX_SALUTATION = env.getProperty("Normalizer.salutations");
-	private static final String REGEX_CARE_OF_LABLE = env.getProperty("Normalizer.careOfLables");
-	private static final String OTHER = env.getProperty("Normalizer.other");
-	private static final String REGEX_WHITE_SPACE = env.getProperty("Normalizer.whiteSpace");
+	private static final String REGEX_SPECIAL_CHARACTERS = "[\\.|,|\\-|\\*|\\(|\\)|\\[|\\]|`|\\'|/|\\|#|\"]";
+	private static final String REGEX_SALUTATION = "(M|m|D|d)(rs?)(.)";
+	private static final String REGEX_CARE_OF_LABLE = "(C|c|S|s|D|d|W|w|H|h)/[O|o]";
+	private static final String OTHER = "(N|n)(O|o)(\\.)?";
+	private static final String REGEX_WHITE_SPACE = "\\s+";
 
 	private DemoNormalizer() {
 
