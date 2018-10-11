@@ -115,7 +115,7 @@ public class FullAddressMatchingStrategyTest {
 	public void TestValidPartialMatchingStrategyFunction() {
 		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		int value = matchFunction.doMatch("no 1 second street chennai", "no 1 second");
-		assertEquals(60, value);
+		assertEquals(50, value);
 	}
 
 	/**

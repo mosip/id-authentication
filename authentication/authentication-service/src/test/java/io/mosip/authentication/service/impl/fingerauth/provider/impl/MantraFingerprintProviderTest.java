@@ -48,6 +48,7 @@ public class MantraFingerprintProviderTest {
 
 	@Test
 	public void testCapture() {
+		fp.captureFingerprint(50, 1000);
 		Mockito.when(fpDevice.IsConnected()).thenReturn(true);
 		Mockito.when(fpDevice.Init()).thenReturn(0);
 		Mockito.when(fpDevice.GetLastError()).thenReturn("");
@@ -77,5 +78,10 @@ public class MantraFingerprintProviderTest {
 	@Test
 	public void testOnPreview() {
 		fp.OnPreview(null);
+	}
+	
+	@Test
+	public void testOnCaptureCompleted() {
+		fp.OnCaptureCompleted(false, 0, null, null);
 	}
 }
