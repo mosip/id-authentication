@@ -10,7 +10,7 @@ public final class DemoNormalizer {
 
 	private static final String REGEX_SPECIAL_CHARACTERS = "[\\.|,|\\-|\\*|\\(|\\)|\\[|\\]|`|\\'|/|\\|#|\"]";
 	private static final String REGEX_SALUTATION = "(M|m|D|d)(rs?)(.)";
-	private static final String REGEX_CARE_OF_LABLE = "(C|c|S|s|D|d|W|w|H|h)/[O|o]";
+	private static final String REGEX_CARE_OF_LABLE = "(C|c|S|s|D|d|W|w|H|h)/(O|o)";
 	private static final String OTHER = "(N|n)(O|o)(\\.)?";
 	private static final String REGEX_WHITE_SPACE = "\\s+";
 
@@ -28,8 +28,9 @@ public final class DemoNormalizer {
 
 	public static String normalizeAddress(String address) {
 
-		address = address.replace(REGEX_CARE_OF_LABLE, "").replaceAll(REGEX_SPECIAL_CHARACTERS, " ")
-				.replaceAll(OTHER, "").replaceAll(REGEX_WHITE_SPACE, " ").trim();
+		address = address.replaceAll(REGEX_CARE_OF_LABLE, "").replaceAll(REGEX_SALUTATION, "")
+				.replaceAll(OTHER, "").replaceAll(REGEX_SPECIAL_CHARACTERS, " ").replaceAll(REGEX_WHITE_SPACE, " ")
+				.trim();
 
 		return address;
 	}
