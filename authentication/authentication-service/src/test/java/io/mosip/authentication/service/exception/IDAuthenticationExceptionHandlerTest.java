@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.Errors;
@@ -29,7 +28,6 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.service.exception.IdAuthExceptionHandler;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 @RunWith(SpringRunner.class)
@@ -37,7 +35,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @WebMvcTest
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
 public class IDAuthenticationExceptionHandlerTest {
 	@Autowired
 	Environment environment;

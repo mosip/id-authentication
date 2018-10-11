@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.Errors;
@@ -33,11 +32,9 @@ import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDataDTO;
 import io.mosip.authentication.service.impl.indauth.validator.DemoValidator;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
-
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@TestPropertySource(value = { "classpath:log.properties" })
 public class DemoValidatorTest {
 
 	@Autowired
@@ -327,7 +324,6 @@ public class DemoValidatorTest {
 		DemoDTO demodto = new DemoDTO();
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 
-		String dob = null;
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
 
@@ -411,7 +407,7 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demodto, "setPersonalIdentityDTO", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", setDob);
 
-		SimpleDateFormat formatter = new SimpleDateFormat(env.getProperty("date.pattern"));
+		SimpleDateFormat formatter = new SimpleDateFormat(env.getProperty("dob.date.time.pattern"));
 		Date dob = formatter.parse(setDob);
 		Instant instantDob = dob.toInstant();
 

@@ -9,17 +9,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.otpgen.service.OTPServiceImpl;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
@@ -28,9 +30,9 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
  *
  * @author Rakesh Roshan
  */
-//@RunWith(MockitoJUnitRunner.class)
 @RunWith(SpringRunner.class)
-@TestPropertySource(value = { "classpath:log.properties" })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@WebMvcTest
 public class OTPServiceImplTest {
 
 	@Mock
@@ -41,6 +43,7 @@ public class OTPServiceImplTest {
 	private AuditRequestFactory auditRequestFactory;
 	@Mock
 	private RestHelper restHelper;
+	
 	@Autowired
 	Environment env;
 

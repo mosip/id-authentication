@@ -18,7 +18,6 @@ import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
@@ -36,7 +35,6 @@ import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
@@ -46,7 +44,6 @@ import reactor.ipc.netty.http.server.HttpServer;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OTPManagerTest.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@TestPropertySource(value = { "classpath:rest-services.properties", "classpath:log.properties" })
 public class OTPManagerTest {
 
 	@Mock

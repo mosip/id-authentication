@@ -30,7 +30,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
 public class AuditHelperTest {
 	
 	@Mock

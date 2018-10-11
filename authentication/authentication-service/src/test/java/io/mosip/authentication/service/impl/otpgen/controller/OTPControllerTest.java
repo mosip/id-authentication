@@ -23,7 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindingResult;
@@ -36,7 +35,6 @@ import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
-import io.mosip.authentication.service.impl.otpgen.controller.OTPController;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
@@ -48,7 +46,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@TestPropertySource(value = "classpath:log.properties")
 public class OTPControllerTest {
 
 	/** Mock the objects */

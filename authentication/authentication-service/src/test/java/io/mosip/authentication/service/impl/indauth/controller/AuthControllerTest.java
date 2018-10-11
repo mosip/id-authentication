@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindException;
@@ -26,7 +25,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.indauth.controller.AuthController;
 import io.mosip.authentication.service.impl.indauth.facade.AuthFacadeImpl;
 import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
@@ -39,7 +37,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes= {TestContext.class, WebApplicationContext.class})
-@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
 public class AuthControllerTest {
 	
 	@Mock
