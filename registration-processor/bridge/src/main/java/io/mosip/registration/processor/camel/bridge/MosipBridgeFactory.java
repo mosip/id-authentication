@@ -11,6 +11,7 @@ import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.ignite.IgniteClusterManager;
 
 /**
+ * This class provides 
  * @author Mukul Puspam
  *
  */
