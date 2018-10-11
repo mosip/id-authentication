@@ -5,12 +5,10 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.number.money.CurrencyUnitFormatter;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.spi.idgenerator.MosipTokenIdGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.idgenerator.tokenid.cache.TokenIdCacheManager;
 import io.mosip.kernel.idgenerator.tokenid.constant.TokenIdGeneratorErrorCodes;
 import io.mosip.kernel.idgenerator.tokenid.entity.TokenId;
@@ -54,8 +52,8 @@ public class TokenIdGenerator implements MosipTokenIdGenerator<String> {
 				unique = true;
 			}
 		}
-		String genTokenId=saveGeneratedTokenId(generatedTokenId);
-		return genTokenId;
+		 return saveGeneratedTokenId(generatedTokenId);
+		
 
 	}
 

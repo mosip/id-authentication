@@ -14,6 +14,11 @@ public class TokenIdGenerationException extends BaseUncheckedException {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	
+	public TokenIdGenerationException() {
+		super();
+	}
 
       /**
 	 * Constructor the initialize TokenIdGenerationException

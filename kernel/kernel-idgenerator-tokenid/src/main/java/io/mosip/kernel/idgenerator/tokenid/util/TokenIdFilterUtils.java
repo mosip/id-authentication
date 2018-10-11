@@ -3,7 +3,6 @@
  */
 package io.mosip.kernel.idgenerator.tokenid.util;
 
-import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 /**

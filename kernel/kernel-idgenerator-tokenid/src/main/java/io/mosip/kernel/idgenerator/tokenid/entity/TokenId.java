@@ -9,8 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
+/**
+ * TokenId generator entity with lombok dependency
+ * 
+ * @author M1046464
+ *
+ */
 @Data
 @Entity
 @Table(name="tokenid", schema ="ids")
@@ -25,7 +30,7 @@ public class TokenId {
 	@NonNull
 	private String id;
 	@Column(name = "created_at")
-	private long created_at;
+	private long createdAt;
 	
 	
 }

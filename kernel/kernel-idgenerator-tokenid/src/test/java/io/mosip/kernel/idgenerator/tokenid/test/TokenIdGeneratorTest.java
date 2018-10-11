@@ -4,7 +4,6 @@ package io.mosip.kernel.idgenerator.tokenid.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,13 +15,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.spi.idgenerator.MosipTokenIdGenerator;
 import io.mosip.kernel.idgenerator.tokenid.cache.impl.TokenIdCacheManagerImpl;
 import io.mosip.kernel.idgenerator.tokenid.exception.TokenIdGenerationException;
 import io.mosip.kernel.idgenerator.tokenid.generator.TokenIdGenerator;
@@ -95,6 +91,11 @@ public class TokenIdGeneratorTest {
 		
 	    this.tokenIdGenerator.saveGeneratedTokenId(null);
 		
+	}
+	
+	@Test(expected=TokenIdGenerationException.class)
+	public void throwTokenIdgenerationException() {
+		throw new TokenIdGenerationException();
 	}
 	
 	
