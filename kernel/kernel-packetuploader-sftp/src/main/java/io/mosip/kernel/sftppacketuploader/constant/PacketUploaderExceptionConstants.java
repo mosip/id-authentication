@@ -79,22 +79,18 @@ public enum PacketUploaderExceptionConstants {
 	MOSIP_PACKET_SIZE_EXCEPTION("adadadasdasdas", "packet size should be less than 5 MB and greater than 0 Byte");
 
 	/**
+	 * ErrorCode
+	 */
+	String errorCode;
+	/**
+	 * ErrorMessage
+	 */
+	String errorMessage;
+
+	/**
 	 * Constructor for this enum
 	 */
 	private PacketUploaderExceptionConstants() {
-	}
-
-	/**
-	 * Constructor for this {@link Enum}
-	 * 
-	 * @param errorCode
-	 *            {@link #errorCode}Code
-	 * @param errorMessage
-	 *            {@link #errorMessage}
-	 */
-	PacketUploaderExceptionConstants(String errorCode, String errorMessage) {
-		this.setErrorCode(errorCode);
-		this.setErrorMessage(errorMessage);
 	}
 
 	/**
@@ -104,6 +100,17 @@ public enum PacketUploaderExceptionConstants {
 	 */
 	public String getErrorCode() {
 		return errorCode;
+	}
+
+	/**
+	 * Constructor for this {@link Enum}
+	 * 
+	 * @param errorCode    {@link #errorCode}Code
+	 * @param errorMessage {@link #errorMessage}
+	 */
+	PacketUploaderExceptionConstants(String errorCode, String errorMessage) {
+		this.setErrorCode(errorCode);
+		this.setErrorMessage(errorMessage);
 	}
 
 	/**
@@ -127,19 +134,9 @@ public enum PacketUploaderExceptionConstants {
 	/**
 	 * Setter for {@link #errorMessage}
 	 * 
-	 * @param errorMessage
-	 *            {@link #errorMessage}
+	 * @param errorMessage {@link #errorMessage}
 	 */
 	private void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
-
-	/**
-	 * ErrorCode
-	 */
-	String errorCode;
-	/**
-	 * ErrorMessage
-	 */
-	String errorMessage;
 }

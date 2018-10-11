@@ -15,13 +15,28 @@ public enum PacketServerExceptionConstants {
 	/**
 	 * {@link #MOSIP_INVALID_SPEC_EXCEPTION} exception constant
 	 */
-	MOSIP_INVALID_SPEC_EXCEPTION("KER-FTM-FTP-002",
-			"public key is does not have valid spec"),
+	MOSIP_INVALID_SPEC_EXCEPTION("KER-FTM-FTP-002", "public key is does not have valid spec"),
 	/**
 	 * {@link #MOSIP_ILLEGAL_STATE_EXCEPTION} exception constant
 	 */
-	MOSIP_ILLEGAL_STATE_EXCEPTION("KER-FTM-FTP-003",
-			"server went into illegal state");
+	MOSIP_ILLEGAL_STATE_EXCEPTION("KER-FTM-FTP-003", "server went into illegal state");
+	/**
+	 * Error Code for Exception
+	 */
+	String errorCode;
+	/**
+	 * Error Message for Exception
+	 */
+	String errorMessage;
+
+	/**
+	 * Getter for {@link #errorMessage}
+	 * 
+	 * @return {@link #errorMessage}
+	 */
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 
 	/**
 	 * Constructor for this {@link Enum}
@@ -30,12 +45,19 @@ public enum PacketServerExceptionConstants {
 	}
 
 	/**
+	 * Setter for {@link #errorMessage}
+	 * 
+	 * @param errorMessage
+	 */
+	private void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
+	/**
 	 * Constructor for this {@link Enum}
 	 * 
-	 * @param errorCode
-	 *            errorCode for exception
-	 * @param errorMessage
-	 *            errorMessage for exception
+	 * @param errorCode    errorCode for exception
+	 * @param errorMessage errorMessage for exception
 	 */
 	PacketServerExceptionConstants(String errorCode, String errorMessage) {
 		this.setErrorCode(errorCode);
@@ -54,37 +76,10 @@ public enum PacketServerExceptionConstants {
 	/**
 	 * Setter for {@link #errorCode}
 	 * 
-	 * @param errorCode
-	 *            {@link #errorCode}
+	 * @param errorCode {@link #errorCode}
 	 */
 	private void setErrorCode(String errorCode) {
 		this.errorCode = errorCode;
 	}
 
-	/**
-	 * Getter for {@link #errorMessage}
-	 * 
-	 * @return {@link #errorMessage}
-	 */
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	/**
-	 * Setter for {@link #errorMessage}
-	 * 
-	 * @param errorMessage
-	 */
-	private void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
-
-	/**
-	 * Error Code for Exception
-	 */
-	String errorCode;
-	/**
-	 * Error Message for Exception
-	 */
-	String errorMessage;
 }
