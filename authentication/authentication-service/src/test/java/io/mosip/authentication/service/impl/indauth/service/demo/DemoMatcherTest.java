@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
@@ -15,7 +19,9 @@ import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
 public class DemoMatcherTest {
 	
 	
+
 	
+
 
 	@Test
 	public void matchDemoDataTest() {
@@ -23,7 +29,9 @@ public class DemoMatcherTest {
 		PersonalIdentityDTO pid=new PersonalIdentityDTO();
 		pid.setNamePri("john");
 		DemoEntity demoEntity=new DemoEntity();
-		demoEntity.setLang1Name("john");
+		demoEntity.setFirstName("john");
+		demoEntity.setMiddleName("Rajiv");
+		demoEntity.setLastName("Samuel");
 		List<MatchInput> listMatchInputs=new ArrayList<>();
 		DemoMatcher demoMatcher=new DemoMatcher();
 		List<MatchOutput> listMatchOutput=new ArrayList<MatchOutput>();
@@ -35,10 +43,12 @@ public class DemoMatcherTest {
 	public void matchTypeTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		DemoDTO demoDTO =new DemoDTO();
 		PersonalIdentityDTO pid =new PersonalIdentityDTO();
-		pid.setNamePri("John");
+		pid.setNamePri("John Rajiv Samuel");
 		demoDTO.setPersonalIdentityDTO(pid);
 		DemoEntity demoEntity=new DemoEntity();
-		demoEntity.setLang1Name("John");
+		demoEntity.setFirstName("John");
+		demoEntity.setMiddleName("Rajiv");
+		demoEntity.setLastName("Samuel");
 		MatchInput matchInput=new MatchInput(DemoMatchType.NAME_PRI,null,100);
 		MatchOutput  matchOutputExpect=new MatchOutput(100, true,null, matchInput.getDemoMatchType());
 		DemoMatcher demoMatcher=new DemoMatcher();
