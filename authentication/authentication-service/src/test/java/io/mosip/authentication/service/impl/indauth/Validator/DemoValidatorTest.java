@@ -410,7 +410,7 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demodto, "setPersonalIdentityDTO", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", setDob);
 
-		SimpleDateFormat formatter = new SimpleDateFormat(env.getProperty("dob.date.time.pattern"));
+		SimpleDateFormat formatter = new SimpleDateFormat(env.getProperty("date.pattern"));
 		Date dob = formatter.parse(setDob);
 		Instant instantDob = dob.toInstant();
 
