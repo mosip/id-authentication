@@ -13,8 +13,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
-
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
@@ -42,9 +40,6 @@ public class DemoValidator implements Validator {
 	}
 
 	@Autowired
-	private SpringValidatorAdapter validator;
-
-	@Autowired
 	Environment env;
 
 	@Override
@@ -56,14 +51,19 @@ public class DemoValidator implements Validator {
 	public void validate(Object target, Errors errors) {
 
 		AuthRequestDTO authRequestdto = (AuthRequestDTO) target;
-		DemoDTO demodto = authRequestdto.getPersonalDataDTO().getDemoDTO();
 
-		// javax.validator constraint validation
-		//validator.validate(demodto, errors);
-		// address validation
+		String primaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangPri();
+		String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
+
+		if (primaryLanguage != null) {
+			checkValidPrimaryLanguageCode(primaryLanguage, errors);
+		}
+		if (secondaryLanguage != null) {
+			checkValidSecondaryLanguageCode(secondaryLanguage, errors);
+		}
+
 		completeAddressValidation(authRequestdto, errors);
 
-		// PID validation
 		personalIdentityValidation(authRequestdto, errors);
 
 	}
@@ -105,6 +105,8 @@ public class DemoValidator implements Validator {
 
 			String primaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangPri();
 			String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
+			PersonalFullAddressDTO personalFullAddressDTO = authRequestdto.getPersonalDataDTO().getDemoDTO()
+					.getPersonalFullAddressDTO();
 
 			if (primaryLanguage == null && secondaryLanguage == null) {
 				mosipLogger.error("SessionID56", "personalFullAddressDTO",
@@ -113,9 +115,6 @@ public class DemoValidator implements Validator {
 				errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
 			}
-
-			PersonalFullAddressDTO personalFullAddressDTO = authRequestdto.getPersonalDataDTO().getDemoDTO()
-					.getPersonalFullAddressDTO();
 
 			if (primaryLanguage != null && (personalFullAddressDTO.getAddrPri() == null
 					&& personalFullAddressDTO.getMsPri() == null && personalFullAddressDTO.getMtPri() == null)) {
@@ -192,6 +191,7 @@ public class DemoValidator implements Validator {
 	}
 
 	/**
+	 * Validate personal information.
 	 * 
 	 * @param authRequestdto
 	 * @param errors
@@ -204,6 +204,8 @@ public class DemoValidator implements Validator {
 		if (authRequestdto.getAuthType().isPi()) {
 
 			// TODO dobType integrate with CK
+			String primaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangPri();
+			String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
 
 			if (personalIdentityDTO.getDob() != null) {
 				try {
@@ -212,34 +214,34 @@ public class DemoValidator implements Validator {
 					mosipLogger.error("sessionID-NA", "ParseException", e.getCause().toString(), e.getMessage());
 				}
 			}
-
 			if (isAllPINull(personalIdentityDTO)) {
 				mosipLogger.error("SessionID123", "Personal info", "personal info should be present",
 						"At least select one valid personal info");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorMessage());
 			}
-			String primaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangPri();
 			if (personalIdentityDTO.getNamePri() != null && primaryLanguage == null) {
-				mosipLogger.error("SessionID", "Personal identity", "personal info for secondary language",
+				mosipLogger.error("SessionIDPri", "Personal identity", "personal info for secondary language",
 						"Primary Language code (langPri) should be present ");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION_PRI.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION_PRI.getErrorMessage());
-
 			}
-
-			String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
 			if (personalIdentityDTO.getNameSec() != null && secondaryLanguage == null) {
-				mosipLogger.error("SessionID", "Personal identity", "personal info for secondary language",
+				mosipLogger.error("SessionIDSec", "Personal identity", "personal info for secondary language",
 						"Primary Language code (langSec) should be present ");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION_SEC.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION_SEC.getErrorMessage());
-
 			}
 		}
-
 	}
 
+	/**
+	 * Dob validation with pattern
+	 * 
+	 * @param authRequestdto
+	 * @param errors
+	 * @throws ParseException
+	 */
 	private void dobValidation(AuthRequestDTO authRequestdto, Errors errors) throws ParseException {
 
 		String pidob = authRequestdto.getPersonalDataDTO().getDemoDTO().getPersonalIdentityDTO().getDob();
@@ -253,7 +255,6 @@ public class DemoValidator implements Validator {
 			errors.reject(IdAuthenticationErrorConstants.INVALID_DOB_YEAR.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_DOB_YEAR.getErrorMessage());
 		}
-
 	}
 
 	private boolean isAllPINull(PersonalIdentityDTO personalIdentityDTO) {
@@ -266,6 +267,36 @@ public class DemoValidator implements Validator {
 	@SafeVarargs
 	private static <T> boolean isAllNull(T obj, Function<T, Object>... funcs) {
 		return Stream.of(funcs).allMatch(func -> func.apply(obj) == null);
+	}
+
+	/**
+	 * Verify valid language code for primary language.
+	 * 
+	 * @param primaryLanguage
+	 * @param errors
+	 */
+	private void checkValidPrimaryLanguageCode(String primaryLanguage, Errors errors) {
+		if (!primaryLanguage.equals("en") || !primaryLanguage.equals("ar")) {
+			mosipLogger.error("SessionID", "Primary Language", "code for primary language",
+					"Valid primary Language code  should be present ");
+			errors.reject(IdAuthenticationErrorConstants.INVALID_PRIMARY_LANGUAGE_CODE.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_PRIMARY_LANGUAGE_CODE.getErrorMessage());
+		}
+	}
+
+	/**
+	 * Verify valid language code for secondary language.
+	 * 
+	 * @param secondaryLanguage
+	 * @param errors
+	 */
+	private void checkValidSecondaryLanguageCode(String secondaryLanguage, Errors errors) {
+		if (!secondaryLanguage.equals("en") || !secondaryLanguage.equals("ar")) {
+			mosipLogger.error("SessionID", "Secondary Language", "code for secondary language",
+					"Valid secondary Language code  should be present ");
+			errors.reject(IdAuthenticationErrorConstants.INVALID_SECONDARY_LANGUAGE_CODE.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_SECONDARY_LANGUAGE_CODE.getErrorMessage());
+		}
 	}
 
 }
