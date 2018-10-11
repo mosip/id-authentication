@@ -1,5 +1,7 @@
 package io.mosip.registration.dto.demographic;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.mosip.registration.dto.BaseDTO;
 
 /**
@@ -9,6 +11,8 @@ import io.mosip.registration.dto.BaseDTO;
  * @since 1.0.0
  */
 public class DocumentDetailsDTO extends BaseDTO {
+	
+	@JsonIgnore
 	private byte[] document;
 	protected String documentName;
 	protected String documentCategory;

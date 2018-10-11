@@ -3,44 +3,68 @@ package io.mosip.registration.test;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import io.mosip.registration.test.config.SpringConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
+import io.mosip.kernel.core.security.decryption.MosipDecryptor;
+import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
+import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.packet.encryption.rsa.RSAEncryption;
 import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionManager;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 
 import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-public class RSAEncryptionManagerTest extends SpringConfiguration {
+public class RSAEncryptionManagerTest {
 
-	@Autowired
+	@InjectMocks
 	private RSAEncryptionManager rsaEncryptionManager;
 	@Mock
-	RSAKeyGenerator rsaKeyGenerator;
-	@Mock
-	RSAEncryption rsaEncryption;
+	private RSAKeyGenerator rsaKeyGenerator;
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
-
-	@Test
-	public void rsaPacketCreation() {
-
+	@Mock
+	private MosipLogger logger;
+	
+	private KeyPair keyPair;
+	
+	@Before
+	public void initialize() {
+		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
+		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
+		mosipRollingFileAppender.setFileName("logs");
+		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
+		mosipRollingFileAppender.setMaxFileSize("1MB");
+		mosipRollingFileAppender.setTotalCap("10MB");
+		mosipRollingFileAppender.setMaxHistory(10);
+		mosipRollingFileAppender.setImmediateFlush(true);
+		mosipRollingFileAppender.setPrudent(true);
+		
+		ReflectionTestUtils.invokeMethod(rsaEncryptionManager, "initializeLogger", mosipRollingFileAppender);
+		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString());		
+		
+		// Generate Key Pair
 		KeyPairGenerator keyPairGenerator=null;
 		try {
 			// Generate key pair generator
-			keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+			keyPairGenerator = KeyPairGenerator.getInstance(RegConstants.RSA_ALG);
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			throw new RegBaseUncheckedException(REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
 					REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), noSuchAlgorithmException);
@@ -48,19 +72,35 @@ public class RSAEncryptionManagerTest extends SpringConfiguration {
 		// initialize key pair generator
 		keyPairGenerator.initialize(2048);
 		// get key pair
-		KeyPair keyPair = keyPairGenerator.genKeyPair();
-		// get public key from key pair
-		PublicKey publicKey = keyPair.getPublic();
+		keyPair = keyPairGenerator.genKeyPair();
+		
+		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
+		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
+		ReflectionTestUtils.setField(RSAEncryptionManager.class, "LOGGER", logger);
+	}
 
-		when(rsaKeyGenerator.readPublickey(RegConstants.RSA_PUBLIC_KEY_FILE))
-				.thenReturn(publicKey);
+	@Test
+	public void rsaPacketCreation() throws RegBaseCheckedException, MosipInvalidDataException, MosipInvalidKeyException {
+		when(rsaKeyGenerator.getEncodedKey(true)).thenReturn(keyPair.getPublic().getEncoded());
 
-		byte[] encryptedBytes = "aesEncryptedBytes".getBytes();
-		when(rsaEncryption.encrypt("aesEncryptedBytes".getBytes(), publicKey))
-				.thenReturn(encryptedBytes);
-		byte[] rsaEncryptedBytes = rsaEncryptionManager
-				.encrypt("aesEncryptedInformationInBytes".getBytes());
-		Assert.assertNotNull(rsaEncryptedBytes);
+		byte[] dataToEncrypt = "aesEncryptedInformationInBytes".getBytes();
 
+		byte[] rsaEncryptedBytes = rsaEncryptionManager.encrypt(dataToEncrypt);
+		byte[] rsaDecryptedBytes = MosipDecryptor.asymmetricPrivateDecrypt(keyPair.getPrivate().getEncoded(),
+				rsaEncryptedBytes, MosipSecurityMethod.RSA_WITH_PKCS1PADDING);
+		Assert.assertArrayEquals(dataToEncrypt, rsaDecryptedBytes);
+
+	}
+	
+	@Test(expected=RegBaseUncheckedException.class)
+	public void testNullData() throws RegBaseCheckedException {
+		when(rsaKeyGenerator.getEncodedKey(true)).thenReturn(keyPair.getPublic().getEncoded());
+		rsaEncryptionManager.encrypt(null);
+	}
+	
+	@Test(expected=RegBaseCheckedException.class)
+	public void testInvalidKey() throws RegBaseCheckedException {
+		when(rsaKeyGenerator.getEncodedKey(true)).thenReturn("key".getBytes());
+		rsaEncryptionManager.encrypt(null);
 	}
 }

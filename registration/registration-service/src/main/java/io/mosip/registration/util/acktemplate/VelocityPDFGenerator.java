@@ -25,7 +25,7 @@ import io.mosip.registration.constants.RegConstants;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.biometric.ExceptionFingerprintDetailsDTO;
+import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
@@ -76,10 +76,10 @@ public class VelocityPDFGenerator {
 				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLine1());
 		velocityContext.put(RegConstants.TEMPLATE_ADDRESS_LINE2,
 				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLine2());
-		velocityContext.put(RegConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getCity());
-		velocityContext.put(RegConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getState());
+		velocityContext.put(RegConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLocationDTO().getLine6());
+		velocityContext.put(RegConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLocationDTO().getLine5());
 		velocityContext.put(RegConstants.TEMPLATE_COUNTRY,
-				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getCountry());
+				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLocationDTO().getLine4());
 		velocityContext.put(RegConstants.TEMPLATE_MOBILE, registration.getDemographicDTO().getDemoInLocalLang().getMobile());
 		velocityContext.put(RegConstants.TEMPLATE_EMAIL, registration.getDemographicDTO().getDemoInLocalLang().getEmailId());
 
@@ -92,7 +92,7 @@ public class VelocityPDFGenerator {
 
 		String documentsList = documentNames.stream().map(Object::toString).collect(Collectors.joining(", "));
 		velocityContext.put("Documents", documentsList);
-		velocityContext.put(RegConstants.TEMPLATE_OPERATOR_NAME, registration.getOsiDataDTO().getOperatorName());
+		velocityContext.put(RegConstants.TEMPLATE_OPERATOR_NAME, registration.getOsiDataDTO().getOperatorID());
 
 		byte[] imageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
 
@@ -141,12 +141,12 @@ public class VelocityPDFGenerator {
 		HashMap<String, Double> fingersQuality = new HashMap<>();
 
 		// list of missing fingers
-		List<ExceptionFingerprintDetailsDTO> exceptionFingers = registration.getBiometricDTO()
-				.getApplicantBiometricDTO().getExceptionFingerprintDetailsDTO();
+		List<BiometricExceptionDTO> exceptionFingers = registration.getBiometricDTO()
+				.getApplicantBiometricDTO().getFingerPrintBiometricExceptionDTO();
 		//
 		if (exceptionFingers != null) {
-			for (ExceptionFingerprintDetailsDTO exceptionFinger : exceptionFingers) {
-				fingersQuality.put(exceptionFinger.getMissingFinger(), (double) 0);
+			for (BiometricExceptionDTO exceptionFinger : exceptionFingers) {
+				fingersQuality.put(exceptionFinger.getMissingBiometric(), (double) 0);
 			}
 		}
 		List<FingerprintDetailsDTO> availableFingers = registration.getBiometricDTO().getApplicantBiometricDTO()

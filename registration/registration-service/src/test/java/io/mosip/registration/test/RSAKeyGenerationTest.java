@@ -8,10 +8,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import io.mosip.registration.test.config.SpringConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.test.config.SpringConfiguration;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 
 public class RSAKeyGenerationTest extends SpringConfiguration {
@@ -31,12 +30,12 @@ public class RSAKeyGenerationTest extends SpringConfiguration {
 
 	@Test
 	public void readPublicKeyTest() {
-		Assert.assertNotNull(rsaKeyGenerator.readPublickey(RegConstants.RSA_PUBLIC_KEY_FILE));
+		Assert.assertNotNull(rsaKeyGenerator.getEncodedKey(true));
 	}
 
 	@Test
 	public void readPrivateKeyTest() {
-		Assert.assertNotNull(rsaKeyGenerator.readPublickey(RegConstants.RSA_PRIVATE_KEY_FILE));
+		Assert.assertNotNull(rsaKeyGenerator.getEncodedKey(true));
 	}
 
 }

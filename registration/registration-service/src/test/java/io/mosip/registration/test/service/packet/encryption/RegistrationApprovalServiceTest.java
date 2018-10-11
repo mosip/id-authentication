@@ -53,7 +53,7 @@ public class RegistrationApprovalServiceTest {
 	RegistrationDTO registrationDTO;
 
 	@Before
-	public void initialize() throws IOException, URISyntaxException {
+	public void initialize() throws IOException, URISyntaxException, RegBaseCheckedException {
 		mosipRollingFileAppender = new MosipRollingFileAppender();
 		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
 		mosipRollingFileAppender.setFileName("logs");

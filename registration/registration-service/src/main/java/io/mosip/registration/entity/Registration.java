@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Registration entity details
@@ -21,6 +22,7 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
+@EqualsAndHashCode(callSuper=true)
 @Entity
 @Table(schema="REG", name = "REGISTRATION")
 public class Registration extends RegistrationCommonFields {

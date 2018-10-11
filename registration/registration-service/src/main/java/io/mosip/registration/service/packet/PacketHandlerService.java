@@ -75,13 +75,10 @@ public class PacketHandlerService {
 				getPropertyValue(APPLICATION_ID), "Registration Handler had been called");
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
-			// TODO: 1. Registration validation - To be implemented
-			// packetValidationManager.validate(enrollmentDTO);
-
-			// 2. create packet
+			// 1. create packet
 			byte[] inMemoryZipFile = packetCreationManager.create(registrationDTO);
 
-			// 3.encrypt packet
+			// 2.encrypt packet
 			if (inMemoryZipFile != null && inMemoryZipFile.length > 0) {
 				LOGGER.debug("REGISTRATION - PACKET_HANDLER - CREATE", getPropertyValue(APPLICATION_NAME),
 						getPropertyValue(APPLICATION_ID), "Registration Packet had been created successfully");
