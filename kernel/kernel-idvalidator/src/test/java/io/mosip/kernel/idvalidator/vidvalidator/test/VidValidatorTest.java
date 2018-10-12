@@ -3,32 +3,38 @@ package io.mosip.kernel.idvalidator.vidvalidator.test;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
 import io.mosip.kernel.idvalidator.vidvalidator.VidValidator;
 
 /**
  * Test class for VIDValidator class
- *  
- * @author M1037462
- * since 1.0.0
+ * 
+ * @author M1037462 since 1.0.0
  * 
  */
-
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class VidValidatorTest {
-	VidValidator vidValidator = new VidValidator();
-	
+
+	@Autowired
+	VidValidator vidValidator;
+
 	@Test(expected = MosipInvalidIDException.class)
 	public void nullTest() {
-		String id =null;
-		 vidValidator.validateId(id);
+		String id = null;
+		vidValidator.validateId(id);
 
 	}
 
 	@Test(expected = MosipInvalidIDException.class)
 	public void lengthTest() {
 		String id = "537184361359820";
-		 vidValidator.validateId(id);
+		vidValidator.validateId(id);
 
 	}
 
@@ -36,19 +42,19 @@ public class VidValidatorTest {
 	public void firstDigitZeroTest() {
 		String id = "0247389354374855";
 
-		 vidValidator.validateId(id);
+		vidValidator.validateId(id);
 	}
 
 	@Test(expected = MosipInvalidIDException.class)
 	public void firstDigitOneTest() {
 		String id = "1247389354374855";
-		 vidValidator.validateId(id);
+		vidValidator.validateId(id);
 	}
 
 	@Test(expected = MosipInvalidIDException.class)
 	public void ChecksumTest() {
 		String id = "5371843613598205";
-		 vidValidator.validateId(id);
+		vidValidator.validateId(id);
 	}
 
 	@Test(expected = MosipInvalidIDException.class)
@@ -67,13 +73,13 @@ public class VidValidatorTest {
 	@Test(expected = MosipInvalidIDException.class)
 	public void sequentialNumberTest() {
 		String id = "8245679354374855";
-		 vidValidator.validateId(id);
+		vidValidator.validateId(id);
 	}
 
 	@Test(expected = MosipInvalidIDException.class)
 	public void repeatingNumberTest() {
 		String id = "5371143613598206";
-		 vidValidator.validateId(id);
+		vidValidator.validateId(id);
 	}
 
 	@Test

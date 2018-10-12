@@ -5,9 +5,15 @@ package io.mosip.kernel.idvalidator.uinvalidator;
 
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.spi.idvalidator.MosipIdValidator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
 import io.mosip.kernel.idvalidator.uinvalidator.constants.MosipUinExceptionConstants;
 
@@ -19,16 +25,28 @@ import io.mosip.kernel.idvalidator.uinvalidator.constants.MosipUinExceptionConst
  * @since 1.0.0
  */
 
+@Component
 public class UinValidator implements MosipIdValidator<String> {
 
 	/**
-	 * The length of the uin
+	 * The length of the UIN is reading from property file
 	 */
-	private static final int UIN_LEN = 12;
+	@Value("${mosip.kernel.uin.length}")
+	private int uinLength;
+
 	/**
-	 * Field for numerical numbers regex
+	 * This Field to hold regular expressions for checking UIN has only digits.
 	 */
-	private static final String APLHA_REGEX = "\\d{12}";
+	private String numaricRegEx;
+
+	/**
+	 * Method to prepare regular expressions for checking UIN has only digits.
+	 */
+	@PostConstruct
+	public void preparNumaricRegEx() {
+		numaricRegEx = "\\d{" + uinLength + "}";
+	}
+
 	/**
 	 * Field for zero digit
 	 */
@@ -45,14 +63,14 @@ public class UinValidator implements MosipIdValidator<String> {
 	 * @param id
 	 *            pass a UIN in String format example : String inputFile =
 	 *            "426789089018"
-	 * @return boolean True If entered is Valide else it will throw an error
+	 * @return boolean True If entered is Valid else it will throw an error
 	 * @throws MosipInvalidIDException
 	 *             If entered UIN is empty or null.
 	 * @throws MosipInvalidIDException
 	 *             If entered UIN contain any sequential and repeated block of
 	 *             number for 2 or more than two digits",
 	 * @throws MosipInvalidIDException
-	 *             If entered UIN length should be 12 digit.
+	 *             If entered UIN length should be specified number of digit.
 	 * @throws MosipInvalidIDException
 	 *             If entered UIN contain any alphanumeric characters
 	 * @throws MosipInvalidIDException
@@ -68,16 +86,16 @@ public class UinValidator implements MosipIdValidator<String> {
 		 * Check UIN, It Shouldn't be Null or empty
 		 * 
 		 */
-		if (id == null) {
+		if (StringUtils.isEmpty(id)) {
 			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_INVALID_NULL.getErrorCode(),
 					MosipUinExceptionConstants.UIN_VAL_INVALID_NULL.getErrorMessage());
 		}
 		/**
 		 * 
-		 * Check the Length of the UIN, It Should be 12 Digit
+		 * Check the Length of the UIN, It Should be specified number of digits
 		 * 
 		 */
-		if (id.length() != UIN_LEN) {
+		if (id.length() != uinLength) {
 			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorCode(),
 					MosipUinExceptionConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorCode());
 		}
@@ -86,7 +104,7 @@ public class UinValidator implements MosipIdValidator<String> {
 		 * Validation for the UIN should not contain any alphanumeric characters
 		 * 
 		 */
-		if (!Pattern.matches(APLHA_REGEX, id)) {
+		if (!Pattern.matches(numaricRegEx, id)) {
 			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_INVALID_DIGITS.getErrorCode(),
 					MosipUinExceptionConstants.UIN_VAL_INVALID_DIGITS.getErrorMessage());
 		}
