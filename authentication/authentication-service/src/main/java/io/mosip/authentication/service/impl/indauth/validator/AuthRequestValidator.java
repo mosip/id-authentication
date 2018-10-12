@@ -150,7 +150,7 @@ public class AuthRequestValidator implements Validator {
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
 		boolean remainingAuthType = authRequest.getAuthType().isBio() || authRequest.getAuthType().isAd()
-				|| authRequest.getAuthType().isPin() || authRequest.getAuthType().isId();
+				|| authRequest.getAuthType().isPin() || authRequest.getAuthType().isPi();
 		if (remainingAuthType) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 					"INVALID_AUTH_REQUEST - remainingAuthType is true");

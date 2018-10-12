@@ -173,7 +173,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIdType(IdType.UIN.getType());
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(false);
-		authType.setId(false);
+		authType.setPi(false);
 		authType.setAd(false);
 		authType.setPin(false);
 		authType.setOtp(true);
@@ -199,7 +199,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setIdType(IdType.UIN.getType());
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(false);
-		authType.setId(false);
+		authType.setPi(false);
 		authType.setAd(false);
 		authType.setPin(false);
 		authType.setOtp(false);
@@ -217,7 +217,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setId("234567890124");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(false);
-		authType.setId(false);
+		authType.setPi(false);
 		authType.setAd(false);
 		authType.setPin(false);
 		authType.setOtp(true);
@@ -240,7 +240,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setId("234567890123");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(false);
-		authType.setId(false);
+		authType.setPi(false);
 		authType.setAd(false);
 		authType.setPin(false);
 		authType.setOtp(true);
@@ -262,7 +262,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setId("5371843613598206");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(false);
-		authType.setId(false);
+		authType.setPi(false);
 		authType.setAd(false);
 		authType.setPin(false);
 		authType.setOtp(true);
@@ -285,7 +285,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setId("5371843613598211");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(false);
-		authType.setId(false);
+		authType.setPi(false);
 		authType.setAd(false);
 		authType.setPin(false);
 		authType.setOtp(true);
@@ -307,7 +307,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setId("5371843613598211");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(false);
-		authType.setId(false);
+		authType.setPi(false);
 		authType.setAd(false);
 		authType.setPin(false);
 		authType.setOtp(true);
@@ -329,7 +329,7 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setId("5371843613598211");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(false);
-		authType.setId(false);
+		authType.setPi(false);
 		authType.setAd(false);
 		authType.setPin(false);
 		authType.setOtp(true);
