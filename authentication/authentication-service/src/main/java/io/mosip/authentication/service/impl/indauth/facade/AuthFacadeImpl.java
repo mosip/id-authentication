@@ -114,7 +114,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 		
 		if (authRequestDTO.getAuthType().isPi() || authRequestDTO.getAuthType().isAd() || authRequestDTO.getAuthType().isFad()) {
-			AuthStatusInfo demoValidationStatus = demoAuthService.getDemoStatus(authRequestDTO);
+			AuthStatusInfo demoValidationStatus = demoAuthService.getDemoStatus(authRequestDTO, refId);
 			authStatusList.add(demoValidationStatus);
 			// TODO log authStatus - authType, response
 			logger.info(DEFAULT_SESSION_ID, "IDA", "AuthFacade","Demographic Authentication status : " + demoValidationStatus.isStatus());
