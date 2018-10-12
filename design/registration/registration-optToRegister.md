@@ -170,15 +170,13 @@ Need DB script.zip
 List of Sync Job Status:
 
   C   Completed
-  --- -------------
   I   In-Progress
   H   On-hold
   S   Suspended
 
 Class Diagram:
 
-<https://github.com/mosip/mosip/tree/DEV/design/registration/_images/_class_diagram/registration-optToRegistration-classDiagram.png>
+<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_class_diagram/registration-optToRegister-classDiagram.png>
 
 Sequence Diagram:
-
-<https://github.com/mosip/mosip/tree/DEV/design/registration/_images/_class_diagram/registration-optToRegistration-sequenceDiagram.png>
+<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_sequence_diagram/registration-optToRegister-sequenceDiagram.png>
