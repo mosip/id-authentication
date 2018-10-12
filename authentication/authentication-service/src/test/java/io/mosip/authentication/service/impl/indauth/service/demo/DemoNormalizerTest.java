@@ -20,6 +20,12 @@ public class DemoNormalizerTest {
 		assertEquals("mosip mosip", DemoNormalizer.normalizeName("Dr. mr. mrs mosip  ,    mosip*"));
 
 	}
+	
+	@Test
+	public void testNameNormalizer3() {
+		assertEquals("mosipmosip", DemoNormalizer.normalizeName("Dr. mr. mrs mosip,mosip*"));
+
+	}
 
 	@Test
 	public void testNameNormalizerFailureCase() {

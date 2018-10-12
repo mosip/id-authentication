@@ -4,9 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -276,12 +278,14 @@ public class DemoValidator implements Validator {
 	 * @param errors
 	 */
 	private void checkValidPrimaryLanguageCode(String primaryLanguage, Errors errors) {
-		if (!primaryLanguage.equals("en") || !primaryLanguage.equals("ar")) {
-			mosipLogger.error("SessionID", "Primary Language", "code for primary language",
-					"Valid primary Language code  should be present ");
+		Locale locale = new Locale.Builder().setLanguageTag(primaryLanguage).build();
+		if (!LocaleUtils.isAvailableLocale(locale)) {
+			mosipLogger.error("SessionID", "Secondary Language", "code for secondary language",
+					"Valid secondary Language code  should be present ");
 			errors.reject(IdAuthenticationErrorConstants.INVALID_PRIMARY_LANGUAGE_CODE.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_PRIMARY_LANGUAGE_CODE.getErrorMessage());
 		}
+
 	}
 
 	/**
@@ -291,12 +295,14 @@ public class DemoValidator implements Validator {
 	 * @param errors
 	 */
 	private void checkValidSecondaryLanguageCode(String secondaryLanguage, Errors errors) {
-		if (!secondaryLanguage.equals("en") || !secondaryLanguage.equals("ar")) {
+		Locale locale = new Locale.Builder().setLanguageTag(secondaryLanguage).build();
+		if (!LocaleUtils.isAvailableLocale(locale)) {
 			mosipLogger.error("SessionID", "Secondary Language", "code for secondary language",
 					"Valid secondary Language code  should be present ");
 			errors.reject(IdAuthenticationErrorConstants.INVALID_SECONDARY_LANGUAGE_CODE.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_SECONDARY_LANGUAGE_CODE.getErrorMessage());
 		}
+		
 	}
 
 }
