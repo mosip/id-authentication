@@ -1,5 +1,6 @@
 package io.mosip.kernel.core.spi.templatemanager;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.Map;
@@ -22,9 +23,10 @@ public interface MosipTemplateManager {
 	 * @param values
 	 *            as Map values should be pass as Map<String,Object>
 	 * @return template as InputStream merged given template content and values
+	 * @throws IOException 
 	 * 
 	 */
-	public InputStream mergeTemplate(InputStream template, Map<String, Object> values);
+	public InputStream mergeTemplate(InputStream template, Map<String, Object> values) throws IOException;
 
 	/**
 	 * Method to merge template using default UTF-8 encoding
@@ -35,8 +37,9 @@ public interface MosipTemplateManager {
 	 * @param values
 	 *            as Map values should be pass as Map<String,Object>
 	 * @return boolean return true if successfully merged given template and values
+	 * @throws IOException 
 	 */
-	public boolean merge(String templateName, Writer writer, Map<String, Object> values);
+	public boolean merge(String templateName, Writer writer, Map<String, Object> values) throws IOException;
 
 	/**
 	 * Method to merge template using provided encoding type
@@ -49,6 +52,7 @@ public interface MosipTemplateManager {
 	 * @param encodingType
 	 *            as String
 	 * @return boolean return true if successfully merged given template and values
+	 * @throws IOException 
 	 */
-	public boolean merge(String templateName, Writer writer, Map<String, Object> values, final String encodingType);
+	public boolean merge(String templateName, Writer writer, Map<String, Object> values, final String encodingType) throws IOException;
 }

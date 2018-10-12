@@ -99,8 +99,8 @@
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-validator</module>
 		<module>kernel-virusscanner-clamav</module>
-		<module>kernel-template-manager-velocity</module>
-		<module>kernel-template-manager-freemarker</module>
+		<module>kernel-templatemanager-velocity</module>
+		<module>kernel-templatemanager-freemarker</module>
 	</modules>
 
 	<profiles>
@@ -127,18 +127,7 @@
 			</properties>
 		</profile>
 	</profiles>
-	<dependencies>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jul-to-slf4j</artifactId>
-			<version>1.7.25</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.7.25</version>
-		</dependency>
-	</dependencies>
+
 
 	<build>
 		<pluginManagement>
