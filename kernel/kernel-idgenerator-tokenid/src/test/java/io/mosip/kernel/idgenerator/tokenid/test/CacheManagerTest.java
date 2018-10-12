@@ -22,9 +22,9 @@ public class CacheManagerTest {
 	TokenIdCacheManagerImpl tokenIdCacheManager;
 	
 	@Mock
-	TokenIdRepository tokenRepo;
+	TokenIdRepository tokenIdRepository;
 	
-	String testTokenId="15463470923203664956734524854603577";
+	String testTokenId="95463470923203664956734524854603577";
 	
 	@Before
 	public void setup() {

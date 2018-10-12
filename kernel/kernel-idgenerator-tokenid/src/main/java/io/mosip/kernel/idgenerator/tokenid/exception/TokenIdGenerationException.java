@@ -4,7 +4,8 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import org.springframework.stereotype.Component;
 
 /**
- * @author M1037462
+ * Class handles TokenId generation Exception that which extends {@link BaseUncheckedException}
+ * @author M1046464
  * @see 1.0.0
  *
  */

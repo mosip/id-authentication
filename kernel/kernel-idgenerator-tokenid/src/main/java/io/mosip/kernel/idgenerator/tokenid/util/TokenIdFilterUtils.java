@@ -6,7 +6,7 @@ package io.mosip.kernel.idgenerator.tokenid.util;
 import java.util.stream.IntStream;
 
 /**
- * @author Dharmesh Khandelwal
+ * @author Srinivasan
  * @since 1.0.0
  *
  */

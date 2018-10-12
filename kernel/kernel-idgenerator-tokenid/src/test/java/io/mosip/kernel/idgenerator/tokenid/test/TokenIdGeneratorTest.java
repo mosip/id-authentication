@@ -1,7 +1,5 @@
 package io.mosip.kernel.idgenerator.tokenid.test;
 
-
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -24,8 +22,6 @@ import io.mosip.kernel.idgenerator.tokenid.exception.TokenIdGenerationException;
 import io.mosip.kernel.idgenerator.tokenid.generator.TokenIdGenerator;
 import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdRepository;
 
-
-
 /**
  * Test class for TokenIdenerator class
  * 
@@ -36,68 +32,50 @@ import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdRepository;
 
 public class TokenIdGeneratorTest {
 	private Integer tokenIdLength;
-	
+
 	@InjectMocks
 	private TokenIdGenerator tokenIdGenerator;
-	
+
 	@Mock
 	TokenIdCacheManagerImpl tokenCacheManager;
-	
+
 	@Mock
-	TokenIdRepository tokenRepo;
-	
-	String tokenIdLen="tokenIdLength";
-	
-	
- 	
+	TokenIdRepository tokenIdRepository;
+
+	String tokenIdLengthFieldName = "tokenIdLength";
+
 	@Before
 	public void setup() {
 		try {
-			
 			InputStream config = getClass().getClassLoader().getResourceAsStream("application.properties");
 			Properties propObj = new Properties();
 			propObj.load(config);
 			String tokenIdLengthString = propObj.getProperty("mosip.kernel.tokenid.length");
-			tokenIdLength=Integer.parseInt(tokenIdLengthString);
+			tokenIdLength = Integer.parseInt(tokenIdLengthString);
 			MockitoAnnotations.initMocks(this);
-
-			ReflectionTestUtils.setField(this.tokenIdGenerator, tokenIdLen, 36);
+			ReflectionTestUtils.setField(this.tokenIdGenerator, tokenIdLengthFieldName, 36);
 			this.tokenIdGenerator.tokenIdGeneratorPostConstruct();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
-	
+
 	@Test
 	public void notNullTest() {
-		
 		assertNotNull(tokenIdGenerator.generateId());
 	}
 
 	@Test
-	public void tokenIdDigitTest() {
-		Integer tokenLength=tokenIdGenerator.generateId().length();
+	public void tokenIdLengthTest() {
+		Integer tokenLength = tokenIdGenerator.generateId().length();
 		assertEquals(tokenIdLength, tokenLength);
 	}
-	
-	
-	@Test(expected=Exception.class)
-	public void tokenIdgeneratorNullTest() {
-		
-	    this.tokenIdGenerator.saveGeneratedTokenId(null);
-		
-	}
-	
-	@Test(expected=TokenIdGenerationException.class)
-	public void throwTokenIdgenerationException() {
-		throw new TokenIdGenerationException();
-	}
-	
-	
-}
 
+	@Test(expected = TokenIdGenerationException.class)
+	public void tokenIdgeneratorNullTest() {
+		this.tokenIdGenerator.saveGeneratedTokenId(null);
+	}
+
+}
