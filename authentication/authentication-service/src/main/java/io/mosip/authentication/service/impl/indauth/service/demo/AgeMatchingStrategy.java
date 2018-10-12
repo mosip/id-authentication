@@ -8,7 +8,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
  */
 public enum AgeMatchingStrategy implements MatchingStrategy {
 	
-	EXACT(MatchStrategyType.EXACT, (reqInfo, entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (reqInfo, entityInfo) -> {
 		if (reqInfo instanceof Integer && entityInfo instanceof Integer) {
 			return MatcherUtil.doLessThanEqualToMatch((int) reqInfo, (int) entityInfo);
 		} else {
@@ -18,7 +18,7 @@ public enum AgeMatchingStrategy implements MatchingStrategy {
 	
 	private final MatchFunction matchFunction;
 
-	private final MatchStrategyType matchStrategyType;
+	private final MatchingStrategyType matchStrategyType;
 
 	/**
 	 * 
@@ -26,13 +26,13 @@ public enum AgeMatchingStrategy implements MatchingStrategy {
 	 * @param matchValue
 	 * @param matchFunction
 	 */
-	private AgeMatchingStrategy(MatchStrategyType matchStrategyType, MatchFunction matchFunction) {
+	private AgeMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
 
 	@Override
-	public MatchStrategyType getType() {
+	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 

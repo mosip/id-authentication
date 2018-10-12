@@ -9,7 +9,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
 
 public enum NameMatchingStrategy implements MatchingStrategy {
 
-	EXACT(MatchStrategyType.EXACT, (reqInfo, entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (reqInfo, entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
@@ -17,7 +17,7 @@ public enum NameMatchingStrategy implements MatchingStrategy {
 		} else {
 			return 0;
 		}
-	}), PARTIAL(MatchStrategyType.PARTIAL, (reqInfo, entityInfo) -> {
+	}), PARTIAL(MatchingStrategyType.PARTIAL, (reqInfo, entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
@@ -25,11 +25,11 @@ public enum NameMatchingStrategy implements MatchingStrategy {
 		} else {
 			return 0;
 		}
-	}), PHONETICS(MatchStrategyType.PHONETICS, (reqInfo, entityInfo) -> 0);
+	}), PHONETICS(MatchingStrategyType.PHONETICS, (reqInfo, entityInfo) -> 0);
 
 	private final MatchFunction matchFunction;
 
-	private final MatchStrategyType matchStrategyType;
+	private final MatchingStrategyType matchStrategyType;
 
 	/**
 	 * Constructor for Name Matching Strategy
@@ -37,13 +37,13 @@ public enum NameMatchingStrategy implements MatchingStrategy {
 	 * @param matchStrategyType
 	 * @param matchFunction
 	 */
-	private NameMatchingStrategy(MatchStrategyType matchStrategyType, MatchFunction matchFunction) {
+	private NameMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
 
 	@Override
-	public MatchStrategyType getType() {
+	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 

@@ -7,15 +7,17 @@ import java.util.stream.Stream;
  * @author Arun Bose
  * The Enum MatchStrategyType.
  */
-public enum MatchStrategyType {
+public enum MatchingStrategyType {
 
 	/** The exact. */
-	EXACT("EXACT"), /** The partial. */
- PARTIAL("PARTIAL"), /** The phonetics. */
- PHONETICS("PHONETICS");
+	EXACT("EXACT"),
+	/** The partial. */
+	PARTIAL("PARTIAL"),
+	/** The phonetics. */
+	PHONETICS("PHONETICS");
 
 	/** The Constant default_Matching_Strategy. */
-	public static final MatchStrategyType default_Matching_Strategy = MatchStrategyType.EXACT;
+	public static final MatchingStrategyType DEFAULT_MATCHING_STRATEGY = MatchingStrategyType.EXACT;
 
 	/** The type. */
 	private String type;
@@ -25,7 +27,7 @@ public enum MatchStrategyType {
 	 *
 	 * @param type the type
 	 */
-	private MatchStrategyType(String type) {
+	private MatchingStrategyType(String type) {
 		this.type = type;
 	}
 
@@ -44,7 +46,7 @@ public enum MatchStrategyType {
 	 * @param type the type
 	 * @return the match strategy type
 	 */
-	public static Optional<MatchStrategyType> getMatchStrategyType(String type) {
+	public static Optional<MatchingStrategyType> getMatchStrategyType(String type) {
 		return Stream.of(values()).filter(t -> t.getType().equals(type)).findAny();
 
 	}

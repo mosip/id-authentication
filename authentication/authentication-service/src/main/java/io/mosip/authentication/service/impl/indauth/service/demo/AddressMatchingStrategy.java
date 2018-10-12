@@ -4,7 +4,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
 
 public enum AddressMatchingStrategy implements MatchingStrategy {
 
-	EXACT(MatchStrategyType.EXACT, (reqInfo, entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (reqInfo, entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
@@ -16,7 +16,7 @@ public enum AddressMatchingStrategy implements MatchingStrategy {
 
 	private final MatchFunction matchFunction;
 
-	private final MatchStrategyType matchStrategyType;
+	private final MatchingStrategyType matchStrategyType;
 
 	/**
 	 * Constructor for Address Matching Strategy
@@ -24,13 +24,13 @@ public enum AddressMatchingStrategy implements MatchingStrategy {
 	 * @param matchStrategyType
 	 * @param matchFunction
 	 */
-	private AddressMatchingStrategy(MatchStrategyType matchStrategyType, MatchFunction matchFunction) {
+	private AddressMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
 
 	@Override
-	public MatchStrategyType getType() {
+	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 

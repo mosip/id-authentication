@@ -17,7 +17,7 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategytype() {
-		assertEquals(FullAddressMatchingStrategy.EXACT.getType(), MatchStrategyType.EXACT);
+		assertEquals(FullAddressMatchingStrategy.EXACT.getType(), MatchingStrategyType.EXACT);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidPartialMatchingStrategytype() {
-		assertEquals(FullAddressMatchingStrategy.PARTIAL.getType(), MatchStrategyType.PARTIAL);
+		assertEquals(FullAddressMatchingStrategy.PARTIAL.getType(), MatchingStrategyType.PARTIAL);
 	}
 
 	/**
@@ -147,7 +147,7 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPhoneticsMatchStrategyType() {
-		assertEquals(FullAddressMatchingStrategy.PHONETICS.getType(), MatchStrategyType.PHONETICS);
+		assertEquals(FullAddressMatchingStrategy.PHONETICS.getType(), MatchingStrategyType.PHONETICS);
 	}
 
 	/**

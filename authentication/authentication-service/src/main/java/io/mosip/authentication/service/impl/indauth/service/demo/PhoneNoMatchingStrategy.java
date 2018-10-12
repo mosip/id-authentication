@@ -8,7 +8,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
  */
 public enum PhoneNoMatchingStrategy implements MatchingStrategy {
 	
-	EXACT(MatchStrategyType.EXACT, (reqInfo, entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (reqInfo, entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			return MatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {
@@ -18,7 +18,7 @@ public enum PhoneNoMatchingStrategy implements MatchingStrategy {
 	
 	private final MatchFunction matchFunction;
 
-	private final MatchStrategyType matchStrategyType;
+	private final MatchingStrategyType matchStrategyType;
 
 	/**
 	 * 
@@ -26,13 +26,13 @@ public enum PhoneNoMatchingStrategy implements MatchingStrategy {
 	 * @param matchValue
 	 * @param matchFunction
 	 */
-	private PhoneNoMatchingStrategy(MatchStrategyType matchStrategyType, MatchFunction matchFunction) {
+	private PhoneNoMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
 
 	@Override
-	public MatchStrategyType getType() {
+	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 

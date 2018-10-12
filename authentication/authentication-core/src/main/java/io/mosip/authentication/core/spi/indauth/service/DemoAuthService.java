@@ -1,8 +1,7 @@
 package io.mosip.authentication.core.spi.indauth.service;
 
-import java.util.List;
-
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 
 
 /**
@@ -19,7 +18,7 @@ public interface DemoAuthService {
 	 * @param authRequestDTO the auth request DTO
 	 * @return the demo status
 	 */
-	public boolean getDemoStatus(AuthRequestDTO authRequestDTO);
+	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO);
 	
 	
 

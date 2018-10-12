@@ -16,11 +16,20 @@ import lombok.Data;
 @Data
 public class OtpResponseDTO {
 
-	private static final long serialVersionUID = 8039452517810739329L;
-
 	private String status;
 	private List<AuthError> errorCode;
 	private String txnID;
 	private Date responseTime;
+	
+	/**
+	 * masked mobile(i.e XXXXXXX123) number where send OTP
+	 */
+	//TODO
+	private String maskedMobile;
+	/**
+	 * masked email id(raXXXXXXXXXan@xyz.com) where send OTP
+	 */
+	//TODO
+	private String maskedEmail;
 
 }

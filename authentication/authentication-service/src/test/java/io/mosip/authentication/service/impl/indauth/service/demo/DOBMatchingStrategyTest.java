@@ -14,7 +14,7 @@ public class DOBMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategytype() {
-		assertEquals(DOBMatchingStrategy.EXACT.getType(), MatchStrategyType.EXACT);
+		assertEquals(DOBMatchingStrategy.EXACT.getType(), MatchingStrategyType.EXACT);
 	}
 
 	/**

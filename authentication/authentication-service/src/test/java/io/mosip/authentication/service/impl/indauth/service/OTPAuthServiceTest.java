@@ -180,7 +180,7 @@ public class OTPAuthServiceTest {
 		pindto.setType(PinType.OTP);
 		pindto.setValue("23232323");
 		otpAuthRequestDTO.setPinDTO(pindto);
-		assertFalse(authserviceimpl.validateOtp(otpAuthRequestDTO, "45345435345"));
+		assertFalse(authserviceimpl.validateOtp(otpAuthRequestDTO, "45345435345").isStatus());
 	}
 
 	/**

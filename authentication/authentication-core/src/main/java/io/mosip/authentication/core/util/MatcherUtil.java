@@ -122,7 +122,7 @@ public final class MatcherUtil {
 	 */
 
 	private static boolean allMatch(List<String> refInfoList, List<String> entityInfoList) {
-		return entityInfoList.parallelStream().allMatch(name -> refInfoList.contains(name));
+		return entityInfoList.parallelStream().allMatch(str -> refInfoList.contains(str));
 	}
 
 }

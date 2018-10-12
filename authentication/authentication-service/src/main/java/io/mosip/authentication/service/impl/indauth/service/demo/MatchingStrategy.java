@@ -1,7 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchStrategyType;
-
 /**
  * @author  Arun Bose
  * The Interface MatchingStrategy.
@@ -13,7 +11,7 @@ public interface MatchingStrategy {
 	 *
 	 * @return the type
 	 */
-	MatchStrategyType getType();
+	MatchingStrategyType getType();
 	
 	/**
 	 * Gets the match function.

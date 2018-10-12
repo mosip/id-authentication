@@ -14,7 +14,7 @@ public class GenderMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategytype() {
-		assertEquals(GenderMatchingStrategy.EXACT.getType(), MatchStrategyType.EXACT);
+		assertEquals(GenderMatchingStrategy.EXACT.getType(), MatchingStrategyType.EXACT);
 	}
 
 	/**

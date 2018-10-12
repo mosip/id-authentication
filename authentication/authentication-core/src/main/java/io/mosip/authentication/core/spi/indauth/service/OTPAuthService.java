@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.spi.indauth.service;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
@@ -22,6 +23,6 @@ public interface OTPAuthService {
 	 * @return
 	 */
 
-	public boolean validateOtp(AuthRequestDTO authreqdto, String txnId) throws IdAuthenticationBusinessException;
+	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String txnId) throws IdAuthenticationBusinessException;
 
 }

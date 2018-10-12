@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
+import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
@@ -66,7 +69,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * 
 	 */
 	@Override
-	public boolean validateOtp(AuthRequestDTO authreqdto, String refId) throws IdAuthenticationBusinessException {
+	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String refId) throws IdAuthenticationBusinessException {
 		boolean isOtpValid = false;
 		String txnId = authreqdto.getTxnID();
 		String UIN = authreqdto.getId();
@@ -87,7 +90,20 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			
 		}
 
-		return isOtpValid;
+		return constructAuthStatusInfo(isOtpValid);
+	}
+
+	private AuthStatusInfo constructAuthStatusInfo(boolean isOtpValid) {
+		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
+		statusInfoBuilder
+				.setStatus(isOtpValid)
+				.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP);
+		
+		if(isOtpValid) {
+			statusInfoBuilder.addAuthUsageDataBits(AuthUsageDataBit.MATCHED_OTP);
+		}
+		
+		return statusInfoBuilder.build();
 	}
 
 	/**

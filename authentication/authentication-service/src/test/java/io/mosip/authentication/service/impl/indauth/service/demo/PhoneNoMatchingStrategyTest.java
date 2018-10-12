@@ -14,7 +14,7 @@ public class PhoneNoMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategytype() {
-		assertEquals(PhoneNoMatchingStrategy.EXACT.getType(), MatchStrategyType.EXACT);
+		assertEquals(PhoneNoMatchingStrategy.EXACT.getType(), MatchingStrategyType.EXACT);
 	}
 
 	/**

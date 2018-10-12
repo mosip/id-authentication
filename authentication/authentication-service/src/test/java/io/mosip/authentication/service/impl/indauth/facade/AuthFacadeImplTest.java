@@ -1,6 +1,9 @@
 package io.mosip.authentication.service.impl.indauth.facade;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +23,9 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
+import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
@@ -28,6 +33,7 @@ import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.idauth.service.impl.IdAuthServiceImpl;
+import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
@@ -120,8 +126,9 @@ public class AuthFacadeImplTest {
 		authTypeDTO.setOtp(true);
 		authRequestDTO.setAuthType(authTypeDTO);
 		Mockito.when(idAuthServiceImpl.validateUIN(Mockito.any())).thenReturn(refId);
-		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, refId)).thenReturn(authStatus);
-		AuthResponseDTO authenticateApplicant = authFacadeImpl.authenticateApplicant(authRequestDTO);
+		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, refId))
+				.thenReturn(AuthStatusInfoBuilder.newInstance().setStatus(authStatus).build());
+		authFacadeImpl.authenticateApplicant(authRequestDTO);
 	}
 	
 	
@@ -131,13 +138,19 @@ public class AuthFacadeImplTest {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Test
-	public void processAuthTypeTestFail() throws IdAuthenticationBusinessException{
+	public void processAuthTypeTestFail() throws IdAuthenticationBusinessException {
 		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
 		AuthTypeDTO authType=new AuthTypeDTO();
 		authRequestDTO.setAuthType(authType);
 		authRequestDTO.getAuthType().setOtp(false);
-		boolean authStatus=authFacadeImpl.processAuthType(authRequestDTO, Mockito.any());
-		assertEquals(authStatus,false);
+		List<AuthStatusInfo> authStatusList=authFacadeImpl.processAuthType(authRequestDTO, Mockito.any());
+		
+		assertTrue(authStatusList
+				.stream()
+				.noneMatch(status -> 
+						status.getUsageDataBits()
+						.contains(AuthUsageDataBit.USED_OTP) 
+				|| status.isStatus()));
     }
 	 
 	
@@ -153,10 +166,18 @@ public class AuthFacadeImplTest {
 		AuthTypeDTO authTypeDTO=new AuthTypeDTO();
 		authTypeDTO.setOtp(true);
 		authRequestDTO.setAuthType(authTypeDTO);
-		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO,"1242")).thenReturn(true);
-		boolean authStatus=authFacadeImpl.processAuthType(authRequestDTO, "1242");
-		assertEquals(authStatus,true);
-    }
+		Mockito.when(otpAuthServiceImpl.validateOtp(authRequestDTO, "1242"))
+				.thenReturn(AuthStatusInfoBuilder.newInstance()
+						.setStatus(true)
+						.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP)
+						.build());
+		List<AuthStatusInfo> authStatusList=authFacadeImpl.processAuthType(authRequestDTO, "1242");
+		assertTrue(authStatusList
+				.stream()
+				.anyMatch(status -> status
+						.getUsageDataBits()
+						.contains(AuthUsageDataBit.USED_OTP) 
+				&& status.isStatus()));    }
 	
 	/**
 	 * This class tests the processIdtype  where UIN is passed and gets successful.

@@ -14,7 +14,7 @@ public class EmailMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategytype() {
-		assertEquals(EmailMatchingStrategy.EXACT.getType(), MatchStrategyType.EXACT);
+		assertEquals(EmailMatchingStrategy.EXACT.getType(), MatchingStrategyType.EXACT);
 	}
 
 	/**

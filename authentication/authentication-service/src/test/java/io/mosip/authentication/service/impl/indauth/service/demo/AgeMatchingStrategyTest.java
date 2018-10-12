@@ -14,7 +14,7 @@ public class AgeMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategytype() {
-		assertEquals(AgeMatchingStrategy.EXACT.getType(), MatchStrategyType.EXACT);
+		assertEquals(AgeMatchingStrategy.EXACT.getType(), MatchingStrategyType.EXACT);
 	}
 
 	/**

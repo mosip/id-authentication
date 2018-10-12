@@ -42,12 +42,12 @@ public class DemoMatcher {
 	private MatchOutput matchType(DemoDTO demoDTO, DemoEntity demoEntity, MatchInput input) {
 		String matchStrategyTypeStr = input.getMatchStrategyType();
 		if(matchStrategyTypeStr == null) {
-			matchStrategyTypeStr = MatchStrategyType.EXACT.getType();
+			matchStrategyTypeStr = MatchingStrategyType.EXACT.getType();
 		}
 
-		Optional<MatchStrategyType> matchStrategyType = MatchStrategyType.getMatchStrategyType(matchStrategyTypeStr);
+		Optional<MatchingStrategyType> matchStrategyType = MatchingStrategyType.getMatchStrategyType(matchStrategyTypeStr);
 		if(matchStrategyType.isPresent() ) {
-			MatchStrategyType strategyType = matchStrategyType.get();
+			MatchingStrategyType strategyType = matchStrategyType.get();
 			Optional<MatchingStrategy> matchingStrategy = input.getDemoMatchType().getAllowedMatchingStrategy(strategyType);
 			if(matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();

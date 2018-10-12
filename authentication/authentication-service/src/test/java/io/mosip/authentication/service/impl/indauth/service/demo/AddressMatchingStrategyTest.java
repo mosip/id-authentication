@@ -18,7 +18,7 @@ public class AddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategytype() {
-		assertEquals(AddressMatchingStrategy.EXACT.getType(), MatchStrategyType.EXACT);
+		assertEquals(AddressMatchingStrategy.EXACT.getType(), MatchingStrategyType.EXACT);
 	}
 
 	/**

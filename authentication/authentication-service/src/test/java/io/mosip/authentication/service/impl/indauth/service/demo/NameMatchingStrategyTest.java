@@ -19,7 +19,7 @@ public class NameMatchingStrategyTest {
 
 	@Test
 	public void TestValidExactMatchingStrategytype() {
-		assertEquals(NameMatchingStrategy.EXACT.getType(), MatchStrategyType.EXACT);
+		assertEquals(NameMatchingStrategy.EXACT.getType(), MatchingStrategyType.EXACT);
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidPartialMatchingStrategytype() {
-		assertEquals(NameMatchingStrategy.PARTIAL.getType(), MatchStrategyType.PARTIAL);
+		assertEquals(NameMatchingStrategy.PARTIAL.getType(), MatchingStrategyType.PARTIAL);
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPhoneticsMatchStrategyType() {
-		assertEquals(NameMatchingStrategy.PHONETICS.getType(), MatchStrategyType.PHONETICS);
+		assertEquals(NameMatchingStrategy.PHONETICS.getType(), MatchingStrategyType.PHONETICS);
 	}
 
 	/**

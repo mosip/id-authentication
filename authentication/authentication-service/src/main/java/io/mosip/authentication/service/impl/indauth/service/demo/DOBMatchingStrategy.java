@@ -12,7 +12,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
  */
 public enum DOBMatchingStrategy implements MatchingStrategy {
 	
-	EXACT(MatchStrategyType.EXACT, (reqInfo, entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (reqInfo, entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date reqInfoDate = null;
@@ -32,7 +32,7 @@ public enum DOBMatchingStrategy implements MatchingStrategy {
 	
 	private final MatchFunction matchFunction;
 
-	private final MatchStrategyType matchStrategyType;
+	private final MatchingStrategyType matchStrategyType;
 
 	/**
 	 * 
@@ -40,13 +40,13 @@ public enum DOBMatchingStrategy implements MatchingStrategy {
 	 * @param matchValue
 	 * @param matchFunction
 	 */
-	private DOBMatchingStrategy(MatchStrategyType matchStrategyType, MatchFunction matchFunction) {
+	private DOBMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
 
 	@Override
-	public MatchStrategyType getType() {
+	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 
