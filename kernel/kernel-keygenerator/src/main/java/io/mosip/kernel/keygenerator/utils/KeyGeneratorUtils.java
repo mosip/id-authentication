@@ -38,7 +38,7 @@ public class KeyGeneratorUtils {
 	public static KeyGenerator getKeyGenerator(KeyGeneratorConfig config) {
 
 		BouncyCastleProvider provider = init();
-		KeyGenerator generator;
+		KeyGenerator generator = null;
 		try {
 			generator = KeyGenerator.getInstance(config.getAlgorithmName(), provider);
 		} catch (NoSuchAlgorithmException e) {
