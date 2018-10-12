@@ -23,6 +23,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchOutput;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
+import io.mosip.authentication.service.repository.DemoRepository;
 
 /**
  * The implementation of Demographic Authentication service.
@@ -42,6 +43,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	/** The demo matcher. */
 	@Autowired
 	private DemoMatcher demoMatcher;
+	
+	@Autowired
+	private DemoRepository demoRepository;
 
 	/**
 	 * Construct match input.
@@ -221,7 +225,8 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		boolean demoMatched = false;
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs,
-				authRequestDTO.getPersonalDataDTO().getDemoDTO(), getDemoEntity(authRequestDTO.getId()));
+		        authRequestDTO.getPersonalDataDTO().getDemoDTO(), 
+		        getDemoEntity(refId,authRequestDTO.getPersonalDataDTO().getDemoDTO().getLangPri()));
 		demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
 		
 		
@@ -258,8 +263,14 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 *            the unique id
 	 * @return the demo entity
 	 */
-	public DemoEntity getDemoEntity(String uniqueId) {
-		return new DemoEntity();
+	public DemoEntity getDemoEntity(String refId,String langCode) {
+		return demoRepository.findByUinRefIdAndLangCode(refId, langCode);
+	}
+	
+	public static void main(String[] args) {
+		DemoAuthServiceImpl demoService=new DemoAuthServiceImpl();
+		DemoEntity demoEntity=demoService.getDemoEntity("12345", "EN");
+		System.out.println(demoEntity.getFirstName());
 	}
 
 }

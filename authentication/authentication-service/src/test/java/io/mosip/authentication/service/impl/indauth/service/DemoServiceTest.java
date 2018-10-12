@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -26,9 +27,11 @@ import io.mosip.authentication.core.spi.idauth.demo.PersonalAddressDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalFullAddressDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDataDTO;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
+import io.mosip.authentication.service.repository.DemoRepository;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -41,6 +44,8 @@ public class DemoServiceTest {
 	@InjectMocks
 	private DemoAuthServiceImpl demoAuthServiceImpl;
 	
+	@Mock
+	private DemoRepository demoRepository;
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "environment", environment);
@@ -143,6 +148,13 @@ public class DemoServiceTest {
 		List<MatchInput> listMatchInputsExp=new ArrayList<>();
 		List<MatchInput> listMatchInputsAct=(List<MatchInput>) constructInputMethod.invoke(demoAuthServiceImpl,authRequest);
 		assertEquals(listMatchInputsExp, listMatchInputsAct);
+	}
+	
+	@Test
+	public void getDemoEntityTest() {
+		//Mockito.when(demoRepository.findByUinRefIdAndLangCode("12345", "EN"));
+		DemoEntity demoEntity=demoAuthServiceImpl.getDemoEntity("12345", "EN");
+		System.out.println(demoEntity);
 	}
 
 }

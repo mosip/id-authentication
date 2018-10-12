@@ -149,7 +149,7 @@ public class AuthRequestValidator implements Validator {
 	 * @param errors
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
-		boolean anyAuthType = authRequest.getAuthType().isOtp() && authRequest.getAuthType().isBio()
+		boolean anyAuthType = authRequest.getAuthType().isOtp() || authRequest.getAuthType().isBio()
 				|| authRequest.getAuthType().isAd() || authRequest.getAuthType().isFad()
 				|| authRequest.getAuthType().isPin() || authRequest.getAuthType().isPi();
 			
@@ -174,8 +174,8 @@ public class AuthRequestValidator implements Validator {
 	 */
 	public void checkOTPAuth(AuthRequestDTO authRequest, Errors errors) {
 
-		PinDTO pinDTO = authRequest.getPersonalDataDTO().getPinDTO();
-		if (pinDTO != null) {
+		PinDTO pinDTO = null;
+		if (authRequest.getPersonalDataDTO() != null && (pinDTO = authRequest.getPersonalDataDTO().getPinDTO()) != null) {
 			PinType pinType = pinDTO.getType();
 			if (null != pinDTO.getType() && pinType.getType().equals(PinType.OTP.getType())) {
 				String otpValue = pinDTO.getValue();

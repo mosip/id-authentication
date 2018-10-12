@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -122,6 +123,7 @@ public class DemoEntity {
 	private String statusCode;
 	
 	/** The lang code. */
+	@Id
 	@Column(name="lang_code")
 	private String langCode;
 	
