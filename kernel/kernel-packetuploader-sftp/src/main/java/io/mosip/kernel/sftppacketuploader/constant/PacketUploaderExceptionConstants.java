@@ -81,11 +81,11 @@ public enum PacketUploaderExceptionConstants {
 	/**
 	 * ErrorCode
 	 */
-	String errorCode;
+	private String errorCode;
 	/**
 	 * ErrorMessage
 	 */
-	String errorMessage;
+	private String errorMessage;
 
 	/**
 	 * Constructor for this enum

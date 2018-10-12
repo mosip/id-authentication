@@ -69,9 +69,9 @@ public enum KeyGeneratorExceptionConstants {
 	/**
 	 * Error Code for Exception
 	 */
-	String errorCode;
+	private String errorCode;
 	/**
 	 * Error Message for Exception
 	 */
-	String errorMessage;
+	private String errorMessage;
 }

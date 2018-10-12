@@ -21,7 +21,36 @@ import io.mosip.kernel.keygenerator.exception.MosipNoSuchAlgorithmException;
  * @since 1.0.0
  */
 
+/**
+ * @author Urvil Joshi
+ *
+ * @since 1.0.0
+ */
+/**
+ * @author Urvil Joshi
+ *
+ * @since 1.0.0
+ */
+/**
+ * @author Urvil Joshi
+ *
+ * @since 1.0.0
+ */
+/**
+ * @author Urvil Joshi
+ *
+ * @since 1.0.0
+ */
 public class KeyGeneratorUtils {
+
+	/**
+	 * Bouncy-Castle provider instance
+	 */
+	private static BouncyCastleProvider provider;
+
+	static {
+		provider = init();
+	}
 
 	/**
 	 * No Args Constructor for this class
@@ -37,7 +66,6 @@ public class KeyGeneratorUtils {
 	 */
 	public static KeyGenerator getKeyGenerator(KeyGeneratorConfig config) {
 
-		BouncyCastleProvider provider = init();
 		KeyGenerator generator = null;
 		try {
 			generator = KeyGenerator.getInstance(config.getAlgorithmName(), provider);
@@ -56,7 +84,7 @@ public class KeyGeneratorUtils {
 	 * @return configured {@link KeyPairGenerator} instance
 	 */
 	public static KeyPairGenerator getKeyPairGenerator(KeyGeneratorConfig config) {
-		BouncyCastleProvider provider = init();
+
 		KeyPairGenerator generator = null;
 		try {
 			generator = KeyPairGenerator.getInstance(config.getAlgorithmName(), provider);

@@ -5,6 +5,7 @@ import java.security.KeyPairGenerator;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+
 import io.mosip.kernel.keygenerator.config.KeyGeneratorConfig;
 import io.mosip.kernel.keygenerator.utils.KeyGeneratorUtils;
 
@@ -29,6 +30,7 @@ public class MosipKeyGenerator {
 	 * @return generated symmetric key
 	 */
 	public static SecretKey getSymmetricKey() {
+
 		KeyGenerator generator = KeyGeneratorUtils.getKeyGenerator(KeyGeneratorConfig.SYMMETRIC_ALGORITHM);
 		return generator.generateKey();
 	}
@@ -41,7 +43,7 @@ public class MosipKeyGenerator {
 	public static KeyPair getAsymmetricKey() {
 		KeyPairGenerator generator = KeyGeneratorUtils.getKeyPairGenerator(KeyGeneratorConfig.ASYMMETRIC_ALGORITHM);
 		return generator.generateKeyPair();
-		
+
 	}
 
 }

@@ -33,12 +33,12 @@ public enum PacketUploaderExceptionConstants {
 	/**
 	 * Error Message for Exception
 	 */
-	String errorMessage;
+	private String errorMessage;
 
 	/**
 	 * Error Code for Exception
 	 */
-	String errorCode;
+	private String errorCode;
 	
 	/**
 	 * Setter for {@link #errorCode}
