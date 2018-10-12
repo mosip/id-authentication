@@ -178,7 +178,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		object.setAddress(MessageBusAddress.STRUCTURE_BUS_IN);
+		object.setMessageBusAddress(MessageBusAddress.STRUCTURE_BUS_IN);
 		String registrationId = object.getRid();
 
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PACKET_META_INFO);
