@@ -40,7 +40,7 @@ public class SendMailController {
 	 *            the content.
 	 * @param attachments
 	 *            the attachments.
-	 * @return the response.
+	 * @return the dto response.
 	 */
 	@PostMapping(value = "/notifier/email", consumes = "multipart/form-data")
 	public @ResponseBody CompletableFuture<ResponseEntity<ResponseDto>> sendMail(String[] mailTo,
