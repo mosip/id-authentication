@@ -18,27 +18,27 @@ public enum DemoMatchType implements MatchType{
 	/** The addr pri. */
 	ADDR_PRI(setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
 			demo -> demo.getPersonalFullAddressDTO().getAddrPri(),
-			entity -> entity.getAddrLine1() + " " + entity.getAddrLine2() + " "
-					+ entity.getAddrLine3() + " "+entity.getNationalId()+" " + entity.getLocationCode(),		
+			entity -> concatDemo(entity.getAddrLine1(),entity.getAddrLine2() ,
+					 entity.getAddrLine3(),entity.getNationalId(), entity.getLocationCode()),		
 			AuthUsageDataBit.USED_FAD_ADDR_PRI, AuthUsageDataBit.MATCHED_FAD_ADDR_PRI),
 
 	NAME_PRI(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL),
 			demo -> demo.getPersonalIdentityDTO().getNamePri(), 
-			entity -> entity.getFirstName()+" "+entity.getMiddleName()+" "+entity.getLastName(),//FIXME for getting consolidated name as it requires admin config
+			entity -> concatDemo(entity.getFirstName(),entity.getMiddleName(),entity.getLastName()),//FIXME for getting consolidated name as it requires admin config
 			AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI),
 	
 	
 	/** The addr sec. */
 	ADDR_SEC(setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
 			demo -> demo.getPersonalFullAddressDTO().getAddrSec(),
-			entity -> entity.getAddrLine1() + " " + entity.getAddrLine2() + " "
-					+ entity.getAddrLine3() + " "+entity.getNationalId()+" " + entity.getLocationCode()
+			entity -> concatDemo(entity.getAddrLine1(),entity.getAddrLine2() ,
+					 entity.getAddrLine3(),entity.getNationalId(), entity.getLocationCode())
 					, AuthUsageDataBit.USED_FAD_ADDR_SEC, AuthUsageDataBit.MATCHED_FAD_ADDR_SEC),
 	
 	/** The name sec. */
 	NAME_SEC(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL),
 			demo -> demo.getPersonalIdentityDTO().getNameSec(), 
-			entity -> entity.getFirstName()+" "+entity.getMiddleName()+" "+entity.getLastName(),//FIXME for getting consolidated name as it requires admin config
+			entity -> concatDemo(entity.getFirstName(),entity.getMiddleName(),entity.getLastName()),//FIXME for getting consolidated name as it requires admin config
 			AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC),
 	
 	/** The gender. */
@@ -182,6 +182,19 @@ public enum DemoMatchType implements MatchType{
 		return Stream.of(matchingStrategies).collect(Collectors.toSet());
 
 	}
+	
+	public static String concatDemo(String... demoValues) {
+		StringBuilder demoBuilder=new StringBuilder();
+		for (int i = 0; i < demoValues.length; i++) {
+			String demo = demoValues[i];
+			if(null!=demo) {
+				demoBuilder.append(demo.concat(" "));
+			}
+		}
+		 String demoStr=demoBuilder.toString();
+		 demoStr=demoStr.substring(0,demoStr.length()-1);
+		 return demoStr;
+	}
 
-
+	
 }
