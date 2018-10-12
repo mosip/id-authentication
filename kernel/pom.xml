@@ -79,7 +79,7 @@
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
 
-		<sonar.exclusions>**/constant/**,**/config/**,**/dto/**,**/entity/**,**/exception/**,**/repository/**,**/*BootApplication.java</sonar.exclusions>
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/cache/**,**/dto/**,**/entity/**,**/exception/**,**/repository/**,**/*BootApplication.java</sonar.coverage.exclusions>
 	</properties>
 
 	<modules>
@@ -237,15 +237,6 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
 					<append>true</append>
-					<excludes>
-						<exclude>**/constant/**</exclude>
-						<exclude>**/config/**</exclude>
-						<exclude>**/dto/**</exclude>
-						<exclude>**/entity/**</exclude>
-						<exclude>**/exception/**</exclude>
-						<exclude>**/repository/**</exclude>
-						<exclude>**/*BootApplication.java</exclude>
-					</excludes>
 				</configuration>
 				<executions>
 					<execution>
