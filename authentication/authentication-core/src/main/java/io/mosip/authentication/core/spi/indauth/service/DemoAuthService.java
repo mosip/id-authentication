@@ -2,6 +2,7 @@ package io.mosip.authentication.core.spi.indauth.service;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 
 /**
@@ -18,7 +19,7 @@ public interface DemoAuthService {
 	 * @param authRequestDTO the auth request DTO
 	 * @return the demo status
 	 */
-	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO);
+	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId) throws IdAuthenticationBusinessException;
 	
 	
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalAddressDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalFullAddressDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
@@ -216,7 +217,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @see io.mosip.authentication.core.spi.indauth.service.DemoAuthService#
 	 * getDemoStatus(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
 	 */
-	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO) {
+	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId) throws IdAuthenticationBusinessException {
 		boolean demoMatched = false;
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs,
