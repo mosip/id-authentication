@@ -10,9 +10,7 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.Objects;
 
-import freemarker.core.ParseException;
 import freemarker.template.Configuration;
-import freemarker.template.MalformedTemplateNameException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
@@ -23,9 +21,16 @@ import io.mosip.kernel.templatemanager.freemarker.exception.TemplateParsingExcep
 import io.mosip.kernel.templatemanager.freemarker.exception.TemplateResourceNotFoundException;
 
 /**
- * Implementation of @See {@link MosipTemplateManager} which uses Apache
- * Freemarker Template Engine. TemplateManagerImpl will merge the template with
- * values.
+ * Implementation of {@link MosipTemplateManager} which uses Velocity Template
+ * Engine, TemplateManagerImpl will merge the template with values.
+ * 
+ * <pre>
+ * // set up and initialize {@link MosipTemplateManager} using {@link
+ * // TemplateConfigureBuilder} before this code block
+ *
+ * MosipTemplateManager templateManager = new TemplateConfigureBuilder().build();
+ * templateManager.merge(template, values);
+ * </pre>
  * 
  * @author Abhishek Kumar
  * @version 1.0
@@ -34,6 +39,13 @@ import io.mosip.kernel.templatemanager.freemarker.exception.TemplateResourceNotF
 public class TemplateManagerImpl implements MosipTemplateManager {
 	private Configuration configuration;
 
+	/**
+	 * constructor
+	 * 
+	 * @param configuration
+	 *            template configuration
+	 * 
+	 */
 	public TemplateManagerImpl(Configuration configuration) {
 		this.configuration = configuration;
 	}
@@ -42,11 +54,11 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	 * Method to merge template , where template content will be pass as inputSteam
 	 * 
 	 * @param is
-	 *            as InputStream
+	 *            the {@link InputStream} is template content .
 	 * @param values
-	 *            as Map
-	 * @return as InputStream
-	 * @throws IOException
+	 *            as Map<String,Object> where key will be placeholder name and
+	 *            Object is the actual value for the placeholder
+	 * @return template merged template content as {@link InputStream}
 	 */
 	@Override
 	public InputStream mergeTemplate(InputStream is, Map<String, Object> values) throws IOException {
@@ -68,13 +80,17 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	}
 
 	/**
-	 * Method will merge template with values with default encoding UTF-8
+	 * Merges a template and puts the rendered stream into the writer. The default
+	 * encoding that template manager uses to read template files is UTF-8
 	 * 
 	 * @param templateName
+	 *            name of template to be used in merge
 	 * @param writer
+	 *            output writer for rendered template
 	 * @param values
-	 *            as Map
-	 * @throws IOException
+	 *            as Map<String,Object> where key is placeholder name and Object is
+	 *            Placeholder value
+	 * @return boolean true if successfully, false otherwise.
 	 */
 	@Override
 	public boolean merge(String templateName, Writer writer, Map<String, Object> values) throws IOException {
@@ -82,16 +98,18 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	}
 
 	/**
-	 * Method will merge template with values with provided encoding type
+	 * Method to merge template using provided encoding type
 	 * 
 	 * @param templateName
+	 *            name of the template to be used in merge
 	 * @param writer
+	 *            output writer for render template
 	 * @param values
-	 *            as Map
+	 *            as Map<String,Object> where key is placeholder name and Object is
+	 *            value for the placeholder
 	 * @param encodingType
-	 * @throws IOException
-	 * @throws ParseException
-	 * @throws MalformedTemplateNameException
+	 *            as String like UTF-8,UTF-16 etc.
+	 * @return boolean true if successfully, false otherwise
 	 */
 	@Override
 	public boolean merge(String templateName, Writer writer, Map<String, Object> values, String encodingType)

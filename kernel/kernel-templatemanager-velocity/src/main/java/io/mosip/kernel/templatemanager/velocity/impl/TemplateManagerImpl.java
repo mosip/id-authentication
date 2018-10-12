@@ -24,9 +24,16 @@ import io.mosip.kernel.templatemanager.velocity.exception.TemplateResourceNotFou
 import io.mosip.kernel.templatemanager.velocity.util.TemplateManagerUtil;
 
 /**
- * Implementation of @See {@link MosipTemplateManager} which uses Velocity
- * Template Engine internaly. TemplateManagerImpl will merge the template with
- * values.
+ * Implementation of {@link MosipTemplateManager} which uses Velocity Template
+ * Engine, TemplateManagerImpl will merge the template with values.
+ * 
+ * <pre>
+ * // set up and initialize MosipTemplateManager using {@link
+ * // TemplateConfigureBuilder} before this code block
+ *
+ * MosipTemplateManager templateManager = new TemplateConfigureBuilder().build();
+ * templateManager.merge(template, values);
+ * </pre>
  * 
  * @author Abhishek Kumar
  * @version 1.0
@@ -44,10 +51,11 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	 * Method to merge template , where template content will be pass as inputSteam
 	 * 
 	 * @param is
-	 *            as InputStream for template content template content should be in
-	 *            the form of InputStream
+	 *            the {@link InputStream} as template content template content
 	 * @param values
-	 *            as Map values should be pass as Map<String,Object>
+	 *            the {@link Map} as Map<String,Object> where key will be
+	 *            placeholder name and Object is the actual value for the
+	 *            placeholder
 	 * @return template as InputStream merged given template content and values
 	 * 
 	 */
@@ -71,8 +79,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 					TemplateManagerExceptionCodeConstants.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateManagerExceptionCodeConstants.TEMPLATE_NOT_FOUND.getErrorMessage());
 		} catch (ParseErrorException e) {
-			throw new TemplateParsingException(
-					TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorCode(),
+			throw new TemplateParsingException(TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorCode(),
 					TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorMessage());
 		} catch (MethodInvocationException e) {
 			throw new TemplateMethodInvocationException(
@@ -83,14 +90,17 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	}
 
 	/**
-	 * Method to merge template using default UTF-8 encoding
+	 * Merges a template and puts the rendered stream into the writer. The default
+	 * encoding that template manager uses to read template files is UTF-8
 	 * 
 	 * @param templateName
-	 *            as String
+	 *            name of template to be used in merge
 	 * @param writer
+	 *            output writer for rendered template
 	 * @param values
-	 *            as Map values should be pass as Map<String,Object>
-	 * @return boolean return true if successfully merged given template and values
+	 *            as Map<String,Object> where key is placeholder name and Object is
+	 *            Placeholder value
+	 * @return boolean true if successfully, false otherwise.
 	 */
 	@Override
 	public boolean merge(String templateName, final Writer writer, Map<String, Object> values) {
@@ -104,9 +114,10 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	 *            as String
 	 * @param writer
 	 * @param values
-	 *            as Map
+	 *            as Map<String,Object> where key will be placeholder name and
+	 *            Object is the actual value for the placeholder
 	 * @param encodingType
-	 *            as String
+	 *            as String like UTF-8,UTF-16.. etc.
 	 * @return boolean return true if successfully merged given template and values
 	 */
 	@Override
@@ -130,8 +141,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 					TemplateManagerExceptionCodeConstants.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateManagerExceptionCodeConstants.TEMPLATE_NOT_FOUND.getErrorMessage());
 		} catch (ParseErrorException e) {
-			throw new TemplateParsingException(
-					TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorCode(),
+			throw new TemplateParsingException(TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorCode(),
 					TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorMessage());
 		} catch (MethodInvocationException e) {
 			throw new TemplateMethodInvocationException(

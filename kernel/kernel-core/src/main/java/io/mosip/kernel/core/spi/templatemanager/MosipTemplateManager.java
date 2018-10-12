@@ -6,8 +6,7 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * MosipTemplateManager which will merge the template and values
- * together.
+ * MosipTemplateManager which will merge the template and values together.
  * 
  * @author Abhishek Kumar
  * @since 2018-10-01
@@ -17,27 +16,27 @@ public interface MosipTemplateManager {
 	/**
 	 * Method to merge template , where template content will be pass as inputSteam
 	 * 
-	 * @param template
-	 *            as InputStream for template content template content should be in
-	 *            the form of InputStream
+	 * @param is
+	 *            the {@link InputStream} is template content .
 	 * @param values
-	 *            as Map values should be pass as Map<String,Object>
-	 * @return template as InputStream merged given template content and values
-	 * @throws IOException 
-	 * 
+	 *            as Map<String,Object> where key will be placeholder name and
+	 *            Object is the actual value for the placeholder
+	 * @return template merged template content as {@link InputStream}
 	 */
 	public InputStream mergeTemplate(InputStream template, Map<String, Object> values) throws IOException;
 
 	/**
-	 * Method to merge template using default UTF-8 encoding
+	 * Merges a template and puts the rendered stream into the writer. The default
+	 * encoding that template manager uses to read template files is UTF-8
 	 * 
 	 * @param templateName
-	 *            as String
+	 *            name of template to be used in merge
 	 * @param writer
+	 *            output writer for rendered template
 	 * @param values
-	 *            as Map values should be pass as Map<String,Object>
-	 * @return boolean return true if successfully merged given template and values
-	 * @throws IOException 
+	 *            as Map<String,Object> where key is placeholder name and Object is
+	 *            Placeholder value
+	 * @return boolean true if successfully, false otherwise.
 	 */
 	public boolean merge(String templateName, Writer writer, Map<String, Object> values) throws IOException;
 
@@ -45,14 +44,16 @@ public interface MosipTemplateManager {
 	 * Method to merge template using provided encoding type
 	 * 
 	 * @param templateName
-	 *            as String
+	 *            name of the template to be used in merge
 	 * @param writer
+	 *            output writer for render template
 	 * @param values
-	 *            as Map
+	 *            as Map<String,Object> where key is placeholder name and Object is
+	 *            value for the placeholder
 	 * @param encodingType
-	 *            as String
-	 * @return boolean return true if successfully merged given template and values
-	 * @throws IOException 
+	 *            as String like UTF-8,UTF-16 etc.
+	 * @return boolean true if successfully, false otherwise
 	 */
-	public boolean merge(String templateName, Writer writer, Map<String, Object> values, final String encodingType) throws IOException;
+	public boolean merge(String templateName, Writer writer, Map<String, Object> values, final String encodingType)
+			throws IOException;
 }
