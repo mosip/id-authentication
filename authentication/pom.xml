@@ -13,16 +13,44 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<!-- Maven Plugins -->
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.version>3.7.0</maven.compiler.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 		<maven.swagger.version>2.9.2</maven.swagger.version>
-		<orika.version>1.5.2</orika.version>
 		<maven.jacoco.version>0.8.2</maven.jacoco.version>
 		<maven.sonar.version>3.2</maven.sonar.version>
+		
+		<!-- Kernel components -->
+		<kernel.core.version>1.0.0-SNAPSHOT</kernel.core.version>
+		<kernel.hibernate.version>1.0.0-SNAPSHOT</kernel.hibernate.version>
+		
+		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
+		<mockito.version>1.10.19</mockito.version>
+		
+		<!-- Lombok -->
+		<lombok.version>1.16.18</lombok.version>
+		
+		<!-- Spring Boot -->
+		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
+		
+		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
+		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
+		<jackson.version>2.9.5</jackson.version>
+		<postgresql.version>42.2.2</postgresql.version>
+		
+		<!-- Commons -->
+		<commons.lang.version>2.4</commons.lang.version>
+		<commons.codec.version>1.11</commons.codec.version>
+		
+		<javax.el-api.version>3.0.0</javax.el-api.version>
+		<glassfish.javax.el>2.2.6</glassfish.javax.el>
+		<sourceafis.version>3.4.0</sourceafis.version>
+		
 		<sonar.exclusions>**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/service/entity/**</sonar.exclusions>
 	</properties>
 
@@ -39,6 +67,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${maven.swagger.version}</version>
@@ -48,15 +82,11 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${maven.swagger.version}</version>
 		</dependency>
+		<!-- TODO - Check if below dependency can be added only in service -->
 		<dependency>
-			<groupId>ma.glasnost.orika</groupId>
-			<artifactId>orika-core</artifactId>
-			<version>${orika.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-			<version>${spring-cloud-config.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+			<version>${spring.boot.version}</version>
 		</dependency>
 	</dependencies>
 
