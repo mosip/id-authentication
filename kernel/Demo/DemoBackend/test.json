@@ -1,0 +1,24 @@
+{
+  "version" : "1.0.0",
+  "demographicFields" : [ {
+    "field" : "Name"
+  }, {
+    "field" : "Age"
+  } ],
+  "enrollmentCenters" : [ {
+    "centerName" : "Bangalore Main",
+    "centerId" : "KA-BAN-023",
+    "centerLocation" : "Global village"
+  }, {
+    "centerName" : "Bangalore Central",
+    "centerId" : "KA-BAN-403",
+    "centerLocation" : "Indira Nagar"
+  }, {
+    "centerName" : "Chennai Main",
+    "centerId" : "TN-CHE-176",
+    "centerLocation" : "Neville Block"
+  } ],
+  "blacklistedWords" : [ {
+    "word" : "@#$%"
+  } ]
+}

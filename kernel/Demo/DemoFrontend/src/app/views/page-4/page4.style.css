@@ -1,0 +1,49 @@
+.page1-title{
+  color: #84c5cd;
+}
+.page1-content{
+  background: #c6e6ea;
+}
+.conv{
+  float: none;
+}
+.conv-text{
+  font-size: 20px;
+}
+.conv-btn{
+  display: inline-block
+}
+.text-center{
+  text-align: center
+}
+
+.red-bg{
+  background:#e6b3b3;
+  padding:30px 15px;
+}
+.green-bg{
+  background:#c3f5ca;
+  padding:30px 15px;
+}
+.top-margin{
+  margin-top: 40px;
+}
+.bottom-margin{
+  padding-bottom: 70px;
+}
+.margin-all{
+  margin:20px;
+}
+.otp-res{
+  margin-left: 50px;
+  width: auto;
+  text-align: center;
+  display: inline-block;
+  background: #d7b0e5;
+  padding: 8px;
+  font-weight: bold;
+  color: darkgreen;
+}
+.demo-btn{
+  width: 150px;
+}

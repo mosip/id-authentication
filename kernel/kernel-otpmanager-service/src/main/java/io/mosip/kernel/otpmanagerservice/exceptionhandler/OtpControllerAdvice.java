@@ -60,4 +60,11 @@ public class OtpControllerAdvice {
 		map.put(err, exception.getList());
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
+	
+	@ExceptionHandler(MosipResourceNotFoundExceptionHandler.class)
+	public ResponseEntity<Object> otpResourceValidity(final MosipResourceNotFoundExceptionHandler exception) {
+		Map<String, List<MosipErrors>> map = new HashMap<>();
+		map.put(err, exception.getList());
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
 }

@@ -10,7 +10,7 @@ import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.vidvalidator.constants.MosipVidExceptionCodeConstants;
+import io.mosip.kernel.idvalidator.vidvalidator.constants.MosipVidExceptionConstants;
 
 public class VidValidator implements MosipIdValidator<String> {
 
@@ -55,8 +55,8 @@ public class VidValidator implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (id == null) {
-			throw new MosipInvalidIDException(MosipVidExceptionCodeConstants.VID_VAL_INVALID_NULL.getErrorCode(),
-					MosipVidExceptionCodeConstants.VID_VAL_INVALID_NULL.getErrorMessage());
+			throw new MosipInvalidIDException(MosipVidExceptionConstants.VID_VAL_INVALID_NULL.getErrorCode(),
+					MosipVidExceptionConstants.VID_VAL_INVALID_NULL.getErrorMessage());
 		}
 
 		/**
@@ -65,8 +65,8 @@ public class VidValidator implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (id.length() != VID_LENGTH) {
-			throw new MosipInvalidIDException(MosipVidExceptionCodeConstants.VID_VAL_ILLEGAL_LENGTH.getErrorCode(),
-					MosipVidExceptionCodeConstants.VID_VAL_ILLEGAL_LENGTH.getErrorMessage());
+			throw new MosipInvalidIDException(MosipVidExceptionConstants.VID_VAL_ILLEGAL_LENGTH.getErrorCode(),
+					MosipVidExceptionConstants.VID_VAL_ILLEGAL_LENGTH.getErrorMessage());
 		}
 
 		/**
@@ -75,8 +75,8 @@ public class VidValidator implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (!Pattern.matches(NUMERIC_REGEX, id)) {
-			throw new MosipInvalidIDException(MosipVidExceptionCodeConstants.VID_VAL_INVALID_DIGITS.getErrorCode(),
-					MosipVidExceptionCodeConstants.VID_VAL_INVALID_DIGITS.getErrorMessage());
+			throw new MosipInvalidIDException(MosipVidExceptionConstants.VID_VAL_INVALID_DIGITS.getErrorCode(),
+					MosipVidExceptionConstants.VID_VAL_INVALID_DIGITS.getErrorMessage());
 		}
 
 		/**
@@ -87,8 +87,8 @@ public class VidValidator implements MosipIdValidator<String> {
 		 */
 
 		if (id.charAt(0) == '0' || id.charAt(0) == '1') {
-			throw new MosipInvalidIDException(MosipVidExceptionCodeConstants.VID_VAL_INVALID_ZERO_ONE.getErrorCode(),
-					MosipVidExceptionCodeConstants.VID_VAL_INVALID_ZERO_ONE.getErrorMessage());
+			throw new MosipInvalidIDException(MosipVidExceptionConstants.VID_VAL_INVALID_ZERO_ONE.getErrorCode(),
+					MosipVidExceptionConstants.VID_VAL_INVALID_ZERO_ONE.getErrorMessage());
 		}
 
 		/**
@@ -107,8 +107,8 @@ public class VidValidator implements MosipIdValidator<String> {
 		 */
 		if (!IdFilterUtils.isValidId(id)) {
 			throw new MosipInvalidIDException(
-					MosipVidExceptionCodeConstants.VID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
-					MosipVidExceptionCodeConstants.VID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
+					MosipVidExceptionConstants.VID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
+					MosipVidExceptionConstants.VID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
 		}
 
 		/**
@@ -118,8 +118,8 @@ public class VidValidator implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (!ChecksumUtils.validateChecksum(id)) {
-			throw new MosipInvalidIDException(MosipVidExceptionCodeConstants.VID_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
-					MosipVidExceptionCodeConstants.VID_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
+			throw new MosipInvalidIDException(MosipVidExceptionConstants.VID_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
+					MosipVidExceptionConstants.VID_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
 		}
 
 		/**

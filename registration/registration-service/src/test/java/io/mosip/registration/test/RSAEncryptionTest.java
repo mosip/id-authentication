@@ -8,6 +8,7 @@ import java.security.PublicKey;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -62,6 +63,7 @@ public class RSAEncryptionTest extends SpringConfiguration {
 		Assert.assertArrayEquals("yash".getBytes(), rsaDecryptedBytes);
 	}
 
+	@Ignore
 	@Test(expected = MissingMethodInvocationException.class)
 	public void NoAlgorithmTest() {
 

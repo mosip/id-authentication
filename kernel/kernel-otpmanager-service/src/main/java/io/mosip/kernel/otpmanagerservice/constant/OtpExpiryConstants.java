@@ -9,11 +9,9 @@ package io.mosip.kernel.otpmanagerservice.constant;
  *
  */
 public enum OtpExpiryConstants {
-	OTP_PROPERTIES_FILE_NAME("otpProperties"), 
-	OTP_EXPIRY_TIME_LIMIT("timeAfterWhichOtpExpires"), 
-	USER_FREEZE_DURATION("timeForWhichKeyIsFreezed"), 
-	ALLOWED_NUMBER_OF_ATTEMPTS("numberOfValidationAttemptsAllowed"), 
-	DEFAULT_NUM_OF_ATTEMPT(0);
+	OTP_PROPERTIES_FILE_NAME("otp"), OTP_EXPIRY_TIME_LIMIT("mosip.otp.expiry.time"), USER_FREEZE_DURATION(
+			"mosip.key.freeze.time"), ALLOWED_NUMBER_OF_ATTEMPTS(
+					"mosip.validation.attempt.count"), DEFAULT_NUM_OF_ATTEMPT(0);
 
 	/**
 	 * The property for the constant of type integer.
