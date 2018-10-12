@@ -12,9 +12,10 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 public interface OTPFacade {
 	/**
 	 * 
-	 * @param otpKey
+	 * @param otpRequest
 	 * @return
 	 * @throws IdAuthenticationBusinessException
 	 */
-	public OtpResponseDTO generateOtp(OtpRequestDTO otpKey) throws IdAuthenticationBusinessException;
+	
+	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequest) throws IdAuthenticationBusinessException;
 }
