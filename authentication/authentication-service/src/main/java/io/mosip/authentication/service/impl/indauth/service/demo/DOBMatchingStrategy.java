@@ -13,16 +13,14 @@ import io.mosip.authentication.core.util.MatcherUtil;
 public enum DOBMatchingStrategy implements MatchingStrategy {
 	
 	EXACT(MatchingStrategyType.EXACT, (reqInfo, entityInfo) -> {
-		if (reqInfo instanceof String && entityInfo instanceof String) {
+		if (reqInfo instanceof String && entityInfo instanceof Date) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Date reqInfoDate = null;
-			Date entityInfoDate = null;
 			try {
-				reqInfoDate = sdf.parse((String) reqInfo);
-				entityInfoDate = sdf.parse((String) entityInfo);
+				Date entityInfoDate = (Date)entityInfo;
+				Date reqInfoDate = sdf.parse((String) reqInfo);
 				return MatcherUtil.doExactMatch(reqInfoDate,entityInfoDate);
 			} catch (ParseException e) {
-				//Fix Me
+				//FIXME
 				return 0;
 			}
 		} 

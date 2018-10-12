@@ -9,7 +9,7 @@ import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
  * The Interface DemoRepository.
  */
 @Repository
-public interface DemoRepository extends BaseRepository<DemoEntity, String> {
+public interface DemoRepository extends BaseRepository<DemoEntity, Integer> {
 	
 	/**
 	 * Find by uin ref id and lang code.
