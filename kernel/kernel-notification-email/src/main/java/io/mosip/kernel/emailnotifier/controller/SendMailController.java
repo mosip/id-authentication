@@ -38,7 +38,7 @@ public class SendMailController {
 	 *            the subject.
 	 * @param mailContent
 	 *            the content.
-	 * @param attachment
+	 * @param attachments
 	 *            the attachments.
 	 * @return the response.
 	 */

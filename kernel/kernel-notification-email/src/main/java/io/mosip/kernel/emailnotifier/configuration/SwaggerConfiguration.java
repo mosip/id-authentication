@@ -20,7 +20,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfiguration {
 	/**
-	 * Method to configure swagger.
+	 * Produce Docket bean
+	 * 
+	 * @return Docket bean
 	 */
 	@Bean
 	public Docket api() {
