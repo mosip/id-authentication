@@ -46,7 +46,7 @@ public class DemoValidator implements Validator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return DemoDTO.class.equals(clazz);
+		return AuthRequestDTO.class.equals(clazz);
 	}
 
 	@Override
