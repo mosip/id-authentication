@@ -14,6 +14,7 @@ import io.mosip.authentication.core.dto.indauth.DemoDTO;
  * The Class DemoMatcher.
  */
 @Component
+
 public class DemoMatcher {
 	
 	/**
