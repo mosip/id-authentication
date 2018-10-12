@@ -54,6 +54,17 @@ public class MosipFileAppender {
 	public String getAppenderName() {
 		return appenderName;
 	}
+	
+
+	/**
+	 * Getter for immediateFlush
+	 * 
+	 * @return current immediateFlush value
+	 */
+	public boolean isImmediateFlush() {
+		return immediateFlush;
+	}
+
 
 	/**
 	 * Setter for appenderName
@@ -64,15 +75,6 @@ public class MosipFileAppender {
 	@XmlAttribute
 	public void setAppenderName(String appenderName) {
 		this.appenderName = appenderName;
-	}
-
-	/**
-	 * Getter for immediateFlush
-	 * 
-	 * @return current immediateFlush value
-	 */
-	public boolean isImmediateFlush() {
-		return immediateFlush;
 	}
 
 	/**
