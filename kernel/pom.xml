@@ -88,15 +88,16 @@
 		<module>kernel-dataaccess-hibernate</module>
 		<module>kernel-auditmanager-api</module>
 		<module>kernel-auditmanager-service</module>
-		<module>kernel-idvalidator</module>
+		<module>kernel-otpmanager-service</module>
 		<module>kernel-idgenerator-prid</module>
 		<module>kernel-idgenerator-rid</module>
+		<module>kernel-idgenerator-uin</module>
 		<module>kernel-idgenerator-vid</module>
+		<module>kernel-idgenerator-tokenid</module>
 		<module>kernel-packetuploader-sftp</module>
 		<module>kernel-packetuploader-http</module>
 		<module>kernel-packetserver-sftp</module>
-		<module>kernel-idgenerator-uin</module>
-		<module>kernel-otpmanager-service</module>
+		<module>kernel-idvalidator</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-config-server</module>
@@ -110,7 +111,7 @@
 				<sonar.host.url>
 					http://13.67.91.2:9000
 				</sonar.host.url>
-				<sonar.login>5006c6fd96284f6545a4101fb5b1369374265c0f</sonar.login>
+				<sonar.login>1b0451a7a15ae55e3760de8b0630e2c73fbd3600</sonar.login>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
