@@ -20,6 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
@@ -53,29 +55,29 @@ public class AuditRequestFactoryTest {
 	
 	@Test
 	public void testBuildRequest() {
-		AuditRequestDto actualRequest = auditFactory.buildRequest("IDA", "desc");
+		AuditRequestDto actualRequest = auditFactory.buildRequest(AuditModules.BIO_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc");
 		actualRequest.setActionTimeStamp(null);
 
 		AuditRequestDto expectedRequest = new AuditRequestDto();
 		try {
 			InetAddress inetAddress = InetAddress.getLocalHost();
 
-			expectedRequest.setEventId("eventId"); //
-			expectedRequest.setEventName("eventName"); //
-			expectedRequest.setEventType("eventType"); //
+			expectedRequest.setEventId(AuditEvents.AUTH_REQUEST_RESPONSE.getEventId()); 
+			expectedRequest.setEventName(AuditEvents.AUTH_REQUEST_RESPONSE.getEventName()); 
+			expectedRequest.setEventType(AuditEvents.AUTH_REQUEST_RESPONSE.getEventType()); 
 			expectedRequest.setActionTimeStamp(null);
 			expectedRequest.setHostName(inetAddress.getHostName());
 			expectedRequest.setHostIp(inetAddress.getHostAddress());
-			expectedRequest.setApplicationId(env.getProperty("application.id")); // config application.id
-			expectedRequest.setApplicationName(env.getProperty("application.name")); // config application.name
+			expectedRequest.setApplicationId(env.getProperty("application.id")); 
+			expectedRequest.setApplicationName(env.getProperty("application.name")); 
 			expectedRequest.setSessionUserId("sessionUserId");
 			expectedRequest.setSessionUserName("sessionUserName");
 			expectedRequest.setId("id");
 			expectedRequest.setIdType("idType");
-			expectedRequest.setCreatedBy("createdBy"); // system
-			expectedRequest.setModuleName("moduleName"); // get from constant
-			expectedRequest.setModuleId("IDA"); // parameter
-			expectedRequest.setDescription("desc"); // parameter
+			expectedRequest.setCreatedBy(env.getProperty("user.name")); 
+			expectedRequest.setModuleName(AuditModules.BIO_AUTH.getModuleName());
+			expectedRequest.setModuleId(AuditModules.BIO_AUTH.getModuleId());
+			expectedRequest.setDescription("desc");
 
 		} catch (UnknownHostException e) {
 			e.printStackTrace();

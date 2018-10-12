@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.impl.fingerauth.provider.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.util.Map;
 import java.util.Optional;
@@ -21,12 +22,12 @@ import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
 public class MantraFingerprintProviderTest {
 	@Mock
 	MFS100 fpDevice;
-	
+
 	@Mock
 	DeviceInfo info;
-	
+
 	MantraFingerprintProvider fp = new MantraFingerprintProvider();
-	
+
 	@Test
 	public void deviceInfoTest() {
 		Mockito.when(info.Make()).thenReturn("Mantra");
@@ -37,7 +38,7 @@ public class MantraFingerprintProviderTest {
 		Mockito.when(fpDevice.Init()).thenReturn(0);
 		ReflectionTestUtils.setField(fpDevice, "deviceInfo", info);
 		ReflectionTestUtils.setField(fp, "fpDevice", fpDevice);
-		
+
 		FingerprintDeviceInfo dInfo = new FingerprintDeviceInfo();
 		dInfo.setDeviceId("123456");
 		dInfo.setFingerType("Single");
@@ -48,18 +49,17 @@ public class MantraFingerprintProviderTest {
 
 	@Test
 	public void testCapture() {
-		fp.captureFingerprint(50, 1000);
 		Mockito.when(fpDevice.IsConnected()).thenReturn(true);
 		Mockito.when(fpDevice.Init()).thenReturn(0);
+		Mockito.when(fpDevice.AutoCapture(Mockito.any(FingerData.class), Mockito.anyInt(), Mockito.anyBoolean(),
+				Mockito.anyBoolean())).thenReturn(0);
 		Mockito.when(fpDevice.GetLastError()).thenReturn("");
-		Mockito.when(fpDevice.AutoCapture(Mockito.any(FingerData.class), Mockito.anyInt(), Mockito.anyBoolean(), Mockito.anyBoolean()))
-		.thenReturn(0);
 		ReflectionTestUtils.setField(fpDevice, "deviceInfo", info);
 		ReflectionTestUtils.setField(fp, "fpDevice", fpDevice);
 		Optional<byte[]> captureFingerprint = fp.captureFingerprint(0, 0);
 		assertFalse(captureFingerprint.isPresent());
 	}
-	
+
 	@Test
 	public void testCaptureFail() {
 		Mockito.when(fpDevice.IsConnected()).thenReturn(false);
@@ -68,18 +68,30 @@ public class MantraFingerprintProviderTest {
 		Optional<byte[]> captureFingerprint = fp.captureFingerprint(0, 0);
 		assertFalse(captureFingerprint.isPresent());
 	}
-	
+
+	@Test
+	public void testCaptureFailWithError() {
+		Mockito.when(fpDevice.IsConnected()).thenReturn(true);
+		Mockito.when(fpDevice.Init()).thenReturn(0);
+		Mockito.when(fpDevice.AutoCapture(Mockito.any(FingerData.class), Mockito.anyInt(), Mockito.anyBoolean(),
+				Mockito.anyBoolean())).thenReturn(1);
+		ReflectionTestUtils.setField(fpDevice, "deviceInfo", info);
+		ReflectionTestUtils.setField(fp, "fpDevice", fpDevice);
+		Optional<byte[]> captureFingerprint = fp.captureFingerprint(0, 0);
+		assertFalse(captureFingerprint.isPresent());
+	}
+
 	@Test
 	public void testSegmentFingerprint() {
-		Optional<Map<?, ?>> segmentFingerprint = fp.segmentFingerprint(new byte[10]);
+		Optional<Map> segmentFingerprint = fp.segmentFingerprint(new byte[10]);
 		assertFalse(segmentFingerprint.isPresent());
 	}
-	
+
 	@Test
 	public void testOnPreview() {
 		fp.OnPreview(null);
 	}
-	
+
 	@Test
 	public void testOnCaptureCompleted() {
 		fp.OnCaptureCompleted(false, 0, null, null);

@@ -71,8 +71,6 @@
 			<groupId>Mantra</groupId>
 			<artifactId>MFS100</artifactId>
 			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/src/lib/MANTRA.MFS100.jar</systemPath>
 		</dependency>
 
 		<!-- Commons Lang -->
@@ -83,6 +81,13 @@
 		</dependency>
 
 	</dependencies>
+	
+	<repositories>
+		<repository>
+			<id>local-maven-repo</id>
+			<url>file:///${basedir}/lib</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<plugins>

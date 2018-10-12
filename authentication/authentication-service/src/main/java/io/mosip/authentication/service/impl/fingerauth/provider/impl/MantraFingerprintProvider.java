@@ -10,12 +10,18 @@ import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 
 /**
- * @author Manoj SP
+ * The Class MantraFingerprintProvider.
  *
+ * @author Manoj SP
  */
 public class MantraFingerprintProvider extends FingerprintProvider implements MFS100Event {
+	
+	/** The fp device. */
 	private MFS100 fpDevice = new MFS100(this);
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.MosipFingerprintProvider#deviceInfo()
+	 */
 	@Override
 	public FingerprintDeviceInfo deviceInfo() {
 		FingerprintDeviceInfo dInfo = new FingerprintDeviceInfo();
@@ -28,6 +34,9 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 		return dInfo;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.MosipFingerprintProvider#captureFingerprint(java.lang.Integer, java.lang.Integer)
+	 */
 	@Override
 	public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {
 		if (fpDevice.IsConnected() && fpDevice.Init() == 0) {
@@ -48,20 +57,27 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 		return Optional.empty();
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.core.spi.fingerprintauth.provider.MosipFingerprintProvider#segmentFingerprint(byte[])
+	 */
 	@Override
-	public Optional<Map<?, ?>> segmentFingerprint(byte[] fingerImage) {
+	public Optional<Map> segmentFingerprint(byte[] fingerImage) {
 		return Optional.empty();
 	}
 
+	/* (non-Javadoc)
+	 * @see MFS100.MFS100Event#OnCaptureCompleted(boolean, int, java.lang.String, MFS100.FingerData)
+	 */
 	@Override
 	public void OnCaptureCompleted(boolean arg0, int arg1, String arg2, FingerData arg3) {
-		// TODO Auto-generated method stub
 
 	}
 
+	/* (non-Javadoc)
+	 * @see MFS100.MFS100Event#OnPreview(MFS100.FingerData)
+	 */
 	@Override
 	public void OnPreview(FingerData arg0) {
-		// TODO Auto-generated method stub
 
 	}
 }

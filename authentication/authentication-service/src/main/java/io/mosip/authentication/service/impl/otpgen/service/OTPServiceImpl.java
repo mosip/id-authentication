@@ -3,6 +3,8 @@ package io.mosip.authentication.service.impl.otpgen.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -77,7 +79,7 @@ public class OTPServiceImpl implements OTPService {
 
 	public void audit() throws IDDataValidationException  {
 		//TODO Update audit details
-		AuditRequestDto auditRequest = auditRequestFactory.buildRequest("moduleId", "description");
+		AuditRequestDto auditRequest = auditRequestFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc");
 
 		RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
 				AuditResponseDto.class);

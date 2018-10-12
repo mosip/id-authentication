@@ -16,6 +16,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
@@ -68,8 +70,7 @@ public class AuditHelperTest {
 	
 	@Test
 	public void testAuditUtil() throws IDDataValidationException {
-		System.err.println(auditFactory);
-		auditHelper.audit("moduleId", "description");
+		auditHelper.audit(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc");
 	}
 
 }

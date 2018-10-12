@@ -38,7 +38,7 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 public class AuthRequestValidator implements Validator {
 
 	private static final String VALIDATE_CHECK_OTP_AUTH = "validate -> checkOTPAuth";
-	private static final String PIN_DTO = "pinDTO";
+	private static final String PERSONAL_DATA_DTO = "personalDataDTO";
 	private static final String VALIDATE = "validate";
 	private static final String AUTH_REQUEST_VALIDATOR = "AuthRequestValidator";
 	private static final String SESSION_ID = "sessionId";
@@ -182,19 +182,19 @@ public class AuthRequestValidator implements Validator {
 				if (otpValue != null && otpValue.length() != 6) {
 					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH,
 							"INVALID_OTP - length mismatch");
-					errors.rejectValue(PIN_DTO, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
+					errors.rejectValue(PERSONAL_DATA_DTO, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
 							IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage());
 				}
 
 			} else {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH,
 						"INVALID_OTP - pinType is not OTP");
-				errors.rejectValue(PIN_DTO, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
+				errors.rejectValue(PERSONAL_DATA_DTO, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
 						env.getProperty("mosip.ida.validation.message.AuthRequest.OTP"));
 			}
 		} else {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH, "EMPTY_OTP - OTP is empty");
-			errors.rejectValue(PIN_DTO, IdAuthenticationErrorConstants.EMPTY_OTP.getErrorCode(),
+			errors.rejectValue(PERSONAL_DATA_DTO, IdAuthenticationErrorConstants.EMPTY_OTP.getErrorCode(),
 					env.getProperty("mosip.ida.validation.message.AuthRequest.PinType"));
 		}
 

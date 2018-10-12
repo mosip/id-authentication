@@ -9,6 +9,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
@@ -161,7 +163,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	}
  
 	private void auditData() throws IdAuthenticationBusinessException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest("moduleId", "description");
+		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc");
 
 		RestRequestDTO restRequest;
 		try {

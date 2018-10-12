@@ -14,19 +14,16 @@ public class CogentFingerprintProvider extends FingerprintProvider {
 	
 	@Override
 	public FingerprintDeviceInfo deviceInfo() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {
-		// TODO Auto-generated method stub
 		return Optional.empty();
 	}
 
 	@Override
-	public Optional<Map<?, ?>> segmentFingerprint(byte[] fingerImage) {
-		// TODO Auto-generated method stub
+	public Optional<Map> segmentFingerprint(byte[] fingerImage) {
 		return Optional.empty();
 	}
 

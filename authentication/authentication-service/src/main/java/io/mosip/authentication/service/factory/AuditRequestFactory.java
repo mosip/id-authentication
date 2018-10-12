@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
@@ -38,7 +40,7 @@ public class AuditRequestFactory {
 	 *
 	 * @return the audit request dto
 	 */
-	public AuditRequestDto buildRequest(String moduleId, String description) {
+	public AuditRequestDto buildRequest(AuditModules module, AuditEvents event, String desc) {
 		AuditRequestDto request = new AuditRequestDto();
 		String hostName;
 		String hostAddress;
@@ -53,9 +55,9 @@ public class AuditRequestFactory {
 			hostAddress = env.getProperty("audit.defaultHostAddress");
 		}
 
-		request.setEventId("eventId");
-		request.setEventName("eventName");
-		request.setEventType("eventType");
+		request.setEventId(event.getEventId());
+		request.setEventName(event.getEventName());
+		request.setEventType(event.getEventType());
 		request.setActionTimeStamp(OffsetDateTime.now());
 		request.setHostName(hostName);
 		request.setHostIp(hostAddress);
@@ -65,10 +67,10 @@ public class AuditRequestFactory {
 		request.setSessionUserName("sessionUserName");
 		request.setId("id");
 		request.setIdType("idType");
-		request.setCreatedBy("createdBy"); //TODO get from system
-		request.setModuleName("moduleName"); //TODO get from constant
-		request.setModuleId(moduleId);
-		request.setDescription(description);
+		request.setCreatedBy(env.getProperty("user.name"));
+		request.setModuleName(module.getModuleName());
+		request.setModuleId(module.getModuleId());
+		request.setDescription(desc);
 
 		return request;
 	}

@@ -21,6 +21,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
@@ -65,7 +67,7 @@ public class RestRequestFactoryTest {
 
 	@Test
 	public void testBuildRequest() throws IDDataValidationException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "desc");
+		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc");
 		auditRequest.setActionTimeStamp(null);
 
 		RestRequestDTO request = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -101,7 +103,7 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc"),
 				AuditResponseDto.class);
 	}
 
@@ -112,7 +114,7 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc"),
 				AuditResponseDto.class);
 	}
 
@@ -125,14 +127,14 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc"),
 				AuditResponseDto.class);
 	}
 
 	@Test(expected=IDDataValidationException.class)
 	public void testBuildRequestEmptyResponseType() throws IDDataValidationException {
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc"),
 				null);
 	}
 
@@ -145,7 +147,7 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc"),
 				AuditResponseDto.class);
 
 		// TODO Assert response
@@ -160,7 +162,7 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc"),
 				AuditResponseDto.class);
 	}
 

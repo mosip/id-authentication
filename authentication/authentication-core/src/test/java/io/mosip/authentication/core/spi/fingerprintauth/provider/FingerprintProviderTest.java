@@ -55,7 +55,7 @@ public class FingerprintProviderTest {
 	MosipFingerprintProvider fp = new FingerprintProvider() {
 
 		@Override
-		public Optional<Map<?, ?>> segmentFingerprint(byte[] fingerImage) {
+		public Optional<Map> segmentFingerprint(byte[] fingerImage) {
 			return null;
 		}
 

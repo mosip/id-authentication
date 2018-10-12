@@ -37,6 +37,13 @@
 			<version>${commons.codec.version}</version>
 		</dependency>
 		
+		<!--  Spring boot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+		
 		<!-- Open Source Fingerprint SDK  -->
 		<dependency>
 			<groupId>com.machinezoo.sourceafis</groupId>

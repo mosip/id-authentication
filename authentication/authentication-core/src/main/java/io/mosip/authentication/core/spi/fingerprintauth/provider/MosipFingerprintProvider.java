@@ -19,5 +19,5 @@ public interface MosipFingerprintProvider {
 	
 	double scoreCalculator(String fingerImage1, String fingerImage2);
 	
-	Optional<Map<?, ?>> segmentFingerprint(byte[] fingerImage);
+	Optional<Map> segmentFingerprint(byte[] fingerImage);
 }
