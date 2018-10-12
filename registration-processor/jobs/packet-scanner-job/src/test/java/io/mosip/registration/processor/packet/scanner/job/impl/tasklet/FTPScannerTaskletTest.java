@@ -65,9 +65,9 @@ public class FTPScannerTaskletTest {
 
 	@Before
 	public void setup() {
-
 		ClassLoader classLoader = getClass().getClassLoader();
-		this.directoryPath = classLoader.getResource("FTP").getPath().toString();
+		File file = new File(classLoader.getResource("FTP").getFile());
+		this.directoryPath = file.getAbsolutePath();
 	}
 
 	@Test
@@ -117,7 +117,7 @@ public class FTPScannerTaskletTest {
 		final Appender mockAppender = mock(Appender.class);
 		FileNotFoundInDestinationException fileNotFoundInDestinationException = new FileNotFoundInDestinationException(
 				"File not found");
-		
+
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 		Mockito.when(filemanager.getCurrentDirectory()).thenReturn(this.directoryPath);
