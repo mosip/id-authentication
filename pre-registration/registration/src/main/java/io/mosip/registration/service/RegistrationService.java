@@ -37,5 +37,22 @@ public interface RegistrationService<T, U> {
 	 * @throws TableNotAccecibleException
 	 */
 	public Map<String, String> getApplicationStatus(String groupId) throws TablenotAccessibleException;
+	
+	/**
+	 * @param groupId 
+	 * @param preregId list
+	 *          
+	 * 
+	 * @throws PrimaryMemberException
+	 */
+	public void deleteIndividual(String groupId, List<String> preregIds);
+	
+	
+	/**
+	 * @param groupId 
+	 *          
+	 * 
+	 */
+	public void deleteGroup(String id);
 
 }

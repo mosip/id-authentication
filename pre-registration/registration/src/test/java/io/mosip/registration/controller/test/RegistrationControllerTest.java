@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,6 +175,27 @@ public class RegistrationControllerTest {
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/ApplicationStatus/")
 				.param("groupId", groupId);
 
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void discardIndividualTest() throws Exception {
+		 String groupId= "33";
+		 String[] preregIds= {"3"};
+		Mockito.doNothing().when(registrationService).deleteIndividual(ArgumentMatchers.any(),ArgumentMatchers.any());
+		
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/registration/discard")
+				.param("groupId", groupId).param("preregIds",preregIds).accept(MediaType.ALL_VALUE);
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void discardGroupTest() throws Exception {
+		 String groupId= "33";
+		Mockito.doNothing().when(registrationService).deleteGroup(ArgumentMatchers.any());
+		
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/registration/discardGroup")
+				.param("groupId", groupId).accept(MediaType.ALL_VALUE);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 

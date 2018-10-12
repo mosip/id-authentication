@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -80,6 +81,27 @@ public class RegistrationController {
 		Map<String, String> response = registrationService.getApplicationStatus(groupId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
+	}
+	
+	/**
+	 * Delete api to delete the Individual applicant and documents associated with it
+	 * 
+	 */
+	@DeleteMapping(path = "/discard")
+	public void discardIndividual(@RequestParam(value = "groupId") String groupId,
+			@RequestParam(value = "preregIds") List<String> preregIds) {
+		
+		registrationService.deleteIndividual(groupId, preregIds);
+		
+	}
+
+	/**
+	 * Delete api to delete the Group applicants and documents associated with it
+	 * 
+	 */
+	@DeleteMapping(path = "/discardGroup")
+	public void discardGroup(@RequestParam(value = "groupId") String groupId) {
+		registrationService.deleteGroup(groupId);
 	}
 
 }

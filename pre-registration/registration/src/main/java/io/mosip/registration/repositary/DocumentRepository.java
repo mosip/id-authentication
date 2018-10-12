@@ -10,6 +10,8 @@ import io.mosip.registration.entity.DocumentEntity;
 @Repository("documentRepositoery")
 public interface DocumentRepository extends BaseRepository<DocumentEntity, String> {
 
+	public void deleteAllByPreregId(String preregId);
 	
+	public boolean existsByPreregId(String preregId);
 	/*List<DocumentEntity> findBypreregId(String preId);*/
 }

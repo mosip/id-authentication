@@ -1,12 +1,14 @@
 package io.mosip.registration.service.test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.doNothing;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +27,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.dto.ViewRegistrationResponseDto;
+import io.mosip.registration.entity.DocumentEntity;
 import io.mosip.registration.entity.RegistrationEntity;
+import io.mosip.registration.exception.OperationNotAllowedException;
 import io.mosip.registration.exception.utils.RegistrationErrorCodes;
+import io.mosip.registration.repositary.DocumentRepository;
 import io.mosip.registration.repositary.RegistrationRepositary;
 import io.mosip.registration.service.RegistrationService;
 import io.mosip.registration.service.impl.RegistrationServiceImpl;
@@ -47,6 +52,9 @@ public class RegistrationServiceTest {
 
 	@Mock
 	private RegistrationRepositary registrationRepositary;
+	
+	@Mock
+	private DocumentRepository documentRepository;
 
 	@InjectMocks
 	private RegistrationService<?,?> viewRegistrationService = new RegistrationServiceImpl();
@@ -143,4 +151,109 @@ public class RegistrationServiceTest {
 			assertEquals(expected.get(i).toString(), actual.get(i).toString());
 		}
 	}
+	
+
+	
+	@Test
+	public void deleteIndividualTest() {
+		
+		String groupId="33";
+		List<String> preregIds=Arrays.asList("1");
+		
+		RegistrationEntity applicant_Demographic=new RegistrationEntity();
+		applicant_Demographic.setGroupId("33");
+		applicant_Demographic.setPreRegistrationId("1");
+		applicant_Demographic.setIsPrimary(false);
+		applicant_Demographic.setStatusCode("Draft");
+		
+		Mockito.when(registrationRepositary.findByGroupIdAndPreRegistrationId(ArgumentMatchers.any(),
+			ArgumentMatchers.any())).thenReturn(applicant_Demographic);
+		
+		doNothing().when(registrationRepositary).deleteByGroupIdAndPreRegistrationId(applicant_Demographic.getGroupId(), applicant_Demographic.getPreRegistrationId());
+		viewRegistrationService.deleteIndividual(groupId, preregIds);
+		
+		
+	}
+	@Test(expected=OperationNotAllowedException.class)
+	public void deleteDraftTest() {
+		
+		String groupId="33";
+		List<String> preregIds=Arrays.asList("1");
+		RegistrationEntity applicant_Demographic=new RegistrationEntity();
+		applicant_Demographic.setGroupId("33");
+		applicant_Demographic.setPreRegistrationId("1");
+		applicant_Demographic.setIsPrimary(true);
+		applicant_Demographic.setStatusCode("update");
+
+		
+		Mockito.when(registrationRepositary.findByGroupIdAndPreRegistrationId(ArgumentMatchers.any(),
+			ArgumentMatchers.any())).thenReturn(applicant_Demographic);
+		doNothing().when(documentRepository).deleteAllByPreregId(applicant_Demographic.getPreRegistrationId());
+		doNothing().when(registrationRepositary).deleteByGroupIdAndPreRegistrationId(applicant_Demographic.getGroupId(), applicant_Demographic.getPreRegistrationId());
+		viewRegistrationService.deleteIndividual(groupId, preregIds);
+		
+		
+	}
+	
+	
+	@Test(expected=OperationNotAllowedException.class)
+	public void deletePrimaryMemberTest() {
+		
+		String groupId="33";
+		List<String> preregIds=Arrays.asList("1");
+		RegistrationEntity applicant_Demographic=new RegistrationEntity();
+		applicant_Demographic.setGroupId("33");
+		applicant_Demographic.setPreRegistrationId("1");
+		applicant_Demographic.setIsPrimary(true);
+		applicant_Demographic.setStatusCode("Draft");
+
+		
+		Mockito.when(registrationRepositary.findByGroupIdAndPreRegistrationId(ArgumentMatchers.any(),
+			ArgumentMatchers.any())).thenReturn(applicant_Demographic);
+		
+		doNothing().when(registrationRepositary).deleteByGroupIdAndPreRegistrationId(applicant_Demographic.getGroupId(), applicant_Demographic.getPreRegistrationId());
+		viewRegistrationService.deleteIndividual(groupId, preregIds);
+		
+		
+	}
+	
+	@Test
+	public void deleteGroupWithoutPrimaryTest() {
+		String groupId="33";
+		
+		RegistrationEntity applicant_Demographic1=new RegistrationEntity();
+		applicant_Demographic1.setGroupId("33");
+		applicant_Demographic1.setPreRegistrationId("1");
+		applicant_Demographic1.setIsPrimary(true);
+		applicant_Demographic1.setStatusCode("Draft");
+		
+		RegistrationEntity applicant_Demographic2=new RegistrationEntity();
+		applicant_Demographic2.setGroupId("33");
+		applicant_Demographic2.setPreRegistrationId("2");
+		applicant_Demographic2.setIsPrimary(false);
+		applicant_Demographic2.setStatusCode("Draft");
+		
+		RegistrationEntity applicant_Demographic3=new RegistrationEntity();
+		applicant_Demographic3.setGroupId("33");
+		applicant_Demographic3.setPreRegistrationId("3");
+		applicant_Demographic3.setIsPrimary(false);
+		applicant_Demographic3.setStatusCode("Draft");
+		
+		List<RegistrationEntity> lists=new ArrayList<RegistrationEntity>();
+		
+		lists.add(applicant_Demographic1);
+		lists.add(applicant_Demographic2);
+		lists.add(applicant_Demographic3);
+		
+		List<RegistrationEntity> list= new ArrayList<RegistrationEntity>();
+		list.add(applicant_Demographic1);
+		
+		
+		Mockito.when(registrationRepositary.findByGroupIdAndIsPrimary(groupId,
+				true)).thenReturn(list);
+		
+		doNothing().when(registrationRepositary).deleteAllBygroupId(groupId);
+		viewRegistrationService.deleteGroup(groupId);
+	}
+	
 }

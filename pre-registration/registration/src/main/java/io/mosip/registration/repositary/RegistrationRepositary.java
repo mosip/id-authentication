@@ -26,6 +26,16 @@ public interface RegistrationRepositary extends BaseRepository<RegistrationEntit
 
 	@Query(value = countRec, nativeQuery = true)
 	public List<String> noOfGroupIds(@Param("userId") String userId);
-
 	
+	
+
+	public RegistrationEntity findByGroupIdAndPreRegistrationId(String groupId, String preRegistrationId);
+
+	public List<RegistrationEntity> findByGroupIdAndIsPrimary(String groupId, boolean isPrimary);
+
+	public void deleteAllBygroupId(String groupId);
+
+	public void deleteByGroupIdAndPreRegistrationId(String groupId, String preRegistrationId);
+
+	public void deleteByGroupIdAndIsPrimary(String groupId, boolean isPrimary);
 }

@@ -19,6 +19,7 @@ import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.core.spi.idgenerator.MosipPridGenerator;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.code.AuditLogTempConstant;
+import io.mosip.registration.core.exceptions.DatabaseOperationException;
 import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.core.generator.MosipGroupIdGenerator;
 import io.mosip.registration.dao.RegistrationDao;
@@ -29,7 +30,9 @@ import io.mosip.registration.dto.RegistrationDto;
 import io.mosip.registration.dto.ResponseDto;
 import io.mosip.registration.dto.ViewRegistrationResponseDto;
 import io.mosip.registration.entity.RegistrationEntity;
+import io.mosip.registration.exception.OperationNotAllowedException;
 import io.mosip.registration.exception.utils.RegistrationErrorCodes;
+import io.mosip.registration.repositary.DocumentRepository;
 import io.mosip.registration.repositary.RegistrationRepositary;
 import io.mosip.registration.service.RegistrationService;
 
@@ -63,6 +66,9 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	 */
 	@Autowired
 	private RegistrationRepositary registrationRepositary;
+
+	@Autowired
+	private DocumentRepository documentRepository;
 
 	@Override
 	public RegistrationDto getRegistration(String userID) {
@@ -334,6 +340,59 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 				.collect(Collectors.toMap(RegistrationEntity::getPreRegistrationId, RegistrationEntity::getStatusCode));
 
 		return response;
+	}
+
+	/**
+	 * This Method is used to delete the Individual Application and documents associated with it
+	 * 
+	 * @param groupId
+	 * @param list of preRegistrationIds
+	 * 
+	 * 
+	 */
+	@Override
+	public void deleteIndividual(String groupId, List<String> preregIds) {
+		try {
+			for (String preregId : preregIds) {
+				RegistrationEntity applicant = registrationRepositary.findByGroupIdAndPreRegistrationId(groupId,
+						preregId);
+				if (applicant.getStatusCode().equals("Draft")) {
+					if (!applicant.getIsPrimary()) {
+						documentRepository.deleteAllByPreregId(preregId);
+						registrationRepositary.deleteByGroupIdAndPreRegistrationId(groupId, preregId);
+					} else {
+						throw new OperationNotAllowedException(
+								RegistrationErrorCodes.DELETE_OPERATION_NOT_ALLOWED_PRIMARY);
+					}
+				} else {
+					throw new OperationNotAllowedException(
+							RegistrationErrorCodes.DELETE_OPERATION_NOT_ALLOWED_FOR_OTHERTHEN_DRAFT);
+				}
+			}
+		} catch (DataAccessLayerException e) {
+			throw new DatabaseOperationException("Failed to delete the appliation", e);
+		}
+
+	}
+	
+	/**
+	 * This Method is used to delete the Group Applications and documents associated with it
+	 * 
+	 * @param groupId
+	 * 
+	 * 
+	 */
+	@Override
+	public void deleteGroup(String groupId) {
+		try {
+			List<RegistrationEntity> applications = registrationRepositary.findBygroupId(groupId);
+			for (RegistrationEntity application : applications) {
+				documentRepository.deleteAllByPreregId(application.getPreRegistrationId());
+			}
+			registrationRepositary.deleteAllBygroupId(groupId);
+		} catch (DataAccessLayerException e) {
+			throw new DatabaseOperationException("Failed to delete the appliation", e);
+		}
 	}
 
 }
