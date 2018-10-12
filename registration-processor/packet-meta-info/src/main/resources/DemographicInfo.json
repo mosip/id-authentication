@@ -1,0 +1,60 @@
+{
+	"demoInLocalLang": {
+		"firstname": null,
+		"forename": null,
+		"givenname": null,
+		"middlename": null,
+		"middleinitial": null,
+		"lastname": null,
+		"surname": null,
+		"familyname": null,
+		"fullName": "Balaji S",
+		"dateOfBirth": 1537771349345,
+		"gender": "Male",
+		"address": {
+			"line1": null,
+			"line2": null,
+			"line3": null,
+			"location": {
+				"line4": null,
+				"line5": null,
+				"line6": null,
+				"line7": null,
+				"line8": null
+			}
+		},
+		"emailId": "email",
+		"mobile": "9791941815",
+		"languageCode": "en",
+		"child": false
+	},
+	"demoInUserLang": {
+		"firstname": null,
+		"forename": null,
+		"givenname": null,
+		"middlename": null,
+		"middleinitial": null,
+		"lastname": null,
+		"surname": null,
+		"familyname": null,
+		"fullName": "Balaji S",
+		"dateOfBirth": 1537771349345,
+		"gender": "Male",
+		"address": {
+			"line1": null,
+			"line2": null,
+			"line3": null,
+			"location": {
+				"line4": null,
+				"line5": null,
+				"line6": null,
+				"line7": null,
+				"line8": null
+			}
+		},
+		"emailId": "email",
+		"mobile": "9791941815",
+		"languageCode": "en",
+		"child": false
+	}
+}
