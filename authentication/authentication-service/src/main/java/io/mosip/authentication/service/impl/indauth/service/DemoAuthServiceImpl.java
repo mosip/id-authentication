@@ -224,9 +224,12 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId) throws IdAuthenticationBusinessException {
 		boolean demoMatched = false;
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
+		DemoEntity demoEntity = getDemoEntity(refId, authRequestDTO.getPersonalDataDTO()
+																.getDemoDTO()
+																.getLangPri());
 		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs,
 		        authRequestDTO.getPersonalDataDTO().getDemoDTO(), 
-		        getDemoEntity(refId,authRequestDTO.getPersonalDataDTO().getDemoDTO().getLangPri()));
+		        demoEntity);
 		demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
 		
 		

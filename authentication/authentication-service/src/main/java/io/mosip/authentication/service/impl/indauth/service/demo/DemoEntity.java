@@ -1,12 +1,13 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -17,9 +18,13 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "indv_demographic", schema = "ida")
-public class DemoEntity {
+@IdClass(DemoEntitiyPK.class)
+public class DemoEntity implements Serializable{
 
-	//FIX ME annotate columns for all fields.
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3457171500151648568L;
 
 	/** The uin ref id. */
 	@Id

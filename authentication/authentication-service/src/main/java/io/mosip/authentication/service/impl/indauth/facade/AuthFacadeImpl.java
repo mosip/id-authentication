@@ -112,14 +112,14 @@ public class AuthFacadeImpl implements AuthFacade {
 			AuthStatusInfo otpValidationStatus = otpService.validateOtp(authRequestDTO, refId);
 			authStatusList.add(otpValidationStatus);
 			// TODO log authStatus - authType, response
-			logger.info(DEFAULT_SESSION_ID, "IDA", "AuthFacade","OTP Authentication status : " + otpValidationStatus.isStatus());
+			logger.info(DEFAULT_SESSION_ID, "IDA", "AuthFacade","OTP Authentication status : " + otpValidationStatus);
 		}
 		
 		if (authRequestDTO.getAuthType().isPi() || authRequestDTO.getAuthType().isAd() || authRequestDTO.getAuthType().isFad()) {
 			AuthStatusInfo demoValidationStatus = demoAuthService.getDemoStatus(authRequestDTO, refId);
 			authStatusList.add(demoValidationStatus);
 			// TODO log authStatus - authType, response
-			logger.info(DEFAULT_SESSION_ID, "IDA", "AuthFacade","Demographic Authentication status : " + demoValidationStatus.isStatus());
+			logger.info(DEFAULT_SESSION_ID, "IDA", "AuthFacade","Demographic Authentication status : " + demoValidationStatus);
 		}
 		//TODO Update audit details
 		auditData();  
