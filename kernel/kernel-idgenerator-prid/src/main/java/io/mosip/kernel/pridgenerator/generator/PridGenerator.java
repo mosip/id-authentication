@@ -44,10 +44,10 @@ public class PridGenerator implements MosipPridGenerator<String> {
 	@PostConstruct
 	public void pridGeneratorPostConstruct() {
 		generatedIdLength = pridLength - 1;
-		lowerBound = Long.parseLong(PridGeneratorConstants.TWO + StringUtils.repeat(PridGeneratorConstants.ZERO, generatedIdLength - 1));
+		lowerBound = Long.parseLong(
+				PridGeneratorConstants.TWO + StringUtils.repeat(PridGeneratorConstants.ZERO, generatedIdLength - 1));
 		upperBound = Long.parseLong(StringUtils.repeat(PridGeneratorConstants.NINE, generatedIdLength));
 	}
-
 
 	@Override
 	public String generateId() {
@@ -65,10 +65,14 @@ public class PridGenerator implements MosipPridGenerator<String> {
 		long currentTimestamp = System.currentTimeMillis();
 		prid.setId(generatedPrid);
 		prid.setCreatedAt(currentTimestamp);
+		saveGeneratedPrid(prid, generatedPrid);
+		return generatedPrid;
+	}
+
+	private void saveGeneratedPrid(Prid prid, String generatedPrid) {
 		try {
 			pridRepository.save(prid);
 			pridCacheManager.add(prid.getId());
-			return generatedPrid;
 		} catch (Exception e) {
 			throw new PridGenerationException(PridGeneratorErrorCodes.UNABLE_TO_CONNECT_TO_DB.getErrorCode(),
 					PridGeneratorErrorCodes.UNABLE_TO_CONNECT_TO_DB.getErrorMessage());
@@ -78,7 +82,7 @@ public class PridGenerator implements MosipPridGenerator<String> {
 	private String generatePrid() {
 		String generatedPrid = generateRandomId(generatedIdLength, lowerBound, upperBound);
 		while (!IdFilterUtils.isValidId(generatedPrid)) {
-			generatedPrid = generatePrid();
+			generatedPrid = generateRandomId(generatedIdLength, lowerBound, upperBound);
 		}
 		return generatedPrid;
 	}
