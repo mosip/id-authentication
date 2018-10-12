@@ -1,5 +1,6 @@
 package io.mosip.registration.service.impl;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 		if (documentDto.is_primary()) {
 
 			documentEntity.setPreregId(documentDto.getPrereg_id());
-			documentEntity.setDoc_name(file.getName());
+			documentEntity.setDoc_name(file.getOriginalFilename());
 			documentEntity.setDoc_cat_code(documentDto.getDoc_cat_code());
 			documentEntity.setDoc_typ_code(documentDto.getDoc_typ_code());
 			documentEntity.setDoc_file_format(documentDto.getDoc_file_format());
@@ -50,13 +51,13 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 			documentEntity.setStatus_code(documentDto.getStatus_code());
 			documentEntity.setLang_code(documentDto.getLang_code());
 			documentEntity.setCr_by(documentDto.getCr_by());
-			documentEntity.setCr_dtimesz(documentDto.getCr_dtimesz());
+			documentEntity.setCr_dtimesz(new Timestamp(System.currentTimeMillis()));
 			documentEntity.setUpd_by(documentDto.getUpd_by());
-			documentEntity.setUpd_dtimesz(documentDto.getUpd_dtimesz());
+			documentEntity.setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
 
 			documentRepository.save(documentEntity);
 
-			List<String> preIdList =null /*registrationRepositary.findByGroupIds(documentDto.getGroup_id())*/;
+			List<String> preIdList =registrationRepositary.findBygroupIds(documentDto.getGroup_id());
 
 			for (int counter = 0; counter < preIdList.size(); counter++) {
 				if (preIdList.get(counter).equals(documentDto.getPrereg_id())) {
@@ -67,14 +68,14 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 			if (preIdList.size() > 0) {
 				for (int counter = 0; counter < preIdList.size(); counter++) {
 
-					List<DocumentEntity> entity =null /*documentRepository.findBypreregId(preIdList.get(counter))*/;
+					List<DocumentEntity> entity =documentRepository.findBypreregId(preIdList.get(counter));
 
 					for (int ecount = 0; ecount < entity.size(); ecount++) {
 						if (entity.get(ecount).getDoc_cat_code().equalsIgnoreCase(documentDto.getDoc_cat_code())) {
 							entity.get(ecount).setDoc_store(file.getBytes());
 						} else {
 							entity.get(ecount).setPreregId(preIdList.get(counter));
-							entity.get(ecount).setDoc_name(file.getName());
+							entity.get(ecount).setDoc_name(file.getOriginalFilename());
 							entity.get(ecount).setDoc_cat_code(documentDto.getDoc_cat_code());
 							entity.get(ecount).setDoc_typ_code(documentDto.getDoc_typ_code());
 							entity.get(ecount).setDoc_file_format(documentDto.getDoc_file_format());
@@ -82,9 +83,9 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 							entity.get(ecount).setStatus_code(documentDto.getStatus_code());
 							entity.get(ecount).setLang_code(documentDto.getLang_code());
 							entity.get(ecount).setCr_by(documentDto.getCr_by());
-							entity.get(ecount).setCr_dtimesz(documentDto.getCr_dtimesz());
+							entity.get(ecount).setCr_dtimesz(new Timestamp(System.currentTimeMillis()));
 							entity.get(ecount).setUpd_by(documentDto.getUpd_by());
-							entity.get(ecount).setUpd_dtimesz(documentDto.getUpd_dtimesz());
+							entity.get(ecount).setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
 
 							documentRepository.save(entity.get(ecount));
 						}
@@ -99,10 +100,10 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
 		else if (!documentDto.is_primary()) {
 
-			//List<String> preIdList = getRegistrationRepositary().findByGroupIds(documentDto.getGroup_id());
+			List<String> preIdList = registrationRepositary.findBygroupIds(documentDto.getGroup_id());
 				
 				documentEntity.setPreregId(documentDto.getPrereg_id());
-				documentEntity.setDoc_name(file.getName());
+				documentEntity.setDoc_name(file.getOriginalFilename());
 				documentEntity.setDoc_cat_code(documentDto.getDoc_cat_code());
 				documentEntity.setDoc_typ_code(documentDto.getDoc_typ_code());
 				documentEntity.setDoc_file_format(documentDto.getDoc_file_format());
@@ -110,9 +111,9 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 				documentEntity.setStatus_code(documentDto.getStatus_code());
 				documentEntity.setLang_code(documentDto.getLang_code());
 				documentEntity.setCr_by(documentDto.getCr_by());
-				documentEntity.setCr_dtimesz(documentDto.getCr_dtimesz());
+				documentEntity.setCr_dtimesz(new Timestamp(System.currentTimeMillis()));
 				documentEntity.setUpd_by(documentDto.getUpd_by());
-				documentEntity.setUpd_dtimesz(documentDto.getUpd_dtimesz());
+				documentEntity.setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
 				
 				documentRepository.save(documentEntity);
 			

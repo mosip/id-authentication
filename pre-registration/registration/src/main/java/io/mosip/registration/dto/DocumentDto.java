@@ -1,6 +1,8 @@
 package io.mosip.registration.dto;
 
-import java.sql.Timestamp;
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,32 +13,42 @@ import lombok.ToString;
 @Getter@Setter
 @ToString@NoArgsConstructor
 @AllArgsConstructor
-public class DocumentDto {
+public class DocumentDto implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7070542323407937205L;
+
+	@JsonProperty("prereg_id")
 	private String prereg_id;
 
+	@JsonProperty("group_id")
 	private String group_id;
-	
-	private boolean is_primary;
 
+	@JsonProperty("doc_cat_code")
 	private String doc_cat_code;
 
+	@JsonProperty("doc_typ_code")
 	private String doc_typ_code;
 
+	@JsonProperty("doc_file_format")
 	private String doc_file_format;
 
-	private byte[] doc_store;
-
+	@JsonProperty("status_code")
 	private String status_code;
 
+	@JsonProperty("lang_code")
 	private String lang_code;
 
+	@JsonProperty("cr_by")
 	private String cr_by;
 
-	private Timestamp cr_dtimesz;
 
+	@JsonProperty("upd_by")
 	private String upd_by;
-
-	private Timestamp upd_dtimesz;
+	
+	@JsonProperty("_primary")
+	private boolean is_primary;
 
 }

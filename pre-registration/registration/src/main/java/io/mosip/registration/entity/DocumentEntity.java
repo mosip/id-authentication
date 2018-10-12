@@ -1,5 +1,6 @@
 package io.mosip.registration.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Entity;
@@ -7,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +23,12 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="document",schema="document")
-public class DocumentEntity {
+public class DocumentEntity implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1692781286748263575L;
+
 	@Id
 	private int documentId;
 	
@@ -42,9 +50,11 @@ public class DocumentEntity {
 	
 	private String cr_by;
 	
+	
 	private Timestamp cr_dtimesz;
 	
 	private String upd_by;
+	
 	
 	private Timestamp upd_dtimesz;
 
