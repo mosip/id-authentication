@@ -149,23 +149,21 @@ public class AuthRequestValidator implements Validator {
 	 * @param errors
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
-		boolean remainingAuthType = authRequest.getAuthType().isBio() || authRequest.getAuthType().isAd()
+		boolean anyAuthType = authRequest.getAuthType().isOtp() && authRequest.getAuthType().isBio()
+				|| authRequest.getAuthType().isAd() || authRequest.getAuthType().isFad()
 				|| authRequest.getAuthType().isPin() || authRequest.getAuthType().isPi();
-		if (remainingAuthType) {
-			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
-					"INVALID_AUTH_REQUEST - remainingAuthType is true");
-			errors.rejectValue("authType", IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					env.getProperty("mosip.ida.validation.message.AuthRequest.unsupportedAuthtype"));
-		} else if (authRequest.getAuthType().isOtp()) {
-			checkOTPAuth(authRequest, errors);
-
-		} else {
+			
+		if(!anyAuthType) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 					"INVALID_AUTH_REQUEST - No auth type found");
 			errors.rejectValue("authType", IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					env.getProperty("mosip.ida.validation.message.AuthRequest.NoAuthtype"));
 
 		}
+		
+		if (authRequest.getAuthType().isOtp()) {
+			checkOTPAuth(authRequest, errors);
+		} 
 	}
 
 	/**
@@ -176,7 +174,7 @@ public class AuthRequestValidator implements Validator {
 	 */
 	public void checkOTPAuth(AuthRequestDTO authRequest, Errors errors) {
 
-		PinDTO pinDTO = authRequest.getPinDTO();
+		PinDTO pinDTO = authRequest.getPersonalDataDTO().getPinDTO();
 		if (pinDTO != null) {
 			PinType pinType = pinDTO.getType();
 			if (null != pinDTO.getType() && pinType.getType().equals(PinType.OTP.getType())) {

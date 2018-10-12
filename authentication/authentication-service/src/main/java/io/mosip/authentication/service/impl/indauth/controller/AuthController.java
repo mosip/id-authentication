@@ -82,10 +82,10 @@ public class AuthController {
 
 			authResponsedto = authFacade.authenticateApplicant(authrequestdto);
 		} catch (IDDataValidationException e) {
-			logger.error("sessionId", null, null, e.getErrorText());
+			logger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			logger.error("sessionId", null, null, e.getErrorText());
+			logger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" :e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
 		}
 

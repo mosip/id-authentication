@@ -48,8 +48,9 @@ public class PersonalFullAddressDTO {
 	 * 100 and it is used only when matching strategy (ms attribute) is “P” (Partial
 	 * match).
 	 */
-	@Min(1)
-	@Max(100)
+//FIXME add manual validation
+//	@Min(1)
+//	@Max(100)
 	private Integer mtPri; // TODO
 
 	/**
@@ -57,7 +58,8 @@ public class PersonalFullAddressDTO {
 	 * value is 1 to 100 and it is used only when matching strategy (ms attribute)
 	 * is “P” (Partial match).
 	 */
-	@Min(1)
-	@Max(100)
+//FIXME add manual validation
+//	@Min(1)
+//	@Max(100)
 	private Integer mtSec; // TODO
 }

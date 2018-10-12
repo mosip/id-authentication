@@ -141,7 +141,7 @@ public class AuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		PinDTO pinDTO = new PinDTO();
 		pinDTO.setType(PinType.OTP);
-		authRequestDTO.setPinDTO(pinDTO);
+		authRequestDTO.getPersonalDataDTO().setPinDTO(pinDTO);
 
 		// error.rejectValue(IdAuthenticationErrorConstants.NO_PINTYPE.getErrorCode(),
 		// env.getProperty("mosip.ida.validation.message.AuthRequest.PinType"));
@@ -159,7 +159,7 @@ public class AuthRequestValidatorTest {
 	public void checkOTPAuthValidatepinTypeFail() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		PinDTO pinDTO = new PinDTO();
-		authRequestDTO.setPinDTO(pinDTO);
+		authRequestDTO.getPersonalDataDTO().setPinDTO(pinDTO);
 
 		// error.rejectValue(IdAuthenticationErrorConstants.NO_PINTYPE.getErrorCode(),
 		// env.getProperty("mosip.ida.validation.message.AuthRequest.PinType"));
@@ -225,7 +225,7 @@ public class AuthRequestValidatorTest {
 		PinDTO pinDTO = new PinDTO();
 		pinDTO.setType(PinType.OTP);
 		pinDTO.setValue("123456");
-		authRequestDTO.setPinDTO(pinDTO);
+		authRequestDTO.getPersonalDataDTO().setPinDTO(pinDTO);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		authRequestDTO.setReqTime(format.format(new Date()));
 		authRequestValidator.validate(authRequestDTO, errors);
@@ -249,7 +249,7 @@ public class AuthRequestValidatorTest {
 		pinDTO.setType(PinType.OTP);
 		pinDTO.setValue("123456");
 		authRequestDTO.setReqTime(new Date().toString());
-		authRequestDTO.setPinDTO(pinDTO);
+		authRequestDTO.getPersonalDataDTO().setPinDTO(pinDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -270,7 +270,7 @@ public class AuthRequestValidatorTest {
 		PinDTO pinDTO = new PinDTO();
 		pinDTO.setType(PinType.OTP);
 		pinDTO.setValue("123456");
-		authRequestDTO.setPinDTO(pinDTO);
+		authRequestDTO.getPersonalDataDTO().setPinDTO(pinDTO);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		authRequestDTO.setReqTime(format.format(new Date()));
 		authRequestValidator.validate(authRequestDTO, errors);
@@ -294,7 +294,7 @@ public class AuthRequestValidatorTest {
 		pinDTO.setType(PinType.OTP);
 		pinDTO.setValue("123456");
 		authRequestDTO.setReqTime(new Date().toString());
-		authRequestDTO.setPinDTO(pinDTO);
+		authRequestDTO.getPersonalDataDTO().setPinDTO(pinDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -316,7 +316,7 @@ public class AuthRequestValidatorTest {
 		pinDTO.setType(PinType.OTP);
 		pinDTO.setValue("123456");
 		authRequestDTO.setReqTime(new Date().toString());
-		authRequestDTO.setPinDTO(pinDTO);
+		authRequestDTO.getPersonalDataDTO().setPinDTO(pinDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -338,7 +338,7 @@ public class AuthRequestValidatorTest {
 		pinDTO.setType(PinType.OTP);
 		pinDTO.setValue("12345");
 		authRequestDTO.setReqTime(new Date().toString());
-		authRequestDTO.setPinDTO(pinDTO);
+		authRequestDTO.getPersonalDataDTO().setPinDTO(pinDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}

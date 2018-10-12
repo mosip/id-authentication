@@ -1,10 +1,7 @@
 package io.mosip.authentication.core.dto.indauth;
 
-import java.util.Date;
-
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -46,7 +43,7 @@ public class AuthRequestDTO  {
 	private String txnID;
 
 	// The value of the field or property must be a date or time in the past or present.
-	@PastOrPresent(message = "{mosip.ida.validation.message.AuthRequest.date}")
+	@NotNull(message = "Request time should not be null") //TODO change to message property
 	private String reqTime;
 
 	//@Pattern(regexp = "^[A-Za-z0-9]{10}$", message = "{mosip.ida.validation.message.AuthRequest.asaLicenseKey}")
@@ -63,11 +60,5 @@ public class AuthRequestDTO  {
 	private AuthSecureDTO key;
 	
 	private PersonalIdentityDataDTO personalDataDTO;
-	
-	private PinDTO pinDTO;//FIX IT
-	
-	
-	
-	
 
 }

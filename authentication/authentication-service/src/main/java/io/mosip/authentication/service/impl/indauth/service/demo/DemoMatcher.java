@@ -28,6 +28,7 @@ public class DemoMatcher {
 	public List<MatchOutput> matchDemoData(DemoDTO demoDTO,DemoEntity demoEntity,List<MatchInput> listMatchInputs){
 		return listMatchInputs.parallelStream()
 				.map(input -> matchType(demoDTO, demoEntity, input))
+				.filter(output -> output != null)
 				.collect(Collectors.toList());
 	}
 

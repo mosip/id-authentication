@@ -10,11 +10,11 @@ import java.util.stream.Stream;
 public enum MatchingStrategyType {
 
 	/** The exact. */
-	EXACT("EXACT"),
+	EXACT("E"),
 	/** The partial. */
-	PARTIAL("PARTIAL"),
+	PARTIAL("P"),
 	/** The phonetics. */
-	PHONETICS("PHONETICS");
+	PHONETICS("PH");
 
 	/** The Constant default_Matching_Strategy. */
 	public static final MatchingStrategyType DEFAULT_MATCHING_STRATEGY = MatchingStrategyType.EXACT;
