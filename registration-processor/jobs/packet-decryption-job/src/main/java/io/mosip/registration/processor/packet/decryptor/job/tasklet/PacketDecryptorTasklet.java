@@ -1,18 +1,6 @@
 package io.mosip.registration.processor.packet.decryptor.job.tasklet;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.Tasklet;
-import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
@@ -22,6 +10,7 @@ import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAc
 import io.mosip.registration.processor.packet.decryptor.job.Decryptor;
 import io.mosip.registration.processor.packet.decryptor.job.MosipEventBus;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
+import io.mosip.registration.processor.packet.decryptor.job.messagesender.DecryptionMessageSender;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -29,10 +18,22 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.DeliveryOptions;
 import io.vertx.core.eventbus.EventBus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * Tasklet class for Packet decryption job
- * 
+ *
  * @author Jyoti Prakash Nayak
  *
  */
@@ -46,8 +47,11 @@ public class PacketDecryptorTasklet implements Tasklet {
 
 	@Autowired
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
-
+	
 	private FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter = new FilesystemCephAdapterImpl();
+
+	private DecryptionMessageSender decryptionMessageSender = new DecryptionMessageSender();
+
 	@Autowired
 	private Decryptor decryptor;
 
@@ -60,21 +64,21 @@ public class PacketDecryptorTasklet implements Tasklet {
 	DeliveryOptions options = new DeliveryOptions();
 
 	private static final String DFS_NOT_ACCESSIBLE = "The DFS Path set by the System is not accessible";
-
-	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Registration Status table "
+	
+	private static final String  REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Registration Status table "
 			+ "is not accessible";
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.springframework.batch.core.step.tasklet.Tasklet#execute(org.
 	 * springframework.batch.core.StepContribution,
 	 * org.springframework.batch.core.scope.context.ChunkContext)
 	 */
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		List<RegistrationStatusDto> dtolist = null;
-
+		List<RegistrationStatusDto> dtolist=null;
+		
 		try {
 			dtolist = registrationStatusService
 					.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
@@ -117,7 +121,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 
 	/**
 	 * method for decrypting registration packet
-	 * 
+	 *
 	 * @param dto
 	 *            RegistrationStatus of the packet to be decrypted
 	 * @throws IOException
@@ -152,7 +156,11 @@ public class PacketDecryptorTasklet implements Tasklet {
 
 			options.addHeader("enrolmentId", dto.getRegistrationId());
 			mosipEventBus.getEventBus().send("RegistrationProcessor", "Packet Unpacked ", options);
+            MessageDTO messageDTO = new MessageDTO();
 
+            messageDTO.setRid(dto.getRegistrationId());
+
+            decryptionMessageSender.sendMessage(messageDTO);
 			LOGGER.info(LOGDISPLAY, dto.getRegistrationId(),
 					" Packet decrypted and extracted encrypted files stored in DFS.");
 

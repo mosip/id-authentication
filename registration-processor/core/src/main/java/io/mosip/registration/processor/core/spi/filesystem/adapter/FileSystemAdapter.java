@@ -60,7 +60,7 @@ public interface FileSystemAdapter<T, U, V> {
 	 *            File that needs to checked
 	 * @return True if file is found, false otherwise
 	 */
-	public Boolean checkFileExistence(String enrolmentId, U fileName);
+	public Boolean checkFileExistence(String enrolmentId, String fileName);
 
 	/**
 	 * This method fetches a file corresponding to an enrolment ID and returns it
@@ -71,7 +71,7 @@ public interface FileSystemAdapter<T, U, V> {
 	 *            Required file name
 	 * @return the required file
 	 */
-	public T getFile(String enrolmentId, U fileName);
+	public T getFile(String enrolmentId, String fileName);
 
 	/**
 	 * This method unzips the packet corresponding to an enrolment ID and uploads
@@ -101,6 +101,6 @@ public interface FileSystemAdapter<T, U, V> {
 	 *            The file which needs to be deleted
 	 * @return True if the file is successfully deleted
 	 */
-	public V deleteFile(String enrolmentId, U fileName);
+	public V deleteFile(String enrolmentId, String fileName);
 
 }

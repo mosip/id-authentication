@@ -65,9 +65,9 @@ public class FTPScannerTaskletTest {
 
 	@Before
 	public void setup() {
-
 		ClassLoader classLoader = getClass().getClassLoader();
-		this.directoryPath = classLoader.getResource("FTP").getPath().toString();
+		File file = new File(classLoader.getResource("FTP").getFile());
+		this.directoryPath = file.getAbsolutePath();
 	}
 
 	@Test
