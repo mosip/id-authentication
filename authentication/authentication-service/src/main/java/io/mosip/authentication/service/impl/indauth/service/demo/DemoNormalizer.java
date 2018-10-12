@@ -20,7 +20,7 @@ public final class DemoNormalizer {
 
 	public static String normalizeName(String name) {
 
-		name = name.replaceAll(REGEX_SALUTATION, "").replaceAll(REGEX_SPECIAL_CHARACTERS, " ")
+		name = name.replaceAll(REGEX_SALUTATION, "").replaceAll(REGEX_SPECIAL_CHARACTERS, "")
 				.replaceAll(REGEX_WHITE_SPACE, " ").trim();
 
 		return name;
@@ -29,7 +29,7 @@ public final class DemoNormalizer {
 	public static String normalizeAddress(String address) {
 
 		address = address.replaceAll(REGEX_CARE_OF_LABLE, "").replaceAll(REGEX_SALUTATION, "")
-				.replaceAll(OTHER, "").replaceAll(REGEX_SPECIAL_CHARACTERS, " ").replaceAll(REGEX_WHITE_SPACE, " ")
+				.replaceAll(OTHER, "").replaceAll(REGEX_SPECIAL_CHARACTERS, "").replaceAll(REGEX_WHITE_SPACE, " ")
 				.trim();
 
 		return address;

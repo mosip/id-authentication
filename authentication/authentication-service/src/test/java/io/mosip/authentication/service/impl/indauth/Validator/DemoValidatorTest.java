@@ -1,5 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.Validator;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -17,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
@@ -419,6 +423,68 @@ public class DemoValidatorTest {
 				IdAuthenticationErrorConstants.INVALID_DOB_YEAR.getErrorMessage());
 
 		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", authRequestdto, errors);
+	}
+
+	// ==================== validate Language code ===========================
+	@Test
+	public void testPrimaryLanguageWithInvalidCode() {
+		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+		DemoDTO demodto = new DemoDTO();
+
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidPrimaryLanguageCode", "english", errors);
+
+		errors.getFieldErrors();
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testPrimaryLanguageWithValidCode() {
+		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+		DemoDTO demodto = new DemoDTO();
+
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidPrimaryLanguageCode", "en", errors);
+
+		errors.getFieldErrors();
+		assertFalse(errors.hasErrors());
+	}
+	
+	
+	@Test
+	public void testSecondaryLanguageWithInvalidCode() {
+		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+		DemoDTO demodto = new DemoDTO();
+
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidSecondaryLanguageCode", "english", errors);
+
+		errors.getFieldErrors();
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testSecondaryLanguageWithValidCode() {
+		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+		DemoDTO demodto = new DemoDTO();
+
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidSecondaryLanguageCode", "en", errors);
+
+		errors.getFieldErrors();
+		assertFalse(errors.hasErrors());
 	}
 
 }
