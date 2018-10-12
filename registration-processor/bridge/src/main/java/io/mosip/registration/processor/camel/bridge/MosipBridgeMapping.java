@@ -36,7 +36,7 @@ public class MosipBridgeMapping {
 						.toVertx(MessageBusAddress.RETRY_BUS.getAddress()))
 
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.BATCH_BUS.getAddress())
-						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.BATCH_BUS.getAddress())))
+						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN.getAddress())))
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.STRUCTURE_BUS_OUT.getAddress())
 						.toCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_OUT.getAddress())))
 				.addOutboundMapping(OutboundMapping.fromVertx(MessageBusAddress.DEMOGRAPHIC_BUS_OUT.getAddress())
