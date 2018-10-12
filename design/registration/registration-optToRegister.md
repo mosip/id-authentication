@@ -170,7 +170,6 @@ Need DB script.zip
 List of Sync Job Status:
 
   C   Completed
-  --- -------------
   I   In-Progress
   H   On-hold
   S   Suspended
