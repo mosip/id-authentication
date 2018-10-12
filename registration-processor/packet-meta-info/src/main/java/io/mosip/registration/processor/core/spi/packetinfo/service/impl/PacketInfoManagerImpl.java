@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,7 @@ import io.mosip.registration.processor.core.spi.packetinfo.entity.ApplicantPhoto
 import io.mosip.registration.processor.core.spi.packetinfo.entity.BiometricExceptionEntity;
 import io.mosip.registration.processor.core.spi.packetinfo.entity.BiometricExceptionPKEntity;
 import io.mosip.registration.processor.core.spi.packetinfo.entity.RegOsiEntity;
+import io.mosip.registration.processor.core.spi.packetinfo.exception.FileNotFoundInDFSException;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantDocumentRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantFingerprintRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantIrisRepository;
@@ -50,6 +53,8 @@ import io.mosip.registration.processor.core.spi.packetinfo.service.PacketInfoMan
 @Service
 public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, BiometericData, DocumentDetail> {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
+	
 	@Autowired
 	private ApplicantDocumentRepository applicantDocumentRepository;
 
@@ -108,22 +113,20 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 	 */
 	@Override
 	public void saveDemographicData(DocumentDetail demograficData) throws IOException {
-		System.out.println(demograficData);
 		ApplicantDocumentEntity applicantDocumentEntity = convertAppDocDtoToAppDocEntity(demograficData);
 		
-	/*	if (photoGraphData.isHasExceptionPhoto()) {
+		if (photoGraphData.isHasExceptionPhoto()) {
 			byte[] docBytes = getPhotoGraphDataInByteArray(metaData.getRegistrationId(),photoGraphData.getExceptionPhotoName());
 			applicantDocumentEntity.setDocStore(docBytes);
 			if (applicantDocumentRepository.save(applicantDocumentEntity) != null) {
-				System.out.println("ExceptionPhotograph is SAVED");
+				LOGGER.info(applicantDocumentEntity.getId().getRegId() +" --> Document Exception Demographic DATA SAVED");
 			}
-		}*/
-		 
-		// byte[] docBytes =getPhotoGraphDataInByteArray(metaData.getRegistrationId(),photoGraphData.getPhotographName());
-		byte[] docBytes = { 10, 20, 40 };
+		}
+		 byte[] docBytes =getPhotoGraphDataInByteArray(metaData.getRegistrationId(),photoGraphData.getPhotographName());
+		//byte[] docBytes = { 10, 20, 40 };
 		applicantDocumentEntity.setDocStore(docBytes);
 		if (applicantDocumentRepository.save(applicantDocumentEntity) != null) {
-			System.out.println("DATA SAVED");
+			LOGGER.info(applicantDocumentEntity.getId().getRegId() +" --> Document Demographic DATA SAVED");
 		}
 	}
 	
@@ -140,28 +143,28 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		for (Fingerprint fingerprint : fingerprints) {
 			ApplicantFingerprintEntity fingerprintEntity = convertFingerprintToFingerprintEntity(fingerprint);
 			if (applicantFingerprintRepository.save(fingerprintEntity) != null) {
-				System.out.println("Fingerprint DATA SAVED");
+				LOGGER.info(fingerprintEntity.getId().getRegId() +" --> Fingerprint DATA SAVED");
 			}
 		}
 
 		for (ExceptionFingerprint exceptionFingerprint : exceptionFingerprints) {
 			BiometricExceptionEntity biometricExceptionEntity = convertBiometricExcToBiometricExcEntity(exceptionFingerprint);
 			if (biometricExceptionRepository.save(biometricExceptionEntity) != null) {
-				System.out.println("Biometric DATA SAVED");
+				LOGGER.info(biometricExceptionEntity.getId().getRegId() +" --> Biometric Exception DATA SAVED");
 			}
 		}
 
 		for (Iris iris : irisList) {
 			ApplicantIrisEntity applicantIrisEntity = convertIrisToIrisEntity(iris);
 			if (applicantIrisRepository.save(applicantIrisEntity) != null) {
-				System.out.println("Iris DATA SAVED");
+				LOGGER.info(applicantIrisEntity.getId().getRegId() +" --> Applicant Iris DATA SAVED");
 			}
 		}
 
 		for (ExceptionIris exceptionIris : exceptionIrisList) {
 			BiometricExceptionEntity biometricIrisExceptionEntity = convertIrisToIrisExcEntity(exceptionIris);
 			if (biometricExceptionRepository.save(biometricIrisExceptionEntity) != null) {
-				System.out.println("Biometric Iris exception DATA SAVED");
+				LOGGER.info(biometricIrisExceptionEntity.getId().getRegId() +" --> Applicant Iris DATA SAVED");
 			}
 		}
 	}
@@ -175,7 +178,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 	private void saveOsiData(OsiData osiData)  throws Exception{
 		RegOsiEntity regOsiEntity =  convertOsiDataToOsiEntity(osiData);
 		if (regOsiRepository.save(regOsiEntity) != null) {
-			System.out.println("OSI DATA SAVED");
+			LOGGER.info(regOsiEntity.getRegId() +" --> Applicant OSI DATA SAVED");
 		}
 		
 	}
@@ -189,7 +192,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 	private void savePhotoGraphData(Photograph photoGraphData) throws Exception {
 		ApplicantPhotographEntity applicantPhotographEntity= convertPhotoGraphDataToPhotoGraphEntity(photoGraphData);
 		if (applicantPhotographRepository.save(applicantPhotographEntity) != null) {
-			System.out.println("Photograph DATA SAVED");
+			LOGGER.info(applicantPhotographEntity.getId().getRegId() +" --> Applicant Photograph DATA SAVED");
 		}
 	}
 
@@ -239,7 +242,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		bioMetricExceptionEntity.setIsDeleted(false);
 		bioMetricExceptionEntity.setStatusCode("");
 
-		bioMetricExceptionEntity.setUpdBy("Test-user");
+		bioMetricExceptionEntity.setUpdBy(" ");
 		bioMetricExceptionEntity.setCrBy("Test-user");
 		return bioMetricExceptionEntity;
 	}
@@ -263,7 +266,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		applicantIrisEntity.setImageName(iris.getIrisImageName());
 		applicantIrisEntity.setPreregId(metaData.getPreRegistrationId());
 		applicantIrisEntity.setNoOfRetry(0);
-		applicantIrisEntity.setQualityScore(new BigDecimal(iris.getQualityScore()));
+		applicantIrisEntity.setQualityScore(BigDecimal.valueOf(iris.getQualityScore()));
 		applicantIrisEntity.setStatusCode("Test-Status");
 		applicantIrisEntity.setCrBy("Test-user");
 		applicantIrisEntity.setUpdBy("Test-user");
@@ -290,7 +293,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		applicantFingerprintEntity.setImageName(fingerprint.getFingerprintImageName());
 		applicantFingerprintEntity.setNoOfRetry(fingerprint.getNumRetry());
 		applicantFingerprintEntity.setPreregId(metaData.getPreRegistrationId());
-		applicantFingerprintEntity.setQualityScore(new BigDecimal(fingerprint.getQualityScore()));
+		applicantFingerprintEntity.setQualityScore(BigDecimal.valueOf(fingerprint.getQualityScore()));
 		applicantFingerprintEntity.setStatusCode("Test-Status");
 		applicantFingerprintEntity.setCrBy("Test-user");
 		applicantFingerprintEntity.setUpdBy("Test-user");
@@ -347,7 +350,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		applicantPhotographEntity.setImageName(photoGraphData.getPhotographName());
 		applicantPhotographEntity.setHasExcpPhotograph(true);
 		applicantPhotographEntity.setNoOfRetry(1);
-		applicantPhotographEntity.setQualityScore(new BigDecimal(photoGraphData.getQualityScore()));
+		applicantPhotographEntity.setQualityScore(BigDecimal.valueOf(photoGraphData.getQualityScore()));
 		
 		applicantPhotographEntity.setStatusCode("");
 		applicantPhotographEntity.setCrBy("Test-user");
@@ -397,7 +400,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 	private byte[] getPhotoGraphDataInByteArray(String registrationId, String photographName) throws IOException {
 		InputStream in = (InputStream) fileSystemAdapter.getFile(metaData.getRegistrationId(),photoGraphData.getPhotographName());
 		byte[] buffer = new byte[1024];
-		int len = 0;
+		int len;
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		while ((len = in.read(buffer)) != -1) {
 			os.write(buffer, 0, len);
