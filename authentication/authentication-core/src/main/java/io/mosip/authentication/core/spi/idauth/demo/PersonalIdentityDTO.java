@@ -43,8 +43,9 @@ public class PersonalIdentityDTO {
 	 * 100 and it is used only when matching strategy (ms attribute) is “P” (Partial
 	 * match).
 	 */
-	@Min(1)
-	@Max(100)
+	//FIXME add manual validation
+//	@Min(1)
+//	@Max(100)
 	private Integer mtPri;
 
 	/**
@@ -52,8 +53,9 @@ public class PersonalIdentityDTO {
 	 * value is 1 to 100 and it is used only when matching strategy (ms attribute)
 	 * is “P” (Partial match).
 	 */
-	@Min(1)
-	@Max(100)
+	//FIXME add manual validation
+//	@Min(1)
+//	@Max(100)
 	private Integer mtSec;
 
 	/** Gender acceptable values are M- Male, F-Female, T- Transgender */
