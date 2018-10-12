@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.entity.RegistrationEntity;
@@ -18,6 +19,7 @@ public class RegistrationDao {
 
 	/** The registration status repositary. */
 	@Autowired
+	@Qualifier("registrationRepository")
 	RegistrationRepositary registrationRepositary;
 
 	/** The Constant AND. */
