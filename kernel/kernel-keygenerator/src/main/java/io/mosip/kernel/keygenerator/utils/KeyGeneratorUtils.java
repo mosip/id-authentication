@@ -20,27 +20,6 @@ import io.mosip.kernel.keygenerator.exception.MosipNoSuchAlgorithmException;
  *
  * @since 1.0.0
  */
-
-/**
- * @author Urvil Joshi
- *
- * @since 1.0.0
- */
-/**
- * @author Urvil Joshi
- *
- * @since 1.0.0
- */
-/**
- * @author Urvil Joshi
- *
- * @since 1.0.0
- */
-/**
- * @author Urvil Joshi
- *
- * @since 1.0.0
- */
 public class KeyGeneratorUtils {
 
 	/**
@@ -61,7 +40,8 @@ public class KeyGeneratorUtils {
 	/**
 	 * This class configures keygenerator
 	 * 
-	 * @param config algorithm and size configuration {@link KeyGeneratorConfig}
+	 * @param config
+	 *            algorithm and size configuration {@link KeyGeneratorConfig}
 	 * @return configured {@link KeyGenerator} instance
 	 */
 	public static KeyGenerator getKeyGenerator(KeyGeneratorConfig config) {
@@ -80,7 +60,8 @@ public class KeyGeneratorUtils {
 	/**
 	 * This class configures keypairgenerator
 	 * 
-	 * @param config algorithm and size configuration {@link KeyGeneratorConfig}
+	 * @param config
+	 *            algorithm and size configuration {@link KeyGeneratorConfig}
 	 * @return configured {@link KeyPairGenerator} instance
 	 */
 	public static KeyPairGenerator getKeyPairGenerator(KeyGeneratorConfig config) {
