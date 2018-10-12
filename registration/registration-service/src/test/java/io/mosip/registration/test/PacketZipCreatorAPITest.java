@@ -42,7 +42,7 @@ public class PacketZipCreatorAPITest extends SpringConfiguration {
 	private MosipLogger logger;
 	
 	@Before
-	public void initialize() throws IOException, URISyntaxException {
+	public void initialize() throws IOException, URISyntaxException, RegBaseCheckedException {
 		registrationDTO = DataProvider.getPacketDTO();
 		mosipRollingFileAppender = new MosipRollingFileAppender();
 		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");

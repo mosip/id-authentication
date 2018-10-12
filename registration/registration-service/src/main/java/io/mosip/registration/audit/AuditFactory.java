@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.registration.constants.AppModuleEnum;
 import io.mosip.registration.constants.AuditEventEnum;
 import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.context.SessionContext.UserContext;
 
 /**
  * Class to Audit the events of Registration.
@@ -60,6 +62,9 @@ public class AuditFactory {
 	public void audit(AuditEventEnum auditEventEnum, AppModuleEnum appModuleEnum, String auditDescription, String refId,
 			String refIdType) {
 
+		// Get UserContext Object from SessionContext
+		UserContext userContext = SessionContext.getInstance().getUserContext();		
+		
 		// Getting Host IP Address and Name
 		String hostIP = null;
 		String hostName = null;
@@ -77,12 +82,12 @@ public class AuditFactory {
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
 				.setApplicationId(getPropertyValue(RegConstants.APPLICATION_ID))
-				.setApplicationName(getPropertyValue(RegConstants.APPLICATION_NAME)).setCreatedBy(RegConstants.CREATED_BY)
+				.setApplicationName(getPropertyValue(RegConstants.APPLICATION_NAME)).setCreatedBy(userContext.getName())
 				.setDescription(auditDescription).setEventId(auditEventEnum.getId())
 				.setEventName(auditEventEnum.getName()).setEventType(auditEventEnum.getType()).setHostIp(hostIP)
 				.setHostName(hostName).setId(refId).setIdType(refIdType).setModuleId(appModuleEnum.getId())
-				.setModuleName(appModuleEnum.getName()).setSessionUserId(RegConstants.SESSION_USER_ID)
-				.setSessionUserName(RegConstants.SESSION_USER_NAME);
+				.setModuleName(appModuleEnum.getName()).setSessionUserId(userContext.getUserId())
+				.setSessionUserName(userContext.getName());
 		auditHandler.writeAudit(auditRequestBuilder.build());
 	}
 }

@@ -1,5 +1,9 @@
 package io.mosip.registration.constants;
 
+import static io.mosip.registration.constants.RegConstants.PACKET_CREATION_EXP_CODE;
+import static io.mosip.registration.constants.RegConstants.PACKET_UPLOAD_EXP_CODE;
+import static io.mosip.registration.constants.RegConstants.REG_ACK_EXP_CODE;
+
 /**
  * Exception enum for Registration Processor Module
  * 
@@ -9,29 +13,23 @@ package io.mosip.registration.constants;
  */
 public enum RegProcessorExceptionEnum {
 
-	REG_SOCKET_ERROR_CODE("REG-PRO-PAC-001", "No socket is available"),
-	REG_UNKNOWN_HOST_ERROR_CODE("REG-PRO-PAC-002", "The host is unknown"),
-	REG_NO_SUCH_ALGORITHM_ERROR_CODE("REG-PRO-PAC-003", "No such algorithm available for input"),
-	REG_NO_SUCH_PADDING_ERROR_CODE("REG-PRO-PAC-004", "No such padding available for input"),
-	REG_INVALID_KEY_ERROR_CODE("REG-PRO-PAC-005", "Invalid key for input"),
-	REG_INVALID_ALGORITHM_PARAMETER_ERROR_CODE("REG-PRO-PAC-006", "Invalid parameter for the algorithm"),
-	REG_ILLEGAL_BLOCK_ERROR_CODE("REG-PRO-PAC-007", "The block size is illegal for the input"),
-	REG_BAD_PADDING_ERROR_CODE("REG-PRO-PAC-008", "Bad padding for the input"),
+	REG_SOCKET_ERROR_CODE(PACKET_CREATION_EXP_CODE +"SMA-001", "No socket is available"),
+	REG_NO_SUCH_ALGORITHM_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AKM-001", "No such algorithm available for input"),
+	REG_INVALID_DATA_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AEM-001", "Invalid Data for Packet Encryption"),
+	REG_INVALID_KEY_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AEM-002", "Invalid key for input"),
 	REG_INVALID_KEY_SEED_ERROR_CODE("REG-PRO-PAC-009", "Invalid seeds for key generation"),
-	REG_IO_EXCEPTION("REG-PRO-PAC-010", "IO exception"),
-	REG_JSON_PROCESSING_EXCEPTION("REG-PRO-PAC-011", "Exception while parsing object to JSON"),
-	REG_ILLEGAL_BLOCK_SIZE_ERROR_CODE("REG-PRO-PAC-012", "Illegal key size for key generation"),
-	REG_INVALID_KEY_SPEC_ERROR_CODE("REG-PRO-PAC-013", "Invalid key spec for input"),
-	REG_FILE_NOT_FOUND_ERROR_CODE("REG-PRO-PAC-014", "File not found for input path"),
-	REG_IO_ERROR_CODE("REG-PRO-PAC-015", "Input-output relation failed"),
-	REG_CLASS_NOT_FOUND_ERROR_CODE("REG-PRO-PAC-016", "Class not found for input"),
-	REG_PACKET_CREATION_ERROR_CODE("REG-PRO-PAC-017", "Exception while creating Registration"),
-	REG_PACKET_DTAILS_INSERT_SQL_ERROR_CODE("REG-PRO-PAC-018", "SQL Exception"),
-	REG_INVALID_DATA_ERROR_CODE("REG-PRO-PAC-019", "Invalid Data for Packet Encryption"),
-	REG_FTP_CONNECTION_ERROR_CODE("REG-PRO-UPL-020","Error in ftp connection"),
-	REG_TEMPLATE_IO_EXCEPTION("REG-PRO-UPL-021","Exception while writing the template into file"),
-	REG_FTP_PROPERTIES_SET_ERROR_CODE("REG-PRO-UPL-021","Error in ftp properties"),
-	REG_SERVICE_DELEGATE_UTIL_CODE("IDC-FRA-PAC-022","Exception through service delegate util, class not found");
+	REG_IO_EXCEPTION(PACKET_CREATION_EXP_CODE + "ZCM-001", "IO exception"),
+	REG_JSON_PROCESSING_EXCEPTION(PACKET_CREATION_EXP_CODE + "PCS-001", "Exception while parsing object to JSON"),
+	REG_FILE_NOT_FOUND_ERROR_CODE(PACKET_UPLOAD_EXP_CODE + "FUM-001", "File not found for input path"),
+	REG_IO_ERROR_CODE(PACKET_UPLOAD_EXP_CODE + "RKG-001", "Input-output relation failed"),
+	REG_CLASS_NOT_FOUND_ERROR_CODE(PACKET_CREATION_EXP_CODE + "SDU-001", "Class not found for input"),
+	REG_PACKET_CREATION_ERROR_CODE(PACKET_CREATION_EXP_CODE + "PHS-001", "Exception while creating Registration"),
+	REG_FTP_CONNECTION_ERROR_CODE(PACKET_UPLOAD_EXP_CODE + "FUM-002","Error in ftp connection"),
+	REG_TEMPLATE_IO_EXCEPTION(REG_ACK_EXP_CODE + "TES","Exception while writing the template into file"),
+	REG_FTP_PROPERTIES_SET_ERROR_CODE(PACKET_UPLOAD_EXP_CODE + "FUM-003","Error in ftp properties"),
+	REG_SERVICE_DELEGATE_UTIL_CODE(PACKET_CREATION_EXP_CODE + "SDU-002","Exception through service delegate util, class not found"),
+	REG_RSA_INVALID_DATA(PACKET_CREATION_EXP_CODE + "REM-001", "Invalid data for RSA encryption"),
+	REG_RSA_INVALID_KEY(PACKET_CREATION_EXP_CODE + "REM-002", "Invalid key for RSA encryption");
 
 	/**
 	 * The constructor

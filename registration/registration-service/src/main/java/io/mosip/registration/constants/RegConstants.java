@@ -1,8 +1,5 @@
 package io.mosip.registration.constants;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Class for storing the idisConstants
  * 
@@ -11,13 +8,14 @@ import java.util.Map;
  *
  */
 public class RegConstants {
-	
+
 	public static final String PROOF_OF_RESIDENT = "ProofOfResident";
+
 	/**
 	 * private constructor
 	 */
 	private RegConstants() {
-		
+
 	}
 
 	public static final String EMPTY = "";
@@ -67,55 +65,14 @@ public class RegConstants {
 	public static final String DOC_TYPE = ".jpg";
 
 	/**
-	 * Specifies the names for storing the finger print images in zip file
-	 */
-	private static final Map<String, String> FINGERPRINT_IMAGE_NAMES_MAP = new HashMap<>();
-
-	/**
-	 * Specifies the names for storing the iris images in zip file
-	 */
-	private static final Map<String, String> IRIS_IMAGE_NAMES_MAP = new HashMap<>();
-
-	/**
-	 * Specifies the names for storing the documents in zip file
-	 */
-	private static final Map<String, String> DOCUMENT_TYPES_MAP = new HashMap<>();
-
-	/**
 	 * Specifies the format for storing the Registration Acknowledgement
 	 */
 	public static final String IMAGE_FORMAT = "png";
+
 	/**
 	 * Specifies the path for storing the template in vm file
 	 */
 	public static final String TEMPLATE_PATH = "src/main/resources/templates/acktemplate.vm";
-
-	static {
-		FINGERPRINT_IMAGE_NAMES_MAP.put("leftthumb", "LeftThumb");
-		FINGERPRINT_IMAGE_NAMES_MAP.put("rightthumb", "RightThumb");
-		FINGERPRINT_IMAGE_NAMES_MAP.put("leftindexfinger", "LeftIndexFinger");
-		FINGERPRINT_IMAGE_NAMES_MAP.put("leftmiddlefinger", "LeftMiddleFinger");
-		FINGERPRINT_IMAGE_NAMES_MAP.put("leftringfinger", "LeftRingFinger");
-		FINGERPRINT_IMAGE_NAMES_MAP.put("leftlittlefinger", "LeftLittleFinger");
-		FINGERPRINT_IMAGE_NAMES_MAP.put("rightindexfinger", "RightIndexFinger");
-		FINGERPRINT_IMAGE_NAMES_MAP.put("rightmiddlefinger", "RightMiddleFinger");
-		FINGERPRINT_IMAGE_NAMES_MAP.put("rightringfinger", "RightRingFinger");
-		FINGERPRINT_IMAGE_NAMES_MAP.put("rightlittlefinger", "RightLittleFinger");
-
-		FINGERPRINT_IMAGE_NAMES_MAP.put("leftpalm", "LeftPalm");
-		FINGERPRINT_IMAGE_NAMES_MAP.put("rightpalm", "RightPalm");
-
-		IRIS_IMAGE_NAMES_MAP.put("lefteye", "LeftEye");
-		IRIS_IMAGE_NAMES_MAP.put("righteye", "RightEye");
-
-		DOCUMENT_TYPES_MAP.put("poa", "ProofOfAddress");
-		DOCUMENT_TYPES_MAP.put("proofofaddress", "ProofOfAddress");
-		DOCUMENT_TYPES_MAP.put("poi", "ProofOfIdentity");
-		DOCUMENT_TYPES_MAP.put("proofofidentity", "ProofOfIdentity");
-		DOCUMENT_TYPES_MAP.put("por", PROOF_OF_RESIDENT);
-		DOCUMENT_TYPES_MAP.put("proofofresident", PROOF_OF_RESIDENT);
-		DOCUMENT_TYPES_MAP.put("proofofresidenty", PROOF_OF_RESIDENT);
-	}
 
 	// Constants for Registration ID Generator - will be removed after Kernel
 	// Integration
@@ -133,56 +90,42 @@ public class RegConstants {
 	public static final String CREATED_BY = "createdBy";
 	public static final String SESSION_USER_ID = "sessionUserId";
 	public static final String SESSION_USER_NAME = "sessionUserName";
-	
-	//OnlineConnectivity check
+
+	// OnlineConnectivity check
 	public static final String URL = "http://localhost:8080/getTokenId";
-	
-	public static final String OTP_GENERATOR_SERVICE_NAME="otp_generator";
-	public static final String USERNAME_KEY="key";
-	public static final String OTP_GENERATED="otp";
-	public static final String OTP_VALIDATOR_SERVICE_NAME="otp_validator";
-	public static final String OTP_GENERATION_SUCCESS_MESSAGE="Generated OTP is : ";
-	public static final String OTP_VALIDATION_SUCCESS_MESSAGE="OTP validation Successful";
-	public static final String OTP_GENERATION_ERROR_MESSAGE="Please Enter Valid Username ";
-	public static final String OTP_VALIDATION_ERROR_MESSAGE="Please Enter Valid OTP";
-	public static final String OTP_GENERATOR_RESPONSE_DTO="otpGeneratorResponseDTO";
-	public static final String OTP_VALIDATOR_RESPONSE_DTO="otpValidatorResponseDTO";
-	public static final String OTP_INFO_MESSAGE="OTP Login Information";
-	
-	public static final String ALERT_INFORMATION="INFORMATION";
-	public static final String ALERT_ERROR="ERROR";
-	public static final String ALERT_WARNING="WARNING";
-	
 
-	
-	//api related constant values
-	public static  final String HTTPMETHOD="service.httpmethod";
-	public static  final String SERVICE_URL="service.url";
-	public static  final String HEADERS="service.headers";
-	public static  final String RESPONSE_TYPE="service.responseType";
-	public static  final String REQUEST_TYPE="service.requestType";
-	public static  final String AUTH_HEADER="service.authheader";
-	public static  final String AUTH_REQUIRED="service.authrequired";
-	public static  final String AUTH_TYPE = "BASIC";
-	
-	//Alert Related Details
-	public static  final String LOGIN_ALERT_TITLE="LOGIN ALERT";
-	public static  final String LOGIN_INVALID_USERNAME="Unable To Login";
-	public static  final String LOGIN_INVALID_OTP="Unable To Login";
-	public static  final String GENERATED_OTP="Generated OTP : ";
-	
-	public static Map<String, String> getFingerPrintImageNamesMap() {
-		return FINGERPRINT_IMAGE_NAMES_MAP;
-	}
+	public static final String OTP_GENERATOR_SERVICE_NAME = "otp_generator";
+	public static final String USERNAME_KEY = "key";
+	public static final String OTP_GENERATED = "otp";
+	public static final String OTP_VALIDATOR_SERVICE_NAME = "otp_validator";
+	public static final String OTP_GENERATION_SUCCESS_MESSAGE = "Generated OTP is : ";
+	public static final String OTP_VALIDATION_SUCCESS_MESSAGE = "OTP validation Successful";
+	public static final String OTP_GENERATION_ERROR_MESSAGE = "Please Enter Valid Username ";
+	public static final String OTP_VALIDATION_ERROR_MESSAGE = "Please Enter Valid OTP";
+	public static final String OTP_GENERATOR_RESPONSE_DTO = "otpGeneratorResponseDTO";
+	public static final String OTP_VALIDATOR_RESPONSE_DTO = "otpValidatorResponseDTO";
+	public static final String OTP_INFO_MESSAGE = "OTP Login Information";
 
-	public static Map<String, String> getIrisimageNamesMap() {
-		return IRIS_IMAGE_NAMES_MAP;
-	}
-	
-	public static Map<String, String> getDocumentTypesMap() {
-		return DOCUMENT_TYPES_MAP;
-	}
-	
+	public static final String ALERT_INFORMATION = "INFORMATION";
+	public static final String ALERT_ERROR = "ERROR";
+	public static final String ALERT_WARNING = "WARNING";
+
+	// api related constant values
+	public static final String HTTPMETHOD = "service.httpmethod";
+	public static final String SERVICE_URL = "service.url";
+	public static final String HEADERS = "service.headers";
+	public static final String RESPONSE_TYPE = "service.responseType";
+	public static final String REQUEST_TYPE = "service.requestType";
+	public static final String AUTH_HEADER = "service.authheader";
+	public static final String AUTH_REQUIRED = "service.authrequired";
+	public static final String AUTH_TYPE = "BASIC";
+
+	// Alert Related Details
+	public static final String LOGIN_ALERT_TITLE = "LOGIN ALERT";
+	public static final String LOGIN_INVALID_USERNAME = "Unable To Login";
+	public static final String LOGIN_INVALID_OTP = "Unable To Login";
+	public static final String GENERATED_OTP = "Generated OTP : ";
+
 	/** Velocity Template Generator Constants */
 	public static final String RESOURCE_LOADER = "file";
 	public static final String FILE_RESOURCE_LOADER_CLASS = "file.resource.loader.class";
@@ -206,5 +149,10 @@ public class RegConstants {
 	public static final String TEMPLATE_IMAGE_ENCODING = "data:image/jpg;base64,";
 	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "BiometricsCaptured";
-	
+
+	// Exception Code for Components
+	public static final String PACKET_CREATION_EXP_CODE = "PCC-";
+	public static final String PACKET_UPLOAD_EXP_CODE = "PAU-";
+	public static final String REG_ACK_EXP_CODE = "ACK-";
+
 }

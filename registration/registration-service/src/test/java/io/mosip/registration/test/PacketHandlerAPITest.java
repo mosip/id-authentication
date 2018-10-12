@@ -44,11 +44,22 @@ public class PacketHandlerAPITest {
 
 	@Before
 	public void initialize() {
+		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
+		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
+		mosipRollingFileAppender.setFileName("logs");
+		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
+		mosipRollingFileAppender.setMaxFileSize("1MB");
+		mosipRollingFileAppender.setTotalCap("10MB");
+		mosipRollingFileAppender.setMaxHistory(10);
+		mosipRollingFileAppender.setImmediateFlush(true);
+		mosipRollingFileAppender.setPrudent(true);
+
+		ReflectionTestUtils.invokeMethod(packetHandlerService, "initializeLogger", mosipRollingFileAppender);
 		mockedSuccessResponse = new ResponseDTO();
-		//mockedSuccessResponse.setCode("0000");
-		//mockedSuccessResponse.setMessage("Success");
 		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class),
 				Mockito.any(AppModuleEnum.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
+		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
 	}
 
 	@Test
@@ -72,30 +83,32 @@ public class PacketHandlerAPITest {
 				actualResponse.getErrorResponseDTOs().get(0).getCode());
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testHandlerException() throws RegBaseCheckedException {
 		ReflectionTestUtils.setField(packetHandlerService, "LOGGER", logger);
+		RegBaseUncheckedException exception = new RegBaseUncheckedException("errorCode", "errorMsg");
 
 		Mockito.when(packetCreationManager.create(Mockito.any(RegistrationDTO.class)))
-				.thenThrow(RegBaseUncheckedException.class);
+				.thenThrow(exception);
 		Mockito.when(
 				packetEncryptionManager.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
 				.thenReturn(mockedSuccessResponse);
-		packetHandlerService.handle(new RegistrationDTO());
+		ResponseDTO dto = packetHandlerService.handle(new RegistrationDTO());
+		Assert.assertNotNull(dto.getErrorResponseDTOs());
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testHandlerChkException() throws RegBaseCheckedException {
 		ReflectionTestUtils.setField(packetHandlerService, "LOGGER", logger);
+		RegBaseCheckedException exception = new RegBaseCheckedException("errorCode", "errorMsg");
 
 		Mockito.when(packetCreationManager.create(Mockito.any(RegistrationDTO.class)))
-				.thenThrow(RegBaseCheckedException.class);
+				.thenThrow(exception);
 		Mockito.when(
 				packetEncryptionManager.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
 				.thenReturn(mockedSuccessResponse);
-		packetHandlerService.handle(new RegistrationDTO());
+		ResponseDTO dto = packetHandlerService.handle(new RegistrationDTO());
+		Assert.assertNotNull(dto.getErrorResponseDTOs());
 	}
 
 }

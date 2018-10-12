@@ -50,6 +50,17 @@
 		<!-- Derby Version -->
 		<apache.derby.version>10.13.1.1</apache.derby.version>
 		
+		<sonar.exclusions>src/main/java/io/mosip/registration/util/**/*,
+			src/main/java/io/mosip/registration/dao/**/*,
+			src/main/java/io/mosip/registration/repositories/**/*,
+			src/main/java/io/mosip/registration/context/**/*,
+			src/main/java/io/mosip/registration/controller/**/*,
+			src/main/java/io/mosip/registration/ui/constants/**/*,
+			src/main/java/io/mosip/registration/scheduler/**/*,
+			src/main/java/io/mosip/registration/dto/**/*,
+			src/main/java/io/mosip/registration/constants/**/*,
+			src/main/java/io/mosip/registration/entity/**/*</sonar.exclusions>
+		
 	</properties>
 
 	<modules>

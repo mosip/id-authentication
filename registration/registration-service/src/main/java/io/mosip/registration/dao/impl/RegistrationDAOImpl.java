@@ -62,9 +62,9 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	@Override
 	public void save(String zipFileName, String individualName) throws RegBaseCheckedException {
 		try {
-			LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_DAO", 
+			LOGGER.debug("REGISTRATION - PACKET_CREATION - REGISTRATION_DAO", 
 					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), 
-					"Packet encryption had been ended");
+					"Packet insertion had been started");
 
 			OffsetDateTime time = OffsetDateTime.now();
 
@@ -97,9 +97,9 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setRegistrationTransaction(registrationTransactions);
 
 			registrationRepository.create(registration);
-			LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_DAO", 
+			LOGGER.debug("REGISTRATION - PACKET_CREATION - REGISTRATION_DAO", 
 					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), 
-					"Packet encryption had been ended");
+					"Packet creation had been ended");
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegProcessorExceptionCode.CREATE_PACKET_ENTITY,
 					runtimeException.toString());

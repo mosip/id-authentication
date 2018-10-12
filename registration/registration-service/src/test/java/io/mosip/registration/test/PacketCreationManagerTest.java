@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
+import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.test.config.SpringConfiguration;
@@ -24,9 +26,11 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.AppModuleEnum;
 import io.mosip.registration.constants.AuditEventEnum;
 import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.mapper.CustomObjectMapper;
 import io.mosip.registration.service.PacketCreationService;
 import io.mosip.registration.util.hmac.HMACGeneration;
 import io.mosip.registration.util.zip.ZipCreationManager;
@@ -45,11 +49,13 @@ public class PacketCreationManagerTest extends SpringConfiguration {
 	private MosipLogger logger;
 	@Mock
 	private AuditFactory auditFactory;
+	@Mock
+	private AuditDAO auditDAO;
 	private MosipRollingFileAppender mosipRollingFileAppender;
 	private RegistrationDTO registrationDTO;
 
 	@Before
-	public void initialize() throws IOException, URISyntaxException {
+	public void initialize() throws IOException, URISyntaxException, RegBaseCheckedException {
 		mosipRollingFileAppender = new MosipRollingFileAppender();
 		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
 		mosipRollingFileAppender.setFileName("logs");
@@ -67,6 +73,8 @@ public class PacketCreationManagerTest extends SpringConfiguration {
 		ReflectionTestUtils.setField(packetCreationManager, "LOGGER", logger);
 		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class),
 				Mockito.any(AppModuleEnum.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		Mockito.when(auditDAO.getAllAudits())
+				.thenReturn(CustomObjectMapper.MAPPER_FACADE.mapAsList(registrationDTO.getAuditDTOs(), Audit.class));
 		Map<String, byte[]> jsonMap = new HashMap<>();
 		jsonMap.put(RegConstants.DEMOGRPAHIC_JSON_NAME, "Demo".getBytes());
 		jsonMap.put(RegConstants.PACKET_META_JSON_NAME, "Registration".getBytes());
