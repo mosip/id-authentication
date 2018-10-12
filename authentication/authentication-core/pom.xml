@@ -16,21 +16,28 @@
 	<description>Maven project of MOSIP ID-Authentication Core</description>
 
 	<dependencies>
+		<!-- Kernel Core -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+		
+		<!-- Kernel Logback Impl -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-logger-logback</artifactId>
 			<version>${kernel.core.version}</version>
 		</dependency>
+		
+		<!-- Commons Codec -->
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
 			<version>${commons.codec.version}</version>
 		</dependency>
+		
+		<!-- Open Source Fingerprint SDK  -->
 		<dependency>
 			<groupId>com.machinezoo.sourceafis</groupId>
 			<artifactId>sourceafis</artifactId>
