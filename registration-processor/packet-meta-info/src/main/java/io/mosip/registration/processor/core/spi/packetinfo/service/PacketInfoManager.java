@@ -20,7 +20,7 @@ public interface PacketInfoManager<T, B, D> {
 	 *            the packet info
 	 * @return true, if successful
 	 */
-	public void savePacketData(T packetInfo) throws Exception;
+	public void savePacketData(T packetInfo);
 
 	/**
 	 * Save bio metric info.
@@ -29,7 +29,7 @@ public interface PacketInfoManager<T, B, D> {
 	 *            the bio metric data
 	 * @return true, if successful
 	 */
-	public void saveBioMetricData(B bioMetricData)throws Exception;
+	public void saveBioMetricData(B bioMetricData);
 
 	/**
 	 * Save demografic data.
@@ -38,5 +38,5 @@ public interface PacketInfoManager<T, B, D> {
 	 *            the demografic data
 	 * @return true, if successful
 	 */
-	public void saveDemographicData(D demograficData) throws Exception;
+	public void saveDemographicData(D demograficData);
 }
