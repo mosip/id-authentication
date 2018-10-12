@@ -97,7 +97,7 @@
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-idgenerator-uin</module>
 		<module>kernel-otpmanager-service</module>
-		<module>kernel-validator</module>
+		<module>kernel-datavalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-config-server</module>
 
