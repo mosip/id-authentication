@@ -10,39 +10,27 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-
 	<artifactId>kernel-notification-sms</artifactId>
 
 	<name>kernel-notification-sms</name>
 
-	<description>Demo project for Spring Boot</description>
-
-
 	<dependencies>
-
 		<dependency>
-
 			<groupId>org.springframework.boot</groupId>
-
 			<artifactId>spring-boot-starter</artifactId>
-
 			<version>${spring.boot.version}</version>
-
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<version>${spring.boot.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
@@ -59,14 +47,10 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${swagger.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${swagger.version}</version>
 		</dependency>
 	</dependencies>
-
-
-
 </project>

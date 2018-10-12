@@ -10,7 +10,7 @@ package io.mosip.kernel.smsnotifier.constant;
 public enum SmsExceptionConstants {
 
 	SMS_ILLEGAL_INPUT("KER-NOS-001", "Number and message can't be empty, null"),
-	SMS_NUMBER_INVALID("KER-NOS-002",""),
+	SMS_NUMBER_INVALID("KER-NOS-002","Empty Json Responce"),
 	SMS_EMPTY_JSON("KER-NOS-003","Json Not Found");
 
 	/**

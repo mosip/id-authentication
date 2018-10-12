@@ -9,14 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
 
-import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
-import io.mosip.kernel.core.util.exception.MosipJsonParseException;
 import io.mosip.kernel.smsnotifier.constant.SmsExceptionConstants;
-import io.mosip.kernel.smsnotifier.dto.SmsServerResponseDto;
+import io.mosip.kernel.smsnotifier.exception.MosipHttpClientException;
 
 /**
  * Central class for handling exceptions.
@@ -55,27 +50,17 @@ public class SmsControllerAdvice {
 	}
 
 	/**
-	 * This method handles HttpClientErrorException type of exceptions.
+	 * This method handles MosipHttpClientException type of exceptions.
 	 * 
 	 * @param e
 	 *            The exception
 	 * @return The response entity.
 	 */
-	@ExceptionHandler(HttpClientErrorException.class)
+	@ExceptionHandler(MosipHttpClientException.class)
 	public ResponseEntity<Map<String, ArrayList<MosipErrors>>> smsNotificationServerResponse(
-			final HttpClientErrorException e) {
+			final MosipHttpClientException e) {
 
-		SmsServerResponseDto responseDto = null;
-		try {
-			responseDto = (SmsServerResponseDto) JsonUtils.jsonStringToJavaObject(SmsServerResponseDto.class,
-					e.getResponseBodyAsString());
-		} catch (MosipJsonParseException | MosipJsonMappingException | MosipIOException e1) {
-			throw new JsonParseException(SmsExceptionConstants.SMS_EMPTY_JSON.getErrorCode(),
-					SmsExceptionConstants.SMS_EMPTY_JSON.getErrorMessage(), e1.getCause());
-		}
-
-		MosipErrors error = new MosipErrors(SmsExceptionConstants.SMS_NUMBER_INVALID.getErrorCode(),
-				responseDto.getMessage());
+		MosipErrors error = new MosipErrors(SmsExceptionConstants.SMS_NUMBER_INVALID.getErrorCode(), e.getErrorText());
 		ArrayList<MosipErrors> errorList = new ArrayList<>();
 		errorList.add(error);
 

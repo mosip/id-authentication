@@ -1,4 +1,4 @@
-package io.mosip.kernel.smsnotifier.exception;
+package io.mosip.kernel.smsnotifier.exception.test;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,28 +49,28 @@ public class ExceptionHandlerTest {
 	@Test
 	public void emptyContactNumberTest() throws Exception {
 		String json = "{\"number\":\"\",\"message\":\"hello..your otp is 342891\"}";
-		mockMvc.perform(post("/smsnotifier/texts").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void nullContactNumberTest() throws Exception {
 		String json = "{\"number\":null,\"message\":\"hello..your otp is 342891\"}";
-		mockMvc.perform(post("/smsnotifier/texts").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void nullMessageTest() throws Exception {
 		String json = "{\"number\":\"8987672341\",\"message\":null}";
-		mockMvc.perform(post("/smsnotifier/texts").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void emptyMessageTest() throws Exception {
 		String json = "{\"number\":\"\",\"message\":\"\"}";
-		mockMvc.perform(post("/smsnotifier/texts").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
