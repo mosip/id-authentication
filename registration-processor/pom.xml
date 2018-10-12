@@ -84,6 +84,35 @@
 		<module>jobs</module>
 	</modules>
 
+	<profiles>
+		<profile>
+			<id>LOCAL</id>
+			<properties>
+				<sonar.host.url>
+					http://13.67.91.2:9000
+				</sonar.host.url>
+				<sonar.login>5006c6fd96284f6545a4101fb5b1369374265c0f</sonar.login>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+		<profile>
+			<id>DEV</id>
+			<properties>
+				<sonar.host.url>
+					http://13.76.43.109:9000
+				</sonar.host.url>
+				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 		<pluginManagement>
 			<plugins>

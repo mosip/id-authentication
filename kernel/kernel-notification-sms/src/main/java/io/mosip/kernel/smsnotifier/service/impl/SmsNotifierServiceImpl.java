@@ -14,7 +14,6 @@ import io.mosip.kernel.smsnotifier.constant.SmsPropertyConstants;
 import io.mosip.kernel.smsnotifier.dto.SmsResponseDto;
 import io.mosip.kernel.smsnotifier.dto.SmsServerResponseDto;
 
-
 /**
  * This service class send SMS on the contact number provided.
  * 
@@ -57,7 +56,6 @@ public class SmsNotifierServiceImpl implements SmsNotifier<SmsResponseDto> {
 	@Override
 	public SmsResponseDto sendSmsNotification(String contactNumber, String contentMessage) {
 
-	
 		RestTemplate restTemplate = restTemplateBuilder.build();
 		SmsResponseDto result = new SmsResponseDto();
 		ResponseEntity<SmsServerResponseDto> response;

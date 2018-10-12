@@ -29,7 +29,6 @@ import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -48,7 +47,6 @@ import io.mosip.kernel.uingenerator.exception.UinGenerationJobException;
  *
  */
 @Configuration
-@PropertySource("classpath:uin.properties")
 @EnableBatchProcessing
 @EnableScheduling
 public class UinBatchConfig extends DefaultBatchConfigurer {

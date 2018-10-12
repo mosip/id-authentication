@@ -54,11 +54,10 @@ public class VidGenerator implements MosipVidGenerator<String> {
 	@PostConstruct
 	public void vidGeneratorPostConstruct() {
 		generatedIdLength = vidLength - 1;
-		lowerBound = Long.parseLong(VidGeneratorConstants.TWO + StringUtils.repeat(VidGeneratorConstants.ZERO, generatedIdLength - 1));
+		lowerBound = Long.parseLong(
+				VidGeneratorConstants.TWO + StringUtils.repeat(VidGeneratorConstants.ZERO, generatedIdLength - 1));
 		upperBound = Long.parseLong(StringUtils.repeat(VidGeneratorConstants.NINE, generatedIdLength));
 	}
-
-
 
 	/**
 	 * Generates a Vid and map it against the input Uin
@@ -85,13 +84,7 @@ public class VidGenerator implements MosipVidGenerator<String> {
 			long currentTimestamp = System.currentTimeMillis();
 			existingVId.setId(generatedVid);
 			existingVId.setCreatedAt(currentTimestamp);
-			try {
-				vidRepository.save(existingVId);
-				vidCacheManager.saveOrUpdate(existingVId);
-			} catch (Exception e) {
-				throw new VidGenerationFailedException(VidErrorCodes.VID_GENERATION_FAILED.getErrorCode(),
-						VidErrorCodes.VID_GENERATION_FAILED.getErrorMessage());
-			}
+			saveGeneratedVid(existingVId);
 		} else {
 			generatedVid = getUniqueVid();
 			Vid newVid = new Vid();
@@ -99,15 +92,19 @@ public class VidGenerator implements MosipVidGenerator<String> {
 			newVid.setUin(uin);
 			newVid.setId(generatedVid);
 			newVid.setCreatedAt(currentTimestamp);
-			try {
-				vidRepository.save(newVid);
-				vidCacheManager.saveOrUpdate(newVid);
-			} catch (Exception e) {
-				throw new VidGenerationFailedException(VidErrorCodes.VID_GENERATION_FAILED.getErrorCode(),
-						VidErrorCodes.VID_GENERATION_FAILED.getErrorMessage());
-			}
+			saveGeneratedVid(newVid);
 		}
 		return generatedVid;
+	}
+
+	private void saveGeneratedVid(Vid newVid) {
+		try {
+			vidRepository.save(newVid);
+			vidCacheManager.saveOrUpdate(newVid);
+		} catch (Exception e) {
+			throw new VidGenerationFailedException(VidErrorCodes.VID_GENERATION_FAILED.getErrorCode(),
+					VidErrorCodes.VID_GENERATION_FAILED.getErrorMessage());
+		}
 	}
 
 	/**
@@ -134,7 +131,7 @@ public class VidGenerator implements MosipVidGenerator<String> {
 	private String generateVid() {
 		String generatedVid = generateRandomId(generatedIdLength, lowerBound, upperBound);
 		while (!IdFilterUtils.isValidId(generatedVid)) {
-			generatedVid = generateVid();
+			generatedVid = generateRandomId(generatedIdLength, lowerBound, upperBound);
 		}
 		return generatedVid;
 	}
