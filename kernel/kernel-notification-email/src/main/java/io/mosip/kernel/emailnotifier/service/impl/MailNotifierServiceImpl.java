@@ -44,7 +44,7 @@ public class MailNotifierServiceImpl implements MailNotifierService<MultipartFil
 	 * java.lang.String, java.lang.String, java.lang.Object[])
 	 */
 	@Override
-	public CompletableFuture<ResponseDto> sendTextMailWithCcWithAttachment(String[] mailTo, String[] mailCc,
+	public CompletableFuture<ResponseDto> sendEMail(String[] mailTo, String[] mailCc,
 			String mailSubject, String mailContent, MultipartFile[] attachments) {
 		/**
 		 * Calling utility method to validate mail arguments.
