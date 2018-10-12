@@ -31,6 +31,7 @@ import io.mosip.authentication.core.dto.indauth.PinDTO;
 import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDataDTO;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.UinEntity;
 import io.mosip.authentication.service.integration.OTPManager;
@@ -162,7 +163,6 @@ public class OTPAuthServiceTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Ignore
 	@Test
 	public void TestValidateOtp_ValidRequest() throws IdAuthenticationBusinessException {
 		AutnTxn autntxn = new AutnTxn();
@@ -179,6 +179,7 @@ public class OTPAuthServiceTest {
 		PinDTO pindto = new PinDTO();
 		pindto.setType(PinType.OTP);
 		pindto.setValue("23232323");
+		otpAuthRequestDTO.setPersonalDataDTO(new PersonalIdentityDataDTO());
 		otpAuthRequestDTO.getPersonalDataDTO().setPinDTO(pindto);
 		assertFalse(authserviceimpl.validateOtp(otpAuthRequestDTO, "45345435345").isStatus());
 	}
@@ -190,7 +191,6 @@ public class OTPAuthServiceTest {
 	 * @throws IdAuthenticationBusinessException
 	 */
 
-	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidValidateOtp() throws IdAuthenticationBusinessException {
 		OTPAuthServiceImpl authservice = Mockito.mock(OTPAuthServiceImpl.class);
@@ -204,6 +204,7 @@ public class OTPAuthServiceTest {
 		PinDTO pindto = new PinDTO();
 		pindto.setType(PinType.OTP);
 		pindto.setValue("23232323");
+		otpAuthRequestDTO.setPersonalDataDTO(new PersonalIdentityDataDTO());
 		otpAuthRequestDTO.getPersonalDataDTO().setPinDTO(pindto);
 		authservice.validateOtp(otpAuthRequestDTO, "");
 	}
@@ -227,11 +228,11 @@ public class OTPAuthServiceTest {
 		PinDTO pindto = new PinDTO();
 		pindto.setType(PinType.OTP);
 		pindto.setValue("23232323");
+		otpAuthRequestDTO.setPersonalDataDTO(new PersonalIdentityDataDTO());
 		otpAuthRequestDTO.getPersonalDataDTO().setPinDTO(pindto);
 		authservice.validateOtp(otpAuthRequestDTO, "34545");
 	}
 
-	@Ignore
 	@Test(expected = IDDataValidationException.class)
 	public void TestInvalidKey() throws IdAuthenticationBusinessException {
 		MockEnvironment mockenv = new MockEnvironment();
@@ -241,6 +242,7 @@ public class OTPAuthServiceTest {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
 		PinDTO pinDTO = new PinDTO();
 		pinDTO.setValue("");
+		authreqdto.setPersonalDataDTO(new PersonalIdentityDataDTO());
 		authreqdto.getPersonalDataDTO().setPinDTO(pinDTO);
 		authserviceimpl.validateOtp(authreqdto, "");
 	}

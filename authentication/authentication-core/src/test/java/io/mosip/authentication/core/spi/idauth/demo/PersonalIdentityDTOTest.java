@@ -22,7 +22,7 @@ import org.springframework.test.util.ReflectionTestUtils;
  *
  * @author Rakesh Roshan
  */
-@Ignore
+@Ignore //FIXME
 @RunWith(SpringRunner.class)
 public class PersonalIdentityDTOTest {
 

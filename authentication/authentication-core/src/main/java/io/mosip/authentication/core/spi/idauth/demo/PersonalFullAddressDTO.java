@@ -1,7 +1,5 @@
 package io.mosip.authentication.core.spi.idauth.demo;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
