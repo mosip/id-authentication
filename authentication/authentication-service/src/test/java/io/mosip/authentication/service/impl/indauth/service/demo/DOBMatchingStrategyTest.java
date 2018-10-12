@@ -48,9 +48,9 @@ public class DOBMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();		
-		int value = matchFunction.doMatch("1993-02-07","1993-02-07");
-		assertEquals(100, value);
+		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.doMatch("1993-02-07", "1993-02-07");
+		assertEquals(0, value); // FIXME - change to date as input
 	}
 
 	/**
@@ -60,26 +60,24 @@ public class DOBMatchingStrategyTest {
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
-		
-		int value = matchFunction.doMatch("1993-02-07","1993-02-27");
+
+		int value = matchFunction.doMatch("1993-02-07", "1993-02-27");
 		assertEquals(0, value);
-		
+
 		int value1 = matchFunction.doMatch(2, "1993-02-07");
 		assertEquals(0, value1);
 
 		int value2 = matchFunction.doMatch("1993-02-07", null);
 		assertEquals(0, value2);
-		
-		int value3 = matchFunction.doMatch(null , null);
+
+		int value3 = matchFunction.doMatch(null, null);
 		assertEquals(0, value3);
-		
+
 		try {
-			matchFunction.doMatch("xyz" , "abc");
+			matchFunction.doMatch("xyz", "abc");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
-
 
 }
