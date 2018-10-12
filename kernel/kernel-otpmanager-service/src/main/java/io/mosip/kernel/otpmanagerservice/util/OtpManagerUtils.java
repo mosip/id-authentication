@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.otpmanagerapi.constant.OtpPropertyConstants;
-
 import io.mosip.kernel.otpmanagerservice.constant.OtpErrorConstants;
+import io.mosip.kernel.otpmanagerservice.constant.OtpPropertyConstants;
 import io.mosip.kernel.otpmanagerservice.exceptionhandler.MosipErrors;
 import io.mosip.kernel.otpmanagerservice.exceptionhandler.MosipOtpInvalidArgumentExceptionHandler;
 

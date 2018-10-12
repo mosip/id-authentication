@@ -78,6 +78,8 @@
 		<jsch.version>0.1.54</jsch.version>
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
+
+		<sonar.exclusions>**/constant/**,**/config/**,**/dto/**,**/entity/**,**/exception/**,**/repository/**,**/*BootApplication.java</sonar.exclusions>
 	</properties>
 
 	<modules>
@@ -94,7 +96,6 @@
 		<module>kernel-packetuploader-http</module>
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-idgenerator-uin</module>
-		<module>kernel-otpmanager-api</module>
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-validator</module>
 		<module>kernel-virusscanner-clamav</module>
@@ -107,8 +108,10 @@
 			<id>LOCAL</id>
 			<properties>
 				<sonar.host.url>
-					http://localhost:9000
+					http://13.67.91.2:9000
 				</sonar.host.url>
+				<sonar.login>5006c6fd96284f6545a4101fb5b1369374265c0f</sonar.login>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
@@ -118,8 +121,10 @@
 			<id>DEV</id>
 			<properties>
 				<sonar.host.url>
-					http://13.67.91.2:9000
+					http://13.76.43.109:9000
 				</sonar.host.url>
+				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
@@ -232,6 +237,15 @@
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
 					<append>true</append>
+					<excludes>
+						<exclude>**/constant/**</exclude>
+						<exclude>**/config/**</exclude>
+						<exclude>**/dto/**</exclude>
+						<exclude>**/entity/**</exclude>
+						<exclude>**/exception/**</exclude>
+						<exclude>**/repository/**</exclude>
+						<exclude>**/*BootApplication.java</exclude>
+					</excludes>
 				</configuration>
 				<executions>
 					<execution>
