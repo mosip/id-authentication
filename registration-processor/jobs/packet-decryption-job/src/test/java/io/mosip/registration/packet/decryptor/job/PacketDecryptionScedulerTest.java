@@ -1,4 +1,4 @@
-/*
+
 package io.mosip.registration.packet.decryptor.job;
 
 import static org.mockito.Mockito.times;
@@ -33,4 +33,3 @@ public class PacketDecryptionScedulerTest {
 	
 	 
 }
-*/

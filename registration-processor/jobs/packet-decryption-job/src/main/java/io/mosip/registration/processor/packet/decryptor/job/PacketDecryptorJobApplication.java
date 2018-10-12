@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
-@SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.packet.decryptor.job",
+@SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.packet",
 		"io.mosip.registration.processor.status" })
 @PropertySource({ "classpath:decryption-application.properties" })
 @PropertySource({ "classpath:status-application.properties" })

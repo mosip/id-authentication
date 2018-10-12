@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -355,6 +356,10 @@ public class PacketDecryptorTaskletTest {
 	@Test
 	public void IOExceptionTest() throws Exception {
 
+		byte[] by= new byte[2];
+		by[0]=1;
+		by[1]=2;
+		InputStream stream=new ByteArrayInputStream(by);
 		list.add(dto);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
@@ -368,6 +373,8 @@ public class PacketDecryptorTaskletTest {
 				registrationStatusService.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString()))
 				.thenReturn(list);
 
+		Mockito.when(adapter.getPacket(any(String.class))).thenReturn(stream);
+		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
 		Mockito.doThrow(IOException.class).when(adapter).unpackPacket(any(String.class));
 
 		RepeatStatus status = packetDecryptorTasklet.execute(stepContribution, chunkContext);

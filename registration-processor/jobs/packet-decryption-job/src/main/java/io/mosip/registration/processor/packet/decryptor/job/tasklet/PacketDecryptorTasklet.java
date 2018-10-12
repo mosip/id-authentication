@@ -58,10 +58,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 	@Autowired
 	private PacketArchiver packetArchiver;
 
-	Vertx vertx = Vertx.vertx();
-	EventBus eb = vertx.eventBus();
-	MosipEventBus mosipEventBus = new MosipEventBus(eb);
-	DeliveryOptions options = new DeliveryOptions();
+	
 
 	private static final String DFS_NOT_ACCESSIBLE = "The DFS Path set by the System is not accessible";
 	
@@ -136,8 +133,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 			LOGGER.error(LOGDISPLAY, ex.getErrorCode(), ex.getMessage(), ex.getCause());
 		}
 
-		adapter.unpackPacket(dto.getRegistrationId());
-
+		
 		InputStream encryptedPacket = adapter.getPacket(dto.getRegistrationId());
 		InputStream decryptedData = decryptor.decrypt(encryptedPacket, dto.getRegistrationId());
 
@@ -154,8 +150,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 			dto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(dto);
 
-			options.addHeader("enrolmentId", dto.getRegistrationId());
-			mosipEventBus.getEventBus().send("RegistrationProcessor", "Packet Unpacked ", options);
+			
             MessageDTO messageDTO = new MessageDTO();
 
             messageDTO.setRid(dto.getRegistrationId());
