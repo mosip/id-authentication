@@ -162,7 +162,7 @@ public class OTPAuthServiceTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-
+	@Ignore
 	@Test
 	public void TestValidateOtp_ValidRequest() throws IdAuthenticationBusinessException {
 		AutnTxn autntxn = new AutnTxn();
@@ -190,6 +190,7 @@ public class OTPAuthServiceTest {
 	 * @throws IdAuthenticationBusinessException
 	 */
 
+	@Ignore
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidValidateOtp() throws IdAuthenticationBusinessException {
 		OTPAuthServiceImpl authservice = Mockito.mock(OTPAuthServiceImpl.class);
@@ -230,6 +231,7 @@ public class OTPAuthServiceTest {
 		authservice.validateOtp(otpAuthRequestDTO, "34545");
 	}
 
+	@Ignore
 	@Test(expected = IDDataValidationException.class)
 	public void TestInvalidKey() throws IdAuthenticationBusinessException {
 		MockEnvironment mockenv = new MockEnvironment();
@@ -242,6 +244,5 @@ public class OTPAuthServiceTest {
 		authreqdto.getPersonalDataDTO().setPinDTO(pinDTO);
 		authserviceimpl.validateOtp(authreqdto, "");
 	}
-
 
 }
