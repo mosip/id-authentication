@@ -101,17 +101,30 @@ public class VelocityPDFGenerator {
 		velocityContext.put(RegConstants.TEMPLATE_IMAGE_SOURCE, RegConstants.TEMPLATE_IMAGE_ENCODING + encodedBytes);
 
 		// get the quality ranking for fingerprints of the applicant
-		HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
+		/*HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
+		int count=1;
 		for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
 			if (entry.getValue() != 0) {
 				// display rank of quality for the captured fingerprints
-				velocityContext.put(entry.getKey(), entry.getValue());
+				velocityContext.put(entry.getKey(), count++);
 			} else {
 				// display cross mark for missing fingerprints
 				velocityContext.put(entry.getKey(), RegConstants.TEMPLATE_MISSING_FINGER);
 			}
-		}
+		}*/
+		File imageFile = new File("src/main/resources/images/hands.jpg");
+		velocityContext.put("handsImageSource", "file:/"+ imageFile.getAbsolutePath().replace("\\", "/"));
 
+		velocityContext.put("rightIndexFinger", "1");
+		velocityContext.put("rightMiddleFinger", "4");
+		velocityContext.put("rightRingFinger", "2");
+		velocityContext.put("rightLittleFinger", "5");
+		velocityContext.put("rightThumb", "3");
+		velocityContext.put("leftIndexFinger", "6");
+		velocityContext.put("leftMiddleFinger", "2");
+		velocityContext.put("leftRingFinger", "2");
+		velocityContext.put("leftLittleFinger", "4");
+		velocityContext.put("leftThumb", "5");
 		// get the total count of fingerprints captured and irises captured
 		List<FingerprintDetailsDTO> capturedFingers = registration.getBiometricDTO()
 				.getApplicantBiometricDTO().getFingerprintDetailsDTO();

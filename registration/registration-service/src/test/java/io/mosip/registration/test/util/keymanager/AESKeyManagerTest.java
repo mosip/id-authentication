@@ -1,4 +1,4 @@
-package io.mosip.registration.test;
+package io.mosip.registration.test.util.keymanager;
 
 import static java.lang.System.currentTimeMillis;
 import static org.junit.Assert.assertNotNull;
@@ -18,14 +18,13 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.registration.test.config.SpringConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.keymanager.impl.AESKeyManagerImpl;
 
-public class AESKeyManagerTest extends SpringConfiguration {
+public class AESKeyManagerTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
@@ -45,11 +44,14 @@ public class AESKeyManagerTest extends SpringConfiguration {
 		mosipRollingFileAppender.setMaxHistory(10);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
+
+		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
+		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
 	}
 
 	@Test
 	public void testGenerateAESKey() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(aesKeyManagerImpl, "LOGGER", logger);
+		ReflectionTestUtils.setField(aesKeyManagerImpl, "logger", logger);
 		SecretKey sessionKey = aesKeyManagerImpl.generateSessionKey(new LinkedList<String>(
 				Arrays.asList(new String[] { "D46D6D302186", "user", String.valueOf(currentTimeMillis()) })));
 		assertNotNull(sessionKey);
@@ -63,7 +65,7 @@ public class AESKeyManagerTest extends SpringConfiguration {
 	
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testUncheckedException() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(aesKeyManagerImpl, "LOGGER", logger);
+		ReflectionTestUtils.setField(aesKeyManagerImpl, "logger", logger);
 		ReflectionTestUtils.invokeMethod(aesKeyManagerImpl, "initializeLogger", mosipRollingFileAppender);
 		aesKeyManagerImpl.generateSessionKey(null);
 	}

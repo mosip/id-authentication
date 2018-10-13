@@ -48,7 +48,7 @@ public interface RegistrationDAO {
 	 * 
 	 * @return the updated {@link Registration} entity
 	 */
-	Registration updateStatus(String id, String clientStatus_code, String approverUsrId, String statusComments,
+	Registration updateStatus(String id, String clientStatusCode, String approverUsrId, String statusComments,
 			String updBy);
 
 	/**
@@ -60,10 +60,6 @@ public interface RegistrationDAO {
 	 */
 	List<Registration> getEnrollmentByStatus(String status);
 
-	boolean upload(Object object);
-
-	List<String> view(String zipFileName);
-	
 	/**
 	 * 
 	 * This method is used to get the Packet details using the Id.
@@ -71,16 +67,15 @@ public interface RegistrationDAO {
 	 * @param packetNames
 	 * @return
 	 */
-	
 	List<Registration> getRegistrationById(List<String> packetNames);
-	
+
 	/**
 	 * 
-	 * This method is used to update the registration status in the Registration table.
+	 * This method is used to update the registration status in the Registration
+	 * table.
 	 * 
 	 * @param regId
 	 * @return
 	 */
-	
 	Registration updateRegStatus(String regId);
 }

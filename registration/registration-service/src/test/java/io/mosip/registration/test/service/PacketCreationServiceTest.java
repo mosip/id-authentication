@@ -1,4 +1,4 @@
-package io.mosip.registration.test;
+package io.mosip.registration.test.service;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -18,7 +18,6 @@ import org.mockito.junit.MockitoRule;
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.registration.test.config.SpringConfiguration;
 import io.mosip.registration.test.util.datastub.DataProvider;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -33,16 +32,16 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mapper.CustomObjectMapper;
 import io.mosip.registration.service.PacketCreationService;
 import io.mosip.registration.util.hmac.HMACGeneration;
-import io.mosip.registration.util.zip.ZipCreationManager;
+import io.mosip.registration.util.zip.ZipCreationService;
 
-public class PacketCreationManagerTest extends SpringConfiguration {
+public class PacketCreationServiceTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
-	private PacketCreationService packetCreationManager;
+	private PacketCreationService packetCreationService;
 	@Mock
-	private ZipCreationManager zipCreationManager;
+	private ZipCreationService zipCreationService;
 	@Mock
 	private HMACGeneration hMACGeneration;
 	@Mock
@@ -66,14 +65,18 @@ public class PacketCreationManagerTest extends SpringConfiguration {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
 		registrationDTO = DataProvider.getPacketDTO();
+		
+		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
+		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
+		ReflectionTestUtils.setField(ZipCreationService.class, "logger", logger);
 	}
 
 	@Test
 	public void testCreatePacket() throws RegBaseCheckedException, IOException, URISyntaxException {
-		ReflectionTestUtils.setField(packetCreationManager, "LOGGER", logger);
+		ReflectionTestUtils.setField(packetCreationService, "logger", logger);
 		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class),
 				Mockito.any(AppModuleEnum.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-		Mockito.when(auditDAO.getAllAudits())
+		Mockito.when(auditDAO.getAllUnsyncAudits())
 				.thenReturn(CustomObjectMapper.MAPPER_FACADE.mapAsList(registrationDTO.getAuditDTOs(), Audit.class));
 		Map<String, byte[]> jsonMap = new HashMap<>();
 		jsonMap.put(RegConstants.DEMOGRPAHIC_JSON_NAME, "Demo".getBytes());
@@ -81,16 +84,16 @@ public class PacketCreationManagerTest extends SpringConfiguration {
 		jsonMap.put(RegConstants.ENROLLMENT_META_JSON_NAME, "Enrollment".getBytes());
 		jsonMap.put(RegConstants.HASHING_JSON_NAME, "HASHCode".getBytes());
 		jsonMap.put(RegConstants.AUDIT_JSON_FILE, "audit".getBytes());
-		Assert.assertNotNull(packetCreationManager.create(registrationDTO));
+		Assert.assertNotNull(packetCreationService.create(registrationDTO));
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testException() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(packetCreationManager, "LOGGER", logger);
-		ReflectionTestUtils.invokeMethod(packetCreationManager, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.setField(packetCreationService, "logger", logger);
+		ReflectionTestUtils.invokeMethod(packetCreationService, "initializeLogger", mosipRollingFileAppender);
 		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class),
 				Mockito.any(AppModuleEnum.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-		packetCreationManager.create(null);
+		packetCreationService.create(null);
 	}
 
 }

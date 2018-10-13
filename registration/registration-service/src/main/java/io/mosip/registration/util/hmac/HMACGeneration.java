@@ -1,6 +1,5 @@
 package io.mosip.registration.util.hmac;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import io.mosip.kernel.core.util.HMACUtils;
@@ -28,8 +27,8 @@ public class HMACGeneration {
 	}
 
 	/**
-	 * * Generates hash for registration Dto and Demographic json file which
-	 * includes biometric, demographic and registration Id
+	 * Generates hash for registrationDTO and Demographic JSON file which includes
+	 * biometric and demographic
 	 * 
 	 * @param registrationDTO
 	 *            has to be hash updation
@@ -44,8 +43,8 @@ public class HMACGeneration {
 			HashSequence sequence) {
 
 		// Sequence
-		DemographicSequence demographicSequence = sequence.demographicSequence;
-		BiometricSequence biometricSequence = sequence.biometricSequence;
+		DemographicSequence demographicSequence = sequence.getDemographicSequence();
+		BiometricSequence biometricSequence = sequence.getBiometricSequence();
 
 		// generates packet biometric hash which may includes applicant, hof and
 		// introducer
@@ -79,19 +78,18 @@ public class HMACGeneration {
 
 	}
 
-	private static void generateBiometricInfoHash(final BiometricInfoDTO biometricInfoDTO,
-			LinkedList<String> hashOrder) {
+	private static void generateBiometricInfoHash(final BiometricInfoDTO biometricInfoDTO, List<String> hashOrder) {
 		// hash for fingerprints
 		if (biometricInfoDTO.getFingerprintDetailsDTO() != null) {
-			biometricInfoDTO.getFingerprintDetailsDTO().forEach((fingerprintDetailsDTO) -> {
+			biometricInfoDTO.getFingerprintDetailsDTO().forEach(fingerprintDetailsDTO -> {
 				if (fingerprintDetailsDTO != null)
-					generateHash(fingerprintDetailsDTO.getFingerPrint(), fingerprintDetailsDTO.getFingerprintImageName(),
-							hashOrder);
+					generateHash(fingerprintDetailsDTO.getFingerPrint(),
+							fingerprintDetailsDTO.getFingerprintImageName(), hashOrder);
 			});
 		}
 		// hash for iris
 		if (biometricInfoDTO.getIrisDetailsDTO() != null) {
-			biometricInfoDTO.getIrisDetailsDTO().forEach((irisDetailsDTO) -> {
+			biometricInfoDTO.getIrisDetailsDTO().forEach(irisDetailsDTO -> {
 				if (irisDetailsDTO != null)
 					generateHash(irisDetailsDTO.getIris(), irisDetailsDTO.getIrisImageName(), hashOrder);
 			});
@@ -108,7 +106,7 @@ public class HMACGeneration {
 	}
 
 	private static void generateApplicantDocumentHash(final ApplicantDocumentDTO applicantDocument,
-			LinkedList<String> hashOrder) {
+			List<String> hashOrder) {
 		List<DocumentDetailsDTO> documentDetailsDTOList = applicantDocument.getDocumentDetailsDTO();
 		byte[] applicantPhotoBytes = applicantDocument.getPhoto();
 		byte[] applicantExceptionPhotoBytes = applicantDocument.getExceptionPhoto();
@@ -116,7 +114,7 @@ public class HMACGeneration {
 
 		// for documents hash
 		if (documentDetailsDTOList != null) {
-			documentDetailsDTOList.forEach((document) -> {
+			documentDetailsDTOList.forEach(document -> {
 				if (document != null)
 					generateHash(document.getDocument(), document.getDocumentName(), hashOrder);
 			});
@@ -130,14 +128,15 @@ public class HMACGeneration {
 		if (applicantExceptionPhotoBytes != null) {
 			generateHash(applicantExceptionPhotoBytes, applicantDocument.getExceptionPhotoName(), hashOrder);
 		}
-		
-		if(registrationAck != null) {
+
+		// Hash for Acknowledgement Receipt
+		if (registrationAck != null) {
 			generateHash(registrationAck, applicantDocument.getAcknowledgeReceiptName(), hashOrder);
 		}
 
 	}
 
-	private static void generateHash(final byte[] byteArray, final String filename, LinkedList<String> hashOrder) {
+	private static void generateHash(final byte[] byteArray, final String filename, List<String> hashOrder) {
 		// Hash updation
 		if (byteArray != null) {
 			HMACUtils.update(byteArray);

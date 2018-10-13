@@ -1,4 +1,4 @@
-package io.mosip.registration.test;
+package io.mosip.registration.test.util.keymanager;
 
 import javax.crypto.Cipher;
 

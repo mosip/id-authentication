@@ -78,7 +78,7 @@ public class RegConstants {
 	// Integration
 	public static final String AGENCY_CODE = "2018";
 	public static final String STATION_NUMBER = "78213";
-	public static final String RID_DATE_FORMAT = "dd/MM/yyyy/HH/mm/ss";
+	public static final String RID_DATE_FORMAT = "ddMMyyyyHHmmss";
 
 	// Audit & Logger - Constants
 	public static final String APPLICATION_ID = "applicationId";
@@ -154,5 +154,9 @@ public class RegConstants {
 	public static final String PACKET_CREATION_EXP_CODE = "PCC-";
 	public static final String PACKET_UPLOAD_EXP_CODE = "PAU-";
 	public static final String REG_ACK_EXP_CODE = "ACK-";
+	
+	// Constants for Audits
+	public static final String INTERNAL_SERVER_ERROR = "Internal error while creating packet";
+	public static final String REGISTRATION_ID = "RID";
 
 }

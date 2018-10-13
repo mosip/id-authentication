@@ -48,8 +48,9 @@ public class PacketHandlerAPIDemo extends SpringConfiguration {
 		sessionContext.getUserContext().setName("operator");
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", sessionContext);
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
+		registrationDTO.setRegistrationId(registrationDTO.getRegistrationId());
 		packetHandlerService.handle(registrationDTO);
-		String registrationId = registrationDTO.getRegistrationId().replaceAll("[^0-9]", "");
+		String registrationId = registrationDTO.getRegistrationId();
 
 		// Decryption
 		String dateInString = DateUtils.formatDate(new Date(),

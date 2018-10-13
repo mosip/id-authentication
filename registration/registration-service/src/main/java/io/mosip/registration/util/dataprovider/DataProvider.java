@@ -173,7 +173,6 @@ public class DataProvider {
 		DemographicDTO demographicDTO = new DemographicDTO();
 		demographicDTO.setApplicantDocumentDTO(DataProvider.setApplicantDocumentDTO());
 		demographicDTO.setIntroducerRID("2018234500321157812");
-		demographicDTO.setIntroducerUIN("2018234500321");
 		demographicDTO.setDemoInLocalLang(DataProvider.getDemoInLocalLang());
 		demographicDTO.setDemoInUserLang(DataProvider.getDemoInLocalLang());
 		return demographicDTO;
@@ -184,6 +183,7 @@ public class DataProvider {
 		demographicInfoDTO.setFirstName("John");
 		demographicInfoDTO.setMiddleName("Lawernce");
 		demographicInfoDTO.setLastName("Jr");
+		demographicInfoDTO.setFullName("John Lawernce Jr");
 		demographicInfoDTO.setDateOfBirth(new Date());
 		demographicInfoDTO.setEmailId("john.lawerence@gmail.com");
 		demographicInfoDTO.setGender("Male");
@@ -208,7 +208,9 @@ public class DataProvider {
 		applicantDocumentDTO.setDocumentDetailsDTO(DataProvider.getDocumentDetailsDTO());
 		applicantDocumentDTO.setPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
 		applicantDocumentDTO.setPhotographName("ApplicantPhoto");
-		applicantDocumentDTO.setHasExceptionPhoto(false);
+		applicantDocumentDTO.setHasExceptionPhoto(true);
+		applicantDocumentDTO.setExceptionPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
+		applicantDocumentDTO.setExceptionPhotoName("ExceptionPhoto");
 		applicantDocumentDTO.setQualityScore(89.0);
 		applicantDocumentDTO.setNumRetry(1);
 		applicantDocumentDTO.setAcknowledgeReceipt(DataProvider.getImageBytes("/acknowledgementReceipt.jpg"));

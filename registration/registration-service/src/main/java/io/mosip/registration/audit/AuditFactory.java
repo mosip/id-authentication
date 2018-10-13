@@ -1,7 +1,5 @@
 package io.mosip.registration.audit;
 
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.OffsetDateTime;
@@ -18,6 +16,8 @@ import io.mosip.registration.constants.AuditEventEnum;
 import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
+
+import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 /**
  * Class to Audit the events of Registration.
@@ -63,22 +63,20 @@ public class AuditFactory {
 			String refIdType) {
 
 		// Get UserContext Object from SessionContext
-		UserContext userContext = SessionContext.getInstance().getUserContext();		
-		
+		UserContext userContext = SessionContext.getInstance().getUserContext();
+
 		// Getting Host IP Address and Name
 		String hostIP = null;
 		String hostName = null;
 		try {
 			InetAddress hostInetAddress = InetAddress.getLocalHost();
-			hostIP = new String(hostInetAddress.getAddress());
+			hostIP = hostInetAddress.getHostAddress();
 			hostName = hostInetAddress.getHostName();
-		} catch (UnknownHostException e) {
+		} catch (UnknownHostException unknownHostException) {
 			hostIP = getPropertyValue(RegConstants.HOST_IP);
 			hostName = getPropertyValue(RegConstants.HOST_NAME);
 		}
 
-		// TODO: Get createdBy, sessionUserId, SessionUserName values from Session
-		// Context
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
 				.setApplicationId(getPropertyValue(RegConstants.APPLICATION_ID))

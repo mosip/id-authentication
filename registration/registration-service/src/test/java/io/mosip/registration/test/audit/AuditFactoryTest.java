@@ -28,7 +28,8 @@ public class AuditFactoryTest {
 	private AuditFactory auditFactory;
 	
 	@Test
-	public void testAudit() {
+	public void auditTest() {
+		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
 		SessionContext sessionContext = SessionContext.getInstance();
 		sessionContext.getUserContext().setUserId("userId");
 		sessionContext.getUserContext().setName("operator");

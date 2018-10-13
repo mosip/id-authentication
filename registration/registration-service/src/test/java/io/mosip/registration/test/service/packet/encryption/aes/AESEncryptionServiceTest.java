@@ -1,11 +1,13 @@
-package io.mosip.registration.test;
+package io.mosip.registration.test.service.packet.encryption.aes;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 import org.junit.Assert;
@@ -30,23 +32,23 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.packet.encryption.aes.AESEncryptionManager;
+import io.mosip.registration.service.packet.encryption.aes.AESEncryptionService;
 import io.mosip.registration.service.packet.encryption.aes.AESSeedGenerator;
-import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionManager;
+import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionService;
 import io.mosip.registration.util.keymanager.AESKeyManager;
 import io.mosip.registration.util.keymanager.impl.AESKeyManagerImpl;
 import io.mosip.registration.util.reader.PropertyFileReader;
 
-public class AESEncryptionManagerTest {
+public class AESEncryptionServiceTest {
 
 	@InjectMocks
-	private AESEncryptionManager aesEncryptionManager;
+	private AESEncryptionService aesEncryptionService;
 	@Mock
 	private AESKeyManager aesKeyManager;
 	@Mock
 	private AESSeedGenerator aesSeedGenerator;
 	@Mock
-	private RSAEncryptionManager rsaEncryptionManager;
+	private RSAEncryptionService rsaEncryptionManager;
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Mock
@@ -55,6 +57,8 @@ public class AESEncryptionManagerTest {
 	private AuditFactory auditFactory;
 
 	private SecretKey sessionKey;
+	List<String> seeds;
+	AESKeyManagerImpl aesKeyManagerImpl;
 
 	@Before
 	public void initialize() throws RegBaseCheckedException {
@@ -68,32 +72,32 @@ public class AESEncryptionManagerTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
 
-		ReflectionTestUtils.invokeMethod(aesEncryptionManager, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(aesEncryptionService, "initializeLogger", mosipRollingFileAppender);
 		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
 
+		aesKeyManagerImpl = new AESKeyManagerImpl();
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(AESKeyManagerImpl.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(aesEncryptionManager, "LOGGER", logger);
+		ReflectionTestUtils.setField(aesKeyManagerImpl, "logger", logger);
+		ReflectionTestUtils.setField(aesEncryptionService, "logger", logger);
 
-		List<String> seeds = new ArrayList<>();
+		seeds = new ArrayList<>();
 		seeds.add("name");
 		seeds.add(String.valueOf(System.currentTimeMillis()));
-		sessionKey = new AESKeyManagerImpl().generateSessionKey(seeds);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
 	public void aesEncryptionTest()
 			throws RegBaseCheckedException, MosipInvalidDataException, MosipInvalidKeyException {
-		// Enable AES 256 bit encryption
+		sessionKey = aesKeyManagerImpl.generateSessionKey(seeds);
 		when(aesSeedGenerator.generateAESKeySeeds()).thenReturn(new ArrayList<>());
 		when(aesKeyManager.generateSessionKey(Mockito.anyList())).thenReturn(sessionKey);
 		when(rsaEncryptionManager.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
 
 		byte[] dataToEncrypt = "original data".getBytes();
-		byte[] encryptedData = aesEncryptionManager.encrypt(dataToEncrypt);
+		byte[] encryptedData = aesEncryptionService.encrypt(dataToEncrypt);
 		String ciperText = new String(encryptedData);
 		String splitter = PropertyFileReader.getPropertyValue(RegConstants.AES_KEY_CIPHER_SPLITTER);
 		int startIndex = ciperText.indexOf(splitter) + splitter.length();
@@ -104,6 +108,31 @@ public class AESEncryptionManagerTest {
 		byte[] actualData = new byte[dataToEncrypt.length];
 		System.arraycopy(decryptedData, 0, actualData, 0, dataToEncrypt.length);
 		Assert.assertArrayEquals(dataToEncrypt, actualData);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected = RegBaseUncheckedException.class)
+	public void aesEncryptionRuntimeExpTest() throws RegBaseCheckedException {
+		when(aesSeedGenerator.generateAESKeySeeds()).thenReturn(new ArrayList<>());
+		when(aesKeyManager.generateSessionKey(Mockito.anyList())).thenReturn(sessionKey);
+		when(rsaEncryptionManager.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
+		aesEncryptionService.encrypt(null);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected = RegBaseCheckedException.class)
+	public void invalidKeyExpTest() throws RegBaseCheckedException, NoSuchAlgorithmException {
+		KeyGenerator keyGenerator = KeyGenerator.getInstance("DES");
+		SecretKey sessionKey = keyGenerator.generateKey();
+		when(aesSeedGenerator.generateAESKeySeeds()).thenReturn(new ArrayList<>());
+		when(aesKeyManager.generateSessionKey(Mockito.anyList())).thenReturn(sessionKey);
+		when(rsaEncryptionManager.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
+		aesEncryptionService.encrypt("encrypt".getBytes());
+	}
+
+	@Test(expected = RegBaseUncheckedException.class)
+	public void concatExceptionTest() {
+		ReflectionTestUtils.invokeMethod(aesEncryptionService, "concat", "encrypted".getBytes(), null);
 	}
 
 }

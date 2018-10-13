@@ -1,9 +1,4 @@
-package io.mosip.registration.test;
-
-import static io.mosip.registration.constants.RegConstants.DEMOGRPAHIC_JSON_NAME;
-import static io.mosip.registration.constants.RegConstants.ENROLLMENT_META_JSON_NAME;
-import static io.mosip.registration.constants.RegConstants.HASHING_JSON_NAME;
-import static io.mosip.registration.constants.RegConstants.PACKET_META_JSON_NAME;
+package io.mosip.registration.test.util.zip;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -20,7 +15,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.registration.test.config.SpringConfiguration;
 import io.mosip.registration.test.util.datastub.DataProvider;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -28,14 +22,19 @@ import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.util.zip.ZipCreationManager;
+import io.mosip.registration.util.zip.ZipCreationService;
 
-public class PacketZipCreatorAPITest extends SpringConfiguration {
+import static io.mosip.registration.constants.RegConstants.DEMOGRPAHIC_JSON_NAME;
+import static io.mosip.registration.constants.RegConstants.ENROLLMENT_META_JSON_NAME;
+import static io.mosip.registration.constants.RegConstants.HASHING_JSON_NAME;
+import static io.mosip.registration.constants.RegConstants.PACKET_META_JSON_NAME;
+
+public class ZipCreationServiceTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
-	private ZipCreationManager zipCreationManager;
+	private ZipCreationService zipCreationService;
 	private RegistrationDTO registrationDTO;
 	private MosipRollingFileAppender mosipRollingFileAppender;
 	@Mock
@@ -53,27 +52,30 @@ public class PacketZipCreatorAPITest extends SpringConfiguration {
 		mosipRollingFileAppender.setMaxHistory(10);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
+		
+		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
+		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
 	}
 	
 	@Test
 	public void testPacketZipCreator() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(ZipCreationManager.class, "LOGGER", logger);
+		ReflectionTestUtils.setField(ZipCreationService.class, "logger", logger);
 		Map<String, byte[]> jsonMap = new HashMap<>();
 		jsonMap.put(DEMOGRPAHIC_JSON_NAME, "Demo".getBytes());
 		jsonMap.put(PACKET_META_JSON_NAME, "Registration".getBytes());
 		jsonMap.put(ENROLLMENT_META_JSON_NAME, "Enrollment".getBytes());
 		jsonMap.put(HASHING_JSON_NAME, "HASHCode".getBytes());
 		jsonMap.put(RegConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
-		byte[] packetZipInBytes = ZipCreationManager.createPacket(registrationDTO, jsonMap);
+		byte[] packetZipInBytes = ZipCreationService.createPacket(registrationDTO, jsonMap);
 		Assert.assertNotNull(packetZipInBytes);
 	}
 	
 	@SuppressWarnings("static-access")
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testException() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(zipCreationManager, "LOGGER", logger);
-		ReflectionTestUtils.invokeMethod(zipCreationManager, "initializeLogger", mosipRollingFileAppender);
-		zipCreationManager.createPacket(registrationDTO, new HashMap<String, byte[]>());
+		ReflectionTestUtils.setField(zipCreationService, "logger", logger);
+		ReflectionTestUtils.invokeMethod(zipCreationService, "initializeLogger", mosipRollingFileAppender);
+		zipCreationService.createPacket(registrationDTO, new HashMap<String, byte[]>());
 	}
 	
 }

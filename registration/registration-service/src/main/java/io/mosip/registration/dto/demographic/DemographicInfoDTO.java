@@ -2,6 +2,8 @@ package io.mosip.registration.dto.demographic;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.mosip.registration.dto.BaseDTO;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,13 +19,9 @@ import lombok.EqualsAndHashCode;
 public class DemographicInfoDTO extends BaseDTO {
 
 	private String firstName;
-	private String forename;
-	private String givenName;
 	private String middleName;
-	private String middleInitial;
 	private String lastName;
-	private String surname;
-	private String familyName;
+	@JsonIgnore
 	private String fullName;
 	protected Date dateOfBirth;
 	protected String gender;
