@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -30,6 +32,7 @@ public class DocumentEntity implements Serializable {
 	private static final long serialVersionUID = 1692781286748263575L;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int documentId;
 	
 	private String preregId;
