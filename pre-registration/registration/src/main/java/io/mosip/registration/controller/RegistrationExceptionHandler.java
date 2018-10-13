@@ -14,7 +14,6 @@ import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.dto.ExceptionJSONInfo;
 import io.mosip.registration.errorcodes.ErrorCodes;
 import io.mosip.registration.exception.DocumentNotValidException;
-import io.mosip.registration.exception.PrimaryValidationFailed;
 
 @RestControllerAdvice
 public class RegistrationExceptionHandler {
@@ -22,16 +21,9 @@ public class RegistrationExceptionHandler {
 
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<ExceptionJSONInfo> databaseerror(final TablenotAccessibleException e, WebRequest request) {
-		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(e.getErrorCode(), e.getErrorText());
-		log.error(e.getErrorCode(), e.getCause());
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_007.toString(),
+				StatusCodes.DOCUMENT_SIZE_GREATER_THAN_LIMIT.toString());
 		return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
-	
-	@ExceptionHandler(PrimaryValidationFailed.class)
-	public ResponseEntity<ExceptionJSONInfo> validationFailure(final PrimaryValidationFailed e, WebRequest request) {
-		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(e.getErrorCode(), e.getErrorText());
-		log.error(e.getErrorCode(), e.getCause());
-		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(DocumentNotValidException.class)

@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class NameDto implements Serializable {
 
 	/** The Constant serialVersionUID. */

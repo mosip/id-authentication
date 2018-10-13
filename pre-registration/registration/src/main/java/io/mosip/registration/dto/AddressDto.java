@@ -11,7 +11,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class AddressDto implements Serializable {
 
 	

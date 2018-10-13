@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,11 +20,7 @@ import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.code.AuditLogTempConstant;
 import io.mosip.registration.core.exceptions.DatabaseOperationException;
 import io.mosip.registration.core.exceptions.TablenotAccessibleException;
-import io.mosip.registration.core.generator.MosipGroupIdGenerator;
 import io.mosip.registration.dao.RegistrationDao;
-import io.mosip.registration.dto.AddressDto;
-import io.mosip.registration.dto.ContactDto;
-import io.mosip.registration.dto.NameDto;
 import io.mosip.registration.dto.RegistrationDto;
 import io.mosip.registration.dto.ResponseDto;
 import io.mosip.registration.dto.ViewRegistrationResponseDto;
@@ -39,27 +34,36 @@ import io.mosip.registration.service.RegistrationService;
 @Component
 public class RegistrationServiceImpl implements RegistrationService<String, RegistrationDto> {
 
+
+	@Autowired
+	private DocumentRepository documentRepository;
+	
+	/**
+	 * Field for {@link #RegistrationDao}
+	 */
 	@Autowired
 	private RegistrationDao registrationDao;
 
+
 	private static final String COULD_NOT_GET = "Could not get Information from table";
 
+	/**
+	 * Field for {@link #AuditRequestBuilder}
+	 */
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
 
+	/**
+	 * Field for {@link #AuditHandler<AuditRequestDto>}
+	 */
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
 
-	@Autowired
-	private ModelMapper modelMapper;
-
+	/**
+	 * Field for {@link #MosipPridGenerator<String>}
+	 */
 	@Autowired
 	private MosipPridGenerator<String> pridGenerator;
-
-	@Autowired
-	private MosipGroupIdGenerator<String> groupIdGenerator;
-
-	private String groupID;
 
 	/**
 	 * Field for {@link #RegistrationRepositary}
@@ -67,56 +71,25 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	@Autowired
 	private RegistrationRepositary registrationRepositary;
 
-	@Autowired
-	private DocumentRepository documentRepository;
 
+    
 	@Override
-	public RegistrationDto getRegistration(String userID) {
-
-		createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-				AuditLogTempConstant.APPLICATION_NAME.toString(), "", AuditLogTempConstant.EVENT_ID.toString(),
-				AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
-		return null;
-	}
-
-	@Override
-	public ResponseDto addRegistration(RegistrationDto registrationDto, String type) {
+	public ResponseDto addRegistration(RegistrationDto registrationDto,String groupId)throws TablenotAccessibleException  {
 		RegistrationEntity entity = convertDtoToEntity(registrationDto);
 		ResponseDto response = new ResponseDto();
-
+		try {
 		if (registrationDto.getPreRegistrationId().isEmpty()) {
-
-			if (type.equalsIgnoreCase("Family")) {
-				if (registrationDto.getIsPrimary()) {
-					String prid = pridGenerator.generateId();
-					groupID = groupIdGenerator.generateGroupId();
-					entity.setPreRegistrationId(prid);
-					entity.setGroupId(groupID);
-				} else {
-					String prid = pridGenerator.generateId();
-					entity.setPreRegistrationId(prid);
-					entity.setGroupId(groupID);
-				}
-			} else {
-				if (type.equalsIgnoreCase("Friends")) {
-					String prid = pridGenerator.generateId();
-					groupID = groupIdGenerator.generateGroupId();
-					entity.setPreRegistrationId(prid);
-					entity.setGroupId(groupID);
-				}
-			}
-			try {
-				registrationDao.save(entity);
-			} catch (DataAccessLayerException e) {
-				throw new TablenotAccessibleException("Could not add Information to table", e);
-			}
-
+			String prid = pridGenerator.generateId();
+			entity.setPreRegistrationId(prid);
+			entity.setGroupId(groupId);
+			registrationDao.save(entity);
 		} else {
-			try {
-				registrationDao.save(entity);
-			} catch (DataAccessLayerException e) {
-				throw new TablenotAccessibleException("Could not add Information to table", e);
-			}
+			registrationDao.save(entity);
+			
+		}
+		} catch (DataAccessLayerException e) {
+			
+			throw new TablenotAccessibleException("Could not add Information to table",e);
 		}
 
 		// createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
@@ -136,15 +109,7 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 
 	}
 
-	@Override
-	public void updateRegistration(RegistrationDto registrationDto) {
-
-		createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-				AuditLogTempConstant.APPLICATION_NAME.toString(), "", AuditLogTempConstant.EVENT_ID.toString(),
-				AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
-
-	}
-
+	
 	public int getThreshholdTime() {
 		return this.getThreshholdTime();
 	}
@@ -186,57 +151,10 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 		registrationEntity.setSurname(dto.getName().getSurname());
 		registrationEntity.setUpdateDateTime(dto.getUpdateDateTime());
 		registrationEntity.setUpdatedBy(dto.getUpdatedBy());
+		registrationEntity.setUserId(dto.getUserId());
 		return registrationEntity;
 	}
 
-	private RegistrationDto convertToDTO(RegistrationEntity entity) {
-		RegistrationDto regDto = new RegistrationDto();
-		NameDto nameDto = new NameDto();
-		ContactDto contactDto = new ContactDto();
-		AddressDto addrDto = new AddressDto();
-
-		nameDto.setFamilyname(entity.getFamilyname());
-		nameDto.setFirstname(entity.getFirstname());
-		nameDto.setForename(entity.getForename());
-		nameDto.setFullname(entity.getFullname());
-		nameDto.setGivenname(entity.getGivenname());
-		nameDto.setLastname(entity.getLastname());
-		nameDto.setMiddleinitial(entity.getMiddleinitial());
-		nameDto.setMiddlename(entity.getMiddlename());
-		nameDto.setSurname(entity.getSurname());
-
-		contactDto.setEmail(entity.getEmail());
-		contactDto.setMobile(entity.getMobile());
-
-		addrDto.setAddrLine1(entity.getAddrLine1());
-		addrDto.setAddrLine2(entity.getAddrLine2());
-		addrDto.setAddrLine3(entity.getAddrLine3());
-		addrDto.setLocationCode(entity.getLocationCode());
-
-		regDto.setAddress(addrDto);
-		regDto.setContact(contactDto);
-		regDto.setName(nameDto);
-
-		regDto.setAge(entity.getAge());
-		regDto.setApplicantType(entity.getApplicantType());
-		regDto.setCreateDateTime(entity.getCreateDateTime());
-		regDto.setCreatedBy(entity.getCreatedBy());
-		regDto.setDeletedDateTime(entity.getDeletedDateTime());
-		regDto.setDob(entity.getDob());
-		regDto.setGenderCode(entity.getGenderCode());
-		regDto.setGroupId(entity.getGroupId());
-		regDto.setNationalid(entity.getNationalid());
-		regDto.setParentFullName(entity.getParentFullName());
-		regDto.setParentRefId(entity.getParentRefId());
-		regDto.setParentRefIdType(entity.getParentRefIdType());
-		regDto.setPreRegistrationId(entity.getPreRegistrationId());
-		regDto.setStatusCode(entity.getStatusCode());
-		regDto.setUpdateDateTime(entity.getUpdateDateTime());
-		regDto.setUpdatedBy(entity.getUpdatedBy());
-		regDto.setIsPrimary(entity.getIsPrimary());
-		return regDto;
-
-	}
 
 	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,
 			String eventId, String eventName, String eventType) {

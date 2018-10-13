@@ -12,8 +12,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class ApplicationDto implements Serializable {
 
 	/** The Constant serialVersionUID. */

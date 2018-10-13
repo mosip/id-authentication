@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ContactDto implements Serializable {
 
 	/** The Constant serialVersionUID. */

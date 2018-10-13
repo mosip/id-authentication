@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 
 /**
@@ -17,7 +18,7 @@ import lombok.Setter;
 
 @Getter
 @Setter@NoArgsConstructor
-@AllArgsConstructor
+@ToString
 public class RegistrationDto implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -78,18 +79,6 @@ public class RegistrationDto implements Serializable {
 
 	/** The deleted date time. */
 	private LocalDateTime deletedDateTime;
-
-	@Override
-	public String toString() {
-		return "RegistrationDto [preRegistrationId=" + preRegistrationId + ", groupId=" + groupId + ", isPrimary="
-				+ isPrimary + ", name=" + name + ", genderCode=" + genderCode + ", parentFullName=" + parentFullName
-				+ ", parentRefIdType=" + parentRefIdType + ", parentRefId=" + parentRefId + ", dob=" + dob + ", age="
-				+ age + ", address=" + address + ", contact=" + contact + ", applicantType=" + applicantType
-				+ ", nationalid=" + nationalid + ", statusCode=" + statusCode + ", langCode=" + langCode + ", isActive="
-				+ isActive + ", createdBy=" + createdBy + ", createDateTime=" + createDateTime + ", updatedBy="
-				+ updatedBy + ", updateDateTime=" + updateDateTime + ", isDeleted=" + isDeleted + ", deletedDateTime="
-				+ deletedDateTime + "]";
-	}
 
 	
 }

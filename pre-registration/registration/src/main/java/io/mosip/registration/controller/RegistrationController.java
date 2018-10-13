@@ -1,5 +1,6 @@
 package io.mosip.registration.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.registration.code.RegistrationCode;
+import io.mosip.registration.core.generator.MosipGroupIdGenerator;
 import io.mosip.registration.dto.ApplicationDto;
-
+import io.mosip.registration.dto.RegistrationDto;
 import io.mosip.registration.dto.ResponseDto;
 import io.mosip.registration.dto.ViewRegistrationResponseDto;
-import io.mosip.registration.helper.ApplicationHelper;
 import io.mosip.registration.service.RegistrationService;
 
 import io.swagger.annotations.Api;
@@ -34,23 +35,41 @@ import io.swagger.annotations.ApiResponses;
 @CrossOrigin("*")
 public class RegistrationController {
 
-	@Autowired
-	ApplicationHelper applicationHelper;
+
 	/**
 	 * Field for {@link #ViewRegistrationService}
 	 */
 	@Autowired
-	private RegistrationService<?,?> registrationService;
+	private RegistrationService<String, RegistrationDto> registrationService;
+	
+	@Autowired
+	private MosipGroupIdGenerator<String> groupIdGenerator;
+	
+	private String groupId;
+	
+	private boolean isNewApplication=true;
 
 	@PostMapping(path = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Save form data", response = RegistrationCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully saved"),
 			@ApiResponse(code = 400, message = "Unable to save the Registration Entity") })
 	public ResponseEntity<List<ResponseDto>> register(@RequestBody(required = true) ApplicationDto applications) {
-		List<ResponseDto> response = applicationHelper.Helper(applications);
+		List<ResponseDto> response= new ArrayList<>();
+		int noOfApplications=applications.getApplications().size();
+		for (int i = 0; i < noOfApplications; i++) {
+			if (!applications.getApplications().get(i).getGroupId().isEmpty()) {
+				groupId = applications.getApplications().get(i).getGroupId();
+				isNewApplication = false;
+				break;
+			}
+		}
+		if(isNewApplication) {
+			groupId= groupIdGenerator.generateGroupId();
+		}
+		for (RegistrationDto registartion : applications.getApplications()) {
+			response.add(registrationService.addRegistration(registartion,groupId));
+		}
 		return ResponseEntity.status(HttpStatus.OK).body(response);
-		// applicationHelper.test("479548729071");
-		// return null;
 	}
 
 	/**

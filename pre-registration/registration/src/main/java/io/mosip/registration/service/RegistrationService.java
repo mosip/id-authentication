@@ -13,11 +13,14 @@ import io.mosip.registration.dto.ViewRegistrationResponseDto;
 @Service
 public interface RegistrationService<T, U> {
 
-	public U getRegistration(T userId);
+	/**
+	 * 
+	 * @param registrationDto 
+	 * 
+	 * @return responseDto
+	 */
 
-	public ResponseDto addRegistration(U registrationDto, String groupId);
-
-	public void updateRegistration(U registrationDto);
+	public ResponseDto addRegistration(U registrationDto, String groupId) throws TablenotAccessibleException ;
 	
 	/**
 	 * @param userId
