@@ -28,7 +28,6 @@ public class DataValidationUtilTest {
 		DataValidationUtil.validate(errors);
 	}
 	
-	@Ignore
 	@Test(expected=IDDataValidationException.class)
 	public void testDataValidationUtilException() throws IDDataValidationException, NoSuchFieldException, SecurityException {
 		request.setId("uniqueID");
