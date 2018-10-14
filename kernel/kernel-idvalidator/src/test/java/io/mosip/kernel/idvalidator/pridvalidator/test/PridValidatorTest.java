@@ -1,8 +1,12 @@
 package io.mosip.kernel.idvalidator.pridvalidator.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
 import io.mosip.kernel.idvalidator.pridvalidator.PridValidator;
@@ -14,9 +18,12 @@ import io.mosip.kernel.idvalidator.pridvalidator.PridValidator;
  * 
  * @since 1.0.0
  */
+@SpringBootTest
+@RunWith(SpringRunner.class)
 public class PridValidatorTest {
 
-	PridValidator pridValidator = new PridValidator();
+	@Autowired
+	PridValidator pridValidator;
 
 	@Test(expected = MosipInvalidIDException.class)
 	public void nullTest() {

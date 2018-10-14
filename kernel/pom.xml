@@ -71,13 +71,15 @@
 		<logback.version>1.2.3</logback.version>
 		<slf4j.version>1.7.19</slf4j.version>
 		<mockito.version>1.10.19</mockito.version>
-
+		<powermock.version>1.7.4</powermock.version>
 		<!-- Lombok -->
 		<lombok.version>1.16.18</lombok.version>
 		<!-- Jsch -->
 		<jsch.version>0.1.54</jsch.version>
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
+
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/cache/**,**/dto/**,**/entity/**,**/exception/**,**/repository/**,**/*BootApplication.java</sonar.coverage.exclusions>
 	</properties>
 
 	<modules>
@@ -86,18 +88,20 @@
 		<module>kernel-dataaccess-hibernate</module>
 		<module>kernel-auditmanager-api</module>
 		<module>kernel-auditmanager-service</module>
-		<module>kernel-idvalidator</module>
+		<module>kernel-otpmanager-service</module>
 		<module>kernel-idgenerator-prid</module>
 		<module>kernel-idgenerator-rid</module>
+		<module>kernel-idgenerator-uin</module>
 		<module>kernel-idgenerator-vid</module>
+		<module>kernel-idgenerator-tokenid</module>
 		<module>kernel-packetuploader-sftp</module>
 		<module>kernel-packetuploader-http</module>
 		<module>kernel-packetserver-sftp</module>
-		<module>kernel-idgenerator-uin</module>
-		<module>kernel-otpmanager-service</module>
-		<module>kernel-validator</module>
+		<module>kernel-idvalidator</module>
+		<module>kernel-datavalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-config-server</module>
+		<module>kernel-keygenerator</module>
         <module>kernel-notification-sms</module>
 	</modules>
 
@@ -106,8 +110,10 @@
 			<id>LOCAL</id>
 			<properties>
 				<sonar.host.url>
-					http://localhost:9000
+					http://13.67.91.2:9000
 				</sonar.host.url>
+				<sonar.login>1b0451a7a15ae55e3760de8b0630e2c73fbd3600</sonar.login>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
@@ -117,8 +123,10 @@
 			<id>DEV</id>
 			<properties>
 				<sonar.host.url>
-					http://13.67.91.2:9000
+					http://13.76.43.109:9000
 				</sonar.host.url>
+				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
@@ -126,11 +134,6 @@
 		</profile>
 	</profiles>
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-config</artifactId>
-			<version>${spring-cloud-config.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>

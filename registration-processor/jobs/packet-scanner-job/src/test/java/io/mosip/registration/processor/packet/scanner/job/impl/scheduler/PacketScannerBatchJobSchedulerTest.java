@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.awaitility.Awaitility;
-import org.awaitility.Duration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +34,7 @@ import io.mosip.registration.processor.packet.scanner.job.PacketScannerApplicati
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PacketScannerApplication.class)
 public class PacketScannerBatchJobSchedulerTest {
-	
+
 	@InjectMocks
 	private PacketScannerBatchJobScheduler packetScannerBatchJobScheduler;
 	@SpyBean
@@ -67,24 +66,21 @@ public class PacketScannerBatchJobSchedulerTest {
 		root.addAppender(mockAppender);
 	}
 
-
-
 	@Test
 	public void testLandingZoneScannerJobScheduler() {
-		Awaitility.await().atMost(Duration.FIVE_SECONDS)
-		.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).landingZoneScannerJobScheduler());
+		Awaitility.await().untilAsserted(
+				() -> verify(packetScannerBatchJobSchedulerJob, times(1)).landingZoneScannerJobScheduler());
 	}
 
 	@Test
 	public void testVirusScannerJobScheduler() {
-		Awaitility.await().atMost(Duration.FIVE_SECONDS)
-		.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).virusScannerJobScheduler());
+		Awaitility.await()
+				.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).virusScannerJobScheduler());
 	}
 
 	@Test
 	public void testFtpJobScheduler() {
-		Awaitility.await().atMost(Duration.FIVE_SECONDS)
-		.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).ftpJobScheduler());
+		Awaitility.await().untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).ftpJobScheduler());
 	}
 
 	@Test
@@ -108,7 +104,6 @@ public class PacketScannerBatchJobSchedulerTest {
 				any(JobParameters.class));
 		packetScannerBatchJobScheduler.landingZoneScannerJobScheduler();
 
-
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
@@ -121,9 +116,9 @@ public class PacketScannerBatchJobSchedulerTest {
 	@Test
 	public void testJobRestartFailure() throws Exception {
 		Mockito.doThrow(JobRestartException.class).when(jobLauncher).run(any(Job.class), any(JobParameters.class));
-		
+
 		packetScannerBatchJobScheduler.landingZoneScannerJobScheduler();
-		
+
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
@@ -139,7 +134,6 @@ public class PacketScannerBatchJobSchedulerTest {
 		Mockito.doThrow(JobInstanceAlreadyCompleteException.class).when(jobLauncher).run(any(Job.class),
 				any(JobParameters.class));
 		packetScannerBatchJobScheduler.landingZoneScannerJobScheduler();
-
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
