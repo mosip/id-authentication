@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import io.mosip.kernel.smsnotifier.SmsNotifierApplication;
 import io.mosip.kernel.smsnotifier.service.impl.SmsNotifierServiceImpl;
 
-
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { SmsNotifierApplication.class })
@@ -29,11 +28,13 @@ public class SmsNotifierControllerTest {
 	SmsNotifierServiceImpl service;
 
 	@Test
-	public void integrationTest() throws Exception {
+	public void controllerTest() throws Exception {
 
 		String json = "{\"number\":\"8987672341\",\"message\":\"hello..your otp is 342891\"}";
 
 		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isAccepted());
 	}
+
+	
 }
