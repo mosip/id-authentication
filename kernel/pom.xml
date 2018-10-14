@@ -102,7 +102,7 @@
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-config-server</module>
 		<module>kernel-keygenerator</module>
-        <module>kernel-notification-sms</module>
+		<module>kernel-notification-sms</module>
 	</modules>
 
 	<profiles>
