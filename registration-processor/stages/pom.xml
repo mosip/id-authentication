@@ -18,7 +18,8 @@
 
 	<modules>
 		<module>packet-validator</module>
-		<module>retry-verticle</module>
+		<module>retry-stage</module>
+		<module>failover-stage</module>
 	</modules>
 
 </project>

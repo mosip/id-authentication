@@ -47,7 +47,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 				.setHAEnabled(true);
 		Vertx.clusteredVertx(options, result -> {
 			if (result.succeeded()) {
-				result.result().deployVerticle(verticleName.getName(), new DeploymentOptions().setHa(true));
+				result.result().deployVerticle(verticleName.getName(), new DeploymentOptions().setHa(true).setWorker(true));
 				eventBus.complete(result.result());
 				logger.debug(verticleName + " deployed successfully");
 			}
