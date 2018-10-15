@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.packet.dto.BiometericData;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.DocumentDetail;
@@ -36,6 +37,7 @@ import io.mosip.registration.processor.core.spi.packetinfo.entity.ApplicantPhoto
 import io.mosip.registration.processor.core.spi.packetinfo.entity.BiometricExceptionEntity;
 import io.mosip.registration.processor.core.spi.packetinfo.entity.BiometricExceptionPKEntity;
 import io.mosip.registration.processor.core.spi.packetinfo.entity.RegOsiEntity;
+import io.mosip.registration.processor.core.spi.packetinfo.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantDocumentRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantFingerprintRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantIrisRepository;
@@ -85,7 +87,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 	 * @see io.mosip.registration.processor.core.spi.packetinfo.service.PacketInfoManager#savePacketData(java.lang.Object)
 	 */
 	@Override
-	public void savePacketData(PacketInfo packetInfo) throws Exception {
+	public void savePacketData(PacketInfo packetInfo) {
 
 		biometricData = packetInfo.getBiometericData();
 		documentDto = packetInfo.getDocument();
@@ -94,25 +96,26 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		photoGraphData = packetInfo.getPhotograph();
 		hashSequence = packetInfo.getHashSequence();
 		checksumMap = packetInfo.getCheckSumMap();
-
-		List<DocumentDetail> documentDetails = documentDto.getDocumentDetails();
-		for (DocumentDetail documentDetail : documentDetails) {
-			saveDemographicData(documentDetail);
+		try {
+			List<DocumentDetail> documentDetails = documentDto.getDocumentDetails();
+			for (DocumentDetail documentDetail : documentDetails) {
+				saveDemographicData(documentDetail);
+			}
+			saveBioMetricData(biometricData);
+			savePhotoGraphData(photoGraphData);
+			saveOsiData(osiData);
+		} catch (DataAccessLayerException  e) {
+			throw new TablenotAccessibleException("Table Not Accessible", e);
 		}
-
-		saveBioMetricData(biometricData);
 		
-		savePhotoGraphData(photoGraphData);
-		
-		saveOsiData(osiData);
 	}
 	
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.packetinfo.service.PacketInfoManager#saveDemographicData(java.lang.Object)
 	 */
 	@Override
-	public void saveDemographicData(DocumentDetail demograficData) throws IOException {
-		ApplicantDocumentEntity applicantDocumentEntity = convertAppDocDtoToAppDocEntity(demograficData);
+	public void saveDemographicData(DocumentDetail documentDetail) {
+		ApplicantDocumentEntity applicantDocumentEntity = convertAppDocDtoToAppDocEntity(documentDetail);
 		
 		if (photoGraphData.isHasExceptionPhoto()) {
 			byte[] docBytes = getPhotoGraphDataInByteArray(metaData.getRegistrationId(),photoGraphData.getExceptionPhotoName());
@@ -133,7 +136,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 	 * @see io.mosip.registration.processor.core.spi.packetinfo.service.PacketInfoManager#saveBioMetricData(java.lang.Object)
 	 */
 	@Override
-	public void saveBioMetricData(BiometericData bioMetricData) throws IOException {
+	public void saveBioMetricData(BiometericData bioMetricData){
 		List<Fingerprint> fingerprints = bioMetricData.getFingerprintData().getFingerprints();
 		List<ExceptionFingerprint> exceptionFingerprints = bioMetricData.getFingerprintData().getExceptionFingerprints();
 		List<Iris> irisList = bioMetricData.getIrisData().getIris();
@@ -174,7 +177,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 	 * @param osiData the osi data
 	 * @throws Exception the exception
 	 */
-	private void saveOsiData(OsiData osiData)  throws Exception{
+	private void saveOsiData(OsiData osiData) {
 		RegOsiEntity regOsiEntity =  convertOsiDataToOsiEntity(osiData);
 		if (regOsiRepository.save(regOsiEntity) != null) {
 			LOGGER.info(regOsiEntity.getRegId() +" --> Applicant OSI DATA SAVED");
@@ -188,7 +191,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 	 * @param photoGraphData the photo graph data
 	 * @throws Exception the exception
 	 */
-	private void savePhotoGraphData(Photograph photoGraphData) throws Exception {
+	private void savePhotoGraphData(Photograph photoGraphData){
 		ApplicantPhotographEntity applicantPhotographEntity= convertPhotoGraphDataToPhotoGraphEntity(photoGraphData);
 		if (applicantPhotographRepository.save(applicantPhotographEntity) != null) {
 			LOGGER.info(applicantPhotographEntity.getId().getRegId() +" --> Applicant Photograph DATA SAVED");
@@ -202,7 +205,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 	 * @return the applicant document entity
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private ApplicantDocumentEntity convertAppDocDtoToAppDocEntity(DocumentDetail documentDto) throws IOException {
+	private ApplicantDocumentEntity convertAppDocDtoToAppDocEntity(DocumentDetail documentDto) {
 
 		ApplicantDocumentEntity applicantDocumentEntity = new ApplicantDocumentEntity();
 		ApplicantDocumentPKEntity applicantDocumentPKEntity = new ApplicantDocumentPKEntity();
@@ -396,13 +399,17 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 	 * @return the photo graph data in byte array
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private byte[] getPhotoGraphDataInByteArray(String registrationId, String photographName) throws IOException {
+	private byte[] getPhotoGraphDataInByteArray(String registrationId, String photographName)  {
 		InputStream in = (InputStream) fileSystemAdapter.getFile(metaData.getRegistrationId(),photoGraphData.getPhotographName());
 		byte[] buffer = new byte[1024];
 		int len;
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		while ((len = in.read(buffer)) != -1) {
-			os.write(buffer, 0, len);
+		try {
+			while ((len = in.read(buffer)) != -1) {
+				os.write(buffer, 0, len);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return os.toByteArray();
 	}
