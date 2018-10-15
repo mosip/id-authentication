@@ -50,8 +50,11 @@ public class SmsControllerAdvice {
 	}
 
 	/**
+	 * This method handles MosipInvalidNumberException type of exceptions.
+	 * 
 	 * @param e
-	 * @return
+	 *            The exception
+	 * @return The response entity.
 	 */
 	@ExceptionHandler(MosipInvalidNumberException.class)
 	public ResponseEntity<Map<String, ArrayList<MosipErrors>>> smsNotificationInvalidNumber(
