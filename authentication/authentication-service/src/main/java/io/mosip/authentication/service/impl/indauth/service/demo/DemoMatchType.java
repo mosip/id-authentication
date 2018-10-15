@@ -188,12 +188,13 @@ public enum DemoMatchType implements MatchType{
 		for (int i = 0; i < demoValues.length; i++) {
 			String demo = demoValues[i];
 			if(null!=demo) {
-				demoBuilder.append(demo.concat(" "));
+				demoBuilder.append(demo);
+				if(i < demoValues.length - 1) {
+					demoBuilder.append(" ");
+				}
 			}
 		}
-		 String demoStr=demoBuilder.toString();
-		 demoStr=demoStr.substring(0,demoStr.length()-1);
-		 return demoStr;
+		 return demoBuilder.toString();
 	}
 
 	
