@@ -1,8 +1,0 @@
-io.mosip.kernel.emailnotifier
-io.mosip.kernel.emailnotifier.configuration
-io.mosip.kernel.emailnotifier.constants
-io.mosip.kernel.emailnotifier.controller
-io.mosip.kernel.emailnotifier.dto
-io.mosip.kernel.emailnotifier.exceptionhandler
-io.mosip.kernel.emailnotifier.service.impl
-io.mosip.kernel.emailnotifier.utils
