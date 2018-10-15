@@ -236,7 +236,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		statusInfoBuilder.setStatus(demoMatched);
 		
-		listMatchInputs.forEach(matchInput -> {
+		listMatchInputs.stream()
+			.filter(matchInput -> matchInput.getMatchStrategyType() != null)
+			.forEach(matchInput -> {
 						statusInfoBuilder.addMessageInfo(
 											AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
 													.map(AuthType::getType).orElse(""),

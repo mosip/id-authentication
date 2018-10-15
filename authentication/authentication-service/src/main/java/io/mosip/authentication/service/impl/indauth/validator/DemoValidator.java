@@ -15,9 +15,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.DemoDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalAddressDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalFullAddressDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
@@ -214,7 +214,7 @@ public class DemoValidator implements Validator {
 					dobValidation(authRequestdto, errors);
 				} catch (ParseException e) {
 					mosipLogger.error("sessionID-NA", "ParseException",
-							e == null ? e.toString() : e.getCause().toString(), e.getMessage());
+							 e.getCause() == null ? "" : e.getCause().getMessage(), e.getMessage());
 				}
 			}
 			if (isAllPINull(personalIdentityDTO)) {
