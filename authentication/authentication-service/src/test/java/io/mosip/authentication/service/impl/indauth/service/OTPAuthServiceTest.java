@@ -194,8 +194,9 @@ public class OTPAuthServiceTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidValidateOtp() throws IdAuthenticationBusinessException {
 		OTPAuthServiceImpl authservice = Mockito.mock(OTPAuthServiceImpl.class);
-		Mockito.when(authservice.validateOtp(Mockito.any(), Mockito.anyString())).thenThrow(
-				new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_INVALID_VALIDATEOTP_REQUEST));
+		Mockito.when(authservice.validateOtp(Mockito.any(), Mockito.anyString()))
+				.thenThrow(new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.KERNEL_OTP_VALIDATION_REQUEST_FAILED));
 		otpAuthRequestDTO.setTxnID("1234567890");
 		otpAuthRequestDTO.setMuaCode("ASA000000011");
 		otpAuthRequestDTO.setTxnID("TXN00001");
