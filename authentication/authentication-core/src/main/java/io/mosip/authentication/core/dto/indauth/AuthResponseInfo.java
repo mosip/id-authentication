@@ -1,6 +1,5 @@
 package io.mosip.authentication.core.dto.indauth;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
@@ -13,20 +12,17 @@ import lombok.Data;
 @Data
 public class AuthResponseInfo {
 
-	/**
-	 * Static token
-	 */
-	//TODO
-	private String staticToken;
 	
 	/**
 	 * Type of user ID ("D" or "V") as per the {@link IdType}
 	 */
 	private String idType;
+	
 	/**
 	 * Request Time
 	 */
-	private Date reqTime;
+	private String reqTime;
+	
 	/**
 	 * Version
 	 */
@@ -44,5 +40,11 @@ public class AuthResponseInfo {
 	 * used and the authentication types that are matched.
 	 */
 	private String usageData;
+	
+//	/**
+//	 * Static token
+//	 */
+//	//TODO
+//	private String staticToken;
 
 }

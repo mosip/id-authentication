@@ -30,6 +30,8 @@ public class AuthResponseBuilder {
 
 	private AuthResponseBuilder() {
 		responseDTO = new AuthResponseDTO();
+		AuthResponseInfo authResponseInfo = new AuthResponseInfo();
+		responseDTO.setInfo(authResponseInfo);
 		authStatusInfos = new ArrayList<>();
 	}
 
@@ -59,6 +61,21 @@ public class AuthResponseBuilder {
 		return  this;
 	}
 	
+	public AuthResponseBuilder setIdType(String idType) {
+		responseDTO.getInfo().setIdType(idType);;
+		return  this;
+	}
+	
+	public AuthResponseBuilder setReqTime(String reqTime) {
+		responseDTO.getInfo().setReqTime(reqTime);
+		return  this;
+	}
+	
+	public AuthResponseBuilder setVersion(String ver) {
+		responseDTO.getInfo().setVer(ver);
+		return  this;
+	}
+	
 	public AuthResponseDTO build() {
 		assertNotBuilt();
 		boolean status = !authStatusInfos.isEmpty() 
@@ -66,9 +83,6 @@ public class AuthResponseBuilder {
 		responseDTO.setStatus(status );
 		
 		responseDTO.setResTime(new Date());
-		
-		AuthResponseInfo authResponseInfo = new AuthResponseInfo();
-		responseDTO.setInfo(authResponseInfo);
 		
 		AuthError[] authErrors = authStatusInfos.stream()
 											.flatMap(statusInfo -> 
@@ -84,7 +98,7 @@ public class AuthResponseBuilder {
 												.map(List<MatchInfo>::stream)
 												.orElseGet(Stream::empty))
 										.collect(Collectors.toList());
-		authResponseInfo.setMatchInfos(matchInfos);
+		responseDTO.getInfo().setMatchInfos(matchInfos);
 		
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(DEFAULT_USAGE_DATA_HEX_COUNT);
 		
@@ -97,7 +111,7 @@ public class AuthResponseBuilder {
 						.forEach(usageDataBit -> 
 									bitwiseInfo.setBit(usageDataBit.getHexNum(), usageDataBit.getBitIndex()));
 		
-		authResponseInfo.setUsageData(bitwiseInfo.toString());
+		responseDTO.getInfo().setUsageData(bitwiseInfo.toString());
 		
 		built = true;
 		return responseDTO;

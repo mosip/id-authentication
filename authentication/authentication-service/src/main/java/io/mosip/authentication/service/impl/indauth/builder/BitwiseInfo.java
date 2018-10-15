@@ -132,12 +132,8 @@ public class BitwiseInfo {
 		 */
 		@Override
 		public boolean tryAdvance(Consumer<? super Integer> action) {
-			StringBuffer buffer = new StringBuffer();
-			if(tryAdvanceBoolean(buffer) 
-				&& tryAdvanceBoolean(buffer)
-				&& tryAdvanceBoolean(buffer)
-				&& tryAdvanceBoolean(buffer)
-				) {
+			StringBuilder buffer = new StringBuilder();
+			if(IntStream.range(0, 4).allMatch(i -> tryAdvanceBoolean(buffer))) {
 				String binaryStr = buffer.toString();
 				int intVal = Integer.parseInt(binaryStr, 2);
 				action.accept(intVal);
@@ -152,7 +148,7 @@ public class BitwiseInfo {
 		 * @param buffer the buffer
 		 * @return true, if successful
 		 */
-		private boolean tryAdvanceBoolean(StringBuffer buffer) {
+		private boolean tryAdvanceBoolean(StringBuilder buffer) {
 			return booleanSpliterator.tryAdvance(b -> buffer.insert(0, b ? 1 : 0));
 		}
 
