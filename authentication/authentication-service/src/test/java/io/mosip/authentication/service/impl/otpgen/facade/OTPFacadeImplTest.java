@@ -26,6 +26,7 @@ import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
+import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
@@ -78,6 +79,43 @@ public class OTPFacadeImplTest {
 		mosipRollingFileAppender.setPrudent(true);
 		ReflectionTestUtils.setField(otpFacadeImpl, "env", env);
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "initializeLogger", mosipRollingFileAppender);
+	}
+
+	@Test
+	public void test_GenerateOTP() throws IdAuthenticationBusinessException {
+		String unqueId = otpRequestDto.getId();
+		String txnID = otpRequestDto.getTxnID();
+		String productid = "IDA";
+		String refId = "8765";
+		String otp = "987654";
+
+		Mockito.when(idAuthService.validateUIN(unqueId)).thenReturn(refId);
+		String otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
+		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
+		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "generateOtp", otpRequestDto);
+	}
+
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void testGenerateOTP_WhenOtpIsFlooded_ThrowException() throws IdAuthenticationBusinessException {
+		Mockito.when(autntxnrepository.countRequestDTime(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(5);
+		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "isOtpFlooded", otpRequestDto);
+		Mockito.when(otpFacadeImpl.generateOtp(otpRequestDto))
+				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED));
+	}
+	
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void testGenerateOTP_WhenOTPIsNull_ThrowException() throws IdAuthenticationBusinessException {
+		String unqueId = otpRequestDto.getId();
+		String txnID = otpRequestDto.getTxnID();
+		String productid = "IDA";
+		String refId = "8765";
+		String otp = null;
+
+		Mockito.when(idAuthService.validateUIN(unqueId)).thenReturn(refId);
+		String otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
+		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
+		Mockito.when(otpFacadeImpl.generateOtp(otpRequestDto))
+		.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
 	}
 
 	@Test
@@ -145,14 +183,14 @@ public class OTPFacadeImplTest {
 
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
-		otpRequestDto.setMsaLicenseKey("1234567890");
-		otpRequestDto.setMuaCode("1234567890");
+		otpRequestDto.setMsaLicenseKey("2345678901234");
+		otpRequestDto.setMuaCode("2345678901234");
 		otpRequestDto.setIdType(IdType.UIN.getType());
 
 		// otpRequestDto.setReqTime(new Date(Long.valueOf("2018-09-2412:06:28.501")));
 		otpRequestDto.setReqTime(new Date());
-		otpRequestDto.setTxnID("1234567890");
-		otpRequestDto.setId("1234567890");
+		otpRequestDto.setTxnID("2345678901234");
+		otpRequestDto.setId("2345678901234");
 		otpRequestDto.setVer("1.0");
 
 		return otpRequestDto;

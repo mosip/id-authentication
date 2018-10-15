@@ -33,6 +33,7 @@ import io.mosip.authentication.core.spi.idauth.demo.PersonalAddressDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalFullAddressDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
 import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDataDTO;
+import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.service.impl.indauth.validator.DemoValidator;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
@@ -71,6 +72,50 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demoValidator, "initializeLogger", mosipRollingFileAppender);
 	}
 
+	
+	@Test
+	public void testSupportTrue() {
+		assertTrue(demoValidator.supports(AuthRequestDTO.class));
+	}
+	
+	@Test
+	public void testSupportFalse() {
+		assertFalse(demoValidator.supports(AuthRequestValidator.class));
+	}
+	
+	@Test
+	public void checkValidateMethod() {
+		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+		DemoDTO demodto = new DemoDTO();
+		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
+		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
+		
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
+		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
+		ReflectionTestUtils.invokeMethod(auth, "setFad", false);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
+		String priLanguage = "en";
+		String secLanguage = "ar";
+		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
+		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
+		ReflectionTestUtils.invokeMethod(demodto, "setPersonalFullAddressDTO", personalFullAddressDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
+		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
+		ReflectionTestUtils.invokeMethod(demodto, "setPersonalAddressDTO", personalAddressDTO);
+		
+		personalAddressDTO.setAddrLine1Pri("mosip");
+		personalFullAddressDTO.setAddrPri("mosip");
+		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", authRequestdto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", authRequestdto, errors);
+		
+		ReflectionTestUtils.invokeMethod(demoValidator, "validate", authRequestdto, errors);
+		
+		//demoValidator.validate(authRequestdto, errors);
+	}
+	
 	// ========================= complete address validation =================
 
 	@Test
@@ -89,18 +134,56 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", authRequestdto, errors);
 	}
 
-	@Ignore
 	@Test
 	public void testCompleteAddressValidation_WhenFadIsTrue_ValidateFullAddressOnly() {
 		AuthRequestDTO authRequestdto = new AuthRequestDTO();
 		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+		DemoDTO demodto = new DemoDTO();
+		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
+		String priLanguage = "en";
+		String secLanguage = null;
 
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setAd", false);
 		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
+		ReflectionTestUtils.invokeMethod(demodto, "setPersonalFullAddressDTO", personalFullAddressDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
+		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
 
-		// ReflectionTestUtils.invokeMethod(demoValidator,
-		// "fullAddressValidation",authRequestdto, errors);
+		String allNullForPriLanguage = "mosip";
+		ReflectionTestUtils.invokeMethod(personalFullAddressDTO, "setAddrPri", allNullForPriLanguage);
+		
+		ReflectionTestUtils.invokeMethod(demoValidator,"fullAddressValidation",authRequestdto, errors);
+
+		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", authRequestdto, errors);
+	}
+	
+	@Test
+	public void testCompleteAddressValidation_WhenAdIsTrue_ValidateFullAddressOnly() {
+		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+		DemoDTO demodto = new DemoDTO();
+		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
+		String priLanguage = "en";
+		String secLanguage = null;
+
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
+		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
+
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
+		ReflectionTestUtils.invokeMethod(demodto, "setPersonalAddressDTO", personalAddressDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
+		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
+
+		String allNullForPriLanguage = "mosip";
+		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine1Pri", allNullForPriLanguage);
+		
+		ReflectionTestUtils.invokeMethod(demoValidator,"addressValidation",authRequestdto, errors);
 
 		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", authRequestdto, errors);
 	}
