@@ -36,7 +36,6 @@ import io.mosip.registration.processor.core.spi.packetinfo.entity.ApplicantPhoto
 import io.mosip.registration.processor.core.spi.packetinfo.entity.BiometricExceptionEntity;
 import io.mosip.registration.processor.core.spi.packetinfo.entity.BiometricExceptionPKEntity;
 import io.mosip.registration.processor.core.spi.packetinfo.entity.RegOsiEntity;
-import io.mosip.registration.processor.core.spi.packetinfo.exception.FileNotFoundInDFSException;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantDocumentRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantFingerprintRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantIrisRepository;
