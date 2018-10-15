@@ -213,7 +213,8 @@ public class DemoValidator implements Validator {
 				try {
 					dobValidation(authRequestdto, errors);
 				} catch (ParseException e) {
-					mosipLogger.error("sessionID-NA", "ParseException", e.getCause().toString(), e.getMessage());
+					mosipLogger.error("sessionID-NA", "ParseException",
+							e == null ? e.toString() : e.getCause().toString(), e.getMessage());
 				}
 			}
 			if (isAllPINull(personalIdentityDTO)) {
@@ -302,7 +303,7 @@ public class DemoValidator implements Validator {
 			errors.reject(IdAuthenticationErrorConstants.INVALID_SECONDARY_LANGUAGE_CODE.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_SECONDARY_LANGUAGE_CODE.getErrorMessage());
 		}
-		
+
 	}
 
 }
