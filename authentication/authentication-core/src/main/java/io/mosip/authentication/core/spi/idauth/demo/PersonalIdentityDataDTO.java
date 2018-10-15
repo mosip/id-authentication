@@ -1,7 +1,5 @@
 package io.mosip.authentication.core.spi.idauth.demo;
 
-import java.util.Date;
-
 import io.mosip.authentication.core.dto.indauth.BioDTO;
 import io.mosip.authentication.core.dto.indauth.BioType;
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
@@ -20,9 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PersonalIdentityDataDTO {
-
-	/** request time for demographic validation */
-	private Date requestTimestamp;
 
 	/** Factory class for demographic details */
 	private DemoDTO demoDTO;
