@@ -11,13 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.spi.smsnotifier.SmsNotifier;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
-import io.mosip.kernel.core.util.exception.MosipJsonParseException;
-import io.mosip.kernel.smsnotifier.constant.SmsExceptionConstants;
 import io.mosip.kernel.smsnotifier.dto.SmsRequestDto;
 import io.mosip.kernel.smsnotifier.dto.SmsResponseDto;
-import io.mosip.kernel.smsnotifier.exception.JsonParseException;
 
 /**
  * This controller class receives contact number and message in data transfer
@@ -46,16 +41,9 @@ public class SmsNotifierController {
 	 */
 	@PostMapping(value = "/notifier/sms")
 	public ResponseEntity<SmsResponseDto> sendSms(@Valid @RequestBody SmsRequestDto smsRequestDto) {
-		SmsResponseDto smsResponseDto = null;
-		try {
-			smsResponseDto = service.sendSmsNotification(smsRequestDto.getNumber(), smsRequestDto.getMessage());
 
-		} catch (MosipJsonParseException | MosipJsonMappingException | MosipIOException e) {
-
-			throw new JsonParseException(SmsExceptionConstants.SMS_EMPTY_JSON.getErrorCode(),
-					SmsExceptionConstants.SMS_EMPTY_JSON.getErrorMessage(), e.getCause());
-		}
-		return new ResponseEntity<>(smsResponseDto, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(service.sendSmsNotification(smsRequestDto.getNumber(), smsRequestDto.getMessage()),
+				HttpStatus.ACCEPTED);
 
 	}
 

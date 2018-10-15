@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.mosip.kernel.smsnotifier.constant.SmsExceptionConstants;
-import io.mosip.kernel.smsnotifier.exception.JsonParseException;
-import io.mosip.kernel.smsnotifier.exception.MosipHttpClientException;
+import io.mosip.kernel.smsnotifier.exception.MosipInvalidNumberException;
 
 /**
  * Central class for handling exceptions.
@@ -51,30 +50,13 @@ public class SmsControllerAdvice {
 	}
 
 	/**
-	 * This method handles MosipHttpClientException type of exceptions.
-	 * 
 	 * @param e
-	 *            The exception
-	 * @return The response entity.
+	 * @return
 	 */
-	@ExceptionHandler(MosipHttpClientException.class)
-	public ResponseEntity<Map<String, ArrayList<MosipErrors>>> smsNotificationServerResponse(
-			final MosipHttpClientException e) {
-
-		MosipErrors error = new MosipErrors(SmsExceptionConstants.SMS_NUMBER_INVALID.getErrorCode(), e.getErrorText());
-		ArrayList<MosipErrors> errorList = new ArrayList<>();
-		errorList.add(error);
-
-		Map<String, ArrayList<MosipErrors>> map = new HashMap<>();
-		map.put(err, errorList);
-		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
-
-	}
-
-	@ExceptionHandler(JsonParseException.class)
-	public ResponseEntity<Map<String, ArrayList<MosipErrors>>> smsNotificationJsonResponse(final JsonParseException e) {
-		MosipErrors error = new MosipErrors(SmsExceptionConstants.SMS_EMPTY_JSON.getErrorCode(),
-				SmsExceptionConstants.SMS_EMPTY_JSON.getErrorMessage());
+	@ExceptionHandler(MosipInvalidNumberException.class)
+	public ResponseEntity<Map<String, ArrayList<MosipErrors>>> smsNotificationInvalidNumber(
+			final MosipInvalidNumberException e) {
+		MosipErrors error = new MosipErrors(e.getErrorCode(), e.getErrorText());
 		ArrayList<MosipErrors> errorList = new ArrayList<>();
 		errorList.add(error);
 

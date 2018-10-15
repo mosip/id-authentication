@@ -1,9 +1,5 @@
 package io.mosip.kernel.core.spi.smsnotifier;
 
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
-import io.mosip.kernel.core.util.exception.MosipJsonParseException;
-
 public interface SmsNotifier<T> {
 
 	/**
@@ -15,6 +11,6 @@ public interface SmsNotifier<T> {
 	 *            the message need to be send.
 	 * @return the ResponseDto.
 	 */
-	public T sendSmsNotification(String contactNumber, String contentMessage)throws MosipJsonParseException, MosipJsonMappingException, MosipIOException;
+	public T sendSmsNotification(String contactNumber, String contentMessage);
 
 }
