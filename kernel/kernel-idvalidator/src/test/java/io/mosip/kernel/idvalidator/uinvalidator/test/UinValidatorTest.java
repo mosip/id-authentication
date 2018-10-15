@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.uinvalidator.UinValidator;
+import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 
 /**
  * Test class for UinValidator class
@@ -26,7 +26,7 @@ import io.mosip.kernel.idvalidator.uinvalidator.UinValidator;
 public class UinValidatorTest {
 
 	@Autowired
-	private UinValidator uinValidator;
+	private UinValidatorImpl uinValidator;
 
 	@Test
 	public void uinValidatorTest() {
