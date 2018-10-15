@@ -80,17 +80,17 @@ public class SmsNotifierServiceTest {
 	}
 
 	@Test(expected = MosipInvalidNumberException.class)
-	public void aphabetInContactNumberTest() {
+	public void invalidContactNumberTest() {
 		service.sendSmsNotification("jsbchb", "hello your otp is 45373");
 	}
 
 	@Test(expected = MosipInvalidNumberException.class)
-	public void contactNumberLengthTest() {
+	public void contactNumberMinimumThresholdTest() {
 		service.sendSmsNotification("78978976", "hello your otp is 45373");
 	}
 
 	@Test(expected = MosipInvalidNumberException.class)
-	public void contactNumberExtraLengthTest() {
+	public void contactNumberMaximumThresholdTest() {
 		service.sendSmsNotification("7897897458673484376", "hello your otp is 45373");
 	}
 

@@ -75,14 +75,14 @@ public class ExceptionHandlerTest {
 	}
 
 	@Test
-	public void invalidNumberFirstTest() throws Exception {
+	public void contactNumberLengthTest() throws Exception {
 		String json = "{\"number\":\"678\",\"message\":\"\"}";
 		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
-	public void invalidNumberSecondTest() throws Exception {
+	public void invalidContactNumberTest() throws Exception {
 		String json = "{\"number\":\"sdjnjkdfj\",\"message\":\"\"}";
 		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
