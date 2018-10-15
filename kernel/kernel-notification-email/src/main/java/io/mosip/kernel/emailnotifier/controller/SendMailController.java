@@ -45,7 +45,7 @@ public class SendMailController {
 	@PostMapping(value = "/notifier/email", consumes = "multipart/form-data")
 	public @ResponseBody CompletableFuture<ResponseEntity<ResponseDto>> sendMail(String[] mailTo,
 			String[] mailCc, String mailSubject, String mailContent, MultipartFile[] attachments) {
-		return service.sendEMail(mailTo, mailCc, mailSubject, mailContent, attachments)
+		return service.sendEmail(mailTo, mailCc, mailSubject, mailContent, attachments)
 				.thenApplyAsync(responseDto -> new ResponseEntity<>(responseDto, HttpStatus.ACCEPTED));
 	}
 }

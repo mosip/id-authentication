@@ -24,6 +24,6 @@ public interface MailNotifierService<T, D> {
 	 *            the attachments.
 	 * @return the response.
 	 */
-	public CompletableFuture<D> sendEMail(String[] mailTo, String[] mailCc, String mailSubject,
+	public CompletableFuture<D> sendEmail(String[] mailTo, String[] mailCc, String mailSubject,
 			String mailContent, T[] attachment);
 }

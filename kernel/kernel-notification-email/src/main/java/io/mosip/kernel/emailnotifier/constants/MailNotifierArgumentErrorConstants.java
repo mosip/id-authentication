@@ -11,7 +11,10 @@ package io.mosip.kernel.emailnotifier.constants;
 public enum MailNotifierArgumentErrorConstants {
 	RECEIVER_ADDRESS_NOT_FOUND("KER-NOT-MAL-001", "To must be valid. It can't be empty or null."), 
 	SUBJECT_NOT_FOUND("KER-NOT-MAL-002", "Subject must be valid. It can't be empty or null."), 
-	CONTENT_NOT_FOUND("KER-NOT-MAL-003", "Content must be valid. It can't be empty or null.");
+	CONTENT_NOT_FOUND("KER-NOT-MAL-003", "Content must be valid. It can't be empty or null."), 
+	MAIL_SEND_EXCEPTION_CODE("KER-NOT-MAL-004"), 
+	MAIL_AUTHENTICATION_EXCEPTION_CODE("KER-NOT-MAL-005"), 
+	MAIL_EXCEPTION_CODE("KER-NOT-MAL-006");
 
 	/**
 	 * The error code.
@@ -22,9 +25,19 @@ public enum MailNotifierArgumentErrorConstants {
 	 * The error message.
 	 */
 	private String errorMessage;
+	
+	/**
+	 * Single argument constructor for {@link MailNotifierArgumentErrorConstants}
+	 * 
+	 * @param errorCode
+	 *            this error code
+	 */
+	private MailNotifierArgumentErrorConstants(String errorCode) {
+		this.errorCode = errorCode;
+	}
 
 	/**
-	 * Constructor for {@link MailNotifierArgumentErrorConstants}
+	 * Multiple argument Constructor for {@link MailNotifierArgumentErrorConstants}
 	 * 
 	 * @param errorCode
 	 *            this error code.
@@ -34,7 +47,7 @@ public enum MailNotifierArgumentErrorConstants {
 	private MailNotifierArgumentErrorConstants(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
-	}
+	}	
 
 	/**
 	 * Getter for error code.

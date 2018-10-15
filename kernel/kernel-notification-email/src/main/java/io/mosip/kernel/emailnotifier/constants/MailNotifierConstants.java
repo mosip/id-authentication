@@ -8,9 +8,6 @@ package io.mosip.kernel.emailnotifier.constants;
  */
 public enum MailNotifierConstants {
 	MESSAGE_REQUEST_SENT("Email Request submitted"),
-	MAIL_SEND_EXCEPTION_CODE("KER-NOT-MAL-004"),
-	MAIL_AUTHENTICATION_EXCEPTION_CODE("KER-NOT-MAL-005"),
-	MAIL_EXCEPTION_CODE("KER-NOT-MAL-006"),
 	ERROR_CODE("ERROR-CODE"),
 	LOGGER_TARGET("System.err"),
 	EMPTY_STRING("");
