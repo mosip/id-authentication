@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.emailnotifier.configuration.LoggerConfiguration;
+import io.mosip.kernel.emailnotifier.constants.MailNotifierArgumentErrorConstants;
 import io.mosip.kernel.emailnotifier.constants.MailNotifierConstants;
 import io.mosip.kernel.emailnotifier.constants.MailNotifierExceptionClassNameConstants;
 
@@ -36,15 +37,16 @@ public class MailNotifierAsyncHandler implements AsyncUncaughtExceptionHandler {
 		switch (ex.getClass().toString()) {
 		case MailNotifierExceptionClassNameConstants.MAIL_AUTH_EXCEPTION_CLASS_NAME:
 			logger.error(MailNotifierConstants.EMPTY_STRING.getValue(), MailNotifierConstants.ERROR_CODE.getValue(),
-					MailNotifierConstants.MAIL_SEND_EXCEPTION_CODE.getValue(), ex.getMessage());
+					MailNotifierArgumentErrorConstants.MAIL_SEND_EXCEPTION_CODE.getErrorCode(), ex.getMessage());
 			break;
 		case MailNotifierExceptionClassNameConstants.MAIL_SENDMAIL_SEND_EXCEPTION_CLASS_NAME:
 			logger.error(MailNotifierConstants.EMPTY_STRING.getValue(), MailNotifierConstants.ERROR_CODE.getValue(),
-					MailNotifierConstants.MAIL_AUTHENTICATION_EXCEPTION_CODE.getValue(), ex.getMessage());
+					MailNotifierArgumentErrorConstants.MAIL_AUTHENTICATION_EXCEPTION_CODE.getErrorCode(),
+					ex.getMessage());
 			break;
 		default:
 			logger.error(MailNotifierConstants.EMPTY_STRING.getValue(), MailNotifierConstants.ERROR_CODE.getValue(),
-					MailNotifierConstants.MAIL_EXCEPTION_CODE.getValue(), ex.getMessage());
+					MailNotifierArgumentErrorConstants.MAIL_EXCEPTION_CODE.getErrorCode(), ex.getMessage());
 			break;
 		}
 	}
