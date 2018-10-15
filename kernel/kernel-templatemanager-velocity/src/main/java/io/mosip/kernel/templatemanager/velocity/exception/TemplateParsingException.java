@@ -17,6 +17,14 @@ public class TemplateParsingException extends BaseUncheckedException{
 
 	private static final long serialVersionUID = 1368132089641129425L;
 
+	/**
+	 * constructor for set error code and message
+	 * 
+	 * @param errorCode
+	 *            the error code
+	 * @param errorMessage
+	 *            the error message
+	 */
 	public TemplateParsingException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}

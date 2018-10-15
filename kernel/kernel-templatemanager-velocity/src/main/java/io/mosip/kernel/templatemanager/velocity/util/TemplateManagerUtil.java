@@ -8,7 +8,7 @@ import org.apache.velocity.VelocityContext;
  * TemplateManagerUtil contain Utility methods
  * 
  * @author Abhishek Kumar
- * @version 1.0
+ * @version 1.0.0
  * @since 2018-10-01
  */
 public class TemplateManagerUtil {
@@ -19,8 +19,8 @@ public class TemplateManagerUtil {
 	/**
 	 * Method to bind the map of values into VelocityContext
 	 * 
-	 * @param values
-	 *            as Map<String,Object> where key will be placeholder name and
+	 * @param input
+	 *            as Map&lt;String,Object&gt; where key will be placeholder name and
 	 *            Object is the actual value for the placeholder
 	 * @return VelocityContext
 	 */

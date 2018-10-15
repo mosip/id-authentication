@@ -18,6 +18,11 @@ public enum TemplateManagerConstant {
 	 */
 	private String message;
 
+	/**
+	 * TemplateManagerConstant Enum constructor for setting message
+	 * 
+	 * @param message
+	 */
 	TemplateManagerConstant(String message) {
 		this.message = message;
 	}
@@ -25,7 +30,7 @@ public enum TemplateManagerConstant {
 	/**
 	 * getter for getting message
 	 * 
-	 * @return
+	 * @return message
 	 */
 	public String getMessage() {
 		return message;

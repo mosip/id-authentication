@@ -31,7 +31,9 @@ public class TemplateConfigureBuilder {
 	 * Method for overriding the resourceloader, default is file and classpath
 	 * 
 	 * @param resourceLoader
-	 *            as String ,default value is file,classpath
+	 *            the resourceLoader will specify from where to load templates
+	 *            ,default value is file,classpath
+	 * @return {@link TemplateConfigureBuilder}
 	 */
 	public TemplateConfigureBuilder resourceLoader(String resourceLoader) {
 		this.resourceLoader = resourceLoader;
@@ -43,6 +45,7 @@ public class TemplateConfigureBuilder {
 	 * 
 	 * @param templatePath
 	 *            as String , template location
+	 * @return {@link TemplateConfigureBuilder}
 	 */
 	public TemplateConfigureBuilder resourcePath(String templatePath) {
 		this.templatePath = templatePath;
@@ -54,6 +57,7 @@ public class TemplateConfigureBuilder {
 	 * 
 	 * @param cache
 	 *            as boolean , default is true
+	 * @return {@link TemplateConfigureBuilder}
 	 */
 	public TemplateConfigureBuilder enableCache(boolean cache) {
 		this.cache = cache;
@@ -65,7 +69,7 @@ public class TemplateConfigureBuilder {
 	 * 
 	 * @param defaultEncoding
 	 *            as String , default is UTF-8
-	 * @return
+	 * @return {@link TemplateConfigureBuilder}
 	 */
 	public TemplateConfigureBuilder encodingType(String defaultEncoding) {
 		this.defaultEncoding = defaultEncoding;

@@ -25,15 +25,15 @@ import io.mosip.kernel.templatemanager.freemarker.exception.TemplateResourceNotF
  * Engine, TemplateManagerImpl will merge the template with values.
  * 
  * <pre>
- * // set up and initialize {@link MosipTemplateManager} using {@link
- * // TemplateConfigureBuilder} before this code block
+ * // set up and initialize MosipTemplateManager using TemplateConfigureBuilder
+ * // before this code block
  *
  * MosipTemplateManager templateManager = new TemplateConfigureBuilder().build();
  * templateManager.merge(template, values);
  * </pre>
  * 
  * @author Abhishek Kumar
- * @version 1.0
+ * @version 1.0.0
  * @since 2018-10-01
  */
 public class TemplateManagerImpl implements MosipTemplateManager {
@@ -56,9 +56,12 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	 * @param is
 	 *            the {@link InputStream} is template content .
 	 * @param values
-	 *            as Map<String,Object> where key will be placeholder name and
-	 *            Object is the actual value for the placeholder
+	 *            as Map&lt;String,Object &gt; where key will be placeholder name
+	 *            and Object is the actual value for the placeholder
 	 * @return template merged template content as {@link InputStream}
+	 * @throws IOException
+	 *             if an I/O exception occurs during writing to the writer
+	 * 
 	 */
 	@Override
 	public InputStream mergeTemplate(InputStream is, Map<String, Object> values) throws IOException {
@@ -88,9 +91,11 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	 * @param writer
 	 *            output writer for rendered template
 	 * @param values
-	 *            as Map<String,Object> where key is placeholder name and Object is
-	 *            Placeholder value
+	 *            as Map&lt;String,Object &gt; where key is placeholder name and
+	 *            Object is Placeholder value
 	 * @return boolean true if successfully, false otherwise.
+	 * @throws IOException
+	 *             if an I/O exception occurs during writing to the writer
 	 */
 	@Override
 	public boolean merge(String templateName, Writer writer, Map<String, Object> values) throws IOException {
@@ -105,11 +110,13 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	 * @param writer
 	 *            output writer for render template
 	 * @param values
-	 *            as Map<String,Object> where key is placeholder name and Object is
-	 *            value for the placeholder
+	 *            as Map&lt;String,Object &gt; where key is placeholder name and
+	 *            Object is value for the placeholder
 	 * @param encodingType
 	 *            as String like UTF-8,UTF-16 etc.
 	 * @return boolean true if successfully, false otherwise
+	 * @throws IOException
+	 *             if an I/O exception occurs during writing to the writer
 	 */
 	@Override
 	public boolean merge(String templateName, Writer writer, Map<String, Object> values, String encodingType)
