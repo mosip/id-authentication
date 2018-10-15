@@ -215,8 +215,9 @@ public class OTPAuthServiceTest {
 	 * @throws IdAuthenticationBusinessException
 	 */
 
-	@Ignore
-	@Test(expected = IDDataValidationException.class)
+//	@Ignore
+//	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void TEst_isEMptynull() throws IdAuthenticationBusinessException {
 		OTPAuthServiceImpl authservice = Mockito.mock(OTPAuthServiceImpl.class);
 		Mockito.when(authservice.isEmpty(Mockito.any())).thenReturn(true);
