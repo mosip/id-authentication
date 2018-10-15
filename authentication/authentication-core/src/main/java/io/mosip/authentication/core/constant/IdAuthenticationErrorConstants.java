@@ -26,6 +26,8 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_VID("IDA-MLC-004", "Invalid VID"), EXPIRED_VID("IDA-IDV-004", "Expired VID"), // Not referenced
 	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
+	INVALID_INPUT_PARAMETER("IDA-IDV-002", "Invalid Input Parameter - %s"),
+	MISSING_INPUT_PARAMETER("IDA-IDV-003", "Missing Input Parameter - %s"),
 
 	// ID_VERIFICATION_FAILED_EXCEPTION("IDA-DTV-IDV-001", "Invalid UIN"),
 	// Internal Errors
