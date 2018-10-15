@@ -1,4 +1,4 @@
-package io.mosip.kernel.datamapper.orika.impl;
+package io.mosip.kernel.datamapper.orika.impl.model;
 
 import java.util.List;
 
@@ -6,6 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 
+ * @author Neha
+ *
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
