@@ -1,23 +1,17 @@
 package io.mosip.registration.service.impl;
 
 import java.sql.Timestamp;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.core.spi.idgenerator.MosipPridGenerator;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
-import io.mosip.registration.code.AuditLogTempConstant;
 import io.mosip.registration.core.exceptions.DatabaseOperationException;
 import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.dao.RegistrationDao;
@@ -34,30 +28,15 @@ import io.mosip.registration.service.RegistrationService;
 @Component
 public class RegistrationServiceImpl implements RegistrationService<String, RegistrationDto> {
 
-
 	@Autowired
 	private DocumentRepository documentRepository;
-	
+
 	/**
 	 * Field for {@link #RegistrationDao}
 	 */
 	@Autowired
 	private RegistrationDao registrationDao;
 
-
-	private static final String COULD_NOT_GET = "Could not get Information from table";
-
-	/**
-	 * Field for {@link #AuditRequestBuilder}
-	 */
-	@Autowired
-	private AuditRequestBuilder auditRequestBuilder;
-
-	/**
-	 * Field for {@link #AuditHandler<AuditRequestDto>}
-	 */
-	@Autowired
-	private AuditHandler<AuditRequestDto> auditHandler;
 
 	/**
 	 * Field for {@link #MosipPridGenerator<String>}
@@ -71,32 +50,25 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	@Autowired
 	private RegistrationRepositary registrationRepositary;
 
-
-    
 	@Override
-	public ResponseDto addRegistration(RegistrationDto registrationDto,String groupId)throws TablenotAccessibleException  {
+	public ResponseDto addRegistration(RegistrationDto registrationDto, String groupId)
+			throws TablenotAccessibleException {
 		RegistrationEntity entity = convertDtoToEntity(registrationDto);
 		ResponseDto response = new ResponseDto();
 		try {
-		if (registrationDto.getPreRegistrationId().isEmpty()) {
-			String prid = pridGenerator.generateId();
-			entity.setPreRegistrationId(prid);
-			entity.setGroupId(groupId);
-			registrationDao.save(entity);
-		} else {
-			registrationDao.save(entity);
-			
-		}
-		} catch (DataAccessLayerException e) {
-			
-			throw new TablenotAccessibleException("Could not add Information to table",e);
-		}
+			if (registrationDto.getPreRegistrationId().isEmpty()) {
+				String prid = pridGenerator.generateId();
+				entity.setPreRegistrationId(prid);
+				entity.setGroupId(groupId);
+				registrationDao.save(entity);
+			} else {
+				registrationDao.save(entity);
 
-		// createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-		// AuditLogTempConstant.APPLICATION_NAME.toString(), "",
-		// AuditLogTempConstant.EVENT_ID.toString(),
-		// AuditLogTempConstant.EVENT_TYPE.toString(),
-		// AuditLogTempConstant.EVENT_TYPE.toString());
+			}
+		} catch (DataAccessLayerException e) {
+
+			throw new TablenotAccessibleException("Could not add Information to table", e);
+		}
 
 		response.setPrId(entity.getPreRegistrationId());
 		response.setCreateDateTime(entity.getCreateDateTime());
@@ -109,14 +81,7 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 
 	}
 
-	
-	public int getThreshholdTime() {
-		return this.getThreshholdTime();
-	}
 
-	public String generateId() {
-		return UUID.randomUUID().toString();
-	}
 
 	private RegistrationEntity convertDtoToEntity(RegistrationDto dto) {
 		RegistrationEntity registrationEntity = new RegistrationEntity();
@@ -155,23 +120,6 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 		return registrationEntity;
 	}
 
-
-	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,
-			String eventId, String eventName, String eventType) {
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
-				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
-				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-				.setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(AuditLogTempConstant.ID.toString())
-				.setIdType(AuditLogTempConstant.ID_TYPE.toString())
-				.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-				.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-				.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-				.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
-
-		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-		auditHandler.writeAudit(auditRequestDto);
-	}
 
 	/**
 	 * This Method is used to fetch all the applications created by User
@@ -261,23 +209,34 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	}
 
 	/**
-	 * This Method is used to delete the Individual Application and documents associated with it
+	 * This Method is used to delete the Individual Application and documents
+	 * associated with it
 	 * 
 	 * @param groupId
-	 * @param list of preRegistrationIds
+	 * @param list
+	 *            of preRegistrationIds
 	 * 
 	 * 
 	 */
 	@Override
-	public void deleteIndividual(String groupId, List<String> preregIds) {
+	public List<ResponseDto> deleteIndividual(String groupId, List<String> preregIds) {
+		List<ResponseDto> responseList = new ArrayList<>();
 		try {
 			for (String preregId : preregIds) {
+				ResponseDto responseDto = new ResponseDto();
 				RegistrationEntity applicant = registrationRepositary.findByGroupIdAndPreRegistrationId(groupId,
 						preregId);
 				if (applicant.getStatusCode().equals("Draft")) {
 					if (!applicant.getIsPrimary()) {
 						documentRepository.deleteAllByPreregId(preregId);
 						registrationRepositary.deleteByGroupIdAndPreRegistrationId(groupId, preregId);
+						responseDto.setGroupId(groupId);
+						responseDto.setPrId(applicant.getPreRegistrationId());
+						responseDto.setCreateDateTime(applicant.getCreateDateTime());
+						responseDto.setCreatedBy(applicant.getCreatedBy());
+						responseDto.setUpdateDateTime(applicant.getUpdateDateTime());
+						responseDto.setUpdatedBy(applicant.getUpdatedBy());
+						responseList.add(responseDto);
 					} else {
 						throw new OperationNotAllowedException(
 								RegistrationErrorCodes.DELETE_OPERATION_NOT_ALLOWED_PRIMARY);
@@ -290,27 +249,38 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 		} catch (DataAccessLayerException e) {
 			throw new DatabaseOperationException("Failed to delete the appliation", e);
 		}
-
+		return responseList;
 	}
-	
+
 	/**
-	 * This Method is used to delete the Group Applications and documents associated with it
+	 * This Method is used to delete the Group Applications and documents associated
+	 * with it
 	 * 
 	 * @param groupId
 	 * 
 	 * 
 	 */
 	@Override
-	public void deleteGroup(String groupId) {
+	public List<ResponseDto> deleteGroup(String groupId) {
+		List<ResponseDto> responseList = new ArrayList<>();
 		try {
 			List<RegistrationEntity> applications = registrationRepositary.findBygroupId(groupId);
 			for (RegistrationEntity application : applications) {
+				ResponseDto responseDto = new ResponseDto();
+				responseDto.setGroupId(groupId);
+				responseDto.setPrId(application.getPreRegistrationId());
+				responseDto.setCreateDateTime(application.getCreateDateTime());
+				responseDto.setCreatedBy(application.getCreatedBy());
+				responseDto.setUpdateDateTime(application.getUpdateDateTime());
+				responseDto.setUpdatedBy(application.getUpdatedBy());
+				responseList.add(responseDto);
 				documentRepository.deleteAllByPreregId(application.getPreRegistrationId());
 			}
 			registrationRepositary.deleteAllBygroupId(groupId);
 		} catch (DataAccessLayerException e) {
 			throw new DatabaseOperationException("Failed to delete the appliation", e);
 		}
+		return responseList;
 	}
 
 }

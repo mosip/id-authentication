@@ -48,6 +48,12 @@ public class RegistrationController {
 	private String groupId;
 	
 	private boolean isNewApplication=true;
+	
+	/**
+	 * 
+	 * @param list of application forms
+	 * @return List of response dto containing pre-id and group-id
+	 */
 
 	@PostMapping(path = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Save form data", response = RegistrationCode.class)
@@ -77,7 +83,10 @@ public class RegistrationController {
 	 * 
 	 * @return List of applications created by User
 	 */
-	@PostMapping(path = "/Applications")
+	@PostMapping(path = "/Applications", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "fetch all the applications created by user")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications fetched successfully"),
+			@ApiResponse(code = 400, message = "Unable to fetch applications ") })
 	public ResponseEntity<List<ViewRegistrationResponseDto>> getAllApplications(
 			@RequestParam(value = "userId", required = true) String userId)
 
@@ -92,7 +101,10 @@ public class RegistrationController {
 	 * 
 	 * @return status of application
 	 */
-	@PostMapping(path = "/ApplicationStatus")
+	@PostMapping(path = "/ApplicationStatus", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "fetch the status of a application", response = RegistrationCode.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications status fetched successfully"),
+			@ApiResponse(code = 400, message = "Unable to fetch application status ") })
 	public ResponseEntity<Map<String, String>> getApplicationStatus(
 			@RequestParam(value = "groupId", required = true) String groupId)
 
@@ -106,11 +118,16 @@ public class RegistrationController {
 	 * Delete api to delete the Individual applicant and documents associated with it
 	 * 
 	 */
-	@DeleteMapping(path = "/discard")
-	public void discardIndividual(@RequestParam(value = "groupId") String groupId,
+	
+    @DeleteMapping(path = "/discard", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Discard individual")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of individual is successfully"),
+			@ApiResponse(code = 400, message = "Unable to delete individual") })
+	public  ResponseEntity<List<ResponseDto>> discardIndividual(@RequestParam(value = "groupId") String groupId,
 			@RequestParam(value = "preregIds") List<String> preregIds) {
 		
-		registrationService.deleteIndividual(groupId, preregIds);
+		List<ResponseDto> response=registrationService.deleteIndividual(groupId, preregIds);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 		
 	}
 
@@ -118,9 +135,14 @@ public class RegistrationController {
 	 * Delete api to delete the Group applicants and documents associated with it
 	 * 
 	 */
-	@DeleteMapping(path = "/discardGroup")
-	public void discardGroup(@RequestParam(value = "groupId") String groupId) {
-		registrationService.deleteGroup(groupId);
+
+	 @DeleteMapping(path = "/discardGroup", produces = MediaType.APPLICATION_JSON_VALUE)
+	 @ApiOperation(value = "delete the Group applicants")
+	 @ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of group is successfully"),
+				@ApiResponse(code = 400, message = "Unable to delete group") })
+	public ResponseEntity<List<ResponseDto>> discardGroup(@RequestParam(value = "groupId") String groupId) {
+		List<ResponseDto> response=registrationService.deleteGroup(groupId);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 }

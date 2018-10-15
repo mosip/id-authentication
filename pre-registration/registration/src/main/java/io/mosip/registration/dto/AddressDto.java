@@ -18,12 +18,16 @@ public class AddressDto implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6705845720255847210L;
 	
+	/**	The addrLine1 */
 	private String addrLine1;
 
+	/**	The addrLine2 */
 	private String addrLine2;
 
+	/**	The addrLine3 */
 	private String addrLine3;
 	
+	/**	The locationCode */
 	private String locationCode;
 
 	

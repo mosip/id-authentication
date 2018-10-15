@@ -166,6 +166,7 @@ public class RegistrationControllerTest {
 		Mockito.when(registrationService.getApplicationDetails(Mockito.anyString())).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/Applications/")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.param("userId", userId);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -180,6 +181,7 @@ public class RegistrationControllerTest {
 
 		Mockito.when(registrationService.getApplicationStatus(Mockito.anyString())).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/ApplicationStatus/")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.param("groupId", groupId);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -189,20 +191,32 @@ public class RegistrationControllerTest {
 	public void discardIndividualTest() throws Exception {
 		 String groupId= "33";
 		 String[] preregIds= {"3"};
-		Mockito.doNothing().when(registrationService).deleteIndividual(ArgumentMatchers.any(),ArgumentMatchers.any());
+		 ResponseDto response= new ResponseDto();
+		 response.setPrId("3");
+	     response.setGroupId("33");
+	     List<ResponseDto> resList= new ArrayList<>();
+	     resList.add(response);
+		Mockito.when(registrationService.deleteIndividual(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(resList);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/registration/discard")
-				.param("groupId", groupId).param("preregIds",preregIds).accept(MediaType.ALL_VALUE);
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.param("groupId", groupId).param("preregIds",preregIds);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 	
 	@Test
 	public void discardGroupTest() throws Exception {
 		 String groupId= "33";
-		Mockito.doNothing().when(registrationService).deleteGroup(ArgumentMatchers.any());
+		 ResponseDto response= new ResponseDto();
+		 response.setPrId("3");
+	     response.setGroupId("33");
+	     List<ResponseDto> resList= new ArrayList<>();
+	     resList.add(response);
+		Mockito.when(registrationService.deleteGroup(ArgumentMatchers.any())).thenReturn(resList);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/registration/discardGroup")
-				.param("groupId", groupId).accept(MediaType.ALL_VALUE);
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.param("groupId", groupId);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 

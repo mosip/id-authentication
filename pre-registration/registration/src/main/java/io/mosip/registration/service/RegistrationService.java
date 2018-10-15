@@ -47,8 +47,10 @@ public interface RegistrationService<T, U> {
 	 *          
 	 * 
 	 * @throws PrimaryMemberException
+	 * 
+	 * @returns List of response Dto
 	 */
-	public void deleteIndividual(String groupId, List<String> preregIds);
+	public List<ResponseDto> deleteIndividual(String groupId, List<String> preregIds);
 	
 	
 	/**
@@ -56,6 +58,6 @@ public interface RegistrationService<T, U> {
 	 *          
 	 * 
 	 */
-	public void deleteGroup(String id);
+	public List<ResponseDto> deleteGroup(String id);
 
 }
