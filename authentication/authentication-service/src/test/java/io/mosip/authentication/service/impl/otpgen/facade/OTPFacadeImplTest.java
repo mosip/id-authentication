@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
@@ -18,9 +19,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
+import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.service.entity.AutnTxn;
@@ -32,7 +35,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
  *
  * @author Rakesh Roshan
  */
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -56,16 +58,11 @@ public class OTPFacadeImplTest {
 	@Mock
 	IdAuthService idAuthService;
 
-	// @Mock
-	// DateUtil dateUtil ;
-
 	@InjectMocks
 	OTPFacadeImpl otpFacadeImpl;
 
 	@Before
 	public void before() {
-		//MockitoAnnotations.initMocks(this);
-
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
 
@@ -75,7 +72,7 @@ public class OTPFacadeImplTest {
 		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
 		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
 		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-	
+
 		mosipRollingFileAppender.setMaxHistory(10);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
@@ -107,38 +104,40 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "saveAutnTxn", otpRequestDto);
 	}
 
-	
 	@Test
 	public void testGetRefIdForUIN() {
 		String uniqueID = otpRequestDto.getId();
-		String actualrefid=ReflectionTestUtils.invokeMethod(idAuthService, "validateUIN", uniqueID);
-		String expactedRefId=ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
+		String actualrefid = ReflectionTestUtils.invokeMethod(idAuthService, "validateUIN", uniqueID);
+		String expactedRefId = ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
 		assertEquals(actualrefid, expactedRefId);
 	}
 
-	
+	@Test
+	public void test_WhenInvalidID_ForUIN_RefIdIsNull() throws IdAuthenticationBusinessException {
+		otpRequestDto.setId("cvcvcjhg76");
+		String uniqueID = otpRequestDto.getId();
+		ReflectionTestUtils.invokeMethod(idAuthService, "validateUIN", uniqueID);
+		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
+	}
+
 	@Test
 	public void testGetRefIdForVID() {
 		String uniqueID = otpRequestDto.getId();
 		otpRequestDto.setIdType(IdType.VID.getType());
-		String actualrefid=ReflectionTestUtils.invokeMethod(idAuthService, "validateVID", uniqueID);
-		String expactedRefId=ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
-		
+		String actualrefid = ReflectionTestUtils.invokeMethod(idAuthService, "validateVID", uniqueID);
+		String expactedRefId = ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
+
 		assertEquals(actualrefid, expactedRefId);
 	}
 
-	/*
-	 * @Test(expected=IdAuthenticationBusinessException.class) public void
-	 * testGetRefIdForUINHandleBusineddException() throws
-	 * IdAuthenticationBusinessException { IdAuthenticationBusinessException e = new
-	 * IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN)
-	 * ; String uniqueID = otpRequestDto.getUniqueID();
-	 * //Mockito.when(idAuthService.validateUIN(uniqueID)).thenThrow(e);
-	 * ReflectionTestUtils.invokeMethod(idAuthService, "validateUIN", "");
-	 * ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
-	 * 
-	 * }
-	 */
+	@Test
+	public void test_WhenInvalidID_ForVID_RefIdIsNull() throws IdAuthenticationBusinessException {
+		otpRequestDto.setId("cvcvcjhg76");
+		otpRequestDto.setIdType(IdType.VID.getType());
+		String uniqueID = otpRequestDto.getId();
+		ReflectionTestUtils.invokeMethod(idAuthService, "validateVID", uniqueID);
+		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getRefId", otpRequestDto);
+	}
 
 	// =========================================================
 	// ************ Helping Method *****************************
