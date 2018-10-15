@@ -82,7 +82,7 @@ public class MailNotifierUtils {
 					.add(new MosipErrors(MailNotifierArgumentErrorConstants.SUBJECT_NOT_FOUND.getErrorCode(),
 							MailNotifierArgumentErrorConstants.SUBJECT_NOT_FOUND.getErrorMessage()));
 		}
-		if (mailContent == null || mailSubject == null || mailSubject.isEmpty()) {
+		if (mailContent == null || mailContent.isEmpty()) {
 			validationErrorsList
 					.add(new MosipErrors(MailNotifierArgumentErrorConstants.CONTENT_NOT_FOUND.getErrorCode(),
 							MailNotifierArgumentErrorConstants.CONTENT_NOT_FOUND.getErrorMessage()));
