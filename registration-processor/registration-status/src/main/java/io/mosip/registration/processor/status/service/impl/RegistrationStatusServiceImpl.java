@@ -6,14 +6,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
@@ -30,6 +30,9 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	@Value("${landingZone_To_VirusScan_Interval_Threshhold_time}")
 
 	private int threshholdTime;
+
+	private static final String DECRYPTION_SUCCESS = "description--sync Success";
+	private static final String DECRYPTION_FAILURE = "description--sync Failure";
 
 	@Autowired
 	private RegistrationStatusDao registrationStatusDao;
@@ -55,25 +58,20 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		} catch (DataAccessLayerException e) {
 
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
-		} finally { 
-			String description="";
-			if (isTransactionSuccessful) {
-				description="description--getRegistrationStatus Success";
-				
-				
-			} else {
-				description="description--getRegistrationStatus Failure";
-				
-			}
+		} finally {
 
-			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
-					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
+			String description = isTransactionSuccessful ? DECRYPTION_SUCCESS : DECRYPTION_FAILURE;
+
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
 		}
 	}
 
 	@Override
 	public List<RegistrationStatusDto> findbyfilesByThreshold(String statusCode) {
-		boolean isTransactionSuccessful  = false;
+		boolean isTransactionSuccessful = false;
 		try {
 			List<RegistrationStatusEntity> entities = registrationStatusDao.findbyfilesByThreshold(statusCode,
 					getThreshholdTime());
@@ -82,19 +80,14 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
-			String description="";
-			if (isTransactionSuccessful) {
-				description="description--findbyfilesByThreshold Success";
-				
-				
-			} else {
-				description="description--findbyfilesByThreshold Failure";
-				
-			}
 
-			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
-					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
-			
+			String description = isTransactionSuccessful ? DECRYPTION_SUCCESS : DECRYPTION_FAILURE;
+
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
+
 		}
 	}
 
@@ -105,7 +98,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		registrationStatusDto.setLatestRegistrationTransactionId(transactionId);
 		try {
 			RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
-			registrationStatusDao.save(entity); 
+			registrationStatusDao.save(entity);
 			isTransactionSuccessful = true;
 			TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
 					null, TransactionTypeCode.CREATE.toString(), "Added registration status record",
@@ -116,17 +109,13 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Could not add Information to table", e);
 		} finally {
-			String description="";
-			if (isTransactionSuccessful) {
-				description="description--addRegistrationStatus Success";
-	
-			} else {
-				description="description--addRegistrationStatus Failure";
-				
-			}
-			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
-					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
-		
+
+			String description = isTransactionSuccessful ? DECRYPTION_SUCCESS : DECRYPTION_FAILURE;
+
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
 
 		}
 	}
@@ -152,25 +141,21 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			}
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Could not update Information to table", e);
-		} finally { 
-			String description="";
-			if (isTransactionSuccessful) {
-				description="description--updateRegistrationStatus Success";
-	
-			} else {
-				description="description--updateRegistrationStatus Failure";
-				
-			}
-			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
-					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
-			
+		} finally {
+
+			String description = isTransactionSuccessful ? DECRYPTION_SUCCESS : DECRYPTION_FAILURE;
+
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
 
 		}
 	}
 
 	@Override
 	public List<RegistrationStatusDto> getByStatus(String status) {
-		boolean isTransactionSuccessful = false; 
+		boolean isTransactionSuccessful = false;
 		try {
 			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
 					.getEnrolmentStatusByStatusCode(status);
@@ -179,17 +164,13 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
-			String description="";
-			if (isTransactionSuccessful) {
-				description="description--getByStatus Success";
-	
-			} else {
-				description="description--getByStatus Failure";
-				
-			}
-			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
-					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
-			
+
+			String description = isTransactionSuccessful ? DECRYPTION_SUCCESS : DECRYPTION_FAILURE;
+
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
 
 		}
 	}
@@ -208,17 +189,14 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
-			String description="";
-			if (isTransactionSuccessful) {
-				description="description--getByIds Success";
-	
-			} else {
-				description="description--getByIds Failure";
-				
-			}
-			 createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(), AuditLogTempConstant.APPLICATION_NAME.toString(),description, AuditLogTempConstant.EVENT_ID.toString(), 
-					 AuditLogTempConstant.EVENT_TYPE.toString(), AuditLogTempConstant.EVENT_TYPE.toString());
-			
+
+			String description = isTransactionSuccessful ? DECRYPTION_SUCCESS : DECRYPTION_FAILURE;
+
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
+
 		}
 	}
 
@@ -235,7 +213,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 
 	private RegistrationStatusDto convertEntityToDto(RegistrationStatusEntity entity) {
 		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
-		registrationStatusDto.setRegistrationId(entity.getRegistrationId());
+		registrationStatusDto.setRegistrationId(entity.getId());
 		registrationStatusDto.setRegistrationType(entity.getRegistrationType());
 		registrationStatusDto.setReferenceRegistrationId(entity.getReferenceRegistrationId());
 		registrationStatusDto.setStatusCode(entity.getStatusCode());
@@ -255,7 +233,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 
 	private RegistrationStatusEntity convertDtoToEntity(RegistrationStatusDto dto) {
 		RegistrationStatusEntity registrationStatusEntity = new RegistrationStatusEntity();
-		registrationStatusEntity.setRegistrationId(dto.getRegistrationId());
+		registrationStatusEntity.setId(dto.getRegistrationId());
 		registrationStatusEntity.setRegistrationType(dto.getRegistrationType());
 		registrationStatusEntity.setReferenceRegistrationId(dto.getReferenceRegistrationId());
 		registrationStatusEntity.setStatusCode(dto.getStatusCode());
@@ -286,24 +264,21 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	public String generateId() {
 		return UUID.randomUUID().toString();
 	}
-	public void createAuditRequestBuilder(String applicationId,String applicationName,String description,String eventId,String eventName,String eventType){
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-		.setApplicationId(applicationId)
-		.setApplicationName(applicationName)
-		.setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-		.setDescription(description)
-		.setEventId(eventId)
-		.setEventName(eventName)
-		.setEventType(eventType)
-		.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-		.setHostName(AuditLogTempConstant.HOST_NAME.toString())
-		.setId(AuditLogTempConstant.ID.toString()).setIdType(AuditLogTempConstant.ID_TYPE.toString())
-		.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-		.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-		.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-		.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
-		
-        AuditRequestDto auditRequestDto = auditRequestBuilder.build();
+
+	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,
+			String eventId, String eventName, String eventType) {
+		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
+				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
+				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
+				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
+				.setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(AuditLogTempConstant.ID.toString())
+				.setIdType(AuditLogTempConstant.ID_TYPE.toString())
+				.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
+				.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
+				.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
+				.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+
+		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
 		auditHandler.writeAudit(auditRequestDto);
 	}
 

@@ -2,12 +2,15 @@ package io.mosip.registration.processor.packet.receiver.exception;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,6 +37,9 @@ public class DuplicateUploadExceptionTest {
 
 	@Mock
 	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+
+    @Mock
+    private SyncRegistrationService syncRegistrationService;
 
 	@InjectMocks
 	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl() {
@@ -67,6 +73,7 @@ public class DuplicateUploadExceptionTest {
 		}
 
 		Mockito.doReturn(dto).when(registrationStatusService).getRegistrationStatus("0000");
+        when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
 
 		try {
 			packetReceiverService.storePacket(mockMultipartFile);

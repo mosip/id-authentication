@@ -12,6 +12,7 @@ import org.springframework.web.multipart.support.MissingServletRequestPartExcept
 import io.mosip.registration.processor.packet.receiver.dto.ExceptionJSONInfo;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
+import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.exception.ValidationException;
 import io.mosip.registration.processor.packet.receiver.exception.systemexception.TimeoutException;
@@ -51,6 +52,14 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(FileSizeExceedException.class)
 	public ResponseEntity<ExceptionJSONInfo> handleFileSizeExceedException(final FileSizeExceedException e,
+			WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(e.getErrorCode(), e.getErrorText());
+		log.error(errorDetails.getErrorcode(), e.getCause());
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(PacketNotSyncException.class)
+	public ResponseEntity<ExceptionJSONInfo> handleFileSizeExceedException(final PacketNotSyncException e,
 			WebRequest request) {
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(e.getErrorCode(), e.getErrorText());
 		log.error(errorDetails.getErrorcode(), e.getCause());

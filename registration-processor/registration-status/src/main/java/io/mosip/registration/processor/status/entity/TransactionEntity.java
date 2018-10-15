@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,12 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name = "registration_transaction", schema = "regprc")
-public class TransactionEntity {
-
-	/** The id. */
-	@Column(name = "id")
-	@Id
-	private String transactionId;
+public class TransactionEntity extends BaseRegistrationEntity {
 
 	/** The registration id. */
 	@Column(name = "reg_id")
@@ -103,32 +97,13 @@ public class TransactionEntity {
 	 */
 	public TransactionEntity(String transactionId, String registrationId, String parentid, String trntypecode,
 			String statusCode, String statusComment) {
-		this.transactionId = transactionId;
+		id = transactionId;
 		this.registrationId = registrationId;
 		this.parentid = parentid;
 		this.trntypecode = trntypecode;
 		this.statusCode = statusCode;
 		this.statusComment = statusComment;
 
-	}
-
-	/**
-	 * Gets the transaction id.
-	 *
-	 * @return the transaction id
-	 */
-	public String getTransactionId() {
-		return transactionId;
-	}
-
-	/**
-	 * Sets the transaction id.
-	 *
-	 * @param transactionId
-	 *            the new transaction id
-	 */
-	public void setTransactionId(String transactionId) {
-		this.transactionId = transactionId;
 	}
 
 	/**

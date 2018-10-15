@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.packet.receiver.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -13,6 +14,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.registration.processor.status.service.SyncRegistrationService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,6 +61,18 @@ public class PacketReceiverServiceTest {
 
 	@Mock
 	private RegistrationStatusDto mockDto;
+
+    @Mock
+    private AuditRequestBuilder auditRequestBuilder;
+
+    @Mock
+    AuditRequestDto auditRequestDto;
+
+    @Mock
+    private AuditHandler<AuditRequestDto> auditHandler;
+
+	@Mock
+    private SyncRegistrationService syncRegistrationService;
 
 	@Rule
 	public ExpectedException exceptionRule = ExpectedException.none();
@@ -96,6 +114,10 @@ public class PacketReceiverServiceTest {
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
+
+		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
+		Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
+		Mockito.doReturn(true).when(auditHandler).writeAudit(auditRequestDto);
 	}
 
 	@Test
