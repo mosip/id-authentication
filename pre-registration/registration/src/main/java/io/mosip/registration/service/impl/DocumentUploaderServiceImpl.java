@@ -1,24 +1,34 @@
 package io.mosip.registration.service.impl;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.registration.code.StatusCodes;
 import io.mosip.registration.dto.DocumentDto;
 import io.mosip.registration.entity.DocumentEntity;
+import io.mosip.registration.exception.DocumentSizeExceedException;
 import io.mosip.registration.repositary.DocumentRepository;
 import io.mosip.registration.repositary.RegistrationRepositary;
 import io.mosip.registration.service.DocumentUploadService;
 
 @Component
+@Qualifier("DocumentUploaderServiceImpl")
 public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
-	@Autowired
-	private DocumentEntity documentEntity;
+	private final Logger logger = LoggerFactory.getLogger(DocumentUploaderServiceImpl.class);
+	
+	//@Autowired
+	//private DocumentEntity documentEntity;
 
 	@Autowired
 	@Qualifier("documentRepositoery")
@@ -27,6 +37,9 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 	@Autowired
 	@Qualifier("registrationRepository")
 	private RegistrationRepositary registrationRepositary;
+	
+	@Value("${max.file.size}")
+	private int maxFileSize;
 
 	/*
 	 * (non-Javadoc)
@@ -36,10 +49,15 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 	 * org.springframework.web.multipart.MultipartFile)
 	 */
 	@Override
-	public Boolean uploadDoucment(MultipartFile file, DocumentDto documentDto) throws Exception {
+	public Boolean uploadDoucment(MultipartFile file, DocumentDto documentDto) {
 
 		boolean saveFlag = false;
+		
+		if(file.getSize()>getMaxFileSize()){
+			throw new DocumentSizeExceedException(StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
+		}
 
+		DocumentEntity documentEntity =new DocumentEntity ();
 		if (documentDto.is_primary()) {
 
 			documentEntity.setPreregId(documentDto.getPrereg_id());
@@ -47,7 +65,11 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 			documentEntity.setDoc_cat_code(documentDto.getDoc_cat_code());
 			documentEntity.setDoc_typ_code(documentDto.getDoc_typ_code());
 			documentEntity.setDoc_file_format(documentDto.getDoc_file_format());
-			documentEntity.setDoc_store(file.getBytes());
+			try {
+				documentEntity.setDoc_store(file.getBytes());
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+			}
 			documentEntity.setStatus_code(documentDto.getStatus_code());
 			documentEntity.setLang_code(documentDto.getLang_code());
 			documentEntity.setCr_by(documentDto.getCr_by());
@@ -55,7 +77,8 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 			documentEntity.setUpd_by(documentDto.getUpd_by());
 			documentEntity.setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
 
-			documentRepository.save(documentEntity);
+			DocumentEntity entityr = documentRepository.save(documentEntity);
+			System.out.println(entityr);
 
 			List<String> preIdList =registrationRepositary.findBygroupIds(documentDto.getGroup_id());
 
@@ -72,14 +95,22 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
 					for (int ecount = 0; ecount < entity.size(); ecount++) {
 						if (entity.get(ecount).getDoc_cat_code().equalsIgnoreCase(documentDto.getDoc_cat_code())) {
-							entity.get(ecount).setDoc_store(file.getBytes());
+							try {
+								entity.get(ecount).setDoc_store(file.getBytes());
+							} catch (IOException e) {
+								logger.error(e.getMessage());
+							}
 						} else {
 							entity.get(ecount).setPreregId(preIdList.get(counter));
 							entity.get(ecount).setDoc_name(file.getOriginalFilename());
 							entity.get(ecount).setDoc_cat_code(documentDto.getDoc_cat_code());
 							entity.get(ecount).setDoc_typ_code(documentDto.getDoc_typ_code());
 							entity.get(ecount).setDoc_file_format(documentDto.getDoc_file_format());
-							entity.get(ecount).setDoc_store(file.getBytes());
+							try {
+								entity.get(ecount).setDoc_store(file.getBytes());
+							} catch (IOException e) {
+								logger.error(e.getMessage());
+							}
 							entity.get(ecount).setStatus_code(documentDto.getStatus_code());
 							entity.get(ecount).setLang_code(documentDto.getLang_code());
 							entity.get(ecount).setCr_by(documentDto.getCr_by());
@@ -107,7 +138,11 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 				documentEntity.setDoc_cat_code(documentDto.getDoc_cat_code());
 				documentEntity.setDoc_typ_code(documentDto.getDoc_typ_code());
 				documentEntity.setDoc_file_format(documentDto.getDoc_file_format());
-				documentEntity.setDoc_store(file.getBytes());
+				try {
+					documentEntity.setDoc_store(file.getBytes());
+				} catch (IOException e) {
+					logger.error(e.getMessage());
+				}
 				documentEntity.setStatus_code(documentDto.getStatus_code());
 				documentEntity.setLang_code(documentDto.getLang_code());
 				documentEntity.setCr_by(documentDto.getCr_by());
@@ -123,6 +158,9 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
 		return saveFlag;
 
+	}
+	public long getMaxFileSize() {
+		return (5 * 1024 * 1024);
 	}
 
 

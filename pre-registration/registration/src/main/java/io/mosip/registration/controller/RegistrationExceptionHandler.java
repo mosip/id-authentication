@@ -48,7 +48,7 @@ public class RegistrationExceptionHandler {
 			WebRequest webRequest){
 		
 		ExceptionJSONInfo jsonInfo=new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_004.toString(), 
-											StatusCodes.DOCUMENT_SIZE_GREATER_THAN_LIMIT.toString());
+											StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
 		
 		return new ResponseEntity<ExceptionJSONInfo>(jsonInfo, HttpStatus.BAD_REQUEST);
 	} 

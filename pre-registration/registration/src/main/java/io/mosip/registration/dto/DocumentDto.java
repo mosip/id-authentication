@@ -2,16 +2,19 @@ package io.mosip.registration.dto;
 
 import java.io.Serializable;
 
+import org.springframework.mock.web.MockMultipartFile;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter@Setter
-@ToString@NoArgsConstructor
+@Data @NoArgsConstructor
 @AllArgsConstructor
 public class DocumentDto implements Serializable {
 
