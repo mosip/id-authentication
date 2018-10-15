@@ -82,7 +82,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 					TemplateManagerExceptionCodeConstants.TEMPLATE_NOT_FOUND.getErrorMessage());
 		} catch (ParseErrorException e) {
 			throw new TemplateParsingException(TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorCode(),
-					TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorMessage());
+					e.getMessage());
 		} catch (MethodInvocationException e) {
 			throw new TemplateMethodInvocationException(
 					TemplateManagerExceptionCodeConstants.TEMPLATE_INVALID_REFERENCE.getErrorCode(),
@@ -150,7 +150,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 					TemplateManagerExceptionCodeConstants.TEMPLATE_NOT_FOUND.getErrorMessage());
 		} catch (ParseErrorException e) {
 			throw new TemplateParsingException(TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorCode(),
-					TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorMessage());
+					e.getMessage());
 		} catch (MethodInvocationException e) {
 			throw new TemplateMethodInvocationException(
 					TemplateManagerExceptionCodeConstants.TEMPLATE_INVALID_REFERENCE.getErrorCode(),

@@ -78,7 +78,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 			return new ByteArrayInputStream(writer.toString().getBytes());
 		} catch (TemplateException e) {
 			throw new TemplateParsingException(TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorCode(),
-					TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorMessage());
+					e.getMessage());
 		}
 	}
 
