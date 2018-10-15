@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
@@ -227,37 +228,46 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		DemoEntity demoEntity = getDemoEntity(refId, authRequestDTO.getPersonalDataDTO()
 																.getDemoDTO()
 																.getLangPri());
-		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs,
-		        authRequestDTO.getPersonalDataDTO().getDemoDTO(), 
-		        demoEntity);
-		demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
-		
-		
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		statusInfoBuilder.setStatus(demoMatched);
-		
-		listMatchInputs.stream()
-			.filter(matchInput -> matchInput.getMatchStrategyType() != null)
-			.forEach(matchInput -> {
-						statusInfoBuilder.addMessageInfo(
-											AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
-													.map(AuthType::getType).orElse(""),
-											matchInput.getMatchStrategyType(), 
-											matchInput.getMatchValue()
-											)
-										.addAuthUsageDataBits(matchInput.getDemoMatchType().getUsedBit());
-					});
-		
-		
-		listMatchOutputs.forEach(matchOutput -> {
-						if(matchOutput.isMatched()) {
-							statusInfoBuilder.addAuthUsageDataBits(
-									matchOutput.getDemoMatchType()
-									.getMatchedBit());
-						}
-					});
-		
+		if(demoEntity != null) {
+			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs,
+			        authRequestDTO.getPersonalDataDTO().getDemoDTO(), 
+			        demoEntity);
+			demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
+			
+			statusInfoBuilder.setStatus(demoMatched);
+			
+			listMatchInputs.stream()
+				.forEach(matchInput -> {
+							if(AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
+									.map(AuthType::getType).isPresent()) {
+								statusInfoBuilder.addMessageInfo(
+										AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
+												.map(AuthType::getType).orElse(""),
+										matchInput.getMatchStrategyType(), 
+										matchInput.getMatchValue());
+							}
+							
+							statusInfoBuilder
+							.addAuthUsageDataBits(matchInput.getDemoMatchType().getUsedBit());
+						});
+			
+			
+			
+			listMatchOutputs.forEach(matchOutput -> {
+							if(matchOutput.isMatched()) {
+								statusInfoBuilder.addAuthUsageDataBits(
+										matchOutput.getDemoMatchType()
+										.getMatchedBit());
+							}
+						});
+		} else {
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST);//TODO check constant
+		}
+			
+			
 		return statusInfoBuilder.build();
+		
 
 	}
 

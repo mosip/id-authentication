@@ -118,8 +118,8 @@ public class DemoValidator implements Validator {
 						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
 			}
 
-			if (primaryLanguage != null && (personalFullAddressDTO.getAddrPri() == null
-					&& personalFullAddressDTO.getMsPri() == null && personalFullAddressDTO.getMtPri() == null)) {
+			if ((personalFullAddressDTO.getAddrPri() != null
+					|| personalFullAddressDTO.getMsPri() != null && personalFullAddressDTO.getMtPri() != null) && primaryLanguage == null) {
 
 				mosipLogger.error("SessionID12", "personal Full Address",
 						"Full Address Validation for primary language",
@@ -129,8 +129,8 @@ public class DemoValidator implements Validator {
 
 			}
 
-			if (secondaryLanguage != null && (personalFullAddressDTO.getAddrSec() == null
-					&& personalFullAddressDTO.getMsSec() == null && personalFullAddressDTO.getMtSec() == null)) {
+			if ((personalFullAddressDTO.getAddrSec() != null
+					|| personalFullAddressDTO.getMsSec() != null || personalFullAddressDTO.getMtSec() != null) && secondaryLanguage == null) {
 
 				mosipLogger.error("SessionID34", "personal Full Address",
 						"Full Address Validation for secondary language",
@@ -166,9 +166,9 @@ public class DemoValidator implements Validator {
 						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
 			}
 
-			if (primaryLanguage != null && (personalAddressDTO.getAddrLine1Pri() == null
-					&& personalAddressDTO.getAddrLine2Pri() == null && personalAddressDTO.getAddrLine3Pri() == null
-					&& personalAddressDTO.getCountryPri() == null && personalAddressDTO.getPinCodePri() == null)) {
+			if ((personalAddressDTO.getAddrLine1Pri() != null
+					|| personalAddressDTO.getAddrLine2Pri() != null || personalAddressDTO.getAddrLine3Pri() != null
+					|| personalAddressDTO.getCountryPri() != null || personalAddressDTO.getPinCodePri() != null) && primaryLanguage == null) {
 
 				mosipLogger.error("SessionID54645", "Personal Address for primary language",
 						"Address Validation for primary language",
@@ -178,9 +178,9 @@ public class DemoValidator implements Validator {
 
 			}
 
-			if (secondaryLanguage != null && (personalAddressDTO.getAddrLine1Sec() == null
-					&& personalAddressDTO.getAddrLine2Sec() == null && personalAddressDTO.getAddrLine3Sec() == null
-					&& personalAddressDTO.getCountrySec() == null && personalAddressDTO.getPinCodeSec() == null)) {
+			if ((personalAddressDTO.getAddrLine1Sec() != null
+					|| personalAddressDTO.getAddrLine2Sec() != null || personalAddressDTO.getAddrLine3Sec() != null
+					|| personalAddressDTO.getCountrySec() != null || personalAddressDTO.getPinCodeSec() != null) && secondaryLanguage != null) {
 
 				mosipLogger.error("SessionID9865", "Personal Address for secondary language",
 						"Address Validation for secondary language",

@@ -189,6 +189,7 @@ public class DemoValidatorTest {
 	}
 
 	// ====================== Full Address Validation Test ===================
+	@Ignore
 	@Test
 	public void testFullAddressValidation_WhenFadIstrue_AndPriAndSecLanguageIsNull() {
 
@@ -282,6 +283,7 @@ public class DemoValidatorTest {
 	}
 
 	// ====================== Address Validation Test ==================
+	@Ignore
 	@Test
 	public void testAddressValidation_WhenAdIsTrue_AndPriAndSecLanguageIsNull() {
 
