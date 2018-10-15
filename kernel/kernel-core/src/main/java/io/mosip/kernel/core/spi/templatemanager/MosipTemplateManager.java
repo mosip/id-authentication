@@ -22,10 +22,11 @@ public interface MosipTemplateManager {
 	 *            as Map&lt;String,Object &gt; where key will be placeholder name
 	 *            and Object is the actual value for the placeholder
 	 * @return template merged template content as {@link InputStream}
-	 * @throws IOException if an I/O exception occurs during writing to the writer
-	 * 			
+	 * @throws IOException
+	 *             if an I/O exception occurs during writing to the writer
+	 * 
 	 */
-	public InputStream mergeTemplate(InputStream template, Map<String, Object> values) throws IOException;
+	public InputStream merge(InputStream template, Map<String, Object> values) throws IOException;
 
 	/**
 	 * Merges a template and puts the rendered stream into the writer. The default
@@ -39,7 +40,8 @@ public interface MosipTemplateManager {
 	 *            as Map&lt;String,Object &gt; where key is placeholder name and
 	 *            Object is Placeholder value
 	 * @return boolean true if successfully, false otherwise.
-	 * @throws IOException if an I/O exception occurs during writing to the writer
+	 * @throws IOException
+	 *             if an I/O exception occurs during writing to the writer
 	 */
 	public boolean merge(String templateName, Writer writer, Map<String, Object> values) throws IOException;
 
@@ -56,7 +58,8 @@ public interface MosipTemplateManager {
 	 * @param encodingType
 	 *            as String like UTF-8,UTF-16 etc.
 	 * @return boolean true if successfully, false otherwise
-	 * @throws IOException if an I/O exception occurs during writing to the writer
+	 * @throws IOException
+	 *             if an I/O exception occurs during writing to the writer
 	 */
 	public boolean merge(String templateName, Writer writer, Map<String, Object> values, final String encodingType)
 			throws IOException;

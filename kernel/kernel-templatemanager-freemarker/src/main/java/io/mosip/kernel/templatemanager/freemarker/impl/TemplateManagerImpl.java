@@ -64,7 +64,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	 * 
 	 */
 	@Override
-	public InputStream mergeTemplate(InputStream is, Map<String, Object> values) throws IOException {
+	public InputStream merge(InputStream is, Map<String, Object> values) throws IOException {
 		Reader reader = null;
 		Template template = null;
 		StringWriter writer = new StringWriter();

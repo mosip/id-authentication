@@ -62,7 +62,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 	 * 
 	 */
 	@Override
-	public InputStream mergeTemplate(InputStream is, Map<String, Object> values) throws IOException {
+	public InputStream merge(InputStream is, Map<String, Object> values) throws IOException {
 		StringWriter writer = new StringWriter();
 		// logging tag name
 		String logTag = "templateManager-mergeTemplate";

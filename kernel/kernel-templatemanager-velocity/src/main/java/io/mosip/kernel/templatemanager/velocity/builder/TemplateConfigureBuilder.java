@@ -13,7 +13,7 @@ import io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl;
 import lombok.Getter;
 
 /**
- * TemplateConfigureBuilder will build the @See {@link MosipTemplateManager}
+ * TemplateConfigureBuilder will build the {@link MosipTemplateManager}
  * with the configuration either custom or default.
  * 
  * @author Abhishek Kumar

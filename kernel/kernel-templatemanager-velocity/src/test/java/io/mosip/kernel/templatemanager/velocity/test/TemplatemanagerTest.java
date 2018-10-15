@@ -71,7 +71,7 @@ public class TemplatemanagerTest {
 
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("test.vm");
 
-		InputStream data = templateManager.mergeTemplate(is, valueMap);
+		InputStream data = templateManager.merge(is, valueMap);
 		StringWriter writer = new StringWriter();
 		IOUtils.copy(data, writer, "UTF-8");
 		String actual = writer.toString();
@@ -85,7 +85,7 @@ public class TemplatemanagerTest {
 		Map<String, Object> values = new HashMap<>();
 		Dummy dummyTest = new Dummy();
 		values.put("dummy", dummyTest);
-		templateManager.mergeTemplate(is, values);
+		templateManager.merge(is, values);
 	}
 
 	@Test(expected = TemplateParsingException.class)
@@ -93,13 +93,13 @@ public class TemplatemanagerTest {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("parserException_template.vm");
 		Map<String, Object> values = new HashMap<>();
 		values.put("dummy", "test");
-		templateManager.mergeTemplate(is, values);
+		templateManager.merge(is, values);
 	}
 
 	@Test(expected = NullPointerException.class)
 	public void testEvaluateNullValues() throws IOException {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("test.vm");
-		InputStream data = templateManager.mergeTemplate(is, null);
+		InputStream data = templateManager.merge(is, null);
 		assertNull(data);
 
 	}
@@ -108,7 +108,7 @@ public class TemplatemanagerTest {
 	public void testEvaluateNullTemplate() throws IOException {
 		Map<String, Object> values = new HashMap<>();
 		values.put("name", "Abhishek");
-		InputStream data = templateManager.mergeTemplate(null, values);
+		InputStream data = templateManager.merge(null, values);
 		assertNull(data);
 
 	}
@@ -116,7 +116,7 @@ public class TemplatemanagerTest {
 	@Test(expected = NullPointerException.class)
 	public void testEvaluateNullParams() throws IOException {
 
-		InputStream data = templateManager.mergeTemplate(null, null);
+		InputStream data = templateManager.merge(null, null);
 		assertNull(data);
 	}
 
