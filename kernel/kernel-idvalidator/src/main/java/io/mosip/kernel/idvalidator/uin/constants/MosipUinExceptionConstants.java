@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.idvalidator.uinvalidator.constants;
+package io.mosip.kernel.idvalidator.uin.constants;
 
 /**
  *

@@ -1,5 +1,5 @@
 
-package io.mosip.kernel.idvalidator.pridvalidator;
+package io.mosip.kernel.idvalidator.prid.impl;
 
 import java.util.regex.Pattern;
 
@@ -13,7 +13,7 @@ import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.pridvalidator.constants.MosipPridExceptionConstants;
+import io.mosip.kernel.idvalidator.prid.constants.MosipPridExceptionConstants;
 
 /**
  * Class to validate the Given PRID in String format
@@ -23,7 +23,7 @@ import io.mosip.kernel.idvalidator.pridvalidator.constants.MosipPridExceptionCon
  * @since 1.0.0
  */
 @Component
-public class PridValidator implements MosipIdValidator<String> {
+public class PridValidatorImpl implements MosipIdValidator<String> {
 
 	/**
 	 * This Field to hold the length of PRID Reading length of PRID from property

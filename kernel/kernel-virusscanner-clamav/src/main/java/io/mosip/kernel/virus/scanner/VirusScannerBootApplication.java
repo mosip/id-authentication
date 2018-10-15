@@ -1,11 +1,11 @@
-package io.mosip.kernel.otpmanagerservice;
+package io.mosip.kernel.virus.scanner;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OtpmanagerServiceApplication {
+public class VirusScannerBootApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(OtpmanagerServiceApplication.class, args);
+		SpringApplication.run(VirusScannerBootApplication.class, args);
 	}
 }

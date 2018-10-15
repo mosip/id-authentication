@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.vidvalidator.VidValidator;
+import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
 /**
  * Test class for VIDValidator class
@@ -22,7 +22,7 @@ import io.mosip.kernel.idvalidator.vidvalidator.VidValidator;
 public class VidValidatorTest {
 
 	@Autowired
-	VidValidator vidValidator;
+	VidValidatorImpl vidValidator;
 
 	@Test(expected = MosipInvalidIDException.class)
 	public void nullTest() {

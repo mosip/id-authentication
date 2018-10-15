@@ -17,7 +17,7 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource(value = {"classpath:packet-server-configuration.properties"})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,
 		HibernateJpaAutoConfiguration.class})
-public class PacketServerApplication {
+public class PacketServerBootApplication {
 
 	/**
 	 * main method which runs the server
@@ -26,7 +26,7 @@ public class PacketServerApplication {
 	 *            params
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(PacketServerApplication.class, args);
+		SpringApplication.run(PacketServerBootApplication.class, args);
 
 	}
 }

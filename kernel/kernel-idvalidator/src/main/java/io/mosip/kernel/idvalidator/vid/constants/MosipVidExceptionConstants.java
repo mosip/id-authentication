@@ -1,4 +1,4 @@
-package io.mosip.kernel.idvalidator.vidvalidator.constants;
+package io.mosip.kernel.idvalidator.vid.constants;
 
 public enum MosipVidExceptionConstants {
 	

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.idvalidator.uinvalidator;
+package io.mosip.kernel.idvalidator.uin.impl;
 
 import java.util.regex.Pattern;
 
@@ -15,7 +15,7 @@ import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.uinvalidator.constants.MosipUinExceptionConstants;
+import io.mosip.kernel.idvalidator.uin.constants.MosipUinExceptionConstants;
 
 /**
  * Test class for validate the Given UIN in String format
@@ -26,7 +26,7 @@ import io.mosip.kernel.idvalidator.uinvalidator.constants.MosipUinExceptionConst
  */
 
 @Component
-public class UinValidator implements MosipIdValidator<String> {
+public class UinValidatorImpl implements MosipIdValidator<String> {
 
 	/**
 	 * The length of the UIN is reading from property file

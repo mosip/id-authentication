@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.pridvalidator.PridValidator;
+import io.mosip.kernel.idvalidator.prid.impl.PridValidatorImpl;
 
 /**
  * Test class for PridValidator class
@@ -23,7 +23,7 @@ import io.mosip.kernel.idvalidator.pridvalidator.PridValidator;
 public class PridValidatorTest {
 
 	@Autowired
-	PridValidator pridValidator;
+	PridValidatorImpl pridValidator;
 
 	@Test(expected = MosipInvalidIDException.class)
 	public void nullTest() {

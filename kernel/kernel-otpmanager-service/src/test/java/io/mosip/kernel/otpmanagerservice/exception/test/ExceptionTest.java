@@ -19,14 +19,14 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import io.mosip.kernel.otpmanagerservice.OtpmanagerServiceApplication;
+import io.mosip.kernel.otpmanagerservice.OtpmanagerBootApplication;
 import io.mosip.kernel.otpmanagerservice.exceptionhandler.MosipOtpInvalidArgumentExceptionHandler;
 import io.mosip.kernel.otpmanagerservice.service.impl.OtpGeneratorServiceImpl;
 import io.mosip.kernel.otpmanagerservice.service.impl.OtpValidatorServiceImpl;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
-@SpringBootTest(classes = OtpmanagerServiceApplication.class)
+@SpringBootTest(classes = OtpmanagerBootApplication.class)
 @TestPropertySource("classpath:/test.application.properties")
 public class ExceptionTest {
 	@Autowired

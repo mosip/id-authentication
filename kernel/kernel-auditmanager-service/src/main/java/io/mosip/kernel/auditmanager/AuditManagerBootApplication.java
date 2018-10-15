@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
-public class AuditManagerApp {
+public class AuditManagerBootApplication {
 
 	/**
 	 * Main method to run spring boot application
@@ -19,6 +19,6 @@ public class AuditManagerApp {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(AuditManagerApp.class, args);
+		SpringApplication.run(AuditManagerBootApplication.class, args);
 	}
 }

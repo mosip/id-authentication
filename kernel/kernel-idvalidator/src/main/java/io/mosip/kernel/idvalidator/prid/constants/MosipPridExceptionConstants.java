@@ -1,4 +1,4 @@
-package io.mosip.kernel.idvalidator.pridvalidator.constants;
+package io.mosip.kernel.idvalidator.prid.constants;
 
 /**
  * 

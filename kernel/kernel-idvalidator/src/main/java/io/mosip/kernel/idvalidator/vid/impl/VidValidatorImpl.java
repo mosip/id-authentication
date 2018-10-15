@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.idvalidator.vidvalidator;
+package io.mosip.kernel.idvalidator.vid.impl;
 
 import java.util.regex.Pattern;
 
@@ -15,7 +15,7 @@ import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.vidvalidator.constants.MosipVidExceptionConstants;
+import io.mosip.kernel.idvalidator.vid.constants.MosipVidExceptionConstants;
 
 /**
  * Class to validate the VID
@@ -25,7 +25,7 @@ import io.mosip.kernel.idvalidator.vidvalidator.constants.MosipVidExceptionConst
  * @since 1.0.0
  */
 @Component
-public class VidValidator implements MosipIdValidator<String> {
+public class VidValidatorImpl implements MosipIdValidator<String> {
 
 	@Value("${mosip.kernel.vid.length}")
 	private int vidLength;
