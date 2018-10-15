@@ -10,14 +10,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ContactDto implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6705845720255847210L;
 	
+	/** The mobile number. */
 	private String mobile;
 
+	/** The email. */
 	private String email;
 
 	@Override

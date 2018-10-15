@@ -28,8 +28,8 @@ import lombok.ToString;
 @Entity
 @Table(name = "applicant_demographic", schema = "prereg")
 @Getter
-@Setter@NoArgsConstructor
-@AllArgsConstructor
+@Setter
+@NoArgsConstructor
 @ToString
 public class RegistrationEntity implements Serializable {
 	

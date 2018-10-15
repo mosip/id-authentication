@@ -3,18 +3,16 @@ package io.mosip.registration.controller.test;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +29,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.controller.RegistrationController;
-import io.mosip.registration.core.exceptions.TablenotAccessibleException;
+import io.mosip.registration.core.generator.MosipGroupIdGenerator;
 import io.mosip.registration.dto.AddressDto;
 import io.mosip.registration.dto.ApplicationDto;
 import io.mosip.registration.dto.ContactDto;
@@ -39,8 +37,6 @@ import io.mosip.registration.dto.NameDto;
 import io.mosip.registration.dto.RegistrationDto;
 import io.mosip.registration.dto.ResponseDto;
 import io.mosip.registration.dto.ViewRegistrationResponseDto;
-import io.mosip.registration.exception.PrimaryValidationFailed;
-import io.mosip.registration.helper.ApplicationHelper;
 import io.mosip.registration.service.RegistrationService;
 
 @RunWith(SpringRunner.class)
@@ -49,11 +45,13 @@ public class RegistrationControllerTest {
 	
 	@Autowired
 	private MockMvc mockMvc;
+	
 	@MockBean
 	private RegistrationService registrationService;
-	@MockBean
-	private ApplicationHelper helper;
 	
+	@MockBean
+	private MosipGroupIdGenerator<String> groupIdGenerator;
+
 	private RegistrationDto regDto= new RegistrationDto();
 	private NameDto nameDto= new NameDto();
 	private ContactDto contactDto= new ContactDto();
@@ -85,44 +83,19 @@ public class RegistrationControllerTest {
 		regDto.setAge(10);
 		regDto.setCreatedBy("Rajath");
         regDto.setIsPrimary(true);
+        regDto.setGroupId("");
+        regDto.setPreRegistrationId("");
         
+        logger.info("Registration DTO "+regDto);
         applicationForms.add(regDto);
         appDto.setApplications(applicationForms);
 	}
 	
-//	@Test
-//	public void successSave() throws Exception {
-//		logger.info("----------Successful save of application-------");		
-//        ResponseDto response= new ResponseDto();
-//        ObjectMapper mapperObj = new ObjectMapper();
-//        String jsonStr="";
-//        
-//        try {
-//             jsonStr = mapperObj.writeValueAsString(appDto);
-//
-//        } catch (IOException e) {
-//
-//            e.printStackTrace();
-//        }
-//        response.setPrId("22893647484937");
-//        response.setGroupId("986453847462");
-//        List<ResponseDto> resList= new ArrayList<>();
-//        resList.add(response);
-//		Mockito.when(helper.Helper(appDto)).thenReturn(resList);
-//
-//		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/save")
-//				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
-//				.content(jsonStr);
-//		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
-//		mockMvc.perform(requestBuilder).andExpect(status().isOk());
-//	}
-	
-	
-	/*@Test
-	public void FailureSave() throws Exception {
-		logger.info("----------Unsuccessful save of application-------");		
+	@Test
+	public void successSave() throws Exception {
+		logger.info("----------Successful save of application-------");		
+        ResponseDto response= new ResponseDto();
         ObjectMapper mapperObj = new ObjectMapper();
-        
         String jsonStr="";
         
         try {
@@ -132,15 +105,49 @@ public class RegistrationControllerTest {
 
             e.printStackTrace();
         }
-		Mockito.doThrow(PrimaryValidationFailed.class).when(helper).Helper(appDto);
+        response.setPrId("22893647484937");
+        response.setGroupId("986453847462");
+        List<ResponseDto> resList= new ArrayList<>();
+        resList.add(response);
+        Mockito.when(groupIdGenerator.generateGroupId()).thenReturn("986453847462");
+        Mockito.when(registrationService.addRegistration(Mockito.anyString(),Mockito.anyString())).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/save")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.content(jsonStr);
-		mockMvc.perform(requestBuilder).andExpect(status().isBadRequest());
+        logger.info("Resonse "+response);
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 	
-	*/
+	@Test
+	public void successUpdate() throws Exception {
+		logger.info("----------Successful save of application-------");		
+        ResponseDto response= new ResponseDto();
+        regDto.setPreRegistrationId("22893647484937");
+        regDto.setGroupId("986453847462");
+        ObjectMapper mapperObj = new ObjectMapper();
+        String jsonStr="";
+        
+        try {
+             jsonStr = mapperObj.writeValueAsString(appDto);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+        response.setPrId("22893647484937");
+        response.setGroupId("986453847462");
+        List<ResponseDto> resList= new ArrayList<>();
+        resList.add(response);
+        Mockito.when(groupIdGenerator.generateGroupId()).thenReturn("986453847462");
+        Mockito.when(registrationService.addRegistration(Mockito.anyString(),Mockito.anyString())).thenReturn(response);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/save")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.content(jsonStr);
+        logger.info("Resonse "+response);
+		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
 	
 	
 	@Test
@@ -159,6 +166,7 @@ public class RegistrationControllerTest {
 		Mockito.when(registrationService.getApplicationDetails(Mockito.anyString())).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/Applications/")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.param("userId", userId);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -173,6 +181,7 @@ public class RegistrationControllerTest {
 
 		Mockito.when(registrationService.getApplicationStatus(Mockito.anyString())).thenReturn(response);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/ApplicationStatus/")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.param("groupId", groupId);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
@@ -182,20 +191,32 @@ public class RegistrationControllerTest {
 	public void discardIndividualTest() throws Exception {
 		 String groupId= "33";
 		 String[] preregIds= {"3"};
-		Mockito.doNothing().when(registrationService).deleteIndividual(ArgumentMatchers.any(),ArgumentMatchers.any());
+		 ResponseDto response= new ResponseDto();
+		 response.setPrId("3");
+	     response.setGroupId("33");
+	     List<ResponseDto> resList= new ArrayList<>();
+	     resList.add(response);
+		Mockito.when(registrationService.deleteIndividual(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(resList);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/registration/discard")
-				.param("groupId", groupId).param("preregIds",preregIds).accept(MediaType.ALL_VALUE);
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.param("groupId", groupId).param("preregIds",preregIds);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 	
 	@Test
 	public void discardGroupTest() throws Exception {
 		 String groupId= "33";
-		Mockito.doNothing().when(registrationService).deleteGroup(ArgumentMatchers.any());
+		 ResponseDto response= new ResponseDto();
+		 response.setPrId("3");
+	     response.setGroupId("33");
+	     List<ResponseDto> resList= new ArrayList<>();
+	     resList.add(response);
+		Mockito.when(registrationService.deleteGroup(ArgumentMatchers.any())).thenReturn(resList);
 		
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/registration/discardGroup")
-				.param("groupId", groupId).accept(MediaType.ALL_VALUE);
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.param("groupId", groupId);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 

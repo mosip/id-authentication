@@ -13,11 +13,14 @@ import io.mosip.registration.dto.ViewRegistrationResponseDto;
 @Service
 public interface RegistrationService<T, U> {
 
-	public U getRegistration(T userId);
+	/**
+	 * 
+	 * @param registrationDto 
+	 * 
+	 * @return responseDto
+	 */
 
-	public ResponseDto addRegistration(U registrationDto, String groupId);
-
-	public void updateRegistration(U registrationDto);
+	public ResponseDto addRegistration(U registrationDto, String groupId) throws TablenotAccessibleException ;
 	
 	/**
 	 * @param userId
@@ -44,8 +47,10 @@ public interface RegistrationService<T, U> {
 	 *          
 	 * 
 	 * @throws PrimaryMemberException
+	 * 
+	 * @returns List of response Dto
 	 */
-	public void deleteIndividual(String groupId, List<String> preregIds);
+	public List<ResponseDto> deleteIndividual(String groupId, List<String> preregIds);
 	
 	
 	/**
@@ -53,6 +58,6 @@ public interface RegistrationService<T, U> {
 	 *          
 	 * 
 	 */
-	public void deleteGroup(String id);
+	public List<ResponseDto> deleteGroup(String id);
 
 }
