@@ -7,8 +7,8 @@ package io.mosip.kernel.templatemanager.velocity.constant;
  * @version 1.0.0
  */
 public enum TemplateManagerExceptionCodeConstants {
-    TEMPLATE_NOT_FOUND("KER-TEM-005", "Template resource not found"),
-    TEMPLATE_PARSING("KER-TEM-004", "Exception occured during template processing"), 
+    TEMPLATE_NOT_FOUND("KER-TEM-004", "Template resource not found"),
+    TEMPLATE_PARSING("KER-TEM-003", "Exception occured during template processing"), 
     TEMPLATE_INVALID_REFERENCE("KER-TEM-001", "Reference method in template could not be invoked");
 	
     /**
