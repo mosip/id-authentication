@@ -29,6 +29,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+/**
+ * Registration controller
+ * @author M1037717
+ *
+ */
 @RestController
 @RequestMapping("/v0.1/pre-registration/registration/")
 @Api(tags = "Pre-Registration")

@@ -9,6 +9,12 @@ import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.dto.ResponseDto;
 import io.mosip.registration.dto.ViewRegistrationResponseDto;
 
+/**
+ * Registration service interface
+ * 
+ * @author M1037717
+ *
+ */
 @Service
 public interface RegistrationService<T, U> {
 
@@ -19,7 +25,7 @@ public interface RegistrationService<T, U> {
 	 * @return responseDto
 	 */
 
-	public ResponseDto addRegistration(U registrationDto, String groupId) throws TablenotAccessibleException;
+	public ResponseDto addRegistration(U registrationDto, String groupId) ;
 
 	/**
 	 * @param userId

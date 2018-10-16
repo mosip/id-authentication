@@ -29,14 +29,13 @@ public class TemplatemanagerTest {
 
 	private MosipTemplateManager templateManager;
 	Map<String, Object> valueMap;
-	private static final String expected = "<html>\r\n" + "<head>\r\n" + "</head>\r\n" + "<body>\r\n"
-			+ "<h1>Welcome to Cafe Coffee Day Store</h1>\r\n" + "\r\n" + "<p>6 Coffee on Sale!\r\n" + "\r\n"
-			+ "We are proud to Offer these fine Coffee at these amazing prices.\r\n" + "\r\n" + "this month only\r\n"
-			+ "\r\n" + "Choose from :\r\n" + "</p>\r\n" + "  	<p><b>latte for only 150</b></p>\r\n"
-			+ "  	<p><b>Tea for only 100</b></p>\r\n" + "  	<p><b>Green Tea for only 110</b></p>\r\n"
-			+ "  	<p><b>latte for only 150</b></p>\r\n" + "  	<p><b>Tea for only 100</b></p>\r\n"
-			+ "  	<p><b>Green Tea for only 110</b></p>\r\n" + "  \r\n" + " <h4>Call  @ <b>1234567</b> Today</h4> \r\n"
-			+ " </body>\r\n" + "</html>";
+	private static final String expected = "<head></head><body>"
+			+ "<h1>Welcome to Cafe Coffee Day Store</h1><p>6 Coffee on Sale!"
+			+ "We are proud to Offer these fine Coffee at these amazing prices.this month only"
+			+ "Choose from :</p>  	<p><b>latte for only 150</b></p>"
+			+ "  	<p><b>Tea for only 100</b></p>  	<p><b>Green Tea for only 110</b></p>"
+			+ "  	<p><b>latte for only 150</b></p>  	<p><b>Tea for only 100</b></p>"
+			+ "  	<p><b>Green Tea for only 110</b></p>   <h4>Call  @ <b>1234567</b> Today</h4> " + " </body>";
 
 	@Before
 	public void setup() {
@@ -67,6 +66,7 @@ public class TemplatemanagerTest {
 	}
 
 	@Test
+
 	public void testEvaluate() throws IOException {
 
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("test.vm");
@@ -80,6 +80,7 @@ public class TemplatemanagerTest {
 	}
 
 	@Test(expected = TemplateMethodInvocationException.class)
+
 	public void testEvaluateMethodInvocationException() throws IOException {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("methodInvocation_template.vm");
 		Map<String, Object> values = new HashMap<>();
@@ -121,6 +122,7 @@ public class TemplatemanagerTest {
 	}
 
 	@Test
+
 	public void testMergeDeafultEncoding() throws IOException {
 		String template = "test.vm";
 		StringWriter writer = new StringWriter();
@@ -171,6 +173,7 @@ public class TemplatemanagerTest {
 	}
 
 	@Test
+
 	public void testMergeEncoding() throws IOException {
 		String template = "test.vm";
 		StringWriter writer = new StringWriter();
@@ -181,6 +184,7 @@ public class TemplatemanagerTest {
 	}
 
 	@Test
+
 	public void testMergeEncodingFileResource() throws IOException {
 		templateManager = new TemplateConfigureBuilder().build();
 		String template = "/test.vm";

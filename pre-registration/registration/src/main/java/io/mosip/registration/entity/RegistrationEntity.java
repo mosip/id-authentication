@@ -20,7 +20,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The Class RegistrationStatusEntity.
+ * Registration entity
+ * 
+ * @author M1037717
+ *
  */
 @Component
 @Entity
