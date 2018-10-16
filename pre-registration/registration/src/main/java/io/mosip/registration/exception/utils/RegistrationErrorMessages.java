@@ -3,6 +3,7 @@ package io.mosip.registration.exception.utils;
 /**
  * Pre-Registration error messages 
  *
+ *@author M1037717 
  */
 public final class RegistrationErrorMessages {
 

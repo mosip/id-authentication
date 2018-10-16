@@ -1,4 +1,4 @@
-package io.mosip.registration.controller;
+package io.mosip.registration.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +11,13 @@ import io.mosip.registration.code.StatusCodes;
 import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.dto.ExceptionJSONInfo;
 import io.mosip.registration.errorcodes.ErrorCodes;
-import io.mosip.registration.exception.DocumentNotValidException;
 
+/**
+ * Exception Handler
+ * 
+ * @author M1037717
+ *
+ */
 @RestControllerAdvice
 public class RegistrationExceptionHandler {
 

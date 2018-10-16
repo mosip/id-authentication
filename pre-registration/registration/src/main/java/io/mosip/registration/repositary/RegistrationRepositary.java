@@ -11,6 +11,12 @@ import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 import io.mosip.registration.entity.RegistrationEntity;
 
+/**
+ * Registration Repository
+ * 
+ * @author M1037462
+ *
+ */
 @Repository("registrationRepository")
 @Transactional
 public interface RegistrationRepositary extends BaseRepository<RegistrationEntity, String> {

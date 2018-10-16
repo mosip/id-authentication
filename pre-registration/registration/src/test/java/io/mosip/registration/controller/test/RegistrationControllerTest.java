@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.controller.RegistrationController;
+import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.core.generator.MosipGroupIdGenerator;
 import io.mosip.registration.dto.AddressDto;
 import io.mosip.registration.dto.ApplicationDto;
@@ -45,7 +46,7 @@ public class RegistrationControllerTest {
 	private MockMvc mockMvc;
 	
 	@MockBean
-	private RegistrationService<?,?> registrationService;
+	private RegistrationService<String,RegistrationDto> registrationService;
 	
 	@MockBean
 	private MosipGroupIdGenerator<String> groupIdGenerator;
@@ -81,7 +82,7 @@ public class RegistrationControllerTest {
 		regDto.setAge(10);
 		regDto.setCreatedBy("Rajath");
         regDto.setIsPrimary(true);
-        regDto.setGroupId("");
+        regDto.setGroupId("123");
         regDto.setPreRegistrationId("");
         
         logger.info("Registration DTO "+regDto);
@@ -115,6 +116,29 @@ public class RegistrationControllerTest {
 				.content(jsonStr);
         logger.info("Resonse "+response);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void failureSave() throws Exception {
+		logger.info("----------Unsuccessful save of application-------");		
+        ObjectMapper mapperObj = new ObjectMapper();
+        
+        String jsonStr="";
+        
+        try {
+             jsonStr = mapperObj.writeValueAsString(appDto);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+		
+		Mockito.doThrow(new TablenotAccessibleException("ex")).when(registrationService).addRegistration(Mockito.any(RegistrationDto.class),Mockito.anyObject());
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/save")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
+				.content(jsonStr);
+		mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
 	}
 	
 	@Test

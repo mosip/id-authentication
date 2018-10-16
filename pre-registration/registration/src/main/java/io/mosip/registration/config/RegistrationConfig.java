@@ -13,6 +13,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class RegistrationConfig {
 
+	/**
+	 *Swaager configuration 
+	 *
+	 */
 	@Bean
 	public Docket registrationStatusBean() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("Registration").select()
