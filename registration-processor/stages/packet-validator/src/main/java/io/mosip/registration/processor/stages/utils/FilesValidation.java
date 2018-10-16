@@ -48,9 +48,9 @@ public class FilesValidation {
 			if (PacketFiles.APPLICANTPHOTO.name().equalsIgnoreCase(applicantFile)) {
 				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
 						+ File.separator + PacketFiles.APPLICANTPHOTO.name();
-			} else if (PacketFiles.REGISTRATIONACKNOWLDEGEMENT.name().equalsIgnoreCase(applicantFile)) {
+			} else if (PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name().equalsIgnoreCase(applicantFile)) {
 				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
-						+ File.separator + PacketFiles.REGISTRATIONACKNOWLDEGEMENT.name();
+						+ File.separator + PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name();
 			} else if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(applicantFile)) {
 				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.DEMOGRAPHICINFO.name();
 			} else if (PacketFiles.PROOFOFADDRESS.name().equalsIgnoreCase(applicantFile)) {
