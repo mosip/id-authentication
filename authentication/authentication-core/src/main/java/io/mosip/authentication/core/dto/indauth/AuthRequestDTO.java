@@ -42,7 +42,7 @@ public class AuthRequestDTO  {
 	private String txnID;
 
 	// The value of the field or property must be a date or time in the past or present.
-	@NotNull(message = "Request time should not be null") //TODO change to message property
+	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.reqTime.notNull}")
 	private String reqTime;
 
 	//@Pattern(regexp = "^[A-Za-z0-9]{10}$", message = "{mosip.ida.validation.message.AuthRequest.asaLicenseKey}")

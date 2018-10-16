@@ -1,6 +1,5 @@
 package io.mosip.authentication.core.dto.indauth;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.Data;

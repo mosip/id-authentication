@@ -156,8 +156,8 @@ public class AuthRequestValidator implements Validator {
 		if(!anyAuthType) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 					"INVALID_AUTH_REQUEST - No auth type found");
-			errors.rejectValue("authType", IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					env.getProperty("mosip.ida.validation.message.AuthRequest.NoAuthtype"));
+			errors.rejectValue("authType", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "authType"));
 
 		}
 		

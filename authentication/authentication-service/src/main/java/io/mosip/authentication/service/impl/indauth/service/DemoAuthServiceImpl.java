@@ -229,6 +229,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 																.getDemo()
 																.getLangPri());
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
+		
 		if(demoEntity != null) {
 			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs,
 			        authRequestDTO.getPii().getDemo(), 
@@ -270,7 +271,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 							}
 						});
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST);//TODO check constant
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST);
 		}
 			
 			

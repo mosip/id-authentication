@@ -37,14 +37,14 @@ public enum IdAuthenticationErrorConstants {
 	KERNEL_OTP_GENERATION_REQUEST_FAILED("IDA-OTA-103", "Kernel Generate OTP request failed"),
 
 	// Rest Helper Error Constants
-	INVALID_URI("IDA-RST-DTV-001", "URI should not be empty"),
-	INVALID_HTTP_METHOD("IDA-RST-DTV-002", "httpMethod is empty or invalid"),
-	INVALID_RETURN_TYPE("IDA-RST-DTV-003", "returnType is empty"),
-	INVALID_REST_SERVICE("IDA-RST-DTV-004", "Rest service name is empty or invalid"),
-	INVALID_TIMEOUT("IDA-RST-DTV-005", "Timeout is invalid"),
-	CLIENT_ERROR("IDA-RST-UTL-001", "4XX - Client Error occured"),
-	SERVER_ERROR("IDA-RST-UTL-002", "5XX - Server Error occured"),
-	CONNECTION_TIMED_OUT("IDA-RST-UTL-003", "Connection timed out"),
+	INVALID_URI("IDA-RST-001", "URI should not be empty"),
+    INVALID_HTTP_METHOD("IDA-RST-002", "httpMethod is empty or invalid"),
+    INVALID_RETURN_TYPE("IDA-RST-003", "returnType is empty"),
+    INVALID_REST_SERVICE("IDA-RST-004", "Rest service name is empty or invalid"),
+    INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"),
+    CLIENT_ERROR("IDA-RST-001", "4XX - Client Error occured"),
+    SERVER_ERROR("IDA-RST-002", "5XX - Server Error occured"),
+    CONNECTION_TIMED_OUT("IDA-RST-003", "Connection timed out"),
 
 	// INVALID_GENERATE_OTP_REQUEST("IDA-DTV-RQV-001", "Invalid OTP request"),
 	// OTP_GENERATION_REQUEST_FAILED("IDA-DTV-RQV-002", "OTP generation request
@@ -64,7 +64,7 @@ public enum IdAuthenticationErrorConstants {
 
 	ID_INVALID_VALIDATEOTP_REQUEST("IDA-DTV-ARV-001", "Invalid Validate OTP request"),
 
-	INVALID_AUTH_REQUEST("IDA-DTV-RQV-101", "Invalid Auth Request"),
+	INVALID_AUTH_REQUEST("IDA-RQV-101", "Invalid Auth Request"),
 	UNKNOWN_ERROR("IDA-DTV-IDV-004", "Unknown error occured"),
 
 	// INVALID_UIN_BUISNESS("IDA-IDMB-UIN-401", "Invalid UIN"),
