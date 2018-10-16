@@ -22,7 +22,7 @@ import io.mosip.registration.service.DocumentUploadService;
 import io.swagger.annotations.Api;
 
 @RestController
-//@RequestMapping("/v0.1/pre-registration/registration")
+@RequestMapping("/v0.1/pre-registration/registration")
 @Api(tags = "document Handler")
 public class DocumentUploader {
 
