@@ -15,19 +15,22 @@ import org.springframework.web.multipart.MultipartFile;
 import io.mosip.registration.code.StatusCodes;
 import io.mosip.registration.dto.DocumentDto;
 import io.mosip.registration.entity.DocumentEntity;
+import io.mosip.registration.exception.DocumentNotValidException;
 import io.mosip.registration.exception.DocumentSizeExceedException;
 import io.mosip.registration.repositary.DocumentRepository;
 import io.mosip.registration.repositary.RegistrationRepositary;
 import io.mosip.registration.service.DocumentUploadService;
 
+/**
+ * Document service
+ * 
+ * @author M1043008
+ *
+ */
 @Component
-@Qualifier("DocumentUploaderServiceImpl")
 public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
 	private final Logger logger = LoggerFactory.getLogger(DocumentUploaderServiceImpl.class);
-
-	// @Autowired
-	// private DocumentEntity documentEntity;
 
 	@Autowired
 	@Qualifier("documentRepositoery")
@@ -39,6 +42,9 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
 	@Value("${max.file.size}")
 	private int maxFileSize;
+
+	@Value("${file.extention}")
+	private String fileExtension;
 
 	/*
 	 * (non-Javadoc)
@@ -54,6 +60,10 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
 		if (file.getSize() > getMaxFileSize()) {
 			throw new DocumentSizeExceedException(StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
+		}
+
+		if (!file.getOriginalFilename().endsWith(getFileExtension())) {
+			throw new DocumentNotValidException(StatusCodes.DOCUMENT_INVALID_FORMAT.toString());
 		}
 
 		DocumentEntity documentEntity = new DocumentEntity();
@@ -130,7 +140,7 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
 		else if (!documentDto.is_primary()) {
 
-			registrationRepositary.findBygroupIds(documentDto.getGroup_id());
+			List<String> preIdList = registrationRepositary.findBygroupIds(documentDto.getGroup_id());
 
 			documentEntity.setPreregId(documentDto.getPrereg_id());
 			documentEntity.setDoc_name(file.getOriginalFilename());
@@ -151,6 +161,8 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
 			documentRepository.save(documentEntity);
 
+			saveFlag = true;
+
 		}
 
 		return saveFlag;
@@ -159,6 +171,10 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
 	public long getMaxFileSize() {
 		return (5 * 1024 * 1024);
+	}
+
+	public String getFileExtension() {
+		return ".pdf";
 	}
 
 }

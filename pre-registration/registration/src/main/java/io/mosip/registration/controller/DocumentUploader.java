@@ -1,7 +1,5 @@
 package io.mosip.registration.controller;
 
-import java.io.IOException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,17 +9,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.MosipIOException;
+import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
+import io.mosip.kernel.core.util.exception.MosipJsonParseException;
 import io.mosip.registration.code.StatusCodes;
 import io.mosip.registration.dto.DocumentDto;
 import io.mosip.registration.service.DocumentUploadService;
 import io.swagger.annotations.Api;
 
+/**
+ * Document upload controller
+ * 
+ * @author M1043008
+ *
+ */
 @RestController
-@RequestMapping("/v0.1/pre-registration/registration/document")
+@RequestMapping("/v0.1/pre-registration/registration/")
 @Api(tags = "document Handler")
 public class DocumentUploader {
 
@@ -33,10 +37,9 @@ public class DocumentUploader {
 	public ResponseEntity<StatusCodes> fileUpload(
 			@RequestPart(value = "documentString", required = true) String documentString,
 			@RequestPart(value = "file", required = true) MultipartFile file)
-			throws JsonParseException, JsonMappingException, IOException {
+			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
 
-		ObjectMapper mapper = new ObjectMapper();
-		DocumentDto documentDto = mapper.readValue(documentString, DocumentDto.class);
+		DocumentDto documentDto = (DocumentDto) JsonUtils.jsonStringToJavaObject(DocumentDto.class, documentString);
 
 		documentUploadService.uploadDoucment(file, documentDto);
 
