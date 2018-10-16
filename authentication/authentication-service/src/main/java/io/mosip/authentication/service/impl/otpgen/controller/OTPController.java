@@ -57,8 +57,10 @@ public class OTPController {
 	 * send OtpRequestDTO request to generate OTP and received OtpResponseDTO as
 	 * output.
 	 * 
-	 * @param otpRequestDto as request body
-	 * @param errors        associate error
+	 * @param otpRequestDto
+	 *            as request body
+	 * @param errors
+	 *            associate error
 	 * @return otpResponseDTO
 	 * @throws IdAuthenticationAppException
 	 */
@@ -66,21 +68,17 @@ public class OTPController {
 	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors)
 			throws IdAuthenticationAppException {
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
-		if (errors.hasErrors()) {
-			try {
-				DataValidationUtil.validate(errors);
-			} catch (IDDataValidationException e) {
-				logger.error(DEAFULT_SESSION_ID, null, null, e.getErrorText());
-				throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-			}
-		} else {
-			try {
-				otpResponseDTO = otpFacade.generateOtp(otpRequestDto);
-				logger.info(DEAFULT_SESSION_ID, "NA", "NA", "NA");
-			} catch (IdAuthenticationBusinessException e) {
-				logger.error(DEAFULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
-				throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
-			}
+
+		try {
+			DataValidationUtil.validate(errors);
+			otpResponseDTO = otpFacade.generateOtp(otpRequestDto);
+			logger.info(DEAFULT_SESSION_ID, "NA", "NA", "NA");
+		} catch (IDDataValidationException e) {
+			logger.error(DEAFULT_SESSION_ID, null, null, e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+		} catch (IdAuthenticationBusinessException e) {
+			logger.error(DEAFULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
+			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
 		return otpResponseDTO;
 	}

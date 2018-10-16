@@ -2,6 +2,8 @@ package io.mosip.authentication.service.impl.indauth.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Date;
 import java.util.Optional;
@@ -246,5 +248,18 @@ public class IdAuthServiceTest {
 
 		}
 
+	}
+	
+	@Test(expected = IdValidationFailedException.class)
+	public void testDoValidateUINInactive() throws Throwable {
+		UinEntity uinEntity = new UinEntity();
+		uinEntity.setActive(false);
+		Method doValidateUIN = idAuthServiceImpl.getClass().getDeclaredMethod("doValidateUIN", Optional.class);
+		doValidateUIN.setAccessible(true);
+		try {
+		doValidateUIN.invoke(idAuthServiceImpl, Optional.of(uinEntity));
+		} catch (InvocationTargetException e) {
+			throw e.getTargetException();
+		}
 	}
 }

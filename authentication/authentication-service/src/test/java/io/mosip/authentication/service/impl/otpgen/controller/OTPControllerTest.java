@@ -25,7 +25,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -67,6 +70,8 @@ public class OTPControllerTest {
 	IdAuthenticationBusinessException idAuthenticationBusinessException;
 	@Mock
 	IdAuthenticationAppException idAuthenticationAppException;
+	@Mock
+	WebDataBinder binder;
 
 	/** inject the mocked object */
 	@InjectMocks
@@ -86,6 +91,7 @@ public class OTPControllerTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
 		ReflectionTestUtils.invokeMethod(otpController, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(otpController, "initBinder", binder);
 	}
 
 	@BeforeClass
@@ -187,6 +193,13 @@ public class OTPControllerTest {
 		Mockito.when(otpFacade.generateOtp(otpRequestDto)).thenThrow(idAuthenticationBusinessException);
 		Mockito.when(otpController.generateOTP(otpRequestDto, result)).thenThrow(idAuthenticationAppException);
 
+	}
+	
+	@Test(expected = IdAuthenticationAppException.class)
+	public void testGenerateOtpDataValidationException() throws IdAuthenticationAppException {
+		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
+		errors.reject("errorCode");
+		otpController.generateOTP(new OtpRequestDTO(), errors);
 	}
 
 	// =========================================================

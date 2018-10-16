@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -31,7 +30,6 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
  * @author Rakesh Roshan
  */
 @Component
-@PropertySource("classpath:application-local.properties")
 public class DemoValidator implements Validator {
 
 	private MosipLogger mosipLogger;

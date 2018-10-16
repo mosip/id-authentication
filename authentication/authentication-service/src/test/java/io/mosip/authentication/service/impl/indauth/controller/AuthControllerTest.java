@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -57,7 +58,8 @@ public class AuthControllerTest {
 	@InjectMocks
 	private AuthController authController;
 	
-
+	@Mock
+	WebDataBinder binder;
 
 	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
 	
@@ -81,6 +83,7 @@ public class AuthControllerTest {
 		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.invokeMethod(auditFactory, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.invokeMethod(authController, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(authController, "initBinder", binder);
 	}
 	
 	/*
