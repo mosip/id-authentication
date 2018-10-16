@@ -86,7 +86,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 				refId = uinEntity.getId();
 			} else {
 				// TODO log error
-				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_UIN);
+				throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 			}
 		} else {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
@@ -170,7 +170,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 		if (uinEntityOpt.isPresent()) {
 			UinEntity uinEntity = uinEntityOpt.get();
 			if (!uinEntity.isActive()) {
-				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_UIN);
+				throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 			}
 		} else {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);

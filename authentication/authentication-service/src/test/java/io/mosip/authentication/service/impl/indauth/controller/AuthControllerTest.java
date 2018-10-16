@@ -99,7 +99,7 @@ public class AuthControllerTest {
 	@Test(expected=IdAuthenticationAppException.class)
 	public void authenticationFailed() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		AuthRequestDTO authReqDTO=new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO)).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INACTIVE_UIN));
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO)).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
 		authController.authenticateApplication(authReqDTO, error);
 		
 	}
