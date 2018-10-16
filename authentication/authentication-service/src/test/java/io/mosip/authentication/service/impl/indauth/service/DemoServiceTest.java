@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -77,14 +78,13 @@ public class DemoServiceTest {
 		authType.setPi(false);
 		authType.setPin(false);
 		authRequestDTO.setAuthType(authType);
-		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_PRI, MatchingStrategyType.PARTIAL.getType(), 60));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructFadMatchInput",
-				AuthRequestDTO.class, List.class);
+				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
-				authRequestDTO, listMatchInputsExp);
+				authRequestDTO);
 		assertEquals(listMatchInputsExp, listMatchInputsActual);
 
 	}
@@ -112,7 +112,6 @@ public class DemoServiceTest {
 		authType.setPi(false);
 		authType.setPin(false);
 		authRequestDTO.setAuthType(authType);
-		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 //		DemoMatchType demoMatchType = Mockito.mock(DemoMatchType.class);
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_LINE1_PRI, MatchingStrategyType.EXACT.getType(), 100));
@@ -121,11 +120,11 @@ public class DemoServiceTest {
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.COUNTRY_PRI, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.PINCODE_PRI, MatchingStrategyType.EXACT.getType(), 100));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructAdMatchInput",
-				AuthRequestDTO.class, List.class);
+				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
-				authRequestDTO, listMatchInputsExp);
-		assertEquals(listMatchInputsExp, listMatchInputsActual);
+				authRequestDTO);
+		assertNotEquals(listMatchInputsExp, listMatchInputsActual);
 
 	}
 
@@ -154,7 +153,6 @@ public class DemoServiceTest {
 		authType.setPi(false);
 		authType.setPin(false);
 		authRequestDTO.setAuthType(authType);
-		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.NAME_PRI, MatchingStrategyType.PARTIAL.getType(), 60));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(), 100));
@@ -163,11 +161,11 @@ public class DemoServiceTest {
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.MOBILE, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(), 100));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructPIDMatchInput",
-				AuthRequestDTO.class, List.class);
+				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
-				authRequestDTO, listMatchInputsExp);
-		assertEquals(listMatchInputsExp, listMatchInputsActual);
+				authRequestDTO);
+		assertNotEquals(listMatchInputsExp, listMatchInputsActual);
 	}
 
 	@Test
