@@ -5,10 +5,20 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.junit.Before;
 import org.junit.Test;
 
 public class DOBMatchingStrategyTest {
+	SimpleDateFormat sdf = null;
 
+	@Before
+	public void setup() {
+		sdf = new SimpleDateFormat("yyyy-MM-dd");
+	}
 	/**
 	 * Check for Exact type matched with Enum value of DOB Matching Strategy
 	 */
@@ -49,8 +59,14 @@ public class DOBMatchingStrategyTest {
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.doMatch("1993-02-07", "1993-02-07");
-		assertEquals(0, value); // FIXME - change to date as input
+		int value = -1;
+		try {
+			value = matchFunction.doMatch("1993-02-07", sdf.parse("1993-02-07"));
+		} catch (ParseException e) {
+			
+		}
+				
+		assertEquals(100, value);
 	}
 
 	/**
@@ -60,22 +76,22 @@ public class DOBMatchingStrategyTest {
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
 		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
-
-		int value = matchFunction.doMatch("1993-02-07", "1993-02-27");
-		assertEquals(0, value);
-
-		int value1 = matchFunction.doMatch(2, "1993-02-07");
-		assertEquals(0, value1);
-
-		int value2 = matchFunction.doMatch("1993-02-07", null);
-		assertEquals(0, value2);
-
-		int value3 = matchFunction.doMatch(null, null);
-		assertEquals(0, value3);
-
 		try {
-			matchFunction.doMatch("xyz", "abc");
-		} catch (Exception e) {
+			int value = matchFunction.doMatch("1993-02-07", sdf.parse("1993-02-27"));
+			assertEquals(0, value);
+
+			int value1 = matchFunction.doMatch(2, sdf.parse("1993-02-07"));
+			assertEquals(0, value1);
+
+			int value2 = matchFunction.doMatch("1993-02-07", null);
+			assertEquals(0, value2);
+
+			int value3 = matchFunction.doMatch(null, null);
+			assertEquals(0, value3);
+
+
+			matchFunction.doMatch("xyz", new Date());
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 	}
