@@ -24,7 +24,7 @@ public class PersonalAddressDTO {
 	private String addrLine3Pri;
 
 	/** Registered state of the individual */
-	//private String state; // TODO
+	private String statePri;
 
 	/** Registered country of the individual for primary language */
 	private String countryPri;

@@ -74,7 +74,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authreqdto.getTxnID();
 		String UIN = authreqdto.getId();
 		String TSPCode = authreqdto.getMuaCode();
-		String otp = authreqdto.getPersonalDataDTO().getPinDTO().getValue();
+		String otp = authreqdto.getPii().getPin().getValue();
 		boolean isValidRequest = validateTxnId(txnId, UIN);
 		if (isValidRequest) {
 			// FIXME audit integration

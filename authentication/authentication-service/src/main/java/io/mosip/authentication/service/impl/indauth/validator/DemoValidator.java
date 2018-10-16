@@ -54,8 +54,8 @@ public class DemoValidator implements Validator {
 
 		AuthRequestDTO authRequestdto = (AuthRequestDTO) target;
 
-		String primaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangPri();
-		String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
+		String primaryLanguage = authRequestdto.getPii().getDemo().getLangPri();
+		String secondaryLanguage = authRequestdto.getPii().getDemo().getLangSec();
 
 		if (primaryLanguage != null) {
 			checkValidPrimaryLanguageCode(primaryLanguage, errors);
@@ -105,10 +105,10 @@ public class DemoValidator implements Validator {
 
 		if (authRequestdto.getAuthType().isFad()) {
 
-			String primaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangPri();
-			String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
-			PersonalFullAddressDTO personalFullAddressDTO = authRequestdto.getPersonalDataDTO().getDemoDTO()
-					.getPersonalFullAddressDTO();
+			String primaryLanguage = authRequestdto.getPii().getDemo().getLangPri();
+			String secondaryLanguage = authRequestdto.getPii().getDemo().getLangSec();
+			PersonalFullAddressDTO personalFullAddressDTO = authRequestdto.getPii().getDemo()
+					.getFad();
 
 			if (primaryLanguage == null && secondaryLanguage == null) {
 				mosipLogger.error("SessionID56", "personalFullAddressDTO",
@@ -153,11 +153,11 @@ public class DemoValidator implements Validator {
 	private void addressValidation(AuthRequestDTO authRequestdto, Errors errors) {
 
 		if (authRequestdto.getAuthType().isAd()) {
-			PersonalAddressDTO personalAddressDTO = authRequestdto.getPersonalDataDTO().getDemoDTO()
-					.getPersonalAddressDTO();
+			PersonalAddressDTO personalAddressDTO = authRequestdto.getPii().getDemo()
+					.getAd();
 
-			String primaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangPri();
-			String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
+			String primaryLanguage = authRequestdto.getPii().getDemo().getLangPri();
+			String secondaryLanguage = authRequestdto.getPii().getDemo().getLangSec();
 
 			if (primaryLanguage == null && secondaryLanguage == null) {
 				mosipLogger.error("SessionID635837", "Personal Address", "Address Validation for secondary language",
@@ -200,14 +200,14 @@ public class DemoValidator implements Validator {
 	 */
 	private void personalIdentityValidation(AuthRequestDTO authRequestdto, Errors errors) {
 
-		PersonalIdentityDTO personalIdentityDTO = authRequestdto.getPersonalDataDTO().getDemoDTO()
-				.getPersonalIdentityDTO();
+		PersonalIdentityDTO personalIdentityDTO = authRequestdto.getPii().getDemo()
+				.getPi();
 
 		if (authRequestdto.getAuthType().isPi()) {
 
 			// TODO dobType integrate with CK
-			String primaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangPri();
-			String secondaryLanguage = authRequestdto.getPersonalDataDTO().getDemoDTO().getLangSec();
+			String primaryLanguage = authRequestdto.getPii().getDemo().getLangPri();
+			String secondaryLanguage = authRequestdto.getPii().getDemo().getLangSec();
 
 			if (personalIdentityDTO.getDob() != null) {
 				try {
@@ -247,7 +247,7 @@ public class DemoValidator implements Validator {
 	 */
 	private void dobValidation(AuthRequestDTO authRequestdto, Errors errors) throws ParseException {
 
-		String pidob = authRequestdto.getPersonalDataDTO().getDemoDTO().getPersonalIdentityDTO().getDob();
+		String pidob = authRequestdto.getPii().getDemo().getPi().getDob();
 		SimpleDateFormat formatter = new SimpleDateFormat(env.getProperty("date.pattern"));
 		Date dob = formatter.parse(pidob);
 		Instant instantDob = dob.toInstant();

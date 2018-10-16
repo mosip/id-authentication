@@ -58,6 +58,6 @@ public class AuthRequestDTO  {
 	
 	private AuthSecureDTO key;
 	
-	private PersonalIdentityDataDTO personalDataDTO;
+	private PersonalIdentityDataDTO pii;
 
 }

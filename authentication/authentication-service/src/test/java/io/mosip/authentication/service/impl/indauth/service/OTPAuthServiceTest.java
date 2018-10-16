@@ -179,8 +179,8 @@ public class OTPAuthServiceTest {
 		PinDTO pindto = new PinDTO();
 		pindto.setType(PinType.OTP);
 		pindto.setValue("23232323");
-		otpAuthRequestDTO.setPersonalDataDTO(new PersonalIdentityDataDTO());
-		otpAuthRequestDTO.getPersonalDataDTO().setPinDTO(pindto);
+		otpAuthRequestDTO.setPii(new PersonalIdentityDataDTO());
+		otpAuthRequestDTO.getPii().setPin(pindto);
 		assertFalse(authserviceimpl.validateOtp(otpAuthRequestDTO, "45345435345").isStatus());
 	}
 
@@ -205,8 +205,8 @@ public class OTPAuthServiceTest {
 		PinDTO pindto = new PinDTO();
 		pindto.setType(PinType.OTP);
 		pindto.setValue("23232323");
-		otpAuthRequestDTO.setPersonalDataDTO(new PersonalIdentityDataDTO());
-		otpAuthRequestDTO.getPersonalDataDTO().setPinDTO(pindto);
+		otpAuthRequestDTO.setPii(new PersonalIdentityDataDTO());
+		otpAuthRequestDTO.getPii().setPin(pindto);
 		authservice.validateOtp(otpAuthRequestDTO, "");
 	}
 
@@ -230,8 +230,8 @@ public class OTPAuthServiceTest {
 		PinDTO pindto = new PinDTO();
 		pindto.setType(PinType.OTP);
 		pindto.setValue("23232323");
-		otpAuthRequestDTO.setPersonalDataDTO(new PersonalIdentityDataDTO());
-		otpAuthRequestDTO.getPersonalDataDTO().setPinDTO(pindto);
+		otpAuthRequestDTO.setPii(new PersonalIdentityDataDTO());
+		otpAuthRequestDTO.getPii().setPin(pindto);
 		authservice.validateOtp(otpAuthRequestDTO, "34545");
 	}
 
@@ -244,8 +244,8 @@ public class OTPAuthServiceTest {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
 		PinDTO pinDTO = new PinDTO();
 		pinDTO.setValue("");
-		authreqdto.setPersonalDataDTO(new PersonalIdentityDataDTO());
-		authreqdto.getPersonalDataDTO().setPinDTO(pinDTO);
+		authreqdto.setPii(new PersonalIdentityDataDTO());
+		authreqdto.getPii().setPin(pinDTO);
 		authserviceimpl.validateOtp(authreqdto, "");
 	}
 

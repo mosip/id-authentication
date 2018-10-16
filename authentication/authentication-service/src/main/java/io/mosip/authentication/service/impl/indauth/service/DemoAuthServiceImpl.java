@@ -74,7 +74,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @return the list
 	 */
 	private List<MatchInput> constructPIDMatchInput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs) {
-		PersonalIdentityDTO pid = authRequestDTO.getPersonalDataDTO().getDemoDTO().getPersonalIdentityDTO();
+		PersonalIdentityDTO pid = authRequestDTO.getPii().getDemo().getPi();
 		if (authRequestDTO.getAuthType().isPi() && null != pid) {
 			if (null != pid.getNamePri()) {
 				Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
@@ -134,7 +134,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @return the list
 	 */
 	private List<MatchInput> constructAdMatchInput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs) {
-		PersonalAddressDTO ad = authRequestDTO.getPersonalDataDTO().getDemoDTO().getPersonalAddressDTO();
+		PersonalAddressDTO ad = authRequestDTO.getPii().getDemo().getAd();
 		if (authRequestDTO.getAuthType().isAd() && null != ad) {
 			if (null != ad.getAddrLine1Pri()) {
 				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_LINE1_PRI, MatchingStrategyType.EXACT.getType(),
@@ -181,7 +181,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 */
 	private List<MatchInput> constructFadMatchInput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs) {
 		Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
-		PersonalFullAddressDTO fad = authRequestDTO.getPersonalDataDTO().getDemoDTO().getPersonalFullAddressDTO();
+		PersonalFullAddressDTO fad = authRequestDTO.getPii().getDemo().getFad();
 		if (authRequestDTO.getAuthType().isFad() && null != fad) {
 			if (null != fad.getAddrPri()) {
 				if (fad.getMsPri() != null && fad.getMsPri().equals(MatchingStrategyType.PARTIAL.getType())) {
@@ -225,13 +225,13 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId) throws IdAuthenticationBusinessException {
 		boolean demoMatched = false;
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
-		DemoEntity demoEntity = getDemoEntity(refId, authRequestDTO.getPersonalDataDTO()
-																.getDemoDTO()
+		DemoEntity demoEntity = getDemoEntity(refId, authRequestDTO.getPii()
+																.getDemo()
 																.getLangPri());
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		if(demoEntity != null) {
 			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs,
-			        authRequestDTO.getPersonalDataDTO().getDemoDTO(), 
+			        authRequestDTO.getPii().getDemo(), 
 			        demoEntity);
 			demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
 			
