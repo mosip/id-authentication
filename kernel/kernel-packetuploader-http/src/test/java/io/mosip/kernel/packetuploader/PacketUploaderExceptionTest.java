@@ -22,14 +22,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import io.mosip.kernel.httppacketuploader.PacketUploaderHttpApplication;
-import io.mosip.kernel.httppacketuploader.exception.MosipDirectoryNotEmpty;
-import io.mosip.kernel.httppacketuploader.exception.MosipPacketLocationSecurity;
-import io.mosip.kernel.httppacketuploader.service.PacketUploaderService;
+import io.mosip.kernel.packetuploader.http.PacketUploaderHttpBootApplication;
+import io.mosip.kernel.packetuploader.http.exception.MosipDirectoryNotEmpty;
+import io.mosip.kernel.packetuploader.http.exception.MosipPacketLocationSecurity;
+import io.mosip.kernel.packetuploader.http.service.PacketUploaderService;
 
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=PacketUploaderHttpApplication.class)
+@SpringBootTest(classes=PacketUploaderHttpBootApplication.class)
 @TestPropertySource("classpath:/application.properties")
 public class PacketUploaderExceptionTest {
 

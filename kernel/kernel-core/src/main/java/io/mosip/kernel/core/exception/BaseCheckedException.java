@@ -36,6 +36,14 @@ public class BaseCheckedException extends Exception {
 		super();
 	}
 
+	
+	/**
+	 * Constructs a new checked exception with errorMessage
+	 */
+	public BaseCheckedException(String errorMessage) {
+		super(errorMessage);
+	}
+	
 	/**
 	 * Constructs a new checked exception with the specified detail message and
 	 * error code.
