@@ -6,7 +6,7 @@ This folder has all submodules of kernel of Mosip.
 
 2. `mvn jacoco:report`
 
-3. For local: `mvn sonar:sonar -PLOCAL`  (sonar server should be running locally on localhost:9010)
+3. For local: `mvn sonar:sonar -PLOCAL`
 
    For dev: `mvn sonar:sonar -PDEV`
    
