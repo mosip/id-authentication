@@ -1,13 +1,10 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -28,16 +25,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthSecureDTO;
-import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalAddressDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalFullAddressDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalIdentityDataDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
@@ -73,9 +67,9 @@ public class DemoServiceTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		fad.setAddrPri("23 Bandra Road Mumbai India 809890");
 		fad.setMsPri(MatchingStrategyType.PARTIAL.getType());
-		demoDTO.setPersonalFullAddressDTO(fad);
+		demoDTO.setFad(fad);
 		pidData.setDemoDTO(demoDTO);
-		authRequestDTO.setPersonalDataDTO(pidData);
+		authRequestDTO.setPii(pidData);
 		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_PRI, MatchingStrategyType.PARTIAL.getType(), 60));
@@ -100,9 +94,9 @@ public class DemoServiceTest {
 		ad.setAddrLine3Pri("Red Hills");
 		ad.setCountryPri("India");
 		ad.setPinCodePri("700105");
-		demoDTO.setPersonalAddressDTO(ad);
+		demoDTO.setAd(ad);
 		pidData.setDemoDTO(demoDTO);
-		authRequestDTO.setPersonalDataDTO(pidData);
+		authRequestDTO.setPii(pidData);
 		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_LINE1_PRI, MatchingStrategyType.EXACT.getType(), 100));
@@ -133,9 +127,9 @@ public class DemoServiceTest {
 		pid.setPhone("9876543222");
 		pid.setNamePri("John");
 		pid.setMsPri(MatchingStrategyType.PARTIAL.getType());
-		demoDTO.setPersonalIdentityDTO(pid);
+		demoDTO.setPi(pid);
 		pidData.setDemoDTO(demoDTO);
-		authRequestDTO.setPersonalDataDTO(pidData);
+		authRequestDTO.setPii(pidData);
 		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.NAME_PRI, MatchingStrategyType.PARTIAL.getType(), 60));
@@ -161,11 +155,11 @@ public class DemoServiceTest {
 		DemoDTO demoDTO = new DemoDTO();
 		PersonalIdentityDataDTO personalData = new PersonalIdentityDataDTO();
 		AuthRequestDTO authRequest = new AuthRequestDTO();
-		demoDTO.setPersonalAddressDTO(ad);
-		demoDTO.setPersonalFullAddressDTO(fad);
-		demoDTO.setPersonalIdentityDTO(pid);
+		demoDTO.setAd(ad);
+		demoDTO.setFad(fad);
+		demoDTO.setPi(pid);
 		personalData.setDemoDTO(demoDTO);
-		authRequest.setPersonalDataDTO(personalData);
+		authRequest.setPii(personalData);
 		Method constructInputMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		constructInputMethod.setAccessible(true);
@@ -229,15 +223,15 @@ public class DemoServiceTest {
 		personalIdentityDTO.setMsPri("P");
 		personalIdentityDTO.setMtPri(50);
 		personalIdentityDTO.setDob("2001-07-16");
-		demoDTO.setPersonalIdentityDTO(personalIdentityDTO);
+		demoDTO.setPi(personalIdentityDTO);
 		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
 		personalFullAddressDTO.setAddrPri("#12, Rajaji Avenue, Sathya Nagar, East Mambalam, 600017");
 		personalFullAddressDTO.setMsPri("P");
 		personalFullAddressDTO.setMtPri(60);
-		demoDTO.setPersonalFullAddressDTO(personalFullAddressDTO);
+		demoDTO.setFad(personalFullAddressDTO);
 		PersonalIdentityDataDTO personalDataDTO = new PersonalIdentityDataDTO();
 		personalDataDTO.setDemoDTO(demoDTO);
-		authRequestDTO.setPersonalDataDTO(personalDataDTO);
+		authRequestDTO.setPii(personalDataDTO);
 		authRequestDTO.setReqTime("2018-10-15T07:22:57.086+0000");
 		authRequestDTO.setSignature("test");
 		authRequestDTO.setTxnID("1234567890");

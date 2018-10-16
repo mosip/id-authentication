@@ -76,7 +76,7 @@ public class DemoMatchTypeTest {
 		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
 		personalFullAddressDTO.setAddrPri("no 11 gandhi street");
 		demodto.setLangPri("english");
-		demodto.setPersonalFullAddressDTO(personalFullAddressDTO);
+		demodto.setFad(personalFullAddressDTO);
 		assertEquals(tmpAddress, DemoMatchType.ADDR_PRI.getDemoInfoFetcher().getInfo(demodto));
 		assertNotEquals("invalid", DemoMatchType.ADDR_PRI.getDemoInfoFetcher().getInfo(demodto));
 	}
@@ -144,7 +144,7 @@ public class DemoMatchTypeTest {
 		DemoDTO demoDTO = new DemoDTO();
 		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
 		personalFullAddressDTO.setAddrSec("No 2 gandhi street india 600111");
-		demoDTO.setPersonalFullAddressDTO(personalFullAddressDTO);
+		demoDTO.setFad(personalFullAddressDTO);
 		assertEquals(DemoMatchType.ADDR_SEC.getDemoInfoFetcher().getInfo(demoDTO),
 				DemoMatchType.ADDR_SEC.getEntityInfoFetcher().getInfo(demoEntity));
 
@@ -174,7 +174,7 @@ public class DemoMatchTypeTest {
 		DemoDTO demoDTO = new DemoDTO();
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		personalIdentityDTO.setNamePri("dinesh karuppiah thiagarajan");
-		demoDTO.setPersonalIdentityDTO(personalIdentityDTO);
+		demoDTO.setPi(personalIdentityDTO);
 		assertEquals(DemoMatchType.NAME_PRI.getDemoInfoFetcher().getInfo(demoDTO),
 				DemoMatchType.NAME_PRI.getEntityInfoFetcher().getInfo(demoEntity));
 
@@ -190,7 +190,7 @@ public class DemoMatchTypeTest {
 		DemoDTO demoDTO = new DemoDTO();
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		personalIdentityDTO.setNameSec("dinesh karuppiah thiagarajan");
-		demoDTO.setPersonalIdentityDTO(personalIdentityDTO);
+		demoDTO.setPi(personalIdentityDTO);
 		assertEquals(DemoMatchType.NAME_SEC.getDemoInfoFetcher().getInfo(demoDTO),
 				DemoMatchType.NAME_SEC.getEntityInfoFetcher().getInfo(demoEntity));
 
@@ -207,7 +207,7 @@ public class DemoMatchTypeTest {
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		personalIdentityDTO.setGender("male");
 		DemoDTO demoDTO = new DemoDTO();
-		demoDTO.setPersonalIdentityDTO(personalIdentityDTO);
+		demoDTO.setPi(personalIdentityDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setGenderCode("male");
 		assertEquals(DemoMatchType.GENDER.getDemoInfoFetcher().getInfo(demoDTO),
@@ -220,7 +220,7 @@ public class DemoMatchTypeTest {
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		personalIdentityDTO.setAge(20);
 		DemoDTO demoDTO = new DemoDTO();
-		demoDTO.setPersonalIdentityDTO(personalIdentityDTO);
+		demoDTO.setPi(personalIdentityDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setAge(20);
 		assertEquals(DemoMatchType.AGE.getDemoInfoFetcher().getInfo(demoDTO),
@@ -239,7 +239,7 @@ public class DemoMatchTypeTest {
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		personalIdentityDTO.setDob(reqDate.toString());
 		DemoDTO demoDTO = new DemoDTO();
-		demoDTO.setPersonalIdentityDTO(personalIdentityDTO);
+		demoDTO.setPi(personalIdentityDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setDob(entityDate);
 		assertEquals(DemoMatchType.DOB.getDemoInfoFetcher().getInfo(demoDTO),
@@ -257,7 +257,7 @@ public class DemoMatchTypeTest {
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		personalIdentityDTO.setPhone("1234567890");
 		DemoDTO demoDTO = new DemoDTO();
-		demoDTO.setPersonalIdentityDTO(personalIdentityDTO);
+		demoDTO.setPi(personalIdentityDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setMobile("1234567890");
 		assertEquals(DemoMatchType.MOBILE.getDemoInfoFetcher().getInfo(demoDTO),
@@ -275,7 +275,7 @@ public class DemoMatchTypeTest {
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		personalIdentityDTO.setEmail("test@test.com");
 		DemoDTO demoDTO = new DemoDTO();
-		demoDTO.setPersonalIdentityDTO(personalIdentityDTO);
+		demoDTO.setPi(personalIdentityDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setEmail("test@test.com");
 		assertEquals(DemoMatchType.EMAIL.getDemoInfoFetcher().getInfo(demoDTO),
@@ -293,7 +293,7 @@ public class DemoMatchTypeTest {
 		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
 		personalAddressDTO.setAddrLine1Pri("no1 gandhi street");
 		DemoDTO demoDTO = new DemoDTO();
-		demoDTO.setPersonalAddressDTO(personalAddressDTO);
+		demoDTO.setAd(personalAddressDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setAddrLine1("no1 gandhi street");
 		assertEquals(DemoMatchType.ADDR_LINE1_PRI.getDemoInfoFetcher().getInfo(demoDTO),
@@ -311,7 +311,7 @@ public class DemoMatchTypeTest {
 		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
 		personalAddressDTO.setAddrLine2Pri("kamarajapuram");
 		DemoDTO demoDTO = new DemoDTO();
-		demoDTO.setPersonalAddressDTO(personalAddressDTO);
+		demoDTO.setAd(personalAddressDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setAddrLine2("kamarajapuram");
 		assertEquals(DemoMatchType.ADDR_LINE2_PRI.getDemoInfoFetcher().getInfo(demoDTO),
@@ -329,7 +329,7 @@ public class DemoMatchTypeTest {
 		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
 		personalAddressDTO.setAddrLine3Pri("chennai");
 		DemoDTO demoDTO = new DemoDTO();
-		demoDTO.setPersonalAddressDTO(personalAddressDTO);
+		demoDTO.setAd(personalAddressDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setAddrLine3("chennai");
 		assertEquals(DemoMatchType.ADDR_LINE3_PRI.getDemoInfoFetcher().getInfo(demoDTO),
@@ -347,7 +347,7 @@ public class DemoMatchTypeTest {
 		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
 		personalAddressDTO.setCountryPri("india");
 		DemoDTO demoDTO = new DemoDTO();
-		demoDTO.setPersonalAddressDTO(personalAddressDTO);
+		demoDTO.setAd(personalAddressDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setNationalId("india");
 		assertEquals(DemoMatchType.COUNTRY_PRI.getDemoInfoFetcher().getInfo(demoDTO),
@@ -365,7 +365,7 @@ public class DemoMatchTypeTest {
 		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
 		personalAddressDTO.setPinCodePri("600117");
 		DemoDTO demoDTO = new DemoDTO();
-		demoDTO.setPersonalAddressDTO(personalAddressDTO);
+		demoDTO.setAd(personalAddressDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setLocationCode("600117");
 		assertEquals(DemoMatchType.PINCODE_PRI.getDemoInfoFetcher().getInfo(demoDTO),

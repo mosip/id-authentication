@@ -17,77 +17,77 @@ public enum DemoMatchType implements MatchType{
 
 	/** The addr pri. */
 	ADDR_PRI(setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
-			demo -> demo.getPersonalFullAddressDTO().getAddrPri(),
+			demo -> demo.getFad().getAddrPri(),
 			entity -> concatDemo(entity.getAddrLine1(),entity.getAddrLine2() ,
 					 entity.getAddrLine3(),entity.getNationalId(), entity.getLocationCode()),		
 			AuthUsageDataBit.USED_FAD_ADDR_PRI, AuthUsageDataBit.MATCHED_FAD_ADDR_PRI),
 
 	NAME_PRI(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL),
-			demo -> demo.getPersonalIdentityDTO().getNamePri(), 
+			demo -> demo.getPi().getNamePri(), 
 			entity -> concatDemo(entity.getFirstName(),entity.getMiddleName(),entity.getLastName()),//FIXME for getting consolidated name as it requires admin config
 			AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI),
 	
 	
 	/** The addr sec. */
 	ADDR_SEC(setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
-			demo -> demo.getPersonalFullAddressDTO().getAddrSec(),
+			demo -> demo.getFad().getAddrSec(),
 			entity -> concatDemo(entity.getAddrLine1(),entity.getAddrLine2() ,
 					 entity.getAddrLine3(),entity.getNationalId(), entity.getLocationCode())
 					, AuthUsageDataBit.USED_FAD_ADDR_SEC, AuthUsageDataBit.MATCHED_FAD_ADDR_SEC),
 	
 	/** The name sec. */
 	NAME_SEC(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL),
-			demo -> demo.getPersonalIdentityDTO().getNameSec(), 
+			demo -> demo.getPi().getNameSec(), 
 			entity -> concatDemo(entity.getFirstName(),entity.getMiddleName(),entity.getLastName()),//FIXME for getting consolidated name as it requires admin config
 			AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC),
 	
 	/** The gender. */
-	GENDER(setOf(GenderMatchingStrategy.EXACT), demo -> demo.getPersonalIdentityDTO().getGender(),
+	GENDER(setOf(GenderMatchingStrategy.EXACT), demo -> demo.getPi().getGender(),
 			entity ->entity.getGenderCode(),
 			AuthUsageDataBit.USED_PI_GENDER, AuthUsageDataBit.MATCHED_PI_GENDER),
 
 	/** The age. */
-	AGE(setOf(AgeMatchingStrategy.EXACT), demo -> demo.getPersonalIdentityDTO().getAge(),
+	AGE(setOf(AgeMatchingStrategy.EXACT), demo -> demo.getPi().getAge(),
 			entity ->entity.getAge(),
 			AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE),
 
 	/** The dob. */
-	DOB(setOf(DOBMatchingStrategy.EXACT), demo -> demo.getPersonalIdentityDTO().getDob(),
+	DOB(setOf(DOBMatchingStrategy.EXACT), demo -> demo.getPi().getDob(),
 			entity ->entity.getDob(),
 			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB),
 
 	/** The mobile. */
-	MOBILE(setOf(PhoneNoMatchingStrategy.EXACT), demo -> demo.getPersonalIdentityDTO().getPhone(),
+	MOBILE(setOf(PhoneNoMatchingStrategy.EXACT), demo -> demo.getPi().getPhone(),
 			entity ->entity.getMobile(),
 			AuthUsageDataBit.USED_PI_PHONE, AuthUsageDataBit.MATCHED_PI_PHONE),
 
 	/** The email. */
-	EMAIL(setOf(EmailMatchingStrategy.EXACT), demo -> demo.getPersonalIdentityDTO().getEmail(),
+	EMAIL(setOf(EmailMatchingStrategy.EXACT), demo -> demo.getPi().getEmail(),
 			entity ->entity.getEmail(),
 			AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL),
 
 	/** The addr line1 pri. */
-	ADDR_LINE1_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getPersonalAddressDTO().getAddrLine1Pri(),
+	ADDR_LINE1_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine1Pri(),
 			entity -> entity.getAddrLine1(),
 			AuthUsageDataBit.USED_AD_ADDR_LINE1_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_LINE1_PRI),
 
 	/** The addr line2 pri. */
-	ADDR_LINE2_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getPersonalAddressDTO().getAddrLine2Pri(),
+	ADDR_LINE2_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine2Pri(),
 			entity -> entity.getAddrLine2(),
 			AuthUsageDataBit.USED_AD_ADDR_LINE2_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_LINE2_PRI),
 
 	/** The addr line3 pri. */
-	ADDR_LINE3_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getPersonalAddressDTO().getAddrLine3Pri(),
+	ADDR_LINE3_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine3Pri(),
 			entity ->entity.getAddrLine3(),
 			AuthUsageDataBit.USED_AD_ADDR_LINE3_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_PRI),
 
 	/** The country pri. */
-	COUNTRY_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getPersonalAddressDTO().getCountryPri(),
+	COUNTRY_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getCountryPri(),
 			entity ->entity.getNationalId(),
 			AuthUsageDataBit.USED_AD_ADDR_COUNTRY_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_COUNTRY_PRI),
 
 	/** The pincode pri. */
-	PINCODE_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getPersonalAddressDTO().getPinCodePri(),
+	PINCODE_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getPinCodePri(),
 			entity ->entity.getLocationCode(),
 			AuthUsageDataBit.USED_AD_ADDR_PINCODE_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE_PRI);
 

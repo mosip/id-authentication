@@ -26,12 +26,12 @@ public class DemoDTO {
 	private String langSec;
 
 	/** PersonalIdentityDTO gives individual identity details */
-	private PersonalIdentityDTO personalIdentityDTO;
+	private PersonalIdentityDTO pi;
 
 	/** PersonalAddressDTO gives individual address details */
-	private PersonalAddressDTO personalAddressDTO;
+	private PersonalAddressDTO ad;
 
 	/** PersonalFullAddressDTO gives individual full address details */
-	private PersonalFullAddressDTO personalFullAddressDTO;
+	private PersonalFullAddressDTO fad;
 
 }

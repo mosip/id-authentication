@@ -38,7 +38,7 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 public class AuthRequestValidator implements Validator {
 
 	private static final String VALIDATE_CHECK_OTP_AUTH = "validate -> checkOTPAuth";
-	private static final String PERSONAL_DATA_DTO = "personalDataDTO";
+	private static final String PERSONAL_DATA_DTO = "Pii";
 	private static final String VALIDATE = "validate";
 	private static final String AUTH_REQUEST_VALIDATOR = "AuthRequestValidator";
 	private static final String SESSION_ID = "sessionId";
@@ -175,7 +175,7 @@ public class AuthRequestValidator implements Validator {
 	public void checkOTPAuth(AuthRequestDTO authRequest, Errors errors) {
 
 		PinDTO pinDTO = null;
-		if (authRequest.getPersonalDataDTO() != null && (pinDTO = authRequest.getPersonalDataDTO().getPinDTO()) != null) {
+		if (authRequest.getPii() != null && (pinDTO = authRequest.getPii().getPinDTO()) != null) {
 			PinType pinType = pinDTO.getType();
 			if (null != pinDTO.getType() && pinType.getType().equals(PinType.OTP.getType())) {
 				String otpValue = pinDTO.getValue();

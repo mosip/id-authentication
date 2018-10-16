@@ -95,16 +95,16 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
 		ReflectionTestUtils.invokeMethod(auth, "setFad", false);
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
 		String priLanguage = "en";
 		String secLanguage = "ar";
 		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalFullAddressDTO", personalFullAddressDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setFad", personalFullAddressDTO);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalAddressDTO", personalAddressDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setAd", personalAddressDTO);
 		
 		personalAddressDTO.setAddrLine1Pri("mosip");
 		personalFullAddressDTO.setAddrPri("mosip");
@@ -147,9 +147,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setAd", false);
 		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalFullAddressDTO", personalFullAddressDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setFad", personalFullAddressDTO);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
 
@@ -174,9 +174,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalAddressDTO", personalAddressDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setAd", personalAddressDTO);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
 
@@ -203,7 +203,7 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
@@ -230,9 +230,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalFullAddressDTO", personalFullAddressDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setFad", personalFullAddressDTO);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
 
@@ -263,9 +263,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalFullAddressDTO", personalFullAddressDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setFad", personalFullAddressDTO);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
 
@@ -297,7 +297,7 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
@@ -324,9 +324,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalAddressDTO", personalAddressDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setAd", personalAddressDTO);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
 
@@ -359,9 +359,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalAddressDTO", personalAddressDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setAd", personalAddressDTO);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
 
@@ -394,9 +394,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalIdentityDTO", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", dob);
 
 		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", authRequestdto, errors);
@@ -416,9 +416,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalIdentityDTO", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 
 		ReflectionTestUtils.invokeMethod(demoValidator, "isAllPINull", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(errors, "reject",
@@ -441,9 +441,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalIdentityDTO", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", namePri);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", primaryLanguage);
 
@@ -467,9 +467,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalIdentityDTO", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNameSec", nameSec);
 		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secondaryLanguage);
 
@@ -491,9 +491,9 @@ public class DemoValidatorTest {
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		String setDob = "2019-02-26";
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPersonalIdentityDTO", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", setDob);
 
 		SimpleDateFormat formatter = new SimpleDateFormat(env.getProperty("dob.date.time.pattern"));
@@ -518,7 +518,7 @@ public class DemoValidatorTest {
 		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
 		DemoDTO demodto = new DemoDTO();
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
 		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidPrimaryLanguageCode", "english", errors);
 
@@ -533,7 +533,7 @@ public class DemoValidatorTest {
 		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
 		DemoDTO demodto = new DemoDTO();
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
 		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidPrimaryLanguageCode", "en", errors);
 
@@ -549,7 +549,7 @@ public class DemoValidatorTest {
 		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
 		DemoDTO demodto = new DemoDTO();
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
 		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidSecondaryLanguageCode", "english", errors);
 
@@ -564,7 +564,7 @@ public class DemoValidatorTest {
 		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
 		DemoDTO demodto = new DemoDTO();
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPersonalDataDTO", personalIdentityDataDTO);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemoDTO", demodto);
 		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidSecondaryLanguageCode", "en", errors);
 

@@ -44,7 +44,7 @@ public class DemoMatcherTest {
 		DemoDTO demoDTO =new DemoDTO();
 		PersonalIdentityDTO pid =new PersonalIdentityDTO();
 		pid.setNamePri("John Rajiv Samuel");
-		demoDTO.setPersonalIdentityDTO(pid);
+		demoDTO.setPi(pid);
 		DemoEntity demoEntity=new DemoEntity();
 		demoEntity.setFirstName("John");
 		demoEntity.setMiddleName("Rajiv");
