@@ -41,7 +41,7 @@ public class DemoNormalizerTest {
 	@Test
 	public void testAddressNormalizer2() {
 
-		assertEquals("mosip mosip", DemoNormalizer.normalizeAddress("C/o- Mr.mosip,.*  no    mosip"));
+		assertEquals("mosip mosip", DemoNormalizer.normalizeAddress("c/o- Mr.mosip,.*  no    mosip"));
 	}
 
 }
