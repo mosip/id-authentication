@@ -29,9 +29,6 @@ import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
-import io.mosip.authentication.service.factory.AuditRequestFactory;
-import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.idauth.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
@@ -48,10 +45,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @ContextConfiguration(classes= {TestContext.class, WebApplicationContext.class})
 public class AuthFacadeImplTest {
 	
-	/** The rest helper. */
-	@Mock
-	RestHelper restHelper;
-	
 	/** The env. */
 	@Autowired
 	Environment env;
@@ -61,14 +54,6 @@ public class AuthFacadeImplTest {
 
 	/*@InjectMocks
 	MosipRollingFileAppender idaRollingFileAppender;*/
-
-	/** The rest factory. */
-	@InjectMocks
-	private RestRequestFactory  restFactory;
-	
-	/** The audit factory. */
-	@InjectMocks
-	private AuditRequestFactory auditFactory;
 	
 	/** The auth facade impl. */
 	@InjectMocks
@@ -97,13 +82,7 @@ public class AuthFacadeImplTest {
 		mosipRollingFileAppender.setMaxHistory(10);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.setField(auditFactory, "env", env);
-		ReflectionTestUtils.setField(restFactory, "env", env);
-		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.invokeMethod(auditFactory, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.setField(authFacadeImpl, "auditFactory", auditFactory);
-		ReflectionTestUtils.setField(authFacadeImpl, "restFactory", restFactory);
 	}
 	
 	
@@ -143,7 +122,7 @@ public class AuthFacadeImplTest {
 		AuthTypeDTO authType=new AuthTypeDTO();
 		authRequestDTO.setAuthType(authType);
 		authRequestDTO.getAuthType().setOtp(false);
-		List<AuthStatusInfo> authStatusList=authFacadeImpl.processAuthType(authRequestDTO, Mockito.any());
+		List<AuthStatusInfo> authStatusList=authFacadeImpl.processAuthType(authRequestDTO, "1233");
 		
 		assertTrue(authStatusList
 				.stream()

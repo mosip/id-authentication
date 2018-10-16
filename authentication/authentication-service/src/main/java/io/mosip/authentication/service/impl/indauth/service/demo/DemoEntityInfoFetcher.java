@@ -13,7 +13,7 @@ public interface DemoEntityInfoFetcher {
  	 * @param demoEntity the demo entity
  	 * @return the info
  	 */
- 	Object getInfo(DemoEntity demoEntity);
+ 	Object getInfo(DemoEntity demoEntity, LocationInfoFetcher locationInfoFetcher);
 	 
 }
 

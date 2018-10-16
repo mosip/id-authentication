@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.indauth.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -21,10 +22,14 @@ import io.mosip.authentication.service.impl.indauth.builder.AuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
+import io.mosip.authentication.service.impl.indauth.service.demo.LocationEntity;
+import io.mosip.authentication.service.impl.indauth.service.demo.LocationInfoFetcher;
+import io.mosip.authentication.service.impl.indauth.service.demo.LocationLevel;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchOutput;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 import io.mosip.authentication.service.repository.DemoRepository;
+import io.mosip.authentication.service.repository.LocationRepository;
 
 /**
  * The implementation of Demographic Authentication service.
@@ -44,37 +49,38 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	/** The demo matcher. */
 	@Autowired
 	private DemoMatcher demoMatcher;
-	
+
 	@Autowired
 	private DemoRepository demoRepository;
+
+	@Autowired
+	private LocationRepository locationRepository;
 
 	/**
 	 * Construct match input.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
 
 		List<MatchInput> listMatchInputs = new ArrayList<>();
-		constructFadMatchInput(authRequestDTO, listMatchInputs);
-		constructAdMatchInput(authRequestDTO, listMatchInputs);
-		constructPIDMatchInput(authRequestDTO, listMatchInputs);
+		listMatchInputs.addAll(constructFadMatchInput(authRequestDTO));
+		listMatchInputs.addAll(constructAdMatchInput(authRequestDTO));
+		listMatchInputs.addAll(constructPIDMatchInput(authRequestDTO));
 		return listMatchInputs;
 	}
 
 	/**
 	 * Construct PID match input.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param listMatchInput
-	 *            the list match input
+	 * @param authRequestDTO the auth request DTO
+	 * @param listMatchInput the list match input
 	 * @return the list
 	 */
-	private List<MatchInput> constructPIDMatchInput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs) {
+	private List<MatchInput> constructPIDMatchInput(AuthRequestDTO authRequestDTO) {
 		PersonalIdentityDTO pid = authRequestDTO.getPii().getDemo().getPi();
+		List<MatchInput> listMatchInputs = new ArrayList<>();
 		if (authRequestDTO.getAuthType().isPi() && null != pid) {
 			if (null != pid.getNamePri()) {
 				Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
@@ -127,31 +133,30 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	/**
 	 * Construct ad match input.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param listMatchInput
-	 *            the list match input
+	 * @param authRequestDTO the auth request DTO
+	 * @param listMatchInput the list match input
 	 * @return the list
 	 */
-	private List<MatchInput> constructAdMatchInput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs) {
+	private List<MatchInput> constructAdMatchInput(AuthRequestDTO authRequestDTO) {
 		PersonalAddressDTO ad = authRequestDTO.getPii().getDemo().getAd();
+		List<MatchInput> listMatchInputs = new ArrayList<>();
 		if (authRequestDTO.getAuthType().isAd() && null != ad) {
 			if (null != ad.getAddrLine1Pri()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_LINE1_PRI, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
+				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_LINE1_PRI,
+						MatchingStrategyType.EXACT.getType(), DEFAULT_EXACT_MATCH_VALUE);
 				listMatchInputs.add(matchInput);
 			}
 
 			if (null != ad.getAddrLine2Pri()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_LINE2_PRI, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
+				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_LINE2_PRI,
+						MatchingStrategyType.EXACT.getType(), DEFAULT_EXACT_MATCH_VALUE);
 				listMatchInputs.add(matchInput);
 
 			}
 
 			if (null != ad.getAddrLine3Pri()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_LINE3_PRI, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
+				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_LINE3_PRI,
+						MatchingStrategyType.EXACT.getType(), DEFAULT_EXACT_MATCH_VALUE);
 				listMatchInputs.add(matchInput);
 			}
 			if (null != ad.getCountryPri()) {
@@ -173,15 +178,14 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	/**
 	 * Construct fad match input.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param listMatchInput
-	 *            the list match input
+	 * @param authRequestDTO the auth request DTO
+	 * @param listMatchInput the list match input
 	 * @return the list
 	 */
-	private List<MatchInput> constructFadMatchInput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs) {
+	private List<MatchInput> constructFadMatchInput(AuthRequestDTO authRequestDTO) {
 		Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
 		PersonalFullAddressDTO fad = authRequestDTO.getPii().getDemo().getFad();
+		List<MatchInput> listMatchInputs = new ArrayList<>();
 		if (authRequestDTO.getAuthType().isFad() && null != fad) {
 			if (null != fad.getAddrPri()) {
 				if (fad.getMsPri() != null && fad.getMsPri().equals(MatchingStrategyType.PARTIAL.getType())) {
@@ -193,7 +197,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 					// TODO add it for secondary language
 				}
 				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_PRI, fad.getMsPri(), matchValue);
-				listMatchInputs.add(matchInput);
+				listMatchInputs .add(matchInput);
 			}
 		}
 		return listMatchInputs;
@@ -202,17 +206,15 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	/**
 	 * Gets the match output.
 	 *
-	 * @param listMatchInput
-	 *            the list match input
-	 * @param demoDTO
-	 *            the demo DTO
-	 * @param demoEntity
-	 *            the demo entity
+	 * @param listMatchInput the list match input
+	 * @param demoDTO        the demo DTO
+	 * @param demoEntity     the demo entity
 	 * @return the match output
 	 */
-	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, DemoDTO demoDTO, DemoEntity demoEntity) {
+	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, DemoDTO demoDTO, DemoEntity demoEntity,
+			LocationInfoFetcher locationInfoFetcher) {
 
-		return demoMatcher.matchDemoData(demoDTO, demoEntity, listMatchInputs);
+		return demoMatcher.matchDemoData(demoDTO, demoEntity, listMatchInputs, locationInfoFetcher);
 
 	}
 
@@ -222,35 +224,46 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @see io.mosip.authentication.core.spi.indauth.service.DemoAuthService#
 	 * getDemoStatus(io.mosip.authentication.core.dto.indauth.AuthRequestDTO)
 	 */
-	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId) throws IdAuthenticationBusinessException {
+	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId)
+			throws IdAuthenticationBusinessException {
 		boolean demoMatched = false;
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 		DemoEntity demoEntity = getDemoEntity(refId, authRequestDTO.getPii()
 																.getDemo()
 																.getLangPri());
+
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
+		
 		if(demoEntity != null) {
 			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs,
 			        authRequestDTO.getPii().getDemo(), 
-			        demoEntity);
+			        demoEntity, this::getLocation);
 			demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
 			
 			statusInfoBuilder.setStatus(demoMatched);
 			
-			listMatchInputs.stream()
-				.forEach(matchInput -> {
-							if(AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
-									.map(AuthType::getType).isPresent()) {
-								statusInfoBuilder.addMessageInfo(
-										AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
-												.map(AuthType::getType).orElse(""),
-										matchInput.getMatchStrategyType(), 
-										matchInput.getMatchValue());
-							}
-							
-							statusInfoBuilder
-							.addAuthUsageDataBits(matchInput.getDemoMatchType().getUsedBit());
-						});
+			listMatchInputs.stream().forEach(matchInput -> {
+				if (AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType()).map(AuthType::getType)
+						.isPresent()) {
+
+					String ms = matchInput.getMatchStrategyType();
+					if (ms == null || matchInput.getMatchStrategyType().trim().isEmpty()) {
+						ms = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
+					}
+
+					Integer mt = matchInput.getMatchValue();
+					if (mt == null) {
+						mt = Integer.parseInt(environment.getProperty("demo.default.match.value"));
+					}
+
+					String authType = AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
+							.map(AuthType::getType).orElse("");
+
+					statusInfoBuilder.addMessageInfo(authType, ms, mt);
+				}
+
+				statusInfoBuilder.addAuthUsageDataBits(matchInput.getDemoMatchType().getUsedBit());
+			});
 			
 			
 			
@@ -262,7 +275,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 							}
 						});
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST);//TODO check constant
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST);
 		}
 			
 			
@@ -282,10 +295,23 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		return demoRepository.findByUinRefIdAndLangCode(refId, langCode);
 	}
 	
-	public static void main(String[] args) {
-		DemoAuthServiceImpl demoService=new DemoAuthServiceImpl();
-		DemoEntity demoEntity=demoService.getDemoEntity("12345", "EN");
-		System.out.println(demoEntity.getFirstName());
+
+	public Optional<String> getLocation(LocationLevel targetLocationLevel, String locationCode) {
+		Optional<LocationEntity> locationEntity = locationRepository.findByCodeAndIsActive(locationCode, true);
+		String locationname = null;
+		if (locationEntity.isPresent()) {
+			LocationEntity entity = locationEntity.get();
+			String entitylocname = entity.getName();
+			String entityparentcode = entity.getParentloccode();
+			String entityloclevel = entity.getHierarchylevelname();
+			if (targetLocationLevel.getName().equalsIgnoreCase(entityloclevel)) {
+				locationname = entitylocname;
+			} else {
+				getLocation(targetLocationLevel, entityparentcode);
+			}
+		}
+		return Optional.ofNullable(locationname);
+
 	}
 
 }

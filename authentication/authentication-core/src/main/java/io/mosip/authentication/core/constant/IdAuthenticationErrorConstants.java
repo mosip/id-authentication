@@ -22,8 +22,8 @@ public enum IdAuthenticationErrorConstants {
 	REQUEST_PROCESSING_ERROR("IDA-OTA-010", "Request could not be processed. Please try again"),
 
 	// To be discussed with BA
-	INVALID_UIN("IDA-MLC-002", "Invalid UIN"), INACTIVE_UIN("IDA-IDV-002", "Inactive UIN"),
-	INVALID_VID("IDA-MLC-004", "Invalid VID"), EXPIRED_VID("IDA-IDV-004", "Expired VID"), // Not referenced
+	INVALID_UIN("IDA-MLC-002", "Invalid UIN"), UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated"),
+	INVALID_VID("IDA-MLC-004", "Invalid VID"), EXPIRED_VID("IDA-MLC-005", "Expired VID"), // Not referenced
 	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 	INVALID_INPUT_PARAMETER("IDA-IDV-002", "Invalid Input Parameter - %s"),
@@ -37,14 +37,14 @@ public enum IdAuthenticationErrorConstants {
 	KERNEL_OTP_GENERATION_REQUEST_FAILED("IDA-OTA-103", "Kernel Generate OTP request failed"),
 
 	// Rest Helper Error Constants
-	INVALID_URI("IDA-RST-DTV-001", "URI should not be empty"),
-	INVALID_HTTP_METHOD("IDA-RST-DTV-002", "httpMethod is empty or invalid"),
-	INVALID_RETURN_TYPE("IDA-RST-DTV-003", "returnType is empty"),
-	INVALID_REST_SERVICE("IDA-RST-DTV-004", "Rest service name is empty or invalid"),
-	INVALID_TIMEOUT("IDA-RST-DTV-005", "Timeout is invalid"),
-	CLIENT_ERROR("IDA-RST-UTL-001", "4XX - Client Error occured"),
-	SERVER_ERROR("IDA-RST-UTL-002", "5XX - Server Error occured"),
-	CONNECTION_TIMED_OUT("IDA-RST-UTL-003", "Connection timed out"),
+	INVALID_URI("IDA-RST-001", "URI should not be empty"),
+    INVALID_HTTP_METHOD("IDA-RST-002", "httpMethod is empty or invalid"),
+    INVALID_RETURN_TYPE("IDA-RST-003", "returnType is empty"),
+    INVALID_REST_SERVICE("IDA-RST-004", "Rest service name is empty or invalid"),
+    INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"),
+    CLIENT_ERROR("IDA-RST-001", "4XX - Client Error occured"),
+    SERVER_ERROR("IDA-RST-002", "5XX - Server Error occured"),
+    CONNECTION_TIMED_OUT("IDA-RST-003", "Connection timed out"),
 
 	// INVALID_GENERATE_OTP_REQUEST("IDA-DTV-RQV-001", "Invalid OTP request"),
 	// OTP_GENERATION_REQUEST_FAILED("IDA-DTV-RQV-002", "OTP generation request
@@ -64,7 +64,7 @@ public enum IdAuthenticationErrorConstants {
 
 	ID_INVALID_VALIDATEOTP_REQUEST("IDA-DTV-ARV-001", "Invalid Validate OTP request"),
 
-	INVALID_AUTH_REQUEST("IDA-DTV-RQV-101", "Invalid Auth Request"),
+	INVALID_AUTH_REQUEST("IDA-RQV-101", "Invalid Auth Request"),
 	UNKNOWN_ERROR("IDA-DTV-IDV-004", "Unknown error occured"),
 
 	// INVALID_UIN_BUISNESS("IDA-IDMB-UIN-401", "Invalid UIN"),

@@ -17,47 +17,71 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * @author Loganathan Sekar
  */
 class CharResponseWrapper extends HttpServletResponseWrapper {
-    private ByteArrayOutputStream output;
+	
+	/** The output. */
+	private ByteArrayOutputStream output;
+	
+	/** The closed. */
 	private boolean closed;
+	
+	/** The writer. */
+	private PrintWriter writer;
 
-    public String toString() {
-        return output.toString();
-    }
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return output.toString();
+	}
 
-    public CharResponseWrapper(HttpServletResponse response) {
-        super(response);
-        output = new ByteArrayOutputStream();
-    }
+	/**
+	 * Instantiates a new char response wrapper.
+	 *
+	 * @param response the response
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public CharResponseWrapper(HttpServletResponse response) throws IOException {
+		super(response);
+		writer = response.getWriter();
+		output = new ByteArrayOutputStream();
+	}
+	
+	/* (non-Javadoc)
+	 * @see javax.servlet.ServletResponseWrapper#getWriter()
+	 */
+	public PrintWriter getWriter() {
+		return new PrintWriter(new OutputStreamWriter(output));
+	}
 
-    public PrintWriter getWriter() {
-        return new PrintWriter(new OutputStreamWriter(output));
-    }
-    
-    @Override
-    public ServletOutputStream getOutputStream() throws IOException {
-    	return new ServletOutputStream() {
-			
+	/* (non-Javadoc)
+	 * @see javax.servlet.ServletResponseWrapper#getOutputStream()
+	 */
+	@Override
+	public ServletOutputStream getOutputStream() throws IOException {
+		return new ServletOutputStream() {
+
 			@Override
 			public void write(int b) throws IOException {
 				output.write(b);
+//				writer.write(b);
 			}
-			
+
 			@Override
 			public void setWriteListener(WriteListener listener) {
-				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public boolean isReady() {
 				return !closed;
 			}
-			
+
 			@Override
 			public void close() throws IOException {
 				super.close();
 				closed = true;
 			}
 		};
-    }
+	}
+
 }

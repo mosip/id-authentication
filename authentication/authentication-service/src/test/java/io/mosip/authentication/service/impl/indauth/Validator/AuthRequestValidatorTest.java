@@ -3,6 +3,8 @@ package io.mosip.authentication.service.impl.indauth.Validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -106,12 +108,12 @@ public class AuthRequestValidatorTest {
 		 * "restFactory", restFactory);
 		 */
 	}
-	
+
 	@Test
 	public void testSupportTrue() {
 		assertTrue(authRequestValidator.supports(AuthRequestDTO.class));
 	}
-	
+
 	@Test
 	public void testSupportFalse() {
 		assertFalse(authRequestValidator.supports(AuthRequestValidator.class));
@@ -307,7 +309,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testInvalidIdType() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -331,7 +333,7 @@ public class AuthRequestValidatorTest {
 		authRequestValidator.validate(authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testInvalidOTPLength() {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
@@ -353,6 +355,24 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.getPii().setPin(pinDTO);
 		authRequestDTO.setReqTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
 		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void checkAuthRequestTest() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setAd(false);
+		authType.setBio(false);
+		authType.setFad(false);
+		authType.setOtp(false);
+		authType.setPi(false);
+		authType.setPin(false);
+		authRequestDTO.setAuthType(authType);
+		Method checkAuthReq = authRequestValidator.getClass().getDeclaredMethod("checkAuthRequest", AuthRequestDTO.class, Errors.class);
+		checkAuthReq.setAccessible(true);
+		checkAuthReq.invoke(authRequestValidator, authRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
 

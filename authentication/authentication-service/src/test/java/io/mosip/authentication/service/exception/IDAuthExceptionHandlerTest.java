@@ -1,9 +1,9 @@
 package io.mosip.authentication.service.exception;
+
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.assertj.core.util.Arrays;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -35,7 +35,7 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @WebMvcTest
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class IDAuthenticationExceptionHandlerTest {
+public class IDAuthExceptionHandlerTest {
 	@Autowired
 	Environment environment;
 
@@ -74,21 +74,20 @@ public class IDAuthenticationExceptionHandlerTest {
 	@Test
 	public void testHandleExceptionInternal() {
 		ResponseEntity<Object> handleExceptionInternal = handler.handleExceptionInternal(
-				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"),
-				Arrays.asList(new String[] { "Media type is not supported" }), null, HttpStatus.EXPECTATION_FAILED,
-				null);
+				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null,
+				HttpStatus.EXPECTATION_FAILED, null);
 		AuthResponseDTO response = (AuthResponseDTO) handleExceptionInternal.getBody();
 		List<AuthError> errorCode = response.getErr();
 		errorCode.forEach(e -> {
 			assertEquals("Http Media Type Not Supported Exception", e.getErrorCode());
-			assertEquals("Media type is not supported", e.getErrorMessage());
+			assertEquals("Http Media Type Not Supported Exception", e.getErrorMessage());
 		});
 	}
 
 	@Test
 	public void testHandleIdAppException() {
-		ResponseEntity<Object> handleIdAppException = handler
-				.handleIdAppException(new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED), null);
+		ResponseEntity<Object> handleIdAppException = handler.handleIdAppException(
+				new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED), null);
 		AuthResponseDTO response = (AuthResponseDTO) handleIdAppException.getBody();
 		List<AuthError> errorCode = response.getErr();
 		errorCode.forEach(e -> {
@@ -96,12 +95,25 @@ public class IDAuthenticationExceptionHandlerTest {
 			assertEquals("Authentication failed", e.getErrorMessage());
 		});
 	}
-	
+
+	@Test
+	public void testHandleIdAppExceptionWithCause() {
+		IdAuthenticationAppException ex = new IdAuthenticationAppException(
+				IdAuthenticationErrorConstants.AUTHENTICATION_FAILED,
+				new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
+		ResponseEntity<Object> handleIdAppException = handler.handleIdAppException(ex, null);
+		AuthResponseDTO response = (AuthResponseDTO) handleIdAppException.getBody();
+		List<AuthError> errorCode = response.getErr();
+		errorCode.forEach(e -> {
+			assertEquals("IDA-AUT-501", e.getErrorCode());
+			assertEquals("Authentication failed", e.getErrorMessage());
+		});
+	}
+
 	@Test
 	public void testHandleExceptionInternalWithObject() {
 		ResponseEntity<Object> handleExceptionInternal = handler.handleExceptionInternal(
-				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"),
-				null, null, null,
+				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"), null, null, null,
 				null);
 		AuthResponseDTO response = (AuthResponseDTO) handleExceptionInternal.getBody();
 		List<AuthError> errorCode = response.getErr();

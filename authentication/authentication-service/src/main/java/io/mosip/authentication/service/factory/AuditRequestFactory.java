@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
@@ -32,21 +33,19 @@ public class AuditRequestFactory {
 
 	@Autowired
 	private Environment env;
-	
-	private InetAddress inetAddress;
 
 	/**
 	 * Builds the request.
 	 *
 	 * @return the audit request dto
 	 */
-	public AuditRequestDto buildRequest(AuditModules module, AuditEvents event, String desc) {
+	public AuditRequestDto buildRequest(AuditModules module, AuditEvents event, String id, IdType idType, String desc) {
 		AuditRequestDto request = new AuditRequestDto();
 		String hostName;
 		String hostAddress;
 
 		try {
-			inetAddress = InetAddress.getLocalHost();
+			InetAddress inetAddress = InetAddress.getLocalHost();
 			hostName = inetAddress.getHostName();
 			hostAddress = inetAddress.getHostAddress();
 		} catch (UnknownHostException ex) {
@@ -65,8 +64,8 @@ public class AuditRequestFactory {
 		request.setApplicationName(env.getProperty("application.name"));
 		request.setSessionUserId("sessionUserId");
 		request.setSessionUserName("sessionUserName");
-		request.setId("id");
-		request.setIdType("idType");
+		request.setId(id);
+		request.setIdType(idType.name());
 		request.setCreatedBy(env.getProperty("user.name"));
 		request.setModuleName(module.getModuleName());
 		request.setModuleId(module.getModuleId());

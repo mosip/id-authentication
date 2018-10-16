@@ -143,7 +143,6 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO.setReqTime(new Date("1/1/2017"));
 		OtpRequestDTO.setId("5371843613598211");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
-		errors.getFieldErrors().forEach(System.err::println);
 		assertTrue(errors.hasErrors());
 	}
 }

@@ -63,7 +63,6 @@ public class ValidateOtpRequestTest {
 
 	@Before
 	public void before() {
-		System.err.println(restHelper);
 		restfactory = new RestRequestFactory();
 		ReflectionTestUtils.setField(restfactory, "env", env);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);

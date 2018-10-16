@@ -27,7 +27,7 @@ public final class DataValidationUtil {
 	public static void validate(Errors errors) throws IDDataValidationException {
 		if (errors.hasErrors()) {
 			IDDataValidationException exception = new IDDataValidationException();
-			errors.getFieldErrors()
+			errors.getAllErrors()
 			.forEach(error -> exception.addInfo(error.getCode(),
 					error.getDefaultMessage()));
 			throw exception;

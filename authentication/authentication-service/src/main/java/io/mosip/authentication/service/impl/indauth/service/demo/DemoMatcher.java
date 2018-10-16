@@ -9,55 +9,55 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
 
 /**
- * @author Arun Bose
- * The Class DemoMatcher.
+ * @author Arun Bose The Class DemoMatcher.
  */
 @Component
 
 public class DemoMatcher {
-	
+
 	/**
 	 * Match demo data.
 	 *
-	 * @param demoDTO the demo DTO
+	 * @param demoDTO    the demo DTO
 	 * @param demoEntity the demo entity
+	 * @param locationInfoFetcher 
 	 * @param matchInput the match input
 	 * @return the list
 	 */
-	public List<MatchOutput> matchDemoData(DemoDTO demoDTO,DemoEntity demoEntity,List<MatchInput> listMatchInputs){
-		return listMatchInputs.parallelStream()
-				.map(input -> matchType(demoDTO, demoEntity, input))
-				.filter(output -> output != null)
-				.collect(Collectors.toList());
+	public List<MatchOutput> matchDemoData(DemoDTO demoDTO, DemoEntity demoEntity, List<MatchInput> listMatchInputs, LocationInfoFetcher locationInfoFetcher) {
+		return listMatchInputs.parallelStream().map(input -> matchType(demoDTO, demoEntity, input, locationInfoFetcher))
+				.filter(output -> output != null).collect(Collectors.toList());
 	}
 
 	/**
 	 * Match type.
 	 *
-	 * @param demoDTO the demo DTO
+	 * @param demoDTO    the demo DTO
 	 * @param demoEntity the demo entity
-	 * @param input the input
+	 * @param input      the input
 	 * @return the match output
 	 */
-	private MatchOutput matchType(DemoDTO demoDTO, DemoEntity demoEntity, MatchInput input) {
+	private MatchOutput matchType(DemoDTO demoDTO, DemoEntity demoEntity, MatchInput input, LocationInfoFetcher locationInfoFetcher) {
 		String matchStrategyTypeStr = input.getMatchStrategyType();
-		if(matchStrategyTypeStr == null) {
+		if (matchStrategyTypeStr == null) {
 			matchStrategyTypeStr = MatchingStrategyType.EXACT.getType();
 		}
 
-		Optional<MatchingStrategyType> matchStrategyType = MatchingStrategyType.getMatchStrategyType(matchStrategyTypeStr);
-		if(matchStrategyType.isPresent() ) {
+		Optional<MatchingStrategyType> matchStrategyType = MatchingStrategyType
+				.getMatchStrategyType(matchStrategyTypeStr);
+		if (matchStrategyType.isPresent()) {
 			MatchingStrategyType strategyType = matchStrategyType.get();
-			Optional<MatchingStrategy> matchingStrategy = input.getDemoMatchType().getAllowedMatchingStrategy(strategyType);
-			if(matchingStrategy.isPresent()) {
+			Optional<MatchingStrategy> matchingStrategy = input.getDemoMatchType()
+					.getAllowedMatchingStrategy(strategyType);
+			if (matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();
-				Object reqInfo =  input.getDemoMatchType().getDemoInfoFetcher().getInfo(demoDTO);
-				Object entityInfo = input.getDemoMatchType().getEntityInfoFetcher().getInfo(demoEntity);
+				Object reqInfo = input.getDemoMatchType().getDemoInfoFetcher().getInfo(demoDTO);
+				Object entityInfo = input.getDemoMatchType().getEntityInfoFetcher().getInfo(demoEntity, locationInfoFetcher);
 				MatchFunction matchFunction = strategy.getMatchFunction();
 				int mtOut = matchFunction.doMatch(reqInfo, entityInfo);
 				boolean matchOutput = mtOut >= input.getMatchValue();
-				return new MatchOutput(mtOut,matchOutput,input.getMatchStrategyType(),input.getDemoMatchType());
-	       }
+				return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), input.getDemoMatchType());
+			}
 		}
 		return null;
 	}

@@ -1,6 +1,5 @@
 package io.mosip.authentication.core.dto.indauth;
 
-import java.util.Date;
 import java.util.List;
 
 import lombok.Data;
@@ -23,7 +22,7 @@ public class AuthResponseDTO  {
 	private boolean status;
 	private List<AuthError> err;
 	private String txnID;
-	private Date resTime;
+	private String resTime;
 	private AuthResponseInfo info;
 
 }

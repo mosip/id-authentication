@@ -24,7 +24,7 @@ public class LocationEntity {
 	private String name;
 
 	@Column(name = "hierarchy_level")
-	private String hierarchylevel;
+	private int hierarchylevel;
 
 	@Column(name = "hierarchy_level_name")
 	private String hierarchylevelname;

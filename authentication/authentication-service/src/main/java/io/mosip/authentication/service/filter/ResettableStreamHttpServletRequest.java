@@ -22,10 +22,20 @@ import org.springframework.util.StreamUtils;
 class ResettableStreamHttpServletRequest extends
 			HttpServletRequestWrapper {
 
+		/** The raw data. */
 		private byte[] rawData;
+		
+		/** The request. */
 		private HttpServletRequest request;
+		
+		/** The servlet stream. */
 		private ResettableServletInputStream servletStream;
 
+		/**
+		 * Instantiates a new resettable stream http servlet request.
+		 *
+		 * @param request the request
+		 */
 		public ResettableStreamHttpServletRequest(HttpServletRequest request) {
 			super(request);
 			this.request = request;
@@ -33,10 +43,16 @@ class ResettableStreamHttpServletRequest extends
 		}
 
 
+		/**
+		 * Reset input stream.
+		 */
 		public void resetInputStream() {
 			servletStream.stream = new ResettableServletInputStream(new ByteArrayInputStream(rawData));
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.servlet.ServletRequestWrapper#getInputStream()
+		 */
 		@Override
 		public ServletInputStream getInputStream() throws IOException {
 			if (rawData == null) {
@@ -46,6 +62,9 @@ class ResettableStreamHttpServletRequest extends
 			return servletStream;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.servlet.ServletRequestWrapper#getReader()
+		 */
 		@Override
 		public BufferedReader getReader() throws IOException {
 			if (rawData == null) {
@@ -56,19 +75,38 @@ class ResettableStreamHttpServletRequest extends
 		}
 		
 
+		/**
+		 * The Class ResettableServletInputStream.
+		 */
 		private class ResettableServletInputStream extends ServletInputStream {
 
+			/** The stream. */
 			private InputStream stream;
+			
+			/** The eof reached. */
 			private boolean eofReached;
+			
+			/** The closed. */
 			private boolean closed;
 
+			/**
+			 * Instantiates a new resettable servlet input stream.
+			 *
+			 * @param stream the stream
+			 */
 			public ResettableServletInputStream(InputStream stream) {
 				this.stream = stream;
 			}
 
+			/**
+			 * Instantiates a new resettable servlet input stream.
+			 */
 			public ResettableServletInputStream() {
 			}
 
+			/* (non-Javadoc)
+			 * @see java.io.InputStream#read()
+			 */
 			@Override
 			public int read() throws IOException {
 				int val = stream.read();
@@ -78,22 +116,34 @@ class ResettableStreamHttpServletRequest extends
 				return val;
 			}
 
+			/* (non-Javadoc)
+			 * @see javax.servlet.ServletInputStream#isFinished()
+			 */
 			@Override
 			public boolean isFinished() {
 				return eofReached;
 			}
 
+			/* (non-Javadoc)
+			 * @see javax.servlet.ServletInputStream#isReady()
+			 */
 			@Override
 			public boolean isReady() {
 				return !eofReached && !closed;
 			}
 			
+			/* (non-Javadoc)
+			 * @see java.io.InputStream#close()
+			 */
 			@Override
 			public void close() throws IOException {
 				super.close();
 				closed = true;
 			}
 
+			/* (non-Javadoc)
+			 * @see javax.servlet.ServletInputStream#setReadListener(javax.servlet.ReadListener)
+			 */
 			@Override
 			public void setReadListener(ReadListener listener) {
 				// TODO Auto-generated method stub
