@@ -2,6 +2,7 @@ package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -14,7 +15,6 @@ import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthError;
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
@@ -71,27 +72,32 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		requestTime = Instant.now();
+		
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Request received at : " + requestTime);
+		
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(
 				(HttpServletRequest) request);
+		
 		try {
 			authenticateRequest(requestWrapper);
 			requestWrapper.resetInputStream();
 
 			CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
-
 			chain.doFilter(requestWrapper, responseWrapper);
 
+			requestWrapper.resetInputStream();
 			AuthResponseDTO wrappedResponse = mapper.readValue(responseWrapper.toString(), AuthResponseDTO.class);
+			wrappedResponse.setTxnID(((AuthRequestDTO) getRequestBody(requestWrapper.getInputStream())).getTxnID());
+			response.getWriter().write(mapper.writeValueAsString(wrappedResponse));
+			
 			logResponseTime(wrappedResponse.getResTime());
 
 		} catch (IdAuthenticationAppException e) {
 			CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
 			requestWrapper.resetInputStream();
-			responseWrapper.clear();
 			chain.doFilter(requestWrapper, responseWrapper);
 			AuthResponseDTO wrappedResponse = mapper.readValue(responseWrapper.toString(), AuthResponseDTO.class);
-			sendAuthErrorResponse((HttpServletResponse) responseWrapper, e, request.getContentType());
+			sendAuthErrorResponse((HttpServletResponse) response, e, request.getContentType());
 			logResponseTime(wrappedResponse.getResTime());
 			mosipLogger.error(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Error : " + e);
 		}
@@ -109,11 +115,11 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 	private void sendAuthErrorResponse(HttpServletResponse response, IdAuthenticationAppException e, String contentType)
 			throws IOException {
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
-		ServletOutputStream out = response.getOutputStream();
+		PrintWriter writer = response.getWriter();
 		String errorMessageBody = getErrorMessageBody(e);
 		response.setContentLength(errorMessageBody.length());
 		response.setContentType(contentType);
-		out.write(errorMessageBody.getBytes()); // Here you can change the response
+		writer.write(errorMessageBody); // Here you can change the response
 	}
 
 	private String getErrorMessageBody(IdAuthenticationAppException e) {
@@ -178,7 +184,6 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
 
 	}
 

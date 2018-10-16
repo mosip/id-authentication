@@ -20,7 +20,6 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	private ByteArrayOutputStream output;
 	private boolean closed;
 	private PrintWriter writer;
-	private HttpServletResponse response;
 
 	public String toString() {
 		return output.toString();
@@ -28,17 +27,10 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 
 	public CharResponseWrapper(HttpServletResponse response) throws IOException {
 		super(response);
-		this.response = response;
 		writer = response.getWriter();
 		output = new ByteArrayOutputStream();
 	}
 	
-	public void clear() throws IOException {
-		output = new ByteArrayOutputStream();
-		writer = super.getWriter();
-		writer.flush();
-	}
-
 	public PrintWriter getWriter() {
 		return new PrintWriter(new OutputStreamWriter(output));
 	}
@@ -50,7 +42,7 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 			@Override
 			public void write(int b) throws IOException {
 				output.write(b);
-				writer.write(b);
+//				writer.write(b);
 			}
 
 			@Override

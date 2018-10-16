@@ -60,7 +60,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
 		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Entered handleAllExceptions",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
-
 		mosipLogger.error(DEFAULT_SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(),
 				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -109,11 +108,14 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				ex.toString() + "Error message Object : "
 						+ Optional.ofNullable(errorMessage).orElseGet(() -> "null").toString() + "\nStatus returned: "
 						+ Optional.ofNullable(status).orElseGet(() -> HttpStatus.INTERNAL_SERVER_ERROR).toString());
-
+		// FIXME Need to handle properly
 		List<String> errorCodes = new ArrayList<>();
 		errorCodes.add(ex.getMessage());
 
-		return new ResponseEntity<>(buildExceptionResponse(ex, errorCodes, errorMessage),
+		List<String> errorMessages = new ArrayList<>();
+		errorMessages.add(ex.getMessage());
+
+		return new ResponseEntity<>(buildExceptionResponse(ex, errorCodes, errorMessages),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
@@ -144,7 +146,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		List<String> errorMessage = new ArrayList<>();
 		errorMessage.addAll(((BaseCheckedException) e).getErrorTexts());
-		
+
 		return new ResponseEntity<>(buildExceptionResponse(ex, ex.getCodes(), errorMessage),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}

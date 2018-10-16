@@ -75,13 +75,13 @@ public class IDAuthExceptionHandlerTest {
 	public void testHandleExceptionInternal() {
 		ResponseEntity<Object> handleExceptionInternal = handler.handleExceptionInternal(
 				new HttpMediaTypeNotSupportedException("Http Media Type Not Supported Exception"),
-				Arrays.asList(new String[] { "Media type is not supported" }), null, HttpStatus.EXPECTATION_FAILED,
+				null, null, HttpStatus.EXPECTATION_FAILED,
 				null);
 		AuthResponseDTO response = (AuthResponseDTO) handleExceptionInternal.getBody();
 		List<AuthError> errorCode = response.getErr();
 		errorCode.forEach(e -> {
 			assertEquals("Http Media Type Not Supported Exception", e.getErrorCode());
-			assertEquals("Media type is not supported", e.getErrorMessage());
+			assertEquals("Http Media Type Not Supported Exception", e.getErrorMessage());
 		});
 	}
 
