@@ -21,7 +21,6 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name="applicant_fingerprint", schema = "regprc")
-@NamedQuery(name="ApplicantFingerprintEntity.findAll", query="SELECT a FROM ApplicantFingerprintEntity a")
 public class ApplicantFingerprintEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 

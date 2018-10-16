@@ -4,7 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,18 +15,22 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.packet.dto.BiometericData;
+import io.mosip.registration.processor.core.packet.dto.DemoInLocalLang;
+import io.mosip.registration.processor.core.packet.dto.DemoInUserLang;
+import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.DocumentDetail;
 import io.mosip.registration.processor.core.packet.dto.ExceptionFingerprint;
 import io.mosip.registration.processor.core.packet.dto.ExceptionIris;
 import io.mosip.registration.processor.core.packet.dto.Fingerprint;
-import io.mosip.registration.processor.core.packet.dto.HashSequence;
 import io.mosip.registration.processor.core.packet.dto.Iris;
 import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.OsiData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.core.spi.packetinfo.entity.ApplicantDemographicEntity;
+import io.mosip.registration.processor.core.spi.packetinfo.entity.ApplicantDemographicPKEntity;
 import io.mosip.registration.processor.core.spi.packetinfo.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.core.spi.packetinfo.entity.ApplicantDocumentPKEntity;
 import io.mosip.registration.processor.core.spi.packetinfo.entity.ApplicantFingerprintEntity;
@@ -38,13 +43,14 @@ import io.mosip.registration.processor.core.spi.packetinfo.entity.BiometricExcep
 import io.mosip.registration.processor.core.spi.packetinfo.entity.BiometricExceptionPKEntity;
 import io.mosip.registration.processor.core.spi.packetinfo.entity.RegOsiEntity;
 import io.mosip.registration.processor.core.spi.packetinfo.exception.TablenotAccessibleException;
+import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantDemographicRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantDocumentRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantFingerprintRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantIrisRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantPhotographRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.BiometricExceptionRepository;
 import io.mosip.registration.processor.core.spi.packetinfo.repository.RegOsiRepository;
-import io.mosip.registration.processor.core.spi.packetinfo.service.PacketInfoManager;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 
 /**
  * 
@@ -52,7 +58,7 @@ import io.mosip.registration.processor.core.spi.packetinfo.service.PacketInfoMan
  *
  */
 @Service
-public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, BiometericData, DocumentDetail> {
+public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo,  DemographicInfo> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
 	
@@ -72,17 +78,22 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 	ApplicantPhotographRepository applicantPhotographRepository;
 	
 	@Autowired
-	RegOsiRepository regOsiRepository;
+	private RegOsiRepository regOsiRepository;
+	
+	@Autowired
+	private ApplicantDemographicRepository applicantDemographicRepository;
 
+	//@Autowired
 	private FileSystemAdapter fileSystemAdapter;
+	
 	private BiometericData biometricData;
-	private HashMap<String, String> checksumMap;
 	private Document documentDto;
-	private HashSequence hashSequence;
 	private MetaData metaData;
 	private OsiData osiData;
 	private Photograph photoGraphData;
+	
 
+	
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.packetinfo.service.PacketInfoManager#savePacketData(java.lang.Object)
 	 */
@@ -94,12 +105,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		metaData = packetInfo.getMetaData();
 		osiData = packetInfo.getOsiData();
 		photoGraphData = packetInfo.getPhotograph();
-		hashSequence = packetInfo.getHashSequence();
-		checksumMap = packetInfo.getCheckSumMap();
 		try {
 			List<DocumentDetail> documentDetails = documentDto.getDocumentDetails();
 			for (DocumentDetail documentDetail : documentDetails) {
-				saveDemographicData(documentDetail);
+				saveDocumentData(documentDetail);
 			}
 			saveBioMetricData(biometricData);
 			savePhotoGraphData(photoGraphData);
@@ -110,32 +119,33 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		
 	}
 	
+	
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.packetinfo.service.PacketInfoManager#saveDemographicData(java.lang.Object)
 	 */
 	@Override
-	public void saveDemographicData(DocumentDetail documentDetail) {
-		ApplicantDocumentEntity applicantDocumentEntity = convertAppDocDtoToAppDocEntity(documentDetail);
+	public void saveDemographicData(DemographicInfo demographicInfo) {
 		
-		if (photoGraphData.isHasExceptionPhoto()) {
-			byte[] docBytes = getPhotoGraphDataInByteArray(metaData.getRegistrationId(),photoGraphData.getExceptionPhotoName());
-			applicantDocumentEntity.setDocStore(docBytes);
-			if (applicantDocumentRepository.save(applicantDocumentEntity) != null) {
-				LOGGER.info(applicantDocumentEntity.getId().getRegId() +" --> Document Exception Demographic DATA SAVED");
+		try {
+			List<ApplicantDemographicEntity> applicantDemographicEntities = convertDemographicInfoToAppDemographicInfoEntity(demographicInfo);
+			for(ApplicantDemographicEntity applicantDemographicEntity:applicantDemographicEntities) {
+				if (applicantDemographicRepository.save(applicantDemographicEntity) != null) {
+					LOGGER.info(applicantDemographicEntity.getId().getRegId() +" --> Demographic  DATA SAVED");
+				}
 			}
+		}catch(DataAccessLayerException  e) {
+			throw new TablenotAccessibleException("Table Not Accessible", e);
 		}
-		 byte[] docBytes =getPhotoGraphDataInByteArray(metaData.getRegistrationId(),photoGraphData.getPhotographName());
-		//byte[] docBytes = { 10, 20, 40 };
-		applicantDocumentEntity.setDocStore(docBytes);
-		if (applicantDocumentRepository.save(applicantDocumentEntity) != null) {
-			LOGGER.info(applicantDocumentEntity.getId().getRegId() +" --> Document Demographic DATA SAVED");
-		}
+		
 	}
 	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.core.spi.packetinfo.service.PacketInfoManager#saveBioMetricData(java.lang.Object)
+	
+
+	/**
+	 * Save bio metric data.
+	 *
+	 * @param bioMetricData the bio metric data
 	 */
-	@Override
 	public void saveBioMetricData(BiometericData bioMetricData){
 		List<Fingerprint> fingerprints = bioMetricData.getFingerprintData().getFingerprints();
 		List<ExceptionFingerprint> exceptionFingerprints = bioMetricData.getFingerprintData().getExceptionFingerprints();
@@ -171,6 +181,30 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		}
 	}
 	
+	/**
+	 * Save document data.
+	 *
+	 * @param documentDetail the document detail
+	 */
+	public void saveDocumentData(DocumentDetail documentDetail) {
+
+		ApplicantDocumentEntity applicantDocumentEntity = convertAppDocDtoToAppDocEntity(documentDetail);
+		
+	/*	if (photoGraphData.isHasExceptionPhoto()) {
+			byte[] docBytes = getPhotoGraphDataInByteArray(metaData.getRegistrationId(),photoGraphData.getExceptionPhotoName());
+			applicantDocumentEntity.setDocStore(docBytes);
+			if (applicantDocumentRepository.save(applicantDocumentEntity) != null) {
+				LOGGER.info(applicantDocumentEntity.getId().getRegId() +" --> Document Exception Demographic DATA SAVED");
+			}
+		}*/
+		//byte[] docBytes =getPhotoGraphDataInByteArray(metaData.getRegistrationId(),photoGraphData.getPhotographName());
+		byte[] docBytes = { 10, 20, 40 };
+		applicantDocumentEntity.setDocStore(docBytes);
+		if (applicantDocumentRepository.save(applicantDocumentEntity) != null) {
+			LOGGER.info(applicantDocumentEntity.getId().getRegId() +" --> Document Demographic DATA SAVED");
+		}
+	
+	}
 	/**
 	 * Save osi data.
 	 *
@@ -409,8 +443,95 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 				os.write(buffer, 0, len);
 			}
 		} catch (IOException e) {
+			LOGGER.error("Error While reading json inputstream file");
 			e.printStackTrace();
 		}
 		return os.toByteArray();
+	}
+	
+	/**
+	 * Convert demographic info to app demographic info entity.
+	 *
+	 * @param demographicInfo the demographic info
+	 * @return the list
+	 */
+	private List<ApplicantDemographicEntity> convertDemographicInfoToAppDemographicInfoEntity(
+			DemographicInfo demographicInfo) {
+		DemoInLocalLang demoInLocalLang = demographicInfo.getDemoInLocalLang();
+		DemoInUserLang demoInUserLang = demographicInfo.getDemoInUserLang();
+		List<ApplicantDemographicEntity> applicantDemographicEntities = new ArrayList<ApplicantDemographicEntity>();
+		ApplicantDemographicEntity applicantDemographicEntity = new ApplicantDemographicEntity();
+		
+		ApplicantDemographicPKEntity applicantDemographicPKEntity  = new ApplicantDemographicPKEntity();
+		applicantDemographicPKEntity.setLangCode(demoInLocalLang.getLanguageCode());
+		applicantDemographicPKEntity.setRegId(metaData.getRegistrationId());
+		
+		applicantDemographicEntity.setId(applicantDemographicPKEntity);
+		applicantDemographicEntity.setPreregId(metaData.getPreRegistrationId());
+		applicantDemographicEntity.setAddrLine1(demoInLocalLang.getAddress().getLine1());
+		applicantDemographicEntity.setAddrLine2(demoInLocalLang.getAddress().getLine2());
+		applicantDemographicEntity.setAddrLine3(demoInLocalLang.getAddress().getLine3());
+		applicantDemographicEntity.setAge(new Date().getYear()-demoInLocalLang.getDateOfBirth().getYear());
+		applicantDemographicEntity.setApplicantType("Local Language");
+		applicantDemographicEntity.setDob(demoInLocalLang.getDateOfBirth());
+		applicantDemographicEntity.setEmail(demoInLocalLang.getEmailId());
+		applicantDemographicEntity.setFamilyname(demoInLocalLang.getFamilyname());
+		applicantDemographicEntity.setFirstname(demoInLocalLang.getFirstname());
+		applicantDemographicEntity.setForename(demoInLocalLang.getForename());
+		applicantDemographicEntity.setFullname(demoInLocalLang.getFullName());
+		applicantDemographicEntity.setGenderCode(demoInLocalLang.getGender());
+		applicantDemographicEntity.setGivenname(demoInLocalLang.getGivenname());
+		applicantDemographicEntity.setLastname(demoInLocalLang.getLastname());
+		applicantDemographicEntity.setLocationCode("Location Code");
+		applicantDemographicEntity.setMiddlename(demoInLocalLang.getMiddlename());
+		applicantDemographicEntity.setMobile(demoInLocalLang.getMobile());
+		applicantDemographicEntity.setNationalid("National Id");
+		applicantDemographicEntity.setParentFullname("Parent Full Name");
+		applicantDemographicEntity.setParentRefIdType("ParentRefIdType");
+		applicantDemographicEntity.setParentRefId(metaData.getPreRegistrationId());
+		applicantDemographicEntity.setStatusCode("Status code");
+		applicantDemographicEntity.setCrBy("Test User");
+		applicantDemographicEntity.setSurname(demoInLocalLang.getSurname());
+		
+		applicantDemographicEntities.add(applicantDemographicEntity);
+		
+		
+		
+		applicantDemographicEntity = new ApplicantDemographicEntity();
+		
+		ApplicantDemographicPKEntity applicantDemographicPKEntity1  = new ApplicantDemographicPKEntity();
+		applicantDemographicPKEntity1.setLangCode(demoInUserLang.getLanguageCode());
+		applicantDemographicPKEntity1.setRegId(metaData.getRegistrationId());
+		
+		applicantDemographicEntity.setId(applicantDemographicPKEntity1);
+		applicantDemographicEntity.setPreregId(metaData.getPreRegistrationId());
+		applicantDemographicEntity.setAddrLine1(demoInUserLang.getAddress().getLine1());
+		applicantDemographicEntity.setAddrLine2(demoInUserLang.getAddress().getLine2());
+		applicantDemographicEntity.setAddrLine3(demoInUserLang.getAddress().getLine3());
+		applicantDemographicEntity.setAge(new Date().getYear()-demoInLocalLang.getDateOfBirth().getYear());
+		applicantDemographicEntity.setApplicantType("USER Language");
+		applicantDemographicEntity.setDob(demoInLocalLang.getDateOfBirth());
+		applicantDemographicEntity.setEmail(demoInUserLang.getEmailId());
+		applicantDemographicEntity.setFamilyname(demoInUserLang.getFamilyname());
+		applicantDemographicEntity.setFirstname(demoInUserLang.getFirstname());
+		applicantDemographicEntity.setForename(demoInUserLang.getForename());
+		applicantDemographicEntity.setFullname(demoInUserLang.getFullName());
+		applicantDemographicEntity.setGenderCode(demoInUserLang.getGender());
+		applicantDemographicEntity.setGivenname(demoInUserLang.getGivenname());
+		applicantDemographicEntity.setLastname(demoInUserLang.getLastname());
+		applicantDemographicEntity.setLocationCode("Location Code");
+		applicantDemographicEntity.setMiddlename(demoInUserLang.getMiddlename());
+		applicantDemographicEntity.setMobile(demoInUserLang.getMobile());
+		applicantDemographicEntity.setNationalid("National Id");
+		applicantDemographicEntity.setParentFullname("Parent Full Name");
+		applicantDemographicEntity.setParentRefId("ParentRefId");
+		applicantDemographicEntity.setParentRefIdType("ParentRefIdType");
+		applicantDemographicEntity.setStatusCode("Status code");
+		applicantDemographicEntity.setCrBy("Test User");
+		applicantDemographicEntity.setSurname(demoInUserLang.getSurname());
+		
+		applicantDemographicEntities.add(applicantDemographicEntity);
+		
+		return applicantDemographicEntities;
 	}
 }

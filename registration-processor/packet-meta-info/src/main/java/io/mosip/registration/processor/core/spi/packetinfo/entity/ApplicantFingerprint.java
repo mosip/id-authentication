@@ -1,43 +1,32 @@
 package io.mosip.registration.processor.core.spi.packetinfo.entity;
 
 import java.io.Serializable;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 
 /**
- * The persistent class for the applicant_iris database table.
+ * The persistent class for the applicant_fingerprint database table.
  * 
- * @author Horteppa M1048399
  */
 @Entity
-@Table(name="applicant_iris", schema = "regprc")
-public class ApplicantIrisEntity implements Serializable {
+@Table(name="applicant_fingerprint")
+@NamedQuery(name="ApplicantFingerprint.findAll", query="SELECT a FROM ApplicantFingerprint a")
+public class ApplicantFingerprint implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private ApplicantIrisPKEntity id;
+	private ApplicantFingerprintPK id;
 
 	@Column(name="cr_by")
 	private String crBy;
 
-	@Column(name="cr_dtimesz", nullable = false, updatable = false)
-	@CreationTimestamp
-	private LocalDateTime crDtimesz;
+	@Column(name="cr_dtimesz")
+	private Timestamp crDtimesz;
 
 	@Column(name="del_dtimesz")
-	@UpdateTimestamp
-	private LocalDateTime delDtimesz;
+	private Timestamp delDtimesz;
 
 	@Column(name="image_name")
 	private String imageName;
@@ -61,18 +50,17 @@ public class ApplicantIrisEntity implements Serializable {
 	private String updBy;
 
 	@Column(name="upd_dtimesz")
-	@UpdateTimestamp
-	private LocalDateTime updDtimesz;
+	private Timestamp updDtimesz;
 
-	public ApplicantIrisEntity() {
+	public ApplicantFingerprint() {
 		super();
 	}
 
-	public ApplicantIrisPKEntity getId() {
+	public ApplicantFingerprintPK getId() {
 		return this.id;
 	}
 
-	public void setId(ApplicantIrisPKEntity id) {
+	public void setId(ApplicantFingerprintPK id) {
 		this.id = id;
 	}
 
@@ -84,19 +72,19 @@ public class ApplicantIrisEntity implements Serializable {
 		this.crBy = crBy;
 	}
 
-	public LocalDateTime getCrDtimesz() {
+	public Timestamp getCrDtimesz() {
 		return this.crDtimesz;
 	}
 
-	public void setCrDtimesz(LocalDateTime crDtimesz) {
+	public void setCrDtimesz(Timestamp crDtimesz) {
 		this.crDtimesz = crDtimesz;
 	}
 
-	public LocalDateTime getDelDtimesz() {
+	public Timestamp getDelDtimesz() {
 		return this.delDtimesz;
 	}
 
-	public void setDelDtimesz(LocalDateTime delDtimesz) {
+	public void setDelDtimesz(Timestamp delDtimesz) {
 		this.delDtimesz = delDtimesz;
 	}
 
@@ -156,11 +144,11 @@ public class ApplicantIrisEntity implements Serializable {
 		this.updBy = updBy;
 	}
 
-	public LocalDateTime getUpdDtimesz() {
+	public Timestamp getUpdDtimesz() {
 		return this.updDtimesz;
 	}
 
-	public void setUpdDtimesz(LocalDateTime updDtimesz) {
+	public void setUpdDtimesz(Timestamp updDtimesz) {
 		this.updDtimesz = updDtimesz;
 	}
 

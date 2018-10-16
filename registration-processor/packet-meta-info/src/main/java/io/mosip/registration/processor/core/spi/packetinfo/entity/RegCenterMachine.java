@@ -1,27 +1,18 @@
 package io.mosip.registration.processor.core.spi.packetinfo.entity;
 
 import java.io.Serializable;
+import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 
 /**
  * The persistent class for the reg_center_machine database table.
  * 
- * @author Horteppa M1048399
  */
 @Entity
-@Table(name="reg_center_machine", schema = "regprc")
-public class RegCenterMachineEntity implements Serializable {
+@Table(name="reg_center_machine")
+@NamedQuery(name="RegCenterMachine.findAll", query="SELECT r FROM RegCenterMachine r")
+public class RegCenterMachine implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -34,13 +25,11 @@ public class RegCenterMachineEntity implements Serializable {
 	@Column(name="cr_by")
 	private String crBy;
 
-	@Column(name="cr_dtimesz", nullable = false, updatable = false)
-	@CreationTimestamp
-	private LocalDateTime crDtimesz;
+	@Column(name="cr_dtimesz")
+	private Timestamp crDtimesz;
 
 	@Column(name="del_dtimesz")
-	@UpdateTimestamp
-	private LocalDateTime delDtimesz;
+	private Timestamp delDtimesz;
 
 	@Column(name="is_active")
 	private Boolean isActive;
@@ -62,10 +51,9 @@ public class RegCenterMachineEntity implements Serializable {
 	private String updBy;
 
 	@Column(name="upd_dtimesz")
-	@UpdateTimestamp
-	private LocalDateTime updDtimesz;
+	private Timestamp updDtimesz;
 
-	public RegCenterMachineEntity() {
+	public RegCenterMachine() {
 		super();
 	}
 
@@ -93,19 +81,19 @@ public class RegCenterMachineEntity implements Serializable {
 		this.crBy = crBy;
 	}
 
-	public LocalDateTime getCrDtimesz() {
+	public Timestamp getCrDtimesz() {
 		return this.crDtimesz;
 	}
 
-	public void setCrDtimesz(LocalDateTime crDtimesz) {
+	public void setCrDtimesz(Timestamp crDtimesz) {
 		this.crDtimesz = crDtimesz;
 	}
 
-	public LocalDateTime getDelDtimesz() {
+	public Timestamp getDelDtimesz() {
 		return this.delDtimesz;
 	}
 
-	public void setDelDtimesz(LocalDateTime delDtimesz) {
+	public void setDelDtimesz(Timestamp delDtimesz) {
 		this.delDtimesz = delDtimesz;
 	}
 
@@ -165,11 +153,11 @@ public class RegCenterMachineEntity implements Serializable {
 		this.updBy = updBy;
 	}
 
-	public LocalDateTime getUpdDtimesz() {
+	public Timestamp getUpdDtimesz() {
 		return this.updDtimesz;
 	}
 
-	public void setUpdDtimesz(LocalDateTime updDtimesz) {
+	public void setUpdDtimesz(Timestamp updDtimesz) {
 		this.updDtimesz = updDtimesz;
 	}
 

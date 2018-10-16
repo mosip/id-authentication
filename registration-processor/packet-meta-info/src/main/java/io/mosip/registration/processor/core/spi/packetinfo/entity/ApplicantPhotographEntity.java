@@ -21,7 +21,6 @@ import org.hibernate.annotations.UpdateTimestamp;
  */
 @Entity
 @Table(name="applicant_photograph", schema = "regprc")
-@NamedQuery(name="ApplicantPhotographEntity.findAll", query="SELECT a FROM ApplicantPhotographEntity a")
 public class ApplicantPhotographEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
