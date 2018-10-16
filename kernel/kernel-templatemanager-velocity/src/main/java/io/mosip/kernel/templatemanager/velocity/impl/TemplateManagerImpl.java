@@ -18,7 +18,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 
 import io.mosip.kernel.core.spi.templatemanager.MosipTemplateManager;
 import io.mosip.kernel.templatemanager.velocity.constant.TemplateManagerConstant;
-import io.mosip.kernel.templatemanager.velocity.constant.TemplateManagerExceptionCodeConstants;
+import io.mosip.kernel.templatemanager.velocity.constant.TemplateManagerExceptionCodeConstant;
 import io.mosip.kernel.templatemanager.velocity.exception.TemplateMethodInvocationException;
 import io.mosip.kernel.templatemanager.velocity.exception.TemplateParsingException;
 import io.mosip.kernel.templatemanager.velocity.exception.TemplateResourceNotFoundException;
@@ -78,15 +78,15 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 			}
 		} catch (ResourceNotFoundException e) {
 			throw new TemplateResourceNotFoundException(
-					TemplateManagerExceptionCodeConstants.TEMPLATE_NOT_FOUND.getErrorCode(),
-					TemplateManagerExceptionCodeConstants.TEMPLATE_NOT_FOUND.getErrorMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorCode(),
+					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorMessage());
 		} catch (ParseErrorException e) {
-			throw new TemplateParsingException(TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorCode(),
+			throw new TemplateParsingException(TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorCode(),
 					e.getMessage());
 		} catch (MethodInvocationException e) {
 			throw new TemplateMethodInvocationException(
-					TemplateManagerExceptionCodeConstants.TEMPLATE_INVALID_REFERENCE.getErrorCode(),
-					TemplateManagerExceptionCodeConstants.TEMPLATE_INVALID_REFERENCE.getErrorMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorCode(),
+					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorMessage());
 		}
 		return null;
 	}
@@ -146,15 +146,15 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 			isMerged = true;
 		} catch (ResourceNotFoundException e) {
 			throw new TemplateResourceNotFoundException(
-					TemplateManagerExceptionCodeConstants.TEMPLATE_NOT_FOUND.getErrorCode(),
-					TemplateManagerExceptionCodeConstants.TEMPLATE_NOT_FOUND.getErrorMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorCode(),
+					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorMessage());
 		} catch (ParseErrorException e) {
-			throw new TemplateParsingException(TemplateManagerExceptionCodeConstants.TEMPLATE_PARSING.getErrorCode(),
+			throw new TemplateParsingException(TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorCode(),
 					e.getMessage());
 		} catch (MethodInvocationException e) {
 			throw new TemplateMethodInvocationException(
-					TemplateManagerExceptionCodeConstants.TEMPLATE_INVALID_REFERENCE.getErrorCode(),
-					TemplateManagerExceptionCodeConstants.TEMPLATE_INVALID_REFERENCE.getErrorMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorCode(),
+					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorMessage());
 		}
 		return isMerged;
 	}
