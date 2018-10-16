@@ -38,7 +38,6 @@ import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 import io.mosip.authentication.service.repository.DemoRepository;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -70,6 +69,14 @@ public class DemoServiceTest {
 		demoDTO.setFad(fad);
 		pidData.setDemo(demoDTO);
 		authRequestDTO.setPii(pidData);
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setAd(false);
+		authType.setFad(true);
+		authType.setBio(false);
+		authType.setOtp(false);
+		authType.setPi(false);
+		authType.setPin(false);
+		authRequestDTO.setAuthType(authType);
 		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_PRI, MatchingStrategyType.PARTIAL.getType(), 60));
@@ -77,7 +84,7 @@ public class DemoServiceTest {
 				AuthRequestDTO.class, List.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
-				authRequestDTO, listMatchInputs);
+				authRequestDTO, listMatchInputsExp);
 		assertEquals(listMatchInputsExp, listMatchInputsActual);
 
 	}
@@ -97,8 +104,17 @@ public class DemoServiceTest {
 		demoDTO.setAd(ad);
 		pidData.setDemo(demoDTO);
 		authRequestDTO.setPii(pidData);
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setAd(false);
+		authType.setFad(true);
+		authType.setBio(false);
+		authType.setOtp(false);
+		authType.setPi(false);
+		authType.setPin(false);
+		authRequestDTO.setAuthType(authType);
 		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
+//		DemoMatchType demoMatchType = Mockito.mock(DemoMatchType.class);
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_LINE1_PRI, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_LINE2_PRI, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_LINE3_PRI, MatchingStrategyType.EXACT.getType(), 100));
@@ -108,7 +124,7 @@ public class DemoServiceTest {
 				AuthRequestDTO.class, List.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
-				authRequestDTO, listMatchInputs);
+				authRequestDTO, listMatchInputsExp);
 		assertEquals(listMatchInputsExp, listMatchInputsActual);
 
 	}
@@ -130,6 +146,14 @@ public class DemoServiceTest {
 		demoDTO.setPi(pid);
 		pidData.setDemo(demoDTO);
 		authRequestDTO.setPii(pidData);
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setAd(false);
+		authType.setFad(true);
+		authType.setBio(false);
+		authType.setOtp(false);
+		authType.setPi(false);
+		authType.setPin(false);
+		authRequestDTO.setAuthType(authType);
 		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.NAME_PRI, MatchingStrategyType.PARTIAL.getType(), 60));
@@ -142,7 +166,7 @@ public class DemoServiceTest {
 				AuthRequestDTO.class, List.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
-				authRequestDTO, listMatchInputs);
+				authRequestDTO, listMatchInputsExp);
 		assertEquals(listMatchInputsExp, listMatchInputsActual);
 	}
 
@@ -160,6 +184,14 @@ public class DemoServiceTest {
 		demoDTO.setPi(pid);
 		personalData.setDemo(demoDTO);
 		authRequest.setPii(personalData);
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setAd(false);
+		authType.setFad(true);
+		authType.setBio(false);
+		authType.setOtp(false);
+		authType.setPi(false);
+		authType.setPin(false);
+		authRequest.setAuthType(authType);
 		Method constructInputMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		constructInputMethod.setAccessible(true);

@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.indauth.service;
+package io.mosip.authentication.service.impl.indauth.service.demo;
 
 /**
  * Marker interface for the match type

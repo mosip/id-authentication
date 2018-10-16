@@ -6,98 +6,106 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
-import io.mosip.authentication.service.impl.indauth.service.MatchType;
 
 /**
  * @author Arun Bose The Enum DemoMatchType.
  */
 
-
-public enum DemoMatchType implements MatchType{
+public enum DemoMatchType implements MatchType {
 
 	/** The addr pri. */
 	ADDR_PRI(setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
 			demo -> demo.getFad().getAddrPri(),
-			entity -> concatDemo(entity.getAddrLine1(),entity.getAddrLine2() ,
-					 entity.getAddrLine3(),entity.getNationalId(), entity.getLocationCode()),		
+			(entity, locationInfoFetcher) -> concatDemo(entity.getAddrLine1(), entity.getAddrLine2(),
+					entity.getAddrLine3(),
+					locationInfoFetcher.getLocation(LocationLevel.CITY, entity.getLocationCode()).orElse(""),
+					locationInfoFetcher.getLocation(LocationLevel.STATE, entity.getLocationCode()).orElse(""),
+					locationInfoFetcher.getLocation(LocationLevel.COUNTRY, entity.getLocationCode()).orElse(""),
+					locationInfoFetcher.getLocation(LocationLevel.ZIPCODE, entity.getLocationCode()).orElse("")),
 			AuthUsageDataBit.USED_FAD_ADDR_PRI, AuthUsageDataBit.MATCHED_FAD_ADDR_PRI),
 
 	NAME_PRI(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL),
-			demo -> demo.getPi().getNamePri(), 
-			entity -> concatDemo(entity.getFirstName(),entity.getMiddleName(),entity.getLastName()),//FIXME for getting consolidated name as it requires admin config
+			demo -> demo.getPi().getNamePri(),
+			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
+					entity.getLastName()), // FIXME for getting consolidated name as it requires admin config
 			AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI),
-	
-	
+
 	/** The addr sec. */
 	ADDR_SEC(setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
-			demo -> demo.getFad().getAddrSec(),
-			entity -> concatDemo(entity.getAddrLine1(),entity.getAddrLine2() ,
-					 entity.getAddrLine3(),entity.getNationalId(), entity.getLocationCode())
-					, AuthUsageDataBit.USED_FAD_ADDR_SEC, AuthUsageDataBit.MATCHED_FAD_ADDR_SEC),
-	
+			demo -> demo.getFad().getAddrPri(),
+			(entity, locationInfoFetcher) -> concatDemo(entity.getAddrLine1(), entity.getAddrLine2(),
+					entity.getAddrLine3(),
+					locationInfoFetcher.getLocation(LocationLevel.CITY, entity.getLocationCode()).orElse(""),
+					locationInfoFetcher.getLocation(LocationLevel.STATE, entity.getLocationCode()).orElse(""),
+					locationInfoFetcher.getLocation(LocationLevel.COUNTRY, entity.getLocationCode()).orElse(""),
+					locationInfoFetcher.getLocation(LocationLevel.ZIPCODE, entity.getLocationCode()).orElse("")),
+			AuthUsageDataBit.USED_FAD_ADDR_SEC, AuthUsageDataBit.MATCHED_FAD_ADDR_SEC),
+
 	/** The name sec. */
 	NAME_SEC(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL),
-			demo -> demo.getPi().getNameSec(), 
-			entity -> concatDemo(entity.getFirstName(),entity.getMiddleName(),entity.getLastName()),//FIXME for getting consolidated name as it requires admin config
+			demo -> demo.getPi().getNameSec(),
+			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
+					entity.getLastName()), // FIXME for getting consolidated name as it requires admin config
 			AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC),
-	
+
 	/** The gender. */
 	GENDER(setOf(GenderMatchingStrategy.EXACT), demo -> demo.getPi().getGender(),
-			entity ->entity.getGenderCode(),
-			AuthUsageDataBit.USED_PI_GENDER, AuthUsageDataBit.MATCHED_PI_GENDER),
+			(entity, locationInfoFetcher) -> entity.getGenderCode(), AuthUsageDataBit.USED_PI_GENDER,
+			AuthUsageDataBit.MATCHED_PI_GENDER),
 
 	/** The age. */
 	AGE(setOf(AgeMatchingStrategy.EXACT), demo -> demo.getPi().getAge(),
-			entity ->entity.getAge(),
-			AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE),
+			(entity, locationInfoFetcher) -> entity.getAge(), AuthUsageDataBit.USED_PI_AGE,
+			AuthUsageDataBit.MATCHED_PI_AGE),
 
 	/** The dob. */
 	DOB(setOf(DOBMatchingStrategy.EXACT), demo -> demo.getPi().getDob(),
-			entity ->entity.getDob(),
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB),
+			(entity, locationInfoFetcher) -> entity.getDob(), AuthUsageDataBit.USED_PI_DOB,
+			AuthUsageDataBit.MATCHED_PI_DOB),
 
 	/** The mobile. */
 	MOBILE(setOf(PhoneNoMatchingStrategy.EXACT), demo -> demo.getPi().getPhone(),
-			entity ->entity.getMobile(),
-			AuthUsageDataBit.USED_PI_PHONE, AuthUsageDataBit.MATCHED_PI_PHONE),
+			(entity, locationInfoFetcher) -> entity.getMobile(), AuthUsageDataBit.USED_PI_PHONE,
+			AuthUsageDataBit.MATCHED_PI_PHONE),
 
 	/** The email. */
 	EMAIL(setOf(EmailMatchingStrategy.EXACT), demo -> demo.getPi().getEmail(),
-			entity ->entity.getEmail(),
-			AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL),
+			(entity, locationInfoFetcher) -> entity.getEmail(), AuthUsageDataBit.USED_PI_EMAIL,
+			AuthUsageDataBit.MATCHED_PI_EMAIL),
 
 	/** The addr line1 pri. */
 	ADDR_LINE1_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine1Pri(),
-			entity -> entity.getAddrLine1(),
-			AuthUsageDataBit.USED_AD_ADDR_LINE1_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_LINE1_PRI),
+			(entity, locationInfoFetcher) -> entity.getAddrLine1(), AuthUsageDataBit.USED_AD_ADDR_LINE1_PRI,
+			AuthUsageDataBit.MATCHED_AD_ADDR_LINE1_PRI),
 
 	/** The addr line2 pri. */
 	ADDR_LINE2_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine2Pri(),
-			entity -> entity.getAddrLine2(),
-			AuthUsageDataBit.USED_AD_ADDR_LINE2_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_LINE2_PRI),
+			(entity, locationInfoFetcher) -> entity.getAddrLine2(), AuthUsageDataBit.USED_AD_ADDR_LINE2_PRI,
+			AuthUsageDataBit.MATCHED_AD_ADDR_LINE2_PRI),
 
 	/** The addr line3 pri. */
 	ADDR_LINE3_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine3Pri(),
-			entity ->entity.getAddrLine3(),
-			AuthUsageDataBit.USED_AD_ADDR_LINE3_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_PRI),
+			(entity, locationInfoFetcher) -> entity.getAddrLine3(), AuthUsageDataBit.USED_AD_ADDR_LINE3_PRI,
+			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_PRI),
 
 	/** The country pri. */
 	COUNTRY_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getCountryPri(),
-			entity ->entity.getNationalId(),
+			(entity, locationInfoFetcher) -> locationInfoFetcher
+					.getLocation(LocationLevel.COUNTRY, entity.getLocationCode()).orElse(""),
 			AuthUsageDataBit.USED_AD_ADDR_COUNTRY_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_COUNTRY_PRI),
 
 	/** The pincode pri. */
 	PINCODE_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getPinCodePri(),
-			entity ->entity.getLocationCode(),
+			(entity, locationInfoFetcher) -> locationInfoFetcher
+					.getLocation(LocationLevel.ZIPCODE, entity.getLocationCode()).orElse(""),
 			AuthUsageDataBit.USED_AD_ADDR_PINCODE_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE_PRI);
 
-
 	/** The allowed matching strategy. */
-	private  Set<MatchingStrategy> allowedMatchingStrategy;
-	
+	private Set<MatchingStrategy> allowedMatchingStrategy;
+
 	/** The demo info. */
 	private DemoDTOInfoFetcher demoInfo;
-	
+
 	/** The entity info. */
 	private DemoEntityInfoFetcher entityInfo;
 
@@ -111,10 +119,10 @@ public enum DemoMatchType implements MatchType{
 	 * Instantiates a new demo match type.
 	 *
 	 * @param allowedMatchingStrategy the allowed matching strategy
-	 * @param demoInfo the demo info
-	 * @param entityInfo the entity info
-	 * @param usedBit the used bit
-	 * @param matchedBit the matched bit
+	 * @param demoInfo                the demo info
+	 * @param entityInfo              the entity info
+	 * @param usedBit                 the used bit
+	 * @param matchedBit              the matched bit
 	 */
 	private DemoMatchType(Set<MatchingStrategy> allowedMatchingStrategy, DemoDTOInfoFetcher demoInfo,
 			DemoEntityInfoFetcher entityInfo, AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit) {
@@ -124,7 +132,6 @@ public enum DemoMatchType implements MatchType{
 		this.usedBit = usedBit;
 		this.matchedBit = matchedBit;
 	}
-
 
 	/**
 	 * Gets the allowed matching strategy.
@@ -153,7 +160,7 @@ public enum DemoMatchType implements MatchType{
 	public DemoEntityInfoFetcher getEntityInfoFetcher() {
 		return entityInfo;
 	}
-	
+
 	/**
 	 * Gets the used bit.
 	 *
@@ -162,7 +169,7 @@ public enum DemoMatchType implements MatchType{
 	public AuthUsageDataBit getUsedBit() {
 		return usedBit;
 	}
-	
+
 	/**
 	 * Gets the matched bit.
 	 *
@@ -182,20 +189,22 @@ public enum DemoMatchType implements MatchType{
 		return Stream.of(matchingStrategies).collect(Collectors.toSet());
 
 	}
-	
+
 	public static String concatDemo(String... demoValues) {
-		StringBuilder demoBuilder=new StringBuilder();
+		StringBuilder demoBuilder = new StringBuilder();
 		for (int i = 0; i < demoValues.length; i++) {
 			String demo = demoValues[i];
-			if(null!=demo) {
-				demoBuilder.append(demo);
-				if(i < demoValues.length - 1) {
-					demoBuilder.append(" ");
+			if (null != demo) {
+				if (demo.length() > 0) {
+					demoBuilder.append(demo);
+					if (i < demoValues.length - 1) {
+						demoBuilder.append(" ");
+					}
 				}
 			}
+
 		}
-		 return demoBuilder.toString();
+		return demoBuilder.toString();
 	}
 
-	
 }
