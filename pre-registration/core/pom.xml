@@ -26,13 +26,8 @@
 			<version>${junit.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip</groupId>
-			<artifactId>kernel-exception</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip</groupId>
-			<artifactId>kernel-logging-impl</artifactId>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -40,6 +35,22 @@
 			<artifactId>lombok</artifactId>
 			<version>${lombok.version}</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-dataaccess-hibernate</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>${h2.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
