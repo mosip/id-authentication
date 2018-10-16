@@ -35,7 +35,7 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @WebMvcTest
 @AutoConfigureMockMvc
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class IDAuthenticationExceptionHandlerTest {
+public class IDAuthExceptionHandlerTest {
 	@Autowired
 	Environment environment;
 

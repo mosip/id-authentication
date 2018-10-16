@@ -22,6 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
@@ -55,7 +56,7 @@ public class AuditRequestFactoryTest {
 	
 	@Test
 	public void testBuildRequest() {
-		AuditRequestDto actualRequest = auditFactory.buildRequest(AuditModules.BIO_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc");
+		AuditRequestDto actualRequest = auditFactory.buildRequest(AuditModules.BIO_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 		actualRequest.setActionTimeStamp(null);
 
 		AuditRequestDto expectedRequest = new AuditRequestDto();
@@ -73,7 +74,7 @@ public class AuditRequestFactoryTest {
 			expectedRequest.setSessionUserId("sessionUserId");
 			expectedRequest.setSessionUserName("sessionUserName");
 			expectedRequest.setId("id");
-			expectedRequest.setIdType("idType");
+			expectedRequest.setIdType(IdType.UIN.name());
 			expectedRequest.setCreatedBy(env.getProperty("user.name")); 
 			expectedRequest.setModuleName(AuditModules.BIO_AUTH.getModuleName());
 			expectedRequest.setModuleId(AuditModules.BIO_AUTH.getModuleId());

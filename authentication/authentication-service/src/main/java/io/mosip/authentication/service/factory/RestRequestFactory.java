@@ -67,8 +67,8 @@ public class RestRequestFactory {
 	 * @throws IDDataValidationException
 	 *             the ID data validation exception
 	 */
-	public RestRequestDTO buildRequest(RestServicesConstants restService, @Nullable Object requestBody,
-			Class<?> returnType) throws IDDataValidationException {
+	public RestRequestDTO buildRequest(RestServicesConstants restService, Object requestBody, Class<?> returnType)
+			throws IDDataValidationException {
 		RestRequestDTO request = new RestRequestDTO();
 		MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
 		Map<String, String> pathVariables = new HashMap<>();
@@ -177,15 +177,9 @@ public class RestRequestFactory {
 	private boolean checkIfEmptyOrWhiteSpace(String string) {
 		boolean result = false;
 
-		if (string != null) {
-			if (!string.isEmpty()) {
-				result = true;
-			}
-		} else {
-			result = false;
+		if (string != null && !string.isEmpty()) {
+			result = true;
 		}
-
 		return result;
 	}
-
 }

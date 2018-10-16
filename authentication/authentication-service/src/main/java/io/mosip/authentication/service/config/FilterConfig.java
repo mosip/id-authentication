@@ -21,7 +21,7 @@ public class FilterConfig {
 		FilterRegistrationBean<IDAuthFilter> registrationBean = new FilterRegistrationBean<>();
 
 		registrationBean.setFilter(new IDAuthFilter());
-		registrationBean.addUrlPatterns("/ida/v0.1/authRequest", "/ida/v0.1/otp"); //FIXME change this
+		registrationBean.addUrlPatterns("/authRequest"); //FIXME change this
 
 		return registrationBean;
 	}

@@ -27,16 +27,7 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @return
 	 * 
 	 */
-	public List<AutnTxn> findAllByRequestTxnIdAndUin(String TxnId, String UIN);
-
-	/**
-	 * Obtain the List of all request_dTtimes for particular UIN(uniqueId)
-	 * 
-	 * @param UIN
-	 * @return
-	 */
-	/*@Query("Select txn.requestDTtimes from ida.autn_txn txn where txn.uin=:UIN")
-	public List<AutnTxn> findAllRequestDTtimesByUIN(@Param("UIN") String UIN);*/
+	public List<AutnTxn> findAllByRequestTxnIdAndUin(String txnId, String uin);
 
 	/**
 	 * Obtain the number of count of request_dTtimes for particular UIN(uniqueId)
@@ -47,11 +38,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @param UIN
 	 * @return
 	 */
-	// @Query("Select count(txn.requestDTtimes) from ida.autn_txn txn where
-	// txn.responseDTimes>=:responseDTimes and txn.responseDTimes<=:nowTime and
-	// txn.uin=:UIN")
-	@Query("Select count(requestDTtimes) from AutnTxn  where requestDTtimes <= :otpRequestDTime and request_dtimes >= :oneMinuteBeforeTime and uin=:UIN")
+	@Query("Select count(requestDTtimes) from AutnTxn  where requestDTtimes <= :otpRequestDTime and request_dtimes >= :oneMinuteBeforeTime and uin=:uin")
 	public int countRequestDTime(@Param("otpRequestDTime") Date otpRequestDTime,
-			@Param("oneMinuteBeforeTime") Date oneMinuteBeforeTime, @Param("UIN") String UIN);
+			@Param("oneMinuteBeforeTime") Date oneMinuteBeforeTime, @Param("uin") String uin);
 
 }

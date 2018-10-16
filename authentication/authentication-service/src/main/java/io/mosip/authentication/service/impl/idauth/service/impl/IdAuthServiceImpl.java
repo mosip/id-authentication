@@ -10,6 +10,7 @@ import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
@@ -76,9 +77,9 @@ public class IdAuthServiceImpl implements IdAuthService {
 	/* (non-Javadoc)
 	 * @see org.mosip.auth.core.spi.idauth.service.IdAuthService#validateUIN(java.lang.String)
 	 */
-	public String validateUIN(String UIN) throws IdAuthenticationBusinessException {
+	public String validateUIN(String uin) throws IdAuthenticationBusinessException {
 		String refId = null;
-		UinEntity uinEntity = uinRepository.findByUin(UIN);
+		UinEntity uinEntity = uinRepository.findByUin(uin);
 		if (null != uinEntity) {
 
 			if (uinEntity.isActive()) {
@@ -103,7 +104,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	private void auditData() throws IdAuthenticationBusinessException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc");
+		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest;
 		try {

@@ -12,13 +12,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 public class IDAuthFilter extends TSPAuthFilter<AuthRequestDTO, AuthResponseDTO> {
 
 	@Override
-	protected AuthResponseDTO createResponseDTO(IdAuthenticationAppException e) {
-		//FIXME call the Error Response builder
-		//return IDAuthenticationExceptionHandler.buildOtpAuthExceptionResponse(e);
-		return null;
-	}
-
-	@Override
 	protected Class<AuthRequestDTO> getRequestDTOClass() {
 		return AuthRequestDTO.class;
 	}
@@ -26,7 +19,6 @@ public class IDAuthFilter extends TSPAuthFilter<AuthRequestDTO, AuthResponseDTO>
 
 	@Override
 	protected TSPInfo getAuthInfo(AuthRequestDTO requestDTO) throws IdAuthenticationAppException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

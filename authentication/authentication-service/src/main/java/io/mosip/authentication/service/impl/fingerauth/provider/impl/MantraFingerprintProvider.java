@@ -48,7 +48,7 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 				fpDevice.Uninit();
 				return Optional.ofNullable(fingerData.WSQImage());
 			} else {
-				// log "Capture failed : " + fpDevice.GetLastError());
+				//TODO log "Capture failed : " + fpDevice.GetLastError());
 				fpDevice.StopCapture();
 				fpDevice.Uninit();
 			}
@@ -69,8 +69,8 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	 * @see MFS100.MFS100Event#OnCaptureCompleted(boolean, int, java.lang.String, MFS100.FingerData)
 	 */
 	@Override
-	public void OnCaptureCompleted(boolean arg0, int arg1, String arg2, FingerData arg3) {
-
+	public void OnCaptureCompleted(boolean status, int arg1, String arg2, FingerData fingerData) {
+		//TODO need to be implemented
 	}
 
 	/* (non-Javadoc)
@@ -78,6 +78,6 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	 */
 	@Override
 	public void OnPreview(FingerData arg0) {
-
+		//TODO need to be implemented
 	}
 }

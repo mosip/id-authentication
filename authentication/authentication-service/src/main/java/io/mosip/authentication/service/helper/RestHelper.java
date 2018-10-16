@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.helper;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
@@ -151,16 +152,16 @@ public class RestHelper {
 	 * @return the mono<? extends throwable>
 	 */
 	private Mono<Throwable> handleStatusError(ClientResponse response) {
-		Mono<String> body = response.body(BodyExtractors.toMono(String.class));
+		Mono<Object> body = response.body(BodyExtractors.toMono(Object.class));
 		logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, "Status error : " + response.statusCode() + " " + response.statusCode().getReasonPhrase());
 		if (response.statusCode().is4xxClientError()) {
 			logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, "Status error - returning RestServiceException - CLIENT_ERROR");
 			return body.flatMap(
-					responseBody -> Mono.error(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR)));
+					responseBody -> Mono.error(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, Optional.of(responseBody))));
 		} else {
 			logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, "Status error - returning RestServiceException - SERVER_ERROR");
 			return body.flatMap(
-					responseBody -> Mono.error(new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR)));
+					responseBody -> Mono.error(new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR, Optional.of(responseBody))));
 		}
 
 	}

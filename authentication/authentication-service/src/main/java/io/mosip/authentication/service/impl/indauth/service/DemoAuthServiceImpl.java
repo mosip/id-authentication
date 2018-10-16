@@ -281,11 +281,5 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	public DemoEntity getDemoEntity(String refId,String langCode) {
 		return demoRepository.findByUinRefIdAndLangCode(refId, langCode);
 	}
-	
-	public static void main(String[] args) {
-		DemoAuthServiceImpl demoService=new DemoAuthServiceImpl();
-		DemoEntity demoEntity=demoService.getDemoEntity("12345", "EN");
-		System.out.println(demoEntity.getFirstName());
-	}
 
 }

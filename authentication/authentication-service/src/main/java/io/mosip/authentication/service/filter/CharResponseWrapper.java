@@ -17,47 +17,58 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * @author Loganathan Sekar
  */
 class CharResponseWrapper extends HttpServletResponseWrapper {
-    private ByteArrayOutputStream output;
+	private ByteArrayOutputStream output;
 	private boolean closed;
+	private PrintWriter writer;
+	private HttpServletResponse response;
 
-    public String toString() {
-        return output.toString();
-    }
+	public String toString() {
+		return output.toString();
+	}
 
-    public CharResponseWrapper(HttpServletResponse response) {
-        super(response);
-        output = new ByteArrayOutputStream();
-    }
+	public CharResponseWrapper(HttpServletResponse response) throws IOException {
+		super(response);
+		this.response = response;
+		writer = response.getWriter();
+		output = new ByteArrayOutputStream();
+	}
+	
+	public void clear() throws IOException {
+		output = new ByteArrayOutputStream();
+		writer = super.getWriter();
+		writer.flush();
+	}
 
-    public PrintWriter getWriter() {
-        return new PrintWriter(new OutputStreamWriter(output));
-    }
-    
-    @Override
-    public ServletOutputStream getOutputStream() throws IOException {
-    	return new ServletOutputStream() {
-			
+	public PrintWriter getWriter() {
+		return new PrintWriter(new OutputStreamWriter(output));
+	}
+
+	@Override
+	public ServletOutputStream getOutputStream() throws IOException {
+		return new ServletOutputStream() {
+
 			@Override
 			public void write(int b) throws IOException {
 				output.write(b);
+				writer.write(b);
 			}
-			
+
 			@Override
 			public void setWriteListener(WriteListener listener) {
-				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public boolean isReady() {
 				return !closed;
 			}
-			
+
 			@Override
 			public void close() throws IOException {
 				super.close();
 				closed = true;
 			}
 		};
-    }
+	}
+
 }

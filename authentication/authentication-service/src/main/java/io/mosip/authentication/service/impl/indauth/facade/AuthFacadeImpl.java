@@ -44,9 +44,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
-	@Autowired
-	RestHelper restHelper;
-	
 	private MosipLogger logger;
 
 	@Autowired
@@ -63,12 +60,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Autowired
 	private IdAuthService idAuthService;
 	
-	@Autowired
-	private RestRequestFactory  restFactory;
-	
-	@Autowired
-	private AuditRequestFactory auditFactory;
-
 	/**
 	 * Process the authorisation type and authorisation response is returned
 	 * 
@@ -160,23 +151,12 @@ public class AuthFacadeImpl implements AuthFacade {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
 		}
-		//TODO Update audit details
+		
 		auditData();
 		return refId;
 	}
  
-	private void auditData() throws IdAuthenticationBusinessException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "desc");
-
-		RestRequestDTO restRequest;
-		try {
-			restRequest = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-					AuditResponseDto.class);
-		} catch (IDDataValidationException e) {
-			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
-		}
-
-		restHelper.requestAsync(restRequest);
+	private void auditData() {
+		//TODO Update audit details
 	}
 }

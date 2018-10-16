@@ -87,7 +87,7 @@ public class IdAuthServiceTest {
 		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "auditFactory", auditFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
-		//ReflectionTestUtils.setField(idAuthServiceImpl, "logger", logger);
+		// ReflectionTestUtils.setField(idAuthServiceImpl, "logger", logger);
 	}
 
 	/**
@@ -224,28 +224,26 @@ public class IdAuthServiceTest {
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(true);
 		Optional<UinEntity> uinEntityopt = Optional.of(uinEntity);
-		System.err.println(uinEntityopt.isPresent());
 		Mockito.when(uinRepository.findById(Mockito.any())).thenReturn(uinEntityopt);
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
 
 		ReflectionTestUtils.setField(idAuthServiceImpl, "uinRepository", uinRepository);
-		System.err.println(uinRepository.findById("refId").get());
 		String refId = idAuthServiceImpl.validateVID(vid);
 		assertEquals(vidEntity.getRefId(), refId);
 
 	}
 
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestAuditData() throws Throwable {
 		RestRequestFactory restfactory = Mockito.mock(RestRequestFactory.class);
 		Mockito.when(restfactory.buildRequest(Mockito.any(RestServicesConstants.class), Mockito.any(), Mockito.any()))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restfactory);
 		try {
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "auditData");
+			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "auditData");
 		} catch (UndeclaredThrowableException e) {
 			throw e.getUndeclaredThrowable();
-			
+
 		}
 
 	}

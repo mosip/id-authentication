@@ -54,7 +54,6 @@ public class AuthController {
 
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
-		// binder.setValidator(authRequestValidator);
 		binder.addValidators(authRequestValidator, demoValidator);
 	}
 
@@ -88,8 +87,7 @@ public class AuthController {
 			logger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" :e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
 		}
-
+		
 		return authResponsedto;
-
 	}
 }

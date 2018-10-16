@@ -23,7 +23,7 @@ public class AuthResponseDTO  {
 	private boolean status;
 	private List<AuthError> err;
 	private String txnID;
-	private Date resTime;
+	private String resTime;
 	private AuthResponseInfo info;
 
 }
