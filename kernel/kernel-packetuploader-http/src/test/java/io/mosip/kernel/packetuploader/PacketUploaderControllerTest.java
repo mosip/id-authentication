@@ -14,9 +14,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.kernel.httppacketuploader.controller.PacketUploaderController;
-import io.mosip.kernel.httppacketuploader.dto.PacketUploaderResponceDTO;
-import io.mosip.kernel.httppacketuploader.service.impl.PacketUploaderServiceImpl;
+import io.mosip.kernel.packetuploader.http.controller.PacketUploaderController;
+import io.mosip.kernel.packetuploader.http.dto.PacketUploaderResponceDTO;
+import io.mosip.kernel.packetuploader.http.service.impl.PacketUploaderServiceImpl;
 
 @RunWith(SpringRunner.class)
 public class PacketUploaderControllerTest {
