@@ -5,6 +5,7 @@ import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import io.mosip.registration.constants.RegistrationUIExceptionCode;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.ui.constants.RegistrationUIConstants;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -102,8 +104,8 @@ public class RegistrationAppInitialization extends Application {
 
 	}
 
-	public static void main(String[] args) {
-
+	public static void main(String[] args) throws IOException, URISyntaxException {
+		System.setProperty("java.net.useSystemProxies", "true");
 		applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
 		launch(args);
 		LOGGER.debug("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
