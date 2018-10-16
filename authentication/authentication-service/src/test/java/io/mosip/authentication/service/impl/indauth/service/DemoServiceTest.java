@@ -246,8 +246,8 @@ public class DemoServiceTest {
 		authRequestDTO.setMsaLicenseKey("LICENSE!@#$");
 		authRequestDTO.setMuaCode("1234567890");
 		DemoDTO demoDTO = new DemoDTO();
-		demoDTO.setLangPri("en");
-		demoDTO.setLangSec("ar");
+		//demoDTO.setLangPri("en");
+		//demoDTO.setLangSec("ar");
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		personalIdentityDTO.setNamePri("dinesh karuppiah");
 		personalIdentityDTO.setMsPri("P");

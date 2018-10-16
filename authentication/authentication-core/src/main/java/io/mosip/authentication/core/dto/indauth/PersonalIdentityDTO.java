@@ -28,14 +28,14 @@ public class PersonalIdentityDTO {
 	 * msPri(Match Strategy)Valid value is “E” (Exact match) and “P” (Partial Match)
 	 * for Primary language
 	 */
-	@Pattern(regexp = "^(E|P[H]?)")
+	//@Pattern(regexp = "^(E|P[H]?)")
 	private String msPri;
 
 	/**
 	 * msSec(Match Strategy)Valid value is “E” (Exact match) and “P” (Partial Match)
 	 * for Secondary language
 	 */
-	@Pattern(regexp = "^(E|P[H]?)")
+	//@Pattern(regexp = "^(E|P[H]?)")
 	private String msSec;
 
 	/**
@@ -63,23 +63,23 @@ public class PersonalIdentityDTO {
 	private String gender;
 
 	/** Date of Birth of the individual of Pattern "yyyy-MM-dd". */
-	@Pattern(regexp = "^([0-9]{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$")
+	//@Pattern(regexp = "^([0-9]{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$")
 	private String dob;
 
 	/** dobType */
 	private String dobType; // TODO
 
 	/** Age of the individual. Should be between 0 and 150. */
-	@Min(1)
-	@Max(150)
+	//@Min(1)
+	//@Max(150)
 	private Integer age;
 
 	/** phone */
-	@Pattern(regexp = "^([0-9]{10}$)")
+	//@Pattern(regexp = "^([0-9]{10}$)")
 	private String phone; // TODO
 
 	/** Registered e-mail ID of the individual */
-	@Pattern(regexp = "^[\\_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
+	//@Pattern(regexp = "^[\\_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")
 	private String email;
 
 }

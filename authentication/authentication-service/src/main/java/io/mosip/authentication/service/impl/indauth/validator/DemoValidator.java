@@ -4,11 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
-import java.util.Locale;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -17,15 +17,18 @@ import org.springframework.validation.Validator;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.DemoDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalAddressDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalFullAddressDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
+import io.mosip.authentication.core.dto.indauth.PersonalIdentityDataDTO;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
- * 
+ * Validate Demographic info of individual.
  *
  * @author Rakesh Roshan
  */
@@ -33,6 +36,11 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 public class DemoValidator implements Validator {
 
 	private MosipLogger mosipLogger;
+
+	private static final String EMAIL_PATTERN = "^[\\_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	private static final String DOB_PATTERN = "^([0-9]{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$";
+
+	private static final String SESSION_ID = "sessionid";
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
@@ -52,19 +60,18 @@ public class DemoValidator implements Validator {
 
 		AuthRequestDTO authRequestdto = (AuthRequestDTO) target;
 
-		String primaryLanguage = authRequestdto.getPii().getDemo().getLangPri();
-		String secondaryLanguage = authRequestdto.getPii().getDemo().getLangSec();
+		PersonalIdentityDataDTO personalDataDTO = authRequestdto.getPii();
 
-		if (primaryLanguage != null) {
-			checkValidPrimaryLanguageCode(primaryLanguage, errors);
+		if (personalDataDTO != null) {
+			DemoDTO demodto = personalDataDTO.getDemo();
+			if (demodto != null && authRequestdto.getAuthType() != null) {
+
+				completeAddressValidation(authRequestdto.getAuthType(), demodto, errors);
+
+				personalIdentityValidation(authRequestdto.getAuthType(), demodto, errors);
+
+			}
 		}
-		if (secondaryLanguage != null) {
-			checkValidSecondaryLanguageCode(secondaryLanguage, errors);
-		}
-
-		completeAddressValidation(authRequestdto, errors);
-
-		personalIdentityValidation(authRequestdto, errors);
 
 	}
 
@@ -74,20 +81,20 @@ public class DemoValidator implements Validator {
 	 * @param authRequestdto
 	 * @param errors
 	 */
-	private void completeAddressValidation(AuthRequestDTO authRequestdto, Errors errors) {
+	private void completeAddressValidation(AuthTypeDTO authType, DemoDTO demodto, Errors errors) {
 
 		/** Address and Full Address both should not be include together */
-		if (authRequestdto.getAuthType().isAd() && authRequestdto.getAuthType().isFad()) {
+		if (authType.isAd() && authType.isFad()) {
 
-			mosipLogger.error("SessionID NA", "DemoValidator", "Address Validation",
+			mosipLogger.error(SESSION_ID, "DemoValidator", "Address Validation",
 					"Address and Full address are mutually exclusive");
 			errors.reject(IdAuthenticationErrorConstants.AD_FAD_MUTUALLY_EXCULUSIVE.getErrorCode(),
 					IdAuthenticationErrorConstants.AD_FAD_MUTUALLY_EXCULUSIVE.getErrorMessage());
-		} else if (authRequestdto.getAuthType().isFad()) {
-			fullAddressValidation(authRequestdto, errors);
+		} else if (authType.isFad()) {
+			fullAddressValidation(authType, demodto, errors);
 
-		} else if (authRequestdto.getAuthType().isAd()) {
-			addressValidation(authRequestdto, errors);
+		} else if (authType.isAd()) {
+			addressValidation(authType, demodto, errors);
 		}
 	}
 
@@ -99,45 +106,34 @@ public class DemoValidator implements Validator {
 	 * @param authRequestdto
 	 * @param errors
 	 */
-	private void fullAddressValidation(AuthRequestDTO authRequestdto, Errors errors) {
+	// TODO detect input text language and match with configurable language
+	private void fullAddressValidation(AuthTypeDTO authType, DemoDTO demodto, Errors errors) {
 
-		if (authRequestdto.getAuthType().isFad()) {
+		PersonalFullAddressDTO personalFullAddressDTO = demodto.getFad();
 
-			String primaryLanguage = authRequestdto.getPii().getDemo().getLangPri();
-			String secondaryLanguage = authRequestdto.getPii().getDemo().getLangSec();
-			PersonalFullAddressDTO personalFullAddressDTO = authRequestdto.getPii().getDemo()
-					.getFad();
+		if (authType.isFad() && personalFullAddressDTO != null) {
 
-			if (primaryLanguage == null && secondaryLanguage == null) {
-				mosipLogger.error("SessionID56", "personalFullAddressDTO",
-						"Select one of language for Full Address Validation",
-						"Atleast select one of language-type for full address");
+			if (personalFullAddressDTO.getAddrPri() == null && personalFullAddressDTO.getMsPri() == null
+					&& personalFullAddressDTO.getMtPri() == null) { // && primaryLanguage ==null
+
+				mosipLogger.error(SESSION_ID, "personal Full Address", "Full Address Validation for primary language",
+						"At least one attribute of full address should be present");
+				errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
+
+			}
+
+			if ((personalFullAddressDTO.getAddrSec() == null && personalFullAddressDTO.getMsSec() == null
+					&& personalFullAddressDTO.getMtSec() == null)) { // && secondaryLanguage == null
+
+				mosipLogger.error(SESSION_ID, "personal Full Address", "Full Address Validation for secondary language",
+						"At least one attribute of full address should be present");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
 			}
 
-			if ((personalFullAddressDTO.getAddrPri() != null
-					|| personalFullAddressDTO.getMsPri() != null && personalFullAddressDTO.getMtPri() != null) && primaryLanguage == null) {
-
-				mosipLogger.error("SessionID12", "personal Full Address",
-						"Full Address Validation for primary language",
-						"At least one attribute of full address should be present");
-				errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST_PRI.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST_PRI.getErrorMessage());
-
-			}
-
-			if ((personalFullAddressDTO.getAddrSec() != null
-					|| personalFullAddressDTO.getMsSec() != null || personalFullAddressDTO.getMtSec() != null) && secondaryLanguage == null) {
-
-				mosipLogger.error("SessionID34", "personal Full Address",
-						"Full Address Validation for secondary language",
-						"At least one attribute of full address should be present");
-				errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST_SEC.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST_SEC.getErrorMessage());
-			}
-
 		}
+
 	}
 
 	/**
@@ -148,43 +144,33 @@ public class DemoValidator implements Validator {
 	 * @param authRequestdto
 	 * @param errors
 	 */
-	private void addressValidation(AuthRequestDTO authRequestdto, Errors errors) {
+	// TODO detect input text language and match with configurable language
+	private void addressValidation(AuthTypeDTO authType, DemoDTO demodto, Errors errors) {
 
-		if (authRequestdto.getAuthType().isAd()) {
-			PersonalAddressDTO personalAddressDTO = authRequestdto.getPii().getDemo()
-					.getAd();
+		PersonalAddressDTO personalAddressDTO = demodto.getAd();
+		if (authType.isAd() && personalAddressDTO != null) {
 
-			String primaryLanguage = authRequestdto.getPii().getDemo().getLangPri();
-			String secondaryLanguage = authRequestdto.getPii().getDemo().getLangSec();
+			if ((personalAddressDTO.getAddrLine1Pri() == null && personalAddressDTO.getAddrLine2Pri() == null
+					&& personalAddressDTO.getAddrLine3Pri() == null && personalAddressDTO.getCountryPri() == null
+					&& personalAddressDTO.getPinCodePri() == null)) {
 
-			if (primaryLanguage == null && secondaryLanguage == null) {
-				mosipLogger.error("SessionID635837", "Personal Address", "Address Validation for secondary language",
-						"At least one attribute of  address should be present");
+				mosipLogger.error(SESSION_ID, "Personal Address for primary language",
+						"Address Validation for primary language",
+						"Atleast one attribute for address should be present");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
-			}
-
-			if ((personalAddressDTO.getAddrLine1Pri() != null
-					|| personalAddressDTO.getAddrLine2Pri() != null || personalAddressDTO.getAddrLine3Pri() != null
-					|| personalAddressDTO.getCountryPri() != null || personalAddressDTO.getPinCodePri() != null) && primaryLanguage == null) {
-
-				mosipLogger.error("SessionID54645", "Personal Address for primary language",
-						"Address Validation for primary language",
-						"Atleast one attribute of  address should be present");
-				errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST_PRI.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST_PRI.getErrorMessage());
 
 			}
 
-			if ((personalAddressDTO.getAddrLine1Sec() != null
-					|| personalAddressDTO.getAddrLine2Sec() != null || personalAddressDTO.getAddrLine3Sec() != null
-					|| personalAddressDTO.getCountrySec() != null || personalAddressDTO.getPinCodeSec() != null) && secondaryLanguage != null) {
+			if ((personalAddressDTO.getAddrLine1Sec() == null && personalAddressDTO.getAddrLine2Sec() == null
+					&& personalAddressDTO.getAddrLine3Sec() == null && personalAddressDTO.getCountrySec() == null
+					&& personalAddressDTO.getPinCodeSec() == null)) {
 
-				mosipLogger.error("SessionID9865", "Personal Address for secondary language",
+				mosipLogger.error(SESSION_ID, "Personal Address for secondary language",
 						"Address Validation for secondary language",
-						"At least one attribute of  address should be present");
-				errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST_SEC.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST_SEC.getErrorMessage());
+						"At least one attribute for address should be present");
+				errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
 
 			}
 		}
@@ -196,43 +182,54 @@ public class DemoValidator implements Validator {
 	 * @param authRequestdto
 	 * @param errors
 	 */
-	private void personalIdentityValidation(AuthRequestDTO authRequestdto, Errors errors) {
+	// TODO detect input text language and match with configurable language
+	private void personalIdentityValidation(AuthTypeDTO authType, DemoDTO demodto, Errors errors) {
 
-		PersonalIdentityDTO personalIdentityDTO = authRequestdto.getPii().getDemo()
-				.getPi();
+		PersonalIdentityDTO personalIdentityDTO = demodto.getPi();
 
-		if (authRequestdto.getAuthType().isPi()) {
+		if (authType.isPi() && personalIdentityDTO != null) {
 
-			// TODO dobType integrate with CK
-			String primaryLanguage = authRequestdto.getPii().getDemo().getLangPri();
-			String secondaryLanguage = authRequestdto.getPii().getDemo().getLangSec();
-
-			if (personalIdentityDTO.getDob() != null) {
-				try {
-					dobValidation(authRequestdto, errors);
-				} catch (ParseException e) {
-					mosipLogger.error("sessionID-NA", "ParseException",
-							 e.getCause() == null ? "" : e.getCause().getMessage(), e.getMessage());
-				}
-			}
 			if (isAllPINull(personalIdentityDTO)) {
-				mosipLogger.error("SessionID123", "Personal info", "personal info should be present",
+				mosipLogger.error(SESSION_ID, "Personal info", "personal info should be present",
 						"At least select one valid personal info");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorMessage());
+			} else {
+				if (personalIdentityDTO.getDob() != null) {
+					try {
+						dobValidation(personalIdentityDTO.getDob(), env.getProperty("date.pattern"), errors);
+					} catch (ParseException e) {
+						mosipLogger.error(SESSION_ID, "ParseException",
+								e.getCause() == null ? "" : e.getCause().getMessage(), e.getMessage());
+					}
+				}
+
+				if (personalIdentityDTO.getAge() != null) {
+					checkAge(personalIdentityDTO.getAge(), errors);
+				}
+				if (personalIdentityDTO.getGender() != null) {
+					checkGender(personalIdentityDTO.getGender(), errors);
+				}
+				if (personalIdentityDTO.getMsPri() != null) {
+					checkMatchStrategy(personalIdentityDTO.getMsPri(), "msPri", errors);
+				}
+				if (personalIdentityDTO.getMsSec() != null) {
+					checkMatchStrategy(personalIdentityDTO.getMsSec(), "msSec", errors);
+				}
+				if (personalIdentityDTO.getMtPri() != null) {
+					checkMatchThresold(personalIdentityDTO.getMtPri(), "mtPri", errors);
+				}
+				if (personalIdentityDTO.getMtSec() != null) {
+					checkMatchThresold(personalIdentityDTO.getMtSec(), "mtSec", errors);
+				}
+				if (personalIdentityDTO.getPhone() != null) {
+					checkPhoneNumber(personalIdentityDTO.getPhone(), errors);
+				}
+				if (personalIdentityDTO.getEmail() != null) {
+					checkEmail(personalIdentityDTO.getEmail(), errors);
+				}
 			}
-			if (personalIdentityDTO.getNamePri() != null && primaryLanguage == null) {
-				mosipLogger.error("SessionIDPri", "Personal identity", "personal info for secondary language",
-						"Primary Language code (langPri) should be present ");
-				errors.reject(IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION_PRI.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION_PRI.getErrorMessage());
-			}
-			if (personalIdentityDTO.getNameSec() != null && secondaryLanguage == null) {
-				mosipLogger.error("SessionIDSec", "Personal identity", "personal info for secondary language",
-						"Primary Language code (langSec) should be present ");
-				errors.reject(IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION_SEC.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION_SEC.getErrorMessage());
-			}
+
 		}
 	}
 
@@ -243,18 +240,75 @@ public class DemoValidator implements Validator {
 	 * @param errors
 	 * @throws ParseException
 	 */
-	private void dobValidation(AuthRequestDTO authRequestdto, Errors errors) throws ParseException {
+	private void dobValidation(String dobToValidate, String dateFromat, Errors errors) throws ParseException {
 
-		String pidob = authRequestdto.getPii().getDemo().getPi().getDob();
-		SimpleDateFormat formatter = new SimpleDateFormat(env.getProperty("date.pattern"));
-		Date dob = formatter.parse(pidob);
-		Instant instantDob = dob.toInstant();
+		Pattern pattern = Pattern.compile(DOB_PATTERN);
+		Matcher matcher = pattern.matcher(dobToValidate);
 
-		Instant now = Instant.now();
+		if (matcher.matches()) {
+			String dateOfBirth = dobToValidate;
+			SimpleDateFormat formatter = new SimpleDateFormat(dateFromat);
+			Date dob = formatter.parse(dateOfBirth);
+			Instant instantDob = dob.toInstant();
 
-		if (instantDob.isAfter(now)) {
-			errors.reject(IdAuthenticationErrorConstants.INVALID_DOB_YEAR.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_DOB_YEAR.getErrorMessage());
+			Instant now = Instant.now();
+			if (instantDob.isAfter(now)) {
+				errors.rejectValue("dob", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "dob"));
+			}
+		} else {
+			errors.rejectValue("dob", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "dob"));
+		}
+
+	}
+
+	private void checkMatchStrategy(String matchStrategy, String ms, Errors errors) {
+
+		if (!matchStrategy.equals("E") || !matchStrategy.equals("P") || !matchStrategy.equals("PH")) {
+			errors.rejectValue(ms, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ms));
+		}
+
+	}
+
+	private void checkMatchThresold(Integer matchThresold, String mt, Errors errors) {
+
+		if (matchThresold.intValue() < 1 || matchThresold.intValue() > 100) {
+			errors.rejectValue(mt, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), mt));
+		}
+	}
+
+	private void checkGender(String gender, Errors errors) {
+
+		if (!gender.equals("M") || !gender.equals("F") || !gender.equals("T")) {
+			errors.rejectValue("gender", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "gender"));
+		}
+	}
+
+	private void checkAge(Integer age, Errors errors) {
+		if (age.intValue() < 1 || age.intValue() > 150) {
+			errors.rejectValue("age", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "age"));
+		}
+	}
+
+	private void checkPhoneNumber(String phone, Errors errors) {
+		if (phone.length() != 10 || phone.length() != 13) {
+			errors.rejectValue("phone", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "phone"));
+		}
+	}
+
+	private void checkEmail(String email, Errors errors) {
+		Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+		Matcher matcher = pattern.matcher(email);
+
+		if (!matcher.matches()) {
+			errors.rejectValue("email", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "email"));
 		}
 	}
 
@@ -268,40 +322,6 @@ public class DemoValidator implements Validator {
 	@SafeVarargs
 	private static <T> boolean isAllNull(T obj, Function<T, Object>... funcs) {
 		return Stream.of(funcs).allMatch(func -> func.apply(obj) == null);
-	}
-
-	/**
-	 * Verify valid language code for primary language.
-	 * 
-	 * @param primaryLanguage
-	 * @param errors
-	 */
-	private void checkValidPrimaryLanguageCode(String primaryLanguage, Errors errors) {
-		Locale locale = new Locale.Builder().setLanguageTag(primaryLanguage).build();
-		if (!LocaleUtils.isAvailableLocale(locale)) {
-			mosipLogger.error("SessionID", "Secondary Language", "code for secondary language",
-					"Valid secondary Language code  should be present ");
-			errors.reject(IdAuthenticationErrorConstants.INVALID_PRIMARY_LANGUAGE_CODE.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_PRIMARY_LANGUAGE_CODE.getErrorMessage());
-		}
-
-	}
-
-	/**
-	 * Verify valid language code for secondary language.
-	 * 
-	 * @param secondaryLanguage
-	 * @param errors
-	 */
-	private void checkValidSecondaryLanguageCode(String secondaryLanguage, Errors errors) {
-		Locale locale = new Locale.Builder().setLanguageTag(secondaryLanguage).build();
-		if (!LocaleUtils.isAvailableLocale(locale)) {
-			mosipLogger.error("SessionID", "Secondary Language", "code for secondary language",
-					"Valid secondary Language code  should be present ");
-			errors.reject(IdAuthenticationErrorConstants.INVALID_SECONDARY_LANGUAGE_CODE.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_SECONDARY_LANGUAGE_CODE.getErrorMessage());
-		}
-
 	}
 
 }

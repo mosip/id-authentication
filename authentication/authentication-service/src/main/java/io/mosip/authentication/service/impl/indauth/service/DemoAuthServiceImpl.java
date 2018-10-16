@@ -228,10 +228,11 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 			throws IdAuthenticationBusinessException {
 		boolean demoMatched = false;
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
-		DemoEntity demoEntity = getDemoEntity(refId, authRequestDTO.getPii()
+		/*DemoEntity demoEntity = getDemoEntity(refId, authRequestDTO.getPii()
 																.getDemo()
-																.getLangPri());
+																.getLangPri());*/
 
+		DemoEntity demoEntity = getDemoEntity(refId, environment.getProperty("mosip.primary.lang-code"));
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		
 		if(demoEntity != null) {

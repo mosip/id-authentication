@@ -18,12 +18,12 @@ public class DemoDTO {
 	/**
 	 * Primary language.
 	 */
-	private String langPri;
+	//private String langPri;
 
 	/**
 	 * Secondary language.
 	 */
-	private String langSec;
+	//private String langSec;
 
 	/** PersonalIdentityDTO gives individual identity details */
 	private PersonalIdentityDTO pi;

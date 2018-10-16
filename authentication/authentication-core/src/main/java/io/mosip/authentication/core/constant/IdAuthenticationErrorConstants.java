@@ -75,24 +75,16 @@ public enum IdAuthenticationErrorConstants {
 	SERVICE_NOT_AVAILABLE("IDA-RST-SRV-001", "Service is not available"),
 
 	// =====================================================================
-	// ||************************** Demo Validation **********************||
-	// =====================================================================
-	INVALID_FULL_ADDRESS_REQUEST("IDA-FAD-RQV-001", "Please select one of language for full address"),
-	INVALID_FULL_ADDRESS_REQUEST_PRI("IDA-FAD-RQV-002", "At least one attribute of full address should be present for primary language"),
-	INVALID_FULL_ADDRESS_REQUEST_SEC("IDA-FAD-RQV-003", "At least one attribute of full address should be present for secondary language"),
-	INVALID_ADDRESS_REQUEST("IDA-AD-RQV-001", "Please select one of language for address"),
-	INVALID_ADDRESS_REQUEST_PRI("IDA-AD-RQV-002", "At least one attribute of address should be present for primary language"),
-	INVALID_ADDRESS_REQUEST_SEC("IDA-AD-RQV-003", "At least one attribute of address should be present for secondary language"),
-	AD_FAD_MUTUALLY_EXCULUSIVE("IDA-AD-RQV-003", "Full Address and Address are mutually exclusive"),
-	INVALID_PERSONAL_INFORMATION("IDA-PRSNL-RQV-001", "Atleat one valid attribute should be present"),
-	INVALID_PERSONAL_INFORMATION_PRI("IDA-PRSNL-RQV-001","Primary Language code (langPri) should be present"),
-	INVALID_PERSONAL_INFORMATION_SEC("IDA-PRSNL-RQV-002","Primary Language code (langSec) should be present"),
-	INVALID_DOB_YEAR("IDA-DOB-RQV-001","DOB year should not excedded from current year"),
-	INVALID_PRIMARY_LANGUAGE_CODE("IDA-PRI-LANGCD-001","Primary Language Code is not matching"),
-	INVALID_SECONDARY_LANGUAGE_CODE("IDA-SEC-LANGCD-001","Secondary Language Code is not matching"),
-	// Request date time
-	INVALID_REQUEST_TIME_FORMAT("IDA-DTTM_FRMT-001","Invalid Date time format"),
-	INVALID_REQUEST_TIME_OUT("IDA-RQV-TMOUT-001","Request should be reached within 24Hrs");
+		// ||************************** Demo Validation **********************||
+		// =====================================================================
+		INVALID_FULL_ADDRESS_REQUEST("IDA-DEA-015", "Required Full Address(fad) attribute is missing"),
+		INVALID_ADDRESS_REQUEST("IDA-DEA-014", "Required Address(ad) attribute is missing"),
+		AD_FAD_MUTUALLY_EXCULUSIVE("IDA-AD-RQV-003", "Full Address and Address are mutually exclusive"),
+		INVALID_PERSONAL_INFORMATION("IDA-PRSNL-RQV-001", "Atleat one valid attribute should be present"),
+
+		// ************** Auth Request Validation request date time ***************
+		INVALID_REQUEST_TIME_FORMAT("IDA-DTTM_FRMT-001", "Invalid Date time format"),
+		INVALID_REQUEST_TIME_OUT("IDA-RQV-TMOUT-001", "Request should be reached within 24Hrs");
 	
 	private final String errorCode;
 	private final String errorMessage;
