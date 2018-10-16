@@ -7,7 +7,7 @@ public class OsiData {
 
 	private String operatorID;
 	private String operatorFingerprintImage;
-	private String operatorIrisImage;
+	private String operatorIrisName;
 	private String supervisorID;
 	private String supervisorName;
 	private String supervisorFingerprintImage;
@@ -20,6 +20,6 @@ public class OsiData {
 	private Object introducerRID;
 	private Object introducerRIDHash;
 	private String introducerFingerprintImage;
-	private String introducerIrisIrish;
+	private String introducerIrisImage;
 
 }

@@ -44,22 +44,26 @@ public class FilesValidation {
 	private static boolean validateDemographicSequence(String registrationId, DemographicSequence demographicSequence) {
 		boolean isDemographicSequenceValidated = false;
 		for (String applicantFile : demographicSequence.getApplicant()) {
-			String fileName = "";
+			String fileName = "";  
 			if (PacketFiles.APPLICANTPHOTO.name().equalsIgnoreCase(applicantFile)) {
 				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
 						+ File.separator + PacketFiles.APPLICANTPHOTO.name();
-			} else if (PacketFiles.REGISTRATIONACKNOWLDEGEMENT.name().equalsIgnoreCase(applicantFile)) {
+			} else if (PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name().equalsIgnoreCase(applicantFile)) {
 				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
-						+ File.separator + PacketFiles.REGISTRATIONACKNOWLDEGEMENT.name();
+						+ File.separator + PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name();
 			} else if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(applicantFile)) {
 				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.DEMOGRAPHICINFO.name();
 			} else if (PacketFiles.PROOFOFADDRESS.name().equalsIgnoreCase(applicantFile)) {
 				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
 						+ File.separator + PacketFiles.PROOFOFADDRESS.name();
-			} else if (PacketFiles.APPLICANTEXCEPTIONPHOTO.name().equalsIgnoreCase(applicantFile)) {
+			} else if (PacketFiles.EXCEPTIONPHOTO.name().equalsIgnoreCase(applicantFile)) {
 				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
-						+ File.separator + PacketFiles.APPLICANTEXCEPTIONPHOTO.name();
-			}
+						+ File.separator + PacketFiles.EXCEPTIONPHOTO.name();
+			}else if (PacketFiles.PROOFOFIDENTITY.name().equalsIgnoreCase(applicantFile)) {
+				fileName = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
+				+ File.separator + PacketFiles.PROOFOFIDENTITY.name();
+	         } 
+			
 			isDemographicSequenceValidated = adapter.checkFileExistence(registrationId, fileName);
 
 			if (!isDemographicSequenceValidated) {

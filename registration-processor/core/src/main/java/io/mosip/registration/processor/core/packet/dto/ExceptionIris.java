@@ -6,7 +6,7 @@ import lombok.Data;
 public class ExceptionIris {
 
 	private String biometricType;
-	private String missingIris;
+	private String missingBiometric;
 	private String exceptionDescription;
 	private String exceptionType;
 
