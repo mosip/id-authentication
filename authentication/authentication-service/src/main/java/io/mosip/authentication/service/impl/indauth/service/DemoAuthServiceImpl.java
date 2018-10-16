@@ -237,20 +237,28 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 			
 			statusInfoBuilder.setStatus(demoMatched);
 			
-			listMatchInputs.stream()
-				.forEach(matchInput -> {
-							if(AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
-									.map(AuthType::getType).isPresent()) {
-								statusInfoBuilder.addMessageInfo(
-										AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
-												.map(AuthType::getType).orElse(""),
-										matchInput.getMatchStrategyType(), 
-										matchInput.getMatchValue());
-							}
-							
-							statusInfoBuilder
-							.addAuthUsageDataBits(matchInput.getDemoMatchType().getUsedBit());
-						});
+			listMatchInputs.stream().forEach(matchInput -> {
+				if (AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType()).map(AuthType::getType)
+						.isPresent()) {
+
+					String ms = matchInput.getMatchStrategyType();
+					if (ms == null || matchInput.getMatchStrategyType().trim().isEmpty()) {
+						ms = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
+					}
+
+					Integer mt = matchInput.getMatchValue();
+					if (mt == null) {
+						mt = Integer.parseInt(environment.getProperty("demo.default.match.value"));
+					}
+
+					String authType = AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
+							.map(AuthType::getType).orElse("");
+
+					statusInfoBuilder.addMessageInfo(authType, ms, mt);
+				}
+
+				statusInfoBuilder.addAuthUsageDataBits(matchInput.getDemoMatchType().getUsedBit());
+			});
 			
 			
 			
