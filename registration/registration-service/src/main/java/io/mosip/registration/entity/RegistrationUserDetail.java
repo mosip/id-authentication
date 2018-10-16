@@ -1,14 +1,16 @@
 package io.mosip.registration.entity;
 
 import java.time.OffsetDateTime;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
-import io.mosip.registration.entity.RegistrationCommonFields;
 
 /**
  * RegistrationUserDetail entity details
@@ -43,6 +45,40 @@ public class RegistrationUserDetail extends RegistrationCommonFields {
 	private OffsetDateTime delDtimes;
 	@Column(name = "user_status", length = 64, nullable = true, updatable = false)
 	private String userStatus;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")	
+	private Set<RegistrationUserRole> userRole;
+
+	@OneToMany(fetch=FetchType.EAGER, mappedBy = "registrationUserDetail")
+	private Set<UserMachineMapping> userMachineMapping;	
+
+	/**
+	 * @return the userRole
+	 */
+	public Set<RegistrationUserRole> getUserRole() {
+		return userRole;
+	}
+
+	/**
+	 * @param userRole the userRole to set
+	 */
+	public void setUserRole(Set<RegistrationUserRole> userRole) {
+		this.userRole = userRole;
+	}
+	
+	/**
+	 * @return the userMachineMapping
+	 */
+	public Set<UserMachineMapping> getUserMachineMapping() {
+		return userMachineMapping;
+	}
+
+	/**
+	 * @param userMachineMapping the userMachineMapping to set
+	 */
+	public void setUserMachineMapping(Set<UserMachineMapping> userMachineMapping) {
+		this.userMachineMapping = userMachineMapping;
+	}
 
 	/**
 	 * @return the id
@@ -207,6 +243,15 @@ public class RegistrationUserDetail extends RegistrationCommonFields {
 	 */
 	public void setUserStatus(String userStatus) {
 		this.userStatus = userStatus;
+	}
+	
+	@Override
+	public String toString() {
+		return "RegistrationUserDetail [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile
+				+ ", cntrId=" + cntrId + ", langCode=" + langCode + ", lastLoginDtimes=" + lastLoginDtimes
+				+ ", lastLoginMethod=" + lastLoginMethod + ", isDeleted=" + isDeleted + ", delDtimes=" + delDtimes
+				+ ", userStatus=" + userStatus + ", userRole=" + userRole + ", userMachineMapping="
+				+ userMachineMapping + "]";
 	}
 
 }

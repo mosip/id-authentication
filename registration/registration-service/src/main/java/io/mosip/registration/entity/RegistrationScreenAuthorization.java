@@ -20,7 +20,7 @@ import org.hibernate.annotations.Type;
 public class RegistrationScreenAuthorization extends RegistrationCommonFields {
 
 	@EmbeddedId
-	RegistrationScreenAuthorizationId registrationScreenAuthorizationId;
+	private RegistrationScreenAuthorizationId registrationScreenAuthorizationId;
 
 	@Column(name = "is_permitted", nullable = true, updatable = false)
 	@Type(type = "true_false")

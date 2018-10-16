@@ -58,17 +58,15 @@ public class RegistrationScreenAuthorizationDAOImpl implements RegistrationScree
 				.findByRegistrationScreenAuthorizationIdRoleCodeAndIsPermittedTrueAndIsActiveTrue(roleCode);
 
 		List<String> authList = new ArrayList<>();
+		authorizationList.forEach(auth -> authList.add(auth.getRegistrationScreenAuthorizationId().getScreenId()));
+		authorizationDTO.setAuthorizationScreenId(authList);
+		authorizationDTO.setAuthorizationRoleCode(roleCode);
 		if (!authorizationList.isEmpty()) {
-			for (int auth = 0; auth < authorizationList.size(); auth++) {
-				authList.add(authorizationList.get(auth).getRegistrationScreenAuthorizationId().getScreenId());
-			}
-			authorizationDTO.setAuthorizationScreenId(authList);
 			authorizationDTO
 					.setAuthorizationAppId(authorizationList.get(0).getRegistrationScreenAuthorizationId().getAppId());
-			authorizationDTO.setAuthorizationRoleCode(roleCode);
 			authorizationDTO.setAuthorizationIsPermitted(authorizationList.get(0).isPermitted());
-		}
 
+		}
 		LOGGER.debug("REGISTRATION - SCREEN_AUTHORIZATION - REGISTRATION_SCREEN_AUTHORIZATION_DAO_IMPL",
 				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
 				"List of Screens to be authorized are fetched successfully");

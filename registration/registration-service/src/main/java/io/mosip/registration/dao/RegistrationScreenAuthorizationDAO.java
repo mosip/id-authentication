@@ -16,5 +16,5 @@ public interface RegistrationScreenAuthorizationDAO {
 	 * 
 	 * @return AuthorizationDTO of authorization details
 	 */
-	public AuthorizationDTO getScreenAuthorizationDetails(String roleCode);
+	AuthorizationDTO getScreenAuthorizationDetails(String roleCode);
 }

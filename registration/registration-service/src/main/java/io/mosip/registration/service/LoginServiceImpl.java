@@ -6,7 +6,6 @@ import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyVa
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
 import io.mosip.registration.dao.RegistrationUserPasswordDAO;
-import io.mosip.registration.dao.RegistrationUserRoleDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDto;
@@ -38,6 +36,7 @@ import io.mosip.registration.dto.OtpValidatorResponseDto;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
@@ -98,12 +97,6 @@ public class LoginServiceImpl implements LoginService {
 	private RegistrationCenterDAO registrationCenterDAO;
 
 	/**
-	 * Class to retrieve the Registration Officer roles from DB
-	 */
-	@Autowired
-	private RegistrationUserRoleDAO registrationUserRoleDAO;
-
-	/**
 	 * Class to retrieve the Registration screen authorization from DB
 	 */
 	@Autowired
@@ -125,26 +118,6 @@ public class LoginServiceImpl implements LoginService {
 				"refId", "refIdType");
 
 		return registrationAppLoginDAO.getModesOfLogin();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mosip.registration.service.login.LoginService#getUserStatus(java.lang.
-	 * String)
-	 */
-	@Override
-	public String getUserStatus(String userId) {
-		// checking for Blocked users
-
-		LOGGER.debug("REGISTRATION - USERSTATUS - LOGINSERVICE", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Checking User status");
-
-		auditFactory.audit(AuditEventEnum.USER_STATUS_FETCH, AppModuleEnum.USER_STATUS, "Fetching User status", "refId",
-				"refIdType");
-
-		return registrationUserDetailDAO.getUserStatus(userId);
 	}
 
 	/*
@@ -174,7 +147,7 @@ public class LoginServiceImpl implements LoginService {
 	 * String)
 	 */
 	@Override
-	public Map<String, String> getUserDetail(String userId) {
+	public RegistrationUserDetail getUserDetail(String userId) {
 		// Retrieving Registration Officer details
 
 		LOGGER.debug("REGISTRATION - USERDETAIL - LOGINSERVICE", getPropertyValue(APPLICATION_NAME),
@@ -199,28 +172,10 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - CENTERDETAILS - LOGINSERVICE", getPropertyValue(APPLICATION_NAME),
 				getPropertyValue(APPLICATION_ID), "Fetching Center details");
 
-		auditFactory.audit(AuditEventEnum.FETCH_CNTR_DET, AppModuleEnum.CENTER_DETAIL, "Fetching Center details", "refId",
-				"refIdType");
+		auditFactory.audit(AuditEventEnum.FETCH_CNTR_DET, AppModuleEnum.CENTER_DETAIL, "Fetching Center details",
+				"refId", "refIdType");
 
 		return registrationCenterDAO.getRegistrationCenterDetails(centerId);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mosip.registration.service.login.LoginService#getRoles(java.lang.String)
-	 */
-	@Override
-	public List<String> getRoles(String userId) {
-		// Retrieving list of User roles
-
-		LOGGER.debug("REGISTRATION - ROLES - LOGINSERVICE", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Fetching User Roles");
-
-		auditFactory.audit(AuditEventEnum.FETCH_USR_ROLE, AppModuleEnum.USER_ROLE, "Fetching User Roles", "refId", "refIdType");
-
-		return registrationUserRoleDAO.getRoles(userId);
 	}
 
 	/*

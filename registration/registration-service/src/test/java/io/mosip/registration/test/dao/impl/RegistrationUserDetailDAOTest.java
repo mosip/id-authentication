@@ -1,5 +1,8 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 
 import java.util.ArrayList;
@@ -68,10 +71,10 @@ public class RegistrationUserDetailDAOTest {
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
 		registrationUserDetailList.add(registrationUserDetail);
 
-		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue(Mockito.anyString()))
+		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue("mosip"))
 				.thenReturn(registrationUserDetailList);
-
-		registrationUserDetailDAOImpl.getUserDetail("Sravya");
+		assertTrue(!registrationUserDetailList.isEmpty());
+		assertNotNull(registrationUserDetailDAOImpl.getUserDetail("mosip"));
 	}
 
 	@Test
@@ -85,27 +88,10 @@ public class RegistrationUserDetailDAOTest {
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
 		registrationUserDetailList.add(registrationUserDetail);
 
-		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue(Mockito.anyString()))
+		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue("mosip"))
 				.thenReturn(registrationUserDetailList);
-
-		registrationUserDetailDAOImpl.getUserDetail("Sravya");
+		assertFalse(registrationUserDetailList.isEmpty());
+		assertNotNull(registrationUserDetailDAOImpl.getUserDetail("mosip"));
 	}
 
-	@Test
-	public void getUserStatusTest() {
-
-		ReflectionTestUtils.setField(registrationUserDetailDAOImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
-
-		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
-		registrationUserDetail.setUserStatus("Sravya");
-		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
-		registrationUserDetailList.add(registrationUserDetail);
-
-		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue(Mockito.anyString()))
-				.thenReturn(registrationUserDetailList);
-
-		registrationUserDetailDAOImpl.getUserStatus("Sravya");
-	}
 }

@@ -2,10 +2,9 @@ package io.mosip.registration.entity;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import io.mosip.registration.entity.RegistrationCommonFields;
-import io.mosip.registration.entity.RegistrationUserRoleId;
 
 /**
  * RegistrationUserRole entity details
@@ -18,7 +17,19 @@ import io.mosip.registration.entity.RegistrationUserRoleId;
 public class RegistrationUserRole extends RegistrationCommonFields {
 
 	@EmbeddedId
-	RegistrationUserRoleId registrationUserRoleId;
+	private RegistrationUserRoleId registrationUserRoleId;
+	
+	@ManyToOne
+	@JoinColumn(name = "usr_id", nullable = false, insertable = false, updatable = false)
+	private RegistrationUserDetail registrationUserDetail;	
+
+	public RegistrationUserDetail getRegistrationUserDetail() {
+		return registrationUserDetail;
+	}
+
+	public void setRegistrationUserDetail(RegistrationUserDetail registrationUserDetail) {
+		this.registrationUserDetail = registrationUserDetail;
+	}
 
 	/**
 	 * @return the registrationUserRoleId
@@ -33,6 +44,12 @@ public class RegistrationUserRole extends RegistrationCommonFields {
 	 */
 	public void setRegistrationUserRoleId(RegistrationUserRoleId registrationUserRoleId) {
 		this.registrationUserRoleId = registrationUserRoleId;
+	}
+	
+	@Override
+	public String toString() {
+		return "RegistrationUserRole [registrationUserRoleId=" + registrationUserRoleId + "]";
+
 	}
 
 }

@@ -28,5 +28,5 @@ public interface RegistrationUserPasswordRepository
 	 * @return the list of {@link RegistrationUserPassword}
 	 */
 
-	List<RegistrationUserPassword> findByRegistrationUserPasswordIdUsrId(String usrId);
+	List<RegistrationUserPassword> findByRegistrationUserPasswordIdUsrIdAndIsActiveTrue(String usrId);
 }

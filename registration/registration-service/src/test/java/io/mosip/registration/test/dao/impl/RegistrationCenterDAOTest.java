@@ -1,5 +1,7 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 
 import java.util.Optional;
@@ -67,10 +69,10 @@ public class RegistrationCenterDAOTest {
 		registrationCenter.setRegistrationCenterId(registrationCenterId);
 		
 		Optional<RegistrationCenter> registrationCenterList = Optional.of(registrationCenter);
-		Mockito.when(registrationCenterRepository.findByRegistrationCenterIdCenterIdAndIsActiveTrue(Mockito.anyString()))
+		Mockito.when(registrationCenterRepository.findByRegistrationCenterIdCenterIdAndIsActiveTrue("mosip"))
 				.thenReturn(registrationCenterList);
-
-		registrationCenterDAOImpl.getRegistrationCenterDetails("Sravya");
+		assertTrue(registrationCenterList.isPresent());
+		assertNotNull(registrationCenterDAOImpl.getRegistrationCenterDetails("mosip"));
 	}
 
 }

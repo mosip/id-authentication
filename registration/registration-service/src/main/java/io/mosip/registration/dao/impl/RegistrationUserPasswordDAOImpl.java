@@ -51,21 +51,16 @@ public class RegistrationUserPasswordDAOImpl implements RegistrationUserPassword
 		LOGGER.debug("REGISTRATION - USER_CREDENTIALS - REGISTRATION_USER_PASSWORD_DAO_IMPL",
 				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "Fetching User credentials");
 
-		List<RegistrationUserPassword> registrationUserPassword = registrationUserPasswordRepository
-				.findByRegistrationUserPasswordIdUsrId(userId);
-		String userData = "";
-		boolean result = false;
-		if (!registrationUserPassword.isEmpty()) {
-			userData = registrationUserPassword.get(0).getPwd();
-		}
-		if(userData != null && hashPassword.equals(userData)) {
-			result = true;
-		}
+		List<RegistrationUserPassword> registrationUserPwd = registrationUserPasswordRepository
+				.findByRegistrationUserPasswordIdUsrIdAndIsActiveTrue(userId);
+
+		String userData = !registrationUserPwd.isEmpty() ? registrationUserPwd.get(0).getPwd() : null;
+
 		LOGGER.debug("REGISTRATION - USER_CREDENTIALS - REGISTRATION_USER_PASSWORD_DAO_IMPL",
 				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
 				"User credentials fetched successfully");
 
-		return result;
+		return userData != null && hashPassword.equals(userData);
 	}
 
 }

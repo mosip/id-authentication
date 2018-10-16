@@ -20,10 +20,10 @@ public interface RegistrationUserDetailRepository extends BaseRepository<Registr
 	/**
 	 * This method returns the list of {@link RegistrationUserDetail} based on id
 	 * 
-	 * @param id
+	 * @param userid
 	 *            the registration user id
 	 * @return the list of {@link RegistrationUserDetail}
 	 */
 
-	List<RegistrationUserDetail> findByIdAndIsActiveTrue(String id);
+	List<RegistrationUserDetail> findByIdAndIsActiveTrue(String userId);
 }

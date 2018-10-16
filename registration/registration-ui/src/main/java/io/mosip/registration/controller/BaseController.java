@@ -2,19 +2,21 @@ package io.mosip.registration.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dto.UserDTO;
+import io.mosip.registration.entity.RegistrationUserDetail;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginServiceImpl;
 import io.mosip.registration.ui.constants.RegistrationUIConstants;
+import io.mosip.registration.util.mac.SystemMacAddress;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -35,8 +37,6 @@ public class BaseController {
 
 	@Autowired
 	private LoginServiceImpl loginServiceImpl;
-
-	public static final UserDTO userDTO = new UserDTO();
 
 	@Value("${TIME_OUT_INTERVAL:30}")
 	private long timeoutInterval;
@@ -136,37 +136,58 @@ public class BaseController {
 	}
 
 	/**
-	 * Setting values for Session context and User context
+	 * Setting values for Session context and User context and Initial info for
+	 * Login
+	 * 
+	 * @param userId
+	 *            entered userId
+	 * @throws RegBaseCheckedException 
 	 */
-	protected void setSessionContext(String userId) {
-
-		Map<String, String> userDetail = loginServiceImpl.getUserDetail(userId);
-
-		userDTO.setUsername(userDetail.get("name"));
-		userDTO.setUserId(userId);
-		userDTO.setCenterId(userDetail.get(RegistrationUIConstants.CENTER_ID));		
-
-		SessionContext sessionContext = SessionContext.getInstance();
-
-		sessionContext.setLoginTime(new Date());
-		sessionContext.setRefreshedLoginTime(refreshedLoginTime);
-		sessionContext.setIdealTime(idealTime);
-		sessionContext.setTimeoutInterval(timeoutInterval);
-		SessionContext.UserContext userContext = sessionContext.getUserContext();
-		userContext.setUserId(userId);
-		userContext.setName(userDetail.get("name"));
-		userContext.setRoles(loginServiceImpl.getRoles(userId));
-		userContext.setRegistrationCenterDetailDTO(
-				loginServiceImpl.getRegistrationCenterDetails(userDetail.get(RegistrationUIConstants.CENTER_ID)));
+	protected String setInitialLoginInfoAndSessionContext(String userId) throws RegBaseCheckedException {
+		RegistrationUserDetail userDetail = loginServiceImpl.getUserDetail(userId);
+		String result = null;
+		List<String> roleList = new ArrayList<>();
 		
-		userDTO.setCenterLocation(userContext.getRegistrationCenterDetailDTO().getRegistrationCenterName());
+		userDetail.getUserRole().forEach(roleCode -> {
+			if(userDetail.getIsActive()) {
+				roleList.add(String
+						.valueOf(roleCode.getRegistrationUserRoleId().getRoleCode()));
+			}
+		});
 		
-		String userRole = "";
-		if (!userContext.getRoles().isEmpty()) {
-			userRole = userContext.getRoles().get(0);
+		// Checking roles
+		if (roleList.isEmpty()) {
+			result = RegistrationUIConstants.ROLES_EMPTY;
+		} else if (roleList.contains(RegistrationUIConstants.ADMIN_ROLE)) {
+			result = RegistrationUIConstants.SUCCESS_MSG;
+		} else {
+			// checking for machine mapping
+			if (!getCenterMachineStatus(userDetail)) {
+				result = RegistrationUIConstants.MACHINE_MAPPING;
+			} else {
+				result = RegistrationUIConstants.SUCCESS_MSG;
+			}
 		}
-		userContext.setAuthorizationDTO(loginServiceImpl.getScreenAuthorizationDetails(userRole));
+		if (result != null && result.equalsIgnoreCase(RegistrationUIConstants.SUCCESS_MSG)) {
+			SessionContext sessionContext = SessionContext.getInstance();
 
+			sessionContext.setLoginTime(new Date());
+			sessionContext.setRefreshedLoginTime(refreshedLoginTime);
+			sessionContext.setIdealTime(idealTime);
+			sessionContext.setTimeoutInterval(timeoutInterval);
+
+			SessionContext.UserContext userContext = sessionContext.getUserContext();
+			userContext.setUserId(userId);
+			userContext.setName(userDetail.getName());
+			userContext.setRoles(roleList);
+			userContext.setRegistrationCenterDetailDTO(
+					loginServiceImpl.getRegistrationCenterDetails(userDetail.getCntrId()));
+
+			String userRole = !userContext.getRoles().isEmpty() ? userContext.getRoles().get(0) : null;
+			userContext.setAuthorizationDTO(loginServiceImpl.getScreenAuthorizationDetails(userRole));
+
+		}
+		return result;
 	}
 
 	/**
@@ -177,14 +198,42 @@ public class BaseController {
 	 * @return boolean
 	 */
 	protected boolean validateScreenAuthorization(String screenId) {
-		List<String> authList = SessionContext.getInstance().getUserContext().getAuthorizationDTO()
-				.getAuthorizationScreenId();
 
-		boolean result = false;
-		if (authList != null) {
-			result = authList.contains(screenId);
-		}
-		return result;
+		return SessionContext.getInstance().getUserContext().getAuthorizationDTO().getAuthorizationScreenId()
+				.contains(screenId);
+	}
+
+	/**
+	 * Fetching and Validating machine and center id
+	 * 
+	 * @param userDetail
+	 *            the userDetail
+	 * @return boolean
+	 * @throws RegBaseCheckedException 
+	 */
+	private boolean getCenterMachineStatus(RegistrationUserDetail userDetail) throws RegBaseCheckedException {
+		List<String> machineList = new ArrayList<>();
+		List<String> centerList = new ArrayList<>();
+		userDetail.getUserMachineMapping().forEach(machineMapping -> {
+				if(machineMapping.getIsActive()) {
+					machineList.add(machineMapping.getUserMachineMappingId().getMachineID());
+					centerList.add(machineMapping.getUserMachineMappingId().getCentreID());
+				} 
+			});
+		return machineList.contains(SystemMacAddress.getSystemMacAddress()) && centerList.contains(userDetail.getCntrId());
+	}
+
+	/**
+	 * Validating user status
+	 * 
+	 * @param userId
+	 *            the userId
+	 * @return boolean
+	 */
+	protected boolean validateUserStatus(String userId) {
+		RegistrationUserDetail userDetail = loginServiceImpl.getUserDetail(userId);
+		return userDetail.getUserStatus() != null
+				&& userDetail.getUserStatus().equalsIgnoreCase(RegistrationUIConstants.BLOCKED);
 	}
 
 }

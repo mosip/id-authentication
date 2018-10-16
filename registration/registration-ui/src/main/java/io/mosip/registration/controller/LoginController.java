@@ -2,10 +2,10 @@ package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static io.mosip.registration.constants.RegConstants.URL;
 import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION;
 import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION;
+import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.io.IOException;
 import java.util.Map;
@@ -22,10 +22,10 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dto.UserDTO;
+import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginServiceImpl;
 import io.mosip.registration.ui.constants.RegistrationUIConstants;
@@ -86,21 +86,24 @@ public class LoginController extends BaseController {
 		LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", getPropertyValue(APPLICATION_NAME),
 				getPropertyValue(APPLICATION_ID), "Retrieve Login mode");
 
-		String loginMode = "";
+		String loginMode = null;
 
 		try {
 			Map<String, Object> userLoginMode = loginServiceImpl.getModesOfLogin();
-			SessionContext.getInstance().setMapObject(userLoginMode);
-			if (userLoginMode.size() > 0) {
-				loginMode = userLoginMode.get("1").toString();
+
+			if (userLoginMode.containsKey((RegistrationUIConstants.LOGIN_INITIAL_VAL))) {
+				loginMode = String.valueOf(userLoginMode.get(RegistrationUIConstants.LOGIN_INITIAL_VAL));
 			}
-			SessionContext.getInstance().getMapObject().put("initialMode", loginMode);
+
+			// To maintain the login mode sequence
+			SessionContext.getInstance().setMapObject(userLoginMode);
+			SessionContext.getInstance().getMapObject().put(RegistrationUIConstants.LOGIN_INITIAL_SCREEN, loginMode);
 
 			LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), "Retrieved correspondingLogin mode");
 
 		} catch (NullPointerException nullPointerException) {
-			throw new RegBaseCheckedException(REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorCode(),
+			generateAlert(RegistrationUIConstants.ALERT_ERROR, AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
 					REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
 		}
 
@@ -114,83 +117,99 @@ public class LoginController extends BaseController {
 	 * @return String loginMode
 	 * @throws RegBaseCheckedException
 	 */
-	public void validateCredentials(ActionEvent event) throws RegBaseCheckedException {
+	public void validateCredentials(ActionEvent event) {
 
 		try {
 			if (userId.getText().isEmpty() && password.getText().isEmpty()) {
 				generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
 						AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-						RegistrationUIConstants.LOGIN_INFO_MESSAGE, RegistrationUIConstants.CREDENTIALS_FIELD_EMPTY);
+						RegistrationUIConstants.MISSING_MANDATOTY_FIELDS, RegistrationUIConstants.CREDENTIALS_FIELD_EMPTY);
 			} else if (userId.getText().isEmpty()) {
 				generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
 						AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-						RegistrationUIConstants.LOGIN_INFO_MESSAGE, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+						RegistrationUIConstants.MISSING_MANDATOTY_FIELDS, RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 			} else if (password.getText().isEmpty()) {
 				generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
 						AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-						RegistrationUIConstants.LOGIN_INFO_MESSAGE, RegistrationUIConstants.PWORD_FIELD_EMPTY);
+						RegistrationUIConstants.MISSING_MANDATOTY_FIELDS, RegistrationUIConstants.PWORD_FIELD_EMPTY);
 			} else {
-				String hashPassword = null;
-				// password hashing
 
+				String hashPassword = null;
+
+				// password hashing
 				if (!(password.getText().isEmpty())) {
 					byte[] bytePassword = password.getText().getBytes();
 					hashPassword = HMACUtils.digestAsPlainText(HMACUtils.generateHash(bytePassword));
 				}
-				UserDTO userObj = new UserDTO();
+				LoginUserDTO userDTO = new LoginUserDTO();
 				userDTO.setUserId(userId.getText());
 				userDTO.setPassword(hashPassword);
-
-				boolean offlineStatus = false;
 				// Server connection check
-				boolean serverStatus = getConnectionCheck(userObj);
-				if (!serverStatus) {
+				boolean serverStatus = getConnectionCheck(userDTO);
+				boolean offlineStatus = false;
 
+				if (!serverStatus) {
 					LOGGER.debug("REGISTRATION - USER_PASSWORD - LOGIN_CONTROLLER", getPropertyValue(APPLICATION_NAME),
 							getPropertyValue(APPLICATION_ID), "Retrieving User Password from database");
-					// user status check
-					String blockedUserCheck = loginServiceImpl.getUserStatus(userId.getText());
 
-					if (blockedUserCheck != null && blockedUserCheck.equals(RegistrationUIConstants.BLOCKED)) {
+					offlineStatus = loginServiceImpl.validateUserPassword(userDTO.getUserId(), hashPassword);
+					if (!offlineStatus) {
 						generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
 								AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-								RegistrationUIConstants.LOGIN_INFO_MESSAGE, RegistrationUIConstants.BLOCKED_USER_ERROR);
-					} else {
-						offlineStatus = loginServiceImpl.validateUserPassword(userId.getText(), hashPassword);
-						if (!offlineStatus) {
-							generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
-									AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-									RegistrationUIConstants.LOGIN_INFO_MESSAGE,
-									RegistrationUIConstants.CREDENTIALS_FIELD_ERROR);
-						}
+								RegistrationUIConstants.LOGIN_INFO_MESSAGE,
+								RegistrationUIConstants.INCORRECT_PWORD);
 					}
 				}
-
-				if (serverStatus || offlineStatus) {
-					int counter = (int) SessionContext.getInstance().getMapObject().get("sequence");
-					counter++;
-					if (SessionContext.getInstance().getMapObject().containsKey("" + counter)) {
-						String mode = SessionContext.getInstance().getMapObject().get("" + counter).toString();
-						if (mode.equals(RegistrationUIConstants.OTP)) {
-							BorderPane pane = (BorderPane) ((Node) event.getSource()).getParent().getParent();
-							AnchorPane loginType = BaseController
-									.load(getClass().getResource("/fxml/LoginWithOTP.fxml"));
-							pane.setCenter(loginType);
-						}
-					} else {
-						setSessionContext(userId.getText());
-						schedulerUtil.startSchedulerUtil();
-						BaseController.load(getClass().getResource("/fxml/RegistrationOfficerLayout.fxml"));
+				if (validateUserStatus(userId.getText())) {
+					generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
+							AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+							RegistrationUIConstants.LOGIN_INFO_MESSAGE, RegistrationUIConstants.BLOCKED_USER_ERROR);
+				} else {
+					SessionContext sessionContext = SessionContext.getInstance();
+					// Resetting login sequence to the Session context after log out
+					if (sessionContext.getMapObject() == null) {
+						Map<String, Object> userLoginMode = loginServiceImpl.getModesOfLogin();
+						sessionContext.setMapObject(userLoginMode);
+						sessionContext.getMapObject().put(RegistrationUIConstants.LOGIN_INITIAL_SCREEN,
+								RegistrationUIConstants.LOGIN_METHOD_PWORD);
 					}
-				}
 
+					if (serverStatus || offlineStatus) {
+						int counter = (int) sessionContext.getMapObject().get(RegConstants.LOGIN_SEQUENCE);
+						counter++;
+						if (sessionContext.getMapObject().containsKey(String.valueOf(counter))) {
+							String mode = sessionContext.getMapObject().get(String.valueOf(counter)).toString();
+							sessionContext.getMapObject().remove(String.valueOf(counter));
+							if (mode.equals(RegistrationUIConstants.OTP)) {
+								BorderPane pane = (BorderPane) ((Node) event.getSource()).getParent().getParent();
+								AnchorPane loginType = BaseController
+										.load(getClass().getResource(RegistrationUIConstants.LOGIN_OTP_PAGE));
+								pane.setCenter(loginType);
+							}
+						} else {
+							String authInfo = setInitialLoginInfoAndSessionContext(userId.getText());
+							if (authInfo != null && authInfo.equals(RegistrationUIConstants.ROLES_EMPTY)) {
+								generateAlert(RegistrationUIConstants.AUTHORIZATION_ALERT_TITLE,
+										AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+										RegistrationUIConstants.LOGIN_FAILURE,
+										RegistrationUIConstants.ROLES_EMPTY_ERROR);
+							} else if (authInfo != null && authInfo.equals(RegistrationUIConstants.MACHINE_MAPPING)) {
+								generateAlert(RegistrationUIConstants.AUTHORIZATION_ALERT_TITLE,
+										AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+										RegistrationUIConstants.LOGIN_FAILURE,
+										RegistrationUIConstants.MACHINE_MAPPING_ERROR);
+							} else {
+								schedulerUtil.startSchedulerUtil();
+								BaseController.load(getClass().getResource(RegistrationUIConstants.HOME_PAGE));
+							}
+						}
+					}
+
+				}
 			}
-		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorCode(),
-					REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage(), ioException);
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorCode(),
-					REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage(), runtimeException);
+		} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
+			generateAlert(RegistrationUIConstants.ALERT_ERROR, AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+					RegistrationUIConstants.LOGIN_FAILURE, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
 		}
 
 	}
@@ -198,19 +217,19 @@ public class LoginController extends BaseController {
 	/**
 	 * Checking server status
 	 * 
-	 * @param UserDTO
+	 * @param LoginUserDTO
 	 *            the UserDTO object
 	 * @return boolean
 	 */
-	private boolean getConnectionCheck(UserDTO userObj) {
+	private boolean getConnectionCheck(LoginUserDTO userObj) {
 
-		HttpEntity<UserDTO> loginEntity = new HttpEntity<UserDTO>(userObj);
+		HttpEntity<LoginUserDTO> loginEntity = new HttpEntity<>(userObj);
 		ResponseEntity<String> tokenId = null;
 		boolean serverStatus = false;
 
 		try {
 			tokenId = new RestTemplate().exchange(URL, HttpMethod.POST, loginEntity, String.class);
-			if (tokenId.getStatusCode().value() == 200) {
+			if (tokenId.getStatusCode().is2xxSuccessful()) {
 				serverStatus = true;
 			}
 		} catch (RestClientException resourceAccessException) {

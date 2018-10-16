@@ -1,6 +1,7 @@
 package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.doNothing;
 
 import java.util.ArrayList;
@@ -33,13 +34,13 @@ public class RegistrationScreenAuthorizationDAOTest {
 	@Mock
 	private MosipLogger logger;
 	private MosipRollingFileAppender mosipRollingFileAppender;
-	
+
 	@InjectMocks
 	private RegistrationScreenAuthorizationDAOImpl registrationScreenAuthorizationDAOImpl;
 
 	@Mock
 	private RegistrationScreenAuthorizationRepository registrationScreenAuthorizationRepository;
-	
+
 	@Before
 	public void initialize() {
 		mosipRollingFileAppender = new MosipRollingFileAppender();
@@ -51,10 +52,11 @@ public class RegistrationScreenAuthorizationDAOTest {
 		mosipRollingFileAppender.setMaxHistory(10);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
-		
+
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.invokeMethod(registrationScreenAuthorizationDAOImpl, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(registrationScreenAuthorizationDAOImpl, "initializeLogger",
+				mosipRollingFileAppender);
 	}
 
 	@Test
@@ -74,11 +76,12 @@ public class RegistrationScreenAuthorizationDAOTest {
 
 		List<RegistrationScreenAuthorization> authorizationList = new ArrayList<>();
 		authorizationList.add(registrationScreenAuthorization);
-		assertFalse(authorizationList.isEmpty());
 		Mockito.when(registrationScreenAuthorizationRepository
-				.findByRegistrationScreenAuthorizationIdRoleCodeAndIsPermittedTrueAndIsActiveTrue(Mockito.anyString()))
+				.findByRegistrationScreenAuthorizationIdRoleCodeAndIsPermittedTrueAndIsActiveTrue("mosip"))
 				.thenReturn(authorizationList);
-		registrationScreenAuthorizationDAOImpl.getScreenAuthorizationDetails("Sravya");
+		assertFalse(authorizationList.isEmpty());
+		assertNotNull(registrationScreenAuthorizationDAOImpl.getScreenAuthorizationDetails("mosip"));
 
 	}
+
 }

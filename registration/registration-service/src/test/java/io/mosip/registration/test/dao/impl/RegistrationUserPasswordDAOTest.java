@@ -70,18 +70,15 @@ public class RegistrationUserPasswordDAOTest {
 
 		List<RegistrationUserPassword> registrationUserPasswordList = new ArrayList<RegistrationUserPassword>();
 		RegistrationUserPassword registrationUserPassword = new RegistrationUserPassword();
-		registrationUserPassword.setPwd("Sravya");
+		registrationUserPassword.setPwd("mosip");
 		registrationUserPasswordList.add(registrationUserPassword);
-		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordIdUsrId(Mockito.anyString()))
+		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordIdUsrIdAndIsActiveTrue(Mockito.anyString()))
 				.thenReturn(registrationUserPasswordList);
 		assertFalse(registrationUserPasswordList.isEmpty());
 		String userData = registrationUserPasswordList.get(0).getPwd();
 		assertNotNull(userData);
-		assertEquals("Sravya", userData);
-		boolean result = true;
-		boolean res;
-		res = registrationUserPassworDAOImpl.getPassword("mosip", "Sravya");
-		assertEquals(result, res);
+		assertEquals("mosip", userData);
+		assertTrue(registrationUserPassworDAOImpl.getPassword("mosip", "mosip"));
 	}
 
 	@Test
@@ -95,16 +92,13 @@ public class RegistrationUserPasswordDAOTest {
 		RegistrationUserPassword registrationUserPassword = new RegistrationUserPassword();
 		registrationUserPassword.setPwd(null);
 		registrationUserPasswordList.add(registrationUserPassword);
-		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordIdUsrId(Mockito.anyString()))
+		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordIdUsrIdAndIsActiveTrue(Mockito.anyString()))
 				.thenReturn(registrationUserPasswordList);
 		assertFalse(registrationUserPasswordList.isEmpty());
 		String userData = registrationUserPasswordList.get(0).getPwd();
 		assertNull(userData);
 		assertEquals(null, userData);
-		boolean result = false;
-		boolean res;
-		res = registrationUserPassworDAOImpl.getPassword("mosip", null);
-		assertEquals(result, res);
+		assertFalse(registrationUserPassworDAOImpl.getPassword("mosip", null));
 	}
 
 	@Test
@@ -117,14 +111,11 @@ public class RegistrationUserPasswordDAOTest {
 		List<RegistrationUserPassword> registrationUserPasswordList = new ArrayList<RegistrationUserPassword>();
 
 		// registrationUserPasswordList.add(registrationUserPassword);
-		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordIdUsrId(Mockito.anyString()))
+		Mockito.when(registrationUserPasswordRepository.findByRegistrationUserPasswordIdUsrIdAndIsActiveTrue(Mockito.anyString()))
 				.thenReturn(registrationUserPasswordList);
 
 		assertTrue(registrationUserPasswordList.isEmpty());
-		boolean result = false;
-		boolean res;
-		res = registrationUserPassworDAOImpl.getPassword("mosip", "Sravya");
-		assertEquals(result, res);
+		assertFalse(registrationUserPassworDAOImpl.getPassword("mosip", "mosip"));
 	}
 
 }

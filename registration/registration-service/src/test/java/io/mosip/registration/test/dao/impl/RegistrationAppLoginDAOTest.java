@@ -1,9 +1,12 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,6 +20,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.dao.impl.RegistrationAppLoginDAOImpl;
 import io.mosip.registration.entity.RegistrationAppLoginMethod;
 import io.mosip.registration.entity.RegistrationAppLoginMethodId;
@@ -70,9 +74,13 @@ public class RegistrationAppLoginDAOTest {
 		registrationAppLoginMethod.setRegistrationAppLoginMethodId(registrationAppLoginMethodId);
 		List<RegistrationAppLoginMethod> loginList = new ArrayList<RegistrationAppLoginMethod>();
 		loginList.add(registrationAppLoginMethod);
-
+		
 		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueOrderByMethodSeq()).thenReturn(loginList);
-		registrationAppLoginDAOImpl.getModesOfLogin();
+		
+		Map<String, Object> modes = new LinkedHashMap<String, Object>();
+		loginList.forEach(p -> modes.put(String.valueOf(p.getMethodSeq()), p.getRegistrationAppLoginMethodId().getLoginMethod()));
+		modes.put(RegConstants.LOGIN_SEQUENCE, RegConstants.INITIAL_LOGIN_SEQUENCE);
+		assertEquals(modes,registrationAppLoginDAOImpl.getModesOfLogin());
 	}
 
 	@Test
@@ -84,7 +92,11 @@ public class RegistrationAppLoginDAOTest {
 
 		List<RegistrationAppLoginMethod> loginList = new ArrayList<RegistrationAppLoginMethod>();
 		Mockito.when(registrationAppLoginRepository.findByIsActiveTrueOrderByMethodSeq()).thenReturn(loginList);
-		registrationAppLoginDAOImpl.getModesOfLogin();
+		
+		Map<String, Object> modes = new LinkedHashMap<String, Object>();
+		loginList.forEach(p -> modes.put(String.valueOf(p.getMethodSeq()), p.getRegistrationAppLoginMethodId().getLoginMethod()));
+		modes.put(RegConstants.LOGIN_SEQUENCE, RegConstants.INITIAL_LOGIN_SEQUENCE);
+		assertEquals(modes,registrationAppLoginDAOImpl.getModesOfLogin());
 	}
 
 }

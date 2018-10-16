@@ -207,4 +207,8 @@ public class RegConstants {
 	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "BiometricsCaptured";
 	
+	//Login Sequence
+	public static final String LOGIN_SEQUENCE = "sequence";
+	public static final int INITIAL_LOGIN_SEQUENCE = 1;
+	
 }

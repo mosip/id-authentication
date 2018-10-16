@@ -3,11 +3,13 @@ package io.mosip.registration.controller;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_AUTHORIZATION_EXCEPTION;
+import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_APPROVE_SCREEN_EXCEPTION;
 import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -70,7 +72,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 	 * Validating screen authorization and Creating Packet and displaying
 	 * acknowledgement form
 	 */
-	public void createPacket(ActionEvent event) throws RegBaseCheckedException {
+	public void createPacket(ActionEvent event) {
 
 		try {
 			RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
@@ -80,7 +82,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 			Writer writer = velocityGenerator.generateTemplate(ackTemplate, registrationDTO);
 			ackReceiptController.setStringWriter(writer);
 
-			Parent createRoot = BaseController.load(getClass().getResource("/fxml/AckReceipt.fxml"));
+			Parent createRoot = BaseController.load(getClass().getResource(RegistrationUIConstants.ACK_RECEIPT_PATH));
 
 			LOGGER.debug("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
@@ -95,7 +97,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 				Stage primaryStage = new Stage();
 
 				primaryStage.setResizable(false);
-				primaryStage.setTitle("Registration Acknowledgement");
+				primaryStage.setTitle(RegistrationUIConstants.ACKNOWLEDGEMENT_FORM_TITLE);
 				Scene scene = new Scene(createRoot);
 				primaryStage.setScene(scene);
 				primaryStage.show();
@@ -114,7 +116,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 	 */
 	public void approvePacket(ActionEvent event) {
 		try {
-			Parent root = BaseController.load(getClass().getResource("/fxml/RegistrationApproval.fxml"));
+			Parent root = BaseController.load(getClass().getResource(RegistrationUIConstants.APPROVAL_PAGE));
 
 			LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
@@ -130,17 +132,15 @@ public class RegistrationOfficerPacketController extends BaseController {
 				AnchorPane anchorPane = (AnchorPane) button.getParent();
 				VBox vBox = (VBox) (anchorPane.getParent());
 				ObservableList<Node> nodes = vBox.getChildren();
-				Node child;
-				for (int index = 1; index < nodes.size(); index++) {
-					child = nodes.get(index);
-					child.setVisible(false);
-					child.setManaged(false);
-				}
+				IntStream.range(1, nodes.size()).forEach(index -> {
+					nodes.get(index).setVisible(false);
+					nodes.get(index).setManaged(false);
+				});
 				nodes.add(root);
 			}
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - UI- Officer Packet approve ", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage());
+			generateAlert(RegistrationUIConstants.ALERT_ERROR, AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+					REG_UI_APPROVE_SCREEN_EXCEPTION.getErrorMessage());
 		}
 	}
 
@@ -149,7 +149,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 	 */
 	public void uploadPacket(ActionEvent event) {
 		try {
-			uploadRoot = BaseController.load(getClass().getResource("/fxml/FTPLogin.fxml"));
+			uploadRoot = BaseController.load(getClass().getResource(RegistrationUIConstants.FTP_UPLOAD_PAGE));
 
 			LOGGER.debug("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),

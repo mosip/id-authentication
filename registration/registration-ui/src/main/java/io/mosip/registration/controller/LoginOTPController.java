@@ -2,6 +2,7 @@ package io.mosip.registration.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -41,48 +40,38 @@ import javafx.scene.layout.BorderPane;
 @PropertySource("classpath:registration.properties")
 public class LoginOTPController extends BaseController implements Initializable {
 
-	/**
-	 * Instance of {@link MosipLogger}
-	 */
-	private static MosipLogger LOGGER;
-
 	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
-	
-	@Autowired
-	Environment environment;
+	private Environment environment;
 
 	/**
 	 * The reference to loginServiceImpl class.
 	 */
 	@Autowired
-	LoginServiceImpl loginServiceImpl;
+	private LoginServiceImpl loginServiceImpl;
 
 	@Autowired
-	SchedulerUtil schedulerUtil;
+	private SchedulerUtil schedulerUtil;
 
 	/**
 	 * Field to enter UIN at UI
 	 */
 	@FXML
-	TextField eoUsername;
+	private TextField eoUsername;
 
 	@FXML
-	PasswordField otp;
+	private PasswordField otp;
 
 	@FXML
-	Button submit;
+	private Button submit;
 
 	@FXML
-	Button getOTP;
+	private Button getOTP;
 
 	@FXML
-	Button resend;
+	private Button resend;
 
 	@FXML
-	Label otpValidity;
+	private Label otpValidity;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -97,7 +86,8 @@ public class LoginOTPController extends BaseController implements Initializable 
 	 * @throws RegBaseCheckedException
 	 */
 	@FXML
-	public void generateOtp(ActionEvent event) throws RegBaseCheckedException {
+	public void generateOtp(ActionEvent event) {
+
 		if (!eoUsername.getText().isEmpty()) {
 			// Response obtained from server
 			ResponseDTO responseDTO = null;
@@ -130,6 +120,7 @@ public class LoginOTPController extends BaseController implements Initializable 
 					RegistrationUIConstants.USERNAME_FIELD_EMPTY);
 
 		}
+
 	}
 
 	/**
@@ -157,21 +148,52 @@ public class LoginOTPController extends BaseController implements Initializable 
 
 				if (responseDTO != null) {
 					if (responseDTO.getSuccessResponseDTO() != null) {
-						
-							int counter = (int) SessionContext.getInstance().getMapObject().get("sequence");
+						//Validating User status
+						if (validateUserStatus(eoUsername.getText())) {
+							generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
+									AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+									RegistrationUIConstants.LOGIN_INFO_MESSAGE,
+									RegistrationUIConstants.BLOCKED_USER_ERROR);
+						} else {
+							SessionContext sessionContext = SessionContext.getInstance();
+							// Resetting login sequence to the Session context after log out
+							if (sessionContext.getMapObject() == null) {
+								Map<String, Object> userLoginMode = loginServiceImpl.getModesOfLogin();
+								sessionContext.setMapObject(userLoginMode);
+								sessionContext.getMapObject().put(RegistrationUIConstants.LOGIN_INITIAL_SCREEN,
+										RegistrationUIConstants.OTP);
+							}
+
+							int counter = (int) sessionContext.getMapObject().get(RegConstants.LOGIN_SEQUENCE);
 							counter++;
-							if(SessionContext.getInstance().getMapObject().containsKey(""+counter)) {
-								String mode = SessionContext.getInstance().getMapObject().get(""+counter).toString();
+							if (sessionContext.getMapObject().containsKey(String.valueOf(counter))) {
+								String mode = sessionContext.getMapObject().get(String.valueOf(counter)).toString();
+								sessionContext.getMapObject().remove(String.valueOf(counter));
 								if (mode.equals(RegistrationUIConstants.LOGIN_METHOD_PWORD)) {
-										BorderPane pane = (BorderPane) ((Node)event.getSource()).getParent().getParent();
-										AnchorPane loginType = BaseController.load(getClass().getResource("/fxml/LoginWithCredentials.fxml"));
-										pane.setCenter(loginType);							
+									BorderPane pane = (BorderPane) ((Node) event.getSource()).getParent().getParent();
+									AnchorPane loginType = BaseController
+											.load(getClass().getResource(RegistrationUIConstants.LOGIN_PWORD_PAGE));
+									pane.setCenter(loginType);
 								}
 							} else {
-								setSessionContext(userDTO.getUserId());
-								schedulerUtil.startSchedulerUtil();
-								BaseController.load(getClass().getResource("/fxml/RegistrationOfficerLayout.fxml"));
+								String authInfo = setInitialLoginInfoAndSessionContext(eoUsername.getText());
+								if(authInfo != null && authInfo.equals(RegistrationUIConstants.ROLES_EMPTY)) {
+									generateAlert(RegistrationUIConstants.AUTHORIZATION_ALERT_TITLE,
+											AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+											RegistrationUIConstants.AUTHORIZATION_ERROR,
+											RegistrationUIConstants.ROLES_EMPTY_ERROR);
+								} else if(authInfo != null && authInfo.equals(RegistrationUIConstants.MACHINE_MAPPING)) {
+									generateAlert(RegistrationUIConstants.AUTHORIZATION_ALERT_TITLE,
+											AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+											RegistrationUIConstants.AUTHORIZATION_ERROR,
+											RegistrationUIConstants.MACHINE_MAPPING_ERROR);
+								} else {
+									schedulerUtil.startSchedulerUtil();
+									BaseController.load(getClass().getResource(RegistrationUIConstants.HOME_PAGE));
+								}
 							}
+
+						}
 
 					} else {
 						// Generate invalid otp alert
@@ -194,7 +216,7 @@ public class LoginOTPController extends BaseController implements Initializable 
 		} catch (RegBaseCheckedException ioException) {
 
 		} catch (IOException e) {
-			
+
 		}
 	}
 

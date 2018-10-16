@@ -16,6 +16,6 @@ public interface RegistrationUserPasswordDAO {
 	 * @return boolean 
 	 */
 	
-	public boolean getPassword(String userId, String hashPassword);
+	boolean getPassword(String userId, String hashPassword);
 
 }

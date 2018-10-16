@@ -1,11 +1,11 @@
 package io.mosip.registration.service;
 
-import java.util.List;
 import java.util.Map;
 
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.RegistrationUserDetail;
 
 /**
  * Service Class for Login
@@ -24,15 +24,6 @@ public interface LoginService {
 	Map<String, Object> getModesOfLogin();
 
 	/**
-	 * validating userstatus
-	 * 
-	 * @param userId
-	 *            entered userId
-	 * @return String userstatus
-	 */
-	String getUserStatus(String userId);
-
-	/**
 	 * validating user credentials
 	 * 
 	 * @param userId
@@ -48,10 +39,10 @@ public interface LoginService {
 	 * 
 	 * @param userId
 	 *            entered userId
-	 * @return map with user details
+	 * @return RegistrationUserDetail
 	 */
-	Map<String, String> getUserDetail(String userId);
-
+	RegistrationUserDetail getUserDetail(String userId);
+	
 	/**
 	 * fetching registration center details
 	 * 
@@ -60,15 +51,6 @@ public interface LoginService {
 	 * @return RegistrationCenterDetailDTO center details
 	 */
 	RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId);
-
-	/**
-	 * fetching registration user roles
-	 * 
-	 * @param userId
-	 *            entered userId
-	 * @return String userRole
-	 */
-	List<String> getRoles(String userId);
 
 	/**
 	 * fetching registration screen authorization details
@@ -86,7 +68,7 @@ public interface LoginService {
 	 *            eoUserName to generate OTP
 	 * @return Response success or Error
 	 */
-	public ResponseDTO getOTP(String key);
+	ResponseDTO getOTP(String key);
 
 	/**
 	 * OTP validation entered by user
@@ -98,6 +80,6 @@ public interface LoginService {
 	 * @return Response success or error
 	 */
 
-	public ResponseDTO validateOTP(String key, String otp);
+	ResponseDTO validateOTP(String key, String otp);
 
 }

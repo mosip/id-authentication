@@ -18,6 +18,6 @@ public interface RegistrationCenterDAO {
 	 * @return the list of {@link RegistrationCenterDetailDTO} based on the given center id
 	 */
 	
-	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId);
+	RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId);
 
 }

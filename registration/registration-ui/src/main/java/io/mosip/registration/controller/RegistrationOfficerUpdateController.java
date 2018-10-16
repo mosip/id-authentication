@@ -11,6 +11,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.ui.constants.RegistrationUIConstants;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -56,7 +57,7 @@ public class RegistrationOfficerUpdateController extends BaseController {
 				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
 				"Displaying date values for the corresponding fields");
 
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyy hh:mm:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat(RegistrationUIConstants.DATE_FORMAT);
 		updateDate.setText(sdf.format(new Date()));
 		syncDate.setText(sdf.format(new Date()));
 		downloadDate.setText(sdf.format(new Date()));

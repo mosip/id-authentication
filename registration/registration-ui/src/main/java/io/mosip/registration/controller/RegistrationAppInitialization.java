@@ -7,17 +7,14 @@ import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
-
-import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.controller.LoginController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationUIExceptionCode;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -70,19 +67,22 @@ public class RegistrationAppInitialization extends Application {
 		String loginMode = loginController.loadInitialScreen();
 
 		try {
-			BorderPane loginRoot = BaseController.load(getClass().getResource("/fxml/RegistrationLogin.fxml"));
-
-			if (loginMode.equals(RegistrationUIConstants.OTP)) {
-				AnchorPane loginType = BaseController.load(getClass().getResource("/fxml/LoginWithOTP.fxml"));
+			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationUIConstants.INITIAL_PAGE));
+			if (loginMode == null) {
+				AnchorPane loginType = BaseController.load(getClass().getResource(RegistrationUIConstants.ERROR_PAGE));
+				loginRoot.setCenter(loginType);
+			} else if (loginMode.equals(RegistrationUIConstants.OTP)) {
+				AnchorPane loginType = BaseController
+						.load(getClass().getResource(RegistrationUIConstants.LOGIN_OTP_PAGE));
 				loginRoot.setCenter(loginType);
 			} else if (loginMode.equals(RegistrationUIConstants.LOGIN_METHOD_PWORD)) {
-				AnchorPane loginType = BaseController.load(getClass().getResource("/fxml/LoginWithCredentials.fxml"));
+				AnchorPane loginType = BaseController
+						.load(getClass().getResource(RegistrationUIConstants.LOGIN_PWORD_PAGE));
 				loginRoot.setCenter(loginType);
 			}
-
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			scene = new Scene(loginRoot, 950, 630);
-			scene.getStylesheets().add(loader.getResource("application.css").toExternalForm());
+			scene.getStylesheets().add(loader.getResource(RegistrationUIConstants.CSS_FILE_PATH).toExternalForm());
 
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);

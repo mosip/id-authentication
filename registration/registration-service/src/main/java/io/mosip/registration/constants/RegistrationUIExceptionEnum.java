@@ -18,7 +18,8 @@ public enum RegistrationUIExceptionEnum {
 	REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION("LGN-UI-SHE-007", "Unable to load the Login Screen"),
 	REG_UI_HOMEPAGE_IO_EXCEPTION("REG-UI-SHE-008", "Unable to load the Home Screen"),
 	REG_ACK_TEMPLATE_IO_EXCEPTION("REG-UI-SHE-009","Unable to write the image file"),
-	REG_UI_AUTHORIZATION_EXCEPTION("REG-ROA-001","You are not authorized to access this feature");
+	REG_UI_AUTHORIZATION_EXCEPTION("REG-ROA-010","You are not authorized to access this feature"),
+	REG_UI_APPROVE_SCREEN_EXCEPTION("REG-APS-011","Unable to load Approval screen");
 	
 
 	private final String errorCode;

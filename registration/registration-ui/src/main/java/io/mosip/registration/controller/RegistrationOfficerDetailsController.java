@@ -2,10 +2,10 @@ package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_HOMEPAGE_IO_EXCEPTION;
 import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +19,7 @@ import io.mosip.registration.ui.constants.RegistrationUIConstants;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -32,7 +33,7 @@ import javafx.scene.layout.VBox;
  */
 @Controller
 public class RegistrationOfficerDetailsController extends BaseController {
-	
+
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
@@ -61,9 +62,12 @@ public class RegistrationOfficerDetailsController extends BaseController {
 				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
 				"Displaying Registration Officer details");
 
-		registrationOfficerName.setText(LoginController.userDTO.getUsername());
-		registrationOfficeId.setText(LoginController.userDTO.getCenterId());
-		registrationOfficeLocation.setText(LoginController.userDTO.getCenterLocation());
+		SessionContext sessionContext = SessionContext.getInstance();
+		registrationOfficerName.setText(sessionContext.getUserContext().getName());
+		registrationOfficeId
+				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
+		registrationOfficeLocation
+				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 	}
 
 	/**
@@ -71,8 +75,8 @@ public class RegistrationOfficerDetailsController extends BaseController {
 	 */
 	public void logout(ActionEvent event) {
 		try {
-			String initialMode = SessionContext.getInstance().getMapObject().get("initialMode").toString();
-			Map<String, Object> restoreMap = SessionContext.getInstance().getMapObject();
+			String initialMode = SessionContext.getInstance().getMapObject()
+					.get(RegistrationUIConstants.LOGIN_INITIAL_SCREEN).toString();
 
 			LOGGER.debug("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER",
 					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "Clearing Session context");
@@ -84,27 +88,24 @@ public class RegistrationOfficerDetailsController extends BaseController {
 					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
 					"Restoring Login sequence after Logout");
 
-			SessionContext.getInstance().setMapObject(restoreMap);
-			SessionContext.getInstance().getMapObject().put("sequence", 1);
-
-			String fxmlPath = "";
+			String fxmlPath = null;
 			switch (initialMode) {
 			case RegistrationUIConstants.OTP:
-				fxmlPath = "/fxml/LoginWithOTP.fxml";
+				fxmlPath = RegistrationUIConstants.LOGIN_OTP_PAGE;
 				break;
 			case RegistrationUIConstants.LOGIN_METHOD_PWORD:
-				fxmlPath = "/fxml/LoginWithCredentials.fxml";
+				fxmlPath = RegistrationUIConstants.LOGIN_PWORD_PAGE;
 				break;
 			default:
-				fxmlPath = "/fxml/LoginWithCredentials.fxml";
+				fxmlPath = RegistrationUIConstants.LOGIN_PWORD_PAGE;
 				break;
 			}
 
-			BorderPane loginpage = BaseController.load(getClass().getResource("/fxml/RegistrationLogin.fxml"));
+			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationUIConstants.INITIAL_PAGE));
 			AnchorPane loginType = BaseController.load(getClass().getResource(fxmlPath));
 			loginpage.setCenter(loginType);
 			RegistrationAppInitialization.getScene().setRoot(loginpage);
-			
+
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI - Logout ", getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), ioException.getMessage());
@@ -120,12 +121,12 @@ public class RegistrationOfficerDetailsController extends BaseController {
 			LOGGER.debug("REGISTRATION - REDIRECT_HOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER",
 					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "Redirecting to Home page");
 
-			VBox homePage = BaseController.load(getClass().getResource("/fxml/RegistrationOfficerLayout.fxml"));
+			VBox homePage = BaseController.load(getClass().getResource(RegistrationUIConstants.HOME_PAGE));
 			RegistrationAppInitialization.getScene().setRoot(homePage);
 
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - UI- Redirect Home Page ", getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), ioException.getMessage());
+		} catch (IOException | RuntimeException exception) {
+			generateAlert(RegistrationUIConstants.ALERT_ERROR, AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+					REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());
 		}
 	}
 }
