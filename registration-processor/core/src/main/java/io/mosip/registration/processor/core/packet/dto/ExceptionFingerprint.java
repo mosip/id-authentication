@@ -6,7 +6,7 @@ import lombok.Data;
 public class ExceptionFingerprint {
 
 	private String biometricType;
-	private String missingFinger;
+	private String missingBiometric;
 	private String exceptionDescription;
 	private String exceptionType;
 
