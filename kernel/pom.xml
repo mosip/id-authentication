@@ -103,6 +103,9 @@
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-config-server</module>
 		<module>kernel-keygenerator</module>
+		<module>kernel-templatemanager-velocity</module>
+		<module>kernel-templatemanager-freemarker</module>
+	
 	</modules>
 
 	<profiles>
