@@ -20,7 +20,7 @@ public class DecryptionMessageSender extends MosipVerticleManager {
 	
 	public void sendMessage(MessageDTO message) {
 		getEventBus();
-		this.send(this.mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, message);
+		this.send(this.mosipEventBus, MessageBusAddress.BATCH_BUS, message);
 	}
 
 	@Override

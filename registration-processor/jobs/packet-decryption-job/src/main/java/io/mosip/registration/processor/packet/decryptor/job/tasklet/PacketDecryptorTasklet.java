@@ -49,8 +49,9 @@ public class PacketDecryptorTasklet implements Tasklet {
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 	
 	private FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter = new FilesystemCephAdapterImpl();
-
-	private DecryptionMessageSender decryptionMessageSender = new DecryptionMessageSender();
+	
+	@Autowired
+	private DecryptionMessageSender decryptionMessageSender;
 
 	@Autowired
 	private Decryptor decryptor;
