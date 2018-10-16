@@ -19,11 +19,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import io.mosip.kernel.httppacketuploader.PacketUploaderHttpApplication;
+import io.mosip.kernel.packetuploader.http.PacketUploaderHttpBootApplication;
 
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=PacketUploaderHttpApplication.class)
+@SpringBootTest(classes=PacketUploaderHttpBootApplication.class)
 @TestPropertySource("classpath:/test.properties")
 public class PacketUploaderIOExceptionTest {
 
