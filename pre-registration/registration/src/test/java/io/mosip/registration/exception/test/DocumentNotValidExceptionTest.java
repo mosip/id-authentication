@@ -18,13 +18,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.dto.DocumentDto;
 import io.mosip.registration.errorcodes.ErrorCodes;
-import io.mosip.registration.exception.DocumentSizeExceedException;
+import io.mosip.registration.exception.DocumentNotValidException;
 import io.mosip.registration.service.DocumentUploadService;
 
 @RunWith(SpringRunner.class)
-public class DocumentSizeExceedTest {
+public class DocumentNotValidExceptionTest {
 
-	private static final String DOCUMENT_EXCEEDING_PERMITTED_SIZE = "This is document size exceed exception";
+	private static final String DOCUMENT_INVALID_FORMAT = "This is document format is invalid exception";
 
 	@Mock
 	private DocumentUploadService documentUploadService;
@@ -33,32 +33,32 @@ public class DocumentSizeExceedTest {
 	private MockMultipartFile multiPartFile;
 
 	@Test
-	public void documentSizeExceedTest() throws FileNotFoundException, IOException {
+	public void notValidException() throws FileNotFoundException, IOException {
 
-		DocumentSizeExceedException exceedException = new DocumentSizeExceedException(
-				DOCUMENT_EXCEEDING_PERMITTED_SIZE);
+		DocumentNotValidException documentNotValidException = new DocumentNotValidException(DOCUMENT_INVALID_FORMAT);
 
 		DocumentDto documentDto = new DocumentDto("99887654323321", "88779876543212", "address", "POA", ".pdf", "Save",
 				"ENG", "kishan", "kishan", true);
 
 		ClassLoader classLoader = getClass().getClassLoader();
 
-		File file = new File(classLoader.getResource("SampleSizeTest.pdf").getFile());
+		File file = new File(classLoader.getResource("SampleZip.zip").getFile());
 
-		this.multiPartFile = new MockMultipartFile("file", "SampleSizeTest.pdf", "mixed/multipart",
+		this.multiPartFile = new MockMultipartFile("file", "SampleZip.zip", "mixed/multipart",
 				new FileInputStream(file));
-		Mockito.when(documentUploadService.uploadDoucment(multiPartFile, documentDto)).thenThrow(exceedException);
+
+		Mockito.when(documentUploadService.uploadDoucment(multiPartFile, documentDto))
+				.thenThrow(documentNotValidException);
 		try {
 
 			documentUploadService.uploadDoucment(multiPartFile, documentDto);
 			fail();
 
-		} catch (DocumentSizeExceedException e) {
-			assertThat("Should throw DocumentSizeExceed exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM‌_001.toString()));
-			assertThat("Should throw DocumentSizeExceed exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(DOCUMENT_EXCEEDING_PERMITTED_SIZE));
-
+		} catch (DocumentNotValidException e) {
+			assertThat("Should throw dopcument invalid exception with correct error codes",
+					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM‌_004.toString()));
+			assertThat("Should throw dopcument invalid exception with correct messages",
+					e.getErrorText().equalsIgnoreCase(DOCUMENT_INVALID_FORMAT));
 		}
 	}
 }
