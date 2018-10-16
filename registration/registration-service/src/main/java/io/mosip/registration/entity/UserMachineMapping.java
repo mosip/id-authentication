@@ -91,5 +91,6 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	public void setDeletedDateTime(String deletedDateTime) {
 		this.deletedDateTime = deletedDateTime;
 	}
+	
 
 }

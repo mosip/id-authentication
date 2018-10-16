@@ -7,9 +7,6 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class UserMachineMappingID implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1883492292190913762L;
 
 	@Column(name = "usr_id", length = 32, nullable = false)
