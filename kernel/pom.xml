@@ -101,7 +101,7 @@
 		<module>kernel-datavalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-config-server</module>
-		<module>kernel-notification-email</module>		
+		<module>kernel-emailnotification-smtp</module>		
 	</modules>
 
 	<profiles>
