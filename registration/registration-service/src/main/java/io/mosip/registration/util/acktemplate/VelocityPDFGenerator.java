@@ -69,19 +69,19 @@ public class VelocityPDFGenerator {
 
 		// map the respective fields with the values in the enrolmentDTO
 		velocityContext.put(RegConstants.TEMPLATE_DATE, currentDate);
-		velocityContext.put(RegConstants.TEMPLATE_FULL_NAME, registration.getDemographicDTO().getDemoInLocalLang().getFullName());
-		velocityContext.put(RegConstants.TEMPLATE_DOB, registration.getDemographicDTO().getDemoInLocalLang().getDateOfBirth());
-		velocityContext.put(RegConstants.TEMPLATE_GENDER, registration.getDemographicDTO().getDemoInLocalLang().getGender());
+		velocityContext.put(RegConstants.TEMPLATE_FULL_NAME, registration.getDemographicDTO().getDemoInUserLang().getFirstName()+" "+registration.getDemographicDTO().getDemoInUserLang().getLastName());
+		velocityContext.put(RegConstants.TEMPLATE_DOB, registration.getDemographicDTO().getDemoInUserLang().getDateOfBirth());
+		velocityContext.put(RegConstants.TEMPLATE_GENDER, registration.getDemographicDTO().getDemoInUserLang().getGender());
 		velocityContext.put(RegConstants.TEMPLATE_ADDRESS_LINE1,
-				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLine1());
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLine1());
 		velocityContext.put(RegConstants.TEMPLATE_ADDRESS_LINE2,
-				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLine2());
-		velocityContext.put(RegConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLocationDTO().getLine6());
-		velocityContext.put(RegConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLocationDTO().getLine5());
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLine2());
+		velocityContext.put(RegConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine6());
+		velocityContext.put(RegConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine5());
 		velocityContext.put(RegConstants.TEMPLATE_COUNTRY,
-				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLocationDTO().getLine4());
-		velocityContext.put(RegConstants.TEMPLATE_MOBILE, registration.getDemographicDTO().getDemoInLocalLang().getMobile());
-		velocityContext.put(RegConstants.TEMPLATE_EMAIL, registration.getDemographicDTO().getDemoInLocalLang().getEmailId());
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine4());
+		velocityContext.put(RegConstants.TEMPLATE_MOBILE, registration.getDemographicDTO().getDemoInUserLang().getMobile());
+		velocityContext.put(RegConstants.TEMPLATE_EMAIL, registration.getDemographicDTO().getDemoInUserLang().getEmailId());
 
 		List<DocumentDetailsDTO> documents = registration.getDemographicDTO().getApplicantDocumentDTO()
 				.getDocumentDetailsDTO();

@@ -59,10 +59,22 @@ public class RegistrationOfficerPacketController extends BaseController {
 	/**
 	 * Creating Packet and displaying acknowledgement form
 	 */
-	public void createPacket(ActionEvent event) throws RegBaseCheckedException {
+	public void createPacket(ActionEvent event) {
+		try {
+			Parent root = BaseController.load(getClass().getResource("/fxml/Registration.fxml"));
+			RegistrationAppInitialization.getScene().setRoot(root);			
+			ClassLoader loader = Thread.currentThread().getContextClassLoader(); 
+			RegistrationAppInitialization.getScene().getStylesheets().add(loader.getResource("application.css").toExternalForm());
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage());
+		}
+	}
+	
+	public void showReciept(RegistrationDTO registrationDTO) {
 
 		try {
-			RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
+			registrationDTO = DataProvider.getPacketDTO(registrationDTO);
 			ackReceiptController.setRegistrationData(registrationDTO);
 
 			File ackTemplate = templateService.createReceipt();
@@ -84,6 +96,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 		}
+	
 	}
 
 	/**

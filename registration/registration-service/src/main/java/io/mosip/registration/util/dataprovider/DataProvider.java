@@ -56,15 +56,13 @@ public class DataProvider {
 		}
 	}
 
-	public static RegistrationDTO getPacketDTO() throws RegBaseCheckedException {
-		RegistrationDTO registrationDTO = new RegistrationDTO();
+	public static RegistrationDTO getPacketDTO(RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		registrationDTO.setAuditDTOs(DataProvider.getAuditDTOs());
 		registrationDTO.setOsiDataDTO(DataProvider.getOsiDataDTO());
 		registrationDTO.setRegistrationMetaDataDTO(DataProvider.getRegistrationMetaDataDTO());
-		registrationDTO.setPreRegistrationId("PEN1345T");
 		registrationDTO.setRegistrationId(RIDGenerator.nextRID());
 
-		registrationDTO.setDemographicDTO(DataProvider.getDemographicDTO());
+		registrationDTO.setDemographicDTO(DataProvider.getDemographicDTO(registrationDTO.getDemographicDTO()));
 		registrationDTO.setBiometricDTO(DataProvider.getBiometricDTO());
 		return registrationDTO;
 
@@ -169,12 +167,10 @@ public class DataProvider {
 		return irisExcepList;
 	}
 
-	private static DemographicDTO getDemographicDTO() throws RegBaseCheckedException {
-		DemographicDTO demographicDTO = new DemographicDTO();
+	private static DemographicDTO getDemographicDTO(DemographicDTO demographicDTO) throws RegBaseCheckedException {
 		demographicDTO.setApplicantDocumentDTO(DataProvider.setApplicantDocumentDTO());
 		demographicDTO.setIntroducerRID("2018234500321157812");
-		demographicDTO.setDemoInLocalLang(DataProvider.getDemoInLocalLang());
-		demographicDTO.setDemoInUserLang(DataProvider.getDemoInLocalLang());
+		demographicDTO.setIntroducerUIN("2018234500321");
 		return demographicDTO;
 	}
 
@@ -183,8 +179,7 @@ public class DataProvider {
 		demographicInfoDTO.setFirstName("John");
 		demographicInfoDTO.setMiddleName("Lawernce");
 		demographicInfoDTO.setLastName("Jr");
-		demographicInfoDTO.setFullName("John Lawernce Jr");
-		demographicInfoDTO.setDateOfBirth(new Date());
+		//demographicInfoDTO.setDateOfBirth(new Date());
 		demographicInfoDTO.setEmailId("john.lawerence@gmail.com");
 		demographicInfoDTO.setGender("Male");
 		demographicInfoDTO.setLanguageCode("en");

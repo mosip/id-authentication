@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
  * @since 1.0.0
  *
  */
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class OSIDataDTO extends BaseDTO {

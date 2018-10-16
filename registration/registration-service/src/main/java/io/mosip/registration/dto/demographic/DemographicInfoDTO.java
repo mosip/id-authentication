@@ -1,6 +1,6 @@
 package io.mosip.registration.dto.demographic;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -23,11 +23,13 @@ public class DemographicInfoDTO extends BaseDTO {
 	private String lastName;
 	@JsonIgnore
 	private String fullName;
-	protected Date dateOfBirth;
+	protected LocalDate dateOfBirth;
 	protected String gender;
 	protected AddressDTO addressDTO;
 	protected String emailId;
 	protected String mobile;
+	protected String landLine;
 	protected String languageCode;
 	protected boolean isChild;
+	protected String age;
 }

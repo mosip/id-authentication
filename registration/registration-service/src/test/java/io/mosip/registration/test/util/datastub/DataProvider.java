@@ -183,7 +183,7 @@ public class DataProvider {
 		demographicInfoDTO.setMiddleName("Lawernce");
 		demographicInfoDTO.setLastName("Jr");
 		demographicInfoDTO.setFullName("John Lawernce Jr");
-		demographicInfoDTO.setDateOfBirth(new Date());
+		//demographicInfoDTO.setDateOfBirth(new Date());
 		demographicInfoDTO.setEmailId("john.lawerence@gmail.com");
 		demographicInfoDTO.setGender("Male");
 		demographicInfoDTO.setLanguageCode("en");

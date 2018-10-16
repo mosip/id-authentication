@@ -1,5 +1,6 @@
 package io.mosip.registration.controller;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.AnchorPane;
 
 @Controller
 public class RegistrationOfficerUpdateController extends BaseController {
@@ -34,4 +37,5 @@ public class RegistrationOfficerUpdateController extends BaseController {
 		downloadDate.setText(sdf.format(new Date()));
 		scanDate.setText(sdf.format(new Date()));
 	}
+	
 }

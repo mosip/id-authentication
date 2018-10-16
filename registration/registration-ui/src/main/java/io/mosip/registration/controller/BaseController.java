@@ -20,6 +20,9 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Control;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
@@ -163,5 +166,28 @@ public class BaseController {
 		userContext.setRoles(loginServiceImpl.getRoles(userId));
 		
 	}
+	
+	/**
+	 * Regex validation with specified field and pattern
+	 * 
+	 * @param field
+	 *            concerned field
+	 * @param regexPattern
+	 *            pattern need to checked
+	 */
+	protected boolean validateRegex(Control field,String regexPattern) {
+		if(field instanceof TextField) {
+			if(!((TextField) field).getText().matches(regexPattern))
+				return true;
+		}
+		else {
+			if(field instanceof PasswordField) {
+				if(!((PasswordField) field).getText().matches(regexPattern))
+					return true;
+			}
+		}
+		return false;
+	}
+	
 
 }

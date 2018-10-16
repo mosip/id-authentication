@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +61,9 @@ public class LoginController extends BaseController {
 	@Autowired
 	SchedulerUtil schedulerUtil;
 	
+	@Autowired
+	private Environment environment;
+	
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
@@ -84,7 +88,7 @@ public class LoginController extends BaseController {
 	public String loadInitialScreen() throws RegBaseCheckedException {
 		
 		LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", 
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), 
+				getPropertyValue(APPLICATION_NAME), environment.getProperty(APPLICATION_ID), 
 				"Retrieve Login mode");
 		
 		String loginMode = "";
