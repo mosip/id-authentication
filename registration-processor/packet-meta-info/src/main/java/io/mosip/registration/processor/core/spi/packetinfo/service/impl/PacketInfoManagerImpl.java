@@ -234,7 +234,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		BiometricExceptionPKEntity biometricExceptionPKEntity = new BiometricExceptionPKEntity();
 		biometricExceptionPKEntity.setRegId(metaData.getRegistrationId());
 		biometricExceptionPKEntity.setLangCode("ENG");
-		biometricExceptionPKEntity.setMissingBio(exceptionIris.getMissingIris());
+		biometricExceptionPKEntity.setMissingBio(exceptionIris.getMissingBiometric());
 
 		bioMetricExceptionEntity.setId(biometricExceptionPKEntity);
 		bioMetricExceptionEntity.setPreregId(metaData.getPreRegistrationId());
@@ -316,7 +316,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		BiometricExceptionPKEntity biometricExceptionPKEntity = new BiometricExceptionPKEntity();
 		biometricExceptionPKEntity.setRegId(metaData.getRegistrationId());
 		biometricExceptionPKEntity.setLangCode("ENG");
-		biometricExceptionPKEntity.setMissingBio(exceptionFingerprint.getMissingFinger());
+		biometricExceptionPKEntity.setMissingBio(exceptionFingerprint.getMissingBiometric());
 
 		bioMetricExceptionEntity.setId(biometricExceptionPKEntity);
 		bioMetricExceptionEntity.setPreregId(metaData.getPreRegistrationId());
@@ -372,13 +372,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Biom
 		RegOsiEntity regOsiEntity = new RegOsiEntity();
 		regOsiEntity.setIntroducerFingerpImageName(osiData.getIntroducerFingerprintImage());
 		regOsiEntity.setIntroducerId(osiData.getIntroducerRID().toString());
-		regOsiEntity.setIntroducerIrisImageName(osiData.getIntroducerIrisIrish());
+		regOsiEntity.setIntroducerIrisImageName(osiData.getIntroducerIrisImage());
 		regOsiEntity.setIntroducerRegId(osiData.getIntroducerUIN());
 		regOsiEntity.setIntroducerTyp(osiData.getIntroducerType());
 		regOsiEntity.setIntroducerUin(osiData.getIntroducerUIN());
 		regOsiEntity.setOfficerFingerpImageName(osiData.getOperatorFingerprintImage());
 		regOsiEntity.setOfficerId(osiData.getOperatorID());
-		regOsiEntity.setOfficerIrisImageName(osiData.getOperatorIrisImage());
+		regOsiEntity.setOfficerIrisImageName(osiData.getOperatorIrisName());
 		regOsiEntity.setRegId(metaData.getRegistrationId());
 		regOsiEntity.setPreregId(metaData.getPreRegistrationId());
 		regOsiEntity.setSupervisorId(osiData.getSupervisorID());
