@@ -20,6 +20,7 @@ import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
+import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -71,9 +72,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			boolean isFilesValidated = FilesValidation.filesValidation(registrationId, packetInfo);
 			boolean isCheckSumValidated = false;
 			if (isFilesValidated) {
-
-				// To do call checksum validation and assign to isCheckSumValidated
-				isCheckSumValidated = true;
+				
+				isCheckSumValidated = CheckSumValidation.checksumvalidation(registrationId, packetInfo);
 				if (!isCheckSumValidated) {
 					registrationStatusDto.setStatusComment("Packet checkSum validation failure");
 				}
