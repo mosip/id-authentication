@@ -19,9 +19,9 @@ import org.junit.Test;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
-import io.mosip.authentication.core.spi.idauth.demo.PersonalAddressDTO;
-import io.mosip.authentication.core.spi.idauth.demo.PersonalFullAddressDTO;
-import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
+import io.mosip.authentication.core.dto.indauth.PersonalAddressDTO;
+import io.mosip.authentication.core.dto.indauth.PersonalFullAddressDTO;
+import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
 
 public class DemoMatchTypeTest {
 

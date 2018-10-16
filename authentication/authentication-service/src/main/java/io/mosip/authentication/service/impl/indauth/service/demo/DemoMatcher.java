@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
 
-// TODO: Auto-generated Javadoc
 /**
  * @author Arun Bose
  * The Class DemoMatcher.

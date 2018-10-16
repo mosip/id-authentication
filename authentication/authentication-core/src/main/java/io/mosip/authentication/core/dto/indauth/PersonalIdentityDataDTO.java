@@ -1,10 +1,5 @@
-package io.mosip.authentication.core.spi.idauth.demo;
+package io.mosip.authentication.core.dto.indauth;
 
-import io.mosip.authentication.core.dto.indauth.BioDTO;
-import io.mosip.authentication.core.dto.indauth.BioType;
-import io.mosip.authentication.core.dto.indauth.DemoDTO;
-import io.mosip.authentication.core.dto.indauth.PinDTO;
-import io.mosip.authentication.core.dto.indauth.PinType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

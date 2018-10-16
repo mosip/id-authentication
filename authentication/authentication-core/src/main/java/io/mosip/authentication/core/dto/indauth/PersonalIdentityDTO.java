@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.spi.idauth.demo;
+package io.mosip.authentication.core.dto.indauth;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;

@@ -1,8 +1,5 @@
 package io.mosip.authentication.core.dto.indauth;
 
-import io.mosip.authentication.core.spi.idauth.demo.PersonalAddressDTO;
-import io.mosip.authentication.core.spi.idauth.demo.PersonalFullAddressDTO;
-import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

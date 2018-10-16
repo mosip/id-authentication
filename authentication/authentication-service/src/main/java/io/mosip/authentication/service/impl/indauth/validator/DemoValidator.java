@@ -18,9 +18,9 @@ import org.springframework.validation.Validator;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.spi.idauth.demo.PersonalAddressDTO;
-import io.mosip.authentication.core.spi.idauth.demo.PersonalFullAddressDTO;
-import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
+import io.mosip.authentication.core.dto.indauth.PersonalAddressDTO;
+import io.mosip.authentication.core.dto.indauth.PersonalFullAddressDTO;
+import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;

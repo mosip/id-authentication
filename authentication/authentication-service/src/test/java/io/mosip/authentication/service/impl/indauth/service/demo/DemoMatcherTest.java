@@ -14,7 +14,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
-import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDTO;
+import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
 
 public class DemoMatcherTest {
 	

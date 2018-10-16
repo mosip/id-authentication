@@ -27,11 +27,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.PersonalIdentityDataDTO;
 import io.mosip.authentication.core.dto.indauth.PinDTO;
 import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.spi.idauth.demo.PersonalIdentityDataDTO;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.UinEntity;
 import io.mosip.authentication.service.integration.OTPManager;

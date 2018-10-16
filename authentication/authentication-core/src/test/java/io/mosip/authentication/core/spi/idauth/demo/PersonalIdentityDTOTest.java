@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
+
 /**
  * personal identity info test
  *
