@@ -62,8 +62,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PACKET_META_INFO);
 		try {
 
-			JsonUtil jsonUtil = new JsonUtil();
-			PacketInfo packetInfo = (PacketInfo) jsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+			
+			PacketInfo packetInfo = (PacketInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketInfo.class);
 
 			RegistrationStatusDto registrationStatusDto = registrationStatusService

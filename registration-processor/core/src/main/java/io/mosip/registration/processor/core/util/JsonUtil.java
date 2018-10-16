@@ -30,7 +30,7 @@ public class JsonUtil {
 	 * @throws JsonIOException
 	 * @throws UnsupportedEncodingException
 	 */
-	public Object inputStreamtoJavaObject(InputStream stream, Class<?> clazz) throws UnsupportedEncodingException {
+	public static Object inputStreamtoJavaObject(InputStream stream, Class<?> clazz) throws UnsupportedEncodingException {
 		// TODO - Handle the exceptions appropriately
 		JsonParser jsonParser = new JsonParser();
 		Gson gson = new Gson();
