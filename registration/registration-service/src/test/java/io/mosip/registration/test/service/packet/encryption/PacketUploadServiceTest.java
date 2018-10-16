@@ -14,7 +14,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.registration.dao.RegTransactionDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
@@ -35,8 +37,12 @@ public class PacketUploadServiceTest {
 	@InjectMocks
 	private PacketUploadService packetUploadService;
 
+	@Mock
+	private MosipLogger logger;
+
 	@Test
 	public void testVerifyPacket() {
+		ReflectionTestUtils.setField(packetUploadService, "LOGGER", logger);
 		List<Registration> registrations = new ArrayList<>();
 		Registration registration = new Registration();
 		registration.setClientStatusCode("P");
@@ -60,6 +66,7 @@ public class PacketUploadServiceTest {
 
 	@Test
 	public void testUpdateStatus() {
+		ReflectionTestUtils.setField(packetUploadService, "LOGGER", logger);
 		List<File> uploadedPackets = new ArrayList<>();
 		uploadedPackets.add(new File(""));
 		Registration registration = new Registration();

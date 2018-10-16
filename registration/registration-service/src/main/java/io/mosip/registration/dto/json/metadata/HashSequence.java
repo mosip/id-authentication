@@ -5,15 +5,12 @@ import lombok.Data;
 @Data
 public class HashSequence {
 	
-	public BiometricSequence biometricSequence;
-	public DemographicSequence demographicSequence;
-	public String registrationID;
+	private BiometricSequence biometricSequence;
+	private DemographicSequence demographicSequence;
 	
-	public HashSequence(BiometricSequence biometricSequence, DemographicSequence demographicSequence,
-			String registrationID) {
+	public HashSequence(BiometricSequence biometricSequence, DemographicSequence demographicSequence) {
 		super();
 		this.biometricSequence = biometricSequence;
 		this.demographicSequence = demographicSequence;
-		this.registrationID = registrationID;
 	}
 }

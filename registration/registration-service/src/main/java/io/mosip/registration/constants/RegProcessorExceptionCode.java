@@ -37,5 +37,8 @@ public class RegProcessorExceptionCode {
 	public static final String PACKET_UPDATE_STATUS = REG_SERVICE_CODE + "RDI-217";
 	public static final String PACKET_RETRIVE_STATUS = REG_SERVICE_CODE + "RDI-218";
 	public static final String RSA_ENCRYPTION_MANAGER = REG_SERVICE_CODE + "REM-219";
+	public static final String UPDATE_SYNC_AUDIT = REG_SERVICE_CODE + "ADI-220";
+	public static final String FETCH_UNSYNC_AUDIT = REG_SERVICE_CODE + "ADI-221";
+	public static final String READ_PROPERTY_FILE_ERROR = REG_SERVICE_CODE + "PFR-222";
 
 }

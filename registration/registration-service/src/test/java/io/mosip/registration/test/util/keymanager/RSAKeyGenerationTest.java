@@ -1,4 +1,4 @@
-package io.mosip.registration.test;
+package io.mosip.registration.test.util.keymanager;
 
 import javax.crypto.Cipher;
 
@@ -24,8 +24,6 @@ public class RSAKeyGenerationTest extends SpringConfiguration {
 	@Test
 	public void keyGenerationTest() {
 		rsaKeyGenerator.generateKey();
-		// Assert.fail();
-
 	}
 
 	@Test
@@ -35,7 +33,7 @@ public class RSAKeyGenerationTest extends SpringConfiguration {
 
 	@Test
 	public void readPrivateKeyTest() {
-		Assert.assertNotNull(rsaKeyGenerator.getEncodedKey(true));
+		Assert.assertNotNull(rsaKeyGenerator.getEncodedKey(false));
 	}
 
 }

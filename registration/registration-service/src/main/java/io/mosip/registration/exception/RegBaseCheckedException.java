@@ -24,7 +24,7 @@ public class RegBaseCheckedException extends BaseCheckedException {
 	/**
 	 * Serializable Version Id
 	 */
-	private static final long serialVersionUID = 1287307733283461272L;
+	private static final long serialVersionUID = 7381314129809012005L;
 	/**
 	 * Instance of {@link MosipLogger}
 	 */

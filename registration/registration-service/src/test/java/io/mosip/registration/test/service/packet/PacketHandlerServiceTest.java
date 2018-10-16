@@ -1,4 +1,4 @@
-package io.mosip.registration.test;
+package io.mosip.registration.test.service.packet;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,15 +25,15 @@ import io.mosip.registration.service.PacketCreationService;
 import io.mosip.registration.service.PacketEncryptionService;
 import io.mosip.registration.service.packet.PacketHandlerService;
 
-public class PacketHandlerAPITest {
+public class PacketHandlerServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
 	private PacketHandlerService packetHandlerService;
 	@Mock
-	private PacketCreationService packetCreationManager;
+	private PacketCreationService packetCreationService;
 	@Mock
-	private PacketEncryptionService packetEncryptionManager;
+	private PacketEncryptionService packetEncryptionService;
 	@Mock
 	private AuditFactory auditFactory;
 	@Mock
@@ -60,24 +60,21 @@ public class PacketHandlerAPITest {
 				Mockito.any(AppModuleEnum.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
+		ReflectionTestUtils.setField(packetHandlerService, "logger", logger);
 	}
 
 	@Test
 	public void testHandle() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(packetHandlerService, "LOGGER", logger);
-		
-		Mockito.when(packetCreationManager.create(Mockito.any(RegistrationDTO.class))).thenReturn("Packet Creation".getBytes());
+		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class))).thenReturn("Packet Creation".getBytes());
 		Mockito.when(
-				packetEncryptionManager.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
+				packetEncryptionService.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
 				.thenReturn(mockedSuccessResponse);
 		Assert.assertSame(mockedSuccessResponse, packetHandlerService.handle(new RegistrationDTO()));
 	}
 
 	@Test
 	public void testCreationException() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(packetHandlerService, "LOGGER", logger);
-
-		Mockito.when(packetCreationManager.create(Mockito.any(RegistrationDTO.class))).thenReturn(null);
+		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class))).thenReturn(null);
 		ResponseDTO actualResponse = packetHandlerService.handle(new RegistrationDTO());
 		Assert.assertEquals(RegProcessorExceptionEnum.REG_PACKET_CREATION_ERROR_CODE.getErrorCode(),
 				actualResponse.getErrorResponseDTOs().get(0).getCode());
@@ -85,13 +82,11 @@ public class PacketHandlerAPITest {
 
 	@Test
 	public void testHandlerException() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(packetHandlerService, "LOGGER", logger);
 		RegBaseUncheckedException exception = new RegBaseUncheckedException("errorCode", "errorMsg");
-
-		Mockito.when(packetCreationManager.create(Mockito.any(RegistrationDTO.class)))
+		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class)))
 				.thenThrow(exception);
 		Mockito.when(
-				packetEncryptionManager.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
+				packetEncryptionService.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
 				.thenReturn(mockedSuccessResponse);
 		ResponseDTO dto = packetHandlerService.handle(new RegistrationDTO());
 		Assert.assertNotNull(dto.getErrorResponseDTOs());
@@ -99,13 +94,11 @@ public class PacketHandlerAPITest {
 
 	@Test
 	public void testHandlerChkException() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(packetHandlerService, "LOGGER", logger);
 		RegBaseCheckedException exception = new RegBaseCheckedException("errorCode", "errorMsg");
-
-		Mockito.when(packetCreationManager.create(Mockito.any(RegistrationDTO.class)))
+		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class)))
 				.thenThrow(exception);
 		Mockito.when(
-				packetEncryptionManager.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
+				packetEncryptionService.encrypt(Mockito.any(RegistrationDTO.class), Mockito.anyString().getBytes()))
 				.thenReturn(mockedSuccessResponse);
 		ResponseDTO dto = packetHandlerService.handle(new RegistrationDTO());
 		Assert.assertNotNull(dto.getErrorResponseDTOs());

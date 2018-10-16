@@ -1,4 +1,4 @@
-package io.mosip.registration.test;
+package io.mosip.registration.test.util.hmac;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -22,9 +22,8 @@ public class HMACGenerationTest {
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		byte[] demographicJsonBytes = "demographicJsonBytes".getBytes();
 		byte[] hashArray = HMACGeneration.generatePacketDTOHash(registrationDTO, demographicJsonBytes, new HashSequence(
-				new BiometricSequence(new LinkedList<String>(), new LinkedList<String>(), new LinkedList<String>()),
-				new DemographicSequence(new LinkedList<String>(), new LinkedList<String>(), new LinkedList<String>()),
-				new String()));
+				new BiometricSequence(new LinkedList<String>(), new LinkedList<String>()),
+				new DemographicSequence(new LinkedList<String>())));
 		Assert.assertNotNull(hashArray);
 	}
 

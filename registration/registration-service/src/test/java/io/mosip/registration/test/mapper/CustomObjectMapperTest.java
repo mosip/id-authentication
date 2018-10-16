@@ -22,10 +22,6 @@ import java.time.OffsetDateTime;
 
 import org.junit.Before;
 
-/**
- * @author Balaji Sridharan
- * @since 1.0.0
- */
 public class CustomObjectMapperTest {
 
 	private MapperFacade mapperFacade = CustomObjectMapper.MAPPER_FACADE;
