@@ -61,7 +61,6 @@
 			src/main/java/io/mosip/registration/constants/**/*,
 			src/main/java/io/mosip/registration/entity/**/*
 		</sonar.exclusions>
-
 	</properties>
 	
 	<modules>

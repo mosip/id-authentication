@@ -63,4 +63,5 @@ public class RegistrationOfficerUpdateController extends BaseController {
 		downloadDate.setText(sdf.format(new Date()));
 		scanDate.setText(sdf.format(new Date()));
 	}
+
 }

@@ -25,7 +25,7 @@ import io.mosip.registration.constants.RegConstants;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.dto.RegistrationDTO;
-import io.mosip.registration.dto.biometric.ExceptionFingerprintDetailsDTO;
+import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
@@ -69,19 +69,19 @@ public class VelocityPDFGenerator {
 
 		// map the respective fields with the values in the enrolmentDTO
 		velocityContext.put(RegConstants.TEMPLATE_DATE, currentDate);
-		velocityContext.put(RegConstants.TEMPLATE_FULL_NAME, registration.getDemographicDTO().getDemoInLocalLang().getFullName());
-		velocityContext.put(RegConstants.TEMPLATE_DOB, registration.getDemographicDTO().getDemoInLocalLang().getDateOfBirth());
-		velocityContext.put(RegConstants.TEMPLATE_GENDER, registration.getDemographicDTO().getDemoInLocalLang().getGender());
+		velocityContext.put(RegConstants.TEMPLATE_FULL_NAME, registration.getDemographicDTO().getDemoInUserLang().getFirstName()+" "+registration.getDemographicDTO().getDemoInUserLang().getLastName());
+		velocityContext.put(RegConstants.TEMPLATE_DOB, registration.getDemographicDTO().getDemoInUserLang().getDateOfBirth());
+		velocityContext.put(RegConstants.TEMPLATE_GENDER, registration.getDemographicDTO().getDemoInUserLang().getGender());
 		velocityContext.put(RegConstants.TEMPLATE_ADDRESS_LINE1,
-				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLine1());
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLine1());
 		velocityContext.put(RegConstants.TEMPLATE_ADDRESS_LINE2,
-				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getLine2());
-		velocityContext.put(RegConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getCity());
-		velocityContext.put(RegConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getState());
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLine2());
+		velocityContext.put(RegConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine6());
+		velocityContext.put(RegConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine5());
 		velocityContext.put(RegConstants.TEMPLATE_COUNTRY,
-				registration.getDemographicDTO().getDemoInLocalLang().getAddressDTO().getCountry());
-		velocityContext.put(RegConstants.TEMPLATE_MOBILE, registration.getDemographicDTO().getDemoInLocalLang().getMobile());
-		velocityContext.put(RegConstants.TEMPLATE_EMAIL, registration.getDemographicDTO().getDemoInLocalLang().getEmailId());
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine4());
+		velocityContext.put(RegConstants.TEMPLATE_MOBILE, registration.getDemographicDTO().getDemoInUserLang().getMobile());
+		velocityContext.put(RegConstants.TEMPLATE_EMAIL, registration.getDemographicDTO().getDemoInUserLang().getEmailId());
 
 		List<DocumentDetailsDTO> documents = registration.getDemographicDTO().getApplicantDocumentDTO()
 				.getDocumentDetailsDTO();
@@ -92,7 +92,7 @@ public class VelocityPDFGenerator {
 
 		String documentsList = documentNames.stream().map(Object::toString).collect(Collectors.joining(", "));
 		velocityContext.put("Documents", documentsList);
-		velocityContext.put(RegConstants.TEMPLATE_OPERATOR_NAME, registration.getOsiDataDTO().getOperatorName());
+		velocityContext.put(RegConstants.TEMPLATE_OPERATOR_NAME, registration.getOsiDataDTO().getOperatorID());
 
 		byte[] imageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
 
@@ -101,17 +101,30 @@ public class VelocityPDFGenerator {
 		velocityContext.put(RegConstants.TEMPLATE_IMAGE_SOURCE, RegConstants.TEMPLATE_IMAGE_ENCODING + encodedBytes);
 
 		// get the quality ranking for fingerprints of the applicant
-		HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
+		/*HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
+		int count=1;
 		for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
 			if (entry.getValue() != 0) {
 				// display rank of quality for the captured fingerprints
-				velocityContext.put(entry.getKey(), entry.getValue());
+				velocityContext.put(entry.getKey(), count++);
 			} else {
 				// display cross mark for missing fingerprints
 				velocityContext.put(entry.getKey(), RegConstants.TEMPLATE_MISSING_FINGER);
 			}
-		}
+		}*/
+		File imageFile = new File("src/main/resources/images/hands.jpg");
+		velocityContext.put("handsImageSource", "file:/"+ imageFile.getAbsolutePath().replace("\\", "/"));
 
+		velocityContext.put("rightIndexFinger", "1");
+		velocityContext.put("rightMiddleFinger", "4");
+		velocityContext.put("rightRingFinger", "2");
+		velocityContext.put("rightLittleFinger", "5");
+		velocityContext.put("rightThumb", "3");
+		velocityContext.put("leftIndexFinger", "6");
+		velocityContext.put("leftMiddleFinger", "2");
+		velocityContext.put("leftRingFinger", "2");
+		velocityContext.put("leftLittleFinger", "4");
+		velocityContext.put("leftThumb", "5");
 		// get the total count of fingerprints captured and irises captured
 		List<FingerprintDetailsDTO> capturedFingers = registration.getBiometricDTO()
 				.getApplicantBiometricDTO().getFingerprintDetailsDTO();
@@ -141,12 +154,12 @@ public class VelocityPDFGenerator {
 		HashMap<String, Double> fingersQuality = new HashMap<>();
 
 		// list of missing fingers
-		List<ExceptionFingerprintDetailsDTO> exceptionFingers = registration.getBiometricDTO()
-				.getApplicantBiometricDTO().getExceptionFingerprintDetailsDTO();
+		List<BiometricExceptionDTO> exceptionFingers = registration.getBiometricDTO()
+				.getApplicantBiometricDTO().getFingerPrintBiometricExceptionDTO();
 		//
 		if (exceptionFingers != null) {
-			for (ExceptionFingerprintDetailsDTO exceptionFinger : exceptionFingers) {
-				fingersQuality.put(exceptionFinger.getMissingFinger(), (double) 0);
+			for (BiometricExceptionDTO exceptionFinger : exceptionFingers) {
+				fingersQuality.put(exceptionFinger.getMissingBiometric(), (double) 0);
 			}
 		}
 		List<FingerprintDetailsDTO> availableFingers = registration.getBiometricDTO().getApplicantBiometricDTO()

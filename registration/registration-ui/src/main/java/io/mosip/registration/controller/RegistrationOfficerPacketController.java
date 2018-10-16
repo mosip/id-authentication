@@ -75,14 +75,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 	public void createPacket(ActionEvent event) {
 
 		try {
-			RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
-			ackReceiptController.setRegistrationData(registrationDTO);
-
-			File ackTemplate = templateService.createReceipt();
-			Writer writer = velocityGenerator.generateTemplate(ackTemplate, registrationDTO);
-			ackReceiptController.setStringWriter(writer);
-
-			Parent createRoot = BaseController.load(getClass().getResource(RegistrationUIConstants.ACK_RECEIPT_PATH));
+			Parent createRoot = BaseController.load(getClass().getResource(RegistrationUIConstants.CREATE_PACKET_PAGE));
 
 			LOGGER.debug("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
@@ -94,14 +87,36 @@ public class RegistrationOfficerPacketController extends BaseController {
 						RegistrationUIConstants.AUTHORIZATION_INFO_MESSAGE,
 						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
 			} else {
-				Stage primaryStage = new Stage();
-
-				primaryStage.setResizable(false);
-				primaryStage.setTitle(RegistrationUIConstants.ACKNOWLEDGEMENT_FORM_TITLE);
-				Scene scene = new Scene(createRoot);
-				primaryStage.setScene(scene);
-				primaryStage.show();
+				RegistrationAppInitialization.getScene().setRoot(createRoot);
+				ClassLoader loader = Thread.currentThread().getContextClassLoader();
+				RegistrationAppInitialization.getScene().getStylesheets()
+						.add(loader.getResource("application.css").toExternalForm());
 			}
+
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage());
+		}
+	}
+
+	public void showReciept(RegistrationDTO registrationDTO) {
+
+		try {
+			registrationDTO = DataProvider.getPacketDTO(registrationDTO);
+			ackReceiptController.setRegistrationData(registrationDTO);
+
+			File ackTemplate = templateService.createReceipt();
+			Writer writer = velocityGenerator.generateTemplate(ackTemplate, registrationDTO);
+			ackReceiptController.setStringWriter(writer);
+
+			Stage primaryStage = new Stage();
+			Parent ackRoot = BaseController.load(getClass().getResource(RegistrationUIConstants.ACK_RECEIPT_PATH));
+			primaryStage.setResizable(false);
+			primaryStage.setTitle(RegistrationUIConstants.ACKNOWLEDGEMENT_FORM_TITLE);
+			Scene scene = new Scene(ackRoot);
+			primaryStage.setScene(scene);
+			primaryStage.show();
+
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), regBaseCheckedException.getMessage());
@@ -109,6 +124,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 		}
+
 	}
 
 	/**

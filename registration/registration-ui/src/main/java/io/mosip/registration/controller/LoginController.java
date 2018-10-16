@@ -58,7 +58,6 @@ public class LoginController extends BaseController {
 
 	@Autowired
 	private SchedulerUtil schedulerUtil;
-
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
@@ -82,12 +81,10 @@ public class LoginController extends BaseController {
 	 * @throws RegBaseCheckedException
 	 */
 	public String loadInitialScreen() throws RegBaseCheckedException {
-
 		LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", getPropertyValue(APPLICATION_NAME),
 				getPropertyValue(APPLICATION_ID), "Retrieve Login mode");
 
 		String loginMode = null;
-
 		try {
 			Map<String, Object> userLoginMode = loginServiceImpl.getModesOfLogin();
 

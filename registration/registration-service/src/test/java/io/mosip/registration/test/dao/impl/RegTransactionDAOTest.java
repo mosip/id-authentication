@@ -50,32 +50,17 @@ public class RegTransactionDAOTest {
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.invokeMethod(regTransactionDAOImpl, "initializeLogger", mosipRollingFileAppender);
 	}
-
-	@Test
-	public void testSaveRegistration() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(regTransactionDAOImpl, "LOGGER", logger);
-
-		when(regTransactionRepository.create(Mockito.any(RegistrationTransaction.class))).thenReturn(new RegistrationTransaction());
-		regTransactionDAOImpl.save("11111");
-	}
-	
-	@Test(expected = RegBaseUncheckedException.class)
-	public void testTransactionException() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(regTransactionDAOImpl, "LOGGER", logger);
-		when(regTransactionRepository.create(Mockito.any(RegistrationTransaction.class))).thenThrow(new RuntimeException());
-		regTransactionDAOImpl.save("file");
-	}
 	
 	@Test
 	public void testBuildRegTrans() {
-		ReflectionTestUtils.setField(regTransactionDAOImpl, "LOGGER", logger);
+		ReflectionTestUtils.setField(regTransactionDAOImpl, "logger", logger);
 		when(regTransactionRepository.create(Mockito.any(RegistrationTransaction.class))).thenReturn(new RegistrationTransaction());
 		regTransactionDAOImpl.buildRegTrans("11111");
 	}
 	
 	@Test
 	public void insertPacketTransDetailsTest() {
-		ReflectionTestUtils.setField(regTransactionDAOImpl, "LOGGER", logger);
+		ReflectionTestUtils.setField(regTransactionDAOImpl, "logger", logger);
 		List<RegistrationTransaction> packetListnew = new ArrayList<RegistrationTransaction>();
 		packetListnew.add(new RegistrationTransaction());
 		when(regTransactionRepository.saveAll(Mockito.anyListOf(RegistrationTransaction.class))).thenReturn(packetListnew);

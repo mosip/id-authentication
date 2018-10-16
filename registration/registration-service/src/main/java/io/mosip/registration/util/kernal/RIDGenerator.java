@@ -17,11 +17,15 @@ public class RIDGenerator {
 	
 	private static Integer idSequence = 0;
 	
+	private RIDGenerator() {
+		
+	}
+	
 	public static String nextRID() {
 		StringBuilder rid = new StringBuilder();
-		rid.append(RegConstants.AGENCY_CODE).append("-")
-			.append(RegConstants.STATION_NUMBER).append("-")
-			.append(String.format("%05d", ++idSequence)).append(": ")
+		rid.append(RegConstants.AGENCY_CODE)
+			.append(RegConstants.STATION_NUMBER)
+			.append(String.format("%05d", ++idSequence))
 			.append(DateUtils.formatDate(new Date(), RegConstants.RID_DATE_FORMAT));
 		return rid.toString();
 	}
