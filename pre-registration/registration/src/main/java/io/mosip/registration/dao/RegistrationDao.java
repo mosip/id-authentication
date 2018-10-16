@@ -1,18 +1,11 @@
 package io.mosip.registration.dao;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.entity.RegistrationEntity;
 import io.mosip.registration.repositary.RegistrationRepositary;
-
-
 
 @Component
 public class RegistrationDao {

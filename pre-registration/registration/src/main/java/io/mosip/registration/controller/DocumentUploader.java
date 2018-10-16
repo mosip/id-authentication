@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,8 +32,8 @@ public class DocumentUploader {
 	@ResponseBody
 	public ResponseEntity<StatusCodes> fileUpload(
 			@RequestPart(value = "documentString", required = true) String documentString,
-			@RequestPart(value = "file", required = true) MultipartFile file) 
-					throws JsonParseException, JsonMappingException, IOException {
+			@RequestPart(value = "file", required = true) MultipartFile file)
+			throws JsonParseException, JsonMappingException, IOException {
 
 		ObjectMapper mapper = new ObjectMapper();
 		DocumentDto documentDto = mapper.readValue(documentString, DocumentDto.class);

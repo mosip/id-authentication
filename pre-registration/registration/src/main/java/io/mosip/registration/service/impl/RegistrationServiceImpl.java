@@ -20,7 +20,7 @@ import io.mosip.registration.dto.ResponseDto;
 import io.mosip.registration.dto.ViewRegistrationResponseDto;
 import io.mosip.registration.entity.RegistrationEntity;
 import io.mosip.registration.exception.OperationNotAllowedException;
-import io.mosip.registration.exception.utils.RegistrationErrorCodes;
+import io.mosip.registration.exception.utils.RegistrationErrorMessages;
 import io.mosip.registration.repositary.DocumentRepository;
 import io.mosip.registration.repositary.RegistrationRepositary;
 import io.mosip.registration.service.RegistrationService;
@@ -36,7 +36,6 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	 */
 	@Autowired
 	private RegistrationDao registrationDao;
-
 
 	/**
 	 * Field for {@link #MosipPridGenerator<String>}
@@ -81,8 +80,6 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 
 	}
 
-
-
 	private RegistrationEntity convertDtoToEntity(RegistrationDto dto) {
 		RegistrationEntity registrationEntity = new RegistrationEntity();
 		registrationEntity.setAddrLine1(dto.getAddress().getAddrLine1());
@@ -119,7 +116,6 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 		registrationEntity.setUserId(dto.getUserId());
 		return registrationEntity;
 	}
-
 
 	/**
 	 * This Method is used to fetch all the applications created by User
@@ -177,7 +173,7 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 			}
 		} catch (DataAccessLayerException e) {
 
-			throw new TablenotAccessibleException(RegistrationErrorCodes.REGISTRATION_TABLE_NOTACCESSIBLE, e);
+			throw new TablenotAccessibleException(RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, e);
 
 		}
 
@@ -200,7 +196,7 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 			details = registrationRepositary.findBygroupId(groupId);
 		} catch (DataAccessLayerException e) {
 
-			throw new TablenotAccessibleException(RegistrationErrorCodes.REGISTRATION_TABLE_NOTACCESSIBLE, e);
+			throw new TablenotAccessibleException(RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, e);
 		}
 		Map<String, String> response = details.stream()
 				.collect(Collectors.toMap(RegistrationEntity::getPreRegistrationId, RegistrationEntity::getStatusCode));
@@ -239,11 +235,11 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 						responseList.add(responseDto);
 					} else {
 						throw new OperationNotAllowedException(
-								RegistrationErrorCodes.DELETE_OPERATION_NOT_ALLOWED_PRIMARY);
+								RegistrationErrorMessages.DELETE_OPERATION_NOT_ALLOWED_PRIMARY);
 					}
 				} else {
 					throw new OperationNotAllowedException(
-							RegistrationErrorCodes.DELETE_OPERATION_NOT_ALLOWED_FOR_OTHERTHEN_DRAFT);
+							RegistrationErrorMessages.DELETE_OPERATION_NOT_ALLOWED_FOR_OTHERTHEN_DRAFT);
 				}
 			}
 		} catch (DataAccessLayerException e) {

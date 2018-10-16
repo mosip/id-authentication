@@ -7,6 +7,6 @@ public class RecordNotFoundException extends BaseUncheckedException {
 	private static final long serialVersionUID = 1L;
 
 	public RecordNotFoundException(String errorCodes) {
-		super(errorCodes,errorCodes);
+		super(errorCodes, errorCodes);
 	}
 }

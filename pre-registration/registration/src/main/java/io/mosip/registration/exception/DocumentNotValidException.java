@@ -12,21 +12,17 @@ public class DocumentNotValidException extends BaseUncheckedException {
 
 	public DocumentNotValidException() {
 		super();
-		
+
 	}
-	
+
 	public DocumentNotValidException(String message) {
 		super(ErrorCodes.PRG_PAM‌_004.toString(), message);
-		
+
 	}
 
-	public DocumentNotValidException( String message, Throwable cause) {
+	public DocumentNotValidException(String message, Throwable cause) {
 		super(ErrorCodes.PRG_PAM‌_004.toString(), message, cause);
-		
-	}
 
-	
-	
-	
+	}
 
 }

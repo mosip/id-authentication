@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.code.StatusCodes;
@@ -26,9 +25,9 @@ import io.mosip.registration.service.DocumentUploadService;
 public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
 	private final Logger logger = LoggerFactory.getLogger(DocumentUploaderServiceImpl.class);
-	
-	//@Autowired
-	//private DocumentEntity documentEntity;
+
+	// @Autowired
+	// private DocumentEntity documentEntity;
 
 	@Autowired
 	@Qualifier("documentRepositoery")
@@ -37,7 +36,7 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 	@Autowired
 	@Qualifier("registrationRepository")
 	private RegistrationRepositary registrationRepositary;
-	
+
 	@Value("${max.file.size}")
 	private int maxFileSize;
 
@@ -52,12 +51,12 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 	public Boolean uploadDoucment(MultipartFile file, DocumentDto documentDto) {
 
 		boolean saveFlag = false;
-		
-		if(file.getSize()>getMaxFileSize()){
+
+		if (file.getSize() > getMaxFileSize()) {
 			throw new DocumentSizeExceedException(StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
 		}
 
-		DocumentEntity documentEntity =new DocumentEntity ();
+		DocumentEntity documentEntity = new DocumentEntity();
 		if (documentDto.is_primary()) {
 
 			documentEntity.setPreregId(documentDto.getPrereg_id());
@@ -80,7 +79,7 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 			DocumentEntity entityr = documentRepository.save(documentEntity);
 			System.out.println(entityr);
 
-			List<String> preIdList =registrationRepositary.findBygroupIds(documentDto.getGroup_id());
+			List<String> preIdList = registrationRepositary.findBygroupIds(documentDto.getGroup_id());
 
 			for (int counter = 0; counter < preIdList.size(); counter++) {
 				if (preIdList.get(counter).equals(documentDto.getPrereg_id())) {
@@ -91,7 +90,7 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 			if (preIdList.size() > 0) {
 				for (int counter = 0; counter < preIdList.size(); counter++) {
 
-					List<DocumentEntity> entity =documentRepository.findBypreregId(preIdList.get(counter));
+					List<DocumentEntity> entity = documentRepository.findBypreregId(preIdList.get(counter));
 
 					for (int ecount = 0; ecount < entity.size(); ecount++) {
 						if (entity.get(ecount).getDoc_cat_code().equalsIgnoreCase(documentDto.getDoc_cat_code())) {
@@ -131,38 +130,35 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 
 		else if (!documentDto.is_primary()) {
 
-			List<String> preIdList = registrationRepositary.findBygroupIds(documentDto.getGroup_id());
-				
-				documentEntity.setPreregId(documentDto.getPrereg_id());
-				documentEntity.setDoc_name(file.getOriginalFilename());
-				documentEntity.setDoc_cat_code(documentDto.getDoc_cat_code());
-				documentEntity.setDoc_typ_code(documentDto.getDoc_typ_code());
-				documentEntity.setDoc_file_format(documentDto.getDoc_file_format());
-				try {
-					documentEntity.setDoc_store(file.getBytes());
-				} catch (IOException e) {
-					logger.error(e.getMessage());
-				}
-				documentEntity.setStatus_code(documentDto.getStatus_code());
-				documentEntity.setLang_code(documentDto.getLang_code());
-				documentEntity.setCr_by(documentDto.getCr_by());
-				documentEntity.setCr_dtimesz(new Timestamp(System.currentTimeMillis()));
-				documentEntity.setUpd_by(documentDto.getUpd_by());
-				documentEntity.setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
-				
-				documentRepository.save(documentEntity);
-			
-			
+			registrationRepositary.findBygroupIds(documentDto.getGroup_id());
+
+			documentEntity.setPreregId(documentDto.getPrereg_id());
+			documentEntity.setDoc_name(file.getOriginalFilename());
+			documentEntity.setDoc_cat_code(documentDto.getDoc_cat_code());
+			documentEntity.setDoc_typ_code(documentDto.getDoc_typ_code());
+			documentEntity.setDoc_file_format(documentDto.getDoc_file_format());
+			try {
+				documentEntity.setDoc_store(file.getBytes());
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+			}
+			documentEntity.setStatus_code(documentDto.getStatus_code());
+			documentEntity.setLang_code(documentDto.getLang_code());
+			documentEntity.setCr_by(documentDto.getCr_by());
+			documentEntity.setCr_dtimesz(new Timestamp(System.currentTimeMillis()));
+			documentEntity.setUpd_by(documentDto.getUpd_by());
+			documentEntity.setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
+
+			documentRepository.save(documentEntity);
 
 		}
 
 		return saveFlag;
 
 	}
+
 	public long getMaxFileSize() {
 		return (5 * 1024 * 1024);
 	}
-
-
 
 }

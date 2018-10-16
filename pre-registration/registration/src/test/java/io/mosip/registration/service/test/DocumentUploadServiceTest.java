@@ -14,20 +14,16 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.dto.DocumentDto;
 import io.mosip.registration.entity.DocumentEntity;
@@ -35,22 +31,18 @@ import io.mosip.registration.repositary.DocumentRepository;
 import io.mosip.registration.repositary.RegistrationRepositary;
 import io.mosip.registration.service.DocumentUploadService;
 import io.mosip.registration.service.impl.DocumentUploaderServiceImpl;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource({"classpath:registration-application.properties"})
+@TestPropertySource({ "classpath:registration-application.properties" })
 public class DocumentUploadServiceTest {
 
-	private static final String fileExtension = ".zip";
-	
-	
-	//private DocumentEntity documentEntity;
-
 	@InjectMocks
-	private DocumentUploadService documentUploaderServiceImpl=new DocumentUploaderServiceImpl();
-	
+	private DocumentUploadService documentUploaderServiceImpl = new DocumentUploaderServiceImpl();
+
 	@Mock
 	private DocumentRepository documentRepository;
-	
+
 	@Mock
 	private RegistrationRepositary registrationRepositary;
 
@@ -61,19 +53,21 @@ public class DocumentUploadServiceTest {
 	DocumentDto documentDto = new DocumentDto("98745632155997", "12345678996325", "address", "POA", ".pdf", "SAVE",
 			"ENG", "Kishan", "Kishan", true);
 	private DocumentEntity entity;
-	
+
 	@Before
 	public void setUp() {
 
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("sample.pdf").getFile());
-		byte[] bFile=null;
+		byte[] bFile = null;
 		try {
 			bFile = Files.readAllBytes(file.toPath());
 		} catch (IOException e1) {
 			logger.error(e1.getMessage());
 		}
-		entity=new DocumentEntity(1, "98745632155997", "sample.pdf", "address", "POA", ".pdf", bFile, "SAVE", "ENG", "Kishan", new Timestamp(System.currentTimeMillis()), "Kishan", new Timestamp(System.currentTimeMillis())); 
+		entity = new DocumentEntity(1, "98745632155997", "sample.pdf", "address", "POA", ".pdf", bFile, "SAVE", "ENG",
+				"Kishan", new Timestamp(System.currentTimeMillis()), "Kishan",
+				new Timestamp(System.currentTimeMillis()));
 
 		try {
 			mockMultipartFile = new MockMultipartFile("sample.pdf", "sample.pdf", "mixed/multipart",
@@ -91,13 +85,13 @@ public class DocumentUploadServiceTest {
 		DocumentEntity documentEntity = entity;
 		List<DocumentEntity> list = new ArrayList<DocumentEntity>();
 		list.add(entity);
-		List<String> list2=new ArrayList<String>();
+		List<String> list2 = new ArrayList<String>();
 		list2.add("98745632155997");
 		Mockito.when(documentRepository.save(entity)).thenReturn(documentEntity);
 		Mockito.when(registrationRepositary.findBygroupIds(ArgumentMatchers.any())).thenReturn(list2);
 		Mockito.when(documentRepository.findBypreregId(ArgumentMatchers.any())).thenReturn(list);
 		boolean success = documentUploaderServiceImpl.uploadDoucment(mockMultipartFile, documentDto);
-		
-		assertEquals(true,success);
+
+		assertEquals(true, success);
 	}
 }

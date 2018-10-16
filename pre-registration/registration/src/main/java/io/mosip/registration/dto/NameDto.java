@@ -2,7 +2,6 @@ package io.mosip.registration.dto;
 
 import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,7 +47,5 @@ public class NameDto implements Serializable {
 				+ ", middlename=" + middlename + ", middleinitial=" + middleinitial + ", lastname=" + lastname
 				+ ", surname=" + surname + ", familyname=" + familyname + ", fullname=" + fullname + "]";
 	}
-	
-	
 
 }

@@ -5,19 +5,18 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 
 /**
  * The Class RegistrationStatusDto.
  */
 
 @Getter
-@Setter@NoArgsConstructor
+@Setter
+@NoArgsConstructor
 @ToString
 public class RegistrationDto implements Serializable {
 
@@ -26,31 +25,31 @@ public class RegistrationDto implements Serializable {
 
 	/** The preRegistration-Id. */
 	private String preRegistrationId;
-	
+
 	/** The user-Id. */
 	private String userId;
-	
+
 	/** The group-Id. */
 	private String groupId;
-	
+
 	/** The isPrimary. */
 	private Boolean isPrimary;
-	
+
 	/** The name dto. */
 	private NameDto name;
-	
+
 	/** The genderCode. */
 	private String genderCode;
-	
+
 	/** The parentFullName. */
 	private String parentFullName;
 
 	/** The parentRefIdType. */
 	private String parentRefIdType;
-	
+
 	/** The parentRefId. */
 	private String parentRefId;
-	
+
 	/** The dob. */
 	private Date dob;
 
@@ -71,9 +70,9 @@ public class RegistrationDto implements Serializable {
 
 	/** The statusCode. */
 	private String statusCode;
-	
+
 	/** The language code. */
-	private String langCode;	
+	private String langCode;
 
 	/** The is active. */
 	private Boolean isActive;
@@ -96,5 +95,4 @@ public class RegistrationDto implements Serializable {
 	/** The deleted date time. */
 	private LocalDateTime deletedDateTime;
 
-	
 }

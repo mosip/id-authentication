@@ -8,8 +8,8 @@ public enum RegistrationType {
 	NEW,
 
 	UPDATE,
-	
+
 	IDIVIDUAL,
-	
+
 	GROUP
 }

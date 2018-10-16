@@ -2,7 +2,7 @@ package io.mosip.registration.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
-public class DocumentNotFoundException extends BaseUncheckedException{
+public class DocumentNotFoundException extends BaseUncheckedException {
 
 	/**
 	 * 
@@ -23,10 +23,5 @@ public class DocumentNotFoundException extends BaseUncheckedException{
 		super(errorCode, errorMessage);
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
-	
-	
-	
 }

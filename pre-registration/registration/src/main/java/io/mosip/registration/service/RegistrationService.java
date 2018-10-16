@@ -9,19 +9,18 @@ import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.dto.ResponseDto;
 import io.mosip.registration.dto.ViewRegistrationResponseDto;
 
-
 @Service
 public interface RegistrationService<T, U> {
 
 	/**
 	 * 
-	 * @param registrationDto 
+	 * @param registrationDto
 	 * 
 	 * @return responseDto
 	 */
 
-	public ResponseDto addRegistration(U registrationDto, String groupId) throws TablenotAccessibleException ;
-	
+	public ResponseDto addRegistration(U registrationDto, String groupId) throws TablenotAccessibleException;
+
 	/**
 	 * @param userId
 	 *            pass a userId through which user has logged in which can be either
@@ -34,28 +33,28 @@ public interface RegistrationService<T, U> {
 
 	/**
 	 * @param groupId
-	 *          
+	 * 
 	 * 
 	 * @return status of the application
 	 * @throws TableNotAccecibleException
 	 */
 	public Map<String, String> getApplicationStatus(String groupId) throws TablenotAccessibleException;
-	
+
 	/**
-	 * @param groupId 
-	 * @param preregId list
-	 *          
+	 * @param groupId
+	 * @param preregId
+	 *            list
+	 * 
 	 * 
 	 * @throws PrimaryMemberException
 	 * 
 	 * @returns List of response Dto
 	 */
 	public List<ResponseDto> deleteIndividual(String groupId, List<String> preregIds);
-	
-	
+
 	/**
-	 * @param groupId 
-	 *          
+	 * @param groupId
+	 * 
 	 * 
 	 */
 	public List<ResponseDto> deleteGroup(String id);

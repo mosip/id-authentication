@@ -12,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -47,7 +45,7 @@ public class RegistrationControllerTest {
 	private MockMvc mockMvc;
 	
 	@MockBean
-	private RegistrationService registrationService;
+	private RegistrationService<?,?> registrationService;
 	
 	@MockBean
 	private MosipGroupIdGenerator<String> groupIdGenerator;
@@ -110,7 +108,7 @@ public class RegistrationControllerTest {
         List<ResponseDto> resList= new ArrayList<>();
         resList.add(response);
         Mockito.when(groupIdGenerator.generateGroupId()).thenReturn("986453847462");
-        Mockito.when(registrationService.addRegistration(Mockito.anyString(),Mockito.anyString())).thenReturn(response);
+        Mockito.when(registrationService.addRegistration(Mockito.any(),Mockito.anyString())).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/save")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
@@ -140,7 +138,7 @@ public class RegistrationControllerTest {
         List<ResponseDto> resList= new ArrayList<>();
         resList.add(response);
         Mockito.when(groupIdGenerator.generateGroupId()).thenReturn("986453847462");
-        Mockito.when(registrationService.addRegistration(Mockito.anyString(),Mockito.anyString())).thenReturn(response);
+        Mockito.when(registrationService.addRegistration(Mockito.any(),Mockito.anyString())).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/save")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)

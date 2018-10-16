@@ -6,6 +6,5 @@ package io.mosip.registration.code;
  */
 public enum RegistrationCode {
 
-   SAVE,
-   SAVED_AS_DRAFT
+	SAVE, SAVED_AS_DRAFT
 }

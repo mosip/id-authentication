@@ -5,10 +5,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.dto.DocumentDto;
 
-
 @Service
 public interface DocumentUploadService {
 
-	Boolean uploadDoucment(MultipartFile file,DocumentDto documentDto);
+	Boolean uploadDoucment(MultipartFile file, DocumentDto documentDto);
 
 }

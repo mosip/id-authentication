@@ -12,19 +12,17 @@ public class DocumentSizeExceedException extends BaseUncheckedException {
 
 	public DocumentSizeExceedException() {
 		super();
-		
+
 	}
 
 	public DocumentSizeExceedException(String message, Throwable cause) {
 		super(ErrorCodes.PRG_PAM‌_001.toString(), message, cause);
-		
+
 	}
 
-	public DocumentSizeExceedException( String message) {
+	public DocumentSizeExceedException(String message) {
 		super(ErrorCodes.PRG_PAM‌_001.toString(), message);
-		
+
 	}
-	
-	
 
 }

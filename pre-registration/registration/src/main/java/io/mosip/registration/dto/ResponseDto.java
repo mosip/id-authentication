@@ -2,17 +2,15 @@ package io.mosip.registration.dto;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @Getter
-@Setter@NoArgsConstructor
+@Setter
+@NoArgsConstructor
 @ToString
 public class ResponseDto implements Serializable {
 
@@ -24,10 +22,10 @@ public class ResponseDto implements Serializable {
 
 	/** The group-Id. */
 	private String groupId;
-	
+
 	/** The isPrimary. */
 	private Boolean isPrimary;
-	
+
 	/** The created by. */
 	private String createdBy;
 
@@ -39,6 +37,5 @@ public class ResponseDto implements Serializable {
 
 	/** The update date time. */
 	private Timestamp updateDateTime;
-
 
 }

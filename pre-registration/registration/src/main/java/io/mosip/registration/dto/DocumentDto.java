@@ -2,8 +2,6 @@ package io.mosip.registration.dto;
 
 import java.io.Serializable;
 
-import org.springframework.mock.web.MockMultipartFile;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -11,10 +9,11 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
-@Getter@Setter
-@Data @NoArgsConstructor
+@Getter
+@Setter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class DocumentDto implements Serializable {
 
@@ -47,10 +46,9 @@ public class DocumentDto implements Serializable {
 	@JsonProperty("cr_by")
 	private String cr_by;
 
-
 	@JsonProperty("upd_by")
 	private String upd_by;
-	
+
 	@JsonProperty("_primary")
 	private boolean is_primary;
 

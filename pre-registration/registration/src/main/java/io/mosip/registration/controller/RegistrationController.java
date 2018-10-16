@@ -35,23 +35,23 @@ import io.swagger.annotations.ApiResponses;
 @CrossOrigin("*")
 public class RegistrationController {
 
-
 	/**
 	 * Field for {@link #ViewRegistrationService}
 	 */
 	@Autowired
 	private RegistrationService<String, RegistrationDto> registrationService;
-	
+
 	@Autowired
 	private MosipGroupIdGenerator<String> groupIdGenerator;
-	
+
 	private String groupId;
-	
-	private boolean isNewApplication=true;
-	
+
+	private boolean isNewApplication = true;
+
 	/**
 	 * 
-	 * @param list of application forms
+	 * @param list
+	 *            of application forms
 	 * @return List of response dto containing pre-id and group-id
 	 */
 
@@ -60,8 +60,8 @@ public class RegistrationController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully saved"),
 			@ApiResponse(code = 400, message = "Unable to save the Registration Entity") })
 	public ResponseEntity<List<ResponseDto>> register(@RequestBody(required = true) ApplicationDto applications) {
-		List<ResponseDto> response= new ArrayList<>();
-		int noOfApplications=applications.getApplications().size();
+		List<ResponseDto> response = new ArrayList<>();
+		int noOfApplications = applications.getApplications().size();
 		for (int i = 0; i < noOfApplications; i++) {
 			if (!applications.getApplications().get(i).getGroupId().isEmpty()) {
 				groupId = applications.getApplications().get(i).getGroupId();
@@ -69,11 +69,11 @@ public class RegistrationController {
 				break;
 			}
 		}
-		if(isNewApplication) {
-			groupId= groupIdGenerator.generateGroupId();
+		if (isNewApplication) {
+			groupId = groupIdGenerator.generateGroupId();
 		}
 		for (RegistrationDto registartion : applications.getApplications()) {
-			response.add(registrationService.addRegistration(registartion,groupId));
+			response.add(registrationService.addRegistration(registartion, groupId));
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -113,22 +113,23 @@ public class RegistrationController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
-	
+
 	/**
-	 * Delete api to delete the Individual applicant and documents associated with it
+	 * Delete api to delete the Individual applicant and documents associated with
+	 * it
 	 * 
 	 */
-	
-    @DeleteMapping(path = "/discard", produces = MediaType.APPLICATION_JSON_VALUE)
+
+	@DeleteMapping(path = "/discard", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Discard individual")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of individual is successfully"),
 			@ApiResponse(code = 400, message = "Unable to delete individual") })
-	public  ResponseEntity<List<ResponseDto>> discardIndividual(@RequestParam(value = "groupId") String groupId,
+	public ResponseEntity<List<ResponseDto>> discardIndividual(@RequestParam(value = "groupId") String groupId,
 			@RequestParam(value = "preregIds") List<String> preregIds) {
-		
-		List<ResponseDto> response=registrationService.deleteIndividual(groupId, preregIds);
+
+		List<ResponseDto> response = registrationService.deleteIndividual(groupId, preregIds);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
-		
+
 	}
 
 	/**
@@ -136,12 +137,12 @@ public class RegistrationController {
 	 * 
 	 */
 
-	 @DeleteMapping(path = "/discardGroup", produces = MediaType.APPLICATION_JSON_VALUE)
-	 @ApiOperation(value = "delete the Group applicants")
-	 @ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of group is successfully"),
-				@ApiResponse(code = 400, message = "Unable to delete group") })
+	@DeleteMapping(path = "/discardGroup", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "delete the Group applicants")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of group is successfully"),
+			@ApiResponse(code = 400, message = "Unable to delete group") })
 	public ResponseEntity<List<ResponseDto>> discardGroup(@RequestParam(value = "groupId") String groupId) {
-		List<ResponseDto> response=registrationService.deleteGroup(groupId);
+		List<ResponseDto> response = registrationService.deleteGroup(groupId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
