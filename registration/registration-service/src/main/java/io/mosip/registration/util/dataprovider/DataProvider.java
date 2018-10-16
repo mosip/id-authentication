@@ -29,7 +29,6 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.kernal.RIDGenerator;
-
 public class DataProvider {
 
 	public static final String PERMANANENT = "Permananent";
