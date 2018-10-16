@@ -81,6 +81,18 @@ public class DemoMatchTypeTest {
 		assertEquals(tmpAddress, DemoMatchType.ADDR_PRI.getDemoInfoFetcher().getInfo(demodto));
 		assertNotEquals("invalid", DemoMatchType.ADDR_PRI.getDemoInfoFetcher().getInfo(demodto));
 	}
+	
+	@Test
+	public void TestSecAddressDemoInfoFetcher() {
+		String tmpAddress = "no 11 gandhi street";
+		DemoDTO demodto = new DemoDTO();
+		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
+		personalFullAddressDTO.setAddrPri("no 11 gandhi street");
+		demodto.setLangPri("english");
+		demodto.setFad(personalFullAddressDTO);
+		assertEquals(tmpAddress, DemoMatchType.ADDR_SEC.getDemoInfoFetcher().getInfo(demodto));
+		assertNotEquals("invalid", DemoMatchType.ADDR_SEC.getDemoInfoFetcher().getInfo(demodto));
+	}
 
 	@Test
 	public void TestFullAddress() {

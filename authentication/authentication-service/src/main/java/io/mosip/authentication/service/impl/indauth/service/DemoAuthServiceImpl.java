@@ -65,9 +65,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
 
 		List<MatchInput> listMatchInputs = new ArrayList<>();
-		constructFadMatchInput(authRequestDTO, listMatchInputs);
-		constructAdMatchInput(authRequestDTO, listMatchInputs);
-		constructPIDMatchInput(authRequestDTO, listMatchInputs);
+		listMatchInputs.addAll(constructFadMatchInput(authRequestDTO));
+		listMatchInputs.addAll(constructAdMatchInput(authRequestDTO));
+		listMatchInputs.addAll(constructPIDMatchInput(authRequestDTO));
 		return listMatchInputs;
 	}
 
@@ -78,8 +78,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @param listMatchInput the list match input
 	 * @return the list
 	 */
-	private List<MatchInput> constructPIDMatchInput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs) {
+	private List<MatchInput> constructPIDMatchInput(AuthRequestDTO authRequestDTO) {
 		PersonalIdentityDTO pid = authRequestDTO.getPii().getDemo().getPi();
+		List<MatchInput> listMatchInputs = new ArrayList<>();
 		if (authRequestDTO.getAuthType().isPi() && null != pid) {
 			if (null != pid.getNamePri()) {
 				Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
@@ -136,8 +137,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @param listMatchInput the list match input
 	 * @return the list
 	 */
-	private List<MatchInput> constructAdMatchInput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs) {
+	private List<MatchInput> constructAdMatchInput(AuthRequestDTO authRequestDTO) {
 		PersonalAddressDTO ad = authRequestDTO.getPii().getDemo().getAd();
+		List<MatchInput> listMatchInputs = new ArrayList<>();
 		if (authRequestDTO.getAuthType().isAd() && null != ad) {
 			if (null != ad.getAddrLine1Pri()) {
 				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_LINE1_PRI,
@@ -180,9 +182,10 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @param listMatchInput the list match input
 	 * @return the list
 	 */
-	private List<MatchInput> constructFadMatchInput(AuthRequestDTO authRequestDTO, List<MatchInput> listMatchInputs) {
+	private List<MatchInput> constructFadMatchInput(AuthRequestDTO authRequestDTO) {
 		Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
 		PersonalFullAddressDTO fad = authRequestDTO.getPii().getDemo().getFad();
+		List<MatchInput> listMatchInputs = new ArrayList<>();
 		if (authRequestDTO.getAuthType().isFad() && null != fad) {
 			if (null != fad.getAddrPri()) {
 				if (fad.getMsPri() != null && fad.getMsPri().equals(MatchingStrategyType.PARTIAL.getType())) {
@@ -194,7 +197,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 					// TODO add it for secondary language
 				}
 				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_PRI, fad.getMsPri(), matchValue);
-				listMatchInputs.add(matchInput);
+				listMatchInputs .add(matchInput);
 			}
 		}
 		return listMatchInputs;
