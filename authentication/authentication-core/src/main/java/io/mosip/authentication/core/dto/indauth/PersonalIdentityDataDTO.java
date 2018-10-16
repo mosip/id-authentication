@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 public class PersonalIdentityDataDTO {
 
 	/** Factory class for demographic details */
-	private DemoDTO demoDTO;
+	private DemoDTO demo;
 
 	/** BioDTO for {@link BioType} */
-	private BioDTO bioDTO;
+	private BioDTO bio;
 
 	/** PinDTO for {@link PinType} */
-	private PinDTO pinDTO;
+	private PinDTO pin;
 
 }

@@ -175,7 +175,7 @@ public class AuthRequestValidator implements Validator {
 	public void checkOTPAuth(AuthRequestDTO authRequest, Errors errors) {
 
 		PinDTO pinDTO = null;
-		if (authRequest.getPii() != null && (pinDTO = authRequest.getPii().getPinDTO()) != null) {
+		if (authRequest.getPii() != null && (pinDTO = authRequest.getPii().getPin()) != null) {
 			PinType pinType = pinDTO.getType();
 			if (null != pinDTO.getType() && pinType.getType().equals(PinType.OTP.getType())) {
 				String otpValue = pinDTO.getValue();

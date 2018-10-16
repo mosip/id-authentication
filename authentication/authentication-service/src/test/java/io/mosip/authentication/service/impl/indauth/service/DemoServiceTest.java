@@ -68,7 +68,7 @@ public class DemoServiceTest {
 		fad.setAddrPri("23 Bandra Road Mumbai India 809890");
 		fad.setMsPri(MatchingStrategyType.PARTIAL.getType());
 		demoDTO.setFad(fad);
-		pidData.setDemoDTO(demoDTO);
+		pidData.setDemo(demoDTO);
 		authRequestDTO.setPii(pidData);
 		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
@@ -95,7 +95,7 @@ public class DemoServiceTest {
 		ad.setCountryPri("India");
 		ad.setPinCodePri("700105");
 		demoDTO.setAd(ad);
-		pidData.setDemoDTO(demoDTO);
+		pidData.setDemo(demoDTO);
 		authRequestDTO.setPii(pidData);
 		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
@@ -128,7 +128,7 @@ public class DemoServiceTest {
 		pid.setNamePri("John");
 		pid.setMsPri(MatchingStrategyType.PARTIAL.getType());
 		demoDTO.setPi(pid);
-		pidData.setDemoDTO(demoDTO);
+		pidData.setDemo(demoDTO);
 		authRequestDTO.setPii(pidData);
 		List<MatchInput> listMatchInputs = new ArrayList<>();
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
@@ -158,7 +158,7 @@ public class DemoServiceTest {
 		demoDTO.setAd(ad);
 		demoDTO.setFad(fad);
 		demoDTO.setPi(pid);
-		personalData.setDemoDTO(demoDTO);
+		personalData.setDemo(demoDTO);
 		authRequest.setPii(personalData);
 		Method constructInputMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
@@ -230,7 +230,7 @@ public class DemoServiceTest {
 		personalFullAddressDTO.setMtPri(60);
 		demoDTO.setFad(personalFullAddressDTO);
 		PersonalIdentityDataDTO personalDataDTO = new PersonalIdentityDataDTO();
-		personalDataDTO.setDemoDTO(demoDTO);
+		personalDataDTO.setDemo(demoDTO);
 		authRequestDTO.setPii(personalDataDTO);
 		authRequestDTO.setReqTime("2018-10-15T07:22:57.086+0000");
 		authRequestDTO.setSignature("test");
