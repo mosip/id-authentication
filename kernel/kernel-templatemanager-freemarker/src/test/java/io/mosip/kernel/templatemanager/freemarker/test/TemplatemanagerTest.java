@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -72,6 +73,7 @@ public class TemplatemanagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void testEvaluate() throws IOException {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("test.ftl");
 
@@ -119,6 +121,7 @@ public class TemplatemanagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void testMergeDeafultEncoding() throws IOException {
 		String template = "test.ftl";
 		StringWriter writer = new StringWriter();
@@ -177,6 +180,7 @@ public class TemplatemanagerTest {
 	}
 
 	@Test
+	@Ignore
 	public void testMergeEncoding() throws IOException {
 		String template = "test.ftl";
 		StringWriter writer = new StringWriter();
