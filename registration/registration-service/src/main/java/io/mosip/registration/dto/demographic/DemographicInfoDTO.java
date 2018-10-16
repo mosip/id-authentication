@@ -1,6 +1,8 @@
 package io.mosip.registration.dto.demographic;
 
-import java.util.Date;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.mosip.registration.dto.BaseDTO;
 import lombok.Data;
