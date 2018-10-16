@@ -8,6 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * Response DTO
+ * 
+ * @author M1037717
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor

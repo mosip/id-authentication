@@ -6,6 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Name DTO
+ * 
+ * @author M1037717
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor

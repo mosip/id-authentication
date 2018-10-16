@@ -3,6 +3,12 @@ package io.mosip.registration.exception;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.registration.errorcodes.ErrorCodes;
 
+/**
+ * DocumentNotValidException
+ * 
+ * @author M1043008
+ *
+ */
 public class DocumentNotValidException extends BaseUncheckedException {
 
 	/**

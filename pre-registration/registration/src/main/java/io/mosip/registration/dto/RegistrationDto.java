@@ -11,7 +11,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * The Class RegistrationStatusDto.
+ * Registration DTO
+ * 
+ * @author M1037717
+ *
  */
 
 @Getter

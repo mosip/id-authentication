@@ -31,6 +31,8 @@ import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.core.spi.idgenerator.MosipPridGenerator;
+import io.mosip.kernel.dataaccess.constant.HibernateErrorCodes;
+import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.dao.RegistrationDao;
 import io.mosip.registration.dto.AddressDto;
@@ -50,7 +52,7 @@ import io.mosip.registration.service.impl.RegistrationServiceImpl;
 /**
  * Test class to test the ViewRegistrationService
  * 
- * @author M1037462 since 1.0.0
+ * @author M1037462 M1037717 since 1.0.0
  */
 
 @RunWith(SpringRunner.class)
@@ -65,10 +67,10 @@ public class RegistrationServiceTest {
 
 	@Mock
 	private DocumentRepository documentRepository;
-
+	
 	@Mock
 	private RegistrationDao registrationDao;
-
+	
 	@Mock
 	private AuditRequestBuilder auditRequestBuilder;
 
@@ -137,8 +139,8 @@ public class RegistrationServiceTest {
 		registrationEntity.setUserId("9988905444");
 		userDetails.add(registrationEntity);
 
-		logger.info("Entity " + registrationEntity);
-
+		logger.info("Entity "+registrationEntity);
+		
 		responseDto = new ViewRegistrationResponseDto();
 
 		responseDto.setFirstname("rupika");
@@ -153,26 +155,25 @@ public class RegistrationServiceTest {
 	public void successSaveImplTest() throws Exception {
 		logger.info("----------successful save of application in impl-------");
 		Mockito.when(pridGenerator.generateId()).thenReturn("67547447647457");
-		ResponseDto res = registrationService.addRegistration(regDto, "125467364864");
+		ResponseDto res = registrationService.addRegistration(regDto,"125467364864");
 		assertEquals(res.getPrId(), "67547447647457");
 	}
-
+	
 	@Test
 	public void successUpdateTest() throws Exception {
 		logger.info("----------successful save of application in impl-------");
 		regDto.setPreRegistrationId("67547447647457");
 		regDto.setNationalid("Indian");
-		ResponseDto res = registrationService.addRegistration(regDto, "125467364864");
+		ResponseDto res = registrationService.addRegistration(regDto,"125467364864");
 		assertEquals(res.getPrId(), "67547447647457");
 	}
-
+	
 	@Test(expected = TablenotAccessibleException.class)
 	public void saveFailureCheck() throws Exception {
-		TablenotAccessibleException exception = new TablenotAccessibleException(
-				RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
+		DataAccessLayerException exception = new DataAccessLayerException(HibernateErrorCodes.ERR_DATABASE,RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
 
 		Mockito.when(registrationDao.save(Mockito.any())).thenThrow(exception);
-		registrationService.addRegistration(regDto, "125467364864");
+		registrationService.addRegistration(regDto,"125467364864");
 	}
 
 	@Test
@@ -206,8 +207,8 @@ public class RegistrationServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getApplicationDetailsTransactionFailureCheck() throws Exception {
 		String userId = "9988905444";
-		TablenotAccessibleException exception = new TablenotAccessibleException(
-				RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE);
+		DataAccessLayerException exception = 
+				new DataAccessLayerException(HibernateErrorCodes.ERR_DATABASE,RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
 
 		Mockito.when(registrationRepositary.noOfGroupIds(ArgumentMatchers.any())).thenThrow(exception);
 		registrationService.getApplicationDetails(userId);
@@ -325,7 +326,7 @@ public class RegistrationServiceTest {
 		doNothing().when(registrationRepositary).deleteAllBygroupId(groupId);
 		registrationService.deleteGroup(groupId);
 	}
-
+	
 	@Test
 	public void deleteGroupTest() {
 		String groupId = "33";
@@ -356,10 +357,10 @@ public class RegistrationServiceTest {
 
 		List<RegistrationEntity> list = new ArrayList<RegistrationEntity>();
 		list.add(applicant_Demographic1);
-
+		
 		Mockito.when(registrationRepositary.findBygroupId(groupId)).thenReturn(list);
 		doNothing().when(documentRepository).deleteAllByPreregId(Mockito.anyString());
-		List<ResponseDto> res = registrationService.deleteGroup(groupId);
+		List<ResponseDto> res =registrationService.deleteGroup(groupId);
 		assertEquals(res.get(0).getPrId(), "1");
 	}
 

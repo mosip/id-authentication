@@ -25,6 +25,12 @@ import io.mosip.registration.repositary.DocumentRepository;
 import io.mosip.registration.repositary.RegistrationRepositary;
 import io.mosip.registration.service.RegistrationService;
 
+/**
+ * Registration service 
+ * 
+ * @author M1037717
+ *
+ */
 @Component
 public class RegistrationServiceImpl implements RegistrationService<String, RegistrationDto> {
 
@@ -49,9 +55,11 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	@Autowired
 	private RegistrationRepositary registrationRepositary;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.RegistrationService#addRegistration(java.lang.Object, java.lang.String)
+	 */
 	@Override
-	public ResponseDto addRegistration(RegistrationDto registrationDto, String groupId)
-			throws TablenotAccessibleException {
+	public ResponseDto addRegistration(RegistrationDto registrationDto, String groupId) {
 		RegistrationEntity entity = convertDtoToEntity(registrationDto);
 		ResponseDto response = new ResponseDto();
 		try {
@@ -80,6 +88,13 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 
 	}
 
+	/**
+	 * Convert DTO to Entity
+	 * 
+	 * @param dto
+	 * 
+	 * @return Entity
+	 */
 	private RegistrationEntity convertDtoToEntity(RegistrationDto dto) {
 		RegistrationEntity registrationEntity = new RegistrationEntity();
 		registrationEntity.setAddrLine1(dto.getAddress().getAddrLine1());

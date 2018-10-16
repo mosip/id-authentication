@@ -52,6 +52,8 @@ public class DocumentUploadServiceTest {
 
 	DocumentDto documentDto = new DocumentDto("98745632155997", "12345678996325", "address", "POA", ".pdf", "SAVE",
 			"ENG", "Kishan", "Kishan", true);
+	DocumentDto documentDto2 = new DocumentDto("85697463215698", "98745632159753", "address", "POI", ".pdf", "SAVE",
+			"ENG", "Rupika", "Rupika", false);
 	private DocumentEntity entity;
 
 	@Before
@@ -82,6 +84,21 @@ public class DocumentUploadServiceTest {
 
 	@Test
 	public void successUpload() {
+		List<DocumentEntity> list = new ArrayList<DocumentEntity>();
+		list.add(entity);
+		List<String> list2 = new ArrayList<String>();
+		list2.add("98745632155997");
+		list2.add("78996741258596");
+		Mockito.when(documentRepository.save(entity)).thenReturn(entity);
+		Mockito.when(registrationRepositary.findBygroupIds(ArgumentMatchers.any())).thenReturn(list2);
+		Mockito.when(documentRepository.findBypreregId(ArgumentMatchers.any())).thenReturn(list);
+		boolean success = documentUploaderServiceImpl.uploadDoucment(mockMultipartFile, documentDto);
+
+		assertEquals(true, success);
+	}
+
+	@Test
+	public void documentCopy() {
 		DocumentEntity documentEntity = entity;
 		List<DocumentEntity> list = new ArrayList<DocumentEntity>();
 		list.add(entity);
@@ -90,8 +107,9 @@ public class DocumentUploadServiceTest {
 		Mockito.when(documentRepository.save(entity)).thenReturn(documentEntity);
 		Mockito.when(registrationRepositary.findBygroupIds(ArgumentMatchers.any())).thenReturn(list2);
 		Mockito.when(documentRepository.findBypreregId(ArgumentMatchers.any())).thenReturn(list);
-		boolean success = documentUploaderServiceImpl.uploadDoucment(mockMultipartFile, documentDto);
+		boolean success = documentUploaderServiceImpl.uploadDoucment(mockMultipartFile, documentDto2);
 
 		assertEquals(true, success);
+
 	}
 }

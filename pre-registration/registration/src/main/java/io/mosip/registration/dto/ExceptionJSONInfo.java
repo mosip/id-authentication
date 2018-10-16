@@ -2,6 +2,12 @@ package io.mosip.registration.dto;
 
 import java.io.Serializable;
 
+/**
+ * Exception json Info
+ * 
+ * @author M1037717
+ *
+ */
 public class ExceptionJSONInfo implements Serializable {
 
 	/**
@@ -22,16 +28,10 @@ public class ExceptionJSONInfo implements Serializable {
 		return errorCode;
 	}
 
-	public void setErrorcode(String errorcode) {
-		errorCode = errorcode;
-	}
 
 	public String getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
 
 }

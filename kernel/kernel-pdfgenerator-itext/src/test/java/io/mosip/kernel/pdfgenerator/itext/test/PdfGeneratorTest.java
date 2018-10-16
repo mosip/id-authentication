@@ -101,8 +101,8 @@ public class PdfGeneratorTest {
 		String outputFileExtension = ".pdf";
 		String fileSepetator = System.getProperty("file.separator");
 		ClassLoader classLoader = getClass().getClassLoader();
-		String inputFile = classLoader.getResource("textContant.txt").getFile();
-		String generatedPdfFileName = "textContant";
+		String inputFile = classLoader.getResource("textcontant.txt").getFile();
+		String generatedPdfFileName = "textcontant";
 		pdfGenerator.generate(inputFile, outputPath, generatedPdfFileName);
 		File tempoutFile = new File(outputPath + fileSepetator + generatedPdfFileName + outputFileExtension);
 		assertTrue(tempoutFile.exists());
@@ -127,7 +127,7 @@ public class PdfGeneratorTest {
 		if (temp2.exists()) {
 			temp2.delete();
 		}
-		File temp3 = new File(outputFilePath + fileSepetator + "textContant" + outputFileExtension);
+		File temp3 = new File(outputFilePath + fileSepetator + "textcontant" + outputFileExtension);
 		if (temp3.exists()) {
 			temp3.delete();
 		}
