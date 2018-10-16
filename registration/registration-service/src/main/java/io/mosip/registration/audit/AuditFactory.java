@@ -8,6 +8,7 @@ import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,6 @@ import io.mosip.registration.constants.AuditEventEnum;
 import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
-
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 /**
  * Class to Audit the events of Registration.
@@ -35,6 +34,8 @@ public class AuditFactory {
 
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
+	@Autowired
+	Environment environment;
 
 	/**
 	 * Static method to audit the events across Registration Processor Module.
@@ -73,15 +74,15 @@ public class AuditFactory {
 			hostIP = hostInetAddress.getHostAddress();
 			hostName = hostInetAddress.getHostName();
 		} catch (UnknownHostException unknownHostException) {
-			hostIP = getPropertyValue(RegConstants.HOST_IP);
-			hostName = getPropertyValue(RegConstants.HOST_NAME);
+			hostIP = environment.getProperty(RegConstants.HOST_IP);
+			hostName = environment.getProperty(RegConstants.HOST_NAME);
 		}
 
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-				.setApplicationId(getPropertyValue(RegConstants.APPLICATION_ID))
-				.setApplicationName(getPropertyValue(RegConstants.APPLICATION_NAME)).setCreatedBy(userContext.getName())
-				.setDescription(auditDescription).setEventId(auditEventEnum.getId())
+				.setApplicationId(environment.getProperty(RegConstants.AUDIT_APPLICATION_ID))
+				.setApplicationName(environment.getProperty(RegConstants.AUDIT_APPLICATION_NAME))
+				.setCreatedBy(userContext.getName()).setDescription(auditDescription).setEventId(auditEventEnum.getId())
 				.setEventName(auditEventEnum.getName()).setEventType(auditEventEnum.getType()).setHostIp(hostIP)
 				.setHostName(hostName).setId(refId).setIdType(refIdType).setModuleId(appModuleEnum.getId())
 				.setModuleName(appModuleEnum.getName()).setSessionUserId(userContext.getUserId())

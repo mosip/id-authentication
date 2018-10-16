@@ -9,6 +9,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
@@ -38,6 +39,8 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_KEY_GE
 @Service
 public class AESKeyManagerImpl implements AESKeyManager {
 
+	@Autowired
+	private Environment environment;
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
@@ -61,13 +64,13 @@ public class AESKeyManagerImpl implements AESKeyManager {
 			byte[] seedArray = aesKeySeeds.stream().reduce("", String::concat).getBytes();
 
 			// Ensure Seed Length is not more than 32
-			Integer aesKeySeedLength = Integer.parseInt(getPropertyValue(AES_KEY_SEED_LENGTH));
+			Integer aesKeySeedLength = Integer.parseInt(environment.getProperty(AES_KEY_SEED_LENGTH));
 			if (seedArray.length > aesKeySeedLength) {
 				seedArray = Arrays.copyOf(seedArray, aesKeySeedLength);
 			}
 
-			final KeyGenerator aesKeyGenerator = KeyGenerator.getInstance(getPropertyValue(AES_KEY_MANAGER_ALG));
-			aesKeyGenerator.init(Integer.parseInt(getPropertyValue(AES_SESSION_KEY_LENGTH)),
+			final KeyGenerator aesKeyGenerator = KeyGenerator.getInstance(environment.getProperty(AES_KEY_MANAGER_ALG));
+			aesKeyGenerator.init(Integer.parseInt(environment.getProperty(AES_SESSION_KEY_LENGTH)),
 					new SecureRandom(seedArray));
 			logger.debug(LOG_PKT_AES_KEY_GENERATION, getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), "Generating AES Encryption had been ended");

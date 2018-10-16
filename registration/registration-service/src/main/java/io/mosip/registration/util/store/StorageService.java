@@ -10,6 +10,7 @@ import io.mosip.kernel.core.util.exception.MosipIOException;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.constants.RegConstants;
@@ -41,10 +42,10 @@ public class StorageService {
 	private MosipLogger logger;
 
 	@Autowired
+	private Environment environment;@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
 		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
 	}
-
 	/**
 	 * Writes the encrypted packet to the local storage
 	 * 
@@ -62,9 +63,9 @@ public class StorageService {
 		try {
 			// Generate the file path for storing the Encrypted Packet and Acknowledgement
 			// Receipt
-			String filePath = getPropertyValue(RegConstants.PACKET_STORE_LOCATION) + separator
-					+ formatDate(new Date(), getPropertyValue(RegConstants.PACKET_STORE_DATE_FORMAT)).concat(separator)
-							.concat(registrationId);
+			String filePath = environment.getProperty(RegConstants.PACKET_STORE_LOCATION) + separator
+					+ formatDate(new Date(), environment.getProperty(RegConstants.PACKET_STORE_DATE_FORMAT))
+							.concat(separator).concat(registrationId);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(packet), new File(filePath.concat(ZIP_FILE_EXTENSION)));
 			logger.debug(LOG_PKT_STORAGE, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),

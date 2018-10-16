@@ -71,7 +71,7 @@ public class AuditDAOImpl implements AuditDAO {
 	@Override
 	@Transactional
 	public int updateSyncAudits(List<String> auditUUIDs) {
-		this.logger.debug(LOG_AUDIT_DAO, getPropertyValue(APPLICATION_NAME),
+		logger.debug(LOG_AUDIT_DAO, getPropertyValue(APPLICATION_NAME),
 				getPropertyValue(APPLICATION_ID), "updateSyncAudits has been started");
 		int updatedCount = 0;
 		try {

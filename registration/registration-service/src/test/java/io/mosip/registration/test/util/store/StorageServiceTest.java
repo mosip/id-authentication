@@ -13,12 +13,16 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+
+import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.store.StorageService;
+
+import static org.mockito.Mockito.when;
 
 public class StorageServiceTest {
 	@Rule
@@ -28,6 +32,8 @@ public class StorageServiceTest {
 	private MosipRollingFileAppender mosipRollingFileAppender;
 	@Mock
 	private MosipLogger logger;
+	@Mock
+	private Environment environment;
 	
 	@Before
 	public void initialize() {
@@ -45,6 +51,10 @@ public class StorageServiceTest {
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(storageService, "logger", logger);
+		ReflectionTestUtils.setField(storageService, "environment", environment);
+		
+		when(environment.getProperty(RegConstants.PACKET_STORE_LOCATION)).thenReturn("PacketStore");
+		when(environment.getProperty(RegConstants.PACKET_STORE_DATE_FORMAT)).thenReturn("dd-MMM-yyyy");
 	}
 	
 	@Test

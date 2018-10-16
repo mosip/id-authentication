@@ -15,6 +15,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.audit.AuditFactory;
@@ -43,6 +44,8 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_ENCRYP
 @Component
 public class AESEncryptionService {
 
+	@Autowired
+	private Environment environment;
 	/**
 	 * Class to generate the seeds for AES Session Key
 	 */
@@ -124,7 +127,7 @@ public class AESEncryptionService {
 		logger.debug(LOG_PKT_AES_ENCRYPTION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
 				"Encryption concatenation had been started");
 		try {
-			final String keySplitter = getPropertyValue(RegConstants.AES_KEY_CIPHER_SPLITTER);
+			final String keySplitter = environment.getProperty(RegConstants.AES_KEY_CIPHER_SPLITTER);
 			final int keyLength = keyByteArray.length;
 			final int encryptedDataLength = encryptedDataByteArray.length;
 			final int keySplitterLength = keySplitter.length();

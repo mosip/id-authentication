@@ -1,15 +1,13 @@
 package io.mosip.registration.constants;
 
 /**
- * Class for storing the idisConstants
+ * Class contains the constants used in Registration application
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
  *
  */
 public class RegConstants {
-
-	public static final String PROOF_OF_RESIDENT = "ProofOfResident";
 
 	/**
 	 * private constructor
@@ -21,37 +19,30 @@ public class RegConstants {
 	public static final String EMPTY = "";
 	public static final String CONSTANTS_FILE_NAME = "constants.properties";
 
-	public static final String AES_KEY_MANAGER_ALG = "AES_KEY_MANAGER_ALG";
-	public static final String AES_CIPHER_ALG = "AES_CIPHER_ALG";
-	public static final String AES_KEY_SEED_LENGTH = "AES_KEY_SEED_LENGTH";
-	public static final String AES_SESSION_KEY_LENGTH = "AES_SESSION_KEY_LENGTH";
-	public static final String AES_KEY_CIPHER_SPLITTER = "AES_KEY_CIPHER_SPLITTER";
-	public static final String USER_NAME = "USER_NAME";
-	public static final String PACKET_STORE_LOCATION = "PACKET_STORE_LOCATION";
+	// AES Encryption Constants
+	public static final String AES_KEY_MANAGER_ALG = "aes.algorithm";
+	public static final String AES_KEY_SEED_LENGTH = "aes.keyLengthInBytes";
+	public static final String AES_SESSION_KEY_LENGTH = "aes.keyLengthInBits";
+	public static final String AES_KEY_CIPHER_SPLITTER = "aes.keySplitter";
+	
+	// Packet Store Location Constants
+	public static final String PACKET_STORE_LOCATION = "packet.storageLocation";
+	public static final String PACKET_STORE_DATE_FORMAT = "packet.location.dateFormat";
+	
+	// Packet Creation Constants 
 	public static final String ZIP_FILE_EXTENSION = ".zip";
 	public static final String DEMOGRPAHIC_JSON_NAME = "demographicJson";
 	public static final String PACKET_META_JSON_NAME = "packetMetaJson";
 	public static final String ENROLLMENT_META_JSON_NAME = "enrollmentMetaJson";
 	public static final String HASHING_JSON_NAME = "hash";
 	public static final String AUDIT_JSON_FILE = "audit";
+	public static final String JSON_FILE_EXTENSION = ".json";
 
-	public static final String DBURL = "jdbc:derby:D:\\idsw;create=true";
-	// Hash
-	public static final String HASHING_ALG = "SHA-256";
 	// RSA
 	public static final String RSA_ALG = "RSA";
-	public static final String RSA_PUBLIC_KEY_FILE = "D:/Key Store/public.key";
-	public static final String RSA_PRIVATE_KEY_FILE = "D:/Key Store/private.key";
-	public static final String RSA_CIPHER_ALG = "RSA/ECB/PKCS1Padding";
-	public static final String PACKET_STORE_DATE_FORMAT = "PACKET_STORE_DATE_FORMAT";
-	public static final String PACKET_ZIP_FILE_NAME = "PACKET_ZIP_FILE_NAME";
-	public static final String ENROLLMENT_META_DATA_FILE_NAME = "ENROLLMENT_META_DATA_FILE_NAME";
-	public static final String JSON_FILE_EXTENSION = ".json";
-	public static final String TIME_STAMP_FORMAT = "TIME_STAMP_FORMAT";
+	public static final String RSA_PUBLIC_KEY_FILE = "../Key_Store/public.key";
+	public static final String RSA_PRIVATE_KEY_FILE = "../Key_Store/private.key";
 	public static final String LOCALHOST = "localhost";
-
-	// Testing
-	public static final String PACKET_UNZIP_LOCATION = "PACKET_UNZIP_LOCATION";
 
 	// Constants for Registration Creation Zip
 	/**
@@ -80,16 +71,16 @@ public class RegConstants {
 	public static final String STATION_NUMBER = "78213";
 	public static final String RID_DATE_FORMAT = "ddMMyyyyHHmmss";
 
-	// Audit & Logger - Constants
+	// Logger - Constants
 	public static final String APPLICATION_ID = "applicationId";
 	public static final String APPLICATION_NAME = "applicationName";
 
+	// Audit - Constants
+	public static final String AUDIT_APPLICATION_ID = "audit.applicationId";
+	public static final String AUDIT_APPLICATION_NAME = "audit.applicationName";
 	// Default Host IP Address and Name for Audit Logs
-	public static final String HOST_IP = "host.hostIP";
-	public static final String HOST_NAME = "host.hostName";
-	public static final String CREATED_BY = "createdBy";
-	public static final String SESSION_USER_ID = "sessionUserId";
-	public static final String SESSION_USER_NAME = "sessionUserName";
+	public static final String HOST_IP = "audit.hostIP";
+	public static final String HOST_NAME = "audit.hostName";
 
 	// OnlineConnectivity check
 	public static final String URL = "http://localhost:8080/getTokenId";

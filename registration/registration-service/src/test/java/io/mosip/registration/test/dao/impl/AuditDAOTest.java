@@ -83,20 +83,18 @@ public class AuditDAOTest {
 		auditDAO.getAllUnsyncAudits();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void updateSyncAuditsTest() {
-		when(auditRepository.updateSyncAudits(Mockito.anyList())).thenReturn(audits.size());
+		when(auditRepository.updateSyncAudits(Mockito.anyListOf(String.class))).thenReturn(audits.size());
 		List<String> auditUUIDs = new LinkedList<>();
 		audits.parallelStream().map(audit -> audit.getUuid()).forEach(auditUUIDs :: add);
 		int updatedCount = auditDAO.updateSyncAudits(auditUUIDs);
 		Assert.assertEquals(auditUUIDs.size(), updatedCount);
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseUncheckedException.class)
 	public void updateSyncAuditsExceptionTest() {
-		when(auditRepository.updateSyncAudits(Mockito.anyList())).thenThrow(new NullPointerException("list is null"));
+		when(auditRepository.updateSyncAudits(Mockito.anyListOf(String.class))).thenThrow(new NullPointerException("list is null"));
 		List<String> auditUUIDs = new LinkedList<>();
 		audits.parallelStream().map(audit -> audit.getUuid()).forEach(auditUUIDs :: add);
 		auditDAO.updateSyncAudits(auditUUIDs);
