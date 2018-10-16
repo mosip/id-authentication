@@ -10,7 +10,7 @@ import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
 import io.mosip.authentication.core.spi.fingerprintauth.provider.FingerprintProvider;
 
 /**
- * The Class MantraFingerprintProvider.
+ * The Class MantraFingerprintProvider - Provider class for Mantra fingerprint devices.
  *
  * @author Manoj SP
  */

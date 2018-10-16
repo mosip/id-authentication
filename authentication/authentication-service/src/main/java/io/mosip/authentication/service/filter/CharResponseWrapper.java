@@ -17,24 +17,45 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * @author Loganathan Sekar
  */
 class CharResponseWrapper extends HttpServletResponseWrapper {
+	
+	/** The output. */
 	private ByteArrayOutputStream output;
+	
+	/** The closed. */
 	private boolean closed;
+	
+	/** The writer. */
 	private PrintWriter writer;
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		return output.toString();
 	}
 
+	/**
+	 * Instantiates a new char response wrapper.
+	 *
+	 * @param response the response
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public CharResponseWrapper(HttpServletResponse response) throws IOException {
 		super(response);
 		writer = response.getWriter();
 		output = new ByteArrayOutputStream();
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.ServletResponseWrapper#getWriter()
+	 */
 	public PrintWriter getWriter() {
 		return new PrintWriter(new OutputStreamWriter(output));
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.ServletResponseWrapper#getOutputStream()
+	 */
 	@Override
 	public ServletOutputStream getOutputStream() throws IOException {
 		return new ServletOutputStream() {

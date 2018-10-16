@@ -20,7 +20,7 @@ public enum AuditModules {
 	PIN_AUTH("IDA-MOD-104"),
 	
 	/** The e KY C AUTH. */
-	eKYC_AUTH("IDA-MOD-105"),
+	EKYC_AUTH("IDA-MOD-105"),
 	
 	/** The otp request. */
 	OTP_REQUEST("IDA-MOD-110"),

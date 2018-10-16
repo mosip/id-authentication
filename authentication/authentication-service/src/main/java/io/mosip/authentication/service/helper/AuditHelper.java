@@ -34,8 +34,11 @@ public class AuditHelper {
 	/**
 	 * Audit.
 	 *
-	 * @param moduleId the module id
-	 * @param description the description
+	 * @param module the module
+	 * @param event the event
+	 * @param id the id
+	 * @param idType the id type
+	 * @param desc the desc
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
 	public void audit(AuditModules module, AuditEvents event, String id, IdType idType, String desc) throws IDDataValidationException {

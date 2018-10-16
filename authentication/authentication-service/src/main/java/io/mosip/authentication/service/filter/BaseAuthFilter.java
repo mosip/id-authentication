@@ -46,21 +46,39 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
  * before allowing the request to the respective controllers.
  *
  * @author Loganathan Sekar
+ * @param <REQUEST_DTO> the generic type
+ * @param <RESPONSE_DTO> the generic type
+ * @param <AUTH_INFO> the generic type
  */
 public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> implements Filter {
 
+	/** The Constant BASE_AUTH_FILTER. */
 	private static final String BASE_AUTH_FILTER = "BaseAuthFilter";
+	
+	/** The Constant EVENT_FILTER. */
 	private static final String EVENT_FILTER = "Event_filter";
+	
+	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SessionId";
 
+	/** The mosip logger. */
 	private MosipLogger mosipLogger;
 
+	/** The request time. */
 	private Instant requestTime;
 
+	/** The Constant EMPTY_JSON_OBJ_STRING. */
 	private static final String EMPTY_JSON_OBJ_STRING = "{}";
+	
+	/** The Constant javaxValidator. */
 	private static final Validator javaxValidator = Validation.buildDefaultValidatorFactory().getValidator();
+	
+	/** The mapper. */
 	ObjectMapper mapper = new ObjectMapper();
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(filterConfig.getServletContext());
@@ -68,6 +86,9 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 		mosipLogger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
@@ -104,6 +125,11 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 
 	}
 
+	/**
+	 * Log response time.
+	 *
+	 * @param responseTime the response time
+	 */
 	private void logResponseTime(String responseTime) {
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Response sent at : " + responseTime);
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_DATE_TIME;
@@ -112,6 +138,14 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 				+ Duration.between(requestTime, Instant.from(accessor)));
 	}
 
+	/**
+	 * Send auth error response.
+	 *
+	 * @param response the response
+	 * @param e the e
+	 * @param contentType the content type
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void sendAuthErrorResponse(HttpServletResponse response, IdAuthenticationAppException e, String contentType)
 			throws IOException {
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -122,6 +156,12 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 		writer.write(errorMessageBody); // Here you can change the response
 	}
 
+	/**
+	 * Gets the error message body.
+	 *
+	 * @param e the e
+	 * @return the error message body
+	 */
 	private String getErrorMessageBody(IdAuthenticationAppException e) {
 		try {
 			return mapper.writeValueAsString(createResponseDTO(e));
@@ -130,6 +170,12 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 		}
 	}
 
+	/**
+	 * Creates the response DTO.
+	 *
+	 * @param e the e
+	 * @return the response dto
+	 */
 	protected RESPONSE_DTO createResponseDTO(IdAuthenticationAppException e) {
 		AuthResponseDTO authResp = new AuthResponseDTO();
 
@@ -148,6 +194,13 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 		return (RESPONSE_DTO) authResp;
 	}
 
+	/**
+	 * Authenticate request.
+	 *
+	 * @param servletRequest the servlet request
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	private void authenticateRequest(HttpServletRequest servletRequest)
 			throws IOException, IdAuthenticationAppException {
 		REQUEST_DTO requestDTO = getRequestBody(servletRequest.getInputStream());
@@ -156,6 +209,14 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 		authenticateRequest(authInfo);
 	}
 
+	/**
+	 * Gets the request body.
+	 *
+	 * @param inputStream the input stream
+	 * @return the request body
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	private REQUEST_DTO getRequestBody(InputStream inputStream) throws IOException, IdAuthenticationAppException {
 		try {
 			return mapper.readValue(inputStream, getRequestDTOClass());
@@ -165,6 +226,12 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 		}
 	}
 
+	/**
+	 * Validate for requiredfields.
+	 *
+	 * @param tspInfo the tsp info
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	private void validateForRequiredfields(AUTH_INFO tspInfo) throws IdAuthenticationAppException {
 		Set<ConstraintViolation<AUTH_INFO>> violations = javaxValidator.validate(tspInfo, Default.class);
 		if (!violations.isEmpty()) {
@@ -175,18 +242,39 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 		}
 	}
 
+	/**
+	 * Gets the auth info.
+	 *
+	 * @param requestDTO the request DTO
+	 * @return the auth info
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	protected abstract AUTH_INFO getAuthInfo(REQUEST_DTO requestDTO) throws IdAuthenticationAppException;
 
+	/**
+	 * Authenticate request.
+	 *
+	 * @param requestDTO the request DTO
+	 * @throws IdAuthenticationAppException the id authentication app exception
+	 */
 	private void authenticateRequest(AUTH_INFO requestDTO) throws IdAuthenticationAppException {
 		// TODO authenticate/authorize TSP, validate UIN and VID. Throw exception upon
 		// any validation failure
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#destroy()
+	 */
 	@Override
 	public void destroy() {
 
 	}
 
+	/**
+	 * Gets the request DTO class.
+	 *
+	 * @return the request DTO class
+	 */
 	protected abstract Class<REQUEST_DTO> getRequestDTOClass();
 
 }

@@ -12,16 +12,20 @@ import io.mosip.authentication.service.filter.IDAuthFilter;
  *
  * @author Loganathan Sekar
  */
-//TODO
 @Configuration
 public class FilterConfig {
 	
+	/**
+	 * Gets the otp auth filter.
+	 *
+	 * @return the otp auth filter
+	 */
 	@Bean
 	public FilterRegistrationBean<IDAuthFilter> getOtpAuthFilter() {
 		FilterRegistrationBean<IDAuthFilter> registrationBean = new FilterRegistrationBean<>();
 
 		registrationBean.setFilter(new IDAuthFilter());
-		registrationBean.addUrlPatterns("/authRequest"); //FIXME change this
+		registrationBean.addUrlPatterns("/authRequest");
 
 		return registrationBean;
 	}
