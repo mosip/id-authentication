@@ -9,29 +9,54 @@ import javax.persistence.*;
  */
 @Embeddable
 public class ApplicantDemographicPKEntity implements Serializable {
-	//default serial version id, required for serializable classes.
+	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="reg_id")
+	@Column(name = "reg_id", nullable = false)
 	private String regId;
 
-	@Column(name="lang_code")
+	@Column(name = "lang_code")
 	private String langCode;
 
 	public ApplicantDemographicPKEntity() {
 		super();
 	}
+
 	public String getRegId() {
 		return this.regId;
 	}
+
 	public void setRegId(String regId) {
 		this.regId = regId;
 	}
+
 	public String getLangCode() {
 		return this.langCode;
 	}
+
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		if (!(other instanceof ApplicantDemographicPKEntity)) {
+			return false;
+		}
+		ApplicantDemographicPKEntity castOther = (ApplicantDemographicPKEntity) other;
+		return this.regId.equals(castOther.regId) && this.langCode.equals(castOther.langCode);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int hash = 17;
+		hash = hash * prime + this.regId.hashCode();
+		hash = hash * prime + this.langCode.hashCode();
+
+		return hash;
+	}
 }

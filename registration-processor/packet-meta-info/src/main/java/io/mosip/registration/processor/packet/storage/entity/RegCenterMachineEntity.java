@@ -1,18 +1,15 @@
 package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 
 /**
  * The persistent class for the reg_center_machine database table.
@@ -20,113 +17,85 @@ import org.hibernate.annotations.UpdateTimestamp;
  * @author Horteppa M1048399
  */
 @Entity
-@Table(name="reg_center_machine", schema = "regprc")
+@Table(name = "reg_center_machine", schema = "regprc")
 public class RegCenterMachineEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="reg_id")
+	@Column(name = "reg_id", nullable = false)
 	private String regId;
 
-	@Column(name="cntr_id")
+	@Column(name = "prereg_id", nullable = false)
+	private String preregId;
+
+	@Column(name = "machine_id", nullable = false)
+	private String machineId;
+
+	@Column(name = "cntr_id", nullable = false)
 	private String cntrId;
-
-	@Column(name="cr_by")
-	private String crBy = "MOSIP_SYSTEM";
-
-	@Column(name="cr_dtimesz", nullable = false, updatable = false)
-	@CreationTimestamp
-	private LocalDateTime crDtimesz;
-
-	@Column(name="del_dtimesz")
-	@UpdateTimestamp
-	private LocalDateTime delDtimesz;
-
-	@Column(name="is_active")
-	private Boolean isActive;
-
-	@Column(name="is_deleted")
-	private Boolean isDeleted;
 
 	private String latitude;
 
 	private String longitude;
 
-	@Column(name="machine_id")
-	private String machineId;
+	@Column(name = "is_active", nullable = false)
+	private Boolean isActive;
 
-	@Column(name="prereg_id")
-	private String preregId;
+	@Column(name = "cr_by")
+	private String crBy = "MOSIP_SYSTEM";
 
-	@Column(name="upd_by")
+	@Column(name = "cr_dtimesz", nullable = false, updatable = false)
+	@CreationTimestamp
+	private LocalDateTime crDtimesz;
+
+	@Column(name = "upd_by")
 	private String updBy = "MOSIP_SYSTEM";
 
-	@Column(name="upd_dtimesz")
+	@Column(name = "upd_dtimesz")
 	@UpdateTimestamp
 	private LocalDateTime updDtimesz;
 
-	public RegCenterMachineEntity() {
-		super();
-	}
+	@Column(name = "del_dtimesz")
+	@UpdateTimestamp
+	private LocalDateTime delDtimesz;
+
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
 
 	public String getRegId() {
-		return this.regId;
+		return regId;
 	}
 
 	public void setRegId(String regId) {
 		this.regId = regId;
 	}
 
+	public String getPreregId() {
+		return preregId;
+	}
+
+	public void setPreregId(String preregId) {
+		this.preregId = preregId;
+	}
+
+	public String getMachineId() {
+		return machineId;
+	}
+
+	public void setMachineId(String machineId) {
+		this.machineId = machineId;
+	}
+
 	public String getCntrId() {
-		return this.cntrId;
+		return cntrId;
 	}
 
 	public void setCntrId(String cntrId) {
 		this.cntrId = cntrId;
 	}
 
-	public String getCrBy() {
-		return this.crBy;
-	}
-
-	public void setCrBy(String crBy) {
-		this.crBy = crBy;
-	}
-
-	public LocalDateTime getCrDtimesz() {
-		return this.crDtimesz;
-	}
-
-	public void setCrDtimesz(LocalDateTime crDtimesz) {
-		this.crDtimesz = crDtimesz;
-	}
-
-	public LocalDateTime getDelDtimesz() {
-		return this.delDtimesz;
-	}
-
-	public void setDelDtimesz(LocalDateTime delDtimesz) {
-		this.delDtimesz = delDtimesz;
-	}
-
-	public Boolean getIsActive() {
-		return this.isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
-
-	public Boolean getIsDeleted() {
-		return this.isDeleted;
-	}
-
-	public void setIsDeleted(Boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
-
 	public String getLatitude() {
-		return this.latitude;
+		return latitude;
 	}
 
 	public void setLatitude(String latitude) {
@@ -134,31 +103,39 @@ public class RegCenterMachineEntity implements Serializable {
 	}
 
 	public String getLongitude() {
-		return this.longitude;
+		return longitude;
 	}
 
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
 
-	public String getMachineId() {
-		return this.machineId;
+	public Boolean getIsActive() {
+		return isActive;
 	}
 
-	public void setMachineId(String machineId) {
-		this.machineId = machineId;
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 
-	public String getPreregId() {
-		return this.preregId;
+	public String getCrBy() {
+		return crBy;
 	}
 
-	public void setPreregId(String preregId) {
-		this.preregId = preregId;
+	public void setCrBy(String crBy) {
+		this.crBy = crBy;
+	}
+
+	public LocalDateTime getCrDtimesz() {
+		return crDtimesz;
+	}
+
+	public void setCrDtimesz(LocalDateTime crDtimesz) {
+		this.crDtimesz = crDtimesz;
 	}
 
 	public String getUpdBy() {
-		return this.updBy;
+		return updBy;
 	}
 
 	public void setUpdBy(String updBy) {
@@ -166,11 +143,31 @@ public class RegCenterMachineEntity implements Serializable {
 	}
 
 	public LocalDateTime getUpdDtimesz() {
-		return this.updDtimesz;
+		return updDtimesz;
 	}
 
 	public void setUpdDtimesz(LocalDateTime updDtimesz) {
 		this.updDtimesz = updDtimesz;
+	}
+
+	public LocalDateTime getDelDtimesz() {
+		return delDtimesz;
+	}
+
+	public void setDelDtimesz(LocalDateTime delDtimesz) {
+		this.delDtimesz = delDtimesz;
+	}
+
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	public RegCenterMachineEntity() {
+		super();
 	}
 
 }

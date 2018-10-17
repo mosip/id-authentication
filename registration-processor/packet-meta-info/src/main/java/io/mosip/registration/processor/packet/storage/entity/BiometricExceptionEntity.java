@@ -1,18 +1,14 @@
 package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 
 /**
  * The persistent class for the biometric_exceptions database table.
@@ -20,46 +16,42 @@ import org.hibernate.annotations.UpdateTimestamp;
  * @author Horteppa M1048399
  */
 @Entity
-@Table(name="biometric_exceptions", schema = "regprc")
-public class BiometricExceptionEntity implements Serializable {
+@Table(name = "biometric_exceptions", schema = "regprc")
+public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptionPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@Column(name = "prereg_id", nullable = false)
+	private String preregId;
 
-	@EmbeddedId
-	private BiometricExceptionPKEntity id;
-
-	@Column(name="bio_typ")
+	@Column(name = "bio_typ", nullable = false)
 	private String bioTyp;
 
-	@Column(name="cr_by")
+	@Column(name = "excp_descr")
+	private String excpDescr;
+
+	@Column(name = "excp_typ")
+	private String excpTyp;
+
+	@Column(name = "status_code")
+	private String statusCode;
+
+	@Column(name = "cr_by", nullable = false)
 	private String crBy = "MOSIP_SYSTEM";
 
-	@Column(name="cr_dtimesz", nullable = false, updatable = false)
+	@Column(name = "cr_dtimesz", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimesz;
 
-	@Column(name="del_dtimesz")
+	@Column(name = "del_dtimesz")
 	@UpdateTimestamp
 	private LocalDateTime delDtimesz;
 
-	@Column(name="excp_descr")
-	private String excpDescr;
-
-	@Column(name="excp_typ")
-	private String excpTyp;
-
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
-	@Column(name="prereg_id")
-	private String preregId;
-
-	@Column(name="status_code")
-	private String statusCode;
-
-	@Column(name="upd_by")
+	@Column(name = "upd_by")
 	private String updBy = "MOSIP_SYSTEM";
 
-	@Column(name="upd_dtimesz")
+	@Column(name = "upd_dtimesz")
 	@UpdateTimestamp
 	private LocalDateTime updDtimesz;
 
@@ -67,48 +59,24 @@ public class BiometricExceptionEntity implements Serializable {
 		super();
 	}
 
-	public BiometricExceptionPKEntity getId() {
-		return this.id;
+	public String getPreregId() {
+		return preregId;
 	}
 
-	public void setId(BiometricExceptionPKEntity id) {
-		this.id = id;
+	public void setPreregId(String preregId) {
+		this.preregId = preregId;
 	}
 
 	public String getBioTyp() {
-		return this.bioTyp;
+		return bioTyp;
 	}
 
 	public void setBioTyp(String bioTyp) {
 		this.bioTyp = bioTyp;
 	}
 
-	public String getCrBy() {
-		return this.crBy;
-	}
-
-	public void setCrBy(String crBy) {
-		this.crBy = crBy;
-	}
-
-	public LocalDateTime getCrDtimesz() {
-		return this.crDtimesz;
-	}
-
-	public void setCrDtimesz(LocalDateTime crDtimesz) {
-		this.crDtimesz = crDtimesz;
-	}
-
-	public LocalDateTime getDelDtimesz() {
-		return this.delDtimesz;
-	}
-
-	public void setDelDtimesz(LocalDateTime delDtimesz) {
-		this.delDtimesz = delDtimesz;
-	}
-
 	public String getExcpDescr() {
-		return this.excpDescr;
+		return excpDescr;
 	}
 
 	public void setExcpDescr(String excpDescr) {
@@ -116,39 +84,55 @@ public class BiometricExceptionEntity implements Serializable {
 	}
 
 	public String getExcpTyp() {
-		return this.excpTyp;
+		return excpTyp;
 	}
 
 	public void setExcpTyp(String excpTyp) {
 		this.excpTyp = excpTyp;
 	}
 
-	public Boolean getIsDeleted() {
-		return this.isDeleted;
-	}
-
-	public void setIsDeleted(Boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
-
-	public String getPreregId() {
-		return this.preregId;
-	}
-
-	public void setPreregId(String preregId) {
-		this.preregId = preregId;
-	}
-
 	public String getStatusCode() {
-		return this.statusCode;
+		return statusCode;
 	}
 
 	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
 	}
 
+	public String getCrBy() {
+		return crBy;
+	}
+
+	public void setCrBy(String crBy) {
+		this.crBy = crBy;
+	}
+
+	public LocalDateTime getCrDtimesz() {
+		return crDtimesz;
+	}
+
+	public void setCrDtimesz(LocalDateTime crDtimesz) {
+		this.crDtimesz = crDtimesz;
+	}
+
+	public LocalDateTime getDelDtimesz() {
+		return delDtimesz;
+	}
+
+	public void setDelDtimesz(LocalDateTime delDtimesz) {
+		this.delDtimesz = delDtimesz;
+	}
+
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
 	public String getUpdBy() {
-		return this.updBy;
+		return updBy;
 	}
 
 	public void setUpdBy(String updBy) {
@@ -156,7 +140,7 @@ public class BiometricExceptionEntity implements Serializable {
 	}
 
 	public LocalDateTime getUpdDtimesz() {
-		return this.updDtimesz;
+		return updDtimesz;
 	}
 
 	public void setUpdDtimesz(LocalDateTime updDtimesz) {

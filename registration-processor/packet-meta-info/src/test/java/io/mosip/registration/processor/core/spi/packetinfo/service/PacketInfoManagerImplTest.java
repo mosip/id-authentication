@@ -7,15 +7,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.mosip.registration.processor.core.spi.packetinfo.repository.ApplicantDocumentRepository;
-
 
 @RunWith(MockitoJUnitRunner.class)
 public class PacketInfoManagerImplTest {
 
 
-	@Mock
-	ApplicantDocumentRepository applicantDocumentRepository;
+	//@Mock
+//	ApplicantDocumentRepository applicantDocumentRepository;
 
 	
 
@@ -26,7 +24,7 @@ public class PacketInfoManagerImplTest {
 
 	@Test
 	public void saveDemograficDataSccesTest() {
-		Mockito.when(applicantDocumentRepository.save(ArgumentMatchers.any())).thenReturn("");
+	//	Mockito.when(applicantDocumentRepository.save(ArgumentMatchers.any())).thenReturn("");
 		
 	}
 

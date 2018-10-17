@@ -1,11 +1,9 @@
 package io.mosip.registration.processor.packet.storage.entity;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -14,452 +12,377 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
 /**
  * The persistent class for the applicant_demographic database table.
  * 
  */
 @Entity
-@Table(name="applicant_demographic", schema = "regprc")
-public class ApplicantDemographicEntity implements Serializable {
+@Table(name = "applicant_demographic", schema = "regprc")
+public class ApplicantDemographicEntity extends BasePacketEntity<ApplicantDemographicPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private ApplicantDemographicPKEntity id;
-
-
-	@Column(name="addr_line1")
+	@Column(name = "addr_line1")
 	private String addrLine1;
 
-
-	@Column(name="addr_line2")
+	@Column(name = "addr_line2")
 	private String addrLine2;
 
-
-	@Column(name="addr_line3")
+	@Column(name = "addr_line3")
 	private String addrLine3;
 
 	private int age;
 
-
-	@Column(name="applicant_type")
+	@Column(name = "applicant_type", nullable = false)
 	private String applicantType;
 
-
-	@Column(name="cr_by")
+	@Column(name = "cr_by", nullable = false)
 	private String crBy = "MOSIP_SYSTEM";
 
-
-	@Column(name="cr_dtimesz",updatable=false,nullable=false)
+	@Column(name = "cr_dtimesz", updatable = false, nullable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimesz;
 
-
-	@Column(name="del_dtimesz")
+	@Column(name = "del_dtimesz")
 	@UpdateTimestamp
 	private LocalDateTime delDtimesz;
-
 
 	@Temporal(TemporalType.DATE)
 	private Date dob;
 
-
 	private String email;
 
+	@Column(name = "familyname")
+	private String familyName;
 
-	private String familyname;
+	@Column(name = "firstname")
+	private String firstName;
 
+	@Column(name = "forename")
+	private String foreName;
 
-	private String firstname;
+	@Column(name = "middleinitial")
+	private String middleInitial;
 
+	@Column(name = "fullname")
+	private String fullName;
 
-	private String forename;
-
-	private String fullname;
-
-
-	@Column(name="gender_code")
+	@Column(name = "gender_code", nullable = false)
 	private String genderCode;
 
+	@Column(name = "givenname")
+	private String givenName;
 
-	private String givenname;
-
-
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
-	
+	@Column(name = "is_active")
+	private Boolean isActive;
 
+	public Boolean getIsActive() {
+		return isActive;
+	}
 
-	private String lastname;
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
 
+	public String getMiddleInitial() {
+		return middleInitial;
+	}
 
-	@Column(name="location_code")
+	@Column(name = "lastname")
+	private String lastName;
+
+	@Column(name = "location_code", nullable = false)
 	private String locationCode;
 
+	@Column(name = "middlename")
+	private String middleName;
 
-
-	private String middlename;
-
-
+	@Column(name = "mobile")
 	private String mobile;
 
+	@Column(name = "nationalid")
+	private String nationalId;
 
-	private String nationalid;
+	@Column(name = "parent_fullname")
+	private String parentFullName;
 
-
-	@Column(name="parent_fullname")
-	private String parentFullname;
-
-
-	@Column(name="parent_ref_id")
+	@Column(name = "parent_ref_id")
 	private String parentRefId;
 
-
-	@Column(name="parent_ref_id_type")
+	@Column(name = "parent_ref_id_type")
 	private String parentRefIdType;
 
+	@Column(name = "prereg_id", nullable = false)
+	private String preRegId;
 
-	@Column(name="prereg_id")
-	private String preregId;
-
-
-	@Column(name="status_code")
+	@Column(name = "status_code")
 	private String statusCode;
 
+	@Column(name = "surname")
+	private String surName;
 
-	private String surname;
-
-	@Column(name="upd_by")
+	@Column(name = "upd_by")
 	private String updBy = "MOSIP_SYSTEM";
 
-
-	@Column(name="upd_dtimesz")
+	@Column(name = "upd_dtimesz")
 	@UpdateTimestamp
 	private LocalDateTime updDtimesz;
-
 
 	public ApplicantDemographicEntity() {
 		super();
 	}
 
-
-	public ApplicantDemographicPKEntity getId() {
-		return id;
-	}
-
-
-	public void setId(ApplicantDemographicPKEntity id) {
-		this.id = id;
-	}
-
-
 	public String getAddrLine1() {
 		return addrLine1;
 	}
-
 
 	public void setAddrLine1(String addrLine1) {
 		this.addrLine1 = addrLine1;
 	}
 
-
 	public String getAddrLine2() {
 		return addrLine2;
 	}
-
 
 	public void setAddrLine2(String addrLine2) {
 		this.addrLine2 = addrLine2;
 	}
 
-
 	public String getAddrLine3() {
 		return addrLine3;
 	}
-
 
 	public void setAddrLine3(String addrLine3) {
 		this.addrLine3 = addrLine3;
 	}
 
-
 	public int getAge() {
 		return age;
 	}
-
 
 	public void setAge(int age) {
 		this.age = age;
 	}
 
-
 	public String getApplicantType() {
 		return applicantType;
 	}
-
 
 	public void setApplicantType(String applicantType) {
 		this.applicantType = applicantType;
 	}
 
-
 	public String getCrBy() {
 		return crBy;
 	}
-
 
 	public void setCrBy(String crBy) {
 		this.crBy = crBy;
 	}
 
-
 	public LocalDateTime getCrDtimesz() {
 		return crDtimesz;
 	}
-
 
 	public void setCrDtimesz(LocalDateTime crDtimesz) {
 		this.crDtimesz = crDtimesz;
 	}
 
-
 	public LocalDateTime getDelDtimesz() {
 		return delDtimesz;
 	}
-
 
 	public void setDelDtimesz(LocalDateTime delDtimesz) {
 		this.delDtimesz = delDtimesz;
 	}
 
-
 	public Date getDob() {
 		return dob;
 	}
-
 
 	public void setDob(Date dob) {
 		this.dob = dob;
 	}
 
-
 	public String getEmail() {
 		return email;
 	}
-
 
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
-
-	public String getFamilyname() {
-		return familyname;
+	public String getFamilyName() {
+		return familyName;
 	}
 
-
-	public void setFamilyname(String familyname) {
-		this.familyname = familyname;
+	public void setFamilyName(String familyname) {
+		this.familyName = familyname;
 	}
 
-
-	public String getFirstname() {
-		return firstname;
+	public String getFirstName() {
+		return firstName;
 	}
 
-
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+	public void setFirstName(String firstname) {
+		this.firstName = firstname;
 	}
 
-
-	public String getForename() {
-		return forename;
+	public String getForeName() {
+		return foreName;
 	}
 
-
-	public void setForename(String forename) {
-		this.forename = forename;
+	public void setForeName(String forename) {
+		this.foreName = forename;
 	}
 
-
-	public String getFullname() {
-		return fullname;
+	public String getFullName() {
+		return fullName;
 	}
 
-
-	public void setFullname(String fullname) {
-		this.fullname = fullname;
+	public void setFullName(String fullname) {
+		this.fullName = fullname;
 	}
-
 
 	public String getGenderCode() {
 		return genderCode;
 	}
 
-
 	public void setGenderCode(String genderCode) {
 		this.genderCode = genderCode;
 	}
 
-
-	public String getGivenname() {
-		return givenname;
+	public String getGivenName() {
+		return givenName;
 	}
 
-
-	public void setGivenname(String givenname) {
-		this.givenname = givenname;
+	public void setGivenName(String givenname) {
+		this.givenName = givenname;
 	}
-
 
 	public Boolean getIsDeleted() {
 		return isDeleted;
 	}
 
-
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
-
-
-
-	public String getLastname() {
-		return lastname;
+	public String getLastName() {
+		return lastName;
 	}
 
-
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
+	public void setLastName(String lastname) {
+		this.lastName = lastname;
 	}
-
 
 	public String getLocationCode() {
 		return locationCode;
 	}
 
-
 	public void setLocationCode(String locationCode) {
 		this.locationCode = locationCode;
 	}
 
-
-	public String getMiddlename() {
-		return middlename;
+	public String getMiddleName() {
+		return middleName;
 	}
 
-
-	public void setMiddlename(String middlename) {
-		this.middlename = middlename;
+	public void setMiddleName(String middlename) {
+		this.middleName = middlename;
 	}
-
 
 	public String getMobile() {
 		return mobile;
 	}
 
-
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
 
-
-	public String getNationalid() {
-		return nationalid;
+	public String getNationalId() {
+		return nationalId;
 	}
 
-
-	public void setNationalid(String nationalid) {
-		this.nationalid = nationalid;
+	public void setNationalId(String nationalid) {
+		this.nationalId = nationalid;
 	}
 
-
-	public String getParentFullname() {
-		return parentFullname;
+	public String getParentFullName() {
+		return parentFullName;
 	}
 
-
-	public void setParentFullname(String parentFullname) {
-		this.parentFullname = parentFullname;
+	public void setParentFullName(String parentFullname) {
+		this.parentFullName = parentFullname;
 	}
-
 
 	public String getParentRefId() {
 		return parentRefId;
 	}
 
-
 	public void setParentRefId(String parentRefId) {
 		this.parentRefId = parentRefId;
 	}
-
 
 	public String getParentRefIdType() {
 		return parentRefIdType;
 	}
 
-
 	public void setParentRefIdType(String parentRefIdType) {
 		this.parentRefIdType = parentRefIdType;
 	}
 
-
-	public String getPreregId() {
-		return preregId;
+	public String getPreRegId() {
+		return preRegId;
 	}
 
-
-	public void setPreregId(String preregId) {
-		this.preregId = preregId;
+	public void setPreRegId(String preregId) {
+		this.preRegId = preregId;
 	}
-
 
 	public String getStatusCode() {
 		return statusCode;
 	}
 
-
 	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
 	}
 
-
-	public String getSurname() {
-		return surname;
+	public String getSurName() {
+		return surName;
 	}
 
-
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setSurName(String surname) {
+		this.surName = surname;
 	}
-
 
 	public String getUpdBy() {
 		return updBy;
 	}
 
-
 	public void setUpdBy(String updBy) {
 		this.updBy = updBy;
 	}
-
 
 	public LocalDateTime getUpdDtimesz() {
 		return updDtimesz;
 	}
 
-
 	public void setUpdDtimesz(LocalDateTime updDtimesz) {
 		this.updDtimesz = updDtimesz;
 	}
-
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 
-	
+	public String getMiddleinitial() {
+		return middleInitial;
+	}
 
+	public void setMiddleInitial(String middleInitial) {
+		this.middleInitial = middleInitial;
+	}
 }

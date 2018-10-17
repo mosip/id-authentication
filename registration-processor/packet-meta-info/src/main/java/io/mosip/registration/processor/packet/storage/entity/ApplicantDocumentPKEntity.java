@@ -1,7 +1,9 @@
 package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 /**
  * The primary key class for the applicant_document database table.
@@ -11,39 +13,42 @@ import javax.persistence.*;
  */
 @Embeddable
 public class ApplicantDocumentPKEntity implements Serializable {
-	//default serial version id, required for serializable classes.
+	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="reg_id")
+	@Column(name = "reg_id")
 	private String regId;
 
-	@Column(name="doc_cat_code")
+	@Column(name = "doc_cat_code", nullable = false)
 	private String docCatCode;
 
-	@Column(name="doc_typ_code")
+	@Column(name = "doc_typ_code", nullable = false)
 	private String docTypCode;
-
-	
 
 	public ApplicantDocumentPKEntity() {
 		super();
 	}
-	
+
 	public String getRegId() {
 		return this.regId;
 	}
+
 	public void setRegId(String regId) {
 		this.regId = regId;
 	}
+
 	public String getDocCatCode() {
 		return this.docCatCode;
 	}
+
 	public void setDocCatCode(String docCatCode) {
 		this.docCatCode = docCatCode;
 	}
+
 	public String getDocTypCode() {
 		return this.docTypCode;
 	}
+
 	public void setDocTypCode(String docTypCode) {
 		this.docTypCode = docTypCode;
 	}
@@ -56,10 +61,8 @@ public class ApplicantDocumentPKEntity implements Serializable {
 		if (!(other instanceof ApplicantDocumentPKEntity)) {
 			return false;
 		}
-		ApplicantDocumentPKEntity castOther = (ApplicantDocumentPKEntity)other;
-		return 
-			this.regId.equals(castOther.regId)
-			&& this.docCatCode.equals(castOther.docCatCode);
+		ApplicantDocumentPKEntity castOther = (ApplicantDocumentPKEntity) other;
+		return this.regId.equals(castOther.regId) && this.docCatCode.equals(castOther.docCatCode);
 	}
 
 	@Override
@@ -69,7 +72,7 @@ public class ApplicantDocumentPKEntity implements Serializable {
 		hash = hash * prime + this.regId.hashCode();
 		hash = hash * prime + this.docCatCode.hashCode();
 		hash = hash * prime + this.docTypCode.hashCode();
-		
+
 		return hash;
 	}
 }

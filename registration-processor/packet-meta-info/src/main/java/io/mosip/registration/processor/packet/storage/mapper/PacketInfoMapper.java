@@ -39,15 +39,13 @@ import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionP
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 
 public class PacketInfoMapper {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoMapper.class);
-	
-	
-	
+
 	private PacketInfoMapper() {
 		super();
 	}
-	
+
 	/**
 	 * Convert app doc dto to app doc entity.
 	 *
@@ -57,7 +55,7 @@ public class PacketInfoMapper {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
-	public static ApplicantDocumentEntity convertAppDocDtoToEntity(DocumentDetail documentDto,MetaData metaData) {
+	public static ApplicantDocumentEntity convertAppDocDtoToEntity(DocumentDetail documentDto, MetaData metaData) {
 
 		ApplicantDocumentEntity applicantDocumentEntity = new ApplicantDocumentEntity();
 		ApplicantDocumentPKEntity applicantDocumentPKEntity = new ApplicantDocumentPKEntity();
@@ -66,11 +64,12 @@ public class PacketInfoMapper {
 		applicantDocumentPKEntity.setRegId(metaData.getRegistrationId());
 
 		applicantDocumentEntity.setId(applicantDocumentPKEntity);
-		applicantDocumentEntity.setPreregId(metaData.getPreRegistrationId());
+		applicantDocumentEntity.setPreRegId(metaData.getPreRegistrationId());
 		applicantDocumentEntity.setDocOwner(documentDto.getDocumentOwner());
 		applicantDocumentEntity.setDocName(documentDto.getDocumentName());
 		applicantDocumentEntity.setDocOwner(documentDto.getDocumentOwner());
 		applicantDocumentEntity.setDocFileFormat(".zip");
+		applicantDocumentEntity.setActive(true);
 
 		return applicantDocumentEntity;
 	}
@@ -82,7 +81,8 @@ public class PacketInfoMapper {
 	 *            the exception iris
 	 * @return the biometric exception entity
 	 */
-	public static BiometricExceptionEntity convertBiometricExcDtoToEntity(ExceptionIris exceptionIris,MetaData metaData) {
+	public static BiometricExceptionEntity convertBiometricExcDtoToEntity(ExceptionIris exceptionIris,
+			MetaData metaData) {
 		BiometricExceptionEntity bioMetricExceptionEntity = new BiometricExceptionEntity();
 		BiometricExceptionPKEntity biometricExceptionPKEntity = new BiometricExceptionPKEntity();
 		biometricExceptionPKEntity.setRegId(metaData.getRegistrationId());
@@ -95,7 +95,7 @@ public class PacketInfoMapper {
 		bioMetricExceptionEntity.setExcpTyp(exceptionIris.getExceptionType());
 		bioMetricExceptionEntity.setIsDeleted(false);
 		bioMetricExceptionEntity.setStatusCode("");
-
+		
 		return bioMetricExceptionEntity;
 	}
 
@@ -106,20 +106,20 @@ public class PacketInfoMapper {
 	 *            the iris
 	 * @return the applicant iris entity
 	 */
-	public static ApplicantIrisEntity convertIrisDtoToEntity(Iris iris,MetaData metaData) {
+	public static ApplicantIrisEntity convertIrisDtoToEntity(Iris iris, MetaData metaData) {
 
 		ApplicantIrisEntity applicantIrisEntity = new ApplicantIrisEntity();
 		ApplicantIrisPKEntity applicantIrisPKEntity = new ApplicantIrisPKEntity();
 
 		applicantIrisPKEntity.setRegId(metaData.getRegistrationId());
 		applicantIrisPKEntity.setTyp(iris.getIrisType());
-		applicantIrisPKEntity.setLangCode("en");
 
 		applicantIrisEntity.setId(applicantIrisPKEntity);
 		applicantIrisEntity.setNoOfRetry(iris.getNumRetry());
 		applicantIrisEntity.setImageName(iris.getIrisImageName());
-		applicantIrisEntity.setPreregId(metaData.getPreRegistrationId());
+		applicantIrisEntity.setPreRegId(metaData.getPreRegistrationId());
 		applicantIrisEntity.setQualityScore(BigDecimal.valueOf(iris.getQualityScore()));
+		applicantIrisEntity.setActive(true);
 
 		return applicantIrisEntity;
 	}
@@ -131,21 +131,21 @@ public class PacketInfoMapper {
 	 *            the fingerprint
 	 * @return the applicant fingerprint entity
 	 */
-	public static ApplicantFingerprintEntity convertFingerprintDtoToEntity(Fingerprint fingerprint,MetaData metaData) {
+	public static ApplicantFingerprintEntity convertFingerprintDtoToEntity(Fingerprint fingerprint, MetaData metaData) {
 
 		ApplicantFingerprintEntity applicantFingerprintEntity = new ApplicantFingerprintEntity();
 		ApplicantFingerprintPKEntity applicantFingerprintPKEntity = new ApplicantFingerprintPKEntity();
 
 		applicantFingerprintPKEntity.setRegId(metaData.getRegistrationId());
 		applicantFingerprintPKEntity.setTyp(fingerprint.getFingerType());
-		applicantFingerprintPKEntity.setLangCode("en");
 
 		applicantFingerprintEntity.setId(applicantFingerprintPKEntity);
 		applicantFingerprintEntity.setNoOfRetry(fingerprint.getNumRetry());
 		applicantFingerprintEntity.setImageName(fingerprint.getFingerprintImageName());
 		applicantFingerprintEntity.setNoOfRetry(fingerprint.getNumRetry());
-		applicantFingerprintEntity.setPreregId(metaData.getPreRegistrationId());
+		applicantFingerprintEntity.setPreRegId(metaData.getPreRegistrationId());
 		applicantFingerprintEntity.setQualityScore(BigDecimal.valueOf(fingerprint.getQualityScore()));
+		applicantFingerprintEntity.setActive(true);
 
 		return applicantFingerprintEntity;
 
@@ -159,7 +159,7 @@ public class PacketInfoMapper {
 	 * @return the biometric exception entity
 	 */
 	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(
-			ExceptionFingerprint exceptionFingerprint,MetaData metaData) {
+			ExceptionFingerprint exceptionFingerprint, MetaData metaData) {
 
 		BiometricExceptionEntity bioMetricExceptionEntity = new BiometricExceptionEntity();
 		BiometricExceptionPKEntity biometricExceptionPKEntity = new BiometricExceptionPKEntity();
@@ -174,7 +174,6 @@ public class PacketInfoMapper {
 		bioMetricExceptionEntity.setExcpTyp(exceptionFingerprint.getExceptionType());
 		bioMetricExceptionEntity.setIsDeleted(false);
 
-
 		return bioMetricExceptionEntity;
 	}
 
@@ -185,22 +184,21 @@ public class PacketInfoMapper {
 	 *            the photo graph data
 	 * @return the applicant photograph entity
 	 */
-	public static ApplicantPhotographEntity convertPhotoGraphDtoToEntity(Photograph photoGraphData,MetaData metaData) {
+	public static ApplicantPhotographEntity convertPhotoGraphDtoToEntity(Photograph photoGraphData, MetaData metaData) {
 
 		ApplicantPhotographEntity applicantPhotographEntity = new ApplicantPhotographEntity();
 
 		ApplicantPhotographPKEntity applicantPhotographPKEntity = new ApplicantPhotographPKEntity();
 		applicantPhotographPKEntity.setRegId(metaData.getRegistrationId());
-		applicantPhotographPKEntity.setLangCode("en");
-		
+
 		applicantPhotographEntity.setId(applicantPhotographPKEntity);
-		applicantPhotographEntity.setPreregId(metaData.getPreRegistrationId());
+		applicantPhotographEntity.setPreRegId(metaData.getPreRegistrationId());
 		applicantPhotographEntity.setExcpPhotoName(photoGraphData.getExceptionPhotoName());
 		applicantPhotographEntity.setImageName(photoGraphData.getPhotographName());
 		applicantPhotographEntity.setHasExcpPhotograph(photoGraphData.isHasExceptionPhoto());
 		applicantPhotographEntity.setQualityScore(BigDecimal.valueOf(photoGraphData.getQualityScore()));
-
-
+		applicantPhotographEntity.setActive(true);
+		
 		return applicantPhotographEntity;
 	}
 
@@ -211,7 +209,7 @@ public class PacketInfoMapper {
 	 *            the osi data
 	 * @return the reg osi entity
 	 */
-	public static RegOsiEntity convertOsiDataToEntity(OsiData osiData,MetaData metaData) {
+	public static RegOsiEntity convertOsiDataToEntity(OsiData osiData, MetaData metaData) {
 
 		RegOsiEntity regOsiEntity = new RegOsiEntity();
 		regOsiEntity.setIntroducerFingerpImageName(osiData.getIntroducerFingerprintImage());
@@ -233,8 +231,6 @@ public class PacketInfoMapper {
 		return regOsiEntity;
 	}
 
-	
-
 	/**
 	 * Convert demographic info to app demographic info entity.
 	 *
@@ -242,8 +238,8 @@ public class PacketInfoMapper {
 	 *            the demographic info
 	 * @return the list
 	 */
-	public static List<ApplicantDemographicEntity> convertDemographicDtoToEntity(
-			DemographicInfo demographicInfo,MetaData metaData) {
+	public static List<ApplicantDemographicEntity> convertDemographicDtoToEntity(DemographicInfo demographicInfo,
+			MetaData metaData) {
 
 		DemoInLocalLang demoInLocalLang = demographicInfo.getDemoInLocalLang();
 		DemoInUserLang demoInUserLang = demographicInfo.getDemoInUserLang();
@@ -257,7 +253,7 @@ public class PacketInfoMapper {
 		applicantDemographicPKEntity.setRegId(metaData.getRegistrationId());
 
 		applicantDemographicEntity.setId(applicantDemographicPKEntity);
-		applicantDemographicEntity.setPreregId(metaData.getPreRegistrationId());
+		applicantDemographicEntity.setPreRegId(metaData.getPreRegistrationId());
 		applicantDemographicEntity.setAddrLine1(demoInLocalLang.getAddress().getLine1());
 		applicantDemographicEntity.setAddrLine2(demoInLocalLang.getAddress().getLine2());
 		applicantDemographicEntity.setAddrLine3(demoInLocalLang.getAddress().getLine3());
@@ -265,23 +261,24 @@ public class PacketInfoMapper {
 		applicantDemographicEntity.setApplicantType(metaData.getApplicationType());
 		applicantDemographicEntity.setDob(demoInLocalLang.getDateOfBirth());
 		applicantDemographicEntity.setEmail(demoInLocalLang.getEmailId());
-		applicantDemographicEntity.setFamilyname(demoInLocalLang.getFamilyname());
-		applicantDemographicEntity.setFirstname(demoInLocalLang.getFirstname());
-		applicantDemographicEntity.setForename(demoInLocalLang.getForename());
-		applicantDemographicEntity.setFullname(demoInLocalLang.getFullName());
+		applicantDemographicEntity.setFamilyName(demoInLocalLang.getFamilyname());
+		applicantDemographicEntity.setFirstName(demoInLocalLang.getFirstname());
+		applicantDemographicEntity.setForeName(demoInLocalLang.getForename());
+		applicantDemographicEntity.setFullName(demoInLocalLang.getFullName());
 		applicantDemographicEntity.setGenderCode(demoInLocalLang.getGender());
-		applicantDemographicEntity.setGivenname(demoInLocalLang.getGivenname());
-		applicantDemographicEntity.setLastname(demoInLocalLang.getLastname());
-		applicantDemographicEntity.setMiddlename(demoInLocalLang.getMiddlename());
+		applicantDemographicEntity.setGivenName(demoInLocalLang.getGivenname());
+		applicantDemographicEntity.setLastName(demoInLocalLang.getLastname());
+		applicantDemographicEntity.setMiddleName(demoInLocalLang.getMiddlename());
 		applicantDemographicEntity.setMobile(demoInLocalLang.getMobile());
-		applicantDemographicEntity.setSurname(demoInLocalLang.getSurname());
+		applicantDemographicEntity.setSurName(demoInLocalLang.getSurname());
+		applicantDemographicEntity.setIsActive(true);
 		
 		applicantDemographicEntity.setLocationCode("Location Code");
-		applicantDemographicEntity.setNationalid("National Id");
-		applicantDemographicEntity.setParentFullname("Parent Full Name");
+		applicantDemographicEntity.setNationalId("National Id");
+		applicantDemographicEntity.setParentFullName("Parent Full Name");
 		applicantDemographicEntity.setParentRefId("ParentRefId");
 		applicantDemographicEntity.setParentRefIdType("ParentRefIdType");
-		
+
 		applicantDemographicEntities.add(applicantDemographicEntity);
 
 		// adding User Language Demographic data
@@ -293,7 +290,7 @@ public class PacketInfoMapper {
 		applicantDemographicPKEntity1.setRegId(metaData.getRegistrationId());
 
 		applicantDemographicEntity.setId(applicantDemographicPKEntity1);
-		applicantDemographicEntity.setPreregId(metaData.getPreRegistrationId());
+		applicantDemographicEntity.setPreRegId(metaData.getPreRegistrationId());
 		applicantDemographicEntity.setAddrLine1(demoInUserLang.getAddress().getLine1());
 		applicantDemographicEntity.setAddrLine2(demoInUserLang.getAddress().getLine2());
 		applicantDemographicEntity.setAddrLine3(demoInUserLang.getAddress().getLine3());
@@ -301,32 +298,31 @@ public class PacketInfoMapper {
 		applicantDemographicEntity.setApplicantType(metaData.getApplicationType());
 		applicantDemographicEntity.setDob(demoInLocalLang.getDateOfBirth());
 		applicantDemographicEntity.setEmail(demoInUserLang.getEmailId());
-		applicantDemographicEntity.setFamilyname(demoInUserLang.getFamilyname());
-		applicantDemographicEntity.setFirstname(demoInUserLang.getFirstname());
-		applicantDemographicEntity.setForename(demoInUserLang.getForename());
-		applicantDemographicEntity.setFullname(demoInUserLang.getFullName());
+		applicantDemographicEntity.setFamilyName(demoInUserLang.getFamilyname());
+		applicantDemographicEntity.setFirstName(demoInUserLang.getFirstname());
+		applicantDemographicEntity.setForeName(demoInUserLang.getForename());
+		applicantDemographicEntity.setFullName(demoInUserLang.getFullName());
 		applicantDemographicEntity.setGenderCode(demoInUserLang.getGender());
-		applicantDemographicEntity.setGivenname(demoInUserLang.getGivenname());
-		applicantDemographicEntity.setLastname(demoInUserLang.getLastname());
-		
-		applicantDemographicEntity.setMiddlename(demoInUserLang.getMiddlename());
+		applicantDemographicEntity.setGivenName(demoInUserLang.getGivenname());
+		applicantDemographicEntity.setLastName(demoInUserLang.getLastname());
+		applicantDemographicEntity.setIsActive(true);
+
+
+		applicantDemographicEntity.setMiddleName(demoInUserLang.getMiddlename());
 		applicantDemographicEntity.setMobile(demoInUserLang.getMobile());
-		applicantDemographicEntity.setSurname(demoInUserLang.getSurname());
-		
-		
+		applicantDemographicEntity.setSurName(demoInUserLang.getSurname());
+
 		applicantDemographicEntity.setLocationCode("Location Code");
-		applicantDemographicEntity.setNationalid("National Id");
-		applicantDemographicEntity.setParentFullname("Parent Full Name");
+		applicantDemographicEntity.setNationalId("National Id");
+		applicantDemographicEntity.setParentFullName("Parent Full Name");
 		applicantDemographicEntity.setParentRefId("ParentRefId");
 		applicantDemographicEntity.setParentRefIdType("ParentRefIdType");
-		
 
 		applicantDemographicEntities.add(applicantDemographicEntity);
 
 		return applicantDemographicEntities;
 	}
-	
-	
+
 	public static int calculateAge(Date dateOfBirth) {
 		final DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		final Calendar c = Calendar.getInstance();
@@ -339,6 +335,5 @@ public class PacketInfoMapper {
 			return 0;
 		}
 	}
-	
 
 }

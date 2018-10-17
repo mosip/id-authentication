@@ -1,7 +1,9 @@
 package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 /**
  * The primary key class for the applicant_fingerprint database table.
@@ -10,38 +12,35 @@ import javax.persistence.*;
  */
 @Embeddable
 public class ApplicantFingerprintPKEntity implements Serializable {
-	//default serial version id, required for serializable classes.
+	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="reg_id")
+	@Column(name = "reg_id", nullable = false)
 	private String regId;
 
+	@Column(name = "typ", nullable = false)
 	private String typ;
-
-	@Column(name="lang_code")
-	private String langCode;
 
 	public ApplicantFingerprintPKEntity() {
 		super();
 	}
+
 	public String getRegId() {
 		return this.regId;
 	}
+
 	public void setRegId(String regId) {
 		this.regId = regId;
 	}
+
 	public String getTyp() {
 		return this.typ;
 	}
+
 	public void setTyp(String typ) {
 		this.typ = typ;
 	}
-	public String getLangCode() {
-		return this.langCode;
-	}
-	public void setLangCode(String langCode) {
-		this.langCode = langCode;
-	}
+
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -50,11 +49,8 @@ public class ApplicantFingerprintPKEntity implements Serializable {
 		if (!(other instanceof ApplicantFingerprintPKEntity)) {
 			return false;
 		}
-		ApplicantFingerprintPKEntity castOther = (ApplicantFingerprintPKEntity)other;
-		return 
-			this.regId.equals(castOther.regId)
-			&& this.typ.equals(castOther.typ)
-			&& this.langCode.equals(castOther.langCode);
+		ApplicantFingerprintPKEntity castOther = (ApplicantFingerprintPKEntity) other;
+		return this.regId.equals(castOther.regId) && this.typ.equals(castOther.typ);
 	}
 
 	@Override
@@ -63,8 +59,7 @@ public class ApplicantFingerprintPKEntity implements Serializable {
 		int hash = 17;
 		hash = hash * prime + this.regId.hashCode();
 		hash = hash * prime + this.typ.hashCode();
-		hash = hash * prime + this.langCode.hashCode();
-		
+
 		return hash;
 	}
 }

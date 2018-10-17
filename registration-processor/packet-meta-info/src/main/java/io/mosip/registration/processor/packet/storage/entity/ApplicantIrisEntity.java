@@ -2,18 +2,14 @@ package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 
 /**
  * The persistent class for the applicant_iris database table.
@@ -21,59 +17,59 @@ import org.hibernate.annotations.UpdateTimestamp;
  * @author Horteppa M1048399
  */
 @Entity
-@Table(name="applicant_iris", schema = "regprc")
-public class ApplicantIrisEntity implements Serializable {
+@Table(name = "applicant_iris", schema = "regprc")
+public class ApplicantIrisEntity extends BasePacketEntity<ApplicantIrisPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private ApplicantIrisPKEntity id;
-
-	@Column(name="cr_by")
+	@Column(name = "cr_by", nullable = false)
 	private String crBy = "MOSIP_SYSTEM";
 
-	@Column(name="cr_dtimesz", nullable = false, updatable = false)
+	@Column(name = "cr_dtimesz", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimesz;
 
-	@Column(name="del_dtimesz")
+	@Column(name = "del_dtimesz")
 	@UpdateTimestamp
 	private LocalDateTime delDtimesz;
 
-	@Column(name="image_name")
+	@Column(name = "image_name", nullable = false)
 	private String imageName;
 
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
-	@Column(name="no_of_retry")
+	@Column(name = "no_of_retry")
 	private Integer noOfRetry;
 
-	@Column(name="prereg_id")
-	private String preregId;
+	@Column(name = "prereg_id", nullable = false)
+	private String preRegId;
 
-	@Column(name="quality_score")
+	@Column(name = "quality_score")
 	private BigDecimal qualityScore;
 
-	@Column(name="status_code")
+	@Column(name = "status_code")
 	private String statusCode;
 
-	@Column(name="upd_by")
+	@Column(name = "upd_by")
 	private String updBy = "MOSIP_SYSTEM";
 
-	@Column(name="upd_dtimesz")
+	@Column(name = "upd_dtimesz")
 	@UpdateTimestamp
 	private LocalDateTime updDtimesz;
 
+	@Column(name = "is_active", nullable = false)
+	private boolean isActive;
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
 	public ApplicantIrisEntity() {
 		super();
-	}
-
-	public ApplicantIrisPKEntity getId() {
-		return this.id;
-	}
-
-	public void setId(ApplicantIrisPKEntity id) {
-		this.id = id;
 	}
 
 	public String getCrBy() {
@@ -124,12 +120,12 @@ public class ApplicantIrisEntity implements Serializable {
 		this.noOfRetry = noOfRetry;
 	}
 
-	public String getPreregId() {
-		return this.preregId;
+	public String getPreRegId() {
+		return this.preRegId;
 	}
 
-	public void setPreregId(String preregId) {
-		this.preregId = preregId;
+	public void setPreRegId(String preregId) {
+		this.preRegId = preregId;
 	}
 
 	public BigDecimal getQualityScore() {
