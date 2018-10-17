@@ -276,7 +276,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 							}
 						});
 		} else {
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		}
 			
 			
@@ -293,7 +293,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @return the demo entity
 	 */
 	public DemoEntity getDemoEntity(String refId,String langCode) {
-		return demoRepository.findByUinRefIdAndLangCode(refId, langCode);
+		return demoRepository.findByUinRefIdAndLangCode(refId, langCode.toUpperCase());//Assuming keeping Langcode Upper case in DB
 	}
 	
 

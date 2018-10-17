@@ -79,11 +79,11 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 */
 	public String validateUIN(String uin) throws IdAuthenticationBusinessException {
 		String refId = null;
-		UinEntity uinEntity = uinRepository.findByUin(uin);
-		if (null != uinEntity) {
-
-			if (uinEntity.isActive()) {
-				refId = uinEntity.getId();
+		Optional<UinEntity> uinEntityOpt = uinRepository.findById(uin);
+		if (uinEntityOpt.isPresent()) {
+			UinEntity uinEntity = uinEntityOpt.get();
+			if (uinEntity .isActive()) {
+				refId = uinEntity.getUinRefId();
 			} else {
 				// TODO log error
 				throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);

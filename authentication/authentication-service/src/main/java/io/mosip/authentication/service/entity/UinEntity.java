@@ -18,18 +18,18 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name="uin", schema="ida")
-public class UinEntity {	
+public class UinEntity {
 
 	/** The id. */
+	@Id
 	@NotNull
 	@Column(name = "id", nullable = false)
 	String id;
 
 	/** The uin. */
-	@Id
 	@NotNull
 	@Column(name = "uin_ref_id", unique = true, nullable = false)
-	String uin;
+	String uinRefId;
 
 	/** The is active. */
 	@Column(name = "is_active")

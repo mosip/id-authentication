@@ -113,24 +113,14 @@ public class DemoValidator implements Validator {
 
 		if (authType.isFad() && personalFullAddressDTO != null) {
 
-			if (personalFullAddressDTO.getAddrPri() == null && personalFullAddressDTO.getMsPri() == null
-					&& personalFullAddressDTO.getMtPri() == null) { // && primaryLanguage ==null
+			if (personalFullAddressDTO.getAddrPri() == null && personalFullAddressDTO.getAddrSec() == null) { // && primaryLanguage ==null
 
 				mosipLogger.error(SESSION_ID, "personal Full Address", "Full Address Validation for primary language",
 						"At least one attribute of full address should be present");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
 
-			}
-
-			if ((personalFullAddressDTO.getAddrSec() == null && personalFullAddressDTO.getMsSec() == null
-					&& personalFullAddressDTO.getMtSec() == null)) { // && secondaryLanguage == null
-
-				mosipLogger.error(SESSION_ID, "personal Full Address", "Full Address Validation for secondary language",
-						"At least one attribute of full address should be present");
-				errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
-			}
+			} 
 
 		}
 
@@ -152,27 +142,20 @@ public class DemoValidator implements Validator {
 
 			if ((personalAddressDTO.getAddrLine1Pri() == null && personalAddressDTO.getAddrLine2Pri() == null
 					&& personalAddressDTO.getAddrLine3Pri() == null && personalAddressDTO.getCountryPri() == null
-					&& personalAddressDTO.getPinCodePri() == null)) {
+					&& personalAddressDTO.getPinCodePri() == null)
+					&&
+					(personalAddressDTO.getAddrLine1Sec() == null && personalAddressDTO.getAddrLine2Sec() == null
+					&& personalAddressDTO.getAddrLine3Sec() == null && personalAddressDTO.getCountrySec() == null
+					&& personalAddressDTO.getPinCodeSec() == null)) {
 
-				mosipLogger.error(SESSION_ID, "Personal Address for primary language",
-						"Address Validation for primary language",
+				mosipLogger.error(SESSION_ID, "Personal Address",
+						"Address Validation",
 						"Atleast one attribute for address should be present");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
 
-			}
-
-			if ((personalAddressDTO.getAddrLine1Sec() == null && personalAddressDTO.getAddrLine2Sec() == null
-					&& personalAddressDTO.getAddrLine3Sec() == null && personalAddressDTO.getCountrySec() == null
-					&& personalAddressDTO.getPinCodeSec() == null)) {
-
-				mosipLogger.error(SESSION_ID, "Personal Address for secondary language",
-						"Address Validation for secondary language",
-						"At least one attribute for address should be present");
-				errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
-
-			}
+			} 
+			
 		}
 	}
 

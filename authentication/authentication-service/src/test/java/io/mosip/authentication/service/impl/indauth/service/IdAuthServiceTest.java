@@ -100,7 +100,7 @@ public class IdAuthServiceTest {
 	@Test(expected = IdValidationFailedException.class)
 	public void testValidateUIN() throws IdAuthenticationBusinessException {
 		String uin = "1234567890";
-		Mockito.when(uinRepository.findByUin(Mockito.anyString())).thenReturn(null);
+		Mockito.when(uinRepository.findByUinRefId(Mockito.anyString())).thenReturn(null);
 		idAuthServiceImpl.validateUIN(uin);
 	}
 
@@ -114,7 +114,7 @@ public class IdAuthServiceTest {
 		String uin = "1234567890";
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(false);
-		Mockito.when(uinRepository.findByUin(uin)).thenReturn(uinEntity);
+		Mockito.when(uinRepository.findByUinRefId(uin)).thenReturn(uinEntity);
 		idAuthServiceImpl.validateUIN(uin);
 	}
 
@@ -129,10 +129,10 @@ public class IdAuthServiceTest {
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(true);
 		uinEntity.setId("12345");
-		Mockito.when(uinRepository.findByUin(Mockito.anyString())).thenReturn(uinEntity);
+		Mockito.when(uinRepository.findById(Mockito.anyString())).thenReturn(Optional.of(uinEntity));
 		String refId = null;
 		refId = idAuthServiceImpl.validateUIN(uin);
-		assertEquals(refId, uinEntity.getId());
+		assertEquals(refId, uinEntity.getUinRefId());
 	}
 
 	/**
