@@ -8,7 +8,7 @@ package io.mosip.kernel.auditmanager.constant;
  *
  */
 public enum AuditErrorCodes {
-	HANDLEREXCEPTION("COK-AUM-AUD-001", "Invalid Audit Request. Required parameters must be present"), INVALIDFORMAT("COK-AUM-AUD-002", "Audit Request format is invalid");
+	HANDLEREXCEPTION("KER-AUD-001", "Invalid Audit Request. Required parameters must be present"), INVALIDFORMAT("KER-AUD-002", "Audit Request format is invalid");
 
 	private final String errorCode;
 	private final String errorMessage;
