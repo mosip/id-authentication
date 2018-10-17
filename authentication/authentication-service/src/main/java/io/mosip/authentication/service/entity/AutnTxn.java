@@ -18,7 +18,7 @@ import lombok.Data;
  * @author Rakesh Roshan
  */
 @Data
-@Table(name = "autn_txn", schema = "ida")
+@Table(name = "auth_transaction", schema = "ida")
 @Entity
 public class AutnTxn {
 
