@@ -42,7 +42,6 @@ public class DemoValidator implements Validator {
 	private MosipLogger mosipLogger;
 
 	private static final String EMAIL_PATTERN = "^[\\_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-	private static final String DOB_PATTERN = "^([0-9]{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$";
 	private static final String SESSION_ID = "sessionid";
 
 	@Autowired
@@ -116,9 +115,7 @@ public class DemoValidator implements Validator {
 
 		if (authType.isFad() && personalFullAddressDTO != null) {
 
-			if (personalFullAddressDTO.getAddrPri() == null && personalFullAddressDTO.getAddrSec() == null) { // &&
-																												// primaryLanguage
-																												// ==null
+			if (personalFullAddressDTO.getAddrPri() == null && personalFullAddressDTO.getAddrSec() == null) { 
 
 				mosipLogger.error(SESSION_ID, "personal Full Address", "Full Address Validation for primary language",
 						"At least one attribute of full address should be present");
@@ -143,29 +140,21 @@ public class DemoValidator implements Validator {
 	private void addressValidation(AuthTypeDTO authType, DemoDTO demodto, Errors errors) {
 
 		PersonalAddressDTO personalAddressDTO = demodto.getAd();
-		if ((personalAddressDTO.getAddrLine1Pri() == null 
-				&& personalAddressDTO.getAddrLine2Pri() == null
-				&& personalAddressDTO.getAddrLine3Pri() == null 
-				&& personalAddressDTO.getCityPri() == null
-				&& personalAddressDTO.getStatePri() == null
-				&& personalAddressDTO.getCountryPri() == null
+		if ((personalAddressDTO.getAddrLine1Pri() == null && personalAddressDTO.getAddrLine2Pri() == null
+				&& personalAddressDTO.getAddrLine3Pri() == null && personalAddressDTO.getCityPri() == null
+				&& personalAddressDTO.getStatePri() == null && personalAddressDTO.getCountryPri() == null
 				&& personalAddressDTO.getPinCodePri() == null)
-				&&
-				(personalAddressDTO.getAddrLine1Sec() == null 
-				&& personalAddressDTO.getAddrLine2Sec() == null
-				&& personalAddressDTO.getAddrLine3Sec() == null
-				&& personalAddressDTO.getCitySec() == null
-				&& personalAddressDTO.getStateSec() == null
-				&& personalAddressDTO.getCountrySec() == null
-				&& personalAddressDTO.getPinCodeSec() == null)) {
+				&& (personalAddressDTO.getAddrLine1Sec() == null && personalAddressDTO.getAddrLine2Sec() == null
+						&& personalAddressDTO.getAddrLine3Sec() == null && personalAddressDTO.getCitySec() == null
+						&& personalAddressDTO.getStateSec() == null && personalAddressDTO.getCountrySec() == null
+						&& personalAddressDTO.getPinCodeSec() == null)) {
 
-			mosipLogger.error(SESSION_ID, "Personal Address",
-					"Address Validation",
+			mosipLogger.error(SESSION_ID, "Personal Address", "Address Validation",
 					"Atleast one attribute for address should be present");
 			errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
 
-		} 
+		}
 	}
 
 	/**
@@ -188,12 +177,17 @@ public class DemoValidator implements Validator {
 						IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorMessage());
 			} else {
 				if (personalIdentityDTO.getDob() != null) {
+
 					try {
 						dobValidation(personalIdentityDTO.getDob(), env.getProperty("date.pattern"), errors);
 					} catch (ParseException e) {
 						mosipLogger.error(SESSION_ID, "ParseException",
 								e.getCause() == null ? "" : e.getCause().getMessage(), e.getMessage());
+						errors.rejectValue("dob", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+								String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+										"dob"));
 					}
+
 				}
 
 				if (personalIdentityDTO.getAge() != null) {
@@ -234,22 +228,15 @@ public class DemoValidator implements Validator {
 	 */
 	private void dobValidation(String dobToValidate, String dateFromat, Errors errors) throws ParseException {
 
-		Pattern pattern = Pattern.compile(DOB_PATTERN);
-		Matcher matcher = pattern.matcher(dobToValidate);
+		String dateOfBirth = dobToValidate;
+		SimpleDateFormat formatter = new SimpleDateFormat(dateFromat);
+		Date dob = formatter.parse(dateOfBirth);
 
-		if (matcher.matches()) {
-			String dateOfBirth = dobToValidate;
-			SimpleDateFormat formatter = new SimpleDateFormat(dateFromat);
-			Date dob = formatter.parse(dateOfBirth);
-			Instant instantDob = dob.toInstant();
+		Instant instantDob = dob.toInstant();
 
-			Instant now = Instant.now();
-			if (instantDob.isAfter(now)) {
-				errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "dob"));
-			}
-		} else {
-			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+		Instant now = Instant.now();
+		if (instantDob.isAfter(now)) {
+			errors.rejectValue("dob", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "dob"));
 		}
 

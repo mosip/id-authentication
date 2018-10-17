@@ -3,6 +3,8 @@ package io.mosip.authentication.service.impl.indauth.Validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.text.ParseException;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -211,9 +213,8 @@ public class DemoValidatorTest {
 
 	}
 
-	@Ignore // TODO
 	@Test
-	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndWrongDateFormat_ResultHasParseException() {
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndWrongDateFormat_ResultHasError() {
 
 		// Given
 		AuthTypeDTO auth = new AuthTypeDTO();
@@ -224,14 +225,58 @@ public class DemoValidatorTest {
 		// When
 		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
 		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", "12-12-2012");
-		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", personalIdentityDTO.getDob(), "yyyy-MM-dd",
-				errors);
-		assertTrue(errors.hasErrors());
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", "12/12/2012");
 		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
 
 		// Then
-		// assertTrue(errors.hasErrors());
+		assertTrue(errors.hasErrors());
+	}
+
+	
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndWithValidDateFormat_ResultHasNoError() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(personalIdentityDTO, "personalIdentityDTO");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", "2012-12-12");
+		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", personalIdentityDTO.getDob(), env.getProperty("date.pattern"),
+		errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+
+		// Then
+		assertFalse(errors.hasErrors());
+	}
+	
+	
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndWithFutureDate_ResultHasError() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(personalIdentityDTO, "personalIdentityDTO");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", "3012-12-12");
+		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", personalIdentityDTO.getDob(), env.getProperty("date.pattern"),
+		errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+
+		// Then
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
