@@ -34,25 +34,4 @@ public class ApplicantDemographicPKEntity implements Serializable {
 		this.langCode = langCode;
 	}
 
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		if (!(other instanceof ApplicantDemographicPKEntity)) {
-			return false;
-		}
-		ApplicantDemographicPKEntity castOther = (ApplicantDemographicPKEntity)other;
-		return 
-			this.regId.equals(castOther.regId)
-			&& this.langCode.equals(castOther.langCode);
-	}
-
-	public int hashCode() {
-		final int prime = 31;
-		int hash = 17;
-		hash = hash * prime + this.regId.hashCode();
-		hash = hash * prime + this.langCode.hashCode();
-		
-		return hash;
-	}
 }

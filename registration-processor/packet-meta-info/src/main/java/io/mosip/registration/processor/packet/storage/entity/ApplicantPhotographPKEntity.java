@@ -34,26 +34,4 @@ public class ApplicantPhotographPKEntity implements Serializable {
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
-
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		if (!(other instanceof ApplicantPhotographPKEntity)) {
-			return false;
-		}
-		ApplicantPhotographPKEntity castOther = (ApplicantPhotographPKEntity)other;
-		return 
-			this.regId.equals(castOther.regId)
-			&& this.langCode.equals(castOther.langCode);
-	}
-
-	public int hashCode() {
-		final int prime = 31;
-		int hash = 17;
-		hash = hash * prime + this.regId.hashCode();
-		hash = hash * prime + this.langCode.hashCode();
-		
-		return hash;
-	}
 }
