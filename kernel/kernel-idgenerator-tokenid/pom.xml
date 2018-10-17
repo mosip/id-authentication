@@ -9,9 +9,7 @@
 		<artifactId>kernel-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<groupId>io.mosip.kernel</groupId>
 	<artifactId>kernel-idgenerator-tokenid</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 	<name>kernel-idgenerator-tokenid</name>
 	<url>http://maven.apache.org</url>
 	<properties>

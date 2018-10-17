@@ -21,7 +21,7 @@ import io.mosip.kernel.idgenerator.tokenid.util.TokenIdFilterUtils;
  * Class generates TokenId based on {@link RandomStringUtils}} and implements
  * {@link MosipTokenIdGenerator<T>}}
  * 
- * @author M1046464
+ * @author Srinivasan
  *
  */
 @Component

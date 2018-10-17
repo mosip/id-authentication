@@ -15,7 +15,7 @@ import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdRepository;
 
 /**
  * Class holds TokenId that are generated and validated. 
- * @author M1046464
+ * @author Srinivasan
  *
  */
 @Component
