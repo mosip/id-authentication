@@ -10,6 +10,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
+import io.mosip.registration.processor.core.abstractverticle.exception.errorcodes.AbstractVerticleErrorCodes;
+
 /**
  * This class provides JSON utilites
  * 
@@ -35,7 +37,11 @@ public class JsonUtil {
 		JsonParser jsonParser = new JsonParser();
 		Gson gson = new Gson();
 		JsonObject jsonObject = (JsonObject) jsonParser.parse(new InputStreamReader(stream, "UTF-8"));
-		return gson.fromJson(jsonObject, clazz);
+		try {
+			return gson.fromJson(jsonObject, clazz);
+			}catch(JsonSyntaxException e) {				
+				throw new UnsupportedEncodingException(AbstractVerticleErrorCodes.IIS_EPU_ATU_UNSUPPORTED_ENCODING);
+			}
 	}
 
 }
