@@ -2,6 +2,7 @@ package io.mosip.authentication.core.dto.indauth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Match Info class.
@@ -21,6 +22,7 @@ import lombok.Data;
  * @param ms the ms
  * @param mt the mt
  */
+@NoArgsConstructor
 @AllArgsConstructor
 public class MatchInfo {
 	

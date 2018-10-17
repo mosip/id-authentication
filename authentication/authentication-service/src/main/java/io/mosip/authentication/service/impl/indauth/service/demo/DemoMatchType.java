@@ -1,5 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,7 +58,10 @@ public enum DemoMatchType implements MatchType {
 
 	/** The age. */
 	AGE(setOf(AgeMatchingStrategy.EXACT), demo -> demo.getPi().getAge(),
-			(entity, locationInfoFetcher) -> entity.getAge(), AuthUsageDataBit.USED_PI_AGE,
+			(entity, locationInfoFetcher) -> {
+				return Period.between(LocalDate.parse( new SimpleDateFormat("yyyy-MM-dd").format(entity.getDob())), LocalDate.now()).getYears();
+			}, 
+			AuthUsageDataBit.USED_PI_AGE,
 			AuthUsageDataBit.MATCHED_PI_AGE),
 
 	/** The dob. */
@@ -219,5 +225,5 @@ public enum DemoMatchType implements MatchType {
 		}
 		return demoBuilder.toString();
 	}
-
+	
 }

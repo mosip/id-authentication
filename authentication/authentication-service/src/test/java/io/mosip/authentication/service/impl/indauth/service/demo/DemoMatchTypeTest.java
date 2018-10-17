@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -25,6 +27,13 @@ import io.mosip.authentication.core.dto.indauth.PersonalFullAddressDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
 
 public class DemoMatchTypeTest {
+	
+	SimpleDateFormat sdf = null;
+
+	@Before
+	public void setup() {
+		sdf = new SimpleDateFormat("yyyy-MM-dd");
+	}
 
 	@Test
 	public void TestPriAddressisNotNull() {
@@ -226,13 +235,13 @@ public class DemoMatchTypeTest {
 	}
 
 	@Test
-	public void TestAgeMatchStrategy() {
+	public void TestAgeMatchStrategy() throws ParseException {
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
-		personalIdentityDTO.setAge(20);
+		personalIdentityDTO.setAge(17);
 		DemoDTO demoDTO = new DemoDTO();
 		demoDTO.setPi(personalIdentityDTO);
 		DemoEntity demoEntity = new DemoEntity();
-		demoEntity.setAge(20);
+		demoEntity.setDob(sdf.parse("2001-07-16"));
 		assertEquals(DemoMatchType.AGE.getDemoInfoFetcher().getInfo(demoDTO),
 				DemoMatchType.AGE.getEntityInfoFetcher().getInfo(demoEntity, null));
 		assertNotEquals(40, DemoMatchType.AGE.getDemoInfoFetcher().getInfo(demoDTO));
