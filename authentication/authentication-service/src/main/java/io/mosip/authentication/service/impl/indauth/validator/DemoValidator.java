@@ -253,11 +253,11 @@ public class DemoValidator implements Validator {
 
 			Instant now = Instant.now();
 			if (instantDob.isAfter(now)) {
-				errors.rejectValue("dob", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+				errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "dob"));
 			}
 		} else {
-			errors.rejectValue("dob", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "dob"));
 		}
 
@@ -266,7 +266,7 @@ public class DemoValidator implements Validator {
 	private void checkMatchStrategy(String matchStrategy, String ms, Errors errors) {
 
 		if (!matchStrategy.equals("E") || !matchStrategy.equals("P") || !matchStrategy.equals("PH")) {
-			errors.rejectValue(ms, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ms));
 		}
 
@@ -275,7 +275,7 @@ public class DemoValidator implements Validator {
 	private void checkMatchThresold(Integer matchThresold, String mt, Errors errors) {
 
 		if (matchThresold.intValue() < 1 || matchThresold.intValue() > 100) {
-			errors.rejectValue(mt, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), mt));
 		}
 	}
@@ -283,21 +283,21 @@ public class DemoValidator implements Validator {
 	private void checkGender(String gender, Errors errors) {
 
 		if (!gender.equals("M") || !gender.equals("F") || !gender.equals("T")) {
-			errors.rejectValue("gender", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "gender"));
 		}
 	}
 
 	private void checkAge(Integer age, Errors errors) {
 		if (age.intValue() < 1 || age.intValue() > 150) {
-			errors.rejectValue("age", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "age"));
 		}
 	}
 
 	private void checkPhoneNumber(String phone, Errors errors) {
 		if (phone.length() != 10 || phone.length() != 13) {
-			errors.rejectValue("phone", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "phone"));
 		}
 	}
@@ -307,7 +307,7 @@ public class DemoValidator implements Validator {
 		Matcher matcher = pattern.matcher(email);
 
 		if (!matcher.matches()) {
-			errors.rejectValue("email", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "email"));
 		}
 	}
