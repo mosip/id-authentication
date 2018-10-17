@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.log.NullLogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 
@@ -89,6 +90,7 @@ public class TemplateConfigureBuilder {
 		properties.put(RuntimeConstants.RESOURCE_LOADER, resourceLoader);
 		properties.put(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, templatePath);
 		properties.put(RuntimeConstants.FILE_RESOURCE_LOADER_CACHE, cache);
+		properties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, NullLogChute.class.getName());  
 		properties.put("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 		properties.put("file.resource.loader.class", FileResourceLoader.class.getName());
 		VelocityEngine engine = new VelocityEngine(properties);

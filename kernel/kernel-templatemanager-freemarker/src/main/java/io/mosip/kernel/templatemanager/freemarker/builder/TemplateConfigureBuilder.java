@@ -88,6 +88,7 @@ public class TemplateConfigureBuilder {
 	public MosipTemplateManager build() {
 		Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
 		configuration.setDefaultEncoding(defaultEncoding);
+		configuration.setLogTemplateExceptions(false);
 		if (FILE.equalsIgnoreCase(resourceLoader) && !templatePath.isEmpty()) {
 			try {
 				configuration.setTemplateLoader(new FileTemplateLoader(new File(templatePath)));
