@@ -79,7 +79,6 @@
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
 
-	   
 		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/cache/**,**/dto/**,**/entity/**,**/exception/**,**/repository/**,**/*BootApplication.java</sonar.coverage.exclusions>
 	</properties>
 
@@ -102,6 +101,7 @@
 		<module>kernel-datavalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-config-server</module>
+		<module>kernel-emailnotification-smtp</module>		
 		<module>kernel-keygenerator</module>
 		<module>kernel-templatemanager-velocity</module>
 		<module>kernel-templatemanager-freemarker</module>
