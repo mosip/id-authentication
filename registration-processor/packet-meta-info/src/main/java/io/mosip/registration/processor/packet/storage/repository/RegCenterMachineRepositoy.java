@@ -7,6 +7,6 @@ import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEnt
  * @author Horteppa M1048399
  *
  */
-public interface RegCenterMachine extends BaseRepository<RegCenterMachineEntity, String> {
+public interface RegCenterMachineRepositoy extends BaseRepository<RegCenterMachineEntity, String> {
 
 }

@@ -25,6 +25,7 @@ public class BiometricExceptionPKEntity implements Serializable {
 	private String langCode;
 
 	public BiometricExceptionPKEntity() {
+		super();
 	}
 
 	public String getRegId() {

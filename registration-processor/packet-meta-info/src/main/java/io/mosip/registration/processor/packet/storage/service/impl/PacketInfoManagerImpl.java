@@ -39,10 +39,12 @@ import io.mosip.registration.processor.packet.storage.entity.ApplicantFingerprin
 import io.mosip.registration.processor.packet.storage.entity.ApplicantIrisEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+import io.mosip.registration.processor.packet.storage.repository.RegCenterMachineRepositoy;
 import io.mosip.registration.processor.packet.storage.repository.RegOsiRepository;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 
@@ -64,19 +66,22 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private BasePacketRepository<BiometricExceptionEntity, String> biometricExceptionRepository;
 
 	@Autowired
-	BasePacketRepository<ApplicantFingerprintEntity, String> applicantFingerprintRepository;
+	private BasePacketRepository<ApplicantFingerprintEntity, String> applicantFingerprintRepository;
 
 	@Autowired
-	BasePacketRepository<ApplicantIrisEntity, String> applicantIrisRepository;
+	private BasePacketRepository<ApplicantIrisEntity, String> applicantIrisRepository;
 
 	@Autowired
-	BasePacketRepository<ApplicantPhotographEntity, String> applicantPhotographRepository;
+	private BasePacketRepository<ApplicantPhotographEntity, String> applicantPhotographRepository;
 
 	@Autowired
 	private RegOsiRepository regOsiRepository;
 
 	@Autowired
 	private BasePacketRepository<ApplicantDemographicEntity, String> applicantDemographicRepository;
+	
+	@Autowired
+	private RegCenterMachineRepositoy regCenterMachineRepository;
 
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
@@ -112,6 +117,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			saveBioMetricData(biometricData);
 			savePhotoGraph(photoGraphData);
 			saveOsiData(osiData);
+			saveRegCenterData(metaData);
+			
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
@@ -125,6 +132,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		}
 
 	}
+
 
 	/*
 	 * (non-Javadoc)
@@ -179,19 +187,18 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		List<Iris> irisList = irisData.getIris();
 		List<ExceptionIris> exceptionIrisList = irisData.getExceptionIris();
 
-		for (Iris iris : irisList) {
+		irisList.forEach(iris->{
 			ApplicantIrisEntity applicantIrisEntity = PacketInfoMapper.convertIrisDtoToEntity(iris, metaData);
 			applicantIrisRepository.save(applicantIrisEntity);
 			LOGGER.info(applicantIrisEntity.getId().getRegId() + " --> Applicant Iris DATA SAVED");
-		}
+		});
 
-		for (ExceptionIris exceptionIris : exceptionIrisList) {
+		exceptionIrisList.forEach(exceptionIris->{
 			BiometricExceptionEntity biometricIrisExceptionEntity = PacketInfoMapper
 					.convertBiometricExcDtoToEntity(exceptionIris, metaData);
 			biometricExceptionRepository.save(biometricIrisExceptionEntity);
 			LOGGER.info(biometricIrisExceptionEntity.getId().getRegId() + " --> Applicant Iris DATA SAVED");
-		}
-
+		});
 	}
 
 	/**
@@ -204,19 +211,20 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		List<Fingerprint> fingerprints = fingerprintData.getFingerprints();
 		List<ExceptionFingerprint> exceptionFingerprints = fingerprintData.getExceptionFingerprints();
 
-		for (Fingerprint fingerprint : fingerprints) {
+		fingerprints.forEach(fingerprint->{
 			ApplicantFingerprintEntity fingerprintEntity = PacketInfoMapper.convertFingerprintDtoToEntity(fingerprint,
 					metaData);
 			applicantFingerprintRepository.save(fingerprintEntity);
 			LOGGER.info(fingerprintEntity.getId().getRegId() + " --> Fingerprint DATA SAVED");
-		}
-
-		for (ExceptionFingerprint exceptionFingerprint : exceptionFingerprints) {
+			
+		});
+		
+		exceptionFingerprints.forEach(exceptionFingerprint->{
 			BiometricExceptionEntity biometricExceptionEntity = PacketInfoMapper
 					.convertBiometricExceptioDtoToEntity(exceptionFingerprint, metaData);
 			biometricExceptionRepository.save(biometricExceptionEntity);
 			LOGGER.info(biometricExceptionEntity.getId().getRegId() + " --> Biometric Exception DATA SAVED");
-		}
+		});
 	}
 
 	/**
@@ -242,8 +250,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	public void saveDocument(DocumentDetail documentDetail) {
 		ApplicantDocumentEntity applicantDocumentEntity = PacketInfoMapper.convertAppDocDtoToEntity(documentDetail,
 				metaData);
-		applicantDocumentEntity
-				.setDocStore(getDocumentAsByteArray(metaData.getRegistrationId(), documentDetail.getDocumentName()));
+		//applicantDocumentEntity.setDocStore(getDocumentAsByteArray(metaData.getRegistrationId(), documentDetail.getDocumentName()));
+		applicantDocumentEntity.setDocStore(new byte[] {20,10});
 		applicantDocumentRepository.save(applicantDocumentEntity);
 		LOGGER.info(applicantDocumentEntity.getId().getRegId() + " --> Document Demographic DATA SAVED");
 	}
@@ -273,6 +281,18 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		LOGGER.info(applicantPhotographEntity.getId().getRegId() + " --> Applicant Photograph DATA SAVED");
 	}
 
+	
+	/**
+	 * Save reg center data.
+	 *
+	 * @param metaData the meta data
+	 */
+	private void saveRegCenterData(MetaData metaData) {
+		RegCenterMachineEntity regCenterMachineEntity = PacketInfoMapper.convertRegCenterMachineToEntity(metaData);
+		regCenterMachineRepository.save(regCenterMachineEntity);
+		LOGGER.info(regCenterMachineEntity.getRegId() + " --> Registration Center Machine DATA SAVED");
+		
+	}
 	/**
 	 * Gets the document as byte array.
 	 *

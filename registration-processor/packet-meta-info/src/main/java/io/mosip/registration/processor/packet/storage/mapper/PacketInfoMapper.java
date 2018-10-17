@@ -36,6 +36,7 @@ import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotograph
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 
 public class PacketInfoMapper {
@@ -334,6 +335,19 @@ public class PacketInfoMapper {
 			LOGGER.error("Invalid DOB : Failed to parse Date of Birth", e);
 			return 0;
 		}
+	}
+
+	public static RegCenterMachineEntity convertRegCenterMachineToEntity(MetaData metaData) {
+		RegCenterMachineEntity regCenterMachineEntity = new RegCenterMachineEntity();
+		regCenterMachineEntity.setCntrId("Center 1");
+		regCenterMachineEntity.setMachineId("Machine 1");
+		regCenterMachineEntity.setRegId(metaData.getRegistrationId());
+		regCenterMachineEntity.setIsActive(true);
+		regCenterMachineEntity.setPreregId(metaData.getPreRegistrationId());
+		regCenterMachineEntity.setLatitude(metaData.getGeoLocation().getLatitude().toString());
+		regCenterMachineEntity.setLongitude(metaData.getGeoLocation().getLongitude().toString());
+		
+		return regCenterMachineEntity;
 	}
 
 }
