@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -46,7 +47,7 @@ import io.mosip.authentication.service.repository.LocationRepository;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-public class DemoServiceTest {
+public class DemoAuthServiceTest {
 
 	@Autowired
 	private Environment environment;
@@ -228,58 +229,55 @@ public class DemoServiceTest {
 		demoAuthService.getDemoStatus(authRequestDTO, "");
 	}
 
-	@Ignore
 	@Test
-	public void TestValidgetDemoStatus() throws IdAuthenticationBusinessException {
+	public void TestValidgetDemoStatus() throws IdAuthenticationBusinessException, NoSuchMethodException,
+			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "demoMatcher", demomatcher);
-		AuthRequestDTO authRequestDTO = generateData();
-		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setPi(true);
-		PersonalIdentityDTO pid = new PersonalIdentityDTO();
-		pid.setNamePri("Mr.Dinesh Karuppiah");
-		DemoDTO demoDTO = new DemoDTO();
-		PersonalIdentityDataDTO personalData = new PersonalIdentityDataDTO();
-		AuthRequestDTO authRequest = new AuthRequestDTO();
-		demoDTO.setPi(pid);
-		personalData.setDemo(demoDTO);
-		authRequest.setPii(personalData);
-		authRequestDTO.setAuthType(authType);
 		DemoEntity demoEntity = new DemoEntity();
+		demoEntity.setActive(true);
 		demoEntity.setFirstName("Dinesh");
 		demoEntity.setLastName("Karuppiah");
 		Mockito.when(demoAuthServiceImpl.getDemoEntity(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(demoEntity);
-		AuthStatusInfo authstatus = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "1234567890");
-		System.out.println(authstatus);
-		assertFalse(authstatus.isStatus());
-
+		AuthRequestDTO authRequestDTO = generateData();
+		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212");
+		assertTrue(authStatusInfo.isStatus());
 	}
 
-	@Ignore
+	@Test(expected = IdAuthenticationBusinessException.class)
+	public void TestInValidgetDemoStatus() throws IdAuthenticationBusinessException, NoSuchMethodException,
+			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		ReflectionTestUtils.setField(demoAuthServiceImpl, "demoMatcher", demomatcher);
+		Mockito.when(demoAuthServiceImpl.getDemoEntity(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+		AuthRequestDTO authRequestDTO = generateData();
+		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212");
+	}
+
 	@Test
-	public void TestgetLocation() throws NoSuchMethodException, SecurityException {
-		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("getDemoEntity", String.class,
-				String.class);
+	public void TestgetLocation() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 		LocationEntity locationEntity = new LocationEntity();
 		locationEntity.setLangcode("EN");
 		locationEntity.setCode("CHN");
-		locationEntity.setName("CHENNAI");
+		locationEntity.setName("CNENNAI");
+		locationEntity.setHierarchylevelname("CITY");
 		locationEntity.setParentloccode("TN");
 		Optional<LocationEntity> optlocation = Optional.of(locationEntity);
 		Mockito.when(locRepository.findByCodeAndIsActive(Mockito.anyString(), Mockito.anyBoolean()))
 				.thenReturn(optlocation);
-		Optional<String> outputvalue = demoAuthServiceImpl.getLocation(LocationLevel.CITY, "chennai");
-		System.out.println(outputvalue);
+		Optional<String> optvalue = demoAuthServiceImpl.getLocation(LocationLevel.CITY, "CHENNAI");
+		assertEquals(locationEntity.getName(), optvalue.get());
 	}
 
 	private AuthRequestDTO generateData() {
+
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setAd(false);
 		authType.setBio(false);
-		authType.setFad(true);
+		authType.setFad(false);
 		authType.setOtp(false);
-		authType.setPi(false);
+		authType.setPi(true);
 		authType.setPin(false);
 		authRequestDTO.setAuthType(authType);
 		authRequestDTO.setData("Value1");
@@ -295,15 +293,15 @@ public class DemoServiceTest {
 		DemoDTO demoDTO = new DemoDTO();
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		personalIdentityDTO.setNamePri("dinesh karuppiah");
-		personalIdentityDTO.setMsPri("P");
-		personalIdentityDTO.setMtPri(50);
-		personalIdentityDTO.setDob("2001-07-16");
+//		personalIdentityDTO.setMsPri("P");
+//		personalIdentityDTO.setMtPri(50);
+//		personalIdentityDTO.setDob("2001-07-16");
 		demoDTO.setPi(personalIdentityDTO);
-		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
-		personalFullAddressDTO.setAddrPri("#12, Rajaji Avenue, Sathya Nagar, East Mambalam, 600017");
-		personalFullAddressDTO.setMsPri("P");
-		personalFullAddressDTO.setMtPri(60);
-		demoDTO.setFad(personalFullAddressDTO);
+//		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
+//		personalFullAddressDTO.setAddrPri("#12, Rajaji Avenue, Sathya Nagar, East Mambalam, 600017");
+//		personalFullAddressDTO.setMsPri("P");
+//		personalFullAddressDTO.setMtPri(60);
+//		demoDTO.setFad(personalFullAddressDTO);
 		PersonalIdentityDataDTO personalDataDTO = new PersonalIdentityDataDTO();
 		personalDataDTO.setDemo(demoDTO);
 		authRequestDTO.setPii(personalDataDTO);
