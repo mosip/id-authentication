@@ -39,7 +39,7 @@ public class DemoValidator implements Validator {
 
 	private static final String EMAIL_PATTERN = "^[\\_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	private static final String DOB_PATTERN = "^([0-9]{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$";
-
+	private static final String PHONE_PATTERN = "^([0-9]{1,}$)";
 	private static final String SESSION_ID = "sessionid";
 
 	@Autowired
@@ -113,14 +113,16 @@ public class DemoValidator implements Validator {
 
 		if (authType.isFad() && personalFullAddressDTO != null) {
 
-			if (personalFullAddressDTO.getAddrPri() == null && personalFullAddressDTO.getAddrSec() == null) { // && primaryLanguage ==null
+			if (personalFullAddressDTO.getAddrPri() == null && personalFullAddressDTO.getAddrSec() == null) { // &&
+																												// primaryLanguage
+																												// ==null
 
 				mosipLogger.error(SESSION_ID, "personal Full Address", "Full Address Validation for primary language",
 						"At least one attribute of full address should be present");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
 
-			} 
+			}
 
 		}
 
@@ -143,19 +145,18 @@ public class DemoValidator implements Validator {
 			if ((personalAddressDTO.getAddrLine1Pri() == null && personalAddressDTO.getAddrLine2Pri() == null
 					&& personalAddressDTO.getAddrLine3Pri() == null && personalAddressDTO.getCountryPri() == null
 					&& personalAddressDTO.getPinCodePri() == null)
-					&&
-					(personalAddressDTO.getAddrLine1Sec() == null && personalAddressDTO.getAddrLine2Sec() == null
-					&& personalAddressDTO.getAddrLine3Sec() == null && personalAddressDTO.getCountrySec() == null
-					&& personalAddressDTO.getPinCodeSec() == null)) {
+					&& (personalAddressDTO.getAddrLine1Sec() == null && personalAddressDTO.getAddrLine2Sec() == null
+							&& personalAddressDTO.getAddrLine3Sec() == null
+							&& personalAddressDTO.getCountrySec() == null
+							&& personalAddressDTO.getPinCodeSec() == null)) {
 
-				mosipLogger.error(SESSION_ID, "Personal Address",
-						"Address Validation",
+				mosipLogger.error(SESSION_ID, "Personal Address", "Address Validation",
 						"Atleast one attribute for address should be present");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
 
-			} 
-			
+			}
+
 		}
 	}
 
@@ -248,7 +249,7 @@ public class DemoValidator implements Validator {
 
 	private void checkMatchStrategy(String matchStrategy, String ms, Errors errors) {
 
-		if (!matchStrategy.equals("E") || !matchStrategy.equals("P") || !matchStrategy.equals("PH")) {
+		if (!matchStrategy.equals("E") && !matchStrategy.equals("P") && !matchStrategy.equals("PH")) {
 			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ms));
 		}
@@ -265,7 +266,7 @@ public class DemoValidator implements Validator {
 
 	private void checkGender(String gender, Errors errors) {
 
-		if (!gender.equals("M") || !gender.equals("F") || !gender.equals("T")) {
+		if (!gender.equals("M") && !gender.equals("F") && !gender.equals("T")) {
 			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "gender"));
 		}
@@ -279,7 +280,11 @@ public class DemoValidator implements Validator {
 	}
 
 	private void checkPhoneNumber(String phone, Errors errors) {
-		if (phone.length() != 10 || phone.length() != 13) {
+
+		Pattern pattern = Pattern.compile(PHONE_PATTERN);
+		Matcher matcher = pattern.matcher(phone);
+
+		if (phone == null || phone.isEmpty() || !matcher.matches()) {
 			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "phone"));
 		}

@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.indauth.Validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
@@ -37,7 +38,6 @@ import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidat
 import io.mosip.authentication.service.impl.indauth.validator.DemoValidator;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -58,6 +58,8 @@ public class DemoValidatorTest {
 	@InjectMocks
 	DemoValidator demoValidator;
 
+	private AuthRequestDTO authRequestdto = new AuthRequestDTO();
+
 	@Before
 	public void before() {
 		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
@@ -73,504 +75,476 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demoValidator, "initializeLogger", mosipRollingFileAppender);
 	}
 
-	
 	@Test
 	public void testSupportTrue() {
 		assertTrue(demoValidator.supports(AuthRequestDTO.class));
 	}
-	
+
 	@Test
 	public void testSupportFalse() {
 		assertFalse(demoValidator.supports(AuthRequestValidator.class));
 	}
+
 	
-	@Test
-	public void checkValidateMethod() {
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
-		DemoDTO demodto = new DemoDTO();
-		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
-		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
-		
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
-		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
-		ReflectionTestUtils.invokeMethod(auth, "setFad", false);
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		String priLanguage = "en";
-		String secLanguage = "ar";
-		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setFad", personalFullAddressDTO);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setAd", personalAddressDTO);
-		
-		personalAddressDTO.setAddrLine1Pri("mosip");
-		personalFullAddressDTO.setAddrPri("mosip");
-		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", authRequestdto, errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", authRequestdto, errors);
-		
-		ReflectionTestUtils.invokeMethod(demoValidator, "validate", authRequestdto, errors);
-		
-		//demoValidator.validate(authRequestdto, errors);
-	}
-	
+
 	// ========================= complete address validation =================
 
 	@Test
-	public void testCompleteAddressValidation_WhenFadAndAdBothTrue_ShouldBeMutuallyExculive() {
+	public void validtae_WhenFadAndAdIsTrueAndAllPIAttributeIsNull_ResultHasErrors() {
 		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+		PersonalIdentityDataDTO personalDataDTO = new PersonalIdentityDataDTO();
 		AuthTypeDTO auth = new AuthTypeDTO();
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
-		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
-		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
-
-		ReflectionTestUtils.invokeMethod(errors, "reject",
-				IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", authRequestdto, errors);
-	}
-
-	@Test
-	public void testCompleteAddressValidation_WhenFadIsTrue_ValidateFullAddressOnly() {
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
 		DemoDTO demodto = new DemoDTO();
-		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
-		String priLanguage = "en";
-		String secLanguage = null;
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
 
+		// When
 		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
-		ReflectionTestUtils.invokeMethod(auth, "setAd", false);
+		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalDataDTO);
+		ReflectionTestUtils.invokeMethod(personalDataDTO, "setDemo", demodto);
 		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setFad", personalFullAddressDTO);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
-
-		String allNullForPriLanguage = "mosip";
-		ReflectionTestUtils.invokeMethod(personalFullAddressDTO, "setAddrPri", allNullForPriLanguage);
-		
-		ReflectionTestUtils.invokeMethod(demoValidator,"fullAddressValidation",authRequestdto, errors);
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", authRequestdto, errors);
-	}
-	
-	@Test
-	public void testCompleteAddressValidation_WhenAdIsTrue_ValidateFullAddressOnly() {
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
-		DemoDTO demodto = new DemoDTO();
-		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
-		String priLanguage = "en";
-		String secLanguage = null;
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
 		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
+		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "validate", authRequestdto, errors);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setAd", personalAddressDTO);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
-
-		String allNullForPriLanguage = "mosip";
-		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine1Pri", allNullForPriLanguage);
-		
-		ReflectionTestUtils.invokeMethod(demoValidator,"addressValidation",authRequestdto, errors);
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", authRequestdto, errors);
+		// Then
+		assertTrue(errors.hasErrors());
 	}
 
 	// ====================== Full Address Validation Test ===================
-	@Ignore
 	@Test
-	public void testFullAddressValidation_WhenFadIstrue_AndPriAndSecLanguageIsNull() {
+	public void testFullAddressValidation_WhenFadIstrueAndAllAttributeIsNull_ResultHasErrors() {
 
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+		// Given
 		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
 		DemoDTO demodto = new DemoDTO();
-		String priLanguage = null;
-		String secLanguage = null;
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
+		// When
 		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setFad", personalFullAddressDTO);
+		ReflectionTestUtils.invokeMethod(demoValidator, "fullAddressValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", auth, demodto, errors);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
-
-		ReflectionTestUtils.invokeMethod(errors, "reject",
-				IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "fullAddressValidation", authRequestdto, errors);
-
+		// Then
+		assertTrue(errors.hasErrors());
 	}
 
 	@Test
-	public void testFullAddressValidation_WhenFadIstrue_PriIsNotNullAndAllOtherAttributeIsNull() {
+	public void testFullAddressValidation_WhenFadIstrueAndAtLeastOneAttributeAvailable_ResultNoErrors() {
 
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+		// Given
 		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
-		DemoDTO demodto = new DemoDTO();
 		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
-		String priLanguage = "en";
-		String secLanguage = null;
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
-		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setFad", personalFullAddressDTO);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
-
-		String allNullForPriLanguage = null;
-		ReflectionTestUtils.invokeMethod(personalFullAddressDTO, "setAddrPri", allNullForPriLanguage);
-		ReflectionTestUtils.invokeMethod(personalFullAddressDTO, "setMsPri", allNullForPriLanguage);
-		ReflectionTestUtils.invokeMethod(personalFullAddressDTO, "setMtPri", allNullForPriLanguage);
-
-		ReflectionTestUtils.invokeMethod(errors, "reject",
-				IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "fullAddressValidation", authRequestdto, errors);
-
-	}
-
-	@Test
-	public void testFullAddressValidation_WhenFadIstrue_SecIsNotNullAndAllOtherAttributeIsNull() {
-
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
 		DemoDTO demodto = new DemoDTO();
-		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
-		String priLanguage = null;
-		String secLanguage = "en";
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
+		// When
 		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
 		ReflectionTestUtils.invokeMethod(demodto, "setFad", personalFullAddressDTO);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
+		ReflectionTestUtils.invokeMethod(personalFullAddressDTO, "setAddrPri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalFullAddressDTO, "setAddrSec", "mosip");
+		ReflectionTestUtils.invokeMethod(demoValidator, "fullAddressValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", auth, demodto, errors);
 
-		String allNullForSecLanguage = null;
-		ReflectionTestUtils.invokeMethod(personalFullAddressDTO, "setAddrSec", allNullForSecLanguage);
-		ReflectionTestUtils.invokeMethod(personalFullAddressDTO, "setMsSec", allNullForSecLanguage);
-		ReflectionTestUtils.invokeMethod(personalFullAddressDTO, "setMtSec", allNullForSecLanguage);
-
-		ReflectionTestUtils.invokeMethod(errors, "reject",
-				IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "fullAddressValidation", authRequestdto, errors);
+		// Then
+		assertFalse(errors.hasErrors());
 
 	}
 
 	// ====================== Address Validation Test ==================
-	@Ignore
 	@Test
-	public void testAddressValidation_WhenAdIsTrue_AndPriAndSecLanguageIsNull() {
+	public void testAddressValidation_WhenAdIsTrueAndAllAttributeIsNull_ResultHasErrors() {
 
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+		// Given
 		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
 		DemoDTO demodto = new DemoDTO();
-		String priLanguage = null;
-		String secLanguage = null;
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
+		// When
 		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setAd", personalAddressDTO);
+		ReflectionTestUtils.invokeMethod(demoValidator, "addressValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", auth, demodto, errors);
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
-
-		ReflectionTestUtils.invokeMethod(errors, "reject",
-				IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "addressValidation", authRequestdto, errors);
+		// Then
+		assertTrue(errors.hasErrors());
 
 	}
 
 	@Test
-	public void testAddressValidation_WhenAdIstrue_PriIsNotNullAndAllOtherAttributeIsNull() {
+	public void testAddressValidation_WhenAdIstrueAndAtLeastOneAttributeAvailable_ResultNoErrors() {
 
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+		// Given
 		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
-		DemoDTO demodto = new DemoDTO();
 		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
-		String priLanguage = "en";
-		String secLanguage = null;
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
-		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setAd", personalAddressDTO);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
-
-		String allNullForPriLanguage = null;
-		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine1Pri", allNullForPriLanguage);
-		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine2Pri", allNullForPriLanguage);
-		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine3Pri", allNullForPriLanguage);
-		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setCountryPri", allNullForPriLanguage);
-		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setPinCodePri", allNullForPriLanguage);
-
-		ReflectionTestUtils.invokeMethod(errors, "reject",
-				IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "addressValidation", authRequestdto, errors);
-
-	}
-
-	@Test
-	public void testAddressValidation_WhenAdIstrue_SecIsNotNullAndAllOtherAttributeIsNull() {
-
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
 		DemoDTO demodto = new DemoDTO();
-		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
-		String priLanguage = null;
-		String secLanguage = "en";
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
+		// When
 		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
 		ReflectionTestUtils.invokeMethod(demodto, "setAd", personalAddressDTO);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", priLanguage);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secLanguage);
+		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine1Pri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine1Sec", "mosip");
+		ReflectionTestUtils.invokeMethod(demoValidator, "addressValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", auth, demodto, errors);
 
-		String allNullForSecLanguage = null;
-		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine1Sec", allNullForSecLanguage);
-		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine2Sec", allNullForSecLanguage);
-		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine3Sec", allNullForSecLanguage);
-		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setCountrySec", allNullForSecLanguage);
-		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setPinCodeSec", allNullForSecLanguage);
-
-		ReflectionTestUtils.invokeMethod(errors, "reject",
-				IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "addressValidation", authRequestdto, errors);
+		// Then
+		assertFalse(errors.hasErrors());
 
 	}
 
 	// ====================== Personal Identity Validation =============
 
 	@Test
-	public void testPersonalIdentity_WhenPiIsTrue_ValidDOBFormate() {
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
+	public void testPersonalIdentity_WhenPiIsTrueAndAllAttributeIsNull_ResultHasErrors() {
+
+		// Given
 		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
-		DemoDTO demodto = new DemoDTO();
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
-
-		String dob = "2017-10-26";
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
-		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", dob);
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", authRequestdto, errors);
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", authRequestdto, errors);
-	}
-
-	// @Test(expected =ParseException.class)
-	@Test // TODO for handle exception
-	public void testPersonalIdentity_WhenPiIsTrue_AllPiAttributesIsNull() {
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
 		DemoDTO demodto = new DemoDTO();
-		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
-		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "isAllPINull", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(errors, "reject",
-				IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorMessage());
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", authRequestdto, errors);
-	}
-
-	@Test
-	public void testersonalIdentity_WhenPiIsTrue_PriLanguageIsNullForPrimaryName() {
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
-		DemoDTO demodto = new DemoDTO();
-		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
-		String primaryLanguage = null;
-		String namePri = "mosip";
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
-		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", namePri);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangPri", primaryLanguage);
-
-		ReflectionTestUtils.invokeMethod(errors, "reject",
-				IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorMessage());
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", authRequestdto, errors);
-	}
-
-	@Test
-	public void testersonalIdentity_WhenPiIsTrue_SecLanguageIsNullForSecondaryName() {
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
-		DemoDTO demodto = new DemoDTO();
-		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
-		String secondaryLanguage = null;
-		String nameSec = "mosip";
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setAuthType", auth);
-		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNameSec", nameSec);
-		ReflectionTestUtils.invokeMethod(demodto, "setLangSec", secondaryLanguage);
-
-		ReflectionTestUtils.invokeMethod(errors, "reject",
-				IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorCode(),
-				IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorMessage());
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", authRequestdto, errors);
-	}
-
-	// =================== DOB Validation Test =========================
-
-	@Test
-	public void testDOB_Errors() throws java.text.ParseException {
-
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
-		DemoDTO demodto = new DemoDTO();
-		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
-		String setDob = "2019-02-26";
-
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", setDob);
-
-		SimpleDateFormat formatter = new SimpleDateFormat(env.getProperty("dob.date.time.pattern"));
-		Date dob = formatter.parse(setDob);
-		Instant instantDob = dob.toInstant();
-
-		Instant now = Instant.now();
-
-		ReflectionTestUtils.invokeMethod(instantDob, "isAfter", now);
-		ReflectionTestUtils.invokeMethod(errors, "rejectValue","dob",
-				IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-				String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "dob"));
-
-		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", authRequestdto, errors);
-	}
-
-	// ==================== validate Language code ===========================
-	@Test
-	public void testPrimaryLanguageWithInvalidCode() {
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+
+		// Then
+		assertTrue(errors.hasErrors());
+
+	}
+
+	@Ignore // TODO
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndWrongDateFormat_ResultHasParseException() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(personalIdentityDTO, "personalIdentityDTO");
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidPrimaryLanguageCode", "english", errors);
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", "12-12-2012");
+		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", personalIdentityDTO.getDob(), "yyyy-MM-dd",
+				errors);
+		assertTrue(errors.hasErrors());
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
 
-		errors.getFieldErrors();
+		// Then
+		// assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndAgeIsMoreThan150_ResultHasErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setAge", 155);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkAge", personalIdentityDTO.getAge(), errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+
+		// Then
 		assertTrue(errors.hasErrors());
 	}
 
 	@Test
-	public void testPrimaryLanguageWithValidCode() {
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndAgeIsInBetween1To150_ResultHasNoErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidPrimaryLanguageCode", "en", errors);
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setAge", 150);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkAge", personalIdentityDTO.getAge(), errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
 
-		errors.getFieldErrors();
+		// Then
 		assertFalse(errors.hasErrors());
 	}
-	
-	
+
 	@Test
-	public void testSecondaryLanguageWithInvalidCode() {
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndInvalidGenderInput_ResultHasErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidSecondaryLanguageCode", "english", errors);
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setGender", "Q");
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkGender", personalIdentityDTO.getGender(), errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
 
-		errors.getFieldErrors();
+		// Then
 		assertTrue(errors.hasErrors());
 	}
 
 	@Test
-	public void testSecondaryLanguageWithValidCode() {
-		AuthRequestDTO authRequestdto = new AuthRequestDTO();
-		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
-		PersonalIdentityDataDTO personalIdentityDataDTO = new PersonalIdentityDataDTO();
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndValidGenderInput_ResultHasNoErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
 
-		ReflectionTestUtils.invokeMethod(authRequestdto, "setPii", personalIdentityDataDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDataDTO, "setDemo", demodto);
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkValidSecondaryLanguageCode", "en", errors);
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setGender", "T");
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkGender", personalIdentityDTO.getGender(), errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
 
-		errors.getFieldErrors();
+		// Then
 		assertFalse(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndInvalidMatchStrategy_ResultHasErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsPri", "A");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsSec", "B");
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsPri(), "msPri",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsSec(), "msSec",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+
+		// Then
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndValidMatchStrategy_ResultHasNoErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsPri", "P");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsSec", "PH");
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsPri(), "msPri",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsSec(), "msSec",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+
+		// Then
+		assertFalse(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndInvalidMatchThresold_ResultHasErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtPri", 101);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtSec", 0);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtPri(), "mtPri",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtSec(), "mtSec",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+
+		// Then
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndValidMatchThresold_ResultHasNoErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtPri", 100);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtSec", 1);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtPri(), "mtPri",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtSec(), "mtSec",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+
+		// Then
+		assertFalse(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndPhoneNumberIsEmpty_ResultHasErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setPhone", "");
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkPhoneNumber", personalIdentityDTO.getPhone(), errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+
+		// Then
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndPhoneNumberIsAlphNumeric_ResultHasErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setPhone", "8aH45");
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkPhoneNumber", personalIdentityDTO.getPhone(), errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+
+		// Then
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndPhoneNumberIsInNumeric_ResultHasNoErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setPhone", "1");
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkPhoneNumber", personalIdentityDTO.getPhone(), errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+
+		// Then
+		assertFalse(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndValidEmails_ResultHasNoErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+
+		String[] validEmailProviders = ValidEmailProvider();
+		for (String email : validEmailProviders) {
+
+			ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setEmail", email);
+			ReflectionTestUtils.invokeMethod(demoValidator, "checkEmail", personalIdentityDTO.getEmail(), errors);
+			ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+			// Then
+			assertFalse(errors.hasErrors());
+		}
+
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndInvalidEmails_ResultHasErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+
+		String[] validEmailProviders = InvalidEmailProvider();
+		for (String email : validEmailProviders) {
+
+			ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setEmail", email);
+			ReflectionTestUtils.invokeMethod(demoValidator, "checkEmail", personalIdentityDTO.getEmail(), errors);
+			ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+			// Then
+			assertTrue(errors.hasErrors());
+		}
+	}
+
+	// ============== Helper Method ========================
+	public String[] ValidEmailProvider() {
+		return new String[] { "_mosip@yahoo.com", "mosip-100@yahoo.com", "mosip.100@yahoo.com", "mosip111@abc.com",
+				"mosip-100@abc.net", "mosip.100@abc.com.au", "mosip@1.com", "mosip@gmail.com.com",
+				"mosip+100@gmail.com", "mosip-100@yahoo-test.com" };
+	}
+
+	public String[] InvalidEmailProvider() {
+		return new String[] { "mosip", "mosip@.com.my", "mosip123@gmail.a", "mosip123@.com", "mosip123@.com.com",
+				".mosip@mosip.com", "mosip()*@gmail.com", "mosip@%*.com", "mosip..2002@gmail.com", "mosip.@gmail.com",
+				"mosip@mosip@gmail.com", "mosip@gmail.com.1a" };
 	}
 
 }
