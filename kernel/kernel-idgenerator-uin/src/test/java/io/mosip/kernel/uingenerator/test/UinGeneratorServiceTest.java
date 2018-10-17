@@ -10,12 +10,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.uingenerator.dto.UinResponseDto;
-import io.mosip.kernel.uingenerator.entity.UinEntity;
-import io.mosip.kernel.uingenerator.exception.UinGenerationJobException;
-import io.mosip.kernel.uingenerator.exception.UinNotFoundException;
-import io.mosip.kernel.uingenerator.repository.UinRepository;
-import io.mosip.kernel.uingenerator.service.impl.UinGeneratorServiceImpl;
+import io.mosip.kernel.idgenerator.uin.dto.UinResponseDto;
+import io.mosip.kernel.idgenerator.uin.entity.UinEntity;
+import io.mosip.kernel.idgenerator.uin.exception.UinGenerationJobException;
+import io.mosip.kernel.idgenerator.uin.exception.UinNotFoundException;
+import io.mosip.kernel.idgenerator.uin.repository.UinRepository;
+import io.mosip.kernel.idgenerator.uin.service.impl.UinGeneratorServiceImpl;
 
 /**
  * @author Dharmesh Khandelwal

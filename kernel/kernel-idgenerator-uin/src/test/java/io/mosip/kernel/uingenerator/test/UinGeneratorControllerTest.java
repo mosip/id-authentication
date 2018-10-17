@@ -12,9 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.uingenerator.controller.UinGeneratorController;
-import io.mosip.kernel.uingenerator.dto.UinResponseDto;
-import io.mosip.kernel.uingenerator.service.impl.UinGeneratorServiceImpl;
+import io.mosip.kernel.idgenerator.uin.controller.UinGeneratorController;
+import io.mosip.kernel.idgenerator.uin.dto.UinResponseDto;
+import io.mosip.kernel.idgenerator.uin.service.impl.UinGeneratorServiceImpl;
 
 /**
  * @author Dharmesh Khandelwal

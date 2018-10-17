@@ -101,9 +101,14 @@
 		<module>kernel-datavalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-config-server</module>
+		<module>kernel-emailnotification-smtp</module>		
 		<module>kernel-keygenerator-bouncycastle</module>
 		<module>kernel-security-bouncycastle</module>
 		<module>kernel-security-cipher</module>
+		<module>kernel-templatemanager-velocity</module>
+		<module>kernel-templatemanager-freemarker</module>
+		<module>kernel-pdfgenerator-itext</module>
+		<module>kernel-smsnotification-msg91</module>
 	</modules>
 
 	<profiles>
@@ -111,9 +116,9 @@
 			<id>LOCAL</id>
 			<properties>
 				<sonar.host.url>
-					http://13.67.91.2:9000
+					http://104.215.158.154:9000
 				</sonar.host.url>
-				<sonar.login>1b0451a7a15ae55e3760de8b0630e2c73fbd3600</sonar.login>
+				<sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
@@ -127,6 +132,7 @@
 					http://13.76.43.109:9000
 				</sonar.host.url>
 				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				 <sonar.ws.timeout>90000</sonar.ws.timeout>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec

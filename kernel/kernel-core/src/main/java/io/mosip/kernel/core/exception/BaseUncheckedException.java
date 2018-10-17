@@ -34,6 +34,14 @@ public class BaseUncheckedException extends RuntimeException {
 	public BaseUncheckedException() {
 		super();
 	}
+	
+	
+	/**
+	 * Constructs a new checked exception with errorMessage
+	 */
+	public BaseUncheckedException(String errorMessage) {
+		super(errorMessage);
+	}
 
 	/**
 	 * Constructs a new unchecked exception with the specified detail message and
