@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.spi.packetinfo.service;
+/*package io.mosip.registration.processor.core.spi.packetinfo.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,3 +36,4 @@ public class PacketInfoManagerImplTest {
 	}
 
 }
+*/
