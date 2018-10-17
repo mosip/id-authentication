@@ -49,7 +49,8 @@
 		
 		<sourceafis.version>3.4.0</sourceafis.version>
 		
-		<sonar.exclusions>**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/service/entity/**</sonar.exclusions>
+		<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/service/entity/**</sonar.exclusions>
 	</properties>
 
 	<modules>
@@ -95,9 +96,14 @@
 		<profile>
 			<id>DEV</id>
 			<properties>
-				<sonar.host.url>
-					http://13.67.91.2:9000
-				</sonar.host.url>
+				 <sonar.host.url>
+				 	http://13.76.43.109:9000
+				 </sonar.host.url>
+				 <sonar.login>
+				 	d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624
+				 </sonar.login>
+				 <sonar.projectName>IdAuthentication</sonar.projectName>
+                 <sonar.projectVersion>1.0.0-SNAPSHOT</sonar.projectVersion>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
@@ -107,8 +113,11 @@
 			<id>LOCAL</id>
 			<properties>
 				<sonar.host.url>
-					http://172.25.166.136:9000
+					http://104.215.158.154:9000
 				</sonar.host.url>
+				 <sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
+                 <sonar.projectName>IdAuthentication</sonar.projectName>
+                 <sonar.projectVersion>1.0.0-SNAPSHOT</sonar.projectVersion>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
