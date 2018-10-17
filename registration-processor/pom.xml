@@ -84,7 +84,6 @@
 		<module>core</module>
 		<module>packet-manager-impl</module>
 		<module>jobs</module>
-		<module>packet-meta-info</module>
 		<module>bridge</module>
     	<module>stages</module>
   </modules>
