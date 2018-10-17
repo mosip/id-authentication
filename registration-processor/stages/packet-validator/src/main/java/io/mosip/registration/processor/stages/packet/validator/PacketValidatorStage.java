@@ -20,8 +20,10 @@ import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
+import io.mosip.registration.processor.stages.exception.utils.ExceptionMessages;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
+import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -39,8 +41,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	private  FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter = new FilesystemCephAdapterImpl();
 
-	public static final String PACKET_META_INFO = "PacketMetaInfo";
-
+	
 	private static final String USER = "MOSIP_SYSTEM";
 
 	@Autowired
@@ -60,7 +61,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		object.setMessageBusAddress(MessageBusAddress.STRUCTURE_BUS_IN);
 		String registrationId = object.getRid();
 
-		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PACKET_META_INFO);
+		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
 		try {
 
 			
@@ -69,24 +70,26 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 			RegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(registrationId);
-			boolean isFilesValidated = FilesValidation.filesValidation(registrationId, packetInfo);
+			FilesValidation filesValidation=new FilesValidation(adapter);
+			boolean isFilesValidated = filesValidation.filesValidation(registrationId, packetInfo);
 			boolean isCheckSumValidated = false;
 			if (isFilesValidated) {
 				
-				isCheckSumValidated = CheckSumValidation.checksumvalidation(registrationId, packetInfo);
+				isCheckSumValidated =CheckSumValidation.checksumvalidation(registrationId, packetInfo);
 				if (!isCheckSumValidated) {
-					registrationStatusDto.setStatusComment("Packet checkSum validation failure");
+					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION);
 				}
 
 			} else {
-				registrationStatusDto.setStatusComment("Packet files validation failure");
+				registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION);
 
 			}
-			if (isFilesValidated && isCheckSumValidated) {
+			if (isFilesValidated && isCheckSumValidated) { 
 				object.setIsValid(Boolean.TRUE);
+				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION);
 				registrationStatusDto
 						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_SUCCESSFULL.toString());
-
+ 
 			} else {
 				object.setIsValid(Boolean.FALSE);
 				if (registrationStatusDto.getRetryCount() == null) {
@@ -103,11 +106,11 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 		} catch (IOException e) {
-			log.error("Structural validation Failed", e);
+			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), e);
 			object.setInternalError(Boolean.TRUE);
 
 		} catch (Exception ex) {
-			log.error("Structural validation Failed", ex);
+			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), ex);
 			object.setInternalError(Boolean.TRUE);
 		}
 

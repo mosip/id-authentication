@@ -1,10 +1,9 @@
 /*package io.mosip.registration.processor.stages.packet.validator;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,24 +19,21 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.core.env.Environment;
 
-import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.packet.dto.BiometricSequence;
 import io.mosip.registration.processor.core.packet.dto.DemographicSequence;
 import io.mosip.registration.processor.core.packet.dto.HashSequence;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
-import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
-import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(JsonUtils.class)
+@PrepareForTest({JsonUtil.class})
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PacketValidatorStageTest {
 
@@ -45,30 +41,24 @@ public class PacketValidatorStageTest {
 	private InputStream inputStream;
 
 	@Mock
-	private Environment env;
-
-	@Mock
-	private FileManager<DirectoryPathDto, InputStream> fileManager;
-
-	@Mock
 	private FileSystemAdapter<InputStream, PacketFiles, Boolean> filesystemCephAdapterImpl = new FilesystemCephAdapterImpl();
+	
+	
 
 	@Mock
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
-	;
+
 
 	@InjectMocks
 	private PacketValidatorStage packetValidatorStage;
 
+	private PacketInfo packetInfo;
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-	}
-
-	@Test
-	public void filesValidationCheck() throws Exception {
-		PacketInfo packetInfo = new PacketInfo();
+		packetInfo = new PacketInfo();
 		HashSequence hashSequence = new HashSequence();
 		BiometricSequence biometricSequence = new BiometricSequence();
 		DemographicSequence demographicSequence = new DemographicSequence();
@@ -88,9 +78,10 @@ public class PacketValidatorStageTest {
 
 		List<String> demographicApplicantList = new ArrayList<String>();
 		demographicApplicantList.add(PacketFiles.DEMOGRAPHICINFO.name());
-		demographicApplicantList.add(PacketFiles.REGISTRATIONACKNOWLDEGEMENT.name());
+		demographicApplicantList.add(PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name());
 		demographicApplicantList.add(PacketFiles.APPLICANTPHOTO.name());
 		demographicApplicantList.add(PacketFiles.PROOFOFADDRESS.name());
+		demographicApplicantList.add(PacketFiles.EXCEPTIONPHOTO.name());
 
 		biometricSequence.setApplicant(biometricApplicantList);
 		biometricSequence.setIntroducer(biometricIntroducerList);
@@ -99,26 +90,47 @@ public class PacketValidatorStageTest {
 		hashSequence.setBiometricSequence(biometricSequence);
 		hashSequence.setDemographicSequence(demographicSequence);
 		packetInfo.setHashSequence(hashSequence);
-		String PACKET_META_INFO_WITH_EXTENSION = "PacketMetaInfo.json";
+	}
+
+	@Test
+	public void filesValidationCheckSuccessFull() throws Exception {
 
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
-		when(env.getProperty("VALIDATION")).thenReturn("test");
-		Mockito.doNothing().when(fileManager).put(PACKET_META_INFO_WITH_EXTENSION, inputStream,
-				DirectoryPathDto.VALIDATION);
-
-		PowerMockito.mockStatic(JsonUtils.class);
-		PowerMockito.when(JsonUtils.class, "jsonFileToJavaObject", PacketInfo.class,
-				"test" + File.separator + "PacketMetaInfo.json").thenReturn(packetInfo);
-		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketInfo.class)
+				.thenReturn(packetInfo);
+		
+	
 		MessageDTO dto = new MessageDTO();
-		dto.setRid("1234");
+		dto.setRid("2018701130000410092018110735");
 
 		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
-
+		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
 		MessageDTO messageDto = packetValidatorStage.process(dto);
 		assertTrue(messageDto.getIsValid());
+
+	}
+
+	@Test
+	public void filesValidationCheckFailure() throws Exception {
+         
+		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketInfo.class)
+				.thenReturn(packetInfo);
+
+	
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("2018701130000410092018110735");
+
+		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
+		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.FALSE);
+		MessageDTO messageDto = packetValidatorStage.process(dto);
+		assertFalse(messageDto.getIsValid());
 
 	}
 
