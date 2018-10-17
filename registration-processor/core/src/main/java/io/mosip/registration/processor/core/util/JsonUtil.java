@@ -39,7 +39,7 @@ public class JsonUtil {
 		JsonObject jsonObject = (JsonObject) jsonParser.parse(new InputStreamReader(stream, "UTF-8"));
 		try {
 			return gson.fromJson(jsonObject, clazz);
-			}catch(JsonSyntaxException e) {				
+			}catch(Exception e) {				
 				throw new UnsupportedEncodingException(AbstractVerticleErrorCodes.IIS_EPU_ATU_UNSUPPORTED_ENCODING);
 			}
 	}

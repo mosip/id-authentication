@@ -63,5 +63,15 @@ public class JsonUtilTest {
 				result.toString());
 
 	}
+	
+	/**
+	 * Input streamto java object failure test.
+	 *
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
+	@Test(expected = UnsupportedEncodingException.class)
+	public void inputStreamtoJavaObjectFailureTest() throws UnsupportedEncodingException {
+	 JsonUtil.inputStreamtoJavaObject(inputStream, null);
+	}
 
 }
