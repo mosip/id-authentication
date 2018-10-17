@@ -10,11 +10,13 @@ Applications generate automatic emails for account signup, password reminders or
 * Generated output in the form of **processed template**.
 
 ## Solution:
-The key solution considerations are 
+
+**The key solution considerations are**
+
 -	Create a project which parse the template using template engine like velocity template engine or freemarker template processor.
 -	The jar of the template-manager can parse the template in their respective modules. Once the kernel’s template manager jar file added into class path.
 
-## The solution can be
+**The solution can be**
 -	Create a project that configure template in their module, add the template manager in class path and configure the MosipTemplateManager.
 -	Create a wrapper interface in MOSIP template manager, which can parse /merge the template.
 -	Configure the template and data which you can pass to template manager.
