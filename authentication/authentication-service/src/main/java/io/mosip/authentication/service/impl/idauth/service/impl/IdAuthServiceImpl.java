@@ -143,10 +143,10 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 			if (vidEntity.isActive()) {
 				Date currentDate = new Date();
-				if (vidEntity.getExpiryDate().before(currentDate)) {
+				if (currentDate.before(vidEntity.getExpiryDate())) {
 					refId = vidEntity.getRefId();
-					Optional<UinEntity> uinEntityOpt = uinRepository.findById(refId);
-					doValidateUIN(uinEntityOpt);
+					UinEntity uinEntityOpt = uinRepository.findByUinRefId(refId);
+					doValidateUIN(Optional.ofNullable(uinEntityOpt));
 				} else {
 					throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
 				}

@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 
@@ -202,7 +204,7 @@ public class IdAuthServiceTest {
 		String vid = "1234567890";
 		VIDEntity vidEntity = new VIDEntity();
 		vidEntity.setActive(true);
-		vidEntity.setExpiryDate(new Date());
+		vidEntity.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plus(1, ChronoUnit.MONTHS)));
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(false);
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
@@ -222,11 +224,10 @@ public class IdAuthServiceTest {
 		VIDEntity vidEntity = new VIDEntity();
 		vidEntity.setRefId("1234");
 		vidEntity.setActive(true);
-		vidEntity.setExpiryDate(new Date(01 / 01 / 2019));
+		vidEntity.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plus(1, ChronoUnit.MONTHS)));
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(true);
-		Optional<UinEntity> uinEntityopt = Optional.of(uinEntity);
-		Mockito.when(uinRepository.findById(Mockito.any())).thenReturn(uinEntityopt);
+		Mockito.when(uinRepository.findByUinRefId(Mockito.any())).thenReturn(uinEntity);
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
 
 		ReflectionTestUtils.setField(idAuthServiceImpl, "uinRepository", uinRepository);
