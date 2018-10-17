@@ -8,4 +8,5 @@ public class Iris {
 	private double qualityScore;
 	private Boolean forceCaptured;
 	private String irisType;
+	private Integer numRetry;
 }

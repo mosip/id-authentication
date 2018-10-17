@@ -1,7 +1,7 @@
 {
   "photograph" : {
     "photographName" : "applicantPhoto",
-    "hasExceptionPhoto" : false,
+    "hasExceptionPhoto" : true,
     "exceptionPhotoName" : "excep",
 	"qualityScore" : 80.0,
 	"numRetry" : 0
@@ -79,7 +79,7 @@
       "latitude" : 13.0049,
       "longitude" : 80.24492
     },
-    "applicationType" : "New Registration/Correction/Update UIN/Lost UIN/Activate UIN/Deactivate UIN",
+    "applicationType" : "New Registration", 
     "registrationCategory" : "Document/Introducer",
     "preRegistrationId" : "PEN1345T",
     "registrationId" : "2018782130000224092018121229",
