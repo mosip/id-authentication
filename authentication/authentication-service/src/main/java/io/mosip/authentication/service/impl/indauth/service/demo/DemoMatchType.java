@@ -74,28 +74,41 @@ public enum DemoMatchType implements MatchType {
 			AuthUsageDataBit.MATCHED_PI_EMAIL),
 
 	/** The addr line1 pri. */
-	ADDR_LINE1_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine1Pri(),
+	ADDR_LINE1_PRI(setOf(AddressMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine1Pri(),
 			(entity, locationInfoFetcher) -> entity.getAddrLine1(), AuthUsageDataBit.USED_AD_ADDR_LINE1_PRI,
 			AuthUsageDataBit.MATCHED_AD_ADDR_LINE1_PRI),
 
 	/** The addr line2 pri. */
-	ADDR_LINE2_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine2Pri(),
+	ADDR_LINE2_PRI(setOf(AddressMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine2Pri(),
 			(entity, locationInfoFetcher) -> entity.getAddrLine2(), AuthUsageDataBit.USED_AD_ADDR_LINE2_PRI,
 			AuthUsageDataBit.MATCHED_AD_ADDR_LINE2_PRI),
 
 	/** The addr line3 pri. */
-	ADDR_LINE3_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine3Pri(),
+	ADDR_LINE3_PRI(setOf(AddressMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine3Pri(),
 			(entity, locationInfoFetcher) -> entity.getAddrLine3(), AuthUsageDataBit.USED_AD_ADDR_LINE3_PRI,
 			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_PRI),
+	
+	/** The city pri. */
+	CITY_PRI(setOf(AddressMatchingStrategy.EXACT), demo -> demo.getAd().getCityPri(),
+			(entity, locationInfoFetcher) -> locationInfoFetcher
+					.getLocation(LocationLevel.CITY, entity.getLocationCode()).orElse(""),
+			AuthUsageDataBit.USED_AD_ADDR_CITY_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_CITY_PRI),
+
+	
+	/** The state pri. */
+	STATE_PRI(setOf(AddressMatchingStrategy.EXACT), demo -> demo.getAd().getStatePri(),
+			(entity, locationInfoFetcher) -> locationInfoFetcher
+					.getLocation(LocationLevel.STATE, entity.getLocationCode()).orElse(""),
+			AuthUsageDataBit.USED_AD_ADDR_STATE_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_STATE_PRI),
 
 	/** The country pri. */
-	COUNTRY_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getCountryPri(),
+	COUNTRY_PRI(setOf(AddressMatchingStrategy.EXACT), demo -> demo.getAd().getCountryPri(),
 			(entity, locationInfoFetcher) -> locationInfoFetcher
 					.getLocation(LocationLevel.COUNTRY, entity.getLocationCode()).orElse(""),
 			AuthUsageDataBit.USED_AD_ADDR_COUNTRY_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_COUNTRY_PRI),
 
 	/** The pincode pri. */
-	PINCODE_PRI(setOf(NameMatchingStrategy.EXACT), demo -> demo.getAd().getPinCodePri(),
+	PINCODE_PRI(setOf(AddressMatchingStrategy.EXACT), demo -> demo.getAd().getPinCodePri(),
 			(entity, locationInfoFetcher) -> locationInfoFetcher
 					.getLocation(LocationLevel.ZIPCODE, entity.getLocationCode()).orElse(""),
 			AuthUsageDataBit.USED_AD_ADDR_PINCODE_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE_PRI);

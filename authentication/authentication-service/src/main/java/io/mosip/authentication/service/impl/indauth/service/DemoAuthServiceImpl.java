@@ -159,6 +159,19 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 						MatchingStrategyType.EXACT.getType(), DEFAULT_EXACT_MATCH_VALUE);
 				listMatchInputs.add(matchInput);
 			}
+			
+			if (null != ad.getCityPri()) {
+				MatchInput matchInput = new MatchInput(DemoMatchType.CITY_PRI, MatchingStrategyType.EXACT.getType(),
+						DEFAULT_EXACT_MATCH_VALUE);
+				listMatchInputs.add(matchInput);
+			}
+			
+			if (null != ad.getStatePri()) {
+				MatchInput matchInput = new MatchInput(DemoMatchType.STATE_PRI, MatchingStrategyType.EXACT.getType(),
+						DEFAULT_EXACT_MATCH_VALUE);
+				listMatchInputs.add(matchInput);
+			}
+			
 			if (null != ad.getCountryPri()) {
 				MatchInput matchInput = new MatchInput(DemoMatchType.COUNTRY_PRI, MatchingStrategyType.EXACT.getType(),
 						DEFAULT_EXACT_MATCH_VALUE);

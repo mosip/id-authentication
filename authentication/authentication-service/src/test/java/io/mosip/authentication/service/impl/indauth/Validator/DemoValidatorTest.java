@@ -3,11 +3,6 @@ package io.mosip.authentication.service.impl.indauth.Validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Date;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,7 +21,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
 
-import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
@@ -434,27 +428,6 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setPhone", "");
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkPhoneNumber", personalIdentityDTO.getPhone(), errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
-
-		// Then
-		assertTrue(errors.hasErrors());
-	}
-
-	@Test
-	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndPhoneNumberIsAlphNumeric_ResultHasErrors() {
-
-		// Given
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
-		DemoDTO demodto = new DemoDTO();
-		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
-
-		// When
-		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
-		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setPhone", "8aH45");
 		ReflectionTestUtils.invokeMethod(demoValidator, "checkPhoneNumber", personalIdentityDTO.getPhone(), errors);
 		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
 

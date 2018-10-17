@@ -46,26 +46,38 @@ public enum AuthUsageDataBit {
 	/** The used ad addr line3 pri. */
 	USED_AD_ADDR_LINE3_PRI(4,0),
 	
+	/** The used ad addr city pri. */
+	USED_AD_ADDR_CITY_PRI(4,1),
+	
+	/** The used ad addr state pri. */
+	USED_AD_ADDR_STATE_PRI(4,2),
+	
 	/** The used ad addr country pri. */
-	USED_AD_ADDR_COUNTRY_PRI(4,1),
+	USED_AD_ADDR_COUNTRY_PRI(4,3),
 	
 	/** The used ad addr pincode pri. */
-	USED_AD_ADDR_PINCODE_PRI(4,2),
+	USED_AD_ADDR_PINCODE_PRI(5,0),
 	
 	/** The used ad addr line1 sec. */
-	USED_AD_ADDR_LINE1_SEC(4,3),
+	USED_AD_ADDR_LINE1_SEC(5,1),
 	
 	/** The used ad addr line2 sec. */
-	USED_AD_ADDR_LINE2_SEC(5,0),
+	USED_AD_ADDR_LINE2_SEC(5,2),
 	
 	/** The used ad addr line3 sec. */
-	USED_AD_ADDR_LINE3_SEC(5,1),
+	USED_AD_ADDR_LINE3_SEC(5,3),
+	
+	/** The used ad addr city sec. */
+	USED_AD_ADDR_CITY_SEC(6,0),
+	
+	/** The used ad addr state sec. */
+	USED_AD_ADDR_STATE_SEC(6,1),
 	
 	/** The used ad addr country sec. */
-	USED_AD_ADDR_COUNTRY_SEC(5,2),
+	USED_AD_ADDR_COUNTRY_SEC(6,2),
 	
 	/** The used ad addr pincode sec. */
-	USED_AD_ADDR_PINCODE_SEC(5,3),
+	USED_AD_ADDR_PINCODE_SEC(6,3),
 	
 	
 	
@@ -110,26 +122,38 @@ public enum AuthUsageDataBit {
 	/** The matched addr line3 pri. */
 	MATCHED_AD_ADDR_LINE3_PRI(12,0),
 	
+	/** The matched ad addr city pri. */
+	MATCHED_AD_ADDR_CITY_PRI(12,1),
+	
+	/** The matched ad addr state pri. */
+	MATCHED_AD_ADDR_STATE_PRI(12,2),
+	
 	/** The matched addr country pri. */
-	MATCHED_AD_ADDR_COUNTRY_PRI(12,1),
+	MATCHED_AD_ADDR_COUNTRY_PRI(12,3),
 	
 	/** The matched addr pincode pri. */
-	MATCHED_AD_ADDR_PINCODE_PRI(12,2),
+	MATCHED_AD_ADDR_PINCODE_PRI(13,0),
 	
 	/** The matched addr line1 sec. */
-	MATCHED_AD_ADDR_LINE1_SEC(12,3),
+	MATCHED_AD_ADDR_LINE1_SEC(13,1),
 	
 	/** The matched addr line2 sec. */
-	MATCHED_AD_ADDR_LINE2_SEC(13,0),
+	MATCHED_AD_ADDR_LINE2_SEC(13,2),
 	
 	/** The matched addr line3 sec. */
-	MATCHED_AD_ADDR_LINE3_SEC(13,1),
+	MATCHED_AD_ADDR_LINE3_SEC(13,3),
+	
+	/** The matched ad addr city pri. */
+	MATCHED_AD_ADDR_CITY_SEC(14,0),
+	
+	/** The matched ad addr state pri. */
+	MATCHED_AD_ADDR_STATE_SEC(14,1),
 	
 	/** The matched addr country sec. */
-	MATCHED_AD_ADDR_COUNTRY_SEC(13,2),
+	MATCHED_AD_ADDR_COUNTRY_SEC(14,2),
 	
 	/** The matched addr pincode sec. */
-	MATCHED_AD_ADDR_PINCODE_SEC(13,3),
+	MATCHED_AD_ADDR_PINCODE_SEC(14,3),
 	
 	
 	//Add bits further for new Authentication types

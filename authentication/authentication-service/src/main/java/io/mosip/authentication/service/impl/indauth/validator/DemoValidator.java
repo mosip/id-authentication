@@ -35,11 +35,14 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 @Component
 public class DemoValidator implements Validator {
 
+	private static final int MAX_AGE = 150;
+
+	private static final int MIN_AGE = 0;
+
 	private MosipLogger mosipLogger;
 
 	private static final String EMAIL_PATTERN = "^[\\_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	private static final String DOB_PATTERN = "^([0-9]{4})-(0?[1-9]|1[012])-(0?[1-9]|[12][0-9]|3[01])$";
-	private static final String PHONE_PATTERN = "^([0-9]{1,}$)";
 	private static final String SESSION_ID = "sessionid";
 
 	@Autowired
@@ -140,24 +143,29 @@ public class DemoValidator implements Validator {
 	private void addressValidation(AuthTypeDTO authType, DemoDTO demodto, Errors errors) {
 
 		PersonalAddressDTO personalAddressDTO = demodto.getAd();
-		if (authType.isAd() && personalAddressDTO != null) {
+		if ((personalAddressDTO.getAddrLine1Pri() == null 
+				&& personalAddressDTO.getAddrLine2Pri() == null
+				&& personalAddressDTO.getAddrLine3Pri() == null 
+				&& personalAddressDTO.getCityPri() == null
+				&& personalAddressDTO.getStatePri() == null
+				&& personalAddressDTO.getCountryPri() == null
+				&& personalAddressDTO.getPinCodePri() == null)
+				&&
+				(personalAddressDTO.getAddrLine1Sec() == null 
+				&& personalAddressDTO.getAddrLine2Sec() == null
+				&& personalAddressDTO.getAddrLine3Sec() == null
+				&& personalAddressDTO.getCitySec() == null
+				&& personalAddressDTO.getStateSec() == null
+				&& personalAddressDTO.getCountrySec() == null
+				&& personalAddressDTO.getPinCodeSec() == null)) {
 
-			if ((personalAddressDTO.getAddrLine1Pri() == null && personalAddressDTO.getAddrLine2Pri() == null
-					&& personalAddressDTO.getAddrLine3Pri() == null && personalAddressDTO.getCountryPri() == null
-					&& personalAddressDTO.getPinCodePri() == null)
-					&& (personalAddressDTO.getAddrLine1Sec() == null && personalAddressDTO.getAddrLine2Sec() == null
-							&& personalAddressDTO.getAddrLine3Sec() == null
-							&& personalAddressDTO.getCountrySec() == null
-							&& personalAddressDTO.getPinCodeSec() == null)) {
+			mosipLogger.error(SESSION_ID, "Personal Address",
+					"Address Validation",
+					"Atleast one attribute for address should be present");
+			errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
 
-				mosipLogger.error(SESSION_ID, "Personal Address", "Address Validation",
-						"Atleast one attribute for address should be present");
-				errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorMessage());
-
-			}
-
-		}
+		} 
 	}
 
 	/**
@@ -273,18 +281,14 @@ public class DemoValidator implements Validator {
 	}
 
 	private void checkAge(Integer age, Errors errors) {
-		if (age.intValue() < 1 || age.intValue() > 150) {
+		if (age.intValue() < MIN_AGE || age.intValue() > MAX_AGE) {
 			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "age"));
 		}
 	}
 
 	private void checkPhoneNumber(String phone, Errors errors) {
-
-		Pattern pattern = Pattern.compile(PHONE_PATTERN);
-		Matcher matcher = pattern.matcher(phone);
-
-		if (phone == null || phone.isEmpty() || !matcher.matches()) {
+		if (phone == null || phone.isEmpty()) {
 			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "phone"));
 		}

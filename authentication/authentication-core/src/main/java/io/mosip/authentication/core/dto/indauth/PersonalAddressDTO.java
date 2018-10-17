@@ -22,8 +22,11 @@ public class PersonalAddressDTO {
 
 	/** Address line 3 of the individual for primary language */
 	private String addrLine3Pri;
+	
+	/** Registered city of the individual for primary language */
+	private String cityPri;
 
-	/** Registered state of the individual */
+	/** Registered state of the individual for primary language */
 	private String statePri;
 
 	/** Registered country of the individual for primary language */
@@ -40,6 +43,12 @@ public class PersonalAddressDTO {
 
 	/** Address line 3 of the individual for secondary language */
 	private String addrLine3Sec;
+	
+	/** Registered city of the individual for primary language */
+	private String citySec;
+	
+	/** Registered state of the individual */
+	private String stateSec;
 	
 	/** Registered country of the individual for secondary language */
 	private String countrySec;
