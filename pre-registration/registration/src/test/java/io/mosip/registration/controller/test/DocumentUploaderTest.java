@@ -25,11 +25,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.registration.controller.DocumentUploader;
 import io.mosip.registration.dto.DocumentDto;
 import io.mosip.registration.service.DocumentUploadService;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(DocumentUploaderTest.class)
+@WebMvcTest(DocumentUploader.class)
 @TestPropertySource({ "classpath:registration-application.test.properties" })
 public class DocumentUploaderTest {
 

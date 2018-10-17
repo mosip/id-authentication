@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication(scanBasePackages="io.mosip.*")
 @PropertySource({"classpath:registration-application.properties"})
-//@PropertySource({"classpath:application.properties"})
+@PropertySource({"classpath:bootstrap.properties"})
 @PropertySource({"classpath:core-application.properties"})
 public class RegistrationApplication {
 	public static void main(String[] args) {
