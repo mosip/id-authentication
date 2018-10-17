@@ -87,7 +87,6 @@ public class DocumentUploaderServiceImpl implements DocumentUploadService {
 			documentEntity.setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
 
 			DocumentEntity entityr = documentRepository.save(documentEntity);
-			System.out.println(entityr);
 
 			List<String> preIdList = registrationRepositary.findBygroupIds(documentDto.getGroup_id());
 

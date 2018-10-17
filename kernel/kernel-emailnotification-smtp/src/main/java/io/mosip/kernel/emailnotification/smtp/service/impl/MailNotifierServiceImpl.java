@@ -71,7 +71,6 @@ public class MailNotifierServiceImpl implements MailNotifierService<MultipartFil
 			}
 			helper.setText(mailContent);
 		} catch (MessagingException exception) {
-			System.out.println("coming here");
 			throw new MosipAsyncCaughtExceptionHandler(exception);
 		}
 		if (attachments != null) {
