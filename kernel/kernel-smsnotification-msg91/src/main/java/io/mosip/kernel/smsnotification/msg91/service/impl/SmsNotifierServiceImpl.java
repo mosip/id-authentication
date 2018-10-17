@@ -25,7 +25,7 @@ import io.mosip.kernel.smsnotification.msg91.exception.MosipInvalidNumberExcepti
  *
  */
 @Service
-@PropertySource(value = { "application.properties" })
+@PropertySource(value = { "bootstrap.properties" })
 public class SmsNotifierServiceImpl implements SmsNotifier<SmsResponseDto> {
 
 	/**
