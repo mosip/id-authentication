@@ -81,8 +81,6 @@ public class DemoValidatorTest {
 		assertFalse(demoValidator.supports(AuthRequestValidator.class));
 	}
 
-	
-
 	// ========================= complete address validation =================
 
 	@Test
@@ -100,7 +98,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(auth, "setFad", true);
 		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
 		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", auth, demodto, errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForAllNullAndDob", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForCommon", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForMatchStrategyAndValue", auth, demodto, errors);
 		ReflectionTestUtils.invokeMethod(demoValidator, "validate", authRequestdto, errors);
 
 		// Then
@@ -162,7 +162,7 @@ public class DemoValidatorTest {
 		// When
 		ReflectionTestUtils.invokeMethod(auth, "setAd", true);
 		ReflectionTestUtils.invokeMethod(demodto, "setAd", personalAddressDTO);
-		ReflectionTestUtils.invokeMethod(demoValidator, "addressValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "addressValidation", demodto, errors);
 		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", auth, demodto, errors);
 
 		// Then
@@ -184,7 +184,7 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demodto, "setAd", personalAddressDTO);
 		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine1Pri", "mosip");
 		ReflectionTestUtils.invokeMethod(personalAddressDTO, "setAddrLine1Sec", "mosip");
-		ReflectionTestUtils.invokeMethod(demoValidator, "addressValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "addressValidation", demodto, errors);
 		ReflectionTestUtils.invokeMethod(demoValidator, "completeAddressValidation", auth, demodto, errors);
 
 		// Then
@@ -206,7 +206,7 @@ public class DemoValidatorTest {
 		// When
 		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
 		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForAllNullAndDob", auth, demodto, errors);
 
 		// Then
 		assertTrue(errors.hasErrors());
@@ -227,13 +227,12 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", "12/12/2012");
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForAllNullAndDob", auth, demodto, errors);
 
 		// Then
 		assertTrue(errors.hasErrors());
 	}
 
-	
 	@Test
 	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndWithValidDateFormat_ResultHasNoError() {
 
@@ -248,15 +247,14 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", "2012-12-12");
-		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", personalIdentityDTO.getDob(), env.getProperty("date.pattern"),
-		errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", personalIdentityDTO.getDob(),
+				env.getProperty("date.pattern"), errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForAllNullAndDob", auth, demodto, errors);
 
 		// Then
 		assertFalse(errors.hasErrors());
 	}
-	
-	
+
 	@Test
 	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndWithFutureDate_ResultHasError() {
 
@@ -271,9 +269,9 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setDob", "3012-12-12");
-		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", personalIdentityDTO.getDob(), env.getProperty("date.pattern"),
-		errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "dobValidation", personalIdentityDTO.getDob(),
+				env.getProperty("date.pattern"), errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForAllNullAndDob", auth, demodto, errors);
 
 		// Then
 		assertTrue(errors.hasErrors());
@@ -293,7 +291,7 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setAge", 155);
 		ReflectionTestUtils.invokeMethod(demoValidator, "checkAge", personalIdentityDTO.getAge(), errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForCommon", auth, demodto, errors);
 
 		// Then
 		assertTrue(errors.hasErrors());
@@ -313,7 +311,7 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setAge", 150);
 		ReflectionTestUtils.invokeMethod(demoValidator, "checkAge", personalIdentityDTO.getAge(), errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForCommon", auth, demodto, errors);
 
 		// Then
 		assertFalse(errors.hasErrors());
@@ -333,7 +331,7 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setGender", "Q");
 		ReflectionTestUtils.invokeMethod(demoValidator, "checkGender", personalIdentityDTO.getGender(), errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForCommon", auth, demodto, errors);
 
 		// Then
 		assertTrue(errors.hasErrors());
@@ -353,107 +351,7 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setGender", "T");
 		ReflectionTestUtils.invokeMethod(demoValidator, "checkGender", personalIdentityDTO.getGender(), errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
-
-		// Then
-		assertFalse(errors.hasErrors());
-	}
-
-	@Test
-	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndInvalidMatchStrategy_ResultHasErrors() {
-
-		// Given
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
-		DemoDTO demodto = new DemoDTO();
-		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
-
-		// When
-		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
-		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsPri", "A");
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsSec", "B");
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsPri(), "msPri",
-				errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsSec(), "msSec",
-				errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
-
-		// Then
-		assertTrue(errors.hasErrors());
-	}
-
-	@Test
-	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndValidMatchStrategy_ResultHasNoErrors() {
-
-		// Given
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
-		DemoDTO demodto = new DemoDTO();
-		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
-
-		// When
-		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
-		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsPri", "P");
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsSec", "PH");
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsPri(), "msPri",
-				errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsSec(), "msSec",
-				errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
-
-		// Then
-		assertFalse(errors.hasErrors());
-	}
-
-	@Test
-	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndInvalidMatchThresold_ResultHasErrors() {
-
-		// Given
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
-		DemoDTO demodto = new DemoDTO();
-		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
-
-		// When
-		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
-		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtPri", 101);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtSec", 0);
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtPri(), "mtPri",
-				errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtSec(), "mtSec",
-				errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
-
-		// Then
-		assertTrue(errors.hasErrors());
-	}
-
-	@Test
-	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndValidMatchThresold_ResultHasNoErrors() {
-
-		// Given
-		AuthTypeDTO auth = new AuthTypeDTO();
-		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
-		DemoDTO demodto = new DemoDTO();
-		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
-
-		// When
-		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
-		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtPri", 100);
-		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtSec", 1);
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtPri(), "mtPri",
-				errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtSec(), "mtSec",
-				errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForCommon", auth, demodto, errors);
 
 		// Then
 		assertFalse(errors.hasErrors());
@@ -474,7 +372,7 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setPhone", "");
 		ReflectionTestUtils.invokeMethod(demoValidator, "checkPhoneNumber", personalIdentityDTO.getPhone(), errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForCommon", auth, demodto, errors);
 
 		// Then
 		assertTrue(errors.hasErrors());
@@ -495,7 +393,7 @@ public class DemoValidatorTest {
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
 		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setPhone", "1");
 		ReflectionTestUtils.invokeMethod(demoValidator, "checkPhoneNumber", personalIdentityDTO.getPhone(), errors);
-		ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForCommon", auth, demodto, errors);
 
 		// Then
 		assertFalse(errors.hasErrors());
@@ -520,7 +418,7 @@ public class DemoValidatorTest {
 
 			ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setEmail", email);
 			ReflectionTestUtils.invokeMethod(demoValidator, "checkEmail", personalIdentityDTO.getEmail(), errors);
-			ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+			ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForCommon", auth, demodto, errors);
 			// Then
 			assertFalse(errors.hasErrors());
 		}
@@ -546,10 +444,110 @@ public class DemoValidatorTest {
 
 			ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setEmail", email);
 			ReflectionTestUtils.invokeMethod(demoValidator, "checkEmail", personalIdentityDTO.getEmail(), errors);
-			ReflectionTestUtils.invokeMethod(demoValidator, "personalIdentityValidation", auth, demodto, errors);
+			ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForCommon", auth, demodto, errors);
 			// Then
 			assertTrue(errors.hasErrors());
 		}
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndInvalidMatchStrategy_ResultHasErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsPri", "A");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsSec", "B");
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsPri(), "msPri",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsSec(), "msSec",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForMatchStrategyAndValue", auth, demodto, errors);
+
+		// Then
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndValidMatchStrategy_ResultHasNoErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsPri", "P");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMsSec", "PH");
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsPri(), "msPri",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchStrategy", personalIdentityDTO.getMsSec(), "msSec",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForMatchStrategyAndValue", auth, demodto, errors);
+
+		// Then
+		assertFalse(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndInvalidMatchThresold_ResultHasErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtPri", 101);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtSec", 0);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtPri(), "mtPri",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtSec(), "mtSec",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForMatchStrategyAndValue", auth, demodto, errors);
+
+		// Then
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testPersonalIdentity_WhenPiIsTrueAndOneAttributeIsAvailableAndValidMatchThresold_ResultHasNoErrors() {
+
+		// Given
+		AuthTypeDTO auth = new AuthTypeDTO();
+		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
+		DemoDTO demodto = new DemoDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
+
+		// When
+		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
+		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setNamePri", "mosip");
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtPri", 100);
+		ReflectionTestUtils.invokeMethod(personalIdentityDTO, "setMtSec", 1);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtPri(), "mtPri",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "checkMatchThresold", personalIdentityDTO.getMtSec(), "mtSec",
+				errors);
+		ReflectionTestUtils.invokeMethod(demoValidator, "piValidationForMatchStrategyAndValue", auth, demodto, errors);
+
+		// Then
+		assertFalse(errors.hasErrors());
 	}
 
 	// ============== Helper Method ========================

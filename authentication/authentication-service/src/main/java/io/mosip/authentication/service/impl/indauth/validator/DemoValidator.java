@@ -70,7 +70,11 @@ public class DemoValidator implements Validator {
 
 				completeAddressValidation(authRequestdto.getAuthType(), demodto, errors);
 
-				personalIdentityValidation(authRequestdto.getAuthType(), demodto, errors);
+				piValidationForAllNullAndDob(authRequestdto.getAuthType(), demodto, errors);
+
+				piValidationForCommon(authRequestdto.getAuthType(), demodto, errors);
+
+				piValidationForMatchStrategyAndValue(authRequestdto.getAuthType(), demodto, errors);
 
 			}
 		}
@@ -96,7 +100,7 @@ public class DemoValidator implements Validator {
 			fullAddressValidation(authType, demodto, errors);
 
 		} else if (authType.isAd()) {
-			addressValidation(authType, demodto, errors);
+			addressValidation(demodto, errors);
 		}
 	}
 
@@ -113,16 +117,13 @@ public class DemoValidator implements Validator {
 
 		PersonalFullAddressDTO personalFullAddressDTO = demodto.getFad();
 
-		if (authType.isFad() && personalFullAddressDTO != null) {
+		if ((authType.isFad() && personalFullAddressDTO != null)
+				&& (personalFullAddressDTO.getAddrPri() == null && personalFullAddressDTO.getAddrSec() == null)) {
 
-			if (personalFullAddressDTO.getAddrPri() == null && personalFullAddressDTO.getAddrSec() == null) { 
-
-				mosipLogger.error(SESSION_ID, "personal Full Address", "Full Address Validation for primary language",
-						"At least one attribute of full address should be present");
-				errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
-
-			}
+			mosipLogger.error(SESSION_ID, "personal Full Address", "Full Address Validation for primary language",
+					"At least one attribute of full address should be present");
+			errors.reject(IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorCode(),
+					IdAuthenticationErrorConstants.INVALID_FULL_ADDRESS_REQUEST.getErrorMessage());
 
 		}
 
@@ -137,7 +138,7 @@ public class DemoValidator implements Validator {
 	 * @param errors
 	 */
 	// TODO detect input text language and match with configurable language
-	private void addressValidation(AuthTypeDTO authType, DemoDTO demodto, Errors errors) {
+	private void addressValidation(DemoDTO demodto, Errors errors) {
 
 		PersonalAddressDTO personalAddressDTO = demodto.getAd();
 		if ((personalAddressDTO.getAddrLine1Pri() == null && personalAddressDTO.getAddrLine2Pri() == null
@@ -164,7 +165,7 @@ public class DemoValidator implements Validator {
 	 * @param errors
 	 */
 	// TODO detect input text language and match with configurable language
-	private void personalIdentityValidation(AuthTypeDTO authType, DemoDTO demodto, Errors errors) {
+	private void piValidationForAllNullAndDob(AuthTypeDTO authType, DemoDTO demodto, Errors errors) {
 
 		PersonalIdentityDTO personalIdentityDTO = demodto.getPi();
 
@@ -175,47 +176,64 @@ public class DemoValidator implements Validator {
 						"At least select one valid personal info");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorMessage());
-			} else {
-				if (personalIdentityDTO.getDob() != null) {
+			} else if (personalIdentityDTO.getDob() != null) {
 
-					try {
-						dobValidation(personalIdentityDTO.getDob(), env.getProperty("date.pattern"), errors);
-					} catch (ParseException e) {
-						mosipLogger.error(SESSION_ID, "ParseException",
-								e.getCause() == null ? "" : e.getCause().getMessage(), e.getMessage());
-						errors.rejectValue("dob", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-								String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-										"dob"));
-					}
+				try {
+					dobValidation(personalIdentityDTO.getDob(), env.getProperty("date.pattern"), errors);
+				} catch (ParseException e) {
+					mosipLogger.error(SESSION_ID, "ParseException",
+							e.getCause() == null ? "" : e.getCause().getMessage(), e.getMessage());
+					errors.rejectValue("dob", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+									"dob"));
 
 				}
 
-				if (personalIdentityDTO.getAge() != null) {
-					checkAge(personalIdentityDTO.getAge(), errors);
-				}
-				if (personalIdentityDTO.getGender() != null) {
-					checkGender(personalIdentityDTO.getGender(), errors);
-				}
-				if (personalIdentityDTO.getMsPri() != null) {
-					checkMatchStrategy(personalIdentityDTO.getMsPri(), "msPri", errors);
-				}
-				if (personalIdentityDTO.getMsSec() != null) {
-					checkMatchStrategy(personalIdentityDTO.getMsSec(), "msSec", errors);
-				}
-				if (personalIdentityDTO.getMtPri() != null) {
-					checkMatchThresold(personalIdentityDTO.getMtPri(), "mtPri", errors);
-				}
-				if (personalIdentityDTO.getMtSec() != null) {
-					checkMatchThresold(personalIdentityDTO.getMtSec(), "mtSec", errors);
-				}
-				if (personalIdentityDTO.getPhone() != null) {
-					checkPhoneNumber(personalIdentityDTO.getPhone(), errors);
-				}
-				if (personalIdentityDTO.getEmail() != null) {
-					checkEmail(personalIdentityDTO.getEmail(), errors);
-				}
 			}
 
+		}
+	}
+
+	private void piValidationForCommon(AuthTypeDTO authType, DemoDTO demodto, Errors errors) {
+
+		PersonalIdentityDTO personalIdentityDTO = demodto.getPi();
+
+		if (authType.isPi() && personalIdentityDTO != null) {
+
+			if (personalIdentityDTO.getAge() != null) {
+				checkAge(personalIdentityDTO.getAge(), errors);
+			}
+			if (personalIdentityDTO.getGender() != null) {
+				checkGender(personalIdentityDTO.getGender(), errors);
+			}
+
+			if (personalIdentityDTO.getPhone() != null) {
+				checkPhoneNumber(personalIdentityDTO.getPhone(), errors);
+			}
+			if (personalIdentityDTO.getEmail() != null) {
+				checkEmail(personalIdentityDTO.getEmail(), errors);
+			}
+		}
+	}
+
+	private void piValidationForMatchStrategyAndValue(AuthTypeDTO authType, DemoDTO demodto, Errors errors) {
+
+		PersonalIdentityDTO personalIdentityDTO = demodto.getPi();
+
+		if (authType.isPi() && personalIdentityDTO != null) {
+
+			if (personalIdentityDTO.getMsPri() != null) {
+				checkMatchStrategy(personalIdentityDTO.getMsPri(), "msPri", errors);
+			}
+			if (personalIdentityDTO.getMsSec() != null) {
+				checkMatchStrategy(personalIdentityDTO.getMsSec(), "msSec", errors);
+			}
+			if (personalIdentityDTO.getMtPri() != null) {
+				checkMatchThresold(personalIdentityDTO.getMtPri(), "mtPri", errors);
+			}
+			if (personalIdentityDTO.getMtSec() != null) {
+				checkMatchThresold(personalIdentityDTO.getMtSec(), "mtSec", errors);
+			}
 		}
 	}
 
