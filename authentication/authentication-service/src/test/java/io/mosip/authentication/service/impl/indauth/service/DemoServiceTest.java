@@ -1,13 +1,13 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Optional;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,9 +23,9 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
-
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthSecureDTO;
+import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalAddressDTO;
@@ -35,9 +35,13 @@ import io.mosip.authentication.core.dto.indauth.PersonalIdentityDataDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
+import io.mosip.authentication.service.impl.indauth.service.demo.LocationEntity;
+import io.mosip.authentication.service.impl.indauth.service.demo.LocationLevel;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 import io.mosip.authentication.service.repository.DemoRepository;
+import io.mosip.authentication.service.repository.LocationRepository;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -50,8 +54,13 @@ public class DemoServiceTest {
 	@InjectMocks
 	private DemoAuthServiceImpl demoAuthServiceImpl;
 
+	private DemoMatcher demomatcher = new DemoMatcher();
+
 	@Mock
 	private DemoRepository demoRepository;
+
+	@Mock
+	private LocationRepository locRepository;
 
 	@Before
 	public void before() {
@@ -85,7 +94,8 @@ public class DemoServiceTest {
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
-		assertEquals(listMatchInputsExp, listMatchInputsActual);
+		assertEquals(listMatchInputsExp.size(), listMatchInputsActual.size());
+		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 
 	}
 
@@ -105,8 +115,8 @@ public class DemoServiceTest {
 		pidData.setDemo(demoDTO);
 		authRequestDTO.setPii(pidData);
 		AuthTypeDTO authType = new AuthTypeDTO();
-		authType.setAd(false);
-		authType.setFad(true);
+		authType.setAd(true);
+		authType.setFad(false);
 		authType.setBio(false);
 		authType.setOtp(false);
 		authType.setPi(false);
@@ -124,7 +134,8 @@ public class DemoServiceTest {
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
-		assertNotEquals(listMatchInputsExp, listMatchInputsActual);
+		assertEquals(listMatchInputsExp.size(), listMatchInputsActual.size());
+		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 
 	}
 
@@ -147,10 +158,10 @@ public class DemoServiceTest {
 		authRequestDTO.setPii(pidData);
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setAd(false);
-		authType.setFad(true);
+		authType.setFad(false);
 		authType.setBio(false);
 		authType.setOtp(false);
-		authType.setPi(false);
+		authType.setPi(true);
 		authType.setPin(false);
 		authRequestDTO.setAuthType(authType);
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
@@ -165,7 +176,8 @@ public class DemoServiceTest {
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
 				authRequestDTO);
-		assertNotEquals(listMatchInputsExp, listMatchInputsActual);
+		assertEquals(listMatchInputsExp.size(), listMatchInputsActual.size());
+		assertTrue(listMatchInputsExp.containsAll(listMatchInputsActual));
 	}
 
 	@Test
@@ -196,7 +208,8 @@ public class DemoServiceTest {
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		List<MatchInput> listMatchInputsAct = (List<MatchInput>) constructInputMethod.invoke(demoAuthServiceImpl,
 				authRequest);
-		assertEquals(listMatchInputsExp, listMatchInputsAct);
+		assertEquals(listMatchInputsExp.size(), listMatchInputsAct.size());
+		assertTrue(listMatchInputsExp.containsAll(listMatchInputsAct));
 	}
 
 	@Test
@@ -218,11 +231,45 @@ public class DemoServiceTest {
 	@Ignore
 	@Test
 	public void TestValidgetDemoStatus() throws IdAuthenticationBusinessException {
+		ReflectionTestUtils.setField(demoAuthServiceImpl, "demoMatcher", demomatcher);
 		AuthRequestDTO authRequestDTO = generateData();
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setPi(true);
+		PersonalIdentityDTO pid = new PersonalIdentityDTO();
+		pid.setNamePri("Mr.Dinesh Karuppiah");
+		DemoDTO demoDTO = new DemoDTO();
+		PersonalIdentityDataDTO personalData = new PersonalIdentityDataDTO();
+		AuthRequestDTO authRequest = new AuthRequestDTO();
+		demoDTO.setPi(pid);
+		personalData.setDemo(demoDTO);
+		authRequest.setPii(personalData);
+		authRequestDTO.setAuthType(authType);
 		DemoEntity demoEntity = new DemoEntity();
+		demoEntity.setFirstName("Dinesh");
+		demoEntity.setLastName("Karuppiah");
+		Mockito.when(demoAuthServiceImpl.getDemoEntity(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(demoEntity);
+		AuthStatusInfo authstatus = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "1234567890");
+		System.out.println(authstatus);
+		assertFalse(authstatus.isStatus());
 
-		Mockito.when(demoAuthServiceImpl.getDemoEntity(Mockito.anyString(), Mockito.anyString()));
-		demoAuthServiceImpl.getDemoStatus(authRequestDTO, "1323323");
+	}
+
+	@Ignore
+	@Test
+	public void TestgetLocation() throws NoSuchMethodException, SecurityException {
+		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("getDemoEntity", String.class,
+				String.class);
+		LocationEntity locationEntity = new LocationEntity();
+		locationEntity.setLangcode("EN");
+		locationEntity.setCode("CHN");
+		locationEntity.setName("CHENNAI");
+		locationEntity.setParentloccode("TN");
+		Optional<LocationEntity> optlocation = Optional.of(locationEntity);
+		Mockito.when(locRepository.findByCodeAndIsActive(Mockito.anyString(), Mockito.anyBoolean()))
+				.thenReturn(optlocation);
+		Optional<String> outputvalue = demoAuthServiceImpl.getLocation(LocationLevel.CITY, "chennai");
+		System.out.println(outputvalue);
 	}
 
 	private AuthRequestDTO generateData() {
@@ -246,8 +293,6 @@ public class DemoServiceTest {
 		authRequestDTO.setMsaLicenseKey("LICENSE!@#$");
 		authRequestDTO.setMuaCode("1234567890");
 		DemoDTO demoDTO = new DemoDTO();
-		//demoDTO.setLangPri("en");
-		//demoDTO.setLangSec("ar");
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		personalIdentityDTO.setNamePri("dinesh karuppiah");
 		personalIdentityDTO.setMsPri("P");
