@@ -2,7 +2,6 @@ package io.mosip.registration.dao.impl;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.util.List;
 
@@ -50,12 +49,12 @@ public class RegistrationUserDetailDAOImpl implements RegistrationUserDetailDAO 
 	public RegistrationUserDetail getUserDetail(String userId) {
 
 		LOGGER.debug("REGISTRATION - USER_DETAIL - REGISTRATION_USER_DETAIL_DAO_IMPL",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "Fetching User details");
+				APPLICATION_NAME, APPLICATION_ID, "Fetching User details");
 
 		List<RegistrationUserDetail> registrationUserDetail = registrationUserDetailRepository
 				.findByIdAndIsActiveTrue(userId);
 		LOGGER.debug("REGISTRATION - USER_DETAIL - REGISTRATION_USER_DETAIL_DAO_IMPL",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"User details fetched successfully");
 
 		return !registrationUserDetail.isEmpty() ? registrationUserDetail.get(0) : null;

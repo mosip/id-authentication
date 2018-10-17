@@ -264,8 +264,9 @@
 			<properties>
 				<!-- Optional URL to server. Default value is http://localhost:9000 -->
 				<sonar.host.url>
-					http://13.67.91.2:9000
-					<!-- http://172.25.166.136:9000 -->
+					<!-- http://13.67.91.2:9000 -->
+					<!--  http://172.25.166.136:9000 -->
+					http://172.23.135.83:8085
 				</sonar.host.url>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec

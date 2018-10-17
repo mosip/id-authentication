@@ -2,7 +2,6 @@ package io.mosip.registration.util.healthcheck;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -14,6 +13,7 @@ import java.net.URL;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
@@ -30,6 +30,7 @@ import oshi.software.os.OperatingSystem;
  * @author Sivasankar Thalavai
  * @since 1.0.0
  */
+@Component
 public class RegistrationAppHealthCheckUtil {
 
 	private static MosipLogger LOGGER;
@@ -59,7 +60,7 @@ public class RegistrationAppHealthCheckUtil {
 	 */
 	public static boolean isNetworkAvailable() {
 		LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Registration Network Checker had been called.");
 		boolean isNWAvailable = false;
 		try {
@@ -76,10 +77,10 @@ public class RegistrationAppHealthCheckUtil {
 				isNWAvailable = true;
 			}
 			LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE",
-					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "Internet Access Available.");
+					APPLICATION_NAME, APPLICATION_ID, "Internet Access Available.");
 		} catch (IOException ioException) {
 			LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISNETWORKAVAILABLE",
-					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "No Internet Access.");
+					APPLICATION_NAME, APPLICATION_ID, "No Internet Access.");
 		} catch (URISyntaxException e) {
 
 		}
@@ -93,7 +94,7 @@ public class RegistrationAppHealthCheckUtil {
 	 */
 	public static boolean isDiskSpaceAvailable() {
 		LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Registration Disk Space Checker had been called.");
 		boolean isSpaceAvailable = false;
 		FileSystem fileSystem = operatingSystem.getFileSystem();
@@ -105,17 +106,17 @@ public class RegistrationAppHealthCheckUtil {
 				if (fs.getUsableSpace() > diskSpaceThreshold) {
 					isSpaceAvailable = true;
 					LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
-							getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+							APPLICATION_NAME, APPLICATION_ID,
 							"Required Disk Space Available.");
 				} else {
 					LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
-							getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+							APPLICATION_NAME, APPLICATION_ID,
 							"Required Disk Space Not Available.");
 				}
 			}
 		}
 		LOGGER.debug("REGISTRATION - REGISTRATIONAPPHEALTHCHECKUTIL - ISDISKSPACEAVAILABLE",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Registration Disk Space Checker had been ended.");
 		return isSpaceAvailable;
 	}

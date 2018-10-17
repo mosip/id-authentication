@@ -24,7 +24,6 @@ import io.mosip.registration.service.PacketEncryptionService;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_PACKET_CREATION_ERROR_CODE;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_HANLDER;
 import static io.mosip.registration.constants.RegConstants.INTERNAL_SERVER_ERROR;
 import static io.mosip.registration.constants.RegConstants.REGISTRATION_ID;
@@ -73,7 +72,7 @@ public class PacketHandlerService {
 	 * @return the {@link ResponseDTO} object
 	 */
 	public ResponseDTO handle(RegistrationDTO registrationDTO) {
-		logger.debug(LOG_PKT_HANLDER, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 				"Registration Handler had been called");
 		ResponseDTO responseDTO = new ResponseDTO();
 		String rid = registrationDTO == null ? "RID" : registrationDTO.getRegistrationId();
@@ -83,7 +82,7 @@ public class PacketHandlerService {
 
 			// 2.encrypt packet
 			if (inMemoryZipFile != null && inMemoryZipFile.length > 0) {
-				logger.debug(LOG_PKT_HANLDER, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 						"Registration Packet had been created successfully");
 				responseDTO = packetEncryptionService.encrypt(registrationDTO, inMemoryZipFile);
 			} else {
@@ -93,7 +92,7 @@ public class PacketHandlerService {
 				List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
 				errorResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
-				logger.debug(LOG_PKT_HANLDER, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 						"Error in creating Registration Packet");
 				auditFactory.audit(AuditEventEnum.PACKET_INTERNAL_ERROR, AppModuleEnum.PACKET_HANDLER,
 						INTERNAL_SERVER_ERROR, REGISTRATION_ID, rid);
@@ -117,7 +116,7 @@ public class PacketHandlerService {
 			errorResponseDTOs.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		}
-		logger.debug(LOG_PKT_HANLDER, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 				"Registration Handler had been ended");
 		return responseDTO;
 	}

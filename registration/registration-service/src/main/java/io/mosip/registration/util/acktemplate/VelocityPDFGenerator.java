@@ -21,6 +21,8 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
+
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.constants.RegConstants;
 import org.springframework.stereotype.Component;
 
@@ -69,8 +71,14 @@ public class VelocityPDFGenerator {
 
 		// map the respective fields with the values in the enrolmentDTO
 		velocityContext.put(RegConstants.TEMPLATE_DATE, currentDate);
-		velocityContext.put(RegConstants.TEMPLATE_FULL_NAME, registration.getDemographicDTO().getDemoInUserLang().getFirstName()+" "+registration.getDemographicDTO().getDemoInUserLang().getLastName());
-		velocityContext.put(RegConstants.TEMPLATE_DOB, registration.getDemographicDTO().getDemoInUserLang().getDateOfBirth());
+		velocityContext.put(RegConstants.TEMPLATE_FULL_NAME, registration.getDemographicDTO().getDemoInUserLang().getFullName());
+		Date dob = registration.getDemographicDTO().getDemoInUserLang().getDateOfBirth();
+		if(dob == null) {
+			velocityContext.put(RegConstants.TEMPLATE_DOB, RegConstants.EMPTY);
+		} else {
+			velocityContext.put(RegConstants.TEMPLATE_DOB, 
+					DateUtils.formatDate(dob, "dd-MM-YYYY"));
+		}
 		velocityContext.put(RegConstants.TEMPLATE_GENDER, registration.getDemographicDTO().getDemoInUserLang().getGender());
 		velocityContext.put(RegConstants.TEMPLATE_ADDRESS_LINE1,
 				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLine1());
@@ -81,7 +89,12 @@ public class VelocityPDFGenerator {
 		velocityContext.put(RegConstants.TEMPLATE_COUNTRY,
 				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine4());
 		velocityContext.put(RegConstants.TEMPLATE_MOBILE, registration.getDemographicDTO().getDemoInUserLang().getMobile());
-		velocityContext.put(RegConstants.TEMPLATE_EMAIL, registration.getDemographicDTO().getDemoInUserLang().getEmailId());
+		String email = registration.getDemographicDTO().getDemoInUserLang().getEmailId();
+		if (email == null || email == RegConstants.EMPTY) {
+			velocityContext.put(RegConstants.TEMPLATE_EMAIL, RegConstants.EMPTY);
+		} else {
+			velocityContext.put(RegConstants.TEMPLATE_EMAIL, email);
+		}
 
 		List<DocumentDetailsDTO> documents = registration.getDemographicDTO().getApplicantDocumentDTO()
 				.getDocumentDetailsDTO();

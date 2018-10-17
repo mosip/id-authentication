@@ -2,7 +2,6 @@ package io.mosip.registration.service;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -14,14 +13,11 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.assertj.core.util.Sets;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
 import io.mosip.registration.dao.RegTransactionDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +61,7 @@ public class PacketUploadService {
 	 */
 	public List<File> verifyPacket(List<String> packetNames, Map<String, File> packetMap) {
 		LOGGER.debug("REGISTRATION - VERIFY_PACKET - PACKET_UPLOAD_SERVICE", 
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), 
+				APPLICATION_NAME, APPLICATION_ID, 
 				"verifying the packets that needs to be uploaded");
 		List<Registration> packetList = registrationDAO.getRegistrationById(packetNames);
 		List<File> verifiedPackets = new ArrayList<>();
@@ -85,7 +81,7 @@ public class PacketUploadService {
 	 */
 	public Boolean updateStatus(List<File> uploadedPackets) {
 		LOGGER.debug("REGISTRATION - UPDATE_STATUS - PACKET_UPLOAD_SERVICE", 
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), 
+				APPLICATION_NAME, APPLICATION_ID, 
 				"Update the status of the uploaded packet");
 		List<RegistrationTransaction> registrationTransactions = new ArrayList<>();
 		PacketUtil packetUtil = new PacketUtil();

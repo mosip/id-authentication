@@ -3,7 +3,6 @@ package io.mosip.registration.entity;
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 
 /**
  * Composite key for RegistrationUserRole entity
@@ -11,13 +10,13 @@ import javax.persistence.Embeddable;
  * @author Sravya Surampalli
  * @since 1.0.0
  */
-@Embeddable
-public class RegistrationUserRoleId implements Serializable {
+public class RegistrationUserRoleID implements Serializable {
 
 	private static final long serialVersionUID = -8072043172665654382L;
 
 	@Column(name = "usr_id", length = 64, nullable = false, updatable = false)
 	private String usrId;
+
 	@Column(name = "role_code", length = 32, nullable = false, updatable = false)
 	private String roleCode;
 	@Column(name = "lang_code", length = 3, nullable = false, updatable = false)
@@ -68,4 +67,5 @@ public class RegistrationUserRoleId implements Serializable {
 		this.langCode = langCode;
 	}
 
+	
 }

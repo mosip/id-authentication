@@ -1,7 +1,5 @@
 package io.mosip.registration.dao.impl;
 
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +45,8 @@ public class RegistrationAppLoginDAOImpl implements RegistrationAppLoginDAO {
 	 */
 	public Map<String, Object> getModesOfLogin() {
 
-		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", getPropertyValue(RegConstants.APPLICATION_NAME),
-				getPropertyValue(RegConstants.APPLICATION_ID), "Fetching list of login modes");
+		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegConstants.APPLICATION_NAME,
+				RegConstants.APPLICATION_ID, "Fetching list of login modes");
 
 		List<RegistrationAppLoginMethod> loginList = registrationAppLoginRepository
 				.findByIsActiveTrueOrderByMethodSeq();
@@ -56,8 +54,8 @@ public class RegistrationAppLoginDAOImpl implements RegistrationAppLoginDAO {
 		Map<String, Object> loginModes = new LinkedHashMap<>();
 		loginList.forEach(mode -> loginModes.put(String.valueOf(mode.getMethodSeq()), mode.getRegistrationAppLoginMethodId().getLoginMethod()));
 		
-		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", getPropertyValue(RegConstants.APPLICATION_NAME),
-				getPropertyValue(RegConstants.APPLICATION_ID), "List of login modes fetched successfully");
+		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegConstants.APPLICATION_NAME,
+				RegConstants.APPLICATION_ID, "List of login modes fetched successfully");
 		
 		loginModes.put(RegConstants.LOGIN_SEQUENCE, RegConstants.INITIAL_LOGIN_SEQUENCE);
 		return loginModes;

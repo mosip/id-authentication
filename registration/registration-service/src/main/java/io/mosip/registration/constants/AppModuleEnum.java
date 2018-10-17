@@ -19,11 +19,14 @@ public enum AppModuleEnum {
 	LOGIN_MODES("REG-LGN-07","Login Modes"),
 	USER_STATUS("REG-USR-08","User Status"),
 	VALIDATE_USER("REG-VLD-09","Validate User"),
-	USER_DETAIL("REG-DTL-010","User Detail"),
-	CENTER_NAME("REG-CTR-011","Center Name"),
-	CENTER_DETAIL("REG-CTR-012","Center Detail"),
-	USER_ROLE("REG-USR-013","User Role"),
-	SCREEN_AUTH("REG-SCR_014","Screen AUthorization"); 
+	USER_DETAIL("REG-DTL-10","User Detail"),
+	CENTER_NAME("REG-CTR-11","Center Name"),
+	CENTER_DETAIL("REG-CTR-12","Center Detail"),
+	USER_ROLE("REG-USR-13","User Role"),
+	SCREEN_AUTH("REG-SCR_14","Screen AUthorization"), 
+	PACKET_RETRIVE("REG-PRO-15","Packet Retrive for Approval"), 
+	PACKET_UPDATE("REG-PRO-16","Update Packet"), 
+	SYNC_VALIDATE("REG-PRO-17","Sync service"); 
 
 	/**
 	 * The constructor

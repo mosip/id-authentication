@@ -2,7 +2,6 @@ package io.mosip.registration.util.healthcheck;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -41,7 +40,7 @@ public class RegistrationSystemPropertiesChecker {
 	 */
 	public static String getMachineId() {
 		LOGGER.debug("REGISTRATION - REGISTRATIONSYSTEMPROPERTIESCHECKER - GETMACHINEID",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Registration Get Machine Id had been called.");
 		StringBuilder machineId = new StringBuilder();
 		try {
@@ -53,10 +52,10 @@ public class RegistrationSystemPropertiesChecker {
 			}
 		} catch (SocketException socketException) {
 			LOGGER.debug("REGISTRATION - REGISTRATIONSYSTEMPROPERTIESCHECKER - GETMACHINEID",
-					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "Socket Exception.");
+					APPLICATION_NAME, APPLICATION_ID, "Socket Exception.");
 		} catch (UnknownHostException e) {
 			LOGGER.debug("REGISTRATION - REGISTRATIONSYSTEMPROPERTIESCHECKER - GETMACHINEID",
-					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "Unknown Host Exception.");
+					APPLICATION_NAME, APPLICATION_ID, "Unknown Host Exception.");
 		}
 		return machineId.toString();
 	}

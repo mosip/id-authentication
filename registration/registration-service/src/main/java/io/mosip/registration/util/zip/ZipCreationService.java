@@ -31,7 +31,6 @@ import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegConstants.IMAGE_TYPE;
 import static io.mosip.registration.constants.RegConstants.JSON_FILE_EXTENSION;
 import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_IO_EXCEPTION;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static io.mosip.registration.constants.LoggerConstants.LOG_ZIP_CREATION;
 
 /**
@@ -62,7 +61,7 @@ public class ZipCreationService {
 	 */
 	public static byte[] createPacket(final RegistrationDTO registrationDTO, final Map<String, byte[]> jsonMap)
 			throws RegBaseCheckedException {
-		logger.debug(LOG_ZIP_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
 				"Packet Zip had been called");
 
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -77,8 +76,8 @@ public class ZipCreationService {
 						folderName = "Biometric".concat(separator).concat("Applicant").concat(separator);
 						addBiometricImages(registrationDTO.getBiometricDTO().getApplicantBiometricDTO(), folderName,
 								zipOutputStream);
-						logger.debug(LOG_ZIP_CREATION, getPropertyValue(APPLICATION_NAME),
-								getPropertyValue(APPLICATION_ID), "Applicant's biometric added");
+						logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME,
+								APPLICATION_ID, "Applicant's biometric added");
 					}
 
 					// Add Introducer Biometrics to packet zip
@@ -86,8 +85,8 @@ public class ZipCreationService {
 						folderName = "Biometric".concat(separator).concat("Introducer").concat(separator);
 						addBiometricImages(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), folderName,
 								zipOutputStream);
-						logger.debug(LOG_ZIP_CREATION, getPropertyValue(APPLICATION_NAME),
-								getPropertyValue(APPLICATION_ID), "Introcucer's biometric added");
+						logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME,
+								APPLICATION_ID, "Introcucer's biometric added");
 					}
 				}
 
@@ -97,19 +96,19 @@ public class ZipCreationService {
 						String folderName = "Demographic".concat(separator).concat("Applicant").concat(separator);
 						addDemogrpahicData(registrationDTO.getDemographicDTO().getApplicantDocumentDTO(), folderName,
 								zipOutputStream);
-						logger.debug(LOG_ZIP_CREATION, getPropertyValue(APPLICATION_NAME),
-								getPropertyValue(APPLICATION_ID), "Applicant's demographic added");
+						logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME,
+								APPLICATION_ID, "Applicant's demographic added");
 					}
 					writeFileToZip(
 							"Demographic".concat(separator).concat("DemographicInfo").concat(JSON_FILE_EXTENSION),
 							jsonMap.get(RegConstants.DEMOGRPAHIC_JSON_NAME), zipOutputStream);
-					logger.debug(LOG_ZIP_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+					logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							"Demographic JSON added");
 				}
 
 				// Add the HMAC Info
 				writeFileToZip("HMACFile.txt", jsonMap.get(RegConstants.HASHING_JSON_NAME), zipOutputStream);
-				logger.debug(LOG_ZIP_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
 						"HMAC added");
 
 				if (checkNotNull(registrationDTO.getBiometricDTO())) {
@@ -122,20 +121,20 @@ public class ZipCreationService {
 						addOfficerBiometric("EnrollmentOfficerBioImage",
 								registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), zipOutputStream);
 					}
-					logger.debug(LOG_ZIP_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+					logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							"Supervisor's Biometric added");
 				}
 
 				// Add Registration Meta JSON
 				writeFileToZip("PacketMetaInfo".concat(JSON_FILE_EXTENSION),
 						jsonMap.get(RegConstants.PACKET_META_JSON_NAME), zipOutputStream);
-				logger.debug(LOG_ZIP_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
 						"Registration Packet Meta added");
 
 				// Add Audits
 				writeFileToZip(RegConstants.AUDIT_JSON_FILE.concat(JSON_FILE_EXTENSION),
 						jsonMap.get(RegConstants.AUDIT_JSON_FILE), zipOutputStream);
-				logger.debug(LOG_ZIP_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
 						"Registration Audit Logs Meta added");
 
 				zipOutputStream.flush();
@@ -144,7 +143,7 @@ public class ZipCreationService {
 				byteArrayOutputStream.close();
 			}
 
-			logger.debug(LOG_ZIP_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Packet zip had been ended");
 			return byteArrayOutputStream.toByteArray();
 		} catch (IOException exception) {

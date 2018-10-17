@@ -18,7 +18,6 @@ import io.mosip.registration.util.mac.SystemMacAddress;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static java.lang.System.currentTimeMillis;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_SEEDS;
 
@@ -49,14 +48,14 @@ public class AESSeedGeneratorImpl implements AESSeedGenerator {
 	 */
 	@Override
 	public List<String> generateAESKeySeeds() throws RegBaseCheckedException {
-		logger.debug(LOG_PKT_AES_SEEDS, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		logger.debug(LOG_PKT_AES_SEEDS, APPLICATION_NAME, APPLICATION_ID,
 				"Generating seeds for AES Encryption had been started");
 		try {
 			List<String> aesKeySeeds = new LinkedList<>();
 			aesKeySeeds.add(SystemMacAddress.getSystemMacAddress());
 			aesKeySeeds.add(SessionContext.getInstance().getUserContext().getName());
 			aesKeySeeds.add(String.valueOf(currentTimeMillis()));
-			logger.debug(LOG_PKT_AES_SEEDS, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_AES_SEEDS, APPLICATION_NAME, APPLICATION_ID,
 					"Generating seeds for AES Encryption had been ended");
 			return aesKeySeeds;
 		} catch (RegBaseCheckedException checkedException) {

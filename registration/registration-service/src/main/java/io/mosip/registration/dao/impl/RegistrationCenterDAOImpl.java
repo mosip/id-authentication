@@ -2,7 +2,6 @@ package io.mosip.registration.dao.impl;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.util.Optional;
 
@@ -49,8 +48,8 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 	 */
 	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
 
-		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Fetching Registration Center details");
+		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,
+				APPLICATION_ID, "Fetching Registration Center details");
 
 		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository
 				.findByRegistrationCenterIdCenterIdAndIsActiveTrue(centerId);
@@ -63,16 +62,16 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 			registrationCenterDetailDTO.setRegistrationCenterAddrLine1(registrationCenter.get().getAddrLine1());
 			registrationCenterDetailDTO.setRegistrationCenterAddrLine2(registrationCenter.get().getAddrLine2());
 			registrationCenterDetailDTO.setRegistrationCenterAddrLine3(registrationCenter.get().getAddrLine3());
-			registrationCenterDetailDTO.setRegistrationLatitude(registrationCenter.get().getLatitude());
-			registrationCenterDetailDTO.setRegistrationLongitude(registrationCenter.get().getLongitude());
+			registrationCenterDetailDTO.setRegistrationCenterLatitude(registrationCenter.get().getLatitude());
+			registrationCenterDetailDTO.setRegistrationCenterLongitude(registrationCenter.get().getLongitude());
 			registrationCenterDetailDTO.setRegistrationCenterLocationCode(registrationCenter.get().getLocationCode());
 			registrationCenterDetailDTO
 					.setRegistrationCenterNumberOfStations(registrationCenter.get().getNumberOfStations());
 			registrationCenterDetailDTO.setRegistrationCenterWorkingHours(registrationCenter.get().getWorkingHours());
 		}
 
-		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Registration Center details fetched successfulyy");
+		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,
+				APPLICATION_ID, "Registration Center details fetched successfulyy");
 
 		return registrationCenterDetailDTO;
 	}

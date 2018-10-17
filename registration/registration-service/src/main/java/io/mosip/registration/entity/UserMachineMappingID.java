@@ -61,10 +61,4 @@ public class UserMachineMappingID implements Serializable {
 		this.machineID = machineID;
 	}
 
-	@Override
-	public String toString() {
-		return "UserMachineMappingID [userID=" + userID + ", centreID=" + centreID + ", machineID=" + machineID + "]";
-
-	}
-
 }

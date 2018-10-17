@@ -120,7 +120,8 @@ public class LoginController extends BaseController {
 			if (userId.getText().isEmpty() && password.getText().isEmpty()) {
 				generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
 						AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-						RegistrationUIConstants.MISSING_MANDATOTY_FIELDS, RegistrationUIConstants.CREDENTIALS_FIELD_EMPTY);
+						RegistrationUIConstants.MISSING_MANDATOTY_FIELDS,
+						RegistrationUIConstants.CREDENTIALS_FIELD_EMPTY);
 			} else if (userId.getText().isEmpty()) {
 				generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
 						AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
@@ -153,25 +154,24 @@ public class LoginController extends BaseController {
 					if (!offlineStatus) {
 						generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
 								AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-								RegistrationUIConstants.LOGIN_INFO_MESSAGE,
-								RegistrationUIConstants.INCORRECT_PWORD);
+								RegistrationUIConstants.LOGIN_INFO_MESSAGE, RegistrationUIConstants.INCORRECT_PWORD);
 					}
 				}
-				if (validateUserStatus(userId.getText())) {
-					generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
-							AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-							RegistrationUIConstants.LOGIN_INFO_MESSAGE, RegistrationUIConstants.BLOCKED_USER_ERROR);
-				} else {
-					SessionContext sessionContext = SessionContext.getInstance();
-					// Resetting login sequence to the Session context after log out
-					if (sessionContext.getMapObject() == null) {
-						Map<String, Object> userLoginMode = loginServiceImpl.getModesOfLogin();
-						sessionContext.setMapObject(userLoginMode);
-						sessionContext.getMapObject().put(RegistrationUIConstants.LOGIN_INITIAL_SCREEN,
-								RegistrationUIConstants.LOGIN_METHOD_PWORD);
-					}
+				if (serverStatus || offlineStatus) {
+					if (validateUserStatus(userId.getText())) {
+						generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
+								AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+								RegistrationUIConstants.LOGIN_INFO_MESSAGE, RegistrationUIConstants.BLOCKED_USER_ERROR);
+					} else {
+						SessionContext sessionContext = SessionContext.getInstance();
+						// Resetting login sequence to the Session context after log out
+						if (sessionContext.getMapObject() == null) {
+							Map<String, Object> userLoginMode = loginServiceImpl.getModesOfLogin();
+							sessionContext.setMapObject(userLoginMode);
+							sessionContext.getMapObject().put(RegistrationUIConstants.LOGIN_INITIAL_SCREEN,
+									RegistrationUIConstants.LOGIN_METHOD_PWORD);
+						}
 
-					if (serverStatus || offlineStatus) {
 						int counter = (int) sessionContext.getMapObject().get(RegConstants.LOGIN_SEQUENCE);
 						counter++;
 						if (sessionContext.getMapObject().containsKey(String.valueOf(counter))) {
@@ -200,8 +200,8 @@ public class LoginController extends BaseController {
 								BaseController.load(getClass().getResource(RegistrationUIConstants.HOME_PAGE));
 							}
 						}
-					}
 
+					}
 				}
 			}
 		} catch (IOException | RuntimeException | RegBaseCheckedException exception) {

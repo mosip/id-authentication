@@ -26,7 +26,6 @@ import io.mosip.registration.util.store.StorageService;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_ENCRYPTION;
 
 @Service
@@ -75,36 +74,36 @@ public class PacketEncryptionService {
 	 */
 	public ResponseDTO encrypt(final RegistrationDTO registrationDTO, final byte[] packetZipData)
 			throws RegBaseCheckedException {
-		logger.debug(LOG_PKT_ENCRYPTION, getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Packet encryption had been started");
+		logger.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+				APPLICATION_ID, "Packet encryption had been started");
 		try {
 			// Encrypt the packet
 			byte[] encryptedPacket = aesEncryptionService.encrypt(packetZipData);
-			logger.debug(LOG_PKT_ENCRYPTION, getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "Packet encrypted successfully");
+			logger.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+					APPLICATION_ID, "Packet encrypted successfully");
 
 			// Generate Zip File Name with absolute path
 			String filePath = storageService.storeToDisk(registrationDTO.getRegistrationId(), encryptedPacket,
 					registrationDTO.getDemographicDTO().getApplicantDocumentDTO().getAcknowledgeReceipt());
-			logger.debug(LOG_PKT_ENCRYPTION, getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+					APPLICATION_ID,
 					"Encrypted Packet and Acknowledgement Receipt saved successfully");
 
 			// Insert the Registration Details into DB
-			registrationDAO.save(filePath, registrationDTO.getDemographicDTO().getDemoInLocalLang().getFullName());
-			logger.debug(LOG_PKT_ENCRYPTION, getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "Encrypted Packet persisted");
+			registrationDAO.save(filePath, registrationDTO.getDemographicDTO().getDemoInUserLang().getFullName());
+			logger.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+					APPLICATION_ID, "Encrypted Packet persisted");
 			
 			// Update the sync'ed audits
 			List<String> auditUUIDs = new LinkedList<>();
 			registrationDTO.getAuditDTOs().parallelStream().map(AuditDTO::getUuid).forEach(auditUUIDs::add);
 			auditDAO.updateSyncAudits(auditUUIDs);
-			logger.debug(LOG_PKT_ENCRYPTION, getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "Sync'ed audit logs updated");
+			logger.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+					APPLICATION_ID, "Sync'ed audit logs updated");
 			auditFactory.audit(AuditEventEnum.PACKET_ENCRYPTED, AppModuleEnum.PACKET_ENCRYPTOR,
 					"Packet encrypted successfully", "registration reference id", "123456");
-			logger.debug(LOG_PKT_ENCRYPTION, getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "Packet encryption had been ended");
+			logger.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
+					APPLICATION_ID, "Packet encryption had been ended");
 			// Return the Response Object
 			ResponseDTO responseDTO = new ResponseDTO();
 			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();

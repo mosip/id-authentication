@@ -8,6 +8,37 @@
 	-fx-background-color: #f8f9fa;
 }
 
+#anchor-pane-registration .text-field {		
+	-fx-background-color: -fx-text-box-border, -fx-background;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 1 0;
+  	-fx-border-width: 0 0 1 0;	
+}	
+
+#anchor-pane-registration .text-field:focused{
+	-fx-border-color: red;
+	-fx-background-insets: 0,0 0 2 0;
+  	
+}
+
+#anchor-pane-registration .button{
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,1), 10, 0, 0, 0);
+}
+
+
+#homeReg{
+	-fx-font-size:15px;
+}
+
+#Detail{
+ 	-fx-padding: 10;
+	-fx-border-color:black;
+    -fx-border-width: 1;
+    -fx-border-style : solid inside;
+    -fx-border-insets: 5;
+    
+}
+
 #hbox {
 	-fx-background-color: #ffffff;
 }

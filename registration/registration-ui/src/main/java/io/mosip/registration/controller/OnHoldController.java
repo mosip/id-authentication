@@ -14,6 +14,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.constants.RegClientStatusCode;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.service.RegistrationApprovalService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -109,9 +110,9 @@ public class OnHoldController extends BaseController implements Initializable{
 	public void updatePacketStatus(ActionEvent event) {
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", getPropertyValue(APPLICATION_NAME),
 				getPropertyValue(APPLICATION_ID), "Packet updation as on hold has been started");
-		//TODO : get the approverId from session context
-		if(registration.packetUpdateStatus(regId, RegClientStatusCode.ON_HOLD.getCode(),"mahesh123", 
-				onHoldComboBox.getSelectionModel().getSelectedItem(), "mahesh123")) {
+String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
+		if(registration.packetUpdateStatus(regId, RegClientStatusCode.ON_HOLD.getCode(),approverUserId, 
+				onHoldComboBox.getSelectionModel().getSelectedItem(), approverUserId)) {
 		generateAlert("Status",AlertType.INFORMATION,"Registration moved to On Hold.");
 		submit.disableProperty().set(true);
 		registrationController.tablePagination();

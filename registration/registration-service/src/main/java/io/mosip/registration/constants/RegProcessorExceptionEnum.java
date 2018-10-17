@@ -29,7 +29,11 @@ public enum RegProcessorExceptionEnum {
 	REG_FTP_PROPERTIES_SET_ERROR_CODE(PACKET_UPLOAD_EXP_CODE + "FUM-003","Error in ftp properties"),
 	REG_SERVICE_DELEGATE_UTIL_CODE(PACKET_CREATION_EXP_CODE + "SDU-002","Exception through service delegate util, class not found"),
 	REG_RSA_INVALID_DATA(PACKET_CREATION_EXP_CODE + "REM-001", "Invalid data for RSA encryption"),
-	REG_RSA_INVALID_KEY(PACKET_CREATION_EXP_CODE + "REM-002", "Invalid key for RSA encryption");
+	REG_RSA_INVALID_KEY(PACKET_CREATION_EXP_CODE + "REM-002", "Invalid key for RSA encryption"),
+	REG_SERVICE_DUPLICATE_KEY_EXCEPTION_CODE("IDC-FRA-PAC-023","Tried to insert Duplicate key in MAchine Mapping table"),
+	REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE("IDC-FRA-UMM-024","No Record Found in the Machine Master table"),
+	REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE("IDC-FRA-UMM-025","No Record Found in the Center Machine table"),
+	REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE("IDC-FRA-UMM-025","No Record Found in the Center USER Machine table");
 
 	/**
 	 * The constructor

@@ -14,11 +14,12 @@ public enum RegClientStatusCode {
 	UIN_UPDATE("U"), 
 	UIN_LOST("L"),
 	UPLOADED_SUCCESSFULLY("P"), 
-	META_INFO_SYN_SERVER("S"), 
+	META_INFO_SYN_SERVER("S"),
 	DELETED("D"),
 	APPROVED("A"), 
 	REJECTED("I"), 
 	ON_HOLD("H"), 
+	SERVER_VALIDATED("V"), 
 	PACKET_ERROR("E");
 
 	/**

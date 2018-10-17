@@ -40,7 +40,7 @@ public class ViewAcknowledgementController extends TableCell<RegistrationApprova
 	 * @param table
 	 */
 	public ViewAcknowledgementController(TableView<RegistrationApprovalUiDto> table) {
-
+		
 		paddedButton.setPadding(new Insets(3));
 		paddedButton.getChildren().add(link);
 		mainHolder.getChildren().add(paddedButton);

@@ -38,7 +38,6 @@ import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegConstants.DEMOGRPAHIC_JSON_NAME;
 import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
 import static io.mosip.registration.constants.RegConstants.REGISTRATION_ID;
@@ -76,7 +75,7 @@ public class PacketCreationService {
 	 * @throws RegBaseCheckedException
 	 */
 	public byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException {
-		logger.debug(LOG_PKT_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 				"Registration Creation had been called");
 		try {
 			String rid = registrationDTO.getRegistrationId();
@@ -91,7 +90,7 @@ public class PacketCreationService {
 			jsonsMap.put(DEMOGRPAHIC_JSON_NAME,
 					javaObjectToJsonString(MAPPER_FACADE.map(registrationDTO.getDemographicDTO(), Demographic.class))
 							.getBytes());
-			logger.debug(LOG_PKT_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Demographic Json created successfully");
 			auditFactory.audit(AuditEventEnum.PACKET_DEMO_JSON_CREATED, AppModuleEnum.PACKET_CREATOR,
 					"Demographic JSON created successfully", REGISTRATION_ID, rid);
@@ -102,7 +101,7 @@ public class PacketCreationService {
 					new DemographicSequence(new LinkedList<String>()));
 			jsonsMap.put(RegConstants.HASHING_JSON_NAME, HMACGeneration.generatePacketDTOHash(registrationDTO,
 					jsonsMap.get(DEMOGRPAHIC_JSON_NAME), hashSequence));
-			logger.debug(LOG_PKT_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"HMAC File generated successfully");
 			auditFactory.audit(AuditEventEnum.PACKET_HMAC_FILE_CREATED, AppModuleEnum.PACKET_CREATOR,
 					"Packet HMAC File created successfully", REGISTRATION_ID, rid);
@@ -116,7 +115,7 @@ public class PacketCreationService {
 			packetInfo.setCheckSumMap(CheckSumUtil.getCheckSumMap());
 			packetInfo.setOsiData(MAPPER_FACADE.convert(registrationDTO, OSIData.class, "osiDataConverter"));
 			jsonsMap.put(RegConstants.PACKET_META_JSON_NAME, javaObjectToJsonString(packetInfo).getBytes());
-			logger.debug(LOG_PKT_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Registration Packet Meta-Info JSON generated successfully");
 			auditFactory.audit(AuditEventEnum.PACKET_META_JSON_CREATED, AppModuleEnum.PACKET_CREATOR,
 					"Packet Meta-Data JSON created successfully", REGISTRATION_ID, rid);
@@ -125,14 +124,14 @@ public class PacketCreationService {
 			jsonsMap.put(RegConstants.AUDIT_JSON_FILE,
 					javaObjectToJsonString(MAPPER_FACADE.mapAsList(registrationDTO.getAuditDTOs(), Audit.class))
 							.getBytes());
-			logger.debug(LOG_PKT_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Registration Packet Meta-Info JSON generated successfully");
 			auditFactory.audit(AuditEventEnum.PACKET_META_JSON_CREATED, AppModuleEnum.PACKET_CREATOR,
 					"Packet Meta-Data JSON created successfully", REGISTRATION_ID, rid);
 
 			// Creating in-memory zip file for Packet Encryption
 			byte[] packetZipBytes = ZipCreationService.createPacket(registrationDTO, jsonsMap);
-			logger.debug(LOG_PKT_CREATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Registration Creation had been ended");
 			auditFactory.audit(AuditEventEnum.PACKET_INTERNAL_ZIP, AppModuleEnum.PACKET_CREATOR,
 					"Packet Internal Zip File created successfully", REGISTRATION_ID, rid);

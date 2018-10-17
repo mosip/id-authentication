@@ -77,6 +77,7 @@ public class RegConstants {
 	// Audit - Constants
 	public static final String AUDIT_APPLICATION_ID = "audit.applicationId";
 	public static final String AUDIT_APPLICATION_NAME = "audit.applicationName";
+	
 	// Default Host IP Address and Name for Audit Logs
 	public static final String HOST_IP = "audit.hostIP";
 	public static final String HOST_NAME = "audit.hostName";
@@ -115,7 +116,7 @@ public class RegConstants {
 	public static final String LOGIN_INVALID_USERNAME = "Unable To Login";
 	public static final String LOGIN_INVALID_OTP = "Unable To Login";
 	public static final String GENERATED_OTP = "Generated OTP : ";
-
+	
 	/** Velocity Template Generator Constants */
 	public static final String RESOURCE_LOADER = "file";
 	public static final String FILE_RESOURCE_LOADER_CLASS = "file.resource.loader.class";
@@ -152,5 +153,59 @@ public class RegConstants {
 	//Login Sequence
 	public static final String LOGIN_SEQUENCE = "sequence";
 	public static final int INITIAL_LOGIN_SEQUENCE = 1;
+
+	// USER CLIENT MACHINE MAPPING
+	public static final String MACHINE_MAPPING_CODE = "USER CLIENT MACHINE MAPPING ALERT";
+	public static final String MACHINE_MAPPING_SUCCESS_MESSAGE = "User Mapped Successfully";
+	public static final String MACHINE_MAPPING_ERROR_MESSAGE = "Unable to map user";
+	public static final String MACHINE_MAPPING_CREATED = "created";
+	public static final String MACHINE_MAPPING_UPDATED = "updated";
+	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
+	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
+	public static final String MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE = "User Data Fetched Successfully";
+	public static final String MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS = "No Records Found";
+	public static final String MACHINE_MAPPING_LOGGER_TITLE = "REGISTRATION - USER CLIENT MACHINE MAPPING";
+	// BLOCKLISTED USER
+	public static final String BLACKLISTED = "BLOCKED";
+
+	// MAP ID
+	public static final String USER_MACHINE_MAPID = "ListOfUserDTO";
+
+	
+	// ACTIVE INACTIVE USER
+	public static final String USER_ACTIVE = "Active";
+	public static final String USER_IN_ACTIVE = "In-Active";
+
+	//opt to register constants
+	public static final String OPT_TO_REG_GEO_CAP_FREQ = "GEO_CAP_FREQ";
+	public static final String OPT_TO_REG_LER_J00009 = "LER_J00009"; 
+	public static final String OPT_TO_REG_ICS‌_001 = "REG-ICS‌-001";
+	public static final String OPT_TO_REG_ICS‌_001_MSG = "Time since last sync exceeded maximum limit. Please sync from server before proceeding with this registration";
+	public static final String OPT_TO_REG_INFOTYPE = "ERROR";
+	public static final String OPT_TO_REG_ICS‌_002 = "REG-ICS‌-002";
+	public static final String OPT_TO_REG_ICS‌_002_MSG = "Time since last export of registration packets exceeded maximum limit. Please export or upload packets to server before proceeding with this registration";
+	public static final String OPT_TO_REG_ICS‌_003 = "REG-ICS‌-003";
+	public static final String OPT_TO_REG_ICS‌_003_MSG = "Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration";
+	public static final String OPT_TO_REG_ICS‌_004 = "REG-ICS‌-004";
+	public static final String OPT_TO_REG_ICS‌_004_MSG = "Your client machine’s location is outside the registration centre. Please note that registration can be done only from within the registration centre";
+	public static final String OPT_TO_REG_PAK_MAX_CNT_OFFLINE_FREQ = "REG_PAK_MAX_CNT_OFFLINE_FREQ";
+	public static final double OPT_TO_REG_EARTH_RADIUS = 6371000;
+	public static final double OPT_TO_REG_METER_CONVERSN = 1609.00;
+	public static final String OPT_TO_REG_LOGGER_SESSION_ID = "REGISTRATION - SYNC - VALIDATION";
+	public static final String OPT_TO_REG_DIST_FRM_MACHN_TO_CENTER = "DIST_FRM_MACHN_TO_CENTER";
+	public static final String OPT_TO_REG_GEO_FLAG_SINGLETIME = "Y";
+	public static final String OPT_TO_REG_GEO_FLAG_MULTIPLETIME = "N";
+	public static final String OPT_TO_REG_ICS‌_005 = "REG-ICS‌-005";
+	public static final String OPT_TO_REG_ICS‌_005_MSG = "Unable to validate machine location. Please insert the GPS device and try again";
+	public static final String OPT_TO_REG_SUCCESS = "success";
+
+	/** Packet Status Sync Constants */
+	public static final String PACKET_STATUS_SYNC_SUCCESS_MESSAGE = "Packet Status Sync Successful";
+	public static final String PACKET_STATUS_SYNC_RESPONSE_ENTITY = "registrations";
+	public static final String PACKET_STATUS_SYNC_SERVICE_NAME = "packet_status";
+	public static final String PACKET_STATUS_SYNC_URL_PARAMETER = "registrationIds";
+	public static final String PACKET_STATUS_SYNC_REGISTRATION_ID = "registrationId";
+	public static final String PACKET_STATUS_SYNC_STATUS_CODE = "statusCode";
+	public static final String PACKET_STATUS_SYNC_ERROR_RESPONSE = "No Status Available";
 	
 }

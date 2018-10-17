@@ -17,7 +17,6 @@ import io.mosip.registration.repositories.RegAuditRepository;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static io.mosip.registration.constants.LoggerConstants.LOG_AUDIT_DAO;
 
 /**
@@ -53,8 +52,8 @@ public class AuditDAOImpl implements AuditDAO {
 	 */
 	@Override
 	public List<Audit> getAllUnsyncAudits() {
-		this.logger.debug(LOG_AUDIT_DAO, getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Fetching the list of unsync'ed Audits");
+		this.logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+				APPLICATION_ID, "Fetching the list of unsync'ed Audits");
 		try {
 			return regAuditRepository.findAllUnsyncAudits();
 		} catch (RuntimeException runtimeException) {
@@ -71,8 +70,8 @@ public class AuditDAOImpl implements AuditDAO {
 	@Override
 	@Transactional
 	public int updateSyncAudits(List<String> auditUUIDs) {
-		logger.debug(LOG_AUDIT_DAO, getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "updateSyncAudits has been started");
+		logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+				APPLICATION_ID, "updateSyncAudits has been started");
 		int updatedCount = 0;
 		try {
 			int syncAuditCount = auditUUIDs.size();
@@ -90,8 +89,8 @@ public class AuditDAOImpl implements AuditDAO {
 			throw new RegBaseUncheckedException(RegProcessorExceptionCode.UPDATE_SYNC_AUDIT,
 					runtimeException.toString());
 		}
-		this.logger.debug(LOG_AUDIT_DAO, getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "updateSyncAudits has been ended");
+		this.logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+				APPLICATION_ID, "updateSyncAudits has been ended");
 		return updatedCount;
 	}
 

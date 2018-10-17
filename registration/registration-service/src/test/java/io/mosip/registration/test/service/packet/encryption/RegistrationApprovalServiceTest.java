@@ -3,6 +3,7 @@ package io.mosip.registration.test.service.packet.encryption;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -26,14 +27,11 @@ import io.mosip.registration.constants.AppModuleEnum;
 import io.mosip.registration.constants.AuditEventEnum;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationApprovalUiDto;
-import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.RegistrationApprovalService;
-import io.mosip.registration.test.util.datastub.DataProvider;
-
 
 public class RegistrationApprovalServiceTest {
 
@@ -50,7 +48,6 @@ public class RegistrationApprovalServiceTest {
 	private AuditFactory auditFactory;
 	@Mock
 	RegistrationDAO registrationDAO;
-	RegistrationDTO registrationDTO;
 
 	@Before
 	public void initialize() throws IOException, URISyntaxException, RegBaseCheckedException {
@@ -64,7 +61,6 @@ public class RegistrationApprovalServiceTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
 
-		registrationDTO = DataProvider.getPacketDTO();
 
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
@@ -177,5 +173,13 @@ public class RegistrationApprovalServiceTest {
 		Boolean updateStatus = registrationApprovalService.packetUpdateStatus("", "", "", "", "");
 		assertTrue(!updateStatus);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test(expected = RegBaseUncheckedException.class)
+	public void testValidateException() throws RegBaseUncheckedException {
+		when(registrationDAO.approvalList()).thenThrow(RegBaseUncheckedException.class);
+		registrationApprovalService.getAllEnrollments();
+	}
+
 
 }

@@ -2,7 +2,6 @@ package io.mosip.registration.exception;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
@@ -53,8 +52,8 @@ public class RegBaseCheckedException extends BaseCheckedException {
 	 */
 	public RegBaseCheckedException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
-		LOGGER.debug("REGISTRATION - CHECKED_EXCEPTION", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), errorCode + "-->" + errorMessage);
+		LOGGER.debug("REGISTRATION - CHECKED_EXCEPTION", APPLICATION_NAME,
+				APPLICATION_ID, errorCode + "-->" + errorMessage);
 	}
 
 	/**
@@ -70,7 +69,7 @@ public class RegBaseCheckedException extends BaseCheckedException {
 	 */
 	public RegBaseCheckedException(String errorCode, String errorMessage, Throwable throwable) {
 		super(errorCode, errorMessage, throwable);
-		LOGGER.debug("REGISTRATION - CHECKED_EXCEPTION", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), errorCode + "-->" + errorMessage);
+		LOGGER.debug("REGISTRATION - CHECKED_EXCEPTION", APPLICATION_NAME,
+				APPLICATION_ID, errorCode + "-->" + errorMessage);
 	}
 }

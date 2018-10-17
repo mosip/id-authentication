@@ -38,14 +38,14 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	List<Registration> findByclientStatusCode(String statusCode);
 
 	/**
-	 * This method updates the client status code of the {@link Registration} entity
-	 * 
-	 * @param status
-	 *            the client status code to be updated
-	 * @param idList
-	 *            the list of entity id's
-	 * @return the status of the update
+	 * This method fetches the registration packets based on given client status codes.
+	 *
+	 * @param statusCodes 
+	 * 				the status codes
+	 * @return List of registration packets
 	 */
+	List<Registration> findByClientStatusCodeIn(List<String> statusCodes);
+
 	@Modifying(clearAutomatically = true)
 	@Query("update Registration r set r.clientStatusCode = ?1 where r.id IN ?2")
 	public int updateClientStatus(@Param("status") String status, @Param("idList") List<String> idList);

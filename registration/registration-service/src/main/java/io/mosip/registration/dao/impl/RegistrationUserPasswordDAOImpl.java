@@ -2,7 +2,6 @@ package io.mosip.registration.dao.impl;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class RegistrationUserPasswordDAOImpl implements RegistrationUserPassword
 	public boolean getPassword(String userId, String hashPassword) {
 
 		LOGGER.debug("REGISTRATION - USER_CREDENTIALS - REGISTRATION_USER_PASSWORD_DAO_IMPL",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "Fetching User credentials");
+				APPLICATION_NAME, APPLICATION_ID, "Fetching User credentials");
 
 		List<RegistrationUserPassword> registrationUserPwd = registrationUserPasswordRepository
 				.findByRegistrationUserPasswordIdUsrIdAndIsActiveTrue(userId);
@@ -57,7 +56,7 @@ public class RegistrationUserPasswordDAOImpl implements RegistrationUserPassword
 		String userData = !registrationUserPwd.isEmpty() ? registrationUserPwd.get(0).getPwd() : null;
 
 		LOGGER.debug("REGISTRATION - USER_CREDENTIALS - REGISTRATION_USER_PASSWORD_DAO_IMPL",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"User credentials fetched successfully");
 
 		return userData != null && hashPassword.equals(userData);

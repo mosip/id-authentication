@@ -17,7 +17,7 @@ import javax.persistence.Table;
 public class RegistrationUserRole extends RegistrationCommonFields {
 
 	@EmbeddedId
-	private RegistrationUserRoleId registrationUserRoleId;
+	private RegistrationUserRoleID registrationUserRoleID;
 	
 	@ManyToOne
 	@JoinColumn(name = "usr_id", nullable = false, insertable = false, updatable = false)
@@ -34,22 +34,16 @@ public class RegistrationUserRole extends RegistrationCommonFields {
 	/**
 	 * @return the registrationUserRoleId
 	 */
-	public RegistrationUserRoleId getRegistrationUserRoleId() {
-		return registrationUserRoleId;
+	public RegistrationUserRoleID getRegistrationUserRoleID() {
+		return registrationUserRoleID;
 	}
 
 	/**
 	 * @param registrationUserRoleId
 	 *            the registrationUserRoleId to set
 	 */
-	public void setRegistrationUserRoleId(RegistrationUserRoleId registrationUserRoleId) {
-		this.registrationUserRoleId = registrationUserRoleId;
+	public void setRegistrationUserRoleID(RegistrationUserRoleID registrationUserRoleID) {
+		this.registrationUserRoleID = registrationUserRoleID;
 	}
 	
-	@Override
-	public String toString() {
-		return "RegistrationUserRole [registrationUserRoleId=" + registrationUserRoleId + "]";
-
-	}
-
 }

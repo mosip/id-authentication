@@ -1,5 +1,6 @@
 package io.mosip.registration.entity;
 
+import java.io.Serializable;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
@@ -20,7 +21,9 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(schema = "reg", name = "user_detail")
-public class RegistrationUserDetail extends RegistrationCommonFields {
+public class RegistrationUserDetail extends RegistrationCommonFields implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	@Id
 	@Column(name = "id", length = 64, nullable = false, updatable = false)
 	private String id;
@@ -44,6 +47,7 @@ public class RegistrationUserDetail extends RegistrationCommonFields {
 	@Column(name = "del_dtimes", nullable = true, updatable = false)
 	private OffsetDateTime delDtimes;
 	@Column(name = "user_status", length = 64, nullable = true, updatable = false)
+
 	private String userStatus;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")	
@@ -78,6 +82,7 @@ public class RegistrationUserDetail extends RegistrationCommonFields {
 	 */
 	public void setUserMachineMapping(Set<UserMachineMapping> userMachineMapping) {
 		this.userMachineMapping = userMachineMapping;
+
 	}
 
 	/**
@@ -245,13 +250,4 @@ public class RegistrationUserDetail extends RegistrationCommonFields {
 		this.userStatus = userStatus;
 	}
 	
-	@Override
-	public String toString() {
-		return "RegistrationUserDetail [id=" + id + ", name=" + name + ", email=" + email + ", mobile=" + mobile
-				+ ", cntrId=" + cntrId + ", langCode=" + langCode + ", lastLoginDtimes=" + lastLoginDtimes
-				+ ", lastLoginMethod=" + lastLoginMethod + ", isDeleted=" + isDeleted + ", delDtimes=" + delDtimes
-				+ ", userStatus=" + userStatus + ", userRole=" + userRole + ", userMachineMapping="
-				+ userMachineMapping + "]";
-	}
-
 }

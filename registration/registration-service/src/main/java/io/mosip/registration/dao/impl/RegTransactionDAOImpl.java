@@ -17,7 +17,6 @@ import io.mosip.registration.repositories.RegTransactionRepository;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 /**
  * DAO class for the {@link RegistrationTransaction} entity
@@ -42,7 +41,7 @@ public class RegTransactionDAOImpl implements RegTransactionDAO {
 
 	public RegistrationTransaction buildRegTrans(String regId) {
 		logger.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Packet encryption had been ended");
 
 		OffsetDateTime time = OffsetDateTime.now();
@@ -55,7 +54,7 @@ public class RegTransactionDAOImpl implements RegTransactionDAO {
 		regTransaction.setCrDtime(time);
 
 		logger.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Packet encryption had been ended");
 
 		return regTransaction;
@@ -71,7 +70,7 @@ public class RegTransactionDAOImpl implements RegTransactionDAO {
 	public List<RegistrationTransaction> insertPacketTransDetails(
 			List<RegistrationTransaction> registrationTransactions) {
 		logger.debug("REGISTRATION - INSERT_PACKET_TRANSACTION_DETAILS - REG_TRANSACTION_DAO",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Inserting the packet status details in the transaction table");
 		return regTransactionRepository.saveAll(registrationTransactions);
 	}

@@ -14,6 +14,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.constants.RegClientStatusCode;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.service.RegistrationApprovalService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -110,9 +111,9 @@ public class RejectionController extends BaseController implements Initializable
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER",
 				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
 				"Packet updation as rejection has been started");
-		
-		if(rejRegistration.packetUpdateStatus(regRejId, RegClientStatusCode.REJECTED.getCode(),"mahesh123", 
-				rejectionComboBox.getSelectionModel().getSelectedItem(), "mahesh123")) {
+		String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
+		if(rejRegistration.packetUpdateStatus(regRejId, RegClientStatusCode.REJECTED.getCode(),approverUserId, 
+				rejectionComboBox.getSelectionModel().getSelectedItem(), approverUserId)) {
 		generateAlert("Status", AlertType.INFORMATION, "Packet Rejected Successfully..");
 		rejectionSubmit.disableProperty().set(true);
 		rejRegistrationController.tablePagination();

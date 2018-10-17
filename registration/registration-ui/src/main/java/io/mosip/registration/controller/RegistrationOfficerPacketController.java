@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.stream.IntStream;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.TemplateService;
 import io.mosip.registration.ui.constants.RegistrationUIConstants;
@@ -72,6 +75,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 	 * Validating screen authorization and Creating Packet and displaying
 	 * acknowledgement form
 	 */
+
 	public void createPacket(ActionEvent event) {
 
 		try {
@@ -87,10 +91,20 @@ public class RegistrationOfficerPacketController extends BaseController {
 						RegistrationUIConstants.AUTHORIZATION_INFO_MESSAGE,
 						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
 			} else {
-				RegistrationAppInitialization.getScene().setRoot(createRoot);
-				ClassLoader loader = Thread.currentThread().getContextClassLoader();
-				RegistrationAppInitialization.getScene().getStylesheets()
-						.add(loader.getResource("application.css").toExternalForm());
+				ResponseDTO responseDTO;
+				responseDTO = validateSyncStatus();
+				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
+				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
+					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
+						generateAlert(errorResponseDTO.getCode(), AlertType.valueOf(errorResponseDTO.getInfoType()),
+								errorResponseDTO.getMessage());
+					}
+				} else {
+					RegistrationAppInitialization.getScene().setRoot(createRoot);
+					ClassLoader loader = Thread.currentThread().getContextClassLoader();
+					RegistrationAppInitialization.getScene().getStylesheets()
+							.add(loader.getResource("application.css").toExternalForm());
+				}
 			}
 
 		} catch (IOException ioException) {
@@ -104,6 +118,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 		try {
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO);
 			ackReceiptController.setRegistrationData(registrationDTO);
+			
 
 			File ackTemplate = templateService.createReceipt();
 			Writer writer = velocityGenerator.generateTemplate(ackTemplate, registrationDTO);
@@ -116,7 +131,6 @@ public class RegistrationOfficerPacketController extends BaseController {
 			Scene scene = new Scene(ackRoot);
 			primaryStage.setScene(scene);
 			primaryStage.show();
-
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", getPropertyValue(APPLICATION_NAME),
 					getPropertyValue(APPLICATION_ID), regBaseCheckedException.getMessage());

@@ -2,7 +2,6 @@ package io.mosip.registration.util.restclient;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.net.URI;
 import java.util.Map;
@@ -69,8 +68,8 @@ public class ServiceDelegateUtil {
 	public Object get(String serviceName, Map<String, String> requestParams)
 			throws RegBaseCheckedException, HttpClientErrorException {
 
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Get method has been called");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME,
+				APPLICATION_ID, "Get method has been called");
 
 		Object responseBody = null;
 		RequestHTTPDTO requestDto = null;
@@ -83,8 +82,8 @@ public class ServiceDelegateUtil {
 		}
 
 		responseBody = restClientUtil.invoke(requestDto);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Get method has been ended");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME,
+				APPLICATION_ID, "Get method has been ended");
 
 		return responseBody;
 
@@ -106,8 +105,8 @@ public class ServiceDelegateUtil {
 	 *             when server exception from server
 	 */
 	public Object post(String serviceName, Object object) throws RegBaseCheckedException, HttpClientErrorException {
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), " post method called");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME,
+				APPLICATION_ID, " post method called");
 
 		RequestHTTPDTO requestDto;
 		Object responseBody = null;
@@ -119,8 +118,8 @@ public class ServiceDelegateUtil {
 		}
 
 		responseBody = restClientUtil.invoke(requestDto);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "post method ended");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME,
+				APPLICATION_ID, "post method ended");
 
 		return responseBody;
 	}
@@ -138,8 +137,8 @@ public class ServiceDelegateUtil {
 	 */
 	private RequestHTTPDTO prepareGETRequest(final String serviceName, final Map<String, String> requestParams)
 			throws RegBaseCheckedException {
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Prepare Get request method called");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME,
+				APPLICATION_ID, "Prepare Get request method called");
 
 		// DTO need to to be prepared
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
@@ -150,8 +149,8 @@ public class ServiceDelegateUtil {
 		// URI creation
 		String url = environment.getProperty(serviceName + "." + RegConstants.SERVICE_URL);
 		URI uri = getUri(requestParams, url);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "get uri method called");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME,
+				APPLICATION_ID, "get uri method called");
 
 		// ResponseType
 		String responseClassName = environment.getProperty(serviceName + "." + RegConstants.RESPONSE_TYPE);
@@ -165,8 +164,8 @@ public class ServiceDelegateUtil {
 
 		requestHTTPDTO.setClazz(responseClass);
 		requestHTTPDTO.setUri(uri);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Prepare Get request method ended");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - GET", APPLICATION_NAME,
+				APPLICATION_ID, "Prepare Get request method ended");
 
 		return requestHTTPDTO;
 	}
@@ -181,8 +180,8 @@ public class ServiceDelegateUtil {
 	 */
 	private RequestHTTPDTO preparePOSTRequest(final String serviceName, final Object object)
 			throws RegBaseCheckedException {
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Prepare post request method called");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME,
+				APPLICATION_ID, "Prepare post request method called");
 
 		// DTO need to to be prepared
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
@@ -193,8 +192,8 @@ public class ServiceDelegateUtil {
 		// URI creation
 		String url = environment.getProperty(serviceName + "." + RegConstants.SERVICE_URL);
 		URI uri = getUri(null, url);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "get uri method called");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME,
+				APPLICATION_ID, "get uri method called");
 
 		// RequestType
 		String requestClassName = environment.getProperty(serviceName + "." + RegConstants.REQUEST_TYPE);
@@ -208,8 +207,8 @@ public class ServiceDelegateUtil {
 
 		requestHTTPDTO.setUri(uri);
 		requestHTTPDTO.setClazz(requestClass);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Prepare post request method ended");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - POST", APPLICATION_NAME,
+				APPLICATION_ID, "Prepare post request method ended");
 
 		return requestHTTPDTO;
 
@@ -296,8 +295,8 @@ public class ServiceDelegateUtil {
 	 * @return
 	 */
 	private RequestHTTPDTO prepareRequest(RequestHTTPDTO requestHTTPDTO, String serviceName, Object object) {
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), " prepare request method  called");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME,
+				APPLICATION_ID, " prepare request method  called");
 
 		// HTTP headers
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -308,8 +307,8 @@ public class ServiceDelegateUtil {
 		// Headers
 		String headers = environment.getProperty(serviceName + "." + RegConstants.HEADERS);
 		setHeaders(httpHeaders, headers);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), " set Headers method called");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME,
+				APPLICATION_ID, " set Headers method called");
 
 		// AuthHeader
 		String authHeader = environment.getProperty(serviceName + "." + RegConstants.AUTH_HEADER);
@@ -318,8 +317,8 @@ public class ServiceDelegateUtil {
 		Boolean authRequired = Boolean.valueOf(environment.getProperty(serviceName + "." + RegConstants.AUTH_REQUIRED));
 
 		setAuthHeaders(httpHeaders, authRequired, authHeader, null);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), " set Auth Headers  method  called");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME,
+				APPLICATION_ID, " set Auth Headers  method  called");
 
 		// HTTP entity
 		@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -327,8 +326,8 @@ public class ServiceDelegateUtil {
 
 		requestHTTPDTO.setHttpMethod(httpMethod);
 		requestHTTPDTO.setHttpEntity(httpEntity);
-		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), " prepare request method  called");
+		LOGGER.debug("REGISTRATION - SERVICE_DELEGATE_UTIL - PREPARE_REQUEST", APPLICATION_NAME,
+				APPLICATION_ID, " prepare request method  called");
 
 		return requestHTTPDTO;
 

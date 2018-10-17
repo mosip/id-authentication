@@ -26,7 +26,6 @@ import static io.mosip.registration.constants.RegConstants.AES_KEY_SEED_LENGTH;
 import static io.mosip.registration.constants.RegConstants.AES_SESSION_KEY_LENGTH;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_KEY_GENERATION;
 
 /**
@@ -57,7 +56,7 @@ public class AESKeyManagerImpl implements AESKeyManager {
 	 * @see com.mosip.client.service.KeyManager#generateKey()
 	 */
 	public SecretKey generateSessionKey(final List<String> aesKeySeeds) throws RegBaseCheckedException {
-		logger.debug(LOG_PKT_AES_KEY_GENERATION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		logger.debug(LOG_PKT_AES_KEY_GENERATION, APPLICATION_NAME, APPLICATION_ID,
 				"Generating AES Encryption had been started");
 		try {
 			// Concatenate the seeds for AES Session Key
@@ -72,8 +71,8 @@ public class AESKeyManagerImpl implements AESKeyManager {
 			final KeyGenerator aesKeyGenerator = KeyGenerator.getInstance(environment.getProperty(AES_KEY_MANAGER_ALG));
 			aesKeyGenerator.init(Integer.parseInt(environment.getProperty(AES_SESSION_KEY_LENGTH)),
 					new SecureRandom(seedArray));
-			logger.debug(LOG_PKT_AES_KEY_GENERATION, getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "Generating AES Encryption had been ended");
+			logger.debug(LOG_PKT_AES_KEY_GENERATION, APPLICATION_NAME,
+					APPLICATION_ID, "Generating AES Encryption had been ended");
 			return aesKeyGenerator.generateKey();
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			throw new RegBaseCheckedException(RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),

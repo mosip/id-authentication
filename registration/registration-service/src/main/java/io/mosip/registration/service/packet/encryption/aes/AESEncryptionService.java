@@ -31,7 +31,6 @@ import io.mosip.registration.util.keymanager.AESKeyManager;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_ENCRYPTION;
 
 /**
@@ -85,7 +84,7 @@ public class AESEncryptionService {
 	 * @throws RegBaseCheckedException
 	 */
 	public byte[] encrypt(final byte[] dataToEncrypt) throws RegBaseCheckedException {
-		logger.debug(LOG_PKT_AES_ENCRYPTION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		logger.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 				"Packet encryption had been started");
 		try {
 			// Enable AES 256 bit encryption
@@ -99,12 +98,12 @@ public class AESEncryptionService {
 			// Encrypt the Data using AES
 			final byte[] encryptedData = MosipEncryptor.symmetricEncrypt(sessionKey.getEncoded(), dataToEncrypt,
 					MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
-			logger.debug(LOG_PKT_AES_ENCRYPTION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"In-Memory zip file encrypted using AES Algorithm successfully");
 
 			// Encrypt the AES Session Key using RSA
 			final byte[] rsaEncryptedKey = rsaEncryptionService.encrypt(sessionKey.getEncoded());
-			logger.debug(LOG_PKT_AES_ENCRYPTION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"AES Session Key encrypted using RSA Algorithm successfully");
 
 			// Combine AES Session Key, AES Key Splitter and RSA Encrypted Data
@@ -124,7 +123,7 @@ public class AESEncryptionService {
 	}
 
 	private byte[] concat(final byte[] keyByteArray, final byte[] encryptedDataByteArray) {
-		logger.debug(LOG_PKT_AES_ENCRYPTION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		logger.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 				"Encryption concatenation had been started");
 		try {
 			final String keySplitter = environment.getProperty(RegConstants.AES_KEY_CIPHER_SPLITTER);
@@ -138,7 +137,7 @@ public class AESEncryptionService {
 			arraycopy(keySplitter.getBytes(), 0, combinedData, keyLength, keySplitterLength);
 			arraycopy(encryptedDataByteArray, 0, combinedData, keyLength + keySplitterLength, encryptedDataLength);
 
-			logger.debug(LOG_PKT_AES_ENCRYPTION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"Encryption concatenation had been ended");
 			return combinedData;
 		} catch (RuntimeException runtimeException) {

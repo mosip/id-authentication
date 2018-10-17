@@ -33,7 +33,13 @@ public enum AuditEventEnum {
 	FETCH_CNTR_NAME("CNT_NME","Center Name","Fetching Center Name"),
 	FETCH_CNTR_DET("CNT_DET","Center Details","Fetching Center Details"),
 	FETCH_USR_ROLE("USR_RLE","User Roles","Fetching User Roles"),
-	FETCH_SCR_AUTH("SCR_ATH","Screen AUthorization","Fetching screens to be authorized");
+	FETCH_SCR_AUTH("SCR_ATH","Screen AUthorization","Fetching screens to be authorized"),
+	SYNCJOB_INFO_FETCH("SYNC_INFO", "Sync Information", "SyncJobInfo containing the synccontrol list and yettoexportpacket count fetched successfully"),
+	SYNC_INFO_VALIDATE("SYNC_INFV", "Sync Information validation", "Validating the sync status ended successfully"),
+	SYNC_PKT_COUNT_VALIDATE("SYNC_PKT_CNT", "Sync Packet Count validation", "Validating yet to export packets frequency with the configured limit count"),
+	PACKET_RETRIVE("PKT_RETRIVE", "Retiving created packets", "Packets which are in created state for approval are retrived"),
+	PACKET_UPDATE("PKT_UPDATE", "Updating created packets status", "Packets which are in created state are updated"),
+	SYNC_GEO_VALIDATE("SYNC_INFO", "Geo Information validation", "Validating the geo information ended successfully");
 	
 	/**
 	 * The constructor

@@ -57,7 +57,6 @@ public class DataProvider {
 
 	public static RegistrationDTO getPacketDTO(RegistrationDTO registrationDTO) throws RegBaseCheckedException {
 		registrationDTO.setAuditDTOs(DataProvider.getAuditDTOs());
-		registrationDTO.setOsiDataDTO(DataProvider.getOsiDataDTO());
 		registrationDTO.setRegistrationMetaDataDTO(DataProvider.getRegistrationMetaDataDTO());
 		registrationDTO.setRegistrationId(RIDGenerator.nextRID());
 

@@ -19,7 +19,6 @@ import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_RSA_INVALID_DATA;
 import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_RSA_INVALID_KEY;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_RSA_ENCRYPTION;
 
 /**
@@ -52,7 +51,7 @@ public class RSAEncryptionService {
 	 */
 	public byte[] encrypt(final byte[] sessionKey) throws RegBaseCheckedException {
 		try {
-			logger.debug(LOG_PKT_RSA_ENCRYPTION, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_RSA_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"Packet RSA Encryption had been called");
 			// TODO: Will be removed upon KeyManager is implemented in Kernel App
 			// Generate key pair public and private key

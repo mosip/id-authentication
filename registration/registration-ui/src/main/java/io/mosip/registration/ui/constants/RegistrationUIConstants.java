@@ -1,8 +1,7 @@
 package io.mosip.registration.ui.constants;
 
+import java.util.Arrays;
 import java.util.List;
-
-import org.assertj.core.util.Arrays;
 
 public class RegistrationUIConstants {
 
@@ -24,7 +23,8 @@ public class RegistrationUIConstants {
 	public static final String ACK_RECEIPT_PATH = "/fxml/AckReceipt.fxml";
 	public static final String APPROVAL_PAGE = "/fxml/RegistrationApproval.fxml";
 	public static final String FTP_UPLOAD_PAGE =  "/fxml/FTPLogin.fxml";
-	
+	public static final String USER_MACHINE_MAPPING =  "/fxml/UserClientMachineMapping.fxml";
+	public static final String SYNC_STATUS =  "/fxml/RegPacketStatus.fxml";
 	
 	//CSS file
 	public static final String CSS_FILE_PATH = "application.css";
@@ -88,7 +88,14 @@ public class RegistrationUIConstants {
 	public static final String LAND_LINE_NUMBER_EXAMPLE = "Example : 44-9854";
 	public static final String PARENT_NAME_EMPTY = "Please Provide Parent Name";
 	public static final String UIN_ID_EMPTY = "Please Provide Uin Id Of The Parent";
+	public static final String ADDRESS_LINE_WARNING = "Address should be between 6 and 20 characters";
+
+	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
+	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
 	
+	//PacketStatusSync
+	public static final String PACKET_STATUS_SYNC_ALERT_TITLE="PACKET STATUS SYNC ALERT";
+	public static final String PACKET_STATUS_SYNC_INFO_MESSAGE="Packet Status Sync Information";
 	
 	public static List getCountries(){
 		

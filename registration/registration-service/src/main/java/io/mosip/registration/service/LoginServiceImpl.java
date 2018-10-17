@@ -2,7 +2,6 @@ package io.mosip.registration.service;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -111,8 +110,8 @@ public class LoginServiceImpl implements LoginService {
 	public Map<String, Object> getModesOfLogin() {
 		// Retrieve Login information
 
-		LOGGER.debug("REGISTRATION - LOGINMODES - LOGINSERVICE", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Fetching list of login modes");
+		LOGGER.debug("REGISTRATION - LOGINMODES - LOGINSERVICE", APPLICATION_NAME,
+				APPLICATION_ID, "Fetching list of login modes");
 
 		auditFactory.audit(AuditEventEnum.LOGIN_MODES_FETCH, AppModuleEnum.LOGIN_MODES, "Fetching list of login modes",
 				"refId", "refIdType");
@@ -130,8 +129,8 @@ public class LoginServiceImpl implements LoginService {
 	public boolean validateUserPassword(String userId, String hashPassword) {
 		// Validating Registration Officer Credentials
 
-		LOGGER.debug("REGISTRATION - VALIDATECREDENTIALS - LOGINSERVICE", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Validating User credentials");
+		LOGGER.debug("REGISTRATION - VALIDATECREDENTIALS - LOGINSERVICE", APPLICATION_NAME,
+				APPLICATION_ID, "Validating User credentials");
 
 		auditFactory.audit(AuditEventEnum.VALIDATE_USER_CRED, AppModuleEnum.VALIDATE_USER,
 				"Validating User credentials", "refId", "refIdType");
@@ -150,8 +149,8 @@ public class LoginServiceImpl implements LoginService {
 	public RegistrationUserDetail getUserDetail(String userId) {
 		// Retrieving Registration Officer details
 
-		LOGGER.debug("REGISTRATION - USERDETAIL - LOGINSERVICE", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Fetching User details");
+		LOGGER.debug("REGISTRATION - USERDETAIL - LOGINSERVICE", APPLICATION_NAME,
+				APPLICATION_ID, "Fetching User details");
 
 		auditFactory.audit(AuditEventEnum.FETCH_USR_DET, AppModuleEnum.USER_DETAIL, "Fetching User details", "refId",
 				"refIdType");
@@ -169,8 +168,8 @@ public class LoginServiceImpl implements LoginService {
 	public RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId) {
 		// Retrieving Registration Center details
 
-		LOGGER.debug("REGISTRATION - CENTERDETAILS - LOGINSERVICE", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Fetching Center details");
+		LOGGER.debug("REGISTRATION - CENTERDETAILS - LOGINSERVICE", APPLICATION_NAME,
+				APPLICATION_ID, "Fetching Center details");
 
 		auditFactory.audit(AuditEventEnum.FETCH_CNTR_DET, AppModuleEnum.CENTER_DETAIL, "Fetching Center details",
 				"refId", "refIdType");
@@ -188,8 +187,8 @@ public class LoginServiceImpl implements LoginService {
 	public AuthorizationDTO getScreenAuthorizationDetails(String roleCode) {
 		// Fetching screen authorization details
 
-		LOGGER.debug("REGISTRATION - SCREENAUTHORIZATION - LOGINSERVICE", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Fetching list of Screens to be Authorized");
+		LOGGER.debug("REGISTRATION - SCREENAUTHORIZATION - LOGINSERVICE", APPLICATION_NAME,
+				APPLICATION_ID, "Fetching list of Screens to be Authorized");
 
 		auditFactory.audit(AuditEventEnum.FETCH_SCR_AUTH, AppModuleEnum.SCREEN_AUTH,
 				"Fetching list of Screens to be Authorized", "refId", "refIdType");
@@ -204,7 +203,7 @@ public class LoginServiceImpl implements LoginService {
 	 */
 	@Override
 	public ResponseDTO getOTP(final String key) {
-		LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME, APPLICATION_ID,
 				"Get OTP method called");
 
 		// Create Response to return to UI layer
@@ -228,8 +227,8 @@ public class LoginServiceImpl implements LoginService {
 
 				// create Error Response
 				response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
-				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), "Error Response created");
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+						APPLICATION_ID, "Error Response created");
 
 			}
 		} catch (HttpClientErrorException httpClientErrorException) {
@@ -237,32 +236,32 @@ public class LoginServiceImpl implements LoginService {
 				// obtain otpGeneratorResponseDto from JsonUtil
 				otpGeneratorResponseDto = (OtpGeneratorResponseDto) JsonUtils.jsonStringToJavaObject(
 						OtpGeneratorResponseDto.class, httpClientErrorException.getResponseBodyAsString());
-				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), "JSON conversion completed");
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+						APPLICATION_ID, "JSON conversion completed");
 
 			} catch (MosipJsonParseException e) {
 				// create Error Response
 				response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
-				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), "Error Response created");
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+						APPLICATION_ID, "Error Response created");
 
 			} catch (MosipJsonMappingException e) {
 				// create Error Response
 				response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
-				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), "Error Response created");
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+						APPLICATION_ID, "Error Response created");
 
 			} catch (MosipIOException e) {
 				// create Error Response
 				response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
-				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), "Error Response created");
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+						APPLICATION_ID, "Error Response created");
 
 			}
 			// create Error Response
 			response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
-			LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "Error Response created");
+			LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+					APPLICATION_ID, "Error Response created");
 
 		}
 
@@ -277,17 +276,17 @@ public class LoginServiceImpl implements LoginService {
 
 			successResponse.setOtherAttributes(otherAttributes);
 			response.setSuccessResponseDTO(successResponse);
-			LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "Success Response created");
+			LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+					APPLICATION_ID, "Success Response created");
 
 		} else {
 			// create Error Response
 			response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
-			LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "Error Response created");
+			LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+					APPLICATION_ID, "Error Response created");
 
 		}
-		LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME, APPLICATION_ID,
 				"Get OTP method ended");
 
 		return response;
@@ -303,7 +302,7 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	public ResponseDTO validateOTP(final String key, final String otp) {
 
-		LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME, APPLICATION_ID,
 				"Validation of OTP called");
 
 		// Create Response to Return to UI layer
@@ -327,8 +326,8 @@ public class LoginServiceImpl implements LoginService {
 			} catch (RegBaseCheckedException e) {
 				// Create Error response
 				response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
-				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), "Error Response Created");
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+						APPLICATION_ID, "Error Response Created");
 
 			}
 		} catch (HttpClientErrorException httpClientErrorException) {
@@ -340,26 +339,26 @@ public class LoginServiceImpl implements LoginService {
 
 				// Create Error response
 				response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
-				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), "Error Response Created");
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+						APPLICATION_ID, "Error Response Created");
 
 			} catch (MosipJsonMappingException e) {
 				// Create Error response
 				response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
-				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), "Error Response Created");
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+						APPLICATION_ID, "Error Response Created");
 
 			} catch (MosipIOException e) {
 				// Create Error response
 				response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
-				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), "Error Response Created");
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+						APPLICATION_ID, "Error Response Created");
 
 			}
 			// Create Error response
 			response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
-			LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "Error Response Created");
+			LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+					APPLICATION_ID, "Error Response Created");
 
 		}
 		if (otpValidatorResponseDto != null) {
@@ -374,35 +373,35 @@ public class LoginServiceImpl implements LoginService {
 					otherAttributes.put(RegConstants.OTP_VALIDATOR_RESPONSE_DTO, otpValidatorResponseDto);
 					successResponse.setOtherAttributes(otherAttributes);
 					response.setSuccessResponseDTO(successResponse);
-					LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-							getPropertyValue(APPLICATION_ID), "Success Response Created");
+					LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+							APPLICATION_ID, "Success Response Created");
 
 				} else {
 
 					// Create Error response
 					response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
-					LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-							getPropertyValue(APPLICATION_ID), "Error Response Created");
+					LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+							APPLICATION_ID, "Error Response Created");
 
 				}
 			} else {
 
 				// Create Error response
 				response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
-				LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-						getPropertyValue(APPLICATION_ID), "Error Response Created");
+				LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+						APPLICATION_ID, "Error Response Created");
 
 			}
 		} else {
 
 			// Create Error response
 			response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
-			LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "Error Response Created");
+			LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
+					APPLICATION_ID, "Error Response Created");
 
 		}
 
-		LOGGER.debug("REGISTRATION - LOGIN - OTP", getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+		LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME, APPLICATION_ID,
 				"Validation of OTP ended");
 
 		return response;

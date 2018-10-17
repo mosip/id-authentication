@@ -15,8 +15,8 @@ public class RegistrationCenterDetailDTO {
 	private String registrationCenterAddrLine1;
 	private String registrationCenterAddrLine2;
 	private String registrationCenterAddrLine3;
-	private String registrationLatitude;
-	private String registrationLongitude;
+	private String registrationCenterLatitude;
+	private String registrationCenterLongitude;
 	private String registrationCenterLocationCode;
 	private int registrationCenterNumberOfStations;
 	private String registrationCenterWorkingHours;
@@ -112,33 +112,33 @@ public class RegistrationCenterDetailDTO {
 	}
 
 	/**
-	 * @return the registrationLatitude
+	 * @return the registrationCenterLatitude
 	 */
-	public String getRegistrationLatitude() {
-		return registrationLatitude;
+	public String getRegistrationCenterLatitude() {
+		return registrationCenterLatitude;
 	}
 
 	/**
-	 * @param registrationLatitude
-	 *            the registrationLatitude to set
+	 * @param registrationCenterLatitude
+	 *            the registrationCenterLatitude to set
 	 */
-	public void setRegistrationLatitude(String registrationLatitude) {
-		this.registrationLatitude = registrationLatitude;
+	public void setRegistrationCenterLatitude(String registrationCenterLatitude) {
+		this.registrationCenterLatitude = registrationCenterLatitude;
 	}
 
 	/**
-	 * @return the registrationLongitude
+	 * @return the registrationCenterLongitude
 	 */
-	public String getRegistrationLongitude() {
-		return registrationLongitude;
+	public String getRegistrationCenterLongitude() {
+		return registrationCenterLongitude;
 	}
 
 	/**
-	 * @param registrationLongitude
-	 *            the registrationLongitude to set
+	 * @param registrationCenterLongitude
+	 *            the registrationCenterLongitude to set
 	 */
-	public void setRegistrationLongitude(String registrationLongitude) {
-		this.registrationLongitude = registrationLongitude;
+	public void setRegistrationCenterLongitude(String registrationCenterLongitude) {
+		this.registrationCenterLongitude = registrationCenterLongitude;
 	}
 
 	/**

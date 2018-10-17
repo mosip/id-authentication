@@ -26,7 +26,6 @@ import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegConstants.ZIP_FILE_EXTENSION;
 import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_IO_EXCEPTION;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_STORAGE;
 
 /**
@@ -68,12 +67,12 @@ public class StorageService {
 							.concat(separator).concat(registrationId);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(packet), new File(filePath.concat(ZIP_FILE_EXTENSION)));
-			logger.debug(LOG_PKT_STORAGE, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID,
 					"Encrypted packet saved");
 			// Storing the Registration Acknowledge Receipt Image
 			FileUtils.copyToFile(new ByteArrayInputStream(ackReceipt),
 					new File(filePath.concat("_Ack.").concat(RegConstants.IMAGE_FORMAT)));
-			logger.debug(LOG_PKT_STORAGE, getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+			logger.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID,
 					"Registration's Acknowledgement Receipt saved");
 			return filePath;
 		} catch (MosipIOException ioException) {

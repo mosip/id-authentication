@@ -15,8 +15,10 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.registration.constants.RegClientStatusCode;
 import io.mosip.registration.constants.RegistrationUIExceptionCode;
 import io.mosip.registration.constants.RegistrationUIExceptionEnum;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationApprovalUiDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -51,7 +53,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private static MosipLogger LOGGER;
+	private MosipLogger LOGGER;
 	
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
@@ -124,7 +126,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	@FXML
 	private Button onHoldBtn;
 
-	int itemsPerPage = 1;
+	int itemsPerPage = 4;
 	List<RegistrationApprovalUiDto> listData = null;
 
 	/* (non-Javadoc)
@@ -134,7 +136,6 @@ public class RegistrationApprovalController extends BaseController implements In
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_APPROVAL_CONTROLLER", getPropertyValue(APPLICATION_NAME),
 				getPropertyValue(APPLICATION_ID), "Page loading has been started");
-
 		reloadTableView();
 	}
 
@@ -153,20 +154,10 @@ public class RegistrationApprovalController extends BaseController implements In
 		operatorName.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("operatorName"));
 		acknowledgementFormPath.setCellValueFactory(
 				new PropertyValueFactory<RegistrationApprovalUiDto, String>("acknowledgementFormPath"));
-
-		expand.setCellFactory(
-				new Callback<TableColumn<RegistrationApprovalUiDto, Boolean>, TableCell<RegistrationApprovalUiDto, Boolean>>() {
-
-					@Override
-					public TableCell<RegistrationApprovalUiDto, Boolean> call(
-							TableColumn<RegistrationApprovalUiDto, Boolean> col) {
-
-						return new ViewAcknowledgementController(table);
-					}
-				});
-
+		
 		tablePagination();
 
+		
 		approvalBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
 		rejectionBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
 		onHoldBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
@@ -178,6 +169,15 @@ public class RegistrationApprovalController extends BaseController implements In
 		fromindex = pageIndex * itemsPerPage;
 		toindex = Math.min(fromindex + itemsPerPage, listData.size());
 		table.setItems(FXCollections.observableArrayList(listData.subList(fromindex, toindex)));
+		expand.setCellFactory(
+				new Callback<TableColumn<RegistrationApprovalUiDto, Boolean>, TableCell<RegistrationApprovalUiDto, Boolean>>() {
+
+					@Override
+					public TableCell<RegistrationApprovalUiDto, Boolean> call(
+							TableColumn<RegistrationApprovalUiDto, Boolean> col) {
+						return new ViewAcknowledgementController(table);
+					}
+				});
 		return table;
 	}
 
@@ -191,7 +191,8 @@ public class RegistrationApprovalController extends BaseController implements In
 		
 		RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 
-		if (registration.packetUpdateStatus(regData.getId(), "A", "mahesh123", "", "mahesh123")) {
+		String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
+		if (registration.packetUpdateStatus(regData.getId(), RegClientStatusCode.APPROVED.getCode(), approverUserId, "", approverUserId)) {
 			listData = registration.getAllEnrollments();
 			generateAlert("Status", AlertType.INFORMATION, "Registration Approved successfully..");
 			tablePagination();

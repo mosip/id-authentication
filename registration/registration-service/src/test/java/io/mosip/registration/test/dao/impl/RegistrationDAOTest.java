@@ -23,6 +23,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.constants.RegClientStatusCode;
 import io.mosip.registration.constants.RegTranType;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.impl.RegistrationDAOImpl;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
@@ -70,7 +71,8 @@ public class RegistrationDAOTest {
 		ReflectionTestUtils.invokeMethod(registrationDAOImpl, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
+		SessionContext.getInstance().getUserContext().setName("mosip");
 	}
 
 	@Test

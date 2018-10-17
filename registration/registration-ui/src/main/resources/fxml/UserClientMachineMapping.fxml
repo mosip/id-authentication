@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="userClientMachineMappingTablePane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="487.0" prefWidth="952.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.UserClientMachineMappingController">
+	<children>
+		<TableView fx:id="mapTable" layoutX="10.0" layoutY="28.0" onMouseClicked="#showSelectedUserDetails" prefHeight="177.0" prefWidth="932.0">
+			<columns>
+				<TableColumn fx:id="usernameColumn" prefWidth="237.0" text="Username" />
+				<TableColumn fx:id="userIDColumn" prefWidth="261.0" text="UserID" />	
+				<TableColumn fx:id="roleColumn" prefWidth="245.0" text="Role" />
+				<TableColumn fx:id="statusColumn" prefWidth="188.0" text="Status" />
+			</columns>
+		</TableView>
+		<Label fx:id="userClientMachineMappingLabel" graphicTextGap="10.0" layoutX="422.0" layoutY="1.0" prefHeight="27.0" prefWidth="128.0" text="Onboard User" />
+		<AnchorPane fx:id="userClientMachineMappingEditPane" layoutX="10.0" layoutY="211.0" prefHeight="250.0" prefWidth="932.0" visible="false">
+			<children>
+				<Label layoutX="14.0" layoutY="26.0" prefHeight="27.0" prefWidth="117.0" text="Username   :" />
+				<Label fx:id="usernameResult" layoutX="131.0" layoutY="26.0" prefHeight="27.0" prefWidth="117.0" />
+				<Label layoutX="275.0" layoutY="24.0" prefHeight="27.0" prefWidth="85.0" text="UserID    :" />
+				<Label fx:id="userIDResult" layoutX="360.0" layoutY="24.0" prefHeight="27.0" prefWidth="85.0" />
+				<Label layoutX="481.0" layoutY="24.0" prefHeight="27.0" prefWidth="85.0" text="Role    :" />
+				<Label fx:id="roleResult" layoutX="553.0" layoutY="24.0" prefHeight="27.0" prefWidth="85.0" />
+				<Label layoutX="14.0" layoutY="211.0" prefHeight="27.0" prefWidth="79.0" text=" Status  :" />
+				<Button fx:id="update" disable="true" layoutX="807.0" layoutY="205.0" mnemonicParsing="false" onAction="#updateUserMapDetails" text="UPDATE" />
+				<AnchorPane fx:id="fingerprintDetailsPane" disable="true" layoutX="14.0" layoutY="75.0" prefHeight="125.0" prefWidth="324.0">
+					<children>
+						<Label prefHeight="27.0" prefWidth="226.0" text="FingerPrint Details" />
+						<Button disable="true" layoutX="293.0" layoutY="86.0" mnemonicParsing="false" text="Edit" />
+					</children>
+				</AnchorPane>
+				<AnchorPane fx:id="irisDetailsPane" layoutX="579.0" layoutY="69.0" prefHeight="125.0" prefWidth="344.0">
+					<children>
+						<Label disable="true" prefHeight="27.0" prefWidth="226.0" text="Iris Details" />
+						<Button disable="true" layoutX="260.0" layoutY="86.0" mnemonicParsing="false" text="Edit" />
+					</children>
+				</AnchorPane>
+				<ComboBox fx:id="statusComboBox" layoutX="93.0" layoutY="205.0" onAction="#changeStatus" prefHeight="39.0" prefWidth="150.0" promptText="Select" />
+				<Label fx:id="userClientMachineMappingEditDetailsLabel" graphicTextGap="10.0" layoutX="376.0" layoutY="1.0" prefHeight="27.0" prefWidth="105.0" text="Edit Details" />
+				<Label layoutX="658.0" layoutY="24.0" prefHeight="27.0" prefWidth="98.0" text="StationID   :" />
+				<Label fx:id="stationIdResult" layoutX="761.0" layoutY="24.0" prefHeight="27.0" prefWidth="117.0" />
+			</children>
+		</AnchorPane>
+	</children>
+</AnchorPane>

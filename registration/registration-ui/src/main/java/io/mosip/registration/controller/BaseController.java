@@ -13,8 +13,10 @@ import org.springframework.context.annotation.PropertySource;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginServiceImpl;
+import io.mosip.registration.service.SyncStatusValidatorService;
 import io.mosip.registration.ui.constants.RegistrationUIConstants;
 import io.mosip.registration.util.mac.SystemMacAddress;
 import javafx.event.Event;
@@ -40,6 +42,9 @@ public class BaseController {
 
 	@Autowired
 	private LoginServiceImpl loginServiceImpl;
+	
+	@Autowired
+	private SyncStatusValidatorService syncStatusValidatorService;
 
 	@Value("${TIME_OUT_INTERVAL:30}")
 	private long timeoutInterval;
@@ -150,14 +155,14 @@ public class BaseController {
 		RegistrationUserDetail userDetail = loginServiceImpl.getUserDetail(userId);
 		String result = null;
 		List<String> roleList = new ArrayList<>();
-		
+
 		userDetail.getUserRole().forEach(roleCode -> {
-			if(userDetail.getIsActive()) {
+			if(roleCode.getIsActive()) {
 				roleList.add(String
-						.valueOf(roleCode.getRegistrationUserRoleId().getRoleCode()));
+						.valueOf(roleCode.getRegistrationUserRoleID().getRoleCode()));
 			}
 		});
-		
+
 		// Checking roles
 		if (roleList.isEmpty()) {
 			result = RegistrationUIConstants.ROLES_EMPTY;
@@ -191,6 +196,11 @@ public class BaseController {
 
 		}
 		return result;
+	}
+	
+	protected ResponseDTO validateSyncStatus() {
+		
+		return syncStatusValidatorService.validateSyncStatus();
 	}
 
 	/**

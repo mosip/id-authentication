@@ -61,11 +61,12 @@ public class AESSeedGeneratorTest {
 		assertNotNull(aesKeySeeds);
 		assertFalse(aesKeySeeds.isEmpty());
 	}
-
+	
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testUncheckedException() throws RegBaseCheckedException {
 		ReflectionTestUtils.setField(SessionContext.class, "userContext", null);
 		aesSeedGeneratorImpl.generateAESKeySeeds();
-	}
+	} 
+
 
 }

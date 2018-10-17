@@ -16,6 +16,7 @@ public class RegistrationDTO extends BaseDTO {
 	private BiometricDTO biometricDTO;
 	private DemographicDTO demographicDTO;
 	private String registrationId;
+	private String registrationIdHash;
 	private String preRegistrationId;
 	private RegistrationMetaDataDTO registrationMetaDataDTO;
 	private OSIDataDTO osiDataDTO;
@@ -64,6 +65,14 @@ public class RegistrationDTO extends BaseDTO {
 	 */
 	public void setRegistrationId(String registrationId) {
 		this.registrationId = registrationId;
+	}
+
+	public String getRegistrationIdHash() {
+		return registrationIdHash;
+	}
+
+	public void setRegistrationIdHash(String registrationIdHash) {
+		this.registrationIdHash = registrationIdHash;
 	}
 
 	/**

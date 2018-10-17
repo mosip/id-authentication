@@ -1,63 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.*?>
 
-<ScrollPane fx:id="newRegistrationRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="654.0" prefWidth="1119.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationController">
+<ScrollPane fx:id="newRegistrationRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="737.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationController">
   <content>
-    <AnchorPane id="anchor-pane" minHeight="0.0" minWidth="0.0" prefHeight="660.0" prefWidth="1117.0">
+    <AnchorPane id="anchor-pane-registration" minHeight="0.0" minWidth="0.0" prefHeight="726.0" prefWidth="906.0">
          <children>
-            <AnchorPane layoutX="16.0" layoutY="4.0" prefHeight="69.0" prefWidth="1045.0">
+            <AnchorPane layoutX="60.0" layoutY="14.0" prefHeight="55.0" prefWidth="654.0">
                <children>
-                  <Text fx:id="newregistration" layoutX="33.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Registration" />
-                  <Text fx:id="newregistration_lc" layoutX="581.0" layoutY="42.0" strokeType="OUTSIDE" strokeWidth="0.0" text="New Registration" />
+                  <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="35.00" layoutY="5.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+                  	 <image>
+            			<Image url="@../images/Home.PNG" />
+         			 </image>
+                  </ImageView>
+                  <Text id="homeReg" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Registration" />
+                  <ImageView fitHeight="50.0" fitWidth="500.0" layoutX="280.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                  	<image>
+            			<Image url="@../images/Pre-Registration.PNG" />
+         			 </image>
+                  </ImageView>
                </children>
             </AnchorPane>
-            <TextField fx:id="preRegistrationId" layoutX="45.0" layoutY="100.0" prefHeight="30.0" prefWidth="184.0" promptText="Search for Pre-Registration ID" />
-            <Button fx:id="fetch" layoutX="248.0" layoutY="100.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="70.0" text="Fetch" />
-            <TextField fx:id="firstName" layoutX="45.0" layoutY="142.0" prefHeight="30.0" prefWidth="142.0" promptText="First Name" />
-            <TextField fx:id="middleName" layoutX="198.0" layoutY="142.0" prefHeight="30.0" prefWidth="142.0" promptText="Middle Name" />
-            <TextField fx:id="lastName" layoutX="349.0" layoutY="142.0" prefHeight="30.0" prefWidth="142.0" promptText="Last Name" />
-            <TextField fx:id="firstName_lc" layoutX="592.0" layoutY="142.0" prefHeight="30.0" prefWidth="142.0" promptText="First Name" />
-            <TextField fx:id="middleName_lc" layoutX="740.0" layoutY="142.0" prefHeight="30.0" prefWidth="142.0" promptText="Middle Name" />
-            <TextField fx:id="lastName_lc" layoutX="888.0" layoutY="142.0" prefHeight="30.0" prefWidth="142.0" promptText="Last Name" />
-            <AnchorPane fx:id="dob" layoutX="32.0" layoutY="181.0" prefHeight="43.0" prefWidth="1008.0">
+            <AnchorPane id="Detail" layoutX="82.0" layoutY="71.0" prefHeight="599.0" prefWidth="759.0">
+           	<children>
+           <Text id="newregistration" fx:id="newregistration" layoutX="45.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Demographic Details" />
+             <Text id="newregistration_lc" fx:id="newregistration_lc" layoutX="551.0" layoutY="68.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Demographic Details" />
+            <TextField fx:id="preRegistrationId" layoutX="45.0" layoutY="100.0" prefHeight="30.0" prefWidth="200.00" promptText="Search for Pre-Registration ID" />
+            <Button fx:id="fetch" layoutX="275.0" layoutY="100.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="70.0" text="Fetch" />
+            <TextField id="fullName" fx:id="fullName" layoutX="45.0" layoutY="142.0" prefHeight="30.0" prefWidth="320.0" promptText="Full Name" />
+            <TextField id="fullName_lc" fx:id="fullName_lc" layoutX="456.0" layoutY="151.0" prefHeight="30.0" prefWidth="320.0" promptText="Full Name" />
+            <AnchorPane fx:id="dob" layoutX="32.0" layoutY="181.0" prefHeight="43.0" prefWidth="395.0">
                <children>
                   <TextField fx:id="ageField" layoutX="14.0" prefHeight="30.0" prefWidth="70.0" promptText="Age" />
-                  <DatePicker fx:id="ageDatePicker" editable="false" layoutX="139.0" layoutY="2.0" onAction="#ageValidationInDatePicker" prefHeight="30.0" />
+                  <DatePicker fx:id="ageDatePicker" editable="false" layoutX="139.0" layoutY="2.0" onAction="#ageValidationInDatePicker" prefHeight="30.0" prefWidth="200.0" promptText="Please Provide Date of Birth" />
                   <Label fx:id="toggleLabel1" layoutX="90.0" layoutY="8.0" prefHeight="20.0" prefWidth="20.0" />
                   <Label fx:id="toggleLabel2" layoutX="110.0" layoutY="8.0" prefHeight="20.0" prefWidth="20.0" />
-               </children></AnchorPane>
-            <AnchorPane layoutX="26.0" layoutY="263.0" prefHeight="342.0" prefWidth="906.0">
+               </children>
+                  </AnchorPane>
+            <AnchorPane layoutX="27.0" layoutY="265.0" prefHeight="335.0" prefWidth="724.0">
                <children>
-                  <TextField fx:id="addressLine1" layoutX="20.0" prefHeight="39.0" prefWidth="251.0" promptText="Address Line 1" />
-                  <TextField fx:id="addressLine2" layoutX="20.0" layoutY="48.0" prefHeight="39.0" prefWidth="251.0" promptText="Address Line 2" />
-                  <TextField fx:id="addressLine3" layoutX="19.0" layoutY="93.0" prefHeight="39.0" prefWidth="253.0" promptText="Address Line 3" />
-                  <TextField fx:id="addressLine1_lc" layoutX="566.0" prefHeight="39.0" prefWidth="277.0" promptText="Address Line 1" />
-                  <TextField fx:id="addressLine2_lc" layoutX="567.0" layoutY="48.0" prefHeight="39.0" prefWidth="275.0" promptText="Address Line 2" />
-                  <TextField fx:id="addressLine3_lc" layoutX="566.0" layoutY="93.0" prefHeight="39.0" prefWidth="277.0" promptText="Address Line 3" />
+                  <TextField fx:id="addressLine1" layoutX="20.0" prefHeight="30.0" prefWidth="320.0" promptText="Address Line 1" />
+                  <TextField fx:id="addressLine2" layoutX="20.0" layoutY="48.0" prefHeight="30.0" prefWidth="320.0" promptText="Address Line 2" />
+                  <TextField fx:id="addressLine3" layoutX="19.0" layoutY="93.0" prefHeight="30.0" prefWidth="320.0" promptText="Address Line 3" />
+                  <TextField fx:id="addressLine1_lc" layoutX="430.0" prefHeight="30.0" prefWidth="320.0" promptText="Address Line 1" />
+                  <TextField fx:id="addressLine2_lc" layoutX="430.0" layoutY="48.0" prefHeight="30.0" prefWidth="320.0" promptText="Address Line 2" />
+                  <TextField fx:id="addressLine3_lc" layoutX="430.0" layoutY="93.0" prefHeight="30.0" prefWidth="320.0" promptText="Address Line 3" />
                  
-                  <ComboBox fx:id="country" layoutX="20.0" layoutY="144.0" onAction="#getStates" prefHeight="20.0" prefWidth="100.0" promptText="Country" />
+                        <ComboBox fx:id="country" layoutX="20.0" layoutY="144.0" onAction="#getStates" prefHeight="20.0" prefWidth="100.0" promptText="Country" />
                   <ComboBox fx:id="state" layoutX="126.0" layoutY="145.0" onAction="#getDistricts" prefHeight="20.0" prefWidth="100.0" promptText="State" />
                   <ComboBox fx:id="district" layoutX="234.0" layoutY="144.0" onAction="#getRegions" prefHeight="20.0" prefWidth="100.0" promptText="District" />
                   <ComboBox fx:id="region" layoutX="20.0" layoutY="174.0" onAction="#getPins" prefHeight="20.0" prefWidth="100.0" promptText="Region" />
                   <ComboBox fx:id="pin" layoutX="126.0" layoutY="174.0" prefHeight="20.0" prefWidth="100.0" promptText="Pin" />
                  
-                  <AnchorPane fx:id="childSpecificFields" layoutX="-13.0" layoutY="302.0" prefHeight="35.0" prefWidth="871.0" visible="false">
+                        <AnchorPane fx:id="childSpecificFields" layoutX="-13.0" layoutY="302.0" prefHeight="25.0" prefWidth="385.0" visible="false">
                      <children>
-                        <TextField fx:id="parentName" layoutX="29.0" layoutY="-5.0" prefHeight="30.0" prefWidth="142.0" promptText="Parent/Guardian Name" />
-                        <TextField fx:id="uinId" layoutX="182.0" layoutY="-5.0" prefHeight="30.0" prefWidth="142.0" promptText="UIN ID" />
+                        <TextField fx:id="parentName" layoutX="33.0" layoutY="-5.0" prefHeight="30.0" prefWidth="150.0" promptText="Parent/Guardian Name" />
+                        <TextField fx:id="uinId" layoutX="200.0" layoutY="-5.0" prefHeight="30.0" prefWidth="155.0" promptText="UIN ID" />
                      </children>
                   </AnchorPane>
-                  <TextField fx:id="mobileNo" layoutX="20.0" layoutY="209.0" prefHeight="30.0" prefWidth="187.0" promptText="Mobile No" />
-                  <TextField fx:id="landLineNo" layoutX="20.0" layoutY="248.0" prefHeight="30.0" prefWidth="187.0" promptText="Landline No" />
+                  <TextField fx:id="mobileNo" layoutX="20.0" layoutY="209.0" prefHeight="30.0" prefWidth="320.0" promptText="Mobile No" />
+                  <TextField fx:id="landLineNo" layoutX="20.0" layoutY="248.0" prefHeight="30.0" prefWidth="320.0" promptText="Landline No" />
+                  <Button layoutX="627.0" layoutY="283.0" mnemonicParsing="false" onAction="#saveDetail" prefHeight="20.0" prefWidth="70.0" text="Next" />
                </children>
             </AnchorPane>
-            <Button layoutX="45.0" layoutY="604.0" mnemonicParsing="false" onAction="#goToHomePage" text="Home" />
-            <Button layoutX="757.0" layoutY="604.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
             <ComboBox fx:id="gender" layoutX="45.0" layoutY="224.0" prefHeight="20.0" prefWidth="100.0" promptText="Gender">
             	<items>
        					 <FXCollections fx:factory="observableArrayList">
@@ -67,7 +78,11 @@
 				        </FXCollections>
    				</items>
             </ComboBox>
-         </children>
+                  <Line endX="400.0" layoutX="365.0" layoutY="93.0" startX="-350.0" /> 	
+            	
+            	</children>
+            </AnchorPane>
+             </children>
     </AnchorPane>
   </content>
 </ScrollPane>
