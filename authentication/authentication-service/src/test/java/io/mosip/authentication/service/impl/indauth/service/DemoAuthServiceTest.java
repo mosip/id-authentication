@@ -110,6 +110,8 @@ public class DemoAuthServiceTest {
 		ad.setAddrLine1Pri("155 second street");
 		ad.setAddrLine2Pri("Anna Nagar");
 		ad.setAddrLine3Pri("Red Hills");
+		ad.setCityPri("Chennai");
+		ad.setStatePri("TamilNadu");
 		ad.setCountryPri("India");
 		ad.setPinCodePri("700105");
 		demoDTO.setAd(ad);
@@ -128,6 +130,8 @@ public class DemoAuthServiceTest {
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_LINE1_PRI, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_LINE2_PRI, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_LINE3_PRI, MatchingStrategyType.EXACT.getType(), 100));
+		listMatchInputsExp.add(new MatchInput(DemoMatchType.CITY_PRI, MatchingStrategyType.EXACT.getType(), 100));
+		listMatchInputsExp.add(new MatchInput(DemoMatchType.STATE_PRI, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.COUNTRY_PRI, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.PINCODE_PRI, MatchingStrategyType.EXACT.getType(), 100));
 		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructAdMatchInput",

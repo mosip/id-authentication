@@ -400,5 +400,49 @@ public class DemoMatchTypeTest {
 				DemoMatchType.PINCODE_PRI.getEntityInfoFetcher().getInfo(demoEntity, locationInfoFetcher));
 		assertNotEquals("600000", DemoMatchType.PINCODE_PRI.getDemoInfoFetcher().getInfo(demoDTO));
 	}
+	
+	@Test
+	public void TestCityStrategyisNotNull() {
+		assertNotNull(DemoMatchType.CITY_PRI);
+	}
+
+	@Test
+	public void TestCityStrategy() {
+		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
+		personalAddressDTO.setCityPri("Chennai");
+		DemoDTO demoDTO = new DemoDTO();
+		demoDTO.setAd(personalAddressDTO);
+		DemoEntity demoEntity = new DemoEntity();
+		demoEntity.setLocationCode("600117");
+		LocationInfoFetcher locationInfoFetcher = Mockito.mock(LocationInfoFetcher.class);
+
+		Mockito.when(locationInfoFetcher.getLocation(LocationLevel.CITY, demoEntity.getLocationCode()))
+				.thenReturn(Optional.of("Chennai"));
+		assertEquals(DemoMatchType.CITY_PRI.getDemoInfoFetcher().getInfo(demoDTO),
+				DemoMatchType.CITY_PRI.getEntityInfoFetcher().getInfo(demoEntity, locationInfoFetcher));
+		assertNotEquals("India", DemoMatchType.CITY_PRI.getDemoInfoFetcher().getInfo(demoDTO));
+	}
+	
+	@Test
+	public void TestStateStrategyisNotNull() {
+		assertNotNull(DemoMatchType.STATE_PRI);
+	}
+
+	@Test
+	public void TestStateStrategy() {
+		PersonalAddressDTO personalAddressDTO = new PersonalAddressDTO();
+		personalAddressDTO.setStatePri("TamilNadu");
+		DemoDTO demoDTO = new DemoDTO();
+		demoDTO.setAd(personalAddressDTO);
+		DemoEntity demoEntity = new DemoEntity();
+		demoEntity.setLocationCode("600117");
+		LocationInfoFetcher locationInfoFetcher = Mockito.mock(LocationInfoFetcher.class);
+
+		Mockito.when(locationInfoFetcher.getLocation(LocationLevel.STATE, demoEntity.getLocationCode()))
+				.thenReturn(Optional.of("TamilNadu"));
+		assertEquals(DemoMatchType.STATE_PRI.getDemoInfoFetcher().getInfo(demoDTO),
+				DemoMatchType.STATE_PRI.getEntityInfoFetcher().getInfo(demoEntity, locationInfoFetcher));
+		assertNotEquals("India", DemoMatchType.STATE_PRI.getDemoInfoFetcher().getInfo(demoDTO));
+	}
 
 }
