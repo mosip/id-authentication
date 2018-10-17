@@ -30,7 +30,7 @@ public class VIDEntity {
 
 	/** The ref id. */
 	@NotNull
-	@Column(name = "uin_id", unique = true, nullable = false)
+	@Column(name = "uin_ref_id", unique = true, nullable = false)
 	private String refId;
 
 	/** The generated on. */

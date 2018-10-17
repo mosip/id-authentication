@@ -28,7 +28,7 @@ public class UinEntity {
 	/** The uin. */
 	@Id
 	@NotNull
-	@Column(name = "uin", unique = true, nullable = false)
+	@Column(name = "uin_ref_id", unique = true, nullable = false)
 	String uin;
 
 	/** The is active. */

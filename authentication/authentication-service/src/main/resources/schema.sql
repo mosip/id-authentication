@@ -98,7 +98,7 @@ alter table ida.vid add constraint pk_vid_id primary key (id)
  ;
 
 alter table ida.vid add constraint fk_vid_uin_ref_id foreign key (uin_ref_id) references 
-ida.uin (id) on delete cascade on update cascade
+ida.uin (uin_ref_id) on delete cascade on update cascade
 ;
 
 -- indexes section ------------------------------------------------------------------------
@@ -279,7 +279,7 @@ alter table ida.indv_demographic add constraint pk_idemo_uin_ref_id primary key 
 ;
  
 alter table ida.indv_demographic add constraint fk_idemo_uin_ref_id foreign key (uin_ref_id) references 
-ida.uin (id) on delete cascade on update cascade
+ida.uin (uin_ref_id) on delete cascade on update cascade
 ;
 -- indexes section ------------------------------------------------------------------
 -- create index idx_idemo_<> on ida.<>(<>)
