@@ -12,21 +12,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import org.springframework.core.io.ClassPathResource;
+import io.mosip.kernel.logger.logback.appender.MosipConsoleAppender;
+import io.mosip.kernel.logger.logback.appender.MosipFileAppender;
+import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.constant.MosipLoggerMethod;
+import io.mosip.kernel.logger.logback.exception.ClassNameNotFoundException;
+import io.mosip.kernel.logger.logback.exception.EmptyPatternException;
+import io.mosip.kernel.logger.logback.exception.FileNameNotProvided;
+import io.mosip.kernel.logger.logback.exception.ImplementationNotFound;
+import io.mosip.kernel.logger.logback.exception.MosipIllegalArgumentException;
+import io.mosip.kernel.logger.logback.exception.MosipIllegalStateException;
+import io.mosip.kernel.logger.logback.exception.MosipXMLConfigurationParseException;
+import io.mosip.kernel.logger.logback.exception.PatternSyntaxException;
+import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 
-import io.mosip.kernel.logger.appender.MosipConsoleAppender;
-import io.mosip.kernel.logger.appender.MosipFileAppender;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.constant.MosipLoggerMethod;
-import io.mosip.kernel.logger.exception.ClassNameNotFoundException;
-import io.mosip.kernel.logger.exception.EmptyPatternException;
-import io.mosip.kernel.logger.exception.FileNameNotProvided;
-import io.mosip.kernel.logger.exception.ImplementationNotFound;
-import io.mosip.kernel.logger.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.logger.exception.MosipIllegalStateException;
-import io.mosip.kernel.logger.exception.MosipXMLConfigurationParseException;
-import io.mosip.kernel.logger.exception.PatternSyntaxException;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
+import org.springframework.core.io.ClassPathResource;
 
 public class MosipLogfactoryTest {
 
