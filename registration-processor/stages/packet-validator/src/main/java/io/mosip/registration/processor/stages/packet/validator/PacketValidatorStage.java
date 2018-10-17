@@ -70,12 +70,13 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 			RegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(registrationId);
-			FilesValidation filesValidation=new FilesValidation(adapter);
+			FilesValidation filesValidation = new FilesValidation(adapter);
 			boolean isFilesValidated = filesValidation.filesValidation(registrationId, packetInfo);
 			boolean isCheckSumValidated = false;
 			if (isFilesValidated) {
 				
-				isCheckSumValidated =CheckSumValidation.checksumvalidation(registrationId, packetInfo);
+				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter);
+				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId, packetInfo);
 				if (!isCheckSumValidated) {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION);
 				}

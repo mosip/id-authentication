@@ -9,30 +9,31 @@ import org.apache.commons.io.IOUtils;
 import io.mosip.registration.processor.core.packet.dto.HashSequence;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
 public class CheckSumValidation {
 	
-	private CheckSumValidation() {
+	public static final String HMAC_FILE = "HMACFile";
+	
+	private  FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter;
+	
+	public CheckSumValidation(FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter) {
+		this.adapter = adapter;
 		
 	}
 	
-	private static FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter = new FilesystemCephAdapterImpl();
-	
-	public static final String HMAC_FILE = "HMACFile";
-	
-	public static boolean checksumvalidation(String registrationId, PacketInfo packetInfo) throws IOException {
+	public boolean checksumvalidation(String registrationId, PacketInfo packetInfo) throws IOException {
 		HashSequence hashSequence = packetInfo.getHashSequence();
 
 		// Getting checksum from HMAC File
-		InputStream HMACFileStream = adapter.getFile(registrationId, HMAC_FILE);
-		byte[] HMACFileHashByte = IOUtils.toByteArray(HMACFileStream);
+		InputStream hmacFileStream = adapter.getFile(registrationId, HMAC_FILE);
+		byte[] hmacFileHashByte = IOUtils.toByteArray(hmacFileStream);
 
 		// Generating checksum using hashSequence
-		byte[] generatedHash = CheckSumGeneration.generatePacketInfoHash(hashSequence, registrationId);
+		CheckSumGeneration checkSumGeneration = new CheckSumGeneration(adapter);
+		byte[] generatedHash = checkSumGeneration.generatePacketInfoHash(hashSequence, registrationId);
 
-		return Arrays.equals(generatedHash, HMACFileHashByte);
+		return Arrays.equals(generatedHash, hmacFileHashByte);
 	}
 
 }

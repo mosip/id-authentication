@@ -14,20 +14,19 @@ import io.mosip.registration.processor.core.packet.dto.BiometricSequence;
 import io.mosip.registration.processor.core.packet.dto.DemographicSequence;
 import io.mosip.registration.processor.core.packet.dto.HashSequence;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
 public class CheckSumGeneration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CheckSumGeneration.class);
 
-	private static FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter = new FilesystemCephAdapterImpl();
+	private FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter;
 
-	private CheckSumGeneration() {
-
+	public CheckSumGeneration(FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter) {
+		this.adapter = adapter;
 	}
 
-	public static byte[] generatePacketInfoHash(HashSequence sequence, String registrationId) {
+	public byte[] generatePacketInfoHash(HashSequence sequence, String registrationId) {
 
 		// Sequence
 		BiometricSequence biometricSequence = sequence.getBiometricSequence();
@@ -44,7 +43,7 @@ public class CheckSumGeneration {
 
 	}
 
-	private static void generateBiometricsHash(BiometricSequence biometricSequence, String registrationId) {
+	private void generateBiometricsHash(BiometricSequence biometricSequence, String registrationId) {
 		// hash for applicant
 		if (biometricSequence.getApplicant() != null) {
 			generateBiometricInfosHash(biometricSequence.getApplicant(), registrationId, PacketFiles.APPLICANT.name());
@@ -58,22 +57,22 @@ public class CheckSumGeneration {
 
 	}
 
-	private static void generateBiometricInfosHash(List<String> hashOrder, String registrationId, String Person) {
+	private void generateBiometricInfosHash(List<String> hashOrder, String registrationId, String personType) {
 		hashOrder.forEach(file -> {
 			byte[] filebyte = null;
 			try {
 				InputStream fileStream = adapter.getFile(registrationId,
-						PacketFiles.BIOMETRIC.name() + File.separator + Person + File.separator + file);
+						PacketFiles.BIOMETRIC.name() + File.separator + personType + File.separator + file);
 				filebyte = toByteArray(fileStream);
 			} catch (IOException e) {
-				LOGGER.error("Unable to read the input stream", e);
+				LOGGER.error(StatusMessage.INPUTSTREAM_NOT_READABLE, e);
 			}
 			generateHash(filebyte);
 
 		});
 	}
 
-	private static void generateDemographicHash(DemographicSequence demographicSequence, String registrationId) {
+	private void generateDemographicHash(DemographicSequence demographicSequence, String registrationId) {
 		List<String> hashOrder = demographicSequence.getApplicant();
 
 		hashOrder.forEach(document -> {
@@ -89,7 +88,7 @@ public class CheckSumGeneration {
 				}
 				filebyte = toByteArray(fileStream);
 			} catch (IOException e) {
-				LOGGER.error("Unable to read the input stream", e);
+				LOGGER.error(StatusMessage.INPUTSTREAM_NOT_READABLE, e);
 			}
 
 			generateHash(filebyte);
