@@ -34,7 +34,7 @@ import io.mosip.registration.service.impl.DocumentUploaderServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource({ "classpath:registration-application.properties" })
+@TestPropertySource({ "classpath:registration-application.test.properties" })
 public class DocumentUploadServiceTest {
 
 	@InjectMocks
@@ -51,9 +51,9 @@ public class DocumentUploadServiceTest {
 	private MockMultipartFile mockMultipartFile;
 
 	DocumentDto documentDto = new DocumentDto("98745632155997", "12345678996325", "address", "POA", ".pdf", "SAVE",
-			"ENG", "Kishan", "Kishan", true);
+			"ENG", "Rudra", "Rudra", true);
 	DocumentDto documentDto2 = new DocumentDto("85697463215698", "98745632159753", "address", "POI", ".pdf", "SAVE",
-			"ENG", "Rupika", "Rupika", false);
+			"ENG", "Rudra", "rudra", false);
 	private DocumentEntity entity;
 
 	@Before

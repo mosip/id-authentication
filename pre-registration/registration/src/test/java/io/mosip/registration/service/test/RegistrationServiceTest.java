@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
@@ -59,7 +60,7 @@ import io.mosip.registration.service.impl.RegistrationServiceImpl;
 
 @SpringBootTest
 @SpringBootConfiguration
-
+@TestPropertySource({ "classpath:registration-application.test.properties" })
 public class RegistrationServiceTest {
 
 	@Mock
