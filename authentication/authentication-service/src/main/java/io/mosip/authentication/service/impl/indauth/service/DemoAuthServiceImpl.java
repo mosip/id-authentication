@@ -299,19 +299,18 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 
 	public Optional<String> getLocation(LocationLevel targetLocationLevel, String locationCode) {
 		Optional<LocationEntity> locationEntity = locationRepository.findByCodeAndIsActive(locationCode, true);
-		String locationname = null;
 		if (locationEntity.isPresent()) {
 			LocationEntity entity = locationEntity.get();
 			String entitylocname = entity.getName();
 			String entityparentcode = entity.getParentloccode();
 			String entityloclevel = entity.getHierarchylevelname();
 			if (targetLocationLevel.getName().equalsIgnoreCase(entityloclevel)) {
-				locationname = entitylocname;
+				return Optional.of(entitylocname);
 			} else {
-				getLocation(targetLocationLevel, entityparentcode);
+				return getLocation(targetLocationLevel, entityparentcode);
 			}
 		}
-		return Optional.ofNullable(locationname);
+		return Optional.empty();
 
 	}
 
