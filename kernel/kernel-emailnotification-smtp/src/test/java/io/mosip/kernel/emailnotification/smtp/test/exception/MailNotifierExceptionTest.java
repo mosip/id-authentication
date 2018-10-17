@@ -1,21 +1,29 @@
 package io.mosip.kernel.emailnotification.smtp.test.exception;
 
 import static org.hamcrest.CoreMatchers.isA;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.emailnotification.smtp.NotificationEmailBootApplication;
+import io.mosip.kernel.emailnotification.smtp.exception.MosipAsyncCaughtExceptionHandler;
 import io.mosip.kernel.emailnotification.smtp.service.impl.MailNotifierServiceImpl;
+import io.mosip.kernel.emailnotification.smtp.util.MailNotifierUtils;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
@@ -27,9 +35,8 @@ public class MailNotifierExceptionTest {
 	@Autowired
 	MailNotifierServiceImpl service;
 
-	/*
-	 * @MockBean MailNotifierUtils utils;
-	 */
+	@MockBean
+	MailNotifierUtils utils;
 
 	@Test
 	public void testToRaiseExceptionForNullContent() throws Exception {
@@ -74,15 +81,17 @@ public class MailNotifierExceptionTest {
 				.andExpect(jsonPath("$.errors[0].errorCode", isA(String.class)));
 	}
 
-	/*
-	 * @Test public void testForAsyncExceptionTest() throws IOException { String
-	 * mailContent = "testcontent"; String[] mailTo = { "urvvil08@gmail.com" };
-	 * String[] mailCc = { "testcc@gmail.com" }; String mailSubject =
-	 * "test subject"; MultipartFile[] attachments = null; doThrow(new
-	 * MosipAsyncCaughtExceptionHandler(new
-	 * IOException())).when(utils).addAttachments(Mockito.any(), Mockito.any());
-	 * service.sendEmail(mailTo, mailCc, mailSubject, mailContent, attachments); }
-	 */
+	@Test
+	public void testForAsyncExceptionTest() throws IOException {
+		String mailContent = "testcontent";
+		String[] mailTo = { "urvvil08@gmail.com" };
+		String[] mailCc = { "testcc@gmail.com" };
+		String mailSubject = "test subject";
+		MultipartFile[] attachments = null;
+		doThrow(new MosipAsyncCaughtExceptionHandler(new IOException())).when(utils).addAttachments(Mockito.any(),
+				Mockito.any());
+		service.sendEmail(mailTo, mailCc, mailSubject, mailContent, attachments);
+	}
 
 	@Test
 	public void testToRaiseExceptionForEmptyWithMultipleToAndMultipleEmpty() throws Exception {

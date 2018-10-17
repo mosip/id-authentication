@@ -18,6 +18,8 @@ import io.mosip.kernel.emailnotification.smtp.exception.MosipAsyncCaughtExceptio
 import io.mosip.kernel.emailnotification.smtp.util.MailNotifierUtils;
 
 /**
+ * Service implementation class for {@link MailNotifierService}.
+ * 
  * @author Sagar Mahapatra
  * @since 1.0.0
  */

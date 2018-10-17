@@ -12,12 +12,10 @@ import io.mosip.kernel.emailnotification.smtp.exception.MailNotifierAsyncHandler
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=NotificationEmailBootApplication.class)
-public class MailNotifierLoggerTest {	
+public class MailNotifierLoggerTest {
 	@Test
 	public void testLogger() {
 		MosipLogger logger = LoggerConfiguration.logConfig(MailNotifierAsyncHandler.class);
-		logger.info("", "", "", "Testing Logging");
-		
+		logger.info("", "", "", "Testing Logging");		
 	}
-
 }
