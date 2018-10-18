@@ -56,37 +56,37 @@ public class PacketServer {
 	/**
 	 * Host name for server
 	 */
-	@Value("${packetserver.host}")
+	@Value("${mosip.kernel.packetserver.host}")
 	private String host;
 	/**
 	 * Port Number
 	 */
-	@Value("${packetserver.port}")
+	@Value("${mosip.kernel.packetserver.port}")
 	private int port;
 	/**
 	 * Public key for private key authentication
 	 */
-	@Value("${packetserver.publicKey}")
+	@Value("${mosip.kernel.packetserver.publicKey}")
 	private String publicKey;
 	/**
 	 * Host key file name
 	 */
-	@Value("${packetserver.keyPairGenerator}")
+	@Value("${mosip.kernel.packetserver.keyPairGenerator}")
 	private String hostKeyFileName;
 	/**
 	 * SFTP home location
 	 */
-	@Value("${packetserver.sftpRemoteDirectory}")
+	@Value("${mosip.kernel.packetserver.sftpRemoteDirectory}")
 	private String sftpRemoteDirectory;
 	/**
 	 * Username for authentication
 	 */
-	@Value("${packetserver.username}")
+	@Value("${mosip.kernel.packetserver.username}")
 	private String username;
 	/**
 	 * Password for authentication
 	 */
-	@Value("${packetserver.password}")
+	@Value("${mosip.kernel.packetserver.password}")
 	private String password;
 
 	/**

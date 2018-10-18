@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author Urvil Joshi
  * @since 1.0.0
  */
-@ConfigurationProperties(prefix = "file")
+@ConfigurationProperties(prefix = "mosip.kernel.packetuploader.http.file")
 public class PacketFileStorageProperties {
 	/**
 	 * Upload directory for this application
