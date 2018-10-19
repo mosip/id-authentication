@@ -55,7 +55,8 @@
 		<mockito.version>1.10.19</mockito.version>
 		<powermock.module.junit4.version>1.7.4</powermock.module.junit4.version>
 		<powermock.api.mockito.version>1.7.4</powermock.api.mockito.version>
-
+		<awaitility.version>3.1.0</awaitility.version>
+		
 		<!-- DFS adapter -->
 		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
@@ -63,6 +64,11 @@
 		<!-- Vert.x -->
 		<vertx.version>3.5.3</vertx.version>
 		
+		<!-- local -->
+		<registration.status.version>1.0.0-SNAPSHOT</registration.status.version>
+		<registration.processor.core.version>1.0.0-SNAPSHOT</registration.processor.core.version>
+		<filesystem.adapter.version>1.0.0-SNAPSHOT</filesystem.adapter.version>
+		<packet.manager.version>1.0.0-SNAPSHOT</packet.manager.version>
 	</properties>
 
 	<dependencyManagement>
@@ -86,6 +92,7 @@
 		<module>jobs</module>
 		<module>bridge</module>
     	<module>stages</module>
+    	<module>packet-meta-info</module>
   </modules>
 
 	<build>

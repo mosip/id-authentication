@@ -30,22 +30,4 @@ public class ApplicantPhotographPKEntity implements Serializable {
 		this.regId = regId;
 	}
 
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		if (!(other instanceof ApplicantPhotographPKEntity)) {
-			return false;
-		}
-		ApplicantPhotographPKEntity castOther = (ApplicantPhotographPKEntity) other;
-		return this.regId.equals(castOther.regId);
-	}
-
-	public int hashCode() {
-		final int prime = 31;
-		int hash = 17;
-		hash = hash * prime + this.regId.hashCode();
-
-		return hash;
-	}
 }

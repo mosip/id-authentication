@@ -78,18 +78,6 @@ public class ApplicantDemographicEntity extends BasePacketEntity<ApplicantDemogr
 	@Column(name = "is_active")
 	private Boolean isActive;
 
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
-
-	public String getMiddleInitial() {
-		return middleInitial;
-	}
-
 	@Column(name = "lastname")
 	private String lastName;
 
@@ -377,11 +365,17 @@ public class ApplicantDemographicEntity extends BasePacketEntity<ApplicantDemogr
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-	public String getMiddleinitial() {
-		return middleInitial;
+	public Boolean getIsActive() {
+		return isActive;
 	}
 
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public String getMiddleInitial() {
+		return middleInitial;
+	}
 	public void setMiddleInitial(String middleInitial) {
 		this.middleInitial = middleInitial;
 	}

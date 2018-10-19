@@ -57,6 +57,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
 
+	public static final String FILE_SEPARATOR = "\\";
+
+	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
+			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
 	@Autowired
 	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
 
@@ -247,9 +251,24 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	public void saveDocument(DocumentDetail documentDetail) {
 		ApplicantDocumentEntity applicantDocumentEntity = PacketInfoMapper.convertAppDocDtoToEntity(documentDetail,
 				metaData);
-		// applicantDocumentEntity.setDocStore(getDocumentAsByteArray(metaData.getRegistrationId(),
-		// documentDetail.getDocumentName()));
-		applicantDocumentEntity.setDocStore(new byte[] { 20, 10 });
+
+		String fileName = "";
+		if (PacketFiles.APPLICANTPHOTO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
+			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.APPLICANTPHOTO.name();
+		} else if (PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
+			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name();
+		} else if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
+			fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name();
+		} else if (PacketFiles.PROOFOFADDRESS.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
+			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.PROOFOFADDRESS.name();
+		} else if (PacketFiles.EXCEPTIONPHOTO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
+			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.EXCEPTIONPHOTO.name();
+		} else if (PacketFiles.PROOFOFIDENTITY.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
+			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.PROOFOFIDENTITY.name();
+		}
+
+		applicantDocumentEntity
+				.setDocStore(getDocumentAsByteArray(metaData.getRegistrationId(), fileName));
 		applicantDocumentRepository.save(applicantDocumentEntity);
 		LOGGER.info(applicantDocumentEntity.getId().getRegId() + " --> Document Demographic DATA SAVED");
 	}
@@ -302,6 +321,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	 * @return the document as byte array
 	 */
 	private byte[] getDocumentAsByteArray(String registrationId, String documentName) {
+
 		InputStream in = fileSystemAdapter.getFile(registrationId, documentName);
 		byte[] buffer = new byte[1024];
 		int len;

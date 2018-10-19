@@ -24,7 +24,6 @@ public class PacketValidatorApplication {
 
 	@PostConstruct
 	public void deployVerticle() {
-
 		validatebean.deployVerticle();
 
 	}
