@@ -44,8 +44,6 @@ import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
-import io.mosip.registration.processor.packet.storage.repository.RegCenterMachineRepositoy;
-import io.mosip.registration.processor.packet.storage.repository.RegOsiRepository;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 
 /**
@@ -79,13 +77,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private BasePacketRepository<ApplicantPhotographEntity, String> applicantPhotographRepository;
 
 	@Autowired
-	private RegOsiRepository regOsiRepository;
+	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
 
 	@Autowired
 	private BasePacketRepository<ApplicantDemographicEntity, String> applicantDemographicRepository;
 
 	@Autowired
-	private RegCenterMachineRepositoy regCenterMachineRepository;
+	private BasePacketRepository<RegCenterMachineEntity, String> regCenterMachineRepository;
 
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
@@ -284,7 +282,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private void saveOsiData(OsiData osiData) {
 		RegOsiEntity regOsiEntity = PacketInfoMapper.convertOsiDataToEntity(osiData, metaData);
 		regOsiRepository.save(regOsiEntity);
-		LOGGER.info(regOsiEntity.getRegId() + " --> Applicant OSI DATA SAVED");
+		LOGGER.info(regOsiEntity.getId() + " --> Applicant OSI DATA SAVED");
 	}
 
 	/**
@@ -309,7 +307,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private void saveRegCenterData(MetaData metaData) {
 		RegCenterMachineEntity regCenterMachineEntity = PacketInfoMapper.convertRegCenterMachineToEntity(metaData);
 		regCenterMachineRepository.save(regCenterMachineEntity);
-		LOGGER.info(regCenterMachineEntity.getRegId() + " --> Registration Center Machine DATA SAVED");
+		LOGGER.info(regCenterMachineEntity.getId() + " --> Registration Center Machine DATA SAVED");
 
 	}
 

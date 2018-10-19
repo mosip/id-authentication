@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,16 +14,13 @@ import org.hibernate.annotations.UpdateTimestamp;
  * The persistent class for the reg_osi database table.
  * 
  * @author Horteppa M1048399
+ * @author Girish Yarru
  */
 @Entity
 @Table(name = "reg_osi", schema = "regprc")
-public class RegOsiEntity implements Serializable {
+public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@Column(name = "reg_id", nullable = false)
-	private String regId;
 
 	@Column(name = "prereg_id", nullable = false)
 	private String preregId;
@@ -91,14 +87,6 @@ public class RegOsiEntity implements Serializable {
 
 	public RegOsiEntity() {
 		super();
-	}
-
-	public String getRegId() {
-		return regId;
-	}
-
-	public void setRegId(String regId) {
-		this.regId = regId;
 	}
 
 	public String getPreregId() {
