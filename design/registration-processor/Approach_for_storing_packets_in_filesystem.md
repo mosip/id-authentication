@@ -1,6 +1,7 @@
 # Approach for storing encrypted registration packets in file system
 
 **Background**
+
 Enrolment packets created by the enrolment clients will be periodically uploaded to the server for processing. These packets must be stored securely and with duplicate copies of each packet such that in the event of storage disk failures, packets should not be lost. 
 The target users are
 -	Server application which will process the packets
