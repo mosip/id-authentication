@@ -28,7 +28,7 @@ public enum MosipSecurityExceptionCodeConstants {
 	MOSIP_INVALID_DATA_EXCEPTION("COK-FSE-007","data not valid"), 
 	MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION("COK-FSE-008","encrypted data is corrupted"), 
 	MOSIP_INVALID_DATA_SIZE_EXCEPTION("COK-FSE-009","ecrypted data size is not valid"), 
-	MOSIP_NULL_DATA_EXCEPTION("COK-FSE-010","data is null"),
+	MOSIP_NULL_DATA_EXCEPTION("COK-FSE-010","data is null or length is 0"),
 	MOSIP_NULL_METHOD_EXCEPTION("COK-FSE-014","mosip security method is null"),
 	MOSIP_NO_SUCH_ALGORITHM_EXCEPTION("COK-FSE-011","no such algorithm"), 
 	MOSIP_NULL_KEY_EXCEPTION("COK-FSE-012","key is null");
