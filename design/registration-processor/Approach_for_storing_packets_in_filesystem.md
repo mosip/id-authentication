@@ -39,4 +39,17 @@ o	Storage and retrieval operations should be secure with authentication and auth
 
 Below is the sample of how files will be stored in CEPH after packet gets decrypted  –
 
-![Registration status class diagram](_images/registration_status_class_diagram.png)
+![CEPH storage example](_images/filesystem_storage_example.png)
+
+
+** Process Flow ** 
+
+![CEPH Adapter process flow](_images/filesystem_storage_process_flow.PNG)
+
+** Class Diagram ** 
+
+![CEPH Adapter class diagram](_images/filesystem_storage_class_diagram.png)
+
+** Sequence Diagram ** 
+
+![CEPH Adapter Sequence diagram](_images/filesystem_storage_seq_diagram.png)
