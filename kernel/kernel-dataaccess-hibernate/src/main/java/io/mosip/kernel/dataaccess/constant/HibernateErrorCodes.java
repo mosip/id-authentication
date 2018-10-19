@@ -8,7 +8,7 @@ package io.mosip.kernel.dataaccess.constant;
  *
  */
 public enum HibernateErrorCodes {
-	ERR_DATABASE("COK-DAO-DAM-001"), HIBERNATE_EXCEPTION("COK-DAO-DAM-002"), NO_RESULT_EXCEPTION("COK-DAO-DAM-003");
+	ERR_DATABASE("KER-DAH-001"), HIBERNATE_EXCEPTION("KER-DAH-002"), NO_RESULT_EXCEPTION("KER-DAH-003");
 
 	/**
 	 * Field for error code

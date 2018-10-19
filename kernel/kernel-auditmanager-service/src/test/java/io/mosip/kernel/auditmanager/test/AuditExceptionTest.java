@@ -50,7 +50,7 @@ public class AuditExceptionTest {
 				"}";
 		mockMvc.perform(post("/auditmanager/audits").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.code", is("COK-AUM-AUD-001")));
+				.andExpect(jsonPath("$.code", is("KER-AUD-001")));
 	}
 	
 	@Test
@@ -76,7 +76,7 @@ public class AuditExceptionTest {
 				"}";
 		mockMvc.perform(post("/auditmanager/audits").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.code", is("COK-AUM-AUD-002")));
+				.andExpect(jsonPath("$.code", is("KER-AUD-002")));
 	}
 	
 	@Test
@@ -102,7 +102,7 @@ public class AuditExceptionTest {
 				"}";
 		mockMvc.perform(post("/auditmanager/audits").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.code", is("COK-AUM-AUD-001")));
+				.andExpect(jsonPath("$.code", is("KER-AUD-001")));
 	}
 	
 	

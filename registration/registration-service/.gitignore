@@ -22,3 +22,7 @@ local.properties
 *.zip
 *.logs
 *.ucls
+/reg/
+
+#not ignore files
+!jfxrt.jar

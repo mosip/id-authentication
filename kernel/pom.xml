@@ -4,12 +4,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-<!-- <parent>
-		<groupId>io.mosip</groupId>
-		<artifactId>mosip-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent> -->
-     <version>1.0.0-SNAPSHOT</version>    
+	<!-- <parent> <groupId>io.mosip</groupId> <artifactId>mosip-parent</artifactId> 
+		<version>1.0.0-SNAPSHOT</version> </parent> -->
+	<version>1.0.0-SNAPSHOT</version>
 
 	<groupId>io.mosip.kernel</groupId>
 	<artifactId>kernel-parent</artifactId>
@@ -41,6 +38,7 @@
 		<jackson.version>2.9.5</jackson.version>
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 		<modelmapper.version>2.1.1</modelmapper.version>
+		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
 
 		<!-- Swagger -->
 		<swagger.version>2.9.2</swagger.version>
@@ -73,13 +71,15 @@
 		<logback.version>1.2.3</logback.version>
 		<slf4j.version>1.7.19</slf4j.version>
 		<mockito.version>1.10.19</mockito.version>
-
+		<powermock.version>1.7.4</powermock.version>
 		<!-- Lombok -->
 		<lombok.version>1.16.18</lombok.version>
 		<!-- Jsch -->
 		<jsch.version>0.1.54</jsch.version>
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
+
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/cache/**,**/dto/**,**/entity/**,**/exception/**,**/repository/**,**/*BootApplication.java</sonar.coverage.exclusions>
 	</properties>
 
 	<modules>
@@ -88,20 +88,25 @@
 		<module>kernel-dataaccess-hibernate</module>
 		<module>kernel-auditmanager-api</module>
 		<module>kernel-auditmanager-service</module>
-		<module>kernel-idvalidator</module>
+		<module>kernel-otpmanager-service</module>
 		<module>kernel-idgenerator-prid</module>
 		<module>kernel-idgenerator-rid</module>
+		<module>kernel-idgenerator-uin</module>
 		<module>kernel-idgenerator-vid</module>
+		<module>kernel-idgenerator-tokenid</module>
 		<module>kernel-packetuploader-sftp</module>
 		<module>kernel-packetuploader-http</module>
 		<module>kernel-packetserver-sftp</module>
-		<module>kernel-idgenerator-uin</module>
-		<module>kernel-otpmanager-api</module>
-		<module>kernel-otpmanager-service</module>
-		<module>kernel-validator</module>
+		<module>kernel-idvalidator</module>
+		<module>kernel-datavalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-config-server</module>
-		
+		<module>kernel-emailnotification-smtp</module>		
+		<module>kernel-keygenerator</module>
+		<module>kernel-templatemanager-velocity</module>
+		<module>kernel-templatemanager-freemarker</module>
+		<module>kernel-pdfgenerator-itext</module>
+		<module>kernel-smsnotification-msg91</module>
 	</modules>
 
 	<profiles>
@@ -109,8 +114,10 @@
 			<id>LOCAL</id>
 			<properties>
 				<sonar.host.url>
-					http://localhost:9010
+					http://104.215.158.154:9000
 				</sonar.host.url>
+				<sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
@@ -120,8 +127,11 @@
 			<id>DEV</id>
 			<properties>
 				<sonar.host.url>
-					http://mosipsonarserver:9000
+					http://13.76.43.109:9000
 				</sonar.host.url>
+				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				 <sonar.ws.timeout>90000</sonar.ws.timeout>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
 				</sonar.jacoco.reportPaths>
@@ -132,12 +142,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jul-to-slf4j</artifactId>
-			<version>1.7.25</version>
+			<version>${jcl.to.slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.7.25</version>
+			<version>${jcl.to.slf4j.version}</version>
 		</dependency>
 	</dependencies>
 
