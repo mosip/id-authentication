@@ -55,7 +55,7 @@ import io.mosip.registration.processor.status.code.AuditLogTempConstant;
  *
  */
 @Service
-public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, DemographicInfo> {
+public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, DemographicInfo,MetaData> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
 
@@ -142,7 +142,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	 * #saveDemographicData(java.lang.Object)
 	 */
 	@Override
-	public void saveDemographicData(DemographicInfo demographicInfo) {
+	public void saveDemographicData(DemographicInfo demographicInfo,MetaData metaData) {
 
 		boolean isTransactionSuccessful = false;
 		try {

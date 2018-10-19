@@ -263,13 +263,13 @@ public class PacketInfoMapper {
 		applicantDemographicEntity.setDob(new Date(Long.parseLong(demoInLocalLang.getDateOfBirth())));
 		applicantDemographicEntity.setEmail(demoInLocalLang.getEmailId());
 		applicantDemographicEntity.setFamilyName(demoInLocalLang.getFamilyname());
-		applicantDemographicEntity.setFirstName(demoInLocalLang.getFirstname());
+		applicantDemographicEntity.setFirstName(demoInLocalLang.getFirstName());
 		applicantDemographicEntity.setForeName(demoInLocalLang.getForename());
 		applicantDemographicEntity.setFullName(demoInLocalLang.getFullName());
 		applicantDemographicEntity.setGenderCode(demoInLocalLang.getGender());
 		applicantDemographicEntity.setGivenName(demoInLocalLang.getGivenname());
-		applicantDemographicEntity.setLastName(demoInLocalLang.getLastname());
-		applicantDemographicEntity.setMiddleName(demoInLocalLang.getMiddlename());
+		applicantDemographicEntity.setLastName(demoInLocalLang.getLastName());
+		applicantDemographicEntity.setMiddleName(demoInLocalLang.getMiddleName());
 		applicantDemographicEntity.setMobile(demoInLocalLang.getMobile());
 		applicantDemographicEntity.setSurName(demoInLocalLang.getSurname());
 		applicantDemographicEntity.setIsActive(true);
@@ -300,16 +300,16 @@ public class PacketInfoMapper {
 		applicantDemographicEntity.setDob(new Date(Long.parseLong(demoInLocalLang.getDateOfBirth())));
 		applicantDemographicEntity.setEmail(demoInUserLang.getEmailId());
 		applicantDemographicEntity.setFamilyName(demoInUserLang.getFamilyname());
-		applicantDemographicEntity.setFirstName(demoInUserLang.getFirstname());
+		applicantDemographicEntity.setFirstName(demoInUserLang.getFirstName());
 		applicantDemographicEntity.setForeName(demoInUserLang.getForename());
 		applicantDemographicEntity.setFullName(demoInUserLang.getFullName());
 		applicantDemographicEntity.setGenderCode(demoInUserLang.getGender());
 		applicantDemographicEntity.setGivenName(demoInUserLang.getGivenname());
-		applicantDemographicEntity.setLastName(demoInUserLang.getLastname());
+		applicantDemographicEntity.setLastName(demoInUserLang.getLastName());
 		applicantDemographicEntity.setIsActive(true);
 
 
-		applicantDemographicEntity.setMiddleName(demoInUserLang.getMiddlename());
+		applicantDemographicEntity.setMiddleName(demoInUserLang.getMiddleName());
 		applicantDemographicEntity.setMobile(demoInUserLang.getMobile());
 		applicantDemographicEntity.setSurName(demoInUserLang.getSurname());
 
