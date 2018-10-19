@@ -92,6 +92,11 @@
 			<version>${powermock.api.mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip</groupId>
+			<artifactId>packet-meta-info</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

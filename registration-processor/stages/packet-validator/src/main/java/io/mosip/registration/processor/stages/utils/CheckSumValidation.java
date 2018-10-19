@@ -13,7 +13,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Packet
 
 public class CheckSumValidation {
 	
-	public static final String HMAC_FILE = "HMACFile";
+	public static final String HMAC_FILE = "HMACFILE";
 	
 	private  FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter;
 	

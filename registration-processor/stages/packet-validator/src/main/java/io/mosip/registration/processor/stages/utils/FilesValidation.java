@@ -13,13 +13,16 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Packet
 
 public class FilesValidation {
 	
-	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.APPLICANT.name()
-	+ File.separator;
 	
-	public static final String BIOMETRIC_APPLICANT = PacketFiles.BIOMETRIC.name() + File.separator + PacketFiles.APPLICANT.name() + File.separator;
+    public static final String FILE_SEPARATOR="\\";
 	
-	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + File.separator + PacketFiles.INTRODUCER.name()
-	+ File.separator;
+	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.APPLICANT.name()
+	+ FILE_SEPARATOR;
+	
+	public static final String BIOMETRIC_APPLICANT = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
+	
+	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + PacketFiles.INTRODUCER.name()
+	+ FILE_SEPARATOR;
 	
 	
 	private  FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter;
@@ -61,7 +64,7 @@ public class FilesValidation {
 			} else if (PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name().equalsIgnoreCase(applicantFile)) {
 				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name();
 			} else if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(applicantFile)) {
-				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.DEMOGRAPHICINFO.name();
+				fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name();
 			} else if (PacketFiles.PROOFOFADDRESS.name().equalsIgnoreCase(applicantFile)) {
 				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.PROOFOFADDRESS.name();
 			} else if (PacketFiles.EXCEPTIONPHOTO.name().equalsIgnoreCase(applicantFile)) {

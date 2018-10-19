@@ -13,9 +13,12 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
+import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
@@ -36,6 +39,8 @@ import io.vertx.core.logging.LoggerFactory;
  */
 @Service
 public class PacketValidatorStage extends MosipVerticleManager {
+	
+	public static final String FILE_SEPARATOR="\\";
 
 	private static Logger log = LoggerFactory.getLogger(PacketValidatorStage.class);
 
@@ -49,6 +54,9 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	@Autowired
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	
+	@Autowired
+	private PacketInfoManager<PacketInfo, DemographicInfo,MetaData> packetInfoManager;
 
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
@@ -59,6 +67,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.STRUCTURE_BUS_IN);
+		object.setIsValid(Boolean.FALSE);
+		object.setInternalError(Boolean.FALSE);
 		String registrationId = object.getRid();
 
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
@@ -90,6 +100,11 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION);
 				registrationStatusDto
 						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_SUCCESSFULL.toString());
+				packetInfoManager.savePacketData(packetInfo);
+				InputStream demographicInfoStream = adapter.getFile(registrationId, PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
+				DemographicInfo demographicInfo = (DemographicInfo) JsonUtil.inputStreamtoJavaObject(demographicInfoStream,
+						DemographicInfo.class);
+				packetInfoManager.saveDemographicData(demographicInfo, packetInfo.getMetaData());
  
 			} else {
 				object.setIsValid(Boolean.FALSE);

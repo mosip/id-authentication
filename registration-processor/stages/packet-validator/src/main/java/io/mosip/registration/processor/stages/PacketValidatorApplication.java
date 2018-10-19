@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import io.mosip.registration.processor.stages.packet.validator.PacketValidatorStage;
 
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.stages",
-		"io.mosip.registration.processor.status", "io.mosip.registration.processor.packet.manager" })
+		"io.mosip.registration.processor.status", "io.mosip.registration.processor.packet.manager", "io.mosip.registration.processor.packet.storage" })
 @PropertySource({ "classpath:validator-application.properties" })
 @PropertySource({ "classpath:status-application.properties" })
 @PropertySource({ "classpath:packet-manager-application.properties" })

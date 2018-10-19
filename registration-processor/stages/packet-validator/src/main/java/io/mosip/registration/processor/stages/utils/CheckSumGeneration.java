@@ -17,6 +17,8 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
 public class CheckSumGeneration {
+	
+	public static final String FILE_SEPARATOR="\\";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CheckSumGeneration.class);
 
@@ -62,7 +64,7 @@ public class CheckSumGeneration {
 			byte[] filebyte = null;
 			try {
 				InputStream fileStream = adapter.getFile(registrationId,
-						PacketFiles.BIOMETRIC.name() + File.separator + personType + File.separator + file);
+						PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + personType + FILE_SEPARATOR + file.toUpperCase());
 				filebyte = toByteArray(fileStream);
 			} catch (IOException e) {
 				LOGGER.error(StatusMessage.INPUTSTREAM_NOT_READABLE, e);
@@ -81,10 +83,10 @@ public class CheckSumGeneration {
 			try {
 				if (document.equalsIgnoreCase(PacketFiles.DEMOGRAPHICINFO.name())) {
 					fileStream = adapter.getFile(registrationId,
-							PacketFiles.DEMOGRAPHIC.name() + File.separator + PacketFiles.DEMOGRAPHICINFO.name());
+							PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
 				} else {
-					fileStream = adapter.getFile(registrationId, PacketFiles.DEMOGRAPHIC.name() + File.separator
-							+ PacketFiles.APPLICANT.name() + File.separator + document);
+					fileStream = adapter.getFile(registrationId, PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
+							+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR + document.toUpperCase());
 				}
 				filebyte = toByteArray(fileStream);
 			} catch (IOException e) {
