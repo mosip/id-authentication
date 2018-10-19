@@ -1,4 +1,4 @@
-package io.mosip.kernel.datamapper.orika.impl.model;
+package io.mosip.kernel.datamapper.orika.test.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

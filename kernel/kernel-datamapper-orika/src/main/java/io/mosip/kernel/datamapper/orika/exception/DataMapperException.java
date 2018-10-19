@@ -1,7 +1,6 @@
 package io.mosip.kernel.datamapper.orika.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.datamapper.orika.constant.DataMapperErrorCodes;
 
 /**
  * 
@@ -17,7 +16,7 @@ public class DataMapperException extends BaseUncheckedException {
 	 * Generated serialVersionUID
 	 */
 	private static final long serialVersionUID = 2L;
-	
+
 	/**
 	 * Constructor for DataMapperException
 	 * 
@@ -26,8 +25,12 @@ public class DataMapperException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            The error message
 	 */
-	public DataMapperException(DataMapperErrorCodes errorCode) {
-		super(errorCode.getErrorCode(), errorCode.getErrorMessage());
+	public DataMapperException(String errorCode, String errorMsg) {
+		super(errorCode, errorMsg);
+	}
+
+	public DataMapperException(String errorMsg) {
+		super(errorMsg);
 	}
 
 }

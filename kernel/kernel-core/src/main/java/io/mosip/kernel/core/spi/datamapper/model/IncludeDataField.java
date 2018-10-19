@@ -1,11 +1,11 @@
-package io.mosip.kernel.datamapper.orika.fieldmapper;
+package io.mosip.kernel.core.spi.datamapper.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 /**
  * This Class contains the source and destination classes 
- * field names that needs to be included.
+ * field names that needs to be included with mapNull configuration.
  * 
  * @author Neha
  *

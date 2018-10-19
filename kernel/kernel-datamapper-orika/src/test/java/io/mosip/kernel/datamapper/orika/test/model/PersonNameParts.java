@@ -1,6 +1,4 @@
-package io.mosip.kernel.datamapper.orika.impl.model;
-
-import java.util.List;
+package io.mosip.kernel.datamapper.orika.test.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,8 +12,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonNameList {
+public class PersonNameParts {
 
-	private List<String> nameList;
+	private String firstName;
+	private String lastName;
 	
 }

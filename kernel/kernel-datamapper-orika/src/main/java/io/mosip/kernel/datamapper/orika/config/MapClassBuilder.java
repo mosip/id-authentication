@@ -1,163 +1,136 @@
 package io.mosip.kernel.datamapper.orika.config;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import io.mosip.kernel.core.spi.datamapper.DataMapper;
-import io.mosip.kernel.datamapper.orika.fieldmapper.ExcludeDataField;
-import io.mosip.kernel.datamapper.orika.fieldmapper.IncludeDataField;
-import io.mosip.kernel.datamapper.orika.impl.DataMapperImpl;
+import io.mosip.kernel.core.spi.datamapper.model.IncludeDataField;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import ma.glasnost.orika.metadata.ClassMapBuilder;
+
 /**
- * /**
- * ClassMapBuilder provides a fluent API which can be used to define 
- * a mapping from one class to another.
+ * ClassMapBuilder provides a fluent API which can be used to define a mapping
+ * from one class to another.
  *
  * @author Neha
  *
  */
-public class MapClassBuilder {
+
+public class MapClassBuilder<S, D> {
 
 	private MapperFactory mapperFactory = null;
 
-	private Class<?> source;
-	private Class<?> destination;
+	private S source;
+	private D destination;
+	private Class<D> destinationClass;
 	private List<IncludeDataField> includeFields;
-	private List<ExcludeDataField> excludeFields;
-
-	private boolean mapClassNull = true;
-
-	/**
-	 * Constructor for MapClassBuilder
-	 * 
-	 */
-	public MapClassBuilder() {
-		includeFields = new ArrayList<>();
-		excludeFields = new ArrayList<>();
-		mapperFactory = new DefaultMapperFactory.Builder().build();
-	}
+	private List<String> excludeFields;
+	private boolean applyDefault;
 
 	/**
 	 * Constructor for MapClassBuilder having
 	 * 
 	 * @param mapClassNull
-	 * 			Configure whether to map nulls in generated mapper code at global level
+	 *            Configure whether to map nulls in generated mapper code at global
+	 *            level
 	 */
 	public MapClassBuilder(boolean mapClassNull) {
-		this();
-		this.mapClassNull = mapClassNull;
-		mapperFactory = new DefaultMapperFactory.Builder().mapNulls(this.mapClassNull).build();
+		mapperFactory = new DefaultMapperFactory.Builder().mapNulls(mapClassNull).build();
 	}
 
 	/**
-     * Constructs a new MapClassBuilder instance initialized with the provided
-     * types which can be used to configure/customize the mapping between the
-     * two types.<br>
-     * <br>
-     * The returned MapClassBuilder instance, after being fully configured,
-     * should finally be registered with the factory using the
-     * <code>registerClassMap</code> method.
-     * 
-     * @param source
-     *            the Class instance representing the "source" side of the mapping
-     * @param destination
-     *            the Class instance representing the "destination" side of the mapping
-     * @return a MapClassBuilder instance for defining mapping between the provided types
-     */
-	public MapClassBuilder mapClass(Class<?> source, Class<?> destination) {
+	 * Constructs a new MapClassBuilder instance initialized with the provided types
+	 * which can be used to configure/customize the mapping between the two types.
+	 * 
+	 * @param source
+	 *            the Object instance representing the "source" side of the mapping
+	 * @param destination
+	 *            the Class instance representing the "destination" side of the
+	 *            mapping
+	 * @param includeDataField
+	 *            the Class instance representing the "source field", "destination
+	 *            field" and "mapNull" configuration
+	 * @param excludeFields
+	 *            this represent the "source field"
+	 * @param applyDefault
+	 *            this represents the "default" configuration of the mapping
+	 * @return a MapClassBuilder instance for defining mapping between the provided
+	 *         types
+	 */
+	public MapClassBuilder<S, D> mapClass(S source, Class<D> destinationClass, List<IncludeDataField> includeDataField,
+			List<String> excludeFields, boolean applyDefault) {
+		this.source = source;
+		this.destination = null;
+		this.destinationClass = destinationClass;
+		this.includeFields = includeDataField;
+		this.excludeFields = excludeFields;
+		this.applyDefault = applyDefault;
+		return this;
+	}
+
+	/**
+	 * Constructs a new MapClassBuilder instance initialized with the provided types
+	 * which can be used to configure/customize the mapping between the two types.
+	 * 
+	 * @param source
+	 *            the Object instance representing the "source" side of the mapping
+	 * @param destination
+	 *            the Object instance representing the "destination" side of the
+	 *            mapping
+	 * @param includeDataField
+	 *            the Class instance representing the "source field", "destination
+	 *            field" and "mapNull" configuration
+	 * @param excludeFields
+	 *            this represent the "source field"
+	 * @param applyDefault
+	 *            this represents the "default" configuration of the mapping
+	 * @return a MapClassBuilder instance for defining mapping between the provided
+	 *         types
+	 */
+	public MapClassBuilder<S, D> mapClass(S source, D destination, List<IncludeDataField> includeDataField,
+			List<String> excludeFields, boolean applyDefault) {
 		this.source = source;
 		this.destination = destination;
+		this.includeFields = includeDataField;
+		this.excludeFields = excludeFields;
+		this.applyDefault = applyDefault;
 		return this;
 	}
 
 	/**
-     * Map a field in both directions
-     * 
-     * @param sourceField
-     *            field name of Source class
-     * @param destinationField
-     *            field name of Destination class
-     * @return this MapClassBuilder
-     */
-	public MapClassBuilder mapFieldInclude(String sourceField, String destinationField) {
-		includeFields.add(new IncludeDataField(sourceField, destinationField, true));
-		return this;
-	}
+	 * Registers the ClassMap defined by this builder
+	 * 
+	 * @return {@link MapperFacade}
+	 */
+	public MapperFacade configure() {
 
-	/**
-     * Map a field in both directions
-     * 
-     * @param sourceField
-     *            field name of Source class
-     * @param destinationField
-     *            field name of Destination class
-     * @param mapIncludeFieldNull
-     * 			  Configure whether to map nulls in generated mapper code
-     * @return this MapClassBuilder
-     */
-	public MapClassBuilder mapFieldInclude(String sourceField, String destinationField,
-			boolean mapIncludeFieldNull) {
-		if (!mapIncludeFieldNull) {
-			includeFields.add(new IncludeDataField(sourceField, destinationField, mapIncludeFieldNull));
+		ClassMapBuilder<?, ?> classMapBuilder;
+
+		if (this.destination != null) {
+			classMapBuilder = mapperFactory.classMap(this.source.getClass(), this.destination.getClass());
 		} else {
-			this.mapFieldInclude(sourceField, destinationField);
+			classMapBuilder = mapperFactory.classMap(this.source.getClass(), this.destinationClass);
 		}
-		return this;
-	}
 
-	/**
-     * Exclude the specified field from mapping
-     * 
-     * @param fieldName the name of the field/property to exclude
-     * @return this MapClassBuilder
-     */
-	public MapClassBuilder mapFieldExclude(String sourceField) {
-		excludeFields.add(new ExcludeDataField(sourceField, true));
-		return this;
-	}
-	
-	/**
-     * Exclude the specified field from mapping
-     * 
-     * @param fieldName the name of the field/property to exclude
-     * @param mapExcludeFieldNull
-     * 			  Configure whether to map nulls in generated mapper code
-     * @return this MapClassBuilder
-     */
-	public MapClassBuilder mapFieldExclude(String sourceField, boolean mapExcludeFieldNull) {
-		if (!mapExcludeFieldNull) {
-			excludeFields.add(new ExcludeDataField(sourceField, mapExcludeFieldNull));
+		if (excludeFields != null && !(excludeFields.isEmpty())) {
+			for (String excludedField : excludeFields) {
+				classMapBuilder.exclude(excludedField);
+			}
+		}
+
+		if (includeFields != null && !(includeFields.isEmpty())) {
+			for (IncludeDataField includedField : includeFields) {
+				classMapBuilder.mapNulls(includedField.isMapIncludeFieldNull()).field(includedField.getSourceField(),
+						includedField.getDestinationField());
+			}
+		}
+
+		if (this.applyDefault) {
+			classMapBuilder.byDefault().register();
 		} else {
-			this.mapFieldExclude(sourceField);
-		}
-		return this;
-	}
-
-	/**
-     * Registers the ClassMap defined by this builder
-     * 
-     * @return {@link DataMapperImpl}
-     */
-	@SuppressWarnings("rawtypes")
-	public DataMapper configure() {
-
-		ClassMapBuilder<?, ?> builder = mapperFactory.classMap(this.source, this.destination);
-
-		for (ExcludeDataField excludedField : excludeFields) {
-			builder.mapNulls(excludedField.isMapExcludeFieldNull()).exclude(excludedField.getSourceField());
+			classMapBuilder.register();
 		}
 
-		for (IncludeDataField includedField : includeFields) {
-			builder.mapNulls(includedField.isMapIncludeFieldNull()).field(includedField.getSourceField(), includedField.getDestinationField());
-		}
-
-		builder.byDefault().register();
-
-		MapperFacade mapper = mapperFactory.getMapperFacade();
-
-		return new DataMapperImpl(mapper);
+		return mapperFactory.getMapperFacade();
 	}
 }

@@ -1,6 +1,4 @@
-package io.mosip.kernel.datamapper.orika.impl.model;
-
-import java.util.Map;
+package io.mosip.kernel.datamapper.orika.test.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,11 +9,14 @@ import lombok.NoArgsConstructor;
  * @author Neha
  *
  */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonNameMap {
+public class Personne {
 
-	private Map<String, String> nameMap;
+	private String nom;
+	private String surnom;
+	private int age;
 	
 }

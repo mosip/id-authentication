@@ -1,4 +1,4 @@
-package io.mosip.kernel.datamapper.orika.impl;
+package io.mosip.kernel.datamapper.orika.test.model;
 
 /**
  * 

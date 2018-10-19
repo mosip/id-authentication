@@ -50,6 +50,11 @@ public class BaseUncheckedException extends RuntimeException {
 		addInfo(errorCode, errorMessage);
 	}
 
+	public BaseUncheckedException( String errorMessage) {
+		super(errorMessage);
+
+	}
+	
 	/**
 	 * Constructs a new unchecked exception with the specified detail message and
 	 * error code and error cause.
