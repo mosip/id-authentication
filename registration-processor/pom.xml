@@ -92,6 +92,7 @@
 		<module>jobs</module>
 		<module>bridge</module>
     	<module>stages</module>
+    	<module>packet-meta-info</module>
   </modules>
 
 	<build>
