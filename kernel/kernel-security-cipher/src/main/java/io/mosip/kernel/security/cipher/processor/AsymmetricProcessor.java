@@ -17,7 +17,6 @@ import javax.crypto.NoSuchPaddingException;
 
 import io.mosip.kernel.security.cipher.constant.MosipSecurityExceptionCodeConstants;
 import io.mosip.kernel.security.cipher.constant.MosipSecurityMethod;
-import io.mosip.kernel.security.cipher.exception.MissingProviderException;
 import io.mosip.kernel.security.cipher.exception.MosipInvalidDataException;
 import io.mosip.kernel.security.cipher.exception.MosipInvalidKeyException;
 import io.mosip.kernel.security.cipher.exception.MosipNoSuchAlgorithmException;
@@ -81,9 +80,6 @@ public class AsymmetricProcessor {
 		} catch (InvalidKeyException e) {
 			throw new MosipInvalidKeyException(
 					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_KEY_EXCEPTION);
-		} catch (IllegalArgumentException e) {
-			throw new MissingProviderException(
-					MosipSecurityExceptionCodeConstants.MISSING_PROVIDER_EXCEPTION_EXCEPTION);
 		}
 		return cipher;
 
@@ -110,18 +106,12 @@ public class AsymmetricProcessor {
 		} catch (BadPaddingException | IllegalStateException e) {
 			throw new MosipInvalidDataException(
 					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_EXCEPTION);
 		} catch (IllegalBlockSizeException e) {
 			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_LENGTH_EXCEPTION);
+					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_SIZE_EXCEPTION);
 		} catch (NullPointerException e) {
 			throw new MosipNullDataException(
 					MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
-		} catch (IllegalArgumentException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_LENGTH_EXCEPTION);
 		}
 
 	}
