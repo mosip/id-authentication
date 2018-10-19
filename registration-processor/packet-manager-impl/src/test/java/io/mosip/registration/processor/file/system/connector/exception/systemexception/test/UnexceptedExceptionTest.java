@@ -24,7 +24,7 @@ import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatfor
  */
 @RunWith(SpringRunner.class)
 public class UnexceptedExceptionTest {
-	
+
 	private static final String UNEXCEPTED_EXCEPTION = "This is unexcepted exception";
 
 	@MockBean
@@ -34,7 +34,7 @@ public class UnexceptedExceptionTest {
 
 	@Test
 	public void TestUnexceptedException() throws IOException {
-		String fileName="sample.zip";
+		String fileName = "sample";
 		UnexpectedException ex = new UnexpectedException(UNEXCEPTED_EXCEPTION);
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
@@ -47,8 +47,7 @@ public class UnexceptedExceptionTest {
 			assertThat("Should throw  Unexpected Exception  with correct messages",
 					e.getErrorText().equalsIgnoreCase(UNEXCEPTED_EXCEPTION));
 		}
-		
-		
+
 	}
 
 }

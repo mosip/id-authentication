@@ -87,7 +87,7 @@ public class RegistrationStatusServiceTest {
 
 		TransactionEntity transactionEntity = new TransactionEntity();
 		transactionEntity.setStatusCode("PACKET_UPLOADED_TO_LANDING_ZONE");
-		transactionEntity.setTransactionId("1001");
+		transactionEntity.setId("1001");
 		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
 				.thenReturn(transactionEntity);
 

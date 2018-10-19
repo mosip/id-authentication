@@ -33,7 +33,7 @@ public class TimeoutExceptionTest {
 
 	@Test
 	public void TestTimeoutException() throws IOException {
-		String fileName = "sample.zip";
+		String fileName = "sample";
 		TimeoutException ex = new TimeoutException(TIMEOUT_EXCEPTION);
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 

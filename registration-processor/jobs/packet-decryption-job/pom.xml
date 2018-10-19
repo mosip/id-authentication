@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	
+
 	<artifactId>packet-decryption-job</artifactId>
 
 	<parent>
@@ -16,10 +17,25 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.h2database</groupId>
+				<artifactId>h2</artifactId>
+				<version>1.4.195</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-batch</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.h2database</groupId>
+					<artifactId>h2</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -43,38 +59,38 @@
 		<dependency>
 			<groupId>io.mosip</groupId>
 			<artifactId>registration-status</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${registration.status.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>io.mosip</groupId>
 			<artifactId>registration-processor-core</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${registration.processor.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.mosip</groupId>
 			<artifactId>filesystem-ceph-adapter-impl</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>${filesystem.adapter.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-core</artifactId>
-			<version>3.5.3</version>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
 		</dependency>
-  		<dependency>
-   			<groupId>org.mockito</groupId>
-    		<artifactId>mockito-core</artifactId>
-    		<scope>test</scope>
-  		</dependency>
-  		<dependency>
+		<dependency>
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
-			<version>3.1.0</version>
+			<version>${awaitility.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.mosip</groupId>
+			<artifactId>packet-manager-impl</artifactId>
+			<version>${packet.manager.version}</version>
 		</dependency>
 	</dependencies>
 

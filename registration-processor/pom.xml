@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -47,7 +45,8 @@
 		<commons-lang3>3.7</commons-lang3>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
-		<commons.io.version>1.3.2</commons.io.version>
+		<commons.io.version>2.6</commons.io.version>
+		<kernel.core.version>1.0.0-SNAPSHOT</kernel.core.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -56,11 +55,20 @@
 		<mockito.version>1.10.19</mockito.version>
 		<powermock.module.junit4.version>1.7.4</powermock.module.junit4.version>
 		<powermock.api.mockito.version>1.7.4</powermock.api.mockito.version>
-
+		<awaitility.version>3.1.0</awaitility.version>
+		
 		<!-- DFS adapter -->
 		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
-
+		
+		<!-- Vert.x -->
+		<vertx.version>3.5.3</vertx.version>
+		
+		<!-- local -->
+		<registration.status.version>1.0.0-SNAPSHOT</registration.status.version>
+		<registration.processor.core.version>1.0.0-SNAPSHOT</registration.processor.core.version>
+		<filesystem.adapter.version>1.0.0-SNAPSHOT</filesystem.adapter.version>
+		<packet.manager.version>1.0.0-SNAPSHOT</packet.manager.version>
 	</properties>
 
 	<dependencyManagement>
@@ -82,7 +90,10 @@
 		<module>core</module>
 		<module>packet-manager-impl</module>
 		<module>jobs</module>
-	</modules>
+		<module>bridge</module>
+    	<module>stages</module>
+    	<module>packet-meta-info</module>
+  </modules>
 
 	<profiles>
 		<profile>
