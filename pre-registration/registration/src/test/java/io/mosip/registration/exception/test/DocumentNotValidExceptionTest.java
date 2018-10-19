@@ -42,9 +42,9 @@ public class DocumentNotValidExceptionTest {
 
 		ClassLoader classLoader = getClass().getClassLoader();
 
-		File file = new File(classLoader.getResource("SampleZip.zip").getFile());
+		File file = new File(classLoader.getResource("sampleZip.zip").getFile());
 
-		this.multiPartFile = new MockMultipartFile("file", "SampleZip.zip", "mixed/multipart",
+		this.multiPartFile = new MockMultipartFile("file", "sampleZip.zip", "mixed/multipart",
 				new FileInputStream(file));
 
 		Mockito.when(documentUploadService.uploadDoucment(multiPartFile, documentDto))
