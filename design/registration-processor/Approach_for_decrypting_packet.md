@@ -4,10 +4,13 @@
 **Background**
 
 Registration packets created by the registration clients will be periodically uploaded to the server for processing. The packets will be scanned for viruses and after successful scan it will be uploaded to file system.
-The target users are
--	Server application which will process the packets
--	Administrator of the platform who may need to verify the packets
-The key requirements are
+
+The target users are -
+-	Server application which will process the packets.
+-	Administrator of the platform who may need to verify the packets.
+
+
+The key requirements are -
 -	Find out registration ids, which are successfully uploaded to file system and ready for decryption.
 -	Decrypt the encrypted zip file and receives a Zip file.
 -	Unpack the Zip file.
