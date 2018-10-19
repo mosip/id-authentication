@@ -21,17 +21,6 @@ import io.mosip.kernel.datamapper.orika.exception.DataMapperException;
  *            the type of the destination object
  */
 public class DataMapperImpl implements DataMapper {
-
-	/**
-	 * Field for runtime interface between a Java application and data mapper.
-	 */
-
-	/**
-	 * Constructor for DataMapperImpl having Mapper configuration information
-	 * 
-	 * @param mapper
-	 */
-
 	/*
 	 * (non-Javadoc)
 	 * 

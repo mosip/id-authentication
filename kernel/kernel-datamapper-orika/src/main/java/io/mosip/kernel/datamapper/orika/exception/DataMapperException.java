@@ -29,6 +29,12 @@ public class DataMapperException extends BaseUncheckedException {
 		super(errorCode, errorMsg);
 	}
 
+	/**
+	 * Constructor for DataMapperException
+	 * 
+	 * @param errorMsg
+	 *            The error message
+	 */
 	public DataMapperException(String errorMsg) {
 		super(errorMsg);
 	}
