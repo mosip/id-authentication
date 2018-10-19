@@ -15,9 +15,12 @@ import org.bouncycastle.crypto.util.PublicKeyFactory;
 
 import io.mosip.kernel.security.bouncycastle.constant.MosipSecurityExceptionCodeConstants;
 import io.mosip.kernel.security.bouncycastle.constant.MosipSecurityMethod;
+import io.mosip.kernel.security.bouncycastle.exception.MosipInvalidDataException;
 import io.mosip.kernel.security.bouncycastle.exception.MosipInvalidKeyException;
+import io.mosip.kernel.security.bouncycastle.exception.MosipNullDataException;
 import io.mosip.kernel.security.bouncycastle.exception.MosipNullKeyException;
 import io.mosip.kernel.security.bouncycastle.exception.MosipNullMethodException;
+
 
 /**
  * Utility class for security
@@ -39,8 +42,8 @@ public class SecurityUtil {
 	 * 
 	 * @param privateKey
 	 *            private Key for processing
-	 * @return {@link AsymmetricKeyParameter} from encoded private key
-	 '*/
+	 * @return {@link AsymmetricKeyParameter} from encoded private key '
+	 */
 	public static AsymmetricKeyParameter bytesToPrivateKey(byte[] privateKey) {
 		AsymmetricKeyParameter keyParameter = null;
 		try {
@@ -65,7 +68,7 @@ public class SecurityUtil {
 	 *            private Key for processing
 	 * @return {@link AsymmetricKeyParameter} from encoded public key
 	 */
-	public static AsymmetricKeyParameter bytesToPublicKey(byte[] publicKey){
+	public static AsymmetricKeyParameter bytesToPublicKey(byte[] publicKey) {
 		AsymmetricKeyParameter keyParameter = null;
 		try {
 			keyParameter = PublicKeyFactory.createKey(publicKey);
@@ -92,6 +95,22 @@ public class SecurityUtil {
 		if (mosipSecurityMethod == null) {
 			throw new MosipNullMethodException(
 					MosipSecurityExceptionCodeConstants.MOSIP_NULL_METHOD_EXCEPTION);
+		}
+	}
+	
+	/**
+	 * Verify if data is null or empty
+	 * 
+	 * @param data
+	 *            data provided by user
+	 */
+	public static void verifyData(byte[] data) {
+		if (data == null) {
+			throw new MosipNullDataException(
+					MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
+		} else if (data.length == 0) {
+			throw new MosipInvalidDataException(
+					MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
 		}
 	}
 }
