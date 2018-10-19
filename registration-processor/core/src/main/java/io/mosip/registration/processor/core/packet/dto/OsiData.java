@@ -5,10 +5,10 @@ import lombok.Data;
 @Data
 public class OsiData {
 
-	private String operatorID;
+	private String operatorId;
 	private String operatorFingerprintImage;
 	private String operatorIrisName;
-	private String supervisorID;
+	private String supervisorId;
 	private String supervisorName;
 	private String supervisorFingerprintImage;
 	private String supervisorIrisName;

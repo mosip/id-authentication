@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.core.packet.dto;
 
-public class Location {
+public class LocationDTO {
 
 	private String line4;
 	private String line5;
