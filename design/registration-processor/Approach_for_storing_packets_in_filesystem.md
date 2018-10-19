@@ -21,6 +21,7 @@ The key non-functional requirements are
 
 
 **Solution**
+
 The key solution considerations are
 -	Distributed storage system to maintain duplicate copies of packets
 -	Open source out of the box distributed file store to align with the principle of non-proprietary software and open standards
@@ -42,14 +43,14 @@ Below is the sample of how files will be stored in CEPH after packet gets decryp
 ![CEPH storage example](_images/filesystem_storage_example.png)
 
 
-** Process Flow ** 
+Process Flow
 
 ![CEPH Adapter process flow](_images/filesystem_storage_process_flow.PNG)
 
-** Class Diagram ** 
+Class Diagram 
 
 ![CEPH Adapter class diagram](_images/filesystem_storage_class_diagram.png)
 
-** Sequence Diagram ** 
+Sequence Diagram ** 
 
 ![CEPH Adapter Sequence diagram](_images/filesystem_storage_seq_diagram.png)
