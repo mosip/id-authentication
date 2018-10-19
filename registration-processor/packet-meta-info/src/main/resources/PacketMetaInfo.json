@@ -1,119 +1,114 @@
 {
   "photograph" : {
-    "photographName" : "applicantPhoto",
+    "photographName" : "ApplicantPhoto",
     "hasExceptionPhoto" : true,
-    "exceptionPhotoName" : "excep",
-	"qualityScore" : 80.0,
-	"numRetry" : 0
+    "exceptionPhotoName" : "ExceptionPhoto",
+    "qualityScore" : 89.0,
+    "numRetry" : 1
   },
   "biometericData" : {
     "fingerprintData" : {
       "fingerprints" : [ {
-        "fingerprintImageName" : "leftPalm",
-        "qualityScore" : 80.0,
-        "fingerType" : "leftThumb",
-		"numRetry" : 4,
+        "fingerprintImageName" : "BothThumbs",
+        "qualityScore" : 85.0,
+        "fingerType" : "BothThumbs",
+        "numRetry" : 0,
         "forceCaptured" : false
       }, {
-        "fingerprintImageName" : "rightPalm",
+        "fingerprintImageName" : "LeftPalm",
         "qualityScore" : 80.0,
-        "fingerType" : "rightThumb",
-		"numRetry" : 4,
+        "fingerType" : "LeftPalm",
+        "numRetry" : 3,
         "forceCaptured" : false
       }, {
-        "fingerprintImageName" : "bothThumbs",
-        "qualityScore" : 80.0,
-        "fingerType" : "bothThumbs",
-		"numRetry" : 4,
+        "fingerprintImageName" : "RightPalm",
+        "qualityScore" : 95.0,
+        "fingerType" : "RightPalm",
+        "numRetry" : 2,
         "forceCaptured" : false
       } ],
       "exceptionFingerprints" : [ {
-		"biometricType" : "fingerprint/iris",
-        "missingFinger" : "rightPalm",
-        "exceptionDescription" : "Lost in accident",
+        "biometricType" : "fingerprint",
+        "missingBiometric" : "LeftThumb",
+        "exceptionDescription" : "Due to accident",
         "exceptionType" : "Permananent"
       }, {
-	    "biometricType" : "fingerprint/iris",
-        "missingFinger" : "LeftPalm",
-        "exceptionDescription" : "Lost permanentlt",
+        "biometricType" : "fingerprint",
+        "missingBiometric" : "LeftForefinger",
+        "exceptionDescription" : "Due to accident",
         "exceptionType" : "Permananent"
       } ]
     },
     "irisData" : {
       "iris" : [ {
-        "irisImageName" : "iris1",
-        "qualityScore" : 85.0,
-        "irisType" : "leftEye",
-        "forceCaptured" : false
-      }, {
-        "irisImageName" : "iris2",
-        "qualityScore" : 85.0,
-        "irisType" : "rightEye",
+        "irisImageName" : "LeftEye",
+        "qualityScore" : 79.0,
+        "irisType" : "LeftEye",
         "forceCaptured" : false
       } ],
       "numRetry" : 2,
       "exceptionIris" : [ {
-		"biometricType" : "fingerprint/iris",
-        "missingIris" : "righteye",
-        "exceptionDescription" : "by birth",
-		"exceptionType" : "Permananent"
-      }, {
-	    "biometricType" : "fingerprint/iris",
-        "missingIris" : "Lefteye",
-        "exceptionDescription" : "by birth",
-		"exceptionType" : "Permananent"
+        "biometricType" : "iris",
+        "missingBiometric" : "RightEye",
+        "exceptionDescription" : "By birth",
+        "exceptionType" : "Permananent"
       } ]
     }
   },
   "document" : {
     "documentDetails" : [ {
-      "documentCategory" : "poA",
-      "documentOwner" : "self",
-      "documentType" : "passport",
-      "documentName" : "ResidenceCopy"
+      "documentName" : "ProofOfIdentity",
+      "documentCategory" : "PoI",
+      "documentOwner" : "Self",
+      "documentType" : "PAN"
+    }, {
+      "documentName" : "ProofOfAddress",
+      "documentCategory" : "PoA",
+      "documentOwner" : "hof",
+      "documentType" : "passport"
     } ],
-    "registrationAckCopy" : "acknowledgementReceipt"
+    "registrationAckCopy" : "RegistrationAcknowledgement"
   },
   "metaData" : {
     "geoLocation" : {
       "latitude" : 13.0049,
       "longitude" : 80.24492
     },
-    "applicationType" : "New Registration", 
-    "registrationCategory" : "Document/Introducer",
+    "applicationType" : "New Registration",
+    "registrationCategory" : "Document Based",
     "preRegistrationId" : "PEN1345T",
-    "registrationId" : "2018782130000224092018121229",
-	"registrationIdHash" : "GHTYU76233887087JLDFDFELFLADGSDD"
+    "registrationId" : "2018782130000116102018124324",
+    "registrationIdHash" : "83645AB592AE8D42BC726110F7CF15377DC24DAB1F99C1D93FBE870DB5A9E1C3"
   },
   "osiData" : {
-    "operatorID" : "123245",
-    "operatorFingerprintImage" : "leftThumb",
-    "operatorIrisImage" : "leftEye",
-    "supervisorID" : "123456789",
-    "supervisorName" : "supervisor",
-    "supervisorFingerprintImage" : "leftThumb",
-    "supervisorIrisName" : "leftEye",
-    "introducerType" : "Parent/HOF/Introducer",
-	"introducerName" : "IntroducerTest Name",
-	"introducerUIN" : "HOF003",
-    "introducerUINHash" : "HOF003",
-    "introducerRID" : "IRID",
-	"introducerRIDHash" : "Introducer RIDHash",
-    "introducerFingerprintImage" : "leftThumb",
-    "introducerIrisIrish" : "leftEye"
+    "operatorId" : "officer 1",
+    "operatorFingerprintImage" : "LeftThumb",
+    "operatorIrisName" :"operator" ,
+    "supervisorId" : "supervisor 1",
+    "supervisorName" : "Ram Paul",
+    "supervisorFingerprintImage" : "LeftThumb",
+    "supervisorIrisName" : "Super IrisName",
+    "introducerType" : "HoF",
+    "introducerName" : "Joan Arc",
+    "introducerUIN" : "intru UIN",
+    "introducerUINHash" : "Intru UINHash",
+    "introducerRID" : "2018234500321157812",
+    "introducerRIDHash" : "58086E976BA47A9F1A52099412665D8AF3FC587D946817553697E06A352D88E3",
+    "introducerFingerprintImage" : "LeftThumb",
+    "introducerIrisImage" : "Intru IrisImage"
   },
   "hashSequence" : {
     "biometricSequence" : {
-      "applicant" : [ "leftPalm", "rightPalm", "bothThumbs","leftEye", "rightEye" ],
-      "introducer" : [ "leftThumb", "rightThumb", "leftEye", "rightEye" ]
+      "applicant" : [ "BothThumbs", "LeftPalm", "RightPalm", "LeftEye" ],
+      "introducer" : [ "LeftThumb" ]
     },
     "demographicSequence" : {
-      "applicant" : [ "ApplicantPhoto", "RegistrationAcknowledgement", "DemographicJson", "ProofOfAddress" ]
+      "applicant" : [ "DemographicInfo", "ProofOfIdentity", "ProofOfAddress", "ApplicantPhoto", "ExceptionPhoto", "RegistrationAcknowledgement" ]
     }
-  }, 
-
+  },
   "checkSumMap" : {
-    "registration-service.jar" : "7yufuay876876gfsadj",
-    "registration-ui.jar" : "uygdfajkdjkHHD56TJHASDJKA"
+    "jackson-core-2.2.2.jar" : "7yufuay876876gfsadj",
+    "lombok-1.16.18.jar" : "uygdfajkdjkHHD56TJHASDJKA",
+    "junit-4.12.jar" : "65gfhab67586cjhsabcjk78"
   }
 }

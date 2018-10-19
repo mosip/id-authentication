@@ -87,7 +87,7 @@ public class PacketInfoMapper {
 		BiometricExceptionEntity bioMetricExceptionEntity = new BiometricExceptionEntity();
 		BiometricExceptionPKEntity biometricExceptionPKEntity = new BiometricExceptionPKEntity();
 		biometricExceptionPKEntity.setRegId(metaData.getRegistrationId());
-		biometricExceptionPKEntity.setMissingBio(exceptionIris.getMissingIris());
+		biometricExceptionPKEntity.setMissingBio(exceptionIris.getMissingBiometric());
 		biometricExceptionPKEntity.setLangCode("en");
 		bioMetricExceptionEntity.setId(biometricExceptionPKEntity);
 		bioMetricExceptionEntity.setPreregId(metaData.getPreRegistrationId());
@@ -165,7 +165,7 @@ public class PacketInfoMapper {
 		BiometricExceptionEntity bioMetricExceptionEntity = new BiometricExceptionEntity();
 		BiometricExceptionPKEntity biometricExceptionPKEntity = new BiometricExceptionPKEntity();
 		biometricExceptionPKEntity.setRegId(metaData.getRegistrationId());
-		biometricExceptionPKEntity.setMissingBio(exceptionFingerprint.getMissingFinger());
+		biometricExceptionPKEntity.setMissingBio(exceptionFingerprint.getMissingBiometric());
 		biometricExceptionPKEntity.setLangCode("en");
 
 		bioMetricExceptionEntity.setId(biometricExceptionPKEntity);
@@ -215,16 +215,16 @@ public class PacketInfoMapper {
 		RegOsiEntity regOsiEntity = new RegOsiEntity();
 		regOsiEntity.setIntroducerFingerpImageName(osiData.getIntroducerFingerprintImage());
 		regOsiEntity.setIntroducerId(osiData.getIntroducerRID().toString());
-		regOsiEntity.setIntroducerIrisImageName(osiData.getIntroducerIrisIrish());
+		regOsiEntity.setIntroducerIrisImageName(osiData.getIntroducerIrisImage());
 		regOsiEntity.setIntroducerRegId(osiData.getIntroducerUIN());
 		regOsiEntity.setIntroducerTyp(osiData.getIntroducerType());
 		regOsiEntity.setIntroducerUin(osiData.getIntroducerUIN());
 		regOsiEntity.setOfficerFingerpImageName(osiData.getOperatorFingerprintImage());
-		regOsiEntity.setOfficerId(osiData.getOperatorID());
-		regOsiEntity.setOfficerIrisImageName(osiData.getOperatorIrisImage());
+		regOsiEntity.setOfficerId(osiData.getOperatorId());
+		regOsiEntity.setOfficerIrisImageName(osiData.getOperatorIrisName());
 		regOsiEntity.setRegId(metaData.getRegistrationId());
 		regOsiEntity.setPreregId(metaData.getPreRegistrationId());
-		regOsiEntity.setSupervisorId(osiData.getSupervisorID());
+		regOsiEntity.setSupervisorId(osiData.getSupervisorId());
 		regOsiEntity.setSupervisorFingerpImageName(osiData.getSupervisorFingerprintImage());
 		regOsiEntity.setSupervisorIrisImageName(osiData.getSupervisorIrisName());
 		regOsiEntity.setIsActive(true);
@@ -255,12 +255,12 @@ public class PacketInfoMapper {
 
 		applicantDemographicEntity.setId(applicantDemographicPKEntity);
 		applicantDemographicEntity.setPreRegId(metaData.getPreRegistrationId());
-		applicantDemographicEntity.setAddrLine1(demoInLocalLang.getAddress().getLine1());
-		applicantDemographicEntity.setAddrLine2(demoInLocalLang.getAddress().getLine2());
-		applicantDemographicEntity.setAddrLine3(demoInLocalLang.getAddress().getLine3());
+		applicantDemographicEntity.setAddrLine1(demoInLocalLang.getAddressDTO().getLine1());
+		applicantDemographicEntity.setAddrLine2(demoInLocalLang.getAddressDTO().getLine2());
+		applicantDemographicEntity.setAddrLine3(demoInLocalLang.getAddressDTO().getLine3());
 		applicantDemographicEntity.setAge(calculateAge(demoInLocalLang.getDateOfBirth()));
 		applicantDemographicEntity.setApplicantType(metaData.getApplicationType());
-		applicantDemographicEntity.setDob(demoInLocalLang.getDateOfBirth());
+		applicantDemographicEntity.setDob(new Date(Long.parseLong(demoInLocalLang.getDateOfBirth())));
 		applicantDemographicEntity.setEmail(demoInLocalLang.getEmailId());
 		applicantDemographicEntity.setFamilyName(demoInLocalLang.getFamilyname());
 		applicantDemographicEntity.setFirstName(demoInLocalLang.getFirstname());
@@ -292,12 +292,12 @@ public class PacketInfoMapper {
 
 		applicantDemographicEntity.setId(applicantDemographicPKEntity1);
 		applicantDemographicEntity.setPreRegId(metaData.getPreRegistrationId());
-		applicantDemographicEntity.setAddrLine1(demoInUserLang.getAddress().getLine1());
-		applicantDemographicEntity.setAddrLine2(demoInUserLang.getAddress().getLine2());
-		applicantDemographicEntity.setAddrLine3(demoInUserLang.getAddress().getLine3());
+		applicantDemographicEntity.setAddrLine1(demoInUserLang.getAddressDTO().getLine1());
+		applicantDemographicEntity.setAddrLine2(demoInUserLang.getAddressDTO().getLine2());
+		applicantDemographicEntity.setAddrLine3(demoInUserLang.getAddressDTO().getLine3());
 		applicantDemographicEntity.setAge(calculateAge(demoInLocalLang.getDateOfBirth()));
 		applicantDemographicEntity.setApplicantType(metaData.getApplicationType());
-		applicantDemographicEntity.setDob(demoInLocalLang.getDateOfBirth());
+		applicantDemographicEntity.setDob(new Date(Long.parseLong(demoInLocalLang.getDateOfBirth())));
 		applicantDemographicEntity.setEmail(demoInUserLang.getEmailId());
 		applicantDemographicEntity.setFamilyName(demoInUserLang.getFamilyname());
 		applicantDemographicEntity.setFirstName(demoInUserLang.getFirstname());
@@ -324,11 +324,11 @@ public class PacketInfoMapper {
 		return applicantDemographicEntities;
 	}
 
-	public static int calculateAge(Date dateOfBirth) {
+	public static int calculateAge(String dateOfBirth) {
 		final DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		final Calendar c = Calendar.getInstance();
 		try {
-			String format = df.format(dateOfBirth);
+			String format = df.format(new Date(Long.parseLong(dateOfBirth)));
 			c.setTime(df.parse(format));
 			return Calendar.getInstance().get(Calendar.YEAR) - c.get(Calendar.YEAR);
 		} catch (ParseException e) {
@@ -336,7 +336,7 @@ public class PacketInfoMapper {
 			return 0;
 		}
 	}
-
+	
 	public static RegCenterMachineEntity convertRegCenterMachineToEntity(MetaData metaData) {
 		RegCenterMachineEntity regCenterMachineEntity = new RegCenterMachineEntity();
 		regCenterMachineEntity.setCntrId("Center 1");

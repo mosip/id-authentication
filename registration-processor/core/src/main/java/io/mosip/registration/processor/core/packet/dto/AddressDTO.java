@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.core.packet.dto;
 
-public class Address {
+public class AddressDTO {
 
 	private String line1;
 
@@ -8,7 +8,7 @@ public class Address {
 
 	private String line3;
 
-	private Location location;
+	private LocationDTO locationDTO;
 
 
 	public String getLine1() {
@@ -35,12 +35,12 @@ public class Address {
 		this.line3 = line3;
 	}
 
-	public Location getLocation() {
-		return location;
+	public LocationDTO getLocation() {
+		return locationDTO;
 	}
 
-	public void setLocation(Location location) {
-		this.location = location;
+	public void setLocation(LocationDTO location) {
+		this.locationDTO = locationDTO;
 	}
 
 

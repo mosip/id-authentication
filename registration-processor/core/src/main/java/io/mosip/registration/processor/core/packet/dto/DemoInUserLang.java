@@ -1,32 +1,31 @@
 package io.mosip.registration.processor.core.packet.dto;
 
-import java.util.Date;
-
 public class DemoInUserLang {
 
-	private String firstname;
+	private String firstName;
 	private String forename;
 	private String givenname;
-	private String middlename;
+	private String middleName;
 	private String middleinitial;
-	private String lastname;
+	private String lastName;
 	private String surname;
 	private String familyname;
 	private String fullName;
-	private Date dateOfBirth;
+	private String dateOfBirth;
 	private String gender;
-	private Address address;
+	private AddressDTO addressDTO;
 	private String emailId;
 	private String mobile;
 	private String languageCode;
 	private Boolean child;
 
+
 	public String getFirstname() {
-		return firstname;
+		return firstName;
 	}
 
 	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+		this.firstName = firstname;
 	}
 
 	public String getForename() {
@@ -46,11 +45,11 @@ public class DemoInUserLang {
 	}
 
 	public String getMiddlename() {
-		return middlename;
+		return middleName;
 	}
 
 	public void setMiddlename(String middlename) {
-		this.middlename = middlename;
+		this.middleName = middlename;
 	}
 
 	public String getMiddleinitial() {
@@ -62,11 +61,11 @@ public class DemoInUserLang {
 	}
 
 	public String getLastname() {
-		return lastname;
+		return lastName;
 	}
 
 	public void setLastname(String lastname) {
-		this.lastname = lastname;
+		this.lastName = lastname;
 	}
 
 	public String getSurname() {
@@ -93,11 +92,11 @@ public class DemoInUserLang {
 		this.fullName = fullName;
 	}
 
-	public Date getDateOfBirth() {
+	public String getDateOfBirth() {
 		return dateOfBirth;
 	}
 
-	public void setDateOfBirth(Date dateOfBirth) {
+	public void setDateOfBirth(String dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
 
@@ -109,12 +108,12 @@ public class DemoInUserLang {
 		this.gender = gender;
 	}
 
-	public Address getAddress() {
-		return address;
+	public AddressDTO getAddressDTO() {
+		return addressDTO;
 	}
 
-	public void setAddress(Address address) {
-		this.address = address;
+	public void setAddressDTO(AddressDTO address) {
+		this.addressDTO = addressDTO;
 	}
 
 	public String getEmailId() {
@@ -129,32 +128,26 @@ public class DemoInUserLang {
 		return mobile;
 	}
 
-	
 	public void setMobile(String mobile) {
 		this.mobile = mobile;
 	}
 
-	
 	public String getLanguageCode() {
 		return languageCode;
 	}
 
-	
 	public void setLanguageCode(String languageCode) {
 		this.languageCode = languageCode;
 	}
 
-	
 	public Boolean getChild() {
 		return child;
 	}
 
-	
 	public void setChild(Boolean child) {
 		this.child = child;
 	}
 
-	
 
 
 }
