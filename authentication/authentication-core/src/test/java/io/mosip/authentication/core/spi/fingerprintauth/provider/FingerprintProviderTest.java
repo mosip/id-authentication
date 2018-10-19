@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 
+import com.google.gson.JsonSyntaxException;
 import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import io.mosip.authentication.core.dto.fingerprintauth.FingerprintDeviceInfo;
@@ -75,26 +76,23 @@ public class FingerprintProviderTest {
 		double score = fp.scoreCalculator(finger1, finger1scan2);
 		assertTrue(score > 100);
 	}
-	
+
 	@Test
 	public void testISOScoreCalculatorDiffFinger() {
 		double score = fp.scoreCalculator(finger1, finger2);
 		assertTrue(score < 100);
 	}
-	
-	@Test
+
+	@Test(expected = IllegalArgumentException.class)
 	public void testISOScoreCalculatorException() {
-		double score = fp.scoreCalculator(new byte[] {1,2}, new byte[] {1,2});
-		assertTrue(score < 100);
+		fp.scoreCalculator(new byte[] { 1, 2 }, new byte[] { 1, 2 });
 	}
-	
-	@Test
+
+	@Test(expected = JsonSyntaxException.class)
 	public void testMinutiaeScoreCalculatorException() {
-		double score = fp.scoreCalculator("123", "123");
-		System.out.println(score);
-		assertTrue(score < 100);
+		fp.scoreCalculator("123", "123");
 	}
-	
+
 	@Test
 	public void testMinutiaeScoreSameFingerDiffScan() {
 		FingerprintTemplate template1 = new FingerprintTemplate().convert(finger1);
@@ -102,7 +100,7 @@ public class FingerprintProviderTest {
 		double score = fp.scoreCalculator(template1.serialize(), template2.serialize());
 		assertTrue(score > 100);
 	}
-	
+
 	@Test
 	public void testMinutiaeScoreDiffFinger() {
 		FingerprintTemplate template1 = new FingerprintTemplate().convert(finger1);

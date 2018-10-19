@@ -24,19 +24,38 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
  */
 @Component
 public class AuditRequestFactory {
+	
+	/**
+	 * Instantiates a new audit request factory.
+	 */
+	private AuditRequestFactory() {
+	}
+	
+	/** The logger. */
 	private MosipLogger logger;
 
+	/**
+	 * Initialize logger.
+	 *
+	 * @param idaRollingFileAppender the ida rolling file appender
+	 */
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
 		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
 	/**
 	 * Builds the request.
 	 *
+	 * @param module the module
+	 * @param event the event
+	 * @param id the id
+	 * @param idType the id type
+	 * @param desc the desc
 	 * @return the audit request dto
 	 */
 	public AuditRequestDto buildRequest(AuditModules module, AuditEvents event, String id, IdType idType, String desc) {

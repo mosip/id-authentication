@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -50,7 +49,7 @@ public class ValidateOtpRequestTest {
 	@Autowired
 	Environment env;
 
-	@Mock
+	@InjectMocks
 	RestRequestFactory restfactory;
 
 	@InjectMocks
@@ -63,7 +62,6 @@ public class ValidateOtpRequestTest {
 
 	@Before
 	public void before() {
-		restfactory = new RestRequestFactory();
 		ReflectionTestUtils.setField(restfactory, "env", env);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
 		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();

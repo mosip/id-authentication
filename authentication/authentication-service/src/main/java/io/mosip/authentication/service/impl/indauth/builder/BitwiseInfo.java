@@ -1,7 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.builder;
 
-import java.util.Spliterator;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -9,9 +7,13 @@ import java.util.stream.StreamSupport;
 
 /**
  * The Class BitwiseInfo.
+ * 
+ * @author Loganathan Sekar
+ * 
  */
 public class BitwiseInfo {
 	
+	private static final Integer FOUR = 4;
 	/** The bits. */
 	private final Boolean[] bits;
 	
@@ -21,7 +23,7 @@ public class BitwiseInfo {
 	 * @param hexCount the hex count
 	 */
 	public BitwiseInfo(int hexCount) {
-		int size = hexCount * 4;
+		int size = hexCount * FOUR;
 		//Initialize to false
 		bits = IntStream.range(0, size).mapToObj(i -> false).toArray(s -> new Boolean[s]);
 	}
@@ -110,72 +112,4 @@ public class BitwiseInfo {
 	                                .mapToObj(i -> temp[i]);
 	}
 	
-	/**
-	 * The Class HexSpliterator.
-	 */
-	static class HexSpliterator implements Spliterator<Integer> {
-		
-		/** The boolean spliterator. */
-		private Spliterator<Boolean> booleanSpliterator;
-
-		/**
-		 * Instantiates a new hex spliterator.
-		 *
-		 * @param booleanSpliterator the boolean spliterator
-		 */
-		private HexSpliterator(Spliterator<Boolean> booleanSpliterator) {
-			this.booleanSpliterator = booleanSpliterator;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.util.Spliterator#tryAdvance(java.util.function.Consumer)
-		 */
-		@Override
-		public boolean tryAdvance(Consumer<? super Integer> action) {
-			StringBuilder buffer = new StringBuilder();
-			if(IntStream.range(0, 4).allMatch(i -> tryAdvanceBoolean(buffer))) {
-				String binaryStr = buffer.toString();
-				int intVal = Integer.parseInt(binaryStr, 2);
-				action.accept(intVal);
-				return true;
-			}
-			return false;
-		}
-
-		/**
-		 * Try advance boolean.
-		 *
-		 * @param buffer the buffer
-		 * @return true, if successful
-		 */
-		private boolean tryAdvanceBoolean(StringBuilder buffer) {
-			return booleanSpliterator.tryAdvance(b -> buffer.insert(0, b ? 1 : 0));
-		}
-
-		/* (non-Javadoc)
-		 * @see java.util.Spliterator#trySplit()
-		 */
-		@Override
-		public Spliterator<Integer> trySplit() {
-			return null;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.util.Spliterator#estimateSize()
-		 */
-		@Override
-		public long estimateSize() {
-			return booleanSpliterator.estimateSize() / 4;
-		}
-
-		/* (non-Javadoc)
-		 * @see java.util.Spliterator#characteristics()
-		 */
-		@Override
-		public int characteristics() {
-			return booleanSpliterator.characteristics();
-		}
-		
-	}
-
 }

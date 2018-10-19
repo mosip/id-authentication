@@ -25,6 +25,7 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import reactor.core.publisher.Mono;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class RestHelper - to send/receive HTTP requests and return the response.
  *
@@ -32,19 +33,42 @@ import reactor.core.publisher.Mono;
  */
 @Component
 public class RestHelper {
+	
+	/**
+	 * Instantiates a new rest helper.
+	 */
+	private RestHelper() {
+	}
+	
+	/** The Constant METHOD_REQUEST_SYNC. */
 	private static final String METHOD_REQUEST_SYNC = "requestSync";
+	
+	/** The Constant METHOD_HANDLE_STATUS_ERROR. */
 	private static final String METHOD_HANDLE_STATUS_ERROR = "handleStatusError";
+	
+	/** The Constant PREFIX_RESPONSE. */
 	private static final String PREFIX_RESPONSE = "Response : ";
+	
+	/** The Constant PREFIX_REQUEST. */
 	private static final String PREFIX_REQUEST = "Request : ";
+	
+	/** The Constant METHOD_REQUEST_ASYNC. */
 	private static final String METHOD_REQUEST_ASYNC = "requestAsync";
+	
+	/** The Constant CLASS_REST_HELPER. */
 	private static final String CLASS_REST_HELPER = "RestHelper";
+	
+	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
+	
+	/** The logger. */
 	// TODO Check for response body
 	private MosipLogger logger;
 
 	/**
 	 * Instantiates a new rest util.
-	 * @return 
+	 *
+	 * @param idaRollingFileAppender the ida rolling file appender
 	 */
 	@Autowired
 	public void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {

@@ -15,6 +15,9 @@ import java.util.stream.Stream;
 
 public final class MatcherUtil {
 
+	private static final String SPLIT_REGEX = "\\s+";
+	private static final Integer EXACT_MATCH_VALUE = 100;
+
 	private MatcherUtil() {
 
 	}
@@ -32,7 +35,7 @@ public final class MatcherUtil {
 		List<String> entityInfoList = split(entityInfo);
 
 		if (refInfoList.size() == entityInfoList.size() && allMatch(refInfoList, entityInfoList)) {
-			matchvalue = 100;
+			matchvalue = EXACT_MATCH_VALUE;
 		}
 		return matchvalue;
 	}
@@ -52,16 +55,16 @@ public final class MatcherUtil {
 		List<String> matchedList = new ArrayList<>();
 		List<String> unmatchedList = new ArrayList<>();
 
-		refInfoList.forEach(str -> {
-			if (entityInfoList.contains(str)) {
-				matchedList.add(str);
-				entityInfoList.remove(str);
+		refInfoList.forEach((String refInfo) -> {
+			if (entityInfoList.contains(refInfo)) {
+				matchedList.add(refInfo);
+				entityInfoList.remove(refInfo);
 			} else {
-				unmatchedList.add(str);
+				unmatchedList.add(refInfo);
 			}
 		});
 
-		new ArrayList<>(unmatchedList).stream().filter(str -> str.length() == 1).forEach(s -> {
+		new ArrayList<>(unmatchedList).stream().filter(str -> str.length() == 1).forEach((String s) -> {
 			Optional<String> matchingWord = entityInfoList.stream().filter(str -> str.startsWith(s)).findAny();
 			if (matchingWord.isPresent()) {
 				entityInfoList.remove(matchingWord.get());
@@ -69,14 +72,9 @@ public final class MatcherUtil {
 			}
 		});
 
-		matchvalue = matchedList.size() * 100 / (originalEntityInfoList.size() + unmatchedList.size());
+		matchvalue = matchedList.size() * EXACT_MATCH_VALUE / (originalEntityInfoList.size() + unmatchedList.size());
 
 		return matchvalue;
-	}
-
-	public static int doPhoneticsMatch(String reqInfo, String entityInfo) {
-		// TODO yet to be coded
-		return 0;
 	}
 
 	/**
@@ -87,7 +85,10 @@ public final class MatcherUtil {
 	 * @return
 	 */
 	public static int doLessThanEqualToMatch(int reqInfo, int entityInfo) {
-		return reqInfo <= entityInfo ? 100 : 0;
+		if (reqInfo <= entityInfo)
+			return EXACT_MATCH_VALUE;
+		else
+			return 0;
 	}
 
 	/**
@@ -98,7 +99,10 @@ public final class MatcherUtil {
 	 * @return 100 when the refInfo and entityInfo dates are matched
 	 */
 	public static int doExactMatch(Date reqInfo, Date entityInfo) {
-		return reqInfo.compareTo(entityInfo) == 0 ? 100 : 0;
+		if (reqInfo.compareTo(entityInfo) == 0)
+			return EXACT_MATCH_VALUE;
+		else
+			return 0;
 	}
 
 	/**
@@ -109,7 +113,7 @@ public final class MatcherUtil {
 	 */
 
 	private static List<String> split(String str) {
-		return Stream.of(str.toLowerCase().split("\\s+")).filter(s -> s.length() > 0).collect(Collectors.toList());
+		return Stream.of(str.toLowerCase().split(SPLIT_REGEX)).filter(s -> s.length() > 0).collect(Collectors.toList());
 	}
 
 	/**

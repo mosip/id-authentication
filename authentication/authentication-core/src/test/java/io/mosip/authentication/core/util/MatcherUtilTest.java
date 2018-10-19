@@ -120,14 +120,4 @@ public class MatcherUtilTest {
 		int value = MatcherUtil.doExactMatch(date, new Date());
 		assertNotEquals(100, value);
 	}
-
-	/**
-	 * Assert phonetics match returns 0
-	 */
-	@Test
-	public void TestPhoneticsMatch() {
-		int value = MatcherUtil.doPhoneticsMatch("", "");
-		assertEquals(0, value);
-	}
-
 }

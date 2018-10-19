@@ -24,36 +24,51 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 
+// TODO: Auto-generated Javadoc
 /**
- * Implementation for OTP Auth Service to authenticate OTP via OTP Manager
- * 
+ * Implementation for OTP Auth Service to authenticate OTP via OTP Manager.
+ *
  * @author Dinesh Karuppiah.T
  */
 
 @Service
 public class OTPAuthServiceImpl implements OTPAuthService {
+	
+	/**
+	 * Instantiates a new OTP auth service impl.
+	 */
+	private OTPAuthServiceImpl() {
+	}
 
+	/** The Constant METHOD_VALIDATE_OTP. */
 	private static final String METHOD_VALIDATE_OTP = "validateOtp";
 
+	/** The Constant DEAFULT_SESSSION_ID. */
 	private static final String DEAFULT_SESSSION_ID = "sessionID";
 
+	/** The otp manager. */
 	@Autowired
 	OTPManager otpManager;
 
+	/** The autntxnrepository. */
 	@Autowired
 	AutnTxnRepository autntxnrepository;
 
+	/** The auditreqfactory. */
 	@Autowired
 	AuditRequestFactory auditreqfactory;
 
+	/** The logger. */
 	private MosipLogger logger;
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
 	/**
-	 * 
-	 * @param idaRollingFileAppender
+	 * Initialize logger.
+	 *
+	 * @param idaRollingFileAppender the ida rolling file appender
 	 */
 
 	@Autowired
@@ -62,11 +77,12 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	}
 
 	/**
-	 * 
-	 * Validates generated OTP via OTP Manager
-	 * 
+	 * Validates generated OTP via OTP Manager.
+	 *
+	 * @param authreqdto the authreqdto
+	 * @param refId the ref id
 	 * @return true - when the OTP is Valid.
-	 * 
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	@Override
 	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String refId) throws IdAuthenticationBusinessException {
@@ -77,7 +93,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String otp = authreqdto.getPii().getPin().getValue();
 		boolean isValidRequest = validateTxnId(txnId, UIN);
 		if (isValidRequest) {
-			// FIXME audit integration
 			logger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
 			String OtpKey = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
 			String key = Optional.ofNullable(OtpKey)
@@ -93,6 +108,12 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		return constructAuthStatusInfo(isOtpValid);
 	}
 
+	/**
+	 * Construct auth status info.
+	 *
+	 * @param isOtpValid the is otp valid
+	 * @return the auth status info
+	 */
 	private AuthStatusInfo constructAuthStatusInfo(boolean isOtpValid) {
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		statusInfoBuilder
@@ -107,34 +128,30 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	}
 
 	/**
-	 * 
-	 * Validates Transaction ID and Unique ID
-	 * 
-	 * @param txnId
-	 * @param uIN
-	 * @return
-	 * @throws IdAuthenticationBusinessException
+	 * Validates Transaction ID and Unique ID.
+	 *
+	 * @param txnId the txn id
+	 * @param uIN the u IN
+	 * @return true, if successful
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 
 	public boolean validateTxnId(String txnId, String uIN) throws IdAuthenticationBusinessException {
 		boolean isValidTxn = false;
 		List<AutnTxn> authtxns = autntxnrepository.findAllByRequestTxnIdAndUin(txnId, uIN);
 		if (authtxns != null && authtxns.size() > 0 && authtxns.get(0) != null) {
-			// FIXME audit integration
 			isValidTxn = true;
 		} else {
-			// FIXME audit integration
 			isValidTxn = false;
 		}
 		return isValidTxn;
 	}
 
 	/**
-	 * Checks for Null or Empty
-	 * 
+	 * Checks for Null or Empty.
+	 *
 	 * @param otpVal - OTP value
 	 * @return true - When the otpVal is Not null or empty
-	 * 
 	 */
 
 	public boolean isEmpty(String otpVal) {

@@ -9,6 +9,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -42,11 +43,11 @@ public class IDAuthExceptionHandlerTest {
 	@Mock
 	private Errors errors;
 
+	@InjectMocks
 	private IdAuthExceptionHandler handler;
 
 	@Before
 	public void setUp() {
-		handler = new IdAuthExceptionHandler();
 		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
 		mosipRollingFileAppender.setAppenderName(environment.getProperty("log4j.appender.Appender"));
 		mosipRollingFileAppender.setFileName(environment.getProperty("log4j.appender.Appender.file"));

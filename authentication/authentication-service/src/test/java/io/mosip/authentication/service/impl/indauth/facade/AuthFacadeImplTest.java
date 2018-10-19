@@ -56,7 +56,6 @@ public class AuthFacadeImplTest {
 	MosipRollingFileAppender idaRollingFileAppender;*/
 	
 	/** The auth facade impl. */
-	@InjectMocks
 	private AuthFacadeImpl authFacadeImpl;
 	
 	/** The id auth service impl. */
@@ -82,7 +81,9 @@ public class AuthFacadeImplTest {
 		mosipRollingFileAppender.setMaxHistory(10);
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(authFacadeImpl, "initializeLogger", mosipRollingFileAppender);
+		authFacadeImpl = new AuthFacadeImpl(mosipRollingFileAppender);
+		ReflectionTestUtils.setField(authFacadeImpl, "idAuthService", idAuthServiceImpl);
+		ReflectionTestUtils.setField(authFacadeImpl, "otpService", otpAuthServiceImpl);
 	}
 	
 	

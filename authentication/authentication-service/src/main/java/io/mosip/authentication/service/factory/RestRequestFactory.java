@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -33,14 +33,24 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
  */
 @Component
 public class RestRequestFactory {
+	
+	/**
+	 * Instantiates a new rest request factory.
+	 */
+	private RestRequestFactory() {
+	}
 
+	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
+	/** The Constant METHOD_BUILD_REQUEST. */
 	private static final String METHOD_BUILD_REQUEST = "buildRequest";
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The logger. */
 	private MosipLogger logger;
 
 	/**
@@ -92,7 +102,7 @@ public class RestRequestFactory {
 
 		constructParams(paramMap, pathVariables, headers, serviceName);
 
-		Consumer<HttpHeaders> consumerHeader = header -> {
+		Consumer<HttpHeaders> consumerHeader = (HttpHeaders header) -> {
 		};
 		consumerHeader.accept(headers);
 		request.setHeaders(consumerHeader);
@@ -112,20 +122,30 @@ public class RestRequestFactory {
 		return request;
 	}
 
+	/**
+	 * Construct params.
+	 *
+	 * @param paramMap the param map
+	 * @param pathVariables the path variables
+	 * @param headers the headers
+	 * @param serviceName the service name
+	 */
 	private void constructParams(MultiValueMap<String, String> paramMap, Map<String, String> pathVariables,
 			HttpHeaders headers, String serviceName) {
-		((AbstractEnvironment) env).getPropertySources().forEach(source -> {
+		((AbstractEnvironment) env).getPropertySources().forEach((PropertySource<?> source) -> {
 			if (source instanceof MapPropertySource) {
 				Map<String, Object> systemProperties = ((MapPropertySource) source).getSource();
 
-				systemProperties.keySet().forEach(property -> {
+				systemProperties.keySet().forEach((String property) -> {
 					if (property.startsWith(serviceName.concat(".rest.headers"))) {
 						headers.add(property.replace(serviceName.concat(".rest.headers."), ""),
 								env.getProperty(property));
-					} else if (property.startsWith(serviceName.concat(".rest.uri.queryparam."))) {
+					}
+					if (property.startsWith(serviceName.concat(".rest.uri.queryparam."))) {
 						paramMap.put(property.replace(serviceName.concat(".rest.uri.queryparam."), ""),
 								Collections.singletonList(env.getProperty(property)));
-					} else if (property.startsWith(serviceName.concat(".rest.uri.pathparam."))) {
+					} 
+					if (property.startsWith(serviceName.concat(".rest.uri.pathparam."))) {
 						pathVariables.put(property.replace(serviceName.concat(".rest.uri.pathparam."), ""),
 								env.getProperty(property));
 					}
@@ -134,33 +154,53 @@ public class RestRequestFactory {
 		});
 	}
 
+	/**
+	 * Check return type.
+	 *
+	 * @param returnType the return type
+	 * @param request the request
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	private void checkReturnType(Class<?> returnType, RestRequestDTO request) throws IDDataValidationException {
 		if (returnType != null) {
 			request.setResponseType(returnType);
 		} else {
-			// FIXME Update logger details
+			
 			logger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
 					"throwing IDDataValidationException - INVALID_RETURN_TYPE" + returnType);
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_RETURN_TYPE);
 		}
 	}
 
+	/**
+	 * Check http method.
+	 *
+	 * @param request the request
+	 * @param httpMethod the http method
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	private void checkHttpMethod(RestRequestDTO request, String httpMethod) throws IDDataValidationException {
 		if (checkIfEmptyOrWhiteSpace(httpMethod)) {
 			request.setHttpMethod(HttpMethod.valueOf(httpMethod));
 		} else {
-			// FIXME Update logger details
+			
 			logger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "httpMethod",
 					"throwing IDDataValidationException - INVALID_HTTP_METHOD" + httpMethod);
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_HTTP_METHOD);
 		}
 	}
 
+	/**
+	 * Check uri.
+	 *
+	 * @param request the request
+	 * @param uri the uri
+	 * @throws IDDataValidationException the ID data validation exception
+	 */
 	private void checkUri(RestRequestDTO request, String uri) throws IDDataValidationException {
 		if (checkIfEmptyOrWhiteSpace(uri)) {
 			request.setUri(uri);
 		} else {
-			// FIXME Update logger details
 			logger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "uri",
 					"throwing IDDataValidationException - uri is empty or whitespace" + uri);
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_URI);

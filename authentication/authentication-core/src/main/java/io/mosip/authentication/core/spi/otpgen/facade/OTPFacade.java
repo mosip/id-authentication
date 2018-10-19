@@ -9,6 +9,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * 
  * @author Rakesh Roshan
  */
+@FunctionalInterface
 public interface OTPFacade {
 	/**
 	 * 

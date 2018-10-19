@@ -28,8 +28,8 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			FingerprintMatcher matcher = new FingerprintMatcher();
 			return matcher.index(template1).match(template2);
 		} catch (IllegalArgumentException e) {
+			throw e;
 			// TODO need to create and add exception
-			return 0;
 		}
 	}
 
@@ -47,8 +47,8 @@ public abstract class FingerprintProvider implements MosipFingerprintProvider {
 			FingerprintMatcher matcher = new FingerprintMatcher();
 			return matcher.index(template1).match(template2);
 		} catch (IllegalArgumentException | JsonSyntaxException e) {
+			throw e;
 			// TODO need to create and add exception
-			return 0;
 		}
 	}
 }

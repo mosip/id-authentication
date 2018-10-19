@@ -4,6 +4,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
  * @author Arun Bose
  * The Interface MatchFunction.
  */
+@FunctionalInterface
 public interface MatchFunction {
 	
    /**

@@ -8,7 +8,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * 
  * @author Rakesh Roshan
  */
-
+@FunctionalInterface
 public interface OTPService {
 
 	public String generateOtp(String otpKey) throws IdAuthenticationBusinessException;

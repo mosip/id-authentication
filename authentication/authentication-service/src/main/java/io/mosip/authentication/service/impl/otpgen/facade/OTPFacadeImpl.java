@@ -16,7 +16,6 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
@@ -36,6 +35,8 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 @Service
 @PropertySource("classpath:application-local.properties")
 public class OTPFacadeImpl implements OTPFacade {
+
+	private static final String SESSION_ID = "SessionID";
 
 	@Autowired
 	private OTPService otpService;
@@ -83,7 +84,7 @@ public class OTPFacadeImpl implements OTPFacade {
 				mosipLogger.error("", otpRequestDto.getIdType(), e.getErrorCode(), e.getErrorText());
 			}
 		}
-		mosipLogger.info("SessionID", "NA", "generated OTP", otp);
+		mosipLogger.info(SESSION_ID, "NA", "generated OTP", otp);
 
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		if (otp == null || otp.trim().isEmpty()) {
@@ -139,7 +140,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			formatedDate = new SimpleDateFormat(formate).parse(formatDate);
 			return formatedDate;
 		} catch (ParseException e) {
-			mosipLogger.error("SessionID", "ParseException", e.getMessage(), "Date formate parse Exception");
+			mosipLogger.error(SESSION_ID, "ParseException", e.getMessage(), "Date formate parse Exception");
 		}
 		return formatedDate;
 	}
@@ -185,17 +186,15 @@ public class OTPFacadeImpl implements OTPFacade {
 		if (idType.isPresent()) {
 			if (idType.get().equals(IdType.UIN)) {
 				refId = idAuthService.validateUIN(uniqueID);
-
 				if (refId == null) {
-					mosipLogger.info("SessionID", "IDTYPE-" + otpRequestDto.getIdType(), "Reference Id for UID",
+					mosipLogger.info(SESSION_ID, "IDTYPE-" + otpRequestDto.getIdType(), "Reference Id for UID",
 							" UID-refId: " + refId);
 				}
-
-			} else if (otpRequestDto.getIdType().equals(IdType.VID.getType())) {
+			} else {
 				refId = idAuthService.validateVID(uniqueID);
 
 				if (refId == null) {
-					mosipLogger.info("SessionID", "IDTYPE-" + otpRequestDto.getIdType(), "Reference Id for VID",
+					mosipLogger.info(SESSION_ID, "IDTYPE-" + otpRequestDto.getIdType(), "Reference Id for VID",
 							" VID-refId: " + refId);
 				}
 			}

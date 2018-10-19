@@ -29,43 +29,67 @@ import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
- * The {@code AuthController} used to handle all the authentication requests
- * 
+ * The {@code AuthController} used to handle all the authentication requests.
+ *
  * @author Arun Bose
  */
 
 @RestController
 public class AuthController {
 
+	/**
+	 * Instantiates a new auth controller.
+	 */
+	private AuthController() {
+	}
+
+	/** The logger. */
 	private MosipLogger logger;
 
+	/**
+	 * Initialize logger.
+	 *
+	 * @param idaRollingFileAppender
+	 *            the ida rolling file appender
+	 */
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
 		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
 
+	/** The auth request validator. */
 	@Autowired
 	private AuthRequestValidator authRequestValidator;
+
+	/** The demo validator. */
 	@Autowired
 	DemoValidator demoValidator;
 
+	/** The auth facade. */
 	@Autowired
 	private AuthFacade authFacade;
 
+	/**
+	 * Inits the binder.
+	 *
+	 * @param binder
+	 *            the binder
+	 */
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
 		binder.addValidators(authRequestValidator, demoValidator);
 	}
 
 	/**
-	 * authenticateRequest - method to authenticate request
-	 * 
-	 * 
-	 * @param authrequestdto - Authenticate Request
+	 * authenticateRequest - method to authenticate request.
+	 *
+	 * @param authrequestdto
+	 *            - Authenticate Request
 	 * @param errors
+	 *            the errors
 	 * @return AuthResponseDTO
 	 * @throws IdAuthenticationAppException
-	 * @throws ValidateOTPException
+	 *             the id authentication app exception
 	 */
 
 	@PostMapping(path = "/authRequest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,10 +108,10 @@ public class AuthController {
 			logger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			logger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" :e.getErrorText());
+			logger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
 		}
-		
+
 		return authResponsedto;
 	}
 }

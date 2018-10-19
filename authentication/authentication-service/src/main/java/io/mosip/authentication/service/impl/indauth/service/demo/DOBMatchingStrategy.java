@@ -7,11 +7,13 @@ import java.util.Date;
 import io.mosip.authentication.core.util.MatcherUtil;
 
 /**
- * @author Sanjay Murali
+ * The Enum DOBMatchingStrategy.
  *
+ * @author Sanjay Murali
  */
 public enum DOBMatchingStrategy implements MatchingStrategy {
 	
+	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (reqInfo, entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof Date) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -20,6 +22,7 @@ public enum DOBMatchingStrategy implements MatchingStrategy {
 				Date reqInfoDate = sdf.parse((String) reqInfo);
 				return MatcherUtil.doExactMatch(reqInfoDate,entityInfoDate);
 			} catch (ParseException e) {
+				/** The match function. */
 				//FIXME
 				return 0;
 			}
@@ -30,24 +33,31 @@ public enum DOBMatchingStrategy implements MatchingStrategy {
 	
 	private final MatchFunction matchFunction;
 
+	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
 
 	/**
-	 * 
-	 * @param matchStrategyType
-	 * @param matchValue
-	 * @param matchFunction
+	 * Instantiates a new DOB matching strategy.
+	 *
+	 * @param matchStrategyType the match strategy type
+	 * @param matchFunction the match function
 	 */
 	private DOBMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#getType()
+	 */
 	@Override
 	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#getMatchFunction()
+	 */
 	@Override
 	public MatchFunction getMatchFunction() {
 		return matchFunction;

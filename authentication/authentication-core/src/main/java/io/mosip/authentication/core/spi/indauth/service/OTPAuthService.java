@@ -12,8 +12,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * 
  * @author Dinesh Karuppiah.T
  */
-
-
+@FunctionalInterface
 public interface OTPAuthService {
 
 	/**

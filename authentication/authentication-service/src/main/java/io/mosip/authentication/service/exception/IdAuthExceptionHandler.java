@@ -36,12 +36,31 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
  */
 @RestControllerAdvice
 public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
+	
+	/**
+	 * Instantiates a new id auth exception handler.
+	 */
+	private IdAuthExceptionHandler() {
+		
+	}
 
+	/** The Constant PREFIX_HANDLING_EXCEPTION. */
 	private static final String PREFIX_HANDLING_EXCEPTION = "Handling exception :";
+	
+	/** The Constant EVENT_EXCEPTION. */
 	private static final String EVENT_EXCEPTION = "Exception";
+	
+	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
+	
+	/** The mosip logger. */
 	private MosipLogger mosipLogger;
 
+	/**
+	 * Initialize logger.
+	 *
+	 * @param idaRollingFileAppender the ida rolling file appender
+	 */
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
 		mosipLogger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
@@ -154,14 +173,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Constructs exception response body for all exceptions.
 	 *
-	 * @param ex
-	 *            the exception occurred
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessages
-	 *            error message object.
-	 * @param request
-	 *            web request
+	 * @param ex            the exception occurred
+	 * @param errorCode            the error code
+	 * @param errorMessages            error message object.
 	 * @return Object .
 	 */
 	@SuppressWarnings("unchecked")
