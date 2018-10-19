@@ -1,7 +1,7 @@
 # Approach for decrypting registration packets and storing files in filesystem
 
 
-** Background **
+**Background**
 
 Registration packets created by the registration clients will be periodically uploaded to the server for processing. The packets will be scanned for viruses and after successful scan it will be uploaded to file system.
 The target users are
@@ -19,7 +19,7 @@ The key non-functional requirements are
 -	Performance: Should be able to support processing multiple packet requests per second.
 
 
-** Solution **
+**Solution**
 
 The key solution considerations are -
 -	Create a batch job “PacketDecryptorJob” to run periodically based on configuration.
