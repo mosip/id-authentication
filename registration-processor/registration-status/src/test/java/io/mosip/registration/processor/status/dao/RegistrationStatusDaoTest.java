@@ -15,9 +15,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
-import io.mosip.registration.processor.status.repositary.RegistrationStatusRepositary;
+import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 
 @SuppressWarnings("deprecation")
 @RunWith(MockitoJUnitRunner.class)
@@ -29,7 +28,7 @@ public class RegistrationStatusDaoTest {
 	@InjectMocks
 	RegistrationStatusDao registrationStatusDao = new RegistrationStatusDao();
 	@Mock
-	RegistrationStatusRepositary registrationStatusRepositary;
+	RegistrationRepositary<RegistrationStatusEntity, String> registrationStatusRepositary;
 
 	@Before
 	public void setup() {

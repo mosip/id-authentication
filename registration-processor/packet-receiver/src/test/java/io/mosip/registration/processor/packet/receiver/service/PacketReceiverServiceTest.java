@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.packet.receiver.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -11,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 
 import org.junit.Before;
@@ -19,6 +21,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -31,16 +34,20 @@ import org.springframework.web.multipart.MultipartFile;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
+import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
-import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
+import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
 @RunWith(SpringRunner.class)
 public class PacketReceiverServiceTest {
@@ -55,6 +62,18 @@ public class PacketReceiverServiceTest {
 
 	@Mock
 	private RegistrationStatusDto mockDto;
+
+    @Mock
+    private AuditRequestBuilder auditRequestBuilder;
+
+    @Mock
+    AuditRequestDto auditRequestDto;
+
+    @Mock
+    private AuditHandler<AuditRequestDto> auditHandler;
+
+	@Mock
+    private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
 
 	@Rule
 	public ExpectedException exceptionRule = ExpectedException.none();
@@ -78,7 +97,7 @@ public class PacketReceiverServiceTest {
 	private MockMultipartFile mockMultipartFile, invalidPacket, largerFile;
 
 	@Before
-	public void setup() {
+	public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		try {
 			ClassLoader classLoader = getClass().getClassLoader();
 			File file = new File(classLoader.getResource("0000.zip").getFile());
@@ -96,6 +115,20 @@ public class PacketReceiverServiceTest {
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
+
+		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
+		Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
+		Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
+		
+		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		AuditRequestDto auditRequest1 = new AuditRequestDto();
+
+		Field f = PacketReceiverServiceImpl.class.getDeclaredField("auditRequestBuilder");
+		f.setAccessible(true);
+		f.set(packetReceiverService, auditRequestBuilder);
+		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+		f1.setAccessible(true);
+		f1.set(auditRequestBuilder, auditRequest1);
 	}
 
 	@Test
@@ -134,16 +167,13 @@ public class PacketReceiverServiceTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Test
-	public void testInvalidPacketFormat() throws PacketNotValidException {
+	@Test(expected = PacketNotValidException.class)
+	public void testInvalidPacketFormat() {
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
 		final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
-
-		exceptionRule.expect(PacketNotValidException.class);
-		exceptionRule.expectMessage(RegistrationStatusCode.INVALID_PACKET_FORMAT.toString());
 
 		packetReceiverService.storePacket(invalidPacket);
 
@@ -156,16 +186,13 @@ public class PacketReceiverServiceTest {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Test
-	public void testFileSizeExceeded() throws FileSizeExceedException {
+	@Test(expected = FileSizeExceedException.class)
+	public void testFileSizeExceeded() {
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
 		final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
-
-		exceptionRule.expect(FileSizeExceedException.class);
-		exceptionRule.expectMessage(RegistrationStatusCode.PACKET_SIZE_GREATER_THAN_LIMIT.name());
 
 		packetReceiverService.storePacket(largerFile);
 
@@ -174,6 +201,28 @@ public class PacketReceiverServiceTest {
 			public boolean matches(final ILoggingEvent argument) {
 				return ((LoggingEvent) argument).getFormattedMessage()
 						.contains("File size is greater than provided limit");
+			}
+		}));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test(expected = PacketNotSyncException.class)
+	public void packetNotSyncExcpetionTest() {
+		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
+				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
+		final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
+		when(mockAppender.getName()).thenReturn("MOCK");
+		root.addAppender(mockAppender);
+
+		Mockito.when(syncRegistrationService.isPresent(ArgumentMatchers.any())).thenReturn(false);
+
+		packetReceiverService.storePacket(mockMultipartFile);
+
+		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
+			@Override
+			public boolean matches(final ILoggingEvent argument) {
+				return ((LoggingEvent) argument).getFormattedMessage()
+						.contains("Registration Packet is Not yet sync in Sync table");
 			}
 		}));
 	}

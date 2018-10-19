@@ -4,26 +4,17 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.stereotype.Component;
-
 
 /**
  * The Class RegistrationStatusEntity.
  */
-@Component
 @Entity
 @Table(name = "registration", schema = "regprc")
-public class RegistrationStatusEntity {
-
-	/** The registration id. */
-	@Column(name = "id", nullable = false)
-	@Id
-	private String registrationId;
+public class RegistrationStatusEntity extends BaseRegistrationEntity {
 
 	/** The registration type. */
 	@Column(name = "reg_type", nullable = false)
@@ -90,25 +81,6 @@ public class RegistrationStatusEntity {
 	public RegistrationStatusEntity() {
 		super();
 
-	}
-
-	/**
-	 * Gets the registration id.
-	 *
-	 * @return the registration id
-	 */
-	public String getRegistrationId() {
-		return registrationId;
-	}
-
-	/**
-	 * Sets the registration id.
-	 *
-	 * @param registrationId
-	 *            the new registration id
-	 */
-	public void setRegistrationId(String registrationId) {
-		this.registrationId = registrationId;
 	}
 
 	/**

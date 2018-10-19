@@ -64,7 +64,8 @@ public class Decryptor {
 		
 		splitKeyEncryptedData(in);
 		
-		byte[] aeskey=decryptRsaEncryptedBytes(sessionKey , readPrivatekey(registrationId));
+		byte[] aeskey=MosipDecryptor.asymmetricPrivateDecrypt(readPrivatekey(registrationId),
+				sessionKey, MosipSecurityMethod.RSA_WITH_PKCS1PADDING);
 		
 		
 		byte[] aesDecryptedData = MosipDecryptor.symmetricDecrypt(aeskey, encryptedData, MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
@@ -121,34 +122,19 @@ public class Decryptor {
 	 * @return private key 
 	 * @throws PacketDecryptionFailureException 
 	 */
-	private PrivateKey readPrivatekey(String registrationId) throws PacketDecryptionFailureException {
+	private byte[] readPrivatekey(String registrationId) throws PacketDecryptionFailureException {
 		FileInputStream fileInputStream = null;
-		PrivateKey rprivateKey=null;
+		byte[] rprivateKey=null;
 		try {
 			fileInputStream = new FileInputStream(new File(privateKey+registrationId+"/private.key"));
-		} catch (FileNotFoundException e) {
+			rprivateKey=IOUtils.toByteArray(fileInputStream);
+		} catch ( IOException e) {
 			
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorMessage(), e);
 		}
-		try(ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);) {
-			
-			BigInteger mod = (BigInteger) objectInputStream.readObject();
-			BigInteger exp = (BigInteger) objectInputStream.readObject();
-
-			
-			RSAPrivateKeySpec rsaPrivateKeySpec = new RSAPrivateKeySpec(mod, exp);
-			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			 rprivateKey = keyFactory.generatePrivate(rsaPrivateKeySpec);
-
-			
-		} catch (IOException | ClassNotFoundException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-			
-			throw new PacketDecryptionFailureException(
-					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
-					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorMessage(), e);
-		}
+		
 		
 		return rprivateKey;
 	}

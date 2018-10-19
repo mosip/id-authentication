@@ -41,7 +41,7 @@ public class InternalServerExceptionTest {
 
 	@Test
 	public void TestInternalServerException() throws IOException {
-		String fileName = "sample.zip";
+		String fileName = "sample";
 		InternalServerException ex = new InternalServerException(SERVER_MSG_ERROR);
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
