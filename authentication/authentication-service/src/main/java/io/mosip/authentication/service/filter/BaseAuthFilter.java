@@ -134,8 +134,8 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Response sent at : " + responseTime);
 		DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_DATE_TIME;
 		TemporalAccessor accessor = timeFormatter.parse(responseTime);
-		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Time difference between request and response : "
-				+ Duration.between(requestTime, Instant.from(accessor)));
+		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Time difference between request and response in millis: "
+				+ Duration.between(requestTime, Instant.from(accessor)).toMillis());
 	}
 
 	/**
