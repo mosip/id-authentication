@@ -44,8 +44,6 @@ import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
-import io.mosip.registration.processor.packet.storage.repository.RegCenterMachineRepositoy;
-import io.mosip.registration.processor.packet.storage.repository.RegOsiRepository;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 
 /**
@@ -55,7 +53,7 @@ import io.mosip.registration.processor.status.code.AuditLogTempConstant;
  *
  */
 @Service
-public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, DemographicInfo,MetaData> {
+public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, DemographicInfo, MetaData> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
 
@@ -75,13 +73,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private BasePacketRepository<ApplicantPhotographEntity, String> applicantPhotographRepository;
 
 	@Autowired
-	private RegOsiRepository regOsiRepository;
+	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
 
 	@Autowired
 	private BasePacketRepository<ApplicantDemographicEntity, String> applicantDemographicRepository;
-	
+
 	@Autowired
-	private RegCenterMachineRepositoy regCenterMachineRepository;
+	private BasePacketRepository<RegCenterMachineEntity, String> regCenterMachineRepository;
 
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
@@ -118,7 +116,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			savePhotoGraph(photoGraphData);
 			saveOsiData(osiData);
 			saveRegCenterData(metaData);
-			
+
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
@@ -133,7 +131,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 
 	}
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -142,7 +139,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	 * #saveDemographicData(java.lang.Object)
 	 */
 	@Override
-	public void saveDemographicData(DemographicInfo demographicInfo,MetaData metaData) {
+	public void saveDemographicData(DemographicInfo demographicInfo, MetaData metaData) {
 
 		boolean isTransactionSuccessful = false;
 		try {
@@ -187,13 +184,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		List<Iris> irisList = irisData.getIris();
 		List<ExceptionIris> exceptionIrisList = irisData.getExceptionIris();
 
-		irisList.forEach(iris->{
+		irisList.forEach(iris -> {
 			ApplicantIrisEntity applicantIrisEntity = PacketInfoMapper.convertIrisDtoToEntity(iris, metaData);
 			applicantIrisRepository.save(applicantIrisEntity);
 			LOGGER.info(applicantIrisEntity.getId().getRegId() + " --> Applicant Iris DATA SAVED");
 		});
 
-		exceptionIrisList.forEach(exceptionIris->{
+		exceptionIrisList.forEach(exceptionIris -> {
 			BiometricExceptionEntity biometricIrisExceptionEntity = PacketInfoMapper
 					.convertBiometricExcDtoToEntity(exceptionIris, metaData);
 			biometricExceptionRepository.save(biometricIrisExceptionEntity);
@@ -211,15 +208,15 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		List<Fingerprint> fingerprints = fingerprintData.getFingerprints();
 		List<ExceptionFingerprint> exceptionFingerprints = fingerprintData.getExceptionFingerprints();
 
-		fingerprints.forEach(fingerprint->{
+		fingerprints.forEach(fingerprint -> {
 			ApplicantFingerprintEntity fingerprintEntity = PacketInfoMapper.convertFingerprintDtoToEntity(fingerprint,
 					metaData);
 			applicantFingerprintRepository.save(fingerprintEntity);
 			LOGGER.info(fingerprintEntity.getId().getRegId() + " --> Fingerprint DATA SAVED");
-			
+
 		});
-		
-		exceptionFingerprints.forEach(exceptionFingerprint->{
+
+		exceptionFingerprints.forEach(exceptionFingerprint -> {
 			BiometricExceptionEntity biometricExceptionEntity = PacketInfoMapper
 					.convertBiometricExceptioDtoToEntity(exceptionFingerprint, metaData);
 			biometricExceptionRepository.save(biometricExceptionEntity);
@@ -250,8 +247,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	public void saveDocument(DocumentDetail documentDetail) {
 		ApplicantDocumentEntity applicantDocumentEntity = PacketInfoMapper.convertAppDocDtoToEntity(documentDetail,
 				metaData);
-		//applicantDocumentEntity.setDocStore(getDocumentAsByteArray(metaData.getRegistrationId(), documentDetail.getDocumentName()));
-		applicantDocumentEntity.setDocStore(new byte[] {20,10});
+		// applicantDocumentEntity.setDocStore(getDocumentAsByteArray(metaData.getRegistrationId(),
+		// documentDetail.getDocumentName()));
+		applicantDocumentEntity.setDocStore(new byte[] { 20, 10 });
 		applicantDocumentRepository.save(applicantDocumentEntity);
 		LOGGER.info(applicantDocumentEntity.getId().getRegId() + " --> Document Demographic DATA SAVED");
 	}
@@ -265,7 +263,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private void saveOsiData(OsiData osiData) {
 		RegOsiEntity regOsiEntity = PacketInfoMapper.convertOsiDataToEntity(osiData, metaData);
 		regOsiRepository.save(regOsiEntity);
-		LOGGER.info(regOsiEntity.getRegId() + " --> Applicant OSI DATA SAVED");
+		LOGGER.info(regOsiEntity.getId() + " --> Applicant OSI DATA SAVED");
 	}
 
 	/**
@@ -281,18 +279,19 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		LOGGER.info(applicantPhotographEntity.getId().getRegId() + " --> Applicant Photograph DATA SAVED");
 	}
 
-	
 	/**
 	 * Save reg center data.
 	 *
-	 * @param metaData the meta data
+	 * @param metaData
+	 *            the meta data
 	 */
 	private void saveRegCenterData(MetaData metaData) {
 		RegCenterMachineEntity regCenterMachineEntity = PacketInfoMapper.convertRegCenterMachineToEntity(metaData);
 		regCenterMachineRepository.save(regCenterMachineEntity);
-		LOGGER.info(regCenterMachineEntity.getRegId() + " --> Registration Center Machine DATA SAVED");
-		
+		LOGGER.info(regCenterMachineEntity.getId() + " --> Registration Center Machine DATA SAVED");
+
 	}
+
 	/**
 	 * Gets the document as byte array.
 	 *

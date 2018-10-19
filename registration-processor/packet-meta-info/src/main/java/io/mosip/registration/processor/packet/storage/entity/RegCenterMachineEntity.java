@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -15,15 +14,12 @@ import org.hibernate.annotations.UpdateTimestamp;
  * The persistent class for the reg_center_machine database table.
  * 
  * @author Horteppa M1048399
+ * @author Girish Yarru
  */
 @Entity
 @Table(name = "reg_center_machine", schema = "regprc")
-public class RegCenterMachineEntity implements Serializable {
+public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@Column(name = "reg_id", nullable = false)
-	private String regId;
 
 	@Column(name = "prereg_id", nullable = false)
 	private String preregId;
@@ -61,14 +57,6 @@ public class RegCenterMachineEntity implements Serializable {
 
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
-
-	public String getRegId() {
-		return regId;
-	}
-
-	public void setRegId(String regId) {
-		this.regId = regId;
-	}
 
 	public String getPreregId() {
 		return preregId;

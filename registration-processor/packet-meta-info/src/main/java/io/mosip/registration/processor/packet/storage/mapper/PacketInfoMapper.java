@@ -37,7 +37,9 @@ import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotograph
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegCenterMachinePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegOsiPkEntity;
 
 public class PacketInfoMapper {
 
@@ -96,7 +98,7 @@ public class PacketInfoMapper {
 		bioMetricExceptionEntity.setExcpTyp(exceptionIris.getExceptionType());
 		bioMetricExceptionEntity.setIsDeleted(false);
 		bioMetricExceptionEntity.setStatusCode("");
-		
+
 		return bioMetricExceptionEntity;
 	}
 
@@ -199,7 +201,7 @@ public class PacketInfoMapper {
 		applicantPhotographEntity.setHasExcpPhotograph(photoGraphData.isHasExceptionPhoto());
 		applicantPhotographEntity.setQualityScore(BigDecimal.valueOf(photoGraphData.getQualityScore()));
 		applicantPhotographEntity.setActive(true);
-		
+
 		return applicantPhotographEntity;
 	}
 
@@ -213,6 +215,9 @@ public class PacketInfoMapper {
 	public static RegOsiEntity convertOsiDataToEntity(OsiData osiData, MetaData metaData) {
 
 		RegOsiEntity regOsiEntity = new RegOsiEntity();
+		RegOsiPkEntity regOsiPkEntity = new RegOsiPkEntity();
+		regOsiPkEntity.setRegId(metaData.getRegistrationId());
+
 		regOsiEntity.setIntroducerFingerpImageName(osiData.getIntroducerFingerprintImage());
 		regOsiEntity.setIntroducerId(osiData.getIntroducerRID().toString());
 		regOsiEntity.setIntroducerIrisImageName(osiData.getIntroducerIrisImage());
@@ -222,7 +227,7 @@ public class PacketInfoMapper {
 		regOsiEntity.setOfficerFingerpImageName(osiData.getOperatorFingerprintImage());
 		regOsiEntity.setOfficerId(osiData.getOperatorId());
 		regOsiEntity.setOfficerIrisImageName(osiData.getOperatorIrisName());
-		regOsiEntity.setRegId(metaData.getRegistrationId());
+		regOsiEntity.setId(regOsiPkEntity);
 		regOsiEntity.setPreregId(metaData.getPreRegistrationId());
 		regOsiEntity.setSupervisorId(osiData.getSupervisorId());
 		regOsiEntity.setSupervisorFingerpImageName(osiData.getSupervisorFingerprintImage());
@@ -273,7 +278,7 @@ public class PacketInfoMapper {
 		applicantDemographicEntity.setMobile(demoInLocalLang.getMobile());
 		applicantDemographicEntity.setSurName(demoInLocalLang.getSurname());
 		applicantDemographicEntity.setIsActive(true);
-		
+
 		applicantDemographicEntity.setLocationCode("Location Code");
 		applicantDemographicEntity.setNationalId("National Id");
 		applicantDemographicEntity.setParentFullName("Parent Full Name");
@@ -308,7 +313,6 @@ public class PacketInfoMapper {
 		applicantDemographicEntity.setLastName(demoInUserLang.getLastName());
 		applicantDemographicEntity.setIsActive(true);
 
-
 		applicantDemographicEntity.setMiddleName(demoInUserLang.getMiddleName());
 		applicantDemographicEntity.setMobile(demoInUserLang.getMobile());
 		applicantDemographicEntity.setSurName(demoInUserLang.getSurname());
@@ -336,17 +340,20 @@ public class PacketInfoMapper {
 			return 0;
 		}
 	}
-	
+
 	public static RegCenterMachineEntity convertRegCenterMachineToEntity(MetaData metaData) {
+		RegCenterMachinePKEntity regCenterMachinePKEntity = new RegCenterMachinePKEntity();
+		regCenterMachinePKEntity.setRegId(metaData.getRegistrationId());
+		
 		RegCenterMachineEntity regCenterMachineEntity = new RegCenterMachineEntity();
 		regCenterMachineEntity.setCntrId("Center 1");
 		regCenterMachineEntity.setMachineId("Machine 1");
-		regCenterMachineEntity.setRegId(metaData.getRegistrationId());
+		regCenterMachineEntity.setId(regCenterMachinePKEntity);
 		regCenterMachineEntity.setIsActive(true);
 		regCenterMachineEntity.setPreregId(metaData.getPreRegistrationId());
 		regCenterMachineEntity.setLatitude(metaData.getGeoLocation().getLatitude().toString());
 		regCenterMachineEntity.setLongitude(metaData.getGeoLocation().getLongitude().toString());
-		
+
 		return regCenterMachineEntity;
 	}
 
