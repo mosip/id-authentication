@@ -12,11 +12,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
-import io.mosip.kernel.core.util.exception.MosipJsonParseException;
 import io.mosip.registration.processor.core.abstractverticle.exception.UnsupportedEncodingException;
 import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
+import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -31,7 +29,7 @@ public class PacketInfoManagerApplication implements CommandLineRunner  {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerApplication.class);
 	@Autowired
-	private PacketInfoManager<PacketInfo, DemographicInfo> packetInfoManager;
+	private PacketInfoManager<PacketInfo, DemographicInfo,MetaData> packetInfoManager;
 	public static void main(String[] args) {
 		SpringApplication.run(PacketInfoManagerApplication.class, args);
 	}
@@ -41,6 +39,7 @@ public class PacketInfoManagerApplication implements CommandLineRunner  {
 	public void run(String... args)  {
 				PacketInfo packetInfo;
 				DemographicInfo  demograpgicInfo;
+				MetaData metaData;
 				JsonUtil jsonUtil;
 		try {
 			File packetInfofile = new File("..\\packet-meta-info\\src\\main\\resources\\PacketMetaInfo.json");
@@ -48,15 +47,21 @@ public class PacketInfoManagerApplication implements CommandLineRunner  {
 			
 			File demographicfile = new File("..\\packet-meta-info\\src\\main\\resources\\DemographicInfo.json");
 			InputStream demographicInfoStream = new FileInputStream(demographicfile);
+			
+			File metaDatafile = new File("..\\packet-meta-info\\src\\main\\resources\\MetaData.json");
+			InputStream metaDataInfoStream = new FileInputStream(metaDatafile);
+			
 			jsonUtil = new JsonUtil();
+			
 			packetInfo = (PacketInfo) jsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,PacketInfo.class);
 			demograpgicInfo = (DemographicInfo)jsonUtil.inputStreamtoJavaObject(demographicInfoStream,DemographicInfo.class);
+			metaData = (MetaData)jsonUtil.inputStreamtoJavaObject(metaDataInfoStream,MetaData.class);
 			
 			// packetInfo = (PacketInfo) JsonUtils.jsonFileToJavaObject(PacketInfo.class, "..\\packet-meta-info\\src\\main\\resources\\PacketMetaInfo.json");
 			// demograpgicInfo = (DemographicInfo)JsonUtils.jsonFileToJavaObject(DemographicInfo.class, "..\\packet-meta-info\\src\\main\\resources\\DemographicInfo.json");
 			 
 			packetInfoManager.savePacketData(packetInfo);
-			packetInfoManager.saveDemographicData(demograpgicInfo);
+			packetInfoManager.saveDemographicData(demograpgicInfo,metaData);
 		} catch (UnsupportedEncodingException e) {
 					LOGGER.error("Error while parsing JSON file",e);
 				} catch (Exception e) {

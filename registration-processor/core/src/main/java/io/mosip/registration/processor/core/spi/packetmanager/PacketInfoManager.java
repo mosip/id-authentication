@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * @param <D> DemographicInfo
  */
 @Service
-public interface PacketInfoManager<T, D> {
+public interface PacketInfoManager<T, D, M> {
 
 
 	/**
@@ -28,5 +28,5 @@ public interface PacketInfoManager<T, D> {
 	 *
 	 * @param demograficData the demografic data
 	 */
-	public void saveDemographicData(D demograficData);
+	public void saveDemographicData(D demograficData,M metaData);
 }
