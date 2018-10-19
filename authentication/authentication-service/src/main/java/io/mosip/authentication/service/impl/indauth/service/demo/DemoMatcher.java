@@ -18,13 +18,17 @@ public class DemoMatcher {
 	/**
 	 * Match demo data.
 	 *
-	 * @param demoDTO    the demo DTO
-	 * @param demoEntity the demo entity
-	 * @param locationInfoFetcher 
-	 * @param matchInput the match input
+	 * @param demoDTO
+	 *            the demo DTO
+	 * @param demoEntity
+	 *            the demo entity
+	 * @param locationInfoFetcher
+	 * @param matchInput
+	 *            the match input
 	 * @return the list
 	 */
-	public List<MatchOutput> matchDemoData(DemoDTO demoDTO, DemoEntity demoEntity, List<MatchInput> listMatchInputs, LocationInfoFetcher locationInfoFetcher) {
+	public List<MatchOutput> matchDemoData(DemoDTO demoDTO, DemoEntity demoEntity, List<MatchInput> listMatchInputs,
+			LocationInfoFetcher locationInfoFetcher) {
 		return listMatchInputs.parallelStream().map(input -> matchType(demoDTO, demoEntity, input, locationInfoFetcher))
 				.filter(output -> output != null).collect(Collectors.toList());
 	}
@@ -32,12 +36,16 @@ public class DemoMatcher {
 	/**
 	 * Match type.
 	 *
-	 * @param demoDTO    the demo DTO
-	 * @param demoEntity the demo entity
-	 * @param input      the input
+	 * @param demoDTO
+	 *            the demo DTO
+	 * @param demoEntity
+	 *            the demo entity
+	 * @param input
+	 *            the input
 	 * @return the match output
 	 */
-	private MatchOutput matchType(DemoDTO demoDTO, DemoEntity demoEntity, MatchInput input, LocationInfoFetcher locationInfoFetcher) {
+	private MatchOutput matchType(DemoDTO demoDTO, DemoEntity demoEntity, MatchInput input,
+			LocationInfoFetcher locationInfoFetcher) {
 		String matchStrategyTypeStr = input.getMatchStrategyType();
 		if (matchStrategyTypeStr == null) {
 			matchStrategyTypeStr = MatchingStrategyType.EXACT.getType();
@@ -52,7 +60,8 @@ public class DemoMatcher {
 			if (matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();
 				Object reqInfo = input.getDemoMatchType().getDemoInfoFetcher().getInfo(demoDTO);
-				Object entityInfo = input.getDemoMatchType().getEntityInfoFetcher().getInfo(demoEntity, locationInfoFetcher);
+				Object entityInfo = input.getDemoMatchType().getEntityInfoFetcher().getInfo(demoEntity,
+						locationInfoFetcher);
 				MatchFunction matchFunction = strategy.getMatchFunction();
 				int mtOut = matchFunction.doMatch(reqInfo, entityInfo);
 				boolean matchOutput = mtOut >= input.getMatchValue();

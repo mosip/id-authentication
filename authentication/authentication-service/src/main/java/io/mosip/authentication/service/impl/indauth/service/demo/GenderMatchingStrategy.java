@@ -11,7 +11,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
  */
 public enum GenderMatchingStrategy implements MatchingStrategy {
 	
-	EXACT(MatchingStrategyType.EXACT, (reqInfo, entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			return MatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
 		} else {

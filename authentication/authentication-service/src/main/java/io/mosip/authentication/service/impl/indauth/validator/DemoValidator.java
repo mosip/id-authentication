@@ -41,7 +41,8 @@ public class DemoValidator implements Validator {
 
 	private MosipLogger mosipLogger;
 
-	private static final String EMAIL_PATTERN = "^[\\_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	private static final String EMAIL_PATTERN = "^[\\_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+"
+			+ "(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	private static final String SESSION_ID = "sessionid";
 
 	@Autowired
@@ -50,7 +51,7 @@ public class DemoValidator implements Validator {
 	}
 
 	@Autowired
-	Environment env;
+	private Environment env;
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -176,7 +177,7 @@ public class DemoValidator implements Validator {
 				errors.reject(IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorMessage());
 			}
-			
+
 			if (personalIdentityDTO.getDob() != null) {
 
 				try {

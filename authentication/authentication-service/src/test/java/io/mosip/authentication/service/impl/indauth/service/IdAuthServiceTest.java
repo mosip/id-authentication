@@ -116,7 +116,7 @@ public class IdAuthServiceTest {
 		String uin = "1234567890";
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(false);
-		Mockito.when(uinRepository.findByUinRefId(uin)).thenReturn(uinEntity);
+		Mockito.when(uinRepository.findByUinRefId(uin)).thenReturn(Optional.of(uinEntity));
 		idAuthServiceImpl.validateUIN(uin);
 	}
 
@@ -227,7 +227,7 @@ public class IdAuthServiceTest {
 		vidEntity.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plus(1, ChronoUnit.MONTHS)));
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(true);
-		Mockito.when(uinRepository.findByUinRefId(Mockito.any())).thenReturn(uinEntity);
+		Mockito.when(uinRepository.findByUinRefId(Mockito.any())).thenReturn(Optional.of(uinEntity));
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
 
 		ReflectionTestUtils.setField(idAuthServiceImpl, "uinRepository", uinRepository);
@@ -255,10 +255,10 @@ public class IdAuthServiceTest {
 	public void testDoValidateUINInactive() throws Throwable {
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(false);
-		Method doValidateUIN = idAuthServiceImpl.getClass().getDeclaredMethod("doValidateUIN", Optional.class);
+		Method doValidateUIN = idAuthServiceImpl.getClass().getDeclaredMethod("doValidateUIN", UinEntity.class);
 		doValidateUIN.setAccessible(true);
 		try {
-		doValidateUIN.invoke(idAuthServiceImpl, Optional.of(uinEntity));
+		doValidateUIN.invoke(idAuthServiceImpl, uinEntity);
 		} catch (InvocationTargetException e) {
 			throw e.getTargetException();
 		}

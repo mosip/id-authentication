@@ -48,15 +48,15 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	/** The otp manager. */
 	@Autowired
-	OTPManager otpManager;
+	private OTPManager otpManager;
 
 	/** The autntxnrepository. */
 	@Autowired
-	AutnTxnRepository autntxnrepository;
+	private AutnTxnRepository autntxnrepository;
 
 	/** The auditreqfactory. */
 	@Autowired
-	AuditRequestFactory auditreqfactory;
+	private AuditRequestFactory auditreqfactory;
 
 	/** The logger. */
 	private MosipLogger logger;

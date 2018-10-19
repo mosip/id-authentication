@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.repository;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
 
 import io.mosip.authentication.service.entity.UinEntity;
@@ -20,5 +22,5 @@ public interface UinRepository extends BaseRepository<UinEntity, String>{
 	 * @return UinEntity
 	 * @param uin 
 	 */
-	public UinEntity findByUinRefId(String uinRefId);
+	public Optional<UinEntity> findByUinRefId(String uinRefId);
 }

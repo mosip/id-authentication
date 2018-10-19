@@ -42,7 +42,7 @@ public enum AuthType {
 	 */
 	private AuthType(String type, Set<MatchType> associatedMatchTypes) {
 		this.type = type;
-		this.associatedMatchTypes = associatedMatchTypes;
+		this.associatedMatchTypes = Collections.unmodifiableSet(associatedMatchTypes);
 	}
 	
 	/**

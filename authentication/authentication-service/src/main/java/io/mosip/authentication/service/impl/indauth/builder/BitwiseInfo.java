@@ -46,7 +46,7 @@ public class BitwiseInfo {
 	 * @return the index
 	 */
 	private int getIndex(int hexNum, int bitIndex) {
-		return bits.length - ((hexNum ) * 4) + bitIndex;
+		return bits.length - ((hexNum ) * FOUR) + bitIndex;
 	}
 	
 	/**

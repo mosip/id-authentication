@@ -11,6 +11,8 @@ import java.util.stream.IntStream;
  */
 public class HexSpliterator implements Spliterator<Integer> {
 	
+	private static final Integer TWO = 2;
+	private static final Integer FOUR = 4;
 	/** The boolean spliterator. */
 	private Spliterator<Boolean> booleanSpliterator;
 
@@ -29,9 +31,9 @@ public class HexSpliterator implements Spliterator<Integer> {
 	@Override
 	public boolean tryAdvance(Consumer<? super Integer> action) {
 		StringBuilder buffer = new StringBuilder();
-		if(IntStream.range(0, 4).allMatch(i -> tryAdvanceBoolean(buffer))) {
+		if(IntStream.range(0, FOUR).allMatch(i -> tryAdvanceBoolean(buffer))) {
 			String binaryStr = buffer.toString();
-			int intVal = Integer.parseInt(binaryStr, 2);
+			int intVal = Integer.parseInt(binaryStr, TWO);
 			action.accept(intVal);
 			return true;
 		}
@@ -61,7 +63,7 @@ public class HexSpliterator implements Spliterator<Integer> {
 	 */
 	@Override
 	public long estimateSize() {
-		return booleanSpliterator.estimateSize() / 4;
+		return booleanSpliterator.estimateSize() / FOUR;
 	}
 
 	/* (non-Javadoc)

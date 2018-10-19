@@ -11,14 +11,13 @@ import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 
 /**
- * This is a repository class  for entity {@link AutnTxn}.
+ * This is a repository class for entity {@link AutnTxn}.
  * 
  * @author Rakesh Roshan
  */
 @Repository
 public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 
-	
 	/**
 	 * Obtain all Authentication Transaction for particular TxnId and UIN.
 	 * 
@@ -38,7 +37,8 @@ public interface AutnTxnRepository extends BaseRepository<AutnTxn, Integer> {
 	 * @param UIN
 	 * @return
 	 */
-	@Query("Select count(requestDTtimes) from AutnTxn  where requestDTtimes <= :otpRequestDTime and request_dtimes >= :oneMinuteBeforeTime and uin=:uin")
+	@Query("Select count(requestDTtimes) from AutnTxn  where requestDTtimes <= :otpRequestDTime and "
+			+ "request_dtimes >= :oneMinuteBeforeTime and uin=:uin")
 	public int countRequestDTime(@Param("otpRequestDTime") Date otpRequestDTime,
 			@Param("oneMinuteBeforeTime") Date oneMinuteBeforeTime, @Param("uin") String uin);
 

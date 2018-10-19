@@ -45,7 +45,7 @@ public class OTPRequestValidator implements Validator {
 	private SpringValidatorAdapter validator;
 
 	@Autowired
-	Environment env;
+	private Environment env;
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -95,7 +95,7 @@ public class OTPRequestValidator implements Validator {
 
 	private boolean isTimestampValid(Date timestamp) {
 
-		Date reqTime = timestamp;
+		Date reqTime = (Date) timestamp.clone();
 		Instant reqTimeInstance = reqTime.toInstant();
 		Instant now = Instant.now();
 

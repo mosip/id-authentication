@@ -25,7 +25,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import reactor.core.publisher.Mono;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RestHelper - to send/receive HTTP requests and return the response.
  *
@@ -33,34 +32,34 @@ import reactor.core.publisher.Mono;
  */
 @Component
 public class RestHelper {
-	
+
 	/**
 	 * Instantiates a new rest helper.
 	 */
 	private RestHelper() {
 	}
-	
+
 	/** The Constant METHOD_REQUEST_SYNC. */
 	private static final String METHOD_REQUEST_SYNC = "requestSync";
-	
+
 	/** The Constant METHOD_HANDLE_STATUS_ERROR. */
 	private static final String METHOD_HANDLE_STATUS_ERROR = "handleStatusError";
-	
+
 	/** The Constant PREFIX_RESPONSE. */
 	private static final String PREFIX_RESPONSE = "Response : ";
-	
+
 	/** The Constant PREFIX_REQUEST. */
 	private static final String PREFIX_REQUEST = "Request : ";
-	
+
 	/** The Constant METHOD_REQUEST_ASYNC. */
 	private static final String METHOD_REQUEST_ASYNC = "requestAsync";
-	
+
 	/** The Constant CLASS_REST_HELPER. */
 	private static final String CLASS_REST_HELPER = "RestHelper";
-	
+
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
-	
+
 	/** The logger. */
 	// TODO Check for response body
 	private MosipLogger logger;
@@ -68,7 +67,8 @@ public class RestHelper {
 	/**
 	 * Instantiates a new rest util.
 	 *
-	 * @param idaRollingFileAppender the ida rolling file appender
+	 * @param idaRollingFileAppender
+	 *            the ida rolling file appender
 	 */
 	@Autowired
 	public void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
@@ -76,7 +76,7 @@ public class RestHelper {
 	}
 
 	/**
-	 * Request sync.
+	 * Request to send/receive HTTP requests and return the response synchronously.
 	 *
 	 * @param <T>
 	 *            the generic type
@@ -97,10 +97,12 @@ public class RestHelper {
 				return (T) response;
 			} catch (RuntimeException e) {
 				if (e.getCause().getClass().equals(TimeoutException.class)) {
-					logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, "Throwing RestServiceException - CONNECTION_TIMED_OUT - " + e.getCause());
+					logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+							"Throwing RestServiceException - CONNECTION_TIMED_OUT - " + e.getCause());
 					throw new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e);
 				} else {
-					logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync-RuntimeException", "Throwing RestServiceException - UNKNOWN_ERROR - " + e);
+					logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync-RuntimeException",
+							"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
 					throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
 				}
 			}
@@ -113,7 +115,7 @@ public class RestHelper {
 	}
 
 	/**
-	 * Request async.
+	 * Request to send/receive HTTP requests and return the response asynchronously.
 	 *
 	 * @param request
 	 *            the request
@@ -128,7 +130,7 @@ public class RestHelper {
 	}
 
 	/**
-	 * Request.
+	 * Method to send/receive HTTP requests and return the response as Mono.
 	 *
 	 * @param request
 	 *            the request
@@ -169,7 +171,7 @@ public class RestHelper {
 	}
 
 	/**
-	 * Handle status error.
+	 * Handle 4XX/5XX status error.
 	 *
 	 * @param response
 	 *            the response
@@ -177,15 +179,18 @@ public class RestHelper {
 	 */
 	private Mono<Throwable> handleStatusError(ClientResponse response) {
 		Mono<Object> body = response.body(BodyExtractors.toMono(Object.class));
-		logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, "Status error : " + response.statusCode() + " " + response.statusCode().getReasonPhrase());
+		logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+				"Status error : " + response.statusCode() + " " + response.statusCode().getReasonPhrase());
 		if (response.statusCode().is4xxClientError()) {
-			logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, "Status error - returning RestServiceException - CLIENT_ERROR");
-			return body.flatMap(
-					responseBody -> Mono.error(new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, Optional.of(responseBody))));
+			logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+					"Status error - returning RestServiceException - CLIENT_ERROR");
+			return body.flatMap(responseBody -> Mono.error(
+					new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, Optional.of(responseBody))));
 		} else {
-			logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR, "Status error - returning RestServiceException - SERVER_ERROR");
-			return body.flatMap(
-					responseBody -> Mono.error(new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR, Optional.of(responseBody))));
+			logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+					"Status error - returning RestServiceException - SERVER_ERROR");
+			return body.flatMap(responseBody -> Mono.error(
+					new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR, Optional.of(responseBody))));
 		}
 
 	}

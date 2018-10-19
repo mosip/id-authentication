@@ -134,23 +134,23 @@ public class DemoEntity implements Serializable{
 	
 	/** The is active. */
 	@Column(name = "is_active")
-	boolean isActive;
+	private boolean isActive;
 
 	/** The created by. */
 	@Column(name = "cr_by")
-	String createdBy;
+	private String createdBy;
 
 	/** The created on. */
 	@Column(name = "cr_dtimes")
-	Date createdOn;
+	private Date createdOn;
 
 	/** The updated by. */
 	@Column(name = "upd_by")
-	String updatedBy;
+	private String updatedBy;
 
 	/** The updated on. */
 	@Column(name = "upd_dtimes")
-	Date updatedOn;
+	private Date updatedOn;
 
 	
 	

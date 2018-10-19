@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -55,12 +56,12 @@ public enum DemoMatchType implements MatchType {
 			AuthUsageDataBit.MATCHED_PI_GENDER),
 
 	/** The age. */
-	AGE(setOf(AgeMatchingStrategy.EXACT), demo -> demo.getPi().getAge(), (entity, locationInfoFetcher) -> {
-		int age = Period
-				.between(entity.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now())
-				.getYears();
-		return Math.abs(age);
-	}, AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE),
+	AGE(setOf(AgeMatchingStrategy.EXACT), demo -> demo.getPi().getAge(),
+			(DemoEntity entity, LocationInfoFetcher locationInfoFetcher) -> {
+				int age = Period.between(entity.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+						LocalDate.now()).getYears();
+				return Math.abs(age);
+			}, AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE),
 
 	/** The dob. */
 	DOB(setOf(DOBMatchingStrategy.EXACT), demo -> demo.getPi().getDob(),
@@ -147,7 +148,7 @@ public enum DemoMatchType implements MatchType {
 	 */
 	private DemoMatchType(Set<MatchingStrategy> allowedMatchingStrategy, DemoDTOInfoFetcher demoInfo,
 			DemoEntityInfoFetcher entityInfo, AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit) {
-		this.allowedMatchingStrategy = allowedMatchingStrategy;
+		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
 		this.demoInfo = demoInfo;
 		this.entityInfo = entityInfo;
 		this.usedBit = usedBit;

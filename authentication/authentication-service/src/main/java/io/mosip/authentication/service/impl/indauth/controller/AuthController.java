@@ -63,7 +63,7 @@ public class AuthController {
 
 	/** The demo validator. */
 	@Autowired
-	DemoValidator demoValidator;
+	private DemoValidator demoValidator;
 
 	/** The auth facade. */
 	@Autowired
@@ -92,7 +92,8 @@ public class AuthController {
 	 *             the id authentication app exception
 	 */
 
-	@PostMapping(path = "/authRequest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/authRequest", consumes = MediaType.APPLICATION_JSON_VALUE,
+			produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })

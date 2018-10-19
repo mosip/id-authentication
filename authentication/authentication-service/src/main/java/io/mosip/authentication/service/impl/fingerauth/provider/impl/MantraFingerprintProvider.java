@@ -49,8 +49,8 @@ public class MantraFingerprintProvider extends FingerprintProvider implements MF
 	public Optional<byte[]> captureFingerprint(Integer quality, Integer timeout) {
 		if (fpDevice.IsConnected() && fpDevice.Init() == 0) {
 			FingerData fingerData = new FingerData();
-			int captureStatus = fpDevice.AutoCapture(fingerData, timeout, false, true); // set onPreview as false and
-																						// set detectFinger as true
+			int captureStatus = fpDevice.AutoCapture(fingerData, timeout, false, true); 
+																						
 			if (captureStatus == 0 && fpDevice.GetLastError().isEmpty()) {
 				// TODO Check for Quality and Nfiq
 				fpDevice.StopCapture();

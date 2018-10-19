@@ -29,7 +29,6 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 
-
 /**
  * The class validates the UIN and VID.
  *
@@ -37,21 +36,22 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
  */
 @Service
 public class IdAuthServiceImpl implements IdAuthService {
-	
+
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The rest helper. */
 	@Autowired
 	private RestHelper restHelper;
-	
+
 	/** The logger. */
 	private MosipLogger logger;
 
 	/**
 	 * Initialize logger.
 	 *
-	 * @param idaRollingFileAppender the ida rolling file appender
+	 * @param idaRollingFileAppender
+	 *            the ida rolling file appender
 	 */
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
@@ -60,12 +60,12 @@ public class IdAuthServiceImpl implements IdAuthService {
 
 	/** The rest factory. */
 	@Autowired
-	private RestRequestFactory  restFactory;
-	
+	private RestRequestFactory restFactory;
+
 	/** The audit factory. */
 	@Autowired
 	private AuditRequestFactory auditFactory;
-	
+
 	/** The uin repository. */
 	@Autowired
 	private UinRepository uinRepository;
@@ -74,15 +74,19 @@ public class IdAuthServiceImpl implements IdAuthService {
 	@Autowired
 	private VIDRepository vidRepository;
 
-	/* (non-Javadoc)
-	 * @see org.mosip.auth.core.spi.idauth.service.IdAuthService#validateUIN(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.mosip.auth.core.spi.idauth.service.IdAuthService#validateUIN(java.lang.
+	 * String)
 	 */
 	public String validateUIN(String uin) throws IdAuthenticationBusinessException {
 		String refId = null;
 		Optional<UinEntity> uinEntityOpt = uinRepository.findById(uin);
 		if (uinEntityOpt.isPresent()) {
 			UinEntity uinEntity = uinEntityOpt.get();
-			if (uinEntity .isActive()) {
+			if (uinEntity.isActive()) {
 				refId = uinEntity.getUinRefId();
 			} else {
 				// TODO log error
@@ -92,8 +96,8 @@ public class IdAuthServiceImpl implements IdAuthService {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
 		}
 
-		//TODO Update audit details
-		auditData();  
+		// TODO Update audit details
+		auditData();
 
 		return refId;
 	}
@@ -101,10 +105,12 @@ public class IdAuthServiceImpl implements IdAuthService {
 	/**
 	 * Audit data.
 	 *
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 	private void auditData() throws IdAuthenticationBusinessException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 
 		RestRequestDTO restRequest;
 		try {
@@ -112,19 +118,23 @@ public class IdAuthServiceImpl implements IdAuthService {
 					AuditResponseDto.class);
 		} catch (IDDataValidationException e) {
 			logger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN,	e);
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 		}
 
 		restHelper.requestAsync(restRequest);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.mosip.auth.core.spi.idauth.service.IdAuthService#validateVID(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.mosip.auth.core.spi.idauth.service.IdAuthService#validateVID(java.lang.
+	 * String)
 	 */
 	public String validateVID(String vid) throws IdAuthenticationBusinessException {
 		String refId = doValidateVIDEntity(vid);
-		
-		auditData();  
+
+		auditData();
 
 		return refId;
 	}
@@ -132,9 +142,11 @@ public class IdAuthServiceImpl implements IdAuthService {
 	/**
 	 * Do validate VID entity and checks for the expiry date.
 	 *
-	 * @param vid the vid
+	 * @param vid
+	 *            the vid
 	 * @return the string
-	 * @throws IdValidationFailedException the id validation failed exception
+	 * @throws IdValidationFailedException
+	 *             the id validation failed exception
 	 */
 	private String doValidateVIDEntity(String vid) throws IdValidationFailedException {
 		String refId = null;
@@ -145,8 +157,12 @@ public class IdAuthServiceImpl implements IdAuthService {
 				Date currentDate = new Date();
 				if (currentDate.before(vidEntity.getExpiryDate())) {
 					refId = vidEntity.getRefId();
-					UinEntity uinEntityOpt = uinRepository.findByUinRefId(refId);
-					doValidateUIN(Optional.ofNullable(uinEntityOpt));
+					Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
+					if (uinEntityOpt.isPresent()) {
+						doValidateUIN(uinEntityOpt.get());
+					} else {
+						throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
+					}
 				} else {
 					throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
 				}
@@ -163,17 +179,14 @@ public class IdAuthServiceImpl implements IdAuthService {
 	/**
 	 * Do validate UIN and checks whether it is active.
 	 *
-	 * @param uinEntityOpt the uin entity opt
-	 * @throws IdValidationFailedException the id validation failed exception
+	 * @param uinEntityOpt
+	 *            the uin entity opt
+	 * @throws IdValidationFailedException
+	 *             the id validation failed exception
 	 */
-	private void doValidateUIN(Optional<UinEntity> uinEntityOpt) throws IdValidationFailedException {
-		if (uinEntityOpt.isPresent()) {
-			UinEntity uinEntity = uinEntityOpt.get();
-			if (!uinEntity.isActive()) {
-				throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
-			}
-		} else {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
+	private void doValidateUIN(UinEntity uinEntity) throws IdValidationFailedException {
+		if (!uinEntity.isActive()) {
+			throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 		}
 	}
 

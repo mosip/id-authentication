@@ -39,21 +39,21 @@ public class LocationEntity {
 	private boolean isActive;
 
 	@Column(name = "cr_by")
-	String createdBy;
+	private String createdBy;
 
 	@Column(name = "cr_dtimesz")
-	Date createdOn;
+	private Date createdOn;
 
 	@Column(name = "upd_by")
-	String updatedBy;
+	private String updatedBy;
 
 	@Column(name = "upd_dtimesz")
-	Date updatedOn;
+	private Date updatedOn;
 
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 
 	@Column(name = "del_dtimesz")
-	Date deletedOn;
+	private Date deletedOn;
 
 }

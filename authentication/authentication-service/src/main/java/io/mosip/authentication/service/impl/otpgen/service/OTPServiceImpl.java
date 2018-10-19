@@ -21,7 +21,7 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 public class OTPServiceImpl implements OTPService {
 	
 	@Autowired
-	OTPManager otpManager;
+	private OTPManager otpManager;
 
 	private MosipLogger LOGGER;
 	

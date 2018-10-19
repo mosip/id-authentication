@@ -9,7 +9,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
 
 public enum NameMatchingStrategy implements MatchingStrategy {
 
-	EXACT(MatchingStrategyType.EXACT, (reqInfo, entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
@@ -17,7 +17,7 @@ public enum NameMatchingStrategy implements MatchingStrategy {
 		} else {
 			return 0;
 		}
-	}), PARTIAL(MatchingStrategyType.PARTIAL, (reqInfo, entityInfo) -> {
+	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeName((String) entityInfo);
@@ -25,7 +25,7 @@ public enum NameMatchingStrategy implements MatchingStrategy {
 		} else {
 			return 0;
 		}
-	}), PHONETICS(MatchingStrategyType.PHONETICS, (reqInfo, entityInfo) -> 0);
+	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, Object entityInfo) -> 0);
 
 	private final MatchFunction matchFunction;
 

@@ -38,7 +38,7 @@ public class OTPController {
 	private MosipLogger logger;
 
 	@Autowired
-	OTPFacade otpFacade;
+	private OTPFacade otpFacade;
 
 	@Autowired
 	private OTPRequestValidator otpRequestValidator;

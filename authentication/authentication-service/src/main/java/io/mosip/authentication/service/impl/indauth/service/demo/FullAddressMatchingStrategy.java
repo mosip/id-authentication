@@ -4,7 +4,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
 
 public enum FullAddressMatchingStrategy implements MatchingStrategy {
 
-	EXACT(MatchingStrategyType.EXACT, (reqInfo, entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
@@ -12,7 +12,7 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 		} else {
 			return 0;
 		}
-	}), PARTIAL(MatchingStrategyType.PARTIAL, (reqInfo, entityInfo) -> {
+	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
 			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);

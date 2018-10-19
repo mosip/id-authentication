@@ -37,6 +37,7 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 @PropertySource(value = { "classpath:application-local.properties" })
 public class AuthRequestValidator implements Validator {
 
+	private static final Integer OTP_LENGTH = 6;
 	private static final String VALIDATE_CHECK_OTP_AUTH = "validate -> checkOTPAuth";
 	private static final String PERSONAL_DATA_DTO = "Pii";
 	private static final String VALIDATE = "validate";
@@ -57,9 +58,6 @@ public class AuthRequestValidator implements Validator {
 	/** The validator. */
 	@Autowired
 	private SpringValidatorAdapter validator;
-
-	/** The any id type present. */
-	boolean anyIdTypePresent = false;
 
 	/*
 	 * (non-Javadoc)
@@ -179,7 +177,7 @@ public class AuthRequestValidator implements Validator {
 			PinType pinType = pinDTO.getType();
 			if (null != pinDTO.getType() && pinType.getType().equals(PinType.OTP.getType())) {
 				String otpValue = pinDTO.getValue();
-				if (otpValue != null && otpValue.length() != 6) {
+				if (otpValue != null && otpValue.length() != OTP_LENGTH) {
 					mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH,
 							"INVALID_OTP - length mismatch");
 					errors.rejectValue(PERSONAL_DATA_DTO, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),

@@ -14,7 +14,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
 public enum DOBMatchingStrategy implements MatchingStrategy {
 	
 	/** The exact. */
-	EXACT(MatchingStrategyType.EXACT, (reqInfo, entityInfo) -> {
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo) -> {
 		if (reqInfo instanceof String && entityInfo instanceof Date) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			try {
