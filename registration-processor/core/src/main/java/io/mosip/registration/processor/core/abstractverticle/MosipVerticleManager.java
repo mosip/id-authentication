@@ -3,8 +3,8 @@ package io.mosip.registration.processor.core.abstractverticle;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import io.mosip.registration.processor.core.abstractverticle.exception.DeploymentFailureException;
-import io.mosip.registration.processor.core.abstractverticle.exception.errorcodes.AbstractVerticleErrorCodes;
+import io.mosip.registration.processor.core.exception.DeploymentFailureException;
+import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticleErrorCodes;
 import io.mosip.registration.processor.core.spi.eventbus.EventBusManager;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;

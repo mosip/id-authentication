@@ -1,7 +1,7 @@
-package io.mosip.registration.processor.core.abstractverticle.exception;
+package io.mosip.registration.processor.core.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.abstractverticle.exception.errorcodes.AbstractVerticleErrorCodes;
+import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticleErrorCodes;
 
 public class UnsupportedEncodingException extends BaseUncheckedException {
 

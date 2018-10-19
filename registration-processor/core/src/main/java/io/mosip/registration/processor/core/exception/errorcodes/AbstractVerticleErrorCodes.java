@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.abstractverticle.exception.errorcodes;
+package io.mosip.registration.processor.core.exception.errorcodes;
 
 public class AbstractVerticleErrorCodes {
 	

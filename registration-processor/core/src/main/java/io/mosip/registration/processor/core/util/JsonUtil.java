@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-import io.mosip.registration.processor.core.abstractverticle.exception.errorcodes.AbstractVerticleErrorCodes;
+import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticleErrorCodes;
 
 /**
  * This class provides JSON utilites
