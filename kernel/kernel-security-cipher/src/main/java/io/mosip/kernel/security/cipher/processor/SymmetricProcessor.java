@@ -105,6 +105,12 @@ public class SymmetricProcessor {
 		return output;
 	}
 
+	/**
+	 * Verify if data is null or empty
+	 * 
+	 * @param data
+	 *            data provided by user
+	 */
 	private static void verifyData(byte[] data) {
 		if (data == null || data.length == 0) {
 			throw new MosipNullDataException(
@@ -131,9 +137,6 @@ public class SymmetricProcessor {
 		} catch (IllegalBlockSizeException e) {
 			throw new MosipInvalidDataException(
 					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_SIZE_EXCEPTION);
-		} catch (NullPointerException e) {
-			throw new MosipNullDataException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
 		}
 	}
 

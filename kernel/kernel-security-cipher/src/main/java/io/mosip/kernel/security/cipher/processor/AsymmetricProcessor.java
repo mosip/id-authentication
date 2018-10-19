@@ -1,9 +1,4 @@
-/*
- * 
- * 
- * 
- * 
- */
+
 package io.mosip.kernel.security.cipher.processor;
 
 import java.security.InvalidKeyException;
