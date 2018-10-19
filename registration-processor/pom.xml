@@ -2,12 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>io.mosip</groupId>
-		<artifactId>mosip-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
+	<groupId>io.mosip.registrationprocessor</groupId>
 	<artifactId>registration-processor</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -84,15 +81,15 @@
 	</dependencyManagement>
 
 	<modules>
+		<module>registration-processor-core</module>
 		<module>packet-receiver</module>
-		<module>registration-status</module>
-		<module>filesystem-ceph-adapter-impl</module>
-		<module>core</module>
-		<module>packet-manager-impl</module>
+		<module>registration-status-service</module>
+		<module>filesystem-adapter-ceph</module>
+		<module>packet-manager</module>
 		<module>jobs</module>
-		<module>bridge</module>
+		<module>registration-processor-camel-bridge</module>
     	<module>stages</module>
-    	<module>packet-meta-info</module>
+    	<module>packet-info-storage-service</module>
   </modules>
 
 	<profiles>

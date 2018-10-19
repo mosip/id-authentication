@@ -7,7 +7,7 @@
 
 
 	<parent>
-		<groupId>io.mosip</groupId>
+		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>stages</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
@@ -23,7 +23,7 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip</groupId>
+			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
@@ -38,13 +38,13 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip</groupId>
+			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>retry-stage</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip</groupId>
-			<artifactId>bridge</artifactId>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-camel-bridge</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

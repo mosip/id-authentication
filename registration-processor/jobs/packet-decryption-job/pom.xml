@@ -8,7 +8,7 @@
 	<artifactId>packet-decryption-job</artifactId>
 
 	<parent>
-		<groupId>io.mosip</groupId>
+		<groupId>io.mosip.registrationprocessor</groupId>
 		<artifactId>registration-processor-jobs</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
@@ -57,19 +57,19 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip</groupId>
+			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-status</artifactId>
 			<version>${registration.status.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>io.mosip</groupId>
+			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>registration-processor-core</artifactId>
 			<version>${registration.processor.core.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip</groupId>
-			<artifactId>filesystem-ceph-adapter-impl</artifactId>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>filesystem-adapter-ceph</artifactId>
 			<version>${filesystem.adapter.version}</version>
 		</dependency>
 		<dependency>
@@ -88,8 +88,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip</groupId>
-			<artifactId>packet-manager-impl</artifactId>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>packet-manager</artifactId>
 			<version>${packet.manager.version}</version>
 		</dependency>
 	</dependencies>
