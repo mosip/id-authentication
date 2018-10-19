@@ -39,6 +39,8 @@ import io.mosip.authentication.service.repository.LocationRepository;
 @Service
 public class DemoAuthServiceImpl implements DemoAuthService {
 
+	private static final String DEMO_DEFAULT_MATCH_VALUE = "demo.default.match.value";
+
 	/** The Constant DEFAULT_EXACT_MATCH_VALUE. */
 	private static final int DEFAULT_EXACT_MATCH_VALUE = 100;
 
@@ -59,7 +61,8 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	/**
 	 * Construct match input.
 	 *
-	 * @param authRequestDTO the auth request DTO
+	 * @param authRequestDTO
+	 *            the auth request DTO
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
@@ -74,67 +77,69 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	/**
 	 * Construct PID match input.
 	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @param listMatchInput the list match input
+	 * @param authRequestDTO
+	 *            the auth request DTO
+	 * @param listMatchInput
+	 *            the list match input
 	 * @return the list
 	 */
 	private List<MatchInput> constructPIDMatchInput(AuthRequestDTO authRequestDTO) {
 		PersonalIdentityDTO pid = authRequestDTO.getPii().getDemo().getPi();
 		List<MatchInput> listMatchInputs = new ArrayList<>();
-		if (authRequestDTO.getAuthType().isPi() && null != pid) {
-			if (null != pid.getNamePri()) {
-				Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
+		if (authRequestDTO.getAuthType().isPi() && null != pid && null != pid.getNamePri()) {
+			Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
 
-				if (pid.getMsPri() != null && pid.getMsPri().equals(MatchingStrategyType.PARTIAL.getType())) {
-					matchValue = pid.getMtPri();
-					if (null == matchValue) {
-						matchValue = Integer.parseInt(environment.getProperty("demo.default.match.value"));
-					}
+			if (pid.getMsPri() != null && pid.getMsPri().equals(MatchingStrategyType.PARTIAL.getType())) {
+				matchValue = pid.getMtPri();
+				if (null == matchValue) {
+					matchValue = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
 				}
-
-				MatchInput matchInput = new MatchInput(DemoMatchType.NAME_PRI, pid.getMsPri(), matchValue);
-				listMatchInputs.add(matchInput);
 			}
 
-			if (null != pid.getAge()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != pid.getDob()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != pid.getEmail()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != pid.getPhone()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.MOBILE, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != pid.getGender()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
+			MatchInput matchInput = new MatchInput(DemoMatchType.NAME_PRI, pid.getMsPri(), matchValue);
+			listMatchInputs.add(matchInput);
 		}
+
+		if (null != pid.getAge()) {
+			MatchInput matchInput = new MatchInput(DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(),
+					DEFAULT_EXACT_MATCH_VALUE);
+			listMatchInputs.add(matchInput);
+		}
+
+		if (null != pid.getDob()) {
+			MatchInput matchInput = new MatchInput(DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(),
+					DEFAULT_EXACT_MATCH_VALUE);
+			listMatchInputs.add(matchInput);
+		}
+
+		if (null != pid.getEmail()) {
+			MatchInput matchInput = new MatchInput(DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(),
+					DEFAULT_EXACT_MATCH_VALUE);
+			listMatchInputs.add(matchInput);
+		}
+
+		if (null != pid.getPhone()) {
+			MatchInput matchInput = new MatchInput(DemoMatchType.MOBILE, MatchingStrategyType.EXACT.getType(),
+					DEFAULT_EXACT_MATCH_VALUE);
+			listMatchInputs.add(matchInput);
+		}
+
+		if (null != pid.getGender()) {
+			MatchInput matchInput = new MatchInput(DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
+					DEFAULT_EXACT_MATCH_VALUE);
+			listMatchInputs.add(matchInput);
+		}
+
 		return listMatchInputs;
 	}
 
 	/**
 	 * Construct ad match input.
 	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @param listMatchInput the list match input
+	 * @param authRequestDTO
+	 *            the auth request DTO
+	 * @param listMatchInput
+	 *            the list match input
 	 * @return the list
 	 */
 	private List<MatchInput> constructAdMatchInput(AuthRequestDTO authRequestDTO) {
@@ -159,19 +164,19 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 						MatchingStrategyType.EXACT.getType(), DEFAULT_EXACT_MATCH_VALUE);
 				listMatchInputs.add(matchInput);
 			}
-			
+
 			if (null != ad.getCityPri()) {
 				MatchInput matchInput = new MatchInput(DemoMatchType.CITY_PRI, MatchingStrategyType.EXACT.getType(),
 						DEFAULT_EXACT_MATCH_VALUE);
 				listMatchInputs.add(matchInput);
 			}
-			
+
 			if (null != ad.getStatePri()) {
 				MatchInput matchInput = new MatchInput(DemoMatchType.STATE_PRI, MatchingStrategyType.EXACT.getType(),
 						DEFAULT_EXACT_MATCH_VALUE);
 				listMatchInputs.add(matchInput);
 			}
-			
+
 			if (null != ad.getCountryPri()) {
 				MatchInput matchInput = new MatchInput(DemoMatchType.COUNTRY_PRI, MatchingStrategyType.EXACT.getType(),
 						DEFAULT_EXACT_MATCH_VALUE);
@@ -191,27 +196,27 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	/**
 	 * Construct fad match input.
 	 *
-	 * @param authRequestDTO the auth request DTO
-	 * @param listMatchInput the list match input
+	 * @param authRequestDTO
+	 *            the auth request DTO
+	 * @param listMatchInput
+	 *            the list match input
 	 * @return the list
 	 */
 	private List<MatchInput> constructFadMatchInput(AuthRequestDTO authRequestDTO) {
 		Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
 		PersonalFullAddressDTO fad = authRequestDTO.getPii().getDemo().getFad();
 		List<MatchInput> listMatchInputs = new ArrayList<>();
-		if (authRequestDTO.getAuthType().isFad() && null != fad) {
-			if (null != fad.getAddrPri()) {
-				if (fad.getMsPri() != null && fad.getMsPri().equals(MatchingStrategyType.PARTIAL.getType())) {
-					matchValue = fad.getMtPri();
-					if (null == matchValue) {
-						matchValue = Integer.parseInt(environment.getProperty("demo.default.match.value"));
-					}
-
-					// TODO add it for secondary language
+		if (authRequestDTO.getAuthType().isFad() && null != fad && null != fad.getAddrPri()) {
+			if (fad.getMsPri() != null && fad.getMsPri().equals(MatchingStrategyType.PARTIAL.getType())) {
+				matchValue = fad.getMtPri();
+				if (null == matchValue) {
+					matchValue = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
 				}
-				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_PRI, fad.getMsPri(), matchValue);
-				listMatchInputs .add(matchInput);
+
+				// TODO add it for secondary language
 			}
+			MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_PRI, fad.getMsPri(), matchValue);
+			listMatchInputs.add(matchInput);
 		}
 		return listMatchInputs;
 	}
@@ -219,9 +224,12 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	/**
 	 * Gets the match output.
 	 *
-	 * @param listMatchInput the list match input
-	 * @param demoDTO        the demo DTO
-	 * @param demoEntity     the demo entity
+	 * @param listMatchInput
+	 *            the list match input
+	 * @param demoDTO
+	 *            the demo DTO
+	 * @param demoEntity
+	 *            the demo entity
 	 * @return the match output
 	 */
 	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, DemoDTO demoDTO, DemoEntity demoEntity,
@@ -241,21 +249,21 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 			throws IdAuthenticationBusinessException {
 		boolean demoMatched = false;
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
-		/*DemoEntity demoEntity = getDemoEntity(refId, authRequestDTO.getPii()
-																.getDemo()
-																.getLangPri());*/
+		/*
+		 * DemoEntity demoEntity = getDemoEntity(refId, authRequestDTO.getPii()
+		 * .getDemo() .getLangPri());
+		 */
 
 		DemoEntity demoEntity = getDemoEntity(refId, environment.getProperty("mosip.primary.lang-code"));
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		
-		if(demoEntity != null) {
-			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs,
-			        authRequestDTO.getPii().getDemo(), 
-			        demoEntity, this::getLocation);
+
+		if (demoEntity != null) {
+			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO.getPii().getDemo(),
+					demoEntity, this::getLocation);
 			demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
-			
+
 			statusInfoBuilder.setStatus(demoMatched);
-			
+
 			listMatchInputs.stream().forEach(matchInput -> {
 				if (AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType()).map(AuthType::getType)
 						.isPresent()) {
@@ -267,7 +275,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 
 					Integer mt = matchInput.getMatchValue();
 					if (mt == null) {
-						mt = Integer.parseInt(environment.getProperty("demo.default.match.value"));
+						mt = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
 					}
 
 					String authType = AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
@@ -278,23 +286,17 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 
 				statusInfoBuilder.addAuthUsageDataBits(matchInput.getDemoMatchType().getUsedBit());
 			});
-			
-			
-			
+
 			listMatchOutputs.forEach(matchOutput -> {
-							if(matchOutput.isMatched()) {
-								statusInfoBuilder.addAuthUsageDataBits(
-										matchOutput.getDemoMatchType()
-										.getMatchedBit());
-							}
-						});
+				if (matchOutput.isMatched()) {
+					statusInfoBuilder.addAuthUsageDataBits(matchOutput.getDemoMatchType().getMatchedBit());
+				}
+			});
 		} else {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		}
-			
-			
+
 		return statusInfoBuilder.build();
-		
 
 	}
 
@@ -305,10 +307,10 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 *            the unique id
 	 * @return the demo entity
 	 */
-	public DemoEntity getDemoEntity(String refId,String langCode) {
-		return demoRepository.findByUinRefIdAndLangCode(refId, langCode.toUpperCase());//Assuming keeping Langcode Upper case in DB
+	public DemoEntity getDemoEntity(String refId, String langCode) {
+		return demoRepository.findByUinRefIdAndLangCode(refId, langCode.toUpperCase());// Assuming keeping Langcode
+																						// Upper case in DB
 	}
-	
 
 	public Optional<String> getLocation(LocationLevel targetLocationLevel, String locationCode) {
 		Optional<LocationEntity> locationEntity = locationRepository.findByCodeAndIsActive(locationCode, true);

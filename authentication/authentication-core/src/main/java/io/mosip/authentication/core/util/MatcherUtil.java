@@ -85,10 +85,11 @@ public final class MatcherUtil {
 	 * @return
 	 */
 	public static int doLessThanEqualToMatch(int reqInfo, int entityInfo) {
-		if (reqInfo <= entityInfo)
+		if (reqInfo <= entityInfo) {
 			return EXACT_MATCH_VALUE;
-		else
+		} else {
 			return 0;
+		}
 	}
 
 	/**
@@ -99,10 +100,11 @@ public final class MatcherUtil {
 	 * @return 100 when the refInfo and entityInfo dates are matched
 	 */
 	public static int doExactMatch(Date reqInfo, Date entityInfo) {
-		if (reqInfo.compareTo(entityInfo) == 0)
+		if (reqInfo.compareTo(entityInfo) == 0) {
 			return EXACT_MATCH_VALUE;
-		else
+		} else {
 			return 0;
+		}
 	}
 
 	/**

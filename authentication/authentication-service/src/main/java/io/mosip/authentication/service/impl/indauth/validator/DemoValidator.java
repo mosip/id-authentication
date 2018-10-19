@@ -98,8 +98,7 @@ public class DemoValidator implements Validator {
 					IdAuthenticationErrorConstants.AD_FAD_MUTUALLY_EXCULUSIVE.getErrorMessage());
 		} else if (authType.isFad()) {
 			fullAddressValidation(authType, demodto, errors);
-
-		} else if (authType.isAd()) {
+		} else {
 			addressValidation(demodto, errors);
 		}
 	}
@@ -176,7 +175,9 @@ public class DemoValidator implements Validator {
 						"At least select one valid personal info");
 				errors.reject(IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_PERSONAL_INFORMATION.getErrorMessage());
-			} else if (personalIdentityDTO.getDob() != null) {
+			}
+			
+			if (personalIdentityDTO.getDob() != null) {
 
 				try {
 					dobValidation(personalIdentityDTO.getDob(), env.getProperty("date.pattern"), errors);
@@ -254,7 +255,7 @@ public class DemoValidator implements Validator {
 
 		Instant now = Instant.now();
 		if (instantDob.isAfter(now)) {
-			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(null, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "dob"));
 		}
 

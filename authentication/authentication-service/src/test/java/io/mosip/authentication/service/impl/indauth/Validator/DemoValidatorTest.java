@@ -3,10 +3,7 @@ package io.mosip.authentication.service.impl.indauth.Validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.text.ParseException;
-
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -220,7 +217,7 @@ public class DemoValidatorTest {
 		AuthTypeDTO auth = new AuthTypeDTO();
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		DemoDTO demodto = new DemoDTO();
-		Errors errors = new BeanPropertyBindingResult(personalIdentityDTO, "personalIdentityDTO");
+		Errors errors = new BeanPropertyBindingResult(authRequestdto, "authRequestdto");
 
 		// When
 		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
@@ -262,8 +259,7 @@ public class DemoValidatorTest {
 		AuthTypeDTO auth = new AuthTypeDTO();
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		DemoDTO demodto = new DemoDTO();
-		Errors errors = new BeanPropertyBindingResult(personalIdentityDTO, "personalIdentityDTO");
-
+		Errors errors = new BeanPropertyBindingResult(AuthRequestDTO.class, "authRequestDTO");
 		// When
 		ReflectionTestUtils.invokeMethod(auth, "setPi", true);
 		ReflectionTestUtils.invokeMethod(demodto, "setPi", personalIdentityDTO);

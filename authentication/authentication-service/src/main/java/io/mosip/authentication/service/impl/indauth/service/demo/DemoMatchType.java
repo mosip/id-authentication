@@ -27,8 +27,7 @@ public enum DemoMatchType implements MatchType {
 					locationInfoFetcher.getLocation(LocationLevel.ZIPCODE, entity.getLocationCode()).orElse("")),
 			AuthUsageDataBit.USED_FAD_ADDR_PRI, AuthUsageDataBit.MATCHED_FAD_ADDR_PRI),
 
-	NAME_PRI(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL),
-			demo -> demo.getPi().getNamePri(),
+	NAME_PRI(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), demo -> demo.getPi().getNamePri(),
 			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
 					entity.getLastName()), // FIXME for getting consolidated name as it requires admin config
 			AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI),
@@ -45,8 +44,7 @@ public enum DemoMatchType implements MatchType {
 			AuthUsageDataBit.USED_FAD_ADDR_SEC, AuthUsageDataBit.MATCHED_FAD_ADDR_SEC),
 
 	/** The name sec. */
-	NAME_SEC(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL),
-			demo -> demo.getPi().getNameSec(),
+	NAME_SEC(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), demo -> demo.getPi().getNameSec(),
 			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
 					entity.getLastName()), // FIXME for getting consolidated name as it requires admin config
 			AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC),
@@ -57,18 +55,12 @@ public enum DemoMatchType implements MatchType {
 			AuthUsageDataBit.MATCHED_PI_GENDER),
 
 	/** The age. */
-	AGE(setOf(AgeMatchingStrategy.EXACT), demo -> demo.getPi().getAge(),
-			(entity, locationInfoFetcher) -> {
-				int age = Period.between(
-						entity.getDob()
-							.toInstant()
-							.atZone(ZoneId.systemDefault())
-							.toLocalDate(),
-						LocalDate.now()).getYears();
-				return Math.abs(age);
-			}, 
-			AuthUsageDataBit.USED_PI_AGE,
-			AuthUsageDataBit.MATCHED_PI_AGE),
+	AGE(setOf(AgeMatchingStrategy.EXACT), demo -> demo.getPi().getAge(), (entity, locationInfoFetcher) -> {
+		int age = Period
+				.between(entity.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now())
+				.getYears();
+		return Math.abs(age);
+	}, AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE),
 
 	/** The dob. */
 	DOB(setOf(DOBMatchingStrategy.EXACT), demo -> demo.getPi().getDob(),
@@ -99,14 +91,13 @@ public enum DemoMatchType implements MatchType {
 	ADDR_LINE3_PRI(setOf(AddressMatchingStrategy.EXACT), demo -> demo.getAd().getAddrLine3Pri(),
 			(entity, locationInfoFetcher) -> entity.getAddrLine3(), AuthUsageDataBit.USED_AD_ADDR_LINE3_PRI,
 			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_PRI),
-	
+
 	/** The city pri. */
 	CITY_PRI(setOf(AddressMatchingStrategy.EXACT), demo -> demo.getAd().getCityPri(),
 			(entity, locationInfoFetcher) -> locationInfoFetcher
 					.getLocation(LocationLevel.CITY, entity.getLocationCode()).orElse(""),
 			AuthUsageDataBit.USED_AD_ADDR_CITY_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_CITY_PRI),
 
-	
 	/** The state pri. */
 	STATE_PRI(setOf(AddressMatchingStrategy.EXACT), demo -> demo.getAd().getStatePri(),
 			(entity, locationInfoFetcher) -> locationInfoFetcher
@@ -143,11 +134,16 @@ public enum DemoMatchType implements MatchType {
 	/**
 	 * Instantiates a new demo match type.
 	 *
-	 * @param allowedMatchingStrategy the allowed matching strategy
-	 * @param demoInfo                the demo info
-	 * @param entityInfo              the entity info
-	 * @param usedBit                 the used bit
-	 * @param matchedBit              the matched bit
+	 * @param allowedMatchingStrategy
+	 *            the allowed matching strategy
+	 * @param demoInfo
+	 *            the demo info
+	 * @param entityInfo
+	 *            the entity info
+	 * @param usedBit
+	 *            the used bit
+	 * @param matchedBit
+	 *            the matched bit
 	 */
 	private DemoMatchType(Set<MatchingStrategy> allowedMatchingStrategy, DemoDTOInfoFetcher demoInfo,
 			DemoEntityInfoFetcher entityInfo, AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit) {
@@ -161,7 +157,8 @@ public enum DemoMatchType implements MatchType {
 	/**
 	 * Gets the allowed matching strategy.
 	 *
-	 * @param matchStrategyType the match strategy type
+	 * @param matchStrategyType
+	 *            the match strategy type
 	 * @return the allowed matching strategy
 	 */
 	public Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType) {
@@ -207,7 +204,8 @@ public enum DemoMatchType implements MatchType {
 	/**
 	 * Sets the of.
 	 *
-	 * @param matchingStrategies the matching strategies
+	 * @param matchingStrategies
+	 *            the matching strategies
 	 * @return the sets the
 	 */
 	public static Set<MatchingStrategy> setOf(MatchingStrategy... matchingStrategies) {
@@ -219,17 +217,15 @@ public enum DemoMatchType implements MatchType {
 		StringBuilder demoBuilder = new StringBuilder();
 		for (int i = 0; i < demoValues.length; i++) {
 			String demo = demoValues[i];
-			if (null != demo) {
-				if (demo.length() > 0) {
-					demoBuilder.append(demo);
-					if (i < demoValues.length - 1) {
-						demoBuilder.append(" ");
-					}
+			if (null != demo && demo.length() > 0) {
+				demoBuilder.append(demo);
+				if (i < demoValues.length - 1) {
+					demoBuilder.append(" ");
 				}
 			}
 
 		}
 		return demoBuilder.toString();
 	}
-	
+
 }

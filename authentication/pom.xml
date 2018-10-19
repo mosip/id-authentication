@@ -10,6 +10,11 @@
 
 	<name>id-authentication</name>
 	<description>Parent project of MOSIP ID Authentication</description>
+	
+	<modules>
+		<module>authentication-core</module>
+		<module>authentication-service</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -53,11 +58,6 @@
 		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/service/entity/**,**io.mosip.authentication.service/*.java,**io.mosip.authentication.service/**/*Entity.java</sonar.exclusions>
 	</properties>
 
-	<modules>
-		<module>authentication-core</module>
-		<module>authentication-service</module>
-	</modules>
-
 	<dependencies>
 		<!-- JUnit -->
 		<dependency>
@@ -91,40 +91,7 @@
 			<version>${spring.boot.version}</version>
 		</dependency>
 	</dependencies>
-
-	<profiles>
-		<profile>
-			<id>DEV</id>
-			<properties>
-				 <sonar.host.url>
-				 	http://13.76.43.109:9000
-				 </sonar.host.url>
-				 <sonar.login>
-				 	d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624
-				 </sonar.login>
-				 <sonar.projectName>IdAuthentication</sonar.projectName>
-                 <sonar.projectVersion>1.0.0-SNAPSHOT</sonar.projectVersion>
-				<sonar.jacoco.reportPaths>
-					target/jacoco.exec
-				</sonar.jacoco.reportPaths>
-			</properties>
-		</profile>
-		<profile>
-			<id>LOCAL</id>
-			<properties>
-				<sonar.host.url>
-					http://104.215.158.154:9000
-				</sonar.host.url>
-				 <sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
-                 <sonar.projectName>IdAuthentication</sonar.projectName>
-                 <sonar.projectVersion>1.0.0-SNAPSHOT</sonar.projectVersion>
-				<sonar.jacoco.reportPaths>
-					target/jacoco.exec
-				</sonar.jacoco.reportPaths>
-			</properties>
-		</profile>
-	</profiles>
-
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -180,5 +147,37 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>DEV</id>
+			<properties>
+				 <sonar.host.url>
+				 	http://13.76.43.109:9000
+				 </sonar.host.url>
+				 <sonar.login>
+				 	d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624
+				 </sonar.login>
+				 <sonar.projectName>IdAuthentication</sonar.projectName>
+                 <sonar.projectVersion>1.0.0-SNAPSHOT</sonar.projectVersion>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+		<profile>
+			<id>LOCAL</id>
+			<properties>
+				<sonar.host.url>
+					http://104.215.158.154:9000
+				</sonar.host.url>
+				 <sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
+                 <sonar.projectName>IdAuthentication</sonar.projectName>
+                 <sonar.projectVersion>1.0.0-SNAPSHOT</sonar.projectVersion>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+	</profiles>
 
 </project>
