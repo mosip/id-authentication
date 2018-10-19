@@ -15,7 +15,7 @@ import io.mosip.kernel.security.cipher.constant.MosipSecurityMethod;
 import io.mosip.kernel.security.cipher.exception.MosipInvalidDataException;
 import io.mosip.kernel.security.cipher.exception.MosipInvalidKeyException;
 import io.mosip.kernel.security.cipher.exception.MosipNoSuchAlgorithmException;
-import io.mosip.kernel.security.cipher.exception.MosipNullDataException;
+import io.mosip.kernel.security.cipher.util.SecurityUtil;
 
 /**
  * Asymmetric Encryption/Decryption processor
@@ -47,10 +47,7 @@ public class AsymmetricProcessor {
 	protected static byte[] process(MosipSecurityMethod method, Key key,
 			byte[] data, int mode) {
 		Cipher cipher = init(key, mode, method);
-		if (data == null) {
-			throw new MosipNullDataException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
-		}
+		SecurityUtil.verifyData(data);
 		return processData(cipher, data, 0, data.length);
 	}
 
@@ -103,10 +100,7 @@ public class AsymmetricProcessor {
 					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION);
 		} catch (IllegalBlockSizeException e) {
 			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_SIZE_EXCEPTION);
-		} catch (NullPointerException e) {
-			throw new MosipNullDataException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
+					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_LENGTH_EXCEPTION);
 		}
 
 	}

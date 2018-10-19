@@ -9,6 +9,7 @@ package io.mosip.kernel.security.cipher.util;
 
 import io.mosip.kernel.security.cipher.constant.MosipSecurityExceptionCodeConstants;
 import io.mosip.kernel.security.cipher.constant.MosipSecurityMethod;
+import io.mosip.kernel.security.cipher.exception.MosipNullDataException;
 import io.mosip.kernel.security.cipher.exception.MosipNullMethodException;
 
 /**
@@ -37,5 +38,19 @@ public class SecurityUtil {
 			throw new MosipNullMethodException(
 					MosipSecurityExceptionCodeConstants.MOSIP_NULL_METHOD_EXCEPTION);
 		}
+	}
+	
+	/**
+	 * Verify if data is null or empty
+	 * 
+	 * @param data
+	 *            data provided by user
+	 */
+	public static void verifyData(byte[] data) {
+		if (data == null || data.length == 0) {
+			throw new MosipNullDataException(
+					MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
+		}
+
 	}
 }

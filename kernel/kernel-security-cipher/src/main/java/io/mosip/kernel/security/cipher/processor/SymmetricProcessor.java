@@ -24,7 +24,7 @@ import io.mosip.kernel.security.cipher.constant.MosipSecurityMethod;
 import io.mosip.kernel.security.cipher.exception.MosipInvalidDataException;
 import io.mosip.kernel.security.cipher.exception.MosipInvalidKeyException;
 import io.mosip.kernel.security.cipher.exception.MosipNoSuchAlgorithmException;
-import io.mosip.kernel.security.cipher.exception.MosipNullDataException;
+import io.mosip.kernel.security.cipher.util.SecurityUtil;
 
 /**
  * Symmetric Encryption/Decryption processor
@@ -80,7 +80,7 @@ public class SymmetricProcessor {
 	 */
 	private static byte[] encrypt(MosipSecurityMethod method, SecretKey key,
 			byte[] data, int mode) {
-		verifyData(data);
+		SecurityUtil.verifyData(data);
 		Cipher cipher = null;
 		byte[] output = null;
 		byte[] randomIV = null;
@@ -103,20 +103,6 @@ public class SymmetricProcessor {
 		System.arraycopy(randomIV, 0, output, processData.length,
 				randomIV.length);
 		return output;
-	}
-
-	/**
-	 * Verify if data is null or empty
-	 * 
-	 * @param data
-	 *            data provided by user
-	 */
-	private static void verifyData(byte[] data) {
-		if (data == null || data.length == 0) {
-			throw new MosipNullDataException(
-					MosipSecurityExceptionCodeConstants.MOSIP_NULL_DATA_EXCEPTION);
-		}
-
 	}
 
 	/**
@@ -155,7 +141,7 @@ public class SymmetricProcessor {
 	 */
 	private static byte[] decrypt(MosipSecurityMethod method, SecretKey key,
 			byte[] data, int mode) {
-		verifyData(data);
+		SecurityUtil.verifyData(data);
 		Cipher cipher = null;
 		try {
 			cipher = Cipher.getInstance(method.getValue());
