@@ -183,7 +183,7 @@ public class DemoValidator implements Validator {
 				} catch (ParseException e) {
 					mosipLogger.error(SESSION_ID, "ParseException",
 							e.getCause() == null ? "" : e.getCause().getMessage(), e.getMessage());
-					errors.rejectValue("dob", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
 									"dob"));
 
@@ -254,7 +254,7 @@ public class DemoValidator implements Validator {
 
 		Instant now = Instant.now();
 		if (instantDob.isAfter(now)) {
-			errors.rejectValue("dob", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue("pii", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "dob"));
 		}
 
