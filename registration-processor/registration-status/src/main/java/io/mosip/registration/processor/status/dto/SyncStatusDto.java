@@ -1,10 +1,15 @@
 package io.mosip.registration.processor.status.dto;
+
 /**
- * 
- * @author Girish Yarru
+ * The Enum SyncStatusDto.
  *
+ * @author Girish Yarru
  */
 public enum SyncStatusDto {
-	PRE_SYNC, POST_SYNC;
+
+	/** The pre sync. */
+	PRE_SYNC,
+	/** The post sync. */
+	POST_SYNC;
 
 }

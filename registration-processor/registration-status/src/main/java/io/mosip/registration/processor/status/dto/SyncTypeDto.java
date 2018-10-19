@@ -1,11 +1,23 @@
 package io.mosip.registration.processor.status.dto;
+
 /**
- * 
- * @author Girish Yarru
+ * The Enum SyncTypeDto.
  *
+ * @author Girish Yarru
  */
 public enum SyncTypeDto {
 
-	NEW_REGISTRATION, CORRECTION, UPDATE_UIN, LOST_UIN, ACTIVATE_UIN, DEACTIVATE_UIN;
+	/** The new registration. */
+	NEW_REGISTRATION,
+	/** The correction. */
+	CORRECTION,
+	/** The update uin. */
+	UPDATE_UIN,
+	/** The lost uin. */
+	LOST_UIN,
+	/** The activate uin. */
+	ACTIVATE_UIN,
+	/** The deactivate uin. */
+	DEACTIVATE_UIN;
 
 }

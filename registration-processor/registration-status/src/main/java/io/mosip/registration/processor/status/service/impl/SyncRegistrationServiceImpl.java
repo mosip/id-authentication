@@ -34,15 +34,21 @@ import io.mosip.registration.processor.status.utilities.RegistrationUtility;
 @Component
 public class SyncRegistrationServiceImpl implements SyncRegistrationService<SyncRegistrationDto> {
 
+	/** The Constant TABLE_NOT_ACCESSIBLE. */
 	private static final String TABLE_NOT_ACCESSIBLE = "Could not fetch data from table";
+
+	/** The Constant CREATED_BY. */
 	private static final String CREATED_BY = "MOSIP";
 
+	/** The sync registration dao. */
 	@Autowired
 	private SyncRegistrationDao syncRegistrationDao;
 
+	/** The audit request builder. */
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
 
+	/** The audit handler. */
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
 
@@ -53,6 +59,13 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		super();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.status.service.SyncRegistrationService#sync(
+	 * java.util.List)
+	 */
 	@Override
 	public List<SyncRegistrationDto> sync(List<SyncRegistrationDto> resgistrationDtos) {
 
@@ -93,15 +106,35 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.processor.status.service.SyncRegistrationService#
+	 * isPresent(java.lang.String)
+	 */
 	@Override
 	public boolean isPresent(String registrationId) {
 		return findByRegistrationId(registrationId) != null;
 	}
 
+	/**
+	 * Find by registration id.
+	 *
+	 * @param registrationId
+	 *            the registration id
+	 * @return the sync registration entity
+	 */
 	private SyncRegistrationEntity findByRegistrationId(String registrationId) {
 		return syncRegistrationDao.findById(registrationId);
 	}
 
+	/**
+	 * Convert entity to dto.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the sync registration dto
+	 */
 	private SyncRegistrationDto convertEntityToDto(SyncRegistrationEntity entity) {
 		SyncRegistrationDto syncRegistrationDto = new SyncRegistrationDto();
 		syncRegistrationDto.setRegistrationId(entity.getRegistrationId());
@@ -116,6 +149,13 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		return syncRegistrationDto;
 	}
 
+	/**
+	 * Convert dto to entity.
+	 *
+	 * @param dto
+	 *            the dto
+	 * @return the sync registration entity
+	 */
 	private SyncRegistrationEntity convertDtoToEntity(SyncRegistrationDto dto) {
 		SyncRegistrationEntity syncRegistrationEntity = new SyncRegistrationEntity();
 		syncRegistrationEntity.setRegistrationId(dto.getRegistrationId());
@@ -137,6 +177,22 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		return syncRegistrationEntity;
 	}
 
+	/**
+	 * Creates the audit request builder.
+	 *
+	 * @param applicationId
+	 *            the application id
+	 * @param applicationName
+	 *            the application name
+	 * @param description
+	 *            the description
+	 * @param eventId
+	 *            the event id
+	 * @param eventName
+	 *            the event name
+	 * @param eventType
+	 *            the event type
+	 */
 	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,
 			String eventId, String eventName, String eventType) {
 		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)

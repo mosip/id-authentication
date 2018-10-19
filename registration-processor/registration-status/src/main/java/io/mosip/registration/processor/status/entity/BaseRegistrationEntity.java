@@ -6,10 +6,11 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+
 /**
- * 
- * @author Girish Yarru
+ * The Class BaseRegistrationEntity.
  *
+ * @author Girish Yarru
  */
 // Common Entity where RegistrationStatusEntity,Transaction Enity and
 // SyncRegistrationEntity extends this. This is created to implement common
@@ -19,6 +20,9 @@ import javax.persistence.InheritanceType;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class BaseRegistrationEntity {
 
+	/**
+	 * Instantiates a new base registration entity.
+	 */
 	public BaseRegistrationEntity() {
 		super();
 	}
@@ -28,10 +32,20 @@ public abstract class BaseRegistrationEntity {
 	@Id
 	protected String id;
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * Sets the id.
+	 *
+	 * @param baseId the new id
+	 */
 	public void setId(String baseId) {
 		this.id = baseId;
 	}
