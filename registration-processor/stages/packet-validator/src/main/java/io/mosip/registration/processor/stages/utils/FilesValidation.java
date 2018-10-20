@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.stages.utils;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
