@@ -15,10 +15,6 @@ import io.mosip.kernel.datamapper.orika.exception.DataMapperException;
  * @author Neha
  * @since 1.0.0
  * 
- * @param <S>
- *            the type of the source object
- * @param <D>
- *            the type of the destination object
  */
 public class DataMapperImpl implements DataMapper {
 	/*

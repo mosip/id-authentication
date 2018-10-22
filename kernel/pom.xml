@@ -24,6 +24,7 @@
 		<maven.surefire.plugin.version>2.9</maven.surefire.plugin.version>
 		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
 		<maven.sonar.plugin.version>3.5.0.1254</maven.sonar.plugin.version>
+		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 
 		<!-- Core -->
 		<spring.version>5.0.4.RELEASE</spring.version>
@@ -101,7 +102,7 @@
 		<module>kernel-datavalidator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-config-server</module>
-		<module>kernel-emailnotification-smtp</module>		
+		<module>kernel-emailnotification-smtp</module>
 		<module>kernel-keygenerator</module>
 		<module>kernel-templatemanager-velocity</module>
 		<module>kernel-templatemanager-freemarker</module>
@@ -131,7 +132,7 @@
 					http://13.76.43.109:9000
 				</sonar.host.url>
 				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
-				 <sonar.ws.timeout>90000</sonar.ws.timeout>
+				<sonar.ws.timeout>90000</sonar.ws.timeout>
 				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
 				<sonar.jacoco.reportPaths>
 					target/jacoco.exec
@@ -262,6 +263,14 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
+				<configuration>
+					<aggregate>true</aggregate>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
