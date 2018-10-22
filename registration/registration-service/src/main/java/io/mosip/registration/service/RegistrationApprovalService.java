@@ -39,7 +39,7 @@ public class RegistrationApprovalService {
 	/**
 	 * Object for Logger
 	 */
-	private MosipLogger LOGGER;
+	private static MosipLogger LOGGER;
 
 	/**
 	 * Initializing logger

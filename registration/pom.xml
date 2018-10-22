@@ -59,7 +59,8 @@
 			src/main/java/io/mosip/registration/scheduler/**/*,
 			src/main/java/io/mosip/registration/dto/**/*,
 			src/main/java/io/mosip/registration/constants/**/*,
-			src/main/java/io/mosip/registration/entity/**/*
+			src/main/java/io/mosip/registration/entity/**/*,
+			src/main/java/io/mosip/registration/exception/**/*
 		</sonar.exclusions>
 	</properties>
 	
@@ -256,23 +257,33 @@
 		</plugins>
 	</build>
 	<profiles>
-		<profile>
-			<id>sonar</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<!-- Optional URL to server. Default value is http://localhost:9000 -->
-				<sonar.host.url>
-					<!-- http://13.67.91.2:9000 -->
-					<!--  http://172.25.166.136:9000 -->
-					http://172.23.135.83:8085
-				</sonar.host.url>
-				<sonar.jacoco.reportPaths>
-					target/jacoco.exec
-				</sonar.jacoco.reportPaths>
-			</properties>
-		</profile>
-	</profiles>
-
+        <profile>
+               <id>DEV</id>
+                <properties>
+                        <sonar.host.url>http://13.76.43.109:9000</sonar.host.url>
+                        <sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+                        <sonar.projectName>Registration-DEV</sonar.projectName>
+                        <sonar.projectVersion>master</sonar.projectVersion>
+                        <sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+                        <!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->
+                        <sonar.jacoco.reportPaths>
+                                target/jacoco.exec
+                        </sonar.jacoco.reportPaths>
+                </properties>
+        </profile>
+        <profile>
+                <id>LOCAL</id>
+                <properties>
+                        <sonar.host.url>http://104.215.158.154:9000</sonar.host.url>
+                        <sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
+                        <sonar.projectName>Registration-LOCAL</sonar.projectName>
+                        <sonar.projectVersion>master</sonar.projectVersion>
+                        <sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+                        <!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->
+                        <sonar.jacoco.reportPaths>
+                                target/jacoco.exec
+                        </sonar.jacoco.reportPaths>
+                </properties>
+        </profile>
+    </profiles>
 </project>

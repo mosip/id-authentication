@@ -3,6 +3,7 @@ package io.mosip.registration.service;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,17 +24,18 @@ public class GeoLocationCaptureImpl implements GeoLocationCapture {
 	 * Instance of {@link MosipLogger}
 	 */
 	private static MosipLogger LOGGER;
-	
+
 	/**
 	 * Initialize logger.
 	 *
-	 * @param mosipRollingFileAppender the mosip rolling file appender
+	 * @param mosipRollingFileAppender
+	 *            the mosip rolling file appender
 	 */
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
 		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -41,24 +43,25 @@ public class GeoLocationCaptureImpl implements GeoLocationCapture {
 	 */
 	@Override
 	public Map<String, Object> getLatLongDtls() {
-		LOGGER.debug("REGISTRATION - GEO-CAPTURE - REGISTRATION", APPLICATION_NAME,
-				APPLICATION_ID, "Geo location capture for machine has been started");
-		
+		LOGGER.debug("REGISTRATION - GEO-CAPTURE - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
+				"Geo location capture for machine has been started");
+
 		Map<String, Object> map = new HashMap<>();
-		double deviceLatitute = 12.99194;
-		double deviceLongitude = 80.2471;
-		if (deviceLatitute != 0.0 && deviceLongitude != 0.0) {
-			map.put("latitude", deviceLatitute);
-			map.put("longitude", deviceLongitude);
+		BigDecimal deviceLatitute = new BigDecimal("12.99194");
+		BigDecimal deviceLongitude = new BigDecimal("80.2471");
+		BigDecimal latlong = new BigDecimal("0.0");
+		if ((latlong.compareTo(deviceLatitute) != 0) && (latlong.compareTo(deviceLongitude) != 0)) {
+			map.put("latitude", deviceLatitute.doubleValue());
+			map.put("longitude", deviceLongitude.doubleValue());
 			map.put("errorMessage", "success");
 		} else {
-			map.put("latitude", deviceLatitute);
-			map.put("longitude", deviceLongitude);
+			map.put("latitude", deviceLatitute.doubleValue());
+			map.put("longitude", deviceLongitude.doubleValue());
 			map.put("errorMessage", "failure");
 		}
 
-		LOGGER.debug("REGISTRATION - GEO-CAPTURE - REGISTRATION", APPLICATION_NAME,
-				APPLICATION_ID, "Geo location capture for machine has been started");
+		LOGGER.debug("REGISTRATION - GEO-CAPTURE - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
+				"Geo location capture for machine has been started");
 		return map;
 	}
 

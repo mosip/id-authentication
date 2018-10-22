@@ -191,7 +191,7 @@ public class SyncStatusValidatorService {
 		distance = actualDistance(centerLatitude, centerLongitude, map);
 		if ("success".equals(map.get("errorMessage"))) {
 			if (Double
-					.parseDouble(environment.getProperty(RegConstants.OPT_TO_REG_DIST_FRM_MACHN_TO_CENTER)) >= distance) {
+					.parseDouble(environment.getProperty(RegConstants.OPT_TO_REG_DIST_FRM_MACHN_TO_CENTER)) <= distance) {
 				getErrorResponse(RegConstants.OPT_TO_REG_ICS‌_004, RegConstants.OPT_TO_REG_ICS‌_004_MSG,
 						RegConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 			}

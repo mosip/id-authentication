@@ -74,7 +74,7 @@ public class VelocityPDFGenerator {
 		velocityContext.put(RegConstants.TEMPLATE_FULL_NAME, registration.getDemographicDTO().getDemoInUserLang().getFullName());
 		Date dob = registration.getDemographicDTO().getDemoInUserLang().getDateOfBirth();
 		if(dob == null) {
-			velocityContext.put(RegConstants.TEMPLATE_DOB, RegConstants.EMPTY);
+			velocityContext.put(RegConstants.TEMPLATE_DOB, registration.getDemographicDTO().getDemoInUserLang().getAge());
 		} else {
 			velocityContext.put(RegConstants.TEMPLATE_DOB, 
 					DateUtils.formatDate(dob, "dd-MM-YYYY"));
@@ -125,7 +125,7 @@ public class VelocityPDFGenerator {
 				velocityContext.put(entry.getKey(), RegConstants.TEMPLATE_MISSING_FINGER);
 			}
 		}*/
-		File imageFile = new File("src/main/resources/images/hands.jpg");
+		File imageFile = new File(RegConstants.TEMPLATE_HANDS_IMAGE_PATH);
 		velocityContext.put("handsImageSource", "file:/"+ imageFile.getAbsolutePath().replace("\\", "/"));
 
 		velocityContext.put("rightIndexFinger", "1");

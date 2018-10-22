@@ -18,7 +18,7 @@ import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginServiceImpl;
 import io.mosip.registration.service.SyncStatusValidatorService;
 import io.mosip.registration.ui.constants.RegistrationUIConstants;
-import io.mosip.registration.util.mac.SystemMacAddress;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -233,7 +233,7 @@ public class BaseController {
 					centerList.add(machineMapping.getUserMachineMappingId().getCentreID());
 				} 
 			});
-		return machineList.contains(SystemMacAddress.getSystemMacAddress()) && centerList.contains(userDetail.getCntrId());
+		return machineList.contains(RegistrationSystemPropertiesChecker.getMachineId()) && centerList.contains(userDetail.getCntrId());
 	}
 
 	/**

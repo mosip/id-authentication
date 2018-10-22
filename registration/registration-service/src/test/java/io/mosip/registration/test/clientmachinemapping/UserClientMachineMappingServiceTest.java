@@ -37,7 +37,7 @@ import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.MapMachineServiceImpl;
-import io.mosip.registration.util.mac.SystemMacAddress;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.entity.UserMachineMappingID;
 
 public class UserClientMachineMappingServiceTest {
@@ -74,6 +74,7 @@ public class UserClientMachineMappingServiceTest {
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.invokeMethod(mapMachineServiceImpl, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.setField(mapMachineServiceImpl, "LOGGER", logger);
+		ReflectionTestUtils.setField(RegistrationSystemPropertiesChecker.class, "LOGGER", logger);
 		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class), Mockito.any(AppModuleEnum.class),
@@ -84,7 +85,7 @@ public class UserClientMachineMappingServiceTest {
 	public void view() throws RegBaseCheckedException {
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		String machineID = SystemMacAddress.getSystemMacAddress();
+		String machineID = RegistrationSystemPropertiesChecker.getMachineId();
 
 		Mockito.when(machineMappingDAO.getStationID(Mockito.anyString())).thenReturn("StationID");
  

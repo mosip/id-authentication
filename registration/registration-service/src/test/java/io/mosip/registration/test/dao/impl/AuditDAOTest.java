@@ -85,7 +85,7 @@ public class AuditDAOTest {
 	
 	@Test
 	public void updateSyncAuditsTest() {
-		when(auditRepository.updateSyncAudits(Mockito.anyListOf(String.class))).thenReturn(audits.size());
+		when(auditRepository.updateSyncAudits(Mockito.anyListOf(String.class))).thenReturn(2);
 		List<String> auditUUIDs = new LinkedList<>();
 		audits.parallelStream().map(audit -> audit.getUuid()).forEach(auditUUIDs :: add);
 		int updatedCount = auditDAO.updateSyncAudits(auditUUIDs);

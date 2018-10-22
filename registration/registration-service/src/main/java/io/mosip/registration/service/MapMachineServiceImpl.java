@@ -31,7 +31,7 @@ import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.util.mac.SystemMacAddress;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
  * User Client Machine Mapping Service
@@ -147,8 +147,8 @@ public class MapMachineServiceImpl implements MapMachineService {
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		try {
-			/* get mac address*/
-			String machineID = SystemMacAddress.getSystemMacAddress();
+			/* get mac address*/			
+			String machineID = RegistrationSystemPropertiesChecker.getMachineId();
 			/* get station ID*/
 			String stationID = machineMappingDAO.getStationID(machineID);
 			/* get center id*/

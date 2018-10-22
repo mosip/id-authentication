@@ -14,7 +14,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.encryption.aes.AESSeedGenerator;
-import io.mosip.registration.util.mac.SystemMacAddress;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
@@ -34,7 +34,7 @@ public class AESSeedGeneratorImpl implements AESSeedGenerator {
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private MosipLogger logger;
+	private static MosipLogger logger;
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
@@ -52,14 +52,12 @@ public class AESSeedGeneratorImpl implements AESSeedGenerator {
 				"Generating seeds for AES Encryption had been started");
 		try {
 			List<String> aesKeySeeds = new LinkedList<>();
-			aesKeySeeds.add(SystemMacAddress.getSystemMacAddress());
+			aesKeySeeds.add(RegistrationSystemPropertiesChecker.getMachineId());
 			aesKeySeeds.add(SessionContext.getInstance().getUserContext().getName());
 			aesKeySeeds.add(String.valueOf(currentTimeMillis()));
 			logger.debug(LOG_PKT_AES_SEEDS, APPLICATION_NAME, APPLICATION_ID,
 					"Generating seeds for AES Encryption had been ended");
 			return aesKeySeeds;
-		} catch (RegBaseCheckedException checkedException) {
-			throw checkedException;
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegProcessorExceptionCode.AES_SEED_GENERATION,
 					runtimeException.toString());

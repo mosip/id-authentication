@@ -9,6 +9,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
@@ -20,6 +21,7 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
  * @author Sivasankar Thalavai
  * @since 1.0.0
  */
+@Service
 public class RegistrationSystemPropertiesChecker {
 
 	private static MosipLogger LOGGER;

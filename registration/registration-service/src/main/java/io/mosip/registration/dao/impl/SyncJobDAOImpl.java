@@ -43,7 +43,7 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 	/**
 	 * Object for Logger
 	 */
-	private MosipLogger LOGGER;
+	private static MosipLogger LOGGER;
 
 	/**
 	 * Initializing logger

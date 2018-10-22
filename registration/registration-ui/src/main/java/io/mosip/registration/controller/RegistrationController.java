@@ -514,7 +514,7 @@ public class RegistrationController extends BaseController {
 													landLineNo.requestFocus();
 												} else {
 													if (toggleAgeORDobField) {
-														if (validateRegex(ageField, "\\d{1,1}")) {
+														if (validateRegex(ageField, "\\d{1,2}")) {
 															generateAlert("Error",
 																	AlertType.valueOf(
 																			RegistrationUIConstants.ALERT_ERROR),
@@ -522,7 +522,11 @@ public class RegistrationController extends BaseController {
 																	RegistrationUIConstants.AGE_WARNING);
 															ageField.requestFocus();
 														} else {
-															gotoNext = getParentToggle();
+															if (isChild) {
+																gotoNext = getParentToggle();
+															} else {
+																gotoNext = true;
+															}
 														}
 													} else if (!toggleAgeORDobField) {
 														if (ageDatePicker.getValue() == null) {

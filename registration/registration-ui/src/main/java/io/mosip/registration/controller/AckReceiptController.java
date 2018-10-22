@@ -22,16 +22,20 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.WritableImage;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 
 @Controller
 public class AckReceiptController extends BaseController implements Initializable{
 	
 	@Autowired
-	PacketHandlerService packetHandlerService;
+	private PacketHandlerService packetHandlerService;
+	@Autowired
+	private RegistrationOfficerDetailsController officerDetailsController;
 	
 	private RegistrationDTO registrationData;
 	private Writer stringWriter;
@@ -90,5 +94,9 @@ public class AckReceiptController extends BaseController implements Initializabl
         packetHandlerService.handle(registrationData);
         
         generateAlert("Success",AlertType.INFORMATION, "Packet Created Successfully!");
+        Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
+        stage.close();
+        
+        officerDetailsController.redirectHome(event);
 	}
 }

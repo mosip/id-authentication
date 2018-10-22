@@ -34,7 +34,7 @@ public class RSAEncryptionService {
 	@Autowired
 	public RSAKeyGenerator rsaKeyGenerator;
 
-	private MosipLogger logger;
+	private static MosipLogger logger;
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {

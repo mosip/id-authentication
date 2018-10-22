@@ -52,7 +52,7 @@ public class PacketHandlerService {
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private MosipLogger logger;
+	private static MosipLogger logger;
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {

@@ -32,7 +32,7 @@ public class RegTransactionDAOImpl implements RegTransactionDAO {
 	/**
 	 * Object for Logger
 	 */
-	private MosipLogger logger;
+	private static MosipLogger logger;
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {

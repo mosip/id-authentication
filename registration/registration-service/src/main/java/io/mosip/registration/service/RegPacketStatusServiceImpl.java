@@ -31,7 +31,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 public class RegPacketStatusServiceImpl extends BaseService implements RegPacketStatusService {
 
 	@Autowired
-	RegPacketStatusDAO regPacketStatusDAO;
+	private RegPacketStatusDAO regPacketStatusDAO;
 
 	/**
 	 * Initialize logger.

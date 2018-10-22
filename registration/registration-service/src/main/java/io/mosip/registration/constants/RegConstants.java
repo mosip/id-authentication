@@ -140,6 +140,7 @@ public class RegConstants {
 	public static final String TEMPLATE_IMAGE_ENCODING = "data:image/jpg;base64,";
 	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "BiometricsCaptured";
+	public static final String TEMPLATE_HANDS_IMAGE_PATH = "src/main/resources/images/hands.jpg";
 
 	// Exception Code for Components
 	public static final String PACKET_CREATION_EXP_CODE = "PCC-";

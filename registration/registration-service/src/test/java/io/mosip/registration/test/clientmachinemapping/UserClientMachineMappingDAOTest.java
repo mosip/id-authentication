@@ -43,7 +43,6 @@ import io.mosip.registration.repositories.CenterMachineRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
-import io.mosip.registration.util.mac.SystemMacAddress;
 
 public class UserClientMachineMappingDAOTest {
 

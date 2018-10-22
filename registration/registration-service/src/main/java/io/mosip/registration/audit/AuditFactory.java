@@ -35,7 +35,7 @@ public class AuditFactory {
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
 	@Autowired
-	Environment environment;
+	private Environment environment;
 
 	/**
 	 * Static method to audit the events across Registration Processor Module.

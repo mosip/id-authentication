@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -94,7 +93,6 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 
-	@Ignore
 	@Test
 	public void testValidateSyncStatusFailureCase() {
 		SyncControl syncControl1=new SyncControl();
@@ -136,8 +134,7 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 		assertEquals("Your client machine’s location is outside the registration centre. Please note that registration can be done only from within the registration centre",errorResponseDTOs.get(3).getMessage());
 		
 	}
-	
-	@Ignore
+
 	@Test
 	public void testValidateSyncStatusSuccessCase() {
 		SyncControl syncControl1=new SyncControl();
@@ -171,6 +168,7 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 		assertTrue(errorResponseDTOs.isEmpty());
 		
 	}
+	
 	@Test
 	public void testValidateGpsSyncStatusFailureCase() {
 		SyncControl syncControl1=new SyncControl();
@@ -212,6 +210,7 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 		assertEquals("Unable to validate machine location. Please insert the GPS device and try again",errorResponseDTOs.get(3).getMessage());
 		
 	}
+
 	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testValidateException() throws RegBaseCheckedException {

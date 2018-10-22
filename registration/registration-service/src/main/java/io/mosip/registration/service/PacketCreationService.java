@@ -54,7 +54,7 @@ public class PacketCreationService {
 
 	@Autowired
 	private AuditDAO auditDAO;
-	private MosipLogger logger;
+	private static MosipLogger logger;
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {

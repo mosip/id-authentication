@@ -32,7 +32,7 @@ public class AuditDAOImpl implements AuditDAO {
 	private RegAuditRepository regAuditRepository;
 
 	/** Object for Logger. */
-	private MosipLogger logger;
+	private static MosipLogger logger;
 
 	/**
 	 * Initialize logger.
@@ -42,7 +42,7 @@ public class AuditDAOImpl implements AuditDAO {
 	 */
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		this.logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
+		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
 	}
 
 	/*
@@ -52,7 +52,7 @@ public class AuditDAOImpl implements AuditDAO {
 	 */
 	@Override
 	public List<Audit> getAllUnsyncAudits() {
-		this.logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "Fetching the list of unsync'ed Audits");
 		try {
 			return regAuditRepository.findAllUnsyncAudits();
@@ -89,7 +89,7 @@ public class AuditDAOImpl implements AuditDAO {
 			throw new RegBaseUncheckedException(RegProcessorExceptionCode.UPDATE_SYNC_AUDIT,
 					runtimeException.toString());
 		}
-		this.logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "updateSyncAudits has been ended");
 		return updatedCount;
 	}

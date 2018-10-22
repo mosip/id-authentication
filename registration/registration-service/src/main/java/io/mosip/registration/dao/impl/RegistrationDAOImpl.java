@@ -45,7 +45,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	private RegistrationRepository registrationRepository;
 
 	/** Object for Logger. */
-	private MosipLogger logger;
+	private static MosipLogger logger;
 
 	/**
 	 * Initialize logger.

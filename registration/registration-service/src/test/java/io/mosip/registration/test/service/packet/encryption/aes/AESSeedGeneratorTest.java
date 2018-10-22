@@ -19,6 +19,7 @@ import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.encryption.aes.impl.AESSeedGeneratorImpl;
+import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -49,6 +50,7 @@ public class AESSeedGeneratorTest {
 		ReflectionTestUtils.setField(aesSeedGeneratorImpl, "logger", logger);
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
+		ReflectionTestUtils.setField(RegistrationSystemPropertiesChecker.class, "LOGGER", logger);
 		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
 	}
