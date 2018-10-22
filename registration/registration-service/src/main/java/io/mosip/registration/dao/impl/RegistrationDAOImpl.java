@@ -198,6 +198,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				APPLICATION_ID, "Updating the packet details in the Registation table");
 		Registration reg = registrationRepository.getOne(regId);
 		reg.setClientStatusCode("P");
+		reg.setIsActive(true);
 		return registrationRepository.update(reg);
 	}
 

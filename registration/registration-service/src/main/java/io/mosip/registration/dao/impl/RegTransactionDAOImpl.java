@@ -48,6 +48,7 @@ public class RegTransactionDAOImpl implements RegTransactionDAO {
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId(regId);
+		regTransaction.setIsActive(true);
 		regTransaction.setTrnTypeCode(RegClientStatusCode.CREATED.getCode());
 		regTransaction.setStatusCode(RegClientStatusCode.CREATED.getCode());
 		regTransaction.setCrBy("mosip");
