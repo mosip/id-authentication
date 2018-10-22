@@ -32,8 +32,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstants;
-import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorErrorCodes;
+import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstant;
+import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorStatus;
 import io.mosip.kernel.idgenerator.uin.entity.UinEntity;
 import io.mosip.kernel.idgenerator.uin.exception.UinGenerationJobException;
@@ -130,9 +130,9 @@ public class UinBatchConfig extends DefaultBatchConfigurer {
 	 */
 	@Bean
 	public Job uinGeneratorJob() {
-		JobBuilder jobBuilder = jobBuilderFactory.get(UinGeneratorConstants.UIN_GENERATOR_JOB)
+		JobBuilder jobBuilder = jobBuilderFactory.get(UinGeneratorConstant.UIN_GENERATOR_JOB)
 				.incrementer(new RunIdIncrementer());
-		Flow uinGenFlow = new FlowBuilder<Flow>(UinGeneratorConstants.UIN_GENERATOR_FLOW).start(uinGenDecider)
+		Flow uinGenFlow = new FlowBuilder<Flow>(UinGeneratorConstant.UIN_GENERATOR_FLOW).start(uinGenDecider)
 				.on(UinGeneratorStatus.DO_UIN_GENERATION.toString()).to(uinGeneratorStep()).from(uinGenDecider)
 				.on(UinGeneratorStatus.SKIP_UIN_GENERATION.toString()).end(UinGeneratorStatus.COMPLETED.toString())
 				.build();
@@ -143,17 +143,17 @@ public class UinBatchConfig extends DefaultBatchConfigurer {
 	/**
 	 * The Uin generator job scheduler
 	 */
-	@Scheduled(cron = "${uin.generation.cron}")
+	@Scheduled(cron = "${mosip.kernel.uin.uin-generation-cron}")
 	public void uinGeneratorScheduler() {
 		JobParameters jobParameters = new JobParametersBuilder()
-				.addLong(UinGeneratorConstants.TIME, System.currentTimeMillis()).toJobParameters();
+				.addLong(UinGeneratorConstant.TIME, System.currentTimeMillis()).toJobParameters();
 		if (isJobNotRunning(uinGeneratorJob())) {
 			try {
 				jobLauncher.run(uinGeneratorJob(), jobParameters);
 			} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 					| JobParametersInvalidException e) {
-				throw new UinGenerationJobException(UinGeneratorErrorCodes.UIN_GENERATION_JOB_EXCEPTION.getErrorCode(),
-						UinGeneratorErrorCodes.UIN_GENERATION_JOB_EXCEPTION.getErrorMessage());
+				throw new UinGenerationJobException(UinGeneratorErrorCode.UIN_GENERATION_JOB_EXCEPTION.getErrorCode(),
+						UinGeneratorErrorCode.UIN_GENERATION_JOB_EXCEPTION.getErrorMessage());
 			}
 		}
 	}
@@ -164,7 +164,7 @@ public class UinBatchConfig extends DefaultBatchConfigurer {
 	 * @return The Uin counter step
 	 */
 	private Step uinCounterStep() {
-		return stepBuilderFactory.get(UinGeneratorConstants.UIN_COUNTER_STEP).tasklet(uinCountTasklet).build();
+		return stepBuilderFactory.get(UinGeneratorConstant.UIN_COUNTER_STEP).tasklet(uinCountTasklet).build();
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class UinBatchConfig extends DefaultBatchConfigurer {
 	 * @return The uin generator step
 	 */
 	private Step uinGeneratorStep() {
-		return stepBuilderFactory.get(UinGeneratorConstants.UIN_GENERATOR_STEP).<String, List<UinEntity>>chunk(1)
+		return stepBuilderFactory.get(UinGeneratorConstant.UIN_GENERATOR_STEP).<String, List<UinEntity>>chunk(1)
 				.reader(reader()).processor(uinGenProcessor).writer(uinGenWriter).build();
 	}
 

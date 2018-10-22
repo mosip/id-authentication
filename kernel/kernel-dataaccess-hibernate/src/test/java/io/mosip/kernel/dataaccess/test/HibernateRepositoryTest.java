@@ -23,7 +23,6 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.support.CrudMethodMetadata;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.dataaccess.config.impl.HibernateDaoConfig;
@@ -33,7 +32,7 @@ import io.mosip.kernel.dataaccess.test.Person.Person;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = HibernateDaoConfig.class)
-@TestPropertySource("classpath:/test.application.properties")
+
 public class HibernateRepositoryTest {
 
 	HibernateRepositoryImpl<Person, Integer> repository;
@@ -86,10 +85,10 @@ public class HibernateRepositoryTest {
 		doThrow(new HibernateException("Hibernate exception")).when(em).persist(baseEntity);
 		repository.create(baseEntity);
 	}
-	
+
 	@Test(expected = DataAccessLayerException.class)
 	public void repositoryCreateRuntimeExceptionTest() {
-		
+
 		Person baseEntity = new Person("personName");
 		doThrow(new RuntimeException("Runtime exception")).when(em).persist(baseEntity);
 		repository.create(baseEntity);
@@ -110,7 +109,7 @@ public class HibernateRepositoryTest {
 		doThrow(new HibernateException("Hibernate exception")).when(em).merge(baseEntity);
 		repository.update(baseEntity);
 	}
-	
+
 	@Test(expected = DataAccessLayerException.class)
 	public void repositoryUpdateRuntimeExceptionTest() {
 
@@ -137,7 +136,7 @@ public class HibernateRepositoryTest {
 		doThrow(new HibernateException("Hibernate exception")).when(em).find(Person.class, 1);
 		repository.findById(Person.class, 1);
 	}
-	
+
 	@Test(expected = DataAccessLayerException.class)
 	public void repositoryFindByIdRuntimeExceptionTest() {
 
@@ -165,7 +164,7 @@ public class HibernateRepositoryTest {
 		doThrow(new HibernateException("Hibernate exception")).when(em).createQuery(criteriaQuery);
 		repository.findAll(Person.class);
 	}
-	
+
 	@Test(expected = DataAccessLayerException.class)
 	public void repositoryFindAllRuntimeExceptionTest() {
 
@@ -192,7 +191,7 @@ public class HibernateRepositoryTest {
 		doThrow(new HibernateException("Hibernate exception")).when(em).remove(ArgumentMatchers.any());
 		repository.delete(Person.class, 1);
 	}
-	
+
 	@Test(expected = DataAccessLayerException.class)
 	public void repositoryDeleteRuntimeExceptionTest() {
 
@@ -233,7 +232,7 @@ public class HibernateRepositoryTest {
 		doThrow(new NoResultException("Hibernate exception")).when(query).getResultList();
 		repository.createQuerySelect(qlString, null);
 	}
-	
+
 	@Test(expected = DataAccessLayerException.class)
 	public void repositoryCreateQuerySelectRuntimeExceptionTest() {
 
@@ -275,7 +274,7 @@ public class HibernateRepositoryTest {
 		doThrow(new NoResultException("Hibernate exception")).when(query).getResultList();
 		repository.createQuerySelect(qlString, null, 10);
 	}
-	
+
 	@Test(expected = DataAccessLayerException.class)
 	public void repositoryCreateQuerySelectLimitRuntimeExceptionTest() {
 
@@ -317,7 +316,7 @@ public class HibernateRepositoryTest {
 		doThrow(new NoResultException("Hibernate exception")).when(query).executeUpdate();
 		repository.createQueryUpdateOrDelete(qlString, null);
 	}
-	
+
 	@Test(expected = DataAccessLayerException.class)
 	public void repositoryCreateQueryUpdateOrDeleteRuntimeExceptionTest() {
 
@@ -359,7 +358,7 @@ public class HibernateRepositoryTest {
 		doThrow(new NoResultException("Hibernate exception")).when(query).getResultList();
 		repository.createNamedQuerySelect(name, Person.class, null);
 	}
-	
+
 	@Test(expected = DataAccessLayerException.class)
 	public void repositoryCreateNamedQuerySelectRuntimeExceptionTest() {
 
@@ -401,7 +400,7 @@ public class HibernateRepositoryTest {
 		doThrow(new NoResultException("Hibernate exception")).when(query).executeUpdate();
 		repository.createNamedQueryUpdateOrDelete(name, Person.class, null);
 	}
-	
+
 	@Test(expected = DataAccessLayerException.class)
 	public void repositoryCreateNamedQueryUpdateOrDeleteRuntimeExceptionTest() {
 

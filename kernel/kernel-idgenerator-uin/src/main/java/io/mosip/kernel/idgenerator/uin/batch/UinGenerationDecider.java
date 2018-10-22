@@ -6,7 +6,7 @@ import org.springframework.batch.core.job.flow.FlowExecutionStatus;
 import org.springframework.batch.core.job.flow.JobExecutionDecider;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstants;
+import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstant;
 import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorStatus;
 
 /**
@@ -29,7 +29,7 @@ public class UinGenerationDecider implements JobExecutionDecider {
 	@Override
 	public FlowExecutionStatus decide(JobExecution jobExecution, StepExecution stepExecution) {
 
-		return (Boolean) jobExecution.getExecutionContext().get(UinGeneratorConstants.GENERATE_UIN)
+		return (Boolean) jobExecution.getExecutionContext().get(UinGeneratorConstant.GENERATE_UIN)
 				? new FlowExecutionStatus(UinGeneratorStatus.DO_UIN_GENERATION.toString())
 				: new FlowExecutionStatus(UinGeneratorStatus.SKIP_UIN_GENERATION.toString());
 	}
