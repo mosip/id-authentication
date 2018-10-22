@@ -46,8 +46,8 @@ public class PacketHandlerAPIDemo extends SpringConfiguration {
 	public void testHandle() throws MosipInvalidDataException, MosipInvalidKeyException, IOException,
 			URISyntaxException, RegBaseCheckedException, MosipIOException {
 		SessionContext sessionContext = SessionContext.getInstance();
-		sessionContext.getUserContext().setUserId("userId");
-		sessionContext.getUserContext().setName("operator");
+		sessionContext.getUserContext().setUserId("mosip");
+		sessionContext.getUserContext().setName("mosip");
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", sessionContext);
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
 		registrationDTO.setRegistrationId(registrationDTO.getRegistrationId());

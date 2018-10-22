@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -42,7 +43,24 @@ public class RSAEncryptionServiceTest {
 	@Mock
 	private MosipLogger logger;
 
-	private KeyPair keyPair;
+	private static KeyPair keyPair;
+
+	@BeforeClass
+	public static void generateKeyPair() {
+		// Generate Key Pair
+		KeyPairGenerator keyPairGenerator = null;
+		try {
+			// Generate key pair generator
+			keyPairGenerator = KeyPairGenerator.getInstance(RegConstants.RSA_ALG);
+		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+			throw new RegBaseUncheckedException(REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
+					REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), noSuchAlgorithmException);
+		}
+		// initialize key pair generator
+		keyPairGenerator.initialize(2048);
+		// get key pair
+		keyPair = keyPairGenerator.genKeyPair();
+	}
 
 	@Before
 	public void initialize() {
@@ -59,20 +77,6 @@ public class RSAEncryptionServiceTest {
 		ReflectionTestUtils.invokeMethod(rsaEncryptionService, "initializeLogger", mosipRollingFileAppender);
 		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
-
-		// Generate Key Pair
-		KeyPairGenerator keyPairGenerator = null;
-		try {
-			// Generate key pair generator
-			keyPairGenerator = KeyPairGenerator.getInstance(RegConstants.RSA_ALG);
-		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
-			throw new RegBaseUncheckedException(REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
-					REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), noSuchAlgorithmException);
-		}
-		// initialize key pair generator
-		keyPairGenerator.initialize(2048);
-		// get key pair
-		keyPair = keyPairGenerator.genKeyPair();
 
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);

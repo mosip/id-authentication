@@ -3,6 +3,7 @@ package io.mosip.registration.test.util.keymanager;
 import javax.crypto.Cipher;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -21,7 +22,7 @@ public class RSAKeyGenerationTest extends SpringConfiguration {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
-	@Test
+	@Before
 	public void keyGenerationTest() {
 		rsaKeyGenerator.generateKey();
 	}
