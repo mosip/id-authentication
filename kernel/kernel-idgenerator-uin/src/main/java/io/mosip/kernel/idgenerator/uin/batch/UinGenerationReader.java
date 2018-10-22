@@ -3,7 +3,7 @@ package io.mosip.kernel.idgenerator.uin.batch;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstants;
+import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstant;
 
 /**
  * Item reader to initialize the uin generator job
@@ -37,7 +37,7 @@ public class UinGenerationReader implements ItemReader<String> {
 	public String read() {
 		if (shouldRun) {
 			shouldRun = false;
-			return UinGeneratorConstants.EMPTY_STRING;
+			return UinGeneratorConstant.EMPTY_STRING;
 		} else {
 			return null;
 		}

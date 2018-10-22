@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
-import io.mosip.kernel.auditmanager.constant.AuditErrorCodes;
+import io.mosip.kernel.auditmanager.constant.AuditErrorCode;
 
 /**
  * Class for handling API exceptions
@@ -31,8 +31,8 @@ public class ApiExceptionHandler {
 	public ResponseEntity<ErrorItem> handle(MethodArgumentNotValidException e) {
 
 		ErrorItem error = new ErrorItem();
-		error.setMessage(AuditErrorCodes.HANDLEREXCEPTION.getErrorMessage());
-		error.setCode(AuditErrorCodes.HANDLEREXCEPTION.getErrorCode());
+		error.setMessage(AuditErrorCode.HANDLEREXCEPTION.getErrorMessage());
+		error.setCode(AuditErrorCode.HANDLEREXCEPTION.getErrorCode());
 
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 
@@ -49,8 +49,8 @@ public class ApiExceptionHandler {
 	public ResponseEntity<ErrorItem> handle(InvalidFormatException e) {
 
 		ErrorItem error = new ErrorItem();
-		error.setMessage(AuditErrorCodes.INVALIDFORMAT.getErrorMessage());
-		error.setCode(AuditErrorCodes.INVALIDFORMAT.getErrorCode());
+		error.setMessage(AuditErrorCode.INVALIDFORMAT.getErrorMessage());
+		error.setCode(AuditErrorCode.INVALIDFORMAT.getErrorCode());
 
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 

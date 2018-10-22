@@ -21,7 +21,6 @@ import io.mosip.kernel.auditmanager.service.impl.AuditManagerServiceImpl;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-@TestPropertySource("classpath:/test.properties")
 public class AuditExceptionTest {
 	@Autowired
 	private MockMvc mockMvc;

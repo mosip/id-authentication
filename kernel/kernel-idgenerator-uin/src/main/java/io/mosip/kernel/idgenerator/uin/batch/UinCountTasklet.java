@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstants;
+import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstant;
 import io.mosip.kernel.idgenerator.uin.repository.UinRepository;
 
 /**
@@ -34,7 +34,7 @@ public class UinCountTasklet implements Tasklet {
 	/**
 	 * Long field for uin threshold cocunt
 	 */
-	@Value("${threshold.uin.count}")
+	@Value("${mosip.kernel.uin.min-unused-threshold}")
 	private long thresholdUINCount;
 
 	/**
@@ -52,7 +52,7 @@ public class UinCountTasklet implements Tasklet {
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 
 		chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext()
-				.put(UinGeneratorConstants.GENERATE_UIN, countFreeUin() < thresholdUINCount);
+				.put(UinGeneratorConstant.GENERATE_UIN, countFreeUin() < thresholdUINCount);
 
 		return RepeatStatus.FINISHED;
 	}

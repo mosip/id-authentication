@@ -8,7 +8,7 @@ import org.apache.commons.math3.random.RandomDataGenerator;
 import io.mosip.kernel.core.spi.idgenerator.MosipUinGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
-import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstants;
+import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstant;
 import io.mosip.kernel.idgenerator.uin.entity.UinEntity;
 
 import org.slf4j.Logger;
@@ -49,7 +49,8 @@ public class UinGeneratorImpl implements MosipUinGenerator<Set<UinEntity>> {
 	 * @param uinLength
 	 *            The length of the uin
 	 */
-	public UinGeneratorImpl(@Value("${uins.to.generate}") long uinsCount, @Value("${uin.length}") int uinLength) {
+	public UinGeneratorImpl(@Value("${mosip.kernel.uin.uins-to-generate}") long uinsCount,
+			@Value("${mosip.kernel.uin.length}") int uinLength) {
 		this.uinsCount = uinsCount;
 		this.uinLength = uinLength;
 	}
@@ -66,9 +67,9 @@ public class UinGeneratorImpl implements MosipUinGenerator<Set<UinEntity>> {
 
 		int generatedIdLength = uinLength - 1;
 		Set<UinEntity> uins = new HashSet<>();
-		long upperBound = Long.parseLong(StringUtils.repeat(UinGeneratorConstants.NINE, generatedIdLength));
+		long upperBound = Long.parseLong(StringUtils.repeat(UinGeneratorConstant.NINE, generatedIdLength));
 		long lowerBound = Long.parseLong(
-				UinGeneratorConstants.TWO + StringUtils.repeat(UinGeneratorConstants.ZERO, generatedIdLength - 1));
+				UinGeneratorConstant.TWO + StringUtils.repeat(UinGeneratorConstant.ZERO, generatedIdLength - 1));
 		LOGGER.info("Generating {} uins ", uinsCount);
 		while (uins.size() < uinsCount) {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);
@@ -114,6 +115,5 @@ public class UinGeneratorImpl implements MosipUinGenerator<Set<UinEntity>> {
 		uinStringBuilder.setLength(uinLength);
 		return uinStringBuilder.insert(0, generatedID).insert(generatedIdLength, verhoeffDigit).toString().trim();
 	}
-
 
 }

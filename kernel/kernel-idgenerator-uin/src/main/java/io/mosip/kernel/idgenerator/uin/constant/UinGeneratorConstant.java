@@ -10,12 +10,12 @@ package io.mosip.kernel.idgenerator.uin.constant;
  * @since 1.0.0
  *
  */
-public final class UinGeneratorConstants {
+public final class UinGeneratorConstant {
 
 	/**
 	 * Private constructor for UinGeneratorConstants
 	 */
-	private UinGeneratorConstants() {
+	private UinGeneratorConstant() {
 	}
 
 	/**
