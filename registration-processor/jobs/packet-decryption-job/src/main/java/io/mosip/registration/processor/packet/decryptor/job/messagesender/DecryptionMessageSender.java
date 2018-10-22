@@ -9,15 +9,15 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 
 @Service
 public class DecryptionMessageSender extends MosipVerticleManager {
-	
+
 	private MosipEventBus mosipEventBus;
-	
+
 	private void getEventBus() {
-		if(this.mosipEventBus == null) {
+		if (this.mosipEventBus == null) {
 			mosipEventBus = this.getEventBus(this.getClass());
 		}
 	}
-	
+
 	public void sendMessage(MessageDTO message) {
 		getEventBus();
 		this.send(this.mosipEventBus, MessageBusAddress.BATCH_BUS, message);
@@ -25,7 +25,7 @@ public class DecryptionMessageSender extends MosipVerticleManager {
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 }

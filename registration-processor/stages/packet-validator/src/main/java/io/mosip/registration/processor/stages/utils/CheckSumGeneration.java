@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.stages.utils;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -17,8 +16,8 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
 public class CheckSumGeneration {
-	
-	public static final String FILE_SEPARATOR="\\";
+
+	public static final String FILE_SEPARATOR = "\\";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CheckSumGeneration.class);
 
@@ -63,8 +62,8 @@ public class CheckSumGeneration {
 		hashOrder.forEach(file -> {
 			byte[] filebyte = null;
 			try {
-				InputStream fileStream = adapter.getFile(registrationId,
-						PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + personType + FILE_SEPARATOR + file.toUpperCase());
+				InputStream fileStream = adapter.getFile(registrationId, PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
+						+ personType + FILE_SEPARATOR + file.toUpperCase());
 				filebyte = toByteArray(fileStream);
 			} catch (IOException e) {
 				LOGGER.error(StatusMessage.INPUTSTREAM_NOT_READABLE, e);
