@@ -145,17 +145,20 @@ public class VirusScannerTasklet implements Tasklet {
 		filename = filename.substring(0, filename.lastIndexOf('.'));
 		try {
 			adapter.storePacket(filename, file);
-			if(adapter.isPacketPresent(entry.getRegistrationId())) {
+			if (adapter.isPacketPresent(entry.getRegistrationId())) {
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN, entry.getRegistrationId());
-				LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),"File is Already exists in DFS location " + " And its now Deleted from Virus scanner job ");
-			}else {
-				LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),"File is successfully scanned. " + "It has been sent to DFS.");
+				LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),
+						"File is Already exists in DFS location " + " And its now Deleted from Virus scanner job ");
+			} else {
+				LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),
+						"File is successfully scanned. " + "It has been sent to DFS.");
 			}
-			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString());
+			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 			registrationStatusService.updateRegistrationStatus(entry);
-		}catch(IOException e) {
-			LOGGER.error(LOGDISPLAY, entry.getRegistrationId()+": Failed to delete the packet from Virus scan Zone", e);
-		}catch(Exception e) {
+		} catch (IOException e) {
+			LOGGER.error(LOGDISPLAY, entry.getRegistrationId() + ": Failed to delete the packet from Virus scan Zone",
+					e);
+		} catch (Exception e) {
 			LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e);
 		}
 	}
