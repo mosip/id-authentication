@@ -307,7 +307,7 @@ public class PacketInfoManagerImplTest {
 
 			@Override
 			public boolean writeAudit(AuditRequestDto arg0) {
-				// TODO Auto-generated method stub
+
 				return true;
 			}
 		};
@@ -332,7 +332,7 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(packetInfo.getPhotograph()).thenReturn(photograph);
 		Mockito.when(packetInfo.getMetaData()).thenReturn(metaData);
 
-		FileSystemAdapter<InputStream, PacketFiles, Boolean> fileSystemAdapter = Mockito.mock(FileSystemAdapter.class);
+		FileSystemAdapter<InputStream, Boolean> fileSystemAdapter = Mockito.mock(FileSystemAdapter.class);
 		Field f = packetInfoManagerImpl.getClass().getDeclaredField("fileSystemAdapter");
 		f.setAccessible(true);
 		f.set(packetInfoManagerImpl, fileSystemAdapter);

@@ -47,7 +47,7 @@ public class PacketValidatorStageTest {
 	private InputStream inputStream;
 
 	@Mock
-	private FileSystemAdapter<InputStream, PacketFiles, Boolean> filesystemCephAdapterImpl = new FilesystemCephAdapterImpl();
+	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl = new FilesystemCephAdapterImpl();
 	
 	@Mock
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
