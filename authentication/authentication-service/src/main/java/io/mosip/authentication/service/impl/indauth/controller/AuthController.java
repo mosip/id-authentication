@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -34,6 +35,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author Arun Bose
  */
 
+@RefreshScope
 @RestController
 public class AuthController {
 
@@ -49,8 +51,7 @@ public class AuthController {
 	/**
 	 * Initialize logger.
 	 *
-	 * @param idaRollingFileAppender
-	 *            the ida rolling file appender
+	 * @param idaRollingFileAppender the ida rolling file appender
 	 */
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
@@ -72,8 +73,7 @@ public class AuthController {
 	/**
 	 * Inits the binder.
 	 *
-	 * @param binder
-	 *            the binder
+	 * @param binder the binder
 	 */
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
@@ -83,17 +83,13 @@ public class AuthController {
 	/**
 	 * authenticateRequest - method to authenticate request.
 	 *
-	 * @param authrequestdto
-	 *            - Authenticate Request
-	 * @param errors
-	 *            the errors
+	 * @param authrequestdto - Authenticate Request
+	 * @param errors         the errors
 	 * @return AuthResponseDTO
-	 * @throws IdAuthenticationAppException
-	 *             the id authentication app exception
+	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 
-	@PostMapping(path = "/authRequest", consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/authRequest", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })

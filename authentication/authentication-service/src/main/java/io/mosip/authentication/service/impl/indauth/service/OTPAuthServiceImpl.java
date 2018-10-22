@@ -33,7 +33,7 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 @Service
 public class OTPAuthServiceImpl implements OTPAuthService {
-	
+
 	/**
 	 * Instantiates a new OTP auth service impl.
 	 */
@@ -80,12 +80,14 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * Validates generated OTP via OTP Manager.
 	 *
 	 * @param authreqdto the authreqdto
-	 * @param refId the ref id
+	 * @param refId      the ref id
 	 * @return true - when the OTP is Valid.
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	@Override
-	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String refId) throws IdAuthenticationBusinessException {
+	public AuthStatusInfo validateOtp(AuthRequestDTO authreqdto, String refId)
+			throws IdAuthenticationBusinessException {
 		boolean isOtpValid = false;
 		String txnId = authreqdto.getTxnID();
 		String UIN = authreqdto.getId();
@@ -95,6 +97,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		if (isValidRequest) {
 			logger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
 			String OtpKey = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
+			System.out.println(OtpKey);
 			String key = Optional.ofNullable(OtpKey)
 					.orElseThrow(() -> new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
 			isOtpValid = otpManager.validateOtp(otp, key);
@@ -102,7 +105,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 			logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID", getClass().toString());
 			logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
-			
+
 		}
 
 		return constructAuthStatusInfo(isOtpValid);
@@ -116,14 +119,12 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 */
 	private AuthStatusInfo constructAuthStatusInfo(boolean isOtpValid) {
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
-		statusInfoBuilder
-				.setStatus(isOtpValid)
-				.addAuthUsageDataBits(AuthUsageDataBit.USED_OTP);
-		
-		if(isOtpValid) {
+		statusInfoBuilder.setStatus(isOtpValid).addAuthUsageDataBits(AuthUsageDataBit.USED_OTP);
+
+		if (isOtpValid) {
 			statusInfoBuilder.addAuthUsageDataBits(AuthUsageDataBit.MATCHED_OTP);
 		}
-		
+
 		return statusInfoBuilder.build();
 	}
 
@@ -131,9 +132,10 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * Validates Transaction ID and Unique ID.
 	 *
 	 * @param txnId the txn id
-	 * @param uIN the u IN
+	 * @param uIN   the u IN
 	 * @return true, if successful
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	public boolean validateTxnId(String txnId, String uIN) throws IdAuthenticationBusinessException {
