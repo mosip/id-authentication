@@ -21,9 +21,9 @@ public class CheckSumGeneration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CheckSumGeneration.class);
 
-	private FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter;
+	private FileSystemAdapter<InputStream, Boolean> adapter;
 
-	public CheckSumGeneration(FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter) {
+	public CheckSumGeneration(FileSystemAdapter<InputStream, Boolean> adapter) {
 		this.adapter = adapter;
 	}
 

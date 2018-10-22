@@ -63,7 +63,7 @@ public class FilesystemCephAdapterImplTest {
 	private static final String CONFIG_FILE_NAME = "config.properties";
 
 	/** The dfs adapter. */
-	private FileSystemAdapter<InputStream, PacketFiles, Boolean> dfsAdapter;
+	private FileSystemAdapter<InputStream, Boolean> dfsAdapter;
 
 	/** The Constant FAILURE_ENROLMENT_ID. */
 	private static final String FAILURE_ENROLMENT_ID = "1234";
@@ -80,7 +80,7 @@ public class FilesystemCephAdapterImplTest {
 		Properties properties = new Properties();
 		InputStream inputStream;
 		inputStream = ConnectionUtil.class.getClassLoader().getResourceAsStream(CONFIG_FILE_NAME);
-			properties.load(inputStream);
+		properties.load(inputStream);
 		this.checkEnrolmentId = properties.getProperty("check.enrolment.id");
 		this.fileExtension = properties.getProperty("file.extension");
 		api = new S3Mock.Builder().withPort(8001).withInMemoryBackend().build();
@@ -111,7 +111,7 @@ public class FilesystemCephAdapterImplTest {
 		String filePath = classLoader.getResource(checkEnrolmentId + fileExtension).getFile();
 		File packet = new File(filePath);
 		boolean result = this.dfsAdapter.storePacket(this.checkEnrolmentId, packet);
-		assertEquals("Successfully uploaded packet as filepath to DFS .",true, result);
+		assertEquals("Successfully uploaded packet as filepath to DFS .", true, result);
 	}
 
 	/**
@@ -172,10 +172,10 @@ public class FilesystemCephAdapterImplTest {
 		assertEquals("To check file exist or not by registration id.", true, findResult);
 		// Get file test
 		InputStream file = this.dfsAdapter.getFile(checkEnrolmentId, PacketFiles.DEMOGRAPHIC.name());
-		assertNotNull("Get file as inpustream by registration id .",file);
+		assertNotNull("Get file as inpustream by registration id .", file);
 		// Delete file test
 		boolean result = this.dfsAdapter.deleteFile(checkEnrolmentId, PacketFiles.DEMOGRAPHIC.name());
-		assertEquals("Delete file by registration id .",true, result);
+		assertEquals("Delete file by registration id .", true, result);
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class FilesystemCephAdapterImplTest {
 	public void testStorePacketInputStreamSuccess() {
 		InputStream packet = dfsAdapter.getPacket(checkEnrolmentId);
 		boolean result = this.dfsAdapter.storePacket(this.checkEnrolmentId, packet);
-		assertEquals("Successfully uploaded packet as inputstream to DFS.",true, result);
+		assertEquals("Successfully uploaded packet as inputstream to DFS.", true, result);
 	}
 
 	/**

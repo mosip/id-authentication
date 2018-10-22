@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.context.ContextConfiguration;
 
@@ -25,10 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration
 public class JsonUtilTest {
 
-	/** The json util. */
-	@InjectMocks
-	JsonUtil jsonUtil = new JsonUtil();
-
 	/** The input stream. */
 	private InputStream inputStream;
 
@@ -41,8 +36,10 @@ public class JsonUtilTest {
 	/**
 	 * Setup.
 	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws ClassNotFoundException the class not found exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @throws ClassNotFoundException
+	 *             the class not found exception
 	 */
 	@Before
 	public void setup() throws IOException, ClassNotFoundException {
@@ -54,7 +51,8 @@ public class JsonUtilTest {
 	/**
 	 * Input streamto java object test.
 	 *
-	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 * @throws UnsupportedEncodingException
+	 *             the unsupported encoding exception
 	 */
 	@Test
 	public void inputStreamtoJavaObjectTest() throws UnsupportedEncodingException {
@@ -63,15 +61,16 @@ public class JsonUtilTest {
 				result.toString());
 
 	}
-	
+
 	/**
 	 * Input streamto java object failure test.
 	 *
-	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 * @throws UnsupportedEncodingException
+	 *             the unsupported encoding exception
 	 */
 	@Test(expected = UnsupportedEncodingException.class)
 	public void inputStreamtoJavaObjectFailureTest() throws UnsupportedEncodingException {
-	 JsonUtil.inputStreamtoJavaObject(inputStream, null);
+		JsonUtil.inputStreamtoJavaObject(inputStream, null);
 	}
 
 }

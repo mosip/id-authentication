@@ -9,19 +9,18 @@ import org.apache.commons.io.IOUtils;
 import io.mosip.registration.processor.core.packet.dto.HashSequence;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
 public class CheckSumValidation {
-	
+
 	public static final String HMAC_FILE = "HMACFILE";
-	
-	private  FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter;
-	
-	public CheckSumValidation(FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter) {
+
+	private FileSystemAdapter<InputStream, Boolean> adapter;
+
+	public CheckSumValidation(FileSystemAdapter<InputStream, Boolean> adapter) {
 		this.adapter = adapter;
-		
+
 	}
-	
+
 	public boolean checksumvalidation(String registrationId, PacketInfo packetInfo) throws IOException {
 		HashSequence hashSequence = packetInfo.getHashSequence();
 

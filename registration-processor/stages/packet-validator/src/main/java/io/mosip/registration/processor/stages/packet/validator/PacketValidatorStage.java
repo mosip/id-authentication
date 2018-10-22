@@ -39,14 +39,13 @@ import io.vertx.core.logging.LoggerFactory;
  */
 @Service
 public class PacketValidatorStage extends MosipVerticleManager {
-	
-	public static final String FILE_SEPARATOR="\\";
+
+	public static final String FILE_SEPARATOR = "\\";
 
 	private static Logger log = LoggerFactory.getLogger(PacketValidatorStage.class);
 
-	private  FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter = new FilesystemCephAdapterImpl();
+	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
 
-	
 	private static final String USER = "MOSIP_SYSTEM";
 
 	@Autowired
@@ -54,16 +53,15 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	@Autowired
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
-	
+
 	@Autowired
-	private PacketInfoManager<PacketInfo, DemographicInfo,MetaData> packetInfoManager;
+	private PacketInfoManager<PacketInfo, DemographicInfo, MetaData> packetInfoManager;
 
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, MessageBusAddress.STRUCTURE_BUS_OUT);
 	}
 
-	
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.STRUCTURE_BUS_IN);
@@ -74,7 +72,6 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
 		try {
 
-			
 			PacketInfo packetInfo = (PacketInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketInfo.class);
 
@@ -84,7 +81,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			boolean isFilesValidated = filesValidation.filesValidation(registrationId, packetInfo);
 			boolean isCheckSumValidated = false;
 			if (isFilesValidated) {
-				
+
 				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter);
 				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId, packetInfo);
 				if (!isCheckSumValidated) {
@@ -95,17 +92,18 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION);
 
 			}
-			if (isFilesValidated && isCheckSumValidated) { 
+			if (isFilesValidated && isCheckSumValidated) {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION);
 				registrationStatusDto
 						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_SUCCESSFULL.toString());
 				packetInfoManager.savePacketData(packetInfo);
-				InputStream demographicInfoStream = adapter.getFile(registrationId, PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
-				DemographicInfo demographicInfo = (DemographicInfo) JsonUtil.inputStreamtoJavaObject(demographicInfoStream,
-						DemographicInfo.class);
+				InputStream demographicInfoStream = adapter.getFile(registrationId,
+						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
+				DemographicInfo demographicInfo = (DemographicInfo) JsonUtil
+						.inputStreamtoJavaObject(demographicInfoStream, DemographicInfo.class);
 				packetInfoManager.saveDemographicData(demographicInfo, packetInfo.getMetaData());
- 
+
 			} else {
 				object.setIsValid(Boolean.FALSE);
 				if (registrationStatusDto.getRetryCount() == null) {

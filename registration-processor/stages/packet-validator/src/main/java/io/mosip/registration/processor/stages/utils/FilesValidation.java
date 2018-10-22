@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.stages.utils;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
@@ -12,29 +11,26 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
 public class FilesValidation {
-	
-	
-    public static final String FILE_SEPARATOR="\\";
-	
-	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.APPLICANT.name()
-	+ FILE_SEPARATOR;
-	
-	public static final String BIOMETRIC_APPLICANT = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
-	
-	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + PacketFiles.INTRODUCER.name()
-	+ FILE_SEPARATOR;
-	
-	
-	private  FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter;
-	
-	
-	
-	public FilesValidation(FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter) {
-		
+
+	public static final String FILE_SEPARATOR = "\\";
+
+	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
+			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
+
+	public static final String BIOMETRIC_APPLICANT = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
+			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
+
+	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
+			+ PacketFiles.INTRODUCER.name() + FILE_SEPARATOR;
+
+	private FileSystemAdapter<InputStream, Boolean> adapter;
+
+	public FilesValidation(FileSystemAdapter<InputStream, Boolean> adapter) {
+
 		this.adapter = adapter;
 	}
 
-	public  boolean filesValidation(String registrationId, PacketInfo packetInfo) {
+	public boolean filesValidation(String registrationId, PacketInfo packetInfo) {
 		boolean filesValidated = false;
 
 		HashSequence hashSequence = packetInfo.getHashSequence();
@@ -44,7 +40,7 @@ public class FilesValidation {
 
 	}
 
-	private  boolean validateHashSequence(String registrationId, HashSequence hashSequence) {
+	private boolean validateHashSequence(String registrationId, HashSequence hashSequence) {
 		boolean isHashSequenceValidated = false;
 
 		if (validateBiometricSequence(registrationId, hashSequence.getBiometricSequence())
@@ -55,10 +51,10 @@ public class FilesValidation {
 		return isHashSequenceValidated;
 	}
 
-	private  boolean validateDemographicSequence(String registrationId, DemographicSequence demographicSequence) {
+	private boolean validateDemographicSequence(String registrationId, DemographicSequence demographicSequence) {
 		boolean isDemographicSequenceValidated = false;
 		for (String applicantFile : demographicSequence.getApplicant()) {
-			String fileName = "";  
+			String fileName = "";
 			if (PacketFiles.APPLICANTPHOTO.name().equalsIgnoreCase(applicantFile)) {
 				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.APPLICANTPHOTO.name();
 			} else if (PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name().equalsIgnoreCase(applicantFile)) {
@@ -69,10 +65,10 @@ public class FilesValidation {
 				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.PROOFOFADDRESS.name();
 			} else if (PacketFiles.EXCEPTIONPHOTO.name().equalsIgnoreCase(applicantFile)) {
 				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.EXCEPTIONPHOTO.name();
-			}else if (PacketFiles.PROOFOFIDENTITY.name().equalsIgnoreCase(applicantFile)) {
-				fileName = DEMOGRAPHIC_APPLICANT +PacketFiles.PROOFOFIDENTITY.name();
-	         } 
-			
+			} else if (PacketFiles.PROOFOFIDENTITY.name().equalsIgnoreCase(applicantFile)) {
+				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.PROOFOFIDENTITY.name();
+			}
+
 			isDemographicSequenceValidated = adapter.checkFileExistence(registrationId, fileName);
 
 			if (!isDemographicSequenceValidated) {
@@ -83,7 +79,7 @@ public class FilesValidation {
 		return isDemographicSequenceValidated;
 	}
 
-	private  boolean validateBiometricSequence(String registrationId, BiometricSequence biometricSequence) {
+	private boolean validateBiometricSequence(String registrationId, BiometricSequence biometricSequence) {
 
 		boolean isBiometricSequenceValidated = false;
 
@@ -95,7 +91,7 @@ public class FilesValidation {
 		return isBiometricSequenceValidated;
 	}
 
-	private  boolean validateBiometricIntroducer(String registrationId, List<String> introducer) {
+	private boolean validateBiometricIntroducer(String registrationId, List<String> introducer) {
 		boolean isIntroducerValidated = false;
 
 		for (String applicantFile : introducer) {
@@ -118,7 +114,7 @@ public class FilesValidation {
 		return isIntroducerValidated;
 	}
 
-	private  boolean validateBiometricApplicant(String registrationId, List<String> applicant) {
+	private boolean validateBiometricApplicant(String registrationId, List<String> applicant) {
 		boolean isApplicantValidated = false;
 
 		for (String applicantFile : applicant) {

@@ -20,7 +20,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import io.mosip.kernel.virus.scanner.service.VirusScannerService;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -30,12 +29,12 @@ import org.springframework.core.env.Environment;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import io.mosip.kernel.virus.scanner.service.VirusScannerService;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.scanner.job.exception.DFSNotAccessibleException;
 import io.mosip.registration.processor.packet.scanner.job.exception.RetryFolderNotAccessibleException;
-import io.mosip.registration.processor.packet.scanner.job.impl.tasklet.VirusScannerTasklet;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
@@ -57,7 +56,7 @@ public class VirusScannerTaskletTest {
 	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
-	private FileSystemAdapter<InputStream, ?, Boolean> adapter;
+	private FileSystemAdapter<InputStream, Boolean> adapter;
 
 	@Mock
 	private VirusScannerService<Boolean, String> virusScanner;
@@ -79,7 +78,8 @@ public class VirusScannerTaskletTest {
 		List<RegistrationStatusDto> sample = new ArrayList<RegistrationStatusDto>();
 		sample.add(entry);
 
-		Mockito.when(registrationStatusService.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()))
+		Mockito.when(
+				registrationStatusService.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()))
 				.thenReturn(sample);
 		Mockito.when(env.getProperty(DirectoryPathDto.VIRUS_SCAN.toString())).thenReturn("/resources/Disk/sde");
 

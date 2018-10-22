@@ -13,7 +13,6 @@ import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
 import io.mosip.registration.processor.packet.archiver.util.exception.constant.PacketNotFoundExceptionConstant;
@@ -38,7 +37,7 @@ public class PacketArchiver {
 	private AuditHandler<AuditRequestDto> auditHandler;
 
 	/** The filesystem ceph adapter impl. */
-	private FileSystemAdapter<InputStream, PacketFiles, Boolean> filesystemCephAdapterImpl = new FilesystemCephAdapterImpl();
+	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl = new FilesystemCephAdapterImpl();
 
 	/** The filemanager. */
 	@Autowired

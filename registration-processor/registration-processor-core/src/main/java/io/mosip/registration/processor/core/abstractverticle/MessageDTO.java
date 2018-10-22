@@ -15,10 +15,11 @@ public class MessageDTO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	public MessageDTO() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
+
 	private String rid;
 	private Boolean isValid;
 	private Boolean internalError;
@@ -72,5 +73,5 @@ public class MessageDTO implements Serializable {
 		return "MessageDTO [rid=" + rid + ", isValid=" + isValid + ", internalError=" + internalError
 				+ ", messageBusAddress=" + messageBusAddress + ", retryCount=" + retryCount + "]";
 	}
-	
+
 }

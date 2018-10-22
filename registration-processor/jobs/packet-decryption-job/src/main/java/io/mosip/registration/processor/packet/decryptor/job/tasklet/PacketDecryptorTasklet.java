@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
@@ -45,7 +44,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 	@Autowired
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
-	private FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter = new FilesystemCephAdapterImpl();
+	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
 
 	private DecryptionMessageSender decryptionMessageSender = new DecryptionMessageSender();
 

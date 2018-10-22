@@ -17,7 +17,7 @@ import java.io.IOException;
  * 
  * @since 0.0.1
  */
-public interface FileSystemAdapter<T, U, V> {
+public interface FileSystemAdapter<T, V> {
 
 	/**
 	 * This method stores the packet corresponding to an enrolment ID
