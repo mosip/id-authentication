@@ -22,8 +22,8 @@ import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.uinvalidator.UinValidator;
-import io.mosip.kernel.idvalidator.vidvalidator.VidValidator;
+import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
+import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
 /**
  * 
@@ -111,7 +111,7 @@ public class AuthRequestValidator implements Validator {
 
 		if (idType.equals(IdType.UIN.getType())) {
 			try {
-				UinValidator uinValidator = new UinValidator();
+				UinValidatorImpl uinValidator = new UinValidatorImpl();
 				uinValidator.validateId(authRequest.getId());
 			} catch (MosipInvalidIDException e) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
@@ -120,7 +120,7 @@ public class AuthRequestValidator implements Validator {
 			}
 		} else if (idType.equals(IdType.VID.getType())) {
 			try {
-				VidValidator vidValidator = new VidValidator();
+				VidValidatorImpl vidValidator = new VidValidatorImpl();
 				vidValidator.validateId(authRequest.getId());
 			} catch (MosipInvalidIDException e) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
