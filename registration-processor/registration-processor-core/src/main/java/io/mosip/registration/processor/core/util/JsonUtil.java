@@ -33,7 +33,6 @@ public class JsonUtil {
 	 * @throws UnsupportedEncodingException
 	 */
 	public static Object inputStreamtoJavaObject(InputStream stream, Class<?> clazz) throws UnsupportedEncodingException {
-		// TODO - Handle the exceptions appropriately
 		JsonParser jsonParser = new JsonParser();
 		Gson gson = new Gson();
 		JsonObject jsonObject = (JsonObject) jsonParser.parse(new InputStreamReader(stream, "UTF-8"));

@@ -18,7 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 /**
  * The Class JsonUtilTest.
  * 
- * @author Ranjitha M1047487
+ * @author Ranjitha
  * 
  */
 @RunWith(MockitoJUnitRunner.class)
@@ -58,7 +58,7 @@ public class JsonUtilTest {
 	 */
 	@Test
 	public void inputStreamtoJavaObjectTest() throws UnsupportedEncodingException {
-		Object result = jsonUtil.inputStreamtoJavaObject(inputStream, Object.class);
+		Object result = JsonUtil.inputStreamtoJavaObject(inputStream, Object.class);
 		assertEquals("Coversion of input stream to java object. Expected value is Java Object", expectedResult,
 				result.toString());
 
