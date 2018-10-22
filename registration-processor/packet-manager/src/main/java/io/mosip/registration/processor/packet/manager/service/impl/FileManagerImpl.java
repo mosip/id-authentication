@@ -205,4 +205,15 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 	}
 
+	@Override
+	public void deletePacket(DirectoryPathDto workingDirectory, String fileName) throws IOException {
+		boolean isFilePresent = (boolean) checkIfFileExists(workingDirectory, fileName);
+		if (isFilePresent) {
+			delete(workingDirectory, fileName);
+		} else {
+			throw new FileNotFoundInSourceException(FILE_NOT_FOUND_IN_SOURCE);
+
+		}
+	}
+
 }

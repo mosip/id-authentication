@@ -10,6 +10,11 @@ import io.mosip.registration.processor.core.packet.dto.HashSequence;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 
+/**
+ * @author M1048358 Alok Ranjan
+ *
+ */
+
 public class CheckSumValidation {
 
 	public static final String HMAC_FILE = "HMACFILE";

@@ -247,4 +247,9 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 		}
 		return result;
 	}
+
+	@Override
+	public Boolean isPacketPresent(String registrationId) {
+		return this.getPacket(registrationId) != null;
+	}
 }
