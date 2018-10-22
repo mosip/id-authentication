@@ -8,7 +8,7 @@ package io.mosip.kernel.vidgenerator.constant;
  *
  */
 public enum VidErrorCodes {
-	INVALID_UIN("KER-VID-001", "InValid UIN"), VID_GENERATION_FAILED("KER-VID-002", "VID generation failed");
+	INVALID_UIN("KER-VIG-001", "InValid UIN"), VID_GENERATION_FAILED("KER-VIG-002", "VID generation failed");
 	/**
 	 * The error code
 	 */

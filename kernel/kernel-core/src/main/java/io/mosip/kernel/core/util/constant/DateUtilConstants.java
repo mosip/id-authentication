@@ -1,7 +1,7 @@
 package io.mosip.kernel.core.util.constant;
 
 public enum DateUtilConstants {
-	ILLEGALARGUMENT_ERROR_CODE("COK-UTL-DATE-001", "Invalid Argument Found");
+	ILLEGALARGUMENT_ERROR_CODE("KER-UTL-001", "Invalid Argument Found");
 
 	/** Error code. */
 	public final String errorCode;

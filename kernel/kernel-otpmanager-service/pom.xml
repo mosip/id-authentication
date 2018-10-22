@@ -16,6 +16,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>vn.7team</groupId>
+			<artifactId>seventeam-otp</artifactId>
+			<version>${seventeam-otp.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
 			<version>${project.version}</version>
@@ -52,11 +57,7 @@
 			<artifactId>kernel-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-otpmanager-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+	
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

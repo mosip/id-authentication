@@ -23,15 +23,15 @@ import xyz.capybara.clamav.exceptions.ClamavException;
  * @author Mukul Puspam
  *
  */
-//@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class ServiceNotAvailableExceptionTest {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-	//@Mock
+	@Mock
 	ClamavClient clamavClient;
 
-	//@InjectMocks
+	@InjectMocks
 	private VirusScannerService<Boolean, String> virusScannerService = new VirusScannerServiceImpl() {
 		@Override
 		public void createConnection() {
@@ -42,19 +42,20 @@ public class ServiceNotAvailableExceptionTest {
 	private File file;
 	private File folder;
 
-	//@Before
+	@Before
 	public void setup() throws Exception {
-		file = new File("C:/Users/M1039303/Desktop/disk/sdc/1001.zip");
-		folder = new File("C:/Users/M1039303/Desktop/disk/sdc");
+		ClassLoader classLoader = getClass().getClassLoader();
+		file = new File(classLoader.getResource("files/0000.zip").getFile());
+		folder = new File(classLoader.getResource("files").getFile());
 	}
 
-	//@Test(expected = ServerNotAccessibleException.class)
+	@Test(expected = ServerNotAccessibleException.class)
 	public void serviceUnavailableForScanFileTest() throws ClamavException {
 		Mockito.doThrow(ClamavException.class).when(clamavClient).scan(file.toPath());
 		virusScannerService.scanFile(file.getAbsolutePath());
 	}
 
-	//@Test(expected = ServerNotAccessibleException.class)
+	@Test(expected = ServerNotAccessibleException.class)
 	public void serviceUnavailableForScanFolderTest() throws ClamavException {
 		Mockito.doThrow(ClamavException.class).when(clamavClient).scan(folder.toPath(), false);
 		virusScannerService.scanFolder(folder.getAbsolutePath());
