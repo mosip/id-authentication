@@ -12,9 +12,9 @@ String
 
 **The key solution considerations are**
 
-- Create the project which generate pdf from provided template using pdf generator API.
+- Create a project which generates pdf from provided template using pdf generator API.
 
-- Create the interface PdfGenerator having required method declaration to generate pdf document.
+- Create a interface PdfGenerator having required method declaration to generate pdf document.
 
 - This pdf generator can be used in any MOSP Module to generate pdf after adding PdfGrenerate to their class path.
 
