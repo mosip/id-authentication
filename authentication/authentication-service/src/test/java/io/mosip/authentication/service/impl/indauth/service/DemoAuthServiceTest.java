@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
@@ -90,7 +91,7 @@ public class DemoAuthServiceTest {
 		authRequestDTO.setAuthType(authType);
 		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_PRI, MatchingStrategyType.PARTIAL.getType(), 60));
-		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructFadMatchInput",
+		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
@@ -134,7 +135,7 @@ public class DemoAuthServiceTest {
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.STATE_PRI, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.COUNTRY_PRI, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.PINCODE_PRI, MatchingStrategyType.EXACT.getType(), 100));
-		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructAdMatchInput",
+		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
@@ -176,7 +177,7 @@ public class DemoAuthServiceTest {
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.MOBILE, MatchingStrategyType.EXACT.getType(), 100));
 		listMatchInputsExp.add(new MatchInput(DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(), 100));
-		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructPIDMatchInput",
+		Method demoImplMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
 				AuthRequestDTO.class);
 		demoImplMethod.setAccessible(true);
 		List<MatchInput> listMatchInputsActual = (List<MatchInput>) demoImplMethod.invoke(demoAuthServiceImpl,
@@ -215,6 +216,45 @@ public class DemoAuthServiceTest {
 				authRequest);
 		assertEquals(listMatchInputsExp.size(), listMatchInputsAct.size());
 		assertTrue(listMatchInputsExp.containsAll(listMatchInputsAct));
+	}
+	
+	@Test
+	public void constructMatchInputTestNoFad() throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
+		PersonalAddressDTO ad = new PersonalAddressDTO();
+		PersonalFullAddressDTO fad = new PersonalFullAddressDTO();
+		PersonalIdentityDTO pid = new PersonalIdentityDTO();
+		DemoDTO demoDTO = new DemoDTO();
+		PersonalIdentityDataDTO personalData = new PersonalIdentityDataDTO();
+		pid.setDob("1980-09-09");
+		AuthRequestDTO authRequest = new AuthRequestDTO();
+		demoDTO.setAd(ad);
+		demoDTO.setFad(fad);
+		demoDTO.setPi(pid);
+		personalData.setDemo(demoDTO);
+		authRequest.setPii(personalData);
+		AuthTypeDTO authType = new AuthTypeDTO();
+		authType.setAd(false);
+		authType.setFad(false);
+		authType.setBio(false);
+		authType.setOtp(false);
+		authType.setPi(false);
+		authType.setPin(false);
+		authRequest.setAuthType(authType);
+		Method constructInputMethod = DemoAuthServiceImpl.class.getDeclaredMethod("constructMatchInput",
+				AuthRequestDTO.class);
+		constructInputMethod.setAccessible(true);
+		List<MatchInput> listMatchInputsAct = (List<MatchInput>) constructInputMethod.invoke(demoAuthServiceImpl,
+				authRequest);
+		assertTrue(listMatchInputsAct.isEmpty());
+		
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		PersonalIdentityDataDTO personalData1 = new PersonalIdentityDataDTO();
+		authRequestDTO.setPii(personalData1 );
+		personalData1.setDemo(new DemoDTO());
+		listMatchInputsAct = (List<MatchInput>) constructInputMethod.invoke(demoAuthServiceImpl,
+				authRequestDTO);
+		assertTrue(listMatchInputsAct.isEmpty());
 	}
 
 	@Test
@@ -260,17 +300,29 @@ public class DemoAuthServiceTest {
 	@Test
 	public void TestgetLocation() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-		LocationEntity locationEntity = new LocationEntity();
-		locationEntity.setLangcode("EN");
-		locationEntity.setCode("CHN");
-		locationEntity.setName("CNENNAI");
-		locationEntity.setHierarchylevelname("CITY");
-		locationEntity.setParentloccode("TN");
-		Optional<LocationEntity> optlocation = Optional.of(locationEntity);
-		Mockito.when(locRepository.findByCodeAndIsActive(Mockito.anyString(), Mockito.anyBoolean()))
-				.thenReturn(optlocation);
-		Optional<String> optvalue = demoAuthServiceImpl.getLocation(LocationLevel.CITY, "CHENNAI");
-		assertEquals(locationEntity.getName(), optvalue.get());
+		LocationEntity cityLocationEntity = new LocationEntity();
+		cityLocationEntity.setLangcode("EN");
+		cityLocationEntity.setCode("CHN");
+		cityLocationEntity.setName("CNENNAI");
+		cityLocationEntity.setHierarchylevelname("CITY");
+		cityLocationEntity.setParentloccode("TN");
+		
+		LocationEntity stateLocationEntity = new LocationEntity();
+		stateLocationEntity.setLangcode("EN");
+		stateLocationEntity.setCode("TN");
+		stateLocationEntity.setName("TAMILNADU");
+		stateLocationEntity.setHierarchylevelname("STATE");
+		stateLocationEntity.setParentloccode("IND");
+		
+		Mockito.when(locRepository.findByCodeAndIsActive("CHN", true))
+				.thenReturn(Optional.of(cityLocationEntity));
+		Mockito.when(locRepository.findByCodeAndIsActive("TN", true))
+				.thenReturn(Optional.of(stateLocationEntity));
+		Optional<String> optvalue = demoAuthServiceImpl.getLocation(LocationLevel.CITY, "CHN");
+		assertEquals(cityLocationEntity.getName(), optvalue.get());
+		optvalue = demoAuthServiceImpl.getLocation(LocationLevel.STATE, "CHN");
+		assertEquals(stateLocationEntity.getName(), optvalue.get());
+		assertFalse(demoAuthServiceImpl.getLocation(LocationLevel.STATE, "CHNNN").isPresent());
 	}
 
 	private AuthRequestDTO generateData() {

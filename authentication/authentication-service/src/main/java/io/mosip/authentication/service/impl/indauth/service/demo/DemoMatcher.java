@@ -59,13 +59,16 @@ public class DemoMatcher {
 					.getAllowedMatchingStrategy(strategyType);
 			if (matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();
-				Object reqInfo = input.getDemoMatchType().getDemoInfoFetcher().getInfo(demoDTO);
-				Object entityInfo = input.getDemoMatchType().getEntityInfoFetcher().getInfo(demoEntity,
-						locationInfoFetcher);
-				MatchFunction matchFunction = strategy.getMatchFunction();
-				int mtOut = matchFunction.doMatch(reqInfo, entityInfo);
-				boolean matchOutput = mtOut >= input.getMatchValue();
-				return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), input.getDemoMatchType());
+				Optional<Object> reqInfoOpt = input.getDemoMatchType().getDemoInfoFetcher().getInfo(demoDTO);
+				if(reqInfoOpt.isPresent()) {
+					Object reqInfo = reqInfoOpt.get();
+					Object entityInfo = input.getDemoMatchType().getEntityInfoFetcher().getInfo(demoEntity,
+							locationInfoFetcher);
+					MatchFunction matchFunction = strategy.getMatchFunction();
+					int mtOut = matchFunction.doMatch(reqInfo, entityInfo);
+					boolean matchOutput = mtOut >= input.getMatchValue();
+					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), input.getDemoMatchType());
+				}
 			}
 		}
 		return null;

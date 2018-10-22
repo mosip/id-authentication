@@ -144,7 +144,9 @@ public class AuthResponseBuilder {
 		addErrors(authErrors);
 
 		List<MatchInfo> matchInfos = authStatusInfos.stream().flatMap(statusInfo -> Optional
-				.ofNullable(statusInfo.getMatchInfos()).map(List<MatchInfo>::stream).orElseGet(Stream::empty))
+				.ofNullable(statusInfo.getMatchInfos())
+				.map(List<MatchInfo>::stream)
+				.orElseGet(Stream::empty))
 				.collect(Collectors.toList());
 		responseDTO.getInfo().setMatchInfos(matchInfos);
 

@@ -1,8 +1,10 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -12,9 +14,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalAddressDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalFullAddressDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
+import io.mosip.authentication.core.dto.indauth.PersonalIdentityDataDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
@@ -42,7 +42,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	private static final String DEMO_DEFAULT_MATCH_VALUE = "demo.default.match.value";
 
 	/** The Constant DEFAULT_EXACT_MATCH_VALUE. */
-	private static final int DEFAULT_EXACT_MATCH_VALUE = 100;
+	private static final int DEFAULT_EXACT_MATCH_VALUE = AuthType.DEFAULT_EXACT_MATCH_VALUE;
 
 	/** The environment. */
 	@Autowired
@@ -66,164 +66,46 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
-
-		List<MatchInput> listMatchInputs = new ArrayList<>();
-		listMatchInputs.addAll(constructFadMatchInput(authRequestDTO));
-		listMatchInputs.addAll(constructAdMatchInput(authRequestDTO));
-		listMatchInputs.addAll(constructPIDMatchInput(authRequestDTO));
-		return listMatchInputs;
-	}
-
-	/**
-	 * Construct PID match input.
-	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param listMatchInput
-	 *            the list match input
-	 * @return the list
-	 */
-	private List<MatchInput> constructPIDMatchInput(AuthRequestDTO authRequestDTO) {
-		PersonalIdentityDTO pid = authRequestDTO.getPii().getDemo().getPi();
-		List<MatchInput> listMatchInputs = new ArrayList<>();
-		if (authRequestDTO.getAuthType().isPi() && null != pid) {
-			if (null != pid.getNamePri()) {
-				Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
-
-				if (pid.getMsPri() != null && pid.getMsPri().equals(MatchingStrategyType.PARTIAL.getType())) {
-					matchValue = pid.getMtPri();
-					if (null == matchValue) {
-						matchValue = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
+		 return Optional.ofNullable(authRequestDTO.getPii())
+				.map(PersonalIdentityDataDTO::getDemo)
+				.map(demo -> Stream.of(DemoMatchType.values())
+				.map(demoMatchType -> {
+					Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(demoMatchType);
+					Optional<Object> infoOpt = demoMatchType.getDemoInfoFetcher().getInfo(demo);
+					if (infoOpt.isPresent() && authTypeOpt.isPresent()) {
+						AuthType authType = authTypeOpt.get();
+						if(authType.getAuthTypeTester().testAuthType(authRequestDTO)) {
+							return contstructMatchInput(authRequestDTO, demoMatchType, authType);
+						}
 					}
-				}
+					return null;
+				})
+				.filter(Objects::nonNull))
+				.orElseGet(Stream::empty)
+				.collect(Collectors.toList());
+		 
+				
 
-				MatchInput matchInput = new MatchInput(DemoMatchType.NAME_PRI, pid.getMsPri(), matchValue);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != pid.getAge()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.AGE, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != pid.getDob()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.DOB, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != pid.getEmail()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.EMAIL, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != pid.getPhone()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.MOBILE, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != pid.getGender()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.GENDER, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-		}
-
-		return listMatchInputs;
 	}
 
-	/**
-	 * Construct ad match input.
-	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param listMatchInput
-	 *            the list match input
-	 * @return the list
-	 */
-	private List<MatchInput> constructAdMatchInput(AuthRequestDTO authRequestDTO) {
-		PersonalAddressDTO ad = authRequestDTO.getPii().getDemo().getAd();
-		List<MatchInput> listMatchInputs = new ArrayList<>();
-		if (authRequestDTO.getAuthType().isAd() && null != ad) {
-			if (null != ad.getAddrLine1Pri()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_LINE1_PRI,
-						MatchingStrategyType.EXACT.getType(), DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != ad.getAddrLine2Pri()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_LINE2_PRI,
-						MatchingStrategyType.EXACT.getType(), DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-
-			}
-
-			if (null != ad.getAddrLine3Pri()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_LINE3_PRI,
-						MatchingStrategyType.EXACT.getType(), DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != ad.getCityPri()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.CITY_PRI, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != ad.getStatePri()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.STATE_PRI, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != ad.getCountryPri()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.COUNTRY_PRI, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-			if (null != ad.getPinCodePri()) {
-				MatchInput matchInput = new MatchInput(DemoMatchType.PINCODE_PRI, MatchingStrategyType.EXACT.getType(),
-						DEFAULT_EXACT_MATCH_VALUE);
-				listMatchInputs.add(matchInput);
-			}
-
-		}
-		return listMatchInputs;
-	}
-
-	/**
-	 * Construct fad match input.
-	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param listMatchInput
-	 *            the list match input
-	 * @return the list
-	 */
-	private List<MatchInput> constructFadMatchInput(AuthRequestDTO authRequestDTO) {
+	private MatchInput contstructMatchInput(AuthRequestDTO authRequestDTO, DemoMatchType demoMatchType,
+			AuthType authType) {
 		Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
-		PersonalFullAddressDTO fad = authRequestDTO.getPii().getDemo().getFad();
-		List<MatchInput> listMatchInputs = new ArrayList<>();
-		if (authRequestDTO.getAuthType().isFad() && null != fad && null != fad.getAddrPri()) {
-			if (fad.getMsPri() != null && fad.getMsPri().equals(MatchingStrategyType.PARTIAL.getType())) {
-				matchValue = fad.getMtPri();
-				if (null == matchValue) {
-					matchValue = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
-				}
-
-				// TODO add it for secondary language
+		String matchingStrategy = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
+		Optional<String> matchingStrategyOpt = authType.getMsInfoFetcher().getMatchingStratogy(authRequestDTO);
+		if (matchingStrategyOpt.isPresent()) {
+			matchingStrategy = matchingStrategyOpt.get();
+			if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())) {
+				Optional<Integer> matchThresholdOpt = authType.getMtInfoFetcher().getMatchThreshold(authRequestDTO);
+				int defaultMatchValue = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
+				matchValue = matchThresholdOpt.orElse(defaultMatchValue);
 			}
-			MatchInput matchInput = new MatchInput(DemoMatchType.ADDR_PRI, fad.getMsPri(), matchValue);
-			listMatchInputs.add(matchInput);
 		}
-		return listMatchInputs;
+
+		return new MatchInput(demoMatchType, matchingStrategy, matchValue);
 	}
 
-	/**
+		/**
 	 * Gets the match output.
 	 *
 	 * @param listMatchInput
@@ -263,7 +145,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 			statusInfoBuilder.setStatus(demoMatched);
 
 			listMatchInputs.stream().forEach((MatchInput matchInput) -> {
-				if (AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType()).map(AuthType::getType)
+				if (AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
+						.filter(authType -> !authType.isExactMatchOnly())
+						.map(AuthType::getType)
 						.isPresent()) {
 
 					String ms = matchInput.getMatchStrategyType();

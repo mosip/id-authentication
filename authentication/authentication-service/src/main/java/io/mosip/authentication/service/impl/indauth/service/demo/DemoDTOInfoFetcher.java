@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.util.Optional;
+
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
 
 /**
@@ -13,6 +15,6 @@ public interface DemoDTOInfoFetcher {
 	 * @return Object
 	 * 
 	 */
-	Object getInfo(DemoDTO demoDTO);
+	Optional<Object> getInfo(DemoDTO demoDTO);
 
 }
