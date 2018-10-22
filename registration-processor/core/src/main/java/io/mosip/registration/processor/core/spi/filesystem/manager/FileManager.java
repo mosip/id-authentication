@@ -69,4 +69,13 @@ public interface FileManager<D, F> {
 	 * @return FTP_ZONE path
 	 */
 	public String getCurrentDirectory();
+	
+	/**
+	 * Delete packet.
+	 *
+	 * @param workingDirectory the working directory
+	 * @param fileName the file name
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void deletePacket(D workingDirectory, String fileName) throws IOException;
 }

@@ -103,4 +103,13 @@ public interface FileSystemAdapter<T, U, V> {
 	 */
 	public V deleteFile(String enrolmentId, String fileName);
 
+	
+	/**
+	 * Checks if is packet present.
+	 *
+	 * @param registrationId the registration id
+	 * @return the boolean
+	 */
+	public Boolean isPacketPresent(String registrationId);
+
 }
