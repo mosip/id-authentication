@@ -35,7 +35,7 @@ import springfox.documentation.annotations.ApiIgnore;
  * @author Arun Bose
  */
 
-@RefreshScope
+//@RefreshScope
 @RestController
 public class AuthController {
 
