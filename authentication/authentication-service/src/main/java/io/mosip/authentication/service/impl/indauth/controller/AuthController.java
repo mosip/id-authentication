@@ -34,16 +34,9 @@ import springfox.documentation.annotations.ApiIgnore;
  *
  * @author Arun Bose
  */
-
-//@RefreshScope
+@RefreshScope
 @RestController
 public class AuthController {
-
-	/**
-	 * Instantiates a new auth controller.
-	 */
-	private AuthController() {
-	}
 
 	/** The logger. */
 	private MosipLogger logger;

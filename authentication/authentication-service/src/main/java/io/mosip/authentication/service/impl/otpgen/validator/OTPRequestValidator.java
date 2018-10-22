@@ -99,7 +99,7 @@ public class OTPRequestValidator implements Validator {
 		Instant reqTimeInstance = reqTime.toInstant();
 		Instant now = Instant.now();
 
-		return Duration.between(reqTimeInstance, now).toMinutes() < env.getProperty("requestdate.received.in.max.time",
+		return Duration.between(reqTimeInstance, now).toMinutes() < env.getProperty("requestdate.received.in.max.time.mins",
 				Integer.class);
 
 	}
