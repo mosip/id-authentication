@@ -95,12 +95,10 @@ public class AsymmetricProcessor {
 		try {
 			return cipher.doFinal(data, start, end);
 
-		} catch (BadPaddingException | IllegalStateException e) {
+		} catch (BadPaddingException | IllegalStateException
+				| IllegalBlockSizeException e) {
 			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION);
-		} catch (IllegalBlockSizeException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_LENGTH_EXCEPTION);
+					MosipSecurityExceptionCodeConstants.MOSIP_INVALID_DATA_EXCEPTION);
 		}
 
 	}
