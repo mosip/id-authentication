@@ -91,7 +91,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
 
-	private FileSystemAdapter<InputStream, PacketFiles, Boolean> fileSystemAdapter = new FilesystemCephAdapterImpl();
+	private FileSystemAdapter<InputStream, Boolean> fileSystemAdapter = new FilesystemCephAdapterImpl();
 
 	private MetaData metaData;
 
@@ -267,8 +267,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.PROOFOFIDENTITY.name();
 		}
 
-		applicantDocumentEntity
-				.setDocStore(getDocumentAsByteArray(metaData.getRegistrationId(), fileName));
+		applicantDocumentEntity.setDocStore(getDocumentAsByteArray(metaData.getRegistrationId(), fileName));
 		applicantDocumentRepository.save(applicantDocumentEntity);
 		LOGGER.info(applicantDocumentEntity.getId().getRegId() + " --> Document Demographic DATA SAVED");
 	}

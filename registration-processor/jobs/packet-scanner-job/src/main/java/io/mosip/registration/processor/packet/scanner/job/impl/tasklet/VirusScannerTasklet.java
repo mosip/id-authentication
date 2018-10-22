@@ -1,10 +1,10 @@
 package io.mosip.registration.processor.packet.scanner.job.impl.tasklet;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import io.mosip.kernel.virus.scanner.service.VirusScannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -16,10 +16,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.virus.scanner.service.VirusScannerService;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.scanner.job.exception.VirusScanFailedException;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -56,7 +56,7 @@ public class VirusScannerTasklet implements Tasklet {
 	@Autowired
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
-	private FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter = new FilesystemCephAdapterImpl();
+	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
 
 	private static final String RETRY_FOLDER_NOT_ACCESSIBLE = "The Retry Folder set by the System"
 			+ " is not accessible";
@@ -145,13 +145,17 @@ public class VirusScannerTasklet implements Tasklet {
 		filename = filename.substring(0, filename.lastIndexOf('.'));
 		try {
 			adapter.storePacket(filename, file);
-			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
-			entry.setStatusComment("packet is in status PACKET_UPLOADED_TO_DFS");
-			entry.setUpdatedBy(USER);
+			if(adapter.isPacketPresent(entry.getRegistrationId())) {
+				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN, entry.getRegistrationId());
+				LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),"File is Already exists in DFS location " + " And its now Deleted from Virus scanner job ");
+			}else {
+				LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),"File is successfully scanned. " + "It has been sent to DFS.");
+			}
+			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString());
 			registrationStatusService.updateRegistrationStatus(entry);
-			LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),
-					"File is successfully scanned. " + "It has been sent to DFS.");
-		} catch (Exception e) {
+		}catch(IOException e) {
+			LOGGER.error(LOGDISPLAY, entry.getRegistrationId()+": Failed to delete the packet from Virus scan Zone", e);
+		}catch(Exception e) {
 			LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e);
 		}
 	}

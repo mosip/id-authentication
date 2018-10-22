@@ -20,7 +20,6 @@ import com.amazonaws.services.s3.model.S3Object;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.handler.ExceptionHandler;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
 /**
  * This class is CEPH implementation for MOSIP Packet Store
@@ -28,7 +27,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Packet
  * @author Pranav Kumar
  * @since 0.0.1
  */
-public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream, PacketFiles, Boolean> {
+public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream, Boolean> {
 
 	private AmazonS3 conn;
 
@@ -247,5 +246,10 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 			result = true;
 		}
 		return result;
+	}
+
+	@Override
+	public Boolean isPacketPresent(String registrationId) {
+		return this.getPacket(registrationId) != null;
 	}
 }

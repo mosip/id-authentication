@@ -20,6 +20,10 @@ import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticl
  */
 public class JsonUtil {
 
+	private JsonUtil() {
+
+	}
+
 	/**
 	 * This method converts InputStream to JavaObject
 	 * 
@@ -32,16 +36,16 @@ public class JsonUtil {
 	 * @throws JsonIOException
 	 * @throws UnsupportedEncodingException
 	 */
-	public static Object inputStreamtoJavaObject(InputStream stream, Class<?> clazz) throws UnsupportedEncodingException {
-		// TODO - Handle the exceptions appropriately
+	public static Object inputStreamtoJavaObject(InputStream stream, Class<?> clazz)
+			throws UnsupportedEncodingException {
 		JsonParser jsonParser = new JsonParser();
 		Gson gson = new Gson();
 		JsonObject jsonObject = (JsonObject) jsonParser.parse(new InputStreamReader(stream, "UTF-8"));
 		try {
 			return gson.fromJson(jsonObject, clazz);
-			}catch(Exception e) {				
-				throw new UnsupportedEncodingException(AbstractVerticleErrorCodes.IIS_EPU_ATU_UNSUPPORTED_ENCODING);
-			}
+		} catch (Exception e) {
+			throw new UnsupportedEncodingException(AbstractVerticleErrorCodes.IIS_EPU_ATU_UNSUPPORTED_ENCODING);
+		}
 	}
 
 }

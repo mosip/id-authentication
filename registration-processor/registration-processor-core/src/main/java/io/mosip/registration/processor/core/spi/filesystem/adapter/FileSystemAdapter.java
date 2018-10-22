@@ -17,7 +17,7 @@ import java.io.IOException;
  * 
  * @since 0.0.1
  */
-public interface FileSystemAdapter<T, U, V> {
+public interface FileSystemAdapter<T, V> {
 
 	/**
 	 * This method stores the packet corresponding to an enrolment ID
@@ -102,5 +102,14 @@ public interface FileSystemAdapter<T, U, V> {
 	 * @return True if the file is successfully deleted
 	 */
 	public V deleteFile(String enrolmentId, String fileName);
+
+	
+	/**
+	 * Checks if is packet present.
+	 *
+	 * @param registrationId the registration id
+	 * @return the boolean
+	 */
+	public Boolean isPacketPresent(String registrationId);
 
 }

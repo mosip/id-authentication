@@ -13,6 +13,13 @@ import org.springframework.stereotype.Component;
 public class RegistrationUtility {
 
 	/**
+	 * Utility class.
+	 */
+	private RegistrationUtility() {
+		super();
+	}
+
+	/**
 	 * Generate id.
 	 *
 	 * @return the string

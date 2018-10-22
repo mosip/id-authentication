@@ -1,6 +1,10 @@
 package io.mosip.registration.processor.stages.utils;
 
 public final class StatusMessage {
+	
+	private StatusMessage() {
+		
+	}
 
 	public static final String PACKET_CHECKSUM_VALIDATION ="PACKET_CHECKSUM_VALIDATION_FAILURE";
 	

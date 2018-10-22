@@ -32,7 +32,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
@@ -65,7 +64,7 @@ public class PacketDecryptorTaskletTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter = new FilesystemCephAdapterImpl();
+	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
 
 	/** The decryptor. */
 	@Mock
@@ -356,10 +355,10 @@ public class PacketDecryptorTaskletTest {
 	@Test
 	public void IOExceptionTest() throws Exception {
 
-		byte[] by= new byte[2];
-		by[0]=1;
-		by[1]=2;
-		InputStream stream=new ByteArrayInputStream(by);
+		byte[] by = new byte[2];
+		by[0] = 1;
+		by[1] = 2;
+		InputStream stream = new ByteArrayInputStream(by);
 		list.add(dto);
 		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
 				.getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);

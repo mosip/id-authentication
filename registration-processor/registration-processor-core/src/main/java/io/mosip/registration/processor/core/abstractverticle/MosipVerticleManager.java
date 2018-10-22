@@ -39,7 +39,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	 * (java.lang.Class)
 	 */
 	@Override
-	public MosipEventBus getEventBus(Class<?> verticleName){
+	public MosipEventBus getEventBus(Class<?> verticleName) {
 		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
 		MosipEventBus mosipEventBus = null;
 		ClusterManager clusterManager = new IgniteClusterManager();
@@ -47,23 +47,21 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 				.setHAEnabled(true);
 		Vertx.clusteredVertx(options, result -> {
 			if (result.succeeded()) {
-				result.result().deployVerticle(verticleName.getName(), new DeploymentOptions().setHa(true).setWorker(true));
+				result.result().deployVerticle(verticleName.getName(),
+						new DeploymentOptions().setHa(true).setWorker(true));
 				eventBus.complete(result.result());
 				logger.debug(verticleName + " deployed successfully");
-			}
-			else {
+			} else {
 				throw new DeploymentFailureException(AbstractVerticleErrorCodes.IIS_EPU_ATU_DEPLOYMENT_FAILURE);
 			}
 		});
-		//TODO - Handle these exceptions
+
 		try {
 			mosipEventBus = new MosipEventBus(eventBus.get());
-		} catch (InterruptedException e) {
-			
-			
-		}
-		catch(ExecutionException e) {
-			
+		} catch (InterruptedException | ExecutionException e) {
+			Thread.currentThread().interrupt();
+			throw new DeploymentFailureException(AbstractVerticleErrorCodes.IIS_EPU_ATU_DEPLOYMENT_FAILURE, e);
+
 		}
 		return mosipEventBus;
 	}

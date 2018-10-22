@@ -1,11 +1,11 @@
 package io.mosip.registration.processor.stages.utils;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,15 +16,20 @@ import io.mosip.registration.processor.core.packet.dto.HashSequence;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
+/**
+ * @author M1048358 Alok Ranjan
+ *
+ */
+
 public class CheckSumGeneration {
-	
-	public static final String FILE_SEPARATOR="\\";
+
+	public static final String FILE_SEPARATOR = "\\";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CheckSumGeneration.class);
 
-	private FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter;
+	private FileSystemAdapter<InputStream, Boolean> adapter;
 
-	public CheckSumGeneration(FileSystemAdapter<InputStream, PacketFiles, Boolean> adapter) {
+	public CheckSumGeneration(FileSystemAdapter<InputStream, Boolean> adapter) {
 		this.adapter = adapter;
 	}
 
@@ -65,7 +70,7 @@ public class CheckSumGeneration {
 			try {
 				InputStream fileStream = adapter.getFile(registrationId,
 						PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + personType + FILE_SEPARATOR + file.toUpperCase());
-				filebyte = toByteArray(fileStream);
+				filebyte = IOUtils.toByteArray(fileStream);
 			} catch (IOException e) {
 				LOGGER.error(StatusMessage.INPUTSTREAM_NOT_READABLE, e);
 			}
@@ -88,7 +93,7 @@ public class CheckSumGeneration {
 					fileStream = adapter.getFile(registrationId, PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
 							+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR + document.toUpperCase());
 				}
-				filebyte = toByteArray(fileStream);
+				filebyte = IOUtils.toByteArray(fileStream);
 			} catch (IOException e) {
 				LOGGER.error(StatusMessage.INPUTSTREAM_NOT_READABLE, e);
 			}
@@ -104,13 +109,4 @@ public class CheckSumGeneration {
 		}
 	}
 
-	private static byte[] toByteArray(InputStream in) throws IOException {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		byte[] buffer = new byte[1024];
-		int len;
-		while ((len = in.read(buffer)) != -1) {
-			out.write(buffer, 0, len);
-		}
-		return out.toByteArray();
-	}
 }
