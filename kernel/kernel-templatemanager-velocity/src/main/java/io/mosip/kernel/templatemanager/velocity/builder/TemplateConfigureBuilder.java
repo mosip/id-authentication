@@ -9,12 +9,12 @@ import org.apache.velocity.runtime.log.NullLogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 
-import io.mosip.kernel.core.spi.templatemanager.MosipTemplateManager;
+import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.impl.TemplateManagerImpl;
 import lombok.Getter;
 
 /**
- * TemplateConfigureBuilder will build the {@link MosipTemplateManager}
+ * TemplateConfigureBuilder will build the {@link TemplateManager}
  * with the configuration either custom or default.
  * 
  * @author Abhishek Kumar
@@ -78,11 +78,11 @@ public class TemplateConfigureBuilder {
 	}
 
 	/**
-	 * Method to build the {@link MosipTemplateManager} with required configuration
+	 * Method to build the {@link TemplateManager} with required configuration
 	 * 
-	 * @return {@link MosipTemplateManager}
+	 * @return {@link TemplateManager}
 	 */
-	public MosipTemplateManager build() {
+	public TemplateManager build() {
 		final Properties properties = new Properties();
 		properties.put(RuntimeConstants.INPUT_ENCODING, defaultEncoding);
 		properties.put(RuntimeConstants.OUTPUT_ENCODING, defaultEncoding);

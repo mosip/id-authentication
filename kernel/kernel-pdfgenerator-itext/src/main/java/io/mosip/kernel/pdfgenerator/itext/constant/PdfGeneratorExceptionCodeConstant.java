@@ -7,7 +7,7 @@ package io.mosip.kernel.pdfgenerator.itext.constant;
  */
 
 public enum PdfGeneratorExceptionCodeConstant {
-	 PDF_EXCEPTION("KER-PDG-001", "Document has no pages");
+	 PDF_EXCEPTION("KER-PDG-001", "Pdf generation failed");
 	/**
 	 * This variable holds the error code.
 	 */

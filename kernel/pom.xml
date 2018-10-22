@@ -107,6 +107,7 @@
 		<module>kernel-templatemanager-freemarker</module>
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-smsnotification-msg91</module>
+		<module>kernel-datamapper-orika</module>
 	</modules>
 
 	<profiles>

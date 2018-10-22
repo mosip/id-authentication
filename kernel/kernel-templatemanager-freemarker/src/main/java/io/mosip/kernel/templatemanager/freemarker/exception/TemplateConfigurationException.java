@@ -15,7 +15,7 @@ public class TemplateConfigurationException extends BaseUncheckedException {
 	private static final long serialVersionUID = -6167648722650250191L;
 
 	/**
-	 * constructor for setting error code and message
+	 * Constructor for setting error code and message
 	 * 
 	 * @param errorCode
 	 *            the error code

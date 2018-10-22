@@ -6,13 +6,13 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * MosipTemplateManager which will merge the template and values together.
+ * TemplateManager which will merge the template and values together.
  * 
  * @author Abhishek Kumar
  * @since 2018-10-01
  * @version 1.0.0
  */
-public interface MosipTemplateManager {
+public interface TemplateManager {
 	/**
 	 * Method to merge template , where template content will be pass as inputSteam
 	 * 

@@ -14,21 +14,21 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
-import io.mosip.kernel.core.spi.templatemanager.MosipTemplateManager;
+import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
 import io.mosip.kernel.templatemanager.freemarker.constant.TemplateManagerConstant;
 import io.mosip.kernel.templatemanager.freemarker.constant.TemplateManagerExceptionCodeConstant;
 import io.mosip.kernel.templatemanager.freemarker.exception.TemplateParsingException;
 import io.mosip.kernel.templatemanager.freemarker.exception.TemplateResourceNotFoundException;
 
 /**
- * Implementation of {@link MosipTemplateManager} which uses Velocity Template
+ * Implementation of {@link TemplateManager} which uses Velocity Template
  * Engine, TemplateManagerImpl will merge the template with values.
  * 
  * <pre>
  * // set up and initialize MosipTemplateManager using TemplateConfigureBuilder
  * // before this code block
  *
- * MosipTemplateManager templateManager = new TemplateConfigureBuilder().build();
+ * TemplateManager templateManager = new TemplateConfigureBuilder().build();
  * templateManager.merge(template, values);
  * </pre>
  * 
@@ -36,11 +36,11 @@ import io.mosip.kernel.templatemanager.freemarker.exception.TemplateResourceNotF
  * @version 1.0.0
  * @since 2018-10-01
  */
-public class TemplateManagerImpl implements MosipTemplateManager {
+public class TemplateManagerImpl implements TemplateManager {
 	private Configuration configuration;
 
 	/**
-	 * constructor
+	 * Constructor
 	 * 
 	 * @param configuration
 	 *            template configuration
@@ -78,7 +78,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 			return new ByteArrayInputStream(writer.toString().getBytes());
 		} catch (TemplateException e) {
 			throw new TemplateParsingException(TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorCode(),
-					e.getMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorMessage(), e);
 		}
 	}
 
@@ -137,7 +137,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorMessage());
 		} catch (TemplateException e) {
 			throw new TemplateParsingException(TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorCode(),
-					e.getMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorMessage(), e);
 		}
 		return isMerged;
 	}

@@ -78,7 +78,7 @@ public class PdfGeneratorImpl implements PdfGenerator {
 			HtmlConverter.convertToPdf(template, os);
 		} catch (Exception e) {
 			throw new PdfGeneratorException(PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
 		}
 		return os;
 	}
@@ -104,7 +104,7 @@ public class PdfGeneratorImpl implements PdfGenerator {
 
 		} catch (Exception e) {
 			throw new PdfGeneratorException(PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
 		}
 
 	}
