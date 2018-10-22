@@ -37,7 +37,6 @@ import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.server.HttpServer;
 
@@ -64,16 +63,6 @@ public class OTPManagerTest {
 
 	@Before
 	public void before() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(environment.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(environment.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(environment.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(environment.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(environment.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(otpManager, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		ReflectionTestUtils.setField(auditFactory, "env", environment);
 	}

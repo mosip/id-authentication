@@ -11,10 +11,9 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * A factory for creating and building AuditRequest objects from
@@ -31,18 +30,8 @@ public class AuditRequestFactory {
 	private AuditRequestFactory() {
 	}
 	
-	/** The logger. */
-	private MosipLogger logger;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param idaRollingFileAppender the ida rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
+	/** The mosipLogger. */
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(AuditRequestFactory.class);
 
 	/** The env. */
 	@Autowired
@@ -68,7 +57,7 @@ public class AuditRequestFactory {
 			hostName = inetAddress.getHostName();
 			hostAddress = inetAddress.getHostAddress();
 		} catch (UnknownHostException ex) {
-			logger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(), ex.toString());
+			mosipLogger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(), "Exception : " + ex);
 			hostName = env.getProperty("audit.defaultHostName");
 			hostAddress = env.getProperty("audit.defaultHostAddress");
 		}

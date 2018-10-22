@@ -16,14 +16,13 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * This class provides the implementation of AuthFacade.
@@ -40,18 +39,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The logger. */
-	private MosipLogger logger;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param idaRollingFileAppender
-	 *            the ida rolling file appender
-	 */
-	@Autowired 
-	public AuthFacadeImpl(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
+	private static MosipLogger logger = IdaLogger.getLogger(AuthFacadeImpl.class);
 
 	/** The otp service. */
 	@Autowired

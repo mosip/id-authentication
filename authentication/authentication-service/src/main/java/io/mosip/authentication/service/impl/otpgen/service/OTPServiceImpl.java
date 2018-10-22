@@ -5,11 +5,10 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * Service implementation of OtpTriggerService.
@@ -23,13 +22,8 @@ public class OTPServiceImpl implements OTPService {
 	@Autowired
 	private OTPManager otpManager;
 
-	private MosipLogger LOGGER;
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
 	
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
-
 	/**
 	 * 
 	 * @param otpKey
@@ -47,12 +41,12 @@ public class OTPServiceImpl implements OTPService {
 			otp = otpManager.generateOTP(otpKey);
 
 			if (otp == null || otp.trim().isEmpty()) {
-				LOGGER.error("NA", "NA", "NA", "generated OTP is: " + otp);
+				mosipLogger.error("NA", "NA", "NA", "generated OTP is: " + otp);
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 			}
 			
-			LOGGER.info("NA", "NA", "NA", " generated OTP is: " + otp);
+			mosipLogger.info("NA", "NA", "NA", " generated OTP is: " + otp);
 		}
 
 		return otp;

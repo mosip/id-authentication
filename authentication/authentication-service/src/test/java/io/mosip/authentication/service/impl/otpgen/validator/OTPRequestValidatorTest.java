@@ -57,29 +57,19 @@ public class OTPRequestValidatorTest {
 
 	@Before
 	public void before() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
 		ReflectionTestUtils.setField(otpRequestValidator, "env", env);
-		ReflectionTestUtils.invokeMethod(otpRequestValidator, "initializeLogger", mosipRollingFileAppender);
 	}
-	
+
 	@Test
 	public void testSupportTrue() {
 		assertTrue(otpRequestValidator.supports(OtpRequestDTO.class));
 	}
-	
+
 	@Test
 	public void testSupportFalse() {
 		assertFalse(otpRequestValidator.supports(AuthRequestValidator.class));
 	}
-	
+
 	@Test
 	public void testValidUin() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
@@ -123,7 +113,7 @@ public class OTPRequestValidatorTest {
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testInvalidIdType() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
@@ -134,7 +124,7 @@ public class OTPRequestValidatorTest {
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testInvalidTimestamp() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();

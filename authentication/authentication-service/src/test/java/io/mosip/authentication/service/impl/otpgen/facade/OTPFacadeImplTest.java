@@ -29,7 +29,6 @@ import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 /**
  * Test class for OTPFacadeImpl. Mockito with PowerMockito.
@@ -67,18 +66,7 @@ public class OTPFacadeImplTest {
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
 
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
 		ReflectionTestUtils.setField(otpFacadeImpl, "env", env);
-		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "initializeLogger", mosipRollingFileAppender);
 	}
 
 	@Test
@@ -102,7 +90,7 @@ public class OTPFacadeImplTest {
 		Mockito.when(otpFacadeImpl.generateOtp(otpRequestDto))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_REQUEST_FLOODED));
 	}
-	
+
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void testGenerateOTP_WhenOTPIsNull_ThrowException() throws IdAuthenticationBusinessException {
 		String unqueId = otpRequestDto.getId();
@@ -115,7 +103,7 @@ public class OTPFacadeImplTest {
 		String otpKey = OTPUtil.generateKey(productid, refId, txnID, otpRequestDto.getMuaCode());
 		Mockito.when(otpService.generateOtp(otpKey)).thenReturn(otp);
 		Mockito.when(otpFacadeImpl.generateOtp(otpRequestDto))
-		.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
+				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
 	}
 
 	@Test

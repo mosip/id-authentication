@@ -82,31 +82,9 @@ public class AuthRequestValidatorTest {
 
 	@Before
 	public void before() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
-		ReflectionTestUtils.invokeMethod(authRequestValidator, "initializeLogger", mosipRollingFileAppender);
-		/*
-		 * ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger",
-		 * mosipRollingFileAppender); ReflectionTestUtils.invokeMethod(auditFactory,
-		 * "initializeLogger", mosipRollingFileAppender);
-		 * ReflectionTestUtils.invokeMethod(authRequestValidator, "initializeLogger",
-		 * mosipRollingFileAppender);
-		 */
-		/*
-		 * ReflectionTestUtils.setField(authRequestValidator, "auditFactory",
-		 * auditFactory); ReflectionTestUtils.setField(authRequestValidator,
-		 * "restFactory", restFactory);
-		 */
 	}
 
 	@Test
@@ -258,7 +236,6 @@ public class AuthRequestValidatorTest {
 		authRequestDTO.setPii(new PersonalIdentityDataDTO());
 		authRequestDTO.getPii().setPin(pinDTO);
 		authRequestValidator.validate(authRequestDTO, errors);
-		errors.getFieldErrors().forEach(System.err::println);
 		assertTrue(errors.hasErrors());
 	}
 

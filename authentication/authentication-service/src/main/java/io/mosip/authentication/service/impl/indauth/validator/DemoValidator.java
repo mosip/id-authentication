@@ -23,9 +23,8 @@ import io.mosip.authentication.core.dto.indauth.PersonalAddressDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalFullAddressDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalIdentityDataDTO;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * Validate Demographic info of individual.
@@ -39,16 +38,11 @@ public class DemoValidator implements Validator {
 
 	private static final int MIN_AGE = 0;
 
-	private MosipLogger mosipLogger;
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(DemoValidator.class);
 
 	private static final String EMAIL_PATTERN = "^[\\_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+"
 			+ "(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	private static final String SESSION_ID = "sessionid";
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		mosipLogger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
 
 	@Autowired
 	private Environment env;

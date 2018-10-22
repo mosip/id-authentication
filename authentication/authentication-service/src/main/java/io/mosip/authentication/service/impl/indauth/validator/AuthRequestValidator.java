@@ -19,12 +19,11 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.PinDTO;
 import io.mosip.authentication.core.dto.indauth.PinType;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
 import io.mosip.kernel.idvalidator.uinvalidator.UinValidator;
 import io.mosip.kernel.idvalidator.vidvalidator.VidValidator;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * 
@@ -44,12 +43,7 @@ public class AuthRequestValidator implements Validator {
 	private static final String AUTH_REQUEST_VALIDATOR = "AuthRequestValidator";
 	private static final String SESSION_ID = "sessionId";
 
-	private MosipLogger mosipLogger;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		mosipLogger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
 
 	/** The env. */
 	@Autowired

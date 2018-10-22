@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
@@ -29,7 +27,6 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -45,20 +42,6 @@ public class IDAuthExceptionHandlerTest {
 
 	@InjectMocks
 	private IdAuthExceptionHandler handler;
-
-	@Before
-	public void setUp() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(environment.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(environment.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(environment.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(environment.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(environment.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(handler, "initializeLogger", mosipRollingFileAppender);
-	}
 
 	@Test
 	public void testHandleAllException() {

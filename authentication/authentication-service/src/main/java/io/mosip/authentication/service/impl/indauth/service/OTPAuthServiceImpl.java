@@ -13,6 +13,7 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
@@ -21,8 +22,6 @@ import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilde
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -58,23 +57,12 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	@Autowired
 	private AuditRequestFactory auditreqfactory;
 
-	/** The logger. */
-	private MosipLogger logger;
+	/** The mosipLogger. */
+	private MosipLogger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
 
 	/** The env. */
 	@Autowired
 	private Environment env;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param idaRollingFileAppender the ida rolling file appender
-	 */
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
 
 	/**
 	 * Validates generated OTP via OTP Manager.
@@ -95,15 +83,15 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String otp = authreqdto.getPii().getPin().getValue();
 		boolean isValidRequest = validateTxnId(txnId, UIN);
 		if (isValidRequest) {
-			logger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
+			mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
 			String OtpKey = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
 			System.out.println(OtpKey);
 			String key = Optional.ofNullable(OtpKey)
 					.orElseThrow(() -> new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
 			isOtpValid = otpManager.validateOtp(otp, key);
 		} else {
-			logger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID", getClass().toString());
-			logger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
+			mosipLogger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID", getClass().toString());
+			mosipLogger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 
 		}

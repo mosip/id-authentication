@@ -24,9 +24,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.groups.Default;
 
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,9 +35,8 @@ import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * The Base Auth Filter that does all necessary authentication/authorization
@@ -62,7 +59,7 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 	private static final String SESSION_ID = "SessionId";
 
 	/** The mosip logger. */
-	private MosipLogger mosipLogger;
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
 
 	/** The request time. */
 	private Instant requestTime;
@@ -81,9 +78,6 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(filterConfig.getServletContext());
-		MosipRollingFileAppender idaRollingFileAppender = context.getBean(MosipRollingFileAppender.class);
-		mosipLogger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
 	}
 
 	/* (non-Javadoc)

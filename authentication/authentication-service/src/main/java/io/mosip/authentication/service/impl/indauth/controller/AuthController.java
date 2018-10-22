@@ -17,6 +17,7 @@ import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
@@ -38,18 +39,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class AuthController {
 
-	/** The logger. */
-	private MosipLogger logger;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param idaRollingFileAppender the ida rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
+	/** The mosipLogger. */
+	private MosipLogger mosipLogger = IdaLogger.getLogger(AuthController.class);
 
 	/** The auth request validator. */
 	@Autowired
@@ -95,10 +86,10 @@ public class AuthController {
 
 			authResponsedto = authFacade.authenticateApplicant(authrequestdto);
 		} catch (IDDataValidationException e) {
-			logger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			logger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
 		}
 

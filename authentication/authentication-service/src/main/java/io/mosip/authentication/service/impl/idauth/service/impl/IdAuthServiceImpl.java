@@ -14,6 +14,7 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
@@ -26,8 +27,6 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * The class validates the UIN and VID.
@@ -45,18 +44,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	private RestHelper restHelper;
 
 	/** The logger. */
-	private MosipLogger logger;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param idaRollingFileAppender
-	 *            the ida rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
+	private static MosipLogger logger = IdaLogger.getLogger(IdAuthServiceImpl.class);
 
 	/** The rest factory. */
 	@Autowired

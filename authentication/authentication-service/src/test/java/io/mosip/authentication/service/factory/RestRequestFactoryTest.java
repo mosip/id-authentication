@@ -29,7 +29,6 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
@@ -53,17 +52,6 @@ public class RestRequestFactoryTest {
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(auditFactory, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.invokeMethod(restFactory, "initializeLogger", mosipRollingFileAppender);
 	}
 
 	@Test

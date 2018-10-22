@@ -38,7 +38,6 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.idauth.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 /**
  * This class tests the IdAuthServiceImpl.java
@@ -74,24 +73,10 @@ public class IdAuthServiceTest {
 
 	@Before
 	public void before() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
-		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.invokeMethod(auditFactory, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "auditFactory", auditFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
-		// ReflectionTestUtils.setField(idAuthServiceImpl, "logger", logger);
 	}
 
 	/**

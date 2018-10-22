@@ -19,10 +19,9 @@ import org.springframework.util.MultiValueMap;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * A factory for creating and building RestRequest objects from
@@ -51,18 +50,7 @@ public class RestRequestFactory {
 	private Environment env;
 
 	/** The logger. */
-	private MosipLogger logger;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param idaRollingFileAppender
-	 *            the ida rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(RestRequestFactory.class);
 
 	/**
 	 * Builds the request.
@@ -166,7 +154,7 @@ public class RestRequestFactory {
 			request.setResponseType(returnType);
 		} else {
 			
-			logger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
+			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
 					"throwing IDDataValidationException - INVALID_RETURN_TYPE" + returnType);
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_RETURN_TYPE);
 		}
@@ -184,7 +172,7 @@ public class RestRequestFactory {
 			request.setHttpMethod(HttpMethod.valueOf(httpMethod));
 		} else {
 			
-			logger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "httpMethod",
+			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "httpMethod",
 					"throwing IDDataValidationException - INVALID_HTTP_METHOD" + httpMethod);
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_HTTP_METHOD);
 		}
@@ -201,7 +189,7 @@ public class RestRequestFactory {
 		if (checkIfEmptyOrWhiteSpace(uri)) {
 			request.setUri(uri);
 		} else {
-			logger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "uri",
+			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "uri",
 					"throwing IDDataValidationException - uri is empty or whitespace" + uri);
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_URI);
 		}

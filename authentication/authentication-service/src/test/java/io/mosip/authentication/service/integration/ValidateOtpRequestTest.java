@@ -28,7 +28,6 @@ import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.dto.OTPValidateResponseDTO;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 /**
  * 
@@ -58,44 +57,34 @@ public class ValidateOtpRequestTest {
 	@InjectMocks
 	PinDTO pindto;
 
-//	static BlockingNettyContext server;
+	// static BlockingNettyContext server;
 
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(restfactory, "env", env);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(restfactory, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.invokeMethod(otpManager, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restfactory);
-		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
 	}
 
-//	/**
-//	 * To Configure the HTTP resources to Validate OTP
-//	 * 
-//	 */
-//
-//	@BeforeClass
-//	public static void beforeClass() {
-//		RouterFunction<?> functionSuccess = RouterFunctions.route(RequestPredicates.POST("/otpmanager/otps"),
-//				request -> ServerResponse.status(HttpStatus.OK).body(
-//						Mono.just(new OTPValidateResponseDTO("True", "OTP Validation Successful")),
-//						OTPValidateResponseDTO.class));
-//		HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
-//		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
-//		server = HttpServer.create(8083).start(adapter);
-//		server.installShutdownHook();
-//		System.err.println("Server Started");
-//	}
+	// /**
+	// * To Configure the HTTP resources to Validate OTP
+	// *
+	// */
+	//
+	// @BeforeClass
+	// public static void beforeClass() {
+	// RouterFunction<?> functionSuccess =
+	// RouterFunctions.route(RequestPredicates.POST("/otpmanager/otps"),
+	// request -> ServerResponse.status(HttpStatus.OK).body(
+	// Mono.just(new OTPValidateResponseDTO("True", "OTP Validation Successful")),
+	// OTPValidateResponseDTO.class));
+	// HttpHandler httpHandler = RouterFunctions.toHttpHandler(functionSuccess);
+	// ReactorHttpHandlerAdapter adapter = new
+	// ReactorHttpHandlerAdapter(httpHandler);
+	// server = HttpServer.create(8083).start(adapter);
+	// server.installShutdownHook();
+	// System.err.println("Server Started");
+	// }
 
 	/**
 	 * Test OTP Validation with key and OTP on Core-kernal
@@ -121,8 +110,6 @@ public class ValidateOtpRequestTest {
 
 		assertEquals(true, otpManager.validateOtp("12345", "23232"));
 	}
-
-	
 
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void zTest_InvalidvalidateOTP() throws RestServiceException, IdAuthenticationBusinessException {

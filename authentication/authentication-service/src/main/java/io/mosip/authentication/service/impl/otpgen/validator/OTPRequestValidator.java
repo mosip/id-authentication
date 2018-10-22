@@ -14,12 +14,11 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
 import io.mosip.kernel.idvalidator.uinvalidator.UinValidator;
 import io.mosip.kernel.idvalidator.vidvalidator.VidValidator;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * {@code OTPRequestValidator} do constraint validate of {@link OtpRequestDTO}
@@ -34,12 +33,7 @@ public class OTPRequestValidator implements Validator {
 	private static final String AUTH_REQUEST_VALIDATOR = "OTPValidator";
 	private static final String SESSION_ID = "sessionId";
 
-	private MosipLogger mosipLogger;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		mosipLogger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
+	private MosipLogger mosipLogger = IdaLogger.getLogger(OTPRequestValidator.class);
 
 	@Autowired
 	private SpringValidatorAdapter validator;

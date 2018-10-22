@@ -39,7 +39,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 /**
  * Test functionality
@@ -81,16 +80,6 @@ public class OTPControllerTest {
 
 	@Before
 	public void before() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(otpController, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.invokeMethod(otpController, "initBinder", binder);
 	}
 
@@ -194,7 +183,7 @@ public class OTPControllerTest {
 		Mockito.when(otpController.generateOTP(otpRequestDto, result)).thenThrow(idAuthenticationAppException);
 
 	}
-	
+
 	@Test(expected = IdAuthenticationAppException.class)
 	public void testGenerateOtpDataValidationException() throws IdAuthenticationAppException {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");

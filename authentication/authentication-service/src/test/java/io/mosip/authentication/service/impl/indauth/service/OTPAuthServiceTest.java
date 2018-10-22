@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -36,7 +35,6 @@ import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.UinEntity;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import reactor.ipc.netty.http.HttpResources;
 
 /**
@@ -65,16 +63,6 @@ public class OTPAuthServiceTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authserviceimpl, "env", env);
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(authserviceimpl, "initializeLogger", mosipRollingFileAppender);
 	}
 
 	private AuthRequestDTO otpAuthRequestDTO = new AuthRequestDTO();

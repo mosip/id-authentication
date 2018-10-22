@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +20,9 @@ import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * The Class IDAExceptionHandler - ControllerAdvice to handle
@@ -54,17 +52,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 	
 	/** The mosip logger. */
-	private MosipLogger mosipLogger;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param idaRollingFileAppender the ida rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		mosipLogger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(IdAuthExceptionHandler.class);
 
 	/**
 	 * Handle all exceptions.

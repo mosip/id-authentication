@@ -32,7 +32,6 @@ import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.service.impl.idauth.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -49,13 +48,8 @@ public class AuthFacadeImplTest {
 	@Autowired
 	Environment env;
 	
-	/*@InjectMocks
-	private MosipLogger logger;*/
-
-	/*@InjectMocks
-	MosipRollingFileAppender idaRollingFileAppender;*/
-	
 	/** The auth facade impl. */
+	@InjectMocks
 	private AuthFacadeImpl authFacadeImpl;
 	
 	/** The id auth service impl. */
@@ -72,16 +66,6 @@ public class AuthFacadeImplTest {
 	 */
 	@Before
 	public void before() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		authFacadeImpl = new AuthFacadeImpl(mosipRollingFileAppender);
 		ReflectionTestUtils.setField(authFacadeImpl, "idAuthService", idAuthServiceImpl);
 		ReflectionTestUtils.setField(authFacadeImpl, "otpService", otpAuthServiceImpl);
 	}

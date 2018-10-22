@@ -17,12 +17,11 @@ import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
@@ -35,18 +34,13 @@ public class OTPController {
 
 	private static final String DEAFULT_SESSION_ID = "sessionId";
 
-	private MosipLogger logger;
+	private static MosipLogger logger = IdaLogger.getLogger(OTPController.class);
 
 	@Autowired
 	private OTPFacade otpFacade;
 
 	@Autowired
 	private OTPRequestValidator otpRequestValidator;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
 
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {

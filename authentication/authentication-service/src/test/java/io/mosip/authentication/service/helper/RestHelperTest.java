@@ -46,7 +46,6 @@ import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import reactor.core.publisher.Mono;
 import reactor.ipc.netty.http.HttpResources;
 import reactor.ipc.netty.http.server.HttpServer;
@@ -86,16 +85,6 @@ public class RestHelperTest {
 	 */
 	@Before
 	public void before() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(environment.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(environment.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(environment.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(environment.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(environment.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.setField(auditFactory, "env", environment);
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 	}

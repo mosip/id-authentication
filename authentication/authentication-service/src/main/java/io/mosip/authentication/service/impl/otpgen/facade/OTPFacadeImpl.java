@@ -16,6 +16,7 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
@@ -24,8 +25,6 @@ import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * Facade implementation of OTPfacade to generate OTP.
@@ -50,13 +49,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	@Autowired
 	private Environment env;
 
-	private MosipLogger mosipLogger;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		mosipLogger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-
-	}
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPFacadeImpl.class);
 
 	/**
 	 * Obtained OTP.
@@ -81,7 +74,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			try {
 				otp = otpService.generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
-				mosipLogger.error("", otpRequestDto.getIdType(), e.getErrorCode(), e.getErrorText());
+				mosipLogger.error("", otpRequestDto.getIdType(), e.getErrorCode(), "Error: " + e);
 			}
 		}
 		mosipLogger.info(SESSION_ID, "NA", "generated OTP", otp);

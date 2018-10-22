@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyExtractors;
@@ -19,10 +18,9 @@ import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 import reactor.core.publisher.Mono;
 
 /**
@@ -60,20 +58,8 @@ public class RestHelper {
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
-	/** The logger. */
-	// TODO Check for response body
-	private MosipLogger logger;
-
-	/**
-	 * Instantiates a new rest util.
-	 *
-	 * @param idaRollingFileAppender
-	 *            the ida rolling file appender
-	 */
-	@Autowired
-	public void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, RestHelper.class);
-	}
+	/** The mosipLogger. */
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(RestHelper.class);
 
 	/**
 	 * Request to send/receive HTTP requests and return the response synchronously.
@@ -91,25 +77,25 @@ public class RestHelper {
 		Object response;
 		if (request.getTimeout() != null) {
 			try {
-				logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
+				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_RESPONSE + response);
+				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_RESPONSE + response);
 				return (T) response;
 			} catch (RuntimeException e) {
 				if (e.getCause().getClass().equals(TimeoutException.class)) {
-					logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+					mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
 							"Throwing RestServiceException - CONNECTION_TIMED_OUT - " + e.getCause());
 					throw new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e);
 				} else {
-					logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync-RuntimeException",
+					mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync-RuntimeException",
 							"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
 					throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
 				}
 			}
 		} else {
-			logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
+			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
 			response = request(request).block();
-			logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_RESPONSE + response);
+			mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_RESPONSE + response);
 			return (T) response;
 		}
 	}
@@ -122,10 +108,10 @@ public class RestHelper {
 	 * @return the supplier
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
-		logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
+		mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, PREFIX_REQUEST + request);
 		Mono<?> sendRequest = request(request);
 		sendRequest.subscribe();
-		logger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
+		mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_ASYNC, "Request subscribed");
 		return () -> sendRequest.block();
 	}
 
@@ -179,15 +165,15 @@ public class RestHelper {
 	 */
 	private Mono<Throwable> handleStatusError(ClientResponse response) {
 		Mono<Object> body = response.body(BodyExtractors.toMono(Object.class));
-		logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+		mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 				"Status error : " + response.statusCode() + " " + response.statusCode().getReasonPhrase());
 		if (response.statusCode().is4xxClientError()) {
-			logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 					"Status error - returning RestServiceException - CLIENT_ERROR");
 			return body.flatMap(responseBody -> Mono.error(
 					new RestServiceException(IdAuthenticationErrorConstants.CLIENT_ERROR, Optional.of(responseBody))));
 		} else {
-			logger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
+			mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
 					"Status error - returning RestServiceException - SERVER_ERROR");
 			return body.flatMap(responseBody -> Mono.error(
 					new RestServiceException(IdAuthenticationErrorConstants.SERVER_ERROR, Optional.of(responseBody))));
