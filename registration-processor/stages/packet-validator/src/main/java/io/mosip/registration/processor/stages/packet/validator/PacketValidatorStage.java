@@ -28,7 +28,7 @@ import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -52,7 +52,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	FileManager<DirectoryPathDto, InputStream> fileManager;
 
 	@Autowired
-	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService;
 
 	@Autowired
 	private PacketInfoManager<PacketInfo, DemographicInfo, MetaData> packetInfoManager;
@@ -75,7 +75,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			PacketInfo packetInfo = (PacketInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
 					PacketInfo.class);
 
-			RegistrationStatusDto registrationStatusDto = registrationStatusService
+			InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 					.getRegistrationStatus(registrationId);
 			FilesValidation filesValidation = new FilesValidation(adapter);
 			boolean isFilesValidated = filesValidation.filesValidation(registrationId, packetInfo);

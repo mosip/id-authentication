@@ -27,7 +27,7 @@ import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatfo
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
 @RunWith(SpringRunner.class)
@@ -36,7 +36,7 @@ public class DuplicateUploadExceptionTest {
 	private static final String fileExtension = ".zip";
 
 	@Mock
-	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService;
 
     @Mock
     private SyncRegistrationService syncRegistrationService;
@@ -56,7 +56,7 @@ public class DuplicateUploadExceptionTest {
 	};
 
 	@Mock
-	private RegistrationStatusDto dto;
+	private InternalRegistrationStatusDto dto;
 
 	@Test
 	public void TestDuplicateUploadException() {

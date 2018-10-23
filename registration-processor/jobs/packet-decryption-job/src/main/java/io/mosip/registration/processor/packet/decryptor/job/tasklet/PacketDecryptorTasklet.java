@@ -23,7 +23,7 @@ import io.mosip.registration.processor.packet.decryptor.job.Decryptor;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.decryptor.job.messagesender.DecryptionMessageSender;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
@@ -42,7 +42,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 	private static final String LOGDISPLAY = "{} - {} - {}";
 
 	@Autowired
-	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService;
 
 	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
 
@@ -68,7 +68,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 	 */
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		List<RegistrationStatusDto> dtolist = null;
+		List<InternalRegistrationStatusDto> dtolist = null;
 
 		try {
 			dtolist = registrationStatusService
@@ -118,7 +118,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 	 * @throws IOException
 	 * @throws PacketDecryptionFailureException
 	 */
-	private void decyptpacket(RegistrationStatusDto dto) throws IOException, PacketDecryptionFailureException {
+	private void decyptpacket(InternalRegistrationStatusDto dto) throws IOException, PacketDecryptionFailureException {
 		try {
 			packetArchiver.archivePacket(dto.getRegistrationId());
 		} catch (UnableToAccessPathException e) {

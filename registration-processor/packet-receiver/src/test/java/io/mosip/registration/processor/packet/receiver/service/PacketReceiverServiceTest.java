@@ -44,7 +44,7 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
@@ -55,13 +55,13 @@ public class PacketReceiverServiceTest {
 	private static final String fileExtension = ".zip";
 
 	@Mock
-	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService;
 
 	@Mock
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
 
 	@Mock
-	private RegistrationStatusDto mockDto;
+	private InternalRegistrationStatusDto mockDto;
 
     @Mock
     private AuditRequestBuilder auditRequestBuilder;

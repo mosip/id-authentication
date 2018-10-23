@@ -24,7 +24,7 @@ import io.mosip.registration.processor.packet.receiver.service.PacketReceiverSer
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationType;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
@@ -48,7 +48,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
 
 	@Autowired
-	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService;
 
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
@@ -84,7 +84,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				try {
 					fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
 
-					RegistrationStatusDto dto = new RegistrationStatusDto();
+					InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
 					dto.setRegistrationId(registrationId);
 					dto.setRegistrationType(RegistrationType.NEW.toString());
 					dto.setReferenceRegistrationId(null);

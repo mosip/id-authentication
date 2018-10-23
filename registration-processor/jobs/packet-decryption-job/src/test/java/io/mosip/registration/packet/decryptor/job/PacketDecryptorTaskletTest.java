@@ -40,7 +40,7 @@ import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecr
 import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
 import io.mosip.registration.processor.packet.decryptor.job.tasklet.PacketDecryptorTasklet;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
@@ -60,7 +60,7 @@ public class PacketDecryptorTaskletTest {
 
 	/** The registration status service. */
 	@Mock
-	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService;
 
 	/** The adapter. */
 	@Mock
@@ -83,10 +83,10 @@ public class PacketDecryptorTaskletTest {
 	ChunkContext chunkContext;
 
 	/** The dto. */
-	RegistrationStatusDto dto;
+	InternalRegistrationStatusDto dto;
 
 	/** The list. */
-	List<RegistrationStatusDto> list;
+	List<InternalRegistrationStatusDto> list;
 
 	/**
 	 * Setup.
@@ -100,11 +100,11 @@ public class PacketDecryptorTaskletTest {
 	 */
 	@Before
 	public void setup() throws UnableToAccessPathException, PacketNotFoundException, IOException {
-		dto = new RegistrationStatusDto();
+		dto = new InternalRegistrationStatusDto();
 		dto.setRegistrationId("1001");
 		dto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
 		dto.setRetryCount(0);
-		list = new ArrayList<RegistrationStatusDto>();
+		list = new ArrayList<InternalRegistrationStatusDto>();
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class PacketDecryptorTaskletTest {
 
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
 
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(RegistrationStatusDto.class));
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 
 		RepeatStatus status = packetDecryptorTasklet.execute(stepContribution, chunkContext);
 		Assert.assertEquals(RepeatStatus.FINISHED, status);
@@ -300,7 +300,7 @@ public class PacketDecryptorTaskletTest {
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
 
 		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
-				.updateRegistrationStatus(any(RegistrationStatusDto.class));
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 
 		RepeatStatus status = packetDecryptorTasklet.execute(stepContribution, chunkContext);
 		Assert.assertEquals(RepeatStatus.FINISHED, status);

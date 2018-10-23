@@ -22,7 +22,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCe
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.scanner.job.exception.VirusScanFailedException;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
-import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
@@ -53,7 +53,7 @@ public class VirusScannerTasklet implements Tasklet {
 	FileManager<DirectoryPathDto, InputStream> fileManager;
 
 	@Autowired
-	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService;
 
 	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
 
@@ -74,7 +74,7 @@ public class VirusScannerTasklet implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
-		List<RegistrationStatusDto> registrationStatusDtoList = null;
+		List<InternalRegistrationStatusDto> registrationStatusDtoList = null;
 		try {
 			registrationStatusDtoList = registrationStatusService
 					.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString());
@@ -83,7 +83,7 @@ public class VirusScannerTasklet implements Tasklet {
 			return RepeatStatus.FINISHED;
 		}
 
-		for (RegistrationStatusDto entry : registrationStatusDtoList) {
+		for (InternalRegistrationStatusDto entry : registrationStatusDtoList) {
 
 			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN.toString()) + File.separator
 					+ getFileName(entry.getRegistrationId());
@@ -111,7 +111,7 @@ public class VirusScannerTasklet implements Tasklet {
 	 * @param entry
 	 *            the entry
 	 */
-	private void sendToRetry(RegistrationStatusDto entry) {
+	private void sendToRetry(InternalRegistrationStatusDto entry) {
 		try {
 			if (entry.getRetryCount() == null)
 				entry.setRetryCount(0);
@@ -139,7 +139,7 @@ public class VirusScannerTasklet implements Tasklet {
 	 * @param entry
 	 *            the entry
 	 */
-	private void sendToDFS(File file, RegistrationStatusDto entry) {
+	private void sendToDFS(File file, InternalRegistrationStatusDto entry) {
 		String filename = file.getName();
 		filename = filename.substring(0, filename.lastIndexOf('.'));
 		try {
