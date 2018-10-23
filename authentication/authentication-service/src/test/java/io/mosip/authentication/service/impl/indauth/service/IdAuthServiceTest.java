@@ -213,7 +213,7 @@ public class IdAuthServiceTest {
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(true);
 		Mockito.when(uinRepository.findByUinRefId(Mockito.any())).thenReturn(Optional.of(uinEntity));
-		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
+		Mockito.when(vidRepository.findById(Mockito.anyString())).thenReturn(Optional.of(vidEntity));
 
 		ReflectionTestUtils.setField(idAuthServiceImpl, "uinRepository", uinRepository);
 		String refId = idAuthServiceImpl.validateVID(vid);

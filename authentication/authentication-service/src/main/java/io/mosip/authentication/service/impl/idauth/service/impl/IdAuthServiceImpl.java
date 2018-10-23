@@ -139,28 +139,28 @@ public class IdAuthServiceImpl implements IdAuthService {
 	private String doValidateVIDEntity(String vid) throws IdValidationFailedException {
 		String refId = null;
 		Optional<VIDEntity> vidEntityOpt = vidRepository.findById(vid);
-		if (vidEntityOpt.isPresent()) {
-			VIDEntity vidEntity = vidEntityOpt.get();
-			if (vidEntity .isActive()) {
-				Date currentDate = new Date();
-				if (currentDate.before(vidEntity.getExpiryDate())) {
-					refId = vidEntity.getRefId();
-					Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
-					if (uinEntityOpt.isPresent()) {
-						doValidateUIN(uinEntityOpt.get());
-					} else {
-						throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
-					}
-				} else {
-					throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
-				}
-			} else {
-				// TODO log error
-				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_VID);
-			}
-		} else {
+		if (!vidEntityOpt.isPresent()) {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_VID);
+		} 
+		VIDEntity vidEntity = vidEntityOpt.get();
+		if (!vidEntity.isActive()) {
+			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_VID);
 		}
+		
+		Date currentDate = new Date();
+		if (!currentDate.before(vidEntity.getExpiryDate())) {
+			throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
+		}
+		
+		refId = vidEntity.getRefId();
+		Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
+		if (!uinEntityOpt.isPresent()) {
+			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
+		}
+		
+		
+		doValidateUIN(uinEntityOpt.get());
+	
 		return refId;
 	}
 
