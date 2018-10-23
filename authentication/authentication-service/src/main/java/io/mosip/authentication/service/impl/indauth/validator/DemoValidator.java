@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -135,15 +136,23 @@ public class DemoValidator implements Validator {
 	private void addressValidation(DemoDTO demodto, Errors errors) {
 
 		PersonalAddressDTO personalAddressDTO = demodto.getAd();
-		if ((personalAddressDTO.getAddrLine1Pri() == null && personalAddressDTO.getAddrLine2Pri() == null
-				&& personalAddressDTO.getAddrLine3Pri() == null && personalAddressDTO.getCityPri() == null
-				&& personalAddressDTO.getStatePri() == null && personalAddressDTO.getCountryPri() == null
-				&& personalAddressDTO.getPinCodePri() == null)
-				&& (personalAddressDTO.getAddrLine1Sec() == null && personalAddressDTO.getAddrLine2Sec() == null
-						&& personalAddressDTO.getAddrLine3Sec() == null && personalAddressDTO.getCitySec() == null
-						&& personalAddressDTO.getStateSec() == null && personalAddressDTO.getCountrySec() == null
-						&& personalAddressDTO.getPinCodeSec() == null)) {
-
+		boolean allAdNull = Stream.<Supplier<Object>>of(
+								 personalAddressDTO::getAddrLine1Pri, 
+								 personalAddressDTO::getAddrLine2Pri,
+								 personalAddressDTO::getAddrLine3Pri,
+								 personalAddressDTO::getCityPri     ,
+								 personalAddressDTO::getStatePri    ,
+								 personalAddressDTO::getCountryPri  ,
+								 personalAddressDTO::getPinCodePri  ,
+								 personalAddressDTO::getAddrLine1Sec, 
+								 personalAddressDTO::getAddrLine2Sec,
+								 personalAddressDTO::getAddrLine3Sec, 
+								 personalAddressDTO::getCitySec     ,
+								 personalAddressDTO::getStateSec    ,
+								 personalAddressDTO::getCountrySec  ,
+								 personalAddressDTO::getPinCodeSec      )
+							.allMatch(supplier -> supplier.get() == null);
+		if(allAdNull) {
 			mosipLogger.error(SESSION_ID, "Personal Address", "Address Validation",
 					"Atleast one attribute for address should be present");
 			errors.reject(IdAuthenticationErrorConstants.INVALID_ADDRESS_REQUEST.getErrorCode(),
