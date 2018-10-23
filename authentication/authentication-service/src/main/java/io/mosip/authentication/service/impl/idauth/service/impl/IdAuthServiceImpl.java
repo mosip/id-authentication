@@ -138,10 +138,10 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 */
 	private String doValidateVIDEntity(String vid) throws IdValidationFailedException {
 		String refId = null;
-		VIDEntity vidEntity = vidRepository.getOne(vid);
-		if (null != vidEntity) {
-
-			if (vidEntity.isActive()) {
+		Optional<VIDEntity> vidEntityOpt = vidRepository.findById(vid);
+		if (vidEntityOpt.isPresent()) {
+			VIDEntity vidEntity = vidEntityOpt.get();
+			if (vidEntity .isActive()) {
 				Date currentDate = new Date();
 				if (currentDate.before(vidEntity.getExpiryDate())) {
 					refId = vidEntity.getRefId();
