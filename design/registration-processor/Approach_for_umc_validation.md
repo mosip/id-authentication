@@ -25,5 +25,7 @@ The key non-functional requirements are
 **Solution**
 
 The key solution considerations are -
-- Create a vertical to validate user, machine and center details.
-- On successful response from "packet-validator" vertical send request to user-machine-center-validator for next validation.
+- Create vertical "user-machine-center-validator" to validate user, machine and center details.
+- On successful packet structure validation, send request to user-machine-center-validator .
+- Create UmcValidationProcessor in camel-bridge and route all successful packet structure validation request to umc_bus address. Map the request between vert.x and camel endpoints.
+- Use apache rest client to call [Master-data-APIs](https://github.com/mosip/mosip/wiki/2.4-Master-data-APIs#234-document-formats-master-api)
