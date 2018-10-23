@@ -7,18 +7,16 @@
 
 <AnchorPane fx:id="uploadPacketRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="944.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.PacketUploadController">
    <children>
-      <TableView fx:id="table" layoutX="27.0" layoutY="160.0" prefHeight="290.0" prefWidth="890.0">
+      <TableView fx:id="table" layoutX="52.0" layoutY="116.0" prefHeight="250.0" prefWidth="800.0">
         <columns>
-          <TableColumn fx:id="fileNameColumn" prefWidth="445.0" text="Files" />
-          <TableColumn fx:id="uploadStatusColumn" prefWidth="444.0" text="Upload Status" />
+          <TableColumn fx:id="fileNameColumn" prefWidth="400.0" text="Files" />
+          <TableColumn fx:id="uploadStatusColumn" prefWidth="400.0" text="Upload Status" />
         </columns>
       </TableView>
-      <Button fx:id="formValidationButton" layoutX="835.0" layoutY="111.0" mnemonicParsing="false" onAction="#validate" text="Upload" />
-      <Label layoutX="49.0" layoutY="117.0" text="Local Packet Folder" />
-      <Label fx:id="folderPath" layoutX="230.0" layoutY="117.0" prefHeight="27.0" prefWidth="251.0" />
-      <Label layoutX="384.0" layoutY="31.0" prefHeight="39.0" prefWidth="137.0" text="Upload Packet">
+      <Button fx:id="formValidationButton" layoutX="770.0" layoutY="70.0" mnemonicParsing="false" onAction="#validate" text="Upload" />
+      <Label layoutX="379.0" layoutY="31.0" prefHeight="39.0" prefWidth="161.0" text="Upload Packet">
          <font>
-            <Font size="20.0" />
+            <Font size="23.0" />
          </font>
       </Label>
    </children>

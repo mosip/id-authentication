@@ -21,7 +21,10 @@
             <TableColumn fx:id="acknowledgementFormPath" minWidth="0.0" prefWidth="0.0" resizable="false" text="Operator Name" visible="false" />
 			</columns>
 		</TableView>
-		<Label layoutX="397.0" layoutY="20.0" text="Approve Registration" />
+		<Label layoutX="343.0" layoutY="24.0" text="Approve Registration">
+         <font>
+            <Font size="23.0" />
+         </font></Label>
 		<Button fx:id="onHoldBtn" layoutX="516.0" layoutY="68.0" mnemonicParsing="false" onAction="#onHoldPacket" prefHeight="20.0" prefWidth="100.0" text="On Hold" />
 		<Button fx:id="rejectionBtn" layoutX="402.0" layoutY="68.0" mnemonicParsing="false" onAction="#rejectPacket" prefHeight="20.0" prefWidth="100.0" text="Reject" />
 		<Button fx:id="approvalBtn" layoutX="284.0" layoutY="68.0" mnemonicParsing="false" onAction="#approvePacket" prefHeight="20.0" prefWidth="100.0" text="Approve" />
