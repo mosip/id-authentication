@@ -102,3 +102,6 @@
 #registrationData{
 	-fx-wrap-text: true;
 }
+#userClientMachineMappingEditPane {
+       -fx-background-color:#f2f2f2;
+}            
