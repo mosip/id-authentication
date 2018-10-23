@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -16,6 +18,7 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.PinDTO;
 import io.mosip.authentication.core.dto.indauth.PinType;
@@ -141,9 +144,16 @@ public class AuthRequestValidator implements Validator {
 	 * @param errors
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
-		boolean anyAuthType = authRequest.getAuthType().isOtp() || authRequest.getAuthType().isBio()
-				|| authRequest.getAuthType().isAd() || authRequest.getAuthType().isFad()
-				|| authRequest.getAuthType().isPin() || authRequest.getAuthType().isPi();
+		AuthTypeDTO authType = authRequest.getAuthType();
+		boolean anyAuthType = Stream.<Supplier<Boolean>>of(
+										authType::isOtp, 
+										authType::isBio,
+										authType::isAd,
+										authType::isFad,
+										authType::isPin,
+										authType::isPi)
+									.anyMatch(Supplier<Boolean>::get);
+
 			
 		if(!anyAuthType) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
@@ -153,7 +163,7 @@ public class AuthRequestValidator implements Validator {
 
 		}
 		
-		if (authRequest.getAuthType().isOtp()) {
+		if (authType.isOtp()) {
 			checkOTPAuth(authRequest, errors);
 		} 
 	}
