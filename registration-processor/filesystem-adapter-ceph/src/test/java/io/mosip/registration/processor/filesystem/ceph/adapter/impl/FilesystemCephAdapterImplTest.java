@@ -244,6 +244,12 @@ public class FilesystemCephAdapterImplTest {
 		this.dfsAdapter = new FilesystemCephAdapterImpl();
 		this.dfsAdapter.storePacket(this.checkEnrolmentId, packet);
 	}
+	
+	@Test
+	public void fileExistenceFailureTest() {
+		boolean result = this.dfsAdapter.checkFileExistence(checkEnrolmentId, PacketFiles.BIOMETRIC.name());
+		assertEquals(false, result);
+	}
 
 	/**
 	 * This method destroys the dummy DFS connection.

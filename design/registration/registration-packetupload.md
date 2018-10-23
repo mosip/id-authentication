@@ -115,9 +115,32 @@ Scope
 Functional Scope
 ----------------
 
--   Expose the API to upload the Enrollment packet through FTP.
+-   Invoke the REST service to update the pre-sync status. \[With
+    multiple registration IDs which are under 'yet to be synced'
+    status.\]
 
--   Upload on the packets their status should be ***"Synched".***
+-   Once success then update the transaction and registration table.
+
+    -   Registration -- client status with 'S'
+
+    -   Transaction -- update status with 'Synched'
+
+    -   Timestamp update.
+
+-   Invoke the Upload REST service to push the list of packets to the
+    server in a sequential manner \[one by one\]
+
+-   Once all packets pushed, update the respective status in the table.
+
+    -   Registration -- client status with 'P'
+
+    -   Transaction -- update status with 'Pushed'
+
+    -   Timestamp update.
+
+-   If there are any packets with the server status as 'Resend' then
+    push that packet as well to the server and update the relevant
+    status column.
 
 -   The role of the supervisor, which having the access to upload the
     packets should be able to browse the upload packet location.
@@ -133,7 +156,7 @@ Non Functional Scope
 
 -   Security :
 
-    -   The Enrollment packet shouldn't be decryptable other than
+    -   The Enrollment packet shouldn't be decrypt-able other than
         Enrollment Server.
 
     -   FTP should be communicate via SSH private key always.
@@ -190,7 +213,24 @@ Design Detail
 >
 > **Packet Uploading:**
 
--   Create the **FileUploadController** with method **handleUpload**
+-   Timestamp update.
+
+-   Invoke the Upload REST service to push the list of packets to the
+    server in a sequential manner \[one by one\]
+
+-   Once all packets pushed , update the respective status in the table.
+
+-   Registration -- client status with 'P'
+
+-   Transaction -- update status with 'Pushed'
+
+-   Timestamp update.
+
+-   If there are any packets with the server status as 'Resend' then
+    push that packet as well to the server and update the relevant
+    status column.
+
+-   -   Create the **FileUploadController** with method **handleUpload**
     passing the ***filePath*** as a parameter.
 
 -   The component should get the uploading choose path and validate
@@ -209,10 +249,15 @@ Design Detail
 
 -   **FTPUploadValidationService** having the method ***validate*** and
     the ***packetName*** is the parameter for the method to check the
-    status before uploading to the enrolment server.
+    status before uploading to the enrolment server and to update the
+    pre-sync status. \[with multiple registration IDs which are under
+    'yet to be synced' status.\]
 
-    -   The packet status should be ***"Synched"***, then only the
-        component should upload the packet.
+    -   Once success then update the transaction and registration table.
+
+    -   Registration -- client status with 'S'
+
+    -   Transaction -- update status with 'Synched'
 
 -   Create Java component API like "**FTPUploadManager**" and having the
     method name as "***uploadFile***" and accepting the file as an
@@ -222,9 +267,13 @@ Design Detail
     method as "connect" and the \[url, sshkey, timeoutInterval, status\]
     as a parameters to the method.
 
--   Once returns the success secure connection ftp, the
-    **FTPUploadManager** to upload the each packet to the desired server
-    location.
+-   Once all packets pushed , update the respective status in the table.
+
+    -   Registration -- client status with 'P'
+
+    -   Transaction -- update status with 'Pushed'
+
+    -   Timestamp update.
 
 -   If the folder already uploaded and only some packets are not
     uploaded the manager should check those packets and upload only
@@ -250,6 +299,10 @@ Design Detail
 -   Once the uploaded is done, the API should be able to display the
     result of the upload as a UI screen having the below table with
     columns.
+
+-   If there are any packets with the server status as 'Resend' then
+    push that packet as well to the server and update the relevant
+    status column.
 
   Date Time               The uploaded Date time to server
   ----------------------- -------------------------------------------------------------
@@ -304,11 +357,7 @@ Class Diagram
 Sequence Diagram
 ----------------
 
-> **<https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_sequence_diagram/registration-packetupload-sequenceDiagram.png>
-> **
-
-**\
-**
+[**https://github.com/mosip/mosip/blob/DEV/design/registration/\_images/\_sequence\_diagram/registration-packetupload-sequenceDiagram.png**](https://github.com/mosip/mosip/blob/DEV/design/registration/_images/_sequence_diagram/registration-packetupload-sequenceDiagram.png)
 
 Success / Error Code 
 =====================
