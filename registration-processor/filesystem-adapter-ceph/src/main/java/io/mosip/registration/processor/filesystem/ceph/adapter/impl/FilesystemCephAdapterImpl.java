@@ -18,6 +18,7 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.PacketNotFoundException;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.handler.ExceptionHandler;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
 
@@ -242,8 +243,13 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	@Override
 	public Boolean checkFileExistence(String enrolmentId, String fileName) {
 		boolean result = false;
-		if (getFile(enrolmentId, fileName) != null) {
-			result = true;
+		try {
+			if (getFile(enrolmentId, fileName) != null) {
+				result = true;
+			}
+		} catch (PacketNotFoundException e) {
+			LOGGER.error(LOGDISPLAY, "INVALID_PACKET_FILE_NAME");
+			return false;
 		}
 		return result;
 	}
