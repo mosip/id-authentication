@@ -2,6 +2,7 @@ package io.mosip.authentication.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 import io.mosip.kernel.dataaccess.config.impl.HibernateDaoConfig;
@@ -13,6 +14,7 @@ import io.mosip.kernel.dataaccess.config.impl.HibernateDaoConfig;
  */
 @SpringBootApplication
 @Import(value= {HibernateDaoConfig.class})
+@ComponentScan(basePackages= {"io.mosip.*"})
 public class IdAuthenticationApplication {
 	
 	/**

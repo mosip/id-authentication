@@ -9,11 +9,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
@@ -38,6 +38,9 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.idauth.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
+import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
+import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
+import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 /**
@@ -62,6 +65,12 @@ public class AuthRequestValidatorTest {
 
 	@Autowired
 	Environment env;
+	
+	@Mock
+	private UinValidatorImpl uinValidator;
+	
+	@Mock
+	private VidValidatorImpl vidValidator;
 
 	@InjectMocks
 	MosipRollingFileAppender idaRollingFileAppender;
@@ -193,9 +202,9 @@ public class AuthRequestValidatorTest {
 
 	}
 
-	@Ignore //FIXME
 	@Test
 	public void testValidUin() throws NoSuchMethodException, SecurityException {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setIdType(IdType.UIN.getType());
@@ -220,10 +229,11 @@ public class AuthRequestValidatorTest {
 
 	@Test
 	public void testInvalidUin() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("code", "msg"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setIdType(IdType.UIN.getType());
-		authRequestDTO.setId("234567890123");
+		authRequestDTO.setId("2345678901231");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(false);
 		authType.setPi(false);
@@ -241,13 +251,13 @@ public class AuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore //FIXME
 	@Test
 	public void testValidVid() {
+		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(true);
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setIdType(IdType.VID.getType());
-		authRequestDTO.setId("5371843613598206");
+		authRequestDTO.setId("53718436135982061");
 		AuthTypeDTO authType = new AuthTypeDTO();
 		authType.setBio(false);
 		authType.setPi(false);
@@ -268,6 +278,7 @@ public class AuthRequestValidatorTest {
 
 	@Test
 	public void testInvalidVid() {
+		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("code", "msg"));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		authRequestDTO.setIdType(IdType.VID.getType());

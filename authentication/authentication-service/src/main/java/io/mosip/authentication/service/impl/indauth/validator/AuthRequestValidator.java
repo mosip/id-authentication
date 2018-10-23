@@ -49,6 +49,12 @@ public class AuthRequestValidator implements Validator {
 	/** The env. */
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private UinValidatorImpl uinValidator;
+	
+	@Autowired
+	private VidValidatorImpl vidValidator;
 
 	/** The validator. */
 	@Autowired
@@ -75,7 +81,7 @@ public class AuthRequestValidator implements Validator {
 
 		AuthRequestDTO authRequest = (AuthRequestDTO) target;
 		String reqTime = authRequest.getReqTime();
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(env.getProperty("datetime.pattern"));
 		Date parse = null;
 
 		try {
@@ -112,8 +118,7 @@ public class AuthRequestValidator implements Validator {
 
 		if (idType.equals(IdType.UIN.getType())) {
 			try {
-				UinValidatorImpl uinValidator = new UinValidatorImpl();
-				uinValidator.validateId(authRequest.getId());
+				System.err.println(uinValidator.validateId(authRequest.getId()));
 			} catch (MosipInvalidIDException e) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
 				errors.rejectValue("id", IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
@@ -121,7 +126,6 @@ public class AuthRequestValidator implements Validator {
 			}
 		} else if (idType.equals(IdType.VID.getType())) {
 			try {
-				VidValidatorImpl vidValidator = new VidValidatorImpl();
 				vidValidator.validateId(authRequest.getId());
 			} catch (MosipInvalidIDException e) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
