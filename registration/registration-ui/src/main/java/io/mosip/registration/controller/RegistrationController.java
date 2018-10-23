@@ -349,14 +349,14 @@ public class RegistrationController extends BaseController {
 				environment.getProperty(APPLICATION_ID),
 				"Entering into toggle function for toggle label 1 and toggle level 2");
 
-		toggleLabel1.setStyle("-fx-background-color: red;");
-		toggleLabel2.setStyle("-fx-background-color: green;");
+		toggleLabel1.setStyle("-fx-background-color: grey;");
+		toggleLabel2.setStyle("-fx-background-color: white;");
 		switchedOn.addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
 				if (newValue) {
-					toggleLabel1.setStyle("-fx-background-color: green;");
-					toggleLabel2.setStyle("-fx-background-color: red;");
+					toggleLabel1.setStyle("-fx-background-color: white;");
+					toggleLabel2.setStyle("-fx-background-color: grey;");
 					ageField.clear();
 					ageDatePicker.setValue(null);
 					parentName.clear();
@@ -367,8 +367,8 @@ public class RegistrationController extends BaseController {
 					toggleAgeORDobField = true;
 
 				} else {
-					toggleLabel1.setStyle("-fx-background-color: red;");
-					toggleLabel2.setStyle("-fx-background-color: green;");
+					toggleLabel1.setStyle("-fx-background-color: grey;");
+					toggleLabel2.setStyle("-fx-background-color: white;");
 					ageField.clear();
 					ageDatePicker.setValue(null);
 					parentName.clear();

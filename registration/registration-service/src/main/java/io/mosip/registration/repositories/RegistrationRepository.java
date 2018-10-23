@@ -26,7 +26,7 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 *            the list of entity id's
 	 * @return the list of {@link Registration}
 	 */
-	List<Registration> findByIdIn(List<String> idList);
+	List<Registration> findByClientStatusCodeOrderByCrDtimeAsc(String clientstatuscode);
 
 	/**
 	 * This method returns the list of {@link Registration} based on status code

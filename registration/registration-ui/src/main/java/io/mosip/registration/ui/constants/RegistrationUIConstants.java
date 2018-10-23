@@ -22,7 +22,7 @@ public class RegistrationUIConstants {
 	public static final String CREATE_PACKET_PAGE = "/fxml/Registration.fxml";
 	public static final String ACK_RECEIPT_PATH = "/fxml/AckReceipt.fxml";
 	public static final String APPROVAL_PAGE = "/fxml/RegistrationApproval.fxml";
-	public static final String FTP_UPLOAD_PAGE =  "/fxml/FTPLogin.fxml";
+	public static final String FTP_UPLOAD_PAGE =  "/fxml/PacketUpload.fxml";
 	public static final String USER_MACHINE_MAPPING =  "/fxml/UserClientMachineMapping.fxml";
 	public static final String SYNC_STATUS =  "/fxml/RegPacketStatus.fxml";
 	

@@ -2,15 +2,15 @@ package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_AUTHORIZATION_EXCEPTION;
 import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_APPROVE_SCREEN_EXCEPTION;
+import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_AUTHORIZATION_EXCEPTION;
 import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.stream.IntStream;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,7 +35,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -60,7 +59,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 	private AnchorPane acknowRoot;
 
 	@FXML
-	private BorderPane uploadRoot;
+	private AnchorPane uploadRoot;
 
 	@Autowired
 	private AckReceiptController ackReceiptController;
@@ -118,7 +117,6 @@ public class RegistrationOfficerPacketController extends BaseController {
 		try {
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO);
 			ackReceiptController.setRegistrationData(registrationDTO);
-			
 
 			File ackTemplate = templateService.createReceipt();
 			Writer writer = velocityGenerator.generateTemplate(ackTemplate, registrationDTO);
@@ -191,11 +189,15 @@ public class RegistrationOfficerPacketController extends BaseController {
 						RegistrationUIConstants.AUTHORIZATION_INFO_MESSAGE,
 						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
 			} else {
-				Stage uploadStage = new Stage();
-				Scene scene = new Scene(uploadRoot, 600, 600);
-				uploadStage.setResizable(false);
-				uploadStage.setScene(scene);
-				uploadStage.show();
+				Button button = (Button) event.getSource();
+				AnchorPane anchorPane = (AnchorPane) button.getParent();
+				VBox vBox = (VBox) (anchorPane.getParent());
+				ObservableList<Node> nodes = vBox.getChildren();
+				IntStream.range(1, nodes.size()).forEach(index -> {
+					nodes.get(index).setVisible(false);
+					nodes.get(index).setManaged(false);
+				});
+				nodes.add(uploadRoot);
 			}
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet upload", APPLICATION_NAME, APPLICATION_ID,

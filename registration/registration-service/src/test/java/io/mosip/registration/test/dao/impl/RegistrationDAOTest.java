@@ -91,23 +91,24 @@ public class RegistrationDAOTest {
 	}
 	
 	@Test
-	public void getRegistrationByIdTest() {
+	public void getRegistrationByStatusTest() {
 		ReflectionTestUtils.setField(registrationDAOImpl, "logger", logger);
 		
 		List<Registration> packetLists = new ArrayList<>();
 		packetLists.add(new Registration());
-		when(registrationRepository.findByIdIn(Mockito.anyListOf(String.class))).thenReturn(packetLists);
+		when(registrationRepository.findByClientStatusCodeIn(Mockito.anyListOf(String.class))).thenReturn(packetLists);
 		List<String> packetNames=new ArrayList<>();
-		registrationDAOImpl.getRegistrationById(packetNames);
+		assertEquals(packetLists, registrationDAOImpl.getRegistrationByStatus(packetNames));
 	}
 	
 	@Test
 	public void updateRegStatusTest() {
 		ReflectionTestUtils.setField(registrationDAOImpl, "logger", logger);
 		Registration updatedPacket=new Registration();
+		updatedPacket.setClientStatusCode("P");
 		Mockito.when(registrationRepository.getOne(Mockito.anyString())).thenReturn(updatedPacket);
-		registrationDAOImpl.updateRegStatus("111111");
-		assertEquals("P", updatedPacket.getClientStatusCode());
+		Mockito.when(registrationRepository.update(updatedPacket)).thenReturn(updatedPacket);
+		assertEquals(updatedPacket, registrationDAOImpl.updateRegStatus("11111","P"));
 	}
 	
 	@Test

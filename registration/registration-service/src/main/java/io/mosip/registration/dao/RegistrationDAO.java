@@ -67,8 +67,7 @@ public interface RegistrationDAO {
 	 * @param packetNames
 	 * @return
 	 */
-	List<Registration> getRegistrationById(List<String> packetNames);
-
+	List<Registration> getRegistrationByStatus(List<String> packetStatus);
 	/**
 	 * 
 	 * This method is used to update the registration status in the Registration
@@ -77,5 +76,5 @@ public interface RegistrationDAO {
 	 * @param regId
 	 * @return
 	 */
-	Registration updateRegStatus(String regId);
+	Registration updateRegStatus(String regId, String status);
 }

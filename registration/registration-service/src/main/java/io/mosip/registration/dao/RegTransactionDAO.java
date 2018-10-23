@@ -21,5 +21,5 @@ public interface RegTransactionDAO {
 	 */
 	List<RegistrationTransaction> insertPacketTransDetails(List<RegistrationTransaction> registrationTransactions);
 	
-	RegistrationTransaction buildRegTrans(String regId);
+	RegistrationTransaction buildRegTrans(String regId, String statusCode);
 }
