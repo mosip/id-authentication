@@ -14,6 +14,7 @@ import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.RestServiceException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
@@ -21,8 +22,6 @@ import io.mosip.authentication.service.integration.dto.OTPValidateResponseDTO;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * OTPManager handling with OTP-Generation and OTP-Validation.
@@ -38,14 +37,9 @@ public class OTPManager {
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
-	private MosipLogger logger;
+	private static MosipLogger logger = IdaLogger.getLogger(OTPManager.class);
 
 	private OTPValidateResponseDTO otpvalidateresponsedto;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
 
 	/**
 	 * Generate OTP with information of

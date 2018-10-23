@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -15,80 +14,35 @@
 	<name>id-authentication-service</name>
 	<description>Maven project of MOSIP ID-Authentication Service</description>
 
-	<properties>
-		<kernel.hibernate.version>1.0.0-SNAPSHOT</kernel.hibernate.version>
-		<commons.codec.version>1.11</commons.codec.version>
-		<!-- Test & Logging -->
-		<junit.version>4.12</junit.version>
-		<mockito.version>1.10.19</mockito.version>
-		
-		<!-- Lombok -->
-		<lombok.version>1.16.18</lombok.version>
-		<!-- Spring Boot -->
-		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
-		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
-		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
-		<jackson.version>2.9.5</jackson.version>
-		<postgresql.version>42.2.2</postgresql.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.authentication</groupId>
 			<artifactId>authentication-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>${commons.codec.version}</version>
-		</dependency> -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>${lombok.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>${postgresql.version}</version>
-		</dependency>
-	<!-- 	<dependency>
-			<groupId>org.mosip</groupId>
-			<artifactId>kernel-exception</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mosip</groupId>
-			<artifactId>kernel-logging-impl</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mosip</groupId>
-			<artifactId>kernel-utils</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency> -->
-		<!-- <dependency>
-			<groupId>org.mosip</groupId>
-			<artifactId>kernel-dao-interface</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.mosip</groupId>
-			<artifactId>kernel-dao-hibernate-impl</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency> -->
+
+		<!-- Kernel Hibernate Impl -->
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-dataaccess-hibernate</artifactId>
 			<version>${kernel.hibernate.version}</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.mosip</groupId>
-			<artifactId>kernel-audit-service</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency> -->
+
+		<!-- Kernel Id Validator -->
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idvalidator</artifactId>
+			<version>${kernel.core.version}</version>
+		</dependency>
+
+		<!-- Postgres -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency>
+
+		<!-- Sprint Boot -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -106,9 +60,50 @@
 			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-webflux</artifactId>
-			<version>${spring.boot.version}</version>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+			<version>${spring-cloud-config.version}</version>
 		</dependency>
+
+		<!-- External Fingerprint -->
+		<dependency>
+			<groupId>Mantra</groupId>
+			<artifactId>MFS100</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<!-- Commons Lang -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons.lang.version}</version>
+		</dependency>
+
 	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>local-maven-repo</id>
+			<url>file:///${basedir}/lib</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

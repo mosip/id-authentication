@@ -2,7 +2,11 @@ package io.mosip.authentication.service.impl.indauth.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 
@@ -17,7 +21,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
@@ -35,7 +38,6 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.idauth.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 /**
  * This class tests the IdAuthServiceImpl.java
@@ -46,8 +48,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties",
-		"classpath:log.properties" })
 public class IdAuthServiceTest {
 
 	@Mock
@@ -73,24 +73,10 @@ public class IdAuthServiceTest {
 
 	@Before
 	public void before() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
-		ReflectionTestUtils.invokeMethod(restHelper, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.invokeMethod(auditFactory, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "initializeLogger", mosipRollingFileAppender);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "auditFactory", auditFactory);
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restFactory);
-		//ReflectionTestUtils.setField(idAuthServiceImpl, "logger", logger);
 	}
 
 	/**
@@ -101,7 +87,7 @@ public class IdAuthServiceTest {
 	@Test(expected = IdValidationFailedException.class)
 	public void testValidateUIN() throws IdAuthenticationBusinessException {
 		String uin = "1234567890";
-		Mockito.when(uinRepository.findByUin(Mockito.anyString())).thenReturn(null);
+		Mockito.when(uinRepository.findByUinRefId(Mockito.anyString())).thenReturn(null);
 		idAuthServiceImpl.validateUIN(uin);
 	}
 
@@ -115,7 +101,7 @@ public class IdAuthServiceTest {
 		String uin = "1234567890";
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(false);
-		Mockito.when(uinRepository.findByUin(uin)).thenReturn(uinEntity);
+		Mockito.when(uinRepository.findByUinRefId(uin)).thenReturn(Optional.of(uinEntity));
 		idAuthServiceImpl.validateUIN(uin);
 	}
 
@@ -130,10 +116,10 @@ public class IdAuthServiceTest {
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(true);
 		uinEntity.setId("12345");
-		Mockito.when(uinRepository.findByUin(Mockito.anyString())).thenReturn(uinEntity);
+		Mockito.when(uinRepository.findById(Mockito.anyString())).thenReturn(Optional.of(uinEntity));
 		String refId = null;
 		refId = idAuthServiceImpl.validateUIN(uin);
-		assertEquals(refId, uinEntity.getId());
+		assertEquals(refId, uinEntity.getUinRefId());
 	}
 
 	/**
@@ -203,7 +189,7 @@ public class IdAuthServiceTest {
 		String vid = "1234567890";
 		VIDEntity vidEntity = new VIDEntity();
 		vidEntity.setActive(true);
-		vidEntity.setExpiryDate(new Date());
+		vidEntity.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plus(1, ChronoUnit.MONTHS)));
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(false);
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
@@ -223,33 +209,43 @@ public class IdAuthServiceTest {
 		VIDEntity vidEntity = new VIDEntity();
 		vidEntity.setRefId("1234");
 		vidEntity.setActive(true);
-		vidEntity.setExpiryDate(new Date(01 / 01 / 2019));
+		vidEntity.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plus(1, ChronoUnit.MONTHS)));
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(true);
-		Optional<UinEntity> uinEntityopt = Optional.of(uinEntity);
-		System.err.println(uinEntityopt.isPresent());
-		Mockito.when(uinRepository.findById(Mockito.any())).thenReturn(uinEntityopt);
+		Mockito.when(uinRepository.findByUinRefId(Mockito.any())).thenReturn(Optional.of(uinEntity));
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
 
 		ReflectionTestUtils.setField(idAuthServiceImpl, "uinRepository", uinRepository);
-		System.err.println(uinRepository.findById("refId").get());
 		String refId = idAuthServiceImpl.validateVID(vid);
 		assertEquals(vidEntity.getRefId(), refId);
 
 	}
 
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestAuditData() throws Throwable {
 		RestRequestFactory restfactory = Mockito.mock(RestRequestFactory.class);
 		Mockito.when(restfactory.buildRequest(Mockito.any(RestServicesConstants.class), Mockito.any(), Mockito.any()))
 				.thenThrow(new IDDataValidationException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
 		ReflectionTestUtils.setField(idAuthServiceImpl, "restFactory", restfactory);
 		try {
-		ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "auditData");
+			ReflectionTestUtils.invokeMethod(idAuthServiceImpl, "auditData");
 		} catch (UndeclaredThrowableException e) {
 			throw e.getUndeclaredThrowable();
-			
+
 		}
 
+	}
+	
+	@Test(expected = IdValidationFailedException.class)
+	public void testDoValidateUINInactive() throws Throwable {
+		UinEntity uinEntity = new UinEntity();
+		uinEntity.setActive(false);
+		Method doValidateUIN = idAuthServiceImpl.getClass().getDeclaredMethod("doValidateUIN", UinEntity.class);
+		doValidateUIN.setAccessible(true);
+		try {
+		doValidateUIN.invoke(idAuthServiceImpl, uinEntity);
+		} catch (InvocationTargetException e) {
+			throw e.getTargetException();
+		}
 	}
 }

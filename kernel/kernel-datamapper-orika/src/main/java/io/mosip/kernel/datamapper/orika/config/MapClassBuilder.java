@@ -44,7 +44,7 @@ public class MapClassBuilder<S, D> {
 	 * 
 	 * @param source
 	 *            the Object instance representing the "source" side of the mapping
-	 * @param destination
+	 * @param destinationClass
 	 *            the Class instance representing the "destination" side of the
 	 *            mapping
 	 * @param includeDataField

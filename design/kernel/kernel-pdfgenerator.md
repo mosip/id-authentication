@@ -1,12 +1,15 @@
-﻿# PdfGenerator
+﻿# PDF Generator
 
 #### Background
 
 This Application can be use when converting plain/html template to PDF. This application contain a series of methods that accept template as:-
 
 Input Stream
+
 File
+
 String
+
 
 #### Solution
 
@@ -31,4 +34,4 @@ String
 
 **Class Diagram**
 
-![Class Diagram](_images/kernel-pdfgenerator-itext.png)
+![Class Diagram](_images/kernel_pdfgenerator_itext.png)

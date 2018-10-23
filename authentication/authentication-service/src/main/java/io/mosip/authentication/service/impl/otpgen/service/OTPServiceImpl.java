@@ -4,20 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import io.mosip.authentication.core.constant.RestServicesConstants;
-import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
-import io.mosip.authentication.core.util.dto.AuditRequestDto;
-import io.mosip.authentication.core.util.dto.AuditResponseDto;
-import io.mosip.authentication.core.util.dto.RestRequestDTO;
-import io.mosip.authentication.service.factory.AuditRequestFactory;
-import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * Service implementation of OtpTriggerService.
@@ -29,24 +20,10 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 public class OTPServiceImpl implements OTPService {
 	
 	@Autowired
-	private RestHelper restHelper;
+	private OTPManager otpManager;
 
-	@Autowired
-	OTPManager otpManager;
-
-	private MosipLogger LOGGER;
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPServiceImpl.class);
 	
-	@Autowired
-	RestRequestFactory restRequestFactory;
-	
-	@Autowired
-	AuditRequestFactory auditRequestFactory;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
-
 	/**
 	 * 
 	 * @param otpKey
@@ -64,24 +41,14 @@ public class OTPServiceImpl implements OTPService {
 			otp = otpManager.generateOTP(otpKey);
 
 			if (otp == null || otp.trim().isEmpty()) {
-				LOGGER.error("NA", "NA", "NA", "generated OTP is: " + otp);
+				mosipLogger.error("NA", "NA", "NA", "generated OTP is: " + otp);
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 			}
 			
-			LOGGER.info("NA", "NA", "NA", " generated OTP is: " + otp);
+			mosipLogger.info("NA", "NA", "NA", " generated OTP is: " + otp);
 		}
 
 		return otp;
-	}
-
-	public void audit() throws IDDataValidationException  {
-		//TODO Update audit details
-		AuditRequestDto auditRequest = auditRequestFactory.buildRequest("moduleId", "description");
-
-		RestRequestDTO restRequest = restRequestFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
-				AuditResponseDto.class);
-
-		restHelper.requestAsync(restRequest); 
 	}
 }

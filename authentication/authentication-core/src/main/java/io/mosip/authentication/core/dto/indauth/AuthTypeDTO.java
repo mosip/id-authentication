@@ -3,20 +3,30 @@ package io.mosip.authentication.core.dto.indauth;
 import lombok.Data;
 
 /**
+ * Generic class to find authentication type. For e.g if go for otp validation,
+ * then <b>otp</b> attribute set as <b>true</b>
  * 
  * @author Rakesh Roshan
  */
 @Data
 public class AuthTypeDTO {
 
-	private Boolean id;
-	
-	private Boolean ad;
+	/** For personal identity Authentication */
+	private boolean pi;
 
-	private Boolean pin;
+	/** For address Authentication */
+	private boolean ad;
 
-	private Boolean bio;
+	/** For Full address Authentication */
+	private boolean fad;
 
-	private Boolean otp;
+	/** For biometric Authentication */
+	private boolean bio;
+
+	/** For otp Authentication */
+	private boolean otp;
+
+	/** For pin Authentication */
+	private boolean pin;
 
 }

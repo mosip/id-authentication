@@ -23,10 +23,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -36,9 +38,7 @@ import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
-import io.mosip.authentication.service.impl.otpgen.controller.OTPController;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 /**
  * Test functionality
@@ -48,7 +48,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@TestPropertySource(value = "classpath:log.properties")
 public class OTPControllerTest {
 
 	/** Mock the objects */
@@ -70,6 +69,8 @@ public class OTPControllerTest {
 	IdAuthenticationBusinessException idAuthenticationBusinessException;
 	@Mock
 	IdAuthenticationAppException idAuthenticationAppException;
+	@Mock
+	WebDataBinder binder;
 
 	/** inject the mocked object */
 	@InjectMocks
@@ -79,16 +80,7 @@ public class OTPControllerTest {
 
 	@Before
 	public void before() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(otpController, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(otpController, "initBinder", binder);
 	}
 
 	@BeforeClass
@@ -192,6 +184,13 @@ public class OTPControllerTest {
 
 	}
 
+	@Test(expected = IdAuthenticationAppException.class)
+	public void testGenerateOtpDataValidationException() throws IdAuthenticationAppException {
+		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
+		errors.reject("errorCode");
+		otpController.generateOTP(new OtpRequestDTO(), errors);
+	}
+
 	// =========================================================
 	// ************ Helping Method *****************************
 	// =========================================================
@@ -200,7 +199,7 @@ public class OTPControllerTest {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
 		otpRequestDto.setMsaLicenseKey("1234567890");
 		otpRequestDto.setMuaCode("1234567890");
-		otpRequestDto.setIdType(IdType.UIN);
+		otpRequestDto.setIdType(IdType.UIN.getType());
 		// otpRequestDto.setRequestTime(new Date());
 		otpRequestDto.setTxnID("1234567890");
 		otpRequestDto.setId("1234567890");

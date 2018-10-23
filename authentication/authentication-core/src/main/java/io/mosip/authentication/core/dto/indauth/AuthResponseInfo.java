@@ -1,44 +1,50 @@
 package io.mosip.authentication.core.dto.indauth;
 
-import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
 /**
- * {@code AuthResponseInfo} class which contain the response information like
- * {@link AuthResponseInfo#uid},{@link AuthResponseInfo#requestTimeStamp},
- * {@link AuthResponseInfo#apiVersion} and masked mobile number and email-id i.e
- * {@link AuthResponseInfo#maskedMobileNumber},
- * {@link AuthResponseInfo#maskedEmailId}.
- * 
- * Masked mobile number and email id is used for received OTP Masked Mobile:
- * 95XXXXX123 Masked Email: rakXXXXhj@xyz.com
- * 
+ * The Auth Response Info class.
  * 
  * @author Rakesh Roshan
  */
 @Data
 public class AuthResponseInfo {
 
+	
 	/**
-	 * Type of user ID either UIN or VID
+	 * Type of user ID ("D" or "V") as per the {@link IdType}
 	 */
-	private IdType idType;
+	private String idType;
+	
 	/**
-	 * 
+	 * Request Time
 	 */
-	private Date reqTime;
+	private String reqTime;
+	
 	/**
-	 * 
+	 * Version
 	 */
+	//TODO
 	private String ver;
+	
 	/**
-	 * masked mobile(i.e XXXXXXX123) number where send OTP
+	 * List of all match informations used in different authentication types such as
+	 * Demo Auth, Bio Auth, etc...
 	 */
-	private String maskedMobile;
+	private List<MatchInfo> matchInfos;
+	
 	/**
-	 * masked email id(raXXXXXXXXXan@xyz.com) where send OTP
+	 * The 16 digit Hexa decimal data that encodes the authentication types that are 
+	 * used and the authentication types that are matched.
 	 */
-	private String maskedEmail;
+	private String usageData;
+	
+//	/**
+//	 * Static token
+//	 */
+//	//TODO
+//	private String staticToken;
 
 }
