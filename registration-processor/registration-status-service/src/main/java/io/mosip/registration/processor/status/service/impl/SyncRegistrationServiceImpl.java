@@ -75,7 +75,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		try {
 			for (SyncRegistrationDto registrationDto : resgistrationDtos) {
 				SyncRegistrationEntity existingSyncRegistration = findByRegistrationId(
-						registrationDto.getRegistrationId());
+						registrationDto.getRegistrationId().trim());
 				SyncRegistrationEntity syncRegistration;
 				if (existingSyncRegistration != null) {
 					// update sync registration record
@@ -158,7 +158,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	 */
 	private SyncRegistrationEntity convertDtoToEntity(SyncRegistrationDto dto) {
 		SyncRegistrationEntity syncRegistrationEntity = new SyncRegistrationEntity();
-		syncRegistrationEntity.setRegistrationId(dto.getRegistrationId());
+		syncRegistrationEntity.setRegistrationId(dto.getRegistrationId().trim());
 		syncRegistrationEntity.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : Boolean.TRUE);
 		syncRegistrationEntity.setIsDeleted(dto.getIsDeleted() != null ? dto.getIsDeleted() : Boolean.FALSE);
 		syncRegistrationEntity.setLangCode(dto.getLangCode());

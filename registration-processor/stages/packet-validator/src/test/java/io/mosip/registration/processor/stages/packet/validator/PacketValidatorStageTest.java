@@ -25,7 +25,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.packet.dto.BiometricSequence;
-import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
+import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.DemographicSequence;
 import io.mosip.registration.processor.core.packet.dto.HashSequence;
 import io.mosip.registration.processor.core.packet.dto.MetaData;
@@ -53,14 +53,14 @@ public class PacketValidatorStageTest {
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
-	PacketInfoManager<PacketInfo, DemographicInfo, MetaData> packetinfomanager;
+	PacketInfoManager<PacketInfo, Demographic, MetaData> packetinfomanager;
 
 	@InjectMocks
 	private PacketValidatorStage packetValidatorStage;
 
 	private PacketInfo packetInfo;
 	
-	private DemographicInfo demographicinfo;
+	private Demographic demographicinfo;
 
 	@Before
 	public void setUp() throws Exception {
@@ -125,7 +125,7 @@ public class PacketValidatorStageTest {
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 		
 		Mockito.doNothing().when(packetinfomanager).savePacketData(packetInfo);	
-		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, DemographicInfo.class)
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, Demographic.class)
 		.thenReturn(demographicinfo);
 		Mockito.doNothing().when(packetinfomanager).saveDemographicData(demographicinfo, packetInfo.getMetaData());
 		
@@ -161,7 +161,7 @@ public class PacketValidatorStageTest {
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 		
 		Mockito.doNothing().when(packetinfomanager).savePacketData(packetInfo);	
-		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, DemographicInfo.class)
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, Demographic.class)
 		.thenReturn(demographicinfo);
 		Mockito.doNothing().when(packetinfomanager).saveDemographicData(demographicinfo, packetInfo.getMetaData());
 		

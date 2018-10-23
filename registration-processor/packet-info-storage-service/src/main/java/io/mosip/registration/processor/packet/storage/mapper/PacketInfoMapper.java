@@ -2,19 +2,14 @@ package io.mosip.registration.processor.packet.storage.mapper;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.mosip.registration.processor.core.packet.dto.DemoInLocalLang;
-import io.mosip.registration.processor.core.packet.dto.DemoInUserLang;
+import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
 import io.mosip.registration.processor.core.packet.dto.DocumentDetail;
 import io.mosip.registration.processor.core.packet.dto.ExceptionFingerprint;
@@ -244,11 +239,11 @@ public class PacketInfoMapper {
 	 *            the demographic info
 	 * @return the list
 	 */
-	public static List<ApplicantDemographicEntity> convertDemographicDtoToEntity(DemographicInfo demographicInfo,
+	public static List<ApplicantDemographicEntity> convertDemographicDtoToEntity(Demographic demographicInfo,
 			MetaData metaData) {
 
-		DemoInLocalLang demoInLocalLang = demographicInfo.getDemoInLocalLang();
-		DemoInUserLang demoInUserLang = demographicInfo.getDemoInUserLang();
+		DemographicInfo demoInLocalLang = demographicInfo.getDemoInLocalLang();
+		DemographicInfo demoInUserLang = demographicInfo.getDemoInUserLang();
 		List<ApplicantDemographicEntity> applicantDemographicEntities = new ArrayList<>();
 
 		ApplicantDemographicEntity applicantDemographicEntity = new ApplicantDemographicEntity();
@@ -263,20 +258,23 @@ public class PacketInfoMapper {
 		applicantDemographicEntity.setAddrLine1(demoInLocalLang.getAddressDTO().getLine1());
 		applicantDemographicEntity.setAddrLine2(demoInLocalLang.getAddressDTO().getLine2());
 		applicantDemographicEntity.setAddrLine3(demoInLocalLang.getAddressDTO().getLine3());
-		applicantDemographicEntity.setAge(calculateAge(demoInLocalLang.getDateOfBirth()));
+		int age = demoInLocalLang.getAge() != null ? Integer.parseInt(demoInLocalLang.getAge()) : 0;
+		applicantDemographicEntity.setAge(age);
 		applicantDemographicEntity.setApplicantType(metaData.getApplicationType());
-		applicantDemographicEntity.setDob(new Date(Long.parseLong(demoInLocalLang.getDateOfBirth())));
+		Long dobTime = demoInLocalLang.getDateOfBirth() != null ? Long.parseLong(demoInLocalLang.getDateOfBirth())
+				: null;
+		applicantDemographicEntity.setDob(dobTime != null ? new Date(dobTime) : null);
 		applicantDemographicEntity.setEmail(demoInLocalLang.getEmailId());
-		applicantDemographicEntity.setFamilyName(demoInLocalLang.getFamilyname());
+
 		applicantDemographicEntity.setFirstName(demoInLocalLang.getFirstName());
-		applicantDemographicEntity.setForeName(demoInLocalLang.getForename());
+
 		applicantDemographicEntity.setFullName(demoInLocalLang.getFullName());
 		applicantDemographicEntity.setGenderCode(demoInLocalLang.getGender());
-		applicantDemographicEntity.setGivenName(demoInLocalLang.getGivenname());
+
 		applicantDemographicEntity.setLastName(demoInLocalLang.getLastName());
 		applicantDemographicEntity.setMiddleName(demoInLocalLang.getMiddleName());
 		applicantDemographicEntity.setMobile(demoInLocalLang.getMobile());
-		applicantDemographicEntity.setSurName(demoInLocalLang.getSurname());
+
 		applicantDemographicEntity.setIsActive(true);
 
 		applicantDemographicEntity.setLocationCode("Location Code");
@@ -300,23 +298,20 @@ public class PacketInfoMapper {
 		applicantDemographicEntity.setAddrLine1(demoInUserLang.getAddressDTO().getLine1());
 		applicantDemographicEntity.setAddrLine2(demoInUserLang.getAddressDTO().getLine2());
 		applicantDemographicEntity.setAddrLine3(demoInUserLang.getAddressDTO().getLine3());
-		applicantDemographicEntity.setAge(calculateAge(demoInLocalLang.getDateOfBirth()));
+		int userAge = demoInUserLang.getAge() != null ? Integer.parseInt(demoInUserLang.getAge()) : 0;
+		applicantDemographicEntity.setAge(userAge);
 		applicantDemographicEntity.setApplicantType(metaData.getApplicationType());
-		applicantDemographicEntity.setDob(new Date(Long.parseLong(demoInLocalLang.getDateOfBirth())));
+		Long dobUserTime = demoInLocalLang.getDateOfBirth() != null ? Long.parseLong(demoInUserLang.getDateOfBirth())
+				: null;
+		applicantDemographicEntity.setDob(dobTime != null ? new Date(dobUserTime) : null);
 		applicantDemographicEntity.setEmail(demoInUserLang.getEmailId());
-		applicantDemographicEntity.setFamilyName(demoInUserLang.getFamilyname());
 		applicantDemographicEntity.setFirstName(demoInUserLang.getFirstName());
-		applicantDemographicEntity.setForeName(demoInUserLang.getForename());
 		applicantDemographicEntity.setFullName(demoInUserLang.getFullName());
 		applicantDemographicEntity.setGenderCode(demoInUserLang.getGender());
-		applicantDemographicEntity.setGivenName(demoInUserLang.getGivenname());
 		applicantDemographicEntity.setLastName(demoInUserLang.getLastName());
 		applicantDemographicEntity.setIsActive(true);
-
 		applicantDemographicEntity.setMiddleName(demoInUserLang.getMiddleName());
 		applicantDemographicEntity.setMobile(demoInUserLang.getMobile());
-		applicantDemographicEntity.setSurName(demoInUserLang.getSurname());
-
 		applicantDemographicEntity.setLocationCode("Location Code");
 		applicantDemographicEntity.setNationalId("National Id");
 		applicantDemographicEntity.setParentFullName("Parent Full Name");
@@ -328,23 +323,10 @@ public class PacketInfoMapper {
 		return applicantDemographicEntities;
 	}
 
-	public static int calculateAge(String dateOfBirth) {
-		final DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		final Calendar c = Calendar.getInstance();
-		try {
-			String format = df.format(new Date(Long.parseLong(dateOfBirth)));
-			c.setTime(df.parse(format));
-			return Calendar.getInstance().get(Calendar.YEAR) - c.get(Calendar.YEAR);
-		} catch (ParseException e) {
-			LOGGER.error("Invalid DOB : Failed to parse Date of Birth", e);
-			return 0;
-		}
-	}
-
 	public static RegCenterMachineEntity convertRegCenterMachineToEntity(MetaData metaData) {
 		RegCenterMachinePKEntity regCenterMachinePKEntity = new RegCenterMachinePKEntity();
 		regCenterMachinePKEntity.setRegId(metaData.getRegistrationId());
-		
+
 		RegCenterMachineEntity regCenterMachineEntity = new RegCenterMachineEntity();
 		regCenterMachineEntity.setCntrId("Center 1");
 		regCenterMachineEntity.setMachineId("Machine 1");
