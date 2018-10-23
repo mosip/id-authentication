@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -36,7 +35,6 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
  * @author Arun Bose
  */
 @Component
-@PropertySource(value = { "classpath:application-local.properties" })
 public class AuthRequestValidator implements Validator {
 
 	private static final Integer OTP_LENGTH = 6;
