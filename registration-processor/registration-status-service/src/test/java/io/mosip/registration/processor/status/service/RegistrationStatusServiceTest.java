@@ -1,4 +1,4 @@
-/*package io.mosip.registration.processor.status.service;
+package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -47,7 +47,7 @@ public class RegistrationStatusServiceTest {
 	private List<RegistrationStatusEntity> entities;
 	private static final int threshholdTime = 48;
 	@InjectMocks
-	private RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService = new RegistrationStatusServiceImpl() {
+	private RegistrationStatusService<String, InternalRegistrationStatusDto,RegistrationStatusDto> registrationStatusService = new RegistrationStatusServiceImpl() {
 		@Override
 		public int getThreshholdTime() {
 			return threshholdTime;
@@ -194,7 +194,7 @@ public class RegistrationStatusServiceTest {
 	public void getByIds() {
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
 		List<RegistrationStatusDto> list = registrationStatusService.getByIds("1001,1000");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
+		assertEquals("PROCESSING", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
@@ -207,4 +207,3 @@ public class RegistrationStatusServiceTest {
 	}
 
 }
-*/
