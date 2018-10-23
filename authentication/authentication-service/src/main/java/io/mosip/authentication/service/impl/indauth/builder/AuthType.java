@@ -3,6 +3,8 @@ package io.mosip.authentication.service.impl.indauth.builder;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,11 +14,8 @@ import io.mosip.authentication.core.dto.indauth.DemoDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalFullAddressDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalIdentityDataDTO;
-import io.mosip.authentication.service.impl.indauth.service.demo.AuthTypeTester;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchThresholdInfoFetcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyInfoFetcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 
 /**
@@ -104,13 +103,13 @@ public enum AuthType {
 	private Set<MatchType> associatedMatchTypes;
 	
 	/**  */
-	private AuthTypeTester authTypeTester;
+	private Predicate<AuthRequestDTO> authTypeTester;
 	
 	/**  */
-	private MatchingStrategyInfoFetcher msInfoFetcher;
+	private Function<AuthRequestDTO, Optional<String>> msInfoFetcher;
 	
 	/**  */
-	private MatchThresholdInfoFetcher mtInfoFetcher;
+	private  Function<AuthRequestDTO, Optional<Integer>> mtInfoFetcher;
 
 
 	/**
@@ -122,7 +121,8 @@ public enum AuthType {
 	 * @param msInfoFetcher 
 	 * @param mtInfoFetcher 
 	 */
-	private AuthType(String type, Set<MatchType> associatedMatchTypes, AuthTypeTester authTypeTester, MatchingStrategyInfoFetcher msInfoFetcher, MatchThresholdInfoFetcher mtInfoFetcher) {
+	private AuthType(String type, Set<MatchType> associatedMatchTypes, Predicate<AuthRequestDTO> authTypeTester,
+			 Function<AuthRequestDTO, Optional<String>> msInfoFetcher,  Function<AuthRequestDTO, Optional<Integer>> mtInfoFetcher) {
 		this.type = type;
 		this.authTypeTester = authTypeTester;
 		this.msInfoFetcher = msInfoFetcher;
@@ -173,7 +173,7 @@ public enum AuthType {
 	 *
 	 * @return 
 	 */
-	public AuthTypeTester getAuthTypeTester() {
+	public Predicate<AuthRequestDTO> getAuthTypeTester() {
 		return authTypeTester;
 	}
 	
@@ -182,7 +182,7 @@ public enum AuthType {
 	 *
 	 * @return 
 	 */
-	public MatchingStrategyInfoFetcher getMsInfoFetcher() {
+	public  Function<AuthRequestDTO, Optional<String>> getMsInfoFetcher() {
 		return msInfoFetcher;
 	}
 	
@@ -191,7 +191,7 @@ public enum AuthType {
 	 *
 	 * @return 
 	 */
-	public MatchThresholdInfoFetcher getMtInfoFetcher() {
+	public  Function<AuthRequestDTO, Optional<Integer>> getMtInfoFetcher() {
 		return mtInfoFetcher;
 	}
 	

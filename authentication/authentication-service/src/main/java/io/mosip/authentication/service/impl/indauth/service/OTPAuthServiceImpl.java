@@ -85,7 +85,6 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		if (isValidRequest) {
 			mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
 			String OtpKey = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
-			System.out.println(OtpKey);
 			String key = Optional.ofNullable(OtpKey)
 					.orElseThrow(() -> new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
 			isOtpValid = otpManager.validateOtp(otp, key);

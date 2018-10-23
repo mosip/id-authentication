@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.function.ToIntBiFunction;
+
 import org.junit.Test;
 
 public class EmailMatchingStrategyTest {
@@ -38,7 +40,7 @@ public class EmailMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -48,8 +50,8 @@ public class EmailMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();		
-		int value = matchFunction.doMatch("abc@mail.com","abc@mail.com");
+		ToIntBiFunction<Object, Object> matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();		
+		int value = matchFunction.applyAsInt("abc@mail.com","abc@mail.com");
 		assertEquals(100, value);
 	}
 
@@ -59,27 +61,27 @@ public class EmailMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = EmailMatchingStrategy.EXACT.getMatchFunction();
 		
-		int value = matchFunction.doMatch("abc@mail.com","abc@email.com");
+		int value = matchFunction.applyAsInt("abc@mail.com","abc@email.com");
 		assertEquals(0, value);
 		
-		int value1 = matchFunction.doMatch("abc@email.com","abc@mail.com");
+		int value1 = matchFunction.applyAsInt("abc@email.com","abc@mail.com");
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.doMatch("abc@mail.com","xyz@mail.com");
+		int value2 = matchFunction.applyAsInt("abc@mail.com","xyz@mail.com");
 		assertEquals(0, value2);
 		
-		int value3 = matchFunction.doMatch("@mail.com","abc@mail.com");
+		int value3 = matchFunction.applyAsInt("@mail.com","abc@mail.com");
 		assertEquals(0, value3);
 		
-		int value4 = matchFunction.doMatch(1,2);
+		int value4 = matchFunction.applyAsInt(1,2);
 		assertEquals(0, value4);
 		
-		int value5 = matchFunction.doMatch(1,"abc@mail.com");
+		int value5 = matchFunction.applyAsInt(1,"abc@mail.com");
 		assertEquals(0, value5);
 		
-		int value6 = matchFunction.doMatch("abc@mail.com",1);
+		int value6 = matchFunction.applyAsInt("abc@mail.com",1);
 		assertEquals(0, value6);
 	}
 }

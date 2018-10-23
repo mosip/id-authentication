@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,7 +40,7 @@ public enum DemoMatchType implements MatchType {
 	NAME_PRI(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), 
 			demo -> Optional.of(demo).map(DemoDTO::getPi).map(PersonalIdentityDTO::getNamePri),
 			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
-					entity.getLastName()), // FIXME for getting consolidated name as it requires admin config
+					entity.getLastName()),
 			AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI),
 	
 //
@@ -60,7 +61,7 @@ public enum DemoMatchType implements MatchType {
 //	NAME_SEC(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), 
 //			demo -> Optional.of(demo).map(DemoDTO::getPi).map(PersonalIdentityDTO::getNameSec),
 //			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
-//					entity.getLastName()), // FIXME for getting consolidated name as it requires admin config
+//					entity.getLastName()),
 //			AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC),
 
 	/** The gender. */
@@ -72,7 +73,7 @@ public enum DemoMatchType implements MatchType {
 	/** The age. */
 	AGE(setOf(AgeMatchingStrategy.EXACT),  
 			demo -> Optional.of(demo).map(DemoDTO::getPi).map(PersonalIdentityDTO::getAge),
-			(entity, locationInfoFetcher) -> {
+			(DemoEntity entity, LocationInfoFetcher locationInfoFetcher) -> {
 				int age = Period.between(entity.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
 						LocalDate.now()).getYears();
 				return Math.abs(age);
@@ -150,7 +151,7 @@ public enum DemoMatchType implements MatchType {
 	private Set<MatchingStrategy> allowedMatchingStrategy;
 
 	/** The demo info. */
-	private DemoDTOInfoFetcher demoInfo;
+	private Function<DemoDTO, Optional<Object>> demoInfo;
 
 	/** The entity info. */
 	private DemoEntityInfoFetcher entityInfo;
@@ -175,7 +176,7 @@ public enum DemoMatchType implements MatchType {
 	 * @param matchedBit
 	 *            the matched bit
 	 */
-	private DemoMatchType(Set<MatchingStrategy> allowedMatchingStrategy, DemoDTOInfoFetcher demoInfo,
+	private DemoMatchType(Set<MatchingStrategy> allowedMatchingStrategy, Function<DemoDTO, Optional<Object>> demoInfo,
 			DemoEntityInfoFetcher entityInfo, AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit) {
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
 		this.demoInfo = demoInfo;
@@ -200,7 +201,7 @@ public enum DemoMatchType implements MatchType {
 	 *
 	 * @return the demo info
 	 */
-	public DemoDTOInfoFetcher getDemoInfoFetcher() {
+	public Function<DemoDTO, Optional<Object>> getDemoInfoFetcher() {
 		return demoInfo;
 	}
 

@@ -78,7 +78,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		auditData();
 		AuthResponseDTO authResponseDTO = authResponseBuilder.build();
 		logger.info(DEFAULT_SESSION_ID, "IDA", AUTH_FACADE,
-				"authenticateApplicant status : " + authResponseDTO.isStatus()); // FIXME
+				"authenticateApplicant status : " + authResponseDTO.isStatus());
 		return authResponseDTO;
 
 	}
@@ -138,7 +138,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			try {
 				refId = idAuthService.validateUIN(authRequestDTO.getId());
 			} catch (IdValidationFailedException e) {
-				logger.error(null, null, null, e.getErrorText()); // FIX ME
+				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 			}
 		} else {
@@ -146,7 +146,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			try {
 				refId = idAuthService.validateVID(authRequestDTO.getId());
 			} catch (IdValidationFailedException e) {
-				logger.error(null, null, null, e.getErrorText());// FIX ME
+				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
 			}
 		}

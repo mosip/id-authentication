@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.function.ToIntBiFunction;
+
 import org.junit.Test;
 
 /**
@@ -42,7 +44,7 @@ public class AddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -52,8 +54,8 @@ public class AddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.doMatch("no 1 second street chennai", "no 1 second street chennai");
+		ToIntBiFunction<Object, Object> matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.applyAsInt("no 1 second street chennai", "no 1 second street chennai");
 		assertEquals(100, value);
 	}
 
@@ -63,14 +65,14 @@ public class AddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.doMatch(2, 2);
+		ToIntBiFunction<Object, Object> matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.applyAsInt(2, 2);
 		assertEquals(0, value);
 
-		int value1 = matchFunction.doMatch(2, "no 1 second street chennai");
+		int value1 = matchFunction.applyAsInt(2, "no 1 second street chennai");
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.doMatch("no 1 second street chennai", 2);
+		int value2 = matchFunction.applyAsInt("no 1 second street chennai", 2);
 		assertEquals(0, value2);
 	}
 

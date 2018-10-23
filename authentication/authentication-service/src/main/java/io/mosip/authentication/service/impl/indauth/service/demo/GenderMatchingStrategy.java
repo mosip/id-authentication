@@ -3,6 +3,8 @@
  */
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.util.function.ToIntBiFunction;
+
 import io.mosip.authentication.core.util.MatcherUtil;
 
 /**
@@ -19,7 +21,7 @@ public enum GenderMatchingStrategy implements MatchingStrategy {
 		}
 	});
 	
-	private final MatchFunction matchFunction;
+	private final ToIntBiFunction<Object, Object> matchFunction;
 
 	private final MatchingStrategyType matchStrategyType;
 
@@ -29,7 +31,7 @@ public enum GenderMatchingStrategy implements MatchingStrategy {
 	 * @param matchValue
 	 * @param matchFunction
 	 */
-	private GenderMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
+	private GenderMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
@@ -40,7 +42,7 @@ public enum GenderMatchingStrategy implements MatchingStrategy {
 	}
 
 	@Override
-	public MatchFunction getMatchFunction() {
+	public ToIntBiFunction<Object, Object> getMatchFunction() {
 		return matchFunction;
 	}
 

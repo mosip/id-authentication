@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.ToIntBiFunction;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -59,13 +60,13 @@ public class DemoMatcher {
 					.getAllowedMatchingStrategy(strategyType);
 			if (matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();
-				Optional<Object> reqInfoOpt = input.getDemoMatchType().getDemoInfoFetcher().getInfo(demoDTO);
+				Optional<Object> reqInfoOpt = input.getDemoMatchType().getDemoInfoFetcher().apply(demoDTO);
 				if(reqInfoOpt.isPresent()) {
 					Object reqInfo = reqInfoOpt.get();
 					Object entityInfo = input.getDemoMatchType().getEntityInfoFetcher().getInfo(demoEntity,
 							locationInfoFetcher);
-					MatchFunction matchFunction = strategy.getMatchFunction();
-					int mtOut = matchFunction.doMatch(reqInfo, entityInfo);
+					ToIntBiFunction<Object, Object> matchFunction = strategy.getMatchFunction();
+					int mtOut = matchFunction.applyAsInt(reqInfo, entityInfo);
 					boolean matchOutput = mtOut >= input.getMatchValue();
 					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), input.getDemoMatchType());
 				}

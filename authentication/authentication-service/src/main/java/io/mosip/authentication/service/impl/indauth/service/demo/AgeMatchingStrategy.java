@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.util.function.ToIntBiFunction;
+
 import io.mosip.authentication.core.util.MatcherUtil;
 
 /**
@@ -19,7 +21,7 @@ public enum AgeMatchingStrategy implements MatchingStrategy {
 	});
 	
 	/** The match function. */
-	private final MatchFunction matchFunction;
+	private final ToIntBiFunction<Object, Object> matchFunction;
 
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
@@ -30,7 +32,7 @@ public enum AgeMatchingStrategy implements MatchingStrategy {
 	 * @param matchStrategyType the match strategy type
 	 * @param matchFunction the match function
 	 */
-	private AgeMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
+	private AgeMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
@@ -47,7 +49,7 @@ public enum AgeMatchingStrategy implements MatchingStrategy {
 	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#getMatchFunction()
 	 */
 	@Override
-	public MatchFunction getMatchFunction() {
+	public ToIntBiFunction<Object, Object> getMatchFunction() {
 		return matchFunction;
 	}
 

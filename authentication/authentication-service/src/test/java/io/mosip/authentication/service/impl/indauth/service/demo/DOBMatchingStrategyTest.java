@@ -8,6 +8,7 @@ import static org.junit.Assert.assertNull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.ToIntBiFunction;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +49,7 @@ public class DOBMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -58,10 +59,10 @@ public class DOBMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 		int value = -1;
 		try {
-			value = matchFunction.doMatch("1993-02-07", sdf.parse("1993-02-07"));
+			value = matchFunction.applyAsInt("1993-02-07", sdf.parse("1993-02-07"));
 		} catch (ParseException e) {
 			
 		}
@@ -75,22 +76,22 @@ public class DOBMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 		try {
-			int value = matchFunction.doMatch("1993-02-07", sdf.parse("1993-02-27"));
+			int value = matchFunction.applyAsInt("1993-02-07", sdf.parse("1993-02-27"));
 			assertEquals(0, value);
 
-			int value1 = matchFunction.doMatch(2, sdf.parse("1993-02-07"));
+			int value1 = matchFunction.applyAsInt(2, sdf.parse("1993-02-07"));
 			assertEquals(0, value1);
 
-			int value2 = matchFunction.doMatch("1993-02-07", null);
+			int value2 = matchFunction.applyAsInt("1993-02-07", null);
 			assertEquals(0, value2);
 
-			int value3 = matchFunction.doMatch(null, null);
+			int value3 = matchFunction.applyAsInt(null, null);
 			assertEquals(0, value3);
 
 
-			matchFunction.doMatch("xyz", new Date());
+			matchFunction.applyAsInt("xyz", new Date());
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

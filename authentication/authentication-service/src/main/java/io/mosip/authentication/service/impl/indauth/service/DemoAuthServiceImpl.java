@@ -69,12 +69,12 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		 return Optional.ofNullable(authRequestDTO.getPii())
 				.map(PersonalIdentityDataDTO::getDemo)
 				.map(demo -> Stream.of(DemoMatchType.values())
-				.map(demoMatchType -> {
+				.map((DemoMatchType demoMatchType) -> {
 					Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(demoMatchType);
-					Optional<Object> infoOpt = demoMatchType.getDemoInfoFetcher().getInfo(demo);
+					Optional<Object> infoOpt = demoMatchType.getDemoInfoFetcher().apply(demo);
 					if (infoOpt.isPresent() && authTypeOpt.isPresent()) {
 						AuthType authType = authTypeOpt.get();
-						if(authType.getAuthTypeTester().testAuthType(authRequestDTO)) {
+						if(authType.getAuthTypeTester().test(authRequestDTO)) {
 							return contstructMatchInput(authRequestDTO, demoMatchType, authType);
 						}
 					}
@@ -92,11 +92,11 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 			AuthType authType) {
 		Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
 		String matchingStrategy = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
-		Optional<String> matchingStrategyOpt = authType.getMsInfoFetcher().getMatchingStratogy(authRequestDTO);
+		Optional<String> matchingStrategyOpt = authType.getMsInfoFetcher().apply(authRequestDTO);
 		if (matchingStrategyOpt.isPresent()) {
 			matchingStrategy = matchingStrategyOpt.get();
 			if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())) {
-				Optional<Integer> matchThresholdOpt = authType.getMtInfoFetcher().getMatchThreshold(authRequestDTO);
+				Optional<Integer> matchThresholdOpt = authType.getMtInfoFetcher().apply(authRequestDTO);
 				int defaultMatchValue = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
 				matchValue = matchThresholdOpt.orElse(defaultMatchValue);
 			}
