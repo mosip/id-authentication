@@ -94,7 +94,7 @@ public class DemoValidator implements Validator {
 					IdAuthenticationErrorConstants.AD_FAD_MUTUALLY_EXCULUSIVE.getErrorMessage());
 		} else if (authType.isFad()) {
 			fullAddressValidation(authType, demodto, errors);
-		} else {
+		} else if (authType.isAd())  {
 			addressValidation(demodto, errors);
 		}
 	}
@@ -136,7 +136,7 @@ public class DemoValidator implements Validator {
 	private void addressValidation(DemoDTO demodto, Errors errors) {
 
 		PersonalAddressDTO personalAddressDTO = demodto.getAd();
-		boolean allAdNull = Stream.<Supplier<Object>>of(
+		boolean allAdNull = personalAddressDTO == null || Stream.<Supplier<Object>>of(
 								 personalAddressDTO::getAddrLine1Pri, 
 								 personalAddressDTO::getAddrLine2Pri,
 								 personalAddressDTO::getAddrLine3Pri,
