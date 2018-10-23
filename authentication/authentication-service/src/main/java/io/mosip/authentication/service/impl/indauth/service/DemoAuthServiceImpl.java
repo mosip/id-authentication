@@ -135,51 +135,65 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 
 		DemoEntity demoEntity = getDemoEntity(refId, environment.getProperty("mosip.primary.lang-code"));
-		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 
-		if (demoEntity != null) {
-			List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO.getPii().getDemo(),
-					demoEntity, this::getLocation);
-			demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
-
-			statusInfoBuilder.setStatus(demoMatched);
-
-			listMatchInputs.stream().forEach((MatchInput matchInput) -> {
-				if (AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
-						.filter(authType -> !authType.isExactMatchOnly())
-						.map(AuthType::getType)
-						.isPresent()) {
-
-					String ms = matchInput.getMatchStrategyType();
-					if (ms == null || matchInput.getMatchStrategyType().trim().isEmpty()) {
-						ms = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
-					}
-
-					Integer mt = matchInput.getMatchValue();
-					if (mt == null) {
-						mt = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
-					}
-
-					String authType = AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
-							.map(AuthType::getType).orElse("");
-
-					statusInfoBuilder.addMessageInfo(authType, ms, mt);
-				}
-
-				statusInfoBuilder.addAuthUsageDataBits(matchInput.getDemoMatchType().getUsedBit());
-			});
-
-			listMatchOutputs.forEach((MatchOutput matchOutput) -> {
-				if (matchOutput.isMatched()) {
-					statusInfoBuilder.addAuthUsageDataBits(matchOutput.getDemoMatchType().getMatchedBit());
-				}
-			});
-		} else {
+		if (demoEntity == null) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		}
+		
+		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO.getPii().getDemo(),
+				demoEntity, this::getLocation);
+		demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
+		
+		return buildStatusInfo(demoMatched, listMatchInputs, listMatchOutputs);
 
+	}
+
+	private AuthStatusInfo buildStatusInfo(boolean demoMatched, List<MatchInput> listMatchInputs,
+			List<MatchOutput> listMatchOutputs) {
+		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
+
+		statusInfoBuilder.setStatus(demoMatched);
+
+		buildMatchInfos(listMatchInputs, statusInfoBuilder);
+
+		buildUsageDataBits(listMatchOutputs, statusInfoBuilder);
+		
 		return statusInfoBuilder.build();
+	}
 
+	private void buildUsageDataBits(List<MatchOutput> listMatchOutputs, AuthStatusInfoBuilder statusInfoBuilder) {
+		listMatchOutputs.forEach((MatchOutput matchOutput) -> {
+			if (matchOutput.isMatched()) {
+				statusInfoBuilder.addAuthUsageDataBits(matchOutput.getDemoMatchType().getMatchedBit());
+			}
+		});
+	}
+
+	private void buildMatchInfos(List<MatchInput> listMatchInputs, AuthStatusInfoBuilder statusInfoBuilder) {
+		listMatchInputs.stream().forEach((MatchInput matchInput) -> {
+			if (AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
+					.filter(authType -> !authType.isExactMatchOnly())
+					.map(AuthType::getType)
+					.isPresent()) {
+
+				String ms = matchInput.getMatchStrategyType();
+				if (ms == null || matchInput.getMatchStrategyType().trim().isEmpty()) {
+					ms = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
+				}
+
+				Integer mt = matchInput.getMatchValue();
+				if (mt == null) {
+					mt = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
+				}
+
+				String authType = AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
+						.map(AuthType::getType).orElse("");
+
+				statusInfoBuilder.addMessageInfo(authType, ms, mt);
+			}
+
+			statusInfoBuilder.addAuthUsageDataBits(matchInput.getDemoMatchType().getUsedBit());
+		});
 	}
 
 	/**
