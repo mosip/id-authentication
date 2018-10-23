@@ -1,12 +1,10 @@
 package io.mosip.registration.test.service.packet.encryption;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;

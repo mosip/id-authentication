@@ -2,14 +2,11 @@ package io.mosip.registration.entity;
 
 import java.io.Serializable;
 import java.time.OffsetDateTime;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import org.omg.PortableServer.SERVANT_RETENTION_POLICY_ID;
 
 import lombok.Data;
 

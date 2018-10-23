@@ -1,6 +1,6 @@
 package io.mosip.registration.test.dao.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -19,14 +19,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.dao.impl.DocumentCategoryDAOImpl;
-import io.mosip.registration.dao.impl.ValidDocumentDAOImpl;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.entity.GenericId;
-import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.DocumentCategoryRepository;
-import io.mosip.registration.repositories.ValidDocumentRepository;
 
 public class DocumentCategoryDAOImplTest {
 

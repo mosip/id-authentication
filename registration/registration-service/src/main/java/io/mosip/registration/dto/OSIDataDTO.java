@@ -1,7 +1,5 @@
 package io.mosip.registration.dto;
 
-import org.springframework.stereotype.Component;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

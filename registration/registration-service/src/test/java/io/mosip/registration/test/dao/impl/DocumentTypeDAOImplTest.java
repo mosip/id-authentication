@@ -21,7 +21,6 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.dao.impl.DocumentTypeDAOImpl;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.entity.GenericId;
-import io.mosip.registration.entity.Location;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.DocumentTypeRepository;

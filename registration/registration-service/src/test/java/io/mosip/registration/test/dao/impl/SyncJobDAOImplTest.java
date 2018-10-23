@@ -3,7 +3,6 @@ package io.mosip.registration.test.dao.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -30,8 +29,6 @@ import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
 import io.mosip.registration.dao.impl.SyncJobDAOImpl;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
-import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
 import io.mosip.registration.repositories.SyncJobRepository;
 

@@ -19,7 +19,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.dao.impl.ValidDocumentDAOImpl;
-import io.mosip.registration.entity.DocumentFormat;
 import io.mosip.registration.entity.GenericId;
 import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.exception.RegBaseCheckedException;
