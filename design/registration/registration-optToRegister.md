@@ -116,8 +116,6 @@ The key **non-functional requirements** are
 
     -   All connection should be closed once DB process completed.
 
-    -   
-
 **[Technical Approach]{.underline}**
 ====================================
 
@@ -161,7 +159,7 @@ Create the proper alert success/error to intimate the user.
 
 **DTO**: SyncJobDTO
 
-**DAO**: SyncJobDAOImpl -- create (), update (), find ()
+**DAO**: SyncJobDAOImpl --findAll ()
 
 **DB scripts:**
 
@@ -174,6 +172,9 @@ List of Sync Job Status:
   I   In-Progress
   H   On-hold
   S   Suspended
+
+Note: "validateSyncStatus()" method from Base controller is pluggable
+from any other controller as required.
 
 Class Diagram:
 
