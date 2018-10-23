@@ -6,7 +6,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstants;
+import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 import io.mosip.kernel.logger.logback.exception.MosipXMLConfigurationParseException;
 
 /**
@@ -38,8 +38,8 @@ public class LoggerUtils {
 			return unmarshaller.unmarshal(file);
 		} catch (JAXBException e) {
 			throw new MosipXMLConfigurationParseException(
-					LogExeptionCodeConstants.MOSIPCONFIGURATIONXMLPARSE,
-					LogExeptionCodeConstants.MOSIPCONFIGURATIONXMLPARSEMESSAGE);
+					LogExeptionCodeConstant.MOSIPCONFIGURATIONXMLPARSE,
+					LogExeptionCodeConstant.MOSIPCONFIGURATIONXMLPARSEMESSAGE);
 		}
 
 	}

@@ -14,7 +14,7 @@ public enum TemplateManagerConstant {
 							"Encoding type cannot be null"), TEMPATE_NAME_NULL("Template name cannot be null");
 
 	/**
-	 * this variable contains the message
+	 * This variable contains the message
 	 */
 	private String message;
 

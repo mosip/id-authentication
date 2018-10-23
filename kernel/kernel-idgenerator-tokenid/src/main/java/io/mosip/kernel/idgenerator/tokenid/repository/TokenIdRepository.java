@@ -7,7 +7,7 @@ import io.mosip.kernel.idgenerator.tokenid.entity.TokenId;
 /**
  * Spring JPA repository class which handles database calls. It is 
  * derived from {@link BaseRepository}}.
- * @author M1046464
+ * @author Srinivasan
  *
  */
 @Repository

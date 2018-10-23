@@ -9,7 +9,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.keygenerator.bouncycastle.MosipKeyGenerator;
-import io.mosip.kernel.keygenerator.bouncycastle.constants.KeyGeneratorExceptionConstants;
+import io.mosip.kernel.keygenerator.bouncycastle.constant.KeyGeneratorExceptionConstant;
 import io.mosip.kernel.keygenerator.bouncycastle.exception.MosipNoSuchAlgorithmException;
 
 @RunWith(PowerMockRunner.class)
@@ -20,7 +20,7 @@ public class MosipKeyGeneratorExceptionTest {
 	public void testGetAsymmetricKeyException() {
 		PowerMockito.mockStatic(MosipKeyGenerator.class);
 		when(MosipKeyGenerator.getAsymmetricKey()).thenThrow(
-				new MosipNoSuchAlgorithmException(KeyGeneratorExceptionConstants.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION));
+				new MosipNoSuchAlgorithmException(KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION));
 		MosipKeyGenerator.getAsymmetricKey();
 	}
 

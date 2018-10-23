@@ -21,7 +21,7 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import freemarker.template.Template;
-import io.mosip.kernel.core.spi.templatemanager.MosipTemplateManager;
+import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
 import io.mosip.kernel.templatemanager.freemarker.builder.TemplateConfigureBuilder;
 import io.mosip.kernel.templatemanager.freemarker.exception.TemplateParsingException;
 import io.mosip.kernel.templatemanager.freemarker.exception.TemplateResourceNotFoundException;
@@ -32,7 +32,7 @@ public class TemplatemanagerTest {
 	@Mock
 	private Template mockTemplate;
 	private Map<String, Object> valuesMap;
-	private MosipTemplateManager templateManager;
+	private TemplateManager templateManager;
 
 	private static final String expected = "<html>" + "<head>" + "</head>" + "<body>"
 			+ "<h1>Welcome to Cafe Coffee Day Store</h1>" + "" + "<p>6 Coffee on Sale!" + ""

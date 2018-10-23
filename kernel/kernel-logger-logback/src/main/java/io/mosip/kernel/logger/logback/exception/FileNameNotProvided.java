@@ -15,7 +15,7 @@
 package io.mosip.kernel.logger.logback.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstants;
+import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 
 /**
  * {@link Exception} to be file name is empty or null
@@ -36,8 +36,8 @@ public class FileNameNotProvided extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public FileNameNotProvided(LogExeptionCodeConstants errorCode,
-			LogExeptionCodeConstants errorMessage) {
+	public FileNameNotProvided(LogExeptionCodeConstant errorCode,
+			LogExeptionCodeConstant errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 

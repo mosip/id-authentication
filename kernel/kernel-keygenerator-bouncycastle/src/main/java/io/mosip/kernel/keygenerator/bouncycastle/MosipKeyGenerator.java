@@ -7,7 +7,7 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 import io.mosip.kernel.keygenerator.bouncycastle.config.KeyGeneratorConfig;
-import io.mosip.kernel.keygenerator.bouncycastle.utils.KeyGeneratorUtils;
+import io.mosip.kernel.keygenerator.bouncycastle.util.KeyGeneratorUtils;
 
 /**
  * This class generates asymmetric and symmetric key pairs

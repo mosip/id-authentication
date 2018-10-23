@@ -8,7 +8,7 @@ package io.mosip.kernel.idgenerator.uin.constant;
  *
  */
 public enum UinGeneratorErrorCodes {
-	UIN_NOT_FOUND("KER-IDG-UIN-001", "Uin could not be found"), UIN_GENERATION_JOB_EXCEPTION("KER-IDG-UIN-002",
+	UIN_NOT_FOUND("KER-UIG-001", "Uin could not be found"), UIN_GENERATION_JOB_EXCEPTION("KER-UIG-002",
 			"Error occured in Uin generation job");
 
 	/**

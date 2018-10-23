@@ -5,7 +5,7 @@
 package io.mosip.kernel.logger.logback.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstants;
+import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 
 /**
  * {@link Exception} to be thrown when pattern is empty or null
@@ -26,8 +26,8 @@ public class EmptyPatternException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public EmptyPatternException(LogExeptionCodeConstants errorCode,
-			LogExeptionCodeConstants errorMessage) {
+	public EmptyPatternException(LogExeptionCodeConstant errorCode,
+			LogExeptionCodeConstant errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 

@@ -1,7 +1,7 @@
 package io.mosip.kernel.packetserver.sftp.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.packetserver.sftp.constant.PacketServerExceptionConstants;
+import io.mosip.kernel.packetserver.sftp.constant.PacketServerExceptionConstant;
 
 /**
  * Exception to be thrown when a server goes to illegal state
@@ -25,7 +25,7 @@ public class MosipIllegalStateException extends BaseUncheckedException {
 	 *            cause of exception
 	 */
 	public MosipIllegalStateException(
-			PacketServerExceptionConstants exceptionConstants,
+			PacketServerExceptionConstant exceptionConstants,
 			Throwable cause) {
 		super(exceptionConstants.getErrorCode(),
 				exceptionConstants.getErrorMessage(), cause);

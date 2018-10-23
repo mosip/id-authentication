@@ -40,7 +40,6 @@ public class PdfGeneratorImpl implements PdfGenerator {
 	 * @return It will return generated PDF file as {@link OutputStream}
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred
-	 * @throw PdfGeneratorException If PDF generation failed
 	 *
 	 */
 	@Override
@@ -61,7 +60,7 @@ public class PdfGeneratorImpl implements PdfGenerator {
 	 * Converts a {@link String} containing processed template to an
 	 * {@link OutputStream} containing PDF
 	 *
-	 * @param processTemplate
+	 * @param template
 	 *            the processedTemplate in the form of a {@link String}
 	 * 
 	 * @return It will return generated PDF file as {@link OutputStream}
@@ -69,7 +68,6 @@ public class PdfGeneratorImpl implements PdfGenerator {
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred
 	 * 
-	 * @throw PdfGeneratorException If PDF generation failed
 	 * 
 	 */
 
@@ -80,7 +78,7 @@ public class PdfGeneratorImpl implements PdfGenerator {
 			HtmlConverter.convertToPdf(template, os);
 		} catch (Exception e) {
 			throw new PdfGeneratorException(PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
 		}
 		return os;
 	}
@@ -96,7 +94,6 @@ public class PdfGeneratorImpl implements PdfGenerator {
 	 *            The {@link String} name of output file
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred
-	 * @throw PdfGeneratorException If PDF generation failed
 	 */
 	@Override
 	public void generate(String templatePath, String outpuFilePath, String outputFileName) throws IOException {
@@ -107,7 +104,7 @@ public class PdfGeneratorImpl implements PdfGenerator {
 
 		} catch (Exception e) {
 			throw new PdfGeneratorException(PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					e.getMessage());
+					PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
 		}
 
 	}

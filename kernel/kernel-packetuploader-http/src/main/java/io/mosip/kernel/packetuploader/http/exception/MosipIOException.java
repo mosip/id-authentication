@@ -1,7 +1,7 @@
 package io.mosip.kernel.packetuploader.http.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstants;
+import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstant;
 /**
  * Exception to be thrown when a io exception occur 
  * 
@@ -23,7 +23,7 @@ public class MosipIOException extends BaseUncheckedException {
 	 * @param cause
 	 *            cause of exception
 	 */
-	public MosipIOException(PacketUploaderExceptionConstants exceptionConstants, Throwable cause) {
+	public MosipIOException(PacketUploaderExceptionConstant exceptionConstants, Throwable cause) {
 		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage(), cause);
 	}
 

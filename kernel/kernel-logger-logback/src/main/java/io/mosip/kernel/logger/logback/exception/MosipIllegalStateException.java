@@ -8,7 +8,7 @@
 package io.mosip.kernel.logger.logback.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstants;
+import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 
 /**
  * Exception to be thrown when date format in filename pattern is wrong
@@ -28,8 +28,8 @@ public class MosipIllegalStateException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public MosipIllegalStateException(LogExeptionCodeConstants errorCode,
-			LogExeptionCodeConstants errorMessage) {
+	public MosipIllegalStateException(LogExeptionCodeConstant errorCode,
+			LogExeptionCodeConstant errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 }

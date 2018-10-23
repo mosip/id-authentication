@@ -8,7 +8,7 @@
 package io.mosip.kernel.logger.logback.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstants;
+import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 
 /**
  * {@link Exception} to be thrown when xml is not parsed correctly
@@ -32,8 +32,8 @@ public class MosipXMLConfigurationParseException
 	 *            exception message
 	 */
 	public MosipXMLConfigurationParseException(
-			LogExeptionCodeConstants errorCode,
-			LogExeptionCodeConstants errorMessage) {
+			LogExeptionCodeConstant errorCode,
+			LogExeptionCodeConstant errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 

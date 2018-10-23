@@ -8,7 +8,7 @@ package io.mosip.kernel.logger.logback.appender;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import io.mosip.kernel.logger.logback.constant.MosipConfigurationDefaults;
+import io.mosip.kernel.logger.logback.constant.MosipConfigurationDefault;
 
 /**
  * RollingFile appender for Mosip
@@ -31,17 +31,17 @@ public class MosipRollingFileAppender extends MosipFileAppender {
 	 * Controls the maximum number of archive files to keep, asynchronously
 	 * deleting older files;default this restriction will not apply
 	 */
-	private int maxHistory = MosipConfigurationDefaults.DEFAULMAXFILEHISTORY;
+	private int maxHistory = MosipConfigurationDefault.DEFAULMAXFILEHISTORY;
 	/**
 	 * Controls the total size of all archive files. Oldest archives are deleted
 	 * asynchronously when the total size cap is exceeded;default this
 	 * restriction will not apply
 	 */
-	private String totalCap = MosipConfigurationDefaults.DEFAULTTOTALCAP;
+	private String totalCap = MosipConfigurationDefault.DEFAULTTOTALCAP;
 	/**
 	 * Limit the size of each log file;default this restriction will not apply
 	 */
-	private String maxFileSize = MosipConfigurationDefaults.DEFAULTFILESIZE;
+	private String maxFileSize = MosipConfigurationDefault.DEFAULTFILESIZE;
 
 	/**
 	 * Getter for fileNamePattern

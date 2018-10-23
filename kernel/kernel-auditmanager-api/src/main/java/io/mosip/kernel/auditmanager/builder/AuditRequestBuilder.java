@@ -2,6 +2,8 @@ package io.mosip.kernel.auditmanager.builder;
 
 import java.time.OffsetDateTime;
 
+import org.springframework.stereotype.Service;
+
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 
 /**
@@ -14,6 +16,7 @@ import io.mosip.kernel.auditmanager.request.AuditRequestDto;
  * @since 1.0.0
  *
  */
+@Service
 public class AuditRequestBuilder {
 
 	/**

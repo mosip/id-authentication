@@ -7,7 +7,7 @@
 package io.mosip.kernel.logger.logback.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstants;
+import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 
 /**
  * Exception to be thrown when size string arguments are passed wrong
@@ -27,8 +27,8 @@ public class MosipIllegalArgumentException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public MosipIllegalArgumentException(LogExeptionCodeConstants errorCode,
-			LogExeptionCodeConstants errorMessage) {
+	public MosipIllegalArgumentException(LogExeptionCodeConstant errorCode,
+			LogExeptionCodeConstant errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 }

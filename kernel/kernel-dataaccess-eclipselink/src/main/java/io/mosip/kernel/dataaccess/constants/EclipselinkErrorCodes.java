@@ -8,7 +8,7 @@ package io.mosip.kernel.dataaccess.constants;
  *
  */
 public enum EclipselinkErrorCodes {
-	ERR_DATABASE("COK-DAO-DAM-001"), ECLIPSELINK_EXCEPTION("COK-DAO-DAM-002"), NO_RESULT_EXCEPTION("COK-DAO-DAM-003");
+	ERR_DATABASE("KER-DAE-001"), ECLIPSELINK_EXCEPTION("KER-DAE-002"), NO_RESULT_EXCEPTION("KER-DAE-003");
 
 	/**
 	 * Field for error code

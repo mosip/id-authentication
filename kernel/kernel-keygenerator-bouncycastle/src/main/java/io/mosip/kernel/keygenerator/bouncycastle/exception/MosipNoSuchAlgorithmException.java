@@ -1,7 +1,7 @@
 package io.mosip.kernel.keygenerator.bouncycastle.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.keygenerator.bouncycastle.constants.KeyGeneratorExceptionConstants;
+import io.mosip.kernel.keygenerator.bouncycastle.constant.KeyGeneratorExceptionConstant;
 import lombok.NoArgsConstructor;
 
 /**
@@ -22,10 +22,10 @@ public class MosipNoSuchAlgorithmException extends BaseUncheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param keyGeneratorExceptionConstants exception code constants
+	 * @param keyGeneratorExceptionConstant exception code constants
 	 */
-	public MosipNoSuchAlgorithmException(KeyGeneratorExceptionConstants keyGeneratorExceptionConstants) {
-		super(keyGeneratorExceptionConstants.getErrorCode(), keyGeneratorExceptionConstants.getErrorMessage());
+	public MosipNoSuchAlgorithmException(KeyGeneratorExceptionConstant keyGeneratorExceptionConstant) {
+		super(keyGeneratorExceptionConstant.getErrorCode(), keyGeneratorExceptionConstant.getErrorMessage());
 	}
 
 }

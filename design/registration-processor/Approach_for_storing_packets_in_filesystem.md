@@ -1,6 +1,7 @@
 # Approach for storing encrypted registration packets in file system
 
 **Background**
+
 Enrolment packets created by the enrolment clients will be periodically uploaded to the server for processing. These packets must be stored securely and with duplicate copies of each packet such that in the event of storage disk failures, packets should not be lost. 
 The target users are
 -	Server application which will process the packets
@@ -21,6 +22,7 @@ The key non-functional requirements are
 
 
 **Solution**
+
 The key solution considerations are
 -	Distributed storage system to maintain duplicate copies of packets
 -	Open source out of the box distributed file store to align with the principle of non-proprietary software and open standards
@@ -39,4 +41,17 @@ o	Storage and retrieval operations should be secure with authentication and auth
 
 Below is the sample of how files will be stored in CEPH after packet gets decrypted  –
 
-![Registration status class diagram](_images/registration_status_class_diagram.png)
+![CEPH storage example](_images/filesystem_storage_example.png)
+
+
+Process Flow
+
+![CEPH Adapter process flow](_images/filesystem_storage_process_flow.PNG)
+
+Class Diagram 
+
+![CEPH Adapter class diagram](_images/filesystem_storage_class_diagram.png)
+
+Sequence Diagram ** 
+
+![CEPH Adapter Sequence diagram](_images/filesystem_storage_seq_diagram.png)

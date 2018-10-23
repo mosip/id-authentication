@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import io.mosip.kernel.logger.logback.constant.MosipConfigurationDefaults;
+import io.mosip.kernel.logger.logback.constant.MosipConfigurationDefault;
 
 /**
  * Console appender for Mosip
@@ -29,12 +29,12 @@ public class MosipConsoleAppender {
 	 * It ensures that logging events are immediately written out; with default
 	 * true
 	 */
-	private boolean immediateFlush = MosipConfigurationDefaults.DEFAULTIMMEDIATEFLUSH;
+	private boolean immediateFlush = MosipConfigurationDefault.DEFAULTIMMEDIATEFLUSH;
 	/**
 	 * Target of Logging either System.out or System.err; default target is
 	 * System.out.
 	 */
-	private String target = MosipConfigurationDefaults.DEFAULTARGET;
+	private String target = MosipConfigurationDefault.DEFAULTARGET;
 
 	/**
 	 * Getter for appenderName

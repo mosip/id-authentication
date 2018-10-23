@@ -1,7 +1,7 @@
 package io.mosip.kernel.idgenerator.tokenid.constant;
 
 public enum TokenIdGeneratorErrorCode {
-	UNABLE_TO_CONNECT_TO_DB("KER-PRD-001", "Unable to connect to the database");
+	UNABLE_TO_CONNECT_TO_DB("KER-TIG-001", "Unable to connect to the database");
 	private final String errorCode;
 	private final String errorMessage;
     /**

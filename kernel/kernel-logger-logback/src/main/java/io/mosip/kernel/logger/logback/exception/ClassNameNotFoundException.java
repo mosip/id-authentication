@@ -8,7 +8,7 @@
 package io.mosip.kernel.logger.logback.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstants;
+import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 
 /**
  * {@link Exception} to be thrown when a class name is not found
@@ -29,8 +29,8 @@ public class ClassNameNotFoundException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public ClassNameNotFoundException(LogExeptionCodeConstants errorCode,
-			LogExeptionCodeConstants errorMessage) {
+	public ClassNameNotFoundException(LogExeptionCodeConstant errorCode,
+			LogExeptionCodeConstant errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 

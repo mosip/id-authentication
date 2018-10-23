@@ -16,7 +16,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.logback.appender.MosipConsoleAppender;
 import io.mosip.kernel.logger.logback.appender.MosipFileAppender;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstants;
+import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 import io.mosip.kernel.logger.logback.constant.MosipLoggerMethod;
 import io.mosip.kernel.logger.logback.exception.ImplementationNotFound;
 import io.mosip.kernel.logger.logback.impl.MosipLogback;
@@ -151,8 +151,8 @@ public class MosipLogfactory {
 					clazz.getName());
 		} else {
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 		}
 	}
 
@@ -176,8 +176,8 @@ public class MosipLogfactory {
 					name);
 		else
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 	}
 
 	/**
@@ -200,8 +200,8 @@ public class MosipLogfactory {
 					clazz.getName());
 		else
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 	}
 
 	/**
@@ -223,8 +223,8 @@ public class MosipLogfactory {
 			return MosipLogback.getMosipFileLogger(mosipFileAppender, name);
 		else
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 	}
 
 	/**
@@ -247,8 +247,8 @@ public class MosipLogfactory {
 					mosipRollingFileAppender, clazz.getName());
 		else
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 	}
 
 	/**
@@ -271,8 +271,8 @@ public class MosipLogfactory {
 					.getMosipRollingFileLogger(mosipRollingFileAppender, name);
 		else
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 	}
 
 	/**
@@ -404,8 +404,8 @@ public class MosipLogfactory {
 							clazz.getName());
 		else
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 	}
 
 	/**
@@ -430,8 +430,8 @@ public class MosipLogfactory {
 							name);
 		else
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 	}
 
 	/**
@@ -454,8 +454,8 @@ public class MosipLogfactory {
 					clazz.getName());
 		else
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 	}
 
 	/**
@@ -478,8 +478,8 @@ public class MosipLogfactory {
 					name);
 		else
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 	}
 
 	/**
@@ -505,8 +505,8 @@ public class MosipLogfactory {
 							clazz.getName());
 		else
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 	}
 
 	/**
@@ -531,8 +531,8 @@ public class MosipLogfactory {
 					name);
 		else
 			throw new ImplementationNotFound(
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUND,
-					LogExeptionCodeConstants.IMPLEMENTATIONNOTFOUNDMESSAGE);
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND,
+					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE);
 	}
 
 }

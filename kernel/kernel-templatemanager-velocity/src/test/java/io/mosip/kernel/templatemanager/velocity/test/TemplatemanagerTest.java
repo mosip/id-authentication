@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.spi.templatemanager.MosipTemplateManager;
+import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
 import io.mosip.kernel.templatemanager.velocity.exception.TemplateMethodInvocationException;
 import io.mosip.kernel.templatemanager.velocity.exception.TemplateParsingException;
@@ -27,7 +27,7 @@ import io.mosip.kernel.templatemanager.velocity.exception.TemplateResourceNotFou
 @RunWith(SpringRunner.class)
 public class TemplatemanagerTest {
 
-	private MosipTemplateManager templateManager;
+	private TemplateManager templateManager;
 	Map<String, Object> valueMap;
 	private static final String expected = "<head></head><body>"
 			+ "<h1>Welcome to Cafe Coffee Day Store</h1><p>6 Coffee on Sale!"

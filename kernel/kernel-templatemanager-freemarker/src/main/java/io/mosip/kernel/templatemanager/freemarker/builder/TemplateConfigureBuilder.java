@@ -7,14 +7,14 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.SoftCacheStorage;
 import freemarker.template.Configuration;
-import io.mosip.kernel.core.spi.templatemanager.MosipTemplateManager;
+import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
 import io.mosip.kernel.templatemanager.freemarker.constant.TemplateManagerExceptionCodeConstant;
 import io.mosip.kernel.templatemanager.freemarker.exception.TemplateConfigurationException;
 import io.mosip.kernel.templatemanager.freemarker.impl.TemplateManagerImpl;
 import lombok.Getter;
 
 /**
- * TemplateConfigureBuilder will build the @See {@link MosipTemplateManager}
+ * TemplateConfigureBuilder will build the @See {@link TemplateManager}
  * with the configuration either custom or default.
  * 
  * @author Abhishek Kumar
@@ -80,14 +80,15 @@ public class TemplateConfigureBuilder {
 	}
 
 	/**
-	 * Method to build the @see {@link MosipTemplateManager} with required
+	 * Method to build the @see {@link TemplateManager} with required
 	 * configuration
 	 * 
-	 * @return {@link MosipTemplateManager}
+	 * @return {@link TemplateManager}
 	 */
-	public MosipTemplateManager build() {
+	public TemplateManager build() {
 		Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
 		configuration.setDefaultEncoding(defaultEncoding);
+		configuration.setLogTemplateExceptions(false);
 		if (FILE.equalsIgnoreCase(resourceLoader) && !templatePath.isEmpty()) {
 			try {
 				configuration.setTemplateLoader(new FileTemplateLoader(new File(templatePath)));

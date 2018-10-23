@@ -10,7 +10,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
-import io.mosip.kernel.logger.logback.constant.MosipConfigurationDefaults;
+import io.mosip.kernel.logger.logback.constant.MosipConfigurationDefault;
+
+
 
 /**
  * File Appender for mosip
@@ -30,7 +32,7 @@ public class MosipFileAppender {
 	 * It ensures that logging events are immediately written out;with default
 	 * true
 	 */
-	private boolean immediateFlush = MosipConfigurationDefaults.DEFAULTIMMEDIATEFLUSH;
+	private boolean immediateFlush = MosipConfigurationDefault.DEFAULTIMMEDIATEFLUSH;
 	/**
 	 * Name of File in which logs will be written;<b>Mandatory field to pass</b>
 	 */
@@ -38,13 +40,13 @@ public class MosipFileAppender {
 	/**
 	 * Append in current file;with default true
 	 */
-	private boolean append = MosipConfigurationDefaults.DEFAULTAPPEND;
+	private boolean append = MosipConfigurationDefault.DEFAULTAPPEND;
 	/**
 	 * FileAppender will safely write to the specified file if true,even in the
 	 * presence of other FileAppender instances running in different JVMs,
 	 * potentially running on different hosts; with default false
 	 */
-	private boolean prudent = MosipConfigurationDefaults.DEFAULTPRUDENT;
+	private boolean prudent = MosipConfigurationDefault.DEFAULTPRUDENT;
 
 	/**
 	 * Getter for appenderName

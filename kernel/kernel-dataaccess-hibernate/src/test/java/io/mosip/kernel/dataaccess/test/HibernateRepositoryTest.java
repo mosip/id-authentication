@@ -26,9 +26,9 @@ import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.dataaccess.config.impl.HibernateDaoConfig;
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.dataaccess.repository.impl.HibernateRepositoryImpl;
+import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
 import io.mosip.kernel.dataaccess.test.Person.Person;
 
 @RunWith(SpringRunner.class)

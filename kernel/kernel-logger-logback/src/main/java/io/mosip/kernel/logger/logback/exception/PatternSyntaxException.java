@@ -8,7 +8,7 @@
 package io.mosip.kernel.logger.logback.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstants;
+import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 
 /**
  * {@link Exception} to be thrown when pattern does not contain recommended
@@ -30,8 +30,8 @@ public class PatternSyntaxException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            exception message
 	 */
-	public PatternSyntaxException(LogExeptionCodeConstants errorCode,
-			LogExeptionCodeConstants errorMessage) {
+	public PatternSyntaxException(LogExeptionCodeConstant errorCode,
+			LogExeptionCodeConstant errorMessage) {
 		super(errorCode.getValue(), errorMessage.getValue());
 	}
 

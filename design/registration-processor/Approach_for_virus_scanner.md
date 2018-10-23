@@ -1,7 +1,8 @@
 # Approach for Virus scanner
 
 **Background**
-Enrolment packets created by the enrolment clients will be periodically uploaded to the server for processing. The packets will be stored in landing zone initially and status will be updated in enrollment status table.
+
+Registration packets created by the registration clients will be periodically uploaded to the server for processing. The packets will be stored in landing zone initially and status will be updated in registration status table.
 The target users are
 -	Server application which will process the packets
 -	Administrator of the platform who may need to verify the packets
@@ -22,10 +23,11 @@ The key non-functional requirements are
 
 
 **Solution**
+
 The key solution considerations are
 -	A batch job to run periodically (based on configuration) and scan the packets present in virus scan zone.
 -	Read the cron configuration from properties file to schedule the job.
--	Create a tasklet and call enrollment status service to get list of enrollment ids present in virus scan zone.
+-	Create a tasklet and call registration status service to get list of registration ids present in virus scan zone.
 -	Call file manager module get the packet and send packet to virus scanner (MOS-37 CORE KERNEL).
 -	On successful virus scan -> Call FileSystemAdapter(MOS-168) and send packet to upload in CEPH.
 -	On failure virus scan -> move the packet to VIRUS_SCAN_RETRY directory. (NOTE : if virus scan fails then client has to resend packet and the packet will get deleted from retry zone. It will be stored temporarily there and will get deleted periodically based on configuration).
@@ -39,7 +41,9 @@ The key solution considerations are
 ![Virus scanner process flow diagram](_images/virus_scanner_process_flow.png)
 
 **Class Diagram**
+
 ![Virus scanner class diagram](_images/virus_scanner_process_class_diagram.png)
 
 **Sequence Diagram**
+
 ![Virus scanner sequence diagram](_images/virus_scanner_process_seq_diagram.png)

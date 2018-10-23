@@ -18,7 +18,7 @@ public class TemplateResourceNotFoundException extends BaseUncheckedException {
 	private static final long serialVersionUID = 3070414901455295210L;
 
 	/**
-	 * constructor for set error code and message
+	 * Constructor for set error code and message
 	 * 
 	 * @param errorCode
 	 *            the error code

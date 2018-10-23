@@ -16,7 +16,7 @@ import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
-import io.mosip.kernel.core.spi.templatemanager.MosipTemplateManager;
+import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.constant.TemplateManagerConstant;
 import io.mosip.kernel.templatemanager.velocity.constant.TemplateManagerExceptionCodeConstant;
 import io.mosip.kernel.templatemanager.velocity.exception.TemplateMethodInvocationException;
@@ -25,14 +25,14 @@ import io.mosip.kernel.templatemanager.velocity.exception.TemplateResourceNotFou
 import io.mosip.kernel.templatemanager.velocity.util.TemplateManagerUtil;
 
 /**
- * Implementation of {@link MosipTemplateManager} which uses Velocity Template
+ * Implementation of {@link TemplateManager} which uses Velocity Template
  * Engine, TemplateManagerImpl will merge the template with values.
  * 
  * <pre>
  * // set up and initialize MosipTemplateManager using TemplateConfigureBuilder
  * // before this code block
  *
- * MosipTemplateManager templateManager = new TemplateConfigureBuilder().build();
+ * TemplateManager templateManager = new TemplateConfigureBuilder().build();
  * templateManager.merge(template, values);
  * </pre>
  * 
@@ -40,7 +40,7 @@ import io.mosip.kernel.templatemanager.velocity.util.TemplateManagerUtil;
  * @version 1.0.0
  * @since 2018-10-01
  */
-public class TemplateManagerImpl implements MosipTemplateManager {
+public class TemplateManagerImpl implements TemplateManager {
 	private static final String DEFAULT_ENCODING_TYPE = "UTF-8";
 	private VelocityEngine velocityEngine;
 
@@ -82,7 +82,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorMessage());
 		} catch (ParseErrorException e) {
 			throw new TemplateParsingException(TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorCode(),
-					e.getMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorMessage(), e);
 		} catch (MethodInvocationException e) {
 			throw new TemplateMethodInvocationException(
 					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorCode(),
@@ -150,7 +150,7 @@ public class TemplateManagerImpl implements MosipTemplateManager {
 					TemplateManagerExceptionCodeConstant.TEMPLATE_NOT_FOUND.getErrorMessage());
 		} catch (ParseErrorException e) {
 			throw new TemplateParsingException(TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorCode(),
-					e.getMessage());
+					TemplateManagerExceptionCodeConstant.TEMPLATE_PARSING.getErrorMessage(), e);
 		} catch (MethodInvocationException e) {
 			throw new TemplateMethodInvocationException(
 					TemplateManagerExceptionCodeConstant.TEMPLATE_INVALID_REFERENCE.getErrorCode(),
