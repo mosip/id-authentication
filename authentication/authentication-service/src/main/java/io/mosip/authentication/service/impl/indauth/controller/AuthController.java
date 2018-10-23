@@ -1,8 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
@@ -34,7 +32,6 @@ import springfox.documentation.annotations.ApiIgnore;
  *
  * @author Arun Bose
  */
-@RefreshScope(proxyMode = ScopedProxyMode.DEFAULT)
 @RestController
 public class AuthController {
 
