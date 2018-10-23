@@ -1,5 +1,7 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
@@ -127,15 +129,6 @@ public class LoginOTPController extends BaseController implements Initializable 
 	 * Validate User through username and otp
 	 * 
 	 * @param event
-	 * @throws RegBaseCheckedException
-	 */
-	/**
-	 * @param event
-	 * @throws RegBaseCheckedException
-	 */
-	/**
-	 * @param event
-	 * @throws RegBaseCheckedException
 	 */
 	@FXML
 	public void validateUser(ActionEvent event) {
@@ -213,10 +206,9 @@ public class LoginOTPController extends BaseController implements Initializable 
 						AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
 						RegistrationUIConstants.OTP_INFO_MESSAGE, RegistrationUIConstants.OTP_FIELD_EMPTY);
 			}
-		} catch (RegBaseCheckedException ioException) {
-
-		} catch (IOException e) {
-
+		} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
+			generateAlert(RegistrationUIConstants.ALERT_ERROR, AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+					RegistrationUIConstants.LOGIN_FAILURE, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
 		}
 	}
 

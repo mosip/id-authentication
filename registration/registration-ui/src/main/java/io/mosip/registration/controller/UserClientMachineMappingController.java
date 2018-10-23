@@ -52,11 +52,7 @@ public class UserClientMachineMappingController extends BaseController implement
 	@FXML
 	private AnchorPane userClientMachineMappingEditPane;
 	@FXML
-	private Label usernameResult;
-	@FXML
-	private Label userIDResult;
-	@FXML
-	private Label roleResult;
+	private Label bioDetails;
 	@FXML
 	private Button update;
 	@FXML
@@ -126,9 +122,7 @@ public class UserClientMachineMappingController extends BaseController implement
 		if (mappingDTO != null) {
 			statusComboBox.getSelectionModel().clearSelection();
 			userClientMachineMappingEditPane.setVisible(true);
-			userIDResult.setText(mappingDTO.getUserID());
-			usernameResult.setText(mappingDTO.getUserName());
-			roleResult.setText(mappingDTO.getRole());
+			bioDetails.setText(RegistrationUIConstants.ONBOARD_BIOMETRICS+mappingDTO.getUserName());
 			stationIdResult.setText(mappingDTO.getStationID());
 			update.setDisable(true);
 

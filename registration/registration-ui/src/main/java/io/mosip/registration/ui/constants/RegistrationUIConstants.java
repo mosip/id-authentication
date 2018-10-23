@@ -97,6 +97,9 @@ public class RegistrationUIConstants {
 	public static final String PACKET_STATUS_SYNC_ALERT_TITLE="PACKET STATUS SYNC ALERT";
 	public static final String PACKET_STATUS_SYNC_INFO_MESSAGE="Packet Status Sync Information";
 	
+	//onBoard User
+	public static final String ONBOARD_BIOMETRICS="Biometrics - ";
+	
 	public static List getCountries(){
 		
 		String countries[] = new String[] {"Morocco","Zimbabwe","Zambia","Yemen","Vietnam","Venezuela","Vatican City (Holy See)","Vanuatu","Uzbekistan","Uruguay"};
