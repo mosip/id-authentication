@@ -28,4 +28,5 @@ The key solution considerations are -
 - Create vertical "user-machine-center-validator" to validate user, machine and center details.
 - On successful packet structure validation, send request to user-machine-center-validator .
 - Create UmcValidationProcessor in camel-bridge and route all successful packet structure validation request to umc_bus address. Map the request between vert.x and camel endpoints.
-- Use apache rest client to call [Master-data-APIs](https://github.com/mosip/mosip/wiki/2.4-Master-data-APIs#234-document-formats-master-api)
+- Add new methods in PacketInfoManager to fetch the user, machine and center details from table.
+- Use apache rest client to call [Master-data-APIs](https://github.com/mosip/mosip/wiki/2.4-Master-data-APIs#234-document-formats-master-api). Input will be - {userId + packet creation date}, {centerId + packet creation date}, {machineId + packet creation date}. The api will return the record on or before packet creation date. Registration processor would check if user/center/machine was valid during creation of the packet. 
