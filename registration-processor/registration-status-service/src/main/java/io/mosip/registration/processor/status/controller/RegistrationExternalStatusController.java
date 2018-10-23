@@ -20,20 +20,20 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping("/v0.1/registration-processor/registration-external-status")
-@Api(tags = "Status Handler")
+@RequestMapping("/v0.1/registration-processor/registration-status")
+@Api(tags = "External Status")
 public class RegistrationExternalStatusController {
 
 	@Autowired
-	RegistrationExternalStatusService<String, RegistrationExternalStatusDto> registrationExternalStatusService;
+	RegistrationExternalStatusService<RegistrationExternalStatusDto> registrationExternalStatusService;
 
 	@GetMapping(path = "/registrationexternalstatus", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the registration entity", response = RegistrationExternalStatusCode.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
-			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched")})
 	public ResponseEntity<List<RegistrationExternalStatusDto>> search(
 			@RequestParam(value = "registrationIds", required = true) String registrationIds) {
-		List<RegistrationExternalStatusDto> registrations = registrationExternalStatusService.getByIds(registrationIds);
+		List<RegistrationExternalStatusDto> registrations = registrationExternalStatusService
+				.getStatus(registrationIds);
 		return ResponseEntity.status(HttpStatus.OK).body(registrations);
 	}
 }
