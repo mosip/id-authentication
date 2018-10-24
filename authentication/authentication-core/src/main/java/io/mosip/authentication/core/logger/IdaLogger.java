@@ -13,7 +13,7 @@ import io.mosip.kernel.logger.util.LoggerUtils;
  * @author Manoj SP
  *
  */
-public class IdaLogger {
+public final class IdaLogger {
 
 	/**
 	 * Instantiates a new ida logger.
@@ -24,7 +24,8 @@ public class IdaLogger {
 	/**
 	 * Method to get the rolling file logger for the class provided.
 	 *
-	 * @param clazz the clazz
+	 * @param clazz
+	 *            the clazz
 	 * @return the logger
 	 */
 	public static MosipLogger getLogger(Class<?> clazz) {

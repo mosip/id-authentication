@@ -22,6 +22,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
+import lombok.NoArgsConstructor;
 
 /**
  * A factory for creating and building RestRequest objects from
@@ -31,14 +32,9 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
  *
  */
 @Component
+@NoArgsConstructor
 public class RestRequestFactory {
 	
-	/**
-	 * Instantiates a new rest request factory.
-	 */
-	private RestRequestFactory() {
-	}
-
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
@@ -51,7 +47,7 @@ public class RestRequestFactory {
 
 	/** The logger. */
 	private static MosipLogger mosipLogger = IdaLogger.getLogger(RestRequestFactory.class);
-
+	
 	/**
 	 * Builds the request.
 	 *

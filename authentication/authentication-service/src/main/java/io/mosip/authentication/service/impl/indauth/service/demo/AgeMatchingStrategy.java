@@ -32,7 +32,7 @@ public enum AgeMatchingStrategy implements MatchingStrategy {
 	 * @param matchStrategyType the match strategy type
 	 * @param matchFunction the match function
 	 */
-	private AgeMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
+	AgeMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}

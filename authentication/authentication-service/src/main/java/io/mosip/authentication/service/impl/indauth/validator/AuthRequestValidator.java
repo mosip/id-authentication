@@ -118,7 +118,7 @@ public class AuthRequestValidator implements Validator {
 
 		if (idType.equals(IdType.UIN.getType())) {
 			try {
-				System.err.println(uinValidator.validateId(authRequest.getId()));
+				uinValidator.validateId(authRequest.getId());
 			} catch (MosipInvalidIDException e) {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
 				errors.rejectValue("id", IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),

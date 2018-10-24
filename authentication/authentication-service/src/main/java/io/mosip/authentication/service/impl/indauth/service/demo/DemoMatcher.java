@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.ToIntBiFunction;
@@ -28,7 +29,7 @@ public class DemoMatcher {
 	 *            the match input
 	 * @return the list
 	 */
-	public List<MatchOutput> matchDemoData(DemoDTO demoDTO, DemoEntity demoEntity, List<MatchInput> listMatchInputs,
+	public List<MatchOutput> matchDemoData(DemoDTO demoDTO, DemoEntity demoEntity, Collection<MatchInput> listMatchInputs,
 			LocationInfoFetcher locationInfoFetcher) {
 		return listMatchInputs.parallelStream().map(input -> matchType(demoDTO, demoEntity, input, locationInfoFetcher))
 				.filter(output -> output != null).collect(Collectors.toList());
@@ -45,7 +46,7 @@ public class DemoMatcher {
 	 *            the input
 	 * @return the match output
 	 */
-	private MatchOutput matchType(DemoDTO demoDTO, DemoEntity demoEntity, MatchInput input,
+	private static MatchOutput matchType(DemoDTO demoDTO, DemoEntity demoEntity, MatchInput input,
 			LocationInfoFetcher locationInfoFetcher) {
 		String matchStrategyTypeStr = input.getMatchStrategyType();
 		if (matchStrategyTypeStr == null) {
