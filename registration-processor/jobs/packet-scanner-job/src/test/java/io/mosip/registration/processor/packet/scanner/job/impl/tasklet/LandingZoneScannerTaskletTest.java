@@ -32,9 +32,9 @@ import ch.qos.logback.core.Appender;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
-import io.mosip.registration.processor.packet.scanner.job.impl.tasklet.LandingZoneScannerTasklet;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
@@ -48,7 +48,7 @@ public class LandingZoneScannerTaskletTest {
 	private FileManager<DirectoryPathDto, InputStream> filemanager;
 
 	@Mock
-	private RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@MockBean
 	private StepContribution stepContribution;

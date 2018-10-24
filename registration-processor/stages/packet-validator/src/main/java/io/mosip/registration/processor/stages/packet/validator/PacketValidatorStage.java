@@ -29,6 +29,7 @@ import io.mosip.registration.processor.stages.utils.FilesValidation;
 import io.mosip.registration.processor.stages.utils.StatusMessage;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
@@ -52,7 +53,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	FileManager<DirectoryPathDto, InputStream> fileManager;
 
 	@Autowired
-	RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService;
+	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Autowired
 	private PacketInfoManager<PacketInfo, DemographicInfo, MetaData> packetInfoManager;

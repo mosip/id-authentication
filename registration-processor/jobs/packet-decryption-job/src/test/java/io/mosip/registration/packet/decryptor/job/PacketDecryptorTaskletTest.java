@@ -41,6 +41,7 @@ import io.mosip.registration.processor.packet.decryptor.job.exception.constant.P
 import io.mosip.registration.processor.packet.decryptor.job.tasklet.PacketDecryptorTasklet;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
@@ -60,7 +61,7 @@ public class PacketDecryptorTaskletTest {
 
 	/** The registration status service. */
 	@Mock
-	RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService;
+	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The adapter. */
 	@Mock

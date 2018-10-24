@@ -37,6 +37,7 @@ import io.mosip.registration.processor.packet.scanner.job.exception.DFSNotAccess
 import io.mosip.registration.processor.packet.scanner.job.exception.RetryFolderNotAccessibleException;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
@@ -53,7 +54,7 @@ public class VirusScannerTaskletTest {
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
 
 	@Mock
-	private RegistrationStatusService<String, InternalRegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> adapter;
