@@ -68,7 +68,8 @@ Below are details on the above classes –
 -	***OTPUtil*** – Utility class to generate unique key to be used to generate OTP
 -	***IDAuthControllerAdvice*** – Spring Controller Advice used to handle all exceptions and send corresponding error response
 -	***IDAuthService*** –Spring Service that validates UIN and VID for its authenticity
--	***NotificationService*** – Sprint Service whichwhich is created in another user story and used here to send generated OTP to individual as SMS or Email.
+-	***NotificationService*** – Sprint Service used to send generated OTP to individual as SMS and/or Email
+-	***TSPAuthService*** - Spring Service to authenticate and authorize TSPs 
 
 
 **2.2. Sequence Diagram:**
