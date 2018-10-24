@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.vidgenerator.generator;
+package io.mosip.kernel.vidgenerator.impl;
 
 import javax.annotation.PostConstruct;
 
@@ -15,8 +15,8 @@ import io.mosip.kernel.core.spi.idgenerator.MosipVidGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.vidgenerator.cache.VidCacheManager;
-import io.mosip.kernel.vidgenerator.constant.VidErrorCodes;
-import io.mosip.kernel.vidgenerator.constant.VidGeneratorConstants;
+import io.mosip.kernel.vidgenerator.constant.VidErrorCode;
+import io.mosip.kernel.vidgenerator.constant.VidGeneratorConstant;
 import io.mosip.kernel.vidgenerator.entity.Vid;
 import io.mosip.kernel.vidgenerator.exception.InValidUinException;
 import io.mosip.kernel.vidgenerator.exception.VidGenerationFailedException;
@@ -30,7 +30,7 @@ import io.mosip.kernel.vidgenerator.repository.VidRepository;
  *
  */
 @Service
-public class VidGenerator implements MosipVidGenerator<String> {
+public class VidGeneratorImpl implements MosipVidGenerator<String> {
 	@Autowired
 	VidRepository vidRepository;
 	@Autowired
@@ -55,8 +55,8 @@ public class VidGenerator implements MosipVidGenerator<String> {
 	public void vidGeneratorPostConstruct() {
 		generatedIdLength = vidLength - 1;
 		lowerBound = Long.parseLong(
-				VidGeneratorConstants.TWO + StringUtils.repeat(VidGeneratorConstants.ZERO, generatedIdLength - 1));
-		upperBound = Long.parseLong(StringUtils.repeat(VidGeneratorConstants.NINE, generatedIdLength));
+				VidGeneratorConstant.TWO + StringUtils.repeat(VidGeneratorConstant.ZERO, generatedIdLength - 1));
+		upperBound = Long.parseLong(StringUtils.repeat(VidGeneratorConstant.NINE, generatedIdLength));
 	}
 
 	/**
@@ -70,14 +70,14 @@ public class VidGenerator implements MosipVidGenerator<String> {
 	public String generateId(String uin) {
 		String generatedVid = null;
 		if (uin == null) {
-			throw new InValidUinException(VidErrorCodes.INVALID_UIN.getErrorCode(),
-					VidErrorCodes.INVALID_UIN.getErrorMessage());
+			throw new InValidUinException(VidErrorCode.INVALID_UIN.getErrorCode(),
+					VidErrorCode.INVALID_UIN.getErrorMessage());
 		}
 		if (vidCacheManager.containsUin(uin)) {
 			Vid existingVId = vidCacheManager.findByUin(uin);
 			long existingVIdCreatedAt = existingVId.getCreatedAt();
 			if (existingVIdCreatedAt > (System.currentTimeMillis()
-					- vidValidityHr * VidGeneratorConstants.MILLIS_IN_HR)) {
+					- vidValidityHr * VidGeneratorConstant.MILLIS_IN_HR)) {
 				return existingVId.getId();
 			}
 			generatedVid = getUniqueVid();
@@ -102,8 +102,8 @@ public class VidGenerator implements MosipVidGenerator<String> {
 			vidRepository.save(newVid);
 			vidCacheManager.saveOrUpdate(newVid);
 		} catch (Exception e) {
-			throw new VidGenerationFailedException(VidErrorCodes.VID_GENERATION_FAILED.getErrorCode(),
-					VidErrorCodes.VID_GENERATION_FAILED.getErrorMessage());
+			throw new VidGenerationFailedException(VidErrorCode.VID_GENERATION_FAILED.getErrorCode(),
+					VidErrorCode.VID_GENERATION_FAILED.getErrorMessage());
 		}
 	}
 

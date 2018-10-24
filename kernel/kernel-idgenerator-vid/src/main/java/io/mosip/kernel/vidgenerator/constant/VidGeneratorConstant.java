@@ -7,8 +7,8 @@ package io.mosip.kernel.vidgenerator.constant;
  * @since 1.0.0
  *
  */
-public final class VidGeneratorConstants {
-	private VidGeneratorConstants() {
+public final class VidGeneratorConstant {
+	private VidGeneratorConstant() {
 	}
 
 	/**

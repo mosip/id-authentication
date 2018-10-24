@@ -7,7 +7,7 @@ package io.mosip.kernel.vidgenerator.constant;
  * @since 1.0.0
  *
  */
-public enum VidErrorCodes {
+public enum VidErrorCode {
 	INVALID_UIN("KER-VIG-001", "InValid UIN"), VID_GENERATION_FAILED("KER-VIG-002", "VID generation failed");
 	/**
 	 * The error code
@@ -30,7 +30,7 @@ public enum VidErrorCodes {
 	 * @param errorMessage
 	 *            the error message
 	 */
-	private VidErrorCodes(final String errorCode, final String errorMessage) {
+	private VidErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}
