@@ -5,22 +5,22 @@
 
 TSP can request an OTP for an individual, which can be used to perform OTP based authentication using OTP Request API for that Individual.
 
-1.1. Target users -  
+1.1. ***Target users -***  
 TSP will request for an OTP on behalf of an Individual
 
 
-1.2. Key requirements -   
+1.2. ***Key requirements -***   
 -	TSP can authenticate an Individual using OTP sent to the Individual by OTP Request API
 -	TSP will capture Individual’s UIN/VID and construct OTP Request
 -	Once OTP Request is received, authenticate and authorize TSP
 -	Check Individual’s UIN/VID for authenticity and validity
 -	Create and send OTP to the Individual via message and/or email
 
-1.3. Key non-functional requirements -   
+1.3. ***Key non-functional requirements -***   
 <<TBD>>
 
-**2. Solution**
-OTP Request REST service addresses the above requirement - 
+**2. Solution**   
+OTP Request REST service addresses the above requirement -  
 
 1.	TSP to construct a POST request with below details and send to Request URL identity/otp
 Sample Request Body – 
@@ -73,4 +73,4 @@ Below are details on the above classes –
 
 **2.2. Sequence Diagram:**
 
-![OTP Request Sequence diagram](_images/OTP_Request_Sequence_Diagram.png)
+![OTP Request Sequence diagram](_images/OTP_Request_Sequence_Diagram.PNG)
