@@ -10,7 +10,7 @@
 
 <ScrollPane fx:id="newRegistrationRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="737.0" prefWidth="930.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationController">
   <content>
-    <AnchorPane id="anchor-pane-registration" minHeight="0.0" minWidth="0.0" prefHeight="726.0" prefWidth="906.0">
+    <AnchorPane id="anchor-pane-registration" minHeight="0.0" minWidth="0.0" prefHeight="726.0" prefWidth="940.0">
          <children>
             <AnchorPane layoutX="60.0" layoutY="14.0" prefHeight="55.0" prefWidth="654.0">
                <children>

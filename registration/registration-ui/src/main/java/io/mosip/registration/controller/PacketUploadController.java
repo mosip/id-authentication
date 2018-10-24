@@ -130,6 +130,9 @@ public class PacketUploadController extends BaseController {
 					e.printStackTrace();
 				} catch (RegBaseCheckedException e) {
 					uploadStatusMap.put(packetName[0], "E");
+				} catch (RuntimeException e) {
+					generateAlert("Error", Alert.AlertType.ERROR, "Unable to push packets to the server.");
+					break;
 				}
 			}
 			packetUploadService.updateStatus(uploadStatusMap);
