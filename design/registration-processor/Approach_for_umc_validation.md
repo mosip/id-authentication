@@ -31,9 +31,9 @@ The key solution considerations are -
 - Add new methods in PacketInfoManager to fetch the user, machine and center details from table.
 - Use apache rest client to call [Master-data-APIs](https://github.com/mosip/mosip/wiki/2.4-Master-data-APIs#234-document-formats-master-api). 
 
-Input : {userId + packet creation date}, {centerId + packet creation date}, {machineId + packet creation date}.
+    Input : {userId + packet creation date}, {centerId + packet creation date}, {machineId + packet creation date}.
 
-Output : The table record on or before creation of the packet.
+    Output : The table record on or before creation of the packet.
 - Registration processor would check if user/center/machine was valid during creation of the packet. On successful validation, registration-processor will further validate if the user was assigned to the same machine of same center during packet creation time. For this kernel will lookup in user-machine-center lookup table and return information. 
 
     Input : user id, machine id, center id and packet creation date.
