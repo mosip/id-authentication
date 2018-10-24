@@ -1,11 +1,11 @@
 # OTP Request REST Service
 
 
-**1. Background**
+##1. Background##
 
 TSP can request an OTP for an individual, which can be used to perform OTP based authentication using OTP Request API for that Individual.
 
-***1.1. Target users -   ***
+###1.1. Target users -   ###
 TSP will request for an OTP on behalf of an Individual
 
 
