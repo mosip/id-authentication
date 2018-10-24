@@ -61,6 +61,6 @@ public final class MosipConfigurationDefault {
 	/**
 	 * Default pattern of logs
 	 */
-	public static final String LOGPATTERN = "%d{yyyy-MM-dd'T'HH:mm:ssXXX} - %-5level - %msg%n";
+	public static final String LOGPATTERN = "%d{yyyy-MM-dd'T'HH:mm:ssXXX} - [%logger] - %-5level - %msg%n";
 
 }
