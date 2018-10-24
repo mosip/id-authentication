@@ -17,6 +17,7 @@ public class RetryVerticleApplicationTests {
 	
 	
 	private Vertx vertx;
+	private Vertx revertx;
 	
 	private Integer limit=6;
 	
@@ -28,6 +29,7 @@ public class RetryVerticleApplicationTests {
 	public void setup(TestContext context) {
 		retryStage.deployVerticle();
 		vertx=retryStage.getEventBus(RetryStage.class).getEventbus();
+		revertx=retryStage.getEventBus(RetryStage.class).getEventbus();;
 		dto.setRid("1001");
 		dto.setRetryCount(null);
 		dto.setIsValid(false);
@@ -39,6 +41,8 @@ public class RetryVerticleApplicationTests {
 	@After
 	public void tearDown(TestContext context) {
 		vertx.close(context.asyncAssertSuccess());
+		revertx.close(context.asyncAssertSuccess());
+		
 	}
 	@Test
 	public void checkProcessRetry(TestContext testContext) {
@@ -46,8 +50,12 @@ public class RetryVerticleApplicationTests {
 		final Async async = testContext.async();
 		JsonObject jsonObject = JsonObject.mapFrom(dto);
 		vertx.eventBus().send(MessageBusAddress.RETRY_BUS.getAddress(), jsonObject);
-		
-		async.complete();
+		revertx.eventBus().consumer(dto.getMessageBusAddress().getAddress(), msg -> {
+			testContext.assertTrue(msg.body().toString().contains(dto.getRid()));
+			if (!async.isCompleted())
+				async.complete();
+		});
+		async.awaitSuccess();
 	}
 	@Test
 	public void checkProcessError(TestContext testContext) {
@@ -56,8 +64,12 @@ public class RetryVerticleApplicationTests {
 		dto.setRetryCount(limit);
 		JsonObject jsonObject = JsonObject.mapFrom(dto);
 		vertx.eventBus().send(MessageBusAddress.RETRY_BUS.getAddress(), jsonObject);
-		
-		async.complete();
+		revertx.eventBus().consumer(MessageBusAddress.ERROR.getAddress(), msg -> {
+			testContext.assertTrue(msg.body().toString().contains(dto.getRid()));
+			if (!async.isCompleted())
+				async.complete();
+		});
+		async.awaitSuccess();
 	}
 	
 }
