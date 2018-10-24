@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.core.builder;
 
+import java.net.UnknownHostException;
 import java.time.OffsetDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
+import io.mosip.registration.processor.core.util.ServerUtil;
 
 /**
  * The Class AuditRequestBuilder.
@@ -40,19 +42,20 @@ public class CoreAuditRequestBuilder {
 	 * @param eventType the event type
 	 * @param regisrationId the registration id
 	 * @return true, if successful
+	 * @throws UnknownHostException 
 	 */
-	public boolean createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
-			String registrationId) {
+	public void createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
+			String registrationId) throws UnknownHostException {
 		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
 				.setApplicationId(AuditLogConstant.MOSIP_4.toString())
 				.setApplicationName(AuditLogConstant.REGISTRATION_PROCESSOR.toString())
 				.setCreatedBy(AuditLogConstant.SYSTEM.toString()).setDescription(description).setEventId(eventId)
-				.setEventName(eventName).setEventType(eventType).setHostIp(null).setHostName(null).setId(registrationId)
+				.setEventName(eventName).setEventType(eventType).setHostIp(ServerUtil.getServerUtilInstance().getServerIp()).setHostName(ServerUtil.getServerUtilInstance().getServerName()).setId(registrationId)
 				.setIdType(AuditLogConstant.REGISTRATION_ID.toString()).setModuleId(null).setModuleName(null)
 				.setSessionUserId(AuditLogConstant.SYSTEM.toString()).setSessionUserName(null);
 
 		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-		return auditHandler.writeAudit(auditRequestDto);
+		auditHandler.writeAudit(auditRequestDto);
 	}
 
 }

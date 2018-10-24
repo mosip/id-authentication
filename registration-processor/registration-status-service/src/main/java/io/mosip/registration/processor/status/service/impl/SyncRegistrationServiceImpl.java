@@ -3,6 +3,7 @@
  */
 package io.mosip.registration.processor.status.service.impl;
 
+import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -15,6 +16,10 @@ import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -51,6 +56,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/** The audit handler. */
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
+	
+	@Autowired
+	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
 	/**
 	 * Instantiates a new sync registration service impl.
@@ -98,10 +106,17 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		} finally {
 
 			String description = isTransactionSuccessful ? "description--sync Success" : "description--sync Failure";
-			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+			try {
+				coreAuditRequestBuilder.createAuditRequestBuilder(description, EventId.RPR_401.toString(), EventName.GET.toString(), EventType.SYSTEM.toString(),null);
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+/*			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
 					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
 					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());
+					AuditLogTempConstant.EVENT_TYPE.toString());*/
+			
 		}
 
 	}
