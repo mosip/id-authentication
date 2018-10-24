@@ -1,15 +1,15 @@
 # OTP Request REST Service
 
 
-##1. Background##
+**1. Background**
 
 TSP can request an OTP for an individual, which can be used to perform OTP based authentication using OTP Request API for that Individual.
 
-###1.1. Target users -   ###
+1.1. Target users -  
 TSP will request for an OTP on behalf of an Individual
 
 
-***1.2. Key requirements -   ***
+1.2. Key requirements -   
 -	TSP can authenticate an Individual using OTP sent to the Individual by OTP Request API
 -	TSP will capture Individual’s UIN/VID and construct OTP Request
 -	Once OTP Request is received, authenticate and authorize TSP
@@ -23,7 +23,7 @@ TSP will request for an OTP on behalf of an Individual
 OTP Request REST service addresses the above requirement - 
 
 1.	TSP to construct a POST request with below details and send to Request URL identity/otp
-####Sample Request Body – 
+Sample Request Body – 
 ```JSON
 {
   "id": "mosip.identity.otp",
