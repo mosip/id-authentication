@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySource;
 /**
  * The Class RegistrationStatusApplication.
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.core", "io.mosip.registration.processor.status"})
 @PropertySource({ "classpath:status-application.properties" })
 public class RegistrationStatusApplication {
 
