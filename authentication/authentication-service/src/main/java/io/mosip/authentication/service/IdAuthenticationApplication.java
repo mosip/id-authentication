@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
-import io.mosip.kernel.dataaccess.config.impl.HibernateDaoConfig;
+import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 
 /**
  * Spring-boot class for ID Authentication Application.

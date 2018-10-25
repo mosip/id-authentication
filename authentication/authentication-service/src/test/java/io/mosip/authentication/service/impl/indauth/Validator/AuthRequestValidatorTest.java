@@ -41,7 +41,7 @@ import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidat
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 
 /**
  * This class validates the AuthRequestValidator

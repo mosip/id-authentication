@@ -3,9 +3,9 @@ package io.mosip.authentication.core.logger;
 import java.io.File;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.kernel.logger.util.LoggerUtils;
+import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.kernel.logger.logback.util.LoggerUtils;
 
 /**
  * Logger for IDA which provides implementation from kernel logback.
