@@ -53,7 +53,7 @@ node{
 	stage('Build image') {
 	dir(branch){
         docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
-		    def buildName = registry + ":$BUILD_NUMBER"
+		    def buildName = registry + ":kernel-auditmanager-service-$BUILD_NUMBER"
 			newApp = docker.build(buildName, '-f kernel/kernel-auditmanager-service/Dockerfile .')
 			newApp.push()
 		}
