@@ -2,7 +2,7 @@
  * 
  * 
  */
-package io.mosip.kernel.virus.scanner.service;
+package io.mosip.kernel.virusscanner.clamav.service;
 
 import org.springframework.stereotype.Service;
 

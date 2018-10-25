@@ -1,4 +1,4 @@
-package io.mosip.kernel.virus.scanner.service.impl;
+package io.mosip.kernel.virusscanner.clamav.service.impl;
 
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.virus.scanner.exception.ServerNotAccessibleException;
-import io.mosip.kernel.virus.scanner.service.VirusScannerService;
+import io.mosip.kernel.virusscanner.clamav.exception.ServerNotAccessibleException;
+import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
 import xyz.capybara.clamav.ClamavClient;
 import xyz.capybara.clamav.commands.scan.result.ScanResult;
 import xyz.capybara.clamav.commands.scan.result.ScanResult.Status;

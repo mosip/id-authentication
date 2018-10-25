@@ -1,4 +1,4 @@
-package io.mosip.kernel.virus.scanner.service.test;
+package io.mosip.kernel.virusscanner.clamav.test.service;
 
 import static org.junit.Assert.*;
 import java.io.File;
@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.TestPropertySource;
 
-import io.mosip.kernel.virus.scanner.service.VirusScannerService;
-import io.mosip.kernel.virus.scanner.service.impl.VirusScannerServiceImpl;
+import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
+import io.mosip.kernel.virusscanner.clamav.service.impl.VirusScannerServiceImpl;
 import xyz.capybara.clamav.ClamavClient;
 import xyz.capybara.clamav.commands.scan.result.ScanResult;
 import xyz.capybara.clamav.commands.scan.result.ScanResult.Status;

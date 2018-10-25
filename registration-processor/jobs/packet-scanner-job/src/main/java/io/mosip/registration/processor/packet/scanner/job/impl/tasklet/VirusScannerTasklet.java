@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
-import io.mosip.kernel.virus.scanner.service.VirusScannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;

@@ -2,10 +2,10 @@
  * 
  * 
  */
-package io.mosip.kernel.virus.scanner.exception;
+package io.mosip.kernel.virusscanner.clamav.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.virus.scanner.exception.util.VirusScannerErrorCodes;
+import io.mosip.kernel.virusscanner.clamav.exception.util.VirusScannerErrorCodes;
 
 /**
  * TheServerNotAccessibleException occurs when anti virus service is not

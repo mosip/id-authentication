@@ -1,4 +1,4 @@
-package io.mosip.kernel.virus.scanner.exception.util;
+package io.mosip.kernel.virusscanner.clamav.exception.util;
 
 /**
  * Internal Packet virus scan error codes.

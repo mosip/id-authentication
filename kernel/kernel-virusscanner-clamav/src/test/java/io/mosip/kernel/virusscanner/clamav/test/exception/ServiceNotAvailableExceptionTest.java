@@ -1,4 +1,4 @@
-package io.mosip.kernel.virus.scanner.exception.test;
+package io.mosip.kernel.virusscanner.clamav.test.exception;
 
 import java.io.File;
 
@@ -12,9 +12,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.mosip.kernel.virus.scanner.exception.ServerNotAccessibleException;
-import io.mosip.kernel.virus.scanner.service.VirusScannerService;
-import io.mosip.kernel.virus.scanner.service.impl.VirusScannerServiceImpl;
+import io.mosip.kernel.virusscanner.clamav.exception.ServerNotAccessibleException;
+import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
+import io.mosip.kernel.virusscanner.clamav.service.impl.VirusScannerServiceImpl;
 import xyz.capybara.clamav.ClamavClient;
 import xyz.capybara.clamav.exceptions.ClamavException;
 
