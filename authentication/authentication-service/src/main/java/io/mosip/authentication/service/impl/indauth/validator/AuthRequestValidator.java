@@ -49,10 +49,10 @@ public class AuthRequestValidator implements Validator {
 	/** The env. */
 	@Autowired
 	private Environment env;
-	
+
 	@Autowired
 	private UinValidatorImpl uinValidator;
-	
+
 	@Autowired
 	private VidValidatorImpl vidValidator;
 
@@ -87,8 +87,8 @@ public class AuthRequestValidator implements Validator {
 		try {
 			parse = simpleDateFormat.parse(reqTime);
 		} catch (ParseException e) {
-			errors.rejectValue("reqTime", IdAuthenticationErrorConstants.INVALID_REQUEST_TIME_FORMAT.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_REQUEST_TIME_FORMAT.getErrorMessage());
+			errors.rejectValue("reqTime", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), reqTime));
 		}
 
 		if (parse != null) {
@@ -99,8 +99,9 @@ public class AuthRequestValidator implements Validator {
 			} else {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 						"REQUEST_TIME_OUT - request should be reached within 24Hrs");
-				errors.rejectValue("reqTime", IdAuthenticationErrorConstants.INVALID_REQUEST_TIME_OUT.getErrorCode(),
-						IdAuthenticationErrorConstants.INVALID_REQUEST_TIME_OUT.getErrorMessage());
+				errors.rejectValue("reqTime", IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage(),
+								env.getProperty("authrequest.received-time-allowed.in-hours")));
 			}
 		}
 
@@ -134,8 +135,8 @@ public class AuthRequestValidator implements Validator {
 			}
 		} else {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "INCORRECT_IDTYPE - " + idType);
-			errors.rejectValue("idType", IdAuthenticationErrorConstants.INCORRECT_IDTYPE.getErrorCode(),
-					env.getProperty("mosip.ida.validation.message.AuthRequest.Idtype"));
+			errors.rejectValue("idType", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), idType));
 		}
 	}
 
@@ -147,34 +148,29 @@ public class AuthRequestValidator implements Validator {
 	 */
 	private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
 		AuthTypeDTO authType = authRequest.getAuthType();
-		boolean anyAuthType = Stream.<Supplier<Boolean>>of(
-										authType::isOtp, 
-										authType::isBio,
-										authType::isAd,
-										authType::isFad,
-										authType::isPin,
-										authType::isPi)
-									.anyMatch(Supplier<Boolean>::get);
+		boolean anyAuthType = Stream.<Supplier<Boolean>>of(authType::isOtp, authType::isBio, authType::isAd,
+				authType::isFad, authType::isPin, authType::isPi).anyMatch(Supplier<Boolean>::get);
 
-			
-		if(!anyAuthType) {
+		if (!anyAuthType) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 					"INVALID_AUTH_REQUEST - No auth type found");
-			errors.rejectValue("authType", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "authType"));
+			errors.rejectValue("authType", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), String
+					.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), "authType"));
 
 		}
-		
+
 		if (authType.isOtp()) {
 			checkOTPAuth(authRequest, errors);
-		} 
+		}
 	}
 
 	/**
 	 * This method checks for the otp authorisation parameters to be present.
 	 *
-	 * @param authRequest the auth request
-	 * @param errors      the errors
+	 * @param authRequest
+	 *            the auth request
+	 * @param errors
+	 *            the errors
 	 */
 	public void checkOTPAuth(AuthRequestDTO authRequest, Errors errors) {
 
@@ -189,17 +185,16 @@ public class AuthRequestValidator implements Validator {
 					errors.rejectValue(PERSONAL_DATA_DTO, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
 							IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage());
 				}
-
 			} else {
 				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH,
 						"INVALID_OTP - pinType is not OTP");
 				errors.rejectValue(PERSONAL_DATA_DTO, IdAuthenticationErrorConstants.INVALID_OTP.getErrorCode(),
-						env.getProperty("mosip.ida.validation.message.AuthRequest.OTP"));
+						IdAuthenticationErrorConstants.INVALID_OTP.getErrorMessage());
 			}
 		} else {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH, "EMPTY_OTP - OTP is empty");
-			errors.rejectValue(PERSONAL_DATA_DTO, IdAuthenticationErrorConstants.EMPTY_OTP.getErrorCode(),
-					env.getProperty("mosip.ida.validation.message.AuthRequest.PinType"));
+			errors.rejectValue("pin", IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), "pin"));
 		}
 
 	}

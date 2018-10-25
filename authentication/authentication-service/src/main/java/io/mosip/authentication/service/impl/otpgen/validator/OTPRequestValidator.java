@@ -75,14 +75,14 @@ public class OTPRequestValidator implements Validator {
 			}
 		} else {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, "INCORRECT_IDTYPE - " + idType);
-			errors.rejectValue("idType", IdAuthenticationErrorConstants.INCORRECT_IDTYPE.getErrorCode(),
-					env.getProperty("mosip.ida.validation.message.AuthRequest.Idtype"));
+			errors.rejectValue("idType", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), idType));
 		}
 
 		if (!isTimestampValid(otpRequestDto.getReqTime())) {
-			errors.rejectValue("reqTime",
-					IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
-					IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage());
+			errors.rejectValue("reqTime", IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_OTP_REQUEST_TIMESTAMP.getErrorMessage(),
+							env.getProperty("requestdate.received.in.max.time.mins")));
 		}
 
 	}
@@ -93,8 +93,8 @@ public class OTPRequestValidator implements Validator {
 		Instant reqTimeInstance = reqTime.toInstant();
 		Instant now = Instant.now();
 
-		return Duration.between(reqTimeInstance, now).toMinutes() < env.getProperty("requestdate.received.in.max.time.mins",
-				Integer.class);
+		return Duration.between(reqTimeInstance, now).toMinutes() < env
+				.getProperty("requestdate.received.in.max.time.mins", Integer.class);
 
 	}
 }
