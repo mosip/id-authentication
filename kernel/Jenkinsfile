@@ -42,7 +42,7 @@ node{
 		buildInfo.env.capture = true
 		}
 		 stage ('Exec Maven') {
-        rtMaven.run pom: '$branch/$projectToBuild/pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: 'DEV/kernel/pom.xml', goals: 'clean install', buildInfo: buildInfo
     }
 
 	stage ('Publish build info') {
