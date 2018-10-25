@@ -51,5 +51,6 @@ public class MessageBusAddress implements Serializable {
 	public static final MessageBusAddress FAILURE_BUS = new MessageBusAddress("failure-bus");
 	public static final MessageBusAddress RETRY_BUS = new MessageBusAddress("retry");
 	public static final MessageBusAddress ERROR = new MessageBusAddress("error");
+	public static final MessageBusAddress QUALITY_CHECK_BUS = new MessageBusAddress("quality_check_bus");
 
 }
