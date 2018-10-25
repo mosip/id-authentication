@@ -3,7 +3,8 @@ package io.mosip.registration.processor.core.util;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import io.mosip.registration.processor.core.exception.ServerUtilException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class provides Server IP and Name.
@@ -14,8 +15,15 @@ public class ServerUtil {
 
 	/** The server instance. */
 	private static ServerUtil serverInstance = null;
+	
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = LoggerFactory.getLogger(ServerUtil.class);
+	
+	/** The host not found. */
+	private String HOST_NOT_FOUND;
 
 	/**
+	 * 
 	 * Instantiates a new server util.
 	 */
 	private ServerUtil() {
@@ -49,7 +57,8 @@ public class ServerUtil {
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
-			throw new ServerUtilException();
+			LOGGER.error(HOST_NOT_FOUND, e.getMessage());
+			return "UNKNOWN-HOST";
 		}
 
 	}
@@ -64,7 +73,8 @@ public class ServerUtil {
 		try {
 			return InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException e) {
-			throw new ServerUtilException();
+			LOGGER.error(HOST_NOT_FOUND, e.getMessage());
+			return "UNKNOWN-HOST";
 		}
 	}
 
