@@ -1,8 +1,8 @@
 package io.mosip.authentication.core.logger;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 
 /**
  * Logger for IDA which provides implementation from kernel logback.
