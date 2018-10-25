@@ -1,8 +1,7 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegClientStatusCode;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.service.RegistrationApprovalService;
 import javafx.collections.FXCollections;
@@ -86,7 +85,7 @@ public class RejectionController extends BaseController implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_REJECTION_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID), "Page loading has been started");
+				APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		rejectionComboBox.getItems().clear();
 		rejectionComboBox.setItems(rejectionCommentslist);
 	}
@@ -109,10 +108,10 @@ public class RejectionController extends BaseController implements Initializable
 	 */
 	public void packetUpdateStatus(ActionEvent event) {
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Packet updation as rejection has been started");
 		String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
-		if(rejRegistration.packetUpdateStatus(regRejId, RegClientStatusCode.REJECTED.getCode(),approverUserId, 
+		if(rejRegistration.packetUpdateStatus(regRejId, RegistrationClientStatusCode.REJECTED.getCode(),approverUserId, 
 				rejectionComboBox.getSelectionModel().getSelectedItem(), approverUserId)) {
 		generateAlert("Status", AlertType.INFORMATION, "Packet Rejected Successfully..");
 		rejectionSubmit.disableProperty().set(true);
@@ -124,7 +123,7 @@ public class RejectionController extends BaseController implements Initializable
 		}
 		rejPrimarystage.close();
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Packet updation as rejection has been started");
 	}
 }

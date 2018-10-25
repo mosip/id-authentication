@@ -1,7 +1,5 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
@@ -12,15 +10,15 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
-import io.mosip.registration.service.LoginServiceImpl;
-import io.mosip.registration.ui.constants.RegistrationUIConstants;
+import io.mosip.registration.service.impl.LoginServiceImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -39,7 +37,7 @@ import javafx.scene.layout.BorderPane;
 * @since 1.0.0
 */
 @Controller
-@PropertySource("classpath:registration.properties")
+@PropertySource("classpath:application.properties")
 public class LoginOTPController extends BaseController implements Initializable {
 
 	@Autowired
@@ -103,23 +101,23 @@ public class LoginOTPController extends BaseController implements Initializable 
 
 				// Generate alert to show OTP
 				SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
-				generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
-						AlertType.valueOf(successResponseDTO.getCode()), RegistrationUIConstants.OTP_INFO_MESSAGE,
+				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+						AlertType.valueOf(successResponseDTO.getCode()), RegistrationConstants.OTP_INFO_MESSAGE,
 						successResponseDTO.getMessage());
 
 			} else if (responseDTO.getErrorResponseDTOs() != null) {
 				// Generate Alert to show INVALID USERNAME
 				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-				generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(errorResponseDTO.getCode()),
-						RegistrationUIConstants.OTP_INFO_MESSAGE, errorResponseDTO.getMessage());
+				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(errorResponseDTO.getCode()),
+						RegistrationConstants.OTP_INFO_MESSAGE, errorResponseDTO.getMessage());
 
 			}
 
 		} else {
 			// Generate Alert to show username field was empty
-			generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
-					AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR), RegistrationUIConstants.OTP_INFO_MESSAGE,
-					RegistrationUIConstants.USERNAME_FIELD_EMPTY);
+			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+					AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.OTP_INFO_MESSAGE,
+					RegistrationConstants.USERNAME_FIELD_EMPTY);
 
 		}
 
@@ -143,46 +141,46 @@ public class LoginOTPController extends BaseController implements Initializable 
 					if (responseDTO.getSuccessResponseDTO() != null) {
 						//Validating User status
 						if (validateUserStatus(eoUsername.getText())) {
-							generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
-									AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-									RegistrationUIConstants.LOGIN_INFO_MESSAGE,
-									RegistrationUIConstants.BLOCKED_USER_ERROR);
+							generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+									AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+									RegistrationConstants.LOGIN_INFO_MESSAGE,
+									RegistrationConstants.BLOCKED_USER_ERROR);
 						} else {
 							SessionContext sessionContext = SessionContext.getInstance();
 							// Resetting login sequence to the Session context after log out
 							if (sessionContext.getMapObject() == null) {
 								Map<String, Object> userLoginMode = loginServiceImpl.getModesOfLogin();
 								sessionContext.setMapObject(userLoginMode);
-								sessionContext.getMapObject().put(RegistrationUIConstants.LOGIN_INITIAL_SCREEN,
-										RegistrationUIConstants.OTP);
+								sessionContext.getMapObject().put(RegistrationConstants.LOGIN_INITIAL_SCREEN,
+										RegistrationConstants.OTP);
 							}
 
-							int counter = (int) sessionContext.getMapObject().get(RegConstants.LOGIN_SEQUENCE);
+							int counter = (int) sessionContext.getMapObject().get(RegistrationConstants.LOGIN_SEQUENCE);
 							counter++;
 							if (sessionContext.getMapObject().containsKey(String.valueOf(counter))) {
 								String mode = sessionContext.getMapObject().get(String.valueOf(counter)).toString();
 								sessionContext.getMapObject().remove(String.valueOf(counter));
-								if (mode.equals(RegistrationUIConstants.LOGIN_METHOD_PWORD)) {
+								if (mode.equals(RegistrationConstants.LOGIN_METHOD_PWORD)) {
 									BorderPane pane = (BorderPane) ((Node) event.getSource()).getParent().getParent();
 									AnchorPane loginType = BaseController
-											.load(getClass().getResource(RegistrationUIConstants.LOGIN_PWORD_PAGE));
+											.load(getClass().getResource(RegistrationConstants.LOGIN_PWORD_PAGE));
 									pane.setCenter(loginType);
 								}
 							} else {
 								String authInfo = setInitialLoginInfoAndSessionContext(eoUsername.getText());
-								if(authInfo != null && authInfo.equals(RegistrationUIConstants.ROLES_EMPTY)) {
-									generateAlert(RegistrationUIConstants.AUTHORIZATION_ALERT_TITLE,
-											AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-											RegistrationUIConstants.AUTHORIZATION_ERROR,
-											RegistrationUIConstants.ROLES_EMPTY_ERROR);
-								} else if(authInfo != null && authInfo.equals(RegistrationUIConstants.MACHINE_MAPPING)) {
-									generateAlert(RegistrationUIConstants.AUTHORIZATION_ALERT_TITLE,
-											AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-											RegistrationUIConstants.AUTHORIZATION_ERROR,
-											RegistrationUIConstants.MACHINE_MAPPING_ERROR);
+								if(authInfo != null && authInfo.equals(RegistrationConstants.ROLES_EMPTY)) {
+									generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
+											AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+											RegistrationConstants.AUTHORIZATION_ERROR,
+											RegistrationConstants.ROLES_EMPTY_ERROR);
+								} else if(authInfo != null && authInfo.equals(RegistrationConstants.MACHINE_MAPPING)) {
+									generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
+											AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+											RegistrationConstants.AUTHORIZATION_ERROR,
+											RegistrationConstants.MACHINE_MAPPING_ERROR);
 								} else {
 									schedulerUtil.startSchedulerUtil();
-									BaseController.load(getClass().getResource(RegistrationUIConstants.HOME_PAGE));
+									BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 								}
 							}
 
@@ -191,24 +189,24 @@ public class LoginOTPController extends BaseController implements Initializable 
 					} else {
 						// Generate invalid otp alert
 						ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-						generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
-								AlertType.valueOf(errorResponseDTO.getCode()), RegistrationUIConstants.LOGIN_FAILURE,
+						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+								AlertType.valueOf(errorResponseDTO.getCode()), RegistrationConstants.LOGIN_FAILURE,
 								errorResponseDTO.getMessage());
 					}
 				}
 
 			} else if (eoUsername.getText().length() == 3) {
-				generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
-						AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-						RegistrationUIConstants.OTP_INFO_MESSAGE, RegistrationUIConstants.USERNAME_FIELD_ERROR);
+				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+						RegistrationConstants.OTP_INFO_MESSAGE, RegistrationConstants.USERNAME_FIELD_ERROR);
 			} else {
-				generateAlert(RegistrationUIConstants.LOGIN_ALERT_TITLE,
-						AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-						RegistrationUIConstants.OTP_INFO_MESSAGE, RegistrationUIConstants.OTP_FIELD_EMPTY);
+				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+						RegistrationConstants.OTP_INFO_MESSAGE, RegistrationConstants.OTP_FIELD_EMPTY);
 			}
 		} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
-			generateAlert(RegistrationUIConstants.ALERT_ERROR, AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-					RegistrationUIConstants.LOGIN_FAILURE, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+					RegistrationConstants.LOGIN_FAILURE, RegistrationExceptions.REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
 		}
 	}
 

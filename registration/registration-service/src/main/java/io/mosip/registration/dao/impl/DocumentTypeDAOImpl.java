@@ -1,5 +1,8 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +14,6 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.dao.DocumentTypeDAO;
 import io.mosip.registration.entity.DocumentType;
 import io.mosip.registration.repositories.DocumentTypeRepository;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 /**
  * implementation class of {@link DocumentTypeDAO}
@@ -47,8 +47,8 @@ public class DocumentTypeDAOImpl implements DocumentTypeDAO {
 	 */
 	@Override
 	public List<DocumentType> getDocumentTypes() {
-		LOGGER.debug("REGISTRATION-PACKET_CREATION-DOCUMENTTYPESDAO", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "fetching the document types");
+		LOGGER.debug("REGISTRATION-PACKET_CREATION-DOCUMENTTYPESDAO", APPLICATION_NAME,
+				APPLICATION_ID, "fetching the document types");
 		return documentTypeRepository.findAll();
 	}
 

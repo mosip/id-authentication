@@ -3,8 +3,7 @@ package io.mosip.registration.util.reader;
 import java.io.IOException;
 import java.util.Properties;
 
-import io.mosip.registration.constants.RegConstants;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
@@ -29,9 +28,9 @@ public class PropertyFileReader {
 	static {
 		properties = new Properties();
 		try {
-			properties.load(ClassLoader.getSystemResourceAsStream(RegConstants.CONSTANTS_FILE_NAME));
+			properties.load(ClassLoader.getSystemResourceAsStream(RegistrationConstants.CONSTANTS_FILE_NAME));
 		} catch (IOException ioException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.READ_PROPERTY_FILE_ERROR,
+			throw new RegBaseUncheckedException(RegistrationConstants.READ_PROPERTY_FILE_ERROR,
 					ioException.toString());
 		}
 	}

@@ -1,8 +1,7 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -15,12 +14,11 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.service.RegPacketStatusService;
-import io.mosip.registration.ui.constants.RegistrationUIConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -66,11 +64,11 @@ public class RegPacketStatusController extends BaseController implements Initial
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Page loading has been started");
+		LOGGER.debug("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Page loading has been started");
 		packetSyncStatus();
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Registration Packet status sync has been done");
+		LOGGER.debug("REGISTRATION - PAGE_LOADING - REG_PACKET_STATUS_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Registration Packet status sync has been done");
 	}
 
 	/**
@@ -81,12 +79,12 @@ public class RegPacketStatusController extends BaseController implements Initial
 		ResponseDTO response = regPacketStatusService.packetSyncStatus();
 		if (response.getSuccessResponseDTO() != null) {
 			List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) response
-					.getSuccessResponseDTO().getOtherAttributes().get(RegConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY);
+					.getSuccessResponseDTO().getOtherAttributes().get(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY);
 
 			ObservableList<RegPacketStatusDTO> packetStatus = FXCollections.observableArrayList();
 			for (LinkedHashMap<String, String> registration : registrations) {
-				packetStatus.add(new RegPacketStatusDTO(registration.get(RegConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
-								registration.get(RegConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
+				packetStatus.add(new RegPacketStatusDTO(registration.get(RegistrationConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
+								registration.get(RegistrationConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
 			}
 
 			regID.setCellValueFactory(new PropertyValueFactory<RegPacketStatusDTO, String>("packetId"));
@@ -96,9 +94,9 @@ public class RegPacketStatusController extends BaseController implements Initial
 		} else if (response.getErrorResponseDTOs() != null) {
 			/** Generate Alert to show No Packets Available. */
 			ErrorResponseDTO errorResponseDTO = response.getErrorResponseDTOs().get(0);
-			generateAlert(RegistrationUIConstants.PACKET_STATUS_SYNC_ALERT_TITLE,
+			generateAlert(RegistrationConstants.PACKET_STATUS_SYNC_ALERT_TITLE,
 					AlertType.valueOf(errorResponseDTO.getCode()),
-					RegistrationUIConstants.PACKET_STATUS_SYNC_INFO_MESSAGE, errorResponseDTO.getMessage());
+					RegistrationConstants.PACKET_STATUS_SYNC_INFO_MESSAGE, errorResponseDTO.getMessage());
 
 		}
 

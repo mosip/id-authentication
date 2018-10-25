@@ -20,7 +20,7 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.keymanager.impl.AESKeyManagerImpl;
@@ -54,9 +54,9 @@ public class AESKeyManagerTest  {
 
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		when(environment.getProperty(RegConstants.AES_KEY_MANAGER_ALG)).thenReturn("AES");
-		when(environment.getProperty(RegConstants.AES_KEY_SEED_LENGTH)).thenReturn("32");
-		when(environment.getProperty(RegConstants.AES_SESSION_KEY_LENGTH)).thenReturn("256");
+		when(environment.getProperty(RegistrationConstants.AES_KEY_MANAGER_ALG)).thenReturn("AES");
+		when(environment.getProperty(RegistrationConstants.AES_KEY_SEED_LENGTH)).thenReturn("32");
+		when(environment.getProperty(RegistrationConstants.AES_SESSION_KEY_LENGTH)).thenReturn("256");
 	}
 
 	@Test

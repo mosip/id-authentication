@@ -10,24 +10,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.scheduler.SchedulerUtil;
-import io.mosip.registration.service.LoginServiceImpl;
 import io.mosip.registration.service.SyncStatusValidatorService;
-import io.mosip.registration.ui.constants.RegistrationUIConstants;
+import io.mosip.registration.service.impl.LoginServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 /**
@@ -37,7 +37,7 @@ import javafx.stage.Stage;
  * @since 1.0.0
  *
  */
-@PropertySource("classpath:registration.properties")
+@PropertySource("classpath:application.properties")
 public class BaseController {
 
 	@Autowired
@@ -165,18 +165,18 @@ public class BaseController {
 
 		// Checking roles
 		if (roleList.isEmpty()) {
-			result = RegistrationUIConstants.ROLES_EMPTY;
-		} else if (roleList.contains(RegistrationUIConstants.ADMIN_ROLE)) {
-			result = RegistrationUIConstants.SUCCESS_MSG;
+			result = RegistrationConstants.ROLES_EMPTY;
+		} else if (roleList.contains(RegistrationConstants.ADMIN_ROLE)) {
+			result = RegistrationConstants.SUCCESS_MSG;
 		} else {
 			// checking for machine mapping
 			if (!getCenterMachineStatus(userDetail)) {
-				result = RegistrationUIConstants.MACHINE_MAPPING;
+				result = RegistrationConstants.MACHINE_MAPPING;
 			} else {
-				result = RegistrationUIConstants.SUCCESS_MSG;
+				result = RegistrationConstants.SUCCESS_MSG;
 			}
 		}
-		if (result != null && result.equalsIgnoreCase(RegistrationUIConstants.SUCCESS_MSG)) {
+		if (result != null && result.equalsIgnoreCase(RegistrationConstants.SUCCESS_MSG)) {
 			SessionContext sessionContext = SessionContext.getInstance();
 
 			sessionContext.setLoginTime(new Date());
@@ -246,7 +246,7 @@ public class BaseController {
 	protected boolean validateUserStatus(String userId) {
 		RegistrationUserDetail userDetail = loginServiceImpl.getUserDetail(userId);
 		return userDetail.getUserStatus() != null
-				&& userDetail.getUserStatus().equalsIgnoreCase(RegistrationUIConstants.BLOCKED);
+				&& userDetail.getUserStatus().equalsIgnoreCase(RegistrationConstants.BLOCKED);
 	}
 	
 	/**

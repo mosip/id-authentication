@@ -25,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 @Import({HibernateDaoConfig.class, AuditConfig.class})
 @EnableJpaRepositories(basePackages = "io.mosip.registration.", repositoryBaseClass = HibernateRepositoryImpl.class)
 @ComponentScan("io.mosip.registration.")
-@PropertySource({"application.properties", "config.properties"})
+@PropertySource("application.properties")
 public class AppConfig {
 	
 	@Autowired

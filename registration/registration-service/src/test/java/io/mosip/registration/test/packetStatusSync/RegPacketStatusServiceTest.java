@@ -20,7 +20,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.RegPacketStatusServiceImpl;
+import io.mosip.registration.service.impl.RegPacketStatusServiceImpl;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 @RunWith(SpringRunner.class)

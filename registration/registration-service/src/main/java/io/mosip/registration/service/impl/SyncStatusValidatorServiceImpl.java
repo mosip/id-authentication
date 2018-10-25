@@ -1,14 +1,13 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.impl;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,10 +19,9 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegConstants;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
@@ -31,6 +29,8 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.GeoLocationCapture;
+import io.mosip.registration.service.SyncStatusValidatorService;
 
 /**
  * {@code SyncStatusValidatorServiceImpl} is the sync status validate service class.
@@ -77,9 +77,9 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	 * @see io.mosip.registration.service.SyncStatusValidatorService#validateSyncStatus()
 	 */
 	public ResponseDTO validateSyncStatus() {
-		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID, "Validating the sync status started");
-		String geoFrequnecyFlag = environment.getProperty(RegConstants.OPT_TO_REG_GEO_CAP_FREQ);
+		String geoFrequnecyFlag = environment.getProperty(RegistrationConstants.OPT_TO_REG_GEO_CAP_FREQ);
 		ResponseDTO responseDTO = new ResponseDTO();
 		List<ErrorResponseDTO> errorResponseDTOList = new ArrayList<>();
 		double yetToExportCount = 0;
@@ -90,7 +90,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 			syncJobInfo = syncJObDao.getSyncStatus();
 			List<SyncControl> syncControlList = syncJobInfo.getSyncControlList();
 			yetToExportCount = syncJobInfo.getYetToExportCount();
-			LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+			LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 					APPLICATION_ID,
 					"Fetched SyncJobInfo containing the synccontrol list and yettoexportpacket count");
 			if (null != syncControlList && !syncControlList.isEmpty()) {
@@ -101,50 +101,50 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 						Date lastSyncDate = new Date(epochMilli);
 						String freq = environment.getProperty(syncControl.getSJobId().trim());
 						int actualFreqDays = getActualDays(lastSyncDate);
-						LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+						LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 								APPLICATION_ID,
 								"Checking the actualdaysfrequency with the configured frequency");
 						if (Integer.parseInt(freq) <= (actualFreqDays)) {
 							syncFailureCount++;
-							if (RegConstants.OPT_TO_REG_LER_J00009.equals(syncControl.getSJobId().trim())) {
-								getErrorResponse(RegConstants.OPT_TO_REG_ICS‌_002, RegConstants.OPT_TO_REG_ICS‌_002_MSG,
-										RegConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+							if (RegistrationConstants.OPT_TO_REG_LER_J00009.equals(syncControl.getSJobId().trim())) {
+								getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_002, RegistrationConstants.OPT_TO_REG_ICS‌_002_MSG,
+										RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 							}
 						}
 					}
 				}
 			}
 			if (syncFailureCount > 0) {
-				getErrorResponse(RegConstants.OPT_TO_REG_ICS‌_001, RegConstants.OPT_TO_REG_ICS‌_001_MSG,
-						RegConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_001, RegistrationConstants.OPT_TO_REG_ICS‌_001_MSG,
+						RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 			}
 
 			if (yetToExportCount >= Double
-					.parseDouble(environment.getProperty(RegConstants.OPT_TO_REG_PAK_MAX_CNT_OFFLINE_FREQ))) {
-				LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+					.parseDouble(environment.getProperty(RegistrationConstants.OPT_TO_REG_PAK_MAX_CNT_OFFLINE_FREQ))) {
+				LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 						APPLICATION_ID,
 						"Checking the yet to export packets frequency with the configured limit count");
-				auditFactory.audit(AuditEventEnum.SYNC_PKT_COUNT_VALIDATE, AppModuleEnum.SYNC_VALIDATE,
+				auditFactory.audit(AuditEvent.SYNC_PKT_COUNT_VALIDATE, AppModule.SYNC_VALIDATE,
 						"Validating yet to export packets frequency with the configured limit count", "refId",
 						"refIdType");
-				getErrorResponse(RegConstants.OPT_TO_REG_ICS‌_003, RegConstants.OPT_TO_REG_ICS‌_003_MSG,
-						RegConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_003, RegistrationConstants.OPT_TO_REG_ICS‌_003_MSG,
+						RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 			}
-			if (RegConstants.OPT_TO_REG_GEO_FLAG_SINGLETIME.equals(geoFrequnecyFlag)) {
+			if (RegistrationConstants.OPT_TO_REG_GEO_FLAG_SINGLETIME.equals(geoFrequnecyFlag)) {
 				if (!isCapturedForTheDay()) {
 					captureGeoLocation(errorResponseDTOList);
 				}
-			} else if (RegConstants.OPT_TO_REG_GEO_FLAG_MULTIPLETIME.equals(geoFrequnecyFlag)) {
+			} else if (RegistrationConstants.OPT_TO_REG_GEO_FLAG_MULTIPLETIME.equals(geoFrequnecyFlag)) {
 				captureGeoLocation(errorResponseDTOList);
 			}
 
-			LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+			LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 					APPLICATION_ID, "Validating the sync status ended");
-			auditFactory.audit(AuditEventEnum.SYNC_INFO_VALIDATE, AppModuleEnum.SYNC_VALIDATE,
+			auditFactory.audit(AuditEvent.SYNC_INFO_VALIDATE, AppModule.SYNC_VALIDATE,
 					"Validating the sync status ended successfully", "refId", "refIdType");
 
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.SYNC_STATUS_VALIDATE,
+			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_STATUS_VALIDATE,
 					runtimeException.toString());
 		}
 		responseDTO.setErrorResponseDTOs(errorResponseDTOList);
@@ -163,7 +163,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		//lastCapturedTime - get this from session context if available....
 		Map<String,Object> map=SessionContext.getInstance().getMapObject();
 		lastCapturedTime=(Instant) map.get("lastCapturedTime");
-		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID, "Capturing the login time Firsttime login");
 		return lastCapturedTime != null && Duration.between(lastCapturedTime, Instant.now()).toHours() < 24;
 	}
@@ -176,7 +176,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	 */
 	private void captureGeoLocation(List<ErrorResponseDTO> errorResponseDTOList) {
 
-		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID,
 				"Validating the geo location of machine w.r.t registration center started");
 		Instant lastCapturedTime;
@@ -188,29 +188,27 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 				.getRegistrationCenterLatitude());
 		double centerLongitude = Double.parseDouble(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
 				.getRegistrationCenterLongitude());
-		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID, "Getting the center latitude and longitudes from session conext");
 
 		distance = actualDistance(centerLatitude, centerLongitude, map);
 		if ("success".equals(map.get("errorMessage"))) {
 			if (Double
-					.parseDouble(environment.getProperty(RegConstants.OPT_TO_REG_DIST_FRM_MACHN_TO_CENTER)) <= distance) {
-				getErrorResponse(RegConstants.OPT_TO_REG_ICS‌_004, RegConstants.OPT_TO_REG_ICS‌_004_MSG,
-						RegConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+					.parseDouble(environment.getProperty(RegistrationConstants.OPT_TO_REG_DIST_FRM_MACHN_TO_CENTER)) <= distance) {
+				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_004, RegistrationConstants.OPT_TO_REG_ICS‌_004_MSG,
+						RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 			}
 		} else {
-			getErrorResponse(RegConstants.OPT_TO_REG_ICS‌_005, RegConstants.OPT_TO_REG_ICS‌_005_MSG,
-					RegConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_005, RegistrationConstants.OPT_TO_REG_ICS‌_005_MSG,
+					RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 		}
 		lastCapturedTime = Instant.now();
-		Map<String, Object> maplastTime=new HashMap<>();
-		maplastTime.put("lastCapturedTime",lastCapturedTime);
-		SessionContext.getInstance().setMapObject(maplastTime);
+		SessionContext.getInstance().getMapObject().put("lastCapturedTime",lastCapturedTime);
 
-		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID,
 				"Validating the geo location of machine w.r.t registration center ended");
-		auditFactory.audit(AuditEventEnum.SYNC_GEO_VALIDATE, AppModuleEnum.SYNC_VALIDATE,
+		auditFactory.audit(AuditEvent.SYNC_GEO_VALIDATE, AppModule.SYNC_VALIDATE,
 				"Validating the geo information ended successfully", "refId", "refIdType");
 
 	}
@@ -226,10 +224,10 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	 * @return double
 	 */
 	public static double actualDistance(double fromlat, double fromlng, Map<String, Object> map) {
-		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID,
 				"Calculation of distance between the geo location of machine and registration center started");
-		double earthRadius = RegConstants.OPT_TO_REG_EARTH_RADIUS;
+		double earthRadius = RegistrationConstants.OPT_TO_REG_EARTH_RADIUS;
 		double distanceLat = Math.toRadians((double) map.get("latitude") - fromlat);
 		double distanceLng = Math.toRadians((double) map.get("longitude") - fromlng);
 		double tempDist = Math.sin(distanceLat / 2) * Math.sin(distanceLat / 2)
@@ -238,10 +236,10 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		double radius = 2 * Math.atan2(Math.sqrt(tempDist), Math.sqrt(1 - tempDist));
 
 		double dist = earthRadius * radius;
-		double meterConversion = RegConstants.OPT_TO_REG_METER_CONVERSN;
+		double meterConversion = RegistrationConstants.OPT_TO_REG_METER_CONVERSN;
 		double rounding = dist * meterConversion / 1000;
 
-		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID,
 				"Calculation of distance between the geo location of machine and registration center started");
 		return Math.round(rounding * 10000.0) / 10000.0;
@@ -255,7 +253,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	 * @return the date format
 	 */
 	public static int getActualDays(Date lastSyncDate) {
-		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID,
 				"Calculation of days between the last sync date and present time started");
 		long diffDays = 0;
@@ -264,7 +262,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 			diffDays = diff / (24 * 60 * 60 * 1000) + 1;
 		}
 
-		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
+		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID,
 				"Calculation of days between the last sync date and present time ended");
 		return (int) diffDays;

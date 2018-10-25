@@ -20,7 +20,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.impl.RegistrationAppLoginDAOImpl;
 import io.mosip.registration.entity.RegistrationAppLoginMethod;
 import io.mosip.registration.entity.RegistrationAppLoginMethodId;
@@ -79,7 +79,7 @@ public class RegistrationAppLoginDAOTest {
 		
 		Map<String, Object> modes = new LinkedHashMap<String, Object>();
 		loginList.forEach(p -> modes.put(String.valueOf(p.getMethodSeq()), p.getRegistrationAppLoginMethodId().getLoginMethod()));
-		modes.put(RegConstants.LOGIN_SEQUENCE, RegConstants.INITIAL_LOGIN_SEQUENCE);
+		modes.put(RegistrationConstants.LOGIN_SEQUENCE, RegistrationConstants.INITIAL_LOGIN_SEQUENCE);
 		assertEquals(modes,registrationAppLoginDAOImpl.getModesOfLogin());
 	}
 
@@ -95,7 +95,7 @@ public class RegistrationAppLoginDAOTest {
 		
 		Map<String, Object> modes = new LinkedHashMap<String, Object>();
 		loginList.forEach(p -> modes.put(String.valueOf(p.getMethodSeq()), p.getRegistrationAppLoginMethodId().getLoginMethod()));
-		modes.put(RegConstants.LOGIN_SEQUENCE, RegConstants.INITIAL_LOGIN_SEQUENCE);
+		modes.put(RegistrationConstants.LOGIN_SEQUENCE, RegistrationConstants.INITIAL_LOGIN_SEQUENCE);
 		assertEquals(modes,registrationAppLoginDAOImpl.getModesOfLogin());
 	}
 

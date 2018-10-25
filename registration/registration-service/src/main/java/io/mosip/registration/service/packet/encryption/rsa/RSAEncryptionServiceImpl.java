@@ -10,15 +10,15 @@ import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_RSA_INVALID_DATA;
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_RSA_INVALID_KEY;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_RSA_INVALID_DATA;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_RSA_INVALID_KEY;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_RSA_ENCRYPTION;
 
 /**
@@ -65,7 +65,7 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 			throw new RegBaseCheckedException(REG_RSA_INVALID_KEY.getErrorCode(),
 					REG_RSA_INVALID_KEY.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.RSA_ENCRYPTION_MANAGER,
+			throw new RegBaseUncheckedException(RegistrationConstants.RSA_ENCRYPTION_MANAGER,
 					runtimeException.toString(), runtimeException);
 		}
 	}

@@ -7,7 +7,7 @@ package io.mosip.registration.constants;
  * @since 1.0.0
  *
  */
-public enum AppModuleEnum {
+public enum AppModule {
 
 	PACKET_HANDLER("REG-PRO-01", "Packet Handler"),
 	PACKET_VALIDATOR("REG-PRO-02", "Packet Validator"),
@@ -31,7 +31,7 @@ public enum AppModuleEnum {
 	/**
 	 * The constructor
 	 */
-	private AppModuleEnum(String id, String name) {
+	private AppModule(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}

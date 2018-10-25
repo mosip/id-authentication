@@ -1,11 +1,18 @@
-package io.mosip.registration.service.packet.encryption.aes;
+package io.mosip.registration.service.packet.encryption.aes.impl;
+
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_ENCRYPTION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static java.lang.System.arraycopy;
 
 import java.security.Security;
 import java.util.List;
 
 import javax.crypto.SecretKey;
 
-import static java.lang.System.arraycopy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.encryption.MosipEncryptor;
@@ -14,24 +21,17 @@ import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
-
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegConstants;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
-import io.mosip.registration.constants.RegProcessorExceptionEnum;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.packet.encryption.aes.AESEncryptionService;
+import io.mosip.registration.service.packet.encryption.aes.AESSeedGenerator;
 import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionService;
 import io.mosip.registration.util.keymanager.AESKeyManager;
-
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_ENCRYPTION;
 
 /**
  * API class to encrypt the data using AES algorithm
@@ -103,17 +103,17 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 					"AES Session Key encrypted using RSA Algorithm successfully");
 
 			// Combine AES Session Key, AES Key Splitter and RSA Encrypted Data
-			auditFactory.audit(AuditEventEnum.PACKET_AES_ENCRYPTED, AppModuleEnum.PACKET_AES_ENCRYPTOR,
+			auditFactory.audit(AuditEvent.PACKET_AES_ENCRYPTED, AppModule.PACKET_AES_ENCRYPTOR,
 					"RSA and AES Encryption completed successfully", "RID", "Packet RID");
 			return concat(rsaEncryptedKey, encryptedData);
 		} catch (MosipInvalidDataException mosipInvalidDataException) {
-			throw new RegBaseCheckedException(RegProcessorExceptionEnum.REG_INVALID_DATA_ERROR_CODE.getErrorCode(),
-					RegProcessorExceptionEnum.REG_INVALID_DATA_ERROR_CODE.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptions.REG_INVALID_DATA_ERROR_CODE.getErrorCode(),
+					RegistrationExceptions.REG_INVALID_DATA_ERROR_CODE.getErrorMessage());
 		} catch (MosipInvalidKeyException mosipInvalidKeyException) {
-			throw new RegBaseCheckedException(RegProcessorExceptionEnum.REG_INVALID_KEY_ERROR_CODE.getErrorCode(),
-					RegProcessorExceptionEnum.REG_INVALID_KEY_ERROR_CODE.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptions.REG_INVALID_KEY_ERROR_CODE.getErrorCode(),
+					RegistrationExceptions.REG_INVALID_KEY_ERROR_CODE.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.AES_ENCRYPTION_MANAGER,
+			throw new RegBaseUncheckedException(RegistrationConstants.AES_ENCRYPTION_MANAGER,
 					runtimeException.toString());
 		}
 	}
@@ -122,7 +122,7 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 		logger.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 				"Encryption concatenation had been started");
 		try {
-			final String keySplitter = environment.getProperty(RegConstants.AES_KEY_CIPHER_SPLITTER);
+			final String keySplitter = environment.getProperty(RegistrationConstants.AES_KEY_CIPHER_SPLITTER);
 			final int keyLength = keyByteArray.length;
 			final int encryptedDataLength = encryptedDataByteArray.length;
 			final int keySplitterLength = keySplitter.length();
@@ -137,7 +137,7 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 					"Encryption concatenation had been ended");
 			return combinedData;
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.CONCAT_ENCRYPTED_DATA,
+			throw new RegBaseUncheckedException(RegistrationConstants.CONCAT_ENCRYPTED_DATA,
 					runtimeException.toString());
 		}
 	}

@@ -1,8 +1,8 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -17,10 +17,9 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.constants.RegistrationUIExceptionCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.ui.constants.RegistrationUIConstants;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -59,7 +58,7 @@ public class RegistrationAppInitialization extends Application {
 	public void start(Stage primaryStage) throws RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Login screen initilization "
-						+ new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
+						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
 		BaseController.stage = primaryStage;
 		primaryStage = BaseController.getStage();
@@ -68,22 +67,22 @@ public class RegistrationAppInitialization extends Application {
 		String loginMode = loginController.loadInitialScreen();
 
 		try {
-			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationUIConstants.INITIAL_PAGE));
+			BorderPane loginRoot = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
 			if (loginMode == null) {
-				AnchorPane loginType = BaseController.load(getClass().getResource(RegistrationUIConstants.ERROR_PAGE));
+				AnchorPane loginType = BaseController.load(getClass().getResource(RegistrationConstants.ERROR_PAGE));
 				loginRoot.setCenter(loginType);
-			} else if (loginMode.equals(RegistrationUIConstants.OTP)) {
+			} else if (loginMode.equals(RegistrationConstants.OTP)) {
 				AnchorPane loginType = BaseController
-						.load(getClass().getResource(RegistrationUIConstants.LOGIN_OTP_PAGE));
+						.load(getClass().getResource(RegistrationConstants.LOGIN_OTP_PAGE));
 				loginRoot.setCenter(loginType);
-			} else if (loginMode.equals(RegistrationUIConstants.LOGIN_METHOD_PWORD)) {
+			} else if (loginMode.equals(RegistrationConstants.LOGIN_METHOD_PWORD)) {
 				AnchorPane loginType = BaseController
-						.load(getClass().getResource(RegistrationUIConstants.LOGIN_PWORD_PAGE));
+						.load(getClass().getResource(RegistrationConstants.LOGIN_PWORD_PAGE));
 				loginRoot.setCenter(loginType);
 			}
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			scene = new Scene(loginRoot, 950, 630);
-			scene.getStylesheets().add(loader.getResource(RegistrationUIConstants.CSS_FILE_PATH).toExternalForm());
+			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 
 			primaryStage.setResizable(false);
 			primaryStage.setScene(scene);
@@ -93,13 +92,13 @@ public class RegistrationAppInitialization extends Application {
 			throw new RegBaseCheckedException(REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
 					REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_LOGIN_LOADER_EXCEPTION,
+			throw new RegBaseUncheckedException(RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION,
 					runtimeException.getMessage(), runtimeException);
 		}
 
 		LOGGER.debug("REGISTRATION - LOGIN SCREEN INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Login screen loaded"
-						+ new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
+						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
 	}
 
@@ -109,7 +108,7 @@ public class RegistrationAppInitialization extends Application {
 		launch(args);
 		LOGGER.debug("REGISTRATION - APPLICATION INITILIZATION - REGISTRATIONAPPINITILIZATION", APPLICATION_NAME,
 				APPLICATION_ID, "Application Initilization"
-						+ new SimpleDateFormat(RegistrationUIConstants.HH_MM_SS).format(System.currentTimeMillis()));
+						+ new SimpleDateFormat(RegistrationConstants.HH_MM_SS).format(System.currentTimeMillis()));
 
 	}
 

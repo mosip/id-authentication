@@ -1,4 +1,4 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.impl;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.AuditDTO;
@@ -22,11 +22,12 @@ import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.PacketEncryptionService;
 import io.mosip.registration.service.packet.encryption.aes.AESEncryptionService;
 import io.mosip.registration.util.store.StorageService;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_ENCRYPTION;
 
 /**
@@ -109,7 +110,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 			auditDAO.updateSyncAudits(auditUUIDs);
 			logger.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Sync'ed audit logs updated");
-			auditFactory.audit(AuditEventEnum.PACKET_ENCRYPTED, AppModuleEnum.PACKET_ENCRYPTOR,
+			auditFactory.audit(AuditEvent.PACKET_ENCRYPTED, AppModule.PACKET_ENCRYPTOR,
 					"Packet encrypted successfully", "registration reference id", "123456");
 			logger.debug(LOG_PKT_ENCRYPTION, APPLICATION_NAME,
 					APPLICATION_ID, "Packet encryption had been ended");
@@ -123,7 +124,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 		} catch (RegBaseCheckedException checkedException) {
 			throw checkedException;
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.PACKET_ENCRYPTION_MANAGER,
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ENCRYPTION_MANAGER,
 					runtimeException.toString());
 		}
 	}

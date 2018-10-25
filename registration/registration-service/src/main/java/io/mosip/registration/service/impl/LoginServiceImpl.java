@@ -1,7 +1,7 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.impl;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -16,9 +16,9 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationAppLoginDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
@@ -34,6 +34,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.LoginService;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 /**
@@ -110,7 +111,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - LOGINMODES - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of login modes");
 
-		auditFactory.audit(AuditEventEnum.LOGIN_MODES_FETCH, AppModuleEnum.LOGIN_MODES, "Fetching list of login modes",
+		auditFactory.audit(AuditEvent.LOGIN_MODES_FETCH, AppModule.LOGIN_MODES, "Fetching list of login modes",
 				"refId", "refIdType");
 
 		return registrationAppLoginDAO.getModesOfLogin();
@@ -129,7 +130,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - VALIDATECREDENTIALS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Validating User credentials");
 
-		auditFactory.audit(AuditEventEnum.VALIDATE_USER_CRED, AppModuleEnum.VALIDATE_USER,
+		auditFactory.audit(AuditEvent.VALIDATE_USER_CRED, AppModule.VALIDATE_USER,
 				"Validating User credentials", "refId", "refIdType");
 
 		return registrationUserPasswordDAO.getPassword(userId, hashPassword);
@@ -149,7 +150,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - USERDETAIL - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching User details");
 
-		auditFactory.audit(AuditEventEnum.FETCH_USR_DET, AppModuleEnum.USER_DETAIL, "Fetching User details", "refId",
+		auditFactory.audit(AuditEvent.FETCH_USR_DET, AppModule.USER_DETAIL, "Fetching User details", "refId",
 				"refIdType");
 
 		return registrationUserDetailDAO.getUserDetail(userId);
@@ -168,7 +169,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - CENTERDETAILS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching Center details");
 
-		auditFactory.audit(AuditEventEnum.FETCH_CNTR_DET, AppModuleEnum.CENTER_DETAIL, "Fetching Center details",
+		auditFactory.audit(AuditEvent.FETCH_CNTR_DET, AppModule.CENTER_DETAIL, "Fetching Center details",
 				"refId", "refIdType");
 
 		return registrationCenterDAO.getRegistrationCenterDetails(centerId);
@@ -187,7 +188,7 @@ public class LoginServiceImpl implements LoginService {
 		LOGGER.debug("REGISTRATION - SCREENAUTHORIZATION - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching list of Screens to be Authorized");
 
-		auditFactory.audit(AuditEventEnum.FETCH_SCR_AUTH, AppModuleEnum.SCREEN_AUTH,
+		auditFactory.audit(AuditEvent.FETCH_SCR_AUTH, AppModule.SCREEN_AUTH,
 				"Fetching list of Screens to be Authorized", "refId", "refIdType");
 
 		return registrationScreenAuthorizationDAO.getScreenAuthorizationDetails(roleCode);
@@ -217,17 +218,18 @@ public class LoginServiceImpl implements LoginService {
 
                  // obtain otpGeneratorResponseDto from serviceDelegateUtil
                  otpGeneratorResponseDto = (OtpGeneratorResponseDto) serviceDelegateUtil
-                              .post(RegConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDto);
+                              .post(RegistrationConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDto);
+                 System.out.println(otpGeneratorRequestDto);
                  if (otpGeneratorResponseDto != null && otpGeneratorResponseDto.getOtp() != null) {
 
                        // create Success Response
                        successResponse = new SuccessResponseDTO();
-                        successResponse.setCode(RegConstants.ALERT_INFORMATION);
+                        successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
                        successResponse
-                                     .setMessage(RegConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpGeneratorResponseDto.getOtp());
+                                     .setMessage(RegistrationConstants.OTP_GENERATION_SUCCESS_MESSAGE + otpGeneratorResponseDto.getOtp());
 
                        Map<String, Object> otherAttributes = new HashMap<String, Object>();
-                     otherAttributes.put(RegConstants.OTP_GENERATOR_RESPONSE_DTO, otpGeneratorResponseDto);
+                     otherAttributes.put(RegistrationConstants.OTP_GENERATOR_RESPONSE_DTO, otpGeneratorResponseDto);
 
                         successResponse.setOtherAttributes(otherAttributes);
                         response.setSuccessResponseDTO(successResponse);
@@ -236,16 +238,16 @@ public class LoginServiceImpl implements LoginService {
 
                  } else {
                        // create Error Response
-                       response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
+                       response = getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
                        LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                                      APPLICATION_ID, "Error Response called");
 
                  }
 
           } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException exception) {
-
+        	  	exception.printStackTrace();
                  // create Error Response
-                 response = getErrorResponse(response, RegConstants.OTP_GENERATION_ERROR_MESSAGE);
+                 response = getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
                  LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                               APPLICATION_ID, "Error Response created");
 
@@ -276,12 +278,12 @@ public class LoginServiceImpl implements LoginService {
           OtpValidatorResponseDto otpValidatorResponseDto = null;
 
           // Validator response service api creation
-          final String SERVICE_NAME = RegConstants.OTP_VALIDATOR_SERVICE_NAME;
+          final String SERVICE_NAME = RegistrationConstants.OTP_VALIDATOR_SERVICE_NAME;
 
           // prepare request params to pass through URI
           Map<String, String> requestParamMap = new HashMap<String, String>();
-          requestParamMap.put(RegConstants.USERNAME_KEY, key);
-          requestParamMap.put(RegConstants.OTP_GENERATED, otp);
+          requestParamMap.put(RegistrationConstants.USERNAME_KEY, key);
+          requestParamMap.put(RegistrationConstants.OTP_GENERATED, otp);
 
           try {
                  // Obtain otpValidatorResponseDto from service delegate util
@@ -291,8 +293,8 @@ public class LoginServiceImpl implements LoginService {
 
                        // Create Success Response
                        successResponse = new SuccessResponseDTO();
-                        successResponse.setCode(RegConstants.ALERT_INFORMATION);
-                 successResponse.setMessage(RegConstants.OTP_VALIDATION_SUCCESS_MESSAGE);
+                        successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
+                 successResponse.setMessage(RegistrationConstants.OTP_VALIDATION_SUCCESS_MESSAGE);
                         response.setSuccessResponseDTO(successResponse);
                        LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                                      APPLICATION_ID, "Success Response Created");
@@ -300,7 +302,7 @@ public class LoginServiceImpl implements LoginService {
                  } else {
 
                        // Create Error response
-                       response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+                       response = getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
                        LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                                     APPLICATION_ID, "Error Response Created");
 
@@ -308,7 +310,7 @@ public class LoginServiceImpl implements LoginService {
 
           } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException exception) {
                  // Create Error response
-                 response = getErrorResponse(response, RegConstants.OTP_VALIDATION_ERROR_MESSAGE);
+                 response = getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
                  LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
                               APPLICATION_ID, "Error Response Created");
 
@@ -329,10 +331,10 @@ public class LoginServiceImpl implements LoginService {
 		// Error response
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 
-		errorResponse.setCode(RegConstants.ALERT_ERROR);
+		errorResponse.setCode(RegistrationConstants.ALERT_ERROR);
 		errorResponse.setMessage(message);
 		Map<String, Object> otherAttributes = new HashMap<String, Object>();
-		otherAttributes.put(RegConstants.OTP_VALIDATOR_RESPONSE_DTO, null);
+		otherAttributes.put(RegistrationConstants.OTP_VALIDATOR_RESPONSE_DTO, null);
 
 		errorResponses.add(errorResponse);
 

@@ -1,5 +1,8 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +14,6 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.dao.DocumentCategoryDAO;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.repositories.DocumentCategoryRepository;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 /**
  * implementation class of RegistrationDocumentCategoryDAOImpl
@@ -47,8 +47,8 @@ public class DocumentCategoryDAOImpl implements DocumentCategoryDAO {
 	 */
 	@Override
 	public List<DocumentCategory> getDocumentCategories() {
-		LOGGER.debug("REGISTRATION-PACKET_CREATION-DOCUMENTCATEGORY", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "fetching the document categories");
+		LOGGER.debug("REGISTRATION-PACKET_CREATION-DOCUMENTCATEGORY", APPLICATION_NAME,
+				APPLICATION_ID, "fetching the document categories");
 
 		return documentCategoryRepository.findAll();
 	}

@@ -21,8 +21,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.registration.constants.RegClientStatusCode;
-import io.mosip.registration.constants.RegTranType;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.constants.RegistrationTransactionType;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.impl.RegistrationDAOImpl;
 import io.mosip.registration.entity.Registration;
@@ -63,8 +63,8 @@ public class RegistrationDAOTest {
 		regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId("11111");
-		regTransaction.setTrnTypeCode(RegClientStatusCode.CREATED.getCode());
-		regTransaction.setStatusCode(RegClientStatusCode.CREATED.getCode());
+		regTransaction.setTrnTypeCode(RegistrationClientStatusCode.CREATED.getCode());
+		regTransaction.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 		regTransaction.setCrBy("Officer");
 		regTransaction.setCrDtime(time);
 		
@@ -142,10 +142,10 @@ public class RegistrationDAOTest {
 		
 		List<RegistrationTransaction> registrationTransaction = new ArrayList<>();
 		RegistrationTransaction registrationTxn = new RegistrationTransaction();
-		registrationTxn.setTrnTypeCode(RegTranType.UPDATED.getCode());
+		registrationTxn.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 		registrationTxn.setLangCode("ENG");
 		registrationTxn.setIsActive(true);
-		registrationTxn.setStatusCode(RegClientStatusCode.APPROVED.getCode());
+		registrationTxn.setStatusCode(RegistrationClientStatusCode.APPROVED.getCode());
 		registrationTxn.setStatusComment("");
 		registrationTxn.setCrBy("Mosip1214");
 		registrationTxn.setCrDtime(timestamp);

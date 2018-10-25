@@ -1,10 +1,10 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.impl;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegConstants.MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS;
-import static io.mosip.registration.constants.RegConstants.MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE;
-import static io.mosip.registration.constants.RegConstants.MACHINE_MAPPING_LOGGER_TITLE;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS;
+import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE;
+import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
 
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
@@ -31,6 +31,7 @@ import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.MapMachineService;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
@@ -77,7 +78,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 		userID.setMachineID(userMachineMappingDTO.getMachineID());
 		
 		boolean isActive=false;
-		if(userMachineMappingDTO.getStatus().equalsIgnoreCase(RegConstants.MACHINE_MAPPING_ACTIVE)) {
+		if(userMachineMappingDTO.getStatus().equalsIgnoreCase(RegistrationConstants.MACHINE_MAPPING_ACTIVE)) {
 			isActive=true;
 		} else {
 			isActive=false;
@@ -115,14 +116,14 @@ public class MapMachineServiceImpl implements MapMachineService {
 			}
 			/* create success response*/
 			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-			successResponseDTO.setCode(RegConstants.MACHINE_MAPPING_CODE);
-			successResponseDTO.setInfoType(RegConstants.ALERT_INFORMATION);
-			successResponseDTO.setMessage(RegConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
+			successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
+			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
+			successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 			LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
 					APPLICATION_ID, "Success Response created");
 		} catch (RegBaseUncheckedException exception) {
-			responseDTO = getErrorResponse(responseDTO, RegConstants.MACHINE_MAPPING_ERROR_MESSAGE);
+			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.MACHINE_MAPPING_ERROR_MESSAGE);
 			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
 					APPLICATION_ID, "Error Response created");
 
@@ -159,7 +160,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 			if(registrationUserDetails != null && !registrationUserDetails.isEmpty()) {
 			/* create success response*/
 			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-			successResponseDTO.setCode(RegConstants.MACHINE_MAPPING_CODE);
+			successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
 			successResponseDTO.setMessage(MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE);
 			successResponseDTO
 					.setOtherAttributes(constructDTO(machineID, stationID, centerID, registrationUserDetails));
@@ -206,7 +207,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 							String userName = registrationUserDetail.getName();
 							StringBuilder role = new StringBuilder();
 							String roleCode = "";
-							String status = RegConstants.USER_IN_ACTIVE;
+							String status = RegistrationConstants.USER_IN_ACTIVE;
 							if (!registrationUserDetail.getUserRole().isEmpty()) {
 								/*
 								 * List of roles
@@ -226,8 +227,8 @@ public class MapMachineServiceImpl implements MapMachineService {
 								for (UserMachineMapping userMachineMapping : registrationUserDetail.getUserMachineMapping()) {	
 										if (userMachineMapping.getUserMachineMappingId()
 												.getMachineID().equals(machineID)) {
-											status = userMachineMapping.getIsActive() ? RegConstants.USER_ACTIVE
-													: RegConstants.USER_IN_ACTIVE;	
+											status = userMachineMapping.getIsActive() ? RegistrationConstants.USER_ACTIVE
+													: RegistrationConstants.USER_IN_ACTIVE;	
 									}
 								}
 							}
@@ -238,7 +239,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 						return userMachineMappingDTO;
 
 					}).collect(Collectors.toList());
-			userDetailMap.put(RegConstants.USER_MACHINE_MAPID, userMachineMappingDTOs);
+			userDetailMap.put(RegistrationConstants.USER_MACHINE_MAPID, userMachineMappingDTOs);
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
 					APPLICATION_ID, "Exception in preparing DTO "+regBaseUncheckedException.getMessage());
@@ -259,8 +260,8 @@ public class MapMachineServiceImpl implements MapMachineService {
 
 		/* Error response */
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
-		errorResponse.setCode(RegConstants.MACHINE_MAPPING_CODE);
-		errorResponse.setInfoType(RegConstants.ALERT_ERROR);
+		errorResponse.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
+		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
 		errorResponse.setMessage(message);
 
 		errorResponses.add(errorResponse);

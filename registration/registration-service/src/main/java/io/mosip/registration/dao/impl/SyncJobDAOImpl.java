@@ -1,10 +1,11 @@
 package io.mosip.registration.dao.impl;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -12,10 +13,10 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegClientStatusCode;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.SyncControl;
@@ -70,27 +71,27 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 		List<SyncControl> syncControlList = new ArrayList<>();
 		try {
 			List<String> statusCodes = new ArrayList<>();
-			statusCodes.add(RegClientStatusCode.CREATED.getCode());
-			statusCodes.add(RegClientStatusCode.REJECTED.getCode());
-			statusCodes.add(RegClientStatusCode.APPROVED.getCode());
-			statusCodes.add(RegClientStatusCode.CORRECTION.getCode());
-			statusCodes.add(RegClientStatusCode.UIN_UPDATE.getCode());
-			statusCodes.add(RegClientStatusCode.UIN_LOST.getCode());
-			statusCodes.add(RegClientStatusCode.META_INFO_SYN_SERVER.getCode());
-			statusCodes.add(RegClientStatusCode.ON_HOLD.getCode());
-			statusCodes.add(RegClientStatusCode.PACKET_ERROR.getCode());
+			statusCodes.add(RegistrationClientStatusCode.CREATED.getCode());
+			statusCodes.add(RegistrationClientStatusCode.REJECTED.getCode());
+			statusCodes.add(RegistrationClientStatusCode.APPROVED.getCode());
+			statusCodes.add(RegistrationClientStatusCode.CORRECTION.getCode());
+			statusCodes.add(RegistrationClientStatusCode.UIN_UPDATE.getCode());
+			statusCodes.add(RegistrationClientStatusCode.UIN_LOST.getCode());
+			statusCodes.add(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+			statusCodes.add(RegistrationClientStatusCode.ON_HOLD.getCode());
+			statusCodes.add(RegistrationClientStatusCode.PACKET_ERROR.getCode());
 
 			syncControlList = syncStatusRepository.findAll();
 			List<Registration> registrationsList = registrationRepository.findByClientStatusCodeIn(statusCodes);
 			yetToExportCount = registrationsList.size();
 			LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME,
 					APPLICATION_ID, "Fetching the last sync details from databse ended");
-			auditFactory.audit(AuditEventEnum.SYNCJOB_INFO_FETCH, AppModuleEnum.SYNC_VALIDATE,
+			auditFactory.audit(AuditEvent.SYNCJOB_INFO_FETCH, AppModule.SYNC_VALIDATE,
 					"SyncJobInfo containing the synccontrol list and yet to exportpacket count fetched successfully",
 					"refId", "refIdType");
 			
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.SYNC_STATUS_VALIDATE,
+			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_STATUS_VALIDATE,
 					runtimeException.toString());
 		}
 		return new SyncJobInfo(syncControlList, yetToExportCount);

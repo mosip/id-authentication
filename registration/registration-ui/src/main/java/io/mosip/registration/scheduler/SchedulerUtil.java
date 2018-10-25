@@ -1,9 +1,9 @@
 package io.mosip.registration.scheduler;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_SHEDULER_ARG_EXCEPTION;
-import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_SHEDULER_STATE_EXCEPTION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_SHEDULER_ARG_EXCEPTION;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_SHEDULER_STATE_EXCEPTION;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -20,7 +20,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.RegistrationUIExceptionCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
 import io.mosip.registration.controller.RegistrationAppInitialization;
@@ -38,10 +38,6 @@ import javafx.scene.layout.BorderPane;
  * @author M1047595
  *
  */
-// TODO Interval time has to read from Config
-// TODO Audit has to be implemented
-// TODO Unit Test Testing
-// TODO Code Coverage
 @Component
 public class SchedulerUtil {
 
@@ -142,7 +138,7 @@ public class SchedulerUtil {
 			throw new RegBaseCheckedException(REG_UI_SHEDULER_STATE_EXCEPTION.getErrorCode(),
 					REG_UI_SHEDULER_STATE_EXCEPTION.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_SHEDULER_RUNTIME_EXCEPTION,
+			throw new RegBaseUncheckedException(RegistrationConstants.REG_UI_SHEDULER_RUNTIME_EXCEPTION,
 			runtimeException.getMessage());
 		}
 	}

@@ -1,8 +1,7 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -69,7 +68,7 @@ public class PacketUploadController extends BaseController {
 	 */
 	public void validate(ActionEvent event) {
 		LOGGER.debug("REGISTRATION - VALIDATE_USER_INPUT_DETAILS - PACKET_UPLOAD_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Validating the user input details");
 
 		Map<String, String> statusMap = new HashMap<>();
@@ -90,8 +89,8 @@ public class PacketUploadController extends BaseController {
 	 * @param tableData
 	 */
 	private void displayData(List<PacketUploadStatusDTO> tableData) {
-		LOGGER.debug("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "To display all the ui data");
+		LOGGER.debug("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "To display all the ui data");
 		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
 		uploadStatusColumn.setCellValueFactory(new PropertyValueFactory<>("uploadStatus"));
 
@@ -108,7 +107,7 @@ public class PacketUploadController extends BaseController {
 	 */
 	private Map<String, String> handleUpload() throws RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Handling all the packet upload activities");
 		List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 		Map<String, String> uploadStatusMap = new HashMap<String, String>();
@@ -152,7 +151,7 @@ public class PacketUploadController extends BaseController {
 	 */
 	private List<PacketUploadStatusDTO> populateTableData(Map<String, String> packetStatus) {
 		LOGGER.debug("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Populating the table data with the Updated details");
 		List<PacketUploadStatusDTO> listUploadStatus = new ArrayList<>();
 		PacketUploadStatusDTO packetUploadStatusDTO;

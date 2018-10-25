@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.mosip.registration.service.packet;
 
 import io.mosip.registration.dto.RegistrationDTO;

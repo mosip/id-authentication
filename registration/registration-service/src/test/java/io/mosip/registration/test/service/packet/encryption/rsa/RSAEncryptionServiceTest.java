@@ -22,13 +22,13 @@ import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionServiceImpl;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -51,7 +51,7 @@ public class RSAEncryptionServiceTest {
 		KeyPairGenerator keyPairGenerator = null;
 		try {
 			// Generate key pair generator
-			keyPairGenerator = KeyPairGenerator.getInstance(RegConstants.RSA_ALG);
+			keyPairGenerator = KeyPairGenerator.getInstance(RegistrationConstants.RSA_ALG);
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			throw new RegBaseUncheckedException(REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
 					REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), noSuchAlgorithmException);

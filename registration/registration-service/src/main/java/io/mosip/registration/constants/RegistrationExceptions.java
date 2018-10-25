@@ -1,8 +1,8 @@
 package io.mosip.registration.constants;
 
-import static io.mosip.registration.constants.RegConstants.PACKET_CREATION_EXP_CODE;
-import static io.mosip.registration.constants.RegConstants.PACKET_UPLOAD_EXP_CODE;
-import static io.mosip.registration.constants.RegConstants.REG_ACK_EXP_CODE;
+import static io.mosip.registration.constants.RegistrationConstants.PACKET_CREATION_EXP_CODE;
+import static io.mosip.registration.constants.RegistrationConstants.PACKET_UPLOAD_EXP_CODE;
+import static io.mosip.registration.constants.RegistrationConstants.REG_ACK_EXP_CODE;
 
 /**
  * Exception enum for Registration Processor Module
@@ -11,7 +11,7 @@ import static io.mosip.registration.constants.RegConstants.REG_ACK_EXP_CODE;
  * @since 1.0.0
  *
  */
-public enum RegProcessorExceptionEnum {
+public enum RegistrationExceptions {
 
 	REG_SOCKET_ERROR_CODE(PACKET_CREATION_EXP_CODE +"SMA-001", "No socket is available"),
 	REG_NO_SUCH_ALGORITHM_ERROR_CODE(PACKET_CREATION_EXP_CODE + "AKM-001", "No such algorithm available for input"),
@@ -33,12 +33,24 @@ public enum RegProcessorExceptionEnum {
 	REG_SERVICE_DUPLICATE_KEY_EXCEPTION_CODE("IDC-FRA-PAC-023","Tried to insert Duplicate key in MAchine Mapping table"),
 	REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE("IDC-FRA-UMM-024","No Record Found in the Machine Master table"),
 	REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE("IDC-FRA-UMM-025","No Record Found in the Center Machine table"),
-	REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE("IDC-FRA-UMM-025","No Record Found in the Center USER Machine table");
+	REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE("IDC-FRA-UMM-025","No Record Found in the Center USER Machine table"),	
+	REG_UI_SHEDULER_ARG_EXCEPTION("REG-UI-SHE-001", "Please verify the argument passed"),
+	REG_UI_SHEDULER_STATE_EXCEPTION("REG-UI-SHE-002", "The state not found"),
+	REG_UI_SHEDULER_IOEXCEPTION_EXCEPTION("REG-UI-SHE-003", "Unable to load the screen"),
+	REG_UI_LOGIN_IO_EXCEPTION("LGN-UI-SHE-004", "IO Exception"),
+	REG_UI_LOGIN_RESOURCE_EXCEPTION("LGN-UI-SHE-005", "Unable to load the Resource"),
+	REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION("LGN-UI-SHE-006", "Unable to Initial Login Screen"),
+	REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION("LGN-UI-SHE-007", "Unable to load the Login Screen"),
+	REG_UI_HOMEPAGE_IO_EXCEPTION("REG-UI-SHE-008", "Unable to load the Home Screen"),
+	REG_ACK_TEMPLATE_IO_EXCEPTION("REG-UI-SHE-009","Unable to write the image file"),
+	REG_UI_AUTHORIZATION_EXCEPTION("REG-ROA-010","You are not authorized to access this feature"),
+	REG_UI_APPROVE_SCREEN_EXCEPTION("REG-APS-011","Unable to load Approval screen");
+
 
 	/**
 	 * The constructor
 	 */
-	private RegProcessorExceptionEnum(String errorCode, String errorMessage) {
+	private RegistrationExceptions(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}

@@ -23,9 +23,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.dao.impl.MachineMappingDAOImpl;
@@ -86,7 +86,7 @@ public class UserClientMachineMappingDAOTest {
 		ReflectionTestUtils.setField(machineMappingDAOImpl, "LOGGER", logger);
 		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class), Mockito.any(AppModuleEnum.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 
@@ -99,7 +99,7 @@ public class UserClientMachineMappingDAOTest {
 
 		UserMachineMapping machineMapping = new UserMachineMapping();
 		Mockito.when(machineMappingRepository.update(Mockito.any(UserMachineMapping.class))).thenReturn(machineMapping);
-		Assert.assertSame(machineMappingDAOImpl.update(machineMapping), RegConstants.MACHINE_MAPPING_UPDATED);
+		Assert.assertSame(machineMappingDAOImpl.update(machineMapping), RegistrationConstants.MACHINE_MAPPING_UPDATED);
 	}
 
 	@Test
@@ -111,7 +111,7 @@ public class UserClientMachineMappingDAOTest {
 
 		UserMachineMapping machineMapping = new UserMachineMapping();
 		Mockito.when(machineMappingRepository.save(Mockito.any(UserMachineMapping.class))).thenReturn(machineMapping);
-		Assert.assertSame(machineMappingDAOImpl.save(machineMapping), RegConstants.MACHINE_MAPPING_CREATED);
+		Assert.assertSame(machineMappingDAOImpl.save(machineMapping), RegistrationConstants.MACHINE_MAPPING_CREATED);
 	}
 	@Test(expected = RegBaseUncheckedException.class)
 	public void saveFailuretest() throws RegBaseCheckedException {
@@ -229,7 +229,7 @@ public class UserClientMachineMappingDAOTest {
 		UserContext userContext = SessionContext.getInstance().getUserContext();
 		userContext.setUserId("ID007");
 		Mockito.when(userDetailRepository.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike("Center123",
-				RegConstants.BLACKLISTED, userContext.getUserId())).thenThrow(new NullPointerException());
+				RegistrationConstants.BLACKLISTED, userContext.getUserId())).thenThrow(new NullPointerException());
 		machineMappingDAOImpl.getUsers("Center123");		
 	}  
 	@Test(expected = RegBaseUncheckedException.class)
@@ -237,7 +237,7 @@ public class UserClientMachineMappingDAOTest {
 		UserContext userContext = SessionContext.getInstance().getUserContext();
 		userContext.setUserId("ID007");
 		Mockito.when(userDetailRepository.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike("Center123",
-				RegConstants.BLACKLISTED, userContext.getUserId())).thenThrow(new RegBaseUncheckedException());
+				RegistrationConstants.BLACKLISTED, userContext.getUserId())).thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getUsers("Center123");		
 	}
 	
@@ -312,7 +312,7 @@ public class UserClientMachineMappingDAOTest {
 		registrationUserDetailList.add(registrationUserDetail1);
 
 		Mockito.when(userDetailRepository.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike("Center123",
-				RegConstants.BLACKLISTED, userContext.getUserId())).thenReturn(registrationUserDetailList);
+				RegistrationConstants.BLACKLISTED, userContext.getUserId())).thenReturn(registrationUserDetailList);
 
 		List<RegistrationUserDetail> details = machineMappingDAOImpl.getUsers("Center123");
 

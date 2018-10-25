@@ -1,8 +1,7 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegClientStatusCode;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.service.RegistrationApprovalService;
 import javafx.collections.FXCollections;
@@ -87,8 +86,8 @@ public class OnHoldController extends BaseController implements Initializable{
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_ONHOLD_CONTROLLER", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Page loading has been started");
+		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Page loading has been started");
 
 		onHoldComboBox.getItems().clear();
 		onHoldComboBox.setItems(onHoldCommentslist);
@@ -108,10 +107,10 @@ public class OnHoldController extends BaseController implements Initializable{
 	 * @param event
 	 */
 	public void updatePacketStatus(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Packet updation as on hold has been started");
+		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Packet updation as on hold has been started");
 String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
-		if(registration.packetUpdateStatus(regId, RegClientStatusCode.ON_HOLD.getCode(),approverUserId, 
+		if(registration.packetUpdateStatus(regId, RegistrationClientStatusCode.ON_HOLD.getCode(),approverUserId, 
 				onHoldComboBox.getSelectionModel().getSelectedItem(), approverUserId)) {
 		generateAlert("Status",AlertType.INFORMATION,"Registration moved to On Hold.");
 		submit.disableProperty().set(true);
@@ -121,8 +120,8 @@ String approverUserId = SessionContext.getInstance().getUserContext().getUserId(
 		generateAlert("Status",AlertType.INFORMATION,"");
 	}
 		primarystage.close();
-		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Packet updation as on hold has been ended");
+		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Packet updation as on hold has been ended");
 		
 	}
 }

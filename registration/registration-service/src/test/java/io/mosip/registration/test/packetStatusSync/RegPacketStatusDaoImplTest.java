@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.registration.constants.RegClientStatusCode;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.dao.impl.RegPacketStatusDAOImpl;
 import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.entity.Registration;
@@ -43,9 +43,9 @@ public class RegPacketStatusDaoImplTest {
 		List<Registration> registrations = new ArrayList<>();
 		Registration registration = new Registration();
 		registration.setId("12345");
-		registration.setClientStatusCode(RegClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+		registration.setClientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 		registrations.add(registration);
-		when(registrationRepository.findByclientStatusCode(RegClientStatusCode.UPLOADED_SUCCESSFULLY.getCode())).thenReturn(registrations);
+		when(registrationRepository.findByclientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode())).thenReturn(registrations);
 		List<String> regIds = new ArrayList<>();
 		regIds.add("12345");
 		assertThat(packetStatusDao.getPacketIdsByStatusUploaded(), is(regIds));

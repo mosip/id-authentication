@@ -1,21 +1,22 @@
 package io.mosip.registration.constants;
 
 /**
- * Enum for Registration Transaction Type Code
+ * Enum for Registration Type Code
  *
  * @author Balaji Sridharan
  * @since 1.0.0
  *
  */
-public enum RegTranType {
+public enum RegistrationType {
 
-	// TODO: Have to include other types if applicable
-	CREATED("CREATED"), UPDATED("UPDATED");
+	NEW("N"), CORRECTION("C"), UIN_UPDATE("U"), UIN_LOST("L"),
+	ACTIVATE_UIN("A"), DEACTIVATE_UIN("D"), SUPERVISOR_HOLD("O"),
+	SUPERVISOR_REJECTED("R");
 
 	/**
 	 * @param code
 	 */
-	private RegTranType(String code) {
+	private RegistrationType(String code) {
 		this.code = code;
 	}
 

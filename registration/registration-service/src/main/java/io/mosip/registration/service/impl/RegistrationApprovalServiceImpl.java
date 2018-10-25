@@ -1,19 +1,21 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.impl;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.RegistrationApprovalService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +72,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 			List<Registration> details = registrationDAO.approvalList();
 			LOGGER.debug("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME,
 					APPLICATION_ID, "Packet Approval list has been fetched");
-			auditFactory.audit(AuditEventEnum.PACKET_RETRIVE, AppModuleEnum.PACKET_RETRIVE,
+			auditFactory.audit(AuditEvent.PACKET_RETRIVE, AppModule.PACKET_RETRIVE,
 					"Packets which are in created state for approval are retrived", "refId", "refIdType");
 			details.forEach(detail -> {
 				list.add(new RegistrationApprovalUiDto(detail.getId(), detail.getClientStatusCode(),
@@ -78,7 +80,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 						detail.getAckFilename()));
 			});
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.PACKET_RETRIVE_STATUS,
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_RETRIVE_STATUS,
 					runtimeException.toString());
 		}
 		LOGGER.debug("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME,
@@ -93,7 +95,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 	public List<Registration> getEnrollmentByStatus(String status) {
 		LOGGER.debug("REGISTRATION - PACKET - RETRIVE", APPLICATION_NAME,
 				APPLICATION_ID, "Fetching Packets list by status");
-		auditFactory.audit(AuditEventEnum.PACKET_RETRIVE, AppModuleEnum.PACKET_RETRIVE,
+		auditFactory.audit(AuditEvent.PACKET_RETRIVE, AppModule.PACKET_RETRIVE,
 				"Packets are in retrived based on state", "refId", "refIdType");
 		return registrationDAO.getEnrollmentByStatus(status);
 	}
@@ -106,7 +108,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 			String updBy) {
 		LOGGER.debug("REGISTRATION - PACKET - UPDATE", APPLICATION_NAME,
 				APPLICATION_ID, "Updating status of Packet");
-		auditFactory.audit(AuditEventEnum.PACKET_UPDATE, AppModuleEnum.PACKET_UPDATE,
+		auditFactory.audit(AuditEvent.PACKET_UPDATE, AppModule.PACKET_UPDATE,
 				"Packets which are in created state are updated according to desired status", "refId", "refIdType");
 		return registrationDAO.updateStatus(id, clientStatusCode, approverUserId, statusComments, updBy) != null;
 	}

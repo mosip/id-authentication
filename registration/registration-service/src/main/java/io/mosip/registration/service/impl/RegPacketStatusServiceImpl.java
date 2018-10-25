@@ -1,7 +1,7 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.impl;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,12 +16,14 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.BaseService;
+import io.mosip.registration.service.RegPacketStatusService;
 
 /**
  * This class will update the packet status in the table after sync with the
@@ -65,8 +67,8 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	private void updatePacketIdsByServerStatus(List<LinkedHashMap<String, String>> registrations) {
 		List<RegPacketStatusDTO> packetStatusDTO = new ArrayList<>();
 		for (Map<String, String> registration : registrations) {
-			packetStatusDTO.add(new RegPacketStatusDTO(registration.get(RegConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
-					registration.get(RegConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
+			packetStatusDTO.add(new RegPacketStatusDTO(registration.get(RegistrationConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
+					registration.get(RegistrationConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
 		}
 		/** update server and client status. */
 		regPacketStatusDAO.updatePacketIdsByServerStatus(packetStatusDTO);
@@ -87,12 +89,12 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		SuccessResponseDTO successResponse;
 
 		/** Validator response service API creation */
-		final String SERVICE_NAME = RegConstants.PACKET_STATUS_SYNC_SERVICE_NAME;
+		final String SERVICE_NAME = RegistrationConstants.PACKET_STATUS_SYNC_SERVICE_NAME;
 
 		/** prepare request params to pass through URI */
 		Map<String, String> requestParamMap = new HashMap<>();
 		String packetIdList = packetIds.stream().map(Object::toString).collect(Collectors.joining(","));
-		requestParamMap.put(RegConstants.PACKET_STATUS_SYNC_URL_PARAMETER, packetIdList);
+		requestParamMap.put(RegistrationConstants.PACKET_STATUS_SYNC_URL_PARAMETER, packetIdList);
 
 		try {
 			/** Obtain RegistrationStatusDto from service delegate util */
@@ -100,12 +102,12 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 					requestParamMap);
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			/** Create Error response */
-			getErrorResponse(response, RegConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
+			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
 			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
 					APPLICATION_ID, "Error Response Created");
 		} catch (HttpClientErrorException httpClientErrorException) {
 			/** Create Error response */
-			getErrorResponse(response, RegConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
+			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
 			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
 					APPLICATION_ID, "Error Response Created");
 		}
@@ -117,10 +119,10 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 					APPLICATION_ID, "packet status has been synced with server");
 			/** Create Success response */
 			successResponse = new SuccessResponseDTO();
-			successResponse.setCode(RegConstants.ALERT_INFORMATION);
-			successResponse.setMessage(RegConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE);
+			successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
+			successResponse.setMessage(RegistrationConstants.PACKET_STATUS_SYNC_SUCCESS_MESSAGE);
 			Map<String, Object> otherAttributes = new HashMap<>();
-			otherAttributes.put(RegConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY, registrations);
+			otherAttributes.put(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY, registrations);
 			successResponse.setOtherAttributes(otherAttributes);
 			response.setSuccessResponseDTO(successResponse);
 			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
@@ -129,7 +131,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		} else {
 
 			/** Create Error response */
-			getErrorResponse(response, RegConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
+			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
 			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
 					APPLICATION_ID, "Error Response Created");
 

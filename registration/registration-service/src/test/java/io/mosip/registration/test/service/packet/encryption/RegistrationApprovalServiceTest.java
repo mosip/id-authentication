@@ -23,15 +23,15 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationApprovalUiDto;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.RegistrationApprovalServiceImpl;
+import io.mosip.registration.service.impl.RegistrationApprovalServiceImpl;
 
 public class RegistrationApprovalServiceTest {
 
@@ -68,7 +68,7 @@ public class RegistrationApprovalServiceTest {
 		ReflectionTestUtils.setField(registrationApprovalServiceImpl, "LOGGER", logger);
 		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class), Mockito.any(AppModuleEnum.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 

@@ -3,10 +3,6 @@ package io.mosip.registration.repositories;
 import java.util.List;
 
 import  io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-
 import io.mosip.registration.entity.Registration;
 
 
@@ -45,8 +41,4 @@ public interface RegistrationRepository extends BaseRepository<Registration, Str
 	 * @return List of registration packets
 	 */
 	List<Registration> findByClientStatusCodeIn(List<String> statusCodes);
-
-	@Modifying(clearAutomatically = true)
-	@Query("update Registration r set r.clientStatusCode = ?1 where r.id IN ?2")
-	public int updateClientStatus(@Param("status") String status, @Param("idList") List<String> idList);
 }

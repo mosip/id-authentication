@@ -7,7 +7,7 @@ package io.mosip.registration.constants;
  * @since 1.0.0
  *
  */
-public enum RegClientStatusCode {
+public enum RegistrationClientStatusCode {
 
 	CREATED("R"), 
 	CORRECTION("C"), 
@@ -25,7 +25,7 @@ public enum RegClientStatusCode {
 	/**
 	 * @param code
 	 */
-	private RegClientStatusCode(String code) {
+	private RegistrationClientStatusCode(String code) {
 		this.code = code;
 	}
 

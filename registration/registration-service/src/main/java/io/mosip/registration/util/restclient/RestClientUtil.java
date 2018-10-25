@@ -1,7 +1,7 @@
 package io.mosip.registration.util.restclient;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -63,6 +63,7 @@ public class RestClientUtil {
 			LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME,
 					APPLICATION_ID, "invoke method ended");
 
+			System.out.println(responseBody);
 			
 		return responseBody;
 

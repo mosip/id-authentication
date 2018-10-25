@@ -24,11 +24,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.packet.encryption.aes.AESEncryptionServiceImpl;
 import io.mosip.registration.service.packet.encryption.aes.AESSeedGenerator;
+import io.mosip.registration.service.packet.encryption.aes.impl.AESEncryptionServiceImpl;
 import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionService;
 import io.mosip.registration.util.keymanager.AESKeyManager;
 import io.mosip.registration.util.keymanager.impl.AESKeyManagerImpl;
@@ -83,10 +83,10 @@ public class AESEncryptionServiceTest {
 		ReflectionTestUtils.setField(aesEncryptionServiceImpl, "environment", environment);
 		ReflectionTestUtils.setField(aesKeyManagerImpl, "environment", environment);
 
-		when(environment.getProperty(RegConstants.AES_KEY_MANAGER_ALG)).thenReturn("AES");
-		when(environment.getProperty(RegConstants.AES_KEY_SEED_LENGTH)).thenReturn("32");
-		when(environment.getProperty(RegConstants.AES_SESSION_KEY_LENGTH)).thenReturn("256");
-		when(environment.getProperty(RegConstants.AES_KEY_CIPHER_SPLITTER)).thenReturn(keySplitter);
+		when(environment.getProperty(RegistrationConstants.AES_KEY_MANAGER_ALG)).thenReturn("AES");
+		when(environment.getProperty(RegistrationConstants.AES_KEY_SEED_LENGTH)).thenReturn("32");
+		when(environment.getProperty(RegistrationConstants.AES_SESSION_KEY_LENGTH)).thenReturn("256");
+		when(environment.getProperty(RegistrationConstants.AES_KEY_CIPHER_SPLITTER)).thenReturn(keySplitter);
 
 		seeds = new ArrayList<>();
 		seeds.add("name");

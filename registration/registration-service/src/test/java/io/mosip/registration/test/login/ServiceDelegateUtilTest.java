@@ -21,7 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.OtpGeneratorRequestDto;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -51,8 +51,8 @@ public class ServiceDelegateUtilTest {
 				Mockito.anyString());
 		
 		Map<String, String> requestParamMap = new HashMap<String, String>();
-		requestParamMap.put(RegConstants.USERNAME_KEY, "yashReddy");
-		requestParamMap.put(RegConstants.OTP_GENERATED, "099887");
+		requestParamMap.put(RegistrationConstants.USERNAME_KEY, "yashReddy");
+		requestParamMap.put(RegistrationConstants.OTP_GENERATED, "099887");
 		Assert.assertEquals(delegateUtil.getUri(requestParamMap, "http://localhost:8080/otpmanager/otps").toString(),
 				"http://localhost:8080/otpmanager/otps?otp=099887&key=yashReddy");
 	}
@@ -73,8 +73,8 @@ public class ServiceDelegateUtilTest {
 		
 		when(restClientUtil.invoke(Mockito.any())).thenReturn(response);
 		Map<String, String> requestParamMap = new HashMap<String, String>();
-		requestParamMap.put(RegConstants.USERNAME_KEY, "yashReddy");
-		requestParamMap.put(RegConstants.OTP_GENERATED, "099886");
+		requestParamMap.put(RegistrationConstants.USERNAME_KEY, "yashReddy");
+		requestParamMap.put(RegistrationConstants.OTP_GENERATED, "099886");
 		assertNotNull(delegateUtil.get("otp_validator", requestParamMap));
 	}
 

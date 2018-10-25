@@ -21,15 +21,15 @@ import io.mosip.registration.test.util.datastub.DataProvider;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.PacketEncryptionServiceImpl;
+import io.mosip.registration.service.impl.PacketEncryptionServiceImpl;
 import io.mosip.registration.service.packet.encryption.aes.AESEncryptionService;
 import io.mosip.registration.util.store.StorageService;
 
@@ -74,7 +74,7 @@ public class PacketEncryptionServiceTest {
 		ReflectionTestUtils.setField(packetEncryptionServiceImpl, "logger", logger);
 		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class), Mockito.any(AppModuleEnum.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 

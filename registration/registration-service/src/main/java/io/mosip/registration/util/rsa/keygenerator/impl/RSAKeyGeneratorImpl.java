@@ -1,7 +1,7 @@
 package io.mosip.registration.util.rsa.keygenerator.impl;
 
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_IO_ERROR_CODE;
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_IO_ERROR_CODE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
 
 import java.io.File;
 import java.security.KeyPair;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 
@@ -38,7 +38,7 @@ public class RSAKeyGeneratorImpl implements RSAKeyGenerator {
 		KeyPairGenerator keyPairGenerator = null;
 		try {
 			// Generate key pair generator
-			keyPairGenerator = KeyPairGenerator.getInstance(RegConstants.RSA_ALG);
+			keyPairGenerator = KeyPairGenerator.getInstance(RegistrationConstants.RSA_ALG);
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
 			throw new RegBaseUncheckedException(REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
 					REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage(), noSuchAlgorithmException);
@@ -54,10 +54,10 @@ public class RSAKeyGeneratorImpl implements RSAKeyGenerator {
 
 		try {
 			// Save public key in public.key file
-			FileUtils.writeByteArrayToFile(new File(RegConstants.RSA_PUBLIC_KEY_FILE), publicKey.getEncoded());
+			FileUtils.writeByteArrayToFile(new File(RegistrationConstants.RSA_PUBLIC_KEY_FILE), publicKey.getEncoded());
 
 			// save private key in private.key file
-			FileUtils.writeByteArrayToFile(new File(RegConstants.RSA_PRIVATE_KEY_FILE), privateKey.getEncoded());
+			FileUtils.writeByteArrayToFile(new File(RegistrationConstants.RSA_PRIVATE_KEY_FILE), privateKey.getEncoded());
 		} catch (MosipIOException mosipIOException) {
 			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(), REG_IO_ERROR_CODE.getErrorMessage(),
 					mosipIOException);
@@ -74,7 +74,7 @@ public class RSAKeyGeneratorImpl implements RSAKeyGenerator {
 	public byte[] getEncodedKey(boolean isPublic) {
 		try {
 			return FileUtils.readFileToByteArray(
-					new File(isPublic ? RegConstants.RSA_PUBLIC_KEY_FILE : RegConstants.RSA_PRIVATE_KEY_FILE));
+					new File(isPublic ? RegistrationConstants.RSA_PUBLIC_KEY_FILE : RegistrationConstants.RSA_PRIVATE_KEY_FILE));
 		} catch (MosipIOException mosipIOException) {
 			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(), REG_IO_ERROR_CODE.getErrorMessage(),
 					mosipIOException);

@@ -1,5 +1,13 @@
 package io.mosip.registration.util.zip;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_ZIP_CREATION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.IMAGE_TYPE;
+import static io.mosip.registration.constants.RegistrationConstants.JSON_FILE_EXTENSION;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_IO_EXCEPTION;
+import static java.io.File.separator;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -7,16 +15,13 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static java.io.File.separator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import io.mosip.registration.constants.RegConstants;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -25,13 +30,6 @@ import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegConstants.IMAGE_TYPE;
-import static io.mosip.registration.constants.RegConstants.JSON_FILE_EXTENSION;
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_IO_EXCEPTION;
-import static io.mosip.registration.constants.LoggerConstants.LOG_ZIP_CREATION;
 
 /**
  * API Class to generate the Enrollment Registration Structure for zip file
@@ -101,13 +99,13 @@ public class ZipCreationService {
 					}
 					writeFileToZip(
 							"Demographic".concat(separator).concat("DemographicInfo").concat(JSON_FILE_EXTENSION),
-							jsonMap.get(RegConstants.DEMOGRPAHIC_JSON_NAME), zipOutputStream);
+							jsonMap.get(RegistrationConstants.DEMOGRPAHIC_JSON_NAME), zipOutputStream);
 					logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
 							"Demographic JSON added");
 				}
 
 				// Add the HMAC Info
-				writeFileToZip("HMACFile.txt", jsonMap.get(RegConstants.HASHING_JSON_NAME), zipOutputStream);
+				writeFileToZip("HMACFile.txt", jsonMap.get(RegistrationConstants.HASHING_JSON_NAME), zipOutputStream);
 				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
 						"HMAC added");
 
@@ -127,13 +125,13 @@ public class ZipCreationService {
 
 				// Add Registration Meta JSON
 				writeFileToZip("PacketMetaInfo".concat(JSON_FILE_EXTENSION),
-						jsonMap.get(RegConstants.PACKET_META_JSON_NAME), zipOutputStream);
+						jsonMap.get(RegistrationConstants.PACKET_META_JSON_NAME), zipOutputStream);
 				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
 						"Registration Packet Meta added");
 
 				// Add Audits
-				writeFileToZip(RegConstants.AUDIT_JSON_FILE.concat(JSON_FILE_EXTENSION),
-						jsonMap.get(RegConstants.AUDIT_JSON_FILE), zipOutputStream);
+				writeFileToZip(RegistrationConstants.AUDIT_JSON_FILE.concat(JSON_FILE_EXTENSION),
+						jsonMap.get(RegistrationConstants.AUDIT_JSON_FILE), zipOutputStream);
 				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
 						"Registration Audit Logs Meta added");
 
@@ -149,7 +147,7 @@ public class ZipCreationService {
 		} catch (IOException exception) {
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.PACKET_ZIP_CREATION,
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION,
 					runtimeException.toString());
 		}
 	}
@@ -171,7 +169,7 @@ public class ZipCreationService {
 		// Add Proofs
 		if (checkNotNull(applicantDocumentDTO.getDocumentDetailsDTO())) {
 			for (DocumentDetailsDTO documentDetailsDTO : applicantDocumentDTO.getDocumentDetailsDTO()) {
-				writeFileToZip(folderName + documentDetailsDTO.getDocumentName() + RegConstants.DOC_TYPE,
+				writeFileToZip(folderName + documentDetailsDTO.getDocumentName() + RegistrationConstants.DOC_TYPE,
 						documentDetailsDTO.getDocument(), zipOutputStream);
 			}
 		}
@@ -181,7 +179,7 @@ public class ZipCreationService {
 		addToZip(applicantDocumentDTO.getExceptionPhoto(),
 				folderName + applicantDocumentDTO.getExceptionPhotoName() + IMAGE_TYPE, zipOutputStream);
 		addToZip(applicantDocumentDTO.getAcknowledgeReceipt(),
-				folderName + applicantDocumentDTO.getAcknowledgeReceiptName() + "." + RegConstants.IMAGE_FORMAT,
+				folderName + applicantDocumentDTO.getAcknowledgeReceiptName() + "." + RegistrationConstants.IMAGE_FORMAT,
 				zipOutputStream);
 	}
 

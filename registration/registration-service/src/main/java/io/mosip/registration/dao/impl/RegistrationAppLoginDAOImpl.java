@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationAppLoginDAO;
 import io.mosip.registration.entity.RegistrationAppLoginMethod;
 import io.mosip.registration.repositories.RegistrationAppLoginRepository;
@@ -45,8 +45,8 @@ public class RegistrationAppLoginDAOImpl implements RegistrationAppLoginDAO {
 	 */
 	public Map<String, Object> getModesOfLogin() {
 
-		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegConstants.APPLICATION_NAME,
-				RegConstants.APPLICATION_ID, "Fetching list of login modes");
+		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Fetching list of login modes");
 
 		List<RegistrationAppLoginMethod> loginList = registrationAppLoginRepository
 				.findByIsActiveTrueOrderByMethodSeq();
@@ -54,10 +54,10 @@ public class RegistrationAppLoginDAOImpl implements RegistrationAppLoginDAO {
 		Map<String, Object> loginModes = new LinkedHashMap<>();
 		loginList.forEach(mode -> loginModes.put(String.valueOf(mode.getMethodSeq()), mode.getRegistrationAppLoginMethodId().getLoginMethod()));
 		
-		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegConstants.APPLICATION_NAME,
-				RegConstants.APPLICATION_ID, "List of login modes fetched successfully");
+		LOGGER.debug("REGISTRATION - LOGINMODES - REGISTRATION_APP_LOGIN_DAO_IMPL", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "List of login modes fetched successfully");
 		
-		loginModes.put(RegConstants.LOGIN_SEQUENCE, RegConstants.INITIAL_LOGIN_SEQUENCE);
+		loginModes.put(RegistrationConstants.LOGIN_SEQUENCE, RegistrationConstants.INITIAL_LOGIN_SEQUENCE);
 		return loginModes;
 	}
 }

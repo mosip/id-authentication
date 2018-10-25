@@ -1,32 +1,29 @@
 package io.mosip.registration.util.store;
 
+import static io.mosip.kernel.core.util.DateUtils.formatDate;
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_STORAGE;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.ZIP_FILE_EXTENSION;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_IO_EXCEPTION;
+import static java.io.File.separator;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Date;
 
-import static java.io.File.separator;
-
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import io.mosip.registration.constants.RegConstants;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
-import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
-
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.core.util.FileUtils;
-
-import static io.mosip.kernel.core.util.DateUtils.formatDate;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegConstants.ZIP_FILE_EXTENSION;
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_IO_EXCEPTION;
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_STORAGE;
+import io.mosip.kernel.core.util.exception.MosipIOException;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
  * Class to Store the Packets in local disk
@@ -62,8 +59,8 @@ public class StorageService {
 		try {
 			// Generate the file path for storing the Encrypted Packet and Acknowledgement
 			// Receipt
-			String filePath = environment.getProperty(RegConstants.PACKET_STORE_LOCATION) + separator
-					+ formatDate(new Date(), environment.getProperty(RegConstants.PACKET_STORE_DATE_FORMAT))
+			String filePath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + separator
+					+ formatDate(new Date(), environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT))
 							.concat(separator).concat(registrationId);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(packet), new File(filePath.concat(ZIP_FILE_EXTENSION)));
@@ -71,14 +68,14 @@ public class StorageService {
 					"Encrypted packet saved");
 			// Storing the Registration Acknowledge Receipt Image
 			FileUtils.copyToFile(new ByteArrayInputStream(ackReceipt),
-					new File(filePath.concat("_Ack.").concat(RegConstants.IMAGE_FORMAT)));
+					new File(filePath.concat("_Ack.").concat(RegistrationConstants.IMAGE_FORMAT)));
 			logger.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID,
 					"Registration's Acknowledgement Receipt saved");
 			return filePath;
 		} catch (MosipIOException ioException) {
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.ENCRYPTED_PACKET_STORAGE,
+			throw new RegBaseUncheckedException(RegistrationConstants.ENCRYPTED_PACKET_STORAGE,
 					runtimeException.toString());
 		}
 	}

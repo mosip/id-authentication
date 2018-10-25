@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
@@ -36,7 +36,7 @@ public class BaseService {
 		/** Error response */
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 
-		errorResponse.setCode(RegConstants.ALERT_ERROR);
+		errorResponse.setCode(RegistrationConstants.ALERT_ERROR);
 		errorResponse.setMessage(message);
 		
 		Map<String, Object> otherAttributes = new HashMap<>();

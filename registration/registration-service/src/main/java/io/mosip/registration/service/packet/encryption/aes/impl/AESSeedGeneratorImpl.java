@@ -1,25 +1,25 @@
 package io.mosip.registration.service.packet.encryption.aes.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_SEEDS;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static java.lang.System.currentTimeMillis;
+
 import java.util.LinkedList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.packet.encryption.aes.AESSeedGenerator;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
-
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static java.lang.System.currentTimeMillis;
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_SEEDS;
 
 /**
  * Class for creating the seed values to generate the AES Session Key
@@ -59,7 +59,7 @@ public class AESSeedGeneratorImpl implements AESSeedGenerator {
 					"Generating seeds for AES Encryption had been ended");
 			return aesKeySeeds;
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.AES_SEED_GENERATION,
+			throw new RegBaseUncheckedException(RegistrationConstants.AES_SEED_GENERATION,
 					runtimeException.toString());
 		}
 	}

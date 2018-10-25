@@ -1,10 +1,9 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_APPROVE_SCREEN_EXCEPTION;
-import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_AUTHORIZATION_EXCEPTION;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_APPROVE_SCREEN_EXCEPTION;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTHORIZATION_EXCEPTION;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -17,12 +16,12 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.TemplateService;
-import io.mosip.registration.ui.constants.RegistrationUIConstants;
 import io.mosip.registration.util.acktemplate.VelocityPDFGenerator;
 import io.mosip.registration.util.dataprovider.DataProvider;
 import javafx.collections.ObservableList;
@@ -77,16 +76,16 @@ public class RegistrationOfficerPacketController extends BaseController {
 	public void createPacket(ActionEvent event) {
 
 		try {
-			Parent createRoot = BaseController.load(getClass().getResource(RegistrationUIConstants.CREATE_PACKET_PAGE));
+			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE));
 
 			LOGGER.debug("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+					APPLICATION_NAME, APPLICATION_ID,
 					"Validating Create Packet screen for specific role");
 
 			if (!validateScreenAuthorization(createRoot.getId())) {
-				generateAlert(RegistrationUIConstants.AUTHORIZATION_ALERT_TITLE,
-						AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-						RegistrationUIConstants.AUTHORIZATION_INFO_MESSAGE,
+				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
+						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
 						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
 			} else {
 				ResponseDTO responseDTO;
@@ -122,15 +121,15 @@ public class RegistrationOfficerPacketController extends BaseController {
 			ackReceiptController.setStringWriter(writer);
 
 			Stage primaryStage = new Stage();
-			Parent ackRoot = BaseController.load(getClass().getResource(RegistrationUIConstants.ACK_RECEIPT_PATH));
+			Parent ackRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
 			primaryStage.setResizable(false);
-			primaryStage.setTitle(RegistrationUIConstants.ACKNOWLEDGEMENT_FORM_TITLE);
+			primaryStage.setTitle(RegistrationConstants.ACKNOWLEDGEMENT_FORM_TITLE);
 			Scene scene = new Scene(ackRoot);
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch (RegBaseCheckedException regBaseCheckedException) {
-			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), regBaseCheckedException.getMessage());
+			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", APPLICATION_NAME,
+					APPLICATION_ID, regBaseCheckedException.getMessage());
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
@@ -143,16 +142,16 @@ public class RegistrationOfficerPacketController extends BaseController {
 	 */
 	public void approvePacket(ActionEvent event) {
 		try {
-			Parent root = BaseController.load(getClass().getResource(RegistrationUIConstants.APPROVAL_PAGE));
+			Parent root = BaseController.load(getClass().getResource(RegistrationConstants.APPROVAL_PAGE));
 
 			LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+					APPLICATION_NAME, APPLICATION_ID,
 					"Validating Approve Packet screen for specific role");
 
 			if (!validateScreenAuthorization(root.getId())) {
-				generateAlert(RegistrationUIConstants.AUTHORIZATION_ALERT_TITLE,
-						AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-						RegistrationUIConstants.AUTHORIZATION_INFO_MESSAGE,
+				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
+						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
 						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
 			} else {
 				Button button = (Button) event.getSource();
@@ -166,7 +165,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 				nodes.add(root);
 			}
 		} catch (IOException ioException) {
-			generateAlert(RegistrationUIConstants.ALERT_ERROR, AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_APPROVE_SCREEN_EXCEPTION.getErrorMessage());
 		}
 	}
@@ -176,16 +175,16 @@ public class RegistrationOfficerPacketController extends BaseController {
 	 */
 	public void uploadPacket(ActionEvent event) {
 		try {
-			uploadRoot = BaseController.load(getClass().getResource(RegistrationUIConstants.FTP_UPLOAD_PAGE));
+			uploadRoot = BaseController.load(getClass().getResource(RegistrationConstants.FTP_UPLOAD_PAGE));
 
 			LOGGER.debug("REGISTRATION - UPLOAD_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
-					getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+					APPLICATION_NAME, APPLICATION_ID,
 					"Validating Upload Packet screen for specific role");
 
 			if (!validateScreenAuthorization(uploadRoot.getId())) {
-				generateAlert(RegistrationUIConstants.AUTHORIZATION_ALERT_TITLE,
-						AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-						RegistrationUIConstants.AUTHORIZATION_INFO_MESSAGE,
+				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
+						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
 						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
 			} else {
 				Button button = (Button) event.getSource();

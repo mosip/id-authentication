@@ -1,4 +1,4 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.impl;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,11 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegConstants;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
-import io.mosip.registration.constants.RegProcessorExceptionEnum;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.dto.AuditDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -30,17 +29,18 @@ import io.mosip.registration.dto.json.metadata.OSIData;
 import io.mosip.registration.dto.json.metadata.PacketInfo;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.PacketCreationService;
 import io.mosip.registration.util.checksum.CheckSumUtil;
 import io.mosip.registration.util.hmac.HMACGeneration;
 import io.mosip.registration.util.zip.ZipCreationService;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegConstants.DEMOGRPAHIC_JSON_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
 import static io.mosip.registration.mapper.CustomObjectMapper.MAPPER_FACADE;
 import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_CREATION;
-import static io.mosip.registration.constants.RegConstants.REGISTRATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
 
 /**
  * Class for creating the Resident Registration
@@ -88,18 +88,18 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 							.getBytes());
 			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Demographic Json created successfully");
-			auditFactory.audit(AuditEventEnum.PACKET_DEMO_JSON_CREATED, AppModuleEnum.PACKET_CREATOR,
+			auditFactory.audit(AuditEvent.PACKET_DEMO_JSON_CREATED, AppModule.PACKET_CREATOR,
 					"Demographic JSON created successfully", REGISTRATION_ID, rid);
 
 			// Generating HMAC File as byte array
 			HashSequence hashSequence = new HashSequence(
 					new BiometricSequence(new LinkedList<String>(), new LinkedList<String>()),
 					new DemographicSequence(new LinkedList<String>()));
-			jsonsMap.put(RegConstants.HASHING_JSON_NAME, HMACGeneration.generatePacketDTOHash(registrationDTO,
+			jsonsMap.put(RegistrationConstants.HASHING_JSON_NAME, HMACGeneration.generatePacketDTOHash(registrationDTO,
 					jsonsMap.get(DEMOGRPAHIC_JSON_NAME), hashSequence));
 			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"HMAC File generated successfully");
-			auditFactory.audit(AuditEventEnum.PACKET_HMAC_FILE_CREATED, AppModuleEnum.PACKET_CREATOR,
+			auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, AppModule.PACKET_CREATOR,
 					"Packet HMAC File created successfully", REGISTRATION_ID, rid);
 
 			// Generating Packet Meta-Info JSON as byte array
@@ -110,33 +110,33 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			packetInfo.setHashSequence(hashSequence);
 			packetInfo.setCheckSumMap(CheckSumUtil.getCheckSumMap());
 			packetInfo.setOsiData(MAPPER_FACADE.convert(registrationDTO, OSIData.class, "osiDataConverter"));
-			jsonsMap.put(RegConstants.PACKET_META_JSON_NAME, javaObjectToJsonString(packetInfo).getBytes());
+			jsonsMap.put(RegistrationConstants.PACKET_META_JSON_NAME, javaObjectToJsonString(packetInfo).getBytes());
 			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Registration Packet Meta-Info JSON generated successfully");
-			auditFactory.audit(AuditEventEnum.PACKET_META_JSON_CREATED, AppModuleEnum.PACKET_CREATOR,
+			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, AppModule.PACKET_CREATOR,
 					"Packet Meta-Data JSON created successfully", REGISTRATION_ID, rid);
 
 			// Generating Audit JSON as byte array
-			jsonsMap.put(RegConstants.AUDIT_JSON_FILE,
+			jsonsMap.put(RegistrationConstants.AUDIT_JSON_FILE,
 					javaObjectToJsonString(MAPPER_FACADE.mapAsList(registrationDTO.getAuditDTOs(), Audit.class))
 							.getBytes());
 			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Registration Packet Meta-Info JSON generated successfully");
-			auditFactory.audit(AuditEventEnum.PACKET_META_JSON_CREATED, AppModuleEnum.PACKET_CREATOR,
+			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, AppModule.PACKET_CREATOR,
 					"Packet Meta-Data JSON created successfully", REGISTRATION_ID, rid);
 
 			// Creating in-memory zip file for Packet Encryption
 			byte[] packetZipBytes = ZipCreationService.createPacket(registrationDTO, jsonsMap);
 			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Registration Creation had been ended");
-			auditFactory.audit(AuditEventEnum.PACKET_INTERNAL_ZIP, AppModuleEnum.PACKET_CREATOR,
+			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ZIP, AppModule.PACKET_CREATOR,
 					"Packet Internal Zip File created successfully", REGISTRATION_ID, rid);
 			return packetZipBytes;
 		} catch (MosipJsonProcessingException mosipJsonProcessingException) {
-			throw new RegBaseCheckedException(RegProcessorExceptionEnum.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
-					RegProcessorExceptionEnum.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptions.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
+					RegistrationExceptions.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.PACKET_CREATION_EXCEPTION,
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_CREATION_EXCEPTION,
 					runtimeException.toString());
 		}
 	}

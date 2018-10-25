@@ -14,9 +14,9 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegProcessorExceptionEnum;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -56,8 +56,8 @@ public class PacketHandlerServiceTest {
 
 		ReflectionTestUtils.invokeMethod(packetHandlerServiceImpl, "initializeLogger", mosipRollingFileAppender);
 		mockedSuccessResponse = new ResponseDTO();
-		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class),
-				Mockito.any(AppModuleEnum.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class),
+				Mockito.any(AppModule.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(packetHandlerServiceImpl, "logger", logger);
@@ -76,7 +76,7 @@ public class PacketHandlerServiceTest {
 	public void testCreationException() throws RegBaseCheckedException {
 		Mockito.when(packetCreationService.create(Mockito.any(RegistrationDTO.class))).thenReturn(null);
 		ResponseDTO actualResponse = packetHandlerServiceImpl.handle(new RegistrationDTO());
-		Assert.assertEquals(RegProcessorExceptionEnum.REG_PACKET_CREATION_ERROR_CODE.getErrorCode(),
+		Assert.assertEquals(RegistrationExceptions.REG_PACKET_CREATION_ERROR_CODE.getErrorCode(),
 				actualResponse.getErrorResponseDTOs().get(0).getCode());
 	}
 

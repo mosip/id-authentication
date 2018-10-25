@@ -23,9 +23,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -36,7 +36,7 @@ import io.mosip.registration.entity.RegistrationUserRoleID;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.MapMachineServiceImpl;
+import io.mosip.registration.service.impl.MapMachineServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import io.mosip.registration.entity.UserMachineMappingID;
 
@@ -77,7 +77,7 @@ public class UserClientMachineMappingServiceTest {
 		ReflectionTestUtils.setField(RegistrationSystemPropertiesChecker.class, "LOGGER", logger);
 		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class), Mockito.any(AppModuleEnum.class),
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 
@@ -149,13 +149,13 @@ public class UserClientMachineMappingServiceTest {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		successResponseDTO.setCode(RegConstants.MACHINE_MAPPING_CODE);
-		successResponseDTO.setInfoType(RegConstants.ALERT_INFORMATION);
-		successResponseDTO.setMessage(RegConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
+		successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
+		successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
+		successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
 
 		Mockito.when(machineMappingDAO.update(Mockito.any(UserMachineMapping.class)))
-				.thenReturn(RegConstants.MACHINE_MAPPING_UPDATED);
+				.thenReturn(RegistrationConstants.MACHINE_MAPPING_UPDATED);
 		Mockito.when(machineMappingDAO.findByID(Mockito.any())).thenReturn(null);
 
 		Assert.assertSame(mapMachineServiceImpl.saveOrUpdate(machineMappingDTO).getSuccessResponseDTO().getMessage(),
@@ -175,13 +175,13 @@ public class UserClientMachineMappingServiceTest {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		successResponseDTO.setCode(RegConstants.MACHINE_MAPPING_CODE);
-		successResponseDTO.setInfoType(RegConstants.ALERT_INFORMATION);
-		successResponseDTO.setMessage(RegConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
+		successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
+		successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
+		successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
 
 		Mockito.when(machineMappingDAO.save(Mockito.any(UserMachineMapping.class)))
-				.thenReturn(RegConstants.MACHINE_MAPPING_UPDATED);
+				.thenReturn(RegistrationConstants.MACHINE_MAPPING_UPDATED);
 		Mockito.when(machineMappingDAO.findByID(Mockito.any())).thenReturn(user);
 
 		Assert.assertSame(mapMachineServiceImpl.saveOrUpdate(machineMappingDTO).getSuccessResponseDTO().getMessage(),
@@ -201,9 +201,9 @@ public class UserClientMachineMappingServiceTest {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-		successResponseDTO.setCode(RegConstants.MACHINE_MAPPING_CODE);
-		successResponseDTO.setInfoType(RegConstants.ALERT_INFORMATION);
-		successResponseDTO.setMessage(RegConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
+		successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
+		successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
+		successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 		responseDTO.setSuccessResponseDTO(successResponseDTO);
 
 		Mockito.when(machineMappingDAO.findByID(Mockito.any())).thenThrow(RegBaseUncheckedException.class);

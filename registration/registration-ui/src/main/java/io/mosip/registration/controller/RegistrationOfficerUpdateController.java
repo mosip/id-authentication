@@ -1,21 +1,18 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.controller.BaseController;
-import io.mosip.registration.ui.constants.RegistrationUIConstants;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.registration.constants.RegistrationConstants;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -54,10 +51,10 @@ public class RegistrationOfficerUpdateController extends BaseController {
 	public void initialize() {
 
 		LOGGER.debug("REGISTRATION - DISPLAY_DATE - REGISTRATION_OFFICER_UPDATE_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
+				APPLICATION_NAME, APPLICATION_ID,
 				"Displaying date values for the corresponding fields");
 
-		SimpleDateFormat sdf = new SimpleDateFormat(RegistrationUIConstants.DATE_FORMAT);
+		SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.DATE_FORMAT);
 		updateDate.setText(sdf.format(new Date()));
 		syncDate.setText(sdf.format(new Date()));
 		downloadDate.setText(sdf.format(new Date()));

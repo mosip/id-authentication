@@ -1,8 +1,8 @@
 package io.mosip.registration.dao.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_SAVE_PKT;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.File;
 import java.time.OffsetDateTime;
@@ -17,11 +17,10 @@ import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegClientStatusCode;
-import io.mosip.registration.constants.RegConstants;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
-import io.mosip.registration.constants.RegTranType;
-import io.mosip.registration.constants.RegType;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationTransactionType;
+import io.mosip.registration.constants.RegistrationType;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
@@ -75,13 +74,13 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			Registration registration = new Registration();
 			registration.setId(zipFileName.substring(zipFileName.lastIndexOf(File.separator) + 1));
 
-			registration.setRegType(RegType.NEW.getCode());
+			registration.setRegType(RegistrationType.NEW.getCode());
 			registration.setRefRegId("12345");
-			registration.setStatusCode(RegClientStatusCode.CREATED.getCode());
+			registration.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registration.setLangCode("ENG");
 			registration.setStatusTimestamp(time);
-			registration.setAckFilename(zipFileName + "_Ack." + RegConstants.IMAGE_FORMAT);
-			registration.setClientStatusCode(RegClientStatusCode.CREATED.getCode());
+			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
+			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			// TODO: Get from Session Context - Reg Center
 			registration.setIndividualName(individualName);
 
@@ -91,10 +90,10 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 			List<RegistrationTransaction> registrationTransactions = new ArrayList<>();
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
-			registrationTxn.setTrnTypeCode(RegTranType.CREATED.getCode());
+			registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
 			registrationTxn.setLangCode("ENG");
 			registrationTxn.setIsActive(true);
-			registrationTxn.setStatusCode(RegClientStatusCode.CREATED.getCode());
+			registrationTxn.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 			registrationTxn.setCrDtime(time);
 			registrationTransactions.add(registrationTxn);
@@ -104,7 +103,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			logger.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID,
 					"Save Registration had been ended");
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.CREATE_PACKET_ENTITY,
+			throw new RegBaseUncheckedException(RegistrationConstants.CREATE_PACKET_ENTITY,
 					runtimeException.toString());
 		}
 	}
@@ -135,7 +134,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setUpdDtimes(timestamp);
 			List<RegistrationTransaction> registrationTransaction = registration.getRegistrationTransaction();
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
-			registrationTxn.setTrnTypeCode(RegTranType.UPDATED.getCode());
+			registrationTxn.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 			registrationTxn.setLangCode("ENG");
 			registrationTxn.setIsActive(true);
 			registrationTxn.setStatusCode(clientStatusCode);
@@ -148,7 +147,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 					APPLICATION_ID, "Packet updation has been ended");
 			return registrationRepository.update(registration);
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.PACKET_UPDATE_STATUS,
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_UPDATE_STATUS,
 					runtimeException.toString());
 		}
 	}
@@ -176,7 +175,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	public List<Registration> approvalList() {
 		logger.debug("REGISTRATION - CREATED_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Retriving packets based on created status");
-		return registrationRepository.findByclientStatusCode(RegClientStatusCode.CREATED.getCode());
+		return registrationRepository.findByclientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 	}
 
 

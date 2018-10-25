@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -56,9 +56,9 @@ public class PacketHandlerAPIDemo extends SpringConfiguration {
 
 		// Decryption
 		String dateInString = DateUtils.formatDate(new Date(),
-				environment.getProperty(RegConstants.PACKET_STORE_DATE_FORMAT));
-		String inputZipPath = environment.getProperty(RegConstants.PACKET_STORE_LOCATION) + File.separator
-				+ dateInString + File.separator + registrationId + RegConstants.ZIP_FILE_EXTENSION;
+				environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT));
+		String inputZipPath = environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION) + File.separator
+				+ dateInString + File.separator + registrationId + RegistrationConstants.ZIP_FILE_EXTENSION;
 		String outputZip = "Uncompressed" + File.separator + dateInString;
 
 		FileInputStream fileInputStream = new FileInputStream(new File(inputZipPath));
@@ -76,13 +76,13 @@ public class PacketHandlerAPIDemo extends SpringConfiguration {
 				MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
 
 		FileUtils.copyToFile(new ByteArrayInputStream(aesDecryptedData),
-				new File(outputZip + File.separator + registrationId + RegConstants.ZIP_FILE_EXTENSION));
+				new File(outputZip + File.separator + registrationId + RegistrationConstants.ZIP_FILE_EXTENSION));
 	}
 
 	private void splitKeyEncryptedData(final byte[] encryptedDataWithKey) {
 
 		// Split the Key and Encrypted Data
-		String keySplitter = environment.getProperty(RegConstants.AES_KEY_CIPHER_SPLITTER);
+		String keySplitter = environment.getProperty(RegistrationConstants.AES_KEY_CIPHER_SPLITTER);
 		int keyDemiliterIndex = 0;
 		final int cipherKeyandDataLength = encryptedDataWithKey.length;
 		final int keySplitterLength = keySplitter.length();

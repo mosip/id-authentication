@@ -25,7 +25,7 @@ import org.apache.velocity.app.Velocity;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -54,36 +54,36 @@ public class VelocityPDFGenerator {
 
 		VelocityContext velocityContext = new VelocityContext();
 
-		velocityContext.put(RegConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
+		velocityContext.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
 
-		SimpleDateFormat sdf = new SimpleDateFormat(RegConstants.TEMPLATE_DATE_FORMAT);
+		SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
 		String currentDate = sdf.format(new Date());
 
 		// map the respective fields with the values in the enrolmentDTO
-		velocityContext.put(RegConstants.TEMPLATE_DATE, currentDate);
-		velocityContext.put(RegConstants.TEMPLATE_FULL_NAME, registration.getDemographicDTO().getDemoInUserLang().getFullName());
+		velocityContext.put(RegistrationConstants.TEMPLATE_DATE, currentDate);
+		velocityContext.put(RegistrationConstants.TEMPLATE_FULL_NAME, registration.getDemographicDTO().getDemoInUserLang().getFullName());
 		Date dob = registration.getDemographicDTO().getDemoInUserLang().getDateOfBirth();
 		if(dob == null) {
-			velocityContext.put(RegConstants.TEMPLATE_DOB, registration.getDemographicDTO().getDemoInUserLang().getAge());
+			velocityContext.put(RegistrationConstants.TEMPLATE_DOB, registration.getDemographicDTO().getDemoInUserLang().getAge());
 		} else {
-			velocityContext.put(RegConstants.TEMPLATE_DOB, 
+			velocityContext.put(RegistrationConstants.TEMPLATE_DOB, 
 					DateUtils.formatDate(dob, "dd-MM-YYYY"));
 		}
-		velocityContext.put(RegConstants.TEMPLATE_GENDER, registration.getDemographicDTO().getDemoInUserLang().getGender());
-		velocityContext.put(RegConstants.TEMPLATE_ADDRESS_LINE1,
+		velocityContext.put(RegistrationConstants.TEMPLATE_GENDER, registration.getDemographicDTO().getDemoInUserLang().getGender());
+		velocityContext.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1,
 				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLine1());
-		velocityContext.put(RegConstants.TEMPLATE_ADDRESS_LINE2,
+		velocityContext.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
 				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLine2());
-		velocityContext.put(RegConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine6());
-		velocityContext.put(RegConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine5());
-		velocityContext.put(RegConstants.TEMPLATE_COUNTRY,
+		velocityContext.put(RegistrationConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine6());
+		velocityContext.put(RegistrationConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine5());
+		velocityContext.put(RegistrationConstants.TEMPLATE_COUNTRY,
 				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine4());
-		velocityContext.put(RegConstants.TEMPLATE_MOBILE, registration.getDemographicDTO().getDemoInUserLang().getMobile());
+		velocityContext.put(RegistrationConstants.TEMPLATE_MOBILE, registration.getDemographicDTO().getDemoInUserLang().getMobile());
 		String email = registration.getDemographicDTO().getDemoInUserLang().getEmailId();
-		if (email == null || email == RegConstants.EMPTY) {
-			velocityContext.put(RegConstants.TEMPLATE_EMAIL, RegConstants.EMPTY);
+		if (email == null || email == RegistrationConstants.EMPTY) {
+			velocityContext.put(RegistrationConstants.TEMPLATE_EMAIL, RegistrationConstants.EMPTY);
 		} else {
-			velocityContext.put(RegConstants.TEMPLATE_EMAIL, email);
+			velocityContext.put(RegistrationConstants.TEMPLATE_EMAIL, email);
 		}
 
 		List<DocumentDetailsDTO> documents = registration.getDemographicDTO().getApplicantDocumentDTO()
@@ -95,13 +95,13 @@ public class VelocityPDFGenerator {
 
 		String documentsList = documentNames.stream().map(Object::toString).collect(Collectors.joining(", "));
 		velocityContext.put("Documents", documentsList);
-		velocityContext.put(RegConstants.TEMPLATE_OPERATOR_NAME, registration.getOsiDataDTO().getOperatorID());
+		velocityContext.put(RegistrationConstants.TEMPLATE_OPERATOR_NAME, registration.getOsiDataDTO().getOperatorID());
 
 		byte[] imageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
 
 		String encodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(imageBytes, false));
 
-		velocityContext.put(RegConstants.TEMPLATE_IMAGE_SOURCE, RegConstants.TEMPLATE_IMAGE_ENCODING + encodedBytes);
+		velocityContext.put(RegistrationConstants.TEMPLATE_IMAGE_SOURCE, RegistrationConstants.TEMPLATE_IMAGE_ENCODING + encodedBytes);
 
 		// get the quality ranking for fingerprints of the applicant
 		/*HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
@@ -112,10 +112,10 @@ public class VelocityPDFGenerator {
 				velocityContext.put(entry.getKey(), count++);
 			} else {
 				// display cross mark for missing fingerprints
-				velocityContext.put(entry.getKey(), RegConstants.TEMPLATE_MISSING_FINGER);
+				velocityContext.put(entry.getKey(), RegistrationConstants.TEMPLATE_MISSING_FINGER);
 			}
 		}*/
-		File imageFile = new File(RegConstants.TEMPLATE_HANDS_IMAGE_PATH);
+		File imageFile = new File(RegistrationConstants.TEMPLATE_HANDS_IMAGE_PATH);
 		velocityContext.put("handsImageSource", "file:/"+ imageFile.getAbsolutePath().replace("\\", "/"));
 
 		velocityContext.put("rightIndexFinger", "1");
@@ -137,7 +137,7 @@ public class VelocityPDFGenerator {
 		
 		int[] fingersAndIrises = { capturedFingers.size(), capturedIris.size() };
 		
-		velocityContext.put(RegConstants.TEMPLATE_BIOMETRICS_CAPTURED,
+		velocityContext.put(RegistrationConstants.TEMPLATE_BIOMETRICS_CAPTURED,
 				fingersAndIrises[0] + " fingers and " + fingersAndIrises[1] + " Iris(es)");
 
 		Writer writer = new StringWriter();

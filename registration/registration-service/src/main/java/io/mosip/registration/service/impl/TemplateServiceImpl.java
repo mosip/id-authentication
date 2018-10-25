@@ -1,4 +1,4 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.impl;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import io.mosip.registration.entity.Template;
 import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.TemplateService;
 
 /**
  * Template Manager for choosing the required template for acknowledgement

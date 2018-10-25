@@ -1,8 +1,7 @@
 package io.mosip.registration.dao.impl;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.util.List;
 
@@ -48,8 +47,8 @@ public class ValidDocumentDAOImpl implements ValidDocumentDAO {
 	 */
 	@Override
 	public List<ValidDocument> getValidDocuments() {
-		LOGGER.debug("REGISTRATION-PACKET_CREATION-VALIDDOCUMENTDAO", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "fetching the validdocuments");
+		LOGGER.debug("REGISTRATION-PACKET_CREATION-VALIDDOCUMENTDAO", APPLICATION_NAME,
+				APPLICATION_ID, "fetching the validdocuments");
 
 		return validDocumentRepository.findAll();
 	}

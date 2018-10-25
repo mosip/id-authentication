@@ -1,7 +1,5 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_ACK_TEMPLATE_IO_EXCEPTION;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Writer;
@@ -10,11 +8,11 @@ import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 
-import io.mosip.registration.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.packet.PacketHandlerService;
@@ -81,10 +79,10 @@ public class AckReceiptController extends BaseController implements Initializabl
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         try {
-        	ImageIO.write(SwingFXUtils.fromFXImage(ackImage, null), RegConstants.IMAGE_FORMAT, byteArrayOutputStream);
+        	ImageIO.write(SwingFXUtils.fromFXImage(ackImage, null), RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
         	acknowledgement = byteArrayOutputStream.toByteArray();
 		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorCode(), REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptions.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorCode(), RegistrationExceptions.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorMessage());
 		}
         
         registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(acknowledgement);

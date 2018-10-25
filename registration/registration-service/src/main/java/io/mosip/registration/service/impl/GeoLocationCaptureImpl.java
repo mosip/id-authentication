@@ -1,7 +1,7 @@
-package io.mosip.registration.service;
+package io.mosip.registration.service.impl;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.registration.service.GeoLocationCapture;
 
 /**
  * The {@code GeoLocationCaptureImpl) for capturing geo location of machine.

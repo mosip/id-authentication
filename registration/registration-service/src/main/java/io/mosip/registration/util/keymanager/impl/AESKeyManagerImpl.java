@@ -1,5 +1,12 @@
 package io.mosip.registration.util.keymanager.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_KEY_GENERATION;
+import static io.mosip.registration.constants.RegistrationConstants.AES_KEY_MANAGER_ALG;
+import static io.mosip.registration.constants.RegistrationConstants.AES_KEY_SEED_LENGTH;
+import static io.mosip.registration.constants.RegistrationConstants.AES_SESSION_KEY_LENGTH;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -15,18 +22,11 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
-import io.mosip.registration.constants.RegProcessorExceptionEnum;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.keymanager.AESKeyManager;
-
-import static io.mosip.registration.constants.RegConstants.AES_KEY_MANAGER_ALG;
-import static io.mosip.registration.constants.RegConstants.AES_KEY_SEED_LENGTH;
-import static io.mosip.registration.constants.RegConstants.AES_SESSION_KEY_LENGTH;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_KEY_GENERATION;
 
 /**
  * Class to generate the AES Session Key
@@ -75,10 +75,10 @@ public class AESKeyManagerImpl implements AESKeyManager {
 					APPLICATION_ID, "Generating AES Encryption had been ended");
 			return aesKeyGenerator.generateKey();
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {
-			throw new RegBaseCheckedException(RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
-					RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorCode(),
+					RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.AES_KEY_MANAGER, runtimeException.toString());
+			throw new RegBaseUncheckedException(RegistrationConstants.AES_KEY_MANAGER, runtimeException.toString());
 		}
 	}
 

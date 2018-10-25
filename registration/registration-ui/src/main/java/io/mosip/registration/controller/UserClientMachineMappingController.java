@@ -7,13 +7,12 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.dto.UserMachineMappingDTO;
 import io.mosip.registration.service.MapMachineService;
-import io.mosip.registration.ui.constants.RegistrationUIConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -80,8 +79,8 @@ public class UserClientMachineMappingController extends BaseController implement
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		statusList = FXCollections.observableArrayList(RegistrationUIConstants.MACHINE_MAPPING_ACTIVE,
-				RegistrationUIConstants.MACHINE_MAPPING_IN_ACTIVE);
+		statusList = FXCollections.observableArrayList(RegistrationConstants.MACHINE_MAPPING_ACTIVE,
+				RegistrationConstants.MACHINE_MAPPING_IN_ACTIVE);
 		usernameColumn.setCellValueFactory(new PropertyValueFactory<UserMachineMappingDTO, String>("userName"));
 		userIDColumn.setCellValueFactory(new PropertyValueFactory<UserMachineMappingDTO, String>("userID"));
 		roleColumn.setCellValueFactory(new PropertyValueFactory<UserMachineMappingDTO, String>("role"));
@@ -99,7 +98,7 @@ public class UserClientMachineMappingController extends BaseController implement
 		if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
 			final ObservableList<UserMachineMappingDTO> observableList = FXCollections.observableArrayList();
 			observableList.addAll((List<UserMachineMappingDTO>) responseDTO.getSuccessResponseDTO().getOtherAttributes()
-					.get(RegConstants.USER_MACHINE_MAPID));
+					.get(RegistrationConstants.USER_MACHINE_MAPID));
 			mapTable.setItems(observableList);
 		} else if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
 				&& responseDTO.getErrorResponseDTOs().get(0) != null) {
@@ -122,7 +121,7 @@ public class UserClientMachineMappingController extends BaseController implement
 		if (mappingDTO != null) {
 			statusComboBox.getSelectionModel().clearSelection();
 			userClientMachineMappingEditPane.setVisible(true);
-			bioDetails.setText(RegistrationUIConstants.ONBOARD_BIOMETRICS+mappingDTO.getUserName());
+			bioDetails.setText(RegistrationConstants.ONBOARD_BIOMETRICS+mappingDTO.getUserName());
 			stationIdResult.setText(mappingDTO.getStationID());
 			update.setDisable(true);
 
@@ -186,9 +185,9 @@ public class UserClientMachineMappingController extends BaseController implement
 		if (responseDTO != null && responseDTO.getSuccessResponseDTO() != null) {
 			// Get Selected Column
 			UserMachineMappingDTO mappingDTODummy = mapTable.getSelectionModel().getSelectedItem();
-			mappingDTODummy.setStatus((changedStatus.equalsIgnoreCase(RegistrationUIConstants.MACHINE_MAPPING_ACTIVE)
-					? RegistrationUIConstants.MACHINE_MAPPING_ACTIVE
-					: RegistrationUIConstants.MACHINE_MAPPING_IN_ACTIVE));
+			mappingDTODummy.setStatus((changedStatus.equalsIgnoreCase(RegistrationConstants.MACHINE_MAPPING_ACTIVE)
+					? RegistrationConstants.MACHINE_MAPPING_ACTIVE
+					: RegistrationConstants.MACHINE_MAPPING_IN_ACTIVE));
 			SuccessResponseDTO successResponseDTO = responseDTO.getSuccessResponseDTO();
 			generateAlert(successResponseDTO.getCode(), AlertType.valueOf(successResponseDTO.getInfoType()),
 					successResponseDTO.getMessage());

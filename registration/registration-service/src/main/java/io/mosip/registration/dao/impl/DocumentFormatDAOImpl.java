@@ -1,5 +1,8 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +14,6 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.dao.DocumentFormatDAO;
 import io.mosip.registration.entity.DocumentFormat;
 import io.mosip.registration.repositories.DocumentFormatRepository;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 /**
  * implementation class of {@link DocumentFormatDAO}
@@ -49,8 +49,8 @@ public class DocumentFormatDAOImpl implements DocumentFormatDAO {
 
 	@Override
 	public List<DocumentFormat> getDocumentFormats() {
-		LOGGER.debug("REGISTRATION-PACKET_CREATION-DOCUMENTFORMATDAO", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "fetching the documentformats");
+		LOGGER.debug("REGISTRATION-PACKET_CREATION-DOCUMENTFORMATDAO", APPLICATION_NAME,
+				APPLICATION_ID, "fetching the documentformats");
 
 		return documentFormatRepository.findAll();
 	}

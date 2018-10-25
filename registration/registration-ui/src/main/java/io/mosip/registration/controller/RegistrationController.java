@@ -1,8 +1,7 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -19,6 +18,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.constants.IntroducerType;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -26,7 +26,6 @@ import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
-import io.mosip.registration.ui.constants.RegistrationUIConstants;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -138,7 +137,7 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private void initialize() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", getPropertyValue(APPLICATION_NAME),
+		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
 				environment.getProperty(APPLICATION_ID), "Entering the LOGIN_CONTROLLER");
 
 		switchedOn.set(false);
@@ -150,11 +149,11 @@ public class RegistrationController extends BaseController {
 		ageValidationInDatePicker();
 		dateFormatter();
 
-		LOGGER.debug("REGISTRATION_CONTROLLER", getPropertyValue(APPLICATION_NAME),
+		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
 				environment.getProperty(APPLICATION_ID), "Getting the list of countries");
-		country.getItems().addAll(RegistrationUIConstants.getCountries());
+		country.getItems().addAll(RegistrationConstants.getCountries());
 
-		LOGGER.debug("REGISTRATION_CONTROLLER", getPropertyValue(APPLICATION_NAME),
+		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
 				environment.getProperty(APPLICATION_ID), "Exiting the REGISTRATION_CONTROLLER");
 	}
 
@@ -209,7 +208,7 @@ public class RegistrationController extends BaseController {
 			registrationDTO.setOsiDataDTO(osiDataDto);
 			registrationDTO.setDemographicDTO(demographicDTO);
 
-			LOGGER.debug("REGISTRATION_CONTROLLER", getPropertyValue(APPLICATION_NAME),
+			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
 					environment.getProperty(APPLICATION_ID), "Saved the fields to DTO");
 
 			registrationOfficerPacketController.showReciept(registrationDTO);
@@ -223,9 +222,9 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void getStates() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", getPropertyValue(APPLICATION_NAME),
+		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
 				environment.getProperty(APPLICATION_ID), "Getting the states");
-		state.getItems().addAll(RegistrationUIConstants.getStates());
+		state.getItems().addAll(RegistrationConstants.getStates());
 	}
 
 	/**
@@ -234,9 +233,9 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void getDistricts() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", getPropertyValue(APPLICATION_NAME),
+		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
 				environment.getProperty(APPLICATION_ID), "Getting the districts");
-		district.getItems().addAll(RegistrationUIConstants.getDistricts());
+		district.getItems().addAll(RegistrationConstants.getDistricts());
 	}
 
 	/**
@@ -247,7 +246,7 @@ public class RegistrationController extends BaseController {
 	public void getRegions() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
 				environment.getProperty(APPLICATION_ID), "Getting the regions");
-		region.getItems().addAll(RegistrationUIConstants.getRegions());
+		region.getItems().addAll(RegistrationConstants.getRegions());
 	}
 
 	/**
@@ -258,7 +257,7 @@ public class RegistrationController extends BaseController {
 	public void getPins() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
 				environment.getProperty(APPLICATION_ID), "Getting the Pins");
-		pin.getItems().addAll(RegistrationUIConstants.getPins());
+		pin.getItems().addAll(RegistrationConstants.getPins());
 	}
 
 	/**
@@ -306,7 +305,7 @@ public class RegistrationController extends BaseController {
 	 * To restrict the user not to enter any values other than integer values.
 	 */
 	private void ageFieldValidations() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", getPropertyValue(APPLICATION_NAME),
+		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
 				environment.getProperty(APPLICATION_ID), "Validating the age given by age field");
 		ageField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
@@ -337,7 +336,7 @@ public class RegistrationController extends BaseController {
 				}
 			}
 		});
-		LOGGER.debug("REGISTRATION_CONTROLLER", getPropertyValue(APPLICATION_NAME),
+		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
 				environment.getProperty(APPLICATION_ID), "Validating the age given by age field");
 	}
 
@@ -438,7 +437,7 @@ public class RegistrationController extends BaseController {
 			BaseController.load(getClass().getResource("/fxml/RegistrationOfficerLayout.fxml"));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED",
-					getPropertyValue(APPLICATION_NAME), environment.getProperty(APPLICATION_ID),
+					APPLICATION_NAME, environment.getProperty(APPLICATION_ID),
 					ioException.getMessage());
 		}
 	}
@@ -453,73 +452,73 @@ public class RegistrationController extends BaseController {
 				environment.getProperty(APPLICATION_ID), "Validating the fields");
 		boolean gotoNext = false;
 		if (validateRegex(fullName, "([A-z]+\\s?\\.?)+")) {
-			generateAlert("Error", AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-					RegistrationUIConstants.FIRST_NAME_EMPTY, "Numbers are not allowed");
+			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+					RegistrationConstants.FIRST_NAME_EMPTY, "Numbers are not allowed");
 			fullName.requestFocus();
 		} else {
 			if (gender.getValue() == null) {
-				generateAlert("Error", AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-						RegistrationUIConstants.GENDER_EMPTY);
+				generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+						RegistrationConstants.GENDER_EMPTY);
 				gender.requestFocus();
 			} else {
 				if (validateRegex(addressLine1, "^.{6,20}$")) {
-					generateAlert("Error", AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-							RegistrationUIConstants.ADDRESS_LINE_1_EMPTY, RegistrationUIConstants.ADDRESS_LINE_WARNING);
+					generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+							RegistrationConstants.ADDRESS_LINE_1_EMPTY, RegistrationConstants.ADDRESS_LINE_WARNING);
 					addressLine1.requestFocus();
 				} else {
 					if (validateRegex(addressLine2, "^.{6,20}$")) {
-						generateAlert("Error", AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-								RegistrationUIConstants.ADDRESS_LINE_2_EMPTY,
-								RegistrationUIConstants.ADDRESS_LINE_WARNING);
+						generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+								RegistrationConstants.ADDRESS_LINE_2_EMPTY,
+								RegistrationConstants.ADDRESS_LINE_WARNING);
 						addressLine2.requestFocus();
 					} else {
 						if (country.getValue() == null) {
-							generateAlert("Error", AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-									RegistrationUIConstants.COUNTRY_EMPTY);
+							generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+									RegistrationConstants.COUNTRY_EMPTY);
 							country.requestFocus();
 						} else {
 							if (state.getValue() == null) {
-								generateAlert("Error", AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-										RegistrationUIConstants.STATE_EMPTY);
+								generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+										RegistrationConstants.STATE_EMPTY);
 								state.requestFocus();
 							} else {
 								if (district.getValue() == null) {
-									generateAlert("Error", AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-											RegistrationUIConstants.DISTRICT_EMPTY);
+									generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+											RegistrationConstants.DISTRICT_EMPTY);
 									district.requestFocus();
 								} else {
 									if (region.getValue() == null) {
-										generateAlert("Error", AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-												RegistrationUIConstants.REGION_EMPTY);
+										generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+												RegistrationConstants.REGION_EMPTY);
 										region.requestFocus();
 									} else {
 										if (pin.getValue() == null) {
 											generateAlert("Error",
-													AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-													RegistrationUIConstants.PIN_EMPTY);
+													AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+													RegistrationConstants.PIN_EMPTY);
 											pin.requestFocus();
 										} else {
 											if (validateRegex(mobileNo, "\\d{1,2}\\-\\d{1,4}\\-\\d{1,4}")) {
 												generateAlert("Error",
-														AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-														RegistrationUIConstants.MOBILE_NUMBER_EMPTY,
-														RegistrationUIConstants.MOBILE_NUMBER_EXAMPLE);
+														AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+														RegistrationConstants.MOBILE_NUMBER_EMPTY,
+														RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
 												mobileNo.requestFocus();
 											} else {
 												if (validateRegex(landLineNo, "\\d{1,2}\\-\\d{1,4}")) {
 													generateAlert("Error",
-															AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
-															RegistrationUIConstants.LAND_LINE_NUMBER_EMPTY,
-															RegistrationUIConstants.LAND_LINE_NUMBER_EXAMPLE);
+															AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+															RegistrationConstants.LAND_LINE_NUMBER_EMPTY,
+															RegistrationConstants.LAND_LINE_NUMBER_EXAMPLE);
 													landLineNo.requestFocus();
 												} else {
 													if (toggleAgeORDobField) {
 														if (validateRegex(ageField, "\\d{1,2}")) {
 															generateAlert("Error",
 																	AlertType.valueOf(
-																			RegistrationUIConstants.ALERT_ERROR),
-																	RegistrationUIConstants.AGE_EMPTY,
-																	RegistrationUIConstants.AGE_WARNING);
+																			RegistrationConstants.ALERT_ERROR),
+																	RegistrationConstants.AGE_EMPTY,
+																	RegistrationConstants.AGE_WARNING);
 															ageField.requestFocus();
 														} else {
 															if (isChild) {
@@ -532,8 +531,8 @@ public class RegistrationController extends BaseController {
 														if (ageDatePicker.getValue() == null) {
 															generateAlert("Error",
 																	AlertType.valueOf(
-																			RegistrationUIConstants.ALERT_ERROR),
-																	RegistrationUIConstants.DATE_OF_BIRTH_EMPTY);
+																			RegistrationConstants.ALERT_ERROR),
+																	RegistrationConstants.DATE_OF_BIRTH_EMPTY);
 															ageDatePicker.requestFocus();
 														} else {
 															if (isChild) {
@@ -575,12 +574,12 @@ public class RegistrationController extends BaseController {
 
 		if (isChild) {
 			if (validateRegex(parentName, "[[A-z]+\\s?\\.?]+")) {
-				generateAlert("Error", AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+				generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 						"Please provide parent name");
 				parentName.requestFocus();
 			} else {
 				if (validateRegex(uinId, "\\d{6,28}")) {
-					generateAlert("Error", AlertType.valueOf(RegistrationUIConstants.ALERT_ERROR),
+					generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 							"Please provide parent UIN Id");
 					uinId.requestFocus();
 				} else {

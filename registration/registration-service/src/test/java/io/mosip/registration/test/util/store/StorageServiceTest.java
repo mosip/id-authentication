@@ -17,7 +17,7 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.store.StorageService;
@@ -53,18 +53,18 @@ public class StorageServiceTest {
 		ReflectionTestUtils.setField(storageService, "logger", logger);
 		ReflectionTestUtils.setField(storageService, "environment", environment);
 		
-		when(environment.getProperty(RegConstants.PACKET_STORE_LOCATION)).thenReturn("PacketStore");
-		when(environment.getProperty(RegConstants.PACKET_STORE_DATE_FORMAT)).thenReturn("dd-MMM-yyyy");
+		when(environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION)).thenReturn("PacketStore");
+		when(environment.getProperty(RegistrationConstants.PACKET_STORE_DATE_FORMAT)).thenReturn("dd-MMM-yyyy");
 	}
 	
 	@Test
 	public void testLocalStorage() throws RegBaseCheckedException {
 		Map<String, byte[]> jsonMap = new HashMap<>();
-		jsonMap.put(RegConstants.DEMOGRPAHIC_JSON_NAME, "Demo".getBytes());
-		jsonMap.put(RegConstants.PACKET_META_JSON_NAME, "Registration".getBytes());
-		jsonMap.put(RegConstants.ENROLLMENT_META_JSON_NAME, "Enrollment".getBytes());
-		jsonMap.put(RegConstants.HASHING_JSON_NAME, "HASHCode".getBytes());
-		jsonMap.put(RegConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
+		jsonMap.put(RegistrationConstants.DEMOGRPAHIC_JSON_NAME, "Demo".getBytes());
+		jsonMap.put(RegistrationConstants.PACKET_META_JSON_NAME, "Registration".getBytes());
+		jsonMap.put(RegistrationConstants.ENROLLMENT_META_JSON_NAME, "Enrollment".getBytes());
+		jsonMap.put(RegistrationConstants.HASHING_JSON_NAME, "HASHCode".getBytes());
+		jsonMap.put(RegistrationConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
 		Assert.assertNotNull(storageService.storeToDisk("1234567890123", "demo".getBytes(), "Image".getBytes()));		
 	}
 	

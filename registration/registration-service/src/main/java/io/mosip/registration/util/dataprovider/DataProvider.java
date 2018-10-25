@@ -8,8 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import io.mosip.registration.constants.RegConstants;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuditDTO;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -48,7 +47,7 @@ public class DataProvider {
 
 			return bytesArray;
 		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(RegProcessorExceptionCode.SERVICE_DATA_PROVIDER_UTIL,
+			throw new RegBaseCheckedException(RegistrationConstants.SERVICE_DATA_PROVIDER_UTIL,
 					"Unable to read the Image bytes", ioException);
 		}
 	}
@@ -278,8 +277,8 @@ public class DataProvider {
 		audit.setEventName(eventName);
 		audit.setEventType(eventType);
 		audit.setActionTimeStamp(dateTime);
-		audit.setHostName(RegConstants.LOCALHOST);
-		audit.setHostIp(RegConstants.LOCALHOST);
+		audit.setHostName(RegistrationConstants.LOCALHOST);
+		audit.setHostIp(RegistrationConstants.LOCALHOST);
 		audit.setApplicationId("1");
 		audit.setApplicationName("Registration-UI");
 		audit.setSessionUserId("12345");

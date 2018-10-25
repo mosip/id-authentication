@@ -1,11 +1,11 @@
 package io.mosip.registration.dao.impl;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegConstants.MACHINE_MAPPING_LOGGER_TITLE;
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE;
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE;
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
 
 import java.util.List;
 
@@ -15,8 +15,7 @@ import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegConstants;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.entity.CenterMachine;
@@ -98,7 +97,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 			throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorCode(),
 					REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.MACHINE_MAPPING_STATIONID_RUN_TIME_EXCEPTION,
+			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_STATIONID_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
 		}
 	}
@@ -120,7 +119,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 			throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorCode(),
 					REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.MACHINE_MAPPING_CENTERID_RUN_TIME_EXCEPTION,
+			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_CENTERID_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
 		}
 	}
@@ -137,12 +136,12 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 			LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
 					APPLICATION_ID, "getUsers() ceneterID -> " + ceneterID);
 			return userDetailRepository.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike(ceneterID,
-					RegConstants.BLACKLISTED, SessionContext.getInstance().getUserContext().getUserId());
+					RegistrationConstants.BLACKLISTED, SessionContext.getInstance().getUserContext().getUserId());
 		} catch (NullPointerException nullPointerException) {
 			throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE.getErrorCode(),
 					REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.MACHINE_MAPPING_USERLIST_RUN_TIME_EXCEPTION,
+			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_USERLIST_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
 		}
 
@@ -166,9 +165,9 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 			LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME,
 					APPLICATION_ID, "DAO save method ended");
 
-			return RegConstants.MACHINE_MAPPING_CREATED;
+			return RegistrationConstants.MACHINE_MAPPING_CREATED;
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.MACHINE_MAPPING_RUN_TIME_EXCEPTION,
+			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
 		}
 	}
@@ -191,9 +190,9 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 			LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME,
 					APPLICATION_ID, "DAO update method ended");
 
-			return RegConstants.MACHINE_MAPPING_UPDATED;
+			return RegistrationConstants.MACHINE_MAPPING_UPDATED;
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.MACHINE_MAPPING_RUN_TIME_EXCEPTION,
+			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
 		}
 	}
@@ -215,7 +214,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 			// find the user
 			machineMapping = machineMappingRepository.findById(UserMachineMapping.class, userID);
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.MACHINE_MAPPING_RUN_TIME_EXCEPTION,
+			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
 		}
 		LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME,

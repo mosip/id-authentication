@@ -7,7 +7,7 @@ package io.mosip.registration.constants;
  * @since 1.0.0
  *
  */
-public enum AuditEventEnum {
+public enum AuditEvent {
 
 	PACKET_CREATION_SUCCESS("PKT_CRT", "Success", "Packet Succesfully Created"),
 	PACKET_ENCRYPTED("PKT_ENC", "Encrypted","Packet Encrypted Sucessfully"),
@@ -44,7 +44,7 @@ public enum AuditEventEnum {
 	/**
 	 * The constructor
 	 */
-	private AuditEventEnum(String id, String type, String name) {
+	private AuditEvent(String id, String type, String name) {
 		this.id = id;
 		this.type = type;
 		this.name = name;

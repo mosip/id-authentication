@@ -10,13 +10,13 @@ import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegAuditRepository;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.LoggerConstants.LOG_AUDIT_DAO;
 
 /**
@@ -57,7 +57,7 @@ public class AuditDAOImpl implements AuditDAO {
 		try {
 			return regAuditRepository.findAllUnsyncAudits();
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.FETCH_UNSYNC_AUDIT,
+			throw new RegBaseUncheckedException(RegistrationConstants.FETCH_UNSYNC_AUDIT,
 					runtimeException.toString());
 		}
 	}
@@ -86,7 +86,7 @@ public class AuditDAOImpl implements AuditDAO {
 				updatedCount += regAuditRepository.updateSyncAudits(auditUUIDs.subList(updatedAuditCount, endIndex));
 			}
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegProcessorExceptionCode.UPDATE_SYNC_AUDIT,
+			throw new RegBaseUncheckedException(RegistrationConstants.UPDATE_SYNC_AUDIT,
 					runtimeException.toString());
 		}
 		logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,

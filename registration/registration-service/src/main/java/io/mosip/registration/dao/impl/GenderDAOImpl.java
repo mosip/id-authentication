@@ -1,5 +1,8 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +14,6 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 import io.mosip.registration.dao.GenderDAO;
 import io.mosip.registration.entity.Gender;
 import io.mosip.registration.repositories.GenderRepository;
-
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
 /**
  * implementation class of {@link GenderDAO}
@@ -53,8 +52,8 @@ public class GenderDAOImpl implements GenderDAO {
 
 	@Override
 	public List<Gender> getGenders() {
-		LOGGER.debug("REGISTRATION-PACKET_CREATION-GENDERDAO", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "fetching the genders");
+		LOGGER.debug("REGISTRATION-PACKET_CREATION-GENDERDAO", APPLICATION_NAME,
+				APPLICATION_ID, "fetching the genders");
 
 		return registrationGenderRepository.findAll();
 

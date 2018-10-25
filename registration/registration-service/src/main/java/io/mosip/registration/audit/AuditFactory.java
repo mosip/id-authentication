@@ -12,9 +12,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.stereotype.Service;
 
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
 
@@ -40,7 +40,7 @@ public class AuditFactory {
 	/**
 	 * Static method to audit the events across Registration Processor Module.
 	 * <p>
-	 * This method takes {@code AuditEventEnum}, {@link AppModuleEnum}, audit
+	 * This method takes {@code AuditEventEnum}, {@link AppModule}, audit
 	 * description, refId and refIdType as inputs values from Session Context object
 	 * namely createdBy, sessionUserId and sessionUserName to build the
 	 * {@link AuditRequest} object. This {@link AuditRequest} object will be passed
@@ -60,7 +60,7 @@ public class AuditFactory {
 	 * @param refIdType
 	 *            the ref id type of the audit event
 	 */
-	public void audit(AuditEventEnum auditEventEnum, AppModuleEnum appModuleEnum, String auditDescription, String refId,
+	public void audit(AuditEvent auditEventEnum, AppModule appModuleEnum, String auditDescription, String refId,
 			String refIdType) {
 
 		// Get UserContext Object from SessionContext
@@ -76,14 +76,14 @@ public class AuditFactory {
 			hostIP = hostInetAddress.getHostAddress();
 			hostName = hostInetAddress.getHostName();
 		} catch (UnknownHostException unknownHostException) {
-			hostIP = environment.getProperty(RegConstants.HOST_IP);
-			hostName = environment.getProperty(RegConstants.HOST_NAME);
+			hostIP = environment.getProperty(RegistrationConstants.HOST_IP);
+			hostName = environment.getProperty(RegistrationConstants.HOST_NAME);
 		}
 
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
-				.setApplicationId(environment.getProperty(RegConstants.AUDIT_APPLICATION_ID))
-				.setApplicationName(environment.getProperty(RegConstants.AUDIT_APPLICATION_NAME))
+				.setApplicationId(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_ID))
+				.setApplicationName(environment.getProperty(RegistrationConstants.AUDIT_APPLICATION_NAME))
 				.setCreatedBy(userName).setDescription(auditDescription).setEventId(auditEventEnum.getId())
 				.setEventName(auditEventEnum.getName()).setEventType(auditEventEnum.getType()).setHostIp(hostIP)
 				.setHostName(hostName).setId(refId).setIdType(refIdType).setModuleId(appModuleEnum.getId())

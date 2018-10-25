@@ -18,16 +18,16 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.test.util.datastub.DataProvider;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.zip.ZipCreationService;
 
-import static io.mosip.registration.constants.RegConstants.DEMOGRPAHIC_JSON_NAME;
-import static io.mosip.registration.constants.RegConstants.ENROLLMENT_META_JSON_NAME;
-import static io.mosip.registration.constants.RegConstants.HASHING_JSON_NAME;
-import static io.mosip.registration.constants.RegConstants.PACKET_META_JSON_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.ENROLLMENT_META_JSON_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.HASHING_JSON_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.PACKET_META_JSON_NAME;
 
 public class ZipCreationServiceTest {
 
@@ -65,7 +65,7 @@ public class ZipCreationServiceTest {
 		jsonMap.put(PACKET_META_JSON_NAME, "Registration".getBytes());
 		jsonMap.put(ENROLLMENT_META_JSON_NAME, "Enrollment".getBytes());
 		jsonMap.put(HASHING_JSON_NAME, "HASHCode".getBytes());
-		jsonMap.put(RegConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
+		jsonMap.put(RegistrationConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
 		byte[] packetZipInBytes = ZipCreationService.createPacket(registrationDTO, jsonMap);
 		Assert.assertNotNull(packetZipInBytes);
 	}

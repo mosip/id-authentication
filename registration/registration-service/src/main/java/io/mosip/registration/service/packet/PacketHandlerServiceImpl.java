@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
-import io.mosip.registration.constants.RegProcessorExceptionCode;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -21,12 +21,12 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PacketCreationService;
 import io.mosip.registration.service.PacketEncryptionService;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_PACKET_CREATION_ERROR_CODE;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_PACKET_CREATION_ERROR_CODE;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_HANLDER;
-import static io.mosip.registration.constants.RegConstants.INTERNAL_SERVER_ERROR;
-import static io.mosip.registration.constants.RegConstants.REGISTRATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.INTERNAL_SERVER_ERROR;
+import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
 
 /**
  * The class to handle the enrollment data and create packet out of it
@@ -91,23 +91,23 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 				logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 						"Error in creating Registration Packet");
-				auditFactory.audit(AuditEventEnum.PACKET_INTERNAL_ERROR, AppModuleEnum.PACKET_HANDLER,
+				auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, AppModule.PACKET_HANDLER,
 						INTERNAL_SERVER_ERROR, REGISTRATION_ID, rid);
 			}
 		} catch (RegBaseCheckedException exception) {
-			auditFactory.audit(AuditEventEnum.PACKET_INTERNAL_ERROR, AppModuleEnum.PACKET_HANDLER,
+			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, AppModule.PACKET_HANDLER,
 					INTERNAL_SERVER_ERROR, REGISTRATION_ID, rid);
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setCode(RegProcessorExceptionCode.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
+			errorResponseDTO.setCode(RegistrationConstants.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
 			errorResponseDTO.setMessage(exception.getErrorText());
 			List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
 			errorResponseDTOs.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		} catch (RegBaseUncheckedException uncheckedException) {
-			auditFactory.audit(AuditEventEnum.PACKET_INTERNAL_ERROR, AppModuleEnum.PACKET_HANDLER,
+			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, AppModule.PACKET_HANDLER,
 					INTERNAL_SERVER_ERROR, REGISTRATION_ID, rid);
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-			errorResponseDTO.setCode(RegProcessorExceptionCode.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
+			errorResponseDTO.setCode(RegistrationConstants.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
 			errorResponseDTO.setMessage(uncheckedException.getErrorText());
 			List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
 			errorResponseDTOs.add(errorResponseDTO);
