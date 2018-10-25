@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,9 +52,6 @@ public class SyncStatusValidatorService {
 	@Autowired
 	private GeoLocationCapture geoLocationCapture;
 
-	/** Object for obtaining time. */
-	private Instant lastCapturedTime;
-
 	/** Object for Logger. */
 
 	private static MosipLogger LOGGER;
@@ -89,6 +87,7 @@ public class SyncStatusValidatorService {
 		double yetToExportCount = 0;
 		SyncJobInfo syncJobInfo;
 		int syncFailureCount = 0;
+		
 		try {
 			syncJobInfo = syncJObDao.getSyncStatus();
 			List<SyncControl> syncControlList = syncJobInfo.getSyncControlList();
@@ -161,6 +160,11 @@ public class SyncStatusValidatorService {
 	 * @return boolean
 	 */
 	private boolean isCapturedForTheDay() {
+		Instant lastCapturedTime;
+		
+		//lastCapturedTime - get this from session context if available....
+		Map<String,Object> map=SessionContext.getInstance().getMapObject();
+		lastCapturedTime=(Instant) map.get("lastCapturedTime");
 		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID, "Capturing the login time Firsttime login");
 		return lastCapturedTime != null && Duration.between(lastCapturedTime, Instant.now()).toHours() < 24;
@@ -177,6 +181,7 @@ public class SyncStatusValidatorService {
 		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID,
 				"Validating the geo location of machine w.r.t registration center started");
+		Instant lastCapturedTime;
 		double distance;
 		Map<String, Object> map;
 		map = geoLocationCapture.getLatLongDtls();
@@ -200,6 +205,9 @@ public class SyncStatusValidatorService {
 					RegConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 		}
 		lastCapturedTime = Instant.now();
+		Map<String, Object> maplastTime=new HashMap<>();
+		maplastTime.put("lastCapturedTime",lastCapturedTime);
+		SessionContext.getInstance().setMapObject(maplastTime);
 
 		LOGGER.debug(RegConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME,
 				APPLICATION_ID,
@@ -265,6 +273,15 @@ public class SyncStatusValidatorService {
 
 	}
 
+	/**
+	 * Gets the error response.
+	 *
+	 * @param code the code
+	 * @param message the message
+	 * @param infoType the info type
+	 * @param errorResponseDTOList the error response DTO list
+	 * @return the error response
+	 */
 	private void getErrorResponse(String code, String message, String infoType,
 			List<ErrorResponseDTO> errorResponseDTOList) {
 		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();

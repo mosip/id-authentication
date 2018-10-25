@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,6 +75,12 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 		centerDetailDTO.setRegistrationCenterLatitude("12.991276");
 		centerDetailDTO.setRegistrationCenterLongitude("80.2461");
 		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(centerDetailDTO);
+		
+		Instant lastCapturedTime = null;
+		Map<String, Object> maplastTime=new HashMap<>();
+		maplastTime.put("lastCapturedTime",lastCapturedTime);
+		SessionContext.getInstance().setMapObject(maplastTime);
+
 
 		mosipRollingFileAppender = new MosipRollingFileAppender();
 		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");

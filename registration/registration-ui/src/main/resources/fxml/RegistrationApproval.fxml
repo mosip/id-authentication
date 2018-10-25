@@ -7,26 +7,49 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="approveRegistrationRoot" prefHeight="590.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationApprovalController">
+<AnchorPane fx:id="approveRegistrationRoot" prefHeight="590.0" prefWidth="1013.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.RegistrationApprovalController">
 	<children>
-		<Pagination fx:id="pagination" layoutX="25.0" layoutY="107.0" prefHeight="330.0" prefWidth="850.0" />
-		<TableView fx:id="table" layoutX="52.0" layoutY="116.0" prefHeight="250.0" prefWidth="800.0">
-			<columns>
-				<TableColumn fx:id="expand" minWidth="0.0" prefWidth="134.0" resizable="false" text="Acknowledgement Form" />
-				<TableColumn fx:id="id" prefWidth="170.0" text="Registration ID" />
-				<TableColumn fx:id="type" prefWidth="100.0" text="Type" />
-				<TableColumn fx:id="residentName" prefWidth="133.0" text="Resident Name" />
-				<TableColumn fx:id="operatorId" minWidth="0.0" prefWidth="140.0" text="Operator ID" />
-				<TableColumn fx:id="operatorName" minWidth="0.0" prefWidth="140.0" resizable="false" text="Operator Name" />
-            <TableColumn fx:id="acknowledgementFormPath" minWidth="0.0" prefWidth="0.0" resizable="false" text="Operator Name" visible="false" />
-			</columns>
-		</TableView>
-		<Label layoutX="343.0" layoutY="24.0" text="Approve Registration">
-         <font>
-            <Font size="23.0" />
-         </font></Label>
-		<Button fx:id="onHoldBtn" layoutX="516.0" layoutY="68.0" mnemonicParsing="false" onAction="#onHoldPacket" prefHeight="20.0" prefWidth="100.0" text="On Hold" />
-		<Button fx:id="rejectionBtn" layoutX="402.0" layoutY="68.0" mnemonicParsing="false" onAction="#rejectPacket" prefHeight="20.0" prefWidth="100.0" text="Reject" />
-		<Button fx:id="approvalBtn" layoutX="284.0" layoutY="68.0" mnemonicParsing="false" onAction="#approvePacket" prefHeight="20.0" prefWidth="100.0" text="Approve" />
+      <AnchorPane fx:id="approveRegistrationRootSubPane" layoutY="57.0" prefHeight="535.0" prefWidth="1014.0">
+         <children>
+      		<Pagination fx:id="pagination" layoutX="10.0" layoutY="73.0" prefHeight="350.0" prefWidth="625.0" />
+      		<TableView fx:id="table" layoutX="10.0" layoutY="73.0" prefHeight="278.0" prefWidth="625.0">
+      			<columns>
+      				<TableColumn fx:id="id" prefWidth="238.0" resizable="false" text="Registration ID" />
+      				<TableColumn fx:id="type" prefWidth="40.0" resizable="false" text="Type" />
+      				<TableColumn fx:id="residentName" prefWidth="120.0" resizable="false" text="Resident Name" />
+      				<TableColumn fx:id="operatorId" minWidth="0.0" prefWidth="100.0" resizable="false" text="Operator ID" />
+      				<TableColumn fx:id="operatorName" minWidth="0.0" prefWidth="125.0" resizable="false" text="Operator Name" />
+                  <TableColumn fx:id="acknowledgementFormPath" minWidth="0.0" prefWidth="0.0" resizable="false" text="Operator Name" visible="false" />
+      			</columns>
+      		</TableView>
+            <AnchorPane layoutX="635.0" layoutY="34.0" prefHeight="390.0" prefWidth="374.0">
+               <children>
+                  <ImageView fx:id="imageView" fitHeight="379.0" fitWidth="361.0" layoutX="4.0" layoutY="3.0" onMouseClicked="#openAckForm" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </AnchorPane>
+            <Button fx:id="approvalBtn" layoutX="383.0" layoutY="34.0" mnemonicParsing="false" onAction="#approvePacket" onMouseClicked="#goToHomePage" prefHeight="20.0" prefWidth="80.0" text="Approve">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="rejectionBtn" layoutX="469.0" layoutY="34.0" mnemonicParsing="false" onAction="#rejectPacket" prefHeight="20.0" prefWidth="80.0" text="Reject" textAlignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="onHoldBtn" layoutX="555.0" layoutY="34.0" mnemonicParsing="false" onAction="#onHoldPacket" prefHeight="20.0" prefWidth="80.0" text="On Hold" textAlignment="CENTER">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+      <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="20.0" layoutY="18.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Home.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="46.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/ Approve Registration" />
+		<Label layoutX="457.0" layoutY="14.0" text="EOD Process" />
 	</children>
 </AnchorPane>

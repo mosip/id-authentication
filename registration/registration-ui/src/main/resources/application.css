@@ -8,9 +8,12 @@
 	-fx-background-color: #f8f9fa;
 }
 
-#anchor-pane-registration {
-	-fx-background-color: white;
-}
+#anchor-pane-registration .text-field {		
+	-fx-background-color: -fx-text-box-border, -fx-background;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 1 0;
+  	-fx-border-width: 0 0 1 0;	
+}	
 
 #anchor-pane-registration .text-field:focused{
 	-fx-border-color: red;
@@ -97,5 +100,12 @@
 }
 
 #registrationData{
-	-fx-wrap-text: true;
+	-fx-wrap-text: true;         
+}
+#userClientMachineMappingEditPane {
+       -fx-background-color:#f2f2f2;
 }            
+.imageView {
+	 -fx-border-width: 1.0;
+	-fx-border-color: black;
+} 
