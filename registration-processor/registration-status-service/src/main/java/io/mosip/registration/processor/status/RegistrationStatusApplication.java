@@ -2,13 +2,12 @@ package io.mosip.registration.processor.status;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  * The Class RegistrationStatusApplication.
  */
 @SpringBootApplication
-@PropertySource({ "classpath:status-application.properties" })
+// @PropertySource({ "classpath:status-application.properties" })
 public class RegistrationStatusApplication {
 
 	/**

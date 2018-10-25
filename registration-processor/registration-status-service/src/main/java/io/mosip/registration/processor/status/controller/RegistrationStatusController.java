@@ -3,6 +3,7 @@ package io.mosip.registration.processor.status.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+@RefreshScope
 @RestController
 @RequestMapping("/v0.1/registration-processor/registration-status")
 @Api(tags = "Status Handler")
@@ -33,7 +35,7 @@ public class RegistrationStatusController {
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
 	public ResponseEntity<List<RegistrationStatusDto>> search(
 			@RequestParam(value = "registrationIds", required = true) String registrationIds) {
-		List<RegistrationStatusDto>registrations = registrationStatusService.getByIds(registrationIds);
+		List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationIds);
 		return ResponseEntity.status(HttpStatus.OK).body(registrations);
 	}
 }

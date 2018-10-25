@@ -6,6 +6,7 @@ package io.mosip.registration.processor.status.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,8 @@ import io.swagger.annotations.ApiResponses;
  *
  * @author M1047487
  */
+
+@RefreshScope
 @RestController
 @RequestMapping("/v0.1/registration-processor/registration-status")
 @Api(tags = "Sync Registration")

@@ -26,7 +26,8 @@
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.data.version>2.0.9.RELEASE</spring.data.version>
-
+        <spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
+        
 		<!-- Miscellaneous -->
 		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
 		<jackson.version>2.9.5</jackson.version>
