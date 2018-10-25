@@ -50,22 +50,22 @@ node{
 	stage ('Publish build info') {
         server.publishBuildInfo buildInfo
     }
-	stage('Building image') {
+	stage('Build image') {
 	dir(branch){
         docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
 		    def buildName = registry + ":$BUILD_NUMBER"
-			newApp = docker.build(buildName, '-f kernel/kernel-auditmanager-service/Dockerfile')
+			newApp = docker.build buildName -f 'kernel/kernel-auditmanager-service/Dockerfile'
 			newApp.push()
 		}
         }
 	}
-	stage('Registring image') {
+	stage('Register image') {
 	    
         docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
     		newApp.push 'latest'
         }
 	}
-    stage('Removing image') {
+    stage('Remove image from local') {
 		sh "docker rmi $registry:$BUILD_NUMBER"
 		sh "docker rmi registry.hub.docker.com/$registry:$BUILD_NUMBER"
 		
