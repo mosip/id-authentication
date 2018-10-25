@@ -6,7 +6,6 @@ import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI
 import static io.mosip.registration.constants.RegistrationUIExceptionEnum.REG_UI_AUTHORIZATION_EXCEPTION;
 import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
@@ -118,8 +117,8 @@ public class RegistrationOfficerPacketController extends BaseController {
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO);
 			ackReceiptController.setRegistrationData(registrationDTO);
 
-			File ackTemplate = templateService.createReceipt();
-			Writer writer = velocityGenerator.generateTemplate(ackTemplate, registrationDTO);
+			String ackTemplateText = templateService.createReceipt();
+			Writer writer = velocityGenerator.generateTemplate(ackTemplateText, registrationDTO);
 			ackReceiptController.setStringWriter(writer);
 
 			Stage primaryStage = new Stage();

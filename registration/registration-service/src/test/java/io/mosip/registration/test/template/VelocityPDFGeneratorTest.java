@@ -32,9 +32,8 @@ public class VelocityPDFGeneratorTest {
 	
 	@Test
 	public void generateTemplateTest() throws IOException, URISyntaxException, RegBaseCheckedException {
-		File ackTemplate = new File(RegConstants.TEMPLATE_PATH);
 		RegistrationDTO registrationDTO = DataProvider.getPacketDTO();
-		Writer writer = velocityGenerator.generateTemplate(ackTemplate, registrationDTO);
+		Writer writer = velocityGenerator.generateTemplate("sample text", registrationDTO);
 		assertNotNull(writer);
 	}
 	

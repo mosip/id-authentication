@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,7 @@ import io.mosip.registration.entity.TemplateEmbeddedKeyCommonFields;
 import io.mosip.registration.entity.TemplateFileFormat;
 import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.TemplateService;
+import io.mosip.registration.service.TemplateServiceImpl;
 
 @RunWith(SpringRunner.class)
 public class TemplateServiceTest {
@@ -34,7 +33,7 @@ public class TemplateServiceTest {
 	TemplateDao templateDao;
 	
 	@InjectMocks
-	TemplateService templateService;
+	TemplateServiceImpl templateService;
 	
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -111,11 +110,11 @@ public class TemplateServiceTest {
 		template.setLangCode("en");
 		template.setActive(true);
 		
-		TemplateService temp = new TemplateService();
-		TemplateService spyTemp = Mockito.spy(temp);
+		TemplateServiceImpl temp = new TemplateServiceImpl();
+		TemplateServiceImpl spyTemp = Mockito.spy(temp);
 
 	    Mockito.doReturn(template).when(spyTemp).getTemplate(); 
-	    File ack = spyTemp.createReceipt();
+	    String ack = spyTemp.createReceipt();
 	    
 		assertNotNull(ack);
 	}

@@ -1,6 +1,10 @@
 package io.mosip.registration.util.acktemplate;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
@@ -16,16 +20,12 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
-import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
+import org.apache.velocity.app.Velocity;
+import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.constants.RegConstants;
-import org.springframework.stereotype.Component;
-
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
@@ -48,19 +48,9 @@ public class VelocityPDFGenerator {
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
-	public Writer generateTemplate(File templateFile, RegistrationDTO registration) {
-		// to get the velocity template
-		VelocityEngine vel = new VelocityEngine();
-		/*
-		 * setting the properties such that the template gets loaded in the form of a
-		 * file from the specified location
-		 */
-		vel.setProperty(RuntimeConstants.RESOURCE_LOADER, RegConstants.RESOURCE_LOADER);
-		vel.setProperty(RegConstants.FILE_RESOURCE_LOADER_CLASS, FileResourceLoader.class.getName());
-		vel.setProperty(RegConstants.FILE_RESOURCE_LOADER_PATH, templateFile.getParentFile().getAbsolutePath());
-		vel.init();
-		// getting template using VelocityEngine
-		Template template = vel.getTemplate(templateFile.getName());
+	public Writer generateTemplate(String templateText, RegistrationDTO registration) {
+		
+		Reader templateReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(templateText.getBytes())));
 
 		VelocityContext velocityContext = new VelocityContext();
 
@@ -151,7 +141,7 @@ public class VelocityPDFGenerator {
 				fingersAndIrises[0] + " fingers and " + fingersAndIrises[1] + " Iris(es)");
 
 		Writer writer = new StringWriter();
-		template.merge(velocityContext, writer);
+		Velocity.evaluate(velocityContext, writer, "Acknowledgement Template", templateReader);
 		return writer;
 	}
 
