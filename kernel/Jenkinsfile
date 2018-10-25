@@ -10,7 +10,7 @@ node{
     dir(branch) {
       checkout([$class: 'GitSCM',
                 branches: [[name: branch]],
-                userRemoteConfigs: [[url:'https://github.com/mosip/mosip'],[credentialsId:'4c9741a2-4c15-4aad-a13d-3a1206u05321']],
+                userRemoteConfigs: [[url:'https://github.com/mosip/mosip', credentialsId:'4c9741a2-4c15-4aad-a13d-3a1206u05321']],
                 extensions: [
                   
                   [$class: 'PathRestriction',excludedRegions: '', includedRegions: 'kernel/.*'],
