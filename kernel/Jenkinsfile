@@ -3,7 +3,9 @@ node{
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo
 	def branch = 'DEV'
-	 def projectToBuild = 'kernel/'
+	def projectToBuild = 'kernel/'
+	def registry = 'docker pull mosip/mosip-build-repos'
+    def registryCredential = '4656e6d8-314f-4be5-8bd9-2bf45dce1ed5'
 	
 	stage('SCM CHECKOUT') {
 	// Checkout only Kernel Module
@@ -47,5 +49,27 @@ node{
 
 	stage ('Publish build info') {
         server.publishBuildInfo buildInfo
+    }
+	stage('Building image') {
+	dir(branch){
+        docker.withRegistry( 'https://registry.hub.docker.com', registryCredential ) {
+		    def buildName = registry + ":$BUILD_NUMBER"
+			newApp = docker.build(buildName, '-f kernel/kernel-auditmanager-service/Dockerfile')
+			newApp.push()
+		}
+        }
+	}
+	stage('Registring image') {
+	    
+        docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
+    		newApp.push 'latest'
+        }
+	}
+    stage('Removing image') {
+		sh "docker rmi $registry:$BUILD_NUMBER"
+		sh "docker rmi registry.hub.docker.com/$registry:$BUILD_NUMBER"
+		
+		
+		
     }
 }
