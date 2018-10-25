@@ -3,15 +3,12 @@ package io.mosip.registration.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.logger.appender.MosipFileAppender;
 import io.mosip.registration.constants.StatusCodes;
 import io.mosip.registration.dao.UserManagementRepository;
 import io.mosip.registration.dto.UserDto;

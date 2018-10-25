@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

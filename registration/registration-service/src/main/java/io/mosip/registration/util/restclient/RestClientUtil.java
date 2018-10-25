@@ -12,8 +12,8 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 
 /**
  * This is a general method which gives the response for all httpmethod
