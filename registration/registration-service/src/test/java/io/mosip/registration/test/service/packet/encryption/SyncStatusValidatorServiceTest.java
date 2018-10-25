@@ -104,10 +104,10 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 	public void testValidateSyncStatusFailureCase() {
 		SyncControl syncControl1=new SyncControl();
 		syncControl1.setSJobId("MDS_J00001");
-		syncControl1.setLastSyncDtimez(OffsetDateTime.parse("2018-10-05T18:05:19.199+05:30"));
+		syncControl1.setLastSyncDtimez(OffsetDateTime.now());
 		SyncControl syncControl2=new SyncControl();
 		syncControl2.setSJobId("LER_J00009");
-		syncControl2.setLastSyncDtimez(OffsetDateTime.parse("2018-10-05T18:25:13.199+05:30"));
+		syncControl2.setLastSyncDtimez(OffsetDateTime.now());
 		
 		List<SyncControl> listSync=new ArrayList<>();
 		listSync.add(syncControl1);
@@ -146,10 +146,10 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 	public void testValidateSyncStatusSuccessCase() {
 		SyncControl syncControl1=new SyncControl();
 		syncControl1.setSJobId("MDS_J00001");
-		syncControl1.setLastSyncDtimez(OffsetDateTime.parse("2018-10-05T18:05:19.199+05:30"));
+		syncControl1.setLastSyncDtimez(OffsetDateTime.now());
 		SyncControl syncControl2=new SyncControl();
 		syncControl2.setSJobId("LER_J00009");
-		syncControl2.setLastSyncDtimez(OffsetDateTime.parse("2018-10-05T18:25:13.199+05:30"));
+		syncControl2.setLastSyncDtimez(OffsetDateTime.now());
 		
 		List<SyncControl> listSync=new ArrayList<>();
 		listSync.add(syncControl1);
@@ -180,10 +180,10 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 	public void testValidateGpsSyncStatusFailureCase() {
 		SyncControl syncControl1=new SyncControl();
 		syncControl1.setSJobId("MDS_J00001");
-		syncControl1.setLastSyncDtimez(OffsetDateTime.parse("2018-10-05T18:05:19.199+05:30"));
+		syncControl1.setLastSyncDtimez(OffsetDateTime.now());
 		SyncControl syncControl2=new SyncControl();
 		syncControl2.setSJobId("LER_J00009");
-		syncControl2.setLastSyncDtimez(OffsetDateTime.parse("2018-10-05T18:25:13.199+05:30"));
+		syncControl2.setLastSyncDtimez(OffsetDateTime.now());
 		
 		List<SyncControl> listSync=new ArrayList<>();
 		listSync.add(syncControl1);
