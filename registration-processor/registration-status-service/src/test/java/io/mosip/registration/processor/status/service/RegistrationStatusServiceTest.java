@@ -18,7 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
@@ -33,7 +33,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
 import io.mosip.registration.processor.status.service.impl.RegistrationStatusServiceImpl;
 
-import io.mosip.kernel.dataaccess.constant.HibernateErrorCodes;;
+import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;;
 
 @RunWith(MockitoJUnitRunner.class)
 @DataJpaTest
@@ -115,7 +115,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getRegistrationStatusFailureTest() throws TablenotAccessibleException {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(registrationStatusDao.findById(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.getRegistrationStatus("1001");
@@ -131,7 +131,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void findbyfilesByThresholdFailureTest() {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(registrationStatusDao.findbyfilesByThreshold("PACKET_UPLOADED_TO_LANDING_ZONE", 48))
 				.thenThrow(exp);
@@ -149,7 +149,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void addRegistrationFailureTest() {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(registrationStatusDao.save(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.addRegistrationStatus(registrationStatusDto);
@@ -166,7 +166,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void updateRegistrationStatusFailureTest() {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 
 		Mockito.when(registrationStatusDao.save(ArgumentMatchers.any())).thenThrow(exp);
@@ -183,7 +183,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getByStatusFailureTest() {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(registrationStatusDao.getEnrolmentStatusByStatusCode(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.getByStatus("PACKET_UPLOADED_TO_LANDING_ZONE");
@@ -199,7 +199,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getByIdsFailureTest() {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.getByIds("1001,1000");

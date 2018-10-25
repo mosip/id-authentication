@@ -29,7 +29,7 @@ import org.springframework.core.env.Environment;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.mosip.kernel.virus.scanner.service.VirusScannerService;
+import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
