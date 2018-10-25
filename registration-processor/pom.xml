@@ -90,6 +90,7 @@
 		<module>registration-processor-camel-bridge</module>
     	<module>stages</module>
     	<module>packet-info-storage-service</module>
+    	<module>quality-checker</module>
   </modules>
 
 	<profiles>
