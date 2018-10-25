@@ -17,9 +17,12 @@ import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.exception.ServerUtilException;
+import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticleErrorCodes;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -105,18 +108,13 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			throw new TablenotAccessibleException(TABLE_NOT_ACCESSIBLE, e);
 		} finally {
 
-			String description = isTransactionSuccessful ? "description--sync Success" : "description--sync Failure";
-			try {
-				coreAuditRequestBuilder.createAuditRequestBuilder(description, EventId.RPR_401.toString(), EventName.GET.toString(), EventType.SYSTEM.toString(),"212");
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-/*			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());*/
-			
+			String description = isTransactionSuccessful
+					? "Registartion Id's are successfully synched in Sync Registration table"
+					: "Registartion Id's syn is unsuccessfull";
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, EventId.RPR_401.toString(),
+					EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+					AuditLogConstant.MULTIPLE_ID.toString());
+
 		}
 
 	}

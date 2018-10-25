@@ -18,4 +18,10 @@ public enum AuditLogConstant {
 
 	/** The reference id type. */
 	REGISTRATION_ID,
+	
+	/** The list of registration id's. */
+	MULTIPLE_ID,
+	
+	/**No id provided**/
+	NO_ID,
 }

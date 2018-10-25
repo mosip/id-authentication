@@ -47,7 +47,7 @@ public class CoreAuditRequestBuilder {
 	 * @throws UnknownHostException 
 	 */
 	public void createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
-			String registrationId) throws UnknownHostException {
+			String registrationId){
 		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
 				.setApplicationId(AuditLogConstant.MOSIP_4.toString())
 				.setApplicationName(AuditLogConstant.REGISTRATION_PROCESSOR.toString())
