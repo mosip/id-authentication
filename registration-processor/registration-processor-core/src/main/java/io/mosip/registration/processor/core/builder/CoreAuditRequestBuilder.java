@@ -4,6 +4,7 @@ import java.net.UnknownHostException;
 import java.time.OffsetDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
@@ -16,6 +17,7 @@ import io.mosip.registration.processor.core.util.ServerUtil;
  * 
  * @author Ranjitha
  */
+@Component
 public class CoreAuditRequestBuilder {
 
 	/** The audit request builder. */

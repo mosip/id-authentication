@@ -107,7 +107,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 			String description = isTransactionSuccessful ? "description--sync Success" : "description--sync Failure";
 			try {
-				coreAuditRequestBuilder.createAuditRequestBuilder(description, EventId.RPR_401.toString(), EventName.GET.toString(), EventType.SYSTEM.toString(),null);
+				coreAuditRequestBuilder.createAuditRequestBuilder(description, EventId.RPR_401.toString(), EventName.GET.toString(), EventType.SYSTEM.toString(),"212");
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
