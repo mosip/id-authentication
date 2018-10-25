@@ -62,12 +62,12 @@ node{
 	stage('Register image') {
 	    
         docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
-    		newApp.push 'latest'
+    		newApp.push 'kernel-auditmanager-service-latest'
         }
 	}
     stage('Remove image from local') {
-		sh "docker rmi $registry:$BUILD_NUMBER"
-		sh "docker rmi registry.hub.docker.com/$registry:$BUILD_NUMBER"
+		sh "docker rmi $registry:kernel-auditmanager-service-$BUILD_NUMBER"
+		sh "docker rmi registry.hub.docker.com/$registry:kernel-auditmanager-service-$BUILD_NUMBER"
 		
 		
 		
