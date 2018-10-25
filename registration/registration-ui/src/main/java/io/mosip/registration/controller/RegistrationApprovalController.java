@@ -36,10 +36,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -49,7 +47,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 /**
  * {@code RegistrationApprovalController} is the controller class for
@@ -137,12 +134,18 @@ public class RegistrationApprovalController extends BaseController implements In
 	@FXML
 	private Button onHoldBtn;
 
+	/** The image view. */
 	@FXML
 	private ImageView imageView;
 
+	/** The approve registration root sub pane. */
 	@FXML
 	private AnchorPane approveRegistrationRootSubPane;
 	
+	@FXML
+	private AnchorPane imageAnchorPane;
+	
+	/** Object for environment */
 	@Autowired
 	private Environment environment;
 
@@ -166,46 +169,13 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * Method to reload table
 	 */
 	public void reloadTableView() {
-		approvalBtn.disableProperty().set(true);
-		rejectionBtn.disableProperty().set(true);
-		onHoldBtn.disableProperty().set(true);
+		
+		approvalBtn.setVisible(false);
+		rejectionBtn.setVisible(false);
+		onHoldBtn.setVisible(false);
+		imageAnchorPane.setVisible(false);
 
 		id.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("id"));
-
-		/*Callback<TableColumn<RegistrationApprovalUiDto, String>, TableCell<RegistrationApprovalUiDto, String>> cellFactory0 = (
-				final TableColumn<RegistrationApprovalUiDto, String> entry) -> {
-			return new TableCell<RegistrationApprovalUiDto, String>() {
-
-				Hyperlink hyperlink = new Hyperlink();
-
-				@Override
-				public void updateItem(String item, boolean empty) {
-					super.updateItem(item, empty);
-					if (empty) {
-						setGraphic(null);
-						setText(null);
-					} else {
-						RegistrationApprovalUiDto tempParam = table.getItems().get(getIndex());
-						if (tempParam.getId() != null) {
-							System.out.println("set hyperlink " + tempParam.getName());
-							hyperlink.setText(item);
-							hyperlink.setOnAction(event -> {
-								System.out.println("Go to URL");
-								onEdit();
-							});
-							setGraphic(hyperlink);
-							setText(null);
-						} else {
-							hyperlink.setText("");
-							setGraphic(null);
-							setText(null);
-						}
-					}
-				}
-			};
-		};
-		id.setCellFactory(cellFactory0);*/
-
 		type.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("type"));
 		residentName.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("name"));
 		operatorId.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("operatorId"));
@@ -215,28 +185,33 @@ public class RegistrationApprovalController extends BaseController implements In
 
 		tablePagination();
 
-		approvalBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
-		rejectionBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
-		onHoldBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
-
 		table.setOnMouseClicked((MouseEvent event) -> {
 			if (event.getClickCount() == 1) {
-				onEdit();
+				viewAck();
 			}
 		});
 	}
 
-	public void onEdit() {
-		// check the table's selected item and get selected item
+	/**
+	 * Viewing RegistrationAcknowledgement on selecting the Registration record
+	 */
+	public void viewAck() {
+		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", environment.getProperty(APPLICATION_NAME),
+				environment.getProperty(APPLICATION_ID), "Displaying the Acknowledgement form image beside the Table");
 		if (table.getSelectionModel().getSelectedItem() != null) {
+			imageAnchorPane.setVisible(true);
+			approvalBtn.setVisible(true);
+			rejectionBtn.setVisible(true);
+			onHoldBtn.setVisible(true);
 			FileInputStream file;
 			try {
 				file = new FileInputStream(
 						new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()));
 				imageView.setImage(new Image(file));
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+			} catch (FileNotFoundException fileNotFoundException) {
+				LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
+						getPropertyValue(APPLICATION_NAME), environment.getProperty(APPLICATION_ID),
+						fileNotFoundException.getMessage());			}
 
 		}
 	}
@@ -247,14 +222,6 @@ public class RegistrationApprovalController extends BaseController implements In
 		fromindex = pageIndex * itemsPerPage;
 		toindex = Math.min(fromindex + itemsPerPage, listData.size());
 		table.setItems(FXCollections.observableArrayList(listData.subList(fromindex, toindex)));
-		/*
-		 * expand.setCellFactory( new Callback<TableColumn<RegistrationApprovalUiDto,
-		 * Boolean>, TableCell<RegistrationApprovalUiDto, Boolean>>() {
-		 * 
-		 * @Override public TableCell<RegistrationApprovalUiDto, Boolean> call(
-		 * TableColumn<RegistrationApprovalUiDto, Boolean> col) { return new
-		 * ViewAcknowledgementController(table); } });
-		 */
 		return table;
 	}
 
@@ -276,22 +243,27 @@ public class RegistrationApprovalController extends BaseController implements In
 		}
 	}
 
+	/**
+	 * Opening registration acknowledgement form on clicking on image.
+	 */
 	public void openAckForm() {
+		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", environment.getProperty(APPLICATION_NAME),
+				environment.getProperty(APPLICATION_ID), "Opening the Acknowledgement Form");
+
 		try {
 			Stage primaryStage = new Stage();
 			FileInputStream file = new FileInputStream(
 					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()));
 			primaryStage.setTitle("Acknowlegement Form");
 			ImageView imageView = new ImageView(new Image(file));
-
 			HBox hbox = new HBox(imageView);
-
 			Scene scene = new Scene(hbox, 800, 600);
 			primaryStage.setScene(scene);
 			primaryStage.show();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (FileNotFoundException fileNotFoundException) {
+			LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
+					getPropertyValue(APPLICATION_NAME), environment.getProperty(APPLICATION_ID),
+					fileNotFoundException.getMessage());
 		}
 
 	}
@@ -338,6 +310,10 @@ public class RegistrationApprovalController extends BaseController implements In
 			pagination.setPageCount(pageCount);
 			pagination.setPageFactory(this::createPage);
 		} else {
+			approvalBtn.setVisible(false);
+			rejectionBtn.setVisible(false);
+			onHoldBtn.setVisible(false);
+			imageAnchorPane.setVisible(false);
 			imageView.imageProperty().set(null);
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label("No Packets for approval"));

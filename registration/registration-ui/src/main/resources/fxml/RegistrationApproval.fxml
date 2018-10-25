@@ -22,9 +22,9 @@
                   <TableColumn fx:id="acknowledgementFormPath" minWidth="0.0" prefWidth="0.0" resizable="false" text="Operator Name" visible="false" />
       			</columns>
       		</TableView>
-            <AnchorPane layoutX="635.0" layoutY="34.0" prefHeight="390.0" prefWidth="374.0">
+            <AnchorPane fx:id="imageAnchorPane" layoutX="639.0" layoutY="73.0" prefHeight="304.0" prefWidth="311.0">
                <children>
-                  <ImageView fx:id="imageView" fitHeight="379.0" fitWidth="361.0" layoutX="4.0" layoutY="3.0" onMouseClicked="#openAckForm" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="imageView" fitHeight="294.0" fitWidth="304.0" layoutX="7.0" layoutY="8.0" onMouseClicked="#openAckForm" pickOnBounds="true" preserveRatio="true" />
                </children>
             </AnchorPane>
             <Button fx:id="approvalBtn" layoutX="383.0" layoutY="34.0" mnemonicParsing="false" onAction="#approvePacket" onMouseClicked="#goToHomePage" prefHeight="20.0" prefWidth="80.0" text="Approve">
