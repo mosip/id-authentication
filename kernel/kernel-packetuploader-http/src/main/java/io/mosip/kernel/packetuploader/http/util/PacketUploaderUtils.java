@@ -4,9 +4,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.kernel.packetuploader.http.constant.PacketUploaderConstants;
-import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstants;
-import io.mosip.kernel.packetuploader.http.exception.MosipInvalidFileName;
+import io.mosip.kernel.packetuploader.http.constant.PacketUploaderConstant;
+import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstant;
+import io.mosip.kernel.packetuploader.http.exception.MosipInvalidFileNameException;
 
 /**
  * @author Urvil Joshi
@@ -21,11 +21,11 @@ public class PacketUploaderUtils {
 	 *            packet to be uploaded
 	 */
 	public void check(MultipartFile packet) {
-		if (packet.getOriginalFilename().contains(PacketUploaderConstants.INVALID_FILE.getValue())) {
-			throw new MosipInvalidFileName(PacketUploaderExceptionConstants.MOSIP_INVALID_FILE_NAME_EXCEPTION);
-		} else if (packet.getSize() == Long.parseLong(PacketUploaderConstants.PACKET_MIN_SIZE.getValue())) {
+		if (packet.getOriginalFilename().contains(PacketUploaderConstant.INVALID_FILE.getValue())) {
+			throw new MosipInvalidFileNameException(PacketUploaderExceptionConstant.MOSIP_INVALID_FILE_NAME_EXCEPTION);
+		} else if (packet.getSize() == Long.parseLong(PacketUploaderConstant.PACKET_MIN_SIZE.getValue())) {
 			throw new MaxUploadSizeExceededException(
-					Long.parseLong(PacketUploaderConstants.PACKET_MIN_SIZE.getValue()));
+					Long.parseLong(PacketUploaderConstant.PACKET_MIN_SIZE.getValue()));
 		}
 
 	}

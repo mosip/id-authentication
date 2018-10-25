@@ -3,8 +3,9 @@ package io.mosip.kernel.emailnotification.smtp.config;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.emailnotification.smtp.constant.MailNotifierConstants;
 import io.mosip.kernel.emailnotification.smtp.exception.MailNotifierControllerAdvice;
-import io.mosip.kernel.logger.appender.MosipConsoleAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
+import io.mosip.kernel.logger.logback.appender.MosipConsoleAppender;
+import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+
 
 /**
  * Logger configuration for using {@link MosipLogger} and logging(in console)

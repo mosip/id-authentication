@@ -1,7 +1,7 @@
 package io.mosip.kernel.packetserver.sftp.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.packetserver.sftp.constant.PacketServerExceptionConstants;
+import io.mosip.kernel.packetserver.sftp.constant.PacketServerExceptionConstant;
 
 /**
  * Exception to be thrown when public key is invalid
@@ -23,7 +23,7 @@ public class MosipPublicKeyException extends BaseUncheckedException {
 	 *            exception code constant
 	 */
 	public MosipPublicKeyException(
-			PacketServerExceptionConstants exceptionConstants) {
+			PacketServerExceptionConstant exceptionConstants) {
 		super(exceptionConstants.getErrorCode(),
 				exceptionConstants.getErrorMessage());
 	}

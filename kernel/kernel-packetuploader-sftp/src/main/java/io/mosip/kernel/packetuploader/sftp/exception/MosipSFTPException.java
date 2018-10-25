@@ -1,8 +1,8 @@
 package io.mosip.kernel.packetuploader.sftp.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderConstants;
-import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderExceptionConstants;
+import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderConstant;
+import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderExceptionConstant;
 
 /**
  * Exception to be thrown when there is violation with SFTP protocol
@@ -25,9 +25,9 @@ public class MosipSFTPException extends BaseUncheckedException {
 	 * @param cause
 	 *            cause of exception
 	 */
-	public MosipSFTPException(PacketUploaderExceptionConstants exceptionConstants, Throwable cause) {
+	public MosipSFTPException(PacketUploaderExceptionConstant exceptionConstants, Throwable cause) {
 		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage()
-				+ PacketUploaderConstants.EXCEPTTION_BREAKER.getValue() + cause.getMessage());
+				+ PacketUploaderConstant.EXCEPTTION_BREAKER.getValue() + cause.getMessage());
 	}
 
 }
