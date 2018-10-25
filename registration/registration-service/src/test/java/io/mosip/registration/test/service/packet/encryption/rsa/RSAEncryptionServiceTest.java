@@ -25,7 +25,7 @@ import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionService;
+import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionServiceImpl;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 
 import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 public class RSAEncryptionServiceTest {
 
 	@InjectMocks
-	private RSAEncryptionService rsaEncryptionService;
+	private RSAEncryptionServiceImpl rsaEncryptionServiceImpl;
 	@Mock
 	private RSAKeyGenerator rsaKeyGenerator;
 	@Rule
@@ -74,13 +74,13 @@ public class RSAEncryptionServiceTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
 
-		ReflectionTestUtils.invokeMethod(rsaEncryptionService, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(rsaEncryptionServiceImpl, "initializeLogger", mosipRollingFileAppender);
 		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
 
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(rsaEncryptionService, "logger", logger);
+		ReflectionTestUtils.setField(rsaEncryptionServiceImpl, "logger", logger);
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class RSAEncryptionServiceTest {
 
 		byte[] dataToEncrypt = "aesEncryptedInformationInBytes".getBytes();
 
-		byte[] rsaEncryptedBytes = rsaEncryptionService.encrypt(dataToEncrypt);
+		byte[] rsaEncryptedBytes = rsaEncryptionServiceImpl.encrypt(dataToEncrypt);
 		byte[] rsaDecryptedBytes = MosipDecryptor.asymmetricPrivateDecrypt(keyPair.getPrivate().getEncoded(),
 				rsaEncryptedBytes, MosipSecurityMethod.RSA_WITH_PKCS1PADDING);
 		Assert.assertArrayEquals(dataToEncrypt, rsaDecryptedBytes);
@@ -100,13 +100,13 @@ public class RSAEncryptionServiceTest {
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testNullData() throws RegBaseCheckedException {
 		when(rsaKeyGenerator.getEncodedKey(true)).thenReturn(keyPair.getPublic().getEncoded());
-		rsaEncryptionService.encrypt(null);
+		rsaEncryptionServiceImpl.encrypt(null);
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
 	public void testInvalidKey() throws RegBaseCheckedException {
 		when(rsaKeyGenerator.getEncodedKey(true)).thenReturn("key".getBytes());
-		rsaEncryptionService.encrypt(null);
+		rsaEncryptionServiceImpl.encrypt(null);
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
@@ -116,6 +116,6 @@ public class RSAEncryptionServiceTest {
 		for (int index = 0; index < 4500; index++) {
 			input.append(index);
 		}
-		rsaEncryptionService.encrypt(input.toString().getBytes());
+		rsaEncryptionServiceImpl.encrypt(input.toString().getBytes());
 	}
 }

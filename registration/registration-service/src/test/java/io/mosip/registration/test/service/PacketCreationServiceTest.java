@@ -30,7 +30,7 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.mapper.CustomObjectMapper;
-import io.mosip.registration.service.PacketCreationService;
+import io.mosip.registration.service.PacketCreationServiceImpl;
 import io.mosip.registration.util.hmac.HMACGeneration;
 import io.mosip.registration.util.zip.ZipCreationService;
 
@@ -39,7 +39,7 @@ public class PacketCreationServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
-	private PacketCreationService packetCreationService;
+	private PacketCreationServiceImpl packetCreationServiceImpl;
 	@Mock
 	private ZipCreationService zipCreationService;
 	@Mock
@@ -73,7 +73,7 @@ public class PacketCreationServiceTest {
 
 	@Test
 	public void testCreatePacket() throws RegBaseCheckedException, IOException, URISyntaxException {
-		ReflectionTestUtils.setField(packetCreationService, "logger", logger);
+		ReflectionTestUtils.setField(packetCreationServiceImpl, "logger", logger);
 		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class),
 				Mockito.any(AppModuleEnum.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		Mockito.when(auditDAO.getAllUnsyncAudits())
@@ -84,16 +84,16 @@ public class PacketCreationServiceTest {
 		jsonMap.put(RegConstants.ENROLLMENT_META_JSON_NAME, "Enrollment".getBytes());
 		jsonMap.put(RegConstants.HASHING_JSON_NAME, "HASHCode".getBytes());
 		jsonMap.put(RegConstants.AUDIT_JSON_FILE, "audit".getBytes());
-		Assert.assertNotNull(packetCreationService.create(registrationDTO));
+		Assert.assertNotNull(packetCreationServiceImpl.create(registrationDTO));
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testException() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(packetCreationService, "logger", logger);
-		ReflectionTestUtils.invokeMethod(packetCreationService, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.setField(packetCreationServiceImpl, "logger", logger);
+		ReflectionTestUtils.invokeMethod(packetCreationServiceImpl, "initializeLogger", mosipRollingFileAppender);
 		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class),
 				Mockito.any(AppModuleEnum.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-		packetCreationService.create(null);
+		packetCreationServiceImpl.create(null);
 	}
 
 }

@@ -41,7 +41,7 @@ import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.GeoLocationCapture;
-import io.mosip.registration.service.SyncStatusValidatorService;
+import io.mosip.registration.service.SyncStatusValidatorServiceImpl;
 import io.mosip.registration.test.config.SpringConfiguration;
 
 public class SyncStatusValidatorServiceTest extends SpringConfiguration{
@@ -52,7 +52,7 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 	private MosipLogger logger;
 	private MosipRollingFileAppender mosipRollingFileAppender;
 	@InjectMocks
-	private SyncStatusValidatorService syncStatusValidatorService ;
+	private SyncStatusValidatorServiceImpl syncStatusValidatorServiceImpl ;
 	@Mock
 	private SyncJobDAO syncJobDAO;
 	@Mock
@@ -92,8 +92,8 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
 
-		ReflectionTestUtils.invokeMethod(syncStatusValidatorService, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.setField(syncStatusValidatorService, "LOGGER", logger);
+		ReflectionTestUtils.invokeMethod(syncStatusValidatorServiceImpl, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "LOGGER", logger);
 		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class), Mockito.any(AppModuleEnum.class),
@@ -128,7 +128,7 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
 		
-		ResponseDTO responseDTO=syncStatusValidatorService.validateSyncStatus();
+		ResponseDTO responseDTO=syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs= responseDTO.getErrorResponseDTOs();
 		
 		assertEquals("REG-ICS‌-002",errorResponseDTOs.get(0).getCode());
@@ -170,7 +170,7 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
 		
-		ResponseDTO responseDTO=syncStatusValidatorService.validateSyncStatus();
+		ResponseDTO responseDTO=syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs= responseDTO.getErrorResponseDTOs();
 		assertTrue(errorResponseDTOs.isEmpty());
 		
@@ -204,7 +204,7 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
 		
-		ResponseDTO responseDTO=syncStatusValidatorService.validateSyncStatus();
+		ResponseDTO responseDTO=syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs= responseDTO.getErrorResponseDTOs();
 		
 		assertEquals("REG-ICS‌-002",errorResponseDTOs.get(0).getCode());
@@ -222,7 +222,7 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testValidateException() throws RegBaseCheckedException {
 		when(syncJobDAO.getSyncStatus()).thenThrow(RegBaseUncheckedException.class);
-		syncStatusValidatorService.validateSyncStatus();
+		syncStatusValidatorServiceImpl.validateSyncStatus();
 	}
 
 }

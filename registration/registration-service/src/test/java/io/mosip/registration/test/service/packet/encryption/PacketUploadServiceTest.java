@@ -33,7 +33,7 @@ import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.PacketUploadService;
+import io.mosip.registration.service.PacketUploadServiceImpl;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.RestClientUtil;
 
@@ -55,14 +55,14 @@ public class PacketUploadServiceTest {
 	private RestClientUtil restClientUtil;
 	
 	@InjectMocks
-	private PacketUploadService packetUploadService;
+	private PacketUploadServiceImpl packetUploadServiceImpl;
 
 	@Mock
 	private MosipLogger logger;
 	
 	@Test
 	public void testGetSynchedPackets() {
-		ReflectionTestUtils.setField(packetUploadService, "LOGGER", logger);
+		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
 		List<String> PACKET_STATUS = Arrays.asList("I", "H", "A", "S");
 		Registration registration=new Registration();
 		List<Registration> regList=new ArrayList<>();
@@ -74,7 +74,7 @@ public class PacketUploadServiceTest {
 	
 	@Test
 	public void testPushPacket() throws URISyntaxException, RegBaseCheckedException {
-		ReflectionTestUtils.setField(packetUploadService, "LOGGER", logger);
+		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		File f=new File("");
 		map.add("file", new FileSystemResource(f));
@@ -87,12 +87,12 @@ public class PacketUploadServiceTest {
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
 		Object respObj = new Object();
 		Mockito.when(restClientUtil.invoke(Mockito.anyObject())).thenReturn(respObj);
-		assertEquals(respObj, packetUploadService.pushPacket(f));
+		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
 
 	@Test
 	public void testUpdateStatus() {
-		ReflectionTestUtils.setField(packetUploadService, "LOGGER", logger);
+		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
 		Map<String, String> packetStatus= new HashMap<>();
 		packetStatus.put("1111111111", "P");
 		packetStatus.put("2222222", "E");
@@ -103,7 +103,7 @@ public class PacketUploadServiceTest {
 		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyString(), Mockito.anyString())).thenReturn(registration);
 		Mockito.when(regTransactionDAO.buildRegTrans(Mockito.anyString(), Mockito.anyString())).thenReturn(registrationTransaction);
 		Mockito.when(regTransactionDAO.insertPacketTransDetails(registrationTransactions)).thenReturn(registrationTransactions);
-		assertTrue(packetUploadService.updateStatus(packetStatus));
+		assertTrue(packetUploadServiceImpl.updateStatus(packetStatus));
 	}
 
 }

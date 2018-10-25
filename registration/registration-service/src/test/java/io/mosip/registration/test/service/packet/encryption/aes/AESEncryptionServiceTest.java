@@ -27,7 +27,7 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.packet.encryption.aes.AESEncryptionService;
+import io.mosip.registration.service.packet.encryption.aes.AESEncryptionServiceImpl;
 import io.mosip.registration.service.packet.encryption.aes.AESSeedGenerator;
 import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionService;
 import io.mosip.registration.util.keymanager.AESKeyManager;
@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 public class AESEncryptionServiceTest {
 
 	@InjectMocks
-	private AESEncryptionService aesEncryptionService;
+	private AESEncryptionServiceImpl aesEncryptionServiceImpl;
 	@Mock
 	private AESKeyManager aesKeyManager;
 	@Mock
@@ -71,7 +71,7 @@ public class AESEncryptionServiceTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
 
-		ReflectionTestUtils.invokeMethod(aesEncryptionService, "initializeLogger", mosipRollingFileAppender);
+		ReflectionTestUtils.invokeMethod(aesEncryptionServiceImpl, "initializeLogger", mosipRollingFileAppender);
 		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString());
 
@@ -79,8 +79,8 @@ public class AESEncryptionServiceTest {
 		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
 		ReflectionTestUtils.setField(aesKeyManagerImpl, "logger", logger);
-		ReflectionTestUtils.setField(aesEncryptionService, "logger", logger);
-		ReflectionTestUtils.setField(aesEncryptionService, "environment", environment);
+		ReflectionTestUtils.setField(aesEncryptionServiceImpl, "logger", logger);
+		ReflectionTestUtils.setField(aesEncryptionServiceImpl, "environment", environment);
 		ReflectionTestUtils.setField(aesKeyManagerImpl, "environment", environment);
 
 		when(environment.getProperty(RegConstants.AES_KEY_MANAGER_ALG)).thenReturn("AES");
@@ -101,7 +101,7 @@ public class AESEncryptionServiceTest {
 		when(rsaEncryptionManager.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
 
 		byte[] dataToEncrypt = "original data".getBytes();
-		byte[] encryptedData = aesEncryptionService.encrypt(dataToEncrypt);
+		byte[] encryptedData = aesEncryptionServiceImpl.encrypt(dataToEncrypt);
 		String ciperText = new String(encryptedData);
 		Assert.assertTrue(ciperText.contains("rsa" + keySplitter));
 	}
@@ -112,7 +112,7 @@ public class AESEncryptionServiceTest {
 		when(aesSeedGenerator.generateAESKeySeeds()).thenReturn(new ArrayList<>());
 		when(aesKeyManager.generateSessionKey(Mockito.anyListOf(String.class))).thenReturn(sessionKey);
 		when(rsaEncryptionManager.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
-		aesEncryptionService.encrypt(null);
+		aesEncryptionServiceImpl.encrypt(null);
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
@@ -122,12 +122,12 @@ public class AESEncryptionServiceTest {
 		when(aesSeedGenerator.generateAESKeySeeds()).thenReturn(new ArrayList<>());
 		when(aesKeyManager.generateSessionKey(Mockito.anyListOf(String.class))).thenReturn(sessionKey);
 		when(rsaEncryptionManager.encrypt(Mockito.anyString().getBytes())).thenReturn("rsa".getBytes());
-		aesEncryptionService.encrypt("encrypt".getBytes());
+		aesEncryptionServiceImpl.encrypt("encrypt".getBytes());
 	}
 
 	@Test(expected = RegBaseUncheckedException.class)
 	public void concatExceptionTest() {
-		ReflectionTestUtils.invokeMethod(aesEncryptionService, "concat", "encrypted".getBytes(), null);
+		ReflectionTestUtils.invokeMethod(aesEncryptionServiceImpl, "concat", "encrypted".getBytes(), null);
 	}
 
 }
