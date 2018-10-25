@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.spi.idgenerator.MosipPridGenerator;
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.core.exceptions.DatabaseOperationException;
 import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.dao.RegistrationDao;
