@@ -39,7 +39,7 @@ public enum NameMatchingStrategy implements MatchingStrategy {
 	 * @param matchStrategyType
 	 * @param matchFunction
 	 */
-	private NameMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
+	NameMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}

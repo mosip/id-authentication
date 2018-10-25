@@ -28,7 +28,7 @@ public enum PhoneNoMatchingStrategy implements MatchingStrategy {
 	 * @param matchValue
 	 * @param matchFunction
 	 */
-	private PhoneNoMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
+	PhoneNoMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}

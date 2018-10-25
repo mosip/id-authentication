@@ -66,25 +66,18 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @return the list
 	 */
 	private List<MatchInput> constructMatchInput(AuthRequestDTO authRequestDTO) {
-		 return Optional.ofNullable(authRequestDTO.getPii())
-				.map(PersonalIdentityDataDTO::getDemo)
-				.map(demo -> Stream.of(DemoMatchType.values())
-				.map((DemoMatchType demoMatchType) -> {
+		return Optional.ofNullable(authRequestDTO.getPii()).map(PersonalIdentityDataDTO::getDemo)
+				.map(demo -> Stream.of(DemoMatchType.values()).map((DemoMatchType demoMatchType) -> {
 					Optional<AuthType> authTypeOpt = AuthType.getAuthTypeForMatchType(demoMatchType);
 					Optional<Object> infoOpt = demoMatchType.getDemoInfoFetcher().apply(demo);
 					if (infoOpt.isPresent() && authTypeOpt.isPresent()) {
 						AuthType authType = authTypeOpt.get();
-						if(authType.getAuthTypeTester().test(authRequestDTO)) {
+						if (authType.getAuthTypeTester().test(authRequestDTO)) {
 							return contstructMatchInput(authRequestDTO, demoMatchType, authType);
 						}
 					}
 					return null;
-				})
-				.filter(Objects::nonNull))
-				.orElseGet(Stream::empty)
-				.collect(Collectors.toList());
-		 
-				
+				}).filter(Objects::nonNull)).orElseGet(Stream::empty).collect(Collectors.toList());
 
 	}
 
@@ -105,7 +98,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		return new MatchInput(demoMatchType, matchingStrategy, matchValue);
 	}
 
-		/**
+	/**
 	 * Gets the match output.
 	 *
 	 * @param listMatchInput
@@ -131,19 +124,19 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 */
 	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId)
 			throws IdAuthenticationBusinessException {
-		boolean demoMatched = false;
-		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 
 		DemoEntity demoEntity = getDemoEntity(refId, environment.getProperty("mosip.primary.lang-code"));
 
 		if (demoEntity == null) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		}
-		
+
+		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
+
 		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO.getPii().getDemo(),
 				demoEntity, this::getLocation);
-		demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
-		
+		boolean demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
+
 		return buildStatusInfo(demoMatched, listMatchInputs, listMatchOutputs);
 
 	}
@@ -157,7 +150,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		buildMatchInfos(listMatchInputs, statusInfoBuilder);
 
 		buildUsageDataBits(listMatchOutputs, statusInfoBuilder);
-		
+
 		return statusInfoBuilder.build();
 	}
 
@@ -172,9 +165,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	private void buildMatchInfos(List<MatchInput> listMatchInputs, AuthStatusInfoBuilder statusInfoBuilder) {
 		listMatchInputs.stream().forEach((MatchInput matchInput) -> {
 			if (AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
-					.filter(authType -> !authType.isExactMatchOnly())
-					.map(AuthType::getType)
-					.isPresent()) {
+					.filter(authType -> !authType.isExactMatchOnly()).map(AuthType::getType).isPresent()) {
 
 				String ms = matchInput.getMatchStrategyType();
 				if (ms == null || matchInput.getMatchStrategyType().trim().isEmpty()) {
@@ -186,8 +177,8 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 					mt = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
 				}
 
-				String authType = AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
-						.map(AuthType::getType).orElse("");
+				String authType = AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType()).map(AuthType::getType)
+						.orElse("");
 
 				statusInfoBuilder.addMessageInfo(authType, ms, mt);
 			}
@@ -204,8 +195,10 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @return the demo entity
 	 */
 	public DemoEntity getDemoEntity(String refId, String langCode) {
-		return demoRepository.findByUinRefIdAndLangCode(refId, langCode.toUpperCase());// Assuming keeping Langcode
-																						// Upper case in DB
+		// Assuming keeping Langcode
+		// Upper case in DB
+		return demoRepository.findByUinRefIdAndLangCode(refId, langCode.toUpperCase());
+
 	}
 
 	public Optional<String> getLocation(LocationLevel targetLocationLevel, String locationCode) {

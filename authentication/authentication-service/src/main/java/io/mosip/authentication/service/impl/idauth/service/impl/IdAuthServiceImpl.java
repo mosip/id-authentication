@@ -137,7 +137,6 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 *             the id validation failed exception
 	 */
 	private String doValidateVIDEntity(String vid) throws IdValidationFailedException {
-		String refId = null;
 		Optional<VIDEntity> vidEntityOpt = vidRepository.findById(vid);
 		if (!vidEntityOpt.isPresent()) {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_VID);
@@ -152,7 +151,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
 		}
 		
-		refId = vidEntity.getRefId();
+		String refId = vidEntity.getRefId();
 		Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
 		if (!uinEntityOpt.isPresent()) {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
@@ -172,7 +171,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @throws IdValidationFailedException
 	 *             the id validation failed exception
 	 */
-	private void doValidateUIN(UinEntity uinEntity) throws IdValidationFailedException {
+	private static void doValidateUIN(UinEntity uinEntity) throws IdValidationFailedException {
 		if (!uinEntity.isActive()) {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 		}
