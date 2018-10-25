@@ -49,7 +49,7 @@ public class ServerUtil {
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
-			throw new ServerUtilException();
+			throw new ServerUtilException(e);
 		}
 
 	}
@@ -64,7 +64,7 @@ public class ServerUtil {
 		try {
 			return InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException e) {
-			throw new ServerUtilException();
+			throw new ServerUtilException(e);
 		}
 	}
 
