@@ -509,11 +509,7 @@ public class MosipLogfactoryTest {
 
 	@Test(expected = PatternSyntaxException.class)
 	public void testGetMosipDefaultFileLoggerNameWithRollingNotIConstraintsException() {
-<<<<<<< HEAD
-		mosipRollingFileAppender.setAppenderName("testFileappenderIConstraintsException");
-=======
 		mosipRollingFileAppender.setAppenderName("testFileRollingappender");
->>>>>>> DEV
 		mosipRollingFileAppender.setAppend(true);
 		mosipRollingFileAppender.setFileName(FILENAME);
 		mosipRollingFileAppender.setImmediateFlush(true);
