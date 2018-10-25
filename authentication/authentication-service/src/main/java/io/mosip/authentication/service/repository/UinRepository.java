@@ -22,5 +22,5 @@ public interface UinRepository extends BaseRepository<UinEntity, String>{
 	 * @return UinEntity
 	 * @param uin 
 	 */
-	public Optional<UinEntity> findByUinRefId(String uinRefId);
+	Optional<UinEntity> findByUinRefId(String uinRefId);
 }

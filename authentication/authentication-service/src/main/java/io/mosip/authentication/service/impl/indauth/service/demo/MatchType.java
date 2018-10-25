@@ -8,5 +8,5 @@ import java.util.Optional;
  * @authour Loganathan Sekar
  */
 public interface MatchType {
-	public Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType);
+    Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType);
 }

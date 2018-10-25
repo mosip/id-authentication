@@ -94,7 +94,7 @@ public class DemoValidator implements Validator {
 					IdAuthenticationErrorConstants.AD_FAD_MUTUALLY_EXCULUSIVE.getErrorMessage());
 		} else if (authType.isFad()) {
 			fullAddressValidation(authType, demodto, errors);
-		} else if (authType.isAd())  {
+		} else  {
 			addressValidation(demodto, errors);
 		}
 	}
