@@ -3,27 +3,19 @@
  */
 package io.mosip.registration.processor.status.service.impl;
 
-import java.net.UnknownHostException;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
-import io.mosip.registration.processor.core.exception.ServerUtilException;
-import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticleErrorCodes;
-import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncStatusDto;
@@ -38,6 +30,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationUtility;
  *
  * @author M1048399
  * @author M1048219
+ * @author M1047487
  */
 @Component
 public class SyncRegistrationServiceImpl implements SyncRegistrationService<SyncRegistrationDto> {
@@ -51,14 +44,6 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/** The sync registration dao. */
 	@Autowired
 	private SyncRegistrationDao syncRegistrationDao;
-
-	/** The audit request builder. */
-	@Autowired
-	private AuditRequestBuilder auditRequestBuilder;
-
-	/** The audit handler. */
-	@Autowired
-	private AuditHandler<AuditRequestDto> auditHandler;
 	
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
@@ -111,7 +96,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			String description = isTransactionSuccessful
 					? "Registartion Id's are successfully synched in Sync Registration table"
 					: "Registartion Id's syn is unsuccessfull";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, EventId.RPR_401.toString(),
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, EventId.RPR_405.toString(),
 					EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
 					AuditLogConstant.MULTIPLE_ID.toString());
 
@@ -188,38 +173,5 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		}
 
 		return syncRegistrationEntity;
-	}
-
-	/**
-	 * Creates the audit request builder.
-	 *
-	 * @param applicationId
-	 *            the application id
-	 * @param applicationName
-	 *            the application name
-	 * @param description
-	 *            the description
-	 * @param eventId
-	 *            the event id
-	 * @param eventName
-	 *            the event name
-	 * @param eventType
-	 *            the event type
-	 */
-	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,
-			String eventId, String eventName, String eventType) {
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
-				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
-				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-				.setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(AuditLogTempConstant.ID.toString())
-				.setIdType(AuditLogTempConstant.ID_TYPE.toString())
-				.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-				.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-				.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-				.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
-
-		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-		auditHandler.writeAudit(auditRequestDto);
 	}
 }

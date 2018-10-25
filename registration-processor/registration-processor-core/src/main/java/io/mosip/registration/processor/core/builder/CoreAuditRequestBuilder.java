@@ -29,13 +29,6 @@ public class CoreAuditRequestBuilder {
 	private AuditHandler<AuditRequestDto> auditHandler;
 
 	/**
-	 * AuditRequestBuilder Constructor.
-	 */
-	private CoreAuditRequestBuilder() {
-		super();
-	}
-
-	/**
 	 * Creates the audit request builder.
 	 *
 	 * @param description the description
