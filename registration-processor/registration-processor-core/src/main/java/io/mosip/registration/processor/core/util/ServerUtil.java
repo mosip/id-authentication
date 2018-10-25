@@ -3,6 +3,8 @@ package io.mosip.registration.processor.core.util;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import io.mosip.registration.processor.core.exception.ServerUtilException;
+
 /**
  * This class provides Server IP and Name.
  *
@@ -42,8 +44,14 @@ public class ServerUtil {
 	 * @return The ServerIp
 	 *
 	 */
-	public String getServerIp() throws UnknownHostException {
-		return InetAddress.getLocalHost().getHostAddress();
+	public String getServerIp() {
+
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			throw new ServerUtilException();
+		}
+
 	}
 
 	/**
@@ -52,8 +60,12 @@ public class ServerUtil {
 	 * @return The ServerName
 	 *
 	 */
-	public String getServerName() throws UnknownHostException {
-		return InetAddress.getLocalHost().getHostName();
+	public String getServerName() {
+		try {
+			return InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			throw new ServerUtilException();
+		}
 	}
 
 }
