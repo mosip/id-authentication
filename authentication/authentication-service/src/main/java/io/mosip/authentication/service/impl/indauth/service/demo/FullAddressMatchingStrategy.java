@@ -34,7 +34,7 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 	 * @param matchStrategyType
 	 * @param matchFunction
 	 */
-	private FullAddressMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
+	FullAddressMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}

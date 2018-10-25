@@ -14,6 +14,7 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
+import lombok.NoArgsConstructor;
 
 /**
  * A factory for creating and building AuditRequest objects from
@@ -22,13 +23,8 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
  * @author Manoj SP
  */
 @Component
+@NoArgsConstructor
 public class AuditRequestFactory {
-	
-	/**
-	 * Instantiates a new audit request factory.
-	 */
-	private AuditRequestFactory() {
-	}
 	
 	/** The mosipLogger. */
 	private static MosipLogger mosipLogger = IdaLogger.getLogger(AuditRequestFactory.class);
@@ -36,7 +32,7 @@ public class AuditRequestFactory {
 	/** The env. */
 	@Autowired
 	private Environment env;
-
+	
 	/**
 	 * Builds the request.
 	 *

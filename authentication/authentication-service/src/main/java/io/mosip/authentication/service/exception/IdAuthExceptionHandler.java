@@ -35,13 +35,6 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 @RestControllerAdvice
 public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	
-	/**
-	 * Instantiates a new id auth exception handler.
-	 */
-	private IdAuthExceptionHandler() {
-		
-	}
-
 	/** The Constant PREFIX_HANDLING_EXCEPTION. */
 	private static final String PREFIX_HANDLING_EXCEPTION = "Handling exception :";
 	
@@ -53,6 +46,13 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	/** The mosip logger. */
 	private static MosipLogger mosipLogger = IdaLogger.getLogger(IdAuthExceptionHandler.class);
+	
+	/**
+	 * Instantiates a new id auth exception handler.
+	 */
+	private IdAuthExceptionHandler() {
+		
+	}
 
 	/**
 	 * Handle all exceptions.
@@ -167,7 +167,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	 * @return Object .
 	 */
 	@SuppressWarnings("unchecked")
-	private Object buildExceptionResponse(Exception ex, Object errorCode, Object errorMessages) {
+	private static Object buildExceptionResponse(Exception ex, Object errorCode, Object errorMessages) {
 
 		mosipLogger.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());

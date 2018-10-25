@@ -22,6 +22,7 @@ import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilde
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
+import lombok.NoArgsConstructor;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -31,13 +32,8 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
  */
 
 @Service
+@NoArgsConstructor
 public class OTPAuthServiceImpl implements OTPAuthService {
-
-	/**
-	 * Instantiates a new OTP auth service impl.
-	 */
-	private OTPAuthServiceImpl() {
-	}
 
 	/** The Constant METHOD_VALIDATE_OTP. */
 	private static final String METHOD_VALIDATE_OTP = "validateOtp";
@@ -58,12 +54,12 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	private AuditRequestFactory auditreqfactory;
 
 	/** The mosipLogger. */
-	private MosipLogger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
 
 	/** The env. */
 	@Autowired
 	private Environment env;
-
+	
 	/**
 	 * Validates generated OTP via OTP Manager.
 	 *
@@ -104,7 +100,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * @param isOtpValid the is otp valid
 	 * @return the auth status info
 	 */
-	private AuthStatusInfo constructAuthStatusInfo(boolean isOtpValid) {
+	private static AuthStatusInfo constructAuthStatusInfo(boolean isOtpValid) {
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		statusInfoBuilder.setStatus(isOtpValid).addAuthUsageDataBits(AuthUsageDataBit.USED_OTP);
 

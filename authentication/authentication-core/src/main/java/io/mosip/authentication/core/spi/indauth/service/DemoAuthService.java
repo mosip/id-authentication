@@ -20,7 +20,7 @@ public interface DemoAuthService {
 	 * @param authRequestDTO the auth request DTO
 	 * @return the demo status
 	 */
-	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId)
+	AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId)
 			throws IdAuthenticationBusinessException;
 	
 	
