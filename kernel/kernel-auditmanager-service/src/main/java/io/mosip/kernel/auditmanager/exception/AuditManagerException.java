@@ -9,7 +9,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @since 1.0.0
  *
  */
-public class MosipAuditManagerException extends BaseUncheckedException {
+public class AuditManagerException extends BaseUncheckedException {
 
 	/**
 	 * Generated serial version id
@@ -24,7 +24,7 @@ public class MosipAuditManagerException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            The error message for this exception
 	 */
-	public MosipAuditManagerException(String errorCode, String errorMessage) {
+	public AuditManagerException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 

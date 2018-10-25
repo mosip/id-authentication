@@ -1,4 +1,4 @@
-package io.mosip.kernel.logger.test;
+package io.mosip.kernel.logger.logback.test;
 
 import static org.hamcrest.CoreMatchers.isA;
 import static org.junit.Assert.assertThat;
@@ -509,7 +509,11 @@ public class MosipLogfactoryTest {
 
 	@Test(expected = PatternSyntaxException.class)
 	public void testGetMosipDefaultFileLoggerNameWithRollingNotIConstraintsException() {
+<<<<<<< HEAD
 		mosipRollingFileAppender.setAppenderName("testFileappenderIConstraintsException");
+=======
+		mosipRollingFileAppender.setAppenderName("testFileRollingappender");
+>>>>>>> DEV
 		mosipRollingFileAppender.setAppend(true);
 		mosipRollingFileAppender.setFileName(FILENAME);
 		mosipRollingFileAppender.setImmediateFlush(true);

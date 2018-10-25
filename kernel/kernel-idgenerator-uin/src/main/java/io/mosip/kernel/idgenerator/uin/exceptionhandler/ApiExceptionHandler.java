@@ -6,7 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorErrorCodes;
+import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorErrorCode;
 import io.mosip.kernel.idgenerator.uin.exception.UinNotFoundException;
 
 /**
@@ -30,8 +30,8 @@ public class ApiExceptionHandler {
 	public ResponseEntity<ErrorItem> handle(MethodArgumentNotValidException e) {
 
 		ErrorItem error = new ErrorItem();
-		error.setMessage(UinGeneratorErrorCodes.UIN_NOT_FOUND.getErrorMessage());
-		error.setCode(UinGeneratorErrorCodes.UIN_NOT_FOUND.getErrorCode());
+		error.setMessage(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorMessage());
+		error.setCode(UinGeneratorErrorCode.UIN_NOT_FOUND.getErrorCode());
 
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 

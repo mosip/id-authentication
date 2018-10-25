@@ -53,7 +53,7 @@ public class TokenIdGeneratorTest {
 			String tokenIdLengthString = propObj.getProperty("mosip.kernel.tokenid.length");
 			tokenIdLength = Integer.parseInt(tokenIdLengthString);
 			MockitoAnnotations.initMocks(this);
-			ReflectionTestUtils.setField(this.tokenIdGenerator, tokenIdLengthFieldName, 36);
+			ReflectionTestUtils.setField(this.tokenIdGenerator, tokenIdLengthFieldName, tokenIdLength);
 			this.tokenIdGenerator.tokenIdGeneratorPostConstruct();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

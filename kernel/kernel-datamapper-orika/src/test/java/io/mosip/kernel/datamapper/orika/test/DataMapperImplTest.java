@@ -147,10 +147,10 @@ public class DataMapperImplTest {
 		SourceModel src = new SourceModel(null, 10);
 		DestinationModel dest = new DestinationModel("Neha", 25);
 
-		dataMapper.map(src, dest, true, null, null, true);
+		dataMapper.map(src, dest, false, null, null, true);
 
 		assertEquals(src.getAge(), dest.getAge());
-		assertNull(dest.getName());
+		assertEquals("Neha", dest.getName());
 
 	}
 
@@ -242,7 +242,7 @@ public class DataMapperImplTest {
 	}
 
 	@Test(expected = DataMapperException.class)
-	public void givenSrcAsNullAndDest_whenMaps_thenFails() {
+	public void givenSrcAndDestAsInterface_whenMaps_thenFails() {
 
 		Personne french = new Personne("Claire", "cla", 2);
 		dataMapper.map(french, PersonInterface.class, true, null, null, true);

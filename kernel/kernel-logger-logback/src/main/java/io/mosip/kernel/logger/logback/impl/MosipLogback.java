@@ -1,29 +1,5 @@
-/*
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- */
 
 package io.mosip.kernel.logger.logback.impl;
-
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipConsoleAppender;
-import io.mosip.kernel.logger.logback.appender.MosipFileAppender;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
-import io.mosip.kernel.logger.logback.constant.MosipConfigurationDefault;
-import io.mosip.kernel.logger.logback.exception.ClassNameNotFoundException;
-import io.mosip.kernel.logger.logback.exception.EmptyPatternException;
-import io.mosip.kernel.logger.logback.exception.FileNameNotProvided;
-import io.mosip.kernel.logger.logback.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.logger.logback.exception.MosipIllegalStateException;
-import io.mosip.kernel.logger.logback.exception.PatternSyntaxException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +17,19 @@ import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.logger.logback.appender.MosipConsoleAppender;
+import io.mosip.kernel.logger.logback.appender.MosipFileAppender;
+import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
+import io.mosip.kernel.logger.logback.constant.MosipConfigurationDefault;
+import io.mosip.kernel.logger.logback.exception.ClassNameNotFoundException;
+import io.mosip.kernel.logger.logback.exception.EmptyPatternException;
+import io.mosip.kernel.logger.logback.exception.FileNameNotProvided;
+import io.mosip.kernel.logger.logback.exception.MosipIllegalArgumentException;
+import io.mosip.kernel.logger.logback.exception.MosipIllegalStateException;
+import io.mosip.kernel.logger.logback.exception.PatternSyntaxException;
+
 
 /**
  * Logback implementation class for mosip
@@ -50,9 +39,8 @@ import ch.qos.logback.core.util.FileSize;
  */
 public class MosipLogback implements MosipLogger {
 
-	
-	private static Map<String,Appender<ILoggingEvent>> rollingFileAppenders= new HashMap<>();
-	private static Map<String,Appender<ILoggingEvent>> fileAppenders= new HashMap<>();
+	private static Map<String, Appender<ILoggingEvent>> rollingFileAppenders = new HashMap<>();
+	private static Map<String, Appender<ILoggingEvent>> fileAppenders = new HashMap<>();
 	/**
 	 * Logger Instance per Class
 	 */
@@ -72,19 +60,16 @@ public class MosipLogback implements MosipLogger {
 	 * @param name
 	 *            name of calling class to get logger
 	 */
-	private MosipLogback(MosipConsoleAppender mosipConsoleAppender,
-			String name) {
+	private MosipLogback(MosipConsoleAppender mosipConsoleAppender, String name) {
 
-		LoggerContext context = (LoggerContext) LoggerFactory
-				.getILoggerFactory();
+		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 		this.logger = context.getLogger(name);
 		PatternLayoutEncoder ple = getdefaultPattern(context);
 		ConsoleAppender<ILoggingEvent> consoleAppender = new ConsoleAppender<>();
 		consoleAppender.setContext(context);
 		consoleAppender.setEncoder(ple);
 		consoleAppender.setName(mosipConsoleAppender.getAppenderName());
-		consoleAppender
-				.setImmediateFlush(mosipConsoleAppender.isImmediateFlush());
+		consoleAppender.setImmediateFlush(mosipConsoleAppender.isImmediateFlush());
 		consoleAppender.setTarget(mosipConsoleAppender.getTarget());
 		consoleAppender.start();
 		this.logger.setAdditive(false);
@@ -102,26 +87,24 @@ public class MosipLogback implements MosipLogger {
 	 */
 	private MosipLogback(MosipFileAppender mosipFileAppender, String name) {
 
-		LoggerContext context = (LoggerContext) LoggerFactory
-				.getILoggerFactory();
+		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 		this.logger = context.getLogger(name);
 		this.logger.setAdditive(false);
 		PatternLayoutEncoder ple = getdefaultPattern(context);
-		FileAppender<ILoggingEvent> fileAppender = null; 
-		if(!fileAppenders.containsKey(mosipFileAppender.getAppenderName())) {
-		fileAppender=new FileAppender<>();
-		fileAppender.setContext(context);
-		fileAppender.setEncoder(ple);
-		fileAppender.setName(mosipFileAppender.getAppenderName());
-		fileAppender.setImmediateFlush(mosipFileAppender.isImmediateFlush());
-		fileAppender.setAppend(mosipFileAppender.isAppend());
-		fileAppender.setFile(mosipFileAppender.getFileName());
-		fileAppender.setPrudent(mosipFileAppender.isPrudent());
-		fileAppender.start();
-		fileAppenders.put(fileAppender.getName(), fileAppender);
-		}
-		else {
-			fileAppender=(FileAppender<ILoggingEvent>) fileAppenders.get(mosipFileAppender.getAppenderName());
+		FileAppender<ILoggingEvent> fileAppender = null;
+		if (!fileAppenders.containsKey(mosipFileAppender.getAppenderName())) {
+			fileAppender = new FileAppender<>();
+			fileAppender.setContext(context);
+			fileAppender.setEncoder(ple);
+			fileAppender.setName(mosipFileAppender.getAppenderName());
+			fileAppender.setImmediateFlush(mosipFileAppender.isImmediateFlush());
+			fileAppender.setAppend(mosipFileAppender.isAppend());
+			fileAppender.setFile(mosipFileAppender.getFileName());
+			fileAppender.setPrudent(mosipFileAppender.isPrudent());
+			fileAppender.start();
+			fileAppenders.put(fileAppender.getName(), fileAppender);
+		} else {
+			fileAppender = (FileAppender<ILoggingEvent>) fileAppenders.get(mosipFileAppender.getAppenderName());
 		}
 		this.logger.addAppender(fileAppender);
 	}
@@ -135,96 +118,92 @@ public class MosipLogback implements MosipLogger {
 	 * @param name
 	 *            name of calling class to get logger
 	 */
-	private MosipLogback(MosipRollingFileAppender mosipRollingFileAppender,
-			String name) {
-		
-		LoggerContext context = (LoggerContext) LoggerFactory
-				.getILoggerFactory();
+	private MosipLogback(MosipRollingFileAppender mosipRollingFileAppender, String name) {
+
+		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 		this.logger = context.getLogger(name);
 		this.logger.setAdditive(false);
 		PatternLayoutEncoder ple = getdefaultPattern(context);
-		RollingFileAppender<ILoggingEvent> rollingFileAppender=null;
-		if(!rollingFileAppenders.containsKey(mosipRollingFileAppender.getAppenderName())) {
-		rollingFileAppender = new RollingFileAppender<>();
-		rollingFileAppender.setContext(context);
-		rollingFileAppender.setEncoder(ple);
-		rollingFileAppender.setName(mosipRollingFileAppender.getAppenderName());
-		rollingFileAppender
-				.setImmediateFlush(mosipRollingFileAppender.isImmediateFlush());
-		rollingFileAppender.setFile(mosipRollingFileAppender.getFileName());
-		rollingFileAppender.setAppend(mosipRollingFileAppender.isAppend());
-		rollingFileAppender.setPrudent(mosipRollingFileAppender.isPrudent());
-		if (mosipRollingFileAppender.getMaxFileSize().trim().isEmpty()) {
-			configureTimeBasedRollingPolicy(mosipRollingFileAppender, context,
-					rollingFileAppender);
+		RollingFileAppender<ILoggingEvent> rollingFileAppender = null;
+		if (!rollingFileAppenders.containsKey(mosipRollingFileAppender.getAppenderName())) {
+			rollingFileAppender = new RollingFileAppender<>();
+			rollingFileAppender.setContext(context);
+			rollingFileAppender.setEncoder(ple);
+			rollingFileAppender.setName(mosipRollingFileAppender.getAppenderName());
+			rollingFileAppender.setImmediateFlush(mosipRollingFileAppender.isImmediateFlush());
+			rollingFileAppender.setFile(mosipRollingFileAppender.getFileName());
+			rollingFileAppender.setAppend(mosipRollingFileAppender.isAppend());
+			rollingFileAppender.setPrudent(mosipRollingFileAppender.isPrudent());
+			if (mosipRollingFileAppender.getMaxFileSize().trim().isEmpty()) {
+				configureTimeBasedRollingPolicy(mosipRollingFileAppender, context, rollingFileAppender);
+			} else {
+				configureSizeAndTimeBasedPolicy(mosipRollingFileAppender, context, rollingFileAppender);
+			}
+			rollingFileAppenders.put(rollingFileAppender.getName(), rollingFileAppender);
+			rollingFileAppender.start();
 		} else {
-			configureSizeAndTimeBasedPolicy(mosipRollingFileAppender, context,
-					rollingFileAppender);
+			rollingFileAppender = (RollingFileAppender<ILoggingEvent>) rollingFileAppenders
+					.get(mosipRollingFileAppender.getAppenderName());
 		}
-		rollingFileAppenders.put(rollingFileAppender.getName(), rollingFileAppender);
-		rollingFileAppender.start();
-		}else {
-			rollingFileAppender=(RollingFileAppender<ILoggingEvent>) rollingFileAppenders.get(mosipRollingFileAppender.getAppenderName());
-		}
-		
+
 		this.logger.addAppender(rollingFileAppender);
 
 	}
 
-	/** Configures size and time based policy
-	 * @param mosipRollingFileAppender {@link MosipRollingFileAppender} instance to get values'p
-	 * @param context context of logger
-	 * @param rollingFileAppender {@link RollingFileAppender} instance by which this policy will attach
+	/**
+	 * Configures size and time based policy
+	 * 
+	 * @param mosipRollingFileAppender
+	 *            {@link MosipRollingFileAppender} instance to get values'p
+	 * @param context
+	 *            context of logger
+	 * @param rollingFileAppender
+	 *            {@link RollingFileAppender} instance by which this policy will
+	 *            attach
 	 */
-	private void configureSizeAndTimeBasedPolicy(
-			MosipRollingFileAppender mosipRollingFileAppender,
-			LoggerContext context,
-			RollingFileAppender<ILoggingEvent> rollingFileAppender) {
+	private void configureSizeAndTimeBasedPolicy(MosipRollingFileAppender mosipRollingFileAppender,
+			LoggerContext context, RollingFileAppender<ILoggingEvent> rollingFileAppender) {
 		SizeAndTimeBasedRollingPolicy<ILoggingEvent> sizeAndTimeBasedRollingPolicy = new SizeAndTimeBasedRollingPolicy<>();
 		sizeAndTimeBasedRollingPolicy.setContext(context);
 
-		sizeAndTimeBasedRollingPolicy.setFileNamePattern(
-				mosipRollingFileAppender.getFileNamePattern());
-		sizeAndTimeBasedRollingPolicy
-				.setMaxHistory(mosipRollingFileAppender.getMaxHistory());
+		sizeAndTimeBasedRollingPolicy.setFileNamePattern(mosipRollingFileAppender.getFileNamePattern());
+		sizeAndTimeBasedRollingPolicy.setMaxHistory(mosipRollingFileAppender.getMaxHistory());
 		if (mosipRollingFileAppender.getTotalCap() != null
 				&& !mosipRollingFileAppender.getTotalCap().trim().isEmpty()) {
-			sizeAndTimeBasedRollingPolicy.setTotalSizeCap(FileSize
-					.valueOf(mosipRollingFileAppender.getTotalCap()));
+			sizeAndTimeBasedRollingPolicy.setTotalSizeCap(FileSize.valueOf(mosipRollingFileAppender.getTotalCap()));
 		}
 		if (mosipRollingFileAppender.getMaxFileSize() != null) {
-			sizeAndTimeBasedRollingPolicy.setMaxFileSize(FileSize
-					.valueOf(mosipRollingFileAppender.getMaxFileSize()));
+			sizeAndTimeBasedRollingPolicy.setMaxFileSize(FileSize.valueOf(mosipRollingFileAppender.getMaxFileSize()));
 		}
 		sizeAndTimeBasedRollingPolicy.setParent(rollingFileAppender);
 		rollingFileAppender.setRollingPolicy(sizeAndTimeBasedRollingPolicy);
 		sizeAndTimeBasedRollingPolicy.start();
 	}
 
-	/** Configures time based policy
-	 * @param mosipRollingFileAppender {@link MosipRollingFileAppender} instance to get values
-	 * @param context context of logger
-	 * @param rollingFileAppender {@link RollingFileAppender} instance by which this policy will attach
+	/**
+	 * Configures time based policy
+	 * 
+	 * @param mosipRollingFileAppender
+	 *            {@link MosipRollingFileAppender} instance to get values
+	 * @param context
+	 *            context of logger
+	 * @param rollingFileAppender
+	 *            {@link RollingFileAppender} instance by which this policy will
+	 *            attach
 	 */
-	private void configureTimeBasedRollingPolicy(
-			MosipRollingFileAppender mosipRollingFileAppender,
-			LoggerContext context,
-			RollingFileAppender<ILoggingEvent> rollingFileAppender) {
+	private void configureTimeBasedRollingPolicy(MosipRollingFileAppender mosipRollingFileAppender,
+			LoggerContext context, RollingFileAppender<ILoggingEvent> rollingFileAppender) {
 		TimeBasedRollingPolicy<ILoggingEvent> timeBasedRollingPolicy = new TimeBasedRollingPolicy<>();
 		timeBasedRollingPolicy.setContext(context);
-		timeBasedRollingPolicy.setFileNamePattern(
-				mosipRollingFileAppender.getFileNamePattern());
-		timeBasedRollingPolicy
-				.setMaxHistory(mosipRollingFileAppender.getMaxHistory());
+		timeBasedRollingPolicy.setFileNamePattern(mosipRollingFileAppender.getFileNamePattern());
+		timeBasedRollingPolicy.setMaxHistory(mosipRollingFileAppender.getMaxHistory());
 		if (mosipRollingFileAppender.getFileNamePattern().contains("%i")) {
-			throw new PatternSyntaxException(
-					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION,
+			throw new PatternSyntaxException(LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION,
 					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTIONMESSAGENOTI);
 		}
 		if (mosipRollingFileAppender.getTotalCap() != null
 				&& !mosipRollingFileAppender.getTotalCap().trim().isEmpty()) {
-			timeBasedRollingPolicy.setTotalSizeCap(FileSize
-					.valueOf(mosipRollingFileAppender.getTotalCap()));
+			timeBasedRollingPolicy.setTotalSizeCap(FileSize.valueOf(mosipRollingFileAppender.getTotalCap()));
 		}
 		timeBasedRollingPolicy.setParent(rollingFileAppender);
 		rollingFileAppender.setRollingPolicy(timeBasedRollingPolicy);
@@ -241,11 +220,9 @@ public class MosipLogback implements MosipLogger {
 	 *            name of the calling class
 	 * @return Configured {@link MosipLogger} instance
 	 */
-	public static MosipLogger getMosipConsoleLogger(
-			MosipConsoleAppender consoleAppender, String name) {
+	public static MosipLogger getMosipConsoleLogger(MosipConsoleAppender consoleAppender, String name) {
 		if (name.trim().isEmpty()) {
-			throw new ClassNameNotFoundException(
-					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION,
+			throw new ClassNameNotFoundException(LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION,
 					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE);
 		} else {
 			return new MosipLogback(consoleAppender, name);
@@ -262,20 +239,16 @@ public class MosipLogback implements MosipLogger {
 	 *            name of the calling class
 	 * @return Configured {@link MosipLogger} instance
 	 */
-	public static MosipLogger getMosipFileLogger(MosipFileAppender fileAppender,
-			String name) {
+	public static MosipLogger getMosipFileLogger(MosipFileAppender fileAppender, String name) {
 
 		if (fileAppender.getFileName() == null)
-			throw new FileNameNotProvided(
-					LogExeptionCodeConstant.FILENAMENOTPROVIDED,
+			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED,
 					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGENULL);
 		else if (fileAppender.getFileName().trim().isEmpty())
-			throw new FileNameNotProvided(
-					LogExeptionCodeConstant.FILENAMENOTPROVIDED,
+			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED,
 					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGEEMPTY);
 		else if (name.trim().isEmpty())
-			throw new ClassNameNotFoundException(
-					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION,
+			throw new ClassNameNotFoundException(LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION,
 					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE);
 		else {
 			return new MosipLogback(fileAppender, name);
@@ -292,48 +265,37 @@ public class MosipLogback implements MosipLogger {
 	 *            name of the calling class
 	 * @return Configured {@link MosipLogger} instance
 	 */
-	public static MosipLogger getMosipRollingFileLogger(
-			MosipRollingFileAppender rollingFileAppender, String name) {
+	public static MosipLogger getMosipRollingFileLogger(MosipRollingFileAppender rollingFileAppender, String name) {
 		if (rollingFileAppender.getFileNamePattern() == null)
-			throw new EmptyPatternException(
-					LogExeptionCodeConstant.EMPTYPATTERNEXCEPTION,
+			throw new EmptyPatternException(LogExeptionCodeConstant.EMPTYPATTERNEXCEPTION,
 					LogExeptionCodeConstant.EMPTYPATTERNEXCEPTIONMESSAGENULL);
 		else if (rollingFileAppender.getFileNamePattern().trim().isEmpty())
-			throw new EmptyPatternException(
-					LogExeptionCodeConstant.EMPTYPATTERNEXCEPTION,
+			throw new EmptyPatternException(LogExeptionCodeConstant.EMPTYPATTERNEXCEPTION,
 					LogExeptionCodeConstant.EMPTYPATTERNEXCEPTIONMESSAGEEMPTY);
 		else if (!rollingFileAppender.getFileNamePattern().contains("%d"))
-			throw new PatternSyntaxException(
-					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION,
+			throw new PatternSyntaxException(LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION,
 					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTIONMESSAGED);
-		else if (!rollingFileAppender.getMaxFileSize().trim().isEmpty()
-				&& rollingFileAppender.getMaxFileSize() != null
+		else if (!rollingFileAppender.getMaxFileSize().trim().isEmpty() && rollingFileAppender.getMaxFileSize() != null
 				&& !rollingFileAppender.getFileNamePattern().contains("%i"))
-			throw new PatternSyntaxException(
-					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION,
+			throw new PatternSyntaxException(LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION,
 					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTIONMESSAGEI);
 		else if (rollingFileAppender.getFileName() == null)
-			throw new FileNameNotProvided(
-					LogExeptionCodeConstant.FILENAMENOTPROVIDED,
+			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED,
 					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGENULL);
 		else if (rollingFileAppender.getFileName().trim().isEmpty())
-			throw new FileNameNotProvided(
-					LogExeptionCodeConstant.FILENAMENOTPROVIDED,
+			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED,
 					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGEEMPTY);
 		else if (name.trim().isEmpty())
-			throw new ClassNameNotFoundException(
-					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION,
+			throw new ClassNameNotFoundException(LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION,
 					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE);
 		else
 			try {
 				return new MosipLogback(rollingFileAppender, name);
 			} catch (IllegalStateException e) {
-				throw new MosipIllegalStateException(
-						LogExeptionCodeConstant.MOSIPILLEGALSTATEEXCEPTION,
+				throw new MosipIllegalStateException(LogExeptionCodeConstant.MOSIPILLEGALSTATEEXCEPTION,
 						LogExeptionCodeConstant.MOSIPILLEGALSTATEEXCEPTIONMESSAGE);
 			} catch (IllegalArgumentException e) {
-				throw new MosipIllegalArgumentException(
-						LogExeptionCodeConstant.MOSIPILLEGALARGUMENTEXCEPTION,
+				throw new MosipIllegalArgumentException(LogExeptionCodeConstant.MOSIPILLEGALARGUMENTEXCEPTION,
 						LogExeptionCodeConstant.MOSIPILLEGALARGUMENTEXCEPTIONMESSAGE);
 			}
 	}
@@ -345,8 +307,7 @@ public class MosipLogback implements MosipLogger {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void debug(String sessionId, String idType, String id,
-			String description) {
+	public void debug(String sessionId, String idType, String id, String description) {
 		logger.debug(LOGDISPLAY, sessionId, idType, id, description);
 
 	}
@@ -358,8 +319,7 @@ public class MosipLogback implements MosipLogger {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void warn(String sessionId, String idType, String id,
-			String description) {
+	public void warn(String sessionId, String idType, String id, String description) {
 		logger.warn(LOGDISPLAY, sessionId, idType, id, description);
 
 	}
@@ -371,8 +331,7 @@ public class MosipLogback implements MosipLogger {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void error(String sessionId, String idType, String id,
-			String description) {
+	public void error(String sessionId, String idType, String id, String description) {
 		logger.error(LOGDISPLAY, sessionId, idType, id, description);
 
 	}
@@ -384,8 +343,7 @@ public class MosipLogback implements MosipLogger {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void info(String sessionId, String idType, String id,
-			String description) {
+	public void info(String sessionId, String idType, String id, String description) {
 		logger.info(LOGDISPLAY, sessionId, idType, id, description);
 
 	}
@@ -397,8 +355,7 @@ public class MosipLogback implements MosipLogger {
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void trace(String sessionId, String idType, String id,
-			String description) {
+	public void trace(String sessionId, String idType, String id, String description) {
 		logger.trace(LOGDISPLAY, sessionId, idType, id, description);
 	}
 

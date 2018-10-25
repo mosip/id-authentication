@@ -7,8 +7,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
-import io.mosip.kernel.auditmanager.constant.AuditErrorCodes;
-import io.mosip.kernel.auditmanager.exception.MosipAuditManagerException;
+import io.mosip.kernel.auditmanager.constant.AuditErrorCode;
+import io.mosip.kernel.auditmanager.exception.AuditManagerException;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 
 /**
@@ -42,8 +42,8 @@ public class AuditUtils {
 			Set<ConstraintViolation<AuditRequestDto>> violations = validator.validate(auditRequest);
 
 			if (!violations.isEmpty()) {
-				throw new MosipAuditManagerException(AuditErrorCodes.HANDLEREXCEPTION.getErrorCode(),
-						AuditErrorCodes.HANDLEREXCEPTION.getErrorMessage());
+				throw new AuditManagerException(AuditErrorCode.HANDLEREXCEPTION.getErrorCode(),
+						AuditErrorCode.HANDLEREXCEPTION.getErrorMessage());
 			}
 		} finally {
 			if (factory != null) {
