@@ -48,7 +48,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 		dongleId = StringUtils.removeLeftChar(dongleId,
 				Integer.parseInt(RidGeneratorPropertyConstant.DONGLEID_MIN_LENGTH.getProperty()));
 
-		String randomDigitEid = sequenceNumberGen(centreId, dongleId);
+		String randomDigitEid = sequenceNumberGenerator(centreId, dongleId);
 
 		return appendString(randomDigitEid, getcurrentTimeStamp(), centreId, dongleId);
 	}
@@ -90,7 +90,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 * 
 	 * @return generated five digit random number
 	 */
-	private String sequenceNumberGen(String centreId, String dongleId) {
+	private String sequenceNumberGenerator(String centreId, String dongleId) {
 
 		final int initialValue = Integer.parseInt(RidGeneratorPropertyConstant.SEQUENCE_START_VALUE.getProperty());
 
