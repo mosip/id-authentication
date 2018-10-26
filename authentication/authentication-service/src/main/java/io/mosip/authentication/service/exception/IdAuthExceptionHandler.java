@@ -22,6 +22,7 @@ import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 
 /**
@@ -68,7 +69,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.debug(DEFAULT_SESSION_ID, EVENT_EXCEPTION, "Entered handleAllExceptions",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 		mosipLogger.error(DEFAULT_SESSION_ID, EVENT_EXCEPTION, ex.getClass().getName(),
-				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.INTERNAL_SERVER_ERROR);
+				ex.toString() + "\n Request : " + request + "\n Status returned : " + HttpStatus.INTERNAL_SERVER_ERROR 
+				+ ExceptionUtils.getStackTrace(ex));
 
 		IDAuthenticationUnknownException unknownException = new IDAuthenticationUnknownException(
 				IdAuthenticationErrorConstants.UNKNOWN_ERROR);
@@ -114,7 +116,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.error(DEFAULT_SESSION_ID, "Spring MVC Exception", ex.getClass().getName(),
 				ex.toString() + "Error message Object : "
 						+ Optional.ofNullable(errorMessage).orElseGet(() -> "null").toString() + "\nStatus returned: "
-						+ Optional.ofNullable(status).orElseGet(() -> HttpStatus.INTERNAL_SERVER_ERROR).toString());
+						+ Optional.ofNullable(status).orElseGet(() -> HttpStatus.INTERNAL_SERVER_ERROR).toString()
+						+ ExceptionUtils.getStackTrace(ex));
 		// FIXME Need to handle properly
 		List<String> errorCodes = new ArrayList<>();
 		errorCodes.add(ex.getMessage());
@@ -142,7 +145,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
 		mosipLogger.error(DEFAULT_SESSION_ID, "IdAuthenticationAppException", ex.getErrorCode(),
-				ex.toString() + "\n Status returned: " + HttpStatus.INTERNAL_SERVER_ERROR);
+				ex.toString() + "\n Status returned: " + HttpStatus.INTERNAL_SERVER_ERROR
+				+ ExceptionUtils.getStackTrace(ex));
 
 		Throwable e = ex;
 		while (e.getCause() != null) {

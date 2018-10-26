@@ -54,7 +54,7 @@ public enum IdType {
 	 * @return IDType
 	 */
 	public static Optional<IdType> getIDType(String type) {
-		return Stream.of(values()).filter(t -> t.getType().equals(type))
+		return Stream.of(values()).filter(t -> t.getType().equalsIgnoreCase(type))
 				                                .findAny();
 
 	}
