@@ -24,6 +24,7 @@ import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.constant.HibernateErrorCodes;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.packet.dto.AddressDTO;
 import io.mosip.registration.processor.core.packet.dto.BiometericData;
 import io.mosip.registration.processor.core.packet.dto.DemoInLocalLang;
@@ -63,6 +64,8 @@ public class PacketInfoManagerImplTest {
 	@InjectMocks
 	PacketInfoManager<PacketInfo, DemographicInfo, MetaData> packetInfoManagerImpl = new PacketInfoManagerImpl();
 
+	@Mock
+	CoreAuditRequestBuilder coreAuditRequestBuilder=new CoreAuditRequestBuilder();
 	@Mock
 	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
 
@@ -311,13 +314,13 @@ public class PacketInfoManagerImplTest {
 				return true;
 			}
 		};
-		Field f1 = packetInfoManagerImpl.getClass().getDeclaredField("auditRequestBuilder");
+		Field f1 = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f1.setAccessible(true);
-		f1.set(packetInfoManagerImpl, auditRequestBuilder1);
+		f1.set(coreAuditRequestBuilder, auditRequestBuilder1);
 
-		Field f2 = packetInfoManagerImpl.getClass().getDeclaredField("auditHandler");
+		Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
 		f2.setAccessible(true);
-		f2.set(packetInfoManagerImpl, auditHandler);
+		f2.set(coreAuditRequestBuilder, auditHandler);
 
 	}
 
