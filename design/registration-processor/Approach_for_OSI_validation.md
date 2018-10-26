@@ -28,10 +28,22 @@ The key solution considerations are -
 - Add new methods in PacketInfoManager to fetch the operator, supervisor and introducer basic details from table.
 - The auth module will provide rest API to validate OSI biometrics and pin. 
     ```
-    Input -> 1. UIN (the UIN of Operator/supervisor/introducer).
+    REST API to validate uin and biometric
+    Input ->    1. UIN (the UIN of Operator/supervisor/introducer).
                 2. biometric as byte array.
-    Output -> json with status as TRUE or FALSE.
-                 TRUE : valid individual.
-                 FALSE : invalid individual.
+    Output ->   json with status as TRUE or FALSE.
+                     TRUE : valid individual.
+                     FALSE : invalid individual.
     ```
+    ```
+    REST API to validate uin and pin
+    Input ->    1. UIN (the UIN of Operator/supervisor).
+                2. pin.
+    Output ->   json with status as TRUE or FALSE.
+                     TRUE : valid individual.
+                     FALSE : invalid individual.
+    ```
+    TODO : the rest API specification is not ready yet. Need to link API design when  AUTH module completes it.
+- Registration-processor has to support password validation as well. Kernel team will provide REST API to get or validate USER. 
+    The api specification is not ready yet. 
 
