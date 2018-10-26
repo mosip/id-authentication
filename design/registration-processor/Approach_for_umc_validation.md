@@ -30,17 +30,56 @@ The key solution considerations are -
 - Create UmcValidationProcessor in camel-bridge and route all successful packet structure validation request to umc_bus address. Map the request between vert.x and camel endpoints.
 - Add new methods in PacketInfoManager to fetch the user, machine and center details from table.
 - Use apache rest client to call [Master-data-APIs](https://github.com/mosip/mosip/wiki/2.4-Master-data-APIs#234-document-formats-master-api). 
-
-    Input : {userId + packet creation date}, {centerId + packet creation date}, {machineId + packet creation date}.
-
-    Output : The table record on or before creation of the packet.
-
-
+    1. Verify CENTER was active on packet creation date/time.
+    ### Resource URL
+    ### `GET /registrationcentershistory/{id}/{languagecode}/{eff_dtimes}`
+    ### Example Response
+    ```JSON
+    {
+      "registrationcenters": [
+        {
+            "registrationcenterid":"string",
+            "registrationcentername":"string",
+            "longitude":"string",
+            "latitude":"string",
+            "isactive":"boolean",
+            "centertype":"string",
+            "address":"string",
+            "workinghours":"string",
+            "contactnumber":"string",
+            "pincode":"string",
+            "locationcode":"string",
+            "stateon":"date",
+            "languagecode":"string"
+        }]
+        }
+    ```
+    2. Verify MACHINE was active on packet creation date/time.
+    ### Resource URL
+    ### `GET /machineshistory/{id}/{languagecode}/{eff_dtimes}`
+    ### Example Response
+    ```JSON
+    {
+      "machines": [
+                    { 
+                        "machine": [
+                            {"machineid":"string"},
+                            {"machinename":"string"},
+                            {"macid":"string"},	
+                            {"serialnumber":"string"},
+                            {"isactive":"boolean"}
+                            {"languagecode":"string"}
+                    ]
+                    }
+                ]
+    }
+    ```
     
     3. Verify USER/MACHINE/CENTER mapping was active on packet creation date/time : this is to verify if the user was assigned to the machine of the same center during creation of the packet.    
-    Resource URL
-    GET /getregistrationmachineusermappinghistory/{languagecode}/{eff_dtimes}/{registrationcenterid}/{machineid}/{userid}
-    Example Response
+    ### Resource URL
+    ### `GET /getregistrationmachineusermappinghistory/{languagecode}/{eff_dtimes}/{registrationcenterid}/{machineid}/{userid}`
+    ### Example Response
+    ```JSON
     {
       "registrationcenters": [
         {
@@ -55,6 +94,7 @@ The key solution considerations are -
         }
       ]
     }
+    ```
 - Registration processor would check if user/center/machine was valid during creation of the packet. On successful validation, registration-processor will further validate if the user was assigned to the same machine of same center during packet creation time. For this kernel will lookup in user-machine-center lookup table and return information. 
 - On successful validation send request to umc_bus out address. On failure send response to error queue. If any internal error happens during validation then send response to retry queue.
 
