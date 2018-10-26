@@ -14,13 +14,14 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "rid", schema = "ids")
-public class RidEntity {
+public class Rid {
 
 	/**
 	 * the dongleId.
 	 */
 	@Id
-	private String dongle_Id;
+	@Column(name="dongle_Id")
+	private String dongleId;
 
 	/**
 	 * the sequenceId.
@@ -35,7 +36,7 @@ public class RidEntity {
 	 * @return
 	 */
 	public String getDongleId() {
-		return dongle_Id;
+		return dongleId;
 	}
 
 	/**
@@ -44,7 +45,7 @@ public class RidEntity {
 	 * @param dongleId
 	 */
 	public void setDongleId(String dongleId) {
-		this.dongle_Id = dongleId;
+		this.dongleId = dongleId;
 	}
 
 	/**

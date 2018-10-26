@@ -3,7 +3,7 @@ package io.mosip.kernel.ridgenerator.repository;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
-import io.mosip.kernel.ridgenerator.entity.RidEntity;
+import io.mosip.kernel.ridgenerator.entity.Rid;
 
 /**
  * Rid Generator repository.
@@ -13,6 +13,6 @@ import io.mosip.kernel.ridgenerator.entity.RidEntity;
  *
  */
 @Repository
-public interface RidRepository extends BaseRepository<RidEntity, String> {
+public interface RidRepository extends BaseRepository<Rid, String> {
 
 }

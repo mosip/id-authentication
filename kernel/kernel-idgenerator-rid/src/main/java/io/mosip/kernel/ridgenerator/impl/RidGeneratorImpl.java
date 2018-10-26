@@ -6,11 +6,11 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.idgenerator.MosipRidGenerator;
+import io.mosip.kernel.core.spi.idgenerator.RidGenerator;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorExceptionConstant;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorPropertyConstant;
-import io.mosip.kernel.ridgenerator.entity.RidEntity;
+import io.mosip.kernel.ridgenerator.entity.Rid;
 import io.mosip.kernel.ridgenerator.exception.MosipEmptyInputException;
 import io.mosip.kernel.ridgenerator.exception.MosipInputLengthException;
 import io.mosip.kernel.ridgenerator.exception.MosipNullValueException;
@@ -25,19 +25,10 @@ import io.mosip.kernel.ridgenerator.repository.RidRepository;
  *
  */
 @Component
-public class RidGeneratorImpl implements MosipRidGenerator<String> {
+public class RidGeneratorImpl implements RidGenerator<String> {
 
 	@Autowired
 	RidRepository repository;
-
-	/**s
-	 * Input from user(should be atleast 4 char)
-	 */
-	private String centreId;
-	/**
-	 * Input from user(should be atleast 5 char)
-	 */
-	private String dongleId;
 
 	/*
 	 * (non-Javadoc)
@@ -48,13 +39,18 @@ public class RidGeneratorImpl implements MosipRidGenerator<String> {
 	 */
 	// @Override
 	public String generateId(String centreId, String dongleId) {
-		String rid = null;
-		checkInput(centreId, dongleId);
-		cleanupId(centreId, dongleId);
-		String randomDigitEid = sequenceNumberGen();
-		String currentTimeStamp = getcurrentTimeStamp();
-		rid = appendString(randomDigitEid, currentTimeStamp);
-		return rid;
+
+		validateInput(centreId, dongleId);
+
+		centreId = StringUtils.removeLeftChar(centreId,
+				Integer.parseInt(RidGeneratorPropertyConstant.CENTERID_MIN_LENGTH.getProperty()));
+
+		dongleId = StringUtils.removeLeftChar(dongleId,
+				Integer.parseInt(RidGeneratorPropertyConstant.DONGLEID_MIN_LENGTH.getProperty()));
+
+		String randomDigitEid = sequenceNumberGen(centreId, dongleId);
+
+		return appendString(randomDigitEid, getcurrentTimeStamp(), centreId, dongleId);
 	}
 
 	/**
@@ -65,7 +61,7 @@ public class RidGeneratorImpl implements MosipRidGenerator<String> {
 	 * @param machineId
 	 *            input by user
 	 */
-	private void checkInput(String agentId, String machineId) {
+	private void validateInput(String agentId, String machineId) {
 
 		if (agentId == null || machineId == null) {
 
@@ -90,52 +86,30 @@ public class RidGeneratorImpl implements MosipRidGenerator<String> {
 	}
 
 	/**
-	 * This method is used to clean up the input id
-	 * 
-	 * @param agentId
-	 *            input by user
-	 * @param machineId
-	 *            input by user
-	 */
-	private void cleanupId(String agentId, String machineId) {
-		centreId = StringUtils.removeLeftChar(agentId,
-				Integer.parseInt(RidGeneratorPropertyConstant.CENTERID_MIN_LENGTH.getProperty()));
-		dongleId = StringUtils.removeLeftChar(machineId,
-				Integer.parseInt(RidGeneratorPropertyConstant.DONGLEID_MIN_LENGTH.getProperty()));
-
-	}
-
-	/**
 	 * This method generates a five digit number against dongleId provided.
 	 * 
 	 * @return generated five digit random number
 	 */
-	private String sequenceNumberGen() {
-		final int incrementor = Integer.parseInt(RidGeneratorPropertyConstant.SEQUENCE_START_VALUE.getProperty());
-		RidEntity entity = repository.findById(RidEntity.class, dongleId);
-		if (entity == null) {
-			RidEntity ridEntity = new RidEntity();
-			ridEntity.setDongleId(dongleId);
-			ridEntity.setSequenceId(incrementor);
-			repository.save(ridEntity);
+	private String sequenceNumberGen(String centreId, String dongleId) {
 
-			return String.format("%05d", incrementor);
+		final int initialValue = Integer.parseInt(RidGeneratorPropertyConstant.SEQUENCE_START_VALUE.getProperty());
+
+		Rid entity = repository.findById(Rid.class, dongleId);
+
+		if (entity == null || entity.getSequenceId() == Integer
+				.parseInt(RidGeneratorPropertyConstant.SEQUENCE_END_VALUE.getProperty())) {
+
+			entity = new Rid();
+			entity.setDongleId(dongleId);
+			entity.setSequenceId(initialValue);
+
 		} else {
-			if (entity.getSequenceId() == Integer
-					.parseInt(RidGeneratorPropertyConstant.SEQUENCE_END_VALUE.getProperty())) {
-				RidEntity ridEntity = new RidEntity();
-				ridEntity.setDongleId(dongleId);
-				ridEntity.setSequenceId(incrementor);
-				repository.save(ridEntity);
-				return String.format("%05d", incrementor);
-			}
 
-			int id = entity.getSequenceId() + 1;
-			entity.setSequenceId(id);
-			repository.save(entity);
-			return String.format("%05d", id);
+			entity.setSequenceId(entity.getSequenceId() + 1);
 
 		}
+		repository.save(entity);
+		return String.format("%05d", entity.getSequenceId());
 	}
 
 	/**
@@ -147,7 +121,7 @@ public class RidGeneratorImpl implements MosipRidGenerator<String> {
 	 *            current timestamp generated
 	 * @return generated RID
 	 */
-	private String appendString(String randomDigitRid, String currentTimeStamp) {
+	private String appendString(String randomDigitRid, String currentTimeStamp, String centreId, String dongleId) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(centreId).append(dongleId).append(randomDigitRid).append(currentTimeStamp);
 		return (stringBuilder.toString().trim());

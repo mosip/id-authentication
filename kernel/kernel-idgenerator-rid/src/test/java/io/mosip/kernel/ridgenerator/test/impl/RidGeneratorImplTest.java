@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.ridgenerator.entity.RidEntity;
+import io.mosip.kernel.ridgenerator.entity.Rid;
 import io.mosip.kernel.ridgenerator.exception.MosipEmptyInputException;
 import io.mosip.kernel.ridgenerator.exception.MosipInputLengthException;
 import io.mosip.kernel.ridgenerator.exception.MosipNullValueException;
@@ -30,10 +30,10 @@ public class RidGeneratorImplTest {
 
 	@Test
 	public void generateIdTypeTest() {
-		RidEntity entity = new RidEntity();
+		Rid entity = new Rid();
 		entity.setDongleId("23432");
 		entity.setSequenceId(00001);
-		when(repository.findById(RidEntity.class, "23432")).thenReturn(entity);
+		when(repository.findById(Rid.class, "23432")).thenReturn(entity);
 		assertThat(impl.generateId("1234", "23432"), isA(String.class));
 	}
 
@@ -43,7 +43,7 @@ public class RidGeneratorImplTest {
 	}
 
 	@Test(expected = MosipNullValueException.class)
-	public void doungleIdNullExceptionTest() {
+	public void dongleIdNullExceptionTest() {
 		impl.generateId("1234", null);
 	}
 
@@ -69,16 +69,16 @@ public class RidGeneratorImplTest {
 
 	@Test
 	public void generateIdFirstSequenceTypeTest() {
-		when(repository.findById(RidEntity.class, "23432")).thenReturn(null);
+		when(repository.findById(Rid.class, "23432")).thenReturn(null);
 		assertThat(impl.generateId("1234", "23432"), isA(String.class));
 	}
 
 	@Test
 	public void generateIdMaxSequenceTypeTest() {
-		RidEntity entity = new RidEntity();
+		Rid entity = new Rid();
 		entity.setDongleId("23432");
 		entity.setSequenceId(99999);
-		when(repository.findById(RidEntity.class, "23432")).thenReturn(entity);
+		when(repository.findById(Rid.class, "23432")).thenReturn(entity);
 		assertThat(impl.generateId("1234", "23432"), isA(String.class));
 	}
 

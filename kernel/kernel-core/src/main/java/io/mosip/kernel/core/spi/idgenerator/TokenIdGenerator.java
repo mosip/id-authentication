@@ -5,7 +5,7 @@ package io.mosip.kernel.core.spi.idgenerator;
  * @author Srinivasan
  *
  */
-public interface MosipTokenIdGenerator<T> {
+public interface TokenIdGenerator<T> {
 
 	/**
 	 * Method when called would create random token id.

@@ -7,7 +7,7 @@ package io.mosip.kernel.core.spi.idgenerator;
  * @since 1.0.0
  *
  */
-public interface MosipVidGenerator<T> {
+public interface VidGenerator<T> {
 	/**
 	 * Function to generate an Id
 	 * 

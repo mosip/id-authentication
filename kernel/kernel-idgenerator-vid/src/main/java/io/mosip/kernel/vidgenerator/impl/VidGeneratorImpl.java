@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.spi.idgenerator.MosipVidGenerator;
+import io.mosip.kernel.core.spi.idgenerator.VidGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.vidgenerator.cache.VidCacheManager;
@@ -30,7 +30,7 @@ import io.mosip.kernel.vidgenerator.repository.VidRepository;
  *
  */
 @Service
-public class VidGeneratorImpl implements MosipVidGenerator<String> {
+public class VidGeneratorImpl implements VidGenerator<String> {
 	@Autowired
 	VidRepository vidRepository;
 	@Autowired
