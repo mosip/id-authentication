@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.dto.indauth;
 
+import java.util.List;
+
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -15,13 +17,10 @@ import lombok.Data;
  * @author Rakesh Roshan
  */
 @Data
-public class AuthRequestDTO  {
+public class AuthRequestDTO {
 
 	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.id.notNull}")
 	private String id;
-
-	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.idType.notNull}")
-	private String idType;
 
 	/**
 	 * The value of the field or property must be a number within a specified range.
@@ -29,8 +28,17 @@ public class AuthRequestDTO  {
 	 * number, and the {@code fraction} element specifies the maximum fractional
 	 * digits for the number.
 	 */
+	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.ver.notNull}")
 	@Digits(fraction = 1, integer = 1, message = "{mosip.ida.validation.message.AuthRequest.ver}")
 	private String ver;
+
+	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.indid.notNull}")
+	private String indId;
+
+	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.idType.notNull}")
+	private String indIdType;
+
+	private AuthTypeDTO authType;
 
 	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.muaCode.notNull}")
 	@Pattern(regexp = "^[A-Za-z0-9]*$")
@@ -41,23 +49,18 @@ public class AuthRequestDTO  {
 	@Pattern(regexp = "^[A-Za-z0-9]{10}", message = "{mosip.ida.validation.message.AuthRequest.txnId}")
 	private String txnID;
 
-	// The value of the field or property must be a date or time in the past or present.
 	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.reqTime.notNull}")
 	private String reqTime;
 
-	//@Pattern(regexp = "^[A-Za-z0-9]{10}$", message = "{mosip.ida.validation.message.AuthRequest.asaLicenseKey}")
-	private String msaLicenseKey;
+	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.reqHmac.notNull}")
+	private String reqHmac;
 
-	private String hmac;
-	
-	private String data;
-	
-	private String signature;
-	
-	private AuthTypeDTO authType;
-	
 	private AuthSecureDTO key;
-	
-	private PersonalIdentityDataDTO pii;
+
+	private List<MatchInfo> matchInfo;
+
+	private PinInfo pinInfo;
+
+	private RequestDTO request;
 
 }

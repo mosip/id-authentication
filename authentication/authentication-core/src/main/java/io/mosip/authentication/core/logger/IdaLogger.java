@@ -1,8 +1,8 @@
 package io.mosip.authentication.core.logger;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * Logger for IDA which provides implementation from kernel logback.
@@ -15,16 +15,16 @@ public final class IdaLogger {
 	/**
 	 * Instantiates a new ida logger.
 	 */
-	private IdaLogger() {
-	}
-
-	/**
-	 * Method to get the rolling file logger for the class provided.
-	 *
-	 * @param clazz
-	 *            the clazz
-	 * @return the logger
-	 */
+//	private IdaLogger() {
+//	}
+//
+//	/**
+//	 * Method to get the rolling file logger for the class provided.
+//	 *
+//	 * @param clazz
+//	 *            the clazz
+//	 * @return the logger
+//	 */
 	public static MosipLogger getLogger(Class<?> clazz) {
 		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
 		mosipRollingFileAppender.setAppend(true);

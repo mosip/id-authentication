@@ -56,11 +56,10 @@ public class AuthFacadeImpl implements AuthFacade {
 	/**
 	 * Process the authorisation type and authorisation response is returned.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return the auth response DTO
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	@Override
@@ -70,7 +69,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, refId);
 
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
-		authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdType())
+		authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIndIdType())
 				.setReqTime(authRequestDTO.getReqTime()).setVersion(authRequestDTO.getVer());
 
 		authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
@@ -88,13 +87,11 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * called according to authorisation type. reference Id is returned in
 	 * AuthRequestDTO.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param refId
-	 *            the ref id
+	 * @param authRequestDTO the auth request DTO
+	 * @param refId          the ref id
 	 * @return the list
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public List<AuthStatusInfo> processAuthType(AuthRequestDTO authRequestDTO, String refId)
 			throws IdAuthenticationBusinessException {
@@ -107,8 +104,8 @@ public class AuthFacadeImpl implements AuthFacade {
 			logger.info(DEFAULT_SESSION_ID, "IDA", AUTH_FACADE, "OTP Authentication status : " + otpValidationStatus);
 		}
 
-		if (authRequestDTO.getAuthType().isPi() || authRequestDTO.getAuthType().isAd()
-				|| authRequestDTO.getAuthType().isFad()) {
+		if (authRequestDTO.getAuthType().isPersonalIdentity() || authRequestDTO.getAuthType().isAddress()
+				|| authRequestDTO.getAuthType().isFullAddress()) {
 			AuthStatusInfo demoValidationStatus = demoAuthService.getDemoStatus(authRequestDTO, refId);
 			authStatusList.add(demoValidationStatus);
 			// TODO log authStatus - authType, response
@@ -124,27 +121,25 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * Process the IdType and validates the Idtype and upon validation reference Id
 	 * is returned in AuthRequestDTO.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return the string
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	public String processIdType(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
 		String refId = null;
-		String reqType = authRequestDTO.getIdType();
+		String reqType = authRequestDTO.getIndIdType();
 		if (reqType.equals(IdType.UIN.getType())) {
 			try {
-				refId = idAuthService.validateUIN(authRequestDTO.getId());
+				refId = idAuthService.validateUIN(authRequestDTO.getIndId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 			}
 		} else {
-
 			try {
-				refId = idAuthService.validateVID(authRequestDTO.getId());
+				refId = idAuthService.validateVID(authRequestDTO.getIndId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);

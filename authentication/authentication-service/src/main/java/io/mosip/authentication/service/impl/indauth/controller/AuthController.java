@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -20,7 +19,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
-import io.mosip.authentication.service.impl.indauth.validator.DemoValidator;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -42,10 +40,6 @@ public class AuthController {
 	@Autowired
 	private AuthRequestValidator authRequestValidator;
 
-	/** The demo validator. */
-	@Autowired
-	private DemoValidator demoValidator;
-
 	/** The auth facade. */
 	@Autowired
 	private AuthFacade authFacade;
@@ -57,7 +51,7 @@ public class AuthController {
 	 */
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
-		binder.addValidators(authRequestValidator, demoValidator);
+//		 binder.addValidators(authRequestValidator);
 	}
 
 	/**
