@@ -99,7 +99,7 @@ The key solution considerations are -
 - Update the packet status in "Registration-status" table for both successful and failed validation.
 
 **Class Diagram**
-![Umc class diagram](_images/ucm_class_diagram.png)
+![Umc class diagram](_images/umc_class_diagram.png)
 
 **Sequence Diagram**
-![Packet receiver class diagram](_images/ucm_seq_diagram.png)
+![Umc class diagram](_images/umc_seq_diagram.png)
