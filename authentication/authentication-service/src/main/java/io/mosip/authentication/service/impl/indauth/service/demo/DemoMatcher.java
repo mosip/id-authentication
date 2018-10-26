@@ -1,7 +1,9 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.ToIntBiFunction;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -27,7 +29,7 @@ public class DemoMatcher {
 	 *            the match input
 	 * @return the list
 	 */
-	public List<MatchOutput> matchDemoData(DemoDTO demoDTO, DemoEntity demoEntity, List<MatchInput> listMatchInputs,
+	public List<MatchOutput> matchDemoData(DemoDTO demoDTO, DemoEntity demoEntity, Collection<MatchInput> listMatchInputs,
 			LocationInfoFetcher locationInfoFetcher) {
 		return listMatchInputs.parallelStream().map(input -> matchType(demoDTO, demoEntity, input, locationInfoFetcher))
 				.filter(output -> output != null).collect(Collectors.toList());
@@ -44,7 +46,7 @@ public class DemoMatcher {
 	 *            the input
 	 * @return the match output
 	 */
-	private MatchOutput matchType(DemoDTO demoDTO, DemoEntity demoEntity, MatchInput input,
+	private static MatchOutput matchType(DemoDTO demoDTO, DemoEntity demoEntity, MatchInput input,
 			LocationInfoFetcher locationInfoFetcher) {
 		String matchStrategyTypeStr = input.getMatchStrategyType();
 		if (matchStrategyTypeStr == null) {
@@ -59,13 +61,13 @@ public class DemoMatcher {
 					.getAllowedMatchingStrategy(strategyType);
 			if (matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();
-				Optional<Object> reqInfoOpt = input.getDemoMatchType().getDemoInfoFetcher().getInfo(demoDTO);
+				Optional<Object> reqInfoOpt = input.getDemoMatchType().getDemoInfoFetcher().apply(demoDTO);
 				if(reqInfoOpt.isPresent()) {
 					Object reqInfo = reqInfoOpt.get();
 					Object entityInfo = input.getDemoMatchType().getEntityInfoFetcher().getInfo(demoEntity,
 							locationInfoFetcher);
-					MatchFunction matchFunction = strategy.getMatchFunction();
-					int mtOut = matchFunction.doMatch(reqInfo, entityInfo);
+					ToIntBiFunction<Object, Object> matchFunction = strategy.getMatchFunction();
+					int mtOut = matchFunction.applyAsInt(reqInfo, entityInfo);
 					boolean matchOutput = mtOut >= input.getMatchValue();
 					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), input.getDemoMatchType());
 				}

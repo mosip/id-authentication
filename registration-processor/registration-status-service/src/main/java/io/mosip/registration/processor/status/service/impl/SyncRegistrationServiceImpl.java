@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -75,7 +75,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		try {
 			for (SyncRegistrationDto registrationDto : resgistrationDtos) {
 				SyncRegistrationEntity existingSyncRegistration = findByRegistrationId(
-						registrationDto.getRegistrationId());
+						registrationDto.getRegistrationId().trim());
 				SyncRegistrationEntity syncRegistration;
 				if (existingSyncRegistration != null) {
 					// update sync registration record
@@ -158,7 +158,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	 */
 	private SyncRegistrationEntity convertDtoToEntity(SyncRegistrationDto dto) {
 		SyncRegistrationEntity syncRegistrationEntity = new SyncRegistrationEntity();
-		syncRegistrationEntity.setRegistrationId(dto.getRegistrationId());
+		syncRegistrationEntity.setRegistrationId(dto.getRegistrationId().trim());
 		syncRegistrationEntity.setIsActive(dto.getIsActive() != null ? dto.getIsActive() : Boolean.TRUE);
 		syncRegistrationEntity.setIsDeleted(dto.getIsDeleted() != null ? dto.getIsDeleted() : Boolean.FALSE);
 		syncRegistrationEntity.setLangCode(dto.getLangCode());

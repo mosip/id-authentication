@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import java.util.function.ToIntBiFunction;
+
 import org.junit.Test;
 
 /**
@@ -41,7 +44,7 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -51,8 +54,8 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.doMatch("a k Chowdary Beach view colony apt 12 main st TamilNadu 560055",
+		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.applyAsInt("a k Chowdary Beach view colony apt 12 main st TamilNadu 560055",
 				"a k Chowdary Beach view colony apt 12 main st TamilNadu 560055");
 		assertEquals(100, value);
 	}
@@ -63,14 +66,14 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.doMatch(2, 2);
+		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.applyAsInt(2, 2);
 		assertEquals(0, value);
 
-		int value1 = matchFunction.doMatch(2, "no 1 second street chennai");
+		int value1 = matchFunction.applyAsInt(2, "no 1 second street chennai");
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.doMatch("no 1 second street chennai", 2);
+		int value2 = matchFunction.applyAsInt("no 1 second street chennai", 2);
 		assertEquals(0, value2);
 	}
 
@@ -103,7 +106,7 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPartialMatchingStrategyfunctionisNull() {
-		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -113,8 +116,8 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidPartialMatchingStrategyFunction() {
-		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
-		int value = matchFunction.doMatch("no 1 second street chennai", "no 1 second");
+		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
+		int value = matchFunction.applyAsInt("no 1 second street chennai", "no 1 second");
 		assertEquals(50, value);
 	}
 
@@ -123,14 +126,14 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidPartialMatchingStrategyFunction() {
-		MatchFunction matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
-		int value = matchFunction.doMatch(2, 2);
+		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
+		int value = matchFunction.applyAsInt(2, 2);
 		assertEquals(0, value);
 
-		int value1 = matchFunction.doMatch(2, "no 1 second street chennai");
+		int value1 = matchFunction.applyAsInt(2, "no 1 second street chennai");
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.doMatch("no 1 second street chennai", 2);
+		int value2 = matchFunction.applyAsInt("no 1 second street chennai", 2);
 		assertEquals(0, value2);
 	}
 
@@ -155,8 +158,8 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPhoneticsMatchValue() {
-		MatchFunction matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
-		int value = matchFunction.doMatch(2, 2);
+		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
+		int value = matchFunction.applyAsInt(2, 2);
 		assertEquals(0, value);
 	}
 }

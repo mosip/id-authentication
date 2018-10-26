@@ -12,6 +12,6 @@ This folder has all submodules of kernel of Mosip.
    
    
 
-# MOSIP Modules Components
+# MOSIP Modules Components:
 
 ![](../design/arch_diagrams/MOSIP_modules_components.png)   

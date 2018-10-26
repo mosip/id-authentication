@@ -78,6 +78,7 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
+
 	}
 
 	/* (non-Javadoc)
@@ -87,7 +88,6 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		requestTime = Instant.now();
-		
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Request received at : " + requestTime);
 		
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(

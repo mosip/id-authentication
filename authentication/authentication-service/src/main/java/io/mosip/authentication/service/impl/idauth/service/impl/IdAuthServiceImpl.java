@@ -137,30 +137,29 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 *             the id validation failed exception
 	 */
 	private String doValidateVIDEntity(String vid) throws IdValidationFailedException {
-		String refId = null;
-		VIDEntity vidEntity = vidRepository.getOne(vid);
-		if (null != vidEntity) {
-
-			if (vidEntity.isActive()) {
-				Date currentDate = new Date();
-				if (currentDate.before(vidEntity.getExpiryDate())) {
-					refId = vidEntity.getRefId();
-					Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
-					if (uinEntityOpt.isPresent()) {
-						doValidateUIN(uinEntityOpt.get());
-					} else {
-						throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
-					}
-				} else {
-					throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
-				}
-			} else {
-				// TODO log error
-				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_VID);
-			}
-		} else {
+		Optional<VIDEntity> vidEntityOpt = vidRepository.findById(vid);
+		if (!vidEntityOpt.isPresent()) {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_VID);
+		} 
+		VIDEntity vidEntity = vidEntityOpt.get();
+		if (!vidEntity.isActive()) {
+			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INACTIVE_VID);
 		}
+		
+		Date currentDate = new Date();
+		if (!currentDate.before(vidEntity.getExpiryDate())) {
+			throw new IdValidationFailedException(IdAuthenticationErrorConstants.EXPIRED_VID);
+		}
+		
+		String refId = vidEntity.getRefId();
+		Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
+		if (!uinEntityOpt.isPresent()) {
+			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
+		}
+		
+		
+		doValidateUIN(uinEntityOpt.get());
+	
 		return refId;
 	}
 
@@ -172,7 +171,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 * @throws IdValidationFailedException
 	 *             the id validation failed exception
 	 */
-	private void doValidateUIN(UinEntity uinEntity) throws IdValidationFailedException {
+	private static void doValidateUIN(UinEntity uinEntity) throws IdValidationFailedException {
 		if (!uinEntity.isActive()) {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 		}

@@ -15,10 +15,10 @@ import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.uin.constants.MosipUinExceptionConstants;
+import io.mosip.kernel.idvalidator.uin.constant.MosipUinExceptionConstant;
 
 /**
- * Test class for validate the Given UIN in String format
+ * Class for validate the Given UIN in String format
  *
  * @author Megha Tanga
  * 
@@ -87,8 +87,8 @@ public class UinValidatorImpl implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (StringUtils.isEmpty(id)) {
-			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_INVALID_NULL.getErrorCode(),
-					MosipUinExceptionConstants.UIN_VAL_INVALID_NULL.getErrorMessage());
+			throw new MosipInvalidIDException(MosipUinExceptionConstant.UIN_VAL_INVALID_NULL.getErrorCode(),
+					MosipUinExceptionConstant.UIN_VAL_INVALID_NULL.getErrorMessage());
 		}
 		/**
 		 * 
@@ -96,8 +96,8 @@ public class UinValidatorImpl implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (id.length() != uinLength) {
-			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorCode(),
-					MosipUinExceptionConstants.UIN_VAL_ILLEGAL_LENGTH.getErrorCode());
+			throw new MosipInvalidIDException(MosipUinExceptionConstant.UIN_VAL_ILLEGAL_LENGTH.getErrorCode(),
+					MosipUinExceptionConstant.UIN_VAL_ILLEGAL_LENGTH.getErrorMessage());
 		}
 		/**
 		 * 
@@ -105,8 +105,8 @@ public class UinValidatorImpl implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (!Pattern.matches(numaricRegEx, id)) {
-			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_INVALID_DIGITS.getErrorCode(),
-					MosipUinExceptionConstants.UIN_VAL_INVALID_DIGITS.getErrorMessage());
+			throw new MosipInvalidIDException(MosipUinExceptionConstant.UIN_VAL_INVALID_DIGITS.getErrorCode(),
+					MosipUinExceptionConstant.UIN_VAL_INVALID_DIGITS.getErrorMessage());
 		}
 		/**
 		 * 
@@ -114,8 +114,8 @@ public class UinValidatorImpl implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (id.charAt(0) == CHAR_ZERO || id.charAt(0) == CHAR_ONE) {
-			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_INVALID_ZERO_ONE.getErrorCode(),
-					MosipUinExceptionConstants.UIN_VAL_INVALID_ZERO_ONE.getErrorMessage());
+			throw new MosipInvalidIDException(MosipUinExceptionConstant.UIN_VAL_INVALID_ZERO_ONE.getErrorCode(),
+					MosipUinExceptionConstant.UIN_VAL_INVALID_ZERO_ONE.getErrorMessage());
 		}
 
 		/**
@@ -134,8 +134,8 @@ public class UinValidatorImpl implements MosipIdValidator<String> {
 		 */
 		if (IdFilterUtils.isValidId(id)) {
 			throw new MosipInvalidIDException(
-					MosipUinExceptionConstants.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
-					MosipUinExceptionConstants.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
+					MosipUinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
+					MosipUinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
 		}
 
 		/**
@@ -146,8 +146,8 @@ public class UinValidatorImpl implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (!ChecksumUtils.validateChecksum(id)) {
-			throw new MosipInvalidIDException(MosipUinExceptionConstants.UIN_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
-					MosipUinExceptionConstants.UIN_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
+			throw new MosipInvalidIDException(MosipUinExceptionConstant.UIN_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
+					MosipUinExceptionConstant.UIN_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
 		}
 		/**
 		 * 

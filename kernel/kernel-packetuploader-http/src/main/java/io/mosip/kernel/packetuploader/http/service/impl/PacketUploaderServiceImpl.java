@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.packetuploader.http.config.PacketFileStorageProperties;
-import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstants;
+import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstant;
 import io.mosip.kernel.packetuploader.http.dto.PacketUploaderResponceDTO;
-import io.mosip.kernel.packetuploader.http.exception.MosipDirectoryNotEmpty;
+import io.mosip.kernel.packetuploader.http.exception.MosipDirectoryNotEmptyException;
 import io.mosip.kernel.packetuploader.http.exception.MosipIOException;
-import io.mosip.kernel.packetuploader.http.exception.MosipPacketLocationSecurity;
+import io.mosip.kernel.packetuploader.http.exception.MosipPacketLocationSecurityException;
 import io.mosip.kernel.packetuploader.http.service.PacketUploaderService;
 import io.mosip.kernel.packetuploader.http.util.PacketUploaderUtils;
 
@@ -59,13 +59,13 @@ public class PacketUploaderServiceImpl implements PacketUploaderService {
 			fileSizeInBytes = Files.copy(packet.getInputStream(), packetStorageLocation,
 					StandardCopyOption.REPLACE_EXISTING);
 		} catch (DirectoryNotEmptyException e) {
-			throw new MosipDirectoryNotEmpty(
-					PacketUploaderExceptionConstants.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION, e.getCause());
+			throw new MosipDirectoryNotEmptyException(
+					PacketUploaderExceptionConstant.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION, e.getCause());
 		} catch (SecurityException e) {
-			throw new MosipPacketLocationSecurity(
-					PacketUploaderExceptionConstants.MOSIP_SECURITY_FILE_LOCATION_EXCEPTION, e);
+			throw new MosipPacketLocationSecurityException(
+					PacketUploaderExceptionConstant.MOSIP_SECURITY_FILE_LOCATION_EXCEPTION, e);
 		} catch (IOException e) {
-			throw new MosipIOException(PacketUploaderExceptionConstants.MOSIP_IO_FILE_EXCEPTION, e.getCause());
+			throw new MosipIOException(PacketUploaderExceptionConstant.MOSIP_IO_FILE_EXCEPTION, e.getCause());
 		}
 
 		return new PacketUploaderResponceDTO(fileName, fileSizeInBytes);

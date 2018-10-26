@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.util.function.ToIntBiFunction;
+
 import io.mosip.authentication.core.util.MatcherUtil;
 
 public enum FullAddressMatchingStrategy implements MatchingStrategy {
@@ -22,7 +24,7 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 		}
 	}), PHONETICS(MatchingStrategyType.PHONETICS, (reqInfo, entityInfo) -> 0);
 
-	private final MatchFunction matchFunction;
+	private final ToIntBiFunction<Object, Object> matchFunction;
 
 	private final MatchingStrategyType matchStrategyType;
 
@@ -32,7 +34,7 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 	 * @param matchStrategyType
 	 * @param matchFunction
 	 */
-	private FullAddressMatchingStrategy(MatchingStrategyType matchStrategyType, MatchFunction matchFunction) {
+	FullAddressMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
@@ -43,7 +45,7 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 	}
 
 	@Override
-	public MatchFunction getMatchFunction() {
+	public ToIntBiFunction<Object, Object> getMatchFunction() {
 		return matchFunction;
 	}
 }

@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.packet.dto.BiometericData;
-import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
+import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.DocumentDetail;
 import io.mosip.registration.processor.core.packet.dto.ExceptionFingerprint;
@@ -53,7 +53,7 @@ import io.mosip.registration.processor.status.code.AuditLogTempConstant;
  *
  */
 @Service
-public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, DemographicInfo, MetaData> {
+public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demographic, MetaData> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
 
@@ -143,7 +143,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	 * #saveDemographicData(java.lang.Object)
 	 */
 	@Override
-	public void saveDemographicData(DemographicInfo demographicInfo, MetaData metaData) {
+	public void saveDemographicData(Demographic demographicInfo, MetaData metaData) {
 
 		boolean isTransactionSuccessful = false;
 		try {

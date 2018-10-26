@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.function.ToIntBiFunction;
+
 import org.junit.Test;
 
 /**
@@ -43,7 +45,7 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -53,8 +55,8 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.doMatch("dinesh karuppiah", "dinesh karuppiah");
+		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.applyAsInt("dinesh karuppiah", "dinesh karuppiah");
 		assertEquals(100, value);
 	}
 
@@ -64,14 +66,14 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.doMatch(2, 2);
+		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		int value = matchFunction.applyAsInt(2, 2);
 		assertEquals(0, value);
 
-		int value1 = matchFunction.doMatch(2, "dinesh");
+		int value1 = matchFunction.applyAsInt(2, "dinesh");
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.doMatch("dinesh", 2);
+		int value2 = matchFunction.applyAsInt("dinesh", 2);
 		assertEquals(0, value2);
 	}
 
@@ -104,7 +106,7 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPartialMatchingStrategyfunctionisNull() {
-		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -114,8 +116,8 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidPartialMatchingStrategyFunction() {
-		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
-		int value = matchFunction.doMatch("dinesh thiagarajan", "dinesh karuppiah");
+		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		int value = matchFunction.applyAsInt("dinesh thiagarajan", "dinesh karuppiah");
 		assertEquals(33, value);
 	}
 
@@ -124,14 +126,14 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidPartialMatchingStrategyFunction() {
-		MatchFunction matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
-		int value = matchFunction.doMatch(2, 2);
+		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		int value = matchFunction.applyAsInt(2, 2);
 		assertEquals(0, value);
 
-		int value1 = matchFunction.doMatch(2, "dinesh");
+		int value1 = matchFunction.applyAsInt(2, "dinesh");
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.doMatch("dinesh", 2);
+		int value2 = matchFunction.applyAsInt("dinesh", 2);
 		assertEquals(0, value2);
 	}
 
@@ -156,8 +158,8 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPhoneticsMatchValue() {
-		MatchFunction matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
-		int value = matchFunction.doMatch(2, 2);
+		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		int value = matchFunction.applyAsInt(2, 2);
 		assertEquals(0, value);
 	}
 

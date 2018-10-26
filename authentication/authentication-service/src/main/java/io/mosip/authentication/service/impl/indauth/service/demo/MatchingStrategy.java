@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.util.function.ToIntBiFunction;
+
 /**
  * @author  Arun Bose
  * The Interface MatchingStrategy.
@@ -18,6 +20,6 @@ public interface MatchingStrategy {
 	 *
 	 * @return the match function
 	 */
-	MatchFunction getMatchFunction();
+	 ToIntBiFunction<Object, Object> getMatchFunction();
 	
 }

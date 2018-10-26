@@ -22,12 +22,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.kernel.dataaccess.constant.HibernateErrorCodes;
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.packet.dto.AddressDTO;
 import io.mosip.registration.processor.core.packet.dto.BiometericData;
-import io.mosip.registration.processor.core.packet.dto.DemoInLocalLang;
-import io.mosip.registration.processor.core.packet.dto.DemoInUserLang;
+import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.DocumentDetail;
@@ -44,7 +43,6 @@ import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentPKEntity;
@@ -61,7 +59,7 @@ import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoMan
 @RunWith(MockitoJUnitRunner.class)
 public class PacketInfoManagerImplTest {
 	@InjectMocks
-	PacketInfoManager<PacketInfo, DemographicInfo, MetaData> packetInfoManagerImpl = new PacketInfoManagerImpl();
+	PacketInfoManager<PacketInfo, Demographic, MetaData> packetInfoManagerImpl = new PacketInfoManagerImpl();
 
 	@Mock
 	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
@@ -109,9 +107,9 @@ public class PacketInfoManagerImplTest {
 	private GeoLocation geoLocation;
 	private ApplicantDocumentEntity applicantDocumentEntity;
 	private ApplicantDocumentPKEntity applicantDocumentPKEntity;
-	private DemographicInfo demographicInfo;
-	private DemoInLocalLang demoInLocalLang;
-	private DemoInUserLang demoInUserLang;
+	private Demographic demographicInfo;
+	private DemographicInfo demoInLocalLang;
+	private DemographicInfo demoInUserLang;
 
 	@Before
 	public void setup()
@@ -262,8 +260,8 @@ public class PacketInfoManagerImplTest {
 
 		applicantDocumentEntity.setDocStore(byteArray.getBytes());
 
-		demographicInfo = new DemographicInfo();
-		demoInLocalLang = new DemoInLocalLang();
+		demographicInfo = new Demographic();
+		demoInLocalLang = new DemographicInfo();
 		AddressDTO addressDTO = new AddressDTO();
 		addressDTO.setLine1("line1");
 		addressDTO.setLine2("line2");
@@ -271,20 +269,19 @@ public class PacketInfoManagerImplTest {
 		demoInLocalLang.setAddressDTO(addressDTO);
 		demoInLocalLang.setChild(false);
 		demoInLocalLang.setEmailId("testMosip@mosip.com");
-		demoInLocalLang.setFamilyname("TestFamily");
+
 		demoInLocalLang.setFirstName("FirstNameTest");
 		demoInLocalLang.setLastName("Lastnametest");
 		demoInLocalLang.setDateOfBirth("1539674005050");
-		demoInLocalLang.setForename("ForeNametest");
+
 		demoInLocalLang.setFullName("FullNametest");
 		demoInLocalLang.setGender("Male");
-		demoInLocalLang.setGivenname("Mosip");
+
 		demoInLocalLang.setLanguageCode("eng");
 		demoInLocalLang.setMobile("9876543210");
-		demoInLocalLang.setSurname("Surnametest");
 
 		demographicInfo.setDemoInLocalLang(demoInLocalLang);
-		demoInUserLang = new DemoInUserLang();
+		demoInUserLang = new DemographicInfo();
 		demoInUserLang.setAddressDTO(addressDTO);
 		demoInUserLang.setChild(false);
 		demoInUserLang.setEmailId("testMosip@mosip.com");
@@ -293,11 +290,9 @@ public class PacketInfoManagerImplTest {
 		demoInUserLang.setDateOfBirth("1539674005050");
 		demoInUserLang.setLanguageCode("eng");
 
-		demoInLocalLang.setFamilyname("FamilyName");
-		demoInLocalLang.setForename("ForeNameTest");
 		demoInLocalLang.setFullName("FullNameTest");
 		demoInLocalLang.setGender("Male");
-		demoInLocalLang.setGivenname("GivenNameTest");
+
 		demoInLocalLang.setMiddleName("middleNameTest");
 		demoInLocalLang.setMobile("9876543210");
 		demographicInfo.setDemoInUserLang(demoInUserLang);
@@ -353,7 +348,7 @@ public class PacketInfoManagerImplTest {
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void testDemographicFailureCase() {
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(applicantDemographicRepository.save(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.saveDemographicData(demographicInfo, metaData);

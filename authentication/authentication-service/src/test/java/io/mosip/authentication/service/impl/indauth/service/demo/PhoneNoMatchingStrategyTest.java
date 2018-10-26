@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.function.ToIntBiFunction;
+
 import org.junit.Test;
 
 public class PhoneNoMatchingStrategyTest {
@@ -38,7 +40,7 @@ public class PhoneNoMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		MatchFunction matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -48,12 +50,12 @@ public class PhoneNoMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();		
-		int value = matchFunction.doMatch("9876543210","9876543210");
+		ToIntBiFunction<Object, Object> matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();		
+		int value = matchFunction.applyAsInt("9876543210","9876543210");
 		assertEquals(100, value);
-		int value1 = matchFunction.doMatch("+91-9876543210","+91-9876543210");
+		int value1 = matchFunction.applyAsInt("+91-9876543210","+91-9876543210");
 		assertEquals(100, value1);
-		int value2 = matchFunction.doMatch("413-3432-321","413-3432-321");
+		int value2 = matchFunction.applyAsInt("413-3432-321","413-3432-321");
 		assertEquals(100, value2);
 	}
 
@@ -63,27 +65,27 @@ public class PhoneNoMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		MatchFunction matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, Object> matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
 		
-		int value = matchFunction.doMatch("9789438210","1234567890");
+		int value = matchFunction.applyAsInt("9789438210","1234567890");
 		assertEquals(0, value);
 		
-		int value1 = matchFunction.doMatch("76348798","783248712");
+		int value1 = matchFunction.applyAsInt("76348798","783248712");
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.doMatch("789-7389-783","9832-129-322");
+		int value2 = matchFunction.applyAsInt("789-7389-783","9832-129-322");
 		assertEquals(0, value2);
 		
-		int value3 = matchFunction.doMatch("+91-1234567890","1234567890");
+		int value3 = matchFunction.applyAsInt("+91-1234567890","1234567890");
 		assertEquals(0, value3);
 		
-		int value4 = matchFunction.doMatch(1,2);
+		int value4 = matchFunction.applyAsInt(1,2);
 		assertEquals(0, value4);
 		
-		int value5 = matchFunction.doMatch(1,"123434545");
+		int value5 = matchFunction.applyAsInt(1,"123434545");
 		assertEquals(0, value5);
 		
-		int value6 = matchFunction.doMatch("9768456423",1);
+		int value6 = matchFunction.applyAsInt("9768456423",1);
 		assertEquals(0, value6);
 	}
 }

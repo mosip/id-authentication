@@ -87,7 +87,7 @@ public class DemoMatchTypeTest {
 		personalFullAddressDTO.setAddrPri("no 11 gandhi street");
 		//demodto.setLangPri("english");
 		demoDTO.setFad(personalFullAddressDTO);
-		assertEquals(tmpAddress, DemoMatchType.ADDR_PRI.getDemoInfoFetcher().getInfo(demoDTO).get());
+		assertEquals(tmpAddress, DemoMatchType.ADDR_PRI.getDemoInfoFetcher().apply(demoDTO).get());
 	}
 	
 //	@Test
@@ -98,7 +98,7 @@ public class DemoMatchTypeTest {
 //		personalFullAddressDTO.setAddrSec("no 11 gandhi street");
 //		//demodto.setLangPri("english");
 //		demoDTO.setFad(personalFullAddressDTO);
-//		assertEquals(tmpAddress, DemoMatchType.ADDR_SEC.getDemoInfoFetcher().getInfo(demoDTO).get());
+//		assertEquals(tmpAddress, DemoMatchType.ADDR_SEC.getDemoInfoFetcher().apply(demoDTO).get());
 //	}
 
 	@Test
@@ -188,7 +188,7 @@ public class DemoMatchTypeTest {
 		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 		personalIdentityDTO.setNamePri("dinesh karuppiah thiagarajan");
 		demoDTO.setPi(personalIdentityDTO);
-		assertEquals(DemoMatchType.NAME_PRI.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.NAME_PRI.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.NAME_PRI.getEntityInfoFetcher().getInfo(demoEntity, null));
 
 	}
@@ -203,7 +203,7 @@ public class DemoMatchTypeTest {
 //		PersonalIdentityDTO personalIdentityDTO = new PersonalIdentityDTO();
 //		personalIdentityDTO.setNameSec("dinesh karuppiah thiagarajan");
 //		demoDTO.setPi(personalIdentityDTO);
-//		assertEquals(DemoMatchType.NAME_SEC.getDemoInfoFetcher().getInfo(demoDTO).get(),
+//		assertEquals(DemoMatchType.NAME_SEC.getDemoInfoFetcher().apply(demoDTO).get(),
 //				DemoMatchType.NAME_SEC.getEntityInfoFetcher().getInfo(demoEntity, null));
 //
 //	}
@@ -221,7 +221,7 @@ public class DemoMatchTypeTest {
 		demoDTO.setPi(personalIdentityDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setGenderCode("male");
-		assertEquals(DemoMatchType.GENDER.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.GENDER.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.GENDER.getEntityInfoFetcher().getInfo(demoEntity, null));
 	}
 
@@ -233,7 +233,7 @@ public class DemoMatchTypeTest {
 		demoDTO.setPi(personalIdentityDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setDob(sdf.parse("2001-07-16"));
-		assertEquals(DemoMatchType.AGE.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.AGE.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.AGE.getEntityInfoFetcher().getInfo(demoEntity, null));
 	}
 
@@ -251,7 +251,7 @@ public class DemoMatchTypeTest {
 		demoDTO.setPi(personalIdentityDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setDob(entityDate);
-		assertEquals(DemoMatchType.DOB.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.DOB.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.DOB.getEntityInfoFetcher().getInfo(demoEntity, null).toString());
 	}
 
@@ -268,7 +268,7 @@ public class DemoMatchTypeTest {
 		demoDTO.setPi(personalIdentityDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setMobile("1234567890");
-		assertEquals(DemoMatchType.MOBILE.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.MOBILE.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.MOBILE.getEntityInfoFetcher().getInfo(demoEntity, null));
 	}
 
@@ -285,7 +285,7 @@ public class DemoMatchTypeTest {
 		demoDTO.setPi(personalIdentityDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setEmail("test@test.com");
-		assertEquals(DemoMatchType.EMAIL.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.EMAIL.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.EMAIL.getEntityInfoFetcher().getInfo(demoEntity, null));
 	}
 
@@ -302,7 +302,7 @@ public class DemoMatchTypeTest {
 		demoDTO.setAd(personalAddressDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setAddrLine1("no1 gandhi street");
-		assertEquals(DemoMatchType.ADDR_LINE1_PRI.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.ADDR_LINE1_PRI.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.ADDR_LINE1_PRI.getEntityInfoFetcher().getInfo(demoEntity, null));
 	}
 
@@ -319,7 +319,7 @@ public class DemoMatchTypeTest {
 		demoDTO.setAd(personalAddressDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setAddrLine2("kamarajapuram");
-		assertEquals(DemoMatchType.ADDR_LINE2_PRI.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.ADDR_LINE2_PRI.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.ADDR_LINE2_PRI.getEntityInfoFetcher().getInfo(demoEntity, null));
 	}
 
@@ -336,7 +336,7 @@ public class DemoMatchTypeTest {
 		demoDTO.setAd(personalAddressDTO);
 		DemoEntity demoEntity = new DemoEntity();
 		demoEntity.setAddrLine3("chennai");
-		assertEquals(DemoMatchType.ADDR_LINE3_PRI.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.ADDR_LINE3_PRI.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.ADDR_LINE3_PRI.getEntityInfoFetcher().getInfo(demoEntity, null));
 	}
 
@@ -358,7 +358,7 @@ public class DemoMatchTypeTest {
 		Mockito.when(locationInfoFetcher.getLocation(LocationLevel.COUNTRY, demoEntity.getLocationCode()))
 				.thenReturn(Optional.of("india"));
 
-		assertEquals(DemoMatchType.COUNTRY_PRI.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.COUNTRY_PRI.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.COUNTRY_PRI.getEntityInfoFetcher().getInfo(demoEntity, locationInfoFetcher));
 	}
 
@@ -379,7 +379,7 @@ public class DemoMatchTypeTest {
 
 		Mockito.when(locationInfoFetcher.getLocation(LocationLevel.ZIPCODE, demoEntity.getLocationCode()))
 				.thenReturn(Optional.of("600117"));
-		assertEquals(DemoMatchType.PINCODE_PRI.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.PINCODE_PRI.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.PINCODE_PRI.getEntityInfoFetcher().getInfo(demoEntity, locationInfoFetcher));
 	}
 	
@@ -400,7 +400,7 @@ public class DemoMatchTypeTest {
 
 		Mockito.when(locationInfoFetcher.getLocation(LocationLevel.CITY, demoEntity.getLocationCode()))
 				.thenReturn(Optional.of("Chennai"));
-		assertEquals(DemoMatchType.CITY_PRI.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.CITY_PRI.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.CITY_PRI.getEntityInfoFetcher().getInfo(demoEntity, locationInfoFetcher));
 	}
 	
@@ -421,7 +421,7 @@ public class DemoMatchTypeTest {
 
 		Mockito.when(locationInfoFetcher.getLocation(LocationLevel.STATE, demoEntity.getLocationCode()))
 				.thenReturn(Optional.of("TamilNadu"));
-		assertEquals(DemoMatchType.STATE_PRI.getDemoInfoFetcher().getInfo(demoDTO).get(),
+		assertEquals(DemoMatchType.STATE_PRI.getDemoInfoFetcher().apply(demoDTO).get(),
 				DemoMatchType.STATE_PRI.getEntityInfoFetcher().getInfo(demoEntity, locationInfoFetcher));
 	}
 

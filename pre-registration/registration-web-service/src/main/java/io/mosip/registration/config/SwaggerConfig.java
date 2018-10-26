@@ -16,7 +16,7 @@ public class SwaggerConfig {
 	@Bean
 	public Docket packetUploaderApis() {
 		return new Docket(DocumentationType.SWAGGER_2).select()
-				.apis(RequestHandlerSelectors.basePackage("org.mosip.pre.registration.controller"))
+				.apis(RequestHandlerSelectors.basePackage("io.mosip.registration.controller"))
 				.paths(PathSelectors.ant("/v0.1/pre-registration/*")).build();
 	}
 

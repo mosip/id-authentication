@@ -177,7 +177,7 @@ public class OTPFacadeImpl implements OTPFacade {
 		Optional<IdType> idType = IdType.getIDType(otpRequestDto.getIdType());
 		String uniqueID = otpRequestDto.getId();
 		if (idType.isPresent()) {
-			if (idType.get().equals(IdType.UIN)) {
+			if (idType.get() == IdType.UIN) {
 				refId = idAuthService.validateUIN(uniqueID);
 				if (refId == null) {
 					mosipLogger.info(SESSION_ID, "IDTYPE-" + otpRequestDto.getIdType(), "Reference Id for UID",

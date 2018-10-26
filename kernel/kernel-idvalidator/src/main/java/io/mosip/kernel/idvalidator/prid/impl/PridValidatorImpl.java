@@ -13,7 +13,7 @@ import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.prid.constants.MosipPridExceptionConstants;
+import io.mosip.kernel.idvalidator.prid.constant.MosipPridExceptionConstant;
 
 /**
  * Class to validate the Given PRID in String format
@@ -87,8 +87,8 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (StringUtils.isEmpty(id)) {
-			throw new MosipInvalidIDException(MosipPridExceptionConstants.PRID_VAL_INVALID_NULL.getErrorCode(),
-					MosipPridExceptionConstants.PRID_VAL_INVALID_NULL.getErrorMessage());
+			throw new MosipInvalidIDException(MosipPridExceptionConstant.PRID_VAL_INVALID_NULL.getErrorCode(),
+					MosipPridExceptionConstant.PRID_VAL_INVALID_NULL.getErrorMessage());
 		}
 
 		/**
@@ -98,8 +98,8 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 		 */
 
 		if (id.length() != pridLength) {
-			throw new MosipInvalidIDException(MosipPridExceptionConstants.PRID_VAL_ILLEGAL_LENGTH.getErrorCode(),
-					MosipPridExceptionConstants.PRID_VAL_ILLEGAL_LENGTH.getErrorMessage());
+			throw new MosipInvalidIDException(MosipPridExceptionConstant.PRID_VAL_ILLEGAL_LENGTH.getErrorCode(),
+					MosipPridExceptionConstant.PRID_VAL_ILLEGAL_LENGTH.getErrorMessage());
 		}
 
 		/**
@@ -109,8 +109,8 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 		 */
 
 		if (!Pattern.matches(numaricRegEx, id)) {
-			throw new MosipInvalidIDException(MosipPridExceptionConstants.PRID_VAL_INVALID_DIGITS.getErrorCode(),
-					MosipPridExceptionConstants.PRID_VAL_INVALID_DIGITS.getErrorMessage());
+			throw new MosipInvalidIDException(MosipPridExceptionConstant.PRID_VAL_INVALID_DIGITS.getErrorCode(),
+					MosipPridExceptionConstant.PRID_VAL_INVALID_DIGITS.getErrorMessage());
 		}
 		/**
 		 * 
@@ -119,8 +119,8 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 		 */
 
 		if (id.charAt(0) == CHAR_ZERO || id.charAt(0) == CHAR_ONE) {
-			throw new MosipInvalidIDException(MosipPridExceptionConstants.PRID_VAL_INVALID_ZERO_ONE.getErrorCode(),
-					MosipPridExceptionConstants.PRID_VAL_INVALID_ZERO_ONE.getErrorMessage());
+			throw new MosipInvalidIDException(MosipPridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorCode(),
+					MosipPridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorMessage());
 		}
 		/**
 		 * 
@@ -139,8 +139,8 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 
 		if (!IdFilterUtils.isValidId(id)) {
 			throw new MosipInvalidIDException(
-					MosipPridExceptionConstants.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
-					MosipPridExceptionConstants.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
+					MosipPridExceptionConstant.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
+					MosipPridExceptionConstant.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
 		}
 		/**
 		 * 
@@ -151,8 +151,8 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 		 */
 
 		if (!ChecksumUtils.validateChecksum(id)) {
-			throw new MosipInvalidIDException(MosipPridExceptionConstants.PRID_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
-					MosipPridExceptionConstants.PRID_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
+			throw new MosipInvalidIDException(MosipPridExceptionConstant.PRID_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
+					MosipPridExceptionConstant.PRID_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
 		}
 
 		return true;

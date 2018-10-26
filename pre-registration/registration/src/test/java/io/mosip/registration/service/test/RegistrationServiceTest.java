@@ -32,8 +32,8 @@ import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.core.spi.idgenerator.MosipPridGenerator;
-import io.mosip.kernel.dataaccess.constant.HibernateErrorCodes;
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.core.exceptions.TablenotAccessibleException;
 import io.mosip.registration.dao.RegistrationDao;
 import io.mosip.registration.dto.AddressDto;
@@ -171,7 +171,7 @@ public class RegistrationServiceTest {
 	
 	@Test(expected = TablenotAccessibleException.class)
 	public void saveFailureCheck() throws Exception {
-		DataAccessLayerException exception = new DataAccessLayerException(HibernateErrorCodes.ERR_DATABASE,RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
+		DataAccessLayerException exception = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE,RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
 
 		Mockito.when(registrationDao.save(Mockito.any())).thenThrow(exception);
 		registrationService.addRegistration(regDto,"125467364864");
@@ -209,7 +209,7 @@ public class RegistrationServiceTest {
 	public void getApplicationDetailsTransactionFailureCheck() throws Exception {
 		String userId = "9988905444";
 		DataAccessLayerException exception = 
-				new DataAccessLayerException(HibernateErrorCodes.ERR_DATABASE,RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
+				new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE,RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
 
 		Mockito.when(registrationRepositary.noOfGroupIds(ArgumentMatchers.any())).thenThrow(exception);
 		registrationService.getApplicationDetails(userId);
