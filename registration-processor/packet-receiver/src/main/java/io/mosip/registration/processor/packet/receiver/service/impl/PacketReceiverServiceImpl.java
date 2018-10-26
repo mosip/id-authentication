@@ -14,6 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
@@ -29,33 +33,43 @@ import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
+/**
+ * The Class PacketReceiverServiceImpl.
+ *  
+ */
 @Component
 public class PacketReceiverServiceImpl implements PacketReceiverService<MultipartFile, Boolean> {
 
+	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(PacketReceiverServiceImpl.class);
+	
+	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The file extension. */
 	@Value("${file.extension}")
 	private String fileExtension;
 
+	/** The max file size. */
 	@Value("${max.file.size}")
 	private int maxFileSize;
 
+	/** The file manager. */
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
 	
+	/** The sync registration service. */
 	@Autowired
 	private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
 
+	/** The registration status service. */
 	@Autowired
 	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
+	/** The core audit request builder. */
 	@Autowired
-	private AuditRequestBuilder auditRequestBuilder;
-
-	@Autowired
-	private AuditHandler<AuditRequestDto> auditHandler;
-
+	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -102,14 +116,13 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				}finally {
 					String description = "";
 					if (isTransactionSuccessful) {
-						description = "description--packet-receiver Success";
+						description = "Packet registration status updated successfully";
 					} else {
-						description = "description--packet-receiver Failure";
+						description = "Packet registration status updation failure";
 					}
-					createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-							AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-							AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-							AuditLogTempConstant.EVENT_TYPE.toString());
+					
+					coreAuditRequestBuilder.createAuditRequestBuilder(description, EventId.RPR_402.toString(), EventName.UPDATE.toString(), EventType.BUSINESS.toString(), registrationId);		
+					
 				}
 			} else {
 				throw new DuplicateUploadRequestException(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());
@@ -117,39 +130,32 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 		return storageFlag;
 	}
 
+	/**
+	 * Gets the file extension.
+	 *
+	 * @return the file extension
+	 */
 	public String getFileExtension() {
 		return this.fileExtension;
 	}
 
+	/**
+	 * Gets the max file size.
+	 *
+	 * @return the max file size
+	 */
 	public long getMaxFileSize() {
 		return this.maxFileSize * 1024L * 1024;
 	}
 
 	/**
 	 * Checks if registration id is already present in registration status table.
-	 * 
-	 * @param enrolmentId
-	 * @return
+	 *
+	 * @param enrolmentId the enrolment id
+	 * @return the boolean
 	 */
 	private Boolean isDuplicatePacket(String enrolmentId) {
 		return registrationStatusService.getRegistrationStatus(enrolmentId) != null;
 	}
 	
-	private void createAuditRequestBuilder(String applicationId, String applicationName, String description,
-			String eventId, String eventName, String eventType) {
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
-				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
-				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-				.setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(AuditLogTempConstant.ID.toString())
-				.setIdType(AuditLogTempConstant.ID_TYPE.toString())
-				.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-				.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-				.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-				.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
-
-		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-		auditHandler.writeAudit(auditRequestDto);
-	}
-
 }
