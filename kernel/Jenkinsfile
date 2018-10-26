@@ -3,7 +3,7 @@ node {
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
  def branch = 'DEV'
- def projectToBuild = 'kernel/'
+ def projectToBuild = 'kernel'
  def registry = 'mosip/mosip-build-repos'
  def registryCredential = '4656e6d8-314f-4be5-8bd9-2bf45dce1ed5'
 
@@ -19,9 +19,9 @@ node {
     ],
     extensions: [
 
-     [$class: 'PathRestriction', excludedRegions: '', includedRegions: 'kernel/.*'],
+     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*'],
      [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-      [$class: 'SparseCheckoutPath', path: projectToBuild]
+      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
      ]]
 
     ],
@@ -32,13 +32,13 @@ node {
  stage('Compile-Package') {
   // Get maven home path
   def mvnHome = tool name: 'M2_HOME', type: 'maven'
-  sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild' compile"
+  sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' compile"
  }
 
  stage('SonarQube Analysis') {
   def mvnHome = tool name: 'M2_HOME', type: 'maven'
   withSonarQubeEnv('sonar') {
-   sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild' sonar:sonar"
+   sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
   }
  }
 
@@ -50,7 +50,7 @@ node {
   buildInfo.env.capture = true
  }
  stage('Exec Maven') {
-  rtMaven.run pom: 'DEV/kernel/pom.xml', goals: 'clean install', buildInfo: buildInfo
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
  }
 
  stage('Publish build info') {
@@ -60,7 +60,7 @@ node {
   dir(branch) {
    docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
     def buildName = registry + ":kernel-auditmanager-service-$BUILD_NUMBER"
-    newApp = docker.build(buildName, '-f kernel/kernel-auditmanager-service/Dockerfile .')
+    newApp = docker.build(buildName, '-f kernel/kernel-auditmanager-service/Dockerfile kernel/kernel-auditmanager-service/')
     newApp.push()
    }
   }
