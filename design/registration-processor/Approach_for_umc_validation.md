@@ -26,9 +26,9 @@ The key non-functional requirements are
 
 The key solution considerations are -
 - Create vertical "user-machine-center-validator" to validate user, machine and center details.
-- On successful packet structure validation, send request to user-machine-center-validator .
-- Create UmcValidationProcessor in camel-bridge and route all successful packet structure validation request to umc_bus address. Map the request between vert.x and camel endpoints.
+- In camel bridge after successful packet structure validation the request will be routed to user-machine-center-validator by default. Create router and request processor to map the request to umc_bus address.
 - Add new methods in PacketInfoManager to fetch the user, machine and center details from table.
+- Registration processor would check if user/center/machine was valid during creation of the packet. On successful validation, registration-processor will further validate if the user was assigned to the same machine of same center during packet creation time. For this kernel will lookup in user-machine-center lookup table and return information. 
 - Use apache rest client to call [Master-data-APIs](https://github.com/mosip/mosip/wiki/2.4-Master-data-APIs#234-document-formats-master-api). 
     1. Verify CENTER was active on packet creation date/time.
     ### Resource URL
@@ -95,6 +95,9 @@ The key solution considerations are -
       ]
     }
     ```
-- Registration processor would check if user/center/machine was valid during creation of the packet. On successful validation, registration-processor will further validate if the user was assigned to the same machine of same center during packet creation time. For this kernel will lookup in user-machine-center lookup table and return information. 
 - On successful validation send request to umc_bus out address. On failure send response to error queue. If any internal error happens during validation then send response to retry queue.
+- Update the packet status in "Registration-status" table for both successful and failed validation.
+
+**Class Diagram**
+![Packet receiver class diagram](_images/ucm_class_diagram.png)
 
