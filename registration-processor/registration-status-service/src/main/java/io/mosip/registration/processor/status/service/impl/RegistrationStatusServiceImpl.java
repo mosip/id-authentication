@@ -32,7 +32,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUti
 @Component
 public class RegistrationStatusServiceImpl implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
-	@Value("${landingZone_To_VirusScan_Interval_Threshhold_time}")
+	@Value("${registration.processor.landingZone_To_VirusScan_Interval_Threshhold_time}")
 
 	private int threshholdTime;
 

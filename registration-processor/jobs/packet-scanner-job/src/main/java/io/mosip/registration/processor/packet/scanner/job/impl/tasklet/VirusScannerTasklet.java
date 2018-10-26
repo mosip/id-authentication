@@ -44,7 +44,7 @@ public class VirusScannerTasklet implements Tasklet {
 	@Autowired
 	private Environment env;
 
-	@Value("${packet.ext}")
+	@Value("${registration.processor.packet.ext}")
 	private String extention;
 
 	@Autowired
