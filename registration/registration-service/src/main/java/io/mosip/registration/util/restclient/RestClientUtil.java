@@ -62,8 +62,6 @@ public class RestClientUtil {
 			}
 			LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME,
 					APPLICATION_ID, "invoke method ended");
-
-			System.out.println(responseBody);
 			
 		return responseBody;
 

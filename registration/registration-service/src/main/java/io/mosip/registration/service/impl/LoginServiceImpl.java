@@ -219,7 +219,6 @@ public class LoginServiceImpl implements LoginService {
                  // obtain otpGeneratorResponseDto from serviceDelegateUtil
                  otpGeneratorResponseDto = (OtpGeneratorResponseDto) serviceDelegateUtil
                               .post(RegistrationConstants.OTP_GENERATOR_SERVICE_NAME, otpGeneratorRequestDto);
-                 System.out.println(otpGeneratorRequestDto);
                  if (otpGeneratorResponseDto != null && otpGeneratorResponseDto.getOtp() != null) {
 
                        // create Success Response
@@ -245,7 +244,6 @@ public class LoginServiceImpl implements LoginService {
                  }
 
           } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException exception) {
-        	  	exception.printStackTrace();
                  // create Error Response
                  response = getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
                  LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
