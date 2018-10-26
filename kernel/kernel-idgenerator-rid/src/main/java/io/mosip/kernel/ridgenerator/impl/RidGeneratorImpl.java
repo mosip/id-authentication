@@ -19,7 +19,7 @@ import io.mosip.kernel.ridgenerator.repository.RidRepository;
 /**
  * This class generate 28 digits registration id.
  * 
- * @author Ritesh Sinha
+ * @author Ritesh Sinhas
  * @author Sidhant Agarwal
  * @since 1.0.0
  *
@@ -48,7 +48,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 		dongleId = StringUtils.removeLeftChar(dongleId,
 				Integer.parseInt(RidGeneratorPropertyConstant.DONGLEID_MIN_LENGTH.getProperty()));
 
-		String randomDigitRid = sequenceNumberGenerator(centreId, dongleId);
+		String randomDigitRid = sequenceNumberGenerator(dongleId);
 
 		return appendString(randomDigitRid, getcurrentTimeStamp(), centreId, dongleId);
 	}
@@ -90,7 +90,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 * 
 	 * @return generated five digit random number
 	 */
-	private String sequenceNumberGenerator(String centreId, String dongleId) {
+	private String sequenceNumberGenerator(String dongleId) {
 
 		final int initialValue = Integer.parseInt(RidGeneratorPropertyConstant.SEQUENCE_START_VALUE.getProperty());
 
