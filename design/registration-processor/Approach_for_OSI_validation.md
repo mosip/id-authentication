@@ -27,9 +27,10 @@ The key solution considerations are -
 - In camel bridge after successful packet validation the request will be routed to OSI-validator by default. Create router and request processor to map the request to osi_bus address.
 - Add new methods in PacketInfoManager to fetch the operator, supervisor and introducer basic details from table.
 - The auth module will provide rest API to validate OSI biometrics and pin. 
-    ```Input -> 1. UIN (the UIN of Operator/supervisor/introducer).
+    ```
+    Input -> 1. UIN (the UIN of Operator/supervisor/introducer).
                 2. biometric as byte array.
-       Output -> json with status as TRUE or FALSE.
+    Output -> json with status as TRUE or FALSE.
                  TRUE : valid individual.
                  FALSE : invalid individual.
     ```
