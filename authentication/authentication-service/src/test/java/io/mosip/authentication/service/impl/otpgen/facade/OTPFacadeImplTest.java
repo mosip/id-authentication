@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.otpgen.facade;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,9 @@ import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
+import io.mosip.authentication.service.repository.DemoRepository;
 
 /**
  * Test class for OTPFacadeImpl. Mockito with PowerMockito.
@@ -57,6 +60,9 @@ public class OTPFacadeImplTest {
 	AutnTxn autnTxn;
 	@Mock
 	IdAuthService idAuthService;
+	
+	@Mock
+	DemoRepository demoRepository;
 
 	@InjectMocks
 	OTPFacadeImpl otpFacadeImpl;
@@ -70,7 +76,23 @@ public class OTPFacadeImplTest {
 	}
 
 	@Test
+	public void testMaskedEmail() {
+		String resultString = ReflectionTestUtils.invokeMethod(otpFacadeImpl, "maskEmail", "umamahesh@gmail.com");
+		assertEquals("XXaXXhXXh@gmail.com", resultString);
+	}
+
+	@Test
+	public void testMaskedMobile() {
+		String result = ReflectionTestUtils.invokeMethod(otpFacadeImpl, "maskMobile", "8347899201");
+		assertEquals("XXXXXX9201", result);
+	}
+
+	@Test
 	public void test_GenerateOTP() throws IdAuthenticationBusinessException {
+		DemoEntity demoEntity = new DemoEntity();
+		demoEntity.setEmail("abcd");
+		demoEntity.setMobile("1234");
+		Mockito.when(demoRepository.findById(Mockito.anyString())).thenReturn(Optional.of(demoEntity));
 		String unqueId = otpRequestDto.getId();
 		String txnID = otpRequestDto.getTxnID();
 		String productid = "IDA";
@@ -113,7 +135,6 @@ public class OTPFacadeImplTest {
 		Date addMinutesInOtpRequestDTime = new Date();
 
 		ReflectionTestUtils.setField(otpFacadeImpl, "autntxnrepository", autntxnrepository);
-		String pattern = env.getProperty("date.format.pattern");
 		ReflectionTestUtils.invokeMethod(autntxnrepository, "countRequestDTime", requestTime,
 				addMinutesInOtpRequestDTime, uniqueID);
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "isOtpFlooded", otpRequestDto);
@@ -121,7 +142,7 @@ public class OTPFacadeImplTest {
 
 	@Test
 	public void testAddMinute() {
-		Date requestTime = otpRequestDto.getReqTime();
+		otpRequestDto.getReqTime();
 	}
 
 	@Test
@@ -171,7 +192,6 @@ public class OTPFacadeImplTest {
 
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
-		otpRequestDto.setMsaLicenseKey("2345678901234");
 		otpRequestDto.setMuaCode("2345678901234");
 		otpRequestDto.setIdType(IdType.UIN.getType());
 

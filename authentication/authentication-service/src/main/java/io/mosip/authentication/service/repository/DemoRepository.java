@@ -5,11 +5,14 @@ import org.springframework.stereotype.Repository;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 
-/**@author M1046368 Arun Bose
+/**
  * The Interface DemoRepository.
+ * 
+ * @author M1046368 Arun Bose
+ * 
  */
 @Repository
-public interface DemoRepository extends BaseRepository<DemoEntity, Integer> {
+public interface DemoRepository extends BaseRepository<DemoEntity, String> {
 	
 	/**
 	 * Find by uin ref id and lang code.
