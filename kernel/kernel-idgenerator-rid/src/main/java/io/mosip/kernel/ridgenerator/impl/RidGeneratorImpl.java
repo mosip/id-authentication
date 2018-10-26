@@ -37,7 +37,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 * io.mosip.kernel.core.spi.idgenerator.MosipEidGenerator#eidGeneration(java.
 	 * lang.String, java.lang.String)
 	 */
-	// @Override
+	@Override
 	public String generateId(String centreId, String dongleId) {
 
 		validateInput(centreId, dongleId);
