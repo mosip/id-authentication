@@ -56,26 +56,26 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	/**
 	 * This method is used to validate the input given by user
 	 * 
-	 * @param agentId
+	 * @param centreId
 	 *            input by user
-	 * @param machineId
+	 * @param dongleId
 	 *            input by user
 	 */
-	private void validateInput(String agentId, String machineId) {
+	private void validateInput(String centreId, String dongleId) {
 
-		if (agentId == null || machineId == null) {
+		if (centreId == null || dongleId == null) {
 
 			throw new MosipNullValueException(RidGeneratorExceptionConstant.MOSIP_NULL_VALUE_ERROR_CODE.getErrorCode(),
 					RidGeneratorExceptionConstant.MOSIP_NULL_VALUE_ERROR_CODE.getErrorMessage());
 		}
-		if (agentId.isEmpty() || machineId.isEmpty()) {
+		if (centreId.isEmpty() || dongleId.isEmpty()) {
 
 			throw new MosipEmptyInputException(
 					RidGeneratorExceptionConstant.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorCode(),
 					RidGeneratorExceptionConstant.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorMessage());
 		}
-		if (agentId.length() < Integer.parseInt(RidGeneratorPropertyConstant.CENTERID_MIN_LENGTH.getProperty())
-				|| machineId.length() < Integer
+		if (centreId.length() < Integer.parseInt(RidGeneratorPropertyConstant.CENTERID_MIN_LENGTH.getProperty())
+				|| dongleId.length() < Integer
 						.parseInt(RidGeneratorPropertyConstant.DONGLEID_MIN_LENGTH.getProperty())) {
 
 			throw new MosipInputLengthException(
