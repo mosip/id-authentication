@@ -1,0 +1,92 @@
+{
+	"ida-mapping" : 
+		{
+			"name" : 
+				[
+					"firstName",
+					"middleName",
+					"lastName"
+				],
+			"dob" : 
+				[
+					"dateOfBirth",
+					"dateOfBirthType"
+				],
+			"dobType" : 
+				[
+					"dateOfBirthType"
+				],
+			"age" :
+				[
+					"age"
+				],
+			"gender" : 
+				[
+					"gender"
+				],
+			"phoneNumber" : 
+				[
+					"mobileNumber"
+				],
+			"emailId" : 
+				[
+					"emailId"
+				],
+			"addressLine1" : 
+				[
+					"addressLine1"
+				],
+			"addressLine2" : 
+				[
+					"addressLine2"
+				],
+			"addressLine3" : 
+				[
+					"addressLine3"
+				],
+			"location" : 
+				[
+					"city",
+					"state",
+					"country"
+				],
+			"pinCode" : 
+				[
+					"pinCode"
+				],
+			"fullAddress" : 
+				[
+					"addressLine1", 
+					"addressLine2", 
+					"addressLine3", 
+					"location",
+					"pinCode"
+				],
+			"otp" : 
+				[
+					"otp"
+				],
+			"pin" : 
+				[
+					"pin"
+				],
+			"iris" : 
+				[
+					"leftEye", 
+					"rightEye"
+				],
+			"fingerprint" : 
+				[
+					"leftIndex", 
+					"leftLittle",
+					"leftMiddle",
+					"leftRing",
+					"leftThumb",
+					"rightIndex", 
+					"rightLittle",
+					"rightMiddle",
+					"rightRing",
+					"rightThumb"
+				]	
+		}	
+}
