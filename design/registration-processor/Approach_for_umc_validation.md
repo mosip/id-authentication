@@ -34,10 +34,27 @@ The key solution considerations are -
     Input : {userId + packet creation date}, {centerId + packet creation date}, {machineId + packet creation date}.
 
     Output : The table record on or before creation of the packet.
-- Registration processor would check if user/center/machine was valid during creation of the packet. On successful validation, registration-processor will further validate if the user was assigned to the same machine of same center during packet creation time. For this kernel will lookup in user-machine-center lookup table and return information. 
 
-    Input : user id, machine id, center id and packet creation date.
+
     
-    Output : The table record on or before creation of the packet.
+    3. Verify USER/MACHINE/CENTER mapping was active on packet creation date/time : this is to verify if the user was assigned to the machine of the same center during creation of the packet.    
+    Resource URL
+    GET /getregistrationmachineusermappinghistory/{languagecode}/{eff_dtimes}/{registrationcenterid}/{machineid}/{userid}
+    Example Response
+    {
+      "registrationcenters": [
+        {
+            "registrationcenterid":"string",
+            "machineid":"string",
+            "languagecode":"string"
+        },
+        {
+            "registrationcenterid":"string",
+            "machineid":"string",
+            "languagecode":"string"
+        }
+      ]
+    }
+- Registration processor would check if user/center/machine was valid during creation of the packet. On successful validation, registration-processor will further validate if the user was assigned to the same machine of same center during packet creation time. For this kernel will lookup in user-machine-center lookup table and return information. 
 - On successful validation send request to umc_bus out address. On failure send response to error queue. If any internal error happens during validation then send response to retry queue.
 
