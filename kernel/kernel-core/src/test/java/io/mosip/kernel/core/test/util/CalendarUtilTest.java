@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.mosip.kernel.core.util.CalendarUtils;
-import io.mosip.kernel.core.util.exception.MosipArithmeticException;
+import io.mosip.kernel.core.util.exception.ArithmeticException;
 import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
 import io.mosip.kernel.core.util.exception.MosipNullPointerException;
 
@@ -30,13 +30,13 @@ public class CalendarUtilTest {
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void getCeilingTestCheckException()
-			throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.getCeiling(null, Calendar.HOUR);
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getCeilingTestCheckException2()
-			throws ParseException, MosipArithmeticException, MosipIllegalArgumentException {
+			throws ParseException, ArithmeticException, MosipIllegalArgumentException {
 
 		Date d = dateTimeParser.parse("March 28, 280000001 13:52:10.099");
 		Calendar c = Calendar.getInstance();
@@ -44,9 +44,9 @@ public class CalendarUtilTest {
 		CalendarUtils.getCeiling(c, Calendar.YEAR);
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getRoundCheckException2()
-			throws ParseException, MosipArithmeticException, MosipIllegalArgumentException {
+			throws ParseException, ArithmeticException, MosipIllegalArgumentException {
 
 		Date d = dateTimeParser.parse("March 28, 280000001 13:52:10.099");
 		Calendar c = Calendar.getInstance();
@@ -54,8 +54,8 @@ public class CalendarUtilTest {
 		CalendarUtils.getRound(c, Calendar.YEAR);
 	}
 
-	@Test(expected = MosipArithmeticException.class)
-	public void truncteCheckException() throws ParseException, MosipArithmeticException, MosipIllegalArgumentException {
+	@Test(expected = ArithmeticException.class)
+	public void truncteCheckException() throws ParseException, ArithmeticException, MosipIllegalArgumentException {
 
 		Date d = dateTimeParser.parse("March 28, 280000001 13:52:10.099");
 		Calendar c = Calendar.getInstance();
@@ -65,55 +65,55 @@ public class CalendarUtilTest {
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void getFragmentInDaysTestCheckException()
-			throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.getFragmentInDays(null, Calendar.HOUR);
 	}
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void getFragmentInHoursTestCheckException()
-			throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.getFragmentInHours(null, Calendar.HOUR);
 	}
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void getFragmentInMilliSecondsTestCheckException()
-			throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.getFragmentInMilliseconds(null, Calendar.HOUR);
 	}
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void getFragmentInMinutesTestCheckException()
-			throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.getFragmentInMinutes(null, Calendar.HOUR);
 	}
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void getFragmentInSecondsTestCheckException()
-			throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.getFragmentInSeconds(null, Calendar.HOUR);
 	}
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void isSameDayTestCheckException()
-			throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.isSameDay(null, null);
 	}
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void isSameInstanceTestCheckException()
-			throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.isSameInstant(null, null);
 	}
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void isSameLocalTimeTestCheckException()
-			throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.isSameLocalTime(null, null);
 	}
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void getRoundTestCheckException()
-			throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.getRound(null, Calendar.MONTH);
 	}
 
@@ -129,18 +129,18 @@ public class CalendarUtilTest {
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void truncateTestCheckException()
-			throws MosipNullPointerException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws MosipNullPointerException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.truncate(null, Calendar.MONTH);
 	}
 
 	@Test(expected = MosipIllegalArgumentException.class)
 	public void truncatedEqualsTestCheckException()
-			throws MosipNullPointerException, MosipIllegalArgumentException, MosipArithmeticException {
+			throws MosipNullPointerException, MosipIllegalArgumentException, ArithmeticException {
 		CalendarUtils.truncatedEquals(null, null, Calendar.MONTH);
 	}
 
 	@Test
-	public void getCeilingTest() throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+	public void getCeilingTest() throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		Date d = dateTimeParser.parse("March 28, 2002 13:52:10.099");
 		Date d2 = dateTimeParser.parse("March 28, 2002 14:00:00.000");
 		Calendar c = Calendar.getInstance();
@@ -224,7 +224,7 @@ public class CalendarUtilTest {
 	}
 
 	@Test
-	public void getRoundTest() throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+	public void getRoundTest() throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		Date d = dateTimeParser.parse("March 28, 2002 13:45:01.231");
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
@@ -252,7 +252,7 @@ public class CalendarUtilTest {
 	}
 
 	@Test
-	public void truncateTest() throws ParseException, MosipIllegalArgumentException, MosipArithmeticException {
+	public void truncateTest() throws ParseException, MosipIllegalArgumentException, ArithmeticException {
 		Date d = dateTimeParser.parse("March 28, 2002 13:45:01.231");
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);

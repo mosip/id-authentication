@@ -7,7 +7,7 @@ import java.util.TimeZone;
 import org.apache.commons.lang3.time.DateUtils;
 
 import io.mosip.kernel.core.util.constant.CalendarUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipArithmeticException;
+import io.mosip.kernel.core.util.exception.ArithmeticException;
 import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
 import io.mosip.kernel.core.util.exception.MosipNullPointerException;
 
@@ -37,7 +37,7 @@ public final class CalendarUtils {
 	 * @return the different ceil date, not null
 	 * @throws MosipIllegalArgumentException
 	 *             if the date is null
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             if the year is over 280 million
 	 */
 	public static Calendar getCeiling(Calendar calendar, int field) {
@@ -46,8 +46,8 @@ public final class CalendarUtils {
 		} catch (IllegalArgumentException exception) {
 			throw new MosipIllegalArgumentException(CalendarUtilConstants.ILLEGAL_ARGUMENT_CODE.getErrorCode(),
 					CalendarUtilConstants.ILLEGAL_ARGUMENT_MESSAGE.getErrorCode(), exception.getCause());
-		} catch (ArithmeticException exception) {
-			throw new MosipArithmeticException(CalendarUtilConstants.ARITHMETIC_EXCEPTION_CODE.getErrorCode(),
+		} catch (java.lang.ArithmeticException exception) {
+			throw new ArithmeticException(CalendarUtilConstants.ARITHMETIC_EXCEPTION_CODE.getErrorCode(),
 					CalendarUtilConstants.YEAR_OVERFLOW_MESSAGE.getErrorCode(), exception.getCause());
 		}
 	}
@@ -233,7 +233,7 @@ public final class CalendarUtils {
 	 * @return the different rounded date, not null
 	 * @throws MosipIllegalArgumentException
 	 *             if the date is null
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             if the year is over 280 million
 	 */
 	public static Calendar getRound(Calendar calendar, int field) {
@@ -242,8 +242,8 @@ public final class CalendarUtils {
 		} catch (IllegalArgumentException exception) {
 			throw new MosipIllegalArgumentException(CalendarUtilConstants.ILLEGAL_ARGUMENT_CODE.getErrorCode(),
 					CalendarUtilConstants.ILLEGAL_ARGUMENT_MESSAGE.getErrorCode(), exception.getCause());
-		} catch (ArithmeticException exception) {
-			throw new MosipArithmeticException(CalendarUtilConstants.ARITHMETIC_EXCEPTION_CODE.getErrorCode(),
+		} catch (java.lang.ArithmeticException exception) {
+			throw new ArithmeticException(CalendarUtilConstants.ARITHMETIC_EXCEPTION_CODE.getErrorCode(),
 					CalendarUtilConstants.YEAR_OVERFLOW_MESSAGE.getErrorCode(), exception.getCause());
 		}
 	}
@@ -294,7 +294,7 @@ public final class CalendarUtils {
 	 * @return the different truncated date, not null
 	 * @throws MosipIllegalArgumentException
 	 *             if the date is null
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             if the year is over 280 million
 	 */
 	public static Calendar truncate(Calendar date, int field) {
@@ -303,8 +303,8 @@ public final class CalendarUtils {
 		} catch (IllegalArgumentException exception) {
 			throw new MosipIllegalArgumentException(CalendarUtilConstants.ILLEGAL_ARGUMENT_CODE.getErrorCode(),
 					CalendarUtilConstants.ILLEGAL_ARGUMENT_MESSAGE.getErrorCode(), exception.getCause());
-		} catch (ArithmeticException exception) {
-			throw new MosipArithmeticException(CalendarUtilConstants.ARITHMETIC_EXCEPTION_CODE.getErrorCode(),
+		} catch (java.lang.ArithmeticException exception) {
+			throw new ArithmeticException(CalendarUtilConstants.ARITHMETIC_EXCEPTION_CODE.getErrorCode(),
 					CalendarUtilConstants.YEAR_OVERFLOW_MESSAGE.getErrorCode(), exception.getCause());
 		}
 	}

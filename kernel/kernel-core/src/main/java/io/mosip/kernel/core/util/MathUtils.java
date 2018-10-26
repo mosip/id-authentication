@@ -35,7 +35,7 @@ import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.math3.util.Precision;
 
 import io.mosip.kernel.core.util.constant.MathUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipArithmeticException;
+import io.mosip.kernel.core.util.exception.ArithmeticException;
 import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
 import io.mosip.kernel.core.util.exception.MosipNotANumberException;
 import io.mosip.kernel.core.util.exception.MosipNotFiniteNumberException;
@@ -68,7 +68,7 @@ public final class MathUtils {
 	 * @return num^exp
 	 * @throws MosipNotPositiveException
 	 *             if exp is less than 0.
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             if the result would overflow.
 	 */
 	public static int getPow(final int num, int exp) {
@@ -82,7 +82,7 @@ public final class MathUtils {
 
 		} catch (MathArithmeticException e) {
 
-			throw new MosipArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
+			throw new ArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ARITHMETIC_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -112,7 +112,7 @@ public final class MathUtils {
 	 * @return num^exp
 	 * @throws MosipNotPositiveException
 	 *             if exp is less than 0.
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             if the result would overflow.
 	 */
 	public static long getPow(long num, int exp) {
@@ -122,7 +122,7 @@ public final class MathUtils {
 			throw new MosipNotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		} catch (MathArithmeticException e) {
-			throw new MosipArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
+			throw new ArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ARITHMETIC_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -386,7 +386,7 @@ public final class MathUtils {
 	 * @return n!
 	 * @throws MosipNotPositiveException
 	 *             -If number is not positive
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             -If number is greator than 20 and result is too large to fit in
 	 *             long type.
 	 */
@@ -397,7 +397,7 @@ public final class MathUtils {
 			throw new MosipNotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		} catch (MathArithmeticException e) {
-			throw new MosipArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
+			throw new ArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ARITHMETIC_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -411,7 +411,7 @@ public final class MathUtils {
 	 * @param secondnumber
 	 *            Number.
 	 * @return the greatest common divisor (never negative).
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             if the result cannot be represented as a non-negative integer
 	 *             value.
 	 */
@@ -419,7 +419,7 @@ public final class MathUtils {
 		try {
 			return ArithmeticUtils.gcd(firstnumber, secondnumber);
 		} catch (MathArithmeticException e) {
-			throw new MosipArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
+			throw new ArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ARITHMETIC_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -433,7 +433,7 @@ public final class MathUtils {
 	 * @param secondnumber
 	 *            Number.
 	 * @return the greatest common divisor, never negative.
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             if the result cannot be represented as a non-negative long type
 	 *             value.
 	 */
@@ -441,7 +441,7 @@ public final class MathUtils {
 		try {
 			return ArithmeticUtils.gcd(firstnumber, secondnumber);
 		} catch (MathArithmeticException e) {
-			throw new MosipArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
+			throw new ArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ARITHMETIC_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}

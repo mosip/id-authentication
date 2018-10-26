@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.mosip.kernel.core.util.MathUtils;
-import io.mosip.kernel.core.util.exception.MosipArithmeticException;
+import io.mosip.kernel.core.util.exception.ArithmeticException;
 import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
 import io.mosip.kernel.core.util.exception.MosipNotANumberException;
 import io.mosip.kernel.core.util.exception.MosipNotFiniteNumberException;
@@ -83,7 +83,7 @@ public class MathUtilTest {
 
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getPowExceptionTest2() {
 		MathUtils.getPow(2, 9999999);
 	}
@@ -98,7 +98,7 @@ public class MathUtilTest {
 		MathUtils.getPow(9L, -2);
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getPowExceptionTest4() {
 		MathUtils.getPow(99999999L, 9);
 	}
@@ -203,7 +203,7 @@ public class MathUtilTest {
 		MathUtils.getFactorial(-1);
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getFactorialExceptionTest2() {
 		MathUtils.getFactorial(999999);
 	}
@@ -223,7 +223,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getGcd(2, 3), is(1));
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getGcdExceptionTest1() {
 		MathUtils.getGcd(Integer.MIN_VALUE, Integer.MIN_VALUE);
 	}
@@ -233,7 +233,7 @@ public class MathUtilTest {
 		assertThat(MathUtils.getGcd(2L, 3L), is(1L));
 	}
 
-	@Test(expected = MosipArithmeticException.class)
+	@Test(expected = ArithmeticException.class)
 	public void getGcdExceptionTest2() {
 		MathUtils.getGcd(Long.MIN_VALUE, Long.MIN_VALUE);
 	}

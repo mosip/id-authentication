@@ -9,7 +9,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @author Sagar Mahapatra
  * @since 1.0.0
  */
-public class MosipArithmeticException extends BaseUncheckedException {
+public class ArithmeticException extends BaseUncheckedException {
 
 	/** Serializable version Id. */
 	private static final long serialVersionUID = 834721102100630614L;
@@ -22,7 +22,7 @@ public class MosipArithmeticException extends BaseUncheckedException {
 	 * @param arg2
 	 *            Cause of exception
 	 */
-	public MosipArithmeticException(String arg0, String arg1, Throwable arg2) {
+	public ArithmeticException(String arg0, String arg1, Throwable arg2) {
 		super(arg0, arg1, arg2);
 
 	}
