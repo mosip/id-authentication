@@ -26,6 +26,7 @@ The key solution considerations are -
 - Create vertical "OSI-validator" to validate operator, supervisor and introducer biometric authentication.
 - In camel bridge after successful packet validation the request will be routed to OSI-validator by default. Create router and request processor to map the request to osi_bus address.
 - Add new methods in PacketInfoManager to fetch the operator, supervisor and introducer basic details from table.
+- Call 'packet-store-adapter-ceph' service to get the biometric for operator/supervisor/introducer from inside the packet. 
 - The auth module will provide rest API to validate OSI biometrics and pin. 
     ```
     REST API to validate uin and biometric
@@ -45,5 +46,7 @@ The key solution considerations are -
     ```
     TODO : the rest API specification is not ready yet. Need to link API design when  AUTH module completes it.
 - Registration-processor has to support password validation as well. Kernel team will provide REST API to get or validate USER. 
-    The api specification is not ready yet. 
+    TODO : The api specification is not ready yet. Need to link api spec.
+- On successful validation send request to osi_bus out address. On failure send response to error queue. If any internal error happens during validation then send response to retry queue.
+- Update the packet status in "Registration-status" table for both successful and failed validation.
 
