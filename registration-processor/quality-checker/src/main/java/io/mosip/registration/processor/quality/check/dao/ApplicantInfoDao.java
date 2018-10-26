@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.quality.check.dao;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,8 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
+import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.quality.check.repository.QcuserRegRepositary;
+
 
 @Component
 public class ApplicantInfoDao {
@@ -45,6 +50,27 @@ public class ApplicantInfoDao {
 	@Autowired
 	private QcuserRegRepositary<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
 
+	private List<Object[]> applicantInfo = new ArrayList<Object[]>();
+
+	@Autowired
+	private BasePacketRepository<ApplicantDemographicEntity, String> applicantDemographicRepository;
+
+	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
+		List<ApplicantInfoDto> applicantInfoDtoList = new ArrayList<ApplicantInfoDto>();
+		ApplicantInfoDto applicantInfoDto = new ApplicantInfoDto();
+		List<QcuserRegistrationIdEntity> assignedPackets = qcuserRegRepositary.findByUserId(qcuserId);
+		
+		
+		assignedPackets.forEach(assignedPacket->{
+			String regId = assignedPacket.getId().getRegId();
+			applicantInfo = qcuserRegRepositary.getApplicantInfo(regId);
+		});
+		
+		
+		return applicantInfoDtoList;
+	}
+	
+	
 	public QcuserRegistrationIdEntity save(QcuserRegistrationIdEntity qcUserRegistrationIdEntity) {
 
 		return qcuserRegRepositary.save(qcUserRegistrationIdEntity);
