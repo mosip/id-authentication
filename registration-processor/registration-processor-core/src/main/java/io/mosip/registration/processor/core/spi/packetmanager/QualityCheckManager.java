@@ -2,6 +2,8 @@ package io.mosip.registration.processor.core.spi.packetmanager;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 
 /**
  * QualityCheckManger class for assigning  packets to QCUsers  for quality checking
@@ -9,7 +11,8 @@ import java.util.List;
  *
  * @param <U>
  */
-public interface QualityCheckManager<U,T>{
+@Service
+public interface QualityCheckManager<U,T,Q>{
 	
 	
 	/**
@@ -24,7 +27,7 @@ public interface QualityCheckManager<U,T>{
 	 * @param qcUserId the qc user id
 	 * @param param the param
 	 */
-	public void sendAndVerify(U qcUserId,Object... param);
+	public void updateQCUserStatus(List<Q> qcUserDtos);
 
 	/**
 	 * Gets the packetsfor QC user.
@@ -32,7 +35,7 @@ public interface QualityCheckManager<U,T>{
 	 * @param qcuserId the qcuser id
 	 * @return the packetsfor QC user
 	 */
-	public List<T> getPacketsforQCUser(String qcuserId);
+	public List<T> getPacketsforQCUser(U qcuserId);
 	
 
 }

@@ -19,8 +19,6 @@ import java.time.LocalDateTime;
 public class QcuserRegistrationIdEntity extends BaseQcuserEntity<QcuserRegistrationIdPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	private QcuserRegistrationIdPKEntity id;
 
 	@Column(name = "cr_by", nullable = false)
 	private String crBy = "MOSIP_SYSTEM";
@@ -51,14 +49,6 @@ public class QcuserRegistrationIdEntity extends BaseQcuserEntity<QcuserRegistrat
 
 	public QcuserRegistrationIdEntity() {
 		super();
-	}
-
-	public QcuserRegistrationIdPKEntity getId() {
-		return this.id;
-	}
-
-	public void setId(QcuserRegistrationIdPKEntity id) {
-		this.id = id;
 	}
 
 	public String getCrBy() {

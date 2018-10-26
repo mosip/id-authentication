@@ -6,6 +6,6 @@ import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 import io.mosip.registration.processor.quality.check.entity.BaseQcuserEntity;
 
 @Repository
-public interface QcuserRegRepositary<T extends BaseQcuserEntity, E> extends BaseRepository<T, E> {
+public interface QcuserRegRepositary<E extends BaseQcuserEntity<?>, T> extends BaseRepository<E, T> {
 
 }
