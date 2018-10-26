@@ -322,6 +322,7 @@ public class PacketInfoManagerImplTest {
 		f2.setAccessible(true);
 		f2.set(coreAuditRequestBuilder, auditHandler);
 
+		
 	}
 
 	@Test

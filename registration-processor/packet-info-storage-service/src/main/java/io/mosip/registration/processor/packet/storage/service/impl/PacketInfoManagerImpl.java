@@ -56,6 +56,7 @@ import io.mosip.registration.processor.status.code.AuditLogTempConstant;
  *
  * @author Horteppa M1048399
  * @author Girish Yarru
+ * 
  */
 @Service
 public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, DemographicInfo, MetaData> {
