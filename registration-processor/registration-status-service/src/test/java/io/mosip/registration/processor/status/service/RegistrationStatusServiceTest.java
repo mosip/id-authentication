@@ -23,6 +23,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
@@ -64,6 +65,9 @@ public class RegistrationStatusServiceTest {
 
 	@Mock
 	private AuditHandler<AuditRequestDto> auditHandler;
+	
+	@Mock
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
 
 	@Before
 	public void setup()
@@ -91,13 +95,13 @@ public class RegistrationStatusServiceTest {
 		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
 				.thenReturn(transactionEntity);
 
-		Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
+		//Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-		Field f = RegistrationStatusServiceImpl.class.getDeclaredField("auditRequestBuilder");
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f.setAccessible(true);
-		f.set(registrationStatusService, auditRequestBuilder);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
 		f1.set(auditRequestBuilder, auditRequest1);

@@ -40,11 +40,21 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 	/** The Constant CREATED_BY. */
 	private static final String CREATED_BY = "MOSIP";
+	
+	/** The event id. */
+	private String eventId = "";
+	
+	/** The event name. */
+	private String eventName = "";
+	
+	/** The event type. */
+	private String eventType = "";
 
 	/** The sync registration dao. */
 	@Autowired
 	private SyncRegistrationDao syncRegistrationDao;
 	
+	/** The core audit request builder. */
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
@@ -79,11 +89,17 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 					syncRegistration.setId(existingSyncRegistration.getId());
 					syncRegistration.setCreateDateTime(existingSyncRegistration.getCreateDateTime());
 					syncRegistration = syncRegistrationDao.update(syncRegistration);
+					eventId = EventId.RPR_402.toString();
+					eventName = EventName.UPDATE.toString();
+					eventType = EventType.BUSINESS.toString();
 				} else {
 					// first time sync registration
 					syncRegistration = convertDtoToEntity(registrationDto);
 					syncRegistration.setId(RegistrationUtility.generateId());
 					syncRegistration = syncRegistrationDao.save(syncRegistration);
+					eventId = EventId.RPR_402.toString();
+					eventName = EventName.UPDATE.toString();
+					eventType = EventType.BUSINESS.toString();
 				}
 				list.add(convertEntityToDto(syncRegistration));
 			}
@@ -96,8 +112,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			String description = isTransactionSuccessful
 					? "Registartion Id's are successfully synched in Sync Registration table"
 					: "Registartion Id's syn is unsuccessfull";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, EventId.RPR_405.toString(),
-					EventName.EXCEPTION.toString(), EventType.SYSTEM.toString(),
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 
 		}
