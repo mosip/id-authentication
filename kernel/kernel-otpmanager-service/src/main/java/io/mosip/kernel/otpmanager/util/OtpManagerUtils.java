@@ -9,8 +9,8 @@ import java.util.List;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 import io.mosip.kernel.otpmanager.constant.OtpPropertyConstants;
-import io.mosip.kernel.otpmanager.exceptionhandler.MosipErrors;
-import io.mosip.kernel.otpmanager.exceptionhandler.MosipOtpInvalidArgumentExceptionHandler;
+import io.mosip.kernel.otpmanager.exception.MosipErrors;
+import io.mosip.kernel.otpmanager.exception.MosipOtpInvalidArgumentExceptionHandler;
 
 /**
  * This utility class defines some of the utility methods used in OTP

@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.otpmanager.OtpmanagerBootApplication;
-import io.mosip.kernel.otpmanager.exceptionhandler.MosipOtpInvalidArgumentExceptionHandler;
+import io.mosip.kernel.otpmanager.exception.MosipOtpInvalidArgumentExceptionHandler;
 import io.mosip.kernel.otpmanager.service.impl.OtpGeneratorServiceImpl;
 import io.mosip.kernel.otpmanager.service.impl.OtpValidatorServiceImpl;
 

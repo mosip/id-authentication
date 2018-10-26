@@ -1,4 +1,4 @@
-package io.mosip.kernel.auditmanager.exceptionhandler;
+package io.mosip.kernel.auditmanager.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

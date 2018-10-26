@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanager.exceptionhandler;
+package io.mosip.kernel.otpmanager.exception;
 
 import java.util.List;
 

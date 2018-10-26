@@ -1,4 +1,4 @@
-package io.mosip.kernel.auditmanager.exceptionhandler;
+package io.mosip.kernel.auditmanager.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

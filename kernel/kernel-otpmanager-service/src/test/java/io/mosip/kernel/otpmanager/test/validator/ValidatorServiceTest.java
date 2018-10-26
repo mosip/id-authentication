@@ -17,7 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
-import io.mosip.kernel.otpmanager.exceptionhandler.MosipOtpInvalidArgumentExceptionHandler;
+import io.mosip.kernel.otpmanager.exception.MosipOtpInvalidArgumentExceptionHandler;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
 import io.mosip.kernel.otpmanager.service.impl.OtpValidatorServiceImpl;
 

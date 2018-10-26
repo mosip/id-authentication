@@ -1,4 +1,4 @@
-package io.mosip.kernel.idgenerator.uin.exceptionhandler;
+package io.mosip.kernel.idgenerator.uin.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
