@@ -16,26 +16,24 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.RestServicesConstants;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
-import io.mosip.authentication.service.factory.AuditRequestFactory;
-import io.mosip.authentication.service.factory.RestRequestFactory;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@TestPropertySource(value = { "classpath:audit.properties", "classpath:rest-services.properties", "classpath:log.properties" })
 public class RestRequestFactoryTest {
 
 	@InjectMocks
@@ -54,22 +52,12 @@ public class RestRequestFactoryTest {
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(auditFactory, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.invokeMethod(restFactory, "initializeLogger", mosipRollingFileAppender);
 	}
 
 	@Test
 	public void testBuildRequest() throws IDDataValidationException {
-		AuditRequestDto auditRequest = auditFactory.buildRequest("IDA", "desc");
+		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
 		auditRequest.setActionTimeStamp(null);
 
 		RestRequestDTO request = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
@@ -96,7 +84,7 @@ public class RestRequestFactoryTest {
 
 	}
 
-	@Test(expected=IDDataValidationException.class)
+	@Test(expected = IDDataValidationException.class)
 	public void testBuildRequestEmptyUri() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
@@ -105,22 +93,24 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory
+				.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
 				AuditResponseDto.class);
 	}
 
-	@Test(expected=IDDataValidationException.class)
+	@Test(expected = IDDataValidationException.class)
 	public void testBuildRequestNullProperties() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE,
+				auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
 				AuditResponseDto.class);
 	}
 
-	@Test(expected=IDDataValidationException.class)
+	@Test(expected = IDDataValidationException.class)
 	public void testBuildRequestEmptyHttpMethod() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
@@ -129,15 +119,16 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory
+				.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
 				AuditResponseDto.class);
 	}
 
-	@Test(expected=IDDataValidationException.class)
+	@Test(expected = IDDataValidationException.class)
 	public void testBuildRequestEmptyResponseType() throws IDDataValidationException {
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
-				null);
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE,
+				auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"), null);
 	}
 
 	@Test
@@ -149,7 +140,8 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE,
+				auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
 				AuditResponseDto.class);
 
 		// TODO Assert response
@@ -164,7 +156,8 @@ public class RestRequestFactoryTest {
 
 		ReflectionTestUtils.setField(restFactory, "env", environment);
 
-		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory.buildRequest("IDA", "desc"),
+		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE,
+				auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
 				AuditResponseDto.class);
 	}
 

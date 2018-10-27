@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import io.mosip.authentication.core.constant.AuditEvents;
+import io.mosip.authentication.core.constant.AuditModules;
+import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
+import lombok.NoArgsConstructor;
 
 /**
  * A factory for creating and building AuditRequest objects from
@@ -20,42 +23,44 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
  * @author Manoj SP
  */
 @Component
+@NoArgsConstructor
 public class AuditRequestFactory {
-	private MosipLogger logger;
+	
+	/** The mosipLogger. */
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(AuditRequestFactory.class);
 
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-	}
-
+	/** The env. */
 	@Autowired
 	private Environment env;
 	
-	private InetAddress inetAddress;
-
 	/**
 	 * Builds the request.
 	 *
+	 * @param module the module
+	 * @param event the event
+	 * @param id the id
+	 * @param idType the id type
+	 * @param desc the desc
 	 * @return the audit request dto
 	 */
-	public AuditRequestDto buildRequest(String moduleId, String description) {
+	public AuditRequestDto buildRequest(AuditModules module, AuditEvents event, String id, IdType idType, String desc) {
 		AuditRequestDto request = new AuditRequestDto();
 		String hostName;
 		String hostAddress;
 
 		try {
-			inetAddress = InetAddress.getLocalHost();
+			InetAddress inetAddress = InetAddress.getLocalHost();
 			hostName = inetAddress.getHostName();
 			hostAddress = inetAddress.getHostAddress();
 		} catch (UnknownHostException ex) {
-			logger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(), ex.toString());
+			mosipLogger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(), "Exception : " + ex);
 			hostName = env.getProperty("audit.defaultHostName");
 			hostAddress = env.getProperty("audit.defaultHostAddress");
 		}
 
-		request.setEventId("eventId");
-		request.setEventName("eventName");
-		request.setEventType("eventType");
+		request.setEventId(event.getEventId());
+		request.setEventName(event.getEventName());
+		request.setEventType(event.getEventType());
 		request.setActionTimeStamp(OffsetDateTime.now());
 		request.setHostName(hostName);
 		request.setHostIp(hostAddress);
@@ -63,12 +68,12 @@ public class AuditRequestFactory {
 		request.setApplicationName(env.getProperty("application.name"));
 		request.setSessionUserId("sessionUserId");
 		request.setSessionUserName("sessionUserName");
-		request.setId("id");
-		request.setIdType("idType");
-		request.setCreatedBy("createdBy"); //TODO get from system
-		request.setModuleName("moduleName"); //TODO get from constant
-		request.setModuleId(moduleId);
-		request.setDescription(description);
+		request.setId(id);
+		request.setIdType(idType.name());
+		request.setCreatedBy(env.getProperty("user.name"));
+		request.setModuleName(module.getModuleName());
+		request.setModuleId(module.getModuleId());
+		request.setDescription(desc);
 
 		return request;
 	}

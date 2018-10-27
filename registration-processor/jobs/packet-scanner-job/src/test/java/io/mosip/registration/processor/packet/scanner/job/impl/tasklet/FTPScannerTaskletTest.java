@@ -65,21 +65,9 @@ public class FTPScannerTaskletTest {
 
 	@Before
 	public void setup() {
-
 		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("1000.zip").getFile());
-		this.directoryPath = classLoader.getResource("FTP").getPath().toString().substring(1,
-				classLoader.getResource("FTP").getPath().toString().length());
-		try {
-
-			this.mockMultipartFile = new MockMultipartFile("file", "1000.zip", "mixed/multipart",
-					new FileInputStream(file));
-		} catch (FileNotFoundException e) {
-
-		} catch (IOException e) {
-
-		}
-
+		File file = new File(classLoader.getResource("FTP").getFile());
+		this.directoryPath = file.getAbsolutePath();
 	}
 
 	@Test
@@ -129,7 +117,7 @@ public class FTPScannerTaskletTest {
 		final Appender mockAppender = mock(Appender.class);
 		FileNotFoundInDestinationException fileNotFoundInDestinationException = new FileNotFoundInDestinationException(
 				"File not found");
-		
+
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 		Mockito.when(filemanager.getCurrentDirectory()).thenReturn(this.directoryPath);

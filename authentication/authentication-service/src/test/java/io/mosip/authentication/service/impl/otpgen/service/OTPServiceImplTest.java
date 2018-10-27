@@ -2,35 +2,34 @@ package io.mosip.authentication.service.impl.otpgen.service;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.core.env.Environment;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.otpgen.service.OTPServiceImpl;
 import io.mosip.authentication.service.integration.OTPManager;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 /**
  * Test class for OTPServiceImpl.
  *
  * @author Rakesh Roshan
  */
-//@RunWith(MockitoJUnitRunner.class)
 @RunWith(SpringRunner.class)
-@TestPropertySource(value = { "classpath:log.properties" })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@WebMvcTest
 public class OTPServiceImplTest {
 
 	@Mock
@@ -41,6 +40,7 @@ public class OTPServiceImplTest {
 	private AuditRequestFactory auditRequestFactory;
 	@Mock
 	private RestHelper restHelper;
+	
 	@Autowired
 	Environment env;
 
@@ -49,24 +49,6 @@ public class OTPServiceImplTest {
 	
 	@Mock
 	private OTPServiceImpl otpServiceImplmock;
-
-	
-	@Before
-	public void before() {
-		// otpRequestDto = getOtpRequestDTO();
-		// otpResponseDTO = getOtpResponseDTO();
-
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(otpServiceImpl, "initializeLogger", mosipRollingFileAppender);
-	}
 
 	
 	@Test

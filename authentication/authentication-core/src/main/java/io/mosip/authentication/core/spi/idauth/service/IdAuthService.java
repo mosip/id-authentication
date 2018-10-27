@@ -20,7 +20,7 @@ public interface IdAuthService {
 	 * @return
 	 * @throws IdValidationFailedException
 	 */
-	 String validateUIN(String UIN)  throws IdAuthenticationBusinessException;
+	 String validateUIN(String uin)  throws IdAuthenticationBusinessException;
 	 
 	/**
 	 * validates the VID
@@ -28,5 +28,5 @@ public interface IdAuthService {
 	 * @return
 	 * @throws IdValidationFailedException
 	 */
-	String validateVID(String VID)  throws IdAuthenticationBusinessException;
+	String validateVID(String vid)  throws IdAuthenticationBusinessException;
 }

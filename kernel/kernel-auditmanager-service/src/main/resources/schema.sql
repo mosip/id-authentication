@@ -33,9 +33,8 @@ create table if not exists audit.audit_log_app (
 ;
 
 -- keys section -------------------------------------------------
-ALTER TABLE audit.audit_log_app DROP CONSTRAINT IF EXISTS pk_adtl_log_id;
- alter table audit.audit_log_app add constraint pk_adtl_log_id primary key (log_id)
- ;
+-- ALTER TABLE audit.audit_log_app DROP CONSTRAINT IF EXISTS pk_adtl_log_id;
+-- alter table audit.audit_log_app add constraint pk_adtl_log_id primary key (log_id);
 -- 
 
 -- indexes section -------------------------------------------------

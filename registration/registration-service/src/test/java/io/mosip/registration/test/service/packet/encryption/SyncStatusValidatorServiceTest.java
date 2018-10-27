@@ -27,7 +27,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;

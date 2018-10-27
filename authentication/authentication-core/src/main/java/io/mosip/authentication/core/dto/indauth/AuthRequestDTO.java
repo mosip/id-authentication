@@ -1,10 +1,7 @@
 package io.mosip.authentication.core.dto.indauth;
 
-import java.util.Date;
-
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -20,12 +17,11 @@ import lombok.Data;
 @Data
 public class AuthRequestDTO  {
 
-	@Pattern(regexp = "^[0-9]{10}$", message = "{mosip.ida.validation.message.AuthRequest.id}")
 	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.id.notNull}")
 	private String id;
 
 	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.idType.notNull}")
-	private IdType idType;
+	private String idType;
 
 	/**
 	 * The value of the field or property must be a number within a specified range.
@@ -45,8 +41,9 @@ public class AuthRequestDTO  {
 	@Pattern(regexp = "^[A-Za-z0-9]{10}", message = "{mosip.ida.validation.message.AuthRequest.txnId}")
 	private String txnID;
 
-	@PastOrPresent(message = "{mosip.ida.validation.message.AuthRequest.date}")
-	private Date reqTime;
+	// The value of the field or property must be a date or time in the past or present.
+	@NotNull(message = "{mosip.ida.validation.message.AuthRequest.reqTime.notNull}")
+	private String reqTime;
 
 	//@Pattern(regexp = "^[A-Za-z0-9]{10}$", message = "{mosip.ida.validation.message.AuthRequest.asaLicenseKey}")
 	private String msaLicenseKey;
@@ -61,7 +58,6 @@ public class AuthRequestDTO  {
 	
 	private AuthSecureDTO key;
 	
-	private PinDTO pinDTO;
-	
+	private PersonalIdentityDataDTO pii;
 
 }

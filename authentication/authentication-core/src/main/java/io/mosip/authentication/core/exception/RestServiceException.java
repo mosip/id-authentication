@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.exception;
 
+import java.util.Optional;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 
 /**
@@ -10,8 +12,15 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
  */
 public class RestServiceException extends IdAuthenticationAppException {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 372518972095526748L;
 	
+	/** The response body. */
+	private transient Object responseBody;
+	
+	/**
+	 * Instantiates a new rest service exception.
+	 */
 	public RestServiceException() {
 		super();
 	}
@@ -33,6 +42,26 @@ public class RestServiceException extends IdAuthenticationAppException {
 	 */
 	public RestServiceException(IdAuthenticationErrorConstants exceptionConstant, Throwable rootCause) {
 		super(exceptionConstant, rootCause);
+	}
+	
+	/**
+	 * Instantiates a new rest service exception.
+	 *
+	 * @param exceptionConstant the exception constant
+	 * @param responseBody the response body
+	 */
+	public RestServiceException(IdAuthenticationErrorConstants exceptionConstant, Object responseBody) {
+		super(exceptionConstant);
+		this.responseBody = responseBody;
+	}
+	
+	/**
+	 * Gets the response body.
+	 *
+	 * @return the response body
+	 */
+	public Optional<Object> getResponseBody() {
+		return Optional.of(responseBody);
 	}
 
 }

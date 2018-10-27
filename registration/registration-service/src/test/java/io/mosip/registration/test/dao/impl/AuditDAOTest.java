@@ -19,7 +19,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.dao.impl.AuditDAOImpl;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;

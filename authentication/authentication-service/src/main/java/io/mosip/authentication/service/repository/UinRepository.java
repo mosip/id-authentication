@@ -14,6 +14,7 @@ import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 @Repository
 public interface UinRepository extends BaseRepository<UinEntity, String>{
 	
+	
 	/**
 	 * 
 	 * this method checks for uin
@@ -21,16 +22,5 @@ public interface UinRepository extends BaseRepository<UinEntity, String>{
 	 * @return UinEntity
 	 * @param uin 
 	 */
-	public UinEntity findByUin(String uin);
-	
-	
-	
-	/**
-	 * 
-	 * this method checks for uin based on reference Id
-	 * 
-	 * @return UinEntity
-	 * @param uin 
-	 */
-	public Optional<UinEntity> findById(String refId);
+	Optional<UinEntity> findByUinRefId(String uinRefId);
 }

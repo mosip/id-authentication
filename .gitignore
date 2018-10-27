@@ -1,6 +1,5 @@
 *.class
 .mtj.tmp/
-*.jar
 *.war
 *.ear
 hs_err_pid*
@@ -21,3 +20,4 @@ local.properties
 .loadpath
 .DS_Store
 test.txt
+META-INF/

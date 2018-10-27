@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.otpgen.facade;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -15,6 +16,7 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
@@ -23,8 +25,6 @@ import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.factory.MosipLogfactory;
 
 /**
  * Facade implementation of OTPfacade to generate OTP.
@@ -34,6 +34,8 @@ import io.mosip.kernel.logger.factory.MosipLogfactory;
 @Service
 @PropertySource("classpath:application-local.properties")
 public class OTPFacadeImpl implements OTPFacade {
+
+	private static final String SESSION_ID = "SessionID";
 
 	@Autowired
 	private OTPService otpService;
@@ -47,13 +49,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	@Autowired
 	private Environment env;
 
-	private MosipLogger LOGGER;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender idaRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(idaRollingFileAppender, this.getClass());
-
-	}
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPFacadeImpl.class);
 
 	/**
 	 * Obtained OTP.
@@ -78,20 +74,20 @@ public class OTPFacadeImpl implements OTPFacade {
 			try {
 				otp = otpService.generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
-				LOGGER.error("", otpRequestDto.getIdType().getType(), e.getErrorCode(), e.getErrorText());
+				mosipLogger.error("", otpRequestDto.getIdType(), e.getErrorCode(), "Error: " + e);
 			}
 		}
-		LOGGER.info("SessionID", "NA", "generated OTP", otp); 
-		
+		mosipLogger.info(SESSION_ID, "NA", "generated OTP", otp);
+
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		if (otp == null || otp.trim().isEmpty()) {
-			LOGGER.error("SessionId", "NA", "NA", "generated OTP is: " + otp);
+			mosipLogger.error("SessionId", "NA", "NA", "generated OTP is: " + otp);
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		} else {
-			LOGGER.info("NA", "NA", "NA", "generated OTP is: " + otp);
+			mosipLogger.info("NA", "NA", "NA", "generated OTP is: " + otp);
 			otpResponseDTO.setStatus("Y");
 			otpResponseDTO.setTxnID(txnID);
-			otpResponseDTO.setResponseTime(formateDate(new Date(), env.getProperty("date.format.pattern")));
+			otpResponseDTO.setResponseTime(formateDate(new Date(), env.getProperty("datetime.pattern")));
 			// TODO Date format to be included
 			saveAutnTxn(otpRequestDto);
 		}
@@ -137,7 +133,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			formatedDate = new SimpleDateFormat(formate).parse(formatDate);
 			return formatedDate;
 		} catch (ParseException e) {
-			LOGGER.error("SessionID", "ParseException", e.getMessage(), "Date formate parse Exception");
+			mosipLogger.error(SESSION_ID, "ParseException", e.getMessage(), "Date formate parse Exception");
 		}
 		return formatedDate;
 	}
@@ -178,26 +174,26 @@ public class OTPFacadeImpl implements OTPFacade {
 	 */
 	private String getRefId(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
 		String refId = null;
-		IdType idType = otpRequestDto.getIdType();
+		Optional<IdType> idType = IdType.getIDType(otpRequestDto.getIdType());
 		String uniqueID = otpRequestDto.getId();
-		if (idType.equals(IdType.UIN)) {
-			try {
+		if (idType.isPresent()) {
+			if (idType.get() == IdType.UIN) {
 				refId = idAuthService.validateUIN(uniqueID);
-
-			} catch (IdAuthenticationBusinessException e) {
-				LOGGER.error("", idType.getType(), e.getErrorCode(), e.getErrorText());
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN);
-			}
-
-		} else if (otpRequestDto.getIdType().equals(IdType.VID)) {
-			try {
+				if (refId == null) {
+					mosipLogger.info(SESSION_ID, "IDTYPE-" + otpRequestDto.getIdType(), "Reference Id for UID",
+							" UID-refId: " + refId);
+				}
+			} else {
 				refId = idAuthService.validateVID(uniqueID);
-			} catch (IdAuthenticationBusinessException e) {
-				LOGGER.error("", idType.getType(), e.getErrorCode(), e.getErrorText());
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN);
+
+				if (refId == null) {
+					mosipLogger.info(SESSION_ID, "IDTYPE-" + otpRequestDto.getIdType(), "Reference Id for VID",
+							" VID-refId: " + refId);
+				}
 			}
+			mosipLogger.info("NA", idType.get().getType(), "NA",
+					" reference id of ID Type " + idType.get().getType() + refId);
 		}
-		LOGGER.info("NA", idType.getType(), "NA", " reference id of ID Type " + idType.getType() + refId);
 
 		return refId;
 	}

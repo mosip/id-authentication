@@ -1,7 +1,7 @@
 package io.mosip.authentication.core.constant;
 
 /**
- * Defined request type as 'otp' or 'auth'.
+ * Defined request type for any type of request in IDA.
  * 
  * @author Rakesh Roshan
  */

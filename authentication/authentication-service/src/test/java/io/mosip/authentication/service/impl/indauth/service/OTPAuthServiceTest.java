@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -21,13 +20,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.PersonalIdentityDataDTO;
 import io.mosip.authentication.core.dto.indauth.PinDTO;
 import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
@@ -36,18 +35,15 @@ import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.entity.UinEntity;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 import reactor.ipc.netty.http.HttpResources;
 
 /**
  * 
  * @author Dinesh Karuppiah
  */
-//@RunWith(MockitoJUnitRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@TestPropertySource(value = { "classpath:rest-services.properties", "classpath:log.properties" })
 public class OTPAuthServiceTest {
 
 	@InjectMocks
@@ -67,16 +63,6 @@ public class OTPAuthServiceTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authserviceimpl, "env", env);
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(env.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(env.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(env.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(env.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(env.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		ReflectionTestUtils.invokeMethod(authserviceimpl, "initializeLogger", mosipRollingFileAppender);
 	}
 
 	private AuthRequestDTO otpAuthRequestDTO = new AuthRequestDTO();
@@ -165,7 +151,6 @@ public class OTPAuthServiceTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-
 	@Test
 	public void TestValidateOtp_ValidRequest() throws IdAuthenticationBusinessException {
 		AutnTxn autntxn = new AutnTxn();
@@ -182,8 +167,9 @@ public class OTPAuthServiceTest {
 		PinDTO pindto = new PinDTO();
 		pindto.setType(PinType.OTP);
 		pindto.setValue("23232323");
-		otpAuthRequestDTO.setPinDTO(pindto);
-		assertFalse(authserviceimpl.validateOtp(otpAuthRequestDTO, "45345435345"));
+		otpAuthRequestDTO.setPii(new PersonalIdentityDataDTO());
+		otpAuthRequestDTO.getPii().setPin(pindto);
+		assertFalse(authserviceimpl.validateOtp(otpAuthRequestDTO, "45345435345").isStatus());
 	}
 
 	/**
@@ -196,8 +182,9 @@ public class OTPAuthServiceTest {
 	@Test(expected = IdAuthenticationBusinessException.class)
 	public void TestInvalidValidateOtp() throws IdAuthenticationBusinessException {
 		OTPAuthServiceImpl authservice = Mockito.mock(OTPAuthServiceImpl.class);
-		Mockito.when(authservice.validateOtp(Mockito.any(), Mockito.anyString())).thenThrow(
-				new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.ID_INVALID_VALIDATEOTP_REQUEST));
+		Mockito.when(authservice.validateOtp(Mockito.any(), Mockito.anyString()))
+				.thenThrow(new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.KERNEL_OTP_VALIDATION_REQUEST_FAILED));
 		otpAuthRequestDTO.setTxnID("1234567890");
 		otpAuthRequestDTO.setMuaCode("ASA000000011");
 		otpAuthRequestDTO.setTxnID("TXN00001");
@@ -206,7 +193,8 @@ public class OTPAuthServiceTest {
 		PinDTO pindto = new PinDTO();
 		pindto.setType(PinType.OTP);
 		pindto.setValue("23232323");
-		otpAuthRequestDTO.setPinDTO(pindto);
+		otpAuthRequestDTO.setPii(new PersonalIdentityDataDTO());
+		otpAuthRequestDTO.getPii().setPin(pindto);
 		authservice.validateOtp(otpAuthRequestDTO, "");
 	}
 
@@ -216,8 +204,9 @@ public class OTPAuthServiceTest {
 	 * @throws IdAuthenticationBusinessException
 	 */
 
-	@Ignore
-	@Test(expected = IDDataValidationException.class)
+//	@Ignore
+//	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void TEst_isEMptynull() throws IdAuthenticationBusinessException {
 		OTPAuthServiceImpl authservice = Mockito.mock(OTPAuthServiceImpl.class);
 		Mockito.when(authservice.isEmpty(Mockito.any())).thenReturn(true);
@@ -229,7 +218,8 @@ public class OTPAuthServiceTest {
 		PinDTO pindto = new PinDTO();
 		pindto.setType(PinType.OTP);
 		pindto.setValue("23232323");
-		otpAuthRequestDTO.setPinDTO(pindto);
+		otpAuthRequestDTO.setPii(new PersonalIdentityDataDTO());
+		otpAuthRequestDTO.getPii().setPin(pindto);
 		authservice.validateOtp(otpAuthRequestDTO, "34545");
 	}
 
@@ -242,9 +232,9 @@ public class OTPAuthServiceTest {
 		AuthRequestDTO authreqdto = new AuthRequestDTO();
 		PinDTO pinDTO = new PinDTO();
 		pinDTO.setValue("");
-		authreqdto.setPinDTO(pinDTO);
+		authreqdto.setPii(new PersonalIdentityDataDTO());
+		authreqdto.getPii().setPin(pinDTO);
 		authserviceimpl.validateOtp(authreqdto, "");
 	}
-
 
 }

@@ -48,7 +48,7 @@
 
 		<mosip.core.kernel.version>1.0.0-SNAPSHOT</mosip.core.kernel.version>
 		<!-- Derby Version -->
-		<apache.derby.version>10.11.1.1</apache.derby.version>
+		<apache.derby.version>10.13.1.1</apache.derby.version>
 		
 		<sonar.exclusions>
 			src/main/java/io/mosip/registration/util/**/*,

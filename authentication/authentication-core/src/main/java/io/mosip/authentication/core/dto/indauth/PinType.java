@@ -11,11 +11,15 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * The class PinType holds all the PinType(s).
  *
  * @author Arun Bose
+ * @author Rakesh Roshan
  */
 public enum PinType {
 
 	/** The otp. */
-	OTP("OTP");
+	OTP("OTP"),
+	
+	/** The pin. */
+	PIN("pin");
 
 	/** The type. */
 	private String type;

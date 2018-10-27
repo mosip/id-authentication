@@ -1,36 +1,38 @@
 # MOSIP Functional View
 
-![](arch_diagrams/MOSIP_functional_view.png)
+![Functional View](_images/MOSIP_functional_view.png)
 
 
 # MOSIP Logical Architecture
 
-![](arch_diagrams/MOSIP_logical_arch.png)
+![Logical Architecture](_images/MOSIP_logical_arch.png)
 
 
 # MOSIP Modules Components
 
-![](arch_diagrams/MOSIP_modules_components.png)
+![Modules Components](_images/MOSIP_modules_components.png)
 
 
 # MOSIP Pre Registration 
 
-![](arch_diagrams/MOSIP_Pre-Registration.png)
+![Pre Registration](_images/MOSIP_Pre-Registration.png)
 
 
 # MOSIP Registration 
 
-![](arch_diagrams/MOSIP_Registration.png)
+![Registration](_images/MOSIP_Registration.png)
 
 
 # MOSIP Registration Processor 
 
-![](arch_diagrams/MOSIP_RegistrationProcessor.png)
+![Registration Processor](_images/MOSIP_RegistrationProcessor.png)
 
 
+# MOSIP ID-Authentication Flow
 
+![ID-Authentication Flow](_images/MOSIP_Demo_Auth.png)
 
 
 # MOSIP Configuration Server Setup
 
-![](arch_diagrams/MOSIP_config_server_setup.png)
+![Configuration Server Setup](_images/MOSIP_config_server_setup.png)
