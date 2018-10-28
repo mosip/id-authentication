@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
-import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
+import io.mosip.kernel.dataaccess.config.impl.HibernateDaoConfig;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
