@@ -10,11 +10,11 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.idvalidator.MosipIdValidator;
+import io.mosip.kernel.core.idvalidator.exception.MosipInvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.MosipIdValidator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
 import io.mosip.kernel.idvalidator.uin.constant.MosipUinExceptionConstant;
 
 /**

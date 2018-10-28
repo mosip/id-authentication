@@ -2,7 +2,7 @@ package io.mosip.kernel.ridgenerator;
 
 import java.util.Random;
 
-import io.mosip.kernel.core.spi.idgenerator.MosipRidGenerator;
+import io.mosip.kernel.core.idgenerator.spi.MosipRidGenerator;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorConstants;
 import io.mosip.kernel.ridgenerator.exception.MosipEmptyInputException;

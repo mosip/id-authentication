@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
+import io.mosip.kernel.core.idvalidator.exception.MosipInvalidIDException;
 import io.mosip.kernel.idvalidator.prid.impl.PridValidatorImpl;
 
 /**

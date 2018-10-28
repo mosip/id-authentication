@@ -18,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.datavalidator.email.exception.InvalideEmailException;
+import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
 import io.mosip.kernel.datavalidator.email.impl.EmailValidatorImpl;
 
 /**

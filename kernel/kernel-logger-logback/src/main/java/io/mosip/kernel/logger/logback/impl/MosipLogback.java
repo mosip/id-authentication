@@ -17,19 +17,18 @@ import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
 import ch.qos.logback.core.util.FileSize;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.exception.ClassNameNotFoundException;
+import io.mosip.kernel.core.logger.exception.EmptyPatternException;
+import io.mosip.kernel.core.logger.exception.FileNameNotProvided;
+import io.mosip.kernel.core.logger.exception.MosipIllegalArgumentException;
+import io.mosip.kernel.core.logger.exception.MosipIllegalStateException;
+import io.mosip.kernel.core.logger.exception.PatternSyntaxException;
+import io.mosip.kernel.core.logger.spi.MosipLogger;
 import io.mosip.kernel.logger.logback.appender.MosipConsoleAppender;
 import io.mosip.kernel.logger.logback.appender.MosipFileAppender;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 import io.mosip.kernel.logger.logback.constant.MosipConfigurationDefault;
-import io.mosip.kernel.logger.logback.exception.ClassNameNotFoundException;
-import io.mosip.kernel.logger.logback.exception.EmptyPatternException;
-import io.mosip.kernel.logger.logback.exception.FileNameNotProvided;
-import io.mosip.kernel.logger.logback.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.logger.logback.exception.MosipIllegalStateException;
-import io.mosip.kernel.logger.logback.exception.PatternSyntaxException;
-
 
 /**
  * Logback implementation class for mosip
@@ -198,8 +197,8 @@ public class MosipLogback implements MosipLogger {
 		timeBasedRollingPolicy.setFileNamePattern(mosipRollingFileAppender.getFileNamePattern());
 		timeBasedRollingPolicy.setMaxHistory(mosipRollingFileAppender.getMaxHistory());
 		if (mosipRollingFileAppender.getFileNamePattern().contains("%i")) {
-			throw new PatternSyntaxException(LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION,
-					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTIONMESSAGENOTI);
+			throw new PatternSyntaxException(LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION.getValue(),
+					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTIONMESSAGENOTI.getValue());
 		}
 		if (mosipRollingFileAppender.getTotalCap() != null
 				&& !mosipRollingFileAppender.getTotalCap().trim().isEmpty()) {
@@ -222,8 +221,8 @@ public class MosipLogback implements MosipLogger {
 	 */
 	public static MosipLogger getMosipConsoleLogger(MosipConsoleAppender consoleAppender, String name) {
 		if (name.trim().isEmpty()) {
-			throw new ClassNameNotFoundException(LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION,
-					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE);
+			throw new ClassNameNotFoundException(LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION.getValue(),
+					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE.getValue());
 		} else {
 			return new MosipLogback(consoleAppender, name);
 		}
@@ -242,14 +241,14 @@ public class MosipLogback implements MosipLogger {
 	public static MosipLogger getMosipFileLogger(MosipFileAppender fileAppender, String name) {
 
 		if (fileAppender.getFileName() == null)
-			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED,
-					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGENULL);
+			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED.getValue(),
+					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGENULL.getValue());
 		else if (fileAppender.getFileName().trim().isEmpty())
-			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED,
-					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGEEMPTY);
+			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED.getValue(),
+					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGEEMPTY.getValue());
 		else if (name.trim().isEmpty())
-			throw new ClassNameNotFoundException(LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION,
-					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE);
+			throw new ClassNameNotFoundException(LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION.getValue(),
+					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE.getValue());
 		else {
 			return new MosipLogback(fileAppender, name);
 		}
@@ -267,36 +266,37 @@ public class MosipLogback implements MosipLogger {
 	 */
 	public static MosipLogger getMosipRollingFileLogger(MosipRollingFileAppender rollingFileAppender, String name) {
 		if (rollingFileAppender.getFileNamePattern() == null)
-			throw new EmptyPatternException(LogExeptionCodeConstant.EMPTYPATTERNEXCEPTION,
-					LogExeptionCodeConstant.EMPTYPATTERNEXCEPTIONMESSAGENULL);
+			throw new EmptyPatternException(LogExeptionCodeConstant.EMPTYPATTERNEXCEPTION.getValue(),
+					LogExeptionCodeConstant.EMPTYPATTERNEXCEPTIONMESSAGENULL.getValue());
 		else if (rollingFileAppender.getFileNamePattern().trim().isEmpty())
-			throw new EmptyPatternException(LogExeptionCodeConstant.EMPTYPATTERNEXCEPTION,
-					LogExeptionCodeConstant.EMPTYPATTERNEXCEPTIONMESSAGEEMPTY);
+			throw new EmptyPatternException(LogExeptionCodeConstant.EMPTYPATTERNEXCEPTION.getValue(),
+					LogExeptionCodeConstant.EMPTYPATTERNEXCEPTIONMESSAGEEMPTY.getValue());
 		else if (!rollingFileAppender.getFileNamePattern().contains("%d"))
-			throw new PatternSyntaxException(LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION,
-					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTIONMESSAGED);
+			throw new PatternSyntaxException(LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION.getValue(),
+					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTIONMESSAGED.getValue());
 		else if (!rollingFileAppender.getMaxFileSize().trim().isEmpty() && rollingFileAppender.getMaxFileSize() != null
 				&& !rollingFileAppender.getFileNamePattern().contains("%i"))
-			throw new PatternSyntaxException(LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION,
-					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTIONMESSAGEI);
+			throw new PatternSyntaxException(LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTION.getValue(),
+					LogExeptionCodeConstant.PATTERNSYNTAXEXCEPTIONMESSAGEI.getValue());
 		else if (rollingFileAppender.getFileName() == null)
-			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED,
-					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGENULL);
+			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED.getValue(),
+					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGENULL.getValue());
 		else if (rollingFileAppender.getFileName().trim().isEmpty())
-			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED,
-					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGEEMPTY);
+			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED.getValue(),
+					LogExeptionCodeConstant.FILENAMENOTPROVIDEDMESSAGEEMPTY.getValue());
 		else if (name.trim().isEmpty())
-			throw new ClassNameNotFoundException(LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION,
-					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE);
+			throw new ClassNameNotFoundException(LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION.getValue(),
+					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE.getValue());
 		else
 			try {
 				return new MosipLogback(rollingFileAppender, name);
 			} catch (IllegalStateException e) {
-				throw new MosipIllegalStateException(LogExeptionCodeConstant.MOSIPILLEGALSTATEEXCEPTION,
-						LogExeptionCodeConstant.MOSIPILLEGALSTATEEXCEPTIONMESSAGE);
+				throw new MosipIllegalStateException(LogExeptionCodeConstant.MOSIPILLEGALSTATEEXCEPTION.getValue(),
+						LogExeptionCodeConstant.MOSIPILLEGALSTATEEXCEPTIONMESSAGE.getValue());
 			} catch (IllegalArgumentException e) {
-				throw new MosipIllegalArgumentException(LogExeptionCodeConstant.MOSIPILLEGALARGUMENTEXCEPTION,
-						LogExeptionCodeConstant.MOSIPILLEGALARGUMENTEXCEPTIONMESSAGE);
+				throw new MosipIllegalArgumentException(
+						LogExeptionCodeConstant.MOSIPILLEGALARGUMENTEXCEPTION.getValue(),
+						LogExeptionCodeConstant.MOSIPILLEGALARGUMENTEXCEPTIONMESSAGE.getValue());
 			}
 	}
 

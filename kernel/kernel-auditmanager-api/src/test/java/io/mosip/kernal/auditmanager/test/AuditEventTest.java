@@ -17,10 +17,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.config.AuditConfig;
 import io.mosip.kernel.auditmanager.entity.Audit;
-import io.mosip.kernel.auditmanager.exception.MosipAuditManagerException;
 import io.mosip.kernel.auditmanager.impl.AuditHandlerImpl;
 import io.mosip.kernel.auditmanager.repository.AuditRepository;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.kernel.core.auditmanager.exception.MosipAuditManagerException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AuditConfig.class)

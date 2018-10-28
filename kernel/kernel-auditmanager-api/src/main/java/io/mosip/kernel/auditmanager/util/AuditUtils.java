@@ -8,8 +8,8 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 import io.mosip.kernel.auditmanager.constant.AuditErrorCodes;
-import io.mosip.kernel.auditmanager.exception.MosipAuditManagerException;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.kernel.core.auditmanager.exception.MosipAuditManagerException;
 
 /**
  * Utility class for Audit Manager

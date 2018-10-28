@@ -85,32 +85,33 @@
 
 	<modules>
 		<module>kernel-core</module>
+		<module>kernel-config-server</module>
 		<module>kernel-logger-logback</module>
 		<module>kernel-dataaccess-hibernate</module>
 		<module>kernel-auditmanager-api</module>
-		<module>kernel-auditmanager-service</module>
-		<module>kernel-otpmanager-service</module>
 		<module>kernel-idgenerator-prid</module>
 		<module>kernel-idgenerator-rid</module>
 		<module>kernel-idgenerator-uin</module>
 		<module>kernel-idgenerator-vid</module>
 		<module>kernel-idgenerator-tokenid</module>
 		<module>kernel-packetuploader-sftp</module>
-		<module>kernel-packetuploader-http</module>
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-idvalidator</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-virusscanner-clamav</module>
-		<module>kernel-config-server</module>
-		<module>kernel-emailnotification-smtp</module>
 		<module>kernel-keygenerator-bouncycastle</module>
 		<module>kernel-crypto-bouncycastle</module>
 		<!-- <module>kernel-crypto-jce</module> -->
 		<module>kernel-templatemanager-velocity</module>
 		<module>kernel-templatemanager-freemarker</module>
 		<module>kernel-pdfgenerator-itext</module>
-		<module>kernel-smsnotification-msg91</module>
 		<module>kernel-datamapper-orika</module>
+		<module>kernel-auditmanager-service</module>
+		<module>kernel-otpmanager-service</module>
+		<module>kernel-packetuploader-http-service</module>
+		<module>kernel-emailnotification-service</module>
+		<module>kernel-smsnotification-msg91-service</module>
+		
 	</modules>
 
 	<profiles>

@@ -18,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.spi.pdfgenerator.PdfGenerator;
-import io.mosip.kernel.pdfgenerator.itext.exception.PdfGeneratorException;
+import io.mosip.kernel.core.pdfgenerator.exception.PdfGeneratorException;
+import io.mosip.kernel.core.pdfgenerator.spi.PdfGenerator;
 import io.mosip.kernel.pdfgenerator.itext.impl.PdfGeneratorImpl;
 
 @RunWith(SpringRunner.class)

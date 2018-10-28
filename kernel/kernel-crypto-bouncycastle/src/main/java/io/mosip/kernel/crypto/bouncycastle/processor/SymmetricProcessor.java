@@ -14,10 +14,10 @@ import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.bouncycastle.crypto.params.KeyParameter;
 
+import io.mosip.kernel.core.crypto.exception.MosipInvalidDataException;
+import io.mosip.kernel.core.crypto.exception.MosipInvalidKeyException;
+import io.mosip.kernel.core.crypto.exception.MosipNullKeyException;
 import io.mosip.kernel.crypto.bouncycastle.constant.MosipSecurityExceptionCodeConstant;
-import io.mosip.kernel.crypto.bouncycastle.exception.MosipInvalidDataException;
-import io.mosip.kernel.crypto.bouncycastle.exception.MosipInvalidKeyException;
-import io.mosip.kernel.crypto.bouncycastle.exception.MosipNullKeyException;
 import io.mosip.kernel.crypto.bouncycastle.util.SecurityUtils;
 
 /**
@@ -46,31 +46,32 @@ public class SymmetricProcessor {
 	 *            if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
-	protected static byte[] process(BlockCipher blockCipher, byte[] key,
-			byte[] data, boolean mode) {
-		BufferedBlockCipher cipher = new PaddedBufferedBlockCipher(
-				new CBCBlockCipher(blockCipher));
+	protected static byte[] process(BlockCipher blockCipher, byte[] key, byte[] data, boolean mode) {
+		BufferedBlockCipher cipher = new PaddedBufferedBlockCipher(new CBCBlockCipher(blockCipher));
 		try {
 			cipher.init(mode, new KeyParameter(key));
 		} catch (NullPointerException e) {
-			throw new MosipNullKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION);
+			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorCode(),
+					MosipSecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorMessage());
 		} catch (IllegalArgumentException e) {
 			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_SIZE_EXCEPTION);
+					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_SIZE_EXCEPTION.getErrorCode(),
+					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_SIZE_EXCEPTION.getErrorMessage());
 		}
 		SecurityUtils.verifyData(data);
 		byte[] output = new byte[cipher.getOutputSize(data.length)];
-		int processedBytes = cipher.processBytes(data, 0, data.length, output,
-				0);
+		int processedBytes = cipher.processBytes(data, 0, data.length, output, 0);
 		try {
 			cipher.doFinal(output, processedBytes);
 		} catch (InvalidCipherTextException e) {
 			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION);
+					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION.getErrorCode(),
+					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION
+							.getErrorMessage());
 		} catch (DataLengthException e) {
 			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION);
+					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorCode(),
+					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorMessage());
 		}
 		return output;
 	}

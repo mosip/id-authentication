@@ -5,7 +5,6 @@ import java.util.ResourceBundle;
 
 import org.kamranzafar.otp.provider.TOTPProvider;
 
-import io.mosip.kernel.core.spi.otpmanager.OtpGenerator;
 import io.mosip.kernel.otpmanager.constant.OtpCryptoConstants;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 import io.mosip.kernel.otpmanager.constant.OtpPropertyConstants;
@@ -18,14 +17,12 @@ import io.mosip.kernel.otpmanager.exception.MosipResourceNotFoundException;
  * @version 1.0.0
  *
  */
-public class OtpGeneratorImpl implements OtpGenerator {
-	/*
-	 * (non-Javadoc)
+public class OtpGeneratorImpl {
+	/**
+	 * GenerateOtp
 	 * 
-	 * @see
-	 * io.mosip.kernel.otpmanagerapiwrapper.generator.OtpGenerator#generateOtp()
+	 * @return String
 	 */
-	@Override
 	public String generateOtp() {
 		// Length of OTP.
 		String otpLength;

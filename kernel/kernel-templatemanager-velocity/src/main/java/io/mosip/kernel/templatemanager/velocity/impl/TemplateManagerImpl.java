@@ -16,12 +16,12 @@ import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
-import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
+import io.mosip.kernel.core.templatemanager.exception.TemplateMethodInvocationException;
+import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
+import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.constant.TemplateManagerConstant;
 import io.mosip.kernel.templatemanager.velocity.constant.TemplateManagerExceptionCodeConstant;
-import io.mosip.kernel.templatemanager.velocity.exception.TemplateMethodInvocationException;
-import io.mosip.kernel.templatemanager.velocity.exception.TemplateParsingException;
-import io.mosip.kernel.templatemanager.velocity.exception.TemplateResourceNotFoundException;
 import io.mosip.kernel.templatemanager.velocity.util.TemplateManagerUtil;
 
 /**

@@ -14,11 +14,11 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
-import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
+import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
+import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.freemarker.constant.TemplateManagerConstant;
 import io.mosip.kernel.templatemanager.freemarker.constant.TemplateManagerExceptionCodeConstant;
-import io.mosip.kernel.templatemanager.freemarker.exception.TemplateParsingException;
-import io.mosip.kernel.templatemanager.freemarker.exception.TemplateResourceNotFoundException;
 
 /**
  * Implementation of {@link TemplateManager} which uses Velocity Template

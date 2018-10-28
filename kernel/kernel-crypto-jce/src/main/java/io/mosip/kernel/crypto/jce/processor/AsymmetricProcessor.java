@@ -10,11 +10,11 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import io.mosip.kernel.core.crypto.exception.MosipInvalidDataException;
+import io.mosip.kernel.core.crypto.exception.MosipInvalidKeyException;
+import io.mosip.kernel.core.crypto.exception.MosipNoSuchAlgorithmException;
 import io.mosip.kernel.crypto.jce.constant.MosipSecurityExceptionCodeConstant;
 import io.mosip.kernel.crypto.jce.constant.MosipSecurityMethod;
-import io.mosip.kernel.crypto.jce.exception.MosipInvalidDataException;
-import io.mosip.kernel.crypto.jce.exception.MosipInvalidKeyException;
-import io.mosip.kernel.crypto.jce.exception.MosipNoSuchAlgorithmException;
 import io.mosip.kernel.crypto.jce.util.SecurityUtils;
 
 /**
@@ -44,8 +44,7 @@ public class AsymmetricProcessor {
 	 *            process mode for operation either Encrypt or Decrypt
 	 * @return Processed array
 	 */
-	protected static byte[] process(MosipSecurityMethod method, Key key,
-			byte[] data, int mode) {
+	protected static byte[] process(MosipSecurityMethod method, Key key, byte[] data, int mode) {
 		Cipher cipher = init(key, mode, method);
 		SecurityUtils.verifyData(data);
 		return processData(cipher, data, 0, data.length);
@@ -68,10 +67,12 @@ public class AsymmetricProcessor {
 			cipher.init(mode, key);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
 			throw new MosipNoSuchAlgorithmException(
-					MosipSecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION);
+					MosipSecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					MosipSecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
 		} catch (InvalidKeyException e) {
 			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION);
+					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorCode(),
+					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_EXCEPTION.getErrorMessage());
 		}
 		return cipher;
 
@@ -90,15 +91,14 @@ public class AsymmetricProcessor {
 	 *            limit of processing
 	 * @return Processed Array
 	 */
-	private static byte[] processData(Cipher cipher, byte[] data, int start,
-			int end) {
+	private static byte[] processData(Cipher cipher, byte[] data, int start, int end) {
 		try {
 			return cipher.doFinal(data, start, end);
 
-		} catch (BadPaddingException | IllegalStateException
-				| IllegalBlockSizeException e) {
+		} catch (BadPaddingException | IllegalStateException | IllegalBlockSizeException e) {
 			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION);
+					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorCode(),
+					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorMessage());
 		}
 
 	}

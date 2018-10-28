@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 
 import com.itextpdf.html2pdf.HtmlConverter;
 
-import io.mosip.kernel.core.spi.pdfgenerator.PdfGenerator;
+import io.mosip.kernel.core.pdfgenerator.exception.PdfGeneratorException;
+import io.mosip.kernel.core.pdfgenerator.spi.PdfGenerator;
 import io.mosip.kernel.pdfgenerator.itext.constant.PdfGeneratorExceptionCodeConstant;
-import io.mosip.kernel.pdfgenerator.itext.exception.PdfGeneratorException;
 
 /**
  * The PdfGeneratorImpl is the class you will use most when converting processed

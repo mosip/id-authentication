@@ -1,6 +1,6 @@
 package io.mosip.kernel.otpmanager.repository;
 
-import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
 
 import org.springframework.stereotype.Repository;

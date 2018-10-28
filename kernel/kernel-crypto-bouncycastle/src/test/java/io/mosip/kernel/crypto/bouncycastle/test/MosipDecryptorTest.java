@@ -13,13 +13,13 @@ import javax.crypto.spec.SecretKeySpec;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.mosip.kernel.core.crypto.exception.MosipInvalidDataException;
+import io.mosip.kernel.core.crypto.exception.MosipInvalidKeyException;
+import io.mosip.kernel.core.crypto.exception.MosipNoSuchAlgorithmException;
+import io.mosip.kernel.core.crypto.exception.MosipNullDataException;
 import io.mosip.kernel.crypto.bouncycastle.constant.MosipSecurityMethod;
-import io.mosip.kernel.crypto.bouncycastle.decryption.DecryptorImpl;
-import io.mosip.kernel.crypto.bouncycastle.encryption.EncryptorImpl;
-import io.mosip.kernel.crypto.bouncycastle.exception.MosipInvalidDataException;
-import io.mosip.kernel.crypto.bouncycastle.exception.MosipInvalidKeyException;
-import io.mosip.kernel.crypto.bouncycastle.exception.MosipNoSuchAlgorithmException;
-import io.mosip.kernel.crypto.bouncycastle.exception.MosipNullDataException;
+import io.mosip.kernel.crypto.bouncycastle.impl.DecryptorImpl;
+import io.mosip.kernel.crypto.bouncycastle.impl.EncryptorImpl;
 
 public class MosipDecryptorTest {
 

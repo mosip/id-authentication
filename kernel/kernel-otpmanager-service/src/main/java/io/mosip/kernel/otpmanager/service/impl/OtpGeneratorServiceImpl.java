@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.spi.otpmanager.OtpGenerator;
+
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 import io.mosip.kernel.otpmanager.constant.OtpExpiryConstants;
 import io.mosip.kernel.otpmanager.constant.OtpStatusConstants;
@@ -49,7 +49,7 @@ public class OtpGeneratorServiceImpl implements OtpGeneratorService {
 	 */
 	public OtpGeneratorResponseDto getOtp(OtpGeneratorRequestDto otpDto) {
 		// Creating object of OtpGenerator class present in API, that generates OTP.
-		OtpGenerator otpGenerator = new OtpGeneratorImpl();
+		OtpGeneratorImpl otpGenerator = new OtpGeneratorImpl();
 		// Creating object to return the generation response.
 		OtpGeneratorResponseDto response = new OtpGeneratorResponseDto();
 		// Checking whether the key exists in the repository.
