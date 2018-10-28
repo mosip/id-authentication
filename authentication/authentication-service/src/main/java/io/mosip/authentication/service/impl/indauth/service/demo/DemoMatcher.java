@@ -29,7 +29,7 @@ public class DemoMatcher {
 	 */
 	public List<MatchOutput> matchDemoData(IdentityDTO identityDTO, DemoEntity demoEntity,
 			Collection<MatchInput> listMatchInputs, LocationInfoFetcher locationInfoFetcher,
-			LanguageInfoFetcher languageInfoFetcher) {
+			LanguageFetcher languageInfoFetcher) {
 		return listMatchInputs.parallelStream()
 				.map(input -> matchType(identityDTO, demoEntity, input, locationInfoFetcher, languageInfoFetcher))
 				.filter(output -> output != null).collect(Collectors.toList());
@@ -44,7 +44,7 @@ public class DemoMatcher {
 	 * @return the match output
 	 */
 	private static MatchOutput matchType(IdentityDTO identityDTO, DemoEntity demoEntity, MatchInput input,
-			LocationInfoFetcher locationInfoFetcher, LanguageInfoFetcher languageInfoFetcher) {
+			LocationInfoFetcher locationInfoFetcher, LanguageFetcher languageFetcher) {
 		String matchStrategyTypeStr = input.getMatchStrategyType();
 		if (matchStrategyTypeStr == null) {
 			matchStrategyTypeStr = MatchingStrategyType.EXACT.getType();
@@ -58,8 +58,7 @@ public class DemoMatcher {
 					.getAllowedMatchingStrategy(strategyType);
 			if (matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();
-				Optional<Object> reqInfoOpt = input.getDemoMatchType().getIdentityInfo(identityDTO,
-						languageInfoFetcher);
+				Optional<Object> reqInfoOpt = input.getDemoMatchType().getIdentityInfo(identityDTO, languageFetcher);
 				if (reqInfoOpt.isPresent()) {
 					Object reqInfo = reqInfoOpt.get();
 					Object entityInfo = input.getDemoMatchType().getEntityInfoFetcher().getInfo(demoEntity,

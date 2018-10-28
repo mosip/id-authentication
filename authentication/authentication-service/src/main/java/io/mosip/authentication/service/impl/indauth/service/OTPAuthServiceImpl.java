@@ -13,6 +13,8 @@ import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.PinInfo;
+import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -79,9 +81,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authreqdto.getTxnID();
 		String UIN = authreqdto.getId();
 		String TSPCode = authreqdto.getMuaCode();
-		Optional<String> otp = Optional.ofNullable(authreqdto.getRequest()).map(RequestDTO::getIdentity)
-				.map(IdentityDTO::getOtp).flatMap(identityInfos -> identityInfos.parallelStream().findAny())
-				.map(IdentityInfoDTO::getValue);
+		Optional<String> otp = getOtpValue(authreqdto);
 		if (otp.isPresent()) {
 			boolean isValidRequest = validateTxnId(txnId, UIN);
 			if (isValidRequest) {
@@ -101,6 +101,15 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		}
 
 		return constructAuthStatusInfo(isOtpValid);
+	}
+
+	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
+		return Optional.ofNullable(authreqdto.getPinInfo())
+				.flatMap(pinInfos -> 
+						pinInfos.stream()
+								.filter(pinInfo -> pinInfo.getType() != null && pinInfo.getType().equalsIgnoreCase(PinType.OTP.getType()))
+								.findAny())
+				.map(PinInfo::getValue);
 	}
 
 	/**

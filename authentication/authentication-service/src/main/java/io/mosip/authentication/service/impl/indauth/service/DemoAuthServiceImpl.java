@@ -26,7 +26,7 @@ import io.mosip.authentication.service.impl.indauth.builder.AuthType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
-import io.mosip.authentication.service.impl.indauth.service.demo.LanguageInfoFetcher;
+import io.mosip.authentication.service.impl.indauth.service.demo.LanguageFetcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.LocationEntity;
 import io.mosip.authentication.service.impl.indauth.service.demo.LocationInfoFetcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.LocationLevel;
@@ -121,7 +121,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @return the match output
 	 */
 	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, IdentityDTO identitydto,
-			DemoEntity demoEntity, LocationInfoFetcher locationInfoFetcher, LanguageInfoFetcher languageInfoFetcher) {
+			DemoEntity demoEntity, LocationInfoFetcher locationInfoFetcher, LanguageFetcher languageInfoFetcher) {
 		return demoMatcher.matchDemoData(identitydto, demoEntity, listMatchInputs, locationInfoFetcher,
 				languageInfoFetcher);
 	}

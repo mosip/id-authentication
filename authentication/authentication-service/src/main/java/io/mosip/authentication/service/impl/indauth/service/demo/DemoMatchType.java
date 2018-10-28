@@ -1,5 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +28,23 @@ public enum DemoMatchType implements MatchType {
 	NAME_PRI(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
 			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI,
 			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
-					entity.getLastName()));
+					entity.getLastName())),
+
+	NAME_SEC(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC,
+			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
+					entity.getLastName())),
+
+	DOB(setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDateOfBirth, LanguageType.PRIMARY_LANG,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB,
+			(entity, locationInfoFetcher) -> entity.getDob()),
+
+	AGE(setOf(AgeMatchingStrategy.EXACT), IdentityDTO::getAge, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_AGE,
+			AuthUsageDataBit.MATCHED_PI_AGE, (DemoEntity entity, LocationInfoFetcher locationInfoFetcher) -> {
+				int age = Period.between(entity.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+						LocalDate.now()).getYears();
+				return Math.abs(age);
+			}),
 
 	// @formatter:on
 	;
@@ -66,16 +85,15 @@ public enum DemoMatchType implements MatchType {
 		this.matchedBit = matchedBit;
 	}
 
-	public Optional<Object> getIdentityInfo(IdentityDTO identity, LanguageInfoFetcher languageFetcher) {
+	public Optional<Object> getIdentityInfo(IdentityDTO identity, LanguageFetcher languageFetcher) {
 		String language = languageFetcher.getLanguage(this.getLanguageType());
 		return Optional.of(identity).flatMap(identityDTO -> getInfo(identityInfoFunction.apply(identityDTO), language));
 	}
 
 	private static Optional<Object> getInfo(List<IdentityInfoDTO> identityInfos, String language) {
 		return identityInfos.parallelStream()
-				.filter(id -> id.getLanguage() != null && language.equals(id.getLanguage()))
-				.<Object>map(IdentityInfoDTO::getValue)
-				.findAny();
+				.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage()))
+				.<Object>map(IdentityInfoDTO::getValue).findAny();
 	}
 
 	public LanguageType getLanguageType() {

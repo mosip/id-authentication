@@ -59,7 +59,7 @@ public class AuthRequestDTO {
 
 	private List<MatchInfo> matchInfo;
 
-	private PinInfo pinInfo;
+	private List<PinInfo> pinInfo;
 
 	private RequestDTO request;
 

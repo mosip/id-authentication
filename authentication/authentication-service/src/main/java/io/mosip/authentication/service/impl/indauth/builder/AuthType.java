@@ -16,7 +16,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.LanguageInfoFetcher;
+import io.mosip.authentication.service.impl.indauth.service.demo.LanguageFetcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 
@@ -136,16 +136,16 @@ public enum AuthType {
 		return Optional.of(authReq).map(AuthRequestDTO::getAuthType).filter(authTypePredicate).isPresent();
 	}
 
-	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, LanguageInfoFetcher languageInfoFetcher) {
+	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, LanguageFetcher languageInfoFetcher) {
 		return getMatchInfo(authReq, languageInfoFetcher, MatchInfo::getMatchingStrategy);
 
 	}
 	
-	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, LanguageInfoFetcher languageInfoFetcher) {
+	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, LanguageFetcher languageInfoFetcher) {
 		return getMatchInfo(authReq, languageInfoFetcher, MatchInfo::getMatchingThreshold);
 	}
 	
-	private <T> Optional<T> getMatchInfo(AuthRequestDTO authReq, LanguageInfoFetcher languageInfoFetcher, Function<? super MatchInfo, ? extends T> infoFunction) {
+	private <T> Optional<T> getMatchInfo(AuthRequestDTO authReq, LanguageFetcher languageInfoFetcher, Function<? super MatchInfo, ? extends T> infoFunction) {
 		return Optional.of(authReq)
 						.flatMap(authReqDTO -> getMatchInfo(
 													authReqDTO.getMatchInfo(), 
@@ -154,7 +154,7 @@ public enum AuthType {
 								);
 	}
 	
-	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, LanguageInfoFetcher languageInfoFetcher, Function<? super MatchInfo, ? extends T> infoFunction) {
+	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, LanguageFetcher languageInfoFetcher, Function<? super MatchInfo, ? extends T> infoFunction) {
 		String language = languageInfoFetcher.getLanguage(langType);
 		return matchInfos.parallelStream()
 				.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage()))

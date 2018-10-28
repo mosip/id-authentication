@@ -20,8 +20,6 @@ public class IdentityDTO {
 	List<IdentityInfoDTO> location;
 	List<IdentityInfoDTO> pinCode;
 	List<IdentityInfoDTO> fullAddress;
-	List<IdentityInfoDTO> otp;
-	List<IdentityInfoDTO> pin;
 	List<IdentityInfoDTO> leftEye;
 	List<IdentityInfoDTO> rightEye;
 	List<IdentityInfoDTO> leftIndex;

@@ -11,30 +11,32 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
-@Ignore
+
 public class DemoMatcherTest {
 
-	@Ignore
 	@Test
 	public void matchDemoDataTest() {
-//		DemoDTO demoDTO = new DemoDTO();
-//		PersonalIdentityDTO pid = new PersonalIdentityDTO();
-//		pid.setNamePri("john");
-//		DemoEntity demoEntity = new DemoEntity();
-//		demoEntity.setFirstName("john");
-//		demoEntity.setMiddleName("Rajiv");
-//		demoEntity.setLastName("Samuel");
-//		List<MatchInput> listMatchInputs = new ArrayList<>();
-//		DemoMatcher demoMatcher = new DemoMatcher();
-//		List<MatchOutput> listMatchOutput = new ArrayList<MatchOutput>();
-//		LocationInfoFetcher locationInfoFetcher = null;
-//		LanguageInfoFetcher languageInfoFetcher = null;
-//		List<MatchOutput> listMatchOutputExp = demoMatcher.matchDemoData(demoDTO, demoEntity, listMatchInputs,
-//				locationInfoFetcher, languageInfoFetcher);
-//		assertEquals(listMatchOutput, listMatchOutputExp);
+		DemoDTO demoDTO = new DemoDTO();
+		PersonalIdentityDTO pid = new PersonalIdentityDTO();
+		pid.setNamePri("john");
+		DemoEntity demoEntity = new DemoEntity();
+		demoEntity.setFirstName("john");
+		demoEntity.setMiddleName("Rajiv");
+		demoEntity.setLastName("Samuel");
+		List<MatchInput> listMatchInputs = new ArrayList<>();
+		DemoMatcher demoMatcher = new DemoMatcher();
+		List<MatchOutput> listMatchOutput = new ArrayList<MatchOutput>();
+		LocationInfoFetcher locationInfoFetcher = null;
+		LanguageFetcher languageFetcher = null;
+		IdentityDTO identityDTO = new IdentityDTO();
+		List<MatchOutput> listMatchOutputExp = demoMatcher.matchDemoData(identityDTO, demoEntity, listMatchInputs,
+				locationInfoFetcher, languageFetcher);
+		assertEquals(listMatchOutput, listMatchOutputExp);
 	}
 
+	@Ignore
 	@Test
 	public void matchTypeTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException {
@@ -58,19 +60,22 @@ public class DemoMatcherTest {
 		assertEquals(matchOutputExpect, matchOutputAct);
 	}
 
+	@Ignore
 	@Test
 	public void testMatchTypeMethodFail() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 		DemoDTO demoDTO = new DemoDTO();
 		DemoEntity demoEntity = new DemoEntity();
 		MatchInput matchInput = new MatchInput(DemoMatchType.NAME_PRI, "A", 100);
-		Method matchTypeMethod = DemoMatcher.class.getDeclaredMethod("matchType", DemoDTO.class, DemoEntity.class,
-				MatchInput.class, LocationInfoFetcher.class);
+		Method matchTypeMethod = DemoMatcher.class.getDeclaredMethod("matchType", IdentityDTO.class, DemoEntity.class,
+				MatchInput.class, LocationInfoFetcher.class, LanguageFetcher.class);
 		matchTypeMethod.setAccessible(true);
 		DemoMatcher demoMatcher = new DemoMatcher();
 		LocationInfoFetcher locationInfoFetcher = null;
-		MatchOutput matchOutput = (MatchOutput) matchTypeMethod.invoke(demoMatcher, demoDTO, demoEntity, matchInput,
-				locationInfoFetcher);
+		IdentityDTO identityDTO = new IdentityDTO();
+		LanguageFetcher languageFetcher = null;
+		MatchOutput matchOutput = (MatchOutput) matchTypeMethod.invoke(identityDTO, demoEntity, matchInput,
+				locationInfoFetcher, languageFetcher);
 		assertEquals(null, matchOutput);
 
 	}
