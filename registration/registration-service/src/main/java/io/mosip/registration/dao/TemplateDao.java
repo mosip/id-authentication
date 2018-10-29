@@ -25,7 +25,6 @@ public interface TemplateDao {
 	 */
 	List<Template> getAllTemplates();
 	
-	
 	/**
 	 * This method returns the list of template types which are active
 	 * 
