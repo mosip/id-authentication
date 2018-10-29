@@ -59,7 +59,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
 
 	public static final String FILE_SEPARATOR = "\\";
-
+	
+	public static final String LOG_FORMATTER = "{} - {}";
+	
 	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
 			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
 	@Autowired
@@ -152,7 +154,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 					.convertDemographicDtoToEntity(demographicInfo, metaData);
 			for (ApplicantDemographicEntity applicantDemographicEntity : applicantDemographicEntities) {
 				applicantDemographicRepository.save(applicantDemographicEntity);
-				LOGGER.info(applicantDemographicEntity.getId().getRegId() + " --> Demographic  DATA SAVED");
+				LOGGER.info(LOG_FORMATTER,applicantDemographicEntity.getId().getRegId(), " Demographic  DATA SAVED");
 			}
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
@@ -192,14 +194,14 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		irisList.forEach(iris -> {
 			ApplicantIrisEntity applicantIrisEntity = PacketInfoMapper.convertIrisDtoToEntity(iris, metaData);
 			applicantIrisRepository.save(applicantIrisEntity);
-			LOGGER.info(applicantIrisEntity.getId().getRegId() + " --> Applicant Iris DATA SAVED");
+			LOGGER.info(LOG_FORMATTER, applicantIrisEntity.getId().getRegId() , " Applicant Iris DATA SAVED");
 		});
 
 		exceptionIrisList.forEach(exceptionIris -> {
 			BiometricExceptionEntity biometricIrisExceptionEntity = PacketInfoMapper
 					.convertBiometricExcDtoToEntity(exceptionIris, metaData);
 			biometricExceptionRepository.save(biometricIrisExceptionEntity);
-			LOGGER.info(biometricIrisExceptionEntity.getId().getRegId() + " --> Applicant Iris DATA SAVED");
+			LOGGER.info(LOG_FORMATTER, biometricIrisExceptionEntity.getId().getRegId() , " Applicant Iris DATA SAVED");
 		});
 	}
 
@@ -217,7 +219,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			ApplicantFingerprintEntity fingerprintEntity = PacketInfoMapper.convertFingerprintDtoToEntity(fingerprint,
 					metaData);
 			applicantFingerprintRepository.save(fingerprintEntity);
-			LOGGER.info(fingerprintEntity.getId().getRegId() + " --> Fingerprint DATA SAVED");
+			LOGGER.info(LOG_FORMATTER, fingerprintEntity.getId().getRegId() , " Fingerprint DATA SAVED");
 
 		});
 
@@ -225,7 +227,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			BiometricExceptionEntity biometricExceptionEntity = PacketInfoMapper
 					.convertBiometricExceptioDtoToEntity(exceptionFingerprint, metaData);
 			biometricExceptionRepository.save(biometricExceptionEntity);
-			LOGGER.info(biometricExceptionEntity.getId().getRegId() + " --> Biometric Exception DATA SAVED");
+			LOGGER.info(LOG_FORMATTER, biometricExceptionEntity.getId().getRegId() , "  Biometric Exception DATA SAVED");
 		});
 	}
 
@@ -270,7 +272,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 
 		applicantDocumentEntity.setDocStore(getDocumentAsByteArray(metaData.getRegistrationId(), fileName));
 		applicantDocumentRepository.save(applicantDocumentEntity);
-		LOGGER.info(applicantDocumentEntity.getId().getRegId() + " --> Document Demographic DATA SAVED");
+		LOGGER.info(LOG_FORMATTER, applicantDocumentEntity.getId().getRegId() , "  Document Demographic DATA SAVED");
 	}
 
 	/**
@@ -282,7 +284,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private void saveOsiData(OsiData osiData) {
 		RegOsiEntity regOsiEntity = PacketInfoMapper.convertOsiDataToEntity(osiData, metaData);
 		regOsiRepository.save(regOsiEntity);
-		LOGGER.info(regOsiEntity.getId() + " --> Applicant OSI DATA SAVED");
+		LOGGER.info(LOG_FORMATTER, regOsiEntity.getId() , "  Applicant OSI DATA SAVED");
 	}
 
 	/**
@@ -295,7 +297,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		ApplicantPhotographEntity applicantPhotographEntity = PacketInfoMapper
 				.convertPhotoGraphDtoToEntity(photoGraphData, metaData);
 		applicantPhotographRepository.save(applicantPhotographEntity);
-		LOGGER.info(applicantPhotographEntity.getId().getRegId() + " --> Applicant Photograph DATA SAVED");
+		LOGGER.info(LOG_FORMATTER,applicantPhotographEntity.getId().getRegId(), " Applicant Photograph DATA SAVED");
 	}
 
 	/**
@@ -331,9 +333,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			}
 			return os.toByteArray();
 		} catch (IOException e) {
-			LOGGER.error("Error While reading  inputstream file", e);
-			throw new RuntimeException("",e);
+			LOGGER.error(LOG_FORMATTER,"Error While reading  inputstream file", e);
+			return new byte[1];
 		}
+		
 		
 	}
 

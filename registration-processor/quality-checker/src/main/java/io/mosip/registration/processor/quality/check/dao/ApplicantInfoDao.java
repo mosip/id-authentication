@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.quality.check.dao;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,20 +11,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import io.mosip.registration.processor.core.packet.dto.AddressDTO;
-import io.mosip.registration.processor.core.packet.dto.BiometericData;
 import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
-import io.mosip.registration.processor.core.packet.dto.FingerprintData;
-import io.mosip.registration.processor.core.packet.dto.IrisData;
 import io.mosip.registration.processor.core.packet.dto.LocationDTO;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantFingerprintEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.quality.check.repository.QcuserRegRepositary;
-
 
 @Component
 public class ApplicantInfoDao {
@@ -61,52 +57,68 @@ public class ApplicantInfoDao {
 
 	private List<Object[]> applicantInfo = new ArrayList<>();
 
-
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
 		List<ApplicantInfoDto> applicantInfoDtoList = new ArrayList<>();
 		ApplicantInfoDto applicantInfoDto = new ApplicantInfoDto();
-		
+
 		List<QcuserRegistrationIdEntity> assignedPackets = qcuserRegRepositary.findByUserId(qcuserId);
-		assignedPackets.forEach(assignedPacket->{
-			String regId = assignedPacket.getId().getRegId();
-			applicantInfo = qcuserRegRepositary.getApplicantInfo(regId);
-		});
-		
-		applicantInfo.forEach(objects->{
-			for(Object object: objects) {
-				if(object instanceof ApplicantDemographicEntity) {
-					if("en".equalsIgnoreCase(((ApplicantDemographicEntity)object).getId().getLangCode()))
-					applicantInfoDto.setDemoInLocalLang(convertEntityToDemographicDto((ApplicantDemographicEntity)object).getDemoInLocalLang());
-					else
-					applicantInfoDto.setDemoInUserLang(convertEntityToDemographicDto((ApplicantDemographicEntity)object).getDemoInUserLang());
-				}else if(object instanceof ApplicantFingerprintEntity) {
-					applicantInfoDto.setBiometericData(convertEntityTotBiometericDto((ApplicantFingerprintEntity)object));
-				}else if(object instanceof ApplicantPhotographEntity) {
-					applicantInfoDto.setApplicantPhoto((Photograph)object);
+		if (!assignedPackets.isEmpty()) {
+			assignedPackets.forEach(assignedPacket -> {
+				String regId = assignedPacket.getId().getRegId();
+				applicantInfo = qcuserRegRepositary.getApplicantInfo(regId);
+			});
+			applicantInfo.forEach(objects -> {
+				for (Object object : objects) {
+					if (object instanceof ApplicantDemographicEntity) {
+						if ("en".equalsIgnoreCase(((ApplicantDemographicEntity) object).getId().getLangCode()))
+							applicantInfoDto.setDemoInLocalLang(
+									convertEntityToDemographicDto((ApplicantDemographicEntity) object)
+											.getDemoInLocalLang());
+						else
+							applicantInfoDto.setDemoInUserLang(
+									convertEntityToDemographicDto((ApplicantDemographicEntity) object)
+											.getDemoInUserLang());
+					} else if (object instanceof ApplicantPhotographEntity) {
+						applicantInfoDto
+								.setApplicantPhoto(convertEntityToPhotographDto((ApplicantPhotographEntity) object));
+					}
 				}
-			}
-			applicantInfoDtoList.add(applicantInfoDto);
-		});
+				applicantInfoDtoList.add(applicantInfoDto);
+			});
+		} else {
+			applicantInfo.clear();
+		}
 		return applicantInfoDtoList;
 	}
-	
-	
-	private BiometericData convertEntityTotBiometericDto(ApplicantFingerprintEntity object) {
-		BiometericData bioData = new BiometericData();
-		FingerprintData  fingerprintData = new FingerprintData();
-		fingerprintData.setExceptionFingerprints(null);
-		fingerprintData.setFingerprints(null);
+
+	private Photograph convertEntityToPhotographDto(ApplicantPhotographEntity object) {
+		Photograph photographDto = new Photograph();
 		
-		bioData.setFingerprintData(fingerprintData);
+		photographDto.setExceptionPhotoName(object.getExcpPhotoName());
+		photographDto.setHasExceptionPhoto(object.getHasExcpPhotograph());
+		photographDto.setNumRetry(object.getNoOfRetry());
+		photographDto.setPhotographName(object.getImageName());
+		photographDto.setQualityScore(Double.valueOf(object.getQualityScore().toString()));
 		
-		IrisData irisData = new IrisData();
-		irisData.setExceptionIris(null);
-		irisData.setIris(null);
-		irisData.setNumRetry(0);
-		bioData.setIrisData(irisData);
-	return bioData;
-}
-private Demographic convertEntityToDemographicDto(ApplicantDemographicEntity object) {
+		return photographDto;
+	}
+
+	/*
+	 * private BiometericData
+	 * convertEntityTotBiometericDto(ApplicantFingerprintEntity object) {
+	 * BiometericData bioData = new BiometericData(); FingerprintData
+	 * fingerprintData = new FingerprintData();
+	 * fingerprintData.setExceptionFingerprints(null);
+	 * fingerprintData.setFingerprints(null);
+	 * 
+	 * bioData.setFingerprintData(fingerprintData);
+	 * 
+	 * IrisData irisData = new IrisData(); irisData.setExceptionIris(null);
+	 * irisData.setIris(null); irisData.setNumRetry(0);
+	 * bioData.setIrisData(irisData); return bioData; }
+	 */
+
+	private Demographic convertEntityToDemographicDto(ApplicantDemographicEntity object) {
 		Demographic demo = new Demographic();
 		DemographicInfo demoInfo = new DemographicInfo();
 		AddressDTO address = new AddressDTO();
@@ -122,7 +134,7 @@ private Demographic convertEntityToDemographicDto(ApplicantDemographicEntity obj
 		address.setLocationDTO(location);
 		demoInfo.setAddressDTO(address);
 		demoInfo.setAge(String.valueOf(object.getAge()));
-		demoInfo.setDateOfBirth(object.getDob()!=null?object.getDob().toString():null);
+		demoInfo.setDateOfBirth(object.getDob() != null ? object.getDob().toString() : null);
 		demoInfo.setEmailId(object.getEmail());
 		demoInfo.setFirstName(object.getFirstName());
 		demoInfo.setGender(object.getGenderCode());
@@ -130,15 +142,14 @@ private Demographic convertEntityToDemographicDto(ApplicantDemographicEntity obj
 		demoInfo.setMiddleName(object.getMiddleName());
 		demoInfo.setLastName(object.getLastName());
 		demoInfo.setMobile(object.getMobile());
-		
-		if("en".equalsIgnoreCase(object.getId().getLangCode())) {
+
+		if ("en".equalsIgnoreCase(object.getId().getLangCode())) {
 			demo.setDemoInLocalLang(demoInfo);
-		}else {
+		} else {
 			demo.setDemoInUserLang(demoInfo);
 		}
 		return demo;
 	}
-
 
 	public QcuserRegistrationIdEntity save(QcuserRegistrationIdEntity qcUserRegistrationIdEntity) {
 

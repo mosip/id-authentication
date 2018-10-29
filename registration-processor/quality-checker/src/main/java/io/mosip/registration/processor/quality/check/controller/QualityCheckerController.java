@@ -34,7 +34,7 @@ public class QualityCheckerController {
 	@ApiOperation(value = "Get the exception entity", response = QualityCheckerStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Assigned packets fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch the Exception Data") })
-	public ResponseEntity<List<ApplicantInfoDto>> getExceptionData(
+	public ResponseEntity<List<ApplicantInfoDto>> getPacketsforQCUser(
 			@RequestParam(value = "qcuserId", required = true) String qcuserId) {
 		List<ApplicantInfoDto> packets = qualityCheckManger.getPacketsforQCUser(qcuserId);
 		return ResponseEntity.status(HttpStatus.OK).body(packets);
