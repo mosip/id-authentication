@@ -28,6 +28,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+/**
+ * Class for Packet Status Sync
+ * 
+ * @author Himaja Dhanyamraju
+ *
+ */
 @Controller
 public class RegPacketStatusController extends BaseController implements Initializable {
 

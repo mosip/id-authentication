@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
@@ -16,7 +15,7 @@ import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
  * @author Balaji Sridharan
  * @since 1.0.0
  */
-@Repository
+
 public interface RegAuditRepository extends BaseRepository<Audit, Long> {
 
 	/**

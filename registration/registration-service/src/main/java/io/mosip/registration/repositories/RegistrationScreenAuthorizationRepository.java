@@ -2,8 +2,6 @@ package io.mosip.registration.repositories;
 
 import java.util.List;
 
-import org.springframework.stereotype.Repository;
-
 import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
 import io.mosip.registration.entity.RegistrationScreenAuthorization;
 import io.mosip.registration.entity.RegistrationScreenAuthorizationId;
@@ -15,7 +13,7 @@ import io.mosip.registration.entity.RegistrationScreenAuthorizationId;
  * @since 1.0.0
  *
  */
-@Repository
+
 public interface RegistrationScreenAuthorizationRepository
 		extends BaseRepository<RegistrationScreenAuthorization, RegistrationScreenAuthorizationId> {
 

@@ -3,8 +3,6 @@ package io.mosip.registration.repositories;
 import java.util.List;
 
 import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
-import org.springframework.stereotype.Repository;
-
 import io.mosip.registration.entity.RegistrationUserDetail;
 
 /**
@@ -14,7 +12,7 @@ import io.mosip.registration.entity.RegistrationUserDetail;
  * @since 1.0.0
  *
  */
-@Repository
+
 public interface RegistrationUserDetailRepository extends BaseRepository<RegistrationUserDetail, String> {
 
 	/**
