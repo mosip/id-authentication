@@ -3,8 +3,6 @@ package io.mosip.registration.repositories;
 import java.util.Optional;
 
 import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
-import org.springframework.stereotype.Repository;
-
 import io.mosip.registration.entity.RegistrationCenter;
 import io.mosip.registration.entity.RegistrationCenterId;
 
@@ -15,7 +13,7 @@ import io.mosip.registration.entity.RegistrationCenterId;
  * @since 1.0.0
  *
  */
-@Repository
+
 public interface RegistrationCenterRepository extends BaseRepository<RegistrationCenter, RegistrationCenterId> {
 
 	/**
