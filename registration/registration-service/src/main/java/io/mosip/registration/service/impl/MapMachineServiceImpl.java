@@ -220,7 +220,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 * @param centreID
 	 * @param registrationUserDetails
 	 * @return
-	 */
+	 */  
 	private UserMachineMappingDTO constructDTO(RegistrationUserDetail registrationUserDetail, String machineID,
 			String stationID, String centreID) {
 		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTO() method called");
