@@ -39,7 +39,7 @@ public class SmsNotifierController {
 	 *            the request dto for sms-notification.
 	 * @return the status and message as dto response.
 	 */
-	@PostMapping(value = "/notifier/sms")
+	@PostMapping(value = "/notification/sms")
 	public ResponseEntity<SmsResponseDto> sendSms(@Valid @RequestBody SmsRequestDto smsRequestDto) {
 
 		return new ResponseEntity<>(smsNotifierServiceImpl.sendSmsNotification(smsRequestDto.getNumber(), smsRequestDto.getMessage()),

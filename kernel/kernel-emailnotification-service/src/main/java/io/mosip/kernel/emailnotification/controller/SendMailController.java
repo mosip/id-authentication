@@ -42,7 +42,7 @@ public class SendMailController {
 	 *            the attachments.
 	 * @return the dto response.
 	 */
-	@PostMapping(value = "/notifier/email", consumes = "multipart/form-data")
+	@PostMapping(value = "/notification/email", consumes = "multipart/form-data")
 	public @ResponseBody CompletableFuture<ResponseEntity<ResponseDto>> sendMail(String[] mailTo,
 			String[] mailCc, String mailSubject, String mailContent, MultipartFile[] attachments) {
 		return mailNotifierServiceImpl.sendEmail(mailTo, mailCc, mailSubject, mailContent, attachments)

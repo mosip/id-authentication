@@ -1,4 +1,4 @@
-package io.mosip.kernel.packetuploader.http.exceptionhandler;
+package io.mosip.kernel.packetuploader.http.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +8,6 @@ import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 
 import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstant;
-import io.mosip.kernel.packetuploader.http.exception.MosipDirectoryNotEmptyException;
-import io.mosip.kernel.packetuploader.http.exception.MosipIOException;
-import io.mosip.kernel.packetuploader.http.exception.MosipInvalidFileNameException;
-import io.mosip.kernel.packetuploader.http.exception.MosipPacketLocationSecurityException;
 
 /**
  * Class for handling Packet Uploader exceptions

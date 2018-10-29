@@ -1,4 +1,4 @@
-package io.mosip.kernel.packetuploader.http.exceptionhandler;
+package io.mosip.kernel.packetuploader.http.exception;
 
 import net.bytebuddy.dynamic.scaffold.MethodRegistry.Handler.ForAbstractMethod;
 
