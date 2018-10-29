@@ -70,6 +70,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 	
+	/** The event id. */
+	private String eventId = "";
+	
+	/** The event name. */
+	private String eventName = "";
+	
+	/** The event type. */
+	private String eventType = "";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -111,8 +119,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 					registrationStatusService.addRegistrationStatus(dto);
 					storageFlag = true;
 					isTransactionSuccessful = true;
+					eventId=EventId.RPR_407.toString();
+					eventName=EventName.SAVE.toString();
+					eventType=EventType.BUSINESS.toString();
 				} catch (IOException e) {
 					logger.error(e.getMessage());
+					eventId=EventId.RPR_405.toString();
+					eventName=EventName.EXCEPTION.toString();
+					eventType=EventType.SYSTEM.toString();
 				}finally {
 					String description = "";
 					if (isTransactionSuccessful) {
@@ -121,7 +135,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 						description = "Packet registration status updation failure";
 					}
 					
-					coreAuditRequestBuilder.createAuditRequestBuilder(description, EventId.RPR_402.toString(), EventName.UPDATE.toString(), EventType.BUSINESS.toString(), registrationId);		
+					coreAuditRequestBuilder.createAuditRequestBuilder(description,eventId,eventName,eventType, registrationId);		
 					
 				}
 			} else {
