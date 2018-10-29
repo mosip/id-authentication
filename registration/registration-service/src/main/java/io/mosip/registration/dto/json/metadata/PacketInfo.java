@@ -1,7 +1,13 @@
 package io.mosip.registration.dto.json.metadata;
 
 import java.util.Map;
-
+/**
+ * This class is to capture the json parsing packet info data
+ * 
+ * @author Dinesh Asokan
+ * @since 1.0.0
+ *
+ */
 public class PacketInfo {
 
 	private Photograph photograph;

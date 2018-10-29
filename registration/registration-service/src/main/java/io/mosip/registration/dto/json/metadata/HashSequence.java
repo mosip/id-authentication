@@ -1,8 +1,5 @@
 package io.mosip.registration.dto.json.metadata;
 
-import lombok.Data;
-
-@Data
 public class HashSequence {
 	
 	private BiometricSequence biometricSequence;
@@ -13,4 +10,21 @@ public class HashSequence {
 		this.biometricSequence = biometricSequence;
 		this.demographicSequence = demographicSequence;
 	}
+
+	public BiometricSequence getBiometricSequence() {
+		return biometricSequence;
+	}
+
+	public void setBiometricSequence(BiometricSequence biometricSequence) {
+		this.biometricSequence = biometricSequence;
+	}
+
+	public DemographicSequence getDemographicSequence() {
+		return demographicSequence;
+	}
+
+	public void setDemographicSequence(DemographicSequence demographicSequence) {
+		this.demographicSequence = demographicSequence;
+	}
+	
 }
