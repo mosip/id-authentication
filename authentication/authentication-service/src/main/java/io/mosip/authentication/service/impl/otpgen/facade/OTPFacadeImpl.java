@@ -15,6 +15,7 @@ import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
+import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
@@ -22,6 +23,7 @@ import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
+import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.DemoRepository;
@@ -59,6 +61,9 @@ public class OTPFacadeImpl implements OTPFacade {
 	/** The env. */
 	@Autowired
 	private Environment env;
+	
+	@Autowired
+	private DateHelper dateHelper;
 
 	/** The mosip logger. */
 	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPFacadeImpl.class);
@@ -66,9 +71,11 @@ public class OTPFacadeImpl implements OTPFacade {
 	/**
 	 * Obtained OTP.
 	 *
-	 * @param otpRequestDto the otp request dto
+	 * @param otpRequestDto
+	 *            the otp request dto
 	 * @return otpResponseDTO
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 	@Override
 	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
@@ -86,7 +93,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			try {
 				otp = otpService.generateOtp(otpKey);
 			} catch (IdAuthenticationBusinessException e) {
-				mosipLogger.error("", otpRequestDto.getIdType(), e.getErrorCode(), "Error: " + e);
+				mosipLogger.error("", otpRequestDto.getIdvIdType(), e.getErrorCode(), "Error: " + e);
 			}
 		}
 		mosipLogger.info(SESSION_ID, "NA", "generated OTP", otp);
@@ -113,7 +120,8 @@ public class OTPFacadeImpl implements OTPFacade {
 	/**
 	 * Mask email.
 	 *
-	 * @param email the email
+	 * @param email
+	 *            the email
 	 * @return the string
 	 */
 	private String maskEmail(String email) {
@@ -122,17 +130,17 @@ public class OTPFacadeImpl implements OTPFacade {
 				.forEach(i -> maskedEmail.setCharAt(i - 1, 'X'));
 		return maskedEmail.toString();
 	}
-	
+
 	/**
 	 * Mask mobile number.
 	 *
-	 * @param email the email
+	 * @param email
+	 *            the email
 	 * @return the string
 	 */
 	private String maskMobile(String mobileNumber) {
 		StringBuilder maskedMobile = new StringBuilder(mobileNumber);
-		IntStream.range(0, (maskedMobile.length() / 2) + 1)
-				.forEach(i -> maskedMobile.setCharAt(i, 'X'));
+		IntStream.range(0, (maskedMobile.length() / 2) + 1).forEach(i -> maskedMobile.setCharAt(i, 'X'));
 		return maskedMobile.toString();
 	}
 
@@ -140,18 +148,23 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * Validate the number of request for OTP generation. Limit for the number of
 	 * request for OTP is should not exceed 3 in 60sec.
 	 *
-	 * @param otpRequestDto the otp request dto
+	 * @param otpRequestDto
+	 *            the otp request dto
 	 * @return true, if is otp flooded
+	 * @throws IDDataValidationException 
+	 * @throws IdAuthenticationBusinessException 
 	 */
-	private boolean isOtpFlooded(OtpRequestDTO otpRequestDto) {
+	private boolean isOtpFlooded(OtpRequestDTO otpRequestDto) throws IDDataValidationException {
 		boolean isOtpFlooded = false;
-		String uniqueID = otpRequestDto.getId();
-		Date requestTime = otpRequestDto.getReqTime();
-		Date addMinutesInOtpRequestDTime = addMinites(requestTime, -1);
+			String uniqueID = otpRequestDto.getIdvId();
+			Date requestTime = dateHelper.convertStringToDate(otpRequestDto.getReqTime());
+			System.err.println(requestTime);
+			Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -1);
 
-		if (autntxnrepository.countRequestDTime(requestTime, addMinutesInOtpRequestDTime, uniqueID) > 3) {
-			isOtpFlooded = true;
-		}
+			if (autntxnrepository.countRequestDTime(requestTime, addMinutesInOtpRequestDTime, uniqueID) > 3) {
+				isOtpFlooded = true;
+			}
+			
 		return isOtpFlooded;
 	}
 
@@ -160,19 +173,23 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * object. Add positive, date increase in minutes. Add negative, date reduce in
 	 * minutes.
 	 *
-	 * @param date the date
-	 * @param minute the minute
+	 * @param date
+	 *            the date
+	 * @param minute
+	 *            the minute
 	 * @return the date
 	 */
-	private Date addMinites(Date date, int minute) {
+	private Date addMinutes(Date date, int minute) {
 		return DateUtils.addMinutes(date, minute);
 	}
 
 	/**
 	 * Formate date.
 	 *
-	 * @param date the date
-	 * @param formate the formate
+	 * @param date
+	 *            the date
+	 * @param formate
+	 *            the formate
 	 * @return the date
 	 */
 	private Date formateDate(Date date, String formate) {
@@ -190,10 +207,12 @@ public class OTPFacadeImpl implements OTPFacade {
 	/**
 	 * Save the input Request to trigger OTP.
 	 *
-	 * @param otpRequestDto the otp request dto
+	 * @param otpRequestDto
+	 *            the otp request dto
+	 * @throws IDDataValidationException 
 	 */
-	private void saveAutnTxn(OtpRequestDTO otpRequestDto) {
-		String uniqueID = otpRequestDto.getId();
+	private void saveAutnTxn(OtpRequestDTO otpRequestDto) throws IDDataValidationException {
+		String uniqueID = otpRequestDto.getIdvId();
 		String txnID = otpRequestDto.getTxnID();
 
 		AutnTxn autnTxn = new AutnTxn();
@@ -203,7 +222,8 @@ public class OTPFacadeImpl implements OTPFacade {
 		// TODO check
 		autnTxn.setCrBy("OTP Generate Service");
 		autnTxn.setCrDTimes(new Date());
-		autnTxn.setRequestDTtimes(otpRequestDto.getReqTime());
+		// FIXME utilize Instant
+		autnTxn.setRequestDTtimes(dateHelper.convertStringToDate(otpRequestDto.getReqTime()));
 		autnTxn.setResponseDTimes(new Date()); // TODO check this
 		autnTxn.setAuthTypeCode(RequestType.OTP_REQUEST.getRequestType());
 		autnTxn.setRequestTxnId(txnID);
@@ -217,26 +237,28 @@ public class OTPFacadeImpl implements OTPFacade {
 	/**
 	 * Obtain the reference id for IDType.
 	 *
-	 * @param otpRequestDto the otp request dto
+	 * @param otpRequestDto
+	 *            the otp request dto
 	 * @return the ref id
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException
+	 *             the id authentication business exception
 	 */
 	private String getRefId(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
 		String refId = null;
-		Optional<IdType> idType = IdType.getIDType(otpRequestDto.getIdType());
-		String uniqueID = otpRequestDto.getId();
+		Optional<IdType> idType = IdType.getIDType(otpRequestDto.getIdvIdType());
+		String uniqueID = otpRequestDto.getIdvId();
 		if (idType.isPresent()) {
 			if (idType.get() == IdType.UIN) {
 				refId = idAuthService.validateUIN(uniqueID);
 				if (refId == null) {
-					mosipLogger.info(SESSION_ID, "IDTYPE-" + otpRequestDto.getIdType(), "Reference Id for UID",
+					mosipLogger.info(SESSION_ID, "IDTYPE-" + otpRequestDto.getIdvIdType(), "Reference Id for UID",
 							" UID-refId: " + refId);
 				}
 			} else {
 				refId = idAuthService.validateVID(uniqueID);
 
 				if (refId == null) {
-					mosipLogger.info(SESSION_ID, "IDTYPE-" + otpRequestDto.getIdType(), "Reference Id for VID",
+					mosipLogger.info(SESSION_ID, "IDTYPE-" + otpRequestDto.getIdvIdType(), "Reference Id for VID",
 							" VID-refId: " + refId);
 				}
 			}

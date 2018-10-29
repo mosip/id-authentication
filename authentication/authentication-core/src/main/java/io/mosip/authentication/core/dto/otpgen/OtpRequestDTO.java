@@ -1,7 +1,5 @@
 package io.mosip.authentication.core.dto.otpgen;
 
-import java.util.Date;
-
 import lombok.Data;
 
 /**
@@ -16,16 +14,16 @@ public class OtpRequestDTO  {
 
 	private String id;
 
-	private String idType;
-
 	private String ver;
+
+	private String idvId;
+
+	private String idvIdType;
 
 	private String muaCode;
 
+	private String reqTime;
+
 	private String txnID;
-
-	private Date reqTime;
-
-	private String msaLicenseKey;
 
 }

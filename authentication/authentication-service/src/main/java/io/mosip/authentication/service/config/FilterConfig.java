@@ -24,7 +24,9 @@ public class FilterConfig {
 	public FilterRegistrationBean<IDAuthFilter> getOtpAuthFilter() {
 		FilterRegistrationBean<IDAuthFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new IDAuthFilter());
-		registrationBean.addUrlPatterns("/auth", "/otp");
+		registrationBean.addUrlPatterns("/auth"
+//				, "/otp" //FIXME
+				);
 
 		return registrationBean;
 	}

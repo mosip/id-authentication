@@ -3,6 +3,9 @@ package io.mosip.authentication.service.impl.otpgen.validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.junit.Before;
@@ -25,6 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
+import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
@@ -44,15 +48,18 @@ public class OTPRequestValidatorTest {
 	@Mock
 	private SpringValidatorAdapter validator;
 
+	@InjectMocks
+	DateHelper dateHelper;
+
 	@Mock
 	Errors error;
 
 	@Autowired
 	Environment env;
-	
+
 	@Mock
 	UinValidatorImpl uinValidator;
-	
+
 	@Mock
 	VidValidatorImpl vidValidator;
 
@@ -68,6 +75,8 @@ public class OTPRequestValidatorTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(otpRequestValidator, "env", env);
+		ReflectionTestUtils.setField(dateHelper, "env", env);
+		ReflectionTestUtils.setField(otpRequestValidator, "dateHelper", dateHelper);
 	}
 
 	@Test
@@ -84,10 +93,17 @@ public class OTPRequestValidatorTest {
 	public void testValidUin() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
-		OtpRequestDTO.setReqTime(new Date());
-		OtpRequestDTO.setIdType(IdType.UIN.getType());
-		OtpRequestDTO.setId("426789089018");
+		OtpRequestDTO.setId("id");
+		OtpRequestDTO.setVer("1.1");
+		OtpRequestDTO.setMuaCode("1234567890");
+		OtpRequestDTO.setTxnID("1234567890");
+		ZoneOffset offset = ZoneOffset.MAX;
+		OtpRequestDTO.setReqTime(Instant.now().atOffset(offset).format(
+				DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		OtpRequestDTO.setIdvIdType(IdType.UIN.getType());
+		OtpRequestDTO.setIdvId("426789089018");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
+		errors.getAllErrors().forEach(System.err::println);
 		assertFalse(errors.hasErrors());
 	}
 
@@ -96,9 +112,9 @@ public class OTPRequestValidatorTest {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
-		OtpRequestDTO.setIdType(IdType.UIN.getType());
-		OtpRequestDTO.setId("234567890123");
-		OtpRequestDTO.setReqTime(new Date());
+		OtpRequestDTO.setIdvIdType(IdType.UIN.getType());
+		OtpRequestDTO.setIdvId("234567890123");
+		OtpRequestDTO.setReqTime(Instant.now().toString());
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -107,10 +123,15 @@ public class OTPRequestValidatorTest {
 	public void testValidVid() {
 		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
-		OtpRequestDTO.setReqTime(new Date());
+		OtpRequestDTO.setId("id");
+		OtpRequestDTO.setVer("1.1");
+		OtpRequestDTO.setMuaCode("1234567890");
+		OtpRequestDTO.setTxnID("1234567890");
+		OtpRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")).format(
+				DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
-		OtpRequestDTO.setIdType(IdType.VID.getType());
-		OtpRequestDTO.setId("5371843613598206");
+		OtpRequestDTO.setIdvIdType(IdType.VID.getType());
+		OtpRequestDTO.setIdvId("5371843613598206");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertFalse(errors.hasErrors());
 	}
@@ -120,9 +141,9 @@ public class OTPRequestValidatorTest {
 		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
-		OtpRequestDTO.setIdType(IdType.VID.getType());
-		OtpRequestDTO.setId("5371843613598211");
-		OtpRequestDTO.setReqTime(new Date());
+		OtpRequestDTO.setIdvIdType(IdType.VID.getType());
+		OtpRequestDTO.setIdvId("5371843613598211");
+		OtpRequestDTO.setReqTime(Instant.now().toString());
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -131,9 +152,9 @@ public class OTPRequestValidatorTest {
 	public void testInvalidIdType() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
-		OtpRequestDTO.setIdType("abcd");
-		OtpRequestDTO.setReqTime(new Date());
-		OtpRequestDTO.setId("5371843613598211");
+		OtpRequestDTO.setIdvIdType("abcd");
+		OtpRequestDTO.setReqTime(Instant.now().toString());
+		OtpRequestDTO.setIdvId("5371843613598211");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
@@ -142,71 +163,71 @@ public class OTPRequestValidatorTest {
 	public void testInvalidTimestamp() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
-		OtpRequestDTO.setIdType("abcd");
-		OtpRequestDTO.setReqTime(new Date("1/1/2017"));
-		OtpRequestDTO.setId("5371843613598211");
+		OtpRequestDTO.setIdvIdType("abcd");
+		OtpRequestDTO.setReqTime(new Date("1/1/2017").toInstant().toString());
+		OtpRequestDTO.setIdvId("5371843613598211");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testInvalidVer() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
-		otpRequestDTO.setIdType("D");
-		otpRequestDTO.setReqTime(new Date());
-		otpRequestDTO.setId("5371843613598211");
+		otpRequestDTO.setIdvIdType("D");
+		otpRequestDTO.setReqTime(Instant.now().toString());
+		otpRequestDTO.setIdvId("5371843613598211");
 		otpRequestDTO.setVer("1.12");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testInvalidMuaCode() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
-		otpRequestDTO.setIdType("D");
-		otpRequestDTO.setReqTime(new Date());
-		otpRequestDTO.setId("5371843613598211");
+		otpRequestDTO.setIdvIdType("D");
+		otpRequestDTO.setReqTime(Instant.now().toString());
+		otpRequestDTO.setIdvId("5371843613598211");
 		otpRequestDTO.setVer("1.1");
 		otpRequestDTO.setMuaCode("");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testInvalidTxnId() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
-		otpRequestDTO.setIdType("D");
-		otpRequestDTO.setReqTime(new Date());
-		otpRequestDTO.setId("5371843613598211");
+		otpRequestDTO.setIdvIdType("D");
+		otpRequestDTO.setReqTime(Instant.now().toString());
+		otpRequestDTO.setIdvId("5371843613598211");
 		otpRequestDTO.setVer("1.1");
 		otpRequestDTO.setTxnID("");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testNullId() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
-		otpRequestDTO.setIdType("D");
-		otpRequestDTO.setReqTime(new Date());
-		otpRequestDTO.setId(null);
+		otpRequestDTO.setIdvIdType("D");
+		otpRequestDTO.setReqTime(Instant.now().toString());
+		otpRequestDTO.setIdvId(null);
 		otpRequestDTO.setVer("1.1");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		errors.getAllErrors().forEach(System.err::println);
 		assertTrue(errors.hasErrors());
 	}
-	
+
 	@Test
 	public void testNullIdType() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(otpRequestDTO, "OtpRequestDTO");
-		otpRequestDTO.setIdType(null);
-		otpRequestDTO.setReqTime(new Date());
-		otpRequestDTO.setId("5371843613598211");
+		otpRequestDTO.setIdvIdType(null);
+		otpRequestDTO.setReqTime(Instant.now().toString());
+		otpRequestDTO.setIdvId("5371843613598211");
 		otpRequestDTO.setVer("1.1");
 		otpRequestValidator.validate(otpRequestDTO, errors);
 		errors.getAllErrors().forEach(System.err::println);
