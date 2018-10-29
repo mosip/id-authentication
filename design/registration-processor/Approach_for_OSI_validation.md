@@ -44,6 +44,7 @@ The key solution considerations are -
                      TRUE : valid individual.
                      FALSE : invalid individual.
     ```
+    Refer to [Auth-rest-service](https://github.com/mosip/mosip/blob/DEV/design/authentication/Auth_Request_REST_service.md)
     TODO : the rest API specification is not ready yet. Need to link API design when  AUTH module completes it.
 - Registration-processor has to support password validation as well. Kernel team will provide REST API to get or validate USER. 
     TODO : The api specification is not ready yet. Need to link api spec.
