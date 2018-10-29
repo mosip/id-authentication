@@ -16,4 +16,5 @@ public interface RegPacketStatusService {
 	 *         after sync with server
 	 */
 	public ResponseDTO packetSyncStatus();
+	
 }

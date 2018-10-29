@@ -11,7 +11,7 @@ import io.mosip.registration.dto.RegPacketStatusDTO;
  *
  */
 public interface RegPacketStatusDAO {
-
+	
 	/**
 	 * This method gets the list of packets which are having the status as uploaded-successfully
 	 * 

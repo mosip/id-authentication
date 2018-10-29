@@ -50,38 +50,39 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 
 	@Override
 	public List<String> getPacketIdsByStatusUploaded() {
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME,
-				APPLICATION_ID, "getting packets by status uploaded-successfully has been started");
-		
+		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"getting packets by status uploaded-successfully has been started");
+
 		List<Registration> registrationList = registrationRepository
 				.findByclientStatusCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 		List<String> packetIds = new ArrayList<>();
 		for (Registration registration : registrationList) {
 			packetIds.add(registration.getId());
 		}
-		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME,
-				APPLICATION_ID, "getting packets by status post-sync has been ended");
+		LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"getting packets by status post-sync has been ended");
 		return packetIds;
 	}
 
 	@Override
 	public void updatePacketIdsByServerStatus(List<RegPacketStatusDTO> packetStatus) {
 		try {
-			LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME,
-					APPLICATION_ID, "packets status sync from server has been started");
+			LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+					"packets status sync from server has been started");
 			for (RegPacketStatusDTO regPacketStatusDTO : packetStatus) {
-				Registration reg = registrationRepository.findById(Registration.class, regPacketStatusDTO.getPacketId());
+				Registration reg = registrationRepository.findById(Registration.class,
+						regPacketStatusDTO.getPacketId());
 				reg.setServerStatusCode(regPacketStatusDTO.getStatus());
 				reg.setClientStatusCode(RegistrationClientStatusCode.SERVER_VALIDATED.getCode());
 				registrationRepository.update(reg);
 			}
-			LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME,
-					APPLICATION_ID, "packets status sync from server has been ended");
+			LOGGER.debug("REGISTRATION - PACKET_STATUS_SYNC - REG_PACKET_STATUS_DAO", APPLICATION_NAME, APPLICATION_ID,
+					"packets status sync from server has been ended");
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_UPDATE_STATUS,
 					runtimeException.toString());
 		}
-		
+
 	}
 
 }

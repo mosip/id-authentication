@@ -27,4 +27,5 @@ public interface TemplateService {
 	 * @throws RegBaseCheckedException
 	 */
 	public String createReceipt() throws RegBaseCheckedException;
+	
 }

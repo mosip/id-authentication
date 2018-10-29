@@ -27,6 +27,12 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
+/**
+ * Class for showing the Acknowledgement Receipt
+ * 
+ * @author Himaja Dhanyamraju
+ *
+ */
 @Controller
 public class AckReceiptController extends BaseController implements Initializable{
 	

@@ -101,8 +101,8 @@ public class VelocityPDFGenerator {
 
 		velocityContext.put(RegistrationConstants.TEMPLATE_IMAGE_SOURCE, RegistrationConstants.TEMPLATE_IMAGE_ENCODING + encodedBytes);
 
-		// get the quality ranking for fingerprints of the applicant
-		/*HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
+		/* get the quality ranking for fingerprints of the applicant
+		HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
 		int count=1;
 		for (Map.Entry<String, Integer> entry : fingersQuality.entrySet()) {
 			if (entry.getValue() != 0) {

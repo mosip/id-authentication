@@ -12,6 +12,7 @@ import io.mosip.registration.entity.TemplateType;
  * @author Himaja Dhanyamraju
  */
 public interface TemplateTypeRepository<P> extends BaseRepository<TemplateType, TemplateEmbeddedKeyCommonFields> {
+	
 	/**
 	 * This method returns the list of {@link TemplateType} which are active
 	 * 

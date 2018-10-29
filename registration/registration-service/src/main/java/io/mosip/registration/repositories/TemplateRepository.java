@@ -17,4 +17,5 @@ public interface TemplateRepository<P> extends BaseRepository<Template, String>{
 	 * @return the list of {@link Template}
 	 */
 	List<Template> findByIsActiveTrue();
+	
 }

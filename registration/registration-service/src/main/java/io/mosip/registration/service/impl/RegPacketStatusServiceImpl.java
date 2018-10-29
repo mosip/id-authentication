@@ -69,8 +69,9 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	private void updatePacketIdsByServerStatus(List<LinkedHashMap<String, String>> registrations) {
 		List<RegPacketStatusDTO> packetStatusDTO = new ArrayList<>();
 		for (Map<String, String> registration : registrations) {
-			packetStatusDTO.add(new RegPacketStatusDTO(registration.get(RegistrationConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
-					registration.get(RegistrationConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
+			packetStatusDTO.add(
+					new RegPacketStatusDTO(registration.get(RegistrationConstants.PACKET_STATUS_SYNC_REGISTRATION_ID),
+							registration.get(RegistrationConstants.PACKET_STATUS_SYNC_STATUS_CODE)));
 		}
 		/** update server and client status. */
 		regPacketStatusDAO.updatePacketIdsByServerStatus(packetStatusDTO);
@@ -79,13 +80,13 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	@SuppressWarnings("unchecked")
 	public ResponseDTO packetSyncStatus() {
 
-		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
-				APPLICATION_ID, "packet status sync called");
+		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+				"packet status sync called");
 
 		List<LinkedHashMap<String, String>> registrations = new ArrayList<>();
 		List<String> packetIds = getPacketIds();
-		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
-				APPLICATION_ID, "PacketIds for sync with server have been retrieved");
+		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+				"PacketIds for sync with server have been retrieved");
 		/** Create Response to Return to UI layer */
 		ResponseDTO response = new ResponseDTO();
 		SuccessResponseDTO successResponse;
@@ -105,20 +106,20 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			/** Create Error response */
 			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
-					APPLICATION_ID, "Error Response Created");
+			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+					"Error Response Created");
 		} catch (HttpClientErrorException httpClientErrorException) {
 			/** Create Error response */
 			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
-					APPLICATION_ID, "Error Response Created");
+			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+					"Error Response Created");
 		}
-		
+
 		if (!registrations.isEmpty()) {
 			/** update the status of packets after sync with server */
 			updatePacketIdsByServerStatus(registrations);
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
-					APPLICATION_ID, "packet status has been synced with server");
+			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+					"packet status has been synced with server");
 			/** Create Success response */
 			successResponse = new SuccessResponseDTO();
 			successResponse.setCode(RegistrationConstants.ALERT_INFORMATION);
@@ -127,20 +128,20 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			otherAttributes.put(RegistrationConstants.PACKET_STATUS_SYNC_RESPONSE_ENTITY, registrations);
 			successResponse.setOtherAttributes(otherAttributes);
 			response.setSuccessResponseDTO(successResponse);
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
-					APPLICATION_ID, "Success Response Created");
+			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+					"Success Response Created");
 
 		} else {
 
 			/** Create Error response */
 			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
-					APPLICATION_ID, "Error Response Created");
+			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+					"Error Response Created");
 
 		}
 
-		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME,
-				APPLICATION_ID, "Packet Status Sync ended");
+		LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
+				"Packet Status Sync ended");
 
 		return response;
 	}

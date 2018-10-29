@@ -48,6 +48,7 @@ public class TemplateServiceImpl implements TemplateService {
 		}
 		return ackTemplate;
 	}
+	
 
 	public String createReceipt() throws RegBaseCheckedException {
 		return getTemplate().getFileTxt();
