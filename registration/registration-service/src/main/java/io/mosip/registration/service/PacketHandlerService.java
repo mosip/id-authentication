@@ -1,4 +1,4 @@
-package io.mosip.registration.service.packet;
+package io.mosip.registration.service;
 
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;

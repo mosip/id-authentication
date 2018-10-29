@@ -1,4 +1,4 @@
-package io.mosip.registration.service.packet;
+package io.mosip.registration.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PacketCreationService;
 import io.mosip.registration.service.PacketEncryptionService;
+import io.mosip.registration.service.PacketHandlerService;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -65,12 +66,17 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 	@Autowired
 	private AuditFactory auditFactory;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.packet.PacketHandlerService#handle(io.mosip.registration.dto.RegistrationDTO)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.packet.PacketHandlerService#handle(io.mosip.
+	 * registration.dto.RegistrationDTO)
 	 */
+	@Override
 	public ResponseDTO handle(RegistrationDTO registrationDTO) {
-		logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
-				"Registration Handler had been called");
+		logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been called");
+
 		ResponseDTO responseDTO = new ResponseDTO();
 		String rid = registrationDTO == null ? "RID" : registrationDTO.getRegistrationId();
 		try {
@@ -81,6 +87,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 			if (inMemoryZipFile != null && inMemoryZipFile.length > 0) {
 				logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 						"Registration Packet had been created successfully");
+
 				responseDTO = packetEncryptionService.encrypt(registrationDTO, inMemoryZipFile);
 			} else {
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
@@ -89,14 +96,16 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 				List<ErrorResponseDTO> errorResponseDTOs = new ArrayList<>();
 				errorResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+
 				logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 						"Error in creating Registration Packet");
-				auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, AppModule.PACKET_HANDLER,
-						INTERNAL_SERVER_ERROR, REGISTRATION_ID, rid);
+				auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, AppModule.PACKET_HANDLER, INTERNAL_SERVER_ERROR,
+						REGISTRATION_ID, rid);
 			}
 		} catch (RegBaseCheckedException exception) {
-			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, AppModule.PACKET_HANDLER,
-					INTERNAL_SERVER_ERROR, REGISTRATION_ID, rid);
+			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, AppModule.PACKET_HANDLER, INTERNAL_SERVER_ERROR,
+					REGISTRATION_ID, rid);
+
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 			errorResponseDTO.setCode(RegistrationConstants.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
 			errorResponseDTO.setMessage(exception.getErrorText());
@@ -104,8 +113,9 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 			errorResponseDTOs.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		} catch (RegBaseUncheckedException uncheckedException) {
-			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, AppModule.PACKET_HANDLER,
-					INTERNAL_SERVER_ERROR, REGISTRATION_ID, rid);
+			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, AppModule.PACKET_HANDLER, INTERNAL_SERVER_ERROR,
+					REGISTRATION_ID, rid);
+
 			ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 			errorResponseDTO.setCode(RegistrationConstants.REG_FRAMEWORK_PACKET_HANDLING_EXCEPTION);
 			errorResponseDTO.setMessage(uncheckedException.getErrorText());
@@ -113,8 +123,8 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 			errorResponseDTOs.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		}
-		logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
-				"Registration Handler had been ended");
+		logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been ended");
+
 		return responseDTO;
 	}
 }

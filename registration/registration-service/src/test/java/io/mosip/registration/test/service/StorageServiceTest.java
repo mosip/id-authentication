@@ -1,4 +1,4 @@
-package io.mosip.registration.test.util.store;
+package io.mosip.registration.test.service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.util.store.StorageService;
+import io.mosip.registration.service.impl.StorageServiceImpl;
 
 import static org.mockito.Mockito.when;
 
@@ -28,7 +28,7 @@ public class StorageServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
-	private StorageService storageService;
+	private StorageServiceImpl storageService;
 	private MosipRollingFileAppender mosipRollingFileAppender;
 	@Mock
 	private MosipLogger logger;

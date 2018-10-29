@@ -20,6 +20,7 @@ import ma.glasnost.orika.impl.ConfigurableMapper;
  * Class for Orika Object Mapper
  * 
  * @author YASWANTH S
+ * @author Balaji Sridharan
  * @since 1.0.0
  */
 public class CustomObjectMapper extends ConfigurableMapper {

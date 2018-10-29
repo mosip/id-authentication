@@ -1,4 +1,4 @@
-package io.mosip.registration.service.packet.encryption.rsa;
+package io.mosip.registration.service;
 
 import io.mosip.registration.exception.RegBaseCheckedException;
 
@@ -6,6 +6,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  * Accepts AES session key as bytes and encrypt it by using RSA algorithm
  * 
  * @author YASWANTH S
+ * @author Balaji Sridharan
  * @since 1.0.0
  *
  */

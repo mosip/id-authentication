@@ -1,4 +1,4 @@
-package io.mosip.registration.service.packet.encryption.rsa;
+package io.mosip.registration.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +13,7 @@ import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.RSAEncryptionService;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -25,6 +26,7 @@ import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_RSA_ENCRYP
  * Accepts AES session key as bytes and encrypt it by using RSA algorithm
  * 
  * @author YASWANTH S
+ * @author Balaji Sridharan
  * @since 1.0.0
  *
  */
@@ -44,20 +46,21 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionService#encrypt(byte[])
 	 */
+	@Override
 	public byte[] encrypt(final byte[] sessionKey) throws RegBaseCheckedException {
 		try {
 			logger.debug(LOG_PKT_RSA_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"Packet RSA Encryption had been called");
+			
 			// TODO: Will be removed upon KeyManager is implemented in Kernel App
 			// Generate key pair public and private key
 			rsaKeyGenerator.generateKey();
 			// Read public key from file
 			final byte[] publicKey = rsaKeyGenerator.getEncodedKey(true);
 
-			// encrypt AES Session Key using RSA public keyF
+			// encrypt AES Session Key using RSA public key
 			return MosipEncryptor.asymmetricPublicEncrypt(publicKey, sessionKey,
 					MosipSecurityMethod.RSA_WITH_PKCS1PADDING);
-
 		} catch (MosipInvalidDataException mosipInvalidDataException) {
 			throw new RegBaseCheckedException(REG_RSA_INVALID_DATA.getErrorCode(),
 					REG_RSA_INVALID_DATA.getErrorMessage());

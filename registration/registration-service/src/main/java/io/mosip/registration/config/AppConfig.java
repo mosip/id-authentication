@@ -16,7 +16,7 @@ import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryI
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 
 /**
- * Spring Configuration class for Registration-Processor Module
+ * Spring Configuration class for Registration-Service Module
  * 
  * @author Balaji Sridharan
  * @since 1.0.0

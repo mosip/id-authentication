@@ -1,4 +1,4 @@
-package io.mosip.registration.service.packet.encryption.aes;
+package io.mosip.registration.service;
 
 import java.util.List;
 

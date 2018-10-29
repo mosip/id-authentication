@@ -23,6 +23,6 @@ public interface PacketEncryptionService {
 	 * @return encrypted data as byte array
 	 * @throws RegBaseCheckedException
 	 */
-	public ResponseDTO encrypt(final RegistrationDTO registrationDTO, final byte[] packetZipData)
+	ResponseDTO encrypt(final RegistrationDTO registrationDTO, final byte[] packetZipData)
 			throws RegBaseCheckedException;
 }

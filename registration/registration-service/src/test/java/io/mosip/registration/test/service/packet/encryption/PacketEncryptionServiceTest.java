@@ -29,9 +29,9 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.AESEncryptionService;
 import io.mosip.registration.service.impl.PacketEncryptionServiceImpl;
-import io.mosip.registration.service.packet.encryption.aes.AESEncryptionService;
-import io.mosip.registration.util.store.StorageService;
+import io.mosip.registration.service.StorageService;
 
 public class PacketEncryptionServiceTest {
 

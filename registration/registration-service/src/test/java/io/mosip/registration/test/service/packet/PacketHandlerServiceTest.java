@@ -23,7 +23,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PacketCreationService;
 import io.mosip.registration.service.PacketEncryptionService;
-import io.mosip.registration.service.packet.PacketHandlerServiceImpl;
+import io.mosip.registration.service.impl.PacketHandlerServiceImpl;
 
 public class PacketHandlerServiceTest {
 	@Rule

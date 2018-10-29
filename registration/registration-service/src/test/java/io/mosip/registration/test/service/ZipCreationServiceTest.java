@@ -1,4 +1,4 @@
-package io.mosip.registration.test.util.zip;
+package io.mosip.registration.test.service;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -22,7 +22,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.util.zip.ZipCreationService;
+import io.mosip.registration.service.impl.ZipCreationServiceImpl;
 
 import static io.mosip.registration.constants.RegistrationConstants.DEMOGRPAHIC_JSON_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.ENROLLMENT_META_JSON_NAME;
@@ -34,7 +34,7 @@ public class ZipCreationServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
-	private ZipCreationService zipCreationService;
+	private ZipCreationServiceImpl zipCreationService;
 	private RegistrationDTO registrationDTO;
 	private MosipRollingFileAppender mosipRollingFileAppender;
 	@Mock
@@ -59,18 +59,17 @@ public class ZipCreationServiceTest {
 	
 	@Test
 	public void testPacketZipCreator() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(ZipCreationService.class, "logger", logger);
+		ReflectionTestUtils.setField(ZipCreationServiceImpl.class, "logger", logger);
 		Map<String, byte[]> jsonMap = new HashMap<>();
 		jsonMap.put(DEMOGRPAHIC_JSON_NAME, "Demo".getBytes());
 		jsonMap.put(PACKET_META_JSON_NAME, "Registration".getBytes());
 		jsonMap.put(ENROLLMENT_META_JSON_NAME, "Enrollment".getBytes());
 		jsonMap.put(HASHING_JSON_NAME, "HASHCode".getBytes());
 		jsonMap.put(RegistrationConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
-		byte[] packetZipInBytes = ZipCreationService.createPacket(registrationDTO, jsonMap);
+		byte[] packetZipInBytes = zipCreationService.createPacket(registrationDTO, jsonMap);
 		Assert.assertNotNull(packetZipInBytes);
 	}
 	
-	@SuppressWarnings("static-access")
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testException() throws RegBaseCheckedException {
 		ReflectionTestUtils.setField(zipCreationService, "logger", logger);
