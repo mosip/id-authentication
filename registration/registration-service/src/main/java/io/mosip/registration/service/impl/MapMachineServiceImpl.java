@@ -62,49 +62,50 @@ public class MapMachineServiceImpl implements MapMachineService {
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;
 
-
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.MapMachineService#saveOrUpdate(io.mosip.registration.dto.UserMachineMappingDTO)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.MapMachineService#saveOrUpdate(io.mosip.
+	 * registration.dto.UserMachineMappingDTO)
 	 */
 	@Override
 	public ResponseDTO saveOrUpdate(UserMachineMappingDTO userMachineMappingDTO) {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-				APPLICATION_ID, "Service saveOrUpdate method called");
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"Service saveOrUpdate method called");
 
-		//find user
+		// find user
 		UserMachineMappingID userID = new UserMachineMappingID();
 		userID.setUserID(userMachineMappingDTO.getUserID());
 		userID.setCentreID(userMachineMappingDTO.getCentreID());
 		userID.setMachineID(userMachineMappingDTO.getMachineID());
-		
-		boolean isActive=false;
-		if(userMachineMappingDTO.getStatus().equalsIgnoreCase(RegistrationConstants.MACHINE_MAPPING_ACTIVE)) {
-			isActive=true;
+
+		boolean isActive = false;
+		if (userMachineMappingDTO.getStatus().equalsIgnoreCase(RegistrationConstants.MACHINE_MAPPING_ACTIVE)) {
+			isActive = true;
 		} else {
-			isActive=false;
+			isActive = false;
 		}
-	
-		/* create response*/
+
+		/* create response */
 		ResponseDTO responseDTO = new ResponseDTO();
 
-		/* Interacting with DAO layer*/
+		/* Interacting with DAO layer */
 
 		try {
-			/*find user*/
-			UserMachineMapping user=machineMappingDAO.findByID(userID);
-			
-			if(user!=null) {
-				/*if user already exists*/
+			/* find user */
+			UserMachineMapping user = machineMappingDAO.findByID(userID);
+
+			if (user != null) {
+				/* if user already exists */
 				user.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
 				user.setUpdDtimes(OffsetDateTime.now());
 				user.setIsActive(isActive);
-				
-				
+
 				user.setIsActive(isActive);
 				machineMappingDAO.update(user);
 			} else {
-				/*if user didn't exists*/
-				 user = new UserMachineMapping();
+				/* if user didn't exists */
+				user = new UserMachineMapping();
 				user.setUserMachineMappingId(userID);
 				user.setIsActive(isActive);
 				user.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
@@ -114,26 +115,23 @@ public class MapMachineServiceImpl implements MapMachineService {
 
 				machineMappingDAO.save(user);
 			}
-			/* create success response*/
+			/* create success response */
 			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
 			successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
 			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 			successResponseDTO.setMessage(RegistrationConstants.MACHINE_MAPPING_SUCCESS_MESSAGE);
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
-			LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-					APPLICATION_ID, "Success Response created");
+			LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Success Response created");
 		} catch (RegBaseUncheckedException exception) {
 			responseDTO = getErrorResponse(responseDTO, RegistrationConstants.MACHINE_MAPPING_ERROR_MESSAGE);
-			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-					APPLICATION_ID, "Error Response created");
+			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "Error Response created");
 
 		}
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-				APPLICATION_ID, "Service saveOrUpdate method ended");
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"Service saveOrUpdate method ended");
 
 		return responseDTO;
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -142,43 +140,42 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 */
 	@Override
 	public ResponseDTO view() {
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-				APPLICATION_ID, "View Method called");
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "View Method called");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
 		try {
-			/* get mac address*/			
+			/* get mac address */
 			String machineID = RegistrationSystemPropertiesChecker.getMachineId();
-			/* get station ID*/
+			/* get station ID */
 			String stationID = machineMappingDAO.getStationID(machineID);
-			/* get center id*/
+			/* get center id */
 			String centerID = machineMappingDAO.getCenterID(stationID);
-			/* get user list*/
+			/* get user list */
 			List<RegistrationUserDetail> registrationUserDetails = machineMappingDAO.getUsers(centerID);
-			
-			if(registrationUserDetails != null && !registrationUserDetails.isEmpty()) {
-			/* create success response*/
-			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-			successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
-			successResponseDTO.setMessage(MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE);
-			successResponseDTO
-					.setOtherAttributes(constructDTO(machineID, stationID, centerID, registrationUserDetails));
 
-			responseDTO.setSuccessResponseDTO(successResponseDTO);
-			LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-					APPLICATION_ID, "View Method Success Response created");
-			}else {
-				 getErrorResponse(responseDTO, MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS);
+			if (registrationUserDetails != null && !registrationUserDetails.isEmpty()) {
+				/* create success response */
+				SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+				successResponseDTO.setCode(RegistrationConstants.MACHINE_MAPPING_CODE);
+				successResponseDTO.setMessage(MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE);
+				successResponseDTO
+						.setOtherAttributes(constructDTOs(machineID, stationID, centerID, registrationUserDetails));
+
+				responseDTO.setSuccessResponseDTO(successResponseDTO);
+				LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+						"View Method Success Response created");
+			} else {
+				getErrorResponse(responseDTO, MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS);
 			}
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			responseDTO = getErrorResponse(responseDTO, regBaseUncheckedException.getMessage());
-			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-					APPLICATION_ID, "View() Method Error "+regBaseUncheckedException.getMessage());
+			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					"View() Method Error " + regBaseUncheckedException.getMessage());
 		} catch (RegBaseCheckedException regBaseCheckedException) {
 			responseDTO = getErrorResponse(responseDTO, regBaseCheckedException.getMessage());
-			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-					APPLICATION_ID, "Exception Method Response created"+regBaseCheckedException.getMessage());
+			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					"Exception Method Response created" + regBaseCheckedException.getMessage());
 		}
 
 		return responseDTO;
@@ -193,58 +190,63 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 * @param registrationUserDetails
 	 * @return
 	 */
-	private Map<String, Object> constructDTO(String machineID, String stationID, String centreID,
-			List<RegistrationUserDetail> registrationUserDetails) {		
-		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-				APPLICATION_ID, "constructDTO() method called");
+	private Map<String, Object> constructDTOs(String machineID, String stationID, String centreID,
+			List<RegistrationUserDetail> registrationUserDetails) {
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTOs() method called");
 		Map<String, Object> userDetailMap = new HashMap<>();
 		try {
 			List<UserMachineMappingDTO> userMachineMappingDTOs = registrationUserDetails.stream()
 					.map(registrationUserDetail -> {
 						UserMachineMappingDTO userMachineMappingDTO = null;
 						if (registrationUserDetail != null) {
-							String userID = registrationUserDetail.getId();
-							String userName = registrationUserDetail.getName();
-							StringBuilder role = new StringBuilder();
-							String roleCode = "";
-							String status = RegistrationConstants.USER_IN_ACTIVE;
-							if (!registrationUserDetail.getUserRole().isEmpty()) {
-								/*
-								 * List of roles
-								 * 
-								 * @see role code
-								 */
-								registrationUserDetail.getUserRole().forEach(registrationUserRole -> {
-									role.append(registrationUserRole.getRegistrationUserRoleID().getRoleCode() + ",");
-								});
-
-								if (role.length() > 0) {
-									roleCode = role.substring(0, role.lastIndexOf(","));
-								}
-							}
-							if (!registrationUserDetail.getUserMachineMapping().isEmpty()) {
-								
-								for (UserMachineMapping userMachineMapping : registrationUserDetail.getUserMachineMapping()) {	
-										if (userMachineMapping.getUserMachineMappingId()
-												.getMachineID().equals(machineID)) {
-											status = userMachineMapping.getIsActive() ? RegistrationConstants.USER_ACTIVE
-													: RegistrationConstants.USER_IN_ACTIVE;	
-									}
-								}
-							}
-
-							userMachineMappingDTO = new UserMachineMappingDTO(userID, userName, roleCode, status,
-									centreID, stationID, machineID);
+							userMachineMappingDTO = constructDTO(registrationUserDetail, machineID, stationID,
+									centreID);
 						}
 						return userMachineMappingDTO;
-
 					}).collect(Collectors.toList());
 			userDetailMap.put(RegistrationConstants.USER_MACHINE_MAPID, userMachineMappingDTOs);
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
-			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-					APPLICATION_ID, "Exception in preparing DTO "+regBaseUncheckedException.getMessage());
+			LOGGER.error(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					"Exception in preparing DTO " + regBaseUncheckedException.getMessage());
 		}
 		return userDetailMap;
+	}
+
+	/**
+	 * To prepare the {@link UserMachineMappingDTO}
+	 * 
+	 * @param machineID
+	 * @param stationID
+	 * @param centreID
+	 * @param registrationUserDetails
+	 * @return
+	 */
+	private UserMachineMappingDTO constructDTO(RegistrationUserDetail registrationUserDetail, String machineID,
+			String stationID, String centreID) {
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTO() method called");
+		String userID = registrationUserDetail.getId();
+		String userName = registrationUserDetail.getName();
+		StringBuilder role = new StringBuilder();
+		String roleCode = "";
+		String status = RegistrationConstants.USER_IN_ACTIVE;
+		if (!registrationUserDetail.getUserRole().isEmpty()) {
+			/*List of roles with comma separated*/
+			registrationUserDetail.getUserRole().forEach(registrationUserRole -> role
+					.append(registrationUserRole.getRegistrationUserRoleID().getRoleCode() + ","));
+			if (role.length() > 0) {
+				roleCode = role.substring(0, role.lastIndexOf(","));
+			}
+		}
+		if (!registrationUserDetail.getUserMachineMapping().isEmpty()) {
+			for (UserMachineMapping userMachineMapping : registrationUserDetail.getUserMachineMapping()) {
+				if (userMachineMapping.getUserMachineMappingId().getMachineID().equals(machineID)) {
+					status = userMachineMapping.getIsActive() ? RegistrationConstants.USER_ACTIVE
+							: RegistrationConstants.USER_IN_ACTIVE;
+				}
+			}
+		}
+
+		return new UserMachineMappingDTO(userID, userName, roleCode, status, centreID, stationID, machineID);
 	}
 
 	/**
