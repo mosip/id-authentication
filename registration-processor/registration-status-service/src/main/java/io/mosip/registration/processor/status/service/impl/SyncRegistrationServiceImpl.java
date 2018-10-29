@@ -97,8 +97,8 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 					syncRegistration = convertDtoToEntity(registrationDto);
 					syncRegistration.setId(RegistrationUtility.generateId());
 					syncRegistration = syncRegistrationDao.save(syncRegistration);
-					eventId = EventId.RPR_402.toString();
-					eventName = EventName.UPDATE.toString();
+					eventId = EventId.RPR_407.toString();
+					eventName = EventName.SAVE.toString();
 					eventType = EventType.BUSINESS.toString();
 				}
 				list.add(convertEntityToDto(syncRegistration));

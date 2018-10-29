@@ -24,5 +24,8 @@ public enum EventName {
 	
 	/** The authentication. */
 	AUTHENTICATION,
+	
+	/** The save. */
+	SAVE,
 
 }

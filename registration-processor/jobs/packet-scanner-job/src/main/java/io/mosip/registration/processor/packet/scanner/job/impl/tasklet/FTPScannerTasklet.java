@@ -21,6 +21,11 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.AuditLogConstant;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
@@ -43,6 +48,22 @@ public class FTPScannerTasklet implements Tasklet {
 
 	private static final String FTP_NOT_ACCESSIBLE = "The FTP Path set by the System is not accessible";
 	private static final String DUPLICATE_UPLOAD = "Duplicate file uploading to landing zone";
+	
+	/** The core audit request builder. */
+	@Autowired
+	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	
+	/** The event id. */
+	private String eventId = "";
+	
+	/** The event name. */
+	private String eventName = "";
+	
+	/** The event type. */
+	private String eventType = "";
+	
+	/** The description. */
+	private String description = "";
 
 	/**
 	 * Executes FTPScannerTasklet to move enrollment packet from the FTP zone to
@@ -67,27 +88,42 @@ public class FTPScannerTasklet implements Tasklet {
 			String pattern = Pattern.quote(System.getProperty("file.separator"));
 			String[] directory = filepathName.getParent().toString().split(pattern);
 			String childFolder = directory[directory.length - 1];
-			try {
-				FileInputStream input = new FileInputStream(file);
+			try(FileInputStream input = new FileInputStream(file)) {
+				
 				MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "mixed/multipart",
 						IOUtils.toByteArray(input));
 				packetHandlerService.storePacket(multipartFile);
-				input.close();
 				this.filemanager.cleanUpFile(DirectoryPathDto.FTP_ZONE, DirectoryPathDto.LANDING_ZONE,
 						filepathName.getFileName().toString().split("\\.")[0], childFolder);
+				eventId = EventId.RPR_403.toString();
+				eventName = EventName.DELETE.toString();
+				eventType = EventType.BUSINESS.toString();
+				description = "File moved from FTP zone to landing zone successfully";
 			} catch (FileNotFoundInDestinationException e) {
 				LOGGER.error(e.getErrorCode(), e.getErrorText(), e);
 			} catch (DuplicateUploadRequestException e) {
 				this.filemanager.cleanUpFile(DirectoryPathDto.FTP_ZONE, DirectoryPathDto.LANDING_ZONE,
 						filepathName.getFileName().toString().split("\\.")[0], childFolder);
+				eventId = EventId.RPR_405.toString();
+				eventName = EventName.EXCEPTION.toString();
+				eventType = EventType.SYSTEM.toString();
+				description = DUPLICATE_UPLOAD;
 				LOGGER.error(LOGDISPLAY, DUPLICATE_UPLOAD, e);
 			} catch (IOException e) {
 				FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(FTP_NOT_ACCESSIBLE,
 						e);
+				eventId = EventId.RPR_405.toString();
+				eventName = EventName.EXCEPTION.toString();
+				eventType = EventType.SYSTEM.toString();
+				description = FTP_NOT_ACCESSIBLE;
 				LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 						ftpNotAccessibleException);
+			}finally{		
+				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+						AuditLogConstant.NO_ID.toString());
 			}
 		});
+		
 		paths.close();
 		deleteFolder(filepath);
 		return RepeatStatus.FINISHED;
@@ -107,9 +143,17 @@ public class FTPScannerTasklet implements Tasklet {
 						&& (file.list().length == 0)) {
 					try {
 						Files.delete(file.toPath());
+						eventId = EventId.RPR_403.toString();
+						eventName = EventName.DELETE.toString();
+						eventType = EventType.BUSINESS.toString();
+						description = "Deleted empty folder from FTP zone after all the files are copied";
 					} catch (IOException e) {
 						FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
 								FTP_NOT_ACCESSIBLE, e);
+						eventId = EventId.RPR_405.toString();
+						eventName = EventName.EXCEPTION.toString();
+						eventType = EventType.SYSTEM.toString();
+						description = FTP_NOT_ACCESSIBLE;
 						LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 								ftpNotAccessibleException);
 					}
@@ -117,9 +161,16 @@ public class FTPScannerTasklet implements Tasklet {
 			});
 			deletepath.close();
 		} catch (IOException e) {
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
+			description = FTP_NOT_ACCESSIBLE;
 			FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(FTP_NOT_ACCESSIBLE, e);
 			LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 					ftpNotAccessibleException);
+		}finally {		
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
 		}
 
 	}

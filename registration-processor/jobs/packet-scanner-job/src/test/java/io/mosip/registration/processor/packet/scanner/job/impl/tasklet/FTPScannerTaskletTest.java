@@ -11,6 +11,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,6 +34,9 @@ import org.springframework.web.multipart.MultipartFile;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
@@ -62,12 +66,25 @@ public class FTPScannerTaskletTest {
 	private MockMultipartFile mockMultipartFile = Mockito.mock(MockMultipartFile.class);
 
 	private String directoryPath;
+	
+	@Mock
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
 
 	@Before
-	public void setup() {
+	public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		File file = new File(classLoader.getResource("FTP").getFile());
 		this.directoryPath = file.getAbsolutePath();
+		
+		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		AuditRequestDto auditRequest1 = new AuditRequestDto();
+
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+		f.setAccessible(true);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
+		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+		f1.setAccessible(true);
+		f1.set(auditRequestBuilder, auditRequest1);
 	}
 
 	@Test

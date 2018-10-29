@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.status.service.impl;
 
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,16 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
-import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -142,8 +137,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			registrationStatusDao.save(entity);
 			isTransactionSuccessful = true;
 			//Event constants for audit log
-			eventId = EventId.RPR_402.toString();
-			eventName = EventName.UPDATE.toString();
+			eventId = EventId.RPR_407.toString();
+			eventName = EventName.SAVE.toString();
 			eventType = EventType.BUSINESS.toString();
 			TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
 					null, TransactionTypeCode.CREATE.toString(), "Added registration status record",
@@ -184,8 +179,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 				registrationStatusDao.save(entity);
 				isTransactionSuccessful = true;
 				//Event constants for audit log
-				eventId = EventId.RPR_402.toString();
-				eventName = EventName.UPDATE.toString();
+				eventId = EventId.RPR_407.toString();
+				eventName = EventName.SAVE.toString();
 				eventType = EventType.BUSINESS.toString();
 				TransactionDto transactionDto = new TransactionDto(generateId(),
 						registrationStatusDto.getRegistrationId(), latestTransactionId,
