@@ -47,6 +47,6 @@ The key solution considerations are -
     For API spec please Refer to [Auth-rest-service](https://github.com/mosip/mosip/blob/DEV/design/authentication/Auth_Request_REST_service.md)
 - Registration-processor has to support password validation as well. Kernel team will provide REST API to get or validate USER. 
     TODO : The api specification is not ready yet. Need to link api spec.
-- On successful validation send request to osi_bus out address. On failure send response to error queue. If any internal error happens during validation then send response to retry queue.
+- On successful validation send request to osi_bus out address. On failure send response to error queue. If any internal error happens during validation then send response to retry queue. In case of failure the registration-client has to resend the packet. Make sure the failure status is mapped to external status as 'resend'
 - Update the packet status in "Registration-status" table for both successful and failed validation.
 
