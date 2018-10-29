@@ -7,8 +7,8 @@
  */
 package io.mosip.kernel.crypto.bouncycastle.impl;
 
-import io.mosip.kernel.core.crypto.exception.MosipNoSuchAlgorithmException;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.exception.MosipNoSuchAlgorithmException;
 import io.mosip.kernel.crypto.bouncycastle.algorithm.MosipAES;
 import io.mosip.kernel.crypto.bouncycastle.algorithm.MosipDES;
 import io.mosip.kernel.crypto.bouncycastle.algorithm.MosipRSA;

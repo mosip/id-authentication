@@ -1,10 +1,10 @@
-package io.mosip.kernel.core.util.exception;
+package io.mosip.kernel.core.exception;
 
 /**
- * @author Priya Soni
+ * @author  Megha Tanga
  *
  */
-public class MosipFileNotFoundException extends MosipIOException {
+public class MosipDataFormatException extends MosipIOException {
 
 	/**
 	 * 
@@ -16,7 +16,7 @@ public class MosipFileNotFoundException extends MosipIOException {
 	 * @param errorMessage
 	 * @param rootCause
 	 */
-	public MosipFileNotFoundException(String errorCode, String errorMessage, Throwable rootCause) {
+	public MosipDataFormatException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 
 	}
@@ -25,9 +25,10 @@ public class MosipFileNotFoundException extends MosipIOException {
 	 * @param errorCode
 	 * @param errorMessage
 	 */
-	public MosipFileNotFoundException(String errorCode, String errorMessage) {
+	public MosipDataFormatException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 
 	}
 
 }
+

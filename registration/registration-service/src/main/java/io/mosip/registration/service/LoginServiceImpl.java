@@ -13,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import io.mosip.kernel.core.exception.MosipIOException;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
 import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
 import io.mosip.kernel.core.util.exception.MosipJsonParseException;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;

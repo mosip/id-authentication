@@ -7,10 +7,10 @@ import java.util.Locale;
 
 import org.junit.Test;
 
+import io.mosip.kernel.core.exception.MosipArrayIndexOutOfBoundsException;
+import io.mosip.kernel.core.exception.MosipIllegalArgumentException;
+import io.mosip.kernel.core.exception.MosipPatternSyntaxException;
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.core.util.exception.MosipArrayIndexOutOfBoundsException;
-import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.core.util.exception.MosipPatternSyntaxException;
 
 /**
  * Test classes for String Util

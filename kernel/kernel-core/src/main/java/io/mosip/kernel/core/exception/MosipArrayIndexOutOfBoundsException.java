@@ -1,6 +1,4 @@
-package io.mosip.kernel.core.util.exception;
-
-import io.mosip.kernel.core.exception.BaseUncheckedException;
+package io.mosip.kernel.core.exception;
 
 /**
  * Thrown to indicate that an array has been accessed with an illegal index. The

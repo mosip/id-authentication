@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import io.mosip.kernel.core.crypto.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.crypto.exception.MosipInvalidKeyException;
-import io.mosip.kernel.core.crypto.exception.MosipNoSuchAlgorithmException;
+import io.mosip.kernel.core.exception.MosipNoSuchAlgorithmException;
 import io.mosip.kernel.crypto.jce.constant.MosipSecurityMethod;
 import io.mosip.kernel.crypto.jce.impl.DecryptorImpl;
 import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;

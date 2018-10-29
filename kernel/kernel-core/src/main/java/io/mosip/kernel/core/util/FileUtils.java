@@ -19,14 +19,14 @@ import org.apache.commons.io.FileExistsException;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.io.filefilter.IOFileFilter;
 
+import io.mosip.kernel.core.exception.MosipFileExistsException;
+import io.mosip.kernel.core.exception.MosipFileNotFoundException;
+import io.mosip.kernel.core.exception.MosipIOException;
+import io.mosip.kernel.core.exception.MosipIllegalArgumentException;
+import io.mosip.kernel.core.exception.MosipNullPointerException;
+import io.mosip.kernel.core.exception.MosipUnsupportedCharsetException;
+import io.mosip.kernel.core.exception.MosipUnsupportedEncodingException;
 import io.mosip.kernel.core.util.constant.FileUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipFileExistsException;
-import io.mosip.kernel.core.util.exception.MosipFileNotFoundException;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.core.util.exception.MosipNullPointerException;
-import io.mosip.kernel.core.util.exception.MosipUnsupportedCharsetException;
-import io.mosip.kernel.core.util.exception.MosipUnsupportedEncodingException;
 
 /**
  * This class defines the File Utils to be used in MOSIP Project The File Utils

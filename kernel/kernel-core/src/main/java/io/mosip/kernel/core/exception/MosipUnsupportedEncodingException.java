@@ -1,4 +1,4 @@
-package io.mosip.kernel.core.util.exception;
+package io.mosip.kernel.core.exception;
 
 /**
  * @author Priya Soni

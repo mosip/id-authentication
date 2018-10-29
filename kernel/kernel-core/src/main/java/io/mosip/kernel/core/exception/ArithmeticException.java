@@ -1,6 +1,4 @@
-package io.mosip.kernel.core.util.exception;
-
-import io.mosip.kernel.core.exception.BaseUncheckedException;
+package io.mosip.kernel.core.exception;
 
 /**
  * Base class for arithmetic exceptions.

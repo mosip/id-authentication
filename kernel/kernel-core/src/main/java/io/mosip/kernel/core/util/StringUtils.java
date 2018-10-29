@@ -19,10 +19,10 @@ package io.mosip.kernel.core.util;
 import java.util.Locale;
 import java.util.regex.PatternSyntaxException;
 
+import io.mosip.kernel.core.exception.MosipArrayIndexOutOfBoundsException;
+import io.mosip.kernel.core.exception.MosipIllegalArgumentException;
+import io.mosip.kernel.core.exception.MosipPatternSyntaxException;
 import io.mosip.kernel.core.util.constant.StringUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipArrayIndexOutOfBoundsException;
-import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.core.util.exception.MosipPatternSyntaxException;
 
 /**
  * This class contains methods used for operations on String type data

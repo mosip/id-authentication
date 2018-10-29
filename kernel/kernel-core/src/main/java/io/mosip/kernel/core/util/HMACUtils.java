@@ -8,8 +8,8 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.xml.bind.DatatypeConverter;
 
+import io.mosip.kernel.core.exception.MosipNoSuchAlgorithmException;
 import io.mosip.kernel.core.util.constant.HMACUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipNoSuchAlgorithmException;
 
 /**
  * This class defines the HMAC Util to be used in MOSIP Project. The HMAC Util

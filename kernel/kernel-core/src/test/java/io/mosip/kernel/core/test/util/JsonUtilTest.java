@@ -10,12 +10,12 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import io.mosip.kernel.core.exception.MosipIOException;
 import io.mosip.kernel.core.test.model.Car;
 import io.mosip.kernel.core.test.model.JsonUtilTestConstants;
 import io.mosip.kernel.core.test.model.ParentCar2;
 import io.mosip.kernel.core.test.model.SampleClass;
 import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
 import io.mosip.kernel.core.util.exception.MosipJsonGenerationException;
 import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
 import io.mosip.kernel.core.util.exception.MosipJsonParseException;

@@ -10,10 +10,10 @@ import java.nio.file.Paths;
 
 import org.junit.Test;
 
+import io.mosip.kernel.core.exception.MosipFileNotFoundException;
+import io.mosip.kernel.core.exception.MosipIOException;
+import io.mosip.kernel.core.exception.MosipNullPointerException;
 import io.mosip.kernel.core.util.ZipUtils;
-import io.mosip.kernel.core.util.exception.MosipFileNotFoundException;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipNullPointerException;
 
 /**
  * Test class for ZipUtil class

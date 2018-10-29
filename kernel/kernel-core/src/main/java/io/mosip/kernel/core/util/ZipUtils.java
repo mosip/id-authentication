@@ -17,11 +17,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import io.mosip.kernel.core.exception.MosipDataFormatException;
+import io.mosip.kernel.core.exception.MosipFileNotFoundException;
+import io.mosip.kernel.core.exception.MosipIOException;
+import io.mosip.kernel.core.exception.MosipNullPointerException;
 import io.mosip.kernel.core.util.constant.ZipUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipDataFormatException;
-import io.mosip.kernel.core.util.exception.MosipFileNotFoundException;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipNullPointerException;
 
 /**
  * Utilities for Zip and UnZip operations.

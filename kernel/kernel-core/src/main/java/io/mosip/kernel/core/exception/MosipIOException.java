@@ -1,6 +1,4 @@
-package io.mosip.kernel.core.util.exception;
-
-import io.mosip.kernel.core.exception.BaseCheckedException;
+package io.mosip.kernel.core.exception;
 
 /**
  * @author Priya Soni

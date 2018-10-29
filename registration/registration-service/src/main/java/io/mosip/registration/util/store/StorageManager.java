@@ -10,7 +10,6 @@ import static io.mosip.registration.constants.RegProcessorExceptionEnum.REG_IO_E
 import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
 import static java.io.File.separator;
 
-import io.mosip.kernel.core.util.exception.MosipIOException;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import io.mosip.registration.constants.RegConstants;
 import io.mosip.registration.constants.RegProcessorExceptionCode;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-
+import io.mosip.kernel.core.exception.MosipIOException;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.core.util.FileUtils;
 

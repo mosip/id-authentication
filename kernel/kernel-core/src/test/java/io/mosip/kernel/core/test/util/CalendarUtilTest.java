@@ -14,10 +14,10 @@ import java.util.TimeZone;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.mosip.kernel.core.exception.ArithmeticException;
+import io.mosip.kernel.core.exception.MosipIllegalArgumentException;
+import io.mosip.kernel.core.exception.MosipNullPointerException;
 import io.mosip.kernel.core.util.CalendarUtils;
-import io.mosip.kernel.core.util.exception.ArithmeticException;
-import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.core.util.exception.MosipNullPointerException;
 
 public class CalendarUtilTest {
 

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.exception.MosipIOException;
 import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
 import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
 import io.mosip.kernel.core.util.exception.MosipJsonParseException;
 import io.mosip.registration.code.StatusCodes;

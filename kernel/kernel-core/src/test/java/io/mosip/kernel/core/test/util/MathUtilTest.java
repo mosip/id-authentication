@@ -14,13 +14,13 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.mosip.kernel.core.exception.ArithmeticException;
+import io.mosip.kernel.core.exception.MosipIllegalArgumentException;
+import io.mosip.kernel.core.exception.MosipNullPointerException;
 import io.mosip.kernel.core.util.MathUtils;
-import io.mosip.kernel.core.util.exception.ArithmeticException;
-import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
 import io.mosip.kernel.core.util.exception.MosipNotANumberException;
 import io.mosip.kernel.core.util.exception.MosipNotFiniteNumberException;
 import io.mosip.kernel.core.util.exception.MosipNotPositiveException;
-import io.mosip.kernel.core.util.exception.MosipNullPointerException;
 import io.mosip.kernel.core.util.exception.MosipNumberIsTooLargeException;
 
 public class MathUtilTest {

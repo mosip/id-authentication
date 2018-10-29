@@ -13,8 +13,8 @@ import java.security.PublicKey;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
-import io.mosip.kernel.core.crypto.exception.MosipNoSuchAlgorithmException;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
+import io.mosip.kernel.core.exception.MosipNoSuchAlgorithmException;
 import io.mosip.kernel.crypto.jce.algorithm.MosipAES;
 import io.mosip.kernel.crypto.jce.algorithm.MosipRSA;
 import io.mosip.kernel.crypto.jce.constant.MosipSecurityExceptionCodeConstant;

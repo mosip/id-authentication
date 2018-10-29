@@ -6,10 +6,10 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang3.time.DateUtils;
 
+import io.mosip.kernel.core.exception.ArithmeticException;
+import io.mosip.kernel.core.exception.MosipIllegalArgumentException;
+import io.mosip.kernel.core.exception.MosipNullPointerException;
 import io.mosip.kernel.core.util.constant.CalendarUtilConstants;
-import io.mosip.kernel.core.util.exception.ArithmeticException;
-import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.core.util.exception.MosipNullPointerException;
 
 /**
  * This class provides the calendar utilities for MOSIP implementations.

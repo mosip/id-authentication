@@ -14,8 +14,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import io.mosip.kernel.core.exception.MosipIOException;
 import io.mosip.kernel.core.util.constant.JsonUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipIOException;
 import io.mosip.kernel.core.util.exception.MosipJsonGenerationException;
 import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
 import io.mosip.kernel.core.util.exception.MosipJsonParseException;
