@@ -20,7 +20,7 @@ public class RegistrationConstants {
 	}
 
 	public static final String EMPTY = "";
-	public static final String CONSTANTS_FILE_NAME = "constants.properties";
+	public static final String CONSTANTS_FILE_NAME = "/constants.properties";
 
 	// AES Encryption Constants
 	public static final String AES_KEY_MANAGER_ALG = "aes.algorithm";

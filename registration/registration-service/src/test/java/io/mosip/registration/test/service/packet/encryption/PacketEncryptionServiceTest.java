@@ -20,7 +20,7 @@ import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.test.util.datastub.DataProvider;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.dao.AuditDAO;
@@ -49,7 +49,7 @@ public class PacketEncryptionServiceTest {
 	@Mock
 	private RegistrationDAO registrationDAO;
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditFactoryImpl auditFactory;
 	@Mock
 	private AuditDAO auditDAO;
 	private RegistrationDTO registrationDTO;
