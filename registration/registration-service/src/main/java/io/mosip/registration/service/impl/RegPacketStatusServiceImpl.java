@@ -28,6 +28,8 @@ import io.mosip.registration.service.RegPacketStatusService;
 /**
  * This class will update the packet status in the table after sync with the
  * server.
+ * 
+ * @author Himaja Dhanyamraju
  */
 @Service
 public class RegPacketStatusServiceImpl extends BaseService implements RegPacketStatusService {

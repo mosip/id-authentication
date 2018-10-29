@@ -20,6 +20,11 @@ import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
 
+/**
+ * The implementation class of {@link RegPacketStatusDAO}.
+ *
+ * @author Himaja Dhanyamraju
+ */
 @Repository
 public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 

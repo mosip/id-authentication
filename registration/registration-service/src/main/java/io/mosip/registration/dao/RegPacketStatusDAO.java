@@ -4,6 +4,12 @@ import java.util.List;
 
 import io.mosip.registration.dto.RegPacketStatusDTO;
 
+/**
+ * DAO class for Repository
+ * 
+ * @author Himaja Dhanyamraju
+ *
+ */
 public interface RegPacketStatusDAO {
 
 	/**

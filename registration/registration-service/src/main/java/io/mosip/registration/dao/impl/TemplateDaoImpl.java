@@ -15,8 +15,8 @@ import io.mosip.registration.repositories.TemplateTypeRepository;
 
 /**
  * DaoImpl for calling the respective template repositories and getting data from database
+ * 
  * @author Himaja Dhanyamraju
- * @since 1.0.0
  */
 @Repository
 public class TemplateDaoImpl implements TemplateDao{

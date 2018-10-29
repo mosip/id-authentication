@@ -22,7 +22,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -34,17 +33,16 @@ import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 /**
  * Generates Velocity Template for the creation of acknowledgement
  * 
- * @author M1044292
+ * @author Himaja Dhanyamraju
  *
  */
-@Component
 public class VelocityPDFGenerator {
 
 	/**
-	 * @param templateFile
-	 *            - vm file which is used to generate acknowledgement
-	 * @param enrolment
-	 *            - EnrolmentDTO to display required fields on the template
+	 * @param templateText
+	 *            - string which contains the data of template that is used to generate acknowledgement
+	 * @param registration
+	 *            - RegistrationDTO to display required fields on the template
 	 * @return writer - After mapping all the fields into the template, it is
 	 *         written into a StringWriter and returned
 	 */
@@ -152,7 +150,7 @@ public class VelocityPDFGenerator {
 	 *         respective rankings based on quality score
 	 */
 	@SuppressWarnings("unchecked")
-	private static HashMap<String, Integer> getFingerPrintQualityRanking(RegistrationDTO registration) {
+	private HashMap<String, Integer> getFingerPrintQualityRanking(RegistrationDTO registration) {
 		// for storing the fingerprints captured and their respective quality scores
 		HashMap<String, Double> fingersQuality = new HashMap<>();
 

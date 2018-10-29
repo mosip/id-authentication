@@ -2,6 +2,11 @@ package io.mosip.registration.service;
 
 import io.mosip.registration.dto.ResponseDTO;
 
+/**
+ * {@code RegPacketStatusService} is the Registration Packet Status Service interface
+ *
+ * @author Himaja Dhanyamraju
+ */
 public interface RegPacketStatusService {
 
 	/**
