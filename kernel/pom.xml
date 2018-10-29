@@ -111,6 +111,8 @@
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-smsnotification-msg91</module>
 		<module>kernel-datamapper-orika</module>
+		<module>kernel-batch-framework</module>
+		<module>kernel-batch-server</module>
 	</modules>
 
 	<profiles>
