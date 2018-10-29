@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.scanner.job.impl.scheduler;
+package io.mosip.registration.processor.scanner.landingzone.scheduler;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -30,16 +30,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.mosip.registration.processor.packet.scanner.job.PacketScannerApplication;
+import io.mosip.registration.processor.scanner.landingzone.PacketLandingzoneScannerJobApplication;
+import io.mosip.registration.processor.scanner.landingzone.schedule.LandingzoneScannerBatchJobScheduler;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = PacketScannerApplication.class)
-public class PacketScannerBatchJobSchedulerTest {
+@SpringBootTest(classes = PacketLandingzoneScannerJobApplication.class)
+public class LandingzoneScannerBatchJobSchedulerTest {
 
 	@InjectMocks
-	private PacketScannerBatchJobScheduler packetScannerBatchJobScheduler;
+	private LandingzoneScannerBatchJobScheduler landingzoneScannerBatchJobScheduler;
 	@SpyBean
-	private PacketScannerBatchJobScheduler packetScannerBatchJobSchedulerJob;
+	private LandingzoneScannerBatchJobScheduler landingzoneScannerBatchJobSchedulerJob;
 
 	@Mock
 	JobLauncher jobLauncher;
@@ -70,27 +71,17 @@ public class PacketScannerBatchJobSchedulerTest {
 
 	@Test
 	public void testLandingZoneScannerJobScheduler() {
-		Awaitility.await().atMost(Duration.FIVE_SECONDS).untilAsserted(
-				() -> verify(packetScannerBatchJobSchedulerJob, times(1)).landingZoneScannerJobScheduler());
+		Awaitility.await().atMost(Duration.TEN_SECONDS).untilAsserted(
+				() -> verify(landingzoneScannerBatchJobSchedulerJob, times(1)).landingZoneScannerJobScheduler());
 	}
 
-	@Test
-	public void testVirusScannerJobScheduler() {
-		Awaitility.await().atMost(Duration.FIVE_SECONDS)
-				.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).virusScannerJobScheduler());
-	}
-
-	@Test
-	public void testFtpJobScheduler() {
-		Awaitility.await().atMost(Duration.FIVE_SECONDS)
-				.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).ftpJobScheduler());
-	}
+	
 
 	@Test
 	public void testInvalidJobParameters() throws Exception {
 		Mockito.doThrow(JobParametersInvalidException.class).when(jobLauncher).run(any(Job.class),
 				any(JobParameters.class));
-		packetScannerBatchJobScheduler.landingZoneScannerJobScheduler();
+		landingzoneScannerBatchJobScheduler.landingZoneScannerJobScheduler();
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
@@ -105,7 +96,7 @@ public class PacketScannerBatchJobSchedulerTest {
 	public void testJobIsAlreadyRunning() throws Exception {
 		Mockito.doThrow(JobExecutionAlreadyRunningException.class).when(jobLauncher).run(any(Job.class),
 				any(JobParameters.class));
-		packetScannerBatchJobScheduler.landingZoneScannerJobScheduler();
+		landingzoneScannerBatchJobScheduler.landingZoneScannerJobScheduler();
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
@@ -120,7 +111,7 @@ public class PacketScannerBatchJobSchedulerTest {
 	public void testJobRestartFailure() throws Exception {
 		Mockito.doThrow(JobRestartException.class).when(jobLauncher).run(any(Job.class), any(JobParameters.class));
 
-		packetScannerBatchJobScheduler.landingZoneScannerJobScheduler();
+		landingzoneScannerBatchJobScheduler.landingZoneScannerJobScheduler();
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
@@ -136,7 +127,7 @@ public class PacketScannerBatchJobSchedulerTest {
 
 		Mockito.doThrow(JobInstanceAlreadyCompleteException.class).when(jobLauncher).run(any(Job.class),
 				any(JobParameters.class));
-		packetScannerBatchJobScheduler.landingZoneScannerJobScheduler();
+		landingzoneScannerBatchJobScheduler.landingZoneScannerJobScheduler();
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override

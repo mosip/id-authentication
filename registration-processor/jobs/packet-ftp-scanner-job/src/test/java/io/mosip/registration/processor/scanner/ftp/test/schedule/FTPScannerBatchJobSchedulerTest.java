@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.scanner.job.impl.scheduler;
+package io.mosip.registration.processor.scanner.ftp.test.schedule;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.awaitility.Awaitility;
-import org.awaitility.Duration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,28 +29,20 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.mosip.registration.processor.packet.scanner.job.PacketScannerApplication;
+import io.mosip.registration.processor.scanner.ftp.PacketFtpScannerJobApplication;
+import io.mosip.registration.processor.scanner.ftp.schedule.FTPScannerScheduler;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = PacketScannerApplication.class)
-public class PacketScannerBatchJobSchedulerTest {
+@SpringBootTest(classes = PacketFtpScannerJobApplication.class)
+public class FTPScannerBatchJobSchedulerTest {
 
 	@InjectMocks
-	private PacketScannerBatchJobScheduler packetScannerBatchJobScheduler;
+	private FTPScannerScheduler ftpScannerBatchJobScheduler;
 	@SpyBean
-	private PacketScannerBatchJobScheduler packetScannerBatchJobSchedulerJob;
+	private FTPScannerScheduler ftpScannerBatchJobSchedulerJob;
 
 	@Mock
 	JobLauncher jobLauncher;
-
-	@Mock
-	private Job packetDecryptorJob;
-
-	@Mock
-	private Job landingZoneScannerJob;
-
-	@Mock
-	private Job virusScannerJob;
 
 	@Mock
 	private Job ftpScannerJob;
@@ -68,35 +59,24 @@ public class PacketScannerBatchJobSchedulerTest {
 		root.addAppender(mockAppender);
 	}
 
-	@Test
-	public void testLandingZoneScannerJobScheduler() {
-		Awaitility.await().atMost(Duration.FIVE_SECONDS).untilAsserted(
-				() -> verify(packetScannerBatchJobSchedulerJob, times(1)).landingZoneScannerJobScheduler());
-	}
-
-	@Test
-	public void testVirusScannerJobScheduler() {
-		Awaitility.await().atMost(Duration.FIVE_SECONDS)
-				.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).virusScannerJobScheduler());
-	}
+	
 
 	@Test
 	public void testFtpJobScheduler() {
-		Awaitility.await().atMost(Duration.FIVE_SECONDS)
-				.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).ftpJobScheduler());
+		Awaitility.await().untilAsserted(() -> verify(ftpScannerBatchJobSchedulerJob, times(1)).ftpJobScheduler());
 	}
 
 	@Test
 	public void testInvalidJobParameters() throws Exception {
 		Mockito.doThrow(JobParametersInvalidException.class).when(jobLauncher).run(any(Job.class),
 				any(JobParameters.class));
-		packetScannerBatchJobScheduler.landingZoneScannerJobScheduler();
+		ftpScannerBatchJobScheduler.ftpJobScheduler();
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
 				return ((ILoggingEvent) argument).getFormattedMessage()
-						.contains("landingZoneScannerJobScheduler failed to execute");
+						.contains("ftpJobScheduler failed to execute");
 			}
 		}));
 	}
@@ -105,13 +85,12 @@ public class PacketScannerBatchJobSchedulerTest {
 	public void testJobIsAlreadyRunning() throws Exception {
 		Mockito.doThrow(JobExecutionAlreadyRunningException.class).when(jobLauncher).run(any(Job.class),
 				any(JobParameters.class));
-		packetScannerBatchJobScheduler.landingZoneScannerJobScheduler();
-
+		ftpScannerBatchJobScheduler.ftpJobScheduler();
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
 				return ((ILoggingEvent) argument).getFormattedMessage()
-						.contains("landingZoneScannerJobScheduler failed to execute");
+						.contains("ftpJobScheduler failed to execute");
 			}
 		}));
 	}
@@ -120,13 +99,13 @@ public class PacketScannerBatchJobSchedulerTest {
 	public void testJobRestartFailure() throws Exception {
 		Mockito.doThrow(JobRestartException.class).when(jobLauncher).run(any(Job.class), any(JobParameters.class));
 
-		packetScannerBatchJobScheduler.landingZoneScannerJobScheduler();
+		ftpScannerBatchJobScheduler.ftpJobScheduler();
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
 				return ((ILoggingEvent) argument).getFormattedMessage()
-						.contains("landingZoneScannerJobScheduler failed to execute");
+						.contains("ftpJobScheduler failed to execute");
 			}
 		}));
 	}
@@ -136,13 +115,13 @@ public class PacketScannerBatchJobSchedulerTest {
 
 		Mockito.doThrow(JobInstanceAlreadyCompleteException.class).when(jobLauncher).run(any(Job.class),
 				any(JobParameters.class));
-		packetScannerBatchJobScheduler.landingZoneScannerJobScheduler();
+		ftpScannerBatchJobScheduler.ftpJobScheduler();
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
 				return ((ILoggingEvent) argument).getFormattedMessage()
-						.contains("landingZoneScannerJobScheduler failed to execute");
+						.contains("ftpJobScheduler failed to execute");
 			}
 		}));
 	}
