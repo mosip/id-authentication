@@ -26,7 +26,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
-import io.mosip.registration.service.impl.LoginServiceImpl;
+import io.mosip.registration.service.LoginService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -51,8 +51,8 @@ public class LoginController extends BaseController {
 	@FXML
 	private TextField password;
 
-	@Autowired(required = true)
-	private LoginServiceImpl loginServiceImpl;
+	@Autowired
+	private LoginService loginService;
 
 	@Autowired
 	private SchedulerUtil schedulerUtil;
@@ -84,7 +84,7 @@ public class LoginController extends BaseController {
 
 		String loginMode = null;
 		try {
-			Map<String, Object> userLoginMode = loginServiceImpl.getModesOfLogin();
+			Map<String, Object> userLoginMode = loginService.getModesOfLogin();
 
 			if (userLoginMode.containsKey((RegistrationConstants.LOGIN_INITIAL_VAL))) {
 				loginMode = String.valueOf(userLoginMode.get(RegistrationConstants.LOGIN_INITIAL_VAL));
@@ -148,7 +148,7 @@ public class LoginController extends BaseController {
 					LOGGER.debug("REGISTRATION - USER_PASSWORD - LOGIN_CONTROLLER", APPLICATION_NAME,
 							APPLICATION_ID, "Retrieving User Password from database");
 
-					offlineStatus = loginServiceImpl.validateUserPassword(userDTO.getUserId(), hashPassword);
+					offlineStatus = loginService.validateUserPassword(userDTO.getUserId(), hashPassword);
 					if (!offlineStatus) {
 						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
 								AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
@@ -164,7 +164,7 @@ public class LoginController extends BaseController {
 						SessionContext sessionContext = SessionContext.getInstance();
 						// Resetting login sequence to the Session context after log out
 						if (sessionContext.getMapObject() == null) {
-							Map<String, Object> userLoginMode = loginServiceImpl.getModesOfLogin();
+							Map<String, Object> userLoginMode = loginService.getModesOfLogin();
 							sessionContext.setMapObject(userLoginMode);
 							sessionContext.getMapObject().put(RegistrationConstants.LOGIN_INITIAL_SCREEN,
 									RegistrationConstants.LOGIN_METHOD_PWORD);

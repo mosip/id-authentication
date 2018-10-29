@@ -16,8 +16,8 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.SyncStatusValidatorService;
-import io.mosip.registration.service.impl.LoginServiceImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -41,7 +41,7 @@ import javafx.stage.Stage;
 public class BaseController {
 
 	@Autowired
-	private LoginServiceImpl loginServiceImpl;
+	private LoginService loginService;
 	
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
@@ -152,7 +152,7 @@ public class BaseController {
 	 * @throws RegBaseCheckedException 
 	 */
 	protected String setInitialLoginInfoAndSessionContext(String userId) throws RegBaseCheckedException {
-		RegistrationUserDetail userDetail = loginServiceImpl.getUserDetail(userId);
+		RegistrationUserDetail userDetail = loginService.getUserDetail(userId);
 		String result = null;
 		List<String> roleList = new ArrayList<>();
 
@@ -189,10 +189,10 @@ public class BaseController {
 			userContext.setName(userDetail.getName());
 			userContext.setRoles(roleList);
 			userContext.setRegistrationCenterDetailDTO(
-					loginServiceImpl.getRegistrationCenterDetails(userDetail.getCntrId()));
+					loginService.getRegistrationCenterDetails(userDetail.getCntrId()));
 
 			String userRole = !userContext.getRoles().isEmpty() ? userContext.getRoles().get(0) : null;
-			userContext.setAuthorizationDTO(loginServiceImpl.getScreenAuthorizationDetails(userRole));
+			userContext.setAuthorizationDTO(loginService.getScreenAuthorizationDetails(userRole));
 
 		}
 		return result;
@@ -244,7 +244,7 @@ public class BaseController {
 	 * @return boolean
 	 */
 	protected boolean validateUserStatus(String userId) {
-		RegistrationUserDetail userDetail = loginServiceImpl.getUserDetail(userId);
+		RegistrationUserDetail userDetail = loginService.getUserDetail(userId);
 		return userDetail.getUserStatus() != null
 				&& userDetail.getUserStatus().equalsIgnoreCase(RegistrationConstants.BLOCKED);
 	}
