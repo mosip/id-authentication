@@ -13,6 +13,10 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
 import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
@@ -57,6 +61,19 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	private PacketInfoManager<PacketInfo, DemographicInfo, MetaData> packetInfoManager;
 
+	/** The event id. */
+	private String eventId = "";
+	
+	/** The event name. */
+	private String eventName = "";
+	
+	/** The event type. */
+	private String eventType = "";
+	
+	/** The core audit request builder. */
+	@Autowired
+	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, MessageBusAddress.STRUCTURE_BUS_OUT);
@@ -68,7 +85,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		object.setIsValid(Boolean.FALSE);
 		object.setInternalError(Boolean.FALSE);
 		String registrationId = object.getRid();
-
+		String description="";
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
 		try {
 
@@ -86,10 +103,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId, packetInfo);
 				if (!isCheckSumValidated) {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION);
+					description="Files validation successfull and checksum validation failured in method process() of PacketValidatorStage class";
 				}
-
 			} else {
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION);
+				
+				description="Files validation get failured in method process() of PacketValidatorStage";
 
 			}
 			if (isFilesValidated && isCheckSumValidated) {
@@ -103,6 +122,10 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				DemographicInfo demographicInfo = (DemographicInfo) JsonUtil
 						.inputStreamtoJavaObject(demographicInfoStream, DemographicInfo.class);
 				packetInfoManager.saveDemographicData(demographicInfo, packetInfo.getMetaData());
+				description="PacketInfo & DemographicData has been saved successfully in method process() of PacketValidatorStage class";
+				eventId = EventId.RPR_407.toString();
+				eventName = EventName.SAVE.toString();
+				eventType = EventType.BUSINESS.toString();
 
 			} else {
 				object.setIsValid(Boolean.FALSE);
@@ -114,18 +137,32 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 				registrationStatusDto
 						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_FAILED.toString());
+				description="Files validation and checksum validation get failured in method process() of PacketValidatorStage class";
 
 			}
+			
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 		} catch (IOException e) {
 			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), e);
 			object.setInternalError(Boolean.TRUE);
+			description="IOException occurs in method process() of PacketValidatorStage class";
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
 
 		} catch (Exception ex) {
 			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), ex);
 			object.setInternalError(Boolean.TRUE);
+			description="Unknown exception occurs in method process() of PacketValidatorStage class";
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
+		}finally {
+			
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,registrationId);
+			
 		}
 
 		return object;
