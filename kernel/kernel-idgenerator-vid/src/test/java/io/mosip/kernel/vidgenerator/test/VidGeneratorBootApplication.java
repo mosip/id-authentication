@@ -1,7 +1,8 @@
-package io.mosip.kernel.vidgenerator;
+package io.mosip.kernel.vidgenerator.test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 /*
  * (non-Javadoc)
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 
 @SpringBootApplication
+@ComponentScan(basePackages = "io.mosip.kernel.*")
 public class VidGeneratorBootApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(VidGeneratorBootApplication.class, args);
