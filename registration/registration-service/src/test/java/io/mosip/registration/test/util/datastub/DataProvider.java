@@ -41,7 +41,7 @@ public class DataProvider {
 		filePath = "/dataprovider".concat(filePath);
 
 		try {
-			InputStream file = DataProvider.class.getClass().getResourceAsStream(filePath);
+			InputStream file = DataProvider.class.getResourceAsStream(filePath);
 			byte[] bytesArray = new byte[(int) file.available()];
 			file.read(bytesArray);
 			file.close();

@@ -65,8 +65,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 	@Autowired
 	private TemplateService templateService;
 
-	@Autowired
-	private VelocityPDFGenerator velocityGenerator;
+	private VelocityPDFGenerator velocityGenerator = new VelocityPDFGenerator();
 
 	/**
 	 * Validating screen authorization and Creating Packet and displaying
