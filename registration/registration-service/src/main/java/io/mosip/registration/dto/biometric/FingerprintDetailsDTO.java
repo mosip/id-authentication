@@ -12,8 +12,6 @@ import lombok.EqualsAndHashCode;
  * @author Dinesh Asokan
  * @since 1.0.0
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
 public class FingerprintDetailsDTO extends BaseDTO {
 	
 	@JsonIgnore
@@ -23,4 +21,41 @@ public class FingerprintDetailsDTO extends BaseDTO {
 	protected boolean isForceCaptured;
 	protected String fingerType;
 	protected int numRetry;
+	public byte[] getFingerPrint() {
+		return fingerPrint;
+	}
+	public void setFingerPrint(byte[] fingerPrint) {
+		this.fingerPrint = fingerPrint;
+	}
+	public String getFingerprintImageName() {
+		return fingerprintImageName;
+	}
+	public void setFingerprintImageName(String fingerprintImageName) {
+		this.fingerprintImageName = fingerprintImageName;
+	}
+	public double getQualityScore() {
+		return qualityScore;
+	}
+	public void setQualityScore(double qualityScore) {
+		this.qualityScore = qualityScore;
+	}
+	public boolean isForceCaptured() {
+		return isForceCaptured;
+	}
+	public void setForceCaptured(boolean isForceCaptured) {
+		this.isForceCaptured = isForceCaptured;
+	}
+	public String getFingerType() {
+		return fingerType;
+	}
+	public void setFingerType(String fingerType) {
+		this.fingerType = fingerType;
+	}
+	public int getNumRetry() {
+		return numRetry;
+	}
+	public void setNumRetry(int numRetry) {
+		this.numRetry = numRetry;
+	}
+	
 }

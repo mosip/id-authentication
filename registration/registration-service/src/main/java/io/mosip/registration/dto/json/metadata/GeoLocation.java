@@ -1,5 +1,12 @@
 package io.mosip.registration.dto.json.metadata;
 
+/**
+ * This class is to capture the json parsing geolocation data
+ * 
+ * @author Dinesh Asokan
+ * @since 1.0.0
+ *
+ */
 public class GeoLocation {
 	private double latitude;
 	private double longitude;

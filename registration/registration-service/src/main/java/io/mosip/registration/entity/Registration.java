@@ -12,17 +12,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 /**
  * Registration entity details
  * 
  * @author Mahesh Kumar
  * @since 1.0.0
  */
-@Data
-@EqualsAndHashCode(callSuper=true)
 @Entity
 @Table(schema = "REG", name = "REGISTRATION")
 public class Registration extends RegistrationCommonFields {
@@ -89,4 +84,238 @@ public class Registration extends RegistrationCommonFields {
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "REG_ID")
 	private List<RegistrationTransaction> registrationTransaction;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getRegType() {
+		return regType;
+	}
+
+	public void setRegType(String regType) {
+		this.regType = regType;
+	}
+
+	public String getRefRegId() {
+		return refRegId;
+	}
+
+	public void setRefRegId(String refRegId) {
+		this.refRegId = refRegId;
+	}
+
+	public String getStatusCode() {
+		return statusCode;
+	}
+
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
+	}
+
+	public String getLangCode() {
+		return langCode;
+	}
+
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
+
+	public String getStatusComment() {
+		return statusComment;
+	}
+
+	public void setStatusComment(String statusComment) {
+		this.statusComment = statusComment;
+	}
+
+	public OffsetDateTime getStatusTimestamp() {
+		return statusTimestamp;
+	}
+
+	public void setStatusTimestamp(OffsetDateTime statusTimestamp) {
+		this.statusTimestamp = statusTimestamp;
+	}
+
+	public String getAckFilename() {
+		return ackFilename;
+	}
+
+	public void setAckFilename(String ackFilename) {
+		this.ackFilename = ackFilename;
+	}
+
+	public String getClientStatusCode() {
+		return clientStatusCode;
+	}
+
+	public void setClientStatusCode(String clientStatusCode) {
+		this.clientStatusCode = clientStatusCode;
+	}
+
+	public String getServerStatusCode() {
+		return serverStatusCode;
+	}
+
+	public void setServerStatusCode(String serverStatusCode) {
+		this.serverStatusCode = serverStatusCode;
+	}
+
+	public OffsetDateTime getClientStatusTimestamp() {
+		return clientStatusTimestamp;
+	}
+
+	public void setClientStatusTimestamp(OffsetDateTime clientStatusTimestamp) {
+		this.clientStatusTimestamp = clientStatusTimestamp;
+	}
+
+	public OffsetDateTime getServerStatusTimestamp() {
+		return serverStatusTimestamp;
+	}
+
+	public void setServerStatusTimestamp(OffsetDateTime serverStatusTimestamp) {
+		this.serverStatusTimestamp = serverStatusTimestamp;
+	}
+
+	public String getClientStatusComments() {
+		return clientStatusComments;
+	}
+
+	public void setClientStatusComments(String clientStatusComments) {
+		this.clientStatusComments = clientStatusComments;
+	}
+
+	public String getServerStatusComments() {
+		return serverStatusComments;
+	}
+
+	public void setServerStatusComments(String serverStatusComments) {
+		this.serverStatusComments = serverStatusComments;
+	}
+
+	public String getIndividualName() {
+		return individualName;
+	}
+
+	public void setIndividualName(String individualName) {
+		this.individualName = individualName;
+	}
+
+	public String getRegUsrId() {
+		return regUsrId;
+	}
+
+	public void setRegUsrId(String regUsrId) {
+		this.regUsrId = regUsrId;
+	}
+
+	public String getRegCntrId() {
+		return regCntrId;
+	}
+
+	public void setRegCntrId(String regCntrId) {
+		this.regCntrId = regCntrId;
+	}
+
+	public String getApproverUsrId() {
+		return approverUsrId;
+	}
+
+	public void setApproverUsrId(String approverUsrId) {
+		this.approverUsrId = approverUsrId;
+	}
+
+	public String getApproverRoleCode() {
+		return approverRoleCode;
+	}
+
+	public void setApproverRoleCode(String approverRoleCode) {
+		this.approverRoleCode = approverRoleCode;
+	}
+
+	public String getFileUploadStatus() {
+		return fileUploadStatus;
+	}
+
+	public void setFileUploadStatus(String fileUploadStatus) {
+		this.fileUploadStatus = fileUploadStatus;
+	}
+
+	public Short getUploadCount() {
+		return uploadCount;
+	}
+
+	public void setUploadCount(Short uploadCount) {
+		this.uploadCount = uploadCount;
+	}
+
+	public OffsetDateTime getUploadTimestamp() {
+		return uploadTimestamp;
+	}
+
+	public void setUploadTimestamp(OffsetDateTime uploadTimestamp) {
+		this.uploadTimestamp = uploadTimestamp;
+	}
+
+	public String getLatestRegTrnId() {
+		return latestRegTrnId;
+	}
+
+	public void setLatestRegTrnId(String latestRegTrnId) {
+		this.latestRegTrnId = latestRegTrnId;
+	}
+
+	public String getLatestTrnTypeCode() {
+		return latestTrnTypeCode;
+	}
+
+	public void setLatestTrnTypeCode(String latestTrnTypeCode) {
+		this.latestTrnTypeCode = latestTrnTypeCode;
+	}
+
+	public String getLatestTrnStatusCode() {
+		return latestTrnStatusCode;
+	}
+
+	public void setLatestTrnStatusCode(String latestTrnStatusCode) {
+		this.latestTrnStatusCode = latestTrnStatusCode;
+	}
+
+	public String getLatestTrnLangCode() {
+		return latestTrnLangCode;
+	}
+
+	public void setLatestTrnLangCode(String latestTrnLangCode) {
+		this.latestTrnLangCode = latestTrnLangCode;
+	}
+
+	public OffsetDateTime getLatestRegTrnTimestamp() {
+		return latestRegTrnTimestamp;
+	}
+
+	public void setLatestRegTrnTimestamp(OffsetDateTime latestRegTrnTimestamp) {
+		this.latestRegTrnTimestamp = latestRegTrnTimestamp;
+	}
+
+	public RegistrationUserDetail getUserdetail() {
+		return userdetail;
+	}
+
+	public void setUserdetail(RegistrationUserDetail userdetail) {
+		this.userdetail = userdetail;
+	}
+
+	public List<RegistrationTransaction> getRegistrationTransaction() {
+		return registrationTransaction;
+	}
+
+	public void setRegistrationTransaction(List<RegistrationTransaction> registrationTransaction) {
+		this.registrationTransaction = registrationTransaction;
+	}
+	
+	
 }

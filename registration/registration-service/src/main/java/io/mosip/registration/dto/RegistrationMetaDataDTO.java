@@ -1,8 +1,5 @@
 package io.mosip.registration.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 /**
  * This class contains the meta-information of the Registration
  * 
@@ -10,8 +7,6 @@ import lombok.EqualsAndHashCode;
  * @since 1.0.0
  *
  */
-@Data
-@EqualsAndHashCode(callSuper = true)
 public class RegistrationMetaDataDTO extends BaseDTO {
 	private double geoLatitudeLoc;
 	private double geoLongitudeLoc;
@@ -19,4 +14,29 @@ public class RegistrationMetaDataDTO extends BaseDTO {
 	private String applicationType;
 	// Document Based or Introducer Based
 	private String registrationCategory;
+	public double getGeoLatitudeLoc() {
+		return geoLatitudeLoc;
+	}
+	public void setGeoLatitudeLoc(double geoLatitudeLoc) {
+		this.geoLatitudeLoc = geoLatitudeLoc;
+	}
+	public double getGeoLongitudeLoc() {
+		return geoLongitudeLoc;
+	}
+	public void setGeoLongitudeLoc(double geoLongitudeLoc) {
+		this.geoLongitudeLoc = geoLongitudeLoc;
+	}
+	public String getApplicationType() {
+		return applicationType;
+	}
+	public void setApplicationType(String applicationType) {
+		this.applicationType = applicationType;
+	}
+	public String getRegistrationCategory() {
+		return registrationCategory;
+	}
+	public void setRegistrationCategory(String registrationCategory) {
+		this.registrationCategory = registrationCategory;
+	}
+	
 }

@@ -1,8 +1,5 @@
 package io.mosip.registration.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 /**
  * This class contains the Registration Operator Specific Information
  * 
@@ -10,9 +7,6 @@ import lombok.EqualsAndHashCode;
  * @since 1.0.0
  *
  */
-
-@Data
-@EqualsAndHashCode(callSuper = true)
 public class OSIDataDTO extends BaseDTO {
 	
 	private String operatorID;
@@ -21,4 +15,35 @@ public class OSIDataDTO extends BaseDTO {
 	// Below fields are used for Introducer or HOF or Parent
 	private String introducerType;
 	private String introducerName;
+	public String getOperatorID() {
+		return operatorID;
+	}
+	public void setOperatorID(String operatorID) {
+		this.operatorID = operatorID;
+	}
+	public String getSupervisorID() {
+		return supervisorID;
+	}
+	public void setSupervisorID(String supervisorID) {
+		this.supervisorID = supervisorID;
+	}
+	public String getSupervisorName() {
+		return supervisorName;
+	}
+	public void setSupervisorName(String supervisorName) {
+		this.supervisorName = supervisorName;
+	}
+	public String getIntroducerType() {
+		return introducerType;
+	}
+	public void setIntroducerType(String introducerType) {
+		this.introducerType = introducerType;
+	}
+	public String getIntroducerName() {
+		return introducerName;
+	}
+	public void setIntroducerName(String introducerName) {
+		this.introducerName = introducerName;
+	}
+	
 }

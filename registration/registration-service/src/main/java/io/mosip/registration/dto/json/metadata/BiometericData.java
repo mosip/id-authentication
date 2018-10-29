@@ -1,5 +1,11 @@
 package io.mosip.registration.dto.json.metadata;
-
+/**
+ * This class is to capture the BiometericData
+ * 
+ * @author Dinesh Asokan
+ * @since 1.0.0
+ *
+ */
 public class BiometericData {
 	private FingerprintData fingerprintData;
 	private IrisData irisData;
