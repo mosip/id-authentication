@@ -106,6 +106,9 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			isTransactionSuccessful = true;
 			return list;
 		} catch (DataAccessLayerException e) {
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException(TABLE_NOT_ACCESSIBLE, e);
 		} finally {
 

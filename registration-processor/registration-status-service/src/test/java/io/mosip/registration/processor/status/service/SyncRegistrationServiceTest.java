@@ -137,7 +137,7 @@ public class SyncRegistrationServiceTest {
 	 * @return the sync registration status test
 	 */
 	@Test
-	public void getSyncRegistrationStatusSuccessTest() {
+	public void testGetSyncRegistrationStatusSuccess() {
 
 		Mockito.when(syncRegistrationDao.save(ArgumentMatchers.any())).thenReturn(syncRegistrationEntity);
 		List<SyncRegistrationDto> syncRegistrationDtos = syncRegistrationService.sync(entities);
@@ -160,7 +160,7 @@ public class SyncRegistrationServiceTest {
 	 *             the tablenot accessible exception
 	 */
 	@Test(expected = TablenotAccessibleException.class)
-	public void getSyncRegistrationStatusFailureTest() throws TablenotAccessibleException {
+	public void testGetSyncRegistrationStatusFailure() throws TablenotAccessibleException {
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(syncRegistrationDao.save(ArgumentMatchers.any())).thenThrow(exp);
@@ -172,7 +172,7 @@ public class SyncRegistrationServiceTest {
 	 * Checks if is present success test.
 	 */
 	@Test
-	public void isPresentSuccessTest() {
+	public void testIsPresentSuccess() {
 		Mockito.when(syncRegistrationDao.findById(ArgumentMatchers.any())).thenReturn(syncRegistrationEntity);
 		boolean result = syncRegistrationService.isPresent("1001");
 		assertEquals("Verifing if Registration Id is present in DB. Expected value is true", true, result);
@@ -182,7 +182,7 @@ public class SyncRegistrationServiceTest {
 	 * Checks if is present success test.
 	 */
 	@Test
-	public void isPresentFailureTest() {
+	public void testIsPresentFailure() {
 		Mockito.when(syncRegistrationDao.findById(ArgumentMatchers.any())).thenReturn(null);
 		boolean result = syncRegistrationService.isPresent("15");
 		assertEquals("Verifing if Registration Id is present in DB. Expected value is False", false, result);
