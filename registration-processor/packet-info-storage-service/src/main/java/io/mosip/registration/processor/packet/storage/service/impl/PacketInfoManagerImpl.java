@@ -45,6 +45,7 @@ import io.mosip.registration.processor.packet.storage.exception.TablenotAccessib
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
+import lombok.Cleanup;
 
 /**
  * 
@@ -320,19 +321,20 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	 * @return the document as byte array
 	 */
 	private byte[] getDocumentAsByteArray(String registrationId, String documentName) {
-
-		InputStream in = fileSystemAdapter.getFile(registrationId, documentName);
-		byte[] buffer = new byte[1024];
-		int len;
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		try {
+			@Cleanup InputStream in = fileSystemAdapter.getFile(registrationId, documentName);
+			byte[] buffer = new byte[1024];
+			int len;
+			@Cleanup ByteArrayOutputStream os = new ByteArrayOutputStream();
 			while ((len = in.read(buffer)) != -1) {
 				os.write(buffer, 0, len);
 			}
+			return os.toByteArray();
 		} catch (IOException e) {
 			LOGGER.error("Error While reading  inputstream file", e);
+			throw new RuntimeException("",e);
 		}
-		return os.toByteArray();
+		
 	}
 
 	private void createAuditRequestBuilder(String applicationId, String applicationName, String description,

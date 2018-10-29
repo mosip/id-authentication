@@ -1,13 +1,14 @@
 package io.mosip.registration.processor.quality.check.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.time.LocalDateTime;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 
 /**
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
  * 
  */
 @Entity
-@Table(name="qcuser_registration_id")
+@Table(name="qcuser_registration_id", schema = "regprc")
 public class QcuserRegistrationIdEntity extends BaseQcuserEntity<QcuserRegistrationIdPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 

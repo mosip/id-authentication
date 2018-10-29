@@ -3,7 +3,7 @@ package io.mosip.registration.processor.quality.check.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
@@ -12,7 +12,7 @@ import io.mosip.registration.processor.quality.check.dto.QCUserDto;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdPKEntity;
 
-@Service
+@Component
 public class QualityCheckManagerImpl implements QualityCheckManager<String, ApplicantInfoDto, QCUserDto> {
 	@Autowired
 	private ApplicantInfoDao applicantInfoDao;
@@ -24,8 +24,8 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 
 	@Override
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
-
-		return null;
+		return applicantInfoDao.getPacketsforQCUser(qcuserId); 
+		 
 	}
 
 	@Override
@@ -36,7 +36,6 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 				applicantInfoDao.update(qcUserEntity);
 			}
 		});
-
 	}
 
 	private QcuserRegistrationIdEntity convertDtoToEntity(QCUserDto qcUserDto) {

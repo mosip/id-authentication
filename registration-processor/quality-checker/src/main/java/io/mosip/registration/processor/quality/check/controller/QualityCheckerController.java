@@ -32,10 +32,10 @@ public class QualityCheckerController {
 
 	@GetMapping(path = "/getexceptiondata", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the exception entity", response = QualityCheckerStatusCode.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Assigned packets fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch the Exception Data") })
 	public ResponseEntity<List<ApplicantInfoDto>> getExceptionData(
-			@RequestParam(value = "registrationId", required = true) String qcuserId) {
+			@RequestParam(value = "qcuserId", required = true) String qcuserId) {
 		List<ApplicantInfoDto> packets = qualityCheckManger.getPacketsforQCUser(qcuserId);
 		return ResponseEntity.status(HttpStatus.OK).body(packets);
 	}

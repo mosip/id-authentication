@@ -34,6 +34,7 @@ public class QcuserRegistrationIdPKEntity implements Serializable {
 		this.usrId = usrId;
 	}
 
+	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
 			return true;
@@ -47,6 +48,7 @@ public class QcuserRegistrationIdPKEntity implements Serializable {
 			&& this.usrId.equals(castOther.usrId);
 	}
 
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;
