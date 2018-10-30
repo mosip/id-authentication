@@ -1,6 +1,12 @@
 package io.mosip.registration.processor.camel.bridge;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import org.apache.ignite.configuration.IgniteConfiguration;
+import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
+import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
 
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
@@ -11,7 +17,8 @@ import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.ignite.IgniteClusterManager;
 
 /**
- * This class provides 
+ * This class provides
+ * 
  * @author Mukul Puspam
  *
  */
@@ -23,13 +30,25 @@ public class MosipBridgeFactory {
 	 * Gets the event bus.
 	 *
 	 * @return the event bus
-	 * @throws InterruptedException the interrupted exception
-	 * @throws ExecutionException the execution exception
+	 * @throws InterruptedException
+	 *             the interrupted exception
+	 * @throws ExecutionException
+	 *             the execution exception
 	 */
 	public static void getEventBus() throws InterruptedException, ExecutionException {
-		
-		ClusterManager mgr = new IgniteClusterManager();
-		VertxOptions options = new VertxOptions().setClusterManager(mgr).setHAEnabled(true).setClustered(true);
+
+		List<String> addressList = new ArrayList<>();
+		addressList.add("127.0.0.1:47500..47549");
+		TcpDiscoverySpi tcpDiscoverySpi = new TcpDiscoverySpi();
+		TcpDiscoveryVmIpFinder tcpDiscoveryVmIpFinder = new TcpDiscoveryVmIpFinder();
+		tcpDiscoveryVmIpFinder.setAddresses(addressList);
+		tcpDiscoverySpi.setIpFinder(tcpDiscoveryVmIpFinder);
+		IgniteConfiguration igniteConfiguration = new IgniteConfiguration();
+		igniteConfiguration.setLocalHost("127.0.0.1");
+		igniteConfiguration.setDiscoverySpi(tcpDiscoverySpi);
+		ClusterManager clusterManager = new IgniteClusterManager(igniteConfiguration);
+		VertxOptions options = new VertxOptions().setClusterManager(clusterManager).setHAEnabled(true)
+				.setClustered(true);
 
 		Vertx.clusteredVertx(options, vertx -> {
 			if (vertx.succeeded()) {

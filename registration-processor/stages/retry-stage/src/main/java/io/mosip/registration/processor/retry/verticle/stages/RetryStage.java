@@ -25,13 +25,19 @@ public class RetryStage extends MosipVerticleManager {
 	@Value("${wait.period}")
 	private int waitPeriod;
 
+	@Value("${vertx.cluster.address}")
+	private String clusterAddress;
+
+	@Value("${vertx.localhost}")
+	private String localhost;
+
 	private MosipEventBus mosipEventBus;
 
 	/**
 	 * method to deploy retry-stage
 	 */
 	public void deployVerticle() {
-		this.mosipEventBus = this.getEventBus(this.getClass());
+		this.mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		this.consume(this.mosipEventBus, MessageBusAddress.RETRY_BUS);
 
 	}

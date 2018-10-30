@@ -8,8 +8,8 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 @Service
 public class FailoverStage extends MosipVerticleManager {
 
-	public void deployFailoverStage(){
-		this.getEventBus(this.getClass());
+	public void deployFailoverStage() {
+		// this.getEventBus(this.getClass());
 	}
 
 	@Override

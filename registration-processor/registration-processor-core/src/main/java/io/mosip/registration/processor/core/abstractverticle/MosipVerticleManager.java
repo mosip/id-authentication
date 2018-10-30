@@ -1,7 +1,13 @@
 package io.mosip.registration.processor.core.abstractverticle;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+
+import org.apache.ignite.configuration.IgniteConfiguration;
+import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
+import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
 
 import io.mosip.registration.processor.core.exception.DeploymentFailureException;
 import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticleErrorCodes;
@@ -39,10 +45,19 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	 * (java.lang.Class)
 	 */
 	@Override
-	public MosipEventBus getEventBus(Class<?> verticleName) {
+	public MosipEventBus getEventBus(Class<?> verticleName, String clusterAddress, String localhost) {
 		CompletableFuture<Vertx> eventBus = new CompletableFuture<>();
 		MosipEventBus mosipEventBus = null;
-		ClusterManager clusterManager = new IgniteClusterManager();
+		List<String> addressList = new ArrayList<>();
+		addressList.add(clusterAddress);
+		TcpDiscoverySpi tcpDiscoverySpi = new TcpDiscoverySpi();
+		TcpDiscoveryVmIpFinder tcpDiscoveryVmIpFinder = new TcpDiscoveryVmIpFinder();
+		tcpDiscoveryVmIpFinder.setAddresses(addressList);
+		tcpDiscoverySpi.setIpFinder(tcpDiscoveryVmIpFinder);
+		IgniteConfiguration igniteConfiguration = new IgniteConfiguration();
+		igniteConfiguration.setLocalHost(localhost);
+		igniteConfiguration.setDiscoverySpi(tcpDiscoverySpi);
+		ClusterManager clusterManager = new IgniteClusterManager(igniteConfiguration);
 		VertxOptions options = new VertxOptions().setClustered(true).setClusterManager(clusterManager)
 				.setHAEnabled(true);
 		Vertx.clusteredVertx(options, result -> {

@@ -68,12 +68,12 @@ public class PacketScannerBatchJobSchedulerTest {
 		root.addAppender(mockAppender);
 	}
 
-	@Test
+	/*@Test
 	public void testLandingZoneScannerJobScheduler() {
 		Awaitility.await().untilAsserted(
 				() -> verify(packetScannerBatchJobSchedulerJob, times(1)).landingZoneScannerJobScheduler());
 	}
-
+     */
 	/*
 	 * @Test public void testVirusScannerJobScheduler() { Awaitility.await()
 	 * .untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob,
