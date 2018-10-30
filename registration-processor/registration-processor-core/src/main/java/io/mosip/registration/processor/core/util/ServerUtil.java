@@ -20,7 +20,7 @@ public class ServerUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ServerUtil.class);
 	
 	/** The host not found. */
-	private String HOST_NOT_FOUND;
+	private String noHost  = "HOST_NOT_FOUND";
 
 	/**
 	 * 
@@ -57,7 +57,7 @@ public class ServerUtil {
 		try {
 			return InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
-			LOGGER.error(HOST_NOT_FOUND, e.getMessage());
+			LOGGER.error(noHost, e.getMessage());
 			return "UNKNOWN-HOST";
 		}
 
@@ -73,7 +73,7 @@ public class ServerUtil {
 		try {
 			return InetAddress.getLocalHost().getHostName();
 		} catch (UnknownHostException e) {
-			LOGGER.error(HOST_NOT_FOUND, e.getMessage());
+			LOGGER.error(noHost, e.getMessage());
 			return "UNKNOWN-HOST";
 		}
 	}
