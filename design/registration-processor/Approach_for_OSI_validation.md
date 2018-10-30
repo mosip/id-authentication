@@ -46,8 +46,6 @@ The key solution considerations are -
         a. validate fingerprint.
         b. validate iris.
         c. validate face.
-        d. validate pin.
-        e. validate password.
 ```
 - The auth module will provide rest API to validate OSI biometrics and pin. 
     ```
