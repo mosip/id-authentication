@@ -1,7 +1,9 @@
 package io.mosip.registration.processor.quality.check.service.impl;
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,9 +34,16 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 	
 	@Override
 	public void assignQCUser(String applicantRegistrationId) {
-		
+			List<String> qcUsersList=Arrays.asList("qc001","qc002","qc003");
+		String qcUserId= qcUsersList.get(new Random().nextInt(qcUsersList.size()));
+		QCUserDto qcUserDto=new QCUserDto();
+		qcUserDto.setQcUserId(qcUserId);
+		qcUserDto.setRegId(applicantRegistrationId);
+		qcUserDto.setDecisionStatus("assigned");
+		assignNewPacket(qcUserDto);
 	}
 
+	
 	@Override
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
 		boolean isTransactionSuccessful= false;
@@ -42,7 +51,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 		try {
 			applicantInfoDtoList = applicantInfoDao.getPacketsforQCUser(qcuserId);
 			isTransactionSuccessful=true;
-		} catch (DataAccessLayerException e) {
+		} catch (DataAccessLayerException   e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
 			String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
@@ -58,12 +67,45 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 
 	@Override
 	public void updateQCUserStatus(List<QCUserDto> qcUserDtos) {
+		
 		qcUserDtos.forEach(dto -> {
+			boolean isTransactionSuccessful= false;
+			try {
 			if (applicantInfoDao.findById(dto.getQcUserId()) != null) {
 				QcuserRegistrationIdEntity qcUserEntity = convertDtoToEntity(dto);
 				applicantInfoDao.update(qcUserEntity);
 			}
+			isTransactionSuccessful=true;
+			} catch (DataAccessLayerException e) {
+				throw new TablenotAccessibleException("qcuser_registration_id Table Not Accessible", e);
+			} 
+			finally {
+				String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
+						: "description--Demographic Failed to save";
+				createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+						AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+						AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+						AuditLogTempConstant.EVENT_TYPE.toString());
+			}
 		});
+	}
+	private void assignNewPacket(QCUserDto qcUserDto) {
+		boolean isTransactionSuccessful= false;
+		try {
+		QcuserRegistrationIdEntity qcUserEntity = convertDtoToEntity(qcUserDto);
+		applicantInfoDao.save(qcUserEntity);
+		isTransactionSuccessful=true;
+		} catch (DataAccessLayerException e) {
+			throw new TablenotAccessibleException("qcuser_registration_id Table Not Accessible", e);
+		} 
+		finally {
+			String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
+					: "description--Demographic Failed to save";
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
+		}
 	}
 
 	private QcuserRegistrationIdEntity convertDtoToEntity(QCUserDto qcUserDto) {
@@ -78,13 +120,6 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 		return qcUserEntity;
 
 	}
-
-	// private QCUserDto convertEntityToDto(QcuserRegistrationIdEntity qcUserEntity)
-	// {
-	// QCUserDto qcUserDto = new QCUserDto();
-	//
-	//
-	// }
 
 	private void createAuditRequestBuilder(String applicationId, String applicationName, String description,
 			String eventId, String eventName, String eventType) {

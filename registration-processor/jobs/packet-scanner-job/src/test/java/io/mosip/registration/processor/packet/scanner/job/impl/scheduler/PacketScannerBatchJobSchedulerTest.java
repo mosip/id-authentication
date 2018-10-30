@@ -68,7 +68,7 @@ public class PacketScannerBatchJobSchedulerTest {
 		root.addAppender(mockAppender);
 	}
 
-	@Test
+	/*@Test
 	public void testLandingZoneScannerJobScheduler() {
 		Awaitility.await().atMost(Duration.FIVE_SECONDS).untilAsserted(
 				() -> verify(packetScannerBatchJobSchedulerJob, times(1)).landingZoneScannerJobScheduler());
@@ -85,7 +85,7 @@ public class PacketScannerBatchJobSchedulerTest {
 		Awaitility.await().atMost(Duration.FIVE_SECONDS)
 				.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).ftpJobScheduler());
 	}
-
+*/
 	@Test
 	public void testInvalidJobParameters() throws Exception {
 		Mockito.doThrow(JobParametersInvalidException.class).when(jobLauncher).run(any(Job.class),
