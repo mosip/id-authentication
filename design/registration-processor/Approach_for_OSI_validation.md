@@ -29,6 +29,7 @@ The key solution considerations are -
 - Call 'packet-store-adapter-ceph' service to get the biometric for operator/supervisor/introducer from inside the packet. 
 - The [Auth-rest-service](https://github.com/mosip/mosip/blob/DEV/design/authentication/Auth_Request_REST_service.md) will be responsible for validating OSI info and the service accepts encoded biometrics. The encoded image will come from registration-client by default.
     OSI info to be validated -
+    
         1. fingerprint.
         2. Iris.
         3. Face.
