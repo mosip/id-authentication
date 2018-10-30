@@ -30,7 +30,7 @@ public interface QualityCheckManager<U,T,Q>{
 	 * @param qcUserId the qc user id
 	 * @param param the param
 	 */
-	public void updateQCUserStatus(List<Q> qcUserDtos);
+	public List<Q> updateQCUserStatus(List<Q> qcUserDtos);
 
 	/**
 	 * Gets the packetsfor QC user.

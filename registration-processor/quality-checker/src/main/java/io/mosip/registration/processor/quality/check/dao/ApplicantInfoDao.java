@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.quality.check.dao;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +18,7 @@ import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographi
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdEntity;
+import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdPKEntity;
 import io.mosip.registration.processor.quality.check.repository.QcuserRegRepositary;
 
 @Component
@@ -93,13 +93,13 @@ public class ApplicantInfoDao {
 
 	private Photograph convertEntityToPhotographDto(ApplicantPhotographEntity object) {
 		Photograph photographDto = new Photograph();
-		
+
 		photographDto.setExceptionPhotoName(object.getExcpPhotoName());
 		photographDto.setHasExceptionPhoto(object.getHasExcpPhotograph());
 		photographDto.setNumRetry(object.getNoOfRetry());
 		photographDto.setPhotographName(object.getImageName());
 		photographDto.setQualityScore(Double.valueOf(object.getQualityScore().toString()));
-		
+
 		return photographDto;
 	}
 
@@ -161,7 +161,7 @@ public class ApplicantInfoDao {
 		return qcuserRegRepositary.save(qcUserRegistrationIdEntity);
 	}
 
-	public QcuserRegistrationIdEntity findById(String qcUserId) {
+	public QcuserRegistrationIdEntity findById(String qcUserId, String regId) {
 		Map<String, Object> params = new HashMap<>();
 		String className = QcuserRegistrationIdEntity.class.getSimpleName();
 
@@ -171,7 +171,11 @@ public class ApplicantInfoDao {
 				+ ".id=:QCUserId" + EMPTY_STRING + AND + EMPTY_STRING + alias + ISACTIVE_COLON + ISACTIVE + EMPTY_STRING
 				+ AND + EMPTY_STRING + alias + ISDELETED_COLON + ISDELETED;
 
-		params.put("QCUserId", qcUserId);
+		QcuserRegistrationIdPKEntity pkEntity = new QcuserRegistrationIdPKEntity();
+		pkEntity.setUsrId(qcUserId);
+		pkEntity.setRegId(regId);
+
+		params.put("QCUserId", pkEntity);
 		params.put(ISACTIVE, Boolean.TRUE);
 		params.put(ISDELETED, Boolean.FALSE);
 

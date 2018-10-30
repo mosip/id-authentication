@@ -43,9 +43,8 @@ public class QualityCheckerController {
 	@PostMapping(path = "/decisionStatus", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the QCUser entity", response = QualityCheckerStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "QC User Entity decision status successfully updated") })
-	public ResponseEntity<String> syncRegistrationController(
-			@RequestBody(required = true) List<QCUserDto> qcUserDtos) {
-		qualityCheckManger.updateQCUserStatus(qcUserDtos);
-		return ResponseEntity.status(HttpStatus.OK).body("Status Updated");
+	public ResponseEntity<List<QCUserDto>> syncRegistrationController(@RequestBody(required = true) List<QCUserDto> qcUserDtos) {
+		List<QCUserDto> dtos = qualityCheckManger.updateQCUserStatus(qcUserDtos);
+		return ResponseEntity.status(HttpStatus.MULTI_STATUS).body(dtos);
 	}
 }
