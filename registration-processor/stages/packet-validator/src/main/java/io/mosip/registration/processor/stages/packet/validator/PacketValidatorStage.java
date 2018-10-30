@@ -123,9 +123,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						.inputStreamtoJavaObject(demographicInfoStream, DemographicInfo.class);
 				packetInfoManager.saveDemographicData(demographicInfo, packetInfo.getMetaData());
 				description="PacketInfo & DemographicData has been saved successfully in method process() of PacketValidatorStage class";
-				eventId = EventId.RPR_407.toString();
-				eventName = EventName.SAVE.toString();
-				eventType = EventType.BUSINESS.toString();
+				
 
 			} else {
 				object.setIsValid(Boolean.FALSE);
@@ -140,7 +138,9 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				description="Files validation and checksum validation get failured in method process() of PacketValidatorStage class";
 
 			}
-			
+			eventId = EventId.RPR_402.toString();
+			eventName = EventName.UPDATE.toString();
+			eventType = EventType.BUSINESS.toString();
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
