@@ -4,24 +4,19 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
 /**
- * @author M1048399
- * The persistent class for the role_list database table.
+ * @author M1048399 The persistent class for the role_list database table.
  *
  */
 @Entity
-@Table(name="role_list", schema = "regprc")
-public class RoleListEntity implements Serializable {
+@Table(name = "role_list", schema = "regprc")
+public class RoleListEntity extends BaseQcuserEntity<RoleListPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
-
-	@EmbeddedId
-	private RoleListPKEntity id;
 
 	@Column(name = "cr_by", nullable = false)
 	private String crBy = "MOSIP_SYSTEM";
@@ -30,35 +25,27 @@ public class RoleListEntity implements Serializable {
 	@CreationTimestamp
 	private LocalDateTime crDtimesz;
 
-	@Column(name="del_dtimesz")
+	@Column(name = "del_dtimesz")
 	@CreationTimestamp
 	private LocalDateTime delDtimesz;
 
 	private String descr;
 
-	@Column(name="is_active")
+	@Column(name = "is_active")
 	private Boolean isActive;
 
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
-	@Column(name="upd_by")
+	@Column(name = "upd_by")
 	private String updBy = "MOSIP_SYSTEM";
 
-	@Column(name="upd_dtimesz")
+	@Column(name = "upd_dtimesz")
 	@CreationTimestamp
 	private LocalDateTime updDtimesz;
 
 	public RoleListEntity() {
 		super();
-	}
-
-	public RoleListPKEntity getId() {
-		return this.id;
-	}
-
-	public void setId(RoleListPKEntity id) {
-		this.id = id;
 	}
 
 	public String getCrBy() {

@@ -106,11 +106,11 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 		Map<QcuserRegistrationIdEntity, QCUserDto> map = new LinkedHashMap<>();
 		qcUserDtos.forEach(dto -> {
 
-			if (dto.getQcUserId() == null || dto.getQcUserId().isEmpty()) {
+			if (dto.getQcUserId().trim() == null || dto.getQcUserId().trim().isEmpty()) {
 				throw new InvalidQcUserIdException(
 						QualityCheckerStatusCode.INVALID_QC_USER_ID.name() + ": QC USER ID IS NULL");
 			}
-			if (dto.getRegId() == null || dto.getRegId().isEmpty()) {
+			if (dto.getRegId().trim() == null || dto.getRegId().trim().isEmpty()) {
 				throw new InvalidRegistrationIdException(
 						QualityCheckerStatusCode.INVALID_REGISTRATION_ID.name() + ": REGISTRATION ID IS NULL");
 			}

@@ -19,6 +19,9 @@ import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotograph
 import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdPKEntity;
+import io.mosip.registration.processor.quality.check.entity.RoleListEntity;
+import io.mosip.registration.processor.quality.check.entity.UserDetailEntity;
+import io.mosip.registration.processor.quality.check.entity.UserRoleEntity;
 import io.mosip.registration.processor.quality.check.repository.QcuserRegRepositary;
 
 @Component
@@ -55,6 +58,15 @@ public class ApplicantInfoDao {
 	@Autowired
 	private QcuserRegRepositary<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
 
+	@Autowired
+	private QcuserRegRepositary<RoleListEntity, String> roleListRegRepositary;
+
+	@Autowired
+	private QcuserRegRepositary<UserDetailEntity, String> userDetailRepositary;
+
+	@Autowired
+	private QcuserRegRepositary<UserRoleEntity, String> userRoleRepositary;
+
 	private List<Object[]> applicantInfo = new ArrayList<>();
 
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
@@ -70,14 +82,7 @@ public class ApplicantInfoDao {
 			applicantInfo.forEach(objects -> {
 				for (Object object : objects) {
 					if (object instanceof ApplicantDemographicEntity) {
-						if ("en".equalsIgnoreCase(((ApplicantDemographicEntity) object).getId().getLangCode()))
-							applicantInfoDto.setDemoInLocalLang(
-									convertEntityToDemographicDto((ApplicantDemographicEntity) object)
-											.getDemoInLocalLang());
-						else
-							applicantInfoDto.setDemoInUserLang(
-									convertEntityToDemographicDto((ApplicantDemographicEntity) object)
-											.getDemoInUserLang());
+						validateObject(object, applicantInfoDto);
 					} else if (object instanceof ApplicantPhotographEntity) {
 						applicantInfoDto
 								.setApplicantPhoto(convertEntityToPhotographDto((ApplicantPhotographEntity) object));
@@ -89,6 +94,15 @@ public class ApplicantInfoDao {
 			applicantInfo.clear();
 		}
 		return applicantInfoDtoList;
+	}
+
+	private void validateObject(Object object, ApplicantInfoDto applicantInfoDto) {
+		if ("en".equalsIgnoreCase(((ApplicantDemographicEntity) object).getId().getLangCode()))
+			applicantInfoDto.setDemoInLocalLang(
+					convertEntityToDemographicDto((ApplicantDemographicEntity) object).getDemoInLocalLang());
+		else
+			applicantInfoDto.setDemoInUserLang(
+					convertEntityToDemographicDto((ApplicantDemographicEntity) object).getDemoInUserLang());
 	}
 
 	private Photograph convertEntityToPhotographDto(ApplicantPhotographEntity object) {
