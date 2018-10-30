@@ -102,18 +102,14 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter);
 				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId, packetInfo);
 				if (!isCheckSumValidated) {
-					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION);
-					description="Files validation successfull and checksum validation failured in method process() of PacketValidatorStage class";
+					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);
 				}
 			} else {
-				registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION);
-				
-				description="Files validation get failured in method process() of PacketValidatorStage";
-
+				registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION_FAILURE);
 			}
 			if (isFilesValidated && isCheckSumValidated) {
 				object.setIsValid(Boolean.TRUE);
-				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION);
+				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
 				registrationStatusDto
 						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_SUCCESSFULL.toString());
 				packetInfoManager.savePacketData(packetInfo);
@@ -121,9 +117,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
 				DemographicInfo demographicInfo = (DemographicInfo) JsonUtil
 						.inputStreamtoJavaObject(demographicInfoStream, DemographicInfo.class);
-				packetInfoManager.saveDemographicData(demographicInfo, packetInfo.getMetaData());
-				description="PacketInfo & DemographicData has been saved successfully in method process() of PacketValidatorStage class";
-				
+				packetInfoManager.saveDemographicData(demographicInfo, packetInfo.getMetaData());				
 
 			} else {
 				object.setIsValid(Boolean.FALSE);
@@ -135,9 +129,16 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 				registrationStatusDto
 						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_FAILED.toString());
-				description="Files validation and checksum validation get failured in method process() of PacketValidatorStage class";
 
 			}
+			if(!isFilesValidated) {
+				description = "File validation Failed for registration id : " + registrationId;
+			}else if(!isCheckSumValidated) {
+				description = "Checksum validation failed for registration id : " + registrationId;
+			}else {
+				description = "Packet validation successful for registration id : " + registrationId;
+			}
+			
 			eventId = EventId.RPR_402.toString();
 			eventName = EventName.UPDATE.toString();
 			eventType = EventType.BUSINESS.toString();
@@ -147,7 +148,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		} catch (IOException e) {
 			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), e);
 			object.setInternalError(Boolean.TRUE);
-			description="IOException occurs in method process() of PacketValidatorStage class";
+			description="Internal error occured while processing registratio  id : " + registrationId;
 			eventId = EventId.RPR_405.toString();
 			eventName = EventName.EXCEPTION.toString();
 			eventType = EventType.SYSTEM.toString();
@@ -155,7 +156,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		} catch (Exception ex) {
 			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), ex);
 			object.setInternalError(Boolean.TRUE);
-			description="Unknown exception occurs in method process() of PacketValidatorStage class";
+			description="Internal error occured while processing registratio  id : " + registrationId;
 			eventId = EventId.RPR_405.toString();
 			eventName = EventName.EXCEPTION.toString();
 			eventType = EventType.SYSTEM.toString();
