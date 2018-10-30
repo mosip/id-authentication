@@ -24,6 +24,10 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 @Component
 public abstract class IdAuthValidator implements Validator {
 
+	private static final String IDV_ID_TYPE = "idvIdType";
+
+	private static final String IDV_ID = "idvId";
+
 	/** The Constant MISSING_INPUT_PARAMETER. */
 	private static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
 	
@@ -95,14 +99,14 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param idTypeFieldName the id type field name
 	 * @param errors            the errors
 	 */
-	protected void validateIndId(String id, String idType, String idFieldName, String idTypeFieldName, Errors errors) {
+	protected void validateIdvId(String id, String idType, Errors errors) {
 		if (Objects.isNull(id)) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + idFieldName);
-			errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID);
+			errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
-							idFieldName));
+							IDV_ID));
 		} else {
-			validateIdtypeUinVid(id, idType, idFieldName, idTypeFieldName, errors);
+			validateIdtypeUinVid(id, idType, errors);
 		}
 	}
 
@@ -186,18 +190,18 @@ public abstract class IdAuthValidator implements Validator {
 	 * @param idTypeFieldName the id type field name
 	 * @param errors            the errors
 	 */
-	private void validateIdtypeUinVid(String id, String idType, String idFieldName, String idTypeFieldName, Errors errors) {
+	private void validateIdtypeUinVid(String id, String idType, Errors errors) {
 		if (Objects.isNull(idType)) {
-			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + idTypeFieldName);
-			errors.rejectValue(idTypeFieldName, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
+			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(),
-							idTypeFieldName));
+							IDV_ID_TYPE));
 		} else if (idType.equals(IdType.UIN.getType())) {
 			try {
 				uinValidator.validateId(id);
 			} catch (MosipInvalidIDException e) {
 				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
-				errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
+				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
 			}
 		} else if (idType.equals(IdType.VID.getType())) {
@@ -205,14 +209,14 @@ public abstract class IdAuthValidator implements Validator {
 				vidValidator.validateId(id);
 			} catch (MosipInvalidIDException e) {
 				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
-				errors.rejectValue(idFieldName, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
+				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_VID.getErrorMessage());
 			}
 		} else {
 			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "INCORRECT_IDTYPE - " + idType);
-			errors.rejectValue(idTypeFieldName, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-							idTypeFieldName));
+							IDV_ID_TYPE));
 		}
 	}
 

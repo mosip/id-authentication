@@ -1,8 +1,5 @@
 package io.mosip.authentication.service.impl.otpgen.validator;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
@@ -29,7 +26,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 @Component
 public class OTPRequestValidator extends IdAuthValidator {
 
-	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "requestdate.received.in.max.time.mins";
+	private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "otprequest.received-time-allowed.in-minutes";
 
 	private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
 
@@ -37,11 +34,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 	private static final String SESSION_ID = "session_id";
 
-	private static final String IDV_ID = "idvId";
-
 	private static final String REQ_TIME = "reqTime";
-
-	private static final String ID_TYPE = "idvIdType";
 
 	/** The mosip logger. */
 	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPRequestValidator.class);
@@ -83,7 +76,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 			validateVer(otpRequestDto.getVer(), errors);
 
-			validateIndId(otpRequestDto.getIdvId(), otpRequestDto.getIdvIdType(), IDV_ID, ID_TYPE, errors);
+			validateIdvId(otpRequestDto.getIdvId(), otpRequestDto.getIdvIdType(), errors);
 
 			validateMuaCode(otpRequestDto.getMuaCode(), errors);
 
