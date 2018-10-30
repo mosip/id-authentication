@@ -33,17 +33,17 @@ public class FtpScannerJobTest {
 	private JobLauncher jobLauncher;	
 	
 	@Autowired
-	private Job packetDecryptorJob;	
+	private Job ftpScannerJob;	
 	
 	@MockBean
 	public FTPScannerTasklet ftpScannerTasklet;
 	
 	@Test
-	public void packetDecryptorJobTest() throws JobExecutionAlreadyRunningException, JobRestartException,
+	public void ftpScannerJobTest() throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
-		JobExecution jobExecution = jobLauncher.run(packetDecryptorJob, jobParameters);
+		JobExecution jobExecution = jobLauncher.run(ftpScannerJob, jobParameters);
 		assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
 	}
 }

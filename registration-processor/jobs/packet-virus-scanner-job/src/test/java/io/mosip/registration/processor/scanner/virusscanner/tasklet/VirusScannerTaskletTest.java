@@ -1,4 +1,4 @@
-package io.mosip.registration.scanner.virusscanner.tasklet;
+package io.mosip.registration.processor.scanner.virusscanner.tasklet;
 
 
 import static org.junit.Assert.assertEquals;

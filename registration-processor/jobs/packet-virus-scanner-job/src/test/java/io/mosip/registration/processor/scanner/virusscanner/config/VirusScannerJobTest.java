@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.scanner.landingzone.config;
+package io.mosip.registration.processor.scanner.virusscanner.config;
 
 import static org.junit.Assert.assertEquals;
 
@@ -6,7 +6,6 @@ import static org.junit.Assert.assertEquals;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -22,28 +21,29 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.registration.processor.scanner.landingzone.PacketLandingzoneScannerJobApplication;
-import io.mosip.registration.processor.scanner.landingzone.tasklet.LandingZoneScannerTasklet;
+import io.mosip.registration.processor.scanner.virusscanner.config.VirusScannerBatchJobConfig;
+import io.mosip.registration.processor.scanner.virusscanner.tasklet.VirusScannerTasklet;
+import io.mosip.registration.processor.scanner.virusscanner.PacketVirusScannerJobApplication;
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = PacketLandingzoneScannerJobApplication.class)
-@ContextConfiguration(classes = { LandingZoneScannerConfig.class })
-public class LandingzoneConfigTest {
+@SpringBootTest(classes = PacketVirusScannerJobApplication.class)
+@ContextConfiguration(classes = { VirusScannerBatchJobConfig.class })
+public class VirusScannerJobTest {
 
 	@Autowired
 	private JobLauncher jobLauncher;	
 	
 	@Autowired
-	private Job landingZoneScannerJob;
+	private Job virusScannerJob;	
 	
 	@MockBean
-	public LandingZoneScannerTasklet landingZoneScannerTasklet; 
+	public VirusScannerTasklet ftpScannerTasklet;
 	
 	@Test
-	public void landingZoneScannerJobTest() throws JobExecutionAlreadyRunningException, JobRestartException,
+	public void virusScannerJobTest() throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
-		JobExecution jobExecution = jobLauncher.run(landingZoneScannerJob, jobParameters);
+		JobExecution jobExecution = jobLauncher.run(virusScannerJob, jobParameters);
 		assertEquals(BatchStatus.COMPLETED, jobExecution.getStatus());
 	}
 }
