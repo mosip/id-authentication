@@ -50,8 +50,7 @@ public class GeoLocationCaptureImpl implements GeoLocationCapture {
 		Map<String, Object> map = new HashMap<>();
 		BigDecimal deviceLatitute = new BigDecimal("12.99194");
 		BigDecimal deviceLongitude = new BigDecimal("80.2471");
-		BigDecimal latlong = new BigDecimal("0.0");
-		if ((latlong.compareTo(deviceLatitute) != 0) && (latlong.compareTo(deviceLongitude) != 0)) {
+		if ((BigDecimal.ZERO.compareTo(deviceLatitute) != 0) && (BigDecimal.ZERO.compareTo(deviceLongitude) != 0)) {
 			map.put("latitude", deviceLatitute.doubleValue());
 			map.put("longitude", deviceLongitude.doubleValue());
 			map.put("errorMessage", "success");
