@@ -35,7 +35,7 @@ The key solution considerations are -
         3. Face.
         4. Pin
 - check -
-
+```
     1. If operator is valid.
         a. validate fingerprint.
         b. validate iris.
@@ -54,6 +54,7 @@ The key solution considerations are -
         c. validate face.
         d. validate pin.
         e. validate password.
+```
 - The auth module will provide rest API to validate OSI biometrics and pin. 
     ```
     REST API to validate uin and biometric
