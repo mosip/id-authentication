@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 		"io.mosip.registration.processor.packet.manager", 
 		"io.mosip.registration.processor.core",
 		"io.mosip.kernel.auditmanager"}) 
-@PropertySource({"classpath:application.properties"})
+@PropertySource({"classpath:qc-user-application.properties"})
 public class QualityCheckerApplication {
 
 	public static void main(String[] args) {
