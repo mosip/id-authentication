@@ -19,7 +19,7 @@ import io.mosip.kernel.ridgenerator.repository.RidRepository;
 /**
  * This class generate 28 digits registration id.
  * 
- * @author Ritesh Sinhas
+ * @author Ritesh Sinha
  * @author Sidhant Agarwal
  * @since 1.0.0
  *
