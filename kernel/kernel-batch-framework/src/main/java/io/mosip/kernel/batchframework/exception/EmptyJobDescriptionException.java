@@ -1,4 +1,4 @@
-package io.mosip.kernel.batchframework.exceptions;
+package io.mosip.kernel.batchframework.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 

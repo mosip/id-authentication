@@ -1,4 +1,4 @@
-package io.mosip.kernel.batchframework.constants;
+package io.mosip.kernel.batchframework.constant;
 
 /**
  * This enum provides all the constant for batch framework.
@@ -10,9 +10,12 @@ package io.mosip.kernel.batchframework.constants;
 public enum BatchPropertyConstant {
 
 	BATCH_KEY_SEPARATOR(","), 
+	EMPTY_STRING(" "),
+	ERROR_CODE("ERROR-CODE"),
 	TEMPORARY_DIRECTORY("java.io.tmpdir"),
 	BATCH_JOB_FILE("/jobdescription.txt"),
 	CHARSET("UTF-8"),
+	LOGGER_TARGET("System.err"),
 	REGISTER_JOBS("/apps"),
 	REGISTER_PARAM("uri"),
 	PROTOCALL("http://"),

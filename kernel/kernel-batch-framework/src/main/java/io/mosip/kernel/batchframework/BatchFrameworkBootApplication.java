@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  */
 @SpringBootApplication
-public class BatchFrameWorkBootApplication {
+public class BatchFrameworkBootApplication {
 
 	/**
 	 * Main method.
@@ -20,6 +20,6 @@ public class BatchFrameWorkBootApplication {
 	 *            the argument.
 	 */
 	public static void main(String[] args) {
-		SpringApplication.run(BatchFrameWorkBootApplication.class, args);
+		SpringApplication.run(BatchFrameworkBootApplication.class, args);
 	}
 }

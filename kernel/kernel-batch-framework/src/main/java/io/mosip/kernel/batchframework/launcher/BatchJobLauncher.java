@@ -1,4 +1,4 @@
-package io.mosip.kernel.batchframework.impl;
+package io.mosip.kernel.batchframework.launcher;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -9,21 +9,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.mosip.kernel.batchframework.constants.BatchExceptionConstants;
-import io.mosip.kernel.batchframework.constants.BatchPropertyConstant;
-import io.mosip.kernel.batchframework.exceptions.EmptyJobDescriptionException;
-import io.mosip.kernel.batchframework.exceptions.ClientErrorException;
-import io.mosip.kernel.batchframework.exceptions.InvalidFileUriException;
-import io.mosip.kernel.batchframework.exceptions.InvalidJobDescriptionException;
-import io.mosip.kernel.batchframework.response.Embedded;
-import io.mosip.kernel.batchframework.response.TaskCreater;
+import io.mosip.kernel.batchframework.constant.BatchExceptionConstant;
+import io.mosip.kernel.batchframework.constant.BatchPropertyConstant;
+import io.mosip.kernel.batchframework.exception.ClientErrorException;
+import io.mosip.kernel.batchframework.exception.EmptyJobDescriptionException;
+import io.mosip.kernel.batchframework.exception.InvalidFileUriException;
+import io.mosip.kernel.batchframework.exception.InvalidJobDescriptionException;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.exception.MosipIOException;
 
@@ -36,20 +34,16 @@ import io.mosip.kernel.core.util.exception.MosipIOException;
  * @author Ritesh Sinha
  * @since 1.0.0
  */
-@Configuration
+@Component
 public class BatchJobLauncher {
+
+	@Value("${mosip.kernel.batch.server.port}")
+	String port;
+	@Value("${mosip.kernel.batch.server.host}")
+	String host;
 
 	@Autowired
 	RestTemplateBuilder restTemplateBuilder;
-
-	static List<String> jobDescription = null;
-
-	static List<String> taskNames = new ArrayList<>();
-
-	@Value("${mosip.batch.server.port}")
-	String port;
-	@Value("${mosip.batch.server.host}")
-	String host;
 
 	/**
 	 * This method register and launch batch jobs in cloud data flow server which
@@ -60,6 +54,10 @@ public class BatchJobLauncher {
 	 *            of batch jobs) which need to be register and launch.
 	 */
 	public void registerJobs(File file) {
+		List<String> jobDescription = null;
+
+		List<String> taskNames = new ArrayList<>();
+
 		String serverUrl = urlBuilder(host, port);
 
 		RestTemplate restTemplate = restTemplateBuilder.build();
@@ -67,15 +65,15 @@ public class BatchJobLauncher {
 			jobDescription = FileUtils.readLines(file, Charset.forName(BatchPropertyConstant.CHARSET.getProperty()));
 
 		} catch (MosipIOException e) {
-			throw new InvalidFileUriException(BatchExceptionConstants.INVALID_URI.getErrorCode(),
-					BatchExceptionConstants.INVALID_URI.getErrorMessage(), e.getCause());
+			throw new InvalidFileUriException(BatchExceptionConstant.INVALID_URI.getErrorCode(),
+					BatchExceptionConstant.INVALID_URI.getErrorMessage(), e.getCause());
 		}
 
 		jobDescription.removeAll(Arrays.asList(BatchPropertyConstant.EMPYT_LINES.getProperty()));
 
 		if (jobDescription.isEmpty()) {
-			throw new EmptyJobDescriptionException(BatchExceptionConstants.EMPTY_JOB_DESCRIPTION.getErrorCode(),
-					BatchExceptionConstants.EMPTY_JOB_DESCRIPTION.getErrorMessage());
+			throw new EmptyJobDescriptionException(BatchExceptionConstant.EMPTY_JOB_DESCRIPTION.getErrorCode(),
+					BatchExceptionConstant.EMPTY_JOB_DESCRIPTION.getErrorMessage());
 		}
 
 		try {
@@ -83,29 +81,28 @@ public class BatchJobLauncher {
 					.fromHttpUrl(serverUrl + BatchPropertyConstant.REGISTER_JOBS.getProperty())
 					.queryParam(BatchPropertyConstant.REGISTER_PARAM.getProperty(), file.toURI().toString());
 
-			restTemplate.postForEntity(register.toUriString(), HttpMethod.POST, Embedded.class);
+			restTemplate.postForEntity(register.toUriString(), HttpMethod.POST, Object.class);
 		} catch (HttpServerErrorException e) {
-			System.out.println(e.getResponseBodyAsString());
-			throw new InvalidJobDescriptionException(BatchExceptionConstants.INVALID_JOB_DESCRIPTION.getErrorCode(),
-					BatchExceptionConstants.INVALID_JOB_DESCRIPTION.getErrorMessage());
+			throw new InvalidJobDescriptionException(BatchExceptionConstant.INVALID_JOB_DESCRIPTION.getErrorCode(),
+					BatchExceptionConstant.INVALID_JOB_DESCRIPTION.getErrorMessage());
 		}
 
-		taskCreater();
+		taskCreater(jobDescription, taskNames);
 
-		jobLauncher();
+		jobLauncher(taskNames);
 
 	}
 
 	private String urlBuilder(String host, String port) {
-		String serverUrl = BatchPropertyConstant.PROTOCALL.getProperty() + host
+
+		return BatchPropertyConstant.PROTOCALL.getProperty() + host
 				+ BatchPropertyConstant.ADDRESS_PORT_SEPARATOR.getProperty() + port;
-		return serverUrl;
 	}
 
 	/**
 	 * This methods create task on cloud data flow server for registered batch jobs.
 	 */
-	private void taskCreater() {
+	private void taskCreater(List<String> jobDescription, List<String> taskNames) {
 		String serverUrl = urlBuilder(host, port);
 		RestTemplate restTemplate = restTemplateBuilder.build();
 		jobDescription.forEach(jobDetails -> {
@@ -123,13 +120,13 @@ public class BatchJobLauncher {
 								BatchPropertyConstant.TASK_CREATER_FIRST_PARAM_VALUE.getProperty() + jobName)
 						.queryParam(BatchPropertyConstant.TASK_CREATER_SECOND_PARAM.getProperty(), jobName);
 
-				restTemplate.postForEntity(taskCreater.toUriString(), HttpMethod.POST, TaskCreater.class);
+				restTemplate.postForEntity(taskCreater.toUriString(), HttpMethod.POST, Object.class);
 
 			});
 
 		} catch (HttpClientErrorException e) {
-			throw new ClientErrorException(BatchExceptionConstants.DUPLICATE_JOB.getErrorCode(),
-					BatchExceptionConstants.DUPLICATE_JOB.getErrorMessage(), e.getCause());
+			throw new ClientErrorException(BatchExceptionConstant.DUPLICATE_JOB.getErrorCode(),
+					BatchExceptionConstant.DUPLICATE_JOB.getErrorMessage(), e.getCause());
 		}
 
 	}
@@ -137,7 +134,7 @@ public class BatchJobLauncher {
 	/**
 	 * This method launches the created task on cloud data flow server.
 	 */
-	private void jobLauncher() {
+	private void jobLauncher(List<String> taskNames) {
 		String serverUrl = urlBuilder(host, port);
 		RestTemplate restTemplate = restTemplateBuilder.build();
 		try {
@@ -149,8 +146,8 @@ public class BatchJobLauncher {
 
 			});
 		} catch (HttpServerErrorException e) {
-			throw new InvalidJobDescriptionException(BatchExceptionConstants.INVALID_JOB_DESCRIPTION.getErrorCode(),
-					BatchExceptionConstants.INVALID_JOB_DESCRIPTION.getErrorMessage());
+			throw new InvalidJobDescriptionException(BatchExceptionConstant.INVALID_JOB_DESCRIPTION.getErrorCode(),
+					BatchExceptionConstant.INVALID_JOB_DESCRIPTION.getErrorMessage());
 		}
 	}
 
