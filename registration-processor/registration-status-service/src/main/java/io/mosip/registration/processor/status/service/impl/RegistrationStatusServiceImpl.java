@@ -74,7 +74,9 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			eventType = EventType.BUSINESS.toString();
 			return entity != null ? convertEntityToDto(entity) : null;
 		} catch (DataAccessLayerException e) {
-
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
 
@@ -83,11 +85,6 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
-
-/*			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());*/
 		}
 	}
 
@@ -107,6 +104,9 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			eventType = EventType.BUSINESS.toString();
 			return convertEntityListToDtoList(entities);
 		} catch (DataAccessLayerException e) {
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
 
@@ -115,11 +115,6 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
-
-/*			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());*/
 
 		}
 	}
@@ -147,6 +142,9 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
 		} catch (DataAccessLayerException e) {
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException("Could not add Information to table", e);
 		} finally {
 
@@ -155,12 +153,6 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
-
-/*			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());*/
-
 		}
 	}
 
@@ -191,6 +183,9 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 				transcationStatusService.addRegistrationTransaction(transactionDto);
 			}
 		} catch (DataAccessLayerException e) {
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException("Could not update Information to table", e);
 		} finally {
 
@@ -199,11 +194,6 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
-			
-/*			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());*/
 
 		}
 	}
@@ -224,6 +214,9 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			eventType = EventType.BUSINESS.toString();
 			return convertEntityListToDtoList(registrationStatusEntityList);
 		} catch (DataAccessLayerException e) {
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
 
@@ -232,11 +225,6 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
-
-/*			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());*/
 
 		}
 	}
@@ -260,6 +248,10 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			return convertEntityListToDtoList(registrationStatusEntityList);
 
 		} catch (DataAccessLayerException e) {
+			//Event constants for audit log
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
 
@@ -267,12 +259,6 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
-
-/*			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());*/
-
 		}
 	}
 
@@ -374,32 +360,5 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	public String generateId() {
 		return UUID.randomUUID().toString();
 	}
-
-	/**
-	 * Creates the audit request builder.
-	 *
-	 * @param applicationId the application id
-	 * @param applicationName the application name
-	 * @param description the description
-	 * @param eventId the event id
-	 * @param eventName the event name
-	 * @param eventType the event type
-	 */
-/*	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,
-			String eventId, String eventName, String eventType) {
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
-				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
-				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-				.setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(AuditLogTempConstant.ID.toString())
-				.setIdType(AuditLogTempConstant.ID_TYPE.toString())
-				.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-				.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-				.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-				.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
-
-		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-		auditHandler.writeAudit(auditRequestDto);
-	}*/
 
 }

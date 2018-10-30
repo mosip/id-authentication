@@ -3,7 +3,6 @@ package io.mosip.registration.processor.packet.storage.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,9 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
@@ -49,7 +45,6 @@ import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
-import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 
 /**
  * The Class PacketInfoManagerImpl.
@@ -103,13 +98,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	@Autowired
 	private BasePacketRepository<RegCenterMachineEntity, String> regCenterMachineRepository;
 
-	/** The audit request builder. */
-	@Autowired
-	private AuditRequestBuilder auditRequestBuilder;
-
-	/** The audit handler. */
-	@Autowired
-	private AuditHandler<AuditRequestDto> auditHandler;
 	/** The event id. */
 	private String eventId = "";
 	
@@ -194,12 +182,14 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 				LOGGER.info(applicantDemographicEntity.getId().getRegId() + " --> Demographic  DATA SAVED");
 			}
 			//Event constants for audit log
-			eventId = EventId.RPR_402.toString();
-			eventName = EventName.UPDATE.toString();
+			eventId = EventId.RPR_407.toString();
+			eventName = EventName.SAVE.toString();
 			eventType = EventType.BUSINESS.toString();
-		
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.BUSINESS.toString();
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
 			String description = isTransactionSuccessful ? "Demographic-data saved Success"
@@ -207,8 +197,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
-
-			
 
 		}
 

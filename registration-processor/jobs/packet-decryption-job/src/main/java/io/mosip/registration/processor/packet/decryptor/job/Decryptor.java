@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,11 @@ import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.AuditLogConstant;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
 
@@ -31,6 +37,22 @@ public class Decryptor {
 	private byte[] encryptedData;
 	@Value("${private.key.location}")
 	private String privateKey;
+	
+	/** The event id. */
+	private String eventId = "";
+	
+	/** The event name. */
+	private String eventName = "";
+	
+	/** The event type. */
+	private String eventType = "";
+	
+	/** The description. */
+	private String description = "";
+	
+	/** The core audit request builder. */
+	@Autowired
+	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
 	/**
 	 * random method for decryption
@@ -49,7 +71,10 @@ public class Decryptor {
 			byte[] in = IOUtils.toByteArray(encryptedPacket);
 
 			splitKeyEncryptedData(in);
-
+			eventId = EventId.RPR_402.toString();
+			eventName = EventName.UPDATE.toString();
+			eventType = EventType.BUSINESS.toString();
+			description = "Split the key and encrypted data success";
 			byte[] aeskey = MosipDecryptor.asymmetricPrivateDecrypt(readPrivatekey(registrationId), sessionKey,
 					MosipSecurityMethod.RSA_WITH_PKCS1PADDING);
 
@@ -59,12 +84,18 @@ public class Decryptor {
 			outstream = new ByteArrayInputStream(aesDecryptedData);
 
 		} catch (IOException | MosipInvalidDataException | MosipInvalidKeyException e) {
-
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
+			description = "Invalid data and key exception while decrypting the packet failure";
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
 							.getErrorMessage(),
 					e);
+		} finally {
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					registrationId);
 		}
 		return outstream;
 	}
@@ -83,13 +114,23 @@ public class Decryptor {
 		try {
 			fileInputStream = new FileInputStream(new File(privateKey + registrationId + "/private.key"));
 			rprivateKey = IOUtils.toByteArray(fileInputStream);
+			eventId = EventId.RPR_401.toString();
+			eventName = EventName.GET.toString();
+			eventType = EventType.BUSINESS.toString();
+			description = "Read private key from private key file success";
 		} catch (IOException e) {
-
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
+			description = "Read private key from private key file failure";
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
 							.getErrorMessage(),
 					e);
+		}finally {
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					registrationId);
 		}
 
 		return rprivateKey;

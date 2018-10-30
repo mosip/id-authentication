@@ -109,7 +109,7 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void getRegistrationStatusSuccessTest() {
+	public void testGetRegistrationStatusSuccess() {
 
 		RegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
 		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getStatusCode());
@@ -117,7 +117,7 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
-	public void getRegistrationStatusFailureTest() throws TablenotAccessibleException {
+	public void testGetRegistrationStatusFailure() throws TablenotAccessibleException {
 		DataAccessLayerException exp = new DataAccessLayerException(
 				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
@@ -126,14 +126,14 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void findbyfilesByThresholdSuccessTest() {
+	public void testFindbyfilesByThresholdSuccess() {
 		List<RegistrationStatusDto> list = registrationStatusService
 				.findbyfilesByThreshold("PACKET_UPLOADED_TO_LANDING_ZONE");
 		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
-	public void findbyfilesByThresholdFailureTest() {
+	public void testFindbyfilesByThresholdFailure() {
 		DataAccessLayerException exp = new DataAccessLayerException(
 				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
@@ -143,7 +143,7 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void addRegistrationStatusTest() {
+	public void testAddRegistrationStatusSuccess() {
 
 		registrationStatusService.addRegistrationStatus(registrationStatusDto);
 		RegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
@@ -151,7 +151,7 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
-	public void addRegistrationFailureTest() {
+	public void testAddRegistrationFailure() {
 		DataAccessLayerException exp = new DataAccessLayerException(
 				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
@@ -160,7 +160,7 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void updateRegistrationStatusSuccessTest() {
+	public void testUpdateRegistrationStatusSuccess() {
 		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 		RegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
@@ -168,7 +168,7 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
-	public void updateRegistrationStatusFailureTest() {
+	public void testUpdateRegistrationStatusFailure() {
 		DataAccessLayerException exp = new DataAccessLayerException(
 				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
@@ -178,14 +178,14 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void getByStatus() {
+	public void testGetByStatusSuccess() {
 		Mockito.when(registrationStatusDao.getEnrolmentStatusByStatusCode(ArgumentMatchers.any())).thenReturn(entities);
 		List<RegistrationStatusDto> list = registrationStatusService.getByStatus("PACKET_UPLOADED_TO_LANDING_ZONE");
 		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
-	public void getByStatusFailureTest() {
+	public void testGetByStatusFailure() {
 		DataAccessLayerException exp = new DataAccessLayerException(
 				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
@@ -194,14 +194,14 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void getByIds() {
+	public void testGetByIdsSuccess() {
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
 		List<RegistrationStatusDto> list = registrationStatusService.getByIds("1001,1000");
 		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
-	public void getByIdsFailureTest() {
+	public void testGetByIdsFailure() {
 		DataAccessLayerException exp = new DataAccessLayerException(
 				HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
