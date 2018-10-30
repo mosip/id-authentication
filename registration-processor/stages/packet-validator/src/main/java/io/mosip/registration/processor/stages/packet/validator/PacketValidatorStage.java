@@ -63,17 +63,17 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	/** The event id. */
 	private String eventId = "";
-	
+
 	/** The event name. */
 	private String eventName = "";
-	
+
 	/** The event type. */
 	private String eventType = "";
-	
+
 	/** The core audit request builder. */
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
-	
+
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, MessageBusAddress.STRUCTURE_BUS_OUT);
@@ -85,7 +85,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		object.setIsValid(Boolean.FALSE);
 		object.setInternalError(Boolean.FALSE);
 		String registrationId = object.getRid();
-		String description="";
+		String description = "";
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
 		try {
 
@@ -117,7 +117,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
 				DemographicInfo demographicInfo = (DemographicInfo) JsonUtil
 						.inputStreamtoJavaObject(demographicInfoStream, DemographicInfo.class);
-				packetInfoManager.saveDemographicData(demographicInfo, packetInfo.getMetaData());				
+				packetInfoManager.saveDemographicData(demographicInfo, packetInfo.getMetaData());
 
 			} else {
 				object.setIsValid(Boolean.FALSE);
@@ -131,14 +131,14 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_FAILED.toString());
 
 			}
-			if(!isFilesValidated) {
+			if (!isFilesValidated) {
 				description = "File validation Failed for registration id : " + registrationId;
-			}else if(!isCheckSumValidated) {
+			} else if (!isCheckSumValidated) {
 				description = "Checksum validation failed for registration id : " + registrationId;
-			}else {
+			} else {
 				description = "Packet validation successful for registration id : " + registrationId;
 			}
-			
+
 			eventId = EventId.RPR_402.toString();
 			eventName = EventName.UPDATE.toString();
 			eventType = EventType.BUSINESS.toString();
@@ -148,7 +148,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		} catch (IOException e) {
 			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), e);
 			object.setInternalError(Boolean.TRUE);
-			description="Internal error occured while processing registratio  id : " + registrationId;
+			description = "Internal error occured while processing registration  id : " + registrationId;
 			eventId = EventId.RPR_405.toString();
 			eventName = EventName.EXCEPTION.toString();
 			eventType = EventType.SYSTEM.toString();
@@ -156,14 +156,15 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		} catch (Exception ex) {
 			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), ex);
 			object.setInternalError(Boolean.TRUE);
-			description="Internal error occured while processing registratio  id : " + registrationId;
+			description = "Internal error occured while processing registration  id : " + registrationId;
 			eventId = EventId.RPR_405.toString();
 			eventName = EventName.EXCEPTION.toString();
 			eventType = EventType.SYSTEM.toString();
-		}finally {
-			
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,registrationId);
-			
+		} finally {
+
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					registrationId);
+
 		}
 
 		return object;
