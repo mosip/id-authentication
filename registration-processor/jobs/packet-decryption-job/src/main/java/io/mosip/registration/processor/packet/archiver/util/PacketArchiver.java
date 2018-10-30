@@ -3,6 +3,7 @@ package io.mosip.registration.processor.packet.archiver.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.OffsetDateTime;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
@@ -42,6 +44,8 @@ public class PacketArchiver {
 	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
+	
+	private final static String APPENDER = "_";
 
 	/**
 	 * Archive packet.
@@ -60,6 +64,7 @@ public class PacketArchiver {
 		String description = "failure";
 
 		InputStream encryptedpacket = filesystemCephAdapterImpl.getPacket(registrationId);
+		registrationId = registrationId + APPENDER + DateUtils.formatDate(new Date(), "YYYYMMddhhmmss");
 
 		if (encryptedpacket != null) {
 			try {
