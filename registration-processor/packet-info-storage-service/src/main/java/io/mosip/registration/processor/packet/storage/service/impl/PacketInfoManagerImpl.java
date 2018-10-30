@@ -148,7 +148,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			//Event constants for audit log
 			eventId = EventId.RPR_402.toString();
 			eventName = EventName.UPDATE.toString();
-			eventType = EventType.BUSINESS.toString();
+			eventType = EventType.BUSINESS.toString();R
 			
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
