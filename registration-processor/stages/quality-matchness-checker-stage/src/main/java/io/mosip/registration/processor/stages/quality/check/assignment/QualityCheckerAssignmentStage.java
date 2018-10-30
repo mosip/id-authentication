@@ -3,18 +3,23 @@
  */
 package io.mosip.registration.processor.stages.quality.check.assignment;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
-
+import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
+import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.quality.check.dto.QCUserDto;
 /**
  * @author Jyoti Prakash Nayak M1030448
  *
  */
 public class QualityCheckerAssignmentStage extends MosipVerticleManager {
 
-	
+	@Autowired
+	QualityCheckManager<String, ApplicantInfoDto, QCUserDto> qualityCheckManager;
 	
 	/**
 	 * Method to consume quality check address bus and receive the packet details
@@ -30,6 +35,7 @@ public class QualityCheckerAssignmentStage extends MosipVerticleManager {
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		
+		qualityCheckManager.assignQCUser(object.getRid());
 		return null;
 	}
 

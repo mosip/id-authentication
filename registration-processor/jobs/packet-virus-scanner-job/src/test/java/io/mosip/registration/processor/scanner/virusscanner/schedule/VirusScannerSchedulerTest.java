@@ -1,4 +1,4 @@
-package io.mosip.registration.scanner.virusscanner.schedule;
+package io.mosip.registration.processor.scanner.virusscanner.schedule;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;

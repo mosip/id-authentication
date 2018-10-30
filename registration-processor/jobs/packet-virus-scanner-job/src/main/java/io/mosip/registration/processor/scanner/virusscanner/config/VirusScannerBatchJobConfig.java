@@ -21,7 +21,7 @@ import io.mosip.registration.processor.scanner.virusscanner.tasklet.VirusScanner
  */
 @Configuration
 @EnableBatchProcessing
-public class PacketScannerBatchJobConfig implements VirusScannerJob<Job> {
+public class VirusScannerBatchJobConfig implements VirusScannerJob<Job> {
 
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;

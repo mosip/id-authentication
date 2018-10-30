@@ -4,10 +4,13 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.Random;
 
+import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdPKEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,7 +44,13 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 
 	@Override
 	public void assignQCUser(String applicantRegistrationId) {
-
+			List<String> qcUsersList=Arrays.asList("qc001","qc002","qc003");
+		String qcUserId= qcUsersList.get(new Random().nextInt(qcUsersList.size()));
+		QCUserDto qcUserDto=new QCUserDto();
+		qcUserDto.setQcUserId(qcUserId);
+		qcUserDto.setRegId(applicantRegistrationId);
+		qcUserDto.setDecisionStatus("assigned");
+		assignNewPacket(qcUserDto);
 	}
 
 	@Override
@@ -79,7 +88,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 		});
 //		entities.forEach(entity -> {
 //			//qcUserDtos.stream().filter(dto -> )
-//			
+//
 //			//entity.setStatus(dto.getDecisionStatus().toString());
 //			entity = applicantInfoDao.update(entity);
 //			resultDtos.add(convertEntityToDto(entity));
@@ -89,7 +98,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 
 	private Map<QcuserRegistrationIdEntity, QCUserDto> validateUser(List<QCUserDto> qcUserDtos,Map<QcuserRegistrationIdEntity, QCUserDto> hmap) {
 		List<QcuserRegistrationIdEntity> entities = new ArrayList<>();
-		
+
 		qcUserDtos.forEach(dto -> {
 
 			if (dto.getQcUserId() == null || dto.getQcUserId().isEmpty()) {
@@ -99,7 +108,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 			if (dto.getRegId() == null || dto.getRegId().isEmpty()) {
 				throw new RegistrationIdNotFoundException(QualityCheckerStatusCode.REGISTRATION_ID_NOT_FOUND.name());
 			}
-			
+
 			QcuserRegistrationIdEntity entity = applicantInfoDao.findById(dto.getQcUserId(), dto.getRegId());
 			if (entity == null) {
 				throw new ResultNotFoundException(QualityCheckerStatusCode.DATA_NOT_FOUND.name() + " FOR RID :"
@@ -110,6 +119,38 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 		});
 		return hmap;
 	}
+
+    private void assignNewPacket(QCUserDto qcUserDto) {
+        boolean isTransactionSuccessful= false;
+        try {
+            QcuserRegistrationIdEntity qcUserEntity = convertDtoToEntity(qcUserDto);
+            applicantInfoDao.save(qcUserEntity);
+            isTransactionSuccessful=true;
+        } catch (DataAccessLayerException e) {
+            throw new TablenotAccessibleException("qcuser_registration_id Table Not Accessible", e);
+        }
+        finally {
+            String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
+                    : "description--Demographic Failed to save";
+            createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+                    AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+                    AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+                    AuditLogTempConstant.EVENT_TYPE.toString());
+        }
+    }
+
+    private QcuserRegistrationIdEntity convertDtoToEntity(QCUserDto qcUserDto) {
+        QcuserRegistrationIdEntity qcUserEntity = new QcuserRegistrationIdEntity();
+        QcuserRegistrationIdPKEntity qcuserPKEntity = new QcuserRegistrationIdPKEntity();
+        qcuserPKEntity.setRegId(qcUserDto.getRegId());
+        qcuserPKEntity.setUsrId(qcUserDto.getQcUserId());
+
+        qcUserEntity.setId(qcuserPKEntity);
+        qcUserEntity.setStatus(qcUserDto.getDecisionStatus());
+
+        return qcUserEntity;
+
+    }
 
 	public QCUserDto convertEntityToDto(QcuserRegistrationIdEntity entity) {
 		QCUserDto dto = new QCUserDto();
