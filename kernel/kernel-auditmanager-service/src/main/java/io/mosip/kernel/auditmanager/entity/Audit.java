@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
  *
  */
 @Entity
-@Table(name = "audit_log_app", schema = "audit")
+@Table(name = "app_audit_log", schema = "audit")
 @Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
