@@ -46,7 +46,8 @@ public class PacketDecryptorTasklet implements Tasklet {
 
 	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
 
-	private DecryptionMessageSender decryptionMessageSender = new DecryptionMessageSender();
+	@Autowired
+	private DecryptionMessageSender decryptionMessageSender;
 
 	@Autowired
 	private Decryptor decryptor;

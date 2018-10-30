@@ -26,10 +26,12 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
@@ -38,6 +40,7 @@ import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAc
 import io.mosip.registration.processor.packet.decryptor.job.Decryptor;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
+import io.mosip.registration.processor.packet.decryptor.job.messagesender.DecryptionMessageSender;
 import io.mosip.registration.processor.packet.decryptor.job.tasklet.PacketDecryptorTasklet;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -48,6 +51,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * The Class PacketDecryptorTaskletTest.
  * 
  */
+@RefreshScope
 @RunWith(SpringRunner.class)
 public class PacketDecryptorTaskletTest {
 
@@ -66,6 +70,8 @@ public class PacketDecryptorTaskletTest {
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
 
+	@Mock
+	private DecryptionMessageSender decryptionMessageSender;
 	/** The decryptor. */
 	@Mock
 	private Decryptor decryptor;
@@ -139,6 +145,7 @@ public class PacketDecryptorTaskletTest {
 
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(RegistrationStatusDto.class));
 
+		Mockito.doNothing().when(decryptionMessageSender).sendMessage(any(MessageDTO.class));
 		RepeatStatus status = packetDecryptorTasklet.execute(stepContribution, chunkContext);
 		Assert.assertEquals(RepeatStatus.FINISHED, status);
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {

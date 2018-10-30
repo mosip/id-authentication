@@ -1,13 +1,12 @@
 package io.mosip.registration.processor.camel.bridge;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder;
 
+import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -37,14 +36,12 @@ public class MosipBridgeFactory {
 	 */
 	public static void getEventBus() throws InterruptedException, ExecutionException {
 
-		List<String> addressList = new ArrayList<>();
-		addressList.add("127.0.0.1:47500..47549");
 		TcpDiscoverySpi tcpDiscoverySpi = new TcpDiscoverySpi();
 		TcpDiscoveryVmIpFinder tcpDiscoveryVmIpFinder = new TcpDiscoveryVmIpFinder();
-		tcpDiscoveryVmIpFinder.setAddresses(addressList);
+		tcpDiscoveryVmIpFinder.setAddresses(BridgeUtil.getIpAddressPortRange());
 		tcpDiscoverySpi.setIpFinder(tcpDiscoveryVmIpFinder);
 		IgniteConfiguration igniteConfiguration = new IgniteConfiguration();
-		igniteConfiguration.setLocalHost("127.0.0.1");
+		igniteConfiguration.setLocalHost(BridgeUtil.getLocalHost());
 		igniteConfiguration.setDiscoverySpi(tcpDiscoverySpi);
 		ClusterManager clusterManager = new IgniteClusterManager(igniteConfiguration);
 		VertxOptions options = new VertxOptions().setClusterManager(clusterManager).setHAEnabled(true)
