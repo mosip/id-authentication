@@ -27,9 +27,9 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.packet.encryption.aes.AESSeedGenerator;
-import io.mosip.registration.service.packet.encryption.aes.impl.AESEncryptionServiceImpl;
-import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionService;
+import io.mosip.registration.service.AESSeedGenerator;
+import io.mosip.registration.service.RSAEncryptionService;
+import io.mosip.registration.service.impl.AESEncryptionServiceImpl;
 import io.mosip.registration.util.keymanager.AESKeyManager;
 import io.mosip.registration.util.keymanager.impl.AESKeyManagerImpl;
 

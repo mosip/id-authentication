@@ -18,7 +18,7 @@ import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
-import io.mosip.registration.service.impl.LoginServiceImpl;
+import io.mosip.registration.service.LoginService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -44,10 +44,10 @@ public class LoginOTPController extends BaseController implements Initializable 
 	private Environment environment;
 
 	/**
-	 * The reference to loginServiceImpl class.
+	 * The reference to loginService interface.
 	 */
 	@Autowired
-	private LoginServiceImpl loginServiceImpl;
+	private LoginService loginService;
 
 	@Autowired
 	private SchedulerUtil schedulerUtil;
@@ -93,7 +93,7 @@ public class LoginOTPController extends BaseController implements Initializable 
 			ResponseDTO responseDTO = null;
 
 			// Service Layer interaction
-			responseDTO = loginServiceImpl.getOTP(eoUsername.getText());
+			responseDTO = loginService.getOTP(eoUsername.getText());
 
 			if (responseDTO.getSuccessResponseDTO() != null) {
 				// Enable submit button
@@ -135,7 +135,7 @@ public class LoginOTPController extends BaseController implements Initializable 
 
 				ResponseDTO responseDTO = null;
 
-				responseDTO = loginServiceImpl.validateOTP(eoUsername.getText(), otp.getText());
+				responseDTO = loginService.validateOTP(eoUsername.getText(), otp.getText());
 
 				if (responseDTO != null) {
 					if (responseDTO.getSuccessResponseDTO() != null) {
@@ -149,7 +149,7 @@ public class LoginOTPController extends BaseController implements Initializable 
 							SessionContext sessionContext = SessionContext.getInstance();
 							// Resetting login sequence to the Session context after log out
 							if (sessionContext.getMapObject() == null) {
-								Map<String, Object> userLoginMode = loginServiceImpl.getModesOfLogin();
+								Map<String, Object> userLoginMode = loginService.getModesOfLogin();
 								sessionContext.setMapObject(userLoginMode);
 								sessionContext.getMapObject().put(RegistrationConstants.LOGIN_INITIAL_SCREEN,
 										RegistrationConstants.OTP);

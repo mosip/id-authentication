@@ -1,4 +1,4 @@
-package io.mosip.registration.service.packet.encryption.aes;
+package io.mosip.registration.service;
 
 import io.mosip.registration.exception.RegBaseCheckedException;
 
@@ -18,5 +18,5 @@ public interface AESEncryptionService {
 	 * @return encrypted data as byte array
 	 * @throws RegBaseCheckedException
 	 */
-	public byte[] encrypt(final byte[] dataToEncrypt) throws RegBaseCheckedException;
+	byte[] encrypt(final byte[] dataToEncrypt) throws RegBaseCheckedException;
 }

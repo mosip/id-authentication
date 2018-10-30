@@ -18,7 +18,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.context.SessionContext.UserContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.packet.encryption.aes.impl.AESSeedGeneratorImpl;
+import io.mosip.registration.service.impl.AESSeedGeneratorImpl;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 import static org.junit.Assert.assertFalse;

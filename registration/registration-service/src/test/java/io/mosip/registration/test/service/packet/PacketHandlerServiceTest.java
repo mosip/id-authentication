@@ -13,7 +13,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationExceptions;
@@ -23,7 +23,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PacketCreationService;
 import io.mosip.registration.service.PacketEncryptionService;
-import io.mosip.registration.service.packet.PacketHandlerServiceImpl;
+import io.mosip.registration.service.impl.PacketHandlerServiceImpl;
 
 public class PacketHandlerServiceTest {
 	@Rule
@@ -35,7 +35,7 @@ public class PacketHandlerServiceTest {
 	@Mock
 	private PacketEncryptionService packetEncryptionService;
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditFactoryImpl auditFactory;
 	@Mock
 	private MosipRollingFileAppender mosipRollingFileAppender;
 	@Mock

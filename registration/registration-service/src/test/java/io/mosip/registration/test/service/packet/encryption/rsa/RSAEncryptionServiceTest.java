@@ -25,7 +25,7 @@ import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionServiceImpl;
+import io.mosip.registration.service.impl.RSAEncryptionServiceImpl;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 
 import static io.mosip.registration.constants.RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE;

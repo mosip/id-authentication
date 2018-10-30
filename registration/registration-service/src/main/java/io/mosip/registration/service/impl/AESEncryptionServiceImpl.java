@@ -1,18 +1,15 @@
-package io.mosip.registration.service.packet.encryption.aes.impl;
-
-import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_ENCRYPTION;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static java.lang.System.arraycopy;
+package io.mosip.registration.service.impl;
 
 import java.security.Security;
 import java.util.List;
+
+import static java.lang.System.arraycopy;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.encryption.MosipEncryptor;
@@ -28,10 +25,14 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.packet.encryption.aes.AESEncryptionService;
-import io.mosip.registration.service.packet.encryption.aes.AESSeedGenerator;
-import io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionService;
+import io.mosip.registration.service.AESEncryptionService;
+import io.mosip.registration.service.AESSeedGenerator;
+import io.mosip.registration.service.RSAEncryptionService;
 import io.mosip.registration.util.keymanager.AESKeyManager;
+
+import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_ENCRYPTION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * API class to encrypt the data using AES algorithm
@@ -40,7 +41,7 @@ import io.mosip.registration.util.keymanager.AESKeyManager;
  * @since 1.0.0
  *
  */
-@Component
+@Service
 public class AESEncryptionServiceImpl implements AESEncryptionService {
 
 	@Autowired
@@ -79,9 +80,11 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.packet.encryption.aes.AESEncryptionService#encrypt(byte[])
 	 */
+	@Override
 	public byte[] encrypt(final byte[] dataToEncrypt) throws RegBaseCheckedException {
 		logger.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 				"Packet encryption had been started");
+		
 		try {
 			// Enable AES 256 bit encryption
 			Security.setProperty("crypto.policy", "unlimited");
@@ -94,17 +97,20 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 			// Encrypt the Data using AES
 			final byte[] encryptedData = MosipEncryptor.symmetricEncrypt(sessionKey.getEncoded(), dataToEncrypt,
 					MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
+			
 			logger.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"In-Memory zip file encrypted using AES Algorithm successfully");
 
 			// Encrypt the AES Session Key using RSA
 			final byte[] rsaEncryptedKey = rsaEncryptionService.encrypt(sessionKey.getEncoded());
+			
 			logger.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"AES Session Key encrypted using RSA Algorithm successfully");
 
 			// Combine AES Session Key, AES Key Splitter and RSA Encrypted Data
 			auditFactory.audit(AuditEvent.PACKET_AES_ENCRYPTED, AppModule.PACKET_AES_ENCRYPTOR,
 					"RSA and AES Encryption completed successfully", "RID", "Packet RID");
+			
 			return concat(rsaEncryptedKey, encryptedData);
 		} catch (MosipInvalidDataException mosipInvalidDataException) {
 			throw new RegBaseCheckedException(RegistrationExceptions.REG_INVALID_DATA_ERROR_CODE.getErrorCode(),
@@ -121,6 +127,7 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 	private byte[] concat(final byte[] keyByteArray, final byte[] encryptedDataByteArray) {
 		logger.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 				"Encryption concatenation had been started");
+		
 		try {
 			final String keySplitter = environment.getProperty(RegistrationConstants.AES_KEY_CIPHER_SPLITTER);
 			final int keyLength = keyByteArray.length;
@@ -135,6 +142,7 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 
 			logger.debug(LOG_PKT_AES_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"Encryption concatenation had been ended");
+			
 			return combinedData;
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.CONCAT_ENCRYPTED_DATA,

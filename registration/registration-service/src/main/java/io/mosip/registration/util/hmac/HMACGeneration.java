@@ -18,6 +18,7 @@ import io.mosip.registration.dto.json.metadata.HashSequence;
  * Hash generation for packet DTO
  * 
  * @author YASWANTH S
+ * @author Balaji Sridharan
  * @since 1.0.0
  */
 public class HMACGeneration {

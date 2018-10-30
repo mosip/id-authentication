@@ -28,7 +28,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.service.packet.PacketHandlerService;
+import io.mosip.registration.service.PacketHandlerService;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 
 public class PacketHandlerAPIDemo extends SpringConfiguration {

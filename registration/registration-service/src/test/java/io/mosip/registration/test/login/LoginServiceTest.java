@@ -24,7 +24,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.dao.RegistrationAppLoginDAO;
@@ -64,7 +64,7 @@ public class LoginServiceTest {
 	private MosipRollingFileAppender mosipRollingFileAppender;
 
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditFactoryImpl auditFactory;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();

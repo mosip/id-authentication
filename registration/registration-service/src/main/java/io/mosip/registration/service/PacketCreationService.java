@@ -19,5 +19,5 @@ public interface PacketCreationService {
 	 *            the enrollment data for which packet has to be created
 	 * @throws RegBaseCheckedException
 	 */
-	public byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException;
+	byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException;
 }

@@ -1,4 +1,4 @@
-package io.mosip.registration.service.packet.encryption.aes.impl;
+package io.mosip.registration.service.impl;
 
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_AES_SEEDS;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -18,7 +18,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.packet.encryption.aes.AESSeedGenerator;
+import io.mosip.registration.service.AESSeedGenerator;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 
 /**
@@ -44,7 +44,7 @@ public class AESSeedGeneratorImpl implements AESSeedGenerator {
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.registration.manager.packet.encryption.aes.AESSeedGenerator#generateAESKeySeeds()
+	 * @see io.mosip.registration.service.manager.packet.encryption.aes.AESSeedGenerator#generateAESKeySeeds()
 	 */
 	@Override
 	public List<String> generateAESKeySeeds() throws RegBaseCheckedException {
@@ -55,8 +55,10 @@ public class AESSeedGeneratorImpl implements AESSeedGenerator {
 			aesKeySeeds.add(RegistrationSystemPropertiesChecker.getMachineId());
 			aesKeySeeds.add(SessionContext.getInstance().getUserContext().getName());
 			aesKeySeeds.add(String.valueOf(currentTimeMillis()));
+			
 			logger.debug(LOG_PKT_AES_SEEDS, APPLICATION_NAME, APPLICATION_ID,
 					"Generating seeds for AES Encryption had been ended");
+			
 			return aesKeySeeds;
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.AES_SEED_GENERATION,

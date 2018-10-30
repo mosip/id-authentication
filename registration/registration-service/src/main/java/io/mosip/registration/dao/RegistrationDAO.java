@@ -9,6 +9,8 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  * DAO class for Repository
  * 
  * @author Balaji Sridharan
+ * @author Mahesh Kumar
+ * @author Saravanakumar Gnanaguru
  * @since 1.0.0
  *
  */

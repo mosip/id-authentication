@@ -1,12 +1,4 @@
-package io.mosip.registration.util.zip;
-
-import static io.mosip.registration.constants.LoggerConstants.LOG_ZIP_CREATION;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.RegistrationConstants.IMAGE_TYPE;
-import static io.mosip.registration.constants.RegistrationConstants.JSON_FILE_EXTENSION;
-import static io.mosip.registration.constants.RegistrationExceptions.REG_IO_EXCEPTION;
-import static java.io.File.separator;
+package io.mosip.registration.service.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import static java.io.File.separator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,37 +24,48 @@ import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.ZipCreationService;
+
+import static io.mosip.registration.constants.LoggerConstants.LOG_ZIP_CREATION;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.IMAGE_TYPE;
+import static io.mosip.registration.constants.RegistrationConstants.JSON_FILE_EXTENSION;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_IO_EXCEPTION;
 
 /**
- * API Class to generate the Enrollment Registration Structure for zip file
- * 
+ * API Class to generate the in-memory zip file for Registration Packet.
+ *
  * @author Balaji Sridharan
  * @since 1.0.0
- *
  */
 @Service
-public class ZipCreationService {
+public class ZipCreationServiceImpl implements ZipCreationService {
 
+	/** The logger. */
 	private static MosipLogger logger;
 
+	/**
+	 * Initialize logger.
+	 *
+	 * @param mosipRollingFileAppender
+	 *            the mosip rolling file appender
+	 */
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
 		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
 	}
 
-	/**
-	 * Returns the byte array of the packet zip file containing the Registration
-	 * Details
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param registrationDTO
-	 *            the Registration to be stored in zip file
-	 * @return the byte array of packet zip file
-	 * @throws RegBaseCheckedException
+	 * @see io.mosip.registration.service.ZipCreationService#createPacket(io.mosip.
+	 * registration.dto.RegistrationDTO, java.util.Map)
 	 */
-	public static byte[] createPacket(final RegistrationDTO registrationDTO, final Map<String, byte[]> jsonMap)
+	@Override
+	public byte[] createPacket(final RegistrationDTO registrationDTO, final Map<String, byte[]> jsonMap)
 			throws RegBaseCheckedException {
-		logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
-				"Packet Zip had been called");
+		logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Packet Zip had been called");
 
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 				ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream)) {
@@ -74,8 +79,8 @@ public class ZipCreationService {
 						folderName = "Biometric".concat(separator).concat("Applicant").concat(separator);
 						addBiometricImages(registrationDTO.getBiometricDTO().getApplicantBiometricDTO(), folderName,
 								zipOutputStream);
-						logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME,
-								APPLICATION_ID, "Applicant's biometric added");
+
+						logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Applicant's biometric added");
 					}
 
 					// Add Introducer Biometrics to packet zip
@@ -83,8 +88,9 @@ public class ZipCreationService {
 						folderName = "Biometric".concat(separator).concat("Introducer").concat(separator);
 						addBiometricImages(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), folderName,
 								zipOutputStream);
-						logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME,
-								APPLICATION_ID, "Introcucer's biometric added");
+
+						logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
+								"Introcucer's biometric added");
 					}
 				}
 
@@ -94,20 +100,21 @@ public class ZipCreationService {
 						String folderName = "Demographic".concat(separator).concat("Applicant").concat(separator);
 						addDemogrpahicData(registrationDTO.getDemographicDTO().getApplicantDocumentDTO(), folderName,
 								zipOutputStream);
-						logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME,
-								APPLICATION_ID, "Applicant's demographic added");
+
+						logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
+								"Applicant's demographic added");
 					}
 					writeFileToZip(
 							"Demographic".concat(separator).concat("DemographicInfo").concat(JSON_FILE_EXTENSION),
 							jsonMap.get(RegistrationConstants.DEMOGRPAHIC_JSON_NAME), zipOutputStream);
-					logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
-							"Demographic JSON added");
+
+					logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Demographic JSON added");
 				}
 
 				// Add the HMAC Info
 				writeFileToZip("HMACFile.txt", jsonMap.get(RegistrationConstants.HASHING_JSON_NAME), zipOutputStream);
-				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
-						"HMAC added");
+
+				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "HMAC added");
 
 				if (checkNotNull(registrationDTO.getBiometricDTO())) {
 					if (checkNotNull(registrationDTO.getBiometricDTO().getSupervisorBiometricDTO())) {
@@ -119,21 +126,21 @@ public class ZipCreationService {
 						addOfficerBiometric("EnrollmentOfficerBioImage",
 								registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), zipOutputStream);
 					}
-					logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
-							"Supervisor's Biometric added");
+
+					logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Supervisor's Biometric added");
 				}
 
 				// Add Registration Meta JSON
 				writeFileToZip("PacketMetaInfo".concat(JSON_FILE_EXTENSION),
 						jsonMap.get(RegistrationConstants.PACKET_META_JSON_NAME), zipOutputStream);
-				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
-						"Registration Packet Meta added");
+
+				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Packet Meta added");
 
 				// Add Audits
 				writeFileToZip(RegistrationConstants.AUDIT_JSON_FILE.concat(JSON_FILE_EXTENSION),
 						jsonMap.get(RegistrationConstants.AUDIT_JSON_FILE), zipOutputStream);
-				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
-						"Registration Audit Logs Meta added");
+
+				logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Audit Logs Meta added");
 
 				zipOutputStream.flush();
 				byteArrayOutputStream.flush();
@@ -141,17 +148,28 @@ public class ZipCreationService {
 				byteArrayOutputStream.close();
 			}
 
-			logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID,
-					"Packet zip had been ended");
+			logger.debug(LOG_ZIP_CREATION, APPLICATION_NAME, APPLICATION_ID, "Packet zip had been ended");
+
 			return byteArrayOutputStream.toByteArray();
 		} catch (IOException exception) {
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), exception.getCause().getMessage());
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION,
-					runtimeException.toString());
+			throw new RegBaseUncheckedException(RegistrationConstants.PACKET_ZIP_CREATION, runtimeException.toString());
 		}
 	}
 
+	/**
+	 * Adds the officer biometric.
+	 *
+	 * @param fileName
+	 *            the file name
+	 * @param supervisorBio
+	 *            the supervisor bio
+	 * @param zipOutputStream
+	 *            the zip output stream
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
 	private static void addOfficerBiometric(final String fileName, final BiometricInfoDTO supervisorBio,
 			final ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
 		List<FingerprintDetailsDTO> fingerprintDetailsDTOs = supervisorBio.getFingerprintDetailsDTO();
@@ -164,6 +182,18 @@ public class ZipCreationService {
 		}
 	}
 
+	/**
+	 * Adds the demogrpahic data.
+	 *
+	 * @param applicantDocumentDTO
+	 *            the applicant document DTO
+	 * @param folderName
+	 *            the folder name
+	 * @param zipOutputStream
+	 *            the zip output stream
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
 	private static void addDemogrpahicData(final ApplicantDocumentDTO applicantDocumentDTO, final String folderName,
 			final ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
 		// Add Proofs
@@ -178,11 +208,24 @@ public class ZipCreationService {
 				zipOutputStream);
 		addToZip(applicantDocumentDTO.getExceptionPhoto(),
 				folderName + applicantDocumentDTO.getExceptionPhotoName() + IMAGE_TYPE, zipOutputStream);
-		addToZip(applicantDocumentDTO.getAcknowledgeReceipt(),
-				folderName + applicantDocumentDTO.getAcknowledgeReceiptName() + "." + RegistrationConstants.IMAGE_FORMAT,
+		addToZip(
+				applicantDocumentDTO.getAcknowledgeReceipt(), folderName
+						+ applicantDocumentDTO.getAcknowledgeReceiptName() + "." + RegistrationConstants.IMAGE_FORMAT,
 				zipOutputStream);
 	}
 
+	/**
+	 * Adds the to zip.
+	 *
+	 * @param content
+	 *            the content
+	 * @param fileNameWithPath
+	 *            the file name with path
+	 * @param zipOutputStream
+	 *            the zip output stream
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
 	private static void addToZip(final byte[] content, final String fileNameWithPath,
 			final ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
 		if (checkNotNull(content)) {
@@ -190,6 +233,18 @@ public class ZipCreationService {
 		}
 	}
 
+	/**
+	 * Adds the biometric images.
+	 *
+	 * @param biometricDTO
+	 *            the biometric DTO
+	 * @param folderName
+	 *            the folder name
+	 * @param zipOutputStream
+	 *            the zip output stream
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
 	private static void addBiometricImages(final BiometricInfoDTO biometricDTO, String folderName,
 			ZipOutputStream zipOutputStream) throws RegBaseCheckedException {
 		// Biometric -> Applicant - Files
@@ -210,10 +265,29 @@ public class ZipCreationService {
 		}
 	}
 
+	/**
+	 * Check not null.
+	 *
+	 * @param object
+	 *            the object
+	 * @return true, if successful
+	 */
 	private static boolean checkNotNull(Object object) {
 		return object != null;
 	}
 
+	/**
+	 * Write file to zip.
+	 *
+	 * @param fileName
+	 *            the file name
+	 * @param file
+	 *            the file
+	 * @param zipOutputStream
+	 *            the zip output stream
+	 * @throws RegBaseCheckedException
+	 *             the reg base checked exception
+	 */
 	private static void writeFileToZip(String fileName, byte[] file, ZipOutputStream zipOutputStream)
 			throws RegBaseCheckedException {
 		try {

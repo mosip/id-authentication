@@ -72,11 +72,12 @@ public class AuditDAOImpl implements AuditDAO {
 	public int updateSyncAudits(List<String> auditUUIDs) {
 		logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "updateSyncAudits has been started");
+		
 		int updatedCount = 0;
 		try {
 			int syncAuditCount = auditUUIDs.size();
 			int endIndex = 0;
-			int updateLimit = 50;
+			int updateLimit = 1000;
 
 			for (int updatedAuditCount = 0; updatedAuditCount < syncAuditCount; updatedAuditCount += updateLimit) {
 				endIndex += updateLimit;
@@ -89,8 +90,10 @@ public class AuditDAOImpl implements AuditDAO {
 			throw new RegBaseUncheckedException(RegistrationConstants.UPDATE_SYNC_AUDIT,
 					runtimeException.toString());
 		}
+		
 		logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "updateSyncAudits has been ended");
+		
 		return updatedCount;
 	}
 

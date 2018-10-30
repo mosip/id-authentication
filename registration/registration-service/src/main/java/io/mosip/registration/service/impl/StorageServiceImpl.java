@@ -1,4 +1,4 @@
-package io.mosip.registration.util.store;
+package io.mosip.registration.service.impl;
 
 import static io.mosip.kernel.core.util.DateUtils.formatDate;
 import static io.mosip.registration.constants.LoggerConstants.LOG_PKT_STORAGE;
@@ -24,37 +24,33 @@ import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.StorageService;
 
 /**
- * Class to Store the Packets in local disk
+ * Class to store the encrypted packet and acknowledgement receipt of the
+ * Registration in local disk
  * 
  * @author Balaji Sridharan
  * @since 1.0.0
  *
  */
 @Service
-public class StorageService {
+public class StorageServiceImpl implements StorageService {
 
 	private MosipLogger logger;
 
 	@Autowired
-	private Environment environment;@Autowired
+	private Environment environment;
+
+	@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
 		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
 	}
-	/**
-	 * Writes the encrypted packet to the local storage
-	 * 
-	 * @param registrationId
-	 *            the id of the Registration
-	 * @param packet
-	 *            the encrypted packet data to be stored in local storage
-	 * @param ackReceipt
-	 *            the registration acknowledgement receipt to be stored in local
-	 *            storage
-	 * @return returns the file path where the files had been stored
-	 * @throws RegBaseCheckedException
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.service.StorageService#storeToDisk(java.lang.String, byte[], byte[])
 	 */
+	@Override
 	public String storeToDisk(String registrationId, byte[] packet, byte[] ackReceipt) throws RegBaseCheckedException {
 		try {
 			// Generate the file path for storing the Encrypted Packet and Acknowledgement
@@ -64,13 +60,16 @@ public class StorageService {
 							.concat(separator).concat(registrationId);
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(packet), new File(filePath.concat(ZIP_FILE_EXTENSION)));
-			logger.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID,
-					"Encrypted packet saved");
+
+			logger.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Encrypted packet saved");
+
 			// Storing the Registration Acknowledge Receipt Image
 			FileUtils.copyToFile(new ByteArrayInputStream(ackReceipt),
 					new File(filePath.concat("_Ack.").concat(RegistrationConstants.IMAGE_FORMAT)));
+
 			logger.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID,
 					"Registration's Acknowledgement Receipt saved");
+
 			return filePath;
 		} catch (MosipIOException ioException) {
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());

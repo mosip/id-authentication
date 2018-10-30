@@ -28,7 +28,7 @@ public class PropertyFileReader {
 	static {
 		properties = new Properties();
 		try {
-			properties.load(ClassLoader.getSystemResourceAsStream(RegistrationConstants.CONSTANTS_FILE_NAME));
+			properties.load(PropertyFileReader.class.getResourceAsStream(RegistrationConstants.CONSTANTS_FILE_NAME));
 		} catch (IOException ioException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.READ_PROPERTY_FILE_ERROR,
 					ioException.toString());

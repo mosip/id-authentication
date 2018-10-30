@@ -1,5 +1,7 @@
 package io.mosip.registration.test.audit;
 
+import static org.mockito.Mockito.when;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -12,13 +14,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
-
-import static org.mockito.Mockito.when;
 
 public class AuditFactoryTest {
 	
@@ -27,7 +27,7 @@ public class AuditFactoryTest {
 	@Mock
 	private AuditHandler<AuditRequestDto> auditHandler;
 	@InjectMocks
-	private AuditFactory auditFactory;
+	private AuditFactoryImpl auditFactory;
 	@Mock
 	private Environment environment;
 	

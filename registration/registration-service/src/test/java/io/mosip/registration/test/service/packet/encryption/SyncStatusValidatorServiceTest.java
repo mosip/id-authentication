@@ -28,7 +28,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.context.SessionContext;
@@ -62,7 +62,7 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration{
 	@Mock
 	private GeoLocationCapture geoLocationCapture;
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditFactoryImpl auditFactory;
 	
 	@BeforeClass
 	public static void beforeClass() {
