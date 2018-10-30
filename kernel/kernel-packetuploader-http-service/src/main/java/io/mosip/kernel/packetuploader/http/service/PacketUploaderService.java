@@ -3,6 +3,7 @@ package io.mosip.kernel.packetuploader.http.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.packetuploader.http.dto.PacketUploaderResponceDTO;
 
 /**
@@ -20,7 +21,8 @@ public interface PacketUploaderService {
 	 * @param packet
 	 *            packet to store
 	 * @return {@link PacketUploaderResponceDTO} with file information
+	 * @throws IOException 
 	 */
-	PacketUploaderResponceDTO storePacket(MultipartFile packet);
+	PacketUploaderResponceDTO storePacket(MultipartFile packet) throws IOException;
 
 }

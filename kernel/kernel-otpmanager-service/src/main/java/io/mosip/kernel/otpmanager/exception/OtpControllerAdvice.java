@@ -35,35 +35,35 @@ public class OtpControllerAdvice {
 	 * @return The response entity.
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, ArrayList<MosipErrors>>> otpGeneratorValidity(
+	public ResponseEntity<Map<String, ArrayList<Errors>>> otpGeneratorValidity(
 			final MethodArgumentNotValidException exception) {
-		MosipErrors error = new MosipErrors(OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorCode(),
+		Errors error = new Errors(OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorCode(),
 				OtpErrorConstants.OTP_GEN_ILLEGAL_KEY_INPUT.getErrorMessage());
-		ArrayList<MosipErrors> errorList = new ArrayList<>();
+		ArrayList<Errors> errorList = new ArrayList<>();
 		errorList.add(error);
-		Map<String, ArrayList<MosipErrors>> map = new HashMap<>();
+		Map<String, ArrayList<Errors>> map = new HashMap<>();
 		map.put(err, errorList);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
 
 	/**
-	 * This method handles MosipOtpInvalidArgumentExceptionHandler type of
+	 * This method handles OtpInvalidArgumentExceptionHandler type of
 	 * exceptions.
 	 * 
 	 * @param exception
 	 *            The exception.
 	 * @return The response entity.
 	 */
-	@ExceptionHandler(MosipOtpInvalidArgumentExceptionHandler.class)
-	public ResponseEntity<Object> otpValidationValidity(final MosipOtpInvalidArgumentExceptionHandler exception) {
-		Map<String, List<MosipErrors>> map = new HashMap<>();
+	@ExceptionHandler(OtpInvalidArgumentExceptionHandler.class)
+	public ResponseEntity<Object> otpValidationValidity(final OtpInvalidArgumentExceptionHandler exception) {
+		Map<String, List<Errors>> map = new HashMap<>();
 		map.put(err, exception.getList());
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
 	
-	@ExceptionHandler(MosipResourceNotFoundExceptionHandler.class)
-	public ResponseEntity<Object> otpResourceValidity(final MosipResourceNotFoundExceptionHandler exception) {
-		Map<String, List<MosipErrors>> map = new HashMap<>();
+	@ExceptionHandler(ResourceNotFoundExceptionHandler.class)
+	public ResponseEntity<Object> otpResourceValidity(final ResourceNotFoundExceptionHandler exception) {
+		Map<String, List<Errors>> map = new HashMap<>();
 		map.put(err, exception.getList());
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}

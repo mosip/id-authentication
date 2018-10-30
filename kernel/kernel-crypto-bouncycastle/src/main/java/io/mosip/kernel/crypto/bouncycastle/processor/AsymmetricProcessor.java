@@ -17,10 +17,10 @@ import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import io.mosip.kernel.core.crypto.exception.MosipInvalidDataException;
-import io.mosip.kernel.core.crypto.exception.MosipInvalidKeyException;
-import io.mosip.kernel.crypto.bouncycastle.constant.MosipSecurityExceptionCodeConstant;
-import io.mosip.kernel.crypto.bouncycastle.constant.MosipSecurityMethod;
+import io.mosip.kernel.core.crypto.exception.InvalidDataException;
+import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
+import io.mosip.kernel.crypto.bouncycastle.constant.SecurityExceptionCodeConstant;
+import io.mosip.kernel.crypto.bouncycastle.constant.SecurityMethod;
 import io.mosip.kernel.crypto.bouncycastle.impl.DecryptorImpl;
 import io.mosip.kernel.crypto.bouncycastle.impl.EncryptorImpl;
 import io.mosip.kernel.crypto.bouncycastle.util.SecurityUtils;
@@ -77,7 +77,7 @@ public class AsymmetricProcessor {
 				symmetricKey = generateSymetricKey(16);
 
 			byte[] encryptedSymmetricData = MOSIPENCRYPTOR.symmetricEncrypt(symmetricKey, data,
-					MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
+					SecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
 
 			byte[] encryptedSymmetricKey = processData(asymmetricBlockCipher, symmetricKey, 0, symmetricKey.length);
 
@@ -90,7 +90,7 @@ public class AsymmetricProcessor {
 			byte[] encrptedData = new byte[data.length - blockSize];
 			System.arraycopy(data, blockSize, encrptedData, 0, encrptedData.length);
 			output = MOSIPDECRYPTOR.symmetricDecrypt(symmetricKey, encrptedData,
-					MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
+					SecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
 		}
 		return output;
 	}
@@ -147,26 +147,26 @@ public class AsymmetricProcessor {
 		try {
 			return asymmetricBlockCipher.processBlock(data, start, end);
 		} catch (InvalidCipherTextException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION
 							.getErrorMessage());
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorMessage());
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorMessage());
 		} catch (DataLengthException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_LENGTH_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_LENGTH_EXCEPTION.getErrorMessage());
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_LENGTH_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_LENGTH_EXCEPTION.getErrorMessage());
 		} catch (IllegalArgumentException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorMessage());
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorMessage());
 		} catch (ArithmeticException e) {
-			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorMessage());
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorMessage());
 		}
 
 	}

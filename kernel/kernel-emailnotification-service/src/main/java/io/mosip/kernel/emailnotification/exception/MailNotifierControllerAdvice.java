@@ -28,10 +28,10 @@ public class MailNotifierControllerAdvice {
 	 *            the exception to be handled.
 	 * @return the error map.
 	 */
-	@ExceptionHandler(MosipMailNotifierInvalidArgumentsException.class)
+	@ExceptionHandler(MailNotifierInvalidArgumentsException.class)
 	public ResponseEntity<Object> mailNotifierArgumentsValidation(
-			final MosipMailNotifierInvalidArgumentsException exception) {
-		Map<String, List<MosipErrors>> map = new HashMap<>();
+			final MailNotifierInvalidArgumentsException exception) {
+		Map<String, List<Errors>> map = new HashMap<>();
 		map.put(err, exception.getList());
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}

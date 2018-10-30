@@ -22,9 +22,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
+import io.mosip.kernel.core.exception.DirectoryNotEmptyException;
 import io.mosip.kernel.packetuploader.http.PacketUploaderHttpBootApplication;
-import io.mosip.kernel.packetuploader.http.exception.MosipDirectoryNotEmptyException;
-import io.mosip.kernel.packetuploader.http.exception.MosipPacketLocationSecurityException;
+import io.mosip.kernel.packetuploader.http.exception.PacketLocationSecurityException;
 import io.mosip.kernel.packetuploader.http.service.PacketUploaderService;
 
 @AutoConfigureMockMvc
@@ -60,7 +60,7 @@ public class PacketUploaderExceptionTest {
 	public void uploadFileDirectoryException() throws IOException, Exception {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet.zip").getFile().toPath()));
-		when(service.storePacket(packet)).thenThrow(MosipDirectoryNotEmptyException.class);
+		when(service.storePacket(packet)).thenThrow(DirectoryNotEmptyException.class);
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
 				.andExpect(jsonPath("$.code", isA(String.class)));
 	}
@@ -69,7 +69,7 @@ public class PacketUploaderExceptionTest {
 	public void uploadSecurityException() throws IOException, Exception {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet.zip").getFile().toPath()));
-		when(service.storePacket(packet)).thenThrow(MosipPacketLocationSecurityException.class);
+		when(service.storePacket(packet)).thenThrow(PacketLocationSecurityException.class);
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
 				.andExpect(jsonPath("$.code", isA(String.class)));
 	}

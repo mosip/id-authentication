@@ -16,8 +16,8 @@ import io.mosip.kernel.otpmanager.constant.OtpStatusConstants;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorRequestDto;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorResponseDto;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
-import io.mosip.kernel.otpmanager.exception.MosipErrors;
-import io.mosip.kernel.otpmanager.exception.MosipResourceNotFoundExceptionHandler;
+import io.mosip.kernel.otpmanager.exception.Errors;
+import io.mosip.kernel.otpmanager.exception.ResourceNotFoundExceptionHandler;
 import io.mosip.kernel.otpmanager.impl.OtpGeneratorImpl;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
 import io.mosip.kernel.otpmanager.service.OtpGeneratorService;
@@ -77,10 +77,10 @@ public class OtpGeneratorServiceImpl implements OtpGeneratorService {
 			try {
 				generatedOtp = otpGenerator.generateOtp();
 			} catch (MissingResourceException exception) {
-				List<MosipErrors> validationErrorsList = new ArrayList<>();
-				validationErrorsList.add(new MosipErrors(OtpErrorConstants.OTP_GEN_RESOURCE_NOT_FOUND.getErrorCode(),
+				List<Errors> validationErrorsList = new ArrayList<>();
+				validationErrorsList.add(new Errors(OtpErrorConstants.OTP_GEN_RESOURCE_NOT_FOUND.getErrorCode(),
 						OtpErrorConstants.OTP_GEN_RESOURCE_NOT_FOUND.getErrorMessage()));
-				throw new MosipResourceNotFoundExceptionHandler(validationErrorsList);
+				throw new ResourceNotFoundExceptionHandler(validationErrorsList);
 			}
 			OtpEntity otp = new OtpEntity();
 			otp.setKeyId(otpDto.getKey());

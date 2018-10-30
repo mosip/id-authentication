@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 
+import io.mosip.kernel.core.exception.DirectoryNotEmptyException;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstant;
 
 /**
@@ -25,8 +27,8 @@ public class PacketUploaderExceptionHandler {
 	 *            the exception
 	 * @return the response entity.
 	 */
-	@ExceptionHandler(MosipDirectoryNotEmptyException.class)
-	public ResponseEntity<ErrorItem> handle(MosipDirectoryNotEmptyException e) {
+	@ExceptionHandler(DirectoryNotEmptyException.class)
+	public ResponseEntity<ErrorItem> handle(DirectoryNotEmptyException e) {
 		ErrorItem error = new ErrorItem();
 		error.setMessage(
 				PacketUploaderExceptionConstant.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION.getErrorMessage());
@@ -42,8 +44,8 @@ public class PacketUploaderExceptionHandler {
 	 *            the exception
 	 * @return the response entity.
 	 */
-	@ExceptionHandler(MosipIOException.class)
-	public ResponseEntity<ErrorItem> handle(MosipIOException e) {
+	@ExceptionHandler(IOException.class)
+	public ResponseEntity<ErrorItem> handle(IOException e) {
 
 		ErrorItem error = new ErrorItem();
 		error.setMessage(PacketUploaderExceptionConstant.MOSIP_IO_FILE_EXCEPTION.getErrorMessage());
@@ -58,8 +60,8 @@ public class PacketUploaderExceptionHandler {
 	 *            The InvalidRequestException
 	 * @return The Response entity with error response
 	 */
-	@ExceptionHandler(MosipPacketLocationSecurityException.class)
-	public ResponseEntity<ErrorItem> handle(MosipPacketLocationSecurityException e) {
+	@ExceptionHandler(PacketLocationSecurityException.class)
+	public ResponseEntity<ErrorItem> handle(PacketLocationSecurityException e) {
 		ErrorItem error = new ErrorItem();
 		error.setMessage(PacketUploaderExceptionConstant.MOSIP_SECURITY_FILE_LOCATION_EXCEPTION.getErrorMessage());
 		error.setCode(PacketUploaderExceptionConstant.MOSIP_SECURITY_FILE_LOCATION_EXCEPTION.getErrorCode());
@@ -73,8 +75,8 @@ public class PacketUploaderExceptionHandler {
 	 *            The InvalidRequestException
 	 * @return The Response entity with error response
 	 */
-	@ExceptionHandler(MosipInvalidFileNameException.class)
-	public ResponseEntity<ErrorItem> handle(MosipInvalidFileNameException e) {
+	@ExceptionHandler(InvalidFileNameException.class)
+	public ResponseEntity<ErrorItem> handle(InvalidFileNameException e) {
 		ErrorItem error = new ErrorItem();
 		error.setMessage(e.getErrorText());
 		error.setCode(e.getErrorCode());

@@ -35,14 +35,14 @@ public class SmsControllerAdvice {
 	 * @return The response entity.
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<Map<String, ArrayList<MosipErrors>>> smsNotificationValidation(
+	public ResponseEntity<Map<String, ArrayList<Errors>>> smsNotificationValidation(
 			final MethodArgumentNotValidException exception) {
-		MosipErrors error = new MosipErrors(SmsExceptionConstants.SMS_ILLEGAL_INPUT.getErrorCode(),
+		Errors error = new Errors(SmsExceptionConstants.SMS_ILLEGAL_INPUT.getErrorCode(),
 				SmsExceptionConstants.SMS_ILLEGAL_INPUT.getErrorMessage());
-		ArrayList<MosipErrors> errorList = new ArrayList<>();
+		ArrayList<Errors> errorList = new ArrayList<>();
 		errorList.add(error);
 
-		Map<String, ArrayList<MosipErrors>> map = new HashMap<>();
+		Map<String, ArrayList<Errors>> map = new HashMap<>();
 		map.put(err, errorList);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 
@@ -55,14 +55,14 @@ public class SmsControllerAdvice {
 	 *            The exception
 	 * @return The response entity.
 	 */
-	@ExceptionHandler(MosipInvalidNumberException.class)
-	public ResponseEntity<Map<String, ArrayList<MosipErrors>>> smsNotificationInvalidNumber(
-			final MosipInvalidNumberException e) {
-		MosipErrors error = new MosipErrors(e.getErrorCode(), e.getErrorText());
-		ArrayList<MosipErrors> errorList = new ArrayList<>();
+	@ExceptionHandler(InvalidNumberException.class)
+	public ResponseEntity<Map<String, ArrayList<Errors>>> smsNotificationInvalidNumber(
+			final InvalidNumberException e) {
+		Errors error = new Errors(e.getErrorCode(), e.getErrorText());
+		ArrayList<Errors> errorList = new ArrayList<>();
 		errorList.add(error);
 
-		Map<String, ArrayList<MosipErrors>> map = new HashMap<>();
+		Map<String, ArrayList<Errors>> map = new HashMap<>();
 		map.put(err, errorList);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 

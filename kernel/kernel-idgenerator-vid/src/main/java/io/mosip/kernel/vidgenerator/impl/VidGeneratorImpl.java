@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.idgenerator.exception.InValidUinException;
 import io.mosip.kernel.core.idgenerator.exception.VidGenerationFailedException;
-import io.mosip.kernel.core.idgenerator.spi.MosipVidGenerator;
+import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.vidgenerator.cache.VidCacheManager;
@@ -30,7 +30,7 @@ import io.mosip.kernel.vidgenerator.repository.VidRepository;
  *
  */
 @Service
-public class VidGeneratorImpl implements MosipVidGenerator<String> {
+public class VidGeneratorImpl implements VidGenerator<String> {
 	@Autowired
 	VidRepository vidRepository;
 	@Autowired

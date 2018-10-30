@@ -7,9 +7,9 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
-import io.mosip.kernel.core.packetuploader.exception.MosipConnectionException;
-import io.mosip.kernel.core.packetuploader.exception.MosipNoSessionException;
-import io.mosip.kernel.core.packetuploader.exception.MosipSFTPException;
+import io.mosip.kernel.core.packetuploader.exception.ConnectionException;
+import io.mosip.kernel.core.packetuploader.exception.NoSessionException;
+import io.mosip.kernel.core.packetuploader.exception.SFTPException;
 import io.mosip.kernel.core.packetuploader.exception.PacketUploaderExceptionConstant;
 import io.mosip.kernel.packetuploader.sftp.channel.SftpChannel;
 import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderConfiguration;
@@ -36,12 +36,12 @@ public class PacketUploader {
 	 * @param configuration
 	 *            {@link PacketUploaderConfiguration} provided by user
 	 * @return configured {@link SftpChannel} instance
-	 * @throws MosipConnectionException
+	 * @throws ConnectionException
 	 *             to be thrown when there is a exception during connection with
 	 *             server
 	 */
 	public static SftpChannel createSFTPChannel(PacketUploaderConfiguration configuration)
-			throws MosipConnectionException {
+			throws ConnectionException {
 		PacketUploaderUtils.checkConfiguration(configuration);
 
 		JSch jsch = new JSch();
@@ -56,7 +56,7 @@ public class PacketUploader {
 			sftpChannel = new SftpChannel((ChannelSftp) channel, configuration);
 			channel.connect();
 		} catch (JSchException e) {
-			throw new MosipConnectionException(PacketUploaderExceptionConstant.MOSIP_CONNECTION_EXCEPTION, e);
+			throw new ConnectionException(PacketUploaderExceptionConstant.MOSIP_CONNECTION_EXCEPTION, e);
 		}
 		return sftpChannel;
 	}
@@ -77,7 +77,7 @@ public class PacketUploader {
 		try {
 			channelSftp.put(source, target);
 		} catch (SftpException e) {
-			throw new MosipSFTPException(PacketUploaderExceptionConstant.MOSIP_SFTP_EXCEPTION, e);
+			throw new SFTPException(PacketUploaderExceptionConstant.MOSIP_SFTP_EXCEPTION, e);
 		}
 	}
 
@@ -93,7 +93,7 @@ public class PacketUploader {
 		try {
 			session = channelSftp.getSession();
 		} catch (JSchException e) {
-			throw new MosipNoSessionException(PacketUploaderExceptionConstant.MOSIP_NO_SESSION_FOUND_EXCEPTION, e);
+			throw new NoSessionException(PacketUploaderExceptionConstant.MOSIP_NO_SESSION_FOUND_EXCEPTION, e);
 		}
 		channelSftp.exit();
 		if (session != null) {

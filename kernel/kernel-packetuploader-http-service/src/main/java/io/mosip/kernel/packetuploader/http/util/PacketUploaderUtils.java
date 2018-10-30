@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.packetuploader.http.constant.PacketUploaderConstant;
 import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstant;
-import io.mosip.kernel.packetuploader.http.exception.MosipInvalidFileNameException;
+import io.mosip.kernel.packetuploader.http.exception.InvalidFileNameException;
 
 /**
  * @author Urvil Joshi
@@ -22,7 +22,7 @@ public class PacketUploaderUtils {
 	 */
 	public void check(MultipartFile packet) {
 		if (packet.getOriginalFilename().contains(PacketUploaderConstant.INVALID_FILE.getValue())) {
-			throw new MosipInvalidFileNameException(PacketUploaderExceptionConstant.MOSIP_INVALID_FILE_NAME_EXCEPTION);
+			throw new InvalidFileNameException(PacketUploaderExceptionConstant.MOSIP_INVALID_FILE_NAME_EXCEPTION);
 		} else if (packet.getSize() == Long.parseLong(PacketUploaderConstant.PACKET_MIN_SIZE.getValue())) {
 			throw new MaxUploadSizeExceededException(
 					Long.parseLong(PacketUploaderConstant.PACKET_MIN_SIZE.getValue()));

@@ -13,59 +13,59 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import io.mosip.kernel.smsnotification.msg91.SmsNotifierBootApplication;
-import io.mosip.kernel.smsnotification.msg91.service.impl.SmsNotifierServiceImpl;
+import io.mosip.kernel.smsnotification.msg91.SmsNotificationBootApplication;
+import io.mosip.kernel.smsnotification.msg91.service.impl.SmsNotificationServiceImpl;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { SmsNotifierBootApplication.class })
+@ContextConfiguration(classes = { SmsNotificationBootApplication.class })
 public class ExceptionHandlerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
 
 	@MockBean
-	SmsNotifierServiceImpl service;
+	SmsNotificationServiceImpl service;
 
 	@Test
 	public void emptyContactNumberTest() throws Exception {
 		String json = "{\"number\":\"\",\"message\":\"hello..your otp is 342891\"}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/notification/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void nullContactNumberTest() throws Exception {
 		String json = "{\"number\":null,\"message\":\"hello..your otp is 342891\"}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/notification/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void nullMessageTest() throws Exception {
 		String json = "{\"number\":\"8987672341\",\"message\":null}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/notification/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void emptyMessageTest() throws Exception {
 		String json = "{\"number\":\"\",\"message\":\"\"}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/notification/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void contactNumberLengthTest() throws Exception {
 		String json = "{\"number\":\"678\",\"message\":\"\"}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/notification/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 
 	@Test
 	public void invalidContactNumberTest() throws Exception {
 		String json = "{\"number\":\"sdjnjkdfj\",\"message\":\"\"}";
-		mockMvc.perform(post("/notifier/sms").contentType(MediaType.APPLICATION_JSON).content(json))
+		mockMvc.perform(post("/notification/sms").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable());
 	}
 }

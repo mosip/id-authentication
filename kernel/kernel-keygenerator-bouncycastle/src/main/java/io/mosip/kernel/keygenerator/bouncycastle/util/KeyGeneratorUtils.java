@@ -1,15 +1,14 @@
 package io.mosip.kernel.keygenerator.bouncycastle.util;
 
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
 
-import javax.crypto.KeyGenerator;
+
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import io.mosip.kernel.core.exception.MosipNoSuchAlgorithmException;
+import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.keygenerator.bouncycastle.config.KeyGeneratorConfig;
 import io.mosip.kernel.keygenerator.bouncycastle.constant.KeyGeneratorExceptionConstant;
 
@@ -44,13 +43,13 @@ public class KeyGeneratorUtils {
 	 *            algorithm and size configuration {@link KeyGeneratorConfig}
 	 * @return configured {@link KeyGenerator} instance
 	 */
-	public static KeyGenerator getKeyGenerator(KeyGeneratorConfig config) {
+	public static javax.crypto.KeyGenerator getKeyGenerator(KeyGeneratorConfig config) {
 
-		KeyGenerator generator = null;
+		javax.crypto.KeyGenerator generator = null;
 		try {
-			generator = KeyGenerator.getInstance(config.getAlgorithmName(), provider);
-		} catch (NoSuchAlgorithmException e) {
-			throw new MosipNoSuchAlgorithmException(
+			generator = javax.crypto.KeyGenerator.getInstance(config.getAlgorithmName(), provider);
+		} catch (java.security.NoSuchAlgorithmException e) {
+			throw new NoSuchAlgorithmException(
 					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
 					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
 		}
@@ -71,8 +70,8 @@ public class KeyGeneratorUtils {
 		KeyPairGenerator generator = null;
 		try {
 			generator = KeyPairGenerator.getInstance(config.getAlgorithmName(), provider);
-		} catch (NoSuchAlgorithmException e) {
-			throw new MosipNoSuchAlgorithmException(
+		} catch (java.security.NoSuchAlgorithmException e) {
+			throw new NoSuchAlgorithmException(
 					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
 					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
 		}

@@ -14,6 +14,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.packetuploader.http.controller.PacketUploaderController;
 import io.mosip.kernel.packetuploader.http.dto.PacketUploaderResponceDTO;
 import io.mosip.kernel.packetuploader.http.service.impl.PacketUploaderServiceImpl;
@@ -27,7 +28,7 @@ public class PacketUploaderControllerTest {
 	PacketUploaderController controller;
 
 	@Test
-	public void uploadTest() {
+	public void uploadTest() throws IOException {
 		MultipartFile file = new MockMultipartFile("testFile.zip", "testFile.zip", null, new byte[1100]);
 		PacketUploaderResponceDTO responceDTO = new PacketUploaderResponceDTO("testFile.zip", 1400);
 		doReturn(responceDTO).when(service).storePacket(file);

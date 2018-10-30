@@ -20,7 +20,7 @@ import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.auditmanager.impl.AuditHandlerImpl;
 import io.mosip.kernel.auditmanager.repository.AuditRepository;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.auditmanager.exception.MosipAuditManagerException;
+import io.mosip.kernel.core.auditmanager.exception.AuditManagerException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AuditConfig.class)
@@ -51,7 +51,7 @@ public class AuditEventTest {
 		assertThat(auditHandlerImpl.writeAudit(auditRequestBuilder.build()), is(true));
 	}
 
-	@Test(expected = MosipAuditManagerException.class)
+	@Test(expected = AuditManagerException.class)
 	public void auditBuilderExceptionTest() {
 
 		Mockito.when(auditRepository.create(ArgumentMatchers.any(Audit.class))).thenReturn(new Audit());

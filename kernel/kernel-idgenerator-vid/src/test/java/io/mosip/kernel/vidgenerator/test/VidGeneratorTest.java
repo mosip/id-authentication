@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.idgenerator.exception.InValidUinException;
-import io.mosip.kernel.core.idgenerator.spi.MosipVidGenerator;
+import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 
 /**
  * @author M1043226
@@ -24,7 +24,7 @@ public class VidGeneratorTest {
 	@Value("${mosip.kernel.vid.length}")
 	private int vidLength;
 	@Autowired
-	MosipVidGenerator<String> vidGenerator;
+	VidGenerator<String> vidGenerator;
 
 	@Test(expected = InValidUinException.class)
 	public void UinNotValidExceptionTest() {

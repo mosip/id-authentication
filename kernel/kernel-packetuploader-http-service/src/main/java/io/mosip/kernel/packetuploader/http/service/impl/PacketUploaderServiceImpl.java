@@ -1,7 +1,5 @@
 package io.mosip.kernel.packetuploader.http.service.impl;
 
-import java.io.IOException;
-import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.exception.DirectoryNotEmptyException;
 import io.mosip.kernel.packetuploader.http.config.PacketFileStorageProperties;
 import io.mosip.kernel.packetuploader.http.constant.PacketUploaderExceptionConstant;
 import io.mosip.kernel.packetuploader.http.dto.PacketUploaderResponceDTO;
-import io.mosip.kernel.packetuploader.http.exception.MosipDirectoryNotEmptyException;
-import io.mosip.kernel.packetuploader.http.exception.MosipIOException;
-import io.mosip.kernel.packetuploader.http.exception.MosipPacketLocationSecurityException;
+import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.packetuploader.http.exception.PacketLocationSecurityException;
 import io.mosip.kernel.packetuploader.http.service.PacketUploaderService;
 import io.mosip.kernel.packetuploader.http.util.PacketUploaderUtils;
 
@@ -49,7 +47,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService {
 	 * .springframework.web.multipart.MultipartFile)
 	 */
 	@Override
-	public PacketUploaderResponceDTO storePacket(MultipartFile packet) {
+	public PacketUploaderResponceDTO storePacket(MultipartFile packet) throws IOException {
 		packetUploaderUtils.check(packet);
 		String fileName = packet.getOriginalFilename();
 		Path packetStorageLocation = Paths.get(packetFileStorageProperties.getUploadDir()).toAbsolutePath().normalize()
@@ -58,14 +56,17 @@ public class PacketUploaderServiceImpl implements PacketUploaderService {
 		try {
 			fileSizeInBytes = Files.copy(packet.getInputStream(), packetStorageLocation,
 					StandardCopyOption.REPLACE_EXISTING);
-		} catch (DirectoryNotEmptyException e) {
-			throw new MosipDirectoryNotEmptyException(
-					PacketUploaderExceptionConstant.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION, e.getCause());
+		} catch (java.nio.file.DirectoryNotEmptyException e) {
+			throw new DirectoryNotEmptyException(
+					PacketUploaderExceptionConstant.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION.getErrorCode(),
+					PacketUploaderExceptionConstant.MOSIP_DIRECTORY_NOT_EMPTY_FILE_LOCATION_EXCEPTION.getErrorMessage(),
+					e);
 		} catch (SecurityException e) {
-			throw new MosipPacketLocationSecurityException(
+			throw new PacketLocationSecurityException(
 					PacketUploaderExceptionConstant.MOSIP_SECURITY_FILE_LOCATION_EXCEPTION, e);
-		} catch (IOException e) {
-			throw new MosipIOException(PacketUploaderExceptionConstant.MOSIP_IO_FILE_EXCEPTION, e.getCause());
+		} catch (java.io.IOException e) {
+			throw new IOException(PacketUploaderExceptionConstant.MOSIP_IO_FILE_EXCEPTION.getErrorCode(),
+					PacketUploaderExceptionConstant.MOSIP_IO_FILE_EXCEPTION.getErrorMessage(), e);
 		}
 
 		return new PacketUploaderResponceDTO(fileName, fileSizeInBytes);

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.idgenerator.exception.PridGenerationException;
-import io.mosip.kernel.core.idgenerator.spi.MosipPridGenerator;
+import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.idgenerator.prid.cache.PridCacheManager;
@@ -20,14 +20,14 @@ import io.mosip.kernel.idgenerator.prid.repository.PridRepository;
 
 /**
  * PridGenerator to generate PRID This class will return a Fourteen digit PRID
- * after the validation from MosipIdFilter
+ * after the validation from IdFilter
  * 
  * @author M1037462
  * @since 1.0.0
  *
  */
 @Component
-public class PridGeneratorImpl implements MosipPridGenerator<String> {
+public class PridGeneratorImpl implements PridGenerator<String> {
 	@Value("${mosip.kernel.prid.length}")
 	private int pridLength;
 	@Autowired

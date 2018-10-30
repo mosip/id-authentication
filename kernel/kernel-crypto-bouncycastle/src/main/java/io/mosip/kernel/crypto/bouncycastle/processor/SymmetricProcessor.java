@@ -14,10 +14,10 @@ import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
 import org.bouncycastle.crypto.params.KeyParameter;
 
-import io.mosip.kernel.core.crypto.exception.MosipInvalidDataException;
-import io.mosip.kernel.core.crypto.exception.MosipInvalidKeyException;
-import io.mosip.kernel.core.crypto.exception.MosipNullKeyException;
-import io.mosip.kernel.crypto.bouncycastle.constant.MosipSecurityExceptionCodeConstant;
+import io.mosip.kernel.core.crypto.exception.InvalidDataException;
+import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
+import io.mosip.kernel.core.crypto.exception.NullKeyException;
+import io.mosip.kernel.crypto.bouncycastle.constant.SecurityExceptionCodeConstant;
 import io.mosip.kernel.crypto.bouncycastle.util.SecurityUtils;
 
 /**
@@ -51,12 +51,12 @@ public class SymmetricProcessor {
 		try {
 			cipher.init(mode, new KeyParameter(key));
 		} catch (NullPointerException e) {
-			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorMessage());
+			throw new NullKeyException(SecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorMessage());
 		} catch (IllegalArgumentException e) {
-			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_SIZE_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_SIZE_EXCEPTION.getErrorMessage());
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_SIZE_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_SIZE_EXCEPTION.getErrorMessage());
 		}
 		SecurityUtils.verifyData(data);
 		byte[] output = new byte[cipher.getOutputSize(data.length)];
@@ -64,14 +64,14 @@ public class SymmetricProcessor {
 		try {
 			cipher.doFinal(output, processedBytes);
 		} catch (InvalidCipherTextException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION
 							.getErrorMessage());
 		} catch (DataLengthException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorMessage());
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_SIZE_EXCEPTION.getErrorMessage());
 		}
 		return output;
 	}

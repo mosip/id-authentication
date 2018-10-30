@@ -9,7 +9,7 @@ import javax.validation.ValidatorFactory;
 
 import io.mosip.kernel.auditmanager.constant.AuditErrorCodes;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.auditmanager.exception.MosipAuditManagerException;
+import io.mosip.kernel.core.auditmanager.exception.AuditManagerException;
 
 /**
  * Utility class for Audit Manager
@@ -42,7 +42,7 @@ public class AuditUtils {
 			Set<ConstraintViolation<AuditRequestDto>> violations = validator.validate(auditRequest);
 
 			if (!violations.isEmpty()) {
-				throw new MosipAuditManagerException(AuditErrorCodes.HANDLEREXCEPTION.getErrorCode(),
+				throw new AuditManagerException(AuditErrorCodes.HANDLEREXCEPTION.getErrorCode(),
 						AuditErrorCodes.HANDLEREXCEPTION.getErrorMessage());
 			}
 		} finally {

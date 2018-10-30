@@ -13,13 +13,13 @@ import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.crypto.util.PublicKeyFactory;
 
-import io.mosip.kernel.core.crypto.exception.MosipInvalidDataException;
-import io.mosip.kernel.core.crypto.exception.MosipInvalidKeyException;
-import io.mosip.kernel.core.crypto.exception.MosipNullDataException;
-import io.mosip.kernel.core.crypto.exception.MosipNullKeyException;
-import io.mosip.kernel.core.crypto.exception.MosipNullMethodException;
-import io.mosip.kernel.crypto.bouncycastle.constant.MosipSecurityExceptionCodeConstant;
-import io.mosip.kernel.crypto.bouncycastle.constant.MosipSecurityMethod;
+import io.mosip.kernel.core.crypto.exception.InvalidDataException;
+import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
+import io.mosip.kernel.core.crypto.exception.NullDataException;
+import io.mosip.kernel.core.crypto.exception.NullKeyException;
+import io.mosip.kernel.core.crypto.exception.NullMethodException;
+import io.mosip.kernel.crypto.bouncycastle.constant.SecurityExceptionCodeConstant;
+import io.mosip.kernel.crypto.bouncycastle.constant.SecurityMethod;
 
 /**
  * Utility class for security
@@ -48,17 +48,17 @@ public class SecurityUtils {
 		try {
 			keyParameter = PrivateKeyFactory.createKey(privateKey);
 		} catch (NullPointerException e) {
-			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorMessage());
+			throw new NullKeyException(SecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorMessage());
 		} catch (ClassCastException e) {
-			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ASYMMETRIC_PRIVATE_KEY_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ASYMMETRIC_PRIVATE_KEY_EXCEPTION
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ASYMMETRIC_PRIVATE_KEY_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ASYMMETRIC_PRIVATE_KEY_EXCEPTION
 							.getErrorMessage());
 		} catch (IOException e) {
-			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorMessage());
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorMessage());
 		}
 		return keyParameter;
 	}
@@ -75,16 +75,16 @@ public class SecurityUtils {
 		try {
 			keyParameter = PublicKeyFactory.createKey(publicKey);
 		} catch (NullPointerException e) {
-			throw new MosipNullKeyException(MosipSecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorMessage());
+			throw new NullKeyException(SecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NULL_KEY_EXCEPTION.getErrorMessage());
 		} catch (IllegalArgumentException e) {
-			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ASYMMETRIC_PUBLIC_KEY_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ASYMMETRIC_PUBLIC_KEY_EXCEPTION.getErrorMessage());
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ASYMMETRIC_PUBLIC_KEY_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ASYMMETRIC_PUBLIC_KEY_EXCEPTION.getErrorMessage());
 		} catch (IOException e) {
-			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorMessage());
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorMessage());
 		}
 		return keyParameter;
 	}
@@ -95,11 +95,11 @@ public class SecurityUtils {
 	 * @param mosipSecurityMethod
 	 *            mosipSecurityMethod given by user
 	 */
-	public static void checkMethod(MosipSecurityMethod mosipSecurityMethod) {
+	public static void checkMethod(SecurityMethod mosipSecurityMethod) {
 		if (mosipSecurityMethod == null) {
-			throw new MosipNullMethodException(
-					MosipSecurityExceptionCodeConstant.MOSIP_NULL_METHOD_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_NULL_METHOD_EXCEPTION.getErrorMessage());
+			throw new NullMethodException(
+					SecurityExceptionCodeConstant.MOSIP_NULL_METHOD_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NULL_METHOD_EXCEPTION.getErrorMessage());
 		}
 	}
 
@@ -111,13 +111,13 @@ public class SecurityUtils {
 	 */
 	public static void verifyData(byte[] data) {
 		if (data == null) {
-			throw new MosipNullDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorMessage());
+			throw new NullDataException(
+					SecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorMessage());
 		} else if (data.length == 0) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorCode(),
-					MosipSecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorMessage());
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_NULL_DATA_EXCEPTION.getErrorMessage());
 		}
 	}
 }

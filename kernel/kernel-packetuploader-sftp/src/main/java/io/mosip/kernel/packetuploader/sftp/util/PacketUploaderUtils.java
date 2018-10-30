@@ -6,12 +6,12 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
-import io.mosip.kernel.core.packetuploader.exception.MosipEmptyPathException;
-import io.mosip.kernel.core.packetuploader.exception.MosipIllegalConfigurationException;
-import io.mosip.kernel.core.packetuploader.exception.MosipIllegalIdentityException;
-import io.mosip.kernel.core.packetuploader.exception.MosipNullConfigurationException;
-import io.mosip.kernel.core.packetuploader.exception.MosipNullPathException;
-import io.mosip.kernel.core.packetuploader.exception.MosipPacketSizeException;
+import io.mosip.kernel.core.packetuploader.exception.EmptyPathException;
+import io.mosip.kernel.core.packetuploader.exception.IllegalConfigurationException;
+import io.mosip.kernel.core.packetuploader.exception.IllegalIdentityException;
+import io.mosip.kernel.core.packetuploader.exception.NullConfigurationException;
+import io.mosip.kernel.core.packetuploader.exception.NullPathException;
+import io.mosip.kernel.core.packetuploader.exception.PacketSizeException;
 import io.mosip.kernel.core.packetuploader.exception.PacketUploaderExceptionConstant;
 import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderConfiguration;
 import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderConstant;
@@ -44,7 +44,7 @@ public class PacketUploaderUtils {
 		try {
 			session = jsch.getSession(configuration.getUser(), configuration.getHost(), configuration.getPort());
 		} catch (JSchException e) {
-			throw new MosipIllegalConfigurationException(
+			throw new IllegalConfigurationException(
 					PacketUploaderExceptionConstant.MOSIP_ILLEGAL_CONFIGURATION_EXCEPTION);
 		}
 		session.setConfig(PacketUploaderConstant.STR_STRICT_HOST_KEY_CHECKING.getKey(),
@@ -73,7 +73,7 @@ public class PacketUploaderUtils {
 				jsch.addIdentity(configuration.getPrivateKeyFileName());
 			}
 		} catch (JSchException e) {
-			throw new MosipIllegalIdentityException(PacketUploaderExceptionConstant.MOSIP_ILLEGAL_IDENTITY_EXCEPTION,
+			throw new IllegalIdentityException(PacketUploaderExceptionConstant.MOSIP_ILLEGAL_IDENTITY_EXCEPTION,
 					e);
 		}
 	}
@@ -86,13 +86,13 @@ public class PacketUploaderUtils {
 	 */
 	public static void check(String packetPath) {
 		if (packetPath == null) {
-			throw new MosipNullPathException(PacketUploaderExceptionConstant.MOSIP_NULL_PATH_EXCEPTION);
+			throw new NullPathException(PacketUploaderExceptionConstant.MOSIP_NULL_PATH_EXCEPTION);
 		} else if (packetPath.trim().isEmpty()) {
-			throw new MosipEmptyPathException(PacketUploaderExceptionConstant.MOSIP_EMPTY_PATH_EXCEPTION);
+			throw new EmptyPathException(PacketUploaderExceptionConstant.MOSIP_EMPTY_PATH_EXCEPTION);
 		} else if (new File(packetPath).length() > Long.parseLong(PacketUploaderConstant.PACKET_SIZE_MAX.getValue())
 				|| new File(packetPath).length() == Long
 						.parseLong(PacketUploaderConstant.PACKET_SIZE_MIN.getValue())) {
-			throw new MosipPacketSizeException(PacketUploaderExceptionConstant.MOSIP_PACKET_SIZE_EXCEPTION);
+			throw new PacketSizeException(PacketUploaderExceptionConstant.MOSIP_PACKET_SIZE_EXCEPTION);
 		}
 
 	}
@@ -105,24 +105,24 @@ public class PacketUploaderUtils {
 	 */
 	public static void checkConfiguration(PacketUploaderConfiguration configuration) {
 		if (configuration == null) {
-			throw new MosipNullConfigurationException(
+			throw new NullConfigurationException(
 					PacketUploaderExceptionConstant.MOSIP_NULL_CONFIGURATION_EXCEPTION);
 		} else if (configuration.getHost() == null) {
-			throw new MosipNullConfigurationException(PacketUploaderExceptionConstant.MOSIP_NULL_HOST_EXCEPTION);
+			throw new NullConfigurationException(PacketUploaderExceptionConstant.MOSIP_NULL_HOST_EXCEPTION);
 		} else if (configuration.getHost().trim().isEmpty()) {
-			throw new MosipIllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_EMPTY_HOST_EXCEPTION);
+			throw new IllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_EMPTY_HOST_EXCEPTION);
 		} else if (configuration.getPort() < Integer.parseInt(PacketUploaderConstant.PORT_MIN.getValue())
 				|| configuration.getPort() > Integer.parseInt(PacketUploaderConstant.PORT_MAX.getValue())) {
-			throw new MosipIllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_INVALID_PORT_EXCEPTION);
+			throw new IllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_INVALID_PORT_EXCEPTION);
 		} else if (configuration.getUser() == null) {
-			throw new MosipNullConfigurationException(PacketUploaderExceptionConstant.MOSIP_NULL_USER_EXCEPTION);
+			throw new NullConfigurationException(PacketUploaderExceptionConstant.MOSIP_NULL_USER_EXCEPTION);
 		} else if (configuration.getUser().trim().isEmpty()) {
-			throw new MosipIllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_NULL_USER_EXCEPTION);
+			throw new IllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_NULL_USER_EXCEPTION);
 		} else if (configuration.getSftpRemoteDirectory() == null) {
-			throw new MosipNullConfigurationException(
+			throw new NullConfigurationException(
 					PacketUploaderExceptionConstant.MOSIP_NULL_REMOTE_DIRECTORY_EXCEPTION);
 		} else if (configuration.getSftpRemoteDirectory().trim().isEmpty()) {
-			throw new MosipIllegalConfigurationException(
+			throw new IllegalConfigurationException(
 					PacketUploaderExceptionConstant.MOSIP_EMPTY_REMOTE_DIRECTORY_EXCEPTION);
 		}
 		checkKey(configuration);
@@ -136,14 +136,14 @@ public class PacketUploaderUtils {
 	 */
 	public static void checkKey(PacketUploaderConfiguration configuration) {
 		if (configuration.getPassword() == null && configuration.getPrivateKeyFileName() == null) {
-			throw new MosipNullConfigurationException(PacketUploaderExceptionConstant.MOSIP_INVALID_KEY_EXCEPTION);
+			throw new NullConfigurationException(PacketUploaderExceptionConstant.MOSIP_INVALID_KEY_EXCEPTION);
 		} else if (configuration.getPassword() == null && configuration.getPrivateKeyFileName().trim().isEmpty()) {
-			throw new MosipIllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_INVALID_KEY_EXCEPTION);
+			throw new IllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_INVALID_KEY_EXCEPTION);
 		} else if (configuration.getPrivateKeyFileName() == null && configuration.getPassword().trim().isEmpty()) {
-			throw new MosipIllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_INVALID_KEY_EXCEPTION);
+			throw new IllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_INVALID_KEY_EXCEPTION);
 		} else if (configuration.getPassword() != null && configuration.getPrivateKeyFileName() != null
 				&& configuration.getPassword().isEmpty() && configuration.getPrivateKeyFileName().trim().isEmpty()) {
-			throw new MosipIllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_INVALID_KEY_EXCEPTION);
+			throw new IllegalConfigurationException(PacketUploaderExceptionConstant.MOSIP_INVALID_KEY_EXCEPTION);
 		}
 	}
 }

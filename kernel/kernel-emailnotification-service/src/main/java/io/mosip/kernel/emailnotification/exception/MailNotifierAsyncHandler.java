@@ -8,7 +8,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.logger.spi.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.emailnotification.config.LoggerConfiguration;
 import io.mosip.kernel.emailnotification.constant.MailNotifierArgumentErrorConstants;
 import io.mosip.kernel.emailnotification.constant.MailNotifierConstants;
@@ -33,7 +33,7 @@ public class MailNotifierAsyncHandler implements AsyncUncaughtExceptionHandler {
 	 */
 	@Override
 	public void handleUncaughtException(Throwable ex, Method method, Object... params) {
-		MosipLogger mosipLogger = LoggerConfiguration.logConfig(MailNotifierAsyncHandler.class);
+		Logger mosipLogger = LoggerConfiguration.logConfig(MailNotifierAsyncHandler.class);
 		switch (ex.getClass().toString()) {
 		case MailNotifierExceptionClassNameConstants.MAIL_AUTH_EXCEPTION_CLASS_NAME:
 			mosipLogger.error(MailNotifierConstants.EMPTY_STRING.getValue(), MailNotifierConstants.ERROR_CODE.getValue(),

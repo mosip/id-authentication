@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.emailnotification.dto.ResponseDto;
-import io.mosip.kernel.emailnotification.service.impl.MailNotifierServiceImpl;
+import io.mosip.kernel.emailnotification.service.impl.EmailNotificationServiceImpl;
 
 /**
  * Controller class for sending mail.
@@ -26,7 +26,7 @@ public class SendMailController {
 	 * Autowired reference for MailNotifierService.
 	 */
 	@Autowired
-	MailNotifierServiceImpl mailNotifierServiceImpl;
+	EmailNotificationServiceImpl mailNotifierServiceImpl;
 
 	/**
 	 * @param mailTo

@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 public class IdFilterUtils {
 
 	/**
-	 * Private constructor for MosipIdFilter
+	 * Private constructor for IdFilter
 	 */
 	private IdFilterUtils() {
 	}

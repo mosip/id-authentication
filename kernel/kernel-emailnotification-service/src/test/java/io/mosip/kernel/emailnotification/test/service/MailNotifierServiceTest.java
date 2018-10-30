@@ -19,8 +19,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.emailnotification.NotificationEmailBootApplication;
-import io.mosip.kernel.emailnotification.service.impl.MailNotifierServiceImpl;
-import io.mosip.kernel.emailnotification.util.MailNotifierUtils;
+import io.mosip.kernel.emailnotification.service.impl.EmailNotificationServiceImpl;
+import io.mosip.kernel.emailnotification.util.EmailNotificationUtils;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = NotificationEmailBootApplication.class)
@@ -30,10 +30,10 @@ public class MailNotifierServiceTest {
 	private JavaMailSender emailSender;
 
 	@MockBean
-	MailNotifierUtils utils;
+	EmailNotificationUtils utils;
 
 	@Autowired
-	MailNotifierServiceImpl service;
+	EmailNotificationServiceImpl service;
 
 	@Test
 	public void verifyAddAttachmentFunctionality() throws Exception {

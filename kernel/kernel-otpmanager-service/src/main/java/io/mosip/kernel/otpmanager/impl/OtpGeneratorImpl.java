@@ -8,7 +8,7 @@ import org.kamranzafar.otp.provider.TOTPProvider;
 import io.mosip.kernel.otpmanager.constant.OtpCryptoConstants;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 import io.mosip.kernel.otpmanager.constant.OtpPropertyConstants;
-import io.mosip.kernel.otpmanager.exception.MosipResourceNotFoundException;
+import io.mosip.kernel.otpmanager.exception.ResourceNotFoundException;
 
 /**
  * This class provides the implementation for OTP Generation.
@@ -36,7 +36,7 @@ public class OtpGeneratorImpl {
 		try {
 			resource = ResourceBundle.getBundle(OtpPropertyConstants.OTP_FILE.getProperty());
 		} catch (MissingResourceException exception) {
-			throw new MosipResourceNotFoundException(OtpErrorConstants.OTP_GEN_RESOURCE_NOT_FOUND.getErrorCode(),
+			throw new ResourceNotFoundException(OtpErrorConstants.OTP_GEN_RESOURCE_NOT_FOUND.getErrorCode(),
 					OtpErrorConstants.OTP_GEN_RESOURCE_NOT_FOUND.getErrorMessage());
 		}
 		otpLength = resource.getString(OtpPropertyConstants.OTP_LENGTH.getProperty());

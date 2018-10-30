@@ -6,7 +6,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
 
-import io.mosip.kernel.core.idgenerator.spi.MosipUinGenerator;
+import io.mosip.kernel.core.idgenerator.spi.UinGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstant;
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
  *
  */
 @Component
-public class UinGeneratorImpl implements MosipUinGenerator<Set<UinEntity>> {
+public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 
 	/**
 	 * The logger instance
@@ -61,7 +61,7 @@ public class UinGeneratorImpl implements MosipUinGenerator<Set<UinEntity>> {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.core.spi.idgenerator.MosipIdGenerator#generateId()
+	 * @see io.mosip.kernel.core.spi.idgenerator.IdGenerator#generateId()
 	 */
 	@Override
 	public Set<UinEntity> generateId() {

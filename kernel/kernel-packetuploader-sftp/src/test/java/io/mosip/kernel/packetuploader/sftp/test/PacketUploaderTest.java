@@ -26,13 +26,13 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
-import io.mosip.kernel.core.packetuploader.exception.MosipConnectionException;
-import io.mosip.kernel.core.packetuploader.exception.MosipEmptyPathException;
-import io.mosip.kernel.core.packetuploader.exception.MosipIllegalConfigurationException;
-import io.mosip.kernel.core.packetuploader.exception.MosipIllegalIdentityException;
-import io.mosip.kernel.core.packetuploader.exception.MosipNullConfigurationException;
-import io.mosip.kernel.core.packetuploader.exception.MosipNullPathException;
-import io.mosip.kernel.core.packetuploader.exception.MosipPacketSizeException;
+import io.mosip.kernel.core.packetuploader.exception.ConnectionException;
+import io.mosip.kernel.core.packetuploader.exception.EmptyPathException;
+import io.mosip.kernel.core.packetuploader.exception.IllegalConfigurationException;
+import io.mosip.kernel.core.packetuploader.exception.IllegalIdentityException;
+import io.mosip.kernel.core.packetuploader.exception.NullConfigurationException;
+import io.mosip.kernel.core.packetuploader.exception.NullPathException;
+import io.mosip.kernel.core.packetuploader.exception.PacketSizeException;
 import io.mosip.kernel.packetuploader.sftp.channel.SftpChannel;
 import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderConfiguration;
 import io.mosip.kernel.packetuploader.sftp.impl.PacketUploaderImpl;
@@ -73,14 +73,14 @@ public class PacketUploaderTest {
 	}
 
 	@Test
-	public void testCreateSFTPChannel() throws MosipConnectionException {
+	public void testCreateSFTPChannel() throws ConnectionException {
 
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
 	@Test
-	public void testUpload() throws IOException, MosipConnectionException {
+	public void testUpload() throws IOException, ConnectionException {
 		Path tempFile = new ClassPathResource("/packet3.zip").getFile().toPath();
 
 		assertEquals(0, Files.list(sftpFolder).count());
@@ -93,15 +93,15 @@ public class PacketUploaderTest {
 	}
 
 	@Test
-	public void testCreateSFTPIdentityChannel() throws MosipConnectionException, IOException {
+	public void testCreateSFTPIdentityChannel() throws ConnectionException, IOException {
 		String path = new ClassPathResource("/id_rsa1").getFile().getPath();
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 10022, "testUser", path, null, "/");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipIllegalIdentityException.class)
-	public void testCreateSFTPOllegalIdentityChannel() throws MosipConnectionException, IOException {
+	@Test(expected = IllegalIdentityException.class)
+	public void testCreateSFTPOllegalIdentityChannel() throws ConnectionException, IOException {
 		String path = new ClassPathResource("/id_rsa1").getPath();
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 10022, "testUser", path, null, "/");
 		PacketUploaderImpl.createSFTPChannel(configuration);
@@ -109,7 +109,7 @@ public class PacketUploaderTest {
 	}
 
 	@Test
-	public void testReleaseConnection() throws MosipConnectionException, JSchException {
+	public void testReleaseConnection() throws ConnectionException, JSchException {
 		ChannelSftp channelSftp = Mockito.mock(ChannelSftp.class);
 		Session session = Mockito.mock(Session.class);
 		SftpChannel channel = new SftpChannel(channelSftp, null);
@@ -120,127 +120,127 @@ public class PacketUploaderTest {
 		Mockito.verify(session, times(1)).disconnect();
 	}
 
-	@Test(expected = MosipConnectionException.class)
-	public void testCreateSFTPConnectionExceptionChannel() throws MosipConnectionException {
+	@Test(expected = ConnectionException.class)
+	public void testCreateSFTPConnectionExceptionChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 10022, "user", "testpassword", "/");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipEmptyPathException.class)
-	public void testUploadSftpEmptyPathexception() throws IOException, MosipConnectionException {
+	@Test(expected = EmptyPathException.class)
+	public void testUploadSftpEmptyPathexception() throws IOException, ConnectionException {
 		SftpChannel channel = PacketUploaderImpl.createSFTPChannel(configuration);
 		PacketUploaderImpl.upload(channel, "");
 	}
 
-	@Test(expected = MosipPacketSizeException.class)
-	public void testUploadSftpSizeException() throws IOException, MosipConnectionException {
+	@Test(expected = PacketSizeException.class)
+	public void testUploadSftpSizeException() throws IOException, ConnectionException {
 		SftpChannel channel = PacketUploaderImpl.createSFTPChannel(configuration);
 		Path tempFile = new ClassPathResource("/packet4.zip").getFile().toPath();
 		PacketUploaderImpl.upload(channel, tempFile.toString());
 	}
 
-	@Test(expected = MosipPacketSizeException.class)
-	public void testUploadSFTPException() throws IOException, MosipConnectionException {
+	@Test(expected = PacketSizeException.class)
+	public void testUploadSFTPException() throws IOException, ConnectionException {
 		SftpChannel channel = PacketUploaderImpl.createSFTPChannel(configuration);
 
 		PacketUploaderImpl.upload(channel, "/fakePath");
 	}
 
-	@Test(expected = MosipNullPathException.class)
-	public void testUploadSftpNullPathException() throws IOException, MosipConnectionException {
+	@Test(expected = NullPathException.class)
+	public void testUploadSftpNullPathException() throws IOException, ConnectionException {
 		SftpChannel channel = PacketUploaderImpl.createSFTPChannel(configuration);
 		PacketUploaderImpl.upload(channel, null);
 	}
 
-	@Test(expected = MosipIllegalConfigurationException.class)
-	public void testCreateSFTPEmptyHostChannel() throws MosipConnectionException {
+	@Test(expected = IllegalConfigurationException.class)
+	public void testCreateSFTPEmptyHostChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("", 10022, "testUser", "testpassword", "/");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipNullConfigurationException.class)
-	public void testCreateSFTPNullHostChannel() throws MosipConnectionException {
+	@Test(expected = NullConfigurationException.class)
+	public void testCreateSFTPNullHostChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration(null, 10022, "testUser", "testpassword", "/");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipIllegalConfigurationException.class)
-	public void testCreateSFTPEmptyUserChannel() throws MosipConnectionException {
+	@Test(expected = IllegalConfigurationException.class)
+	public void testCreateSFTPEmptyUserChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 10022, "", "testpassword", "/");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipNullConfigurationException.class)
-	public void testCreateSFTPNullUserChannel() throws MosipConnectionException {
+	@Test(expected = NullConfigurationException.class)
+	public void testCreateSFTPNullUserChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 10022, null, "testpassword", "/");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipIllegalConfigurationException.class)
-	public void testCreateSFTPEmptyDirectoryChannel() throws MosipConnectionException {
+	@Test(expected = IllegalConfigurationException.class)
+	public void testCreateSFTPEmptyDirectoryChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 10022, "testUser", "testpassword", "");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipNullConfigurationException.class)
-	public void testCreateSFTPNullDirectoryChannel() throws MosipConnectionException {
+	@Test(expected = NullConfigurationException.class)
+	public void testCreateSFTPNullDirectoryChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 10022, "testUser", "testpassword", null);
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipIllegalConfigurationException.class)
-	public void testCreateSFTPEmptyKeyChannel() throws MosipConnectionException {
+	@Test(expected = IllegalConfigurationException.class)
+	public void testCreateSFTPEmptyKeyChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 10022, "testUser", "", null, "/");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipIllegalConfigurationException.class)
-	public void testCreateSFTPIllegalKeyChannel() throws MosipConnectionException {
+	@Test(expected = IllegalConfigurationException.class)
+	public void testCreateSFTPIllegalKeyChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 10022, "testUser", null, null, "/");
 		configuration.setPassword("");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipIllegalConfigurationException.class)
-	public void testCreateSFTPEmptyPasswordChannel() throws MosipConnectionException {
+	@Test(expected = IllegalConfigurationException.class)
+	public void testCreateSFTPEmptyPasswordChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 10022, "testUser", "", "/");
 		configuration.setPrivateKeyFileName("");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipNullConfigurationException.class)
-	public void testCreateSFTPNullPasswordChannel() throws MosipConnectionException {
+	@Test(expected = NullConfigurationException.class)
+	public void testCreateSFTPNullPasswordChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 10022, "testUser", null, "/");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipIllegalConfigurationException.class)
-	public void testCreateSFTPMinPortChannel() throws MosipConnectionException {
+	@Test(expected = IllegalConfigurationException.class)
+	public void testCreateSFTPMinPortChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("127.0.0.1", -1, "testUser", "testpassword", "/");
 		assertThat(PacketUploaderImpl.createSFTPChannel(configuration), isA(SftpChannel.class));
 
 	}
 
-	@Test(expected = MosipIllegalConfigurationException.class)
-	public void testCreateSFTPMaxPortChannel() throws MosipConnectionException {
+	@Test(expected = IllegalConfigurationException.class)
+	public void testCreateSFTPMaxPortChannel() throws ConnectionException {
 		configuration = new PacketUploaderConfiguration("127.0.0.1", 65536, "testUser", "testpassword", "/");
 		PacketUploaderImpl.createSFTPChannel(configuration);
 
 	}
 
-	@Test(expected = MosipNullConfigurationException.class)
-	public void testCreateNUllConfigurationtChannel() throws MosipConnectionException {
+	@Test(expected = NullConfigurationException.class)
+	public void testCreateNUllConfigurationtChannel() throws ConnectionException {
 
 		PacketUploaderImpl.createSFTPChannel(null);
 

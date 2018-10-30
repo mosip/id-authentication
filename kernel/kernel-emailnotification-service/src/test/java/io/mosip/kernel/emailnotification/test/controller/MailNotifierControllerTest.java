@@ -18,13 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 import io.mosip.kernel.emailnotification.NotificationEmailBootApplication;
 import io.mosip.kernel.emailnotification.controller.SendMailController;
 import io.mosip.kernel.emailnotification.dto.ResponseDto;
-import io.mosip.kernel.emailnotification.service.impl.MailNotifierServiceImpl;
+import io.mosip.kernel.emailnotification.service.impl.EmailNotificationServiceImpl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes=NotificationEmailBootApplication.class)
 public class MailNotifierControllerTest {
 	@Mock
-	MailNotifierServiceImpl service;
+	EmailNotificationServiceImpl service;
 	
 	@InjectMocks
 	SendMailController controller;

@@ -1,8 +1,0 @@
-io.mosip.kernel.idgenerator.prid
-io.mosip.kernel.idgenerator.prid.cache
-io.mosip.kernel.idgenerator.prid.cache.impl
-io.mosip.kernel.idgenerator.prid.constant
-io.mosip.kernel.idgenerator.prid.entity
-io.mosip.kernel.idgenerator.prid.exception
-io.mosip.kernel.idgenerator.prid.impl
-io.mosip.kernel.idgenerator.prid.repository

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.packetuploader.http.dto.PacketUploaderResponceDTO;
 import io.mosip.kernel.packetuploader.http.service.PacketUploaderService;
 
@@ -32,9 +33,10 @@ public class PacketUploaderController {
 	 * @param packet
 	 *            packet to upload
 	 * @return {@link ResponseEntity} with File properties
+	 * @throws IOException 
 	 */
 	@PostMapping("/uploads")
-	public ResponseEntity<PacketUploaderResponceDTO> upload(MultipartFile packet) {
+	public ResponseEntity<PacketUploaderResponceDTO> upload(MultipartFile packet) throws IOException {
 		return new ResponseEntity<>(service.storePacket(packet), HttpStatus.CREATED);
 	}
 

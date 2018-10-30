@@ -11,7 +11,7 @@ package io.mosip.kernel.core.util;
 public final class ChecksumUtils {
 
 	/**
-	 * Private constructor for MosipIdChecksum
+	 * Private constructor for IdChecksum
 	 */
 	private ChecksumUtils() {
 	}

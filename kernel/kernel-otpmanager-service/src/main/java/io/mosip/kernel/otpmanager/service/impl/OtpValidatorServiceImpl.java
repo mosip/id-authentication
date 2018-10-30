@@ -16,9 +16,9 @@ import io.mosip.kernel.otpmanager.constant.OtpExpiryConstants;
 import io.mosip.kernel.otpmanager.constant.OtpStatusConstants;
 import io.mosip.kernel.otpmanager.constant.SqlQueryConstants;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
-import io.mosip.kernel.otpmanager.exception.MosipErrors;
-import io.mosip.kernel.otpmanager.exception.MosipOtpInvalidArgumentExceptionHandler;
-import io.mosip.kernel.otpmanager.exception.MosipResourceNotFoundExceptionHandler;
+import io.mosip.kernel.otpmanager.exception.Errors;
+import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentExceptionHandler;
+import io.mosip.kernel.otpmanager.exception.ResourceNotFoundExceptionHandler;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
 import io.mosip.kernel.otpmanager.service.OtpValidatorService;
 import io.mosip.kernel.otpmanager.util.OtpManagerUtils;
@@ -59,10 +59,10 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 		 * exception.
 		 */
 		if (otpResponse == null) {
-			List<MosipErrors> validationErrorsList = new ArrayList<>();
-			validationErrorsList.add(new MosipErrors(OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(),
+			List<Errors> validationErrorsList = new ArrayList<>();
+			validationErrorsList.add(new Errors(OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorMessage()));
-			throw new MosipOtpInvalidArgumentExceptionHandler(validationErrorsList);
+			throw new OtpInvalidArgumentExceptionHandler(validationErrorsList);
 
 		}
 
@@ -83,10 +83,10 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 		try {
 			resource = ResourceBundle.getBundle(OtpExpiryConstants.OTP_PROPERTIES_FILE_NAME.getStringProperty());
 		} catch (MissingResourceException exception) {
-			List<MosipErrors> validationErrorsList = new ArrayList<>();
-			validationErrorsList.add(new MosipErrors(OtpErrorConstants.OTP_VAL_RESOURCE_NOT_FOUND.getErrorCode(),
+			List<Errors> validationErrorsList = new ArrayList<>();
+			validationErrorsList.add(new Errors(OtpErrorConstants.OTP_VAL_RESOURCE_NOT_FOUND.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_RESOURCE_NOT_FOUND.getErrorMessage()));
-			throw new MosipResourceNotFoundExceptionHandler(validationErrorsList);
+			throw new ResourceNotFoundExceptionHandler(validationErrorsList);
 		}
 		// This variable holds the number of validation attempts allowed.
 		int numberOfValidationAttemptsAllowed = Integer

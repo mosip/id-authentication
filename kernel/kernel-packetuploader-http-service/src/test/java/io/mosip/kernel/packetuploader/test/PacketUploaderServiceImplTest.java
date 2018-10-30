@@ -32,7 +32,7 @@ public class PacketUploaderServiceImplTest {
 	private PacketUploaderServiceImpl packetUploaderServiceImpl;
 
 	@Test
-	public void testStorePacket() throws IOException {
+	public void testStorePacket() throws IOException, io.mosip.kernel.core.exception.IOException {
 		MultipartFile file = new MockMultipartFile("testFile.zip", "testFile.zip", null, new byte[1100]);
 		doNothing().when(packetUploaderUtils).check(file);
 		doReturn(new ClassPathResource("/").getFile().toPath().toString()).when(packetFileStorageProperties)

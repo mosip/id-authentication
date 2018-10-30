@@ -23,7 +23,7 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
-import io.mosip.kernel.core.exception.MosipIllegalArgumentException;
+import io.mosip.kernel.core.exception.IllegalArgumentException;
 import io.mosip.kernel.core.util.constant.DateUtilConstants;
 
 /**
@@ -51,14 +51,14 @@ public final class DateUtils {
 	 * @param days
 	 *            the number of days to add, may be negative
 	 * @return the new Date with the number of days added
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the date is null
 	 */
 	public static Date addDays(final Date date, final int days) {
 		try {
 			return org.apache.commons.lang3.time.DateUtils.addDays(date, days);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -74,14 +74,14 @@ public final class DateUtils {
 	 * @param hours
 	 *            the hours to add, may be negative
 	 * @return the new Date with the hours added
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the date is null
 	 */
 	public static Date addHours(final Date date, final int hours) {
 		try {
 			return org.apache.commons.lang3.time.DateUtils.addHours(date, hours);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -97,14 +97,14 @@ public final class DateUtils {
 	 * @param minutes
 	 *            the minutes to add, may be negative
 	 * @return the new Date with the minutes added
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the date is null
 	 */
 	public static Date addMinutes(final Date date, final int minutes) {
 		try {
 			return org.apache.commons.lang3.time.DateUtils.addMinutes(date, minutes);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -120,14 +120,14 @@ public final class DateUtils {
 	 * @param seconds
 	 *            the seconds to add, may be negative
 	 * @return the new Date with the seconds added
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the date is null
 	 */
 	public static Date addSeconds(final Date date, final int seconds) {
 		try {
 			return org.apache.commons.lang3.time.DateUtils.addSeconds(date, seconds);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -143,14 +143,14 @@ public final class DateUtils {
 	 * @param pattern
 	 *            the pattern to use to format the date, not null
 	 * @return the formatted date
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the date/pattern is null
 	 */
 	public static String formatDate(final Date date, final String pattern) {
 		try {
 			return DateFormatUtils.format(date, pattern, null, null);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -168,14 +168,14 @@ public final class DateUtils {
 	 * @param timeZone
 	 *            the time zone to use, may be null
 	 * @return the formatted date
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the date/pattern/timeZone is null
 	 */
 	public static String formatDate(final Date date, final String pattern, final TimeZone timeZone) {
 		try {
 			return DateFormatUtils.format(date, pattern, timeZone, null);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -195,15 +195,15 @@ public final class DateUtils {
 	 * @param locale,
 	 *            the locale to use, may be null
 	 * @return the formatted date
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the date/pattern/timeZone is null
 	 */
 	public static String formatDate(final Date date, final String pattern, final TimeZone timeZone,
 			final Locale locale) {
 		try {
 			return DateFormatUtils.format(date, pattern, timeZone, locale);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -217,14 +217,14 @@ public final class DateUtils {
 	 * @param pattern,
 	 *            the pattern to use to format the calendar, not null
 	 * @return the formatted calendar
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the calendar/pattern is null
 	 */
 	public static String formatCalendar(final Calendar calendar, final String pattern) {
 		try {
 			return DateFormatUtils.format(calendar, pattern, null, null);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -240,14 +240,14 @@ public final class DateUtils {
 	 * @param timeZone,
 	 *            the time zone to use, may be null
 	 * @return the formatted calendar
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the calendar/pattern/timeZone is null
 	 */
 	public static String formatCalendar(final Calendar calendar, final String pattern, final TimeZone timeZone) {
 		try {
 			return DateFormatUtils.format(calendar, pattern, timeZone, null);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -263,14 +263,14 @@ public final class DateUtils {
 	 * @param locale,
 	 *            the locale to use, may be null
 	 * @return the formatted calendar
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the calendar/pattern/locale is null
 	 */
 	public static String formatCalendar(final Calendar calendar, final String pattern, final Locale locale) {
 		try {
 			return DateFormatUtils.format(calendar, pattern, null, locale);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -288,15 +288,15 @@ public final class DateUtils {
 	 * @param locale,
 	 *            the locale to use, may be null
 	 * @return the formatted calendar
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the calendar/pattern/timeZone is null
 	 */
 	public static String formatCalendar(final Calendar calendar, final String pattern, final TimeZone timeZone,
 			final Locale locale) {
 		try {
 			return DateFormatUtils.format(calendar, pattern, timeZone, locale);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
