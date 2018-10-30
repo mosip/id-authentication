@@ -123,13 +123,10 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 					eventName=EventName.EXCEPTION.toString();
 					eventType=EventType.SYSTEM.toString();
 				}finally {
-					String description = "";
-					if (isTransactionSuccessful) {
-						description = "Packet registration status updated successfully";
-					} else {
-						description = "Packet registration status updation failure";
-					}
 					
+					String description = isTransactionSuccessful
+							? "Packet registration status updated successfully"
+							: "Packet registration status updation unsuccessfull";
 					coreAuditRequestBuilder.createAuditRequestBuilder(description,eventId,eventName,eventType, registrationId);		
 					
 				}
