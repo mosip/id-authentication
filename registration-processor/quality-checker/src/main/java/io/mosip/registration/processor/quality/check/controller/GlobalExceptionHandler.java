@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import io.mosip.registration.processor.quality.check.dto.ExceptionJSONInfo;
-import io.mosip.registration.processor.quality.check.exception.QcUserNotFoundException;
-import io.mosip.registration.processor.quality.check.exception.RegistrationIdNotFoundException;
+import io.mosip.registration.processor.quality.check.exception.InvalidQcUserIdException;
+import io.mosip.registration.processor.quality.check.exception.InvalidRegistrationIdException;
 import io.mosip.registration.processor.quality.check.exception.ResultNotFoundException;
 
 @RestControllerAdvice
@@ -24,15 +24,15 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(QcUserNotFoundException.class)
-	public ResponseEntity<ExceptionJSONInfo> qcUserIdNotFound(final QcUserNotFoundException e, WebRequest request) {
+	@ExceptionHandler(InvalidQcUserIdException.class)
+	public ResponseEntity<ExceptionJSONInfo> qcUserIdNotFound(final InvalidQcUserIdException e, WebRequest request) {
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(e.getErrorCode(), e.getErrorText());
 		log.error(e.getErrorCode(), e.getCause());
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(RegistrationIdNotFoundException.class)
-	public ResponseEntity<ExceptionJSONInfo> regIdNotFound(final RegistrationIdNotFoundException e,
+	@ExceptionHandler(InvalidRegistrationIdException.class)
+	public ResponseEntity<ExceptionJSONInfo> regIdNotFound(final InvalidRegistrationIdException e,
 			WebRequest request) {
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(e.getErrorCode(), e.getErrorText());
 		log.error(e.getErrorCode(), e.getCause());

@@ -2,15 +2,12 @@ package io.mosip.registration.processor.quality.check.service.impl;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.Random;
 
-import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdPKEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,8 +23,9 @@ import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdEntity;
-import io.mosip.registration.processor.quality.check.exception.QcUserNotFoundException;
-import io.mosip.registration.processor.quality.check.exception.RegistrationIdNotFoundException;
+import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdPKEntity;
+import io.mosip.registration.processor.quality.check.exception.InvalidQcUserIdException;
+import io.mosip.registration.processor.quality.check.exception.InvalidRegistrationIdException;
 import io.mosip.registration.processor.quality.check.exception.ResultNotFoundException;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 
@@ -44,9 +42,9 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 
 	@Override
 	public void assignQCUser(String applicantRegistrationId) {
-			List<String> qcUsersList=Arrays.asList("qc001","qc002","qc003");
-		String qcUserId= qcUsersList.get(new Random().nextInt(qcUsersList.size()));
-		QCUserDto qcUserDto=new QCUserDto();
+		List<String> qcUsersList = Arrays.asList("qc001", "qc002", "qc003");
+		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
+		QCUserDto qcUserDto = new QCUserDto();
 		qcUserDto.setQcUserId(qcUserId);
 		qcUserDto.setRegId(applicantRegistrationId);
 		qcUserDto.setDecisionStatus(DecisionStatus.PENDING);
@@ -76,81 +74,88 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 
 	@Override
 	public List<QCUserDto> updateQCUserStatus(List<QCUserDto> qcUserDtos) {
-		Map<QcuserRegistrationIdEntity, QCUserDto> rhmap = new LinkedHashMap<>();
-		Map<QcuserRegistrationIdEntity, QCUserDto> hmap = validateUser(qcUserDtos,rhmap);
-		List<QCUserDto> resultDtos = new ArrayList<>();
-		//QcuserRegistrationIdEntity entity = new QcuserRegistrationIdEntity();
-		hmap.forEach((k,v)->{
-			k.setStatus(v.getDecisionStatus().name());
-			QcuserRegistrationIdEntity entity = applicantInfoDao.update(k);
-			resultDtos.add(convertEntityToDto(entity));
+		boolean isTransactionSuccessful = false;
+		try {
+			Map<QcuserRegistrationIdEntity, QCUserDto> map = validateUser(qcUserDtos);
+			List<QCUserDto> resultDtos = new ArrayList<>();
 
-		});
-//		entities.forEach(entity -> {
-//			//qcUserDtos.stream().filter(dto -> )
-//
-//			//entity.setStatus(dto.getDecisionStatus().toString());
-//			entity = applicantInfoDao.update(entity);
-//			resultDtos.add(convertEntityToDto(entity));
-//		});
-		return resultDtos;
+			map.forEach((k, v) -> {
+				k.setStatus(v.getDecisionStatus().name());
+				QcuserRegistrationIdEntity entity = applicantInfoDao.update(k);
+				resultDtos.add(convertEntityToDto(entity));
+
+			});
+			isTransactionSuccessful = true;
+			return resultDtos;
+
+		} catch (DataAccessLayerException e) {
+			throw new TablenotAccessibleException("Table Not Accessible", e);
+		} finally {
+			String description = isTransactionSuccessful ? "description--QC User status update successful"
+					: "description--QC User status update failed";
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
+		}
+
 	}
 
-	private Map<QcuserRegistrationIdEntity, QCUserDto> validateUser(List<QCUserDto> qcUserDtos,Map<QcuserRegistrationIdEntity, QCUserDto> hmap) {
-		List<QcuserRegistrationIdEntity> entities = new ArrayList<>();
+	private Map<QcuserRegistrationIdEntity, QCUserDto> validateUser(List<QCUserDto> qcUserDtos) {
 
+		Map<QcuserRegistrationIdEntity, QCUserDto> map = new LinkedHashMap<>();
 		qcUserDtos.forEach(dto -> {
 
 			if (dto.getQcUserId() == null || dto.getQcUserId().isEmpty()) {
-				throw new QcUserNotFoundException(
-						QualityCheckerStatusCode.QC_USER_ID_NOT_FOUND.name() + " FOR QC USER ID " + dto.getQcUserId());
+				throw new InvalidQcUserIdException(
+						QualityCheckerStatusCode.INVALID_QC_USER_ID.name() + ": QC USER ID IS NULL");
 			}
 			if (dto.getRegId() == null || dto.getRegId().isEmpty()) {
-				throw new RegistrationIdNotFoundException(QualityCheckerStatusCode.REGISTRATION_ID_NOT_FOUND.name());
+				throw new InvalidRegistrationIdException(
+						QualityCheckerStatusCode.INVALID_REGISTRATION_ID.name() + ": REGISTRATION ID IS NULL");
 			}
 
 			QcuserRegistrationIdEntity entity = applicantInfoDao.findById(dto.getQcUserId(), dto.getRegId());
 			if (entity == null) {
-				throw new ResultNotFoundException(QualityCheckerStatusCode.DATA_NOT_FOUND.name() + " FOR RID :"
-						+ dto.getRegId() + " AND  FOR QC USER ID:" + dto.getQcUserId());
+				throw new ResultNotFoundException(QualityCheckerStatusCode.DATA_NOT_FOUND.name() + " FOR RID: "
+						+ dto.getRegId() + " AND  FOR QC USER ID: " + dto.getQcUserId());
 			}
-			hmap.put(entity,dto);
-		//	entities.add(entity);
+			map.put(entity, dto);
 		});
-		return hmap;
+
+		return map;
 	}
 
-    private void assignNewPacket(QCUserDto qcUserDto) {
-        boolean isTransactionSuccessful= false;
-        try {
-            QcuserRegistrationIdEntity qcUserEntity = convertDtoToEntity(qcUserDto);
-            applicantInfoDao.save(qcUserEntity);
-            isTransactionSuccessful=true;
-        } catch (DataAccessLayerException e) {
-            throw new TablenotAccessibleException("qcuser_registration_id Table Not Accessible", e);
-        }
-        finally {
-            String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
-                    : "description--Demographic Failed to save";
-            createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-                    AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-                    AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-                    AuditLogTempConstant.EVENT_TYPE.toString());
-        }
-    }
+	private void assignNewPacket(QCUserDto qcUserDto) {
+		boolean isTransactionSuccessful = false;
+		try {
+			QcuserRegistrationIdEntity qcUserEntity = convertDtoToEntity(qcUserDto);
+			applicantInfoDao.save(qcUserEntity);
+			isTransactionSuccessful = true;
+		} catch (DataAccessLayerException e) {
+			throw new TablenotAccessibleException("qcuser_registration_id Table Not Accessible", e);
+		} finally {
+			String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
+					: "description--Demographic Failed to save";
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
+		}
+	}
 
-    private QcuserRegistrationIdEntity convertDtoToEntity(QCUserDto qcUserDto) {
-        QcuserRegistrationIdEntity qcUserEntity = new QcuserRegistrationIdEntity();
-        QcuserRegistrationIdPKEntity qcuserPKEntity = new QcuserRegistrationIdPKEntity();
-        qcuserPKEntity.setRegId(qcUserDto.getRegId());
-        qcuserPKEntity.setUsrId(qcUserDto.getQcUserId());
+	private QcuserRegistrationIdEntity convertDtoToEntity(QCUserDto qcUserDto) {
+		QcuserRegistrationIdEntity qcUserEntity = new QcuserRegistrationIdEntity();
+		QcuserRegistrationIdPKEntity qcuserPKEntity = new QcuserRegistrationIdPKEntity();
+		qcuserPKEntity.setRegId(qcUserDto.getRegId());
+		qcuserPKEntity.setUsrId(qcUserDto.getQcUserId());
 
-        qcUserEntity.setId(qcuserPKEntity);
-        qcUserEntity.setStatus(qcUserDto.getDecisionStatus().name());
+		qcUserEntity.setId(qcuserPKEntity);
+		qcUserEntity.setStatus(qcUserDto.getDecisionStatus().name());
 
-        return qcUserEntity;
+		return qcUserEntity;
 
-    }
+	}
 
 	public QCUserDto convertEntityToDto(QcuserRegistrationIdEntity entity) {
 		QCUserDto dto = new QCUserDto();
