@@ -3,7 +3,6 @@ package io.mosip.registration.processor.packet.decryptor.job.tasklet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -12,7 +11,6 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
@@ -63,22 +61,24 @@ public class PacketDecryptorTasklet implements Tasklet {
 
 	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Registration Status table "
 			+ "is not accessible";
-	
+
 	/** The core audit request builder. */
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
-	
+
 	/** The event id. */
 	private String eventId = "";
-	
+
 	/** The event name. */
 	private String eventName = "";
-	
+
 	/** The event type. */
 	private String eventType = "";
-	
+
 	/** The description. */
 	private String description = "";
+
+	private boolean isTransactionSuccessful = false;
 
 	/*
 	 * (non-Javadoc)
@@ -97,24 +97,19 @@ public class PacketDecryptorTasklet implements Tasklet {
 			eventId = EventId.RPR_401.toString();
 			eventName = EventName.GET.toString();
 			eventType = EventType.BUSINESS.toString();
-			description = "Packet uploaded to file system";
+
 			if (!(dtolist.isEmpty())) {
 				dtolist.forEach(dto -> {
 					try {
-
 						decyptpacket(dto);
-
+						isTransactionSuccessful = true;
 					} catch (TablenotAccessibleException e) {
 						eventId = EventId.RPR_405.toString();
 						eventName = EventName.EXCEPTION.toString();
 						eventType = EventType.SYSTEM.toString();
-						description = REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE;
 						LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e.getMessage(), e);
-
 					} catch (PacketDecryptionFailureException e) {
-
 						LOGGER.error(LOGDISPLAY, e.getErrorCode(), e.getErrorText(), e);
-
 						dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_FAILED.toString());
 						dto.setStatusComment("packet is in status packet for decryption failed");
 						dto.setUpdatedBy(USER);
@@ -122,30 +117,30 @@ public class PacketDecryptorTasklet implements Tasklet {
 						eventId = EventId.RPR_405.toString();
 						eventName = EventName.EXCEPTION.toString();
 						eventType = EventType.SYSTEM.toString();
-						description = "Packet decryption failed";
 					} catch (IOException e) {
 						eventId = EventId.RPR_405.toString();
 						eventName = EventName.EXCEPTION.toString();
 						eventType = EventType.SYSTEM.toString();
-						description = DFS_NOT_ACCESSIBLE;
 						LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e.getMessage(), e);
-
 					}
 				});
 			} else if (dtolist.isEmpty()) {
 				eventId = EventId.RPR_405.toString();
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
-				description = "There are currently no files to be decrypted";
 				LOGGER.info("There are currently no files to be decrypted");
 			}
+
 		} catch (TablenotAccessibleException e) {
 			eventId = EventId.RPR_405.toString();
 			eventName = EventName.EXCEPTION.toString();
 			eventType = EventType.SYSTEM.toString();
-			description = REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE;
 			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
-		}finally{		
+		} finally {
+
+			description = isTransactionSuccessful ? "Packet uploaded to file system"
+					: "Packet uploading to file system is unsuccessfull";
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}

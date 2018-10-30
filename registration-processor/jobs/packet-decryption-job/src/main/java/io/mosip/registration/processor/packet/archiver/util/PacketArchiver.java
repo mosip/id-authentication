@@ -50,6 +50,8 @@ public class PacketArchiver {
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
+	/** Checking transaction status */
+	private boolean isTransactionSuccessful = false;
 	/**
 	 * Archive packet.
 	 *
@@ -65,7 +67,6 @@ public class PacketArchiver {
 	public void archivePacket(String registrationId)
 			throws IOException, UnableToAccessPathException, PacketNotFoundException {
 		String description = " ";
-
 		InputStream encryptedpacket = filesystemCephAdapterImpl.getPacket(registrationId);
 
 		if (encryptedpacket != null) {
@@ -74,18 +75,18 @@ public class PacketArchiver {
 				eventId = EventId.RPR_407.toString();
 				eventName = EventName.SAVE.toString();
 				eventType = EventType.BUSINESS.toString();
-				description = "The file is successfully copied to VM";
+				isTransactionSuccessful=true;
 			} catch (IOException e) {
 				eventId = EventId.RPR_405.toString();
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
-				description = "Unable to access the file path in Packet Decryptor";
 				throw new UnableToAccessPathException(
 						UnableToAccessPathExceptionConstant.UNABLE_TO_ACCESS_PATH_ERROR_CODE.getErrorCode(),
 						UnableToAccessPathExceptionConstant.UNABLE_TO_ACCESS_PATH_ERROR_CODE.getErrorMessage(),
 						e.getCause());
-
 			} finally {
+				description = isTransactionSuccessful ? "The file is successfully copied to VM for RegId :"+registrationId
+						: "The file copying to VM is failured for RegId: "+registrationId;
 				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 						registrationId);
 			}
