@@ -1,6 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +11,9 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
@@ -20,6 +25,8 @@ import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.PersonalIdentityDataDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
+import io.mosip.authentication.core.spi.id.service.IdInfoService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.AuthType;
@@ -65,6 +72,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	@Autowired
 	private LocationRepository locationRepository;
 
+	@Autowired
+	private IdInfoService idInfoService;
+
 	/**
 	 * Construct match input.
 	 *
@@ -83,7 +93,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 						}
 					}
 					return null;
-				})).orElseGet(Stream::empty).collect(Collectors.toList());
+				}))
+				.filter(Objects::nonNull)
+				.orElseGet(Stream::empty).collect(Collectors.toList());
 
 	}
 
@@ -103,7 +115,8 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		if (matchingStrategyOpt.isPresent()) {
 			matchingStrategy = matchingStrategyOpt.get();
 			if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())) {
-				Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO, this::getLanguageCode);
+				Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO,
+						this::getLanguageCode);
 				int defaultMatchValue = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));
 				matchValue = matchThresholdOpt.orElse(defaultMatchValue);
 			}
@@ -121,7 +134,8 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 * @return the match output
 	 */
 	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, IdentityDTO identitydto,
-			DemoEntity demoEntity, LocationInfoFetcher locationInfoFetcher, LanguageFetcher languageInfoFetcher) {
+			Map<String, List<IdentityInfoDTO>> demoEntity, LocationInfoFetcher locationInfoFetcher,
+			LanguageFetcher languageInfoFetcher) {
 		return demoMatcher.matchDemoData(identitydto, demoEntity, listMatchInputs, locationInfoFetcher,
 				languageInfoFetcher);
 	}
@@ -135,7 +149,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	public AuthStatusInfo getDemoStatus(AuthRequestDTO authRequestDTO, String refId)
 			throws IdAuthenticationBusinessException {
 
-		DemoEntity demoEntity = getDemoEntity(refId, environment.getProperty(PRIMARY_LANG_CODE));
+		Map<String, List<IdentityInfoDTO>> demoEntity = getDemoEntity(refId);
 
 		if (demoEntity == null) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
@@ -200,15 +214,24 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 *
 	 * @param uniqueId the unique id
 	 * @return the demo entity
+	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationDaoException
+	 * @throws IOException
+	 * @throws JsonMappingException
+	 * @throws JsonParseException
 	 */
-	public DemoEntity getDemoEntity(String refId, String langCode) {
-		// Assuming keeping Langcode
-		// Upper case in DB
-		return demoRepository.findByUinRefIdAndLangCode(refId, langCode.toUpperCase());
+	public Map<String, List<IdentityInfoDTO>> getDemoEntity(String refId) throws IdAuthenticationBusinessException {
+
+		try {
+			return idInfoService.getIdInfo(refId);
+		} catch (IdAuthenticationDaoException e) {
+			// FIXME wrap business exception
+			throw new IdAuthenticationBusinessException();
+		}
 
 	}
 
-	public Optional<String> getLocation(LocationLevel targetLocationLevel, String locationCode) {
+	private Optional<String> getLocation(LocationLevel targetLocationLevel, String locationCode) {
 		Optional<LocationEntity> locationEntity = locationRepository.findByCodeAndIsActive(locationCode, true);
 		if (locationEntity.isPresent()) {
 			LocationEntity entity = locationEntity.get();

@@ -1,10 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -14,7 +12,9 @@ import java.util.stream.Stream;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.service.config.IDAMappingConfig;
 
 /**
  * @author Arun Bose The Enum DemoMatchType.
@@ -25,26 +25,29 @@ public enum DemoMatchType implements MatchType {
 	// @formatter:off
 
 	/** Primary Name Match Type */
-	NAME_PRI(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
+	NAME_PRI(IdMapping.NAME, setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
 			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI,
-			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
-					entity.getLastName())),
-
-	NAME_SEC(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
-			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC,
-			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
-					entity.getLastName())),
-
-	DOB(setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDateOfBirth, LanguageType.PRIMARY_LANG,
-			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB,
-			(entity, locationInfoFetcher) -> entity.getDob()),
-
-	AGE(setOf(AgeMatchingStrategy.EXACT), IdentityDTO::getAge, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_AGE,
-			AuthUsageDataBit.MATCHED_PI_AGE, (DemoEntity entity, LocationInfoFetcher locationInfoFetcher) -> {
-				int age = Period.between(entity.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-						LocalDate.now()).getYears();
-				return Math.abs(age);
+			(List<IdentityValue> idValues, String language) -> {
+				String[] demoValues = idValues.stream().map(IdentityValue::getValue).toArray(size -> new String[size]);
+				String value = concatDemo(demoValues);
+				return new IdentityInfoDTO(language, value);
 			}),
+
+//	NAME_SEC(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
+//			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC,
+//			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
+//					entity.getLastName())),
+//
+//	DOB(setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDateOfBirth, LanguageType.PRIMARY_LANG,
+//			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB,
+//			(entity, locationInfoFetcher) -> entity.getDob()),
+//
+//	AGE(setOf(AgeMatchingStrategy.EXACT), IdentityDTO::getAge, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_AGE,
+//			AuthUsageDataBit.MATCHED_PI_AGE, (DemoEntity entity, LocationInfoFetcher locationInfoFetcher) -> {
+//				int age = Period.between(entity.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+//						LocalDate.now()).getYears();
+//				return Math.abs(age);
+//			}),
 
 	// @formatter:on
 	;
@@ -65,6 +68,8 @@ public enum DemoMatchType implements MatchType {
 
 	private Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction;
 
+	private IdMapping idMapping;
+
 	/**
 	 * Instantiates a new demo match type.
 	 *
@@ -74,9 +79,10 @@ public enum DemoMatchType implements MatchType {
 	 * @param usedBit                 the used bit
 	 * @param matchedBit              the matched bit
 	 */
-	DemoMatchType(Set<MatchingStrategy> allowedMatchingStrategy,
+	DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
 			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, LanguageType langType,
 			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit, DemoEntityInfoFetcher entityInfoFetcher) {
+		this.idMapping = idMapping;
 		this.identityInfoFunction = identityInfoFunction;
 		this.langType = langType;
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
@@ -115,7 +121,7 @@ public enum DemoMatchType implements MatchType {
 	 *
 	 * @return the entity info
 	 */
-	public DemoEntityInfoFetcher getEntityInfoFetcher() {
+	private DemoEntityInfoFetcher getEntityInfoFetcher() {
 		return entityInfoFetcher;
 	}
 
@@ -148,6 +154,10 @@ public enum DemoMatchType implements MatchType {
 
 	}
 
+	public IdMapping getIdMapping() {
+		return idMapping;
+	}
+
 	public static String concatDemo(String... demoValues) {
 		StringBuilder demoBuilder = new StringBuilder();
 		for (int i = 0; i < demoValues.length; i++) {
@@ -160,6 +170,36 @@ public enum DemoMatchType implements MatchType {
 			}
 		}
 		return demoBuilder.toString();
+	}
+
+	private static Optional<IdentityValue> getIdentityValue(String name, String languageCode,
+			Map<String, List<IdentityInfoDTO>> demoInfo) {
+		List<IdentityInfoDTO> identityInfoList = demoInfo.get(name);
+		if (identityInfoList != null && !identityInfoList.isEmpty()) {
+			return identityInfoList.stream().filter(
+					idinfo -> idinfo.getLanguage() != null && idinfo.getLanguage().equalsIgnoreCase(languageCode))
+					.map(idInfo -> new IdentityValue(name, languageCode, idInfo.getValue())).findAny();
+		}
+
+		return Optional.empty();
+	}
+
+	private static List<String> getIdMappingValue(IdMapping idMapping, IDAMappingConfig idMappingConfig) {
+		return idMapping.getMappingFunction().apply(idMappingConfig);
+	}
+
+	private static List<IdentityValue> getDemoValue(List<String> propertyNames, String languageCode,
+			Map<String, List<IdentityInfoDTO>> demoEntity) {
+		return propertyNames.stream().map(propName -> getIdentityValue(propName, languageCode, demoEntity))
+				.filter(val -> val.isPresent()).<IdentityValue>map(Optional::get).collect(Collectors.toList());
+	}
+
+	public IdentityInfoDTO getEntityInfo(Map<String, List<IdentityInfoDTO>> demoEntity, LanguageFetcher languageFetcher,
+			LocationInfoFetcher locationInfoFetcher, IDAMappingConfig idMappingConfig) {
+		String language = languageFetcher.getLanguage(getLanguageType());
+		List<String> propertyNames = getIdMappingValue(getIdMapping(), idMappingConfig);
+		List<IdentityValue> demoValues = getDemoValue(propertyNames, language, demoEntity);
+		return getEntityInfoFetcher().getInfo(demoValues, language);
 	}
 
 }

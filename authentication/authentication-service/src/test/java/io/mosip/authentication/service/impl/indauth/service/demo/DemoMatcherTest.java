@@ -5,13 +5,16 @@ import static org.junit.Assert.assertEquals;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import io.mosip.authentication.core.dto.indauth.DemoDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
 
 public class DemoMatcherTest {
@@ -21,10 +24,11 @@ public class DemoMatcherTest {
 		DemoDTO demoDTO = new DemoDTO();
 		PersonalIdentityDTO pid = new PersonalIdentityDTO();
 		pid.setNamePri("john");
-		DemoEntity demoEntity = new DemoEntity();
-		demoEntity.setFirstName("john");
-		demoEntity.setMiddleName("Rajiv");
-		demoEntity.setLastName("Samuel");
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<String, List<IdentityInfoDTO>>();
+//		DemoEntity demoEntity = new DemoEntity();
+//		demoEntity.setFirstName("john");
+//		demoEntity.setMiddleName("Rajiv");
+//		demoEntity.setLastName("Samuel");
 		List<MatchInput> listMatchInputs = new ArrayList<>();
 		DemoMatcher demoMatcher = new DemoMatcher();
 		List<MatchOutput> listMatchOutput = new ArrayList<MatchOutput>();

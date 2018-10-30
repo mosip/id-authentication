@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdentityInfoDTO {
+public class IdentityValue {
 
+	private String name;
 	private String language;
 	private String value;
 }

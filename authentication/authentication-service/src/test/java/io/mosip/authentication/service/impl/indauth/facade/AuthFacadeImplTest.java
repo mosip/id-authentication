@@ -29,7 +29,7 @@ import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
-import io.mosip.authentication.service.impl.idauth.service.impl.IdAuthServiceImpl;
+import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
 

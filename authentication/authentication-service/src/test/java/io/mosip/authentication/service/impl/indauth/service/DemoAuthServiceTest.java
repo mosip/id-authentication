@@ -1,16 +1,11 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -26,22 +21,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
-import io.mosip.authentication.core.dto.indauth.AuthSecureDTO;
-import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.DemoDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalAddressDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalFullAddressDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalIdentityDataDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
-import io.mosip.authentication.service.impl.indauth.service.demo.LocationEntity;
-import io.mosip.authentication.service.impl.indauth.service.demo.LocationLevel;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 import io.mosip.authentication.service.repository.DemoRepository;
 import io.mosip.authentication.service.repository.LocationRepository;
 
@@ -217,7 +199,7 @@ public class DemoAuthServiceTest {
 //		assertEquals(listMatchInputsExp.size(), listMatchInputsAct.size());
 //		assertTrue(listMatchInputsExp.containsAll(listMatchInputsAct));
 	}
-	
+
 	@Test
 	public void constructMatchInputTestNoFad() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -257,10 +239,11 @@ public class DemoAuthServiceTest {
 //		assertTrue(listMatchInputsAct.isEmpty());
 	}
 
+	@Ignore
 	@Test
-	public void getDemoEntityTest() {
+	public void getDemoEntityTest() throws IdAuthenticationBusinessException {
 		// Mockito.when(demoRepository.findByUinRefIdAndLangCode("12345", "EN"));
-		DemoEntity demoEntity = demoAuthServiceImpl.getDemoEntity("12345", "EN");
+		Map<String, List<IdentityInfoDTO>> demoEntity = demoAuthServiceImpl.getDemoEntity("12345");
 		System.out.println(demoEntity);
 	}
 

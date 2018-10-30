@@ -34,7 +34,7 @@ import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidat
 import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
 
 /**
  * @author Manoj SP
@@ -98,8 +98,8 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO.setMuaCode("1234567890");
 		OtpRequestDTO.setTxnID("1234567890");
 		ZoneOffset offset = ZoneOffset.MAX;
-		OtpRequestDTO.setReqTime(Instant.now().atOffset(offset).format(
-				DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		OtpRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		OtpRequestDTO.setIdvIdType(IdType.UIN.getType());
 		OtpRequestDTO.setIdvId("426789089018");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
@@ -127,8 +127,8 @@ public class OTPRequestValidatorTest {
 		OtpRequestDTO.setVer("1.1");
 		OtpRequestDTO.setMuaCode("1234567890");
 		OtpRequestDTO.setTxnID("1234567890");
-		OtpRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530")).format(
-				DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		OtpRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setIdvIdType(IdType.VID.getType());
 		OtpRequestDTO.setIdvId("5371843613598206");
