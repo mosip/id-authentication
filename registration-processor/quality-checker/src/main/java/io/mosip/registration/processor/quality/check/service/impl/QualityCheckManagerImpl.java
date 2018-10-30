@@ -49,7 +49,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 		QCUserDto qcUserDto=new QCUserDto();
 		qcUserDto.setQcUserId(qcUserId);
 		qcUserDto.setRegId(applicantRegistrationId);
-		qcUserDto.setDecisionStatus("assigned");
+		qcUserDto.setDecisionStatus(DecisionStatus.PENDING);
 		assignNewPacket(qcUserDto);
 	}
 
@@ -146,7 +146,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
         qcuserPKEntity.setUsrId(qcUserDto.getQcUserId());
 
         qcUserEntity.setId(qcuserPKEntity);
-        qcUserEntity.setStatus(qcUserDto.getDecisionStatus());
+        qcUserEntity.setStatus(qcUserDto.getDecisionStatus().name());
 
         return qcUserEntity;
 
