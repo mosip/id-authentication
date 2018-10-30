@@ -27,13 +27,32 @@ The key solution considerations are -
 - In camel bridge after successful user/machine/center validation the request will be routed to OSI-validator by default. Create routers and request processors to map the incoming request from umc_bus to osi_bus address.
 - Add new methods in "PacketInfoManager" to fetch the operator, supervisor and introducer basic details from table.
 - Call 'packet-store-adapter-ceph' service to get the biometric for operator/supervisor/introducer from inside the packet. 
-- The [Auth-rest-service](https://github.com/mosip/mosip/blob/DEV/design/authentication/Auth_Request_REST_service.md) will be responsible for validating OSI info and the service accepts encoded biometrics. The encoded image will come from registration-client by default.
+- The [Auth-rest-service](https://github.com/mosip/mosip/blob/DEV/design/authentication/Auth_Request_REST_service.md) will be responsible for validating OSI info and the service accepts encoded biometrics. The encoded image will be present inside the packet by default.
     OSI info to be validated -
     
         1. fingerprint.
         2. Iris.
         3. Face.
         4. Pin
+- check -
+    1. If operator is valid.
+        a. validate fingerprint.
+        b. validate iris.
+        c. validate face.
+        d. validate pin.
+        e. validate password.
+    2. If supervisor is valid.
+        a. validate fingerprint.
+        b. validate iris.
+        c. validate face.
+        d. validate pin.
+        e. validate password.
+    3. If introducer is valid.
+        a. validate fingerprint.
+        b. validate iris.
+        c. validate face.
+        d. validate pin.
+        e. validate password.
 - The auth module will provide rest API to validate OSI biometrics and pin. 
     ```
     REST API to validate uin and biometric
@@ -51,7 +70,7 @@ The key solution considerations are -
                      TRUE : valid individual.
                      FALSE : invalid individual.
     ```
-- TODO : Password validation - Registration-processor has to support password validation as well. The Kernel will provide USER module which will have basic information of all types of user(Like name, email id, password etc). Kernel will provide rest API to get/validate the user. Registration-Processor will create a dummy service to complete own implementation. Once the Kernel service is ready then integrate with the actual API.
+- TODO : Password validation - Registration-processor has to support password validation as well. The Kernel will provide rest API inside IAM module which will validate user password. Registration-Processor will create a dummy service to complete own implementation. Once the Kernel service is ready then integrate with the actual API. The API spec is not yet ready from Kernel hence mock will be created by processor.
 - On successful validation send request to osi_bus out address. On failure send response to error queue. If any internal error happens during validation then send response to retry queue. In case of failure the registration-client has to resend the packet. Make sure the failure status is mapped to external status as 'resend'
 - Update the packet status in "Registration-status" table for both successful and failed validation.
 
