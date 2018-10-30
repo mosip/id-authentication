@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -31,9 +32,11 @@ import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PacketUploadService;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.RestClientUtil;
+
 
 /**
  * 
@@ -50,6 +53,8 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	private static MosipLogger LOGGER;
 
 	private static final List<String> PACKET_STATUS = Arrays.asList("I", "H", "A", "S");
+	
+	private static final String packetType = "file";
 
 	@Autowired
 	private RegistrationDAO registrationDAO;
@@ -59,6 +64,9 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 
 	@Autowired
 	private RestClientUtil restClientUtil;
+	
+	@Autowired
+	private Environment environment;
 
 	@Autowired
 	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
@@ -71,9 +79,9 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 
 	public Object pushPacket(File packet) throws URISyntaxException, RegBaseCheckedException {
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
-		String uriPath = "http://104.211.209.102:8080/v0.1/registration-processor/packet-receiver/registrationpackets";
+		String uriPath = environment.getProperty("PACKET_UPLOAD_URL");
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		map.add("file", new FileSystemResource(packet));
+		map.add(packetType, new FileSystemResource(packet));
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
@@ -86,6 +94,8 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 			response = restClientUtil.invoke(requestHTTPDTO);
 		} catch (HttpClientErrorException e) {
 			throw new RegBaseCheckedException(Integer.toString(e.getRawStatusCode()), e.getStatusText());
+		} catch (RuntimeException e) {
+			throw new RegBaseUncheckedException("400", "Unable to push the packets");
 		}
 		return response;
 
