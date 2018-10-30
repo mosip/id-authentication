@@ -1,16 +1,13 @@
 package io.mosip.kernel.core.spi.idgenerator;
 
 /**
- * Interface having a function to generate an Id
+ * This is an interface for the generation of RID
  * 
- * @author Dharmesh Khandelwal
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
- * @param <T>
- *            Type of Id
  */
-public interface MosipUinGenerator<T> {
-
+public interface PridGenerator<T> {
 	/**
 	 * Function to generate an Id
 	 * 

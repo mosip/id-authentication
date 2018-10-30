@@ -7,7 +7,7 @@ package io.mosip.kernel.core.spi.idgenerator;
  * @since 1.0.0
  *
  */
-public interface MosipRidGenerator<T> {
+public interface RidGenerator<T> {
 	/**
 	 * This method is used to generate Registration ID(RID)
 	 * 
