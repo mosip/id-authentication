@@ -9,9 +9,9 @@ import io.swagger.annotations.Api;
 @RestController
 @Api(tags = "Health check")
 public class HealthCheckController {
-	
-	@GetMapping(value="/health")
-	public ResponseEntity<String> health(){
+
+	@GetMapping(value = "/health")
+	public ResponseEntity<String> health() {
 		return ResponseEntity.ok().body("Server is up and running");
 	}
 

@@ -9,6 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
@@ -52,6 +53,8 @@ import io.mosip.registration.processor.status.code.AuditLogTempConstant;
  * @author Girish Yarru
  *
  */
+
+@RefreshScope
 @Service
 public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demographic, MetaData> {
 

@@ -25,12 +25,14 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import io.mosip.registration.processor.packet.scanner.job.PacketScannerApplication;
 
+@RefreshScope
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PacketScannerApplication.class)
 public class PacketScannerBatchJobSchedulerTest {
@@ -72,16 +74,14 @@ public class PacketScannerBatchJobSchedulerTest {
 				() -> verify(packetScannerBatchJobSchedulerJob, times(1)).landingZoneScannerJobScheduler());
 	}
 
-	@Test
-	public void testVirusScannerJobScheduler() {
-		Awaitility.await()
-				.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).virusScannerJobScheduler());
-	}
-
-	@Test
-	public void testFtpJobScheduler() {
-		Awaitility.await().untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).ftpJobScheduler());
-	}
+	/*
+	 * @Test public void testVirusScannerJobScheduler() { Awaitility.await()
+	 * .untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob,
+	 * times(1)).virusScannerJobScheduler()); }
+	 * 
+	 * @Test public void testFtpJobScheduler() { Awaitility.await().untilAsserted(()
+	 * -> verify(packetScannerBatchJobSchedulerJob, times(1)).ftpJobScheduler()); }
+	 */
 
 	@Test
 	public void testInvalidJobParameters() throws Exception {

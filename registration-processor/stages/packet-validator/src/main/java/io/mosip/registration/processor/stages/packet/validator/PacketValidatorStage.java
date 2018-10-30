@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
@@ -37,6 +38,8 @@ import io.vertx.core.logging.LoggerFactory;
  * @author M1022006
  *
  */
+
+@RefreshScope
 @Service
 public class PacketValidatorStage extends MosipVerticleManager {
 
@@ -100,8 +103,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				packetInfoManager.savePacketData(packetInfo);
 				InputStream demographicInfoStream = adapter.getFile(registrationId,
 						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
-				Demographic demographicData = (Demographic) JsonUtil
-						.inputStreamtoJavaObject(demographicInfoStream, Demographic.class);
+				Demographic demographicData = (Demographic) JsonUtil.inputStreamtoJavaObject(demographicInfoStream,
+						Demographic.class);
 				packetInfoManager.saveDemographicData(demographicData, packetInfo.getMetaData());
 
 			} else {

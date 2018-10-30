@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,7 @@ import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
+@RefreshScope
 @Component
 public class PacketReceiverServiceImpl implements PacketReceiverService<MultipartFile, Boolean> {
 
@@ -43,7 +45,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
-	
+
 	@Autowired
 	private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
 
@@ -65,55 +67,55 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	 */
 	@Override
 	public Boolean storePacket(MultipartFile file) {
-		
+
 		String registrationId = file.getOriginalFilename().split("\\.")[0];
 		boolean storageFlag = false;
 		boolean isTransactionSuccessful = false;
-		
-		if(!syncRegistrationService.isPresent(registrationId)) {
+
+		if (!syncRegistrationService.isPresent(registrationId)) {
 			logger.info("Registration Packet is Not yet sync in Sync table");
 			throw new PacketNotSyncException(RegistrationStatusCode.PACKET_NOT_YET_SYNC.name());
 		}
-		
+
 		if (file.getSize() > getMaxFileSize()) {
 			throw new FileSizeExceedException(RegistrationStatusCode.PACKET_SIZE_GREATER_THAN_LIMIT.name());
 		}
 		if (!(file.getOriginalFilename().endsWith(getFileExtension()))) {
 			throw new PacketNotValidException(RegistrationStatusCode.INVALID_PACKET_FORMAT.toString());
 		} else if (!(isDuplicatePacket(registrationId))) {
-				try {
-					fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
+			try {
+				fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
 
-					RegistrationStatusDto dto = new RegistrationStatusDto();
-					dto.setRegistrationId(registrationId);
-					dto.setRegistrationType(RegistrationType.NEW.toString());
-					dto.setReferenceRegistrationId(null);
-					dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
-					dto.setLangCode("eng");
-					dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_LANDING_ZONE status");
-					dto.setIsActive(true);
-					dto.setCreatedBy(USER);
-					dto.setIsDeleted(false);
-					registrationStatusService.addRegistrationStatus(dto);
-					storageFlag = true;
-					isTransactionSuccessful = true;
-				} catch (IOException e) {
-					logger.error(e.getMessage());
-				}finally {
-					String description = "";
-					if (isTransactionSuccessful) {
-						description = "description--packet-receiver Success";
-					} else {
-						description = "description--packet-receiver Failure";
-					}
-					createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-							AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-							AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-							AuditLogTempConstant.EVENT_TYPE.toString());
+				RegistrationStatusDto dto = new RegistrationStatusDto();
+				dto.setRegistrationId(registrationId);
+				dto.setRegistrationType(RegistrationType.NEW.toString());
+				dto.setReferenceRegistrationId(null);
+				dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+				dto.setLangCode("eng");
+				dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_LANDING_ZONE status");
+				dto.setIsActive(true);
+				dto.setCreatedBy(USER);
+				dto.setIsDeleted(false);
+				registrationStatusService.addRegistrationStatus(dto);
+				storageFlag = true;
+				isTransactionSuccessful = true;
+			} catch (IOException e) {
+				logger.error(e.getMessage());
+			} finally {
+				String description = "";
+				if (isTransactionSuccessful) {
+					description = "description--packet-receiver Success";
+				} else {
+					description = "description--packet-receiver Failure";
 				}
-			} else {
-				throw new DuplicateUploadRequestException(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());
+				createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+						AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+						AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+						AuditLogTempConstant.EVENT_TYPE.toString());
 			}
+		} else {
+			throw new DuplicateUploadRequestException(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());
+		}
 		return storageFlag;
 	}
 
@@ -134,7 +136,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	private Boolean isDuplicatePacket(String enrolmentId) {
 		return registrationStatusService.getRegistrationStatus(enrolmentId) != null;
 	}
-	
+
 	private void createAuditRequestBuilder(String applicationId, String applicationName, String description,
 			String eventId, String eventName, String eventType) {
 		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)

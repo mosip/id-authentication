@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * The Class RegistrationStatusApplication.
  */
 @SpringBootApplication
-// @PropertySource({ "classpath:status-application.properties" })
 public class RegistrationStatusApplication {
 
 	/**
