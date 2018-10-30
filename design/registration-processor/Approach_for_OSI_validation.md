@@ -28,13 +28,7 @@ The key solution considerations are -
 - Add new methods in "PacketInfoManager" to fetch the operator, supervisor and introducer basic details from table.
 - Call 'packet-store-adapter-ceph' service to get the biometric for operator/supervisor/introducer from inside the packet. 
 - The [Auth-rest-service](https://github.com/mosip/mosip/blob/DEV/design/authentication/Auth_Request_REST_service.md) will be responsible for validating OSI info and the service accepts encoded biometrics. The encoded image will be present inside the packet by default.
-    OSI info to be validated -
-    
-        1. fingerprint.
-        2. Iris.
-        3. Face.
-        4. Pin
-- check -
+- Check if the following information is present inside packet. If available then verify information against user type. A country may choose not to send certain information(ex - fingerprint/iris etc). Hence if one type of information is not present inside packet then move to next check.
 ```
     1. If operator is valid.
         a. validate fingerprint.
@@ -76,3 +70,10 @@ The key solution considerations are -
 - On successful validation send request to osi_bus out address. On failure send response to error queue. If any internal error happens during validation then send response to retry queue. In case of failure the registration-client has to resend the packet. Make sure the failure status is mapped to external status as 'resend'
 - Update the packet status in "Registration-status" table for both successful and failed validation.
 
+**Class Diagram**
+
+![OSI class diagram](_images/osi_class_diagram.png)
+
+**Sequence Diagram**
+
+![OSI sequence diagram](_images/osi_seq_diagram.png)
