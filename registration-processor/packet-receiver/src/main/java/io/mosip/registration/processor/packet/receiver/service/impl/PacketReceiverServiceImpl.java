@@ -36,10 +36,10 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	private final Logger logger = LoggerFactory.getLogger(PacketReceiverServiceImpl.class);
 	private static final String USER = "MOSIP_SYSTEM";
 
-	@Value("${file.extension}")
+	@Value("${registration.processor.file.extension}")
 	private String fileExtension;
 
-	@Value("${max.file.size}")
+	@Value("${registration.processor.max.file.size}")
 	private int maxFileSize;
 
 	@Autowired

@@ -37,7 +37,7 @@ public class PacketDecryptionScheduler {
 	/**
 	 * packetDecryptorJobScheduler runs the packetDecryptorJobJob as per given cron schedule 
 	 */
-	@Scheduled(cron = "${decryption.cron.job.schedule}")
+	@Scheduled(cron = "${registration.processor.decryption.cron.job.schedule}")
 	public void packetDecryptorJobScheduler() {
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();

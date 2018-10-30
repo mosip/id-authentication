@@ -18,7 +18,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
  */
 @Component
 public class RetryStage extends MosipVerticleManager {
-	@Value("${wait.period}")
+	@Value("${registration.processor.wait.period}")
 	private int waitPeriod;
 	
 	private MosipEventBus mosipEventBus;
