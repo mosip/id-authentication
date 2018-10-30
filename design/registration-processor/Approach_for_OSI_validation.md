@@ -35,6 +35,7 @@ The key solution considerations are -
         3. Face.
         4. Pin
 - check -
+
     1. If operator is valid.
         a. validate fingerprint.
         b. validate iris.
