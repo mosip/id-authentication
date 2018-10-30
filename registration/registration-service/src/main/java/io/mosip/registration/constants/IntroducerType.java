@@ -9,7 +9,7 @@ package io.mosip.registration.constants;
  */
 public enum IntroducerType {
 	
-	PARENT("Parent"), DOCUMENT("Document");
+	PARENT("Parent"), HOF("HOF"), INTRODUCER("Introducer");
 
 	/**
 	 * @param code
