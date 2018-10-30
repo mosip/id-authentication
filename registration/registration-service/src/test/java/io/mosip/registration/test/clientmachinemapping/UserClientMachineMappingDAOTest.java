@@ -146,13 +146,6 @@ public class UserClientMachineMappingDAOTest {
 		Mockito.when(machineMappingRepository.findById(Mockito.any(),Mockito.any())).thenThrow(RuntimeException.class);
 		machineMappingDAOImpl.findByID(machineMapping);
 	}
-
-	@Test(expected = RegBaseCheckedException.class)
-	public void getStationIDNullException() throws RegBaseCheckedException {
-		Mockito.when(machineMasterRepository.findByMacAddress(Mockito.anyString()))
-				.thenThrow(new NullPointerException());
-		machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0B");
-	} 
 	
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getStationIDRunException() throws RegBaseCheckedException {
@@ -168,11 +161,6 @@ public class UserClientMachineMappingDAOTest {
 		Mockito.when(machineMasterRepository.findByMacAddress(Mockito.anyString())).thenReturn(machineMaster);
 		String stationId = machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0C");
 		Assert.assertSame("StationID1947", stationId);
-	}
-	@Test(expected = RegBaseCheckedException.class)
-	public void getCenterIDNullExceptionTest() throws RegBaseCheckedException {
-		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenThrow(new NullPointerException());
-		machineMappingDAOImpl.getCenterID("StationID1947");
 	}
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getCenterIDRunExceptionTest() throws RegBaseCheckedException {
@@ -223,15 +211,7 @@ public class UserClientMachineMappingDAOTest {
 		Mockito.when(machineMappingRepository.save(Mockito.any(UserMachineMapping.class))).thenReturn(machineMapping);
 		Assert.assertNull(machineMappingDAOImpl.findByID(userID));
 	}
-	
-	@Test(expected = RegBaseCheckedException.class)
-	public void getUsersNullException() throws RegBaseCheckedException {
-		UserContext userContext = SessionContext.getInstance().getUserContext();
-		userContext.setUserId("ID007");
-		Mockito.when(userDetailRepository.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike("Center123",
-				RegistrationConstants.BLACKLISTED, userContext.getUserId())).thenThrow(new NullPointerException());
-		machineMappingDAOImpl.getUsers("Center123");		
-	}  
+	  
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getUsersRunException() throws RegBaseCheckedException {
 		UserContext userContext = SessionContext.getInstance().getUserContext();
@@ -317,11 +297,6 @@ public class UserClientMachineMappingDAOTest {
 		List<RegistrationUserDetail> details = machineMappingDAOImpl.getUsers("Center123");
 
 		Assert.assertSame("ID007", details.get(0).getId());
-		// Assert.assertSame("Super Admin", details.get(0).getUserRole());
-
-		// Assert.assertSame("Supervisor", details.get(0).getUserStatus());
-		// Assert.assertSame("Supervisor", details.get(0).getUserRole());
-
 	}
 
 }

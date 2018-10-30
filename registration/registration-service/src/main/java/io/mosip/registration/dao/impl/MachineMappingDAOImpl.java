@@ -88,14 +88,18 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	@Override
 	public String getStationID(String macAddress) throws RegBaseCheckedException {
 
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"getStationID() macAddress --> " + macAddress);
+
 		try {
-			LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-					APPLICATION_ID, "getStationID() macAddress --> " + macAddress);
 			MachineMaster machineMaster = machineMasterRepository.findByMacAddress(macAddress);
-			return machineMaster.getId();
-		} catch (NullPointerException nullPointerException) {
-			throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorCode(),
-					REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorMessage());
+
+			if (machineMaster != null && machineMaster.getId() != null) {
+				return machineMaster.getId();
+			} else {
+				throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorCode(),
+						REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE.getErrorMessage());
+			}
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_STATIONID_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
@@ -110,14 +114,18 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public String getCenterID(String stationID) throws RegBaseCheckedException {
+
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"getCenterID() stationID --> " + stationID);
+
 		try {
-			LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-					APPLICATION_ID, "getCenterID() stationID --> " + stationID);
 			CenterMachine centerMachine = centerMachineRepository.findByCenterMachineIdId(stationID);
-			return centerMachine.getCenterMachineId().getCentreId();
-		} catch (NullPointerException nullPointerException) {
-			throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorCode(),
-					REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorMessage());
+			if (centerMachine != null && centerMachine.getCenterMachineId().getCentreId() != null) {
+				return centerMachine.getCenterMachineId().getCentreId();
+			} else {
+				throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorCode(),
+						REG_USER_MACHINE_MAP_CENTER_MACHINE_CODE.getErrorMessage());
+			}
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_CENTERID_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
@@ -131,20 +139,23 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public List<RegistrationUserDetail> getUsers(String ceneterID) throws RegBaseCheckedException {
-
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"getUsers() ceneterID -> " + ceneterID);
 		try {
-			LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME,
-					APPLICATION_ID, "getUsers() ceneterID -> " + ceneterID);
-			return userDetailRepository.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike(ceneterID,
-					RegistrationConstants.BLACKLISTED, SessionContext.getInstance().getUserContext().getUserId());
-		} catch (NullPointerException nullPointerException) {
-			throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE.getErrorCode(),
-					REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE.getErrorMessage());
+			List<RegistrationUserDetail> registrationUserDetail = userDetailRepository
+					.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike(ceneterID,
+							RegistrationConstants.BLACKLISTED,
+							SessionContext.getInstance().getUserContext().getUserId());
+			if (!registrationUserDetail.isEmpty()) {
+				return registrationUserDetail;
+			} else {
+				throw new RegBaseCheckedException(REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE.getErrorCode(),
+						REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE.getErrorMessage());
+			}
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_USERLIST_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
 		}
-
 	}
 
 	/*
@@ -156,15 +167,15 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public String save(UserMachineMapping user) {
-		LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME,
-				APPLICATION_ID, "DAO save method called");
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"DAO save method called");
 
 		try {
 			// create new mapping
 			machineMappingRepository.save(user);
-			LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME,
-					APPLICATION_ID, "DAO save method ended");
-
+			LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME, APPLICATION_ID,
+					"DAO save method ended");
+			
 			return RegistrationConstants.MACHINE_MAPPING_CREATED;
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_RUN_TIME_EXCEPTION,
@@ -181,14 +192,14 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public String update(UserMachineMapping user) {
-		LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME,
-				APPLICATION_ID, "DAO update method called");
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"DAO update method called");
 
 		try {
 			// update user details in user mapping
 			machineMappingRepository.update(user);
-			LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME,
-					APPLICATION_ID, "DAO update method ended");
+			LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME, APPLICATION_ID,
+					"DAO update method ended");
 
 			return RegistrationConstants.MACHINE_MAPPING_UPDATED;
 		} catch (RuntimeException runtimeException) {
@@ -206,8 +217,8 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 */
 	@Override
 	public UserMachineMapping findByID(UserMachineMappingID userID) {
-		LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME,
-				APPLICATION_ID, "DAO findByID method called");
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"DAO findByID method called");
 
 		UserMachineMapping machineMapping = null;
 		try {
@@ -217,8 +228,8 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 			throw new RegBaseUncheckedException(RegistrationConstants.MACHINE_MAPPING_RUN_TIME_EXCEPTION,
 					runtimeException.getMessage());
 		}
-		LOGGER.debug("REGISTRATION - USER CLIENT MACHINE MAPPING", APPLICATION_NAME,
-				APPLICATION_ID, "DAO findByID method ended");
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"DAO findByID method ended");
 
 		return machineMapping;
 	}
