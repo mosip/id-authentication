@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanager.exceptionhandler;
+package io.mosip.kernel.otpmanager.exception;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @since 1.0.0
  * 
  */
-public class MosipOtpInvalidArgumentExceptionHandler extends BaseUncheckedException {
+public class OtpInvalidArgumentException extends BaseUncheckedException {
 	/**
 	 * Serializable version ID.
 	 */
@@ -21,13 +21,13 @@ public class MosipOtpInvalidArgumentExceptionHandler extends BaseUncheckedExcept
 	/**
 	 * This variable holds the MosipErrors list.
 	 */
-	private final List<MosipErrors> list;
+	private final List<Error> list;
 
 	/**
 	 * @param list
 	 *            The error list.
 	 */
-	public MosipOtpInvalidArgumentExceptionHandler(List<MosipErrors> list) {
+	public OtpInvalidArgumentException(List<Error> list) {
 		this.list = list;
 	}
 
@@ -36,7 +36,7 @@ public class MosipOtpInvalidArgumentExceptionHandler extends BaseUncheckedExcept
 	 * 
 	 * @return The error list.
 	 */
-	public List<MosipErrors> getList() {
+	public List<Error> getList() {
 		return list;
 	}
 }

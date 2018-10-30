@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanager.exceptionhandler;
+package io.mosip.kernel.otpmanager.exception;
 
 import java.io.Serializable;
 
@@ -9,20 +9,19 @@ import java.io.Serializable;
  * @author Sagar Mahapatra
  * @since 1.0.0
  */
-public class MosipErrors implements Serializable {
+public class Error implements Serializable {
 	/**
 	 * Serializable version ID.
 	 */
 	private static final long serialVersionUID = -7725390540618015762L;
-	
+
 	/**
 	 * The error code.
 	 */
 	private String errorCode;
-	
-	
+
 	/**
-	 *The error message.
+	 * The error message.
 	 */
 	private String errorMessage;
 
@@ -34,7 +33,7 @@ public class MosipErrors implements Serializable {
 	 * @param errorMessage
 	 *            The error message.
 	 */
-	public MosipErrors(String errorCode, String errorMessage) {
+	public Error(String errorCode, String errorMessage) {
 		super();
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;

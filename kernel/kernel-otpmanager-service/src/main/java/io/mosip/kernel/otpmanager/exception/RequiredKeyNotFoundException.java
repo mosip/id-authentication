@@ -1,4 +1,4 @@
-package io.mosip.kernel.otpmanager.exceptionhandler;
+package io.mosip.kernel.otpmanager.exception;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @since 1.0.0
  *
  */
-public class MosipRequiredKeyNotFoundExceptionHandler extends BaseUncheckedException {
+public class RequiredKeyNotFoundException extends BaseUncheckedException {
 	/**
 	 * Generated serial version UID.
 	 */
@@ -21,7 +21,7 @@ public class MosipRequiredKeyNotFoundExceptionHandler extends BaseUncheckedExcep
 	/**
 	 * This variable holds the MosipErrors list.
 	 */
-	private final List<MosipErrors> list;
+	private final List<Error> list;
 
 	/**
 	 * Constructor for MosipRequiredKeyNotFoundExceptionHandler class.
@@ -29,7 +29,7 @@ public class MosipRequiredKeyNotFoundExceptionHandler extends BaseUncheckedExcep
 	 * @param list
 	 *            The error list.
 	 */
-	public MosipRequiredKeyNotFoundExceptionHandler(List<MosipErrors> list) {
+	public RequiredKeyNotFoundException(List<Error> list) {
 		this.list = list;
 	}
 
@@ -38,7 +38,7 @@ public class MosipRequiredKeyNotFoundExceptionHandler extends BaseUncheckedExcep
 	 * 
 	 * @return The error list.
 	 */
-	public List<MosipErrors> getList() {
+	public List<Error> getList() {
 		return list;
 	}
 }

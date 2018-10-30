@@ -6,7 +6,7 @@ import io.mosip.kernel.otpmanager.dto.OtpGeneratorResponseDto;
 /**
  * This interface provides the methods which can be used for OTP generation.
  * 
- * @author Sagar Mahapatra
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
@@ -16,8 +16,8 @@ public interface OtpGeneratorService {
 	 * a particular key is generated only if the key is not freezed.
 	 * 
 	 * @param otpDto
-	 *            The OTP generation DTO.
-	 * @return The generated OTP.
+	 *            the OTP generation DTO.
+	 * @return the generated OTP.
 	 */
 	public OtpGeneratorResponseDto getOtp(OtpGeneratorRequestDto otpDto);
 }
