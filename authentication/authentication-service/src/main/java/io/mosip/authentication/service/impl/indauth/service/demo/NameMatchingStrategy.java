@@ -28,7 +28,15 @@ public enum NameMatchingStrategy implements MatchingStrategy {
 		} else {
 			return 0;
 		}
-	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, IdentityValue entityInfo) -> 0);
+	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, IdentityValue entityInfo) -> {
+		if (reqInfo instanceof String) {
+			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
+			String entityInfoName = DemoNormalizer.normalizeName(entityInfo.getValue());
+			return MatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName,entityInfo.getLanguage());
+		} else {
+			return 0;
+		}
+	});
 
 	private final ToIntBiFunction<Object, IdentityValue> matchFunction;
 
