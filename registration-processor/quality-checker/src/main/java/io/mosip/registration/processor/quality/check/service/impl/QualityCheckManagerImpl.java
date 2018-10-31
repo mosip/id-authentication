@@ -16,7 +16,6 @@ import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
-import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.quality.check.code.QualityCheckerStatusCode;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
 import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
@@ -27,6 +26,7 @@ import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationId
 import io.mosip.registration.processor.quality.check.exception.InvalidQcUserIdException;
 import io.mosip.registration.processor.quality.check.exception.InvalidRegistrationIdException;
 import io.mosip.registration.processor.quality.check.exception.ResultNotFoundException;
+import io.mosip.registration.processor.quality.check.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 
 @Component
@@ -106,11 +106,11 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 		Map<QcuserRegistrationIdEntity, QCUserDto> map = new LinkedHashMap<>();
 		qcUserDtos.forEach(dto -> {
 
-			if (dto.getQcUserId().trim() == null || dto.getQcUserId().trim().isEmpty()) {
+			if (dto.getQcUserId() == null || dto.getQcUserId().trim().isEmpty()) {
 				throw new InvalidQcUserIdException(
 						QualityCheckerStatusCode.INVALID_QC_USER_ID.name() + ": QC USER ID IS NULL");
 			}
-			if (dto.getRegId().trim() == null || dto.getRegId().trim().isEmpty()) {
+			if (dto.getRegId() == null || dto.getRegId().trim().isEmpty()) {
 				throw new InvalidRegistrationIdException(
 						QualityCheckerStatusCode.INVALID_REGISTRATION_ID.name() + ": REGISTRATION ID IS NULL");
 			}

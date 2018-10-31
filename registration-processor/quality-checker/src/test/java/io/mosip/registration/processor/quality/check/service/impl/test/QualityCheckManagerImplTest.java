@@ -1,22 +1,26 @@
 package io.mosip.registration.processor.quality.check.service.impl.test;
 
+import static org.junit.Assert.assertEquals;
+
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.dataaccess.constant.HibernateErrorCodes;
+import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
 import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
@@ -24,13 +28,17 @@ import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdPKEntity;
+import io.mosip.registration.processor.quality.check.exception.InvalidQcUserIdException;
+import io.mosip.registration.processor.quality.check.exception.InvalidRegistrationIdException;
+import io.mosip.registration.processor.quality.check.exception.ResultNotFoundException;
+import io.mosip.registration.processor.quality.check.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.quality.check.service.impl.QualityCheckManagerImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 public class QualityCheckManagerImplTest {
 	@InjectMocks
-	QualityCheckManager<String, ApplicantInfoDto, QCUserDto>  qualityCheckManager= new QualityCheckManagerImpl();
-	
+	QualityCheckManager<String, ApplicantInfoDto, QCUserDto> qualityCheckManager = new QualityCheckManagerImpl();
+
 	@Mock
 	private ApplicantInfoDao applicantInfoDao;
 
@@ -39,26 +47,46 @@ public class QualityCheckManagerImplTest {
 
 	@Mock
 	private AuditHandler<AuditRequestDto> auditHandler;
-	
-	
-	@Test
-	public void updateQCUserStatusTest() {
-		List<QCUserDto> qcUserDtos = new ArrayList<>();
-		QCUserDto qCUserDto1 = new QCUserDto();
+	private List<QCUserDto> qcUserDtos;
+	private QcuserRegistrationIdEntity entity;
+	QcuserRegistrationIdPKEntity pkEntity;
+	QCUserDto qCUserDto1;
+
+	@Before
+	public void setup()
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		qcUserDtos = new ArrayList<>();
+		entity = new QcuserRegistrationIdEntity();
+		pkEntity = new QcuserRegistrationIdPKEntity();
+		qCUserDto1 = new QCUserDto();
+
 		qCUserDto1.setQcUserId("123");
 		qCUserDto1.setRegId("2018782130000116102018124324");
 		qCUserDto1.setDecisionStatus(DecisionStatus.ACCEPTED);
-		
-		QCUserDto qCUserDto2 = new QCUserDto();
-		qCUserDto2.setQcUserId("1234");
-		qCUserDto1.setRegId("2018782130000224092018121229");
-		qCUserDto1.setDecisionStatus(DecisionStatus.REJECTED);
-		
 
+		AuditRequestBuilder auditRequestBuilder1 = new AuditRequestBuilder();
+		AuditHandler<AuditRequestDto> auditHandler = new AuditHandler<AuditRequestDto>() {
 
-		
-		QcuserRegistrationIdEntity entity = new QcuserRegistrationIdEntity();
-		QcuserRegistrationIdPKEntity pkEntity = new QcuserRegistrationIdPKEntity();
+			@Override
+			public boolean writeAudit(AuditRequestDto arg0) {
+
+				return true;
+			}
+		};
+		Field f1 = qualityCheckManager.getClass().getDeclaredField("auditRequestBuilder");
+		f1.setAccessible(true);
+		f1.set(qualityCheckManager, auditRequestBuilder1);
+
+		Field f2 = qualityCheckManager.getClass().getDeclaredField("auditHandler");
+		f2.setAccessible(true);
+		f2.set(qualityCheckManager, auditHandler);
+
+	}
+
+	@Test
+	public void updateQCUserStatusTest() {
+
+		qcUserDtos.add(qCUserDto1);
 		pkEntity.setRegId("2018782130000116102018124324");
 		pkEntity.setUsrId("123");
 		entity.setId(pkEntity);
@@ -66,13 +94,54 @@ public class QualityCheckManagerImplTest {
 		entity.setCrDtimesz(LocalDateTime.now());
 		entity.setIsActive(true);
 		entity.setIsDeleted(false);
-		entity.setStatus(qCUserDto1.getDecisionStatus().name());
-		
-		Mockito.when(applicantInfoDao.findById(Matchers.anyString(), Matchers.anyString())).thenReturn(entity);
-		Mockito.when(applicantInfoDao.update(Matchers.any())).thenReturn(entity);
+		entity.setStatus(DecisionStatus.ACCEPTED.name());
+		Mockito.when(applicantInfoDao.findById(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+				.thenReturn(entity);
+		Mockito.when(applicantInfoDao.update(ArgumentMatchers.any())).thenReturn(entity);
+
+		List<QCUserDto> dtolist = qualityCheckManager.updateQCUserStatus(qcUserDtos);
+
+		assertEquals("Verifing decision status . Expected value is ACCEPTED", dtolist.get(0).getDecisionStatus(),
+				DecisionStatus.ACCEPTED);
+
+	}
+
+	@Test(expected = InvalidRegistrationIdException.class)
+	public void updateQCUserStatusInvalidRegistrationIdExceptionTest() {
+		qCUserDto1.setRegId("");
 		qcUserDtos.add(qCUserDto1);
-		qcUserDtos.add(qCUserDto2);
 		qualityCheckManager.updateQCUserStatus(qcUserDtos);
 
 	}
+
+	@Test(expected = InvalidQcUserIdException.class)
+	public void updateQCUserStatusInvalidQcUserIdExceptionTest() {
+		qCUserDto1.setQcUserId("");
+		qcUserDtos.add(qCUserDto1);
+		qualityCheckManager.updateQCUserStatus(qcUserDtos);
+
+	}
+
+	@Test(expected = ResultNotFoundException.class)
+	public void updateQCUserStatusResultNotFoundExceptionExceptionTest() {
+		qcUserDtos.add(qCUserDto1);
+		Mockito.when(applicantInfoDao.findById(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+				.thenReturn(null);
+
+		qualityCheckManager.updateQCUserStatus(qcUserDtos);
+
+	}
+
+	@Test(expected = TablenotAccessibleException.class)
+	public void updateQCUserStatusDataAccessLayerExceptionTest() {
+		qcUserDtos.add(qCUserDto1);
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+				new Exception());
+		Mockito.when(applicantInfoDao.findById(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
+				.thenThrow(exp);
+
+		qualityCheckManager.updateQCUserStatus(qcUserDtos);
+
+	}
+
 }
