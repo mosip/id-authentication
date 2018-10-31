@@ -107,6 +107,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	/** The event type. */
 	private String eventType = "";
 	
+	/** The description. */
 	String description = "";
 	
 	/** The core audit request builder. */
@@ -372,6 +373,4 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		return os.toByteArray();
 	}
 
-
-//	}
 }
