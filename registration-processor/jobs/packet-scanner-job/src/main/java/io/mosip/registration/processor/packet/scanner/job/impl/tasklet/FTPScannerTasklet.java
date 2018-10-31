@@ -62,8 +62,8 @@ public class FTPScannerTasklet implements Tasklet {
 	/** The event type. */
 	private String eventType = "";
 	
-	/** The description. */
-	private String description = "";
+	boolean isTransactionSuccessful = false;
+
 
 	/**
 	 * Executes FTPScannerTasklet to move enrollment packet from the FTP zone to
@@ -80,7 +80,6 @@ public class FTPScannerTasklet implements Tasklet {
 	@Override
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
 
-		boolean isTransactionSuccessful = false;
 		String filepath = this.filemanager.getCurrentDirectory();
 		Stream<Path> paths = Files.walk(Paths.get(filepath));
 		paths.filter(Files::isRegularFile).forEach(filepathName -> {
@@ -138,7 +137,6 @@ public class FTPScannerTasklet implements Tasklet {
 	 * @param filepath
 	 */
 	public void deleteFolder(String filepath) {
-		boolean isTransactionSuccessful = false;
 		
 		try {
 			Stream<Path> deletepath = Files.walk(Paths.get(filepath));

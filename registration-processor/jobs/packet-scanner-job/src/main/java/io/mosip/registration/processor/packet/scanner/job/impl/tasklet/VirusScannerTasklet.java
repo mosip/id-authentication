@@ -115,7 +115,7 @@ public class VirusScannerTasklet implements Tasklet {
 			return RepeatStatus.FINISHED;
 		}
 		finally{		
-			String description = isTransactionSuccessful ? "Packet uploaded to virus scanner successfully"
+			description = isTransactionSuccessful ? "Packet uploaded to virus scanner successfully"
 					: "Packet uploading to virus scanner failed";
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,

@@ -61,8 +61,7 @@ public class LandingZoneScannerTasklet implements Tasklet {
 	/** The event type. */
 	private String eventType = "";
 	
-	/** The description. */
-	private String description = "";
+	boolean isTransactionSuccessful = false;
 
 	private static final String VIRUS_SCAN_NOT_ACCESSIBLE = "The Virus Scan Path set by the System is not accessible";
 	private static final String ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status table is not accessible";
@@ -82,8 +81,6 @@ public class LandingZoneScannerTasklet implements Tasklet {
 	@Override
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
 		
-		boolean isTransactionSuccessful = false;
-
 		List<RegistrationStatusDto> getEnrols = new ArrayList<>();
 		try {
 

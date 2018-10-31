@@ -107,6 +107,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	/** The event type. */
 	private String eventType = "";
 	
+	String description = "";
+	
 	/** The core audit request builder. */
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
@@ -153,7 +155,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			String description = isTransactionSuccessful ? "packet-meta-data saved Success"
+			description = isTransactionSuccessful ? "packet-meta-data saved Success"
 					: "packet-metadata Failure";
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
@@ -192,7 +194,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			eventType = EventType.BUSINESS.toString();
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			String description = isTransactionSuccessful ? "Demographic-data saved Success"
+			description = isTransactionSuccessful ? "Demographic-data saved Success"
 					: "Demographic Failed to save";
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,

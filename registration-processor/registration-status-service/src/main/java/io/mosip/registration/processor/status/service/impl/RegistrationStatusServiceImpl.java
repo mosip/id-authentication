@@ -55,6 +55,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	/** The event type. */
 	private String eventType = "";
 	
+	String description = "";
+	
 	/** The core audit request builder. */
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
@@ -80,7 +82,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
 
-			String description = isTransactionSuccessful ? "Get registration status by registration id is successfull"
+			description = isTransactionSuccessful ? "Get registration status by registration id is successfull"
 					: "Get registration status by registration id is unsuccessfull";
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
@@ -110,7 +112,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
 
-			String description = isTransactionSuccessful ? "Find files by threshold time and statuscode is successfull"
+			description = isTransactionSuccessful ? "Find files by threshold time and statuscode is successfull"
 					: "Find files by threshold time and statuscode is unsuccessfull";
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
@@ -148,7 +150,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			throw new TablenotAccessibleException("Could not add Information to table", e);
 		} finally {
 
-			String description = isTransactionSuccessful ? "Registration status added successfully"
+			description = isTransactionSuccessful ? "Registration status added successfully"
 					: "Registration status unsuccessfull";
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
@@ -189,7 +191,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			throw new TablenotAccessibleException("Could not update Information to table", e);
 		} finally {
 
-			String description = isTransactionSuccessful ? "Updated registration status successfully"
+			description = isTransactionSuccessful ? "Updated registration status successfully"
 					: "Updated registration status unsuccessfully";			
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
@@ -220,7 +222,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
 
-			String description = isTransactionSuccessful ? "Get list of registration status by status successfully"
+			description = isTransactionSuccessful ? "Get list of registration status by status successfully"
 					: "Get list of registration status by status unsuccessfully";
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
@@ -255,7 +257,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
 
-			String description = isTransactionSuccessful ? "Get list of registration status by registration id successfully" : "Get list of registration status by registration id unsuccessfully";
+			description = isTransactionSuccessful ? "Get list of registration status by registration id successfully"
+					: "Get list of registration status by registration id unsuccessfully";
 			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
