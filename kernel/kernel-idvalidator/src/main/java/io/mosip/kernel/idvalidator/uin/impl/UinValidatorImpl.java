@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.core.util.IdFilterUtils;
+
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.uin.constant.UinExceptionConstant;
 
@@ -118,25 +118,26 @@ public class UinValidatorImpl implements IdValidator<String> {
 					UinExceptionConstant.UIN_VAL_INVALID_ZERO_ONE.getErrorMessage());
 		}
 
-		/**
-		 * 
-		 * The method isValidId(id) from MosipIDFilter will validate the UIN for the
-		 * following conditions
-		 * 
-		 * The UIN should not contain any sequential number for 2 or more than two
-		 * digits
-		 * 
-		 * The UIN should not contain any repeating numbers for 2 or more than two
-		 * digits
-		 * 
-		 * The UIN should not have repeated block of numbers for more than 2 digits
-		 * 
-		 */
-		if (IdFilterUtils.isValidId(id)) {
-			throw new InvalidIDException(
-					UinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
-					UinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
-		}
+//TODO : Need to write logic for Sequence validation without using Generator's util	
+//		/**
+//		 * 
+//		 * The method isValidId(id) from MosipIDFilter will validate the UIN for the
+//		 * following conditions
+//		 * 
+//		 * The UIN should not contain any sequential number for 2 or more than two
+//		 * digits
+//		 * 
+//		 * The UIN should not contain any repeating numbers for 2 or more than two
+//		 * digits
+//		 * 
+//		 * The UIN should not have repeated block of numbers for more than 2 digits
+//		 * 
+//		 */
+//		if (IdFilterUtils.isValidId(id)) {
+//			throw new InvalidIDException(
+//					UinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
+//					UinExceptionConstant.UIN_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
+//		}
 
 		/**
 		 * 

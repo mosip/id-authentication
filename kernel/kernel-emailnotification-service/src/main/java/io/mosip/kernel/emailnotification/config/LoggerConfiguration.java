@@ -32,6 +32,6 @@ public class LoggerConfiguration {
 	public static Logger logConfig(Class<?> clazz) {
 		ConsoleAppender appender = new ConsoleAppender();
 		appender.setTarget(MailNotifierConstants.LOGGER_TARGET.getValue());
-		return Logfactory.getMosipDefaultConsoleLogger(appender, clazz);
+		return Logfactory.getDefaultConsoleLogger(appender, clazz);
 	}
 }

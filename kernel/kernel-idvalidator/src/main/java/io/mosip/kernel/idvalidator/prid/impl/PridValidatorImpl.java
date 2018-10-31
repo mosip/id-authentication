@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.core.util.IdFilterUtils;
+
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.idvalidator.prid.constant.PridExceptionConstant;
 
@@ -122,26 +122,31 @@ public class PridValidatorImpl implements IdValidator<String> {
 			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorCode(),
 					PridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorMessage());
 		}
-		/**
-		 * 
-		 * The method isValidId(id) from IDFilter will validate the PRID for the
-		 * following conditions
-		 * 
-		 * The PRID should not contain any sequential number for 2 or more than two
-		 * digits
-		 * 
-		 * The PRID should not contain any repeating numbers for 2 or more than two
-		 * digits
-		 * 
-		 * The PRID should not have repeated block of numbers for more than 2 digits
-		 * 
-		 */
-
-		if (!IdFilterUtils.isValidId(id)) {
-			throw new InvalidIDException(
-					PridExceptionConstant.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
-					PridExceptionConstant.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
-		}
+		
+		
+//TODO : Need to write logic for Sequence validation without using Generator's util		
+//		/**
+//		 * 
+//		 * The method isValidId(id) from IDFilter will validate the PRID for the
+//		 * following conditions
+//		 * 
+//		 * The PRID should not contain any sequential number for 2 or more than two
+//		 * digits
+//		 * 
+//		 * The PRID should not contain any repeating numbers for 2 or more than two
+//		 * digits
+//		 * 
+//		 * The PRID should not have repeated block of numbers for more than 2 digits
+//		 * 
+//		 */
+//
+//		if (!IdFilterUtils.isValidId(id)) {
+//			throw new InvalidIDException(
+//					PridExceptionConstant.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
+//					PridExceptionConstant.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
+//		}
+		
+		
 		/**
 		 * 
 		 * The method validateChecksum(id) from IdChecksum will validate
