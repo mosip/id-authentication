@@ -1,6 +1,8 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,9 +23,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
+import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
+import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 import io.mosip.authentication.service.repository.DemoRepository;
 import io.mosip.authentication.service.repository.LocationRepository;
 
@@ -54,10 +60,11 @@ public class DemoAuthServiceTest {
 	@Test
 	public void fadMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
-//		PersonalFullAddressDTO fad = new PersonalFullAddressDTO();
-//		PersonalIdentityDataDTO pidData = new PersonalIdentityDataDTO();
-//		DemoDTO demoDTO = new DemoDTO();
+
+
 //		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+//		AuthTypeDTO authTypeDTO=new AuthTypeDTO();
+//		authTypeDTO.set
 //		fad.setAddrPri("23 Bandra Road Mumbai India 809890");
 //		fad.setMsPri(MatchingStrategyType.PARTIAL.getType());
 //		demoDTO.setFad(fad);

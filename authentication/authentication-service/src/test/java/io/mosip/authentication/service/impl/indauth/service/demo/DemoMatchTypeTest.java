@@ -7,10 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -18,13 +15,8 @@ import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
-import io.mosip.authentication.core.dto.indauth.DemoDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalAddressDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalFullAddressDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
 
 public class DemoMatchTypeTest {
 	

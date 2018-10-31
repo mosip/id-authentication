@@ -31,7 +31,7 @@ public enum DOBMatchingStrategy implements MatchingStrategy {
 		return 0;
 	});
 
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	
 	private final ToIntBiFunction<Object, IdentityValue> matchFunction;

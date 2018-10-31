@@ -47,33 +47,45 @@ public enum AuthUsageDataBit {
 	USED_AD_ADDR_LINE3_PRI(4, 0),
 
 	/** The used ad addr pincode pri. */
-	USED_AD_ADDR_PINCODE_PRI(5, 0),
+	USED_AD_ADDR_PINCODE_PRI(4, 1),
 
 	/** The used ad addr line1 sec. */
-	USED_AD_ADDR_LINE1_SEC(5, 1),
+	USED_AD_ADDR_LINE1_SEC(4, 2),
 
 	/** The used ad addr line2 sec. */
-	USED_AD_ADDR_LINE2_SEC(5, 2),
+	USED_AD_ADDR_LINE2_SEC(4, 3),
 
 	/** The used ad addr line3 sec. */
-	USED_AD_ADDR_LINE3_SEC(5, 3),
+	USED_AD_ADDR_LINE3_SEC(5, 0),
 
 	/** The used ad addr city sec. */
-	USED_AD_ADDR_CITY_SEC(6, 0),
+	USED_AD_ADDR_CITY_SEC(5, 1),
 
 	/** The used ad addr state sec. */
-	USED_AD_ADDR_STATE_SEC(6, 1),
+	USED_AD_ADDR_STATE_SEC(5, 2),
 
 	/** The used ad addr country sec. */
-	USED_AD_ADDR_COUNTRY_SEC(6, 2),
+	USED_AD_ADDR_COUNTRY_SEC(5, 3),
 
 	/** The used ad addr pincode sec. */
-	USED_AD_ADDR_PINCODE_SEC(6, 3),
+	USED_AD_ADDR_PINCODE_SEC(6, 0),
 
 	/** The used location pri. */
-	USED_LOCATION_PRI(7, 0),
+	USED_LOCATION1_PRI(6, 1),
 
-	USED_LOCATION_SEC(7, 1),
+	USED_LOCATION1_SEC(6, 2),
+
+	USED_LOCATION2_PRI(6, 3),
+
+	USED_LOCATION2_SEC(7, 0),
+
+	USED_LOCATION3_PRI(7, 1),
+
+	USED_LOCATION3_SEC(7, 2),
+
+	USED_DOBTYPE(7, 3),
+
+	USED_LOCATION_SEC(8, 0),
 
 	// Matched bits from 9 to 16 Hex digits
 
@@ -132,17 +144,27 @@ public enum AuthUsageDataBit {
 	MATCHED_AD_ADDR_LINE1_SEC(13, 1),
 
 	/** The matched addr line2 sec. */
-	MATCHED_AD_ADDR_LINE2_SEC(13,2),
+	MATCHED_AD_ADDR_LINE2_SEC(13, 2),
 
 	/** The matched addr line3 sec. */
 	MATCHED_AD_ADDR_LINE3_SEC(13, 3),
 
-	MATCHED_LOCATION_PRI(14, 0),
+	MATCHED_LOCATION1_PRI(14, 0),
 
-	MATCHED_LOCATION_SEC(14, 1),
+	MATCHED_LOCATION1_SEC(14, 1),
+
+	MATCHED_LOCATION2_PRI(14, 2),
+
+	MATCHED_LOCATION2_SEC(14, 3),
+
+	MATCHED_LOCATION3_PRI(15, 0),
+
+	MATCHED_LOCATION3_SEC(15, 1),
 
 	/** The matched addr pincode sec. */
-	MATCHED_AD_ADDR_PINCODE_SEC(14, 2);
+	MATCHED_AD_ADDR_PINCODE_SEC(15, 2),
+
+	MATCHED_DOB_TYPE(15, 3);
 
 	private int hexNum;
 

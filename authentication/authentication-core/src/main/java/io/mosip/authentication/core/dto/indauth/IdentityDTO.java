@@ -17,7 +17,9 @@ public class IdentityDTO {
 	List<IdentityInfoDTO> addressLine1;
 	List<IdentityInfoDTO> addressLine2;
 	List<IdentityInfoDTO> addressLine3;
-	List<IdentityInfoDTO> location;
+	List<IdentityInfoDTO> location1;
+	List<IdentityInfoDTO> location2;
+	List<IdentityInfoDTO> location3;
 	List<IdentityInfoDTO> pinCode;
 	List<IdentityInfoDTO> fullAddress;
 	List<IdentityInfoDTO> leftEye;

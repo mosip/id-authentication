@@ -25,7 +25,9 @@ public class IDAMappingConfig {
 	private List<String> addressLine1;
 	private List<String> addressLine2;
 	private List<String> addressLine3;
-	private List<String> location;
+	private List<String> location1;
+	private List<String> location2;
+	private List<String> location3;
 	private List<String> pinCode;
 	private List<String> fullAddress;
 	private List<String> otp;

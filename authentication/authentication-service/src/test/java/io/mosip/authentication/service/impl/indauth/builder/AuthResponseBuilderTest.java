@@ -21,20 +21,20 @@ import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilde
 import io.mosip.authentication.service.impl.indauth.builder.AuthType;
 import io.mosip.authentication.service.impl.indauth.builder.BitwiseInfo;
 
-
 /**
  * {@code AuthResponseBuilderTest} - Test class for {@link AuthResponseBuilder}
  * 
  * @author Loganathan Sekar
  */
 public class AuthResponseBuilderTest {
+
 	
 	@Test
 	public void testAuthUsageBitsUnique() {
 		Map<String, Long> bitsCountMap = Arrays.stream(AuthUsageDataBit.values())
-				.map(bit ->  bit.getHexNum() + "-" + bit.getBitIndex())
+				.map(bit -> bit.getHexNum() + "-" + bit.getBitIndex())
 				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-		
+
 		assertEquals(AuthUsageDataBit.values().length, bitsCountMap.size());
 		assertTrue(bitsCountMap.values().stream().allMatch(c -> c == 1));
 	}
@@ -43,24 +43,24 @@ public class AuthResponseBuilderTest {
 	public void testUsageDataHexBySettingBits() {
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(0);
-		
+
 		assertEquals("0x0000000000000001", bitwiseInfo.toString());
-		
+
 		bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(4);
 		assertEquals("0x0000000000000010", bitwiseInfo.toString());
-		
+
 		bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(8);
 		bitwiseInfo.setBit(9);
 		bitwiseInfo.setBit(10);
 		bitwiseInfo.setBit(11);
 		assertEquals("0x0000000000000f00".toLowerCase(), bitwiseInfo.toString().toLowerCase());
-		
+
 		bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(63);
 		assertEquals("0x8000000000000000".toLowerCase(), bitwiseInfo.toString().toLowerCase());
-		
+
 		bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(0);
 		bitwiseInfo.setBit(4);
@@ -71,44 +71,41 @@ public class AuthResponseBuilderTest {
 		bitwiseInfo.setBit(63);
 		assertEquals("0x8000000000000f11".toLowerCase(), bitwiseInfo.toString().toLowerCase());
 	}
-	
-	@Test (expected = ArrayIndexOutOfBoundsException.class)
+
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void testUsageDataHexBySettingBitsAIOOBE() {
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(-1);
 	}
-	
-	@Test (expected = ArrayIndexOutOfBoundsException.class)
+
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void testUsageDataHexBySettingBitsAIOOBE2() {
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(64);
 	}
-	
-	
+
 	@Test
 	public void testUsageDataHexBySettingHex() {
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(16, 0);
-		
+
 		assertEquals("0x0000000000000001", bitwiseInfo.toString());
-		
+
 		bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(15, 0);
 		assertEquals("0x0000000000000010", bitwiseInfo.toString());
-		
+
 		bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(14, 0);
 		bitwiseInfo.setBit(14, 1);
 		bitwiseInfo.setBit(14, 2);
 		bitwiseInfo.setBit(14, 3);
 		assertEquals("0x0000000000000f00".toLowerCase(), bitwiseInfo.toString().toLowerCase());
-		
+
 		bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(1, 3);
 		assertEquals("0x8000000000000000".toLowerCase(), bitwiseInfo.toString().toLowerCase());
-		
-		
-		
+
 		bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(16, 0);
 		bitwiseInfo.setBit(15, 0);
@@ -119,43 +116,42 @@ public class AuthResponseBuilderTest {
 		bitwiseInfo.setBit(1, 3);
 		assertEquals("0x8000000000000f11".toLowerCase(), bitwiseInfo.toString().toLowerCase());
 	}
-	
-	@Test (expected = ArrayIndexOutOfBoundsException.class)
+
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void testUsageDataHexBySettingHexAIOOBE() {
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(0, 1);
 	}
 
-	@Test (expected = ArrayIndexOutOfBoundsException.class)
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void testUsageDataHexBySettingHexAIOOBE2() {
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.setBit(17, 1);
 	}
-	
+
 	@Test
 	public void testUsageDataHexByClearingBits() {
 		final BitwiseInfo bitwiseInfo = getFullySetBitwiseInfo();
 		bitwiseInfo.clearBit(0);
-		
+
 		assertEquals("0xfffffffffffffffe", bitwiseInfo.toString());
-		
-		final BitwiseInfo  bitwiseInfo2= getFullySetBitwiseInfo();
+
+		final BitwiseInfo bitwiseInfo2 = getFullySetBitwiseInfo();
 		bitwiseInfo2.clearBit(4);
 		assertEquals("0xffffffffffffffef", bitwiseInfo2.toString());
-		
-		BitwiseInfo bitwiseInfo3 =  getFullySetBitwiseInfo();
+
+		BitwiseInfo bitwiseInfo3 = getFullySetBitwiseInfo();
 		bitwiseInfo3.clearBit(8);
 		bitwiseInfo3.clearBit(9);
 		bitwiseInfo3.clearBit(10);
 		bitwiseInfo3.clearBit(11);
 		assertEquals("0xfffffffffffff0ff".toLowerCase(), bitwiseInfo3.toString().toLowerCase());
-		
-		BitwiseInfo bitwiseInfo4 =  getFullySetBitwiseInfo();
+
+		BitwiseInfo bitwiseInfo4 = getFullySetBitwiseInfo();
 		bitwiseInfo4.clearBit(63);
 		assertEquals("0x7fffffffffffffff".toLowerCase(), bitwiseInfo4.toString().toLowerCase());
-		
-		
-		bitwiseInfo4 =  getFullySetBitwiseInfo();
+
+		bitwiseInfo4 = getFullySetBitwiseInfo();
 		bitwiseInfo4.clearBit(16, 0);
 		bitwiseInfo4.clearBit(15, 0);
 		bitwiseInfo4.clearBit(14, 0);
@@ -165,45 +161,42 @@ public class AuthResponseBuilderTest {
 		bitwiseInfo4.clearBit(1, 3);
 		assertEquals("0x7ffffffffffff0ee".toLowerCase(), bitwiseInfo4.toString().toLowerCase());
 	}
-	
-	@Test (expected = ArrayIndexOutOfBoundsException.class)
+
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void testUsageDataHexByClearingBitsAIOOBE() {
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.clearBit(-1);
 	}
-	
-	@Test (expected = ArrayIndexOutOfBoundsException.class)
+
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void testUsageDataHexByClearingBitsAIOOBE2() {
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.clearBit(64);
 	}
-	
-	
+
 	@Test
 	public void testUsageDataHexByClearingHex() {
 		final BitwiseInfo bitwiseInfo = getFullySetBitwiseInfo();
 		bitwiseInfo.clearBit(16, 0);
-		
+
 		assertEquals("0xfffffffffffffffe", bitwiseInfo.toString());
-		
-		final BitwiseInfo  bitwiseInfo2= getFullySetBitwiseInfo();
+
+		final BitwiseInfo bitwiseInfo2 = getFullySetBitwiseInfo();
 		bitwiseInfo2.clearBit(15, 0);
 		assertEquals("0xffffffffffffffef", bitwiseInfo2.toString());
-		
-		BitwiseInfo bitwiseInfo3 =  getFullySetBitwiseInfo();
+
+		BitwiseInfo bitwiseInfo3 = getFullySetBitwiseInfo();
 		bitwiseInfo3.clearBit(14, 0);
 		bitwiseInfo3.clearBit(14, 1);
 		bitwiseInfo3.clearBit(14, 2);
 		bitwiseInfo3.clearBit(14, 3);
 		assertEquals("0xfffffffffffff0ff".toLowerCase(), bitwiseInfo3.toString().toLowerCase());
-		
-		BitwiseInfo bitwiseInfo4 =  getFullySetBitwiseInfo();
+
+		BitwiseInfo bitwiseInfo4 = getFullySetBitwiseInfo();
 		bitwiseInfo4.clearBit(1, 3);
 		assertEquals("0x7fffffffffffffff".toLowerCase(), bitwiseInfo4.toString().toLowerCase());
-		
-		
-		
-		bitwiseInfo4 =  getFullySetBitwiseInfo();
+
+		bitwiseInfo4 = getFullySetBitwiseInfo();
 		bitwiseInfo4.clearBit(16, 0);
 		bitwiseInfo4.clearBit(15, 0);
 		bitwiseInfo4.clearBit(14, 0);
@@ -219,21 +212,20 @@ public class AuthResponseBuilderTest {
 		IntStream.range(0, 64).forEach(i -> bitwiseInfo.setBit(i));
 		return bitwiseInfo;
 	}
-	
-	@Test (expected = ArrayIndexOutOfBoundsException.class)
+
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void testUsageDataHexByClearingHexAIOOBE() {
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.clearBit(0, 1);
 	}
 
-	@Test (expected = ArrayIndexOutOfBoundsException.class)
+	@Test(expected = ArrayIndexOutOfBoundsException.class)
 	public void testUsageDataHexByClearingHexAIOOBE2() {
 		BitwiseInfo bitwiseInfo = new BitwiseInfo(16);
 		bitwiseInfo.clearBit(17, 1);
 	}
-	
-	
-	@Test 
+
+	@Test
 	public void testAuthStatusInfoBuilder() {
 //		assertTrue(AuthStatusInfoBuilder.newInstance().setStatus(true).build().isStatus());
 //		assertFalse(AuthStatusInfoBuilder.newInstance().setStatus(false).build().isStatus());
@@ -265,19 +257,19 @@ public class AuthResponseBuilderTest {
 //				.map(AuthError::getErrorCode)
 //				.collect(Collectors.toList())
 //				.containsAll(Arrays.asList("101", "102", "103")));
-		
+
 	}
-	
-	@Test (expected = IllegalStateException.class)
+
+	@Test(expected = IllegalStateException.class)
 	public void testAuthStatusInfoBuilderMultipleTimes() {
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		statusInfoBuilder.setStatus(true);
 		statusInfoBuilder.build();
-		
+
 		statusInfoBuilder.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_DOB);
 	}
-	
-	@Test 
+
+	@Test
 	public void testAuthResponseInfoBuilder() {
 //		assertTrue(AuthResponseBuilder
 //					.newInstance()
@@ -342,16 +334,16 @@ public class AuthResponseBuilderTest {
 //
 //		assertTrue(authResponseDTO2.getErr().stream().map(AuthError::getErrorCode).collect(Collectors.toList())
 //				.containsAll(Arrays.asList("101", "102", "103")));
-		
+
 	}
-	
-	@Test (expected = IllegalStateException.class)
+
+	@Test(expected = IllegalStateException.class)
 	public void testAuthResponseBuilderMultipleTimes() {
 		AuthResponseBuilder statusInfoBuilder = AuthResponseBuilder.newInstance();
 		statusInfoBuilder.setTxnID("1234567890");
 		statusInfoBuilder.build();
-		
+
 		statusInfoBuilder.build();
 	}
-	
+
 }
