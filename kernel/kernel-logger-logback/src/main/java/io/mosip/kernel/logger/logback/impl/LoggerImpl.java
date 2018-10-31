@@ -33,7 +33,7 @@ import io.mosip.kernel.logger.logback.constant.ConfigurationDefault;
  * @author Urvil Joshi
  * @since 1.0.0
  */
-public class Logback implements Logger {
+public class LoggerImpl implements Logger {
 
 	private static Map<String, Appender<ILoggingEvent>> rollingFileAppenders = new HashMap<>();
 	private static Map<String, Appender<ILoggingEvent>> fileAppenders = new HashMap<>();
@@ -56,7 +56,7 @@ public class Logback implements Logger {
 	 * @param name
 	 *            name of calling class to get logger
 	 */
-	private Logback(ConsoleAppender mosipConsoleAppender, String name) {
+	private LoggerImpl(ConsoleAppender mosipConsoleAppender, String name) {
 
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 		this.logger = context.getLogger(name);
@@ -81,7 +81,7 @@ public class Logback implements Logger {
 	 * @param name
 	 *            name of calling class to get logger
 	 */
-	private Logback(FileAppender mosipFileAppender, String name) {
+	private LoggerImpl(FileAppender mosipFileAppender, String name) {
 
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 		this.logger = context.getLogger(name);
@@ -114,7 +114,7 @@ public class Logback implements Logger {
 	 * @param name
 	 *            name of calling class to get logger
 	 */
-	private Logback(RollingFileAppender mosipRollingFileAppender, String name) {
+	private LoggerImpl(RollingFileAppender mosipRollingFileAppender, String name) {
 
 		LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 		this.logger = context.getLogger(name);
@@ -216,12 +216,12 @@ public class Logback implements Logger {
 	 *            name of the calling class
 	 * @return Configured {@link Logger} instance
 	 */
-	public static Logger getMosipConsoleLogger(ConsoleAppender consoleAppender, String name) {
+	public static Logger getConsoleLogger(ConsoleAppender consoleAppender, String name) {
 		if (name.trim().isEmpty()) {
 			throw new ClassNameNotFoundException(LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION.getValue(),
 					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE.getValue());
 		} else {
-			return new Logback(consoleAppender, name);
+			return new LoggerImpl(consoleAppender, name);
 		}
 	}
 
@@ -235,7 +235,7 @@ public class Logback implements Logger {
 	 *            name of the calling class
 	 * @return Configured {@link Logger} instance
 	 */
-	public static Logger getMosipFileLogger(FileAppender fileAppender, String name) {
+	public static Logger getFileLogger(FileAppender fileAppender, String name) {
 
 		if (fileAppender.getFileName() == null)
 			throw new FileNameNotProvided(LogExeptionCodeConstant.FILENAMENOTPROVIDED.getValue(),
@@ -247,7 +247,7 @@ public class Logback implements Logger {
 			throw new ClassNameNotFoundException(LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTION.getValue(),
 					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE.getValue());
 		else {
-			return new Logback(fileAppender, name);
+			return new LoggerImpl(fileAppender, name);
 		}
 	}
 
@@ -261,7 +261,7 @@ public class Logback implements Logger {
 	 *            name of the calling class
 	 * @return Configured {@link Logger} instance
 	 */
-	public static Logger getMosipRollingFileLogger(RollingFileAppender rollingFileAppender, String name) {
+	public static Logger getRollingFileLogger(RollingFileAppender rollingFileAppender, String name) {
 		if (rollingFileAppender.getFileNamePattern() == null)
 			throw new EmptyPatternException(LogExeptionCodeConstant.EMPTYPATTERNEXCEPTION.getValue(),
 					LogExeptionCodeConstant.EMPTYPATTERNEXCEPTIONMESSAGENULL.getValue());
@@ -286,7 +286,7 @@ public class Logback implements Logger {
 					LogExeptionCodeConstant.CLASSNAMENOTFOUNDEXEPTIONMESSAGE.getValue());
 		else
 			try {
-				return new Logback(rollingFileAppender, name);
+				return new LoggerImpl(rollingFileAppender, name);
 			} catch (java.lang.IllegalStateException e) {
 				throw new IllegalStateException(LogExeptionCodeConstant.MOSIPILLEGALSTATEEXCEPTION.getValue(),
 						LogExeptionCodeConstant.MOSIPILLEGALSTATEEXCEPTIONMESSAGE.getValue());

@@ -19,7 +19,7 @@ import io.mosip.kernel.logger.logback.appender.FileAppender;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 import io.mosip.kernel.logger.logback.constant.LogExeptionCodeConstant;
 import io.mosip.kernel.logger.logback.constant.LoggerMethod;
-import io.mosip.kernel.logger.logback.impl.Logback;
+import io.mosip.kernel.logger.logback.impl.LoggerImpl;
 import io.mosip.kernel.logger.logback.util.LoggerUtils;
 
 /**
@@ -47,8 +47,8 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultConsoleLogger(ConsoleAppender mosipConsoleAppender, Class<?> clazz) {
-		return Logback.getMosipConsoleLogger(mosipConsoleAppender, clazz.getName());
+	public static Logger getDefaultConsoleLogger(ConsoleAppender mosipConsoleAppender, Class<?> clazz) {
+		return LoggerImpl.getConsoleLogger(mosipConsoleAppender, clazz.getName());
 	}
 
 	/**
@@ -61,8 +61,8 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultConsoleLogger(ConsoleAppender mosipConsoleAppender, String name) {
-		return Logback.getMosipConsoleLogger(mosipConsoleAppender, name);
+	public static Logger getDefaultConsoleLogger(ConsoleAppender mosipConsoleAppender, String name) {
+		return LoggerImpl.getConsoleLogger(mosipConsoleAppender, name);
 	}
 
 	/**
@@ -75,8 +75,8 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultFileLogger(FileAppender mosipFileAppender, Class<?> clazz) {
-		return Logback.getMosipFileLogger(mosipFileAppender, clazz.getName());
+	public static Logger getDefaultFileLogger(FileAppender mosipFileAppender, Class<?> clazz) {
+		return LoggerImpl.getFileLogger(mosipFileAppender, clazz.getName());
 	}
 
 	/**
@@ -89,8 +89,8 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultFileLogger(FileAppender mosipFileAppender, String name) {
-		return Logback.getMosipFileLogger(mosipFileAppender, name);
+	public static Logger getDefaultFileLogger(FileAppender mosipFileAppender, String name) {
+		return LoggerImpl.getFileLogger(mosipFileAppender, name);
 	}
 
 	/**
@@ -103,9 +103,9 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultRollingFileLogger(RollingFileAppender mosipRollingFileAppender,
+	public static Logger getDefaultRollingFileLogger(RollingFileAppender mosipRollingFileAppender,
 			Class<?> clazz) {
-		return Logback.getMosipRollingFileLogger(mosipRollingFileAppender, clazz.getName());
+		return LoggerImpl.getRollingFileLogger(mosipRollingFileAppender, clazz.getName());
 	}
 
 	/**
@@ -118,9 +118,9 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultRollingFileLogger(RollingFileAppender mosipRollingFileAppender,
+	public static Logger getDefaultRollingFileLogger(RollingFileAppender mosipRollingFileAppender,
 			String name) {
-		return Logback.getMosipRollingFileLogger(mosipRollingFileAppender, name);
+		return LoggerImpl.getRollingFileLogger(mosipRollingFileAppender, name);
 	}
 
 	/**
@@ -135,10 +135,10 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipConsoleLogger(ConsoleAppender mosipConsoleAppender,
+	public static Logger getConsoleLogger(ConsoleAppender mosipConsoleAppender,
 			LoggerMethod mosipLoggerMethod, Class<?> clazz) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK) {
-			return Logback.getMosipConsoleLogger(mosipConsoleAppender, clazz.getName());
+			return LoggerImpl.getConsoleLogger(mosipConsoleAppender, clazz.getName());
 		} else {
 			throw new ImplementationNotFound(LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND.getValue(),
 					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE.getValue());
@@ -157,10 +157,10 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipConsoleLogger(ConsoleAppender mosipConsoleAppender,
+	public static Logger getConsoleLogger(ConsoleAppender mosipConsoleAppender,
 			LoggerMethod mosipLoggerMethod, String name) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK)
-			return Logback.getMosipConsoleLogger(mosipConsoleAppender, name);
+			return LoggerImpl.getConsoleLogger(mosipConsoleAppender, name);
 		else
 			throw new ImplementationNotFound(LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND.getValue(),
 					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE.getValue());
@@ -178,10 +178,10 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipFileLogger(FileAppender mosipFileAppender,
+	public static Logger getFileLogger(FileAppender mosipFileAppender,
 			LoggerMethod mosipLoggerMethod, Class<?> clazz) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK)
-			return Logback.getMosipFileLogger(mosipFileAppender, clazz.getName());
+			return LoggerImpl.getFileLogger(mosipFileAppender, clazz.getName());
 		else
 			throw new ImplementationNotFound(LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND.getValue(),
 					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE.getValue());
@@ -199,10 +199,10 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipFileLogger(FileAppender mosipFileAppender,
+	public static Logger getFileLogger(FileAppender mosipFileAppender,
 			LoggerMethod mosipLoggerMethod, String name) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK)
-			return Logback.getMosipFileLogger(mosipFileAppender, name);
+			return LoggerImpl.getFileLogger(mosipFileAppender, name);
 		else
 			throw new ImplementationNotFound(LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND.getValue(),
 					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE.getValue());
@@ -220,10 +220,10 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipRollingFileLogger(RollingFileAppender mosipRollingFileAppender,
+	public static Logger getRollingFileLogger(RollingFileAppender mosipRollingFileAppender,
 			LoggerMethod mosipLoggerMethod, Class<?> clazz) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK)
-			return Logback.getMosipRollingFileLogger(mosipRollingFileAppender, clazz.getName());
+			return LoggerImpl.getRollingFileLogger(mosipRollingFileAppender, clazz.getName());
 		else
 			throw new ImplementationNotFound(LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND.getValue(),
 					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE.getValue());
@@ -241,10 +241,10 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipRollingFileLogger(RollingFileAppender mosipRollingFileAppender,
+	public static Logger getRollingFileLogger(RollingFileAppender mosipRollingFileAppender,
 			LoggerMethod mosipLoggerMethod, String name) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK)
-			return Logback.getMosipRollingFileLogger(mosipRollingFileAppender, name);
+			return LoggerImpl.getRollingFileLogger(mosipRollingFileAppender, name);
 		else
 			throw new ImplementationNotFound(LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND.getValue(),
 					LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUNDMESSAGE.getValue());
@@ -259,8 +259,8 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultConsoleLogger(File mosipConsoleAppenderFile, Class<?> clazz) {
-		return Logback.getMosipConsoleLogger(
+	public static Logger getDefaultConsoleLogger(File mosipConsoleAppenderFile, Class<?> clazz) {
+		return LoggerImpl.getConsoleLogger(
 				(ConsoleAppender) LoggerUtils.unmarshall(mosipConsoleAppenderFile, ConsoleAppender.class),
 				clazz.getName());
 	}
@@ -274,8 +274,8 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultConsoleLogger(File mosipConsoleAppenderFile, String name) {
-		return Logback.getMosipConsoleLogger(
+	public static Logger getDefaultConsoleLogger(File mosipConsoleAppenderFile, String name) {
+		return LoggerImpl.getConsoleLogger(
 				(ConsoleAppender) LoggerUtils.unmarshall(mosipConsoleAppenderFile, ConsoleAppender.class),
 				name);
 	}
@@ -289,8 +289,8 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultFileLogger(File mosipFileAppenderFile, Class<?> clazz) {
-		return Logback.getMosipFileLogger(
+	public static Logger getDefaultFileLogger(File mosipFileAppenderFile, Class<?> clazz) {
+		return LoggerImpl.getFileLogger(
 				(FileAppender) LoggerUtils.unmarshall(mosipFileAppenderFile, FileAppender.class),
 				clazz.getName());
 	}
@@ -304,8 +304,8 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultFileLogger(File mosipFileAppenderFile, String name) {
-		return Logback.getMosipFileLogger(
+	public static Logger getDefaultFileLogger(File mosipFileAppenderFile, String name) {
+		return LoggerImpl.getFileLogger(
 				(FileAppender) LoggerUtils.unmarshall(mosipFileAppenderFile, FileAppender.class), name);
 	}
 
@@ -318,8 +318,8 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultRollingFileLogger(File mosipRollingFileAppenderFile, Class<?> clazz) {
-		return Logback.getMosipRollingFileLogger((RollingFileAppender) LoggerUtils
+	public static Logger getDefaultRollingFileLogger(File mosipRollingFileAppenderFile, Class<?> clazz) {
+		return LoggerImpl.getRollingFileLogger((RollingFileAppender) LoggerUtils
 				.unmarshall(mosipRollingFileAppenderFile, RollingFileAppender.class), clazz.getName());
 	}
 
@@ -332,8 +332,8 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipDefaultRollingFileLogger(File mosipRollingFileAppenderFile, String name) {
-		return Logback.getMosipRollingFileLogger((RollingFileAppender) LoggerUtils
+	public static Logger getDefaultRollingFileLogger(File mosipRollingFileAppenderFile, String name) {
+		return LoggerImpl.getRollingFileLogger((RollingFileAppender) LoggerUtils
 				.unmarshall(mosipRollingFileAppenderFile, RollingFileAppender.class), name);
 	}
 
@@ -348,10 +348,10 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipConsoleLogger(File mosipConsoleAppenderFile, LoggerMethod mosipLoggerMethod,
+	public static Logger getConsoleLogger(File mosipConsoleAppenderFile, LoggerMethod mosipLoggerMethod,
 			Class<?> clazz) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK)
-			return Logback.getMosipConsoleLogger(
+			return LoggerImpl.getConsoleLogger(
 					(ConsoleAppender) LoggerUtils.unmarshall(mosipConsoleAppenderFile, ConsoleAppender.class),
 					clazz.getName());
 		else
@@ -370,10 +370,10 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipConsoleLogger(File mosipConsoleAppenderFile, LoggerMethod mosipLoggerMethod,
+	public static Logger getConsoleLogger(File mosipConsoleAppenderFile, LoggerMethod mosipLoggerMethod,
 			String name) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK)
-			return Logback.getMosipConsoleLogger(
+			return LoggerImpl.getConsoleLogger(
 					(ConsoleAppender) LoggerUtils.unmarshall(mosipConsoleAppenderFile, ConsoleAppender.class),
 					name);
 		else
@@ -392,10 +392,10 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipFileLogger(File mosipFileAppenderFile, LoggerMethod mosipLoggerMethod,
+	public static Logger getFileLogger(File mosipFileAppenderFile, LoggerMethod mosipLoggerMethod,
 			Class<?> clazz) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK)
-			return Logback.getMosipFileLogger(
+			return LoggerImpl.getFileLogger(
 					(FileAppender) LoggerUtils.unmarshall(mosipFileAppenderFile, FileAppender.class),
 					clazz.getName());
 		else
@@ -414,10 +414,10 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipFileLogger(File mosipFileAppenderFile, LoggerMethod mosipLoggerMethod,
+	public static Logger getFileLogger(File mosipFileAppenderFile, LoggerMethod mosipLoggerMethod,
 			String name) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK)
-			return Logback.getMosipFileLogger(
+			return LoggerImpl.getFileLogger(
 					(FileAppender) LoggerUtils.unmarshall(mosipFileAppenderFile, FileAppender.class), name);
 		else
 			throw new ImplementationNotFound(LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND.getValue(),
@@ -435,10 +435,10 @@ public class Logfactory {
 	 *            reference of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipRollingFileLogger(File mosipRollingFileAppenderFile,
+	public static Logger getRollingFileLogger(File mosipRollingFileAppenderFile,
 			LoggerMethod mosipLoggerMethod, Class<?> clazz) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK)
-			return Logback.getMosipRollingFileLogger((RollingFileAppender) LoggerUtils
+			return LoggerImpl.getRollingFileLogger((RollingFileAppender) LoggerUtils
 					.unmarshall(mosipRollingFileAppenderFile, RollingFileAppender.class), clazz.getName());
 		else
 			throw new ImplementationNotFound(LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND.getValue(),
@@ -456,10 +456,10 @@ public class Logfactory {
 	 *            name of the calling class
 	 * @return configured {@link Logger} instance
 	 */
-	public static Logger getMosipRollingFileLogger(File mosipRollingFileAppenderFile,
+	public static Logger getRollingFileLogger(File mosipRollingFileAppenderFile,
 			LoggerMethod mosipLoggerMethod, String name) {
 		if (mosipLoggerMethod == LoggerMethod.MOSIPLOGBACK)
-			return Logback.getMosipRollingFileLogger((RollingFileAppender) LoggerUtils
+			return LoggerImpl.getRollingFileLogger((RollingFileAppender) LoggerUtils
 					.unmarshall(mosipRollingFileAppenderFile, RollingFileAppender.class), name);
 		else
 			throw new ImplementationNotFound(LogExeptionCodeConstant.IMPLEMENTATIONNOTFOUND.getValue(),
