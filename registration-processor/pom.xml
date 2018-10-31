@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.mosip</groupId>
+	<groupId>io.mosip.registrationprocessor</groupId>
 	<artifactId>registration-processor</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 
@@ -16,6 +16,11 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.compiler.version>3.7.0</maven.compiler.version>
+		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
+		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
+		<maven.surefire.plugin.version>2.9</maven.surefire.plugin.version>
+		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
+		<maven.sonar.plugin.version>3.5.0.1254</maven.sonar.plugin.version>
 
 		<!-- Core -->
 		<spring.version>5.0.4.RELEASE</spring.version>
@@ -37,7 +42,8 @@
 		<commons-lang3>3.7</commons-lang3>
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
-		<commons.io.version>1.3.2</commons.io.version>
+		<commons.io.version>2.6</commons.io.version>
+		<kernel.core.version>1.0.0-SNAPSHOT</kernel.core.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -46,13 +52,22 @@
 		<mockito.version>1.10.19</mockito.version>
 		<powermock.module.junit4.version>1.7.4</powermock.module.junit4.version>
 		<powermock.api.mockito.version>1.7.4</powermock.api.mockito.version>
+		<awaitility.version>3.1.0</awaitility.version>
 		
 		<!-- DFS adapter -->
 		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
-
+		
+		<!-- Vert.x -->
+		<vertx.version>3.5.3</vertx.version>
+		
+		<!-- local -->
+		<registration.status.version>1.0.0-SNAPSHOT</registration.status.version>
+		<registration.processor.core.version>1.0.0-SNAPSHOT</registration.processor.core.version>
+		<filesystem.adapter.version>1.0.0-SNAPSHOT</filesystem.adapter.version>
+		<packet.manager.version>1.0.0-SNAPSHOT</packet.manager.version>
 	</properties>
-	
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -66,14 +81,45 @@
 	</dependencyManagement>
 
 	<modules>
+		<module>registration-processor-core</module>
 		<module>packet-receiver</module>
-   		<module>registration-status</module>
-		<module>filesystem-ceph-adapter-impl</module>
-		<module>core</module>
-		<module>core/packet-manager</module>
-		<module>core/virus-scanner</module>
-		<module>core/packet-scanner-job</module>
+		<module>registration-status-service</module>
+		<module>filesystem-adapter-ceph</module>
+		<module>packet-manager</module>
+		<module>jobs</module>
+		<module>registration-processor-camel-bridge</module>
+    	<module>stages</module>
+    	<module>packet-info-storage-service</module>
   </modules>
+
+	<profiles>
+		<profile>
+			<id>LOCAL</id>
+			<properties>
+				<sonar.host.url>
+					http://13.67.91.2:9000
+				</sonar.host.url>
+				<sonar.login>5006c6fd96284f6545a4101fb5b1369374265c0f</sonar.login>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+		<profile>
+			<id>DEV</id>
+			<properties>
+				<sonar.host.url>
+					http://13.76.43.109:9000
+				</sonar.host.url>
+				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+	</profiles>
 
 	<build>
 		<pluginManagement>
@@ -90,7 +136,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.0.2</version>
+					<version>${maven.jar.plugin.version}</version>
 					<configuration>
 						<archive>
 							<manifest>
@@ -106,9 +152,6 @@
 								<Build-Number>${env.BUILD_NUMBER}</Build-Number>
 								<Build-Date>${env.BUILD_ID}</Build-Date>
 								<Build-URL>${env.BUILD_URL}</Build-URL>
-								<Build-Revision>${env.SVN_REVISION}</Build-Revision>
-								<SCM-Path>${scm.path}</SCM-Path>
-								<SCM-CommittedDate>${scm.committedDate}</SCM-CommittedDate>
 							</manifestEntries>
 						</archive>
 					</configuration>
@@ -116,7 +159,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>${maven.war.plugin.version}</version>
 					<configuration>
 						<archive>
 							<manifest>
@@ -132,9 +175,6 @@
 								<Build-Number>${env.BUILD_NUMBER}</Build-Number>
 								<Build-Date>${env.BUILD_ID}</Build-Date>
 								<Build-URL>${env.BUILD_URL}</Build-URL>
-								<Build-Revision>${env.SVN_REVISION}</Build-Revision>
-								<SCM-Path>${scm.path}</SCM-Path>
-								<SCM-CommittedDate>${scm.committedDate}</SCM-CommittedDate>
 							</manifestEntries>
 						</archive>
 					</configuration>
@@ -142,7 +182,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.9</version>
+					<version>${maven.surefire.plugin.version}</version>
 					<configuration>
 						<skip>false</skip>
 						<useFile>false</useFile>
@@ -151,8 +191,48 @@
 						</excludes>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${maven.jacoco.plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${maven.sonar.plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<append>true</append>
+				</configuration>
+				<executions>
+					<execution>
+						<id>agent-for-ut</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>agent-for-it</id>
+						<goals>
+							<goal>prepare-agent-integration</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-site</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 
 </project>

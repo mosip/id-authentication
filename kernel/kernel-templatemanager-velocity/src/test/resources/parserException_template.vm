@@ -1,0 +1,5 @@
+#set ($test=StringUtils.split($filterFieldCSV,","))
+
+    #foreach ( $filterField in $test )
+    <!-- process something here -->
+#end
