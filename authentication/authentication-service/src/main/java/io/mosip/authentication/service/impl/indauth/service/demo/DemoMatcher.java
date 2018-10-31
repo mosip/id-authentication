@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
 import java.util.stream.Collectors;
 
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
+import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 
 /**
@@ -34,9 +37,11 @@ public class DemoMatcher {
 	 */
 	public List<MatchOutput> matchDemoData(IdentityDTO identityDTO, Map<String, List<IdentityInfoDTO>> demoEntity,
 			Collection<MatchInput> listMatchInputs, LocationInfoFetcher locationInfoFetcher,
-			LanguageFetcher languageInfoFetcher) {
-		return listMatchInputs.parallelStream()
-				.map(input -> matchType(identityDTO, demoEntity, input, locationInfoFetcher, languageInfoFetcher))
+			Function<LanguageType, String> languageCodeFetcher,
+			Function<String, Optional<String>> languageNameFetcher) {
+		return listMatchInputs
+				.parallelStream().map(input -> matchType(identityDTO, demoEntity, input, locationInfoFetcher,
+						languageCodeFetcher, languageNameFetcher))
 				.filter(output -> output != null).collect(Collectors.toList());
 	}
 
@@ -49,7 +54,9 @@ public class DemoMatcher {
 	 * @return the match output
 	 */
 	private MatchOutput matchType(IdentityDTO identityDTO, Map<String, List<IdentityInfoDTO>> demoEntity,
-			MatchInput input, LocationInfoFetcher locationInfoFetcher, LanguageFetcher languageFetcher) {
+			MatchInput input, LocationInfoFetcher locationInfoFetcher,
+			Function<LanguageType, String> languageCodeFetcher,
+			Function<String, Optional<String>> languageNameFetcher) {
 		String matchStrategyTypeStr = input.getMatchStrategyType();
 		if (matchStrategyTypeStr == null) {
 			matchStrategyTypeStr = MatchingStrategyType.EXACT.getType();
@@ -63,13 +70,13 @@ public class DemoMatcher {
 					.getAllowedMatchingStrategy(strategyType);
 			if (matchingStrategy.isPresent()) {
 				MatchingStrategy strategy = matchingStrategy.get();
-				Optional<Object> reqInfoOpt = input.getDemoMatchType().getIdentityInfo(identityDTO, languageFetcher);
+				Optional<Object> reqInfoOpt = input.getDemoMatchType().getIdentityInfo(identityDTO,
+						languageCodeFetcher);
 				if (reqInfoOpt.isPresent()) {
 					Object reqInfo = reqInfoOpt.get();
-
-					Object entityInfo = input.getDemoMatchType().getEntityInfo(demoEntity, languageFetcher,
-							locationInfoFetcher, idMappingConfig);
-					ToIntBiFunction<Object, Object> matchFunction = strategy.getMatchFunction();
+					IdentityValue entityInfo = input.getDemoMatchType().getEntityInfo(demoEntity, languageCodeFetcher,
+							languageNameFetcher, locationInfoFetcher, idMappingConfig);
+					ToIntBiFunction<Object, IdentityValue> matchFunction = strategy.getMatchFunction();
 					int mtOut = matchFunction.applyAsInt(reqInfo, entityInfo);
 					boolean matchOutput = mtOut >= input.getMatchValue();
 					return new MatchOutput(mtOut, matchOutput, input.getMatchStrategyType(), input.getDemoMatchType());

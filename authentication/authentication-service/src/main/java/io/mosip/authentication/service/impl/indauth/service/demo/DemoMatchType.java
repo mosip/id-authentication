@@ -27,10 +27,16 @@ public enum DemoMatchType implements MatchType {
 	/** Primary Name Match Type */
 	NAME_PRI(IdMapping.NAME, setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
 			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI,
-			(List<IdentityValue> idValues, String language) -> {
+			(List<IdentityValue> idValues) -> {
 				String[] demoValues = idValues.stream().map(IdentityValue::getValue).toArray(size -> new String[size]);
-				String value = concatDemo(demoValues);
-				return new IdentityInfoDTO(language, value);
+				return concatDemo(demoValues);
+			}),
+	
+	NAME_SEC(IdMapping.NAME, setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC,
+			(List<IdentityValue> idValues) -> {
+				String[] demoValues = idValues.stream().map(IdentityValue::getValue).toArray(size -> new String[size]);
+				return concatDemo(demoValues);
 			}),
 
 //	NAME_SEC(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
@@ -91,8 +97,8 @@ public enum DemoMatchType implements MatchType {
 		this.matchedBit = matchedBit;
 	}
 
-	public Optional<Object> getIdentityInfo(IdentityDTO identity, LanguageFetcher languageFetcher) {
-		String language = languageFetcher.getLanguage(this.getLanguageType());
+	public Optional<Object> getIdentityInfo(IdentityDTO identity, Function<LanguageType, String> languageFetcher) {
+		String language = languageFetcher.apply(this.getLanguageType());
 		return Optional.of(identity).flatMap(identityDTO -> getInfo(identityInfoFunction.apply(identityDTO), language));
 	}
 
@@ -178,7 +184,7 @@ public enum DemoMatchType implements MatchType {
 		if (identityInfoList != null && !identityInfoList.isEmpty()) {
 			return identityInfoList.stream().filter(
 					idinfo -> idinfo.getLanguage() != null && idinfo.getLanguage().equalsIgnoreCase(languageCode))
-					.map(idInfo -> new IdentityValue(name, languageCode, idInfo.getValue())).findAny();
+					.map(idInfo -> new IdentityValue(languageCode, idInfo.getValue())).findAny();
 		}
 
 		return Optional.empty();
@@ -194,12 +200,15 @@ public enum DemoMatchType implements MatchType {
 				.filter(val -> val.isPresent()).<IdentityValue>map(Optional::get).collect(Collectors.toList());
 	}
 
-	public IdentityInfoDTO getEntityInfo(Map<String, List<IdentityInfoDTO>> demoEntity, LanguageFetcher languageFetcher,
+	public IdentityValue getEntityInfo(Map<String, List<IdentityInfoDTO>> demoEntity,
+			Function<LanguageType, String> languageCodeFetcher, Function<String, Optional<String>> languageNameFetcher,
 			LocationInfoFetcher locationInfoFetcher, IDAMappingConfig idMappingConfig) {
-		String language = languageFetcher.getLanguage(getLanguageType());
+		String languageCode = languageCodeFetcher.apply(getLanguageType());
+		Optional<String> languageName = languageNameFetcher.apply(languageCode);
 		List<String> propertyNames = getIdMappingValue(getIdMapping(), idMappingConfig);
-		List<IdentityValue> demoValues = getDemoValue(propertyNames, language, demoEntity);
-		return getEntityInfoFetcher().getInfo(demoValues, language);
+		List<IdentityValue> demoValues = getDemoValue(propertyNames, languageCode, demoEntity);
+		String entityInfo = getEntityInfoFetcher().getInfo(demoValues);
+		return new IdentityValue(languageName.orElse(""), entityInfo);
 	}
 
 }

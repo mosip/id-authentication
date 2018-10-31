@@ -17,6 +17,6 @@ public interface DemoEntityInfoFetcher {
 	 * @param demoEntity the demo entity
 	 * @return the info
 	 */
-	IdentityInfoDTO getInfo(List<IdentityValue> idValues, String language);
+	String getInfo(List<IdentityValue> idValues);
 
 }

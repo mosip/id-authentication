@@ -7,7 +7,24 @@ import io.mosip.authentication.service.config.IDAMappingConfig;
 
 public enum IdMapping {
 
-	NAME("name", IDAMappingConfig::getName),;
+	NAME("name", IDAMappingConfig::getName), 
+	DOB("dob", IDAMappingConfig::getDob),
+	DOBTYPE("dobType", IDAMappingConfig::getDobType),
+	AGE("age", IDAMappingConfig::getAge),
+	GENDER("gender", IDAMappingConfig::getGender), 
+	PHONE("phoneNumber", IDAMappingConfig::getPhoneNumber),
+	EMAIL("emailId", IDAMappingConfig::getEmailId), 
+	ADDRESSLINE1("addressLine1", IDAMappingConfig::getAddressLine1),
+	ADDRESSLINE2("addressLine2", IDAMappingConfig::getAddressLine2),
+	ADDRESSLINE3("addressLine3", IDAMappingConfig::getAddressLine3),
+	LOCATION("location", IDAMappingConfig::getLocation), 
+	PINCODE("pinCode", IDAMappingConfig::getPinCode),
+	FULLADDRESS("fullAddress", IDAMappingConfig::getFullAddress),
+	OTP("otp", IDAMappingConfig::getOtp),
+	PIN("pin", IDAMappingConfig::getPin),
+	IRIS("iris", IDAMappingConfig::getIris),
+	FINGERPRINT("fingerprint", IDAMappingConfig::getFingerprint)
+	;
 
 	private String idname;
 

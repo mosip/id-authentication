@@ -12,11 +12,9 @@ import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.LanguageFetcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 
@@ -45,7 +43,9 @@ public enum AuthType {
 	PI_PRI("personalIdentity", setOf(DemoMatchType.NAME_PRI), LanguageType.PRIMARY_LANG,
 			AuthTypeDTO::isPersonalIdentity),
 
-//	/** The fad pri. */
+	PI_SEC("personalIdentity", setOf(DemoMatchType.NAME_SEC), LanguageType.SECONDARY_LANG,
+			AuthTypeDTO::isPersonalIdentity),
+//	/** The fad pri. *
 //	FAD_PRI("fadPri", setOf(DemoMatchType.ADDR_PRI),
 //			authReq -> Optional.of(authReq).map(AuthRequestDTO::getAuthType).map(AuthTypeDTO::isFad).orElse(false),
 //			authReq -> Optional.of(authReq).map(AuthRequestDTO::getPii).map(PersonalIdentityDataDTO::getDemo)
@@ -136,16 +136,16 @@ public enum AuthType {
 		return Optional.of(authReq).map(AuthRequestDTO::getAuthType).filter(authTypePredicate).isPresent();
 	}
 
-	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, LanguageFetcher languageInfoFetcher) {
+	public Optional<String> getMatchingStrategy(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher) {
 		return getMatchInfo(authReq, languageInfoFetcher, MatchInfo::getMatchingStrategy);
 
 	}
 	
-	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, LanguageFetcher languageInfoFetcher) {
+	public Optional<Integer> getMatchingThreshold(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher) {
 		return getMatchInfo(authReq, languageInfoFetcher, MatchInfo::getMatchingThreshold);
 	}
 	
-	private <T> Optional<T> getMatchInfo(AuthRequestDTO authReq, LanguageFetcher languageInfoFetcher, Function<? super MatchInfo, ? extends T> infoFunction) {
+	private <T> Optional<T> getMatchInfo(AuthRequestDTO authReq, Function<LanguageType, String> languageInfoFetcher, Function<? super MatchInfo, ? extends T> infoFunction) {
 		return Optional.of(authReq)
 						.flatMap(authReqDTO -> getMatchInfo(
 													authReqDTO.getMatchInfo(), 
@@ -154,10 +154,10 @@ public enum AuthType {
 								);
 	}
 	
-	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, LanguageFetcher languageInfoFetcher, Function<? super MatchInfo, ? extends T> infoFunction) {
-		String language = languageInfoFetcher.getLanguage(langType);
+	private <T> Optional<T> getMatchInfo(List<MatchInfo> matchInfos, Function<LanguageType, String> languageInfoFetcher, Function<? super MatchInfo, ? extends T> infoFunction) {
+		String language = languageInfoFetcher.apply(langType);
 		return matchInfos.parallelStream()
-				.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage()))
+				.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage()) && getType().equals(id.getAuthType()))
 				.<T>map(infoFunction)
 				.filter(Objects::nonNull)
 				.findAny();

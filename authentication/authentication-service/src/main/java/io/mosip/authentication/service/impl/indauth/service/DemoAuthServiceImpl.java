@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,11 +19,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
-import io.mosip.authentication.core.dto.indauth.DemoDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
-import io.mosip.authentication.core.dto.indauth.PersonalIdentityDataDTO;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -30,10 +29,8 @@ import io.mosip.authentication.core.spi.id.service.IdInfoService;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.impl.indauth.builder.AuthType;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
-import io.mosip.authentication.service.impl.indauth.service.demo.LanguageFetcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.LocationEntity;
 import io.mosip.authentication.service.impl.indauth.service.demo.LocationInfoFetcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.LocationLevel;
@@ -93,9 +90,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 						}
 					}
 					return null;
-				}))
-				.filter(Objects::nonNull)
-				.orElseGet(Stream::empty).collect(Collectors.toList());
+				}).filter(Objects::nonNull)).orElseGet(Stream::empty).collect(Collectors.toList());
 
 	}
 
@@ -135,9 +130,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 */
 	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, IdentityDTO identitydto,
 			Map<String, List<IdentityInfoDTO>> demoEntity, LocationInfoFetcher locationInfoFetcher,
-			LanguageFetcher languageInfoFetcher) {
+			Function<LanguageType, String> languageCodeFetcher, Function<String, Optional<String>> languageNameFetcher) {
 		return demoMatcher.matchDemoData(identitydto, demoEntity, listMatchInputs, locationInfoFetcher,
-				languageInfoFetcher);
+				languageCodeFetcher, languageNameFetcher);
 	}
 
 	/*
@@ -151,14 +146,14 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 
 		Map<String, List<IdentityInfoDTO>> demoEntity = getDemoEntity(refId);
 
-		if (demoEntity == null) {
+		if (demoEntity == null || demoEntity.isEmpty()) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 		}
 
 		List<MatchInput> listMatchInputs = constructMatchInput(authRequestDTO);
 
 		List<MatchOutput> listMatchOutputs = getMatchOutput(listMatchInputs, authRequestDTO.getRequest().getIdentity(),
-				demoEntity, this::getLocation, this::getLanguageCode);
+				demoEntity, this::getLocation, this::getLanguageCode, this::getLanguageName);
 		boolean demoMatched = listMatchOutputs.stream().allMatch(MatchOutput::isMatched);
 
 		return buildStatusInfo(demoMatched, listMatchInputs, listMatchOutputs);
@@ -247,5 +242,17 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		return Optional.empty();
 
 	}
+	
+	public Optional<String> getLanguageName(String languageCode) {
+		String languagName = null;
+		String key = null;
+		if (languageCode != null) {
+			key = "mosip.primary.lang.".concat(languageCode.toLowerCase());
+			String property = environment.getProperty(key);
+			if (property != null && !property.isEmpty()) {
+				String[] split = property.split("-");
+				languagName = split[0];
+			}}
+		return Optional.ofNullable(languagName);} 
 
 }

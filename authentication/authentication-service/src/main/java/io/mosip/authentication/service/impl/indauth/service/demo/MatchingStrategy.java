@@ -2,6 +2,8 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.function.ToIntBiFunction;
 
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
+
 /**
  * @author  Arun Bose
  * The Interface MatchingStrategy.
@@ -20,6 +22,6 @@ public interface MatchingStrategy {
 	 *
 	 * @return the match function
 	 */
-	 ToIntBiFunction<Object, Object> getMatchFunction();
+	 ToIntBiFunction<Object, IdentityValue> getMatchFunction();
 	
 }

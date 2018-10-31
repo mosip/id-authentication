@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class IdentityValue {
 
-	private String name;
 	private String language;
 	private String value;
 }
