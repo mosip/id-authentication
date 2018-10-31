@@ -31,10 +31,10 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 	private final Logger logger = LoggerFactory.getLogger(FileManagerImpl.class);
 
-	@Value("${packet.ext}")
+	@Value("${registration.processor.packet.ext}")
 	private String extention;
 
-	@Value("${FTP_ZONE}")
+	@Value("${registration.processor.FTP_ZONE}")
 	private String path;
 
 	@Autowired

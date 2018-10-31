@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
@@ -38,7 +39,7 @@ public class RegistrationStatusControllerTest {
 
 	/** The registration status service. */
 	@MockBean
-	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	RegistrationStatusService<String, InternalRegistrationStatusDto,RegistrationStatusDto> registrationStatusService;
 
 	/** The mock mvc. */
 	@Autowired
@@ -48,7 +49,7 @@ public class RegistrationStatusControllerTest {
 	private String registrationIds;
 
 	/** The registration dto list. */
-	private List<RegistrationStatusDto> registrationDtoList;
+	private List<InternalRegistrationStatusDto> registrationDtoList;
 
 	/**
 	 * Sets the up.
@@ -58,14 +59,14 @@ public class RegistrationStatusControllerTest {
 
 		registrationIds = "1001,1002";
 		registrationDtoList = new ArrayList<>();
-		RegistrationStatusDto registrationStatusDto1 = new RegistrationStatusDto();
+		InternalRegistrationStatusDto registrationStatusDto1 = new InternalRegistrationStatusDto();
 		registrationStatusDto1.setRegistrationId("1001");
 		registrationStatusDto1.setRegistrationType("NEW");
 		registrationStatusDto1.setLangCode("EN");
 		registrationStatusDto1.setIsActive(true);
 		registrationStatusDto1.setCreatedBy("MOSIP_SYSTEM");
 
-		RegistrationStatusDto registrationStatusDto2 = new RegistrationStatusDto();
+		InternalRegistrationStatusDto registrationStatusDto2 = new InternalRegistrationStatusDto();
 		registrationStatusDto2.setRegistrationId("1002");
 		registrationStatusDto2.setRegistrationType("NEW");
 		registrationStatusDto2.setLangCode("EN");

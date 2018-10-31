@@ -15,14 +15,14 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 /**
  * Retry stage verticle class for re processing different stages in case of
  * internal/system erroe
- * 
+ *
  * @author Jyoti Prakash Nayak
  *
  */
 @RefreshScope
 @Component
 public class RetryStage extends MosipVerticleManager {
-	@Value("${wait.period}")
+	@Value("${registration.processor.wait.period}")
 	private int waitPeriod;
 
 	@Value("${vertx.cluster.address}")
@@ -44,7 +44,7 @@ public class RetryStage extends MosipVerticleManager {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(
 	 * java.lang.Object)

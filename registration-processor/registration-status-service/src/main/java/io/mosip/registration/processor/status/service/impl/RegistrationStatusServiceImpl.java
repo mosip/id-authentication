@@ -4,6 +4,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +16,23 @@ import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.status.code.AuditLogTempConstant;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.TransactionService;
+import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUtil;
 
 @Component
-public class RegistrationStatusServiceImpl implements RegistrationStatusService<String, RegistrationStatusDto> {
+public class RegistrationStatusServiceImpl implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
-	@Value("${landingZone_To_VirusScan_Interval_Threshhold_time}")
+	@Value("${registration.processor.landingZone_To_VirusScan_Interval_Threshhold_time}")
 
 	private int threshholdTime;
 
@@ -49,7 +54,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	private AuditHandler<AuditRequestDto> auditHandler;
 
 	@Override
-	public RegistrationStatusDto getRegistrationStatus(String registrationId) {
+	public InternalRegistrationStatusDto getRegistrationStatus(String registrationId) {
 		boolean isTransactionSuccessful = false;
 		try {
 			RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
@@ -70,7 +75,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	}
 
 	@Override
-	public List<RegistrationStatusDto> findbyfilesByThreshold(String statusCode) {
+	public List<InternalRegistrationStatusDto> findbyfilesByThreshold(String statusCode) {
 		boolean isTransactionSuccessful = false;
 		try {
 			List<RegistrationStatusEntity> entities = registrationStatusDao.findbyfilesByThreshold(statusCode,
@@ -92,7 +97,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	}
 
 	@Override
-	public void addRegistrationStatus(RegistrationStatusDto registrationStatusDto) {
+	public void addRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto) {
 		boolean isTransactionSuccessful = false;
 		String transactionId = generateId();
 		registrationStatusDto.setLatestRegistrationTransactionId(transactionId);
@@ -121,12 +126,12 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	}
 
 	@Override
-	public void updateRegistrationStatus(RegistrationStatusDto registrationStatusDto) {
+	public void updateRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto) {
 		boolean isTransactionSuccessful = false;
 		String latestTransactionId = getLatestTransactionId(registrationStatusDto.getRegistrationId());
 		registrationStatusDto.setLatestRegistrationTransactionId(latestTransactionId);
 		try {
-			RegistrationStatusDto dto = getRegistrationStatus(registrationStatusDto.getRegistrationId());
+			InternalRegistrationStatusDto dto = getRegistrationStatus(registrationStatusDto.getRegistrationId());
 			if (dto != null) {
 				RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
 				registrationStatusDao.save(entity);
@@ -154,7 +159,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	}
 
 	@Override
-	public List<RegistrationStatusDto> getByStatus(String status) {
+	public List<InternalRegistrationStatusDto> getByStatus(String status) {
 		boolean isTransactionSuccessful = false;
 		try {
 			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
@@ -184,7 +189,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
 					.getByIds(registrationIds);
 			isTransactionSuccessful = true;
-			return convertEntityListToDtoList(registrationStatusEntityList);
+			return convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList);
 
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
@@ -200,8 +205,31 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		}
 	}
 
-	private List<RegistrationStatusDto> convertEntityListToDtoList(List<RegistrationStatusEntity> entities) {
+	private List<RegistrationStatusDto> convertEntityListToDtoListAndGetExternalStatus(
+			List<RegistrationStatusEntity> entities) {
 		List<RegistrationStatusDto> list = new ArrayList<>();
+		if (entities != null) {
+			for (RegistrationStatusEntity entity : entities) {
+				list.add(convertEntityToDtoAndGetExternalStatus(entity));
+			}
+
+		}
+		return list;
+	}
+
+	private RegistrationStatusDto convertEntityToDtoAndGetExternalStatus(RegistrationStatusEntity entity) {
+		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
+		registrationStatusDto.setRegistrationId(entity.getId());
+		Map<RegistrationStatusCode, RegistrationExternalStatusCode> statusMap = RegistrationStatusMapUtil
+				.statusMapper();
+		// get the mapped value for the entity StatusCode
+		String mappedValue = statusMap.get(RegistrationStatusCode.valueOf(entity.getStatusCode())).toString();
+		registrationStatusDto.setStatusCode(mappedValue);
+		return registrationStatusDto;
+	}
+
+	private List<InternalRegistrationStatusDto> convertEntityListToDtoList(List<RegistrationStatusEntity> entities) {
+		List<InternalRegistrationStatusDto> list = new ArrayList<>();
 		if (entities != null) {
 			for (RegistrationStatusEntity entity : entities) {
 				list.add(convertEntityToDto(entity));
@@ -211,8 +239,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		return list;
 	}
 
-	private RegistrationStatusDto convertEntityToDto(RegistrationStatusEntity entity) {
-		RegistrationStatusDto registrationStatusDto = new RegistrationStatusDto();
+	private InternalRegistrationStatusDto convertEntityToDto(RegistrationStatusEntity entity) {
+		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 		registrationStatusDto.setRegistrationId(entity.getId());
 		registrationStatusDto.setRegistrationType(entity.getRegistrationType());
 		registrationStatusDto.setReferenceRegistrationId(entity.getReferenceRegistrationId());
@@ -231,7 +259,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		return registrationStatusDto;
 	}
 
-	private RegistrationStatusEntity convertDtoToEntity(RegistrationStatusDto dto) {
+	private RegistrationStatusEntity convertDtoToEntity(InternalRegistrationStatusDto dto) {
 		RegistrationStatusEntity registrationStatusEntity = new RegistrationStatusEntity();
 		registrationStatusEntity.setId(dto.getRegistrationId());
 		registrationStatusEntity.setRegistrationType(dto.getRegistrationType());

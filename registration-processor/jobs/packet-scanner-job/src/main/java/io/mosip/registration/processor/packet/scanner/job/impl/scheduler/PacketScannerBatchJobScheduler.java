@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Scheduler class for executing the jobs
- * 
+ *
  * @author M1030448
  *
  */
@@ -51,7 +51,7 @@ public class PacketScannerBatchJobScheduler {
 	 * landingZoneScannerJobScheduler runs the landingZoneScannerJob as per given
 	 * cron schedule
 	 */
-	@Scheduled(cron = "${landingzone.cron.job.schedule}")
+	@Scheduled(cron = "${registration.processor.landingzone.cron.job.schedule}")
 	public void landingZoneScannerJobScheduler() {
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
@@ -69,7 +69,7 @@ public class PacketScannerBatchJobScheduler {
 	/**
 	 * virusScannerJobScheduler runs the virusScannerJob as per given cron schedule
 	 */
-	@Scheduled(cron = "${virusscan.cron.job.schedule}")
+	@Scheduled(cron = "${registration.processor.virusscan.cron.job.schedule}")
 	public void virusScannerJobScheduler() {
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
@@ -86,7 +86,7 @@ public class PacketScannerBatchJobScheduler {
 	/**
 	 * ftpJobScheduler runs the ftpJobScheduler as per given cron schedule
 	 */
-	@Scheduled(cron = "${ftp.cron.job.schedule}")
+	@Scheduled(cron = "${registration.processor.ftp.cron.job.schedule}")
 	public void ftpJobScheduler() {
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();

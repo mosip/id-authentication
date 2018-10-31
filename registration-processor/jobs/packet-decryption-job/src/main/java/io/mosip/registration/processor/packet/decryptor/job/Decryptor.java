@@ -29,7 +29,7 @@ import io.mosip.registration.processor.packet.decryptor.job.exception.constant.P
 public class Decryptor {
 	private byte[] sessionKey;
 	private byte[] encryptedData;
-	@Value("${private.key.location}")
+	@Value("${registration.processor.private.key.location}")
 	private String privateKey;
 
 	/**

@@ -36,6 +36,7 @@ import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.scanner.job.exception.DFSNotAccessibleException;
 import io.mosip.registration.processor.packet.scanner.job.exception.RetryFolderNotAccessibleException;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -53,7 +54,7 @@ public class VirusScannerTaskletTest {
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
 
 	@Mock
-	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> adapter;
@@ -70,12 +71,12 @@ public class VirusScannerTaskletTest {
 	@Before
 	public void setup() throws Exception {
 
-		RegistrationStatusDto entry = new RegistrationStatusDto();
+		InternalRegistrationStatusDto entry = new InternalRegistrationStatusDto();
 		entry.setRegistrationId("1000.zip");
 		entry.setRetryCount(0);
 		entry.setStatusComment("Landing");
 
-		List<RegistrationStatusDto> sample = new ArrayList<RegistrationStatusDto>();
+		List<InternalRegistrationStatusDto> sample = new ArrayList<InternalRegistrationStatusDto>();
 		sample.add(entry);
 
 		Mockito.when(

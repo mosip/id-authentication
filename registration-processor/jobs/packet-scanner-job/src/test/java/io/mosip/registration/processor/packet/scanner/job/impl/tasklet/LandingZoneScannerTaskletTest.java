@@ -32,8 +32,8 @@ import ch.qos.logback.core.Appender;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
-import io.mosip.registration.processor.packet.scanner.job.impl.tasklet.LandingZoneScannerTasklet;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -48,7 +48,7 @@ public class LandingZoneScannerTaskletTest {
 	private FileManager<DirectoryPathDto, InputStream> filemanager;
 
 	@Mock
-	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@MockBean
 	private StepContribution stepContribution;
@@ -56,29 +56,29 @@ public class LandingZoneScannerTaskletTest {
 	@MockBean
 	private ChunkContext chunkContext;
 
-	private RegistrationStatusDto dto1;
+	private InternalRegistrationStatusDto dto1;
 
-	private RegistrationStatusDto dto2;
+	private InternalRegistrationStatusDto dto2;
 
-	private List<RegistrationStatusDto> list;
+	private List<InternalRegistrationStatusDto> list;
 
 	@Before
 	public void setup() {
-		dto1 = new RegistrationStatusDto();
+		dto1 = new InternalRegistrationStatusDto();
 		dto1.setRegistrationId("1001");
 		dto1.setStatusComment("landingZone");
 		dto1.setRetryCount(0);
 		dto1.setCreateDateTime(null);
 		dto1.setUpdateDateTime(null);
 
-		dto2 = new RegistrationStatusDto();
+		dto2 = new InternalRegistrationStatusDto();
 		dto2.setRegistrationId("1002");
 		dto2.setStatusComment("landingZone");
 		dto2.setRetryCount(0);
 		dto2.setCreateDateTime(null);
 		dto2.setUpdateDateTime(null);
 
-		list = new ArrayList<RegistrationStatusDto>();
+		list = new ArrayList<InternalRegistrationStatusDto>();
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class LandingZoneScannerTaskletTest {
 		Mockito.doNothing().when(filemanager).cleanUpFile(any(DirectoryPathDto.class), any(DirectoryPathDto.class),
 				any(String.class));
 
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(RegistrationStatusDto.class));
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 
 		RepeatStatus status = landingZoneToVirusScanTasklet.execute(stepContribution, chunkContext);
 		Assert.assertEquals(RepeatStatus.FINISHED, status);
@@ -164,7 +164,7 @@ public class LandingZoneScannerTaskletTest {
 		Mockito.doNothing().when(filemanager).cleanUpFile(any(DirectoryPathDto.class), any(DirectoryPathDto.class),
 				any(String.class));
 		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
-				.updateRegistrationStatus(any(RegistrationStatusDto.class));
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 		landingZoneToVirusScanTasklet.execute(stepContribution, chunkContext);
 
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
