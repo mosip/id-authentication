@@ -1,7 +1,7 @@
 package io.mosip.registration.entity;
 
 import java.io.Serializable;
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -35,15 +35,15 @@ public class Location implements Serializable {
 	@Column(name = "cr_by", length = 24, nullable = false)
 	private String createdBy;
 	@Column(name = "cr_dtimesz", nullable = false)
-	private OffsetDateTime createdDate;
+	private Timestamp createdDate;
 	@Column(name = "upd_by", length = 24, nullable = true)
 	private String updatedBy;
 	@Column(name = "upd_dtimesz")
-	private OffsetDateTime updatedTimesZone;
+	private Timestamp updatedTimesZone;
 	@Column(name = "is_deleted", nullable = true)
 	private boolean isDeleted;
 	@Column(name = "del_dtimesz", nullable = true)
-	private OffsetDateTime deletedTimesZone;
+	private Timestamp deletedTimesZone;
 
 	/**
 	 * @return the locationId
@@ -153,7 +153,7 @@ public class Location implements Serializable {
 	/**
 	 * @return the createdDate
 	 */
-	public OffsetDateTime getCreatedDate() {
+	public Timestamp getCreatedDate() {
 		return createdDate;
 	}
 
@@ -161,7 +161,7 @@ public class Location implements Serializable {
 	 * @param createdDate
 	 *            the createdDate to set
 	 */
-	public void setCreatedDate(OffsetDateTime createdDate) {
+	public void setCreatedDate(Timestamp createdDate) {
 		this.createdDate = createdDate;
 	}
 
@@ -183,7 +183,7 @@ public class Location implements Serializable {
 	/**
 	 * @return the updatedTimesZone
 	 */
-	public OffsetDateTime getUpdatedTimesZone() {
+	public Timestamp getUpdatedTimesZone() {
 		return updatedTimesZone;
 	}
 
@@ -191,7 +191,7 @@ public class Location implements Serializable {
 	 * @param updatedTimesZone
 	 *            the updatedTimesZone to set
 	 */
-	public void setUpdatedTimesZone(OffsetDateTime updatedTimesZone) {
+	public void setUpdatedTimesZone(Timestamp updatedTimesZone) {
 		this.updatedTimesZone = updatedTimesZone;
 	}
 
@@ -213,7 +213,7 @@ public class Location implements Serializable {
 	/**
 	 * @return the deletedTimesZone
 	 */
-	public OffsetDateTime getDeletedTimesZone() {
+	public Timestamp getDeletedTimesZone() {
 		return deletedTimesZone;
 	}
 
@@ -221,7 +221,7 @@ public class Location implements Serializable {
 	 * @param deletedTimesZone
 	 *            the deletedTimesZone to set
 	 */
-	public void setDeletedTimesZone(OffsetDateTime deletedTimesZone) {
+	public void setDeletedTimesZone(Timestamp deletedTimesZone) {
 		this.deletedTimesZone = deletedTimesZone;
 	}
 

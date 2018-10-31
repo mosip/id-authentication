@@ -1,6 +1,6 @@
 package io.mosip.registration.entity;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -18,15 +18,15 @@ public class MasterCommonFields {
 	@Column(name = "cr_by", length = 24, nullable = false)
 	private String createdBy;
 	@Column(name = "cr_dtimesz", nullable = false)
-	private OffsetDateTime createdTimesZone;
+	private Timestamp createdTimesZone;
 	@Column(name = "upd_by", length = 24, nullable = true)
 	private String updatedBy;
 	@Column(name = "upd_dtimesz", nullable = true)
-	private OffsetDateTime updatedTimesZone;
+	private Timestamp updatedTimesZone;
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
 	@Column(name = "del_dtimesz")
-	private OffsetDateTime deletedTimesZone;
+	private Timestamp deletedTimesZone;
 
 	/**
 	 * @return the languageCode
@@ -61,7 +61,7 @@ public class MasterCommonFields {
 	/**
 	 * @return the createdTimesZone
 	 */
-	public OffsetDateTime getCreatedTimesZone() {
+	public Timestamp getCreatedTimesZone() {
 		return createdTimesZone;
 	}
 
@@ -69,7 +69,7 @@ public class MasterCommonFields {
 	 * @param createdTimesZone
 	 *            the createdTimesZone to set
 	 */
-	public void setCreatedTimesZone(OffsetDateTime createdTimesZone) {
+	public void setCreatedTimesZone(Timestamp createdTimesZone) {
 		this.createdTimesZone = createdTimesZone;
 	}
 
@@ -91,7 +91,7 @@ public class MasterCommonFields {
 	/**
 	 * @return the updatedTimesZone
 	 */
-	public OffsetDateTime getUpdatedTimesZone() {
+	public Timestamp getUpdatedTimesZone() {
 		return updatedTimesZone;
 	}
 
@@ -99,7 +99,7 @@ public class MasterCommonFields {
 	 * @param updatedTimesZone
 	 *            the updatedTimesZone to set
 	 */
-	public void setUpdatedTimesZone(OffsetDateTime updatedTimesZone) {
+	public void setUpdatedTimesZone(Timestamp updatedTimesZone) {
 		this.updatedTimesZone = updatedTimesZone;
 	}
 
@@ -121,7 +121,7 @@ public class MasterCommonFields {
 	/**
 	 * @return the deletedTimesZone
 	 */
-	public OffsetDateTime getDeletedTimesZone() {
+	public Timestamp getDeletedTimesZone() {
 		return deletedTimesZone;
 	}
 
@@ -129,7 +129,7 @@ public class MasterCommonFields {
 	 * @param deletedTimesZone
 	 *            the deletedTimesZone to set
 	 */
-	public void setDeletedTimesZone(OffsetDateTime deletedTimesZone) {
+	public void setDeletedTimesZone(Timestamp deletedTimesZone) {
 		this.deletedTimesZone = deletedTimesZone;
 	}
 
