@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
@@ -45,7 +44,8 @@ public class PacketDecryptorTasklet implements Tasklet {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
+	@Autowired
+	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	@Autowired
 	private DecryptionMessageSender decryptionMessageSender;
@@ -129,16 +129,16 @@ public class PacketDecryptorTasklet implements Tasklet {
 			LOGGER.error(LOGDISPLAY, ex.getErrorCode(), ex.getMessage(), ex.getCause());
 		}
 
-		InputStream encryptedPacket = adapter.getPacket(dto.getRegistrationId());
+		InputStream encryptedPacket = filesystemCephAdapterImpl.getPacket(dto.getRegistrationId());
 		InputStream decryptedData = decryptor.decrypt(encryptedPacket, dto.getRegistrationId());
 
 		if (decryptedData != null) {
 
 			encryptedPacket.close();
 
-			adapter.storePacket(dto.getRegistrationId(), decryptedData);
+			filesystemCephAdapterImpl.storePacket(dto.getRegistrationId(), decryptedData);
 
-			adapter.unpackPacket(dto.getRegistrationId());
+			filesystemCephAdapterImpl.unpackPacket(dto.getRegistrationId());
 
 			dto.setStatusCode(RegistrationStatusCode.PACKET_DECRYPTION_SUCCESSFUL.toString());
 			dto.setStatusComment("packet is in status packet for decryption successful");

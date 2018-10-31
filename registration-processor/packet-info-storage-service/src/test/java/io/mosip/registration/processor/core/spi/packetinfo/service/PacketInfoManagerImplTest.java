@@ -41,8 +41,8 @@ import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.OsiData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentPKEntity;
@@ -110,6 +110,9 @@ public class PacketInfoManagerImplTest {
 	private Demographic demographicInfo;
 	private DemographicInfo demoInLocalLang;
 	private DemographicInfo demoInUserLang;
+
+	@Mock
+	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	@Before
 	public void setup()
@@ -327,15 +330,15 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(packetInfo.getPhotograph()).thenReturn(photograph);
 		Mockito.when(packetInfo.getMetaData()).thenReturn(metaData);
 
-		FileSystemAdapter<InputStream, Boolean> fileSystemAdapter = Mockito.mock(FileSystemAdapter.class);
-		Field f = packetInfoManagerImpl.getClass().getDeclaredField("fileSystemAdapter");
+		Field f = packetInfoManagerImpl.getClass().getDeclaredField("filesystemCephAdapterImpl");
 		f.setAccessible(true);
-		f.set(packetInfoManagerImpl, fileSystemAdapter);
+		f.set(packetInfoManagerImpl, filesystemCephAdapterImpl);
 
 		String inputString = "test";
 		InputStream inputStream = new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8));
 
-		Mockito.when(fileSystemAdapter.getFile(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(inputStream);
+		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(inputStream);
 
 		packetInfoManagerImpl.savePacketData(packetInfo);
 

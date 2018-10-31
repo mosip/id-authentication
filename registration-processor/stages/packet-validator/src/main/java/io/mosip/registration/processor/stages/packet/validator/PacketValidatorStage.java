@@ -18,7 +18,6 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -49,7 +48,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 
 	private static Logger log = LoggerFactory.getLogger(PacketValidatorStage.class);
 
-	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
+	@Autowired
+	FilesystemCephAdapterImpl adapter;
 
 	private static final String USER = "MOSIP_SYSTEM";
 

@@ -32,7 +32,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
@@ -69,7 +68,7 @@ public class PacketDecryptorTaskletTest {
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
+	FilesystemCephAdapterImpl adapter;
 
 	@Mock
 	private DecryptionMessageSender decryptionMessageSender;
@@ -144,7 +143,8 @@ public class PacketDecryptorTaskletTest {
 
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
 
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
+		Mockito.doNothing().when(registrationStatusService)
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 
 		Mockito.doNothing().when(decryptionMessageSender).sendMessage(any(MessageDTO.class));
 		RepeatStatus status = packetDecryptorTasklet.execute(stepContribution, chunkContext);

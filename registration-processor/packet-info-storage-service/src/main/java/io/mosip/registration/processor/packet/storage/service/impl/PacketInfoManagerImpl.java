@@ -30,7 +30,6 @@ import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.OsiData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
@@ -94,7 +93,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
 
-	private FileSystemAdapter<InputStream, Boolean> fileSystemAdapter = new FilesystemCephAdapterImpl();
+	@Autowired
+	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	private MetaData metaData;
 
@@ -324,7 +324,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	 */
 	private byte[] getDocumentAsByteArray(String registrationId, String documentName) {
 
-		InputStream in = fileSystemAdapter.getFile(registrationId, documentName);
+		InputStream in = filesystemCephAdapterImpl.getFile(registrationId, documentName);
 		byte[] buffer = new byte[1024];
 		int len;
 		ByteArrayOutputStream os = new ByteArrayOutputStream();

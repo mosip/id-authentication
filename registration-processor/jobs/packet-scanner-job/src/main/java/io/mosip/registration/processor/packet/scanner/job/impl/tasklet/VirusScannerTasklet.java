@@ -17,7 +17,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.virus.scanner.service.VirusScannerService;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -57,7 +56,8 @@ public class VirusScannerTasklet implements Tasklet {
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
+	@Autowired
+	FilesystemCephAdapterImpl adapter;
 
 	private static final String RETRY_FOLDER_NOT_ACCESSIBLE = "The Retry Folder set by the System"
 			+ " is not accessible";

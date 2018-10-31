@@ -30,8 +30,8 @@ import org.springframework.core.env.Environment;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import io.mosip.kernel.virus.scanner.service.VirusScannerService;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.scanner.job.exception.DFSNotAccessibleException;
 import io.mosip.registration.processor.packet.scanner.job.exception.RetryFolderNotAccessibleException;
@@ -57,7 +57,7 @@ public class VirusScannerTaskletTest {
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	@Mock
 	private VirusScannerService<Boolean, String> virusScanner;
@@ -141,7 +141,8 @@ public class VirusScannerTaskletTest {
 		root.addAppender(mockAppender);
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
-		Mockito.doThrow(DFSNotAccessibleException.class).when(adapter).storePacket(anyString(), any(File.class));
+		Mockito.doThrow(DFSNotAccessibleException.class).when(filesystemCephAdapterImpl).storePacket(anyString(),
+				any(File.class));
 
 		virusScannerTasklet.execute(stepContribution, chunkContext);
 

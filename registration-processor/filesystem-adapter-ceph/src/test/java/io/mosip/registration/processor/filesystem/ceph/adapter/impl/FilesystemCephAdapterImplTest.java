@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.filesystem.ceph.adapter.impl;
+/*package io.mosip.registration.processor.filesystem.ceph.adapter.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -36,45 +36,45 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.Pa
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.ConnectionUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
-/**
+*//**
  * This class tests the functionalities of DFSAdapterImpl.
  *
  * @author Pranav Kumar
  * @author Ranjitha
- */
+ *//*
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ConnectionUtil.class)
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class FilesystemCephAdapterImplTest {
 
-	/** The api. */
+	*//** The api. *//*
 	private S3Mock api;
 
-	/** The client. */
+	*//** The client. *//*
 	private AmazonS3 client;
 
-	/** The check enrolment id. */
+	*//** The check enrolment id. *//*
 	private String checkEnrolmentId;
 
-	/** The file extension. */
+	*//** The file extension. *//*
 	private String fileExtension;
 
-	/** The Constant CONFIG_FILE_NAME. */
+	*//** The Constant CONFIG_FILE_NAME. *//*
 	private static final String CONFIG_FILE_NAME = "config.properties";
 
-	/** The dfs adapter. */
+	*//** The dfs adapter. *//*
 	private FileSystemAdapter<InputStream, Boolean> dfsAdapter;
 
-	/** The Constant FAILURE_ENROLMENT_ID. */
+	*//** The Constant FAILURE_ENROLMENT_ID. *//*
 	private static final String FAILURE_ENROLMENT_ID = "1234";
 
-	/**
+	*//**
 	 * This method sets up the required configuration before execution of test
 	 * cases.
 	 *
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 */
+	 *//*
 	@Before
 	public void setup() throws IOException {
 		Properties properties = new Properties();
@@ -99,12 +99,12 @@ public class FilesystemCephAdapterImplTest {
 		dfsAdapter.storePacket(this.checkEnrolmentId, packet);
 	}
 
-	/**
+	*//**
 	 * This method tests uploading of a packet to DFS.
 	 *
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 */
+	 *//*
 	@Test
 	public void testUploadPacketSuccess() throws IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -114,13 +114,13 @@ public class FilesystemCephAdapterImplTest {
 		assertEquals("Successfully uploaded packet as filepath to DFS .", true, result);
 	}
 
-	/**
+	*//**
 	 * This method tests getting a packet successfully from DFS.
 	 *
 	 * @return the packet success test
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 */
+	 *//*
 	@Test
 	public void testGetPacketSuccess() throws IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -144,24 +144,24 @@ public class FilesystemCephAdapterImplTest {
 		actualZipFile.close();
 	}
 
-	/**
+	*//**
 	 * This method tests getting a packet which is not present in DFS.
 	 *
 	 * @return the packet failure test
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 */
+	 *//*
 	@Test(expected = PacketNotFoundException.class)
 	public void testGetPacketFailure() throws IOException {
 		this.dfsAdapter.unpackPacket(FAILURE_ENROLMENT_ID);
 	}
 
-	/**
+	*//**
 	 * This method checks unpacking of a packet in DFS.
 	 *
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
-	 */
+	 *//*
 	@Test
 	public void testUnpackPacketFailure() throws IOException {
 		this.dfsAdapter.unpackPacket(checkEnrolmentId);
@@ -178,28 +178,28 @@ public class FilesystemCephAdapterImplTest {
 		assertEquals("Delete file by registration id .", true, result);
 	}
 
-	/**
+	*//**
 	 * This method checks fetching a file from a packet that is not present in DFS.
 	 *
 	 * @return the file failure test
-	 */
+	 *//*
 	@Test(expected = PacketNotFoundException.class)
 	public void testGetFileFailure() {
 		this.dfsAdapter.getFile(FAILURE_ENROLMENT_ID, PacketFiles.DEMOGRAPHIC.name());
 	}
 
-	/**
+	*//**
 	 * This method checks deleting a packet from DFS and later fetching it.
-	 */
+	 *//*
 	@Test(expected = PacketNotFoundException.class)
 	public void testDeletePacketFailure() {
 		this.dfsAdapter.deletePacket(checkEnrolmentId);
 		this.dfsAdapter.getPacket(checkEnrolmentId);
 	}
 
-	/**
+	*//**
 	 * Store packet input stream success test.
-	 */
+	 *//*
 	@Test
 	public void testStorePacketInputStreamSuccess() {
 		InputStream packet = dfsAdapter.getPacket(checkEnrolmentId);
@@ -207,9 +207,9 @@ public class FilesystemCephAdapterImplTest {
 		assertEquals("Successfully uploaded packet as inputstream to DFS.", true, result);
 	}
 
-	/**
+	*//**
 	 * Store packet connection unavailable exception test.
-	 */
+	 *//*
 	@Test(expected = ConnectionUnavailableException.class)
 	public void testStorePacketConnectionUnavailableException() {
 		EndpointConfiguration endpoint = new EndpointConfiguration("http://localhost:8001", "us-west-2");
@@ -227,9 +227,9 @@ public class FilesystemCephAdapterImplTest {
 		this.dfsAdapter.storePacket(this.checkEnrolmentId, packet);
 	}
 
-	/**
+	*//**
 	 * Store packet invalid connection parameter exception test.
-	 */
+	 *//*
 	@SuppressWarnings("unchecked")
 	@Test(expected = InvalidConnectionParameters.class)
 	public void testStorePacketInvalidConnectionParameterException() {
@@ -251,12 +251,12 @@ public class FilesystemCephAdapterImplTest {
 		assertEquals(false, result);
 	}
 
-	/**
+	*//**
 	 * This method destroys the dummy DFS connection.
-	 */
+	 *//*
 	@After
 	public void destroy() {
 		api.stop();
 	}
 
-}
+}*/
