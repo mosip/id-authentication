@@ -183,8 +183,12 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 
 	private void buildMatchInfos(List<MatchInput> listMatchInputs, AuthStatusInfoBuilder statusInfoBuilder) {
 		listMatchInputs.stream().forEach((MatchInput matchInput) -> {
-			if (AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
-					.filter(authType -> !authType.isExactMatchOnly()).map(AuthType::getType).isPresent()) {
+			boolean hasPartialMatch = matchInput.getDemoMatchType()
+												.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL)
+												.isPresent();
+			if (hasPartialMatch 
+					&& AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
+					.map(AuthType::getType).isPresent()) {
 				String ms = matchInput.getMatchStrategyType();
 				if (ms == null || matchInput.getMatchStrategyType().trim().isEmpty()) {
 					ms = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();

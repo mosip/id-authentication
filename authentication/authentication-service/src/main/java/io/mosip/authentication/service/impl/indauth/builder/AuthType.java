@@ -172,9 +172,5 @@ public enum AuthType {
 	public static Optional<AuthType> getAuthTypeForMatchType(MatchType matchType) {
 		return Stream.of(values()).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
 	}
-
-	public boolean isExactMatchOnly() {
-		return associatedMatchTypes.stream()
-				.noneMatch(matchType -> matchType.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL).isPresent());
-	}
+	
 }
