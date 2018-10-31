@@ -19,21 +19,32 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+/**
+ * The Class RegistrationStatusController.
+ */
 @RestController
 @RequestMapping("/v0.1/registration-processor/registration-status")
 @Api(tags = "Status Handler")
 public class RegistrationStatusController {
 
+	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
+	/**
+	 * Search.
+	 *
+	 * @param registrationIds
+	 *            the registration ids
+	 * @return the response entity
+	 */
 	@GetMapping(path = "/registrationstatus", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the registration entity", response = RegistrationStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully fetched"),
 			@ApiResponse(code = 400, message = "Unable to fetch the Registration Entity") })
 	public ResponseEntity<List<RegistrationStatusDto>> search(
 			@RequestParam(value = "registrationIds", required = true) String registrationIds) {
-		List<RegistrationStatusDto>registrations = registrationStatusService.getByIds(registrationIds);
+		List<RegistrationStatusDto> registrations = registrationStatusService.getByIds(registrationIds);
 		return ResponseEntity.status(HttpStatus.OK).body(registrations);
 	}
 }
