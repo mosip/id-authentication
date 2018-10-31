@@ -34,7 +34,7 @@ public enum AuthType {
 //			authReq -> Optional.of(getDefaultExactMatchValue())),
 
 	/** The pi pri. */
-	PI_PRI("personalIdentity", setOf(DemoMatchType.NAME_PRI), LanguageType.PRIMARY_LANG,
+	PI_PRI("personalIdentity", setOf(DemoMatchType.NAME_PRI, DemoMatchType.DOBTYPE), LanguageType.PRIMARY_LANG,
 			AuthTypeDTO::isPersonalIdentity),
 
 	PI_SEC("personalIdentity", setOf(DemoMatchType.NAME_SEC), LanguageType.SECONDARY_LANG,

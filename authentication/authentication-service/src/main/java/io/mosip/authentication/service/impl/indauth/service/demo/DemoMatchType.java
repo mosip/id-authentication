@@ -40,7 +40,7 @@ public enum DemoMatchType implements MatchType {
 	DOB(IdMapping.DOB, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDateOfBirth, LanguageType.PRIMARY_LANG,
 			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
 
-	DOBTYPE(IdMapping.DOBTYPE, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDateOfBirthType,
+	DOBTYPE(IdMapping.DOBTYPE, setOf(DOBTypeMatchingStrategy.EXACT), IdentityDTO::getDateOfBirthType,
 			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_DOBTYPE, AuthUsageDataBit.MATCHED_DOB_TYPE,
 			Function.identity()),
 
