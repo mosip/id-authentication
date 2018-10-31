@@ -44,7 +44,7 @@ public class PacketArchiver {
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
-	private final static String APPENDER = "_";
+	private static final String APPENDER = "_";
 
 	/**
 	 * Archive packet.

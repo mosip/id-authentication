@@ -32,7 +32,7 @@ public class MosipCamelBridge extends AbstractVerticle {
 	 * @throws ExecutionException
 	 *             the execution exception
 	 */
-	public static void main(String[] args) throws InterruptedException, ExecutionException {
+	public static void main(String[] args) {
 		MosipBridgeFactory.getEventBus();
 	}
 

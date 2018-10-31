@@ -27,6 +27,10 @@ public class BridgeUtil {
 
 	private static JsonObject bridgeConfiguration = null;
 
+	private BridgeUtil() {
+
+	}
+
 	/**
 	 * This method gets all values from config server as a JsonObject and stores it
 	 * locally

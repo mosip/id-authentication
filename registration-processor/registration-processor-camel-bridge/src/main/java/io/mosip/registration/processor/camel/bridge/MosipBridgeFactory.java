@@ -25,6 +25,10 @@ public class MosipBridgeFactory {
 
 	static Logger log = LoggerFactory.getLogger(MosipBridgeFactory.class);
 
+	private MosipBridgeFactory() {
+
+	}
+
 	/**
 	 * Gets the event bus.
 	 *
@@ -34,7 +38,7 @@ public class MosipBridgeFactory {
 	 * @throws ExecutionException
 	 *             the execution exception
 	 */
-	public static void getEventBus() throws InterruptedException, ExecutionException {
+	public static void getEventBus() {
 
 		TcpDiscoverySpi tcpDiscoverySpi = new TcpDiscoverySpi();
 		TcpDiscoveryVmIpFinder tcpDiscoveryVmIpFinder = new TcpDiscoveryVmIpFinder();
@@ -51,8 +55,9 @@ public class MosipBridgeFactory {
 			if (vertx.succeeded()) {
 				vertx.result().deployVerticle(MosipCamelBridge.class.getName(),
 						new DeploymentOptions().setHa(true).setWorker(true));
-			} else
+			} else {
 				log.error("Failed: " + vertx.cause());
+			}
 		});
 	}
 }

@@ -3,7 +3,6 @@ package io.mosip.registration.processor.camel.bridge;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 
-//import io.mosip.registration.processor.camel.bridge.processor.DemographicValidationProcessor;
 import io.mosip.registration.processor.camel.bridge.processor.StructureValidationProcessor;
 import io.mosip.registration.processor.camel.bridge.statuscode.MessageEnum;
 import io.mosip.registration.processor.camel.bridge.util.BridgeUtil;
