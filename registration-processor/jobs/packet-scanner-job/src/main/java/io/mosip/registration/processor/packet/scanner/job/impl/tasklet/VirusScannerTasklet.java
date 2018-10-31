@@ -96,6 +96,8 @@ public class VirusScannerTasklet implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
+		boolean isTransactionSuccessful = false;
+
 		List<RegistrationStatusDto> registrationStatusDtoList = null;
 		try {
 			registrationStatusDtoList = registrationStatusService
@@ -103,16 +105,19 @@ public class VirusScannerTasklet implements Tasklet {
 			eventId = EventId.RPR_401.toString();
 			eventName = EventName.GET.toString();
 			eventType = EventType.BUSINESS.toString();
-			description = "Packet uploaded to virus scanner";
+			isTransactionSuccessful = true;
+			
 		} catch (TablenotAccessibleException e) {
 			eventId = EventId.RPR_405.toString();
 			eventName = EventName.EXCEPTION.toString();
 			eventType = EventType.SYSTEM.toString();
-			description = REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE;
 			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
 			return RepeatStatus.FINISHED;
 		}
 		finally{		
+			String description = isTransactionSuccessful ? "Packet uploaded to virus scanner successfully"
+					: "Packet uploading to virus scanner failed";
+			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}			

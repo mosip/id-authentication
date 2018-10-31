@@ -80,6 +80,7 @@ public class FTPScannerTasklet implements Tasklet {
 	@Override
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
 
+		boolean isTransactionSuccessful = false;
 		String filepath = this.filemanager.getCurrentDirectory();
 		Stream<Path> paths = Files.walk(Paths.get(filepath));
 		paths.filter(Files::isRegularFile).forEach(filepathName -> {
@@ -98,7 +99,8 @@ public class FTPScannerTasklet implements Tasklet {
 				eventId = EventId.RPR_403.toString();
 				eventName = EventName.DELETE.toString();
 				eventType = EventType.BUSINESS.toString();
-				description = "File moved from FTP zone to landing zone successfully";
+				isTransactionSuccessful = true;
+				
 			} catch (FileNotFoundInDestinationException e) {
 				LOGGER.error(e.getErrorCode(), e.getErrorText(), e);
 			} catch (DuplicateUploadRequestException e) {
@@ -107,7 +109,6 @@ public class FTPScannerTasklet implements Tasklet {
 				eventId = EventId.RPR_405.toString();
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
-				description = DUPLICATE_UPLOAD;
 				LOGGER.error(LOGDISPLAY, DUPLICATE_UPLOAD, e);
 			} catch (IOException e) {
 				FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(FTP_NOT_ACCESSIBLE,
@@ -115,10 +116,12 @@ public class FTPScannerTasklet implements Tasklet {
 				eventId = EventId.RPR_405.toString();
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
-				description = FTP_NOT_ACCESSIBLE;
 				LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 						ftpNotAccessibleException);
-			}finally{		
+			}finally{
+				String description = isTransactionSuccessful ? "File moved from FTP zone to landing zone successfully"
+						: "File moving from FTP zone to landing zone  Failed";
+				
 				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 						AuditLogConstant.NO_ID.toString());
 			}
@@ -135,6 +138,8 @@ public class FTPScannerTasklet implements Tasklet {
 	 * @param filepath
 	 */
 	public void deleteFolder(String filepath) {
+		boolean isTransactionSuccessful = false;
+		
 		try {
 			Stream<Path> deletepath = Files.walk(Paths.get(filepath));
 			deletepath.filter(Files::isDirectory).forEach(filepathName -> {
@@ -146,14 +151,14 @@ public class FTPScannerTasklet implements Tasklet {
 						eventId = EventId.RPR_403.toString();
 						eventName = EventName.DELETE.toString();
 						eventType = EventType.BUSINESS.toString();
-						description = "Deleted empty folder from FTP zone after all the files are copied";
+						isTransactionSuccessful = true;
+						
 					} catch (IOException e) {
 						FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
 								FTP_NOT_ACCESSIBLE, e);
 						eventId = EventId.RPR_405.toString();
 						eventName = EventName.EXCEPTION.toString();
 						eventType = EventType.SYSTEM.toString();
-						description = FTP_NOT_ACCESSIBLE;
 						LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 								ftpNotAccessibleException);
 					}
@@ -164,11 +169,14 @@ public class FTPScannerTasklet implements Tasklet {
 			eventId = EventId.RPR_405.toString();
 			eventName = EventName.EXCEPTION.toString();
 			eventType = EventType.SYSTEM.toString();
-			description = FTP_NOT_ACCESSIBLE;
 			FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(FTP_NOT_ACCESSIBLE, e);
 			LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 					ftpNotAccessibleException);
-		}finally {		
+		}finally {	
+			
+			String description = isTransactionSuccessful ? "Deleted empty folder from FTP zone successfully after all the files are copied"
+					: "Deleting empty folder from FTP zone Failed";
+			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
