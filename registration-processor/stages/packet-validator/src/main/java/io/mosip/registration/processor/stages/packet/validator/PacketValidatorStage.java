@@ -62,10 +62,10 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	private PacketInfoManager<PacketInfo, Demographic, MetaData> packetInfoManager;
 
-	@Value("${vertx.cluster.address}")
+	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
-	@Value("${vertx.localhost}")
+	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
 	public void deployVerticle() {

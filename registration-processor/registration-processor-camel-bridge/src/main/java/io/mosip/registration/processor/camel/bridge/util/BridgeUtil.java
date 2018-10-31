@@ -66,7 +66,8 @@ public class BridgeUtil {
 		if (BridgeUtil.bridgeConfiguration == null) {
 			getConfiguration();
 		}
-		return BridgeUtil.bridgeConfiguration.getString("component") + messageBusAddress.getAddress();
+		return BridgeUtil.bridgeConfiguration.getString("registration.processor.component")
+				+ messageBusAddress.getAddress();
 	}
 
 	/**
@@ -78,7 +79,7 @@ public class BridgeUtil {
 		if (BridgeUtil.bridgeConfiguration == null) {
 			getConfiguration();
 		}
-		return BridgeUtil.bridgeConfiguration.getString("localhost");
+		return BridgeUtil.bridgeConfiguration.getString("registration.processor.localhost");
 	}
 
 	/**
@@ -90,7 +91,7 @@ public class BridgeUtil {
 		if (BridgeUtil.bridgeConfiguration == null) {
 			getConfiguration();
 		}
-		String ipPortRange = BridgeUtil.bridgeConfiguration.getString("vertx.ip.range");
+		String ipPortRange = BridgeUtil.bridgeConfiguration.getString("registration.processor.vertx.ip.range");
 		ArrayList<String> ipPort = new ArrayList<>();
 		ipPort.add(ipPortRange);
 		return ipPort;

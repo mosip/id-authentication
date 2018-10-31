@@ -15,10 +15,10 @@ public class DecryptionMessageSender extends MosipVerticleManager {
 
 	private MosipEventBus mosipEventBus;
 
-	@Value("${vertx.cluster.address}")
+	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
 
-	@Value("${vertx.localhost}")
+	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
 	private void getEventBus() {
