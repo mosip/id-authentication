@@ -6,6 +6,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
+import io.mosip.registration.processor.core.exception.ConfigurationServerFailureException;
+import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticleErrorCodes;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
@@ -42,15 +44,18 @@ public class BridgeUtil {
 		configRetriever.getConfig(config -> {
 			if (config.succeeded()) {
 				configuration.complete(config.result());
+			} else {
+				throw new ConfigurationServerFailureException(
+						AbstractVerticleErrorCodes.IIS_EPU_ATU_CONFIGURATION_SERVER_FAILURE_EXCEPTION);
 			}
 		});
 
-		// TODO Exception handling properly
 		try {
 			BridgeUtil.bridgeConfiguration = configuration.get();
 		} catch (InterruptedException | ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Thread.currentThread().interrupt();
+			throw new ConfigurationServerFailureException(
+					AbstractVerticleErrorCodes.IIS_EPU_ATU_CONFIGURATION_SERVER_FAILURE_EXCEPTION, e);
 		}
 
 	}
