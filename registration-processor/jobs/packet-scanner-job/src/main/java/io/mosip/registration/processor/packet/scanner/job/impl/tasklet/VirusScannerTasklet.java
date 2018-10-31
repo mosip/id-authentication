@@ -69,20 +69,20 @@ public class VirusScannerTasklet implements Tasklet {
 	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status"
 			+ " table is not accessible";
 	private static final String VIRUS_SCAN_FAILED = "The Virus Scan for the Packet Failed";
-	
+
 	/** The core audit request builder. */
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
-	
+
 	/** The event id. */
 	private String eventId = "";
-	
+
 	/** The event name. */
 	private String eventName = "";
-	
+
 	/** The event type. */
 	private String eventType = "";
-	
+
 	/** The description. */
 	private String description = "";
 
@@ -106,21 +106,20 @@ public class VirusScannerTasklet implements Tasklet {
 			eventName = EventName.GET.toString();
 			eventType = EventType.BUSINESS.toString();
 			isTransactionSuccessful = true;
-			
+
 		} catch (TablenotAccessibleException e) {
 			eventId = EventId.RPR_405.toString();
 			eventName = EventName.EXCEPTION.toString();
 			eventType = EventType.SYSTEM.toString();
 			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
 			return RepeatStatus.FINISHED;
-		}
-		finally{		
+		} finally {
 			description = isTransactionSuccessful ? "Packet uploaded to virus scanner successfully"
 					: "Packet uploading to virus scanner failed";
-			
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
-		}			
+		}
 		for (RegistrationStatusDto entry : registrationStatusDtoList) {
 
 			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN.toString()) + File.separator
@@ -150,6 +149,8 @@ public class VirusScannerTasklet implements Tasklet {
 	 *            the entry
 	 */
 	private void sendToRetry(RegistrationStatusDto entry) {
+		boolean isTransactionSuccessful = false;
+
 		try {
 			if (entry.getRetryCount() == null)
 				entry.setRetryCount(0);
@@ -164,13 +165,17 @@ public class VirusScannerTasklet implements Tasklet {
 			eventId = EventId.RPR_403.toString();
 			eventName = EventName.DELETE.toString();
 			eventType = EventType.BUSINESS.toString();
-			description = "File is infected. It has been sent to VIRUS_SCAN_RETRY folder";
+			isTransactionSuccessful = true;
+
 			LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),
 					"File is infected. It has been sent" + " to RETRY_FOLDER.");
 		} catch (Exception e) {
 			LOGGER.error(LOGDISPLAY, RETRY_FOLDER_NOT_ACCESSIBLE, e);
-		}
-		finally{		
+		} finally {
+			description = isTransactionSuccessful
+					? "File is infected. It has been sent to VIRUS_SCAN_RETRY folder successfully"
+					: "File is infected, sending to VIRUS_SCAN_RETRY folder failed";
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
@@ -186,40 +191,35 @@ public class VirusScannerTasklet implements Tasklet {
 	 *            the entry
 	 */
 	private void sendToDFS(File file, RegistrationStatusDto entry) {
+		boolean isTransactionSuccessful = false;
+
 		String filename = file.getName();
 		filename = filename.substring(0, filename.lastIndexOf('.'));
 		try {
 			adapter.storePacket(filename, file);
-			if(adapter.isPacketPresent(entry.getRegistrationId())) {
+			if (adapter.isPacketPresent(entry.getRegistrationId())) {
 				fileManager.deletePacket(DirectoryPathDto.VIRUS_SCAN, entry.getRegistrationId());
-				eventId = EventId.RPR_403.toString();
-				eventName = EventName.DELETE.toString();
-				eventType = EventType.BUSINESS.toString();
-				description = "File is already exists in DFS location and its now deleted from Virus scanner job ";
-				LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),"File is Already exists in DFS location " + " And its now Deleted from Virus scanner job ");
-			}else {
-				eventId = EventId.RPR_407.toString();
-				eventName = EventName.SAVE.toString();
-				eventType = EventType.BUSINESS.toString();
-				description = "File is successfully scanned. It has been sent to DFS ";
-				LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),"File is successfully scanned. " + "It has been sent to DFS.");
 			}
 			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_DFS.toString());
 			registrationStatusService.updateRegistrationStatus(entry);
-		}catch(IOException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
-			description = "Failed to delete the packet from Virus scan Zone";
-			LOGGER.error(LOGDISPLAY, entry.getRegistrationId()+": Failed to delete the packet from Virus scan Zone", e);
-		}catch(Exception e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
-			description = DFS_NOT_ACCESSIBLE;
+			isTransactionSuccessful = true;
+		} catch (IOException e) {
+			LOGGER.error(LOGDISPLAY, entry.getRegistrationId() + ": Failed to delete the packet from Virus scan Zone",
+					e);
+		} catch (Exception e) {
 			LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e);
-		}
-		finally{		
+		} finally {
+			if (isTransactionSuccessful) {
+				eventId = EventId.RPR_407.toString();
+				eventName = EventName.SAVE.toString();
+				eventType = EventType.BUSINESS.toString();
+				description = "Packet successfully saved to packet store";
+			} else {
+				description = "Failed to save packet in packet store";
+				eventId = EventId.RPR_405.toString();
+				eventName = EventName.EXCEPTION.toString();
+				eventType = EventType.SYSTEM.toString();
+			}
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
