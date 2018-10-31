@@ -142,14 +142,15 @@ public final class MatcherUtil {
 	 */
 	public static int doPhoneticsMatch(String refInfoName, String entityInfoName, String language) {
 		//TODO
+		int value = 0;
 		try {
-			TextMatcherUtil.phoneticsMatch(refInfoName, entityInfoName, language);
+			value = TextMatcherUtil.phoneticsMatch(refInfoName, entityInfoName, language);
 		} catch (EncoderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return 0;
+		return value;
 	}
 
 }

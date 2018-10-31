@@ -136,7 +136,7 @@ public final class TextMatcherUtil {
 			threshold = getThreshold();
 		if (validateThreshold(threshold)) {
 			try {
-			Integer thresholdProbability = phoneticsMatch(inputString, storedString, language);
+				Integer thresholdProbability = phoneticsMatch(inputString, storedString, language);
 
 				if (validateThreshold(thresholdProbability) && thresholdProbability >= threshold)
 					return true;
@@ -149,7 +149,8 @@ public final class TextMatcherUtil {
 		return false;
 	}
 
-	public static Integer phoneticsMatch(String inputString, String storedString, String language) throws EncoderException {
+	public static Integer phoneticsMatch(String inputString, String storedString, String language)
+			throws EncoderException {
 		PhoneticEngine phoneticEngine = new PhoneticEngine(NameType.GENERIC, RuleType.EXACT, true);
 
 		Soundex soundex = new Soundex();
@@ -157,27 +158,11 @@ public final class TextMatcherUtil {
 		Set<String> languageSet = new HashSet<>();
 		languageSet.add(language);
 
-			String encodedInputString = phoneticEngine.encode(inputString, Languages.LanguageSet.from(languageSet));
+		String encodedInputString = phoneticEngine.encode(inputString, Languages.LanguageSet.from(languageSet));
 
-			languageSet.clear();
-			languageSet.add("ar");
-			String encodedStoredString = phoneticEngine.encode(storedString,Languages.LanguageSet.from(languageSet));
+		String encodedStoredString = phoneticEngine.encode(storedString, Languages.LanguageSet.from(languageSet));
 
 		return (soundex.difference(encodedInputString, encodedStoredString) + 1) * 20;
 	}
-	
-	public static void main(String[] args) throws EncoderException {
-		// Arabic
-		String inputString = "فاس-الدار البيضاء";
-		String storedString = "فاس-الدار البيضاء";
-		//String storedString = "فاس- البيضاء";
-		String language = "arabic";
-		
-		// French
-		/*String inputString = "exemple d'adresse ligne 1";
-		String storedString = "exemple d'adresse ligne 1";
-		String language = "fr";*/
-		
-		System.out.println(phoneticsMatch(inputString, storedString, language));
-	}
+
 }
