@@ -12,19 +12,22 @@ import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 
 /**
- * Retry stage verticle class for re processing different stages in case of internal/system erroe
- * @author Jyoti Prakash Nayak
+ * Retry stage verticle class for re processing different stages in case of internal/system erroe.
  *
+ * @author Jyoti Prakash Nayak
  */
 @Component
 public class RetryStage extends MosipVerticleManager {
+	
+	/** The wait period. */
 	@Value("${wait.period}")
 	private int waitPeriod;
 	
+	/** The mosip event bus. */
 	private MosipEventBus mosipEventBus;
 
 	/**
-	 * method to deploy retry-stage
+	 * method to deploy retry-stage.
 	 */
 	public void deployVerticle() {
 		this.mosipEventBus = this.getEventBus(this.getClass());

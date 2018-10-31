@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.mosip.registration.processor.stages.packet.validator;
 
 import java.io.IOException;
@@ -38,26 +35,34 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
 /**
- * @author M1022006
+ * The Class PacketValidatorStage.
  *
+ * @author M1022006
  */
 @Service
 public class PacketValidatorStage extends MosipVerticleManager {
 
+	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
+	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(PacketValidatorStage.class);
 
+	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
 
+	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The file manager. */
 	@Autowired
 	FileManager<DirectoryPathDto, InputStream> fileManager;
 
+	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
+	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<PacketInfo, DemographicInfo, MetaData> packetInfoManager;
 
@@ -74,11 +79,17 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
+	/**
+	 * Deploy verticle.
+	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, MessageBusAddress.STRUCTURE_BUS_OUT);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.STRUCTURE_BUS_IN);
