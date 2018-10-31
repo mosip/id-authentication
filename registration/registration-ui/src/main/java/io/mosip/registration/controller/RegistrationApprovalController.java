@@ -180,7 +180,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		operatorId.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("operatorId"));
 		operatorName.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("operatorName"));
 		acknowledgementFormPath.setCellValueFactory(
-				new PropertyValueFactory<RegistrationApprovalUiDto, String>(RegistrationConstants.ACKNOWLEDGEMENT_FORM_TITLE));
+				new PropertyValueFactory<RegistrationApprovalUiDto, String>("acknowledgementFormPath"));
 
 		tablePagination();
 
