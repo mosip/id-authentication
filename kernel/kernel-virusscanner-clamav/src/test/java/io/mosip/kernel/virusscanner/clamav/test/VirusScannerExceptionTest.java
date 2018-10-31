@@ -1,4 +1,4 @@
-package io.mosip.kernel.virusscanner.clamav.test.exception;
+package io.mosip.kernel.virusscanner.clamav.test;
 
 import java.io.File;
 
@@ -12,9 +12,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.mosip.kernel.virusscanner.clamav.exception.ServerNotAccessibleException;
-import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
-import io.mosip.kernel.virusscanner.clamav.service.impl.VirusScannerServiceImpl;
+import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
+import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
+import io.mosip.kernel.virusscanner.clamav.impl.VirusScannerImpl;
 import xyz.capybara.clamav.ClamavClient;
 import xyz.capybara.clamav.exceptions.ClamavException;
 
@@ -24,7 +24,7 @@ import xyz.capybara.clamav.exceptions.ClamavException;
  *
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ServiceNotAvailableExceptionTest {
+public class VirusScannerExceptionTest {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
@@ -32,7 +32,7 @@ public class ServiceNotAvailableExceptionTest {
 	ClamavClient clamavClient;
 
 	@InjectMocks
-	private VirusScannerService<Boolean, String> virusScannerService = new VirusScannerServiceImpl() {
+	private VirusScanner<Boolean, String> virusScannerService = new VirusScannerImpl() {
 		@Override
 		public void createConnection() {
 			this.clamavClient = clamavClient;
@@ -49,13 +49,13 @@ public class ServiceNotAvailableExceptionTest {
 		folder = new File(classLoader.getResource("files").getFile());
 	}
 
-	@Test(expected = ServerNotAccessibleException.class)
+	@Test(expected = VirusScannerException.class)
 	public void serviceUnavailableForScanFileTest() throws ClamavException {
 		Mockito.doThrow(ClamavException.class).when(clamavClient).scan(file.toPath());
 		virusScannerService.scanFile(file.getAbsolutePath());
 	}
 
-	@Test(expected = ServerNotAccessibleException.class)
+	@Test(expected = VirusScannerException.class)
 	public void serviceUnavailableForScanFolderTest() throws ClamavException {
 		Mockito.doThrow(ClamavException.class).when(clamavClient).scan(folder.toPath(), false);
 		virusScannerService.scanFolder(folder.getAbsolutePath());

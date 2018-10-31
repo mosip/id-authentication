@@ -2,9 +2,7 @@
  * 
  * 
  */
-package io.mosip.kernel.virusscanner.clamav.service;
-
-import org.springframework.stereotype.Service;
+package io.mosip.kernel.core.virusscanner.spi;
 
 /**
  * @author Mukul Puspam
@@ -15,8 +13,8 @@ import org.springframework.stereotype.Service;
  * @param <V>
  *            file path
  */
-@Service
-public interface VirusScannerService<U, V> {
+
+public interface VirusScanner<U, V> {
 
 	/**
 	 * Scan file.

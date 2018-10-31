@@ -5,17 +5,16 @@ import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.random.RandomDataGenerator;
-
-import io.mosip.kernel.core.idgenerator.spi.UinGenerator;
-import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.core.util.IdFilterUtils;
-import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstant;
-import io.mosip.kernel.idgenerator.uin.entity.UinEntity;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import io.mosip.kernel.core.idgenerator.spi.UinGenerator;
+import io.mosip.kernel.core.util.ChecksumUtils;
+import io.mosip.kernel.idgenerator.uin.constant.UinGeneratorConstant;
+import io.mosip.kernel.idgenerator.uin.entity.UinEntity;
+import io.mosip.kernel.idgenerator.uin.util.UinFilterUtils;
 
 /**
  * This class generates a list of uins
@@ -74,7 +73,7 @@ public class UinGeneratorImpl implements UinGenerator<Set<UinEntity>> {
 		LOGGER.info("Generating {} uins ", uinsCount);
 		while (uins.size() < uinsCount) {
 			String generatedUIN = generateSingleId(generatedIdLength, lowerBound, upperBound);
-			if (IdFilterUtils.isValidId(generatedUIN)) {
+			if (UinFilterUtils.isValidId(generatedUIN)) {
 				UinEntity uinBean = new UinEntity(generatedUIN, false);
 				uins.add(uinBean);
 			}

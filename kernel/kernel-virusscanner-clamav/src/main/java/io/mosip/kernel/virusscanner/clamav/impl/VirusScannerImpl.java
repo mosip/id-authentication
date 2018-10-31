@@ -1,4 +1,4 @@
-package io.mosip.kernel.virusscanner.clamav.service.impl;
+package io.mosip.kernel.virusscanner.clamav.impl;
 
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -9,8 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.virusscanner.clamav.exception.ServerNotAccessibleException;
-import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
+import io.mosip.kernel.core.virusscanner.exception.VirusScannerException;
+import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
+import io.mosip.kernel.virusscanner.clamav.constant.VirusScannerErrorCodes;
 import xyz.capybara.clamav.ClamavClient;
 import xyz.capybara.clamav.commands.scan.result.ScanResult;
 import xyz.capybara.clamav.commands.scan.result.ScanResult.Status;
@@ -22,14 +23,14 @@ import xyz.capybara.clamav.exceptions.ClamavException;
  * @author Mukul Puspam
  */
 @Component
-public class VirusScannerServiceImpl implements VirusScannerService<Boolean, String> {
+public class VirusScannerImpl implements VirusScanner<Boolean, String> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(VirusScannerServiceImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(VirusScannerImpl.class);
 
-	@Value("${clamav.host}")
+	@Value("${mosip.kernel.virus-scanner.host}")
 	private String host;
 
-	@Value("${clamav.port}")
+	@Value("${mosip.kernel.virus-scanner.port}")
 	private int port;
 
 	protected ClamavClient clamavClient;
@@ -66,8 +67,8 @@ public class VirusScannerServiceImpl implements VirusScannerService<Boolean, Str
 				LOGGER.warn("Virus Found in file " + fileName + ": ", listOfVirus);
 			}
 		} catch (ClamavException e) {
-			LOGGER.error(LOGDISPLAY, e.getMessage());
-			throw new ServerNotAccessibleException(ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
+			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
+					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
 		}
 
 		return result;
@@ -94,8 +95,8 @@ public class VirusScannerServiceImpl implements VirusScannerService<Boolean, Str
 				LOGGER.warn("Virus Found in folder " + folderPath + ": ", listOfVirus);
 			}
 		} catch (ClamavException e) {
-			LOGGER.error(LOGDISPLAY, e.getMessage());
-			throw new ServerNotAccessibleException(ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
+			throw new VirusScannerException(VirusScannerErrorCodes.IIS_EPP_EPV_SERVICE_NOT_ACCESSIBLE,
+					ANTIVIRUS_SERVICE_NOT_ACCESSIBLE);
 		}
 
 		return result;

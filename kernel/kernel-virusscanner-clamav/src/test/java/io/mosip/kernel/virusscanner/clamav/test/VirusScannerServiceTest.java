@@ -1,7 +1,9 @@
-package io.mosip.kernel.virusscanner.clamav.test.service;
+package io.mosip.kernel.virusscanner.clamav.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.TestPropertySource;
 
-import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
-import io.mosip.kernel.virusscanner.clamav.service.impl.VirusScannerServiceImpl;
+import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
+import io.mosip.kernel.virusscanner.clamav.impl.VirusScannerImpl;
 import xyz.capybara.clamav.ClamavClient;
 import xyz.capybara.clamav.commands.scan.result.ScanResult;
 import xyz.capybara.clamav.commands.scan.result.ScanResult.Status;
@@ -35,7 +37,7 @@ public class VirusScannerServiceTest {
 	ClamavClient clamavClient;
 
 	@InjectMocks
-	private VirusScannerService<Boolean, String> virusScannerService = new VirusScannerServiceImpl() {
+	private VirusScanner<Boolean, String> virusScanner = new VirusScannerImpl() {
 		@Override
 		public void createConnection() {
 			this.clamavClient = clamavClient;
@@ -59,28 +61,28 @@ public class VirusScannerServiceTest {
 	@Test
 	public void infectedFileCheck() throws ClamavException{
 			Mockito.when(clamavClient.scan(file.toPath())).thenReturn(virusFound);
-			Boolean result = virusScannerService.scanFile(file.getAbsolutePath());
+			Boolean result = virusScanner.scanFile(file.getAbsolutePath());
 			assertEquals(Boolean.FALSE, result);
 	}
 
 	@Test
 	public void nonInfectedFileCheck() throws ClamavException{
 			Mockito.when(clamavClient.scan(file.toPath())).thenReturn(virusNotFound);
-			Boolean result = virusScannerService.scanFile(file.getAbsolutePath());
+			Boolean result = virusScanner.scanFile(file.getAbsolutePath());
 			assertEquals(Boolean.TRUE, result);
 	}
 
 	@Test
 	public void infectedFolderCheck() throws ClamavException{
 			Mockito.when(clamavClient.scan(folder.toPath(), false)).thenReturn(virusFound);
-			Boolean result = virusScannerService.scanFolder(folder.getAbsolutePath());
+			Boolean result = virusScanner.scanFolder(folder.getAbsolutePath());
 			assertEquals(Boolean.FALSE, result);
 	}
 
 	@Test
 	public void nonInfectedFolderCheck() throws ClamavException{
 			Mockito.when(clamavClient.scan(folder.toPath(), false)).thenReturn(virusNotFound);
-			Boolean result = virusScannerService.scanFolder(folder.getAbsolutePath());
+			Boolean result = virusScanner.scanFolder(folder.getAbsolutePath());
 			assertEquals(Boolean.TRUE, result);
 	
 	}

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.core.util;
+package io.mosip.kernel.vidgenerator.util;
 
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -11,12 +11,12 @@ import java.util.stream.IntStream;
  * @since 1.0.0
  *
  */
-public class IdFilterUtils {
+public class VidFilterUtils {
 
 	/**
 	 * Private constructor for IdFilter
 	 */
-	private IdFilterUtils() {
+	private VidFilterUtils() {
 	}
 
 	/**

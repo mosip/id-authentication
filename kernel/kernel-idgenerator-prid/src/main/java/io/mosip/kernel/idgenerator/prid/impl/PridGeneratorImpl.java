@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.idgenerator.exception.PridGenerationException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.idgenerator.prid.cache.PridCacheManager;
 import io.mosip.kernel.idgenerator.prid.constant.PridGeneratorConstants;
 import io.mosip.kernel.idgenerator.prid.constant.PridGeneratorErrorCodes;
 import io.mosip.kernel.idgenerator.prid.entity.Prid;
 import io.mosip.kernel.idgenerator.prid.repository.PridRepository;
+import io.mosip.kernel.idgenerator.prid.util.PridFilterUtils;
 
 /**
  * PridGenerator to generate PRID This class will return a Fourteen digit PRID
@@ -81,7 +81,7 @@ public class PridGeneratorImpl implements PridGenerator<String> {
 
 	private String generatePrid() {
 		String generatedPrid = generateRandomId(generatedIdLength, lowerBound, upperBound);
-		while (!IdFilterUtils.isValidId(generatedPrid)) {
+		while (!PridFilterUtils.isValidId(generatedPrid)) {
 			generatedPrid = generateRandomId(generatedIdLength, lowerBound, upperBound);
 		}
 		return generatedPrid;
