@@ -42,7 +42,7 @@ public class MosipBridgeRoutes extends RouteBuilder {
 				.choice().when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS.getAddress()))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress()));
 
