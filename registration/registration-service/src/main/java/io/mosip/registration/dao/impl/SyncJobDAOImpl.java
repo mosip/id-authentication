@@ -3,7 +3,7 @@ package io.mosip.registration.dao.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.entity.Registration;
-import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
 import io.mosip.registration.repositories.SyncJobRepository;
@@ -28,10 +27,18 @@ import io.mosip.registration.repositories.SyncJobRepository;
  * The implementation class for {@link SyncJobDAO}.
  *
  * @author Sreekar Chukka
+ * @author Mahesh Kumar
  * @since 1.0.0
  */
 @Repository
 public class SyncJobDAOImpl implements SyncJobDAO {
+
+	private static final List<String> REG_STATUS_CODES = Arrays.asList(RegistrationClientStatusCode.CREATED.getCode(),
+			RegistrationClientStatusCode.REJECTED.getCode(), RegistrationClientStatusCode.APPROVED.getCode(),
+			RegistrationClientStatusCode.CORRECTION.getCode(), RegistrationClientStatusCode.UIN_UPDATE.getCode(),
+			RegistrationClientStatusCode.UIN_LOST.getCode(),
+			RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode(), RegistrationClientStatusCode.ON_HOLD.getCode(),
+			RegistrationClientStatusCode.PACKET_ERROR.getCode());
 
 	/** Object for Sync Status Repository. */
 	@Autowired
@@ -58,44 +65,33 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 
 	@Autowired
 	private AuditFactory auditFactory;
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see io.mosip.registration.dao.SyncJobDAO#validateSyncStatus()
 	 */
 	public SyncJobInfo getSyncStatus() {
-		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME,
-				APPLICATION_ID, "Fetching the last sync details from databse started");
 
-		double yetToExportCount = 0;
-		List<SyncControl> syncControlList = new ArrayList<>();
+		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching the last sync details from databse started");
+
 		try {
-			List<String> statusCodes = new ArrayList<>();
-			statusCodes.add(RegistrationClientStatusCode.CREATED.getCode());
-			statusCodes.add(RegistrationClientStatusCode.REJECTED.getCode());
-			statusCodes.add(RegistrationClientStatusCode.APPROVED.getCode());
-			statusCodes.add(RegistrationClientStatusCode.CORRECTION.getCode());
-			statusCodes.add(RegistrationClientStatusCode.UIN_UPDATE.getCode());
-			statusCodes.add(RegistrationClientStatusCode.UIN_LOST.getCode());
-			statusCodes.add(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
-			statusCodes.add(RegistrationClientStatusCode.ON_HOLD.getCode());
-			statusCodes.add(RegistrationClientStatusCode.PACKET_ERROR.getCode());
+			List<Registration> registrationsList = registrationRepository.findByClientStatusCodeIn(REG_STATUS_CODES);
 
-			syncControlList = syncStatusRepository.findAll();
-			List<Registration> registrationsList = registrationRepository.findByClientStatusCodeIn(statusCodes);
-			yetToExportCount = registrationsList.size();
-			LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME,
-					APPLICATION_ID, "Fetching the last sync details from databse ended");
+			LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+					"Fetching the last sync details from databse ended");
+
 			auditFactory.audit(AuditEvent.SYNCJOB_INFO_FETCH, AppModule.SYNC_VALIDATE,
 					"SyncJobInfo containing the synccontrol list and yet to exportpacket count fetched successfully",
 					"refId", "refIdType");
-			
+
+			return new SyncJobInfo(syncStatusRepository.findAll(), registrationsList.size());
+
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_STATUS_VALIDATE,
 					runtimeException.toString());
 		}
-		return new SyncJobInfo(syncControlList, yetToExportCount);
-
 	}
 
 }

@@ -13,6 +13,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.service.RegistrationApprovalService;
 import javafx.collections.FXCollections;
@@ -109,15 +110,17 @@ public class OnHoldController extends BaseController implements Initializable{
 	public void updatePacketStatus(ActionEvent event) {
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Packet updation as on hold has been started");
-String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
+		String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
+		String approverRoleCode = SessionContext.getInstance().getUserContext().getRoles().get(0);
+
 		if(registration.packetUpdateStatus(regId, RegistrationClientStatusCode.ON_HOLD.getCode(),approverUserId, 
-				onHoldComboBox.getSelectionModel().getSelectedItem(), approverUserId)) {
-		generateAlert("Status",AlertType.INFORMATION,"Registration moved to On Hold.");
+				onHoldComboBox.getSelectionModel().getSelectedItem(), approverRoleCode)) {
+		generateAlert(RegistrationConstants.STATUS,AlertType.INFORMATION,RegistrationConstants.ONHOLD_STATUS_MESSAGE);
 		submit.disableProperty().set(true);
 		registrationController.tablePagination();
 	}
 	else {
-		generateAlert("Status",AlertType.INFORMATION,"");
+		generateAlert(RegistrationConstants.STATUS,AlertType.INFORMATION,RegistrationConstants.ONHOLD_STATUS_FAILURE_MESSAGE);
 	}
 		primarystage.close();
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,

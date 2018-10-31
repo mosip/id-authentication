@@ -13,6 +13,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.service.RegistrationApprovalService;
 import javafx.collections.FXCollections;
@@ -111,15 +112,16 @@ public class RejectionController extends BaseController implements Initializable
 				APPLICATION_NAME, APPLICATION_ID,
 				"Packet updation as rejection has been started");
 		String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
+		String approverRoleCode = SessionContext.getInstance().getUserContext().getRoles().get(0);
 		if(rejRegistration.packetUpdateStatus(regRejId, RegistrationClientStatusCode.REJECTED.getCode(),approverUserId, 
-				rejectionComboBox.getSelectionModel().getSelectedItem(), approverUserId)) {
-		generateAlert("Status", AlertType.INFORMATION, "Packet Rejected Successfully..");
+				rejectionComboBox.getSelectionModel().getSelectedItem(), approverRoleCode)) {
+		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.REJECTED_STATUS_MESSAGE);
 		rejectionSubmit.disableProperty().set(true);
 		rejRegistrationController.tablePagination();
 		
 		}
 		else {
-			generateAlert("Status",AlertType.INFORMATION,"");
+			generateAlert(RegistrationConstants.STATUS,AlertType.INFORMATION,RegistrationConstants.REJECTED_STATUS_FAILURE_MESSAGE);
 		}
 		rejPrimarystage.close();
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER",

@@ -20,6 +20,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationApprovalUiDto;
@@ -179,7 +180,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		operatorId.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("operatorId"));
 		operatorName.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("operatorName"));
 		acknowledgementFormPath.setCellValueFactory(
-				new PropertyValueFactory<RegistrationApprovalUiDto, String>("acknowledgementFormPath"));
+				new PropertyValueFactory<RegistrationApprovalUiDto, String>(RegistrationConstants.ACKNOWLEDGEMENT_FORM_TITLE));
 
 		tablePagination();
 
@@ -233,7 +234,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				environment.getProperty(APPLICATION_ID), "Going to home page");
 
 		try {
-			BaseController.load(getClass().getResource("/fxml/RegistrationOfficerLayout.fxml"));
+			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED",
 					APPLICATION_NAME, environment.getProperty(APPLICATION_ID),
@@ -252,7 +253,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			Stage primaryStage = new Stage();
 			FileInputStream file = new FileInputStream(
 					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()));
-			primaryStage.setTitle("Acknowlegement Form");
+			primaryStage.setTitle(RegistrationConstants.ACKNOWLEDGEMENT_FORM_TITLE);
 			ImageView imageView = new ImageView(new Image(file));
 			HBox hbox = new HBox(imageView);
 			Scene scene = new Scene(hbox, 800, 600);
@@ -278,13 +279,14 @@ public class RegistrationApprovalController extends BaseController implements In
 		RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 
 		String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
+		String approverRoleCode = SessionContext.getInstance().getUserContext().getRoles().get(0);
 		if (registration.packetUpdateStatus(regData.getId(), RegistrationClientStatusCode.APPROVED.getCode(), approverUserId, "",
-				approverUserId)) {
+				approverRoleCode)) {
 			listData = registration.getAllEnrollments();
-			generateAlert("Status", AlertType.INFORMATION, "Registration Approved successfully..");
+			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.APPROVED_STATUS_MESSAGE);
 			tablePagination();
 		} else {
-			generateAlert("Status", AlertType.INFORMATION, "");
+			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.APPROVED_STATUS_FAILURE_MESSAGE);
 		}
 		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_", APPLICATION_NAME,
 				APPLICATION_ID, "Packet updation has been ended");
@@ -298,6 +300,11 @@ public class RegistrationApprovalController extends BaseController implements In
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME,
 				APPLICATION_ID, "Pagination has been started");
 		listData = registration.getAllEnrollments();
+		approvalBtn.setVisible(false);
+		rejectionBtn.setVisible(false);
+		onHoldBtn.setVisible(false);
+		imageAnchorPane.setVisible(false);
+		imageView.imageProperty().set(null);
 		if (listData.size() != 0) {
 			int pageCount = 0;
 			if (listData.size() % itemsPerPage == 0) {
@@ -308,13 +315,8 @@ public class RegistrationApprovalController extends BaseController implements In
 			pagination.setPageCount(pageCount);
 			pagination.setPageFactory(this::createPage);
 		} else {
-			approvalBtn.setVisible(false);
-			rejectionBtn.setVisible(false);
-			onHoldBtn.setVisible(false);
-			imageAnchorPane.setVisible(false);
-			imageView.imageProperty().set(null);
 			approveRegistrationRootSubPane.disableProperty().set(true);
-			table.setPlaceholder(new Label("No Packets for approval"));
+			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 		}
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME,
 				APPLICATION_ID, "Pagination has been ended");
@@ -333,9 +335,9 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 			Stage primarystage = new Stage();
-			AnchorPane rejectRoot = BaseController.load(getClass().getResource("/fxml/RejectionComment.fxml"));
+			AnchorPane rejectRoot = BaseController.load(getClass().getResource(RegistrationConstants.REJECTION_PAGE));
 			RejectionController rejectionController = (RejectionController) RegistrationAppInitialization
-					.getApplicationContext().getBean("rejectionController");
+					.getApplicationContext().getBean(RegistrationConstants.REJECTION_BEAN_NAME);
 
 			rejectionController.initData(regData.getId(), primarystage);
 			Scene scene = new Scene(rejectRoot);
@@ -367,9 +369,9 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 			Stage primarystage = new Stage();
-			AnchorPane holdRoot = BaseController.load(getClass().getResource("/fxml/OnholdComment.fxml"));
+			AnchorPane holdRoot = BaseController.load(getClass().getResource(RegistrationConstants.ONHOLD_PAGE));
 			OnHoldController onHoldController = (OnHoldController) RegistrationAppInitialization.getApplicationContext()
-					.getBean("onHoldController");
+					.getBean(RegistrationConstants.ONHOLD_BEAN_NAME);
 
 			onHoldController.initData(regData.getId(), primarystage);
 			Scene scene = new Scene(holdRoot);

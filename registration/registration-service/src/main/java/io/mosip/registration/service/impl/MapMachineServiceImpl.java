@@ -6,7 +6,7 @@ import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPP
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE;
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_LOGGER_TITLE;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,12 +79,8 @@ public class MapMachineServiceImpl implements MapMachineService {
 		userID.setCentreID(userMachineMappingDTO.getCentreID());
 		userID.setMachineID(userMachineMappingDTO.getMachineID());
 
-		boolean isActive = false;
-		if (userMachineMappingDTO.getStatus().equalsIgnoreCase(RegistrationConstants.MACHINE_MAPPING_ACTIVE)) {
-			isActive = true;
-		} else {
-			isActive = false;
-		}
+		boolean isActive = userMachineMappingDTO.getStatus()
+				.equalsIgnoreCase(RegistrationConstants.MACHINE_MAPPING_ACTIVE);
 
 		/* create response */
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -98,7 +94,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 			if (user != null) {
 				/* if user already exists */
 				user.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
-				user.setUpdDtimes(OffsetDateTime.now());
+				user.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
 				user.setIsActive(isActive);
 
 				user.setIsActive(isActive);
@@ -109,9 +105,9 @@ public class MapMachineServiceImpl implements MapMachineService {
 				user.setUserMachineMappingId(userID);
 				user.setIsActive(isActive);
 				user.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
-				user.setCrDtime(OffsetDateTime.now());
+				user.setCrDtime(new Timestamp(System.currentTimeMillis()));
 				user.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
-				user.setUpdDtimes(OffsetDateTime.now());
+				user.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
 
 				machineMappingDAO.save(user);
 			}
@@ -220,7 +216,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	 * @param centreID
 	 * @param registrationUserDetails
 	 * @return
-	 */  
+	 */
 	private UserMachineMappingDTO constructDTO(RegistrationUserDetail registrationUserDetail, String machineID,
 			String stationID, String centreID) {
 		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID, "constructDTO() method called");
@@ -230,7 +226,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 		String roleCode = "";
 		String status = RegistrationConstants.USER_IN_ACTIVE;
 		if (!registrationUserDetail.getUserRole().isEmpty()) {
-			/*List of roles with comma separated*/
+			/* List of roles with comma separated */
 			registrationUserDetail.getUserRole().forEach(registrationUserRole -> role
 					.append(registrationUserRole.getRegistrationUserRoleID().getRoleCode() + ","));
 			if (role.length() > 0) {

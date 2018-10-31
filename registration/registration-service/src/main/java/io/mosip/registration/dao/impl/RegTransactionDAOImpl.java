@@ -3,7 +3,7 @@ package io.mosip.registration.dao.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,7 +38,7 @@ public class RegTransactionDAOImpl implements RegTransactionDAO {
 				APPLICATION_NAME, APPLICATION_ID,
 				"Packet encryption had been ended");
 
-		OffsetDateTime time = OffsetDateTime.now();
+		Timestamp time = new Timestamp(System.currentTimeMillis());
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId(regId);
