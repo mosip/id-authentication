@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -18,6 +19,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
  * @since 0.0.1
  *
  */
+@RefreshScope
 @Component
 public class ConnectionUtil {
 
@@ -32,7 +34,7 @@ public class ConnectionUtil {
 	@Value("${registration.processor.endpoint}")
 	private String endpoint;
 
-	private ConnectionUtil() {
+	public ConnectionUtil() {
 
 	}
 
