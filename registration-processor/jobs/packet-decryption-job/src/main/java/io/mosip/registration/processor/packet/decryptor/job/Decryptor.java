@@ -7,18 +7,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -66,34 +63,31 @@ public class Decryptor {
 			throws PacketDecryptionFailureException {
 
 		InputStream outstream = null;
+		boolean isTransactionSuccessful = false;
 		try {
-
 			byte[] in = IOUtils.toByteArray(encryptedPacket);
-
 			splitKeyEncryptedData(in);
 			eventId = EventId.RPR_402.toString();
 			eventName = EventName.UPDATE.toString();
 			eventType = EventType.BUSINESS.toString();
-			description = "Split the key and encrypted data success";
 			byte[] aeskey = MosipDecryptor.asymmetricPrivateDecrypt(readPrivatekey(registrationId), sessionKey,
 					MosipSecurityMethod.RSA_WITH_PKCS1PADDING);
-
 			byte[] aesDecryptedData = MosipDecryptor.symmetricDecrypt(aeskey, encryptedData,
 					MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
-
 			outstream = new ByteArrayInputStream(aesDecryptedData);
-
+			isTransactionSuccessful=true;
 		} catch (IOException | MosipInvalidDataException | MosipInvalidKeyException e) {
 			eventId = EventId.RPR_405.toString();
 			eventName = EventName.EXCEPTION.toString();
 			eventType = EventType.SYSTEM.toString();
-			description = "Invalid data and key exception while decrypting the packet failure";
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
 							.getErrorMessage(),
 					e);
 		} finally {
+			description = isTransactionSuccessful ? "Decryption of packet completed successfully for registration Id :"+registrationId
+					: "Decryption of packet failured for registration Id: "+registrationId;
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
 		}
@@ -111,24 +105,26 @@ public class Decryptor {
 	private byte[] readPrivatekey(String registrationId) throws PacketDecryptionFailureException {
 		FileInputStream fileInputStream = null;
 		byte[] rprivateKey = null;
+		boolean isTransactionSuccessful = false;
 		try {
 			fileInputStream = new FileInputStream(new File(privateKey + registrationId + "/private.key"));
 			rprivateKey = IOUtils.toByteArray(fileInputStream);
 			eventId = EventId.RPR_401.toString();
 			eventName = EventName.GET.toString();
 			eventType = EventType.BUSINESS.toString();
-			description = "Read private key from private key file success";
+			isTransactionSuccessful=true;
 		} catch (IOException e) {
 			eventId = EventId.RPR_405.toString();
 			eventName = EventName.EXCEPTION.toString();
 			eventType = EventType.SYSTEM.toString();
-			description = "Read private key from private key file failure";
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
 							.getErrorMessage(),
 					e);
 		}finally {
+			description = isTransactionSuccessful ? "Read private key from private key file success for registration Id :"+registrationId
+					: "Read private key from private key file failured for registration Id: "+registrationId;
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
 		}

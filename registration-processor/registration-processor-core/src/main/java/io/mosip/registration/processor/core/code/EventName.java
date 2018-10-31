@@ -27,5 +27,8 @@ public enum EventName {
 	
 	/** The save. */
 	SAVE,
+	
+	/** The Trigger. */
+	TRIGGER,
 
 }

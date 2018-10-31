@@ -85,8 +85,8 @@ public class PacketArchiver {
 						UnableToAccessPathExceptionConstant.UNABLE_TO_ACCESS_PATH_ERROR_CODE.getErrorMessage(),
 						e.getCause());
 			} finally {
-				description = isTransactionSuccessful ? "The file is successfully copied to VM for RegId :"+registrationId
-						: "The file copying to VM is failured for RegId: "+registrationId;
+				description = isTransactionSuccessful ? "The file is successfully copied to VM for registration Id :"+registrationId
+						: "The file copying to VM is failured for registration Id: "+registrationId;
 				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 						registrationId);
 			}
