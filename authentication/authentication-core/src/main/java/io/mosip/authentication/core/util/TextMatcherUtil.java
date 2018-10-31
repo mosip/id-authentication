@@ -1,6 +1,5 @@
 package io.mosip.authentication.core.util;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
@@ -52,8 +51,7 @@ public final class TextMatcherUtil {
 	 *
 	 * TODO need to use {@link FileUtil}
 	 *
-	 * @param property
-	 *            the property
+	 * @param property the property
 	 * @return the property
 	 */
 	private static final String getProperty(String property) {
@@ -77,8 +75,7 @@ public final class TextMatcherUtil {
 	 * TODO need to check whether to return false or error if threshold validation
 	 * fails.
 	 * 
-	 * @param threshold
-	 *            the threshold
+	 * @param threshold the threshold
 	 * @return true, if successful
 	 */
 	private static final boolean validateThreshold(Integer threshold) {
@@ -91,10 +88,8 @@ public final class TextMatcherUtil {
 	/**
 	 * Checks whether two strings are exactly matching or not.
 	 *
-	 * @param inputString
-	 *            the input string
-	 * @param storedString
-	 *            the stored string
+	 * @param inputString  the input string
+	 * @param storedString the stored string
 	 * @return true, if successful, else false
 	 */
 	public static final boolean exactMatch(String inputString, String storedString) {
@@ -107,10 +102,8 @@ public final class TextMatcherUtil {
 	/**
 	 * Checks whether two strings are partially matching or not.
 	 *
-	 * @param inputString
-	 *            the input string
-	 * @param storedString
-	 *            the stored string
+	 * @param inputString  the input string
+	 * @param storedString the stored string
 	 * @return true, if successful
 	 */
 	public static final boolean partialMatch(String inputString, String storedString) {
@@ -131,14 +124,10 @@ public final class TextMatcherUtil {
 	 * TODO 1. need to validate the language given is supported or not. 2. need to
 	 * log exceptions using MosipLogger
 	 * 
-	 * @param inputString
-	 *            the input string
-	 * @param storedString
-	 *            the stored string
-	 * @param threshold
-	 *            the threshold
-	 * @param language
-	 *            the language
+	 * @param inputString  the input string
+	 * @param storedString the stored string
+	 * @param threshold    the threshold
+	 * @param language     the language
 	 * @return true, if successful
 	 */
 	public static final boolean phoneticMatch(String inputString, String storedString, Integer threshold,
@@ -146,20 +135,8 @@ public final class TextMatcherUtil {
 		if (threshold == null)
 			threshold = getThreshold();
 		if (validateThreshold(threshold)) {
-			PhoneticEngine phoneticEngine = new PhoneticEngine(NameType.GENERIC, RuleType.EXACT, true);
-
-			Soundex soundex = new Soundex();
-
-			Set<String> languageSet = new HashSet<String>();
-			languageSet.add(language);
-
 			try {
-				String encodedInputString = phoneticEngine.encode(inputString, Languages.LanguageSet.from(languageSet));
-
-				String encodedStoredString = phoneticEngine.encode(storedString,
-						Languages.LanguageSet.from(languageSet));
-
-				Integer thresholdProbability = (soundex.difference(encodedInputString, encodedStoredString) + 1) * 20;
+			Integer thresholdProbability = phoneticsMatch(inputString, storedString, language);
 
 				if (validateThreshold(thresholdProbability) && thresholdProbability >= threshold)
 					return true;
@@ -170,5 +147,37 @@ public final class TextMatcherUtil {
 			}
 		}
 		return false;
+	}
+
+	public static Integer phoneticsMatch(String inputString, String storedString, String language) throws EncoderException {
+		PhoneticEngine phoneticEngine = new PhoneticEngine(NameType.GENERIC, RuleType.EXACT, true);
+
+		Soundex soundex = new Soundex();
+
+		Set<String> languageSet = new HashSet<>();
+		languageSet.add(language);
+
+			String encodedInputString = phoneticEngine.encode(inputString, Languages.LanguageSet.from(languageSet));
+
+			languageSet.clear();
+			languageSet.add("ar");
+			String encodedStoredString = phoneticEngine.encode(storedString,Languages.LanguageSet.from(languageSet));
+
+		return (soundex.difference(encodedInputString, encodedStoredString) + 1) * 20;
+	}
+	
+	public static void main(String[] args) throws EncoderException {
+		// Arabic
+		String inputString = "فاس-الدار البيضاء";
+		String storedString = "فاس-الدار البيضاء";
+		//String storedString = "فاس- البيضاء";
+		String language = "arabic";
+		
+		// French
+		/*String inputString = "exemple d'adresse ligne 1";
+		String storedString = "exemple d'adresse ligne 1";
+		String language = "fr";*/
+		
+		System.out.println(phoneticsMatch(inputString, storedString, language));
 	}
 }

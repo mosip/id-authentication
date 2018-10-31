@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.codec.EncoderException;
+
 /**
  * 
  * @author Dinesh Karuppiah
@@ -129,6 +131,25 @@ public final class MatcherUtil {
 
 	private static boolean allMatch(List<String> refInfoList, List<String> entityInfoList) {
 		return entityInfoList.parallelStream().allMatch(str -> refInfoList.contains(str));
+	}
+
+	/**
+	 * 
+	 * @param refInfoName
+	 * @param entityInfoName
+	 * @return
+	 * @throws  
+	 */
+	public static int doPhoneticsMatch(String refInfoName, String entityInfoName, String language) {
+		//TODO
+		try {
+			TextMatcherUtil.phoneticsMatch(refInfoName, entityInfoName, language);
+		} catch (EncoderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return 0;
 	}
 
 }
