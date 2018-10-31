@@ -9,10 +9,9 @@
 				],
 			"dob" : 
 				[
-					"dateOfBirth",
-					"dateOfBirthType"
+					"dateOfBirth"
 				],
-			"dobType" : 
+			"dobType":
 				[
 					"dateOfBirthType"
 				],
@@ -44,11 +43,15 @@
 				[
 					"addressLine3"
 				],
-			"location" : 
+			"location1" : 
 				[
-					"city",
-					"state",
-					"country"
+					"city"
+				],
+			"location2" : [
+					"region"
+				],
+			"location3" : [
+					"province"
 				],
 			"pinCode" : 
 				[
@@ -59,7 +62,9 @@
 					"addressLine1", 
 					"addressLine2", 
 					"addressLine3", 
-					"location",
+					"location1",
+					"location2",
+					"location3",
 					"pinCode"
 				],
 			"otp" : 
@@ -87,6 +92,10 @@
 					"rightMiddle",
 					"rightRing",
 					"rightThumb"
-				]	
+				],
+			"face" : 
+				[
+					"face"
+				]
 		}	
 }
