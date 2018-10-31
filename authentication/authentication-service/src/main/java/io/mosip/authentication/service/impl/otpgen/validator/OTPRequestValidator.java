@@ -42,7 +42,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 	/** The env. */
 	@Autowired
 	private Environment env;
-	
+
 	@Autowired
 	private DateHelper dateHelper;
 
@@ -69,7 +69,9 @@ public class OTPRequestValidator extends IdAuthValidator {
 
 		validateReqTime(otpRequestDto.getReqTime(), errors);
 
-		validateRequestTimedOut(otpRequestDto.getReqTime(), errors);
+		if (!errors.hasErrors()) {
+			validateRequestTimedOut(otpRequestDto.getReqTime(), errors);
+		}
 
 		if (!errors.hasErrors()) {
 			validateId(otpRequestDto.getId(), errors);
