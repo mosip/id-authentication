@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
 import io.mosip.kernel.virus.scanner.service.VirusScannerService;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
@@ -40,34 +38,50 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @Component
 public class VirusScannerTasklet implements Tasklet {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(VirusScannerTasklet.class);
 
+	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The extention. */
 	@Value("${packet.ext}")
 	private String extention;
 
+	/** The virus scanner service. */
 	@Autowired
 	VirusScannerService<Boolean, String> virusScannerService;
 
+	/** The file manager. */
 	@Autowired
 	FileManager<DirectoryPathDto, InputStream> fileManager;
 
+	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
+	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
 
+	/** The Constant RETRY_FOLDER_NOT_ACCESSIBLE. */
 	private static final String RETRY_FOLDER_NOT_ACCESSIBLE = "The Retry Folder set by the System"
 			+ " is not accessible";
+	
+	/** The Constant DFS_NOT_ACCESSIBLE. */
 	private static final String DFS_NOT_ACCESSIBLE = "The DFS Path set by the System is not accessible";
+	
+	/** The Constant REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE. */
 	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status"
 			+ " table is not accessible";
+	
+	/** The Constant VIRUS_SCAN_FAILED. */
 	private static final String VIRUS_SCAN_FAILED = "The Virus Scan for the Packet Failed";
 
 	/** The core audit request builder. */
@@ -174,7 +188,7 @@ public class VirusScannerTasklet implements Tasklet {
 		} finally {
 			description = isTransactionSuccessful
 					? "File is infected. It has been sent to VIRUS_SCAN_RETRY folder successfully"
-					: "File is infected, sending to VIRUS_SCAN_RETRY folder failed";
+							: "File is infected, sending to VIRUS_SCAN_RETRY folder failed";
 
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
@@ -226,6 +240,12 @@ public class VirusScannerTasklet implements Tasklet {
 
 	}
 
+	/**
+	 * Gets the file name.
+	 *
+	 * @param fileName the file name
+	 * @return the file name
+	 */
 	private String getFileName(String fileName) {
 		return fileName + extention;
 	}

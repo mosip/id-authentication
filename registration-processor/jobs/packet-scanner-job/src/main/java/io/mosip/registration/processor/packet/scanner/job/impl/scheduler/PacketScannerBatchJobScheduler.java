@@ -17,34 +17,41 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
- * Scheduler class for executing the jobs
- * @author M1030448
+ * Scheduler class for executing the jobs.
  *
+ * @author M1030448
  */
 @Component
 @EnableScheduling
 public class PacketScannerBatchJobScheduler {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketScannerBatchJobScheduler.class);
 
+	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {} - {}";
-	
+
+	/** The Constant JOB_STATUS. */
 	private static final String JOB_STATUS = "Job's status" ;
-	
+
+	/** The job launcher. */
 	@Autowired
 	private JobLauncher jobLauncher;
 
+	/** The landing zone scanner job. */
 	@Autowired
 	private Job landingZoneScannerJob;
 
+	/** The virus scanner job. */
 	@Autowired
 	private Job virusScannerJob;
-	
+
+	/** The ftp scanner job. */
 	@Autowired
 	private Job ftpScannerJob;
 
 	/**
-	 * landingZoneScannerJobScheduler runs the landingZoneScannerJob as per given cron schedule 
+	 * landingZoneScannerJobScheduler runs the landingZoneScannerJob as per given cron schedule.
 	 */
 	@Scheduled(cron = "${landingzone.cron.job.schedule}")
 	public void landingZoneScannerJobScheduler() {
@@ -53,7 +60,7 @@ public class PacketScannerBatchJobScheduler {
 
 		try {
 			JobExecution jobExecution = jobLauncher.run(landingZoneScannerJob, jobParameters);
-			
+
 			LOGGER.info(LOGDISPLAY,JOB_STATUS, jobExecution.getId(),jobExecution.getStatus());
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
@@ -62,7 +69,7 @@ public class PacketScannerBatchJobScheduler {
 	}
 
 	/**
-	 * virusScannerJobScheduler runs the virusScannerJob as per given cron schedule 
+	 * virusScannerJobScheduler runs the virusScannerJob as per given cron schedule.
 	 */
 	@Scheduled(cron = "${virusscan.cron.job.schedule}")
 	public void virusScannerJobScheduler() {
@@ -77,9 +84,9 @@ public class PacketScannerBatchJobScheduler {
 			LOGGER.error(LOGDISPLAY,"virusScannerJobScheduler failed to execute", e);
 		}
 	}
-	
+
 	/**
-	 * ftpJobScheduler runs the ftpJobScheduler as per given cron schedule 
+	 * ftpJobScheduler runs the ftpJobScheduler as per given cron schedule.
 	 */
 	@Scheduled(cron = "${ftp.cron.job.schedule}")
 	public void ftpJobScheduler() {

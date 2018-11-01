@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
@@ -33,49 +32,57 @@ import io.mosip.registration.processor.packet.receiver.exception.DuplicateUpload
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.scanner.job.exception.FTPNotAccessibleException;
 
+/**
+ * The Class FTPScannerTasklet.
+ */
 @Component
 public class FTPScannerTasklet implements Tasklet {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(FTPScannerTasklet.class);
 
+	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {}";
 
+	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
+	/** The packet handler service. */
 	@Autowired
 	protected PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
 
+	/** The Constant FTP_NOT_ACCESSIBLE. */
 	private static final String FTP_NOT_ACCESSIBLE = "The FTP Path set by the System is not accessible";
-	private static final String DUPLICATE_UPLOAD = "Duplicate file uploading to landing zone";
 	
+	/** The Constant DUPLICATE_UPLOAD. */
+	private static final String DUPLICATE_UPLOAD = "Duplicate file uploading to landing zone";
+
 	/** The core audit request builder. */
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
-	
+
 	/** The event id. */
 	private String eventId = "";
-	
+
 	/** The event name. */
 	private String eventName = "";
-	
+
 	/** The event type. */
 	private String eventType = "";
-	
+
+	/** The is transaction successful. */
 	boolean isTransactionSuccessful = false;
 
 
 	/**
 	 * Executes FTPScannerTasklet to move enrollment packet from the FTP zone to
-	 * Landing zone folder
+	 * Landing zone folder.
 	 *
-	 * @param StepContribution
-	 *            arg0
-	 * @param ChunkContext
-	 *            arg1
+	 * @param arg0 the arg 0
+	 * @param arg1 the arg 1
 	 * @return RepeatStatus
-	 * @throws Exception
-	 *
+	 * @throws Exception the exception
 	 */
 	@Override
 	public RepeatStatus execute(StepContribution arg0, ChunkContext arg1) throws Exception {
@@ -89,7 +96,7 @@ public class FTPScannerTasklet implements Tasklet {
 			String[] directory = filepathName.getParent().toString().split(pattern);
 			String childFolder = directory[directory.length - 1];
 			try(FileInputStream input = new FileInputStream(file)) {
-				
+
 				MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "mixed/multipart",
 						IOUtils.toByteArray(input));
 				packetHandlerService.storePacket(multipartFile);
@@ -99,7 +106,7 @@ public class FTPScannerTasklet implements Tasklet {
 				eventName = EventName.DELETE.toString();
 				eventType = EventType.BUSINESS.toString();
 				isTransactionSuccessful = true;
-				
+
 			} catch (FileNotFoundInDestinationException e) {
 				LOGGER.error(e.getErrorCode(), e.getErrorText(), e);
 			} catch (DuplicateUploadRequestException e) {
@@ -120,12 +127,12 @@ public class FTPScannerTasklet implements Tasklet {
 			}finally{
 				String description = isTransactionSuccessful ? "File moved from FTP zone to landing zone successfully"
 						: "File moving from FTP zone to landing zone  Failed";
-				
+
 				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 						AuditLogConstant.NO_ID.toString());
 			}
 		});
-		
+
 		paths.close();
 		deleteFolder(filepath);
 		return RepeatStatus.FINISHED;
@@ -133,11 +140,11 @@ public class FTPScannerTasklet implements Tasklet {
 
 	/**
 	 * Delete empty folder from FTP zone after all the files are copied.
-	 * 
-	 * @param filepath
+	 *
+	 * @param filepath the filepath
 	 */
 	public void deleteFolder(String filepath) {
-		
+
 		try {
 			Stream<Path> deletepath = Files.walk(Paths.get(filepath));
 			deletepath.filter(Files::isDirectory).forEach(filepathName -> {
@@ -150,7 +157,7 @@ public class FTPScannerTasklet implements Tasklet {
 						eventName = EventName.DELETE.toString();
 						eventType = EventType.BUSINESS.toString();
 						isTransactionSuccessful = true;
-						
+
 					} catch (IOException e) {
 						FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
 								FTP_NOT_ACCESSIBLE, e);
@@ -171,10 +178,10 @@ public class FTPScannerTasklet implements Tasklet {
 			LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 					ftpNotAccessibleException);
 		}finally {	
-			
+
 			String description = isTransactionSuccessful ? "Deleted empty folder from FTP zone successfully after all the files are copied"
 					: "Deleting empty folder from FTP zone Failed";
-			
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
