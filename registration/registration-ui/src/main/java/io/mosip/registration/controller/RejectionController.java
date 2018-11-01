@@ -24,6 +24,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
 import javafx.stage.Stage;
 
 /**
@@ -74,6 +75,12 @@ public class RejectionController extends BaseController implements Initializable
 	@FXML
 	private Button rejectionSubmit;
 	
+	/**
+	 * HyperLink for Exit
+	 */
+	@FXML
+	private Hyperlink rejectionExit;
+	
 	ObservableList<String> rejectionCommentslist=FXCollections.observableArrayList("Correction not possible",
             "Wrong Person",
             "Invalid Data",
@@ -87,6 +94,7 @@ public class RejectionController extends BaseController implements Initializable
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_REJECTION_CONTROLLER",
 				APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
+		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
 		rejectionComboBox.setItems(rejectionCommentslist);
 	}
@@ -127,5 +135,26 @@ public class RejectionController extends BaseController implements Initializable
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER",
 				APPLICATION_NAME, APPLICATION_ID,
 				"Packet updation as rejection has been started");
+	}
+	/**
+	 * {@code rejectionWindowExit} is event class to exit from reason for rejection
+	 * pop up window.
+	 * 
+	 * @param event
+	 */
+	public void rejectionWindowExit(ActionEvent event) {
+		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_REJECTION_CONTROLLER",
+				APPLICATION_NAME, APPLICATION_ID,
+				"Rejection Popup window is closed");
+		rejPrimarystage.close();
+	}
+
+	/**
+	 * Rejection combobox action.
+	 * 
+	 * @param event
+	 */
+	public void rejectionComboboxAction(ActionEvent event) {
+		rejectionSubmit.disableProperty().set(false);
 	}
 }

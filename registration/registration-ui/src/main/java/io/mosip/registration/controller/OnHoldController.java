@@ -24,6 +24,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
 import javafx.stage.Stage;
 
 /**
@@ -76,6 +77,9 @@ public class OnHoldController extends BaseController implements Initializable{
 	 */
 	@FXML
 	private Button submit;
+	
+	@FXML
+	private Hyperlink exit;
 
 	 ObservableList<String> onHoldCommentslist=FXCollections.observableArrayList("Gender/Photo mismatch",
 	            "Partial Biometric",
@@ -89,7 +93,7 @@ public class OnHoldController extends BaseController implements Initializable{
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Page loading has been started");
-
+		submit.disableProperty().set(true);
 		onHoldComboBox.getItems().clear();
 		onHoldComboBox.setItems(onHoldCommentslist);
 
@@ -125,6 +129,26 @@ public class OnHoldController extends BaseController implements Initializable{
 		primarystage.close();
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Packet updation as on hold has been ended");
-		
+	}
+	/**
+	 * {@code rejectionWindowExit} is event class to exit from reason for rejection
+	 * pop up window.
+	 * 
+	 * @param event
+	 */
+	public void exitWindow(ActionEvent event) {
+		primarystage.close();
+																										
+																 
+  
+	}
+
+	/**
+	 * Rejection combobox action.
+	 * 
+	 * @param event
+	 */
+	public void onHoldComboboxAction(ActionEvent event) {
+		submit.disableProperty().set(false);
 	}
 }
