@@ -26,19 +26,28 @@ import io.mosip.registration.processor.packet.manager.exception.FilePathNotAcces
 @Service
 public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStream> {
 
+	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(FileManagerImpl.class);
 
+	/** The extention. */
 	@Value("${packet.ext}")
 	private String extention;
 
+	/** The path. */
 	@Value("${FTP_ZONE}")
 	private String path;
 
+	/** The env. */
 	@Autowired
 	private Environment env;
 
+	/** The Constant FILE_PATH_NOT_ACCESSIBLE. */
 	private static final String FILE_PATH_NOT_ACCESSIBLE = "The Folder Path is not Accessible.";
+	
+	/** The Constant FILE_NOT_FOUND_IN_DESTINATION. */
 	private static final String FILE_NOT_FOUND_IN_DESTINATION = "The File is not present in Destination Folder.";
+	
+	/** The Constant FILE_NOT_FOUND_IN_SOURCE. */
 	private static final String FILE_NOT_FOUND_IN_SOURCE = "The File is not present in Source Folder.";
 
 	/*
@@ -114,16 +123,10 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 	/**
 	 * Delete a file from directory.
 	 *
-	 * @param workingDirectory
-	 *            the working directory
-	 * @param fileName
-	 *            the file name
+	 * @param destinationDirectory the destination directory
+	 * @param fileName            the file name
 	 * @return the object
-	 * @throws JSchException
-	 *             the j sch exception
-	 * @throws SftpException
-	 *             the sftp exception
-	 * @throws IOException
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private void delete(DirectoryPathDto destinationDirectory, String fileName) throws IOException {
 
@@ -135,14 +138,17 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 	/**
 	 * Get the file name with extension.
-	 * 
-	 * @param fileName
-	 * @return
+	 *
+	 * @param fileName the file name
+	 * @return the file name
 	 */
 	private String getFileName(String fileName) {
 		return fileName + extention;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.filesystem.manager.FileManager#copy(java.lang.String, java.lang.Object, java.lang.Object)
+	 */
 	@Override
 	public void copy(String fileName, DirectoryPathDto sourceWorkingDirectory,
 			DirectoryPathDto destinationWorkingDirectory) throws IOException {
@@ -205,6 +211,9 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.filesystem.manager.FileManager#deletePacket(java.lang.Object, java.lang.String)
+	 */
 	@Override
 	public void deletePacket(DirectoryPathDto workingDirectory, String fileName) throws IOException {
 		boolean isFilePresent = (boolean) checkIfFileExists(workingDirectory, fileName);
