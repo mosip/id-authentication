@@ -130,7 +130,8 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	 */
 	public List<MatchOutput> getMatchOutput(List<MatchInput> listMatchInputs, IdentityDTO identitydto,
 			Map<String, List<IdentityInfoDTO>> demoEntity, LocationInfoFetcher locationInfoFetcher,
-			Function<LanguageType, String> languageCodeFetcher, Function<String, Optional<String>> languageNameFetcher) {
+			Function<LanguageType, String> languageCodeFetcher,
+			Function<String, Optional<String>> languageNameFetcher) {
 		return demoMatcher.matchDemoData(identitydto, demoEntity, listMatchInputs, locationInfoFetcher,
 				languageCodeFetcher, languageNameFetcher);
 	}
@@ -184,10 +185,8 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 	private void buildMatchInfos(List<MatchInput> listMatchInputs, AuthStatusInfoBuilder statusInfoBuilder) {
 		listMatchInputs.stream().forEach((MatchInput matchInput) -> {
 			boolean hasPartialMatch = matchInput.getDemoMatchType()
-												.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL)
-												.isPresent();
-			if (hasPartialMatch 
-					&& AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
+					.getAllowedMatchingStrategy(MatchingStrategyType.PARTIAL).isPresent();
+			if (hasPartialMatch && AuthType.getAuthTypeForMatchType(matchInput.getDemoMatchType())
 					.map(AuthType::getType).isPresent()) {
 				String ms = matchInput.getMatchStrategyType();
 				if (ms == null || matchInput.getMatchStrategyType().trim().isEmpty()) {
@@ -246,7 +245,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		return Optional.empty();
 
 	}
-	
+
 	public Optional<String> getLanguageName(String languageCode) {
 		String languagName = null;
 		String key = null;
@@ -256,7 +255,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 			if (property != null && !property.isEmpty()) {
 				String[] split = property.split("-");
 				languagName = split[0];
-			}}
-		return Optional.ofNullable(languagName);} 
+			}
+		}
+		return Optional.ofNullable(languagName);
+	}
 
 }

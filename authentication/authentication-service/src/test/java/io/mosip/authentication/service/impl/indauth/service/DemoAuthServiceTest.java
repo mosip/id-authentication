@@ -24,7 +24,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
@@ -61,22 +63,32 @@ public class DemoAuthServiceTest {
 	public void fadMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
 
-
 //		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		AuthTypeDTO authTypeDTO=new AuthTypeDTO();
-//		authTypeDTO.set
-//		fad.setAddrPri("23 Bandra Road Mumbai India 809890");
+//		AuthTypeDTO authType = new AuthTypeDTO();
+//		authType.setAddress(false);
+//		authType.setFullAddress(true);
+//		authType.setBio(false);
+//		authType.setOtp(false);
+//		authType.setPersonalIdentity(false);
+//		authType.setPin(false);
+//		authRequestDTO.setAuthType(authType);
+//		authRequestDTO.setId("IDA");
+//		authRequestDTO.setIndId("426789089018");
+//		RequestDTO requestDTO = new RequestDTO();
+//		IdentityDTO identityDTO = new IdentityDTO();
+//		List<IdentityInfoDTO> infoList = new ArrayList<>();
+//		IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+//		identityInfoDTO.setLanguage("EN");
+//		identityInfoDTO.setValue("Test");
+//		infoList.add(identityInfoDTO);
+//		identityDTO.setFullAddress(infoList);
+//		requestDTO.setIdentity(identityDTO);
+//		authRequestDTO.setIndIdType("D");
 //		fad.setMsPri(MatchingStrategyType.PARTIAL.getType());
 //		demoDTO.setFad(fad);
 //		pidData.setDemo(demoDTO);
 //		authRequestDTO.setPii(pidData);
-//		AuthTypeDTO authType = new AuthTypeDTO();
-//		authType.setAd(false);
-//		authType.setFad(true);
-//		authType.setBio(false);
-//		authType.setOtp(false);
-//		authType.setPi(false);
-//		authType.setPin(false);
+//
 //		authRequestDTO.setAuthType(authType);
 //		List<MatchInput> listMatchInputsExp = new ArrayList<>();
 //		listMatchInputsExp.add(new MatchInput(DemoMatchType.ADDR_PRI, MatchingStrategyType.PARTIAL.getType(), 60));

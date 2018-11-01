@@ -85,8 +85,6 @@ public enum AuthUsageDataBit {
 
 	USED_DOBTYPE(7, 3),
 
-	USED_LOCATION_SEC(8, 0),
-
 	// Matched bits from 9 to 16 Hex digits
 
 	/** The matched otp. */
