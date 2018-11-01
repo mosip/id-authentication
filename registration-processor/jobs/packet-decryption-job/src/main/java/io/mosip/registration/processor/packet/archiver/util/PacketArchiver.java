@@ -2,13 +2,8 @@ package io.mosip.registration.processor.packet.archiver.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -50,7 +45,8 @@ public class PacketArchiver {
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
-	/** Checking transaction status */
+	
+	/** The is transaction successful. */
 	private boolean isTransactionSuccessful = false;
 	/**
 	 * Archive packet.

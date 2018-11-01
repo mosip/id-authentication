@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.packet.decryptor.job;
 
 import static java.util.Arrays.copyOfRange;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,41 +22,46 @@ import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecr
 import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
 
 /**
- * Decryptor class for packet decryption
- * 
- * @author Jyoti Prakash Nayak
+ * Decryptor class for packet decryption.
  *
+ * @author Jyoti Prakash Nayak
  */
 @Component
 public class Decryptor {
+
+	/** The session key. */
 	private byte[] sessionKey;
+
+	/** The encrypted data. */
 	private byte[] encryptedData;
+
+	/** The private key. */
 	@Value("${private.key.location}")
 	private String privateKey;
-	
+
 	/** The event id. */
 	private String eventId = "";
-	
+
 	/** The event name. */
 	private String eventName = "";
-	
+
 	/** The event type. */
 	private String eventType = "";
-	
+
 	/** The description. */
 	private String description = "";
-	
+
 	/** The core audit request builder. */
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
 	/**
-	 * random method for decryption
-	 * 
-	 * @param encryptedPacket
-	 * @param registrationId
+	 * random method for decryption.
+	 *
+	 * @param encryptedPacket the encrypted packet
+	 * @param registrationId the registration id
 	 * @return decrypted packet data in InputStream
-	 * @throws PacketDecryptionFailureException
+	 * @throws PacketDecryptionFailureException the packet decryption failure exception
 	 */
 	public InputStream decrypt(InputStream encryptedPacket, String registrationId)
 			throws PacketDecryptionFailureException {
@@ -83,7 +87,7 @@ public class Decryptor {
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
-							.getErrorMessage(),
+					.getErrorMessage(),
 					e);
 		} finally {
 			description = isTransactionSuccessful ? "Decryption of packet completed successfully for registration Id :"+registrationId
@@ -95,12 +99,11 @@ public class Decryptor {
 	}
 
 	/**
-	 * Method to read private key from private key file
-	 * 
-	 * @param registrationId
-	 *            registarion id of the packet
+	 * Method to read private key from private key file.
+	 *
+	 * @param registrationId            registarion id of the packet
 	 * @return private key
-	 * @throws PacketDecryptionFailureException
+	 * @throws PacketDecryptionFailureException the packet decryption failure exception
 	 */
 	private byte[] readPrivatekey(String registrationId) throws PacketDecryptionFailureException {
 		FileInputStream fileInputStream = null;
@@ -120,7 +123,7 @@ public class Decryptor {
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
-							.getErrorMessage(),
+					.getErrorMessage(),
 					e);
 		}finally {
 			description = isTransactionSuccessful ? "Read private key from private key file success for registration Id :"+registrationId
@@ -134,10 +137,9 @@ public class Decryptor {
 
 	/**
 	 * Method to separate encrypted data and encrypted AES session key in encrypted
-	 * packet
-	 * 
-	 * @param encryptedDataWithKey
-	 *            encrypted packet containing encrypted data and encrypted AES
+	 * packet.
+	 *
+	 * @param encryptedDataWithKey            encrypted packet containing encrypted data and encrypted AES
 	 *            session key
 	 */
 	private void splitKeyEncryptedData(final byte[] encryptedDataWithKey) {
