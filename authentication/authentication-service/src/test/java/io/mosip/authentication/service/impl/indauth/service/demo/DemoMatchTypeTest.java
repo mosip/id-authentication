@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -16,8 +18,12 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.service.config.IDAMappingConfig;
 
 public class DemoMatchTypeTest {
 
@@ -56,7 +62,6 @@ public class DemoMatchTypeTest {
 	public void TestAuthUsageMatchedBit() {
 		Map<AuthUsageDataBit, Long> bitsCountMap = Arrays.stream(DemoMatchType.values()).map(dmt -> dmt.getMatchedBit())
 				.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
-
 //		assertEquals(AuthUsageDataBit.values().length, bitsCountMap.size());
 		assertTrue(bitsCountMap.values().stream().allMatch(c -> c == 1));
 	}
@@ -74,68 +79,63 @@ public class DemoMatchTypeTest {
 	}
 
 	@Test
-	public void TestPriAddressDemoInfoFetcher() {
-//		String tmpAddress = "no 11 gandhi street";
-//		DemoDTO demoDTO = new DemoDTO();
-//		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
-//		personalFullAddressDTO.setAddrPri("no 11 gandhi street");
-//		//demodto.setLangPri("english");
-//		demoDTO.setFad(personalFullAddressDTO);
-//		assertEquals(tmpAddress, DemoMatchType.ADDR_PRI.getDemoInfoFetcher().apply(demoDTO).get());
+	public void TestAgeisNotNull() {
+		assertNotNull(DemoMatchType.AGE);
 	}
 
-//	@Test
-//	public void TestSecAddressDemoInfoFetcher() {
-//		String tmpAddress = "no 11 gandhi street";
-//		DemoDTO demoDTO = new DemoDTO();
-//		PersonalFullAddressDTO personalFullAddressDTO = new PersonalFullAddressDTO();
-//		personalFullAddressDTO.setAddrSec("no 11 gandhi street");
-//		//demodto.setLangPri("english");
-//		demoDTO.setFad(personalFullAddressDTO);
-//		assertEquals(tmpAddress, DemoMatchType.ADDR_SEC.getDemoInfoFetcher().apply(demoDTO).get());
-//	}
+	@Test
+	public void TestAgeisExist() {
+		Optional<MatchingStrategy> matchStrategy = DemoMatchType.AGE
+				.getAllowedMatchingStrategy(AgeMatchingStrategy.EXACT.getType());
+		assertEquals(matchStrategy.get(), AgeMatchingStrategy.EXACT);
+	}
 
 	@Test
 	public void TestFullAddress() {
-//		String tmpAddress = "no 1 gandhi street chennai india";
+		String tmpAddress = "no 1 gandhi street chennai india";
 //		DemoEntity demoEntity = new DemoEntity();
 //		demoEntity.setAddrLine1("no 1");
 //		demoEntity.setAddrLine2("gandhi street");
 //		demoEntity.setLocationCode("CHNN");
+		
+//		Map<String, List<IdentityInfoDTO>> demoEntity=new HashMap<>();
+//		IdentityInfoDTO identityInfoDTO=new IdentityInfoDTO();
 //		LocationInfoFetcher locationInfoFetcher = Mockito.mock(LocationInfoFetcher.class);
-//
+//		Function<LanguageType, String> languageCodeFetcher;
+//		Function<LanguageType, String> languageNameFetcher;
+//		IDAMappingConfig idaMappingConfig;
 //		Mockito.when(locationInfoFetcher.getLocation(LocationLevel.CITY, demoEntity.getLocationCode()))
 //				.thenReturn(Optional.of("chennai"));
 //		Mockito.when(locationInfoFetcher.getLocation(LocationLevel.COUNTRY, demoEntity.getLocationCode()))
 //				.thenReturn(Optional.of("india"));
-//		assertEquals(tmpAddress, DemoMatchType.ADDR_PRI.getEntityInfoFetcher().getInfo(demoEntity, locationInfoFetcher)
+//		assertEquals(tmpAddress, DemoMatchType.ADDR_PRI.getEntityInfo(demoEntity, languageCodeFetcher, languageNameFetcher, locationInfoFetcher, idaMappingConfig);
 //				.toString().trim());
 	}
 
 	@Test
 	public void TestPriAddressPartialisNotNull() {
-//		assertNotNull(DemoMatchType.ADDR_PRI.getAllowedMatchingStrategy(FullAddressMatchingStrategy.PARTIAL.getType()));
+		assertNotNull(DemoMatchType.ADDR_PRI.getAllowedMatchingStrategy(FullAddressMatchingStrategy.PARTIAL.getType()));
 	}
 
 	@Test
 	public void TestValidPriAddressPartial() {
-//		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR_PRI
-//				.getAllowedMatchingStrategy(FullAddressMatchingStrategy.PARTIAL.getType());
-//		assertEquals(matchStrategy.get(), FullAddressMatchingStrategy.PARTIAL);
+		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR_PRI
+				.getAllowedMatchingStrategy(FullAddressMatchingStrategy.PARTIAL.getType());
+		assertEquals(matchStrategy.get(), FullAddressMatchingStrategy.PARTIAL);
 
 	}
 
 	@Test
 	public void TestInvalidPriAddressPartial() {
-//		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR_PRI
-//				.getAllowedMatchingStrategy(FullAddressMatchingStrategy.PARTIAL.getType());
-//		assertNotEquals(matchStrategy.get(), FullAddressMatchingStrategy.EXACT);
+		Optional<MatchingStrategy> matchStrategy = DemoMatchType.ADDR_PRI
+				.getAllowedMatchingStrategy(FullAddressMatchingStrategy.PARTIAL.getType());
+		assertNotEquals(matchStrategy.get(), FullAddressMatchingStrategy.EXACT);
 	}
 
-//	@Test
-//	public void TestSecondaryAddressisNotNull() {
-//		assertNotNull(DemoMatchType.ADDR_SEC);
-//	}
+	@Test
+	public void TestSecondaryAddressisNotNull() {
+		assertNotNull(DemoMatchType.ADDR_SEC);
+	}
 //
 //	@Test
 //	public void TestSecondaryAddressStrategy() {

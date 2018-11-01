@@ -33,12 +33,32 @@ public enum AuthType {
 //			authReq -> Optional.of(MatchingStrategyType.EXACT.getType()),
 //			authReq -> Optional.of(getDefaultExactMatchValue())),
 
+	AD_PRI("address",
+			setOf(DemoMatchType.ADDR_LINE1_PRI, DemoMatchType.ADDR_LINE2_PRI, DemoMatchType.ADDR_LINE3_PRI,
+					DemoMatchType.LOCATION1_PRI, DemoMatchType.LOCATION2_PRI, DemoMatchType.LOCATION3_PRI,
+					DemoMatchType.PINCODE_PRI),
+			LanguageType.PRIMARY_LANG, AuthTypeDTO::isAddress),
+	AD_SEC("address",
+			setOf(DemoMatchType.ADDR_LINE1_SEC, DemoMatchType.ADDR_LINE2_SEC, DemoMatchType.ADDR_LINE3_SEC,
+					DemoMatchType.LOCATION1_SEC, DemoMatchType.LOCATION2_SEC, DemoMatchType.LOCATION3_SEC,
+					DemoMatchType.PINCODE_SEC),
+			LanguageType.SECONDARY_LANG, AuthTypeDTO::isAddress),
+
 	/** The pi pri. */
-	PI_PRI("personalIdentity", setOf(DemoMatchType.NAME_PRI, DemoMatchType.DOBTYPE), LanguageType.PRIMARY_LANG,
-			AuthTypeDTO::isPersonalIdentity),
+	PI_PRI("personalIdentity",
+			setOf(DemoMatchType.NAME_PRI, DemoMatchType.DOB, DemoMatchType.DOBTYPE, DemoMatchType.AGE,
+					DemoMatchType.EMAIL, DemoMatchType.PHONE, DemoMatchType.GENDER),
+			LanguageType.PRIMARY_LANG, AuthTypeDTO::isPersonalIdentity),
 
 	PI_SEC("personalIdentity", setOf(DemoMatchType.NAME_SEC), LanguageType.SECONDARY_LANG,
 			AuthTypeDTO::isPersonalIdentity),
+
+	FAD_PRI("fullAddress", setOf(DemoMatchType.ADDR_PRI), LanguageType.PRIMARY_LANG, AuthTypeDTO::isFullAddress),
+
+	FAD_SEC("fullAddress", setOf(DemoMatchType.ADDR_PRI), LanguageType.SECONDARY_LANG, AuthTypeDTO::isFullAddress),
+
+//	
+
 //	/** The fad pri. *
 //	FAD_PRI("fadPri", setOf(DemoMatchType.ADDR_PRI),
 //			authReq -> Optional.of(authReq).map(AuthRequestDTO::getAuthType).map(AuthTypeDTO::isFad).orElse(false),
