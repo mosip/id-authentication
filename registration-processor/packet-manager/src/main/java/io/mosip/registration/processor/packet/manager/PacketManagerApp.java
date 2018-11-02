@@ -10,7 +10,7 @@ import org.springframework.context.annotation.PropertySource;
 @SpringBootApplication
 @PropertySource({ "classpath:packet-manager-application.properties" })
 public class PacketManagerApp {
-	
+
 	/**
 	 * The main method.
 	 *

@@ -11,12 +11,13 @@ import io.vertx.core.spi.cluster.ClusterManager;
 import io.vertx.spi.cluster.ignite.IgniteClusterManager;
 
 /**
- * This class provides 
- * @author Mukul Puspam
+ * This class provides .
  *
+ * @author Mukul Puspam
  */
 public class MosipBridgeFactory {
 
+	/** The log. */
 	static Logger log = LoggerFactory.getLogger(MosipBridgeFactory.class);
 
 	/**
@@ -27,7 +28,7 @@ public class MosipBridgeFactory {
 	 * @throws ExecutionException the execution exception
 	 */
 	public static void getEventBus() throws InterruptedException, ExecutionException {
-		
+
 		ClusterManager mgr = new IgniteClusterManager();
 		VertxOptions options = new VertxOptions().setClusterManager(mgr).setHAEnabled(true).setClustered(true);
 

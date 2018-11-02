@@ -1,10 +1,8 @@
 package io.mosip.registration.processor.camel.bridge;
 
 import java.util.concurrent.ExecutionException;
-
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
-
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.vertx.camel.CamelBridge;
 import io.vertx.core.AbstractVerticle;

@@ -3,7 +3,6 @@ package io.mosip.registration.processor.packet.manager.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
@@ -43,10 +41,10 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 
 	/** The Constant FILE_PATH_NOT_ACCESSIBLE. */
 	private static final String FILE_PATH_NOT_ACCESSIBLE = "The Folder Path is not Accessible.";
-	
+
 	/** The Constant FILE_NOT_FOUND_IN_DESTINATION. */
 	private static final String FILE_NOT_FOUND_IN_DESTINATION = "The File is not present in Destination Folder.";
-	
+
 	/** The Constant FILE_NOT_FOUND_IN_SOURCE. */
 	private static final String FILE_NOT_FOUND_IN_SOURCE = "The File is not present in Source Folder.";
 

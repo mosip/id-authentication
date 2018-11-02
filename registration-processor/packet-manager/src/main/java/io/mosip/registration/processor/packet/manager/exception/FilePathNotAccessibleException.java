@@ -4,7 +4,6 @@
 package io.mosip.registration.processor.packet.manager.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-
 import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatformErrorCodes;
 
 /**
@@ -14,7 +13,7 @@ import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatfor
  */
 public class FilePathNotAccessibleException extends BaseUncheckedException{
 
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -23,7 +22,7 @@ public class FilePathNotAccessibleException extends BaseUncheckedException{
 	 */
 	public FilePathNotAccessibleException() {
 		super();
-		
+
 	}
 
 	/**
@@ -43,11 +42,11 @@ public class FilePathNotAccessibleException extends BaseUncheckedException{
 	 */
 	public FilePathNotAccessibleException(String message, Throwable cause) {
 		super(IISPlatformErrorCodes.IIS_EPU_FSS_FILE_PATH_NOT_ACCESSIBLE + EMPTY_SPACE, message, cause);
-		
+
 	}
-	
-	
-	
-	
+
+
+
+
 
 }

@@ -4,7 +4,6 @@
 package io.mosip.registration.processor.packet.manager.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-
 import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatformErrorCodes;
 
 /**
@@ -15,7 +14,7 @@ import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatfor
  */
 public class FileNotFoundInDestinationException extends BaseUncheckedException{
 
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -24,7 +23,7 @@ public class FileNotFoundInDestinationException extends BaseUncheckedException{
 	 */
 	public FileNotFoundInDestinationException() {
 		super();
-		
+
 	}
 
 	/**
@@ -44,6 +43,6 @@ public class FileNotFoundInDestinationException extends BaseUncheckedException{
 	 */
 	public FileNotFoundInDestinationException(String message, Throwable cause) {
 		super(IISPlatformErrorCodes.IIS_EPU_FSS_FILE_NOT_FOUND_IN_DESTINATION + EMPTY_SPACE, message, cause);
-		
+
 	}
 }

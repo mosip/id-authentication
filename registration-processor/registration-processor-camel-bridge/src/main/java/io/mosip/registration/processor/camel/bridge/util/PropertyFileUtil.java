@@ -6,11 +6,20 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * @author Mukul Puspam
+ * The Class PropertyFileUtil.
  *
+ * @author Mukul Puspam
  */
 public class PropertyFileUtil {
 
+	/**
+	 * Gets the property.
+	 *
+	 * @param clazz the clazz
+	 * @param fileName the file name
+	 * @param key the key
+	 * @return the property
+	 */
 	public static String getProperty(Class<?> clazz, String fileName, String key) {
 
 		Properties prop = new Properties();

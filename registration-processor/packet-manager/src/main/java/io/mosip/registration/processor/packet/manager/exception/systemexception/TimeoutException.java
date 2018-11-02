@@ -1,10 +1,6 @@
 package io.mosip.registration.processor.packet.manager.exception.systemexception;
 
-
-
-
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-
 import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatformErrorCodes;
 
 /**
@@ -32,7 +28,7 @@ public class TimeoutException extends BaseUncheckedException {
 	public TimeoutException(String message) {
 		super(IISPlatformErrorCodes.IIS_EPU_FSS_TIMEOUT, message);
 	}
-	
+
 	/**
 	 * Instantiates a new timeout exception.
 	 *
@@ -42,7 +38,7 @@ public class TimeoutException extends BaseUncheckedException {
 	public TimeoutException(String message,Throwable cause) {
 		super(IISPlatformErrorCodes.IIS_EPU_FSS_TIMEOUT + EMPTY_SPACE, message,cause);
 	}
-	
-	
+
+
 
 }
