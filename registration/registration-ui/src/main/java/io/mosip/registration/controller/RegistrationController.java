@@ -1,6 +1,5 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.IOException;
@@ -138,8 +137,7 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private void initialize() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
-				environment.getProperty(APPLICATION_ID), "Entering the LOGIN_CONTROLLER");
-		System.out.println("Hello world");
+				RegistrationConstants.APPLICATION_ID, "Entering the LOGIN_CONTROLLER");
 		switchedOn.set(false);
 		ageDatePicker.setDisable(false);
 		ageField.setDisable(true);
@@ -150,11 +148,11 @@ public class RegistrationController extends BaseController {
 		dateFormatter();
 
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
-				environment.getProperty(APPLICATION_ID), "Getting the list of countries");
+				RegistrationConstants.APPLICATION_ID, "Getting the list of countries");
 		country.getItems().addAll(RegistrationConstants.getCountries());
 
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
-				environment.getProperty(APPLICATION_ID), "Exiting the REGISTRATION_CONTROLLER");
+				RegistrationConstants.APPLICATION_ID, "Exiting the REGISTRATION_CONTROLLER");
 	}
 
 	/**
@@ -163,8 +161,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void saveDetail() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Saving the fields to DTO");
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Saving the fields to DTO");
 		RegistrationDTO registrationDTO = new RegistrationDTO();
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
 		LocationDTO locationDto = new LocationDTO();
@@ -209,7 +207,7 @@ public class RegistrationController extends BaseController {
 			registrationDTO.setDemographicDTO(demographicDTO);
 
 			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
-					environment.getProperty(APPLICATION_ID), "Saved the fields to DTO");
+					RegistrationConstants.APPLICATION_ID, "Saved the fields to DTO");
 
 			registrationOfficerPacketController.showReciept(registrationDTO);
 		}
@@ -223,7 +221,7 @@ public class RegistrationController extends BaseController {
 	 */
 	public void getStates() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
-				environment.getProperty(APPLICATION_ID), "Getting the states");
+				RegistrationConstants.APPLICATION_ID, "Getting the states");
 		state.getItems().addAll(RegistrationConstants.getStates());
 	}
 
@@ -234,7 +232,7 @@ public class RegistrationController extends BaseController {
 	 */
 	public void getDistricts() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
-				environment.getProperty(APPLICATION_ID), "Getting the districts");
+				RegistrationConstants.APPLICATION_ID, "Getting the districts");
 		district.getItems().addAll(RegistrationConstants.getDistricts());
 	}
 
@@ -244,8 +242,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void getRegions() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Getting the regions");
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Getting the regions");
 		region.getItems().addAll(RegistrationConstants.getRegions());
 	}
 
@@ -255,8 +253,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void getPins() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Getting the Pins");
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Getting the Pins");
 		pin.getItems().addAll(RegistrationConstants.getPins());
 	}
 
@@ -264,8 +262,8 @@ public class RegistrationController extends BaseController {
 	 * Validating the age field for the child/Infant check.
 	 */
 	public void ageValidationInDatePicker() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Validating the age given by DatePiker");
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validating the age given by DatePiker");
 		if (ageDatePicker.getValue() != null) {
 			LocalDate selectedDate = ageDatePicker.getValue();
 			Date date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -279,8 +277,8 @@ public class RegistrationController extends BaseController {
 				childSpecificFields.setVisible(false);
 			}
 		}
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Validated the age given by DatePiker");
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validated the age given by DatePiker");
 	}
 
 	/**
@@ -297,8 +295,8 @@ public class RegistrationController extends BaseController {
 			}
 		});
 
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Future dates disabled");
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Future dates disabled");
 	}
 
 	/**
@@ -306,7 +304,7 @@ public class RegistrationController extends BaseController {
 	 */
 	private void ageFieldValidations() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
-				environment.getProperty(APPLICATION_ID), "Validating the age given by age field");
+				RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 		ageField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(final ObservableValue<? extends String> obsVal, final String oldValue,
@@ -332,20 +330,21 @@ public class RegistrationController extends BaseController {
 					childSpecificFields.setVisible(true);
 					isChild = true;
 				} else {
+					isChild = false;
 					childSpecificFields.setVisible(false);
 				}
 			}
 		});
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
-				environment.getProperty(APPLICATION_ID), "Validating the age given by age field");
+				RegistrationConstants.APPLICATION_ID, "Validating the age given by age field");
 	}
 
 	/**
 	 * Toggle functionality between age field and date picker.
 	 */
 	private void toggleFunction() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID),
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID,
 				"Entering into toggle function for toggle label 1 and toggle level 2");
 
 		toggleLabel1.setStyle("-fx-background-color: grey;");
@@ -387,8 +386,8 @@ public class RegistrationController extends BaseController {
 		toggleLabel2.setOnMouseClicked((event) -> {
 			switchedOn.set(!switchedOn.get());
 		});
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID),
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID,
 				"Exiting the toggle function for toggle label 1 and toggle level 2");
 	}
 
@@ -397,8 +396,8 @@ public class RegistrationController extends BaseController {
 	 * format("dd-mm-yyyy").
 	 */
 	private void dateFormatter() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Validating the date format");
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validating the date format");
 		ageDatePicker.setConverter(new StringConverter<LocalDate>() {
 			String pattern = "dd-MM-yyyy";
 			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
@@ -430,14 +429,14 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void goToHomePage() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Going to home page");
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
 		try {
 			BaseController.load(getClass().getResource("/fxml/RegistrationOfficerLayout.fxml"));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED",
-					APPLICATION_NAME, environment.getProperty(APPLICATION_ID),
+					APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					ioException.getMessage());
 		}
 	}
@@ -448,8 +447,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	private boolean validateTheFields() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Validating the fields");
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validating the fields");
 		boolean gotoNext = false;
 		if (validateRegex(fullName, "([A-z]+\\s?\\.?)+")) {
 			generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
@@ -557,8 +556,8 @@ public class RegistrationController extends BaseController {
 
 			}
 		}
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Validated the fields");
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Validated the fields");
 		return gotoNext;
 	}
 
@@ -568,8 +567,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	private boolean getParentToggle() {
-		LOGGER.debug("REGISTRATION_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Toggling for parent/guardian fields");
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Toggling for parent/guardian fields");
 		boolean gotoNext = false;
 
 		if (isChild) {
