@@ -139,7 +139,7 @@ public class RegistrationController extends BaseController {
 	private void initialize() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
 				environment.getProperty(APPLICATION_ID), "Entering the LOGIN_CONTROLLER");
-
+		System.out.println("Hello world");
 		switchedOn.set(false);
 		ageDatePicker.setDisable(false);
 		ageField.setDisable(true);
