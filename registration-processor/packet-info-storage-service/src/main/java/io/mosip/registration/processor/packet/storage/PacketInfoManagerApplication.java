@@ -4,6 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
+/**
+ * The Class PacketInfoManagerApplication.
+ */
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.packet.storage",
 		"io.mosip.registration.processor.packet.manager", 
 		"io.mosip.registration.processor.core",
@@ -12,6 +15,11 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource({"classpath:packet-meta-application.properties"})
 public class PacketInfoManagerApplication {
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(PacketInfoManagerApplication.class, args);
 	}

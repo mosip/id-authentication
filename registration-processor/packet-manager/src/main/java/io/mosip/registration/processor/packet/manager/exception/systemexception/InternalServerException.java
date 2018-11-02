@@ -12,16 +12,31 @@ import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatfor
  */
 public class InternalServerException extends BaseUncheckedException {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Instantiates a new internal server exception.
+	 */
 	public InternalServerException() {
 		super();
 	}
 
+	/**
+	 * Instantiates a new internal server exception.
+	 *
+	 * @param message the message
+	 */
 	public InternalServerException(String message) {
 		super(IISPlatformErrorCodes.IIS_EPU_FSS_SERVER_ERROR, message);
 	}
 
+	/**
+	 * Instantiates a new internal server exception.
+	 *
+	 * @param msg the msg
+	 * @param cause the cause
+	 */
 	public InternalServerException(String msg, Throwable cause) {
 		super(IISPlatformErrorCodes.IIS_EPU_FSS_SERVER_ERROR + EMPTY_SPACE, msg, cause);
 	}
