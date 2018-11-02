@@ -69,7 +69,7 @@ public class PacketArchiver {
 			try {
 				filemanager.put(registrationId, encryptedpacket, DirectoryPathDto.ARCHIVE_LOCATION);
 				eventId = EventId.RPR_407.toString();
-				eventName = EventName.SAVE.toString();
+				eventName = EventName.ADD.toString();
 				eventType = EventType.BUSINESS.toString();
 				isTransactionSuccessful=true;
 			} catch (IOException e) {

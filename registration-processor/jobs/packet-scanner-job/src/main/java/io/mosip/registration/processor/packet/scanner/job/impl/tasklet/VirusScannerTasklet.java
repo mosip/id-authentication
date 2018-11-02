@@ -225,7 +225,7 @@ public class VirusScannerTasklet implements Tasklet {
 		} finally {
 			if (isTransactionSuccessful) {
 				eventId = EventId.RPR_407.toString();
-				eventName = EventName.SAVE.toString();
+				eventName = EventName.ADD.toString();
 				eventType = EventType.BUSINESS.toString();
 				description = "Packet successfully saved to packet store";
 			} else {

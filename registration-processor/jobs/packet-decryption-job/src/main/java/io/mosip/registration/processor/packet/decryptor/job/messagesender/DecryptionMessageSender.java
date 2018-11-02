@@ -69,7 +69,7 @@ public class DecryptionMessageSender extends MosipVerticleManager {
 		isTransactionSuccessful=true;
 		eventId = EventId.RPR_408.toString();
 		eventName = EventName.TRIGGER.toString();
-		eventType = EventType.BUSINESS.toString();
+		eventType = EventType.SYSTEM.toString();
 		
 		}catch(Exception e) {
 			eventId = EventId.RPR_405.toString();
