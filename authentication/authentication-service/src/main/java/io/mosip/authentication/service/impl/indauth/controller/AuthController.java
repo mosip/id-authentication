@@ -21,7 +21,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
-import io.mosip.authentication.service.impl.indauth.validator.InternalAuthRequestValidator;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -47,19 +46,14 @@ public class AuthController {
 	@Autowired
 	private AuthFacade authFacade;
 	
-	/** The internal Auth Request Validator*/
-	@Autowired
-	private InternalAuthRequestValidator internalAuthRequestValidator;
 
 	/**
-	 * Inits the binder.
 	 *
 	 * @param binder the binder
 	 */
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
 		binder.addValidators(authRequestValidator);
-		binder.addValidators(internalAuthRequestValidator);
 	}
 
 	/**
@@ -94,28 +88,4 @@ public class AuthController {
 		return authResponsedto;
 	}
 	
-	
-	/**
-	 * @throws IdAuthenticationAppException 
-	 * 
-	 * 
-	 * 
-	 */
-	@PostMapping(path="/auth/internal",consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
-			@ApiResponse(code = 400, message = "Request authenticated failed") })
-	public AuthResponseDTO authenticateTsp(@RequestBody AuthRequestDTO authRequestDTO,@ApiIgnore Errors e) throws IdAuthenticationAppException
-	{
-		AuthResponseDTO authResponseDTO=null;
-		try {
-			DataValidationUtil.validate(e);
-			 authResponseDTO=authFacade.authenticateTsp(authRequestDTO);
-		} catch (IDDataValidationException e1) {
-			
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e1);
-		
-		}
-		
-		return authResponseDTO;
-	}
 }

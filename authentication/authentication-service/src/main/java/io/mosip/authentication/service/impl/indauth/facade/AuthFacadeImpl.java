@@ -6,12 +6,14 @@ package io.mosip.authentication.service.impl.indauth.facade;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
@@ -166,8 +168,9 @@ public class AuthFacadeImpl implements AuthFacade {
 			       .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
 		AuthResponseDTO authResponseTspDto=new AuthResponseDTO();
 		authResponseTspDto.setStatus(true);
-		authResponseTspDto.setErr(null);
+		authResponseTspDto.setErr(Collections.emptyList());
 		authResponseTspDto.setResTime(s);
+		authResponseTspDto.setTxnID(authRequestDTO.getTxnID());
 		return authResponseTspDto;
 	}
 	
