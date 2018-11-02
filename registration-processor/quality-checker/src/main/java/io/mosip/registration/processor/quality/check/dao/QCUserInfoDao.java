@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.quality.check.dao;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,9 +17,11 @@ public class QCUserInfoDao {
 	@Autowired
 	private QcuserRegRepositary<UserDetailEntity, UserDetailPKEntity> qcuserRepositary;
 	
-	public List<UserDetailPKEntity> getAllQcuserIds() {
+	public List<String> getAllQcuserIds() {
 		
-		return qcuserRepositary.findAllUserIds();
+		return qcuserRepositary.findAllUserIds().stream()
+	              .map(UserDetailPKEntity::getId)
+	              .collect(Collectors.toList());
 	}
 	
 }

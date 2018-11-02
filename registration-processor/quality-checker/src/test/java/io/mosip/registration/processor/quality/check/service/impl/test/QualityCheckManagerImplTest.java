@@ -60,18 +60,13 @@ public class QualityCheckManagerImplTest {
 	private QcuserRegistrationIdEntity entity;
 	QcuserRegistrationIdPKEntity pkEntity;
 	QCUserDto qCUserDto1;
-	List<UserDetailPKEntity> qcuserlist;
+	List<String> qcuserlist;
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		 
-		 UserDetailPKEntity pk1=new UserDetailPKEntity();
-		 pk1.setId("qc001");
-		 UserDetailPKEntity pk2=new UserDetailPKEntity();
-		 pk2.setId("qc002");
-		 UserDetailPKEntity pk3=new UserDetailPKEntity();
-		 pk3.setId("qc003");
-		 qcuserlist=Arrays.asList(pk1,pk2,pk3);
+		 
+		 qcuserlist=Arrays.asList("qc001","qc002","qc003");
 		qcUserDtos = new ArrayList<>();
 		entity = new QcuserRegistrationIdEntity();
 		pkEntity = new QcuserRegistrationIdPKEntity();

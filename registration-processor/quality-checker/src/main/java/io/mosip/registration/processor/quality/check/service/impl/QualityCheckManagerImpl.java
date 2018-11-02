@@ -47,10 +47,10 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 
 	@Override
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
-		List<UserDetailPKEntity> qcUsersList = qcUserInfoDao.getAllQcuserIds();
-		UserDetailPKEntity qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
+		List<String> qcUsersList = qcUserInfoDao.getAllQcuserIds();
+		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
 		QCUserDto qcUserDto = new QCUserDto();
-		qcUserDto.setQcUserId(qcUserId.getId());
+		qcUserDto.setQcUserId(qcUserId);
 		qcUserDto.setRegId(applicantRegistrationId);
 		qcUserDto.setDecisionStatus(DecisionStatus.PENDING);
 		qcUserDto=assignNewPacket(qcUserDto);
