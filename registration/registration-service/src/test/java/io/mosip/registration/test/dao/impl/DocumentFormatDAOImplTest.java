@@ -2,8 +2,9 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -66,9 +67,9 @@ public class DocumentFormatDAOImplTest {
 		DocumentFormat documentFormat = new DocumentFormat();
 		documentFormat.setDescription("description");
 		documentFormat.setName("name");
-		documentFormat.setCreatedTimesZone(OffsetDateTime.now());
+		documentFormat.setCreatedTimesZone(new Timestamp(new Date().getTime()));
 		documentFormat.setCreatedBy("createdBy");
-		documentFormat.setDeletedTimesZone(OffsetDateTime.now());
+		documentFormat.setDeletedTimesZone(new Timestamp(new Date().getTime()));
 		documentFormat.setLanguageCode("languageCode");
 		GenericId genericId = new GenericId();
 		genericId.setActive(true);

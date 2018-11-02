@@ -1,6 +1,6 @@
 package io.mosip.registration.entity;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -35,7 +35,7 @@ public class Registration extends RegistrationCommonFields {
 	@Column(name = "STATUS_COMMENT", length = 256, nullable = true, updatable = true)
 	private String statusComment;
 	@Column(name = "STATUS_DTIMES", nullable = true, updatable = true)
-	private OffsetDateTime statusTimestamp;
+	private Timestamp statusTimestamp;
 	@Column(name = "ACK_FILENAME", length = 128, nullable = true, updatable = true)
 	private String ackFilename;
 	@Column(name = "CLIENT_STATUS_CODE", length = 64, nullable = true, updatable = true)
@@ -43,9 +43,9 @@ public class Registration extends RegistrationCommonFields {
 	@Column(name = "SERVER_STATUS_CODE", length = 64, nullable = true, updatable = true)
 	private String serverStatusCode;
 	@Column(name = "CLIENT_STATUS_DTIME", nullable = true, updatable = true)
-	private OffsetDateTime clientStatusTimestamp;
+	private Timestamp clientStatusTimestamp;
 	@Column(name = "SERVER_STATUS_DTIME", nullable = true, updatable = true)
-	private OffsetDateTime serverStatusTimestamp;
+	private Timestamp serverStatusTimestamp;
 	@Column(name = "CLIENT_STATUS_COMMENT", length = 256, nullable = true, updatable = true)
 	private String clientStatusComments;
 	@Column(name = "SERVER_STATUS_COMMENT", length = 256, nullable = true, updatable = true)
@@ -65,7 +65,7 @@ public class Registration extends RegistrationCommonFields {
 	@Column(name = "UPLOAD_COUNT", nullable = true, updatable = true)
 	private Short uploadCount;
 	@Column(name = "UPLOAD_DTIMES", nullable = true, updatable = true)
-	private OffsetDateTime uploadTimestamp;
+	private Timestamp uploadTimestamp;
 	@Column(name = "LATEST_REGTRN_ID", length = 64, nullable = true, updatable = true)
 	private String latestRegTrnId;
 	@Column(name = "LATEST_TRN_TYPE_CODE", length = 64, nullable = true, updatable = true)
@@ -75,7 +75,7 @@ public class Registration extends RegistrationCommonFields {
 	@Column(name = "LATEST_TRN_LANG_CODE", length = 3, nullable = true, updatable = true)
 	private String latestTrnLangCode;
 	@Column(name = "LATEST_REGTRN_DTIMES", nullable = true, updatable = true)
-	private OffsetDateTime latestRegTrnTimestamp;
+	private Timestamp latestRegTrnTimestamp;
 
 	@ManyToOne
 	@JoinColumn(name = "CR_BY", referencedColumnName = "id", insertable = false, updatable = false)
@@ -133,11 +133,11 @@ public class Registration extends RegistrationCommonFields {
 		this.statusComment = statusComment;
 	}
 
-	public OffsetDateTime getStatusTimestamp() {
+	public Timestamp getStatusTimestamp() {
 		return statusTimestamp;
 	}
 
-	public void setStatusTimestamp(OffsetDateTime statusTimestamp) {
+	public void setStatusTimestamp(Timestamp statusTimestamp) {
 		this.statusTimestamp = statusTimestamp;
 	}
 
@@ -165,19 +165,19 @@ public class Registration extends RegistrationCommonFields {
 		this.serverStatusCode = serverStatusCode;
 	}
 
-	public OffsetDateTime getClientStatusTimestamp() {
+	public Timestamp getClientStatusTimestamp() {
 		return clientStatusTimestamp;
 	}
 
-	public void setClientStatusTimestamp(OffsetDateTime clientStatusTimestamp) {
+	public void setClientStatusTimestamp(Timestamp clientStatusTimestamp) {
 		this.clientStatusTimestamp = clientStatusTimestamp;
 	}
 
-	public OffsetDateTime getServerStatusTimestamp() {
+	public Timestamp getServerStatusTimestamp() {
 		return serverStatusTimestamp;
 	}
 
-	public void setServerStatusTimestamp(OffsetDateTime serverStatusTimestamp) {
+	public void setServerStatusTimestamp(Timestamp serverStatusTimestamp) {
 		this.serverStatusTimestamp = serverStatusTimestamp;
 	}
 
@@ -253,11 +253,11 @@ public class Registration extends RegistrationCommonFields {
 		this.uploadCount = uploadCount;
 	}
 
-	public OffsetDateTime getUploadTimestamp() {
+	public Timestamp getUploadTimestamp() {
 		return uploadTimestamp;
 	}
 
-	public void setUploadTimestamp(OffsetDateTime uploadTimestamp) {
+	public void setUploadTimestamp(Timestamp uploadTimestamp) {
 		this.uploadTimestamp = uploadTimestamp;
 	}
 
@@ -293,11 +293,11 @@ public class Registration extends RegistrationCommonFields {
 		this.latestTrnLangCode = latestTrnLangCode;
 	}
 
-	public OffsetDateTime getLatestRegTrnTimestamp() {
+	public Timestamp getLatestRegTrnTimestamp() {
 		return latestRegTrnTimestamp;
 	}
 
-	public void setLatestRegTrnTimestamp(OffsetDateTime latestRegTrnTimestamp) {
+	public void setLatestRegTrnTimestamp(Timestamp latestRegTrnTimestamp) {
 		this.latestRegTrnTimestamp = latestRegTrnTimestamp;
 	}
 

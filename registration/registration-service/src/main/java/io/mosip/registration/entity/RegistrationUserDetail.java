@@ -1,7 +1,7 @@
 package io.mosip.registration.entity;
 
 import java.io.Serializable;
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -38,23 +38,23 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	@Column(name = "lang_code", length = 3, nullable = false, updatable = false)
 	private String langCode;
 	@Column(name = "last_login_dtimes", nullable = true, updatable = false)
-	private OffsetDateTime lastLoginDtimes;
+	private Timestamp lastLoginDtimes;
 	@Column(name = "last_login_method", length = 64, nullable = true, updatable = false)
 	private String lastLoginMethod;
 	@Column(name = "is_deleted", nullable = true, updatable = false)
 	@Type(type = "true_false")
 	private boolean isDeleted;
 	@Column(name = "del_dtimes", nullable = true, updatable = false)
-	private OffsetDateTime delDtimes;
+	private Timestamp delDtimes;
 	@Column(name = "user_status", length = 64, nullable = true, updatable = false)
 
 	private String userStatus;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")
 	private Set<RegistrationUserRole> userRole;
 
-	@OneToMany(fetch=FetchType.EAGER, mappedBy = "registrationUserDetail")
-	private Set<UserMachineMapping> userMachineMapping;	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")
+	private Set<UserMachineMapping> userMachineMapping;
 
 	/**
 	 * @return the userRole
@@ -64,12 +64,13 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	}
 
 	/**
-	 * @param userRole the userRole to set
+	 * @param userRole
+	 *            the userRole to set
 	 */
 	public void setUserRole(Set<RegistrationUserRole> userRole) {
 		this.userRole = userRole;
 	}
-	
+
 	/**
 	 * @return the userMachineMapping
 	 */
@@ -78,7 +79,8 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	}
 
 	/**
-	 * @param userMachineMapping the userMachineMapping to set
+	 * @param userMachineMapping
+	 *            the userMachineMapping to set
 	 */
 	public void setUserMachineMapping(Set<UserMachineMapping> userMachineMapping) {
 		this.userMachineMapping = userMachineMapping;
@@ -178,7 +180,7 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	/**
 	 * @return the lastLoginDtimes
 	 */
-	public OffsetDateTime getLastLoginDtimes() {
+	public Timestamp getLastLoginDtimes() {
 		return lastLoginDtimes;
 	}
 
@@ -186,7 +188,7 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	 * @param lastLoginDtimes
 	 *            the lastLoginDtimes to set
 	 */
-	public void setLastLoginDtimes(OffsetDateTime lastLoginDtimes) {
+	public void setLastLoginDtimes(Timestamp lastLoginDtimes) {
 		this.lastLoginDtimes = lastLoginDtimes;
 	}
 
@@ -223,7 +225,7 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	/**
 	 * @return the delDtimes
 	 */
-	public OffsetDateTime getDelDtimes() {
+	public Timestamp getDelDtimes() {
 		return delDtimes;
 	}
 
@@ -231,7 +233,7 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	 * @param delDtimes
 	 *            the delDtimes to set
 	 */
-	public void setDelDtimes(OffsetDateTime delDtimes) {
+	public void setDelDtimes(Timestamp delDtimes) {
 		this.delDtimes = delDtimes;
 	}
 
@@ -249,5 +251,5 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	public void setUserStatus(String userStatus) {
 		this.userStatus = userStatus;
 	}
-	
+
 }

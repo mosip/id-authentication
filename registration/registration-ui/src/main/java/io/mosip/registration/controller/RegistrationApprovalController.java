@@ -13,13 +13,14 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationApprovalUiDto;
@@ -44,7 +45,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * {@code RegistrationApprovalController} is the controller class for
@@ -55,6 +58,9 @@ import javafx.stage.Stage;
 @Controller
 public class RegistrationApprovalController extends BaseController implements Initializable {
 
+	/** items per page. */
+	@Value("${Items_per_page}")
+	private int itemsPerPage;
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
@@ -140,15 +146,12 @@ public class RegistrationApprovalController extends BaseController implements In
 	@FXML
 	private AnchorPane approveRegistrationRootSubPane;
 	
+	/** The image anchor pane. */
 	@FXML
 	private AnchorPane imageAnchorPane;
-	
-	/** Object for environment */
-	@Autowired
-	private Environment environment;
 
-	int itemsPerPage = 4;
-	List<RegistrationApprovalUiDto> listData = null;
+	/** The list data. */
+	private List<RegistrationApprovalUiDto> listData = null;
 
 	/*
 	 * (non-Javadoc)
@@ -194,8 +197,8 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * Viewing RegistrationAcknowledgement on selecting the Registration record
 	 */
 	public void viewAck() {
-		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Displaying the Acknowledgement form image beside the Table");
+		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Displaying the Acknowledgement form image beside the Table");
 		if (table.getSelectionModel().getSelectedItem() != null) {
 			imageAnchorPane.setVisible(true);
 			approvalBtn.setVisible(true);
@@ -208,7 +211,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				imageView.setImage(new Image(file));
 			} catch (FileNotFoundException fileNotFoundException) {
 				LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
-						APPLICATION_NAME, environment.getProperty(APPLICATION_ID),
+						APPLICATION_NAME, APPLICATION_ID,
 						fileNotFoundException.getMessage());			}
 
 		}
@@ -229,14 +232,14 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * 
 	 */
 	public void goToHomePage() {
-		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Going to home page");
+		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Going to home page");
 
 		try {
-			BaseController.load(getClass().getResource("/fxml/RegistrationOfficerLayout.fxml"));
+			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED",
-					APPLICATION_NAME, environment.getProperty(APPLICATION_ID),
+					APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 		}
 	}
@@ -245,22 +248,26 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * Opening registration acknowledgement form on clicking on image.
 	 */
 	public void openAckForm() {
-		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", environment.getProperty(APPLICATION_NAME),
-				environment.getProperty(APPLICATION_ID), "Opening the Acknowledgement Form");
+		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Opening the Acknowledgement Form");
 
 		try {
 			Stage primaryStage = new Stage();
+			autoCloseStage(primaryStage);
 			FileInputStream file = new FileInputStream(
 					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()));
-			primaryStage.setTitle("Acknowlegement Form");
-			ImageView imageView = new ImageView(new Image(file));
-			HBox hbox = new HBox(imageView);
+			primaryStage.setTitle(RegistrationConstants.ACKNOWLEDGEMENT_FORM_TITLE);
+			ImageView newimageView = new ImageView(new Image(file));
+			HBox hbox = new HBox(newimageView);
 			Scene scene = new Scene(hbox, 800, 600);
 			primaryStage.setScene(scene);
+			primaryStage.initModality(Modality.WINDOW_MODAL);
+			primaryStage.initOwner(stage);
+			primaryStage.resizableProperty().set(false);
 			primaryStage.show();
 		} catch (FileNotFoundException fileNotFoundException) {
 			LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
-					APPLICATION_NAME, environment.getProperty(APPLICATION_ID),
+					APPLICATION_NAME, APPLICATION_ID,
 					fileNotFoundException.getMessage());
 		}
 
@@ -278,13 +285,14 @@ public class RegistrationApprovalController extends BaseController implements In
 		RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 
 		String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
+		String approverRoleCode = SessionContext.getInstance().getUserContext().getRoles().get(0);
 		if (registration.packetUpdateStatus(regData.getId(), RegistrationClientStatusCode.APPROVED.getCode(), approverUserId, "",
-				approverUserId)) {
+				approverRoleCode)) {
 			listData = registration.getAllEnrollments();
-			generateAlert("Status", AlertType.INFORMATION, "Registration Approved successfully..");
+			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.APPROVED_STATUS_MESSAGE);
 			tablePagination();
 		} else {
-			generateAlert("Status", AlertType.INFORMATION, "");
+			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.APPROVED_STATUS_FAILURE_MESSAGE);
 		}
 		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_", APPLICATION_NAME,
 				APPLICATION_ID, "Packet updation has been ended");
@@ -298,7 +306,12 @@ public class RegistrationApprovalController extends BaseController implements In
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME,
 				APPLICATION_ID, "Pagination has been started");
 		listData = registration.getAllEnrollments();
-		if (listData.size() != 0) {
+		approvalBtn.setVisible(false);
+		rejectionBtn.setVisible(false);
+		onHoldBtn.setVisible(false);
+		imageAnchorPane.setVisible(false);
+		imageView.imageProperty().set(null);
+		if (!listData.isEmpty()) {
 			int pageCount = 0;
 			if (listData.size() % itemsPerPage == 0) {
 				pageCount = (listData.size() / itemsPerPage);
@@ -308,13 +321,11 @@ public class RegistrationApprovalController extends BaseController implements In
 			pagination.setPageCount(pageCount);
 			pagination.setPageFactory(this::createPage);
 		} else {
-			approvalBtn.setVisible(false);
-			rejectionBtn.setVisible(false);
-			onHoldBtn.setVisible(false);
-			imageAnchorPane.setVisible(false);
-			imageView.imageProperty().set(null);
 			approveRegistrationRootSubPane.disableProperty().set(true);
-			table.setPlaceholder(new Label("No Packets for approval"));
+			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
+			table.getItems().remove(table.getSelectionModel().getSelectedItem());
+			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.PLACEHOLDER_LABEL);
+			
 		}
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME,
 				APPLICATION_ID, "Pagination has been ended");
@@ -333,13 +344,18 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 			Stage primarystage = new Stage();
-			AnchorPane rejectRoot = BaseController.load(getClass().getResource("/fxml/RejectionComment.fxml"));
+			primarystage.initStyle(StageStyle.UNDECORATED);
+			AnchorPane rejectRoot = BaseController.load(getClass().getResource(RegistrationConstants.REJECTION_PAGE));
 			RejectionController rejectionController = (RejectionController) RegistrationAppInitialization
-					.getApplicationContext().getBean("rejectionController");
+					.getApplicationContext().getBean(RegistrationConstants.REJECTION_BEAN_NAME);
 
 			rejectionController.initData(regData.getId(), primarystage);
 			Scene scene = new Scene(rejectRoot);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primarystage.setScene(scene);
+			primarystage.initModality(Modality.WINDOW_MODAL);
+			primarystage.initOwner(stage);
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
 		} catch (IOException ioException) {
@@ -367,13 +383,18 @@ public class RegistrationApprovalController extends BaseController implements In
 
 			RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 			Stage primarystage = new Stage();
-			AnchorPane holdRoot = BaseController.load(getClass().getResource("/fxml/OnholdComment.fxml"));
+			primarystage.initStyle(StageStyle.UNDECORATED);
+			AnchorPane holdRoot = BaseController.load(getClass().getResource(RegistrationConstants.ONHOLD_PAGE));
 			OnHoldController onHoldController = (OnHoldController) RegistrationAppInitialization.getApplicationContext()
-					.getBean("onHoldController");
+					.getBean(RegistrationConstants.ONHOLD_BEAN_NAME);
 
 			onHoldController.initData(regData.getId(), primarystage);
 			Scene scene = new Scene(holdRoot);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primarystage.setScene(scene);
+			primarystage.initModality(Modality.WINDOW_MODAL);
+			primarystage.initOwner(stage);
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
 		} catch (IOException ioException) {

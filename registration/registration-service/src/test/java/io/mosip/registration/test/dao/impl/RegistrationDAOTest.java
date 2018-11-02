@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -59,7 +59,7 @@ public class RegistrationDAOTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(true);
 		
-		OffsetDateTime time = OffsetDateTime.now();
+		Timestamp time = new Timestamp(System.currentTimeMillis());
 		regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId("11111");
@@ -115,7 +115,7 @@ public class RegistrationDAOTest {
 	public void testUpdateStatusRegistration() throws RegBaseCheckedException {
 		ReflectionTestUtils.setField(registrationDAOImpl, "logger", logger);
 		
-		OffsetDateTime timestamp = OffsetDateTime.now();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		
 		Registration regobjectrequest = new Registration();
 		regobjectrequest.setId("123456");

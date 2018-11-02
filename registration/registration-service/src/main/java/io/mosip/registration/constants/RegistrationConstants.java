@@ -178,7 +178,6 @@ public class RegistrationConstants {
 
 	//opt to register constants
 	public static final String OPT_TO_REG_GEO_CAP_FREQ = "GEO_CAP_FREQ";
-	public static final String OPT_TO_REG_LER_J00009 = "LER_J00009"; 
 	public static final String OPT_TO_REG_ICS‌_001 = "REG-ICS‌-001";
 	public static final String OPT_TO_REG_ICS‌_001_MSG = "Time since last sync exceeded maximum limit. Please sync from server before proceeding with this registration";
 	public static final String OPT_TO_REG_INFOTYPE = "ERROR";
@@ -198,6 +197,19 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_ICS‌_005 = "REG-ICS‌-005";
 	public static final String OPT_TO_REG_ICS‌_005_MSG = "Unable to validate machine location. Please insert the GPS device and try again";
 	public static final String OPT_TO_REG_SUCCESS = "success";
+	public static final String OPT_TO_REG_LAST_CAPTURED_TIME = "lastCapturedTime";
+	public static final String OPT_TO_REG_ERROR_MESSAGE = "errorMessage";
+	public static final String OPT_TO_REG_LATITUDE = "latitude";
+	public static final String OPT_TO_REG_LONGITUDE = "longitude";
+	public static final String OPT_TO_REG_MDS_J00001 = "MDS_J00001";
+	public static final String OPT_TO_REG_LCS_J00002 = "LCS_J00002";
+	public static final String OPT_TO_REG_PDS_J00003 = "PDS_J00003";
+	public static final String OPT_TO_REG_RSS_J00004 = "RSS_J00004";
+	public static final String OPT_TO_REG_RCS_J00005 = "RCS_J00005";
+	public static final String OPT_TO_REG_RPS_J00006 = "RPS_J00006";
+	public static final String OPT_TO_REG_URS_J00007 = "URS_J00007";
+	public static final String OPT_TO_REG_POS_J00008 = "POS_J00008";
+	public static final String OPT_TO_REG_LER_J00009 = "LER_J00009";
 
 	/** Packet Status Sync Constants */
 	public static final String PACKET_STATUS_SYNC_SUCCESS_MESSAGE = "Packet Status Sync Successful";
@@ -257,6 +269,8 @@ public class RegistrationConstants {
 		public static final String FTP_UPLOAD_PAGE =  "/fxml/PacketUpload.fxml";
 		public static final String USER_MACHINE_MAPPING =  "/fxml/UserClientMachineMapping.fxml";
 		public static final String SYNC_STATUS =  "/fxml/RegPacketStatus.fxml";
+		public static final String ONHOLD_PAGE =  "/fxml/OnholdComment.fxml";
+		public static final String REJECTION_PAGE =  "/fxml/RejectionComment.fxml";
 		
 		//CSS file
 		public static final String CSS_FILE_PATH = "application.css";
@@ -329,6 +343,20 @@ public class RegistrationConstants {
 		
 		//onBoard User
 		public static final String ONBOARD_BIOMETRICS="Biometrics - ";
+		
+		//RegistrationApproval
+		public static final String STATUS = "STATUS";
+		public static final String APPROVED_STATUS_MESSAGE = "Registration Approved successfully";
+		public static final String APPROVED_STATUS_FAILURE_MESSAGE = "Registration Approval Failed";
+		public static final String REJECTED_STATUS_MESSAGE = "Registration rejected successfully";
+		public static final String REJECTED_STATUS_FAILURE_MESSAGE = "Registration rejection failed";
+		public static final String ONHOLD_STATUS_MESSAGE = "Registration onHolded successfully";
+		public static final String ONHOLD_STATUS_FAILURE_MESSAGE = "Registration onHold failed";
+		public static final String ITEMS_PER_PAGE = "Items_per_page";
+		public static final String PLACEHOLDER_LABEL = "No Packets for approval";
+		public static final String REJECTION_BEAN_NAME = "rejectionController";
+		public static final String ONHOLD_BEAN_NAME = "onHoldController";
+		public static final String ERROR = "ERROR";
 		
 		public static List getCountries(){
 			

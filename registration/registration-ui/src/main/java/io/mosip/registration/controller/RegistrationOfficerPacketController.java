@@ -87,14 +87,20 @@ public class RegistrationOfficerPacketController extends BaseController {
 						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
 						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
 			} else {
+				StringBuilder errorMessage = new StringBuilder();
+				String errorAlert = null;
 				ResponseDTO responseDTO;
 				responseDTO = validateSyncStatus();
 				List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
 				if (errorResponseDTOs != null && !errorResponseDTOs.isEmpty()) {
 					for (ErrorResponseDTO errorResponseDTO : errorResponseDTOs) {
-						generateAlert(errorResponseDTO.getCode(), AlertType.valueOf(errorResponseDTO.getInfoType()),
-								errorResponseDTO.getMessage());
+						errorMessage
+						.append(errorResponseDTO.getMessage() + " - " + errorResponseDTO.getCode() + "\n\n");
+				errorAlert = errorResponseDTO.getInfoType();
 					}
+					generateAlert(RegistrationConstants.ERROR, AlertType.valueOf(errorAlert),
+							errorMessage.toString().trim());
+
 				} else {
 					RegistrationAppInitialization.getScene().setRoot(createRoot);
 					ClassLoader loader = Thread.currentThread().getContextClassLoader();

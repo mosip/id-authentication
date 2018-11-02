@@ -1,6 +1,6 @@
 package io.mosip.registration.entity;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,13 +20,13 @@ public class SyncControl {
 
 	@Id
 	@Column(name="SJOB_ID", length=32, nullable=false, updatable=false)
-	private String sJobId;
+	private String syncJobId;
 	@Column(name="MACHM_ID", length=64, nullable=true, updatable=true)
 	private String machnId;
 	@Column(name="CNTR_ID", length=32, nullable=true, updatable=true)
 	private String cntrId;
 	@Column(name="LAST_SYNC_DTIMEZ", nullable=false, updatable=false)
-	private OffsetDateTime lastSyncDtimez;
+	private Timestamp lastSyncDtimez;
 	@Column(name="SYNCT_ID", length=32, nullable=false, updatable=false)
 	private String synctId;
 	@Column(name="LANG_CODE", length=3, nullable=true, updatable=true)
@@ -37,20 +37,20 @@ public class SyncControl {
 	@Column(name="CR_BY", length=24, nullable=false, updatable=true)
 	private String crBy;
 	@Column(name="CR_DTIMESZ", nullable=false, updatable=true)
-	private OffsetDateTime crDtime;
+	private Timestamp crDtime;
 	@Column(name="UPD_BY", length=24, nullable=true, updatable=true)
 	private String updBy;
 	@Column(name="UPD_DTIMESZ", nullable=true, updatable=true)
-	private OffsetDateTime updDtime;
+	private Timestamp updDtime;
 	@Column(name="IS_DELETED", nullable=true, updatable=true)
 	private boolean isDeleted;
 	@Column(name="DEL_DTIMESZ", nullable=true, updatable=true)
-	private OffsetDateTime delDtime;
-	public String getSJobId() {
-		return sJobId;
+	private Timestamp delDtime;
+	public String getsyncJobId() {
+		return syncJobId;
 	}
-	public void setSJobId(String sJobId) {
-		this.sJobId = sJobId;
+	public void setsyncJobId(String syncJobId) {
+		this.syncJobId = syncJobId;
 	}
 	public String getMachnId() {
 		return machnId;
@@ -64,10 +64,10 @@ public class SyncControl {
 	public void setCntrId(String cntrId) {
 		this.cntrId = cntrId;
 	}
-	public OffsetDateTime getLastSyncDtimez() {
+	public Timestamp getLastSyncDtimez() {
 		return lastSyncDtimez;
 	}
-	public void setLastSyncDtimez(OffsetDateTime lastSyncDtimez) {
+	public void setLastSyncDtimez(Timestamp lastSyncDtimez) {
 		this.lastSyncDtimez = lastSyncDtimez;
 	}
 	public String getSynctId() {
@@ -94,10 +94,10 @@ public class SyncControl {
 	public void setCrBy(String crBy) {
 		this.crBy = crBy;
 	}
-	public OffsetDateTime getCrDtime() {
+	public Timestamp getCrDtime() {
 		return crDtime;
 	}
-	public void setCrDtime(OffsetDateTime crDtime) {
+	public void setCrDtime(Timestamp crDtime) {
 		this.crDtime = crDtime;
 	}
 	public String getUpdBy() {
@@ -106,10 +106,10 @@ public class SyncControl {
 	public void setUpdBy(String updBy) {
 		this.updBy = updBy;
 	}
-	public OffsetDateTime getUpdDtime() {
+	public Timestamp getUpdDtime() {
 		return updDtime;
 	}
-	public void setUpdDtime(OffsetDateTime updDtime) {
+	public void setUpdDtime(Timestamp updDtime) {
 		this.updDtime = updDtime;
 	}
 	public boolean isDeleted() {
@@ -118,10 +118,10 @@ public class SyncControl {
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-	public OffsetDateTime getDelDtime() {
+	public Timestamp getDelDtime() {
 		return delDtime;
 	}
-	public void setDelDtime(OffsetDateTime delDtime) {
+	public void setDelDtime(Timestamp delDtime) {
 		this.delDtime = delDtime;
 	}
 	

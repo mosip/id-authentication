@@ -1,7 +1,11 @@
 package io.mosip.registration.dao.impl;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_SAVE_PKT;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.io.File;
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +28,6 @@ import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
-
-import static io.mosip.registration.constants.LoggerConstants.LOG_SAVE_PKT;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 /**
  * The implementation class of {@link RegistrationDAO}.
@@ -71,7 +71,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			logger.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID,
 					"Save Registartion had been started");
 
-			OffsetDateTime time = OffsetDateTime.now();
+			Timestamp time = new Timestamp(System.currentTimeMillis());
 
 			Registration registration = new Registration();
 			registration.setId(zipFileName.substring(zipFileName.lastIndexOf(File.separator) + 1));
@@ -119,12 +119,12 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 */
 	@Override
 	public Registration updateStatus(String id, String clientStatusCode, String approverUsrId, String statusComments,
-			String updBy) {
+			String approverRoleCode) {
 		try {
 			logger.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
 					APPLICATION_ID, "Packet updation has been started");
 
-			OffsetDateTime timestamp = OffsetDateTime.now();
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			Registration registration = registrationRepository.getOne(id);
 			registration.setStatusCode(clientStatusCode);
 			registration.setStatusTimestamp(timestamp);
@@ -132,6 +132,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setClientStatusTimestamp(timestamp);
 			registration.setClientStatusComments(statusComments);
 			registration.setApproverUsrId(approverUsrId);
+			registration.setApproverRoleCode(approverRoleCode);
 			registration.setUpdBy(approverUsrId);
 			registration.setUpdDtimes(timestamp);
 			
@@ -143,7 +144,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registrationTxn.setIsActive(true);
 			registrationTxn.setStatusCode(clientStatusCode);
 			registrationTxn.setStatusComment(statusComments);
-			registrationTxn.setCrBy(updBy);
+			registrationTxn.setCrBy(approverUsrId);
 			registrationTxn.setCrDtime(timestamp);
 			registrationTransaction.add(registrationTxn);
 
@@ -192,7 +193,6 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				APPLICATION_NAME, APPLICATION_ID, 
 				"got the packet details by id");
 		
-		//return registrationRepository.findByClientStatusCodeOrderByCrDtimeAsc(packetStatus);
 		return registrationRepository.findByClientStatusCodeIn(packetStatus);
 	}
 	
@@ -204,7 +204,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 				APPLICATION_NAME, APPLICATION_ID, 
 				"Updating the packet details in the Registation table");
 		
-		OffsetDateTime timestamp = OffsetDateTime.now();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		
 		Registration reg = registrationRepository.getOne(regId);
 		if(status.equals("P")) {

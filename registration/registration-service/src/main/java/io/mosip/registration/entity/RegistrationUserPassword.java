@@ -1,14 +1,11 @@
 package io.mosip.registration.entity;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import io.mosip.registration.entity.RegistrationCommonFields;
-import io.mosip.registration.entity.RegistrationUserPasswordId;
 
 /**
  * RegistrationUserPassword entity details
@@ -25,7 +22,7 @@ public class RegistrationUserPassword extends RegistrationCommonFields {
 	@Column(name = "pwd", length = 512, nullable = false, updatable = false)
 	private String pwd;
 	@Column(name = "pwd_expiry_dtimes", nullable = true, updatable = false)
-	private OffsetDateTime pwdExpiryDtimes;
+	private Timestamp pwdExpiryDtimes;
 	@Column(name = "status_code", length = 64, nullable = false, updatable = false)
 	private String statusCode;
 
@@ -62,7 +59,7 @@ public class RegistrationUserPassword extends RegistrationCommonFields {
 	/**
 	 * @return the pwdExpiryDtimes
 	 */
-	public OffsetDateTime getPwdExpiryDtimes() {
+	public Timestamp getPwdExpiryDtimes() {
 		return pwdExpiryDtimes;
 	}
 
@@ -70,7 +67,7 @@ public class RegistrationUserPassword extends RegistrationCommonFields {
 	 * @param pwdExpiryDtimes
 	 *            the pwdExpiryDtimes to set
 	 */
-	public void setPwdExpiryDtimes(OffsetDateTime pwdExpiryDtimes) {
+	public void setPwdExpiryDtimes(Timestamp pwdExpiryDtimes) {
 		this.pwdExpiryDtimes = pwdExpiryDtimes;
 	}
 

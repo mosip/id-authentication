@@ -105,12 +105,12 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 	 * @see io.mosip.registration.service.RegistrationApprovalService#packetUpdateStatus(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	public Boolean packetUpdateStatus(String id, String clientStatusCode, String approverUserId, String statusComments,
-			String updBy) {
+			String approverRoleCode) {
 		LOGGER.debug("REGISTRATION - PACKET - UPDATE", APPLICATION_NAME,
 				APPLICATION_ID, "Updating status of Packet");
 		auditFactory.audit(AuditEvent.PACKET_UPDATE, AppModule.PACKET_UPDATE,
 				"Packets which are in created state are updated according to desired status", "refId", "refIdType");
-		return registrationDAO.updateStatus(id, clientStatusCode, approverUserId, statusComments, updBy) != null;
+		return registrationDAO.updateStatus(id, clientStatusCode, approverUserId, statusComments, approverRoleCode) != null;
 	}
 
 }

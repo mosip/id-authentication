@@ -45,13 +45,13 @@ public interface RegistrationDAO {
 	 *            the user id of the approver
 	 * @param statusComments
 	 *            the status comments to be updated
-	 * @param updBy
-	 *            the user id of the user
+	 * @param approverRoleCode
+	 *            the approver role code
 	 * 
 	 * @return the updated {@link Registration} entity
 	 */
 	Registration updateStatus(String id, String clientStatusCode, String approverUsrId, String statusComments,
-			String updBy);
+			String approverRoleCode);
 
 	/**
 	 * This method retrieves the list of Registrations by status.

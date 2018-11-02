@@ -1,6 +1,6 @@
 package io.mosip.registration.entity;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -16,11 +16,11 @@ public class RegistrationCommonFields {
 	@Column(name = "CR_BY", length = 24, nullable = false, updatable = true)
 	protected String crBy;
 	@Column(name = "CR_DTIMES", nullable = false, updatable = true)
-	protected OffsetDateTime crDtime;
+	protected Timestamp crDtime;
 	@Column(name = "UPD_BY", length = 24, nullable = true, updatable = true)
 	protected String updBy;
 	@Column(name = "UPD_DTIMES", nullable = true, updatable = false)
-	protected OffsetDateTime updDtimes;
+	protected Timestamp updDtimes;
 
 	/**
 	 * @return the isActive
@@ -55,7 +55,7 @@ public class RegistrationCommonFields {
 	/**
 	 * @return the crDtime
 	 */
-	public OffsetDateTime getCrDtime() {
+	public Timestamp getCrDtime() {
 		return crDtime;
 	}
 
@@ -63,7 +63,7 @@ public class RegistrationCommonFields {
 	 * @param crDtime
 	 *            the crDtime to set
 	 */
-	public void setCrDtime(OffsetDateTime crDtime) {
+	public void setCrDtime(Timestamp crDtime) {
 		this.crDtime = crDtime;
 	}
 
@@ -85,7 +85,7 @@ public class RegistrationCommonFields {
 	/**
 	 * @return the updDtimes
 	 */
-	public OffsetDateTime getUpdDtimes() {
+	public Timestamp getUpdDtimes() {
 		return updDtimes;
 	}
 
@@ -93,7 +93,7 @@ public class RegistrationCommonFields {
 	 * @param updDtimes
 	 *            the updDtimes to set
 	 */
-	public void setUpdDtimes(OffsetDateTime updDtimes) {
+	public void setUpdDtimes(Timestamp updDtimes) {
 		this.updDtimes = updDtimes;
 	}
 

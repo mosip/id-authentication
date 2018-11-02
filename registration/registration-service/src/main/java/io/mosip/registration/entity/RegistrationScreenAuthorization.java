@@ -1,6 +1,6 @@
 package io.mosip.registration.entity;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -29,7 +29,7 @@ public class RegistrationScreenAuthorization extends RegistrationCommonFields {
 	@Type(type = "true_false")
 	private boolean isDeleted;
 	@Column(name = "del_dtimes", nullable = true, updatable = true)
-	private OffsetDateTime delDtimes;
+	private Timestamp delDtimes;
 
 	/**
 	 * @return the registrationScreenAuthorizationId
@@ -80,7 +80,7 @@ public class RegistrationScreenAuthorization extends RegistrationCommonFields {
 	/**
 	 * @return the delDtimes
 	 */
-	public OffsetDateTime getDelDtimes() {
+	public Timestamp getDelDtimes() {
 		return delDtimes;
 	}
 
@@ -88,7 +88,7 @@ public class RegistrationScreenAuthorization extends RegistrationCommonFields {
 	 * @param delDtimes
 	 *            the delDtimes to set
 	 */
-	public void setDelDtimes(OffsetDateTime delDtimes) {
+	public void setDelDtimes(Timestamp delDtimes) {
 		this.delDtimes = delDtimes;
 	}
 

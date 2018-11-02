@@ -19,6 +19,7 @@ import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.SyncStatusValidatorService;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
+import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -29,6 +30,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * Base class for all controllers
@@ -271,5 +273,15 @@ public class BaseController {
 		return false;
 	}
 	
+	/**
+	 * {@code autoCloseStage} is to close the stage automatically 
+	 * by itself for a configured amount of time
+	 * @param stage
+	 */
+	protected void autoCloseStage(Stage stage) {
+			PauseTransition delay = new PauseTransition(Duration.seconds(5));
+			delay.setOnFinished( event -> stage.close() );
+			delay.play();  
+	}
 
 }

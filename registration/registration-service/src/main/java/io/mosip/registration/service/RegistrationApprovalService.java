@@ -35,10 +35,10 @@ public interface RegistrationApprovalService {
 	 * @param clientStatusCode
 	 * @param approverUserId
 	 * @param statusComments
-	 * @param updBy
+	 * @param approverRoleCode
 	 * @return Boolean
 	 */
-	public Boolean packetUpdateStatus(String id, String clientStatusCode, String approverUserId, String statusComments,String updBy);
+	public Boolean packetUpdateStatus(String id, String clientStatusCode, String approverUserId, String statusComments,String approverRoleCode);
 	
 
 }

@@ -2,8 +2,9 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -63,14 +64,14 @@ public class GenderDaoImplTest {
 		genderId.setActive(true);
 		Gender gender = new Gender();
 		gender.setGenericId(genderId);
-		gender.setCreatedTimesZone(OffsetDateTime.now());
+		gender.setCreatedTimesZone(new Timestamp(new Date().getTime()));
 		gender.setCreatedBy("createdBy");
 		gender.setDeleted(true);
-		gender.setDeletedTimesZone(OffsetDateTime.now());
+		gender.setDeletedTimesZone(new Timestamp(new Date().getTime()));
 		gender.setLanguageCode("languageCode");
 		gender.setName("name");
 		gender.setUpdatedBy("updatedBy");
-		gender.setUpdatedTimesZone(OffsetDateTime.now());
+		gender.setUpdatedTimesZone(new Timestamp(new Date().getTime()));
 		list.add(gender);
 		Mockito.when(registrationGenderRepository.findAll()).thenReturn(list);
 		assertEquals(list, registrationGenderDAOImpl.getGenders());

@@ -1,19 +1,13 @@
 package io.mosip.registration.util.healthcheck;
 
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Registration System Properties Checker
@@ -21,15 +15,7 @@ import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
  * @author Sivasankar Thalavai
  * @since 1.0.0
  */
-@Service
 public class RegistrationSystemPropertiesChecker {
-
-	private static MosipLogger LOGGER;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
 
 	private RegistrationSystemPropertiesChecker() {
 
@@ -39,26 +25,71 @@ public class RegistrationSystemPropertiesChecker {
 	 * Get Ethernet MAC Address
 	 * 
 	 * @return
+	 * @throws IOException
 	 */
 	public static String getMachineId() {
-		LOGGER.debug("REGISTRATION - REGISTRATIONSYSTEMPROPERTIESCHECKER - GETMACHINEID",
-				APPLICATION_NAME, APPLICATION_ID,
-				"Registration Get Machine Id had been called.");
-		StringBuilder machineId = new StringBuilder();
-		try {
-			InetAddress inetAddress = InetAddress.getLocalHost();
-			NetworkInterface networkIf = NetworkInterface.getByInetAddress(inetAddress);
-			byte[] mac = networkIf.getHardwareAddress();
-			for (int i = 0; i < mac.length; i++) {
-				machineId.append(String.format("%02X%s", mac[i], (i < mac.length - 1) ? "-" : ""));
+		String machineId = "";
+		if (System.getProperty("os.name").equals("Linux")) {
+			try {
+				machineId = getLinuxMacAddress();
+			} catch (IOException e) {
+
 			}
-		} catch (SocketException socketException) {
-			LOGGER.debug("REGISTRATION - REGISTRATIONSYSTEMPROPERTIESCHECKER - GETMACHINEID",
-					APPLICATION_NAME, APPLICATION_ID, "Socket Exception.");
-		} catch (UnknownHostException e) {
-			LOGGER.debug("REGISTRATION - REGISTRATIONSYSTEMPROPERTIESCHECKER - GETMACHINEID",
-					APPLICATION_NAME, APPLICATION_ID, "Unknown Host Exception.");
+		} else {
+			try {
+				machineId = getWindowsMacAddress();
+			} catch (IOException e) {
+
+			}
 		}
-		return machineId.toString();
+		return machineId;
+	}
+
+	private static String getWindowsMacAddress() throws IOException {
+		String windowsMachineId = "";
+		String command = "ipconfig /all";
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(Runtime.getRuntime().exec(command).getInputStream()));
+		while (true) {
+			String line = bufferedReader.readLine();
+			if (line != null) {
+				Pattern p = Pattern.compile(".*Physical Address.*: (.*)");
+				Matcher m = p.matcher(line);
+				if (m.matches()) {
+					windowsMachineId = m.group(1);
+					break;
+				}
+			}
+		}
+		return windowsMachineId;
+	}
+
+	private static String getLinuxMacAddress() throws IOException {
+		String linuxMachineId = "";
+		List<String> devices = new ArrayList<>();
+		Pattern pattern = Pattern.compile("^ *(.*):");
+		try (BufferedReader in = new BufferedReader(new FileReader("/proc/net/dev"))) {
+			String line = null;
+			while ((line = in.readLine()) != null) {
+				Matcher m = pattern.matcher(line);
+				if (m.find()) {
+					devices.add(m.group(1));
+				}
+			}
+			for (String device : devices) {
+				try (FileReader reader1 = new FileReader("/sys/class/net/" + device + "/address")) {
+					if (device.equals("eno1")) {
+						BufferedReader in1 = new BufferedReader(reader1);
+						linuxMachineId = in1.readLine();
+						in1.close();
+					}
+				} catch (IOException e) {
+
+				}
+			}
+		} catch (IOException e) {
+
+		}
+		return linuxMachineId;
 	}
 }

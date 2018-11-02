@@ -1,6 +1,7 @@
 package io.mosip.registration.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -30,7 +31,7 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	private boolean isDeleted;
 
 	@Column(name = "del_dtimesz")
-	private String deletedDateTime;
+	private Timestamp deletedDateTime;
 
 	/**
 	 * @return the userMachineMappingId
@@ -80,7 +81,7 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	/**
 	 * @return the deletedDateTime
 	 */
-	public String getDeletedDateTime() {
+	public Timestamp getDeletedDateTime() {
 		return deletedDateTime;
 	}
 
@@ -88,7 +89,7 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	 * @param deletedDateTime
 	 *            the deletedDateTime to set
 	 */
-	public void setDeletedDateTime(String deletedDateTime) {
+	public void setDeletedDateTime(Timestamp deletedDateTime) {
 		this.deletedDateTime = deletedDateTime;
 	}
 	

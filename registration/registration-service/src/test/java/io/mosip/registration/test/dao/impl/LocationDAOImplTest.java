@@ -1,9 +1,10 @@
 package io.mosip.registration.test.dao.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -67,11 +68,11 @@ public class LocationDAOImplTest {
 
 		location.setLocationId(genericId);
 		location.setCreatedBy("createdBy");
-		location.setCreatedDate(OffsetDateTime.now());
+		location.setCreatedDate(new Timestamp(new Date().getTime()));
 		location.setDeleted(true);
-		location.setDeletedTimesZone(OffsetDateTime.now());
+		location.setDeletedTimesZone(new Timestamp(new Date().getTime()));
 		location.setUpdatedBy("updatedBy");
-		location.setUpdatedTimesZone(OffsetDateTime.now());
+		location.setUpdatedTimesZone(new Timestamp(new Date().getTime()));
 		location.setLanguageCode("languageCode");
 		location.setHeirarchyLevel(0);
 		location.setHeirarchyLevelName("heirarchyLevelName");
