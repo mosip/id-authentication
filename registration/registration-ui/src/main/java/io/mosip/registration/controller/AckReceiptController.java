@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
@@ -13,7 +14,10 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
+import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.PacketHandlerService;
 import javafx.embed.swing.SwingFXUtils;
@@ -95,9 +99,17 @@ public class AckReceiptController extends BaseController implements Initializabl
         String acknowledgementReceiptName = registrationData.getRegistrationId().replaceAll("[^0-9]", "")+"_Ack";
         
         registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(acknowledgementReceiptName);
-        packetHandlerService.handle(registrationData);
+        ResponseDTO response = packetHandlerService.handle(registrationData);
         
         generateAlert("Success",AlertType.INFORMATION, "Packet Created Successfully!");
+      //Adding individual address to session context
+        if(response.getSuccessResponseDTO().getCode().equals("Success")) {
+             AddressDTO addressDTO = registrationData.getDemographicDTO().getDemoInLocalLang().getAddressDTO();           
+             Map<String, Object> addr= SessionContext.getInstance().getMapObject();
+             addr.put("PrevAddress", addressDTO);
+             SessionContext.getInstance().setMapObject(addr);
+        } 
+
         Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
         stage.close();
         
