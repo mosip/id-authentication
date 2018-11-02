@@ -1,4 +1,4 @@
-package io.mosip.kernel.packetuploader.sftp.impl;
+package io.mosip.kernel.packetuploader.sftp;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -22,12 +22,12 @@ import io.mosip.kernel.packetuploader.sftp.util.PacketUploaderUtils;
  * @author Urvil Joshi
  * @since 1.0.0
  */
-public class PacketUploaderImpl {
+public class PacketUploader {
 
 	/**
 	 * Constructor for this class
 	 */
-	private PacketUploaderImpl() {
+	private PacketUploader() {
 	}
 
 	/**

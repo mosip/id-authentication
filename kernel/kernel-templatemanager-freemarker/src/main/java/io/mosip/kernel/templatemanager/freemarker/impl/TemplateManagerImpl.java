@@ -10,6 +10,8 @@ import java.io.Writer;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.stereotype.Component;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -36,6 +38,7 @@ import io.mosip.kernel.templatemanager.freemarker.constant.TemplateManagerExcept
  * @version 1.0.0
  * @since 2018-10-01
  */
+@Component
 public class TemplateManagerImpl implements TemplateManager {
 	private Configuration configuration;
 

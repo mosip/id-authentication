@@ -1,5 +1,7 @@
 package io.mosip.kernel.crypto.bouncycastle.impl;
 
+import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.crypto.bouncycastle.algorithm.AES;
@@ -16,6 +18,7 @@ import io.mosip.kernel.crypto.bouncycastle.util.SecurityUtils;
  * @author Urvil Joshi
  * @since 1.0.0
  */
+@Component
 public class DecryptorImpl implements Decryptor<byte[], byte[], byte[], SecurityMethod> {
 
 	/*

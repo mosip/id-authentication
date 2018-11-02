@@ -13,6 +13,8 @@ import java.security.PublicKey;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
+import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.crypto.jce.algorithm.AES;
@@ -27,6 +29,7 @@ import io.mosip.kernel.crypto.jce.util.SecurityUtils;
  * @author Urvil Joshi
  * @since 1.0.0
  */
+@Component
 public class DecryptorImpl implements Decryptor<PrivateKey, PublicKey, SecretKey, SecurityMethod> {
 
 	/*

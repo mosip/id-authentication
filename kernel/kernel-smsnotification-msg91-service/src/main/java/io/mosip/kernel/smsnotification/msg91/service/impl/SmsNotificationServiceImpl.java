@@ -14,6 +14,7 @@ import io.mosip.kernel.smsnotification.msg91.constant.SmsPropertyConstants;
 import io.mosip.kernel.smsnotification.msg91.dto.SmsResponseDto;
 import io.mosip.kernel.smsnotification.msg91.dto.SmsServerResponseDto;
 import io.mosip.kernel.smsnotification.msg91.exception.InvalidNumberException;
+import io.mosip.kernel.smsnotification.msg91.service.SmsNotificationService;
 
 /**
  * This service class send SMS on the contact number provided.
@@ -23,7 +24,7 @@ import io.mosip.kernel.smsnotification.msg91.exception.InvalidNumberException;
  *
  */
 @Service
-public class SmsNotificationServiceImpl {
+public class SmsNotificationServiceImpl implements SmsNotificationService{
 
 	/**
 	 * The reference that autowired rest template builder.
@@ -56,7 +57,8 @@ public class SmsNotificationServiceImpl {
 	 * @param contentMessage
 	 * @return
 	 */
-	public SmsResponseDto sendSmsNotification(String contactNumber, String contentMessage) {
+	@Override
+	public SmsResponseDto sendSmsNotification(String contactNumber, String contentMessage)  {
 
 		if (!StringUtils.isNumeric(contactNumber) || contactNumber.length() < Integer.parseInt(length)
 				|| contactNumber.length() > Integer.parseInt(length)) {

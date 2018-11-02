@@ -13,6 +13,8 @@ import java.security.PublicKey;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
+import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.crypto.jce.algorithm.AES;
@@ -27,6 +29,7 @@ import io.mosip.kernel.crypto.jce.util.SecurityUtils;
  * @author Urvil Joshi
  * @since 1.0.0
  */
+@Component
 public class EncryptorImpl implements Encryptor<PrivateKey, PublicKey, SecretKey, SecurityMethod> {
 
 	/*
@@ -37,8 +40,7 @@ public class EncryptorImpl implements Encryptor<PrivateKey, PublicKey, SecretKey
 	 * .lang.Object, byte[], java.lang.Object)
 	 */
 	@Override
-	public byte[] asymmetricPrivateEncrypt(PrivateKey privateKey, byte[] data,
-			SecurityMethod mosipSecurityMethod) {
+	public byte[] asymmetricPrivateEncrypt(PrivateKey privateKey, byte[] data, SecurityMethod mosipSecurityMethod) {
 		SecurityUtils.checkMethod(mosipSecurityMethod);
 		if (mosipSecurityMethod == SecurityMethod.RSA_WITH_PKCS1PADDING) {
 			return RSA.rsaWithPKCS1Padding(privateKey, data, Cipher.ENCRYPT_MODE);

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import io.mosip.kernel.emailnotification.constant.MailNotifierConstants;
 import io.mosip.kernel.emailnotification.dto.ResponseDto;
 import io.mosip.kernel.emailnotification.exception.AsyncCaughtExceptionHandler;
+import io.mosip.kernel.emailnotification.service.EmailNotificationService;
 import io.mosip.kernel.emailnotification.util.EmailNotificationUtils;
 
 /**
@@ -23,7 +24,7 @@ import io.mosip.kernel.emailnotification.util.EmailNotificationUtils;
  * @since 1.0.0
  */
 @Service
-public class EmailNotificationServiceImpl {
+public class EmailNotificationServiceImpl implements EmailNotificationService{
 	/**
 	 * Autowired reference for {@link JavaMailSender}
 	 */
@@ -46,6 +47,7 @@ public class EmailNotificationServiceImpl {
 	 * @param attachments
 	 * @return
 	 */
+	@Override
 	public CompletableFuture<ResponseDto> sendEmail(String[] mailTo, String[] mailCc, String mailSubject,
 			String mailContent, MultipartFile[] attachments) {
 		/**

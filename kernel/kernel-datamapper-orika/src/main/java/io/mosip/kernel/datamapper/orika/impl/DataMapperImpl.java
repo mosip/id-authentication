@@ -2,6 +2,8 @@ package io.mosip.kernel.datamapper.orika.impl;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.datamapper.converter.DataConverter;
 import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.model.IncludeDataField;
@@ -16,6 +18,7 @@ import io.mosip.kernel.datamapper.orika.constant.DataMapperErrorCodes;
  * @since 1.0.0
  * 
  */
+@Component
 public class DataMapperImpl implements DataMapper {
 	/*
 	 * (non-Javadoc)
