@@ -13,7 +13,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  */
 
 @Service
-@FunctionalInterface
 public interface AuthFacade {
 	 
 	/**
@@ -24,5 +23,7 @@ public interface AuthFacade {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
 	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest) throws IdAuthenticationBusinessException;
+	
+	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO);
 
 }

@@ -34,5 +34,6 @@ public class IdentityDTO {
 	List<IdentityInfoDTO> rightMiddle;
 	List<IdentityInfoDTO> rightRing;
 	List<IdentityInfoDTO> rightThumb;
+	List<IdentityInfoDTO> face;
 
 }

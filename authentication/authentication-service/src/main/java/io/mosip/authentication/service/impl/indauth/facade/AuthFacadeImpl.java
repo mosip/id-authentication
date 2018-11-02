@@ -3,6 +3,8 @@
  */
 package io.mosip.authentication.service.impl.indauth.facade;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,4 +158,17 @@ public class AuthFacadeImpl implements AuthFacade {
 	private void auditData() {
 		// TODO Update audit details
 	}
+	
+	@Override
+	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO) {
+		
+		String s=LocalDateTime.now()
+			       .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+		AuthResponseDTO authResponseTspDto=new AuthResponseDTO();
+		authResponseTspDto.setStatus(true);
+		authResponseTspDto.setErr(null);
+		authResponseTspDto.setResTime(s);
+		return authResponseTspDto;
+	}
+	
 }
