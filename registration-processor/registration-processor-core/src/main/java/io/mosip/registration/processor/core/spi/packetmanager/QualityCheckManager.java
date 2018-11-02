@@ -22,7 +22,7 @@ public interface QualityCheckManager<U,T,Q>{
 	 * Method to assign  packets to QCUsers
 	 * @param applicantRegistrationId
 	 */
-	public void assignQCUser(U applicantRegistrationId);
+	public Q assignQCUser(U applicantRegistrationId);
 	
 	/**
 	 * Send and verify.

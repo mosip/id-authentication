@@ -4,6 +4,7 @@
 package io.mosip.registration.processor.stages.quality.check.assignment;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -16,6 +17,7 @@ import io.mosip.registration.processor.quality.check.dto.QCUserDto;
  * @author Jyoti Prakash Nayak M1030448
  *
  */
+@Component
 public class QualityCheckerAssignmentStage extends MosipVerticleManager {
 
 	@Autowired

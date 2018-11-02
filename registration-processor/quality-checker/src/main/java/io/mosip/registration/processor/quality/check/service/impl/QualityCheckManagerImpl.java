@@ -24,6 +24,7 @@ import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdPKEntity;
+import io.mosip.registration.processor.quality.check.entity.UserDetailPKEntity;
 import io.mosip.registration.processor.quality.check.exception.InvalidQcUserIdException;
 import io.mosip.registration.processor.quality.check.exception.InvalidRegistrationIdException;
 import io.mosip.registration.processor.quality.check.exception.ResultNotFoundException;
@@ -45,14 +46,15 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 	private AuditHandler<AuditRequestDto> auditHandler;
 
 	@Override
-	public void assignQCUser(String applicantRegistrationId) {
-		List<String> qcUsersList = qcUserInfoDao.getAllQcuserIds();
-		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
+	public QCUserDto assignQCUser(String applicantRegistrationId) {
+		List<UserDetailPKEntity> qcUsersList = qcUserInfoDao.getAllQcuserIds();
+		UserDetailPKEntity qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
 		QCUserDto qcUserDto = new QCUserDto();
-		qcUserDto.setQcUserId(qcUserId);
+		qcUserDto.setQcUserId(qcUserId.getId());
 		qcUserDto.setRegId(applicantRegistrationId);
 		qcUserDto.setDecisionStatus(DecisionStatus.PENDING);
-		assignNewPacket(qcUserDto);
+		qcUserDto=assignNewPacket(qcUserDto);
+		return qcUserDto;
 	}
 
 	@Override
@@ -130,12 +132,14 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 		return map;
 	}
 
-	private void assignNewPacket(QCUserDto qcUserDto) {
+	private QCUserDto assignNewPacket(QCUserDto qcUserDto) {
 		boolean isTransactionSuccessful = false;
 		try {
 			QcuserRegistrationIdEntity qcUserEntity = convertDtoToEntity(qcUserDto);
 			applicantInfoDao.save(qcUserEntity);
 			isTransactionSuccessful = true;
+			
+			return convertEntityToDto(qcUserEntity);
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("qcuser_registration_id Table Not Accessible", e);
 		} finally {
