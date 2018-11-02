@@ -6,13 +6,13 @@ package io.mosip.registration.processor.core.code;
  * @author Ranjitha
  */
 public enum EventType {
-	
+
 	/** The business. */
 	BUSINESS,
-	
+
 	/** The system. */
 	SYSTEM,
-	
+
 	/** The security. */
 	SECURITY,
 

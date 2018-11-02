@@ -6,31 +6,31 @@ package io.mosip.registration.processor.core.code;
  * @author Ranjitha
  */
 public enum EventId {
-	
-	/**  Event Id *. */
-	
+
+	/** Event Id *. */
+
 	/** Id for get event. */
 	RPR_401,
-	
+
 	/** Id for update event. */
 	RPR_402,
-	
+
 	/** Id for delete event. */
 	RPR_403,
 
-	/** Id for archieve packets event */
+	/**  Id for archieve packets event. */
 	RPR_404,
-	
-	/** Id for exception event */
+
+	/**  Id for exception event. */
 	RPR_405,
 
 	/** Id for authentication event. */
 	RPR_406,
-	
-	/** Id for save event */
+
+	/**  Id for save event. */
 	RPR_407,
-	
-	/** Id for trigger event */
+
+	/**  Id for trigger event. */
 	RPR_408,
 
 }
