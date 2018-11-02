@@ -16,7 +16,6 @@ import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.MatchInfo;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
-import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 
 /**
  * The Enum AuthType.
@@ -182,6 +181,10 @@ public enum AuthType {
 	 */
 	public static Optional<AuthType> getAuthTypeForMatchType(MatchType matchType) {
 		return Stream.of(values()).filter(at -> at.isAssociatedMatchType(matchType)).findAny();
+	}
+	
+	public Set<MatchType> getAssociatedMatchTypes() {
+		return associatedMatchTypes;
 	}
 
 }

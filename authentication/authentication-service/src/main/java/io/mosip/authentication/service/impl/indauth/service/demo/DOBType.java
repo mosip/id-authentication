@@ -23,11 +23,11 @@ public enum DOBType {
 		return type;
 	}
 	
-	public Boolean isTypePresent(String dobType) {
+	public static Boolean isTypePresent(String dobType) {
 		return Stream.of(values()).anyMatch(type -> type.getDobType().equalsIgnoreCase(dobType));
 	}
 	
-	public Optional<DOBType> getType(String dobType) {
+	public static Optional<DOBType> getType(String dobType) {
 		return Stream.of(values()).filter(type -> type.getDobType().equalsIgnoreCase(dobType)).findAny();
 	}
 

@@ -294,5 +294,9 @@ public enum DemoMatchType implements MatchType {
 		String entityInfo = getEntityInfoFetcher().apply(demoValue);
 		return new IdentityValue(languageName.orElse(""), entityInfo);
 	}
+	
+	public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
+		return identityInfoFunction;
+	}
 
 }

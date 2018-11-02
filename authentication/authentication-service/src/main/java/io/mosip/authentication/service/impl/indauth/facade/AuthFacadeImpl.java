@@ -69,7 +69,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, refId);
 
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
-		authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIndIdType())
+		authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
 				.setReqTime(authRequestDTO.getReqTime()).setVersion(authRequestDTO.getVer());
 
 		authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
@@ -129,17 +129,17 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	public String processIdType(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
 		String refId = null;
-		String reqType = authRequestDTO.getIndIdType();
+		String reqType = authRequestDTO.getIdvIdType();
 		if (reqType.equals(IdType.UIN.getType())) {
 			try {
-				refId = idAuthService.validateUIN(authRequestDTO.getIndId());
+				refId = idAuthService.validateUIN(authRequestDTO.getIdvId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 			}
 		} else {
 			try {
-				refId = idAuthService.validateVID(authRequestDTO.getIndId());
+				refId = idAuthService.validateVID(authRequestDTO.getIdvId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);

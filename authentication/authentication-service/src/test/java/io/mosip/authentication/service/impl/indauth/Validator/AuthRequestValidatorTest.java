@@ -1,335 +1,1036 @@
 package io.mosip.authentication.service.impl.indauth.Validator;
 
-import org.junit.Ignore;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.context.WebApplicationContext;
+
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.PinInfo;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
+import io.mosip.authentication.service.helper.DateHelper;
+import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
+import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
+import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
+import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
+import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
+import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 
 /**
  * This class validates the AuthRequestValidator
  * 
  * @author Arun Bose
  */
-//@Ignore
-//@RunWith(SpringRunner.class)
-//@WebMvcTest
-//@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-//public class AuthRequestValidatorTest {
+@RunWith(SpringRunner.class)
+@WebMvcTest
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+public class AuthRequestValidatorTest {
 
-//	@Mock
-//	private SpringValidatorAdapter validator;
-//
-//	@Mock
-//	RestHelper restHelper;
-//
-//	@Mock
-//	Errors error;
-//
-//	@Autowired
-//	Environment env;
-//	
-//	@Mock
-//	private UinValidatorImpl uinValidator;
-//	
-//	@Mock
-//	private VidValidatorImpl vidValidator;
-//
-//	@InjectMocks
-//	MosipRollingFileAppender idaRollingFileAppender;
-//
-//	@InjectMocks
-//	private RestRequestFactory restFactory;
-//
-//	@InjectMocks
-//	private AuditRequestFactory auditFactory;
-//
-//	@InjectMocks
-//	private AuthRequestValidator authRequestValidator;
-//
-//	@Mock
-//	private IdAuthServiceImpl idAuthServiceImpl;
-//
-//	@Mock
-//	private OTPAuthServiceImpl otpAuthServiceImpl;
-//
-//	@Before
-//	public void before() {
-//		ReflectionTestUtils.setField(auditFactory, "env", env);
-//		ReflectionTestUtils.setField(restFactory, "env", env);
-//		ReflectionTestUtils.setField(authRequestValidator, "env", env);
-//	}
-//
-//	@Test
-//	public void testSupportTrue() {
-//		assertTrue(authRequestValidator.supports(AuthRequestDTO.class));
-//	}
-//
-//	@Test
-//	public void testSupportFalse() {
-//		assertFalse(authRequestValidator.supports(AuthRequestValidator.class));
-//	}
-//
-//	/*
-//	 * 
-//	 * This method checks the otp parameters present and failed
-//	 * 
-//	 */
-//	@Test
-//	public void checkOTPAuthValidatepinDTOFail() {
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//
-//		// error.rejectValue(IdAuthenticationErrorConstants.NO_PINTYPE.getErrorCode(),
-//		// env.getProperty("mosip.ida.validation.message.AuthRequest.PinType"));
-//		authRequestValidator.checkOTPAuth(authRequestDTO, error);
-//
-//	}
-//	/*
-//	 * 
-//	 * This method checks the otp parameters present and checks for otp value and
-//	 * failed
-//	 */
-//
-//	@Test
-//	public void checkOTPAuthValidatepinValueFail() {
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		PinDTO pinDTO = new PinDTO();
-//		pinDTO.setType(PinType.OTP);
-//		authRequestDTO.setPii(new PersonalIdentityDataDTO());
-//		authRequestDTO.getPii().setPin(pinDTO);
-//
-//		// error.rejectValue(IdAuthenticationErrorConstants.NO_PINTYPE.getErrorCode(),
-//		// env.getProperty("mosip.ida.validation.message.AuthRequest.PinType"));
-//		authRequestValidator.checkOTPAuth(authRequestDTO, error);
-//
-//	}
-//
-//	/*
-//	 * 
-//	 * This method checks the otp parameters present and checks for otp value and
-//	 * failed
-//	 */
-//
-//	@Test
-//	public void checkOTPAuthValidatepinTypeFail() {
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		PinDTO pinDTO = new PinDTO();
-//		authRequestDTO.setPii(new PersonalIdentityDataDTO());
-//		authRequestDTO.getPii().setPin(pinDTO);
-//
-//		// error.rejectValue(IdAuthenticationErrorConstants.NO_PINTYPE.getErrorCode(),
-//		// env.getProperty("mosip.ida.validation.message.AuthRequest.PinType"));
-//		authRequestValidator.checkOTPAuth(authRequestDTO, error);
-//
-//	}
-//
-//	@Test
-//	public void validateCheckIdTypeOtp() {
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		authRequestDTO.setIdType(IdType.UIN.getType());
-//		AuthTypeDTO authType = new AuthTypeDTO();
-//		authType.setBio(false);
-//		authType.setPi(false);
-//		authType.setAd(false);
-//		authType.setPin(false);
-//		authType.setOtp(true);
-//		authRequestDTO.setAuthType(authType);
-//		authRequestDTO.setReqTime(new Date().toString());
-//		authRequestValidator.validate(authRequestDTO, error);
-//	}
-//
-//	@Test
-//	public void validateCheckIdTypeRemAuth() {
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		authRequestDTO.setIdType(IdType.UIN.getType());
-//		AuthTypeDTO authType = new AuthTypeDTO();
-//		authType.setBio(true);
-//		authRequestDTO.setAuthType(authType);
-//		authRequestDTO.setReqTime(new Date().toString());
-//		authRequestValidator.validate(authRequestDTO, error);
-//	}
-//
-//	@Test
-//	public void validateCheckIdTypeNoAuth() {
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		authRequestDTO.setIdType(IdType.UIN.getType());
-//		AuthTypeDTO authType = new AuthTypeDTO();
-//		authType.setBio(false);
-//		authType.setPi(false);
-//		authType.setAd(false);
-//		authType.setPin(false);
-//		authType.setOtp(false);
-//		authRequestDTO.setAuthType(authType);
-//		authRequestDTO.setReqTime(new Date().toString());
-//		authRequestValidator.validate(authRequestDTO, error);
-//
-//	}
-//
-//	@Test
-//	public void testValidUin() throws NoSuchMethodException, SecurityException {
-//		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenReturn(true);
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-//		authRequestDTO.setIdType(IdType.UIN.getType());
-//		authRequestDTO.setId("426789089018");
-//		AuthTypeDTO authType = new AuthTypeDTO();
-//		authType.setBio(false);
-//		authType.setPi(false);
-//		authType.setAd(false);
-//		authType.setPin(false);
-//		authType.setOtp(true);
-//		authRequestDTO.setAuthType(authType);
-//		PinDTO pinDTO = new PinDTO();
-//		pinDTO.setType(PinType.OTP);
-//		pinDTO.setValue("123456");
-//		authRequestDTO.setPii(new PersonalIdentityDataDTO());
-//		authRequestDTO.getPii().setPin(pinDTO);
-//		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-//		authRequestDTO.setReqTime(format.format(new Date()));
-//		authRequestValidator.validate(authRequestDTO, errors);
-//		assertFalse(errors.hasErrors());
-//	}
-//
-//	@Test
-//	public void testInvalidUin() {
-//		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("code", "msg"));
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-//		authRequestDTO.setIdType(IdType.UIN.getType());
-//		authRequestDTO.setId("2345678901231");
-//		AuthTypeDTO authType = new AuthTypeDTO();
-//		authType.setBio(false);
-//		authType.setPi(false);
-//		authType.setAd(false);
-//		authType.setPin(false);
-//		authType.setOtp(true);
-//		authRequestDTO.setAuthType(authType);
-//		PinDTO pinDTO = new PinDTO();
-//		pinDTO.setType(PinType.OTP);
-//		pinDTO.setValue("123456");
-//		authRequestDTO.setReqTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
-//		authRequestDTO.setPii(new PersonalIdentityDataDTO());
-//		authRequestDTO.getPii().setPin(pinDTO);
-//		authRequestValidator.validate(authRequestDTO, errors);
-//		assertTrue(errors.hasErrors());
-//	}
-//
-//	@Test
-//	public void testValidVid() {
-//		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenReturn(true);
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-//		authRequestDTO.setIdType(IdType.VID.getType());
-//		authRequestDTO.setId("53718436135982061");
-//		AuthTypeDTO authType = new AuthTypeDTO();
-//		authType.setBio(false);
-//		authType.setPi(false);
-//		authType.setAd(false);
-//		authType.setPin(false);
-//		authType.setOtp(true);
-//		authRequestDTO.setAuthType(authType);
-//		PinDTO pinDTO = new PinDTO();
-//		pinDTO.setType(PinType.OTP);
-//		pinDTO.setValue("123456");
-//		authRequestDTO.setPii(new PersonalIdentityDataDTO());
-//		authRequestDTO.getPii().setPin(pinDTO);
-//		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-//		authRequestDTO.setReqTime(format.format(new Date()));
-//		authRequestValidator.validate(authRequestDTO, errors);
-//		assertFalse(errors.hasErrors());
-//	}
-//
-//	@Test
-//	public void testInvalidVid() {
-//		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("code", "msg"));
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-//		authRequestDTO.setIdType(IdType.VID.getType());
-//		authRequestDTO.setId("5371843613598211");
-//		AuthTypeDTO authType = new AuthTypeDTO();
-//		authType.setBio(false);
-//		authType.setPi(false);
-//		authType.setAd(false);
-//		authType.setPin(false);
-//		authType.setOtp(true);
-//		authRequestDTO.setAuthType(authType);
-//		PinDTO pinDTO = new PinDTO();
-//		pinDTO.setType(PinType.OTP);
-//		pinDTO.setValue("123456");
-//		authRequestDTO.setReqTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
-//		authRequestDTO.setPii(new PersonalIdentityDataDTO());
-//		authRequestDTO.getPii().setPin(pinDTO);
-//		authRequestDTO.setReqTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
-//		authRequestValidator.validate(authRequestDTO, errors);
-//		assertTrue(errors.hasErrors());
-//	}
-//
-//	@Test
-//	public void testInvalidIdType() {
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-//		authRequestDTO.setIdType("abcd");
-//		authRequestDTO.setId("5371843613598211");
-//		AuthTypeDTO authType = new AuthTypeDTO();
-//		authType.setBio(false);
-//		authType.setPi(false);
-//		authType.setAd(false);
-//		authType.setPin(false);
-//		authType.setOtp(true);
-//		authRequestDTO.setAuthType(authType);
-//		PinDTO pinDTO = new PinDTO();
-//		pinDTO.setType(PinType.OTP);
-//		pinDTO.setValue("123456");
-//		authRequestDTO.setReqTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
-//		authRequestDTO.setPii(new PersonalIdentityDataDTO());
-//		authRequestDTO.getPii().setPin(pinDTO);
-//		authRequestDTO.setReqTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
-//		authRequestValidator.validate(authRequestDTO, errors);
-//		assertTrue(errors.hasErrors());
-//	}
-//
-//	@Test
-//	public void testInvalidOTPLength() {
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-//		authRequestDTO.setIdType("abcd");
-//		authRequestDTO.setId("5371843613598211");
-//		AuthTypeDTO authType = new AuthTypeDTO();
-//		authType.setBio(false);
-//		authType.setPi(false);
-//		authType.setAd(false);
-//		authType.setPin(false);
-//		authType.setOtp(true);
-//		authRequestDTO.setAuthType(authType);
-//		PinDTO pinDTO = new PinDTO();
-//		pinDTO.setType(PinType.OTP);
-//		pinDTO.setValue("12345");
-//		authRequestDTO.setReqTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
-//		authRequestDTO.setPii(new PersonalIdentityDataDTO());
-//		authRequestDTO.getPii().setPin(pinDTO);
-//		authRequestDTO.setReqTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
-//		authRequestValidator.validate(authRequestDTO, errors);
-//		assertTrue(errors.hasErrors());
-//	}
-//
-//	@Test
-//	public void checkAuthRequestTest() throws NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-//		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-//		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
-//		AuthTypeDTO authType = new AuthTypeDTO();
-//		authType.setAd(false);
-//		authType.setBio(false);
-//		authType.setFad(false);
-//		authType.setOtp(false);
-//		authType.setPi(false);
-//		authType.setPin(false);
-//		authRequestDTO.setAuthType(authType);
-//		Method checkAuthReq = authRequestValidator.getClass().getDeclaredMethod("checkAuthRequest", AuthRequestDTO.class, Errors.class);
-//		checkAuthReq.setAccessible(true);
-//		checkAuthReq.invoke(authRequestValidator, authRequestDTO, errors);
-//		assertTrue(errors.hasErrors());
-//	}
+	@Mock
+	private SpringValidatorAdapter validator;
 
-//}
+	@Mock
+	Errors error;
+
+	@Autowired
+	Environment env;
+	
+	@InjectMocks
+	DateHelper dateHelper;
+	
+	@Mock
+	UinValidatorImpl uinValidator;
+
+	@Mock
+	VidValidatorImpl vidValidator;
+
+	@InjectMocks
+	MosipRollingFileAppender idaRollingFileAppender;
+
+	@InjectMocks
+	private AuthRequestValidator authRequestValidator;
+
+	@Before
+	public void before() {
+		ReflectionTestUtils.setField(authRequestValidator, "env", env);
+		ReflectionTestUtils.setField(dateHelper, "env", env);
+		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
+	}
+	
+	@Test
+	public void testSupportTrue() {
+		assertTrue(authRequestValidator.supports(AuthRequestDTO.class));
+	}
+
+	@Test
+	public void testSupportFalse() {
+		assertFalse(authRequestValidator.supports(OTPRequestValidator.class));
+	}
+
+	@Test
+	public void testValidUin() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("234567890123");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertFalse(errors.hasErrors());
+	}
+
+	@Test
+	public void testInvalidUin() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("234567890123");
+		authRequestDTO.setReqTime(Instant.now().toString());
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testValidVid() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertFalse(errors.hasErrors());
+	}
+
+	@Test
+	public void testInvalidVid() {
+		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testInvalidRequestDTO() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testInvalidTimestamp() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType("V");
+		authRequestDTO.setReqTime("2001-07-04T12:08:56.235-0700");
+		authRequestDTO.setIdvId("5371843613598211");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testInvalidVer() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType("D");
+		authRequestDTO.setReqTime(Instant.now().toString());
+		authRequestDTO.setIdvId("5371843613598211");
+		authRequestDTO.setVer("1.12");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testInvalidMuaCode() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType("D");
+		authRequestDTO.setReqTime(Instant.now().toString());
+		authRequestDTO.setIdvId("5371843613598211");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testInvalidTxnId() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType("D");
+		authRequestDTO.setReqTime(Instant.now().toString());
+		authRequestDTO.setIdvId("5371843613598211");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setTxnID("");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testNullId() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType("D");
+		authRequestDTO.setReqTime(Instant.now().toString());
+		authRequestDTO.setIdvId(null);
+		authRequestDTO.setVer("1.1");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testNullIdType() {
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(null);
+		authRequestDTO.setReqTime(Instant.now().toString());
+		authRequestDTO.setIdvId("5371843613598211");
+		authRequestDTO.setVer("1.1");
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInValidRequest() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDateOfBirth(idInfoList);
+		idDTO.setDateOfBirthType(idInfoList);
+		idDTO.setGender(idInfoList);
+		idDTO.setAge(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testValidRequest() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		//name
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		//dob
+		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
+		idInfoDTO2.setLanguage(null);
+		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
+		idInfoList1.add(idInfoDTO2);
+		//dobtype
+		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
+		idInfoDTO4.setLanguage(null);
+		idInfoDTO4.setValue("V");
+		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
+		idInfoList2.add(idInfoDTO4);
+		//age
+		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
+		idInfoDTO3.setLanguage(null);
+		idInfoDTO3.setValue("25");
+		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
+		idInfoList3.add(idInfoDTO3);
+		//gender
+		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
+		idInfoDTO5.setLanguage(null);
+		idInfoDTO5.setValue("M");
+		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
+		idInfoList4.add(idInfoDTO5);
+		
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDateOfBirth(idInfoList1);
+		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setGender(idInfoList4);
+		idDTO.setAge(idInfoList3);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertFalse(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInValidRequest2() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		//name
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		IdentityInfoDTO idInfoDTO6 = new IdentityInfoDTO();
+		idInfoDTO6.setLanguage("EN");
+		idInfoDTO6.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		idInfoList.add(idInfoDTO6);
+		//dob
+		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
+		idInfoDTO2.setLanguage(null);
+		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
+		idInfoList1.add(idInfoDTO2);
+		//dobtype
+		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
+		idInfoDTO4.setLanguage(null);
+		idInfoDTO4.setValue("V");
+		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
+		idInfoList2.add(idInfoDTO4);
+		//age
+		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
+		idInfoDTO3.setLanguage(null);
+		idInfoDTO3.setValue("25");
+		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
+		idInfoList3.add(idInfoDTO3);
+		//gender
+		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
+		idInfoDTO5.setLanguage(null);
+		idInfoDTO5.setValue("M");
+		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
+		idInfoList4.add(idInfoDTO5);
+		
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDateOfBirth(idInfoList1);
+		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setGender(idInfoList4);
+		idDTO.setAge(idInfoList3);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInValidRequest3() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		//name
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("FR");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		IdentityInfoDTO idInfoDTO6 = new IdentityInfoDTO();
+		idInfoDTO6.setLanguage(null);
+		idInfoDTO6.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		idInfoList.add(idInfoDTO6);
+		//dob
+		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
+		idInfoDTO2.setLanguage(null);
+		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
+		idInfoList1.add(idInfoDTO2);
+		//dobtype
+		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
+		idInfoDTO4.setLanguage(null);
+		idInfoDTO4.setValue("V");
+		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
+		idInfoList2.add(idInfoDTO4);
+		//age
+		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
+		idInfoDTO3.setLanguage(null);
+		idInfoDTO3.setValue("25");
+		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
+		idInfoList3.add(idInfoDTO3);
+		//gender
+		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
+		idInfoDTO5.setLanguage(null);
+		idInfoDTO5.setValue("M");
+		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
+		idInfoList4.add(idInfoDTO5);
+		
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDateOfBirth(idInfoList1);
+		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setGender(idInfoList4);
+		idDTO.setAge(idInfoList3);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInValidRequest4() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		//name
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("AR");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		IdentityInfoDTO idInfoDTO6 = new IdentityInfoDTO();
+		idInfoDTO6.setLanguage("EN");
+		idInfoDTO6.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		idInfoList.add(idInfoDTO6);
+		//dob
+		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
+		idInfoDTO2.setLanguage(null);
+		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
+		idInfoList1.add(idInfoDTO2);
+		//dobtype
+		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
+		idInfoDTO4.setLanguage(null);
+		idInfoDTO4.setValue("V");
+		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
+		idInfoList2.add(idInfoDTO4);
+		//age
+		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
+		idInfoDTO3.setLanguage(null);
+		idInfoDTO3.setValue("25");
+		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
+		idInfoList3.add(idInfoDTO3);
+		//gender
+		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
+		idInfoDTO5.setLanguage(null);
+		idInfoDTO5.setValue("M");
+		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
+		idInfoList4.add(idInfoDTO5);
+		
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDateOfBirth(null);
+		idDTO.setDateOfBirthType(null);
+		idDTO.setGender(null);
+		idDTO.setAge(null);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInValidRequest5() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		//name
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue(null);
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		IdentityInfoDTO idInfoDTO6 = new IdentityInfoDTO();
+		idInfoDTO6.setLanguage(null);
+		idInfoDTO6.setValue(null);
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		idInfoList.add(idInfoDTO6);
+		//dob
+		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
+		idInfoDTO2.setLanguage(null);
+		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
+		idInfoList1.add(idInfoDTO2);
+		//dobtype
+		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
+		idInfoDTO4.setLanguage(null);
+		idInfoDTO4.setValue("V");
+		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
+		idInfoList2.add(idInfoDTO4);
+		//age
+		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
+		idInfoDTO3.setLanguage(null);
+		idInfoDTO3.setValue(null);
+		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
+		idInfoList3.add(idInfoDTO3);
+		//gender
+		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
+		idInfoDTO5.setLanguage("EN");
+		idInfoDTO5.setValue(null);
+		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
+		idInfoList4.add(idInfoDTO5);
+		
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDateOfBirth(idInfoList1);
+		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setGender(idInfoList4);
+		idDTO.setAge(idInfoList3);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInValidRequest6() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(false);
+		//name
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue(null);
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		IdentityInfoDTO idInfoDTO6 = new IdentityInfoDTO();
+		idInfoDTO6.setLanguage(null);
+		idInfoDTO6.setValue(null);
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		idInfoList.add(idInfoDTO6);
+		//dob
+		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
+		idInfoDTO2.setLanguage(null);
+		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
+		idInfoList1.add(idInfoDTO2);
+		//dobtype
+		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
+		idInfoDTO4.setLanguage(null);
+		idInfoDTO4.setValue("V");
+		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
+		idInfoList2.add(idInfoDTO4);
+		//age
+		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
+		idInfoDTO3.setLanguage(null);
+		idInfoDTO3.setValue(null);
+		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
+		idInfoList3.add(idInfoDTO3);
+		//gender
+		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
+		idInfoDTO5.setLanguage("EN");
+		idInfoDTO5.setValue(null);
+		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
+		idInfoList4.add(idInfoDTO5);
+		
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDateOfBirth(idInfoList1);
+		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setGender(idInfoList4);
+		idDTO.setAge(idInfoList3);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInValidRequest7() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		//name
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue(null);
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		IdentityInfoDTO idInfoDTO6 = new IdentityInfoDTO();
+		idInfoDTO6.setLanguage(null);
+		idInfoDTO6.setValue(null);
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		idInfoList.add(idInfoDTO6);
+		//dob
+		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
+		idInfoDTO2.setLanguage(null);
+		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
+		idInfoList1.add(idInfoDTO2);
+		//dobtype
+		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
+		idInfoDTO4.setLanguage(null);
+		idInfoDTO4.setValue("V");
+		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
+		idInfoList2.add(idInfoDTO4);
+		//age
+		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
+		idInfoDTO3.setLanguage(null);
+		idInfoDTO3.setValue(null);
+		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
+		idInfoList3.add(idInfoDTO3);
+		//gender
+		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
+		idInfoDTO5.setLanguage("EN");
+		idInfoDTO5.setValue(null);
+		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
+		idInfoList4.add(idInfoDTO5);
+		
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDateOfBirth(idInfoList1);
+		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setGender(idInfoList4);
+		idDTO.setAge(idInfoList3);
+		
+		authTypeDTO.setOtp(true);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestDTO.setPinInfo(null);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testInValidRequest8() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		//name
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue(null);
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		IdentityInfoDTO idInfoDTO6 = new IdentityInfoDTO();
+		idInfoDTO6.setLanguage(null);
+		idInfoDTO6.setValue(null);
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		idInfoList.add(idInfoDTO6);
+		//dob
+		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
+		idInfoDTO2.setLanguage(null);
+		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
+		idInfoList1.add(idInfoDTO2);
+		//dobtype
+		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
+		idInfoDTO4.setLanguage(null);
+		idInfoDTO4.setValue("V");
+		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
+		idInfoList2.add(idInfoDTO4);
+		//age
+		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
+		idInfoDTO3.setLanguage(null);
+		idInfoDTO3.setValue(null);
+		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
+		idInfoList3.add(idInfoDTO3);
+		//gender
+		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
+		idInfoDTO5.setLanguage("EN");
+		idInfoDTO5.setValue(null);
+		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
+		idInfoList4.add(idInfoDTO5);
+		
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDateOfBirth(idInfoList1);
+		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setGender(idInfoList4);
+		idDTO.setAge(idInfoList3);
+		
+		authTypeDTO.setOtp(true);
+		PinInfo pin = new PinInfo();
+		pin.setType("OTP");
+		pin.setValue("123456");
+		List<PinInfo> pinInfo = new ArrayList<>();
+		pinInfo.add(pin);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestDTO.setPinInfo(pinInfo);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertFalse(errors.hasErrors());
+	}
+	
+	@Test
+	public void testValidRequest2() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		//name
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue(null);
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		IdentityInfoDTO idInfoDTO6 = new IdentityInfoDTO();
+		idInfoDTO6.setLanguage(null);
+		idInfoDTO6.setValue(null);
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		idInfoList.add(idInfoDTO6);
+		//dob
+		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
+		idInfoDTO2.setLanguage(null);
+		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
+		idInfoList1.add(idInfoDTO2);
+		//dobtype
+		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
+		idInfoDTO4.setLanguage(null);
+		idInfoDTO4.setValue("V");
+		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
+		idInfoList2.add(idInfoDTO4);
+		//age
+		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
+		idInfoDTO3.setLanguage(null);
+		idInfoDTO3.setValue(null);
+		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
+		idInfoList3.add(idInfoDTO3);
+		//gender
+		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
+		idInfoDTO5.setLanguage("EN");
+		idInfoDTO5.setValue(null);
+		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
+		idInfoList4.add(idInfoDTO5);
+		
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDateOfBirth(idInfoList1);
+		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setGender(idInfoList4);
+		idDTO.setAge(idInfoList3);
+		
+		authTypeDTO.setOtp(true);
+		PinInfo pin = new PinInfo();
+		List<PinInfo> pinInfo = new ArrayList<>();
+		pinInfo.add(pin);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestDTO.setPinInfo(pinInfo);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+	
+	@Test
+	public void testValidRequest10() {
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		Errors errors = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
+		authRequestDTO.setIdvIdType(IdType.VID.getType());
+		authRequestDTO.setIdvId("5371843613598206");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		//name
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue(null);
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setValue("Mike");
+		IdentityInfoDTO idInfoDTO6 = new IdentityInfoDTO();
+		idInfoDTO6.setLanguage(null);
+		idInfoDTO6.setValue(null);
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		idInfoList.add(idInfoDTO6);
+		//dob
+		IdentityInfoDTO idInfoDTO2 = new IdentityInfoDTO();
+		idInfoDTO2.setLanguage(null);
+		idInfoDTO2.setValue(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		List<IdentityInfoDTO> idInfoList1 = new ArrayList<>();
+		idInfoList1.add(idInfoDTO2);
+		//dobtype
+		IdentityInfoDTO idInfoDTO4 = new IdentityInfoDTO();
+		idInfoDTO4.setLanguage(null);
+		idInfoDTO4.setValue("V");
+		List<IdentityInfoDTO> idInfoList2 = new ArrayList<>();
+		idInfoList2.add(idInfoDTO4);
+		//age
+		IdentityInfoDTO idInfoDTO3 = new IdentityInfoDTO();
+		idInfoDTO3.setLanguage(null);
+		idInfoDTO3.setValue(null);
+		List<IdentityInfoDTO> idInfoList3 = new ArrayList<>();
+		idInfoList3.add(idInfoDTO3);
+		//gender
+		IdentityInfoDTO idInfoDTO5 = new IdentityInfoDTO();
+		idInfoDTO5.setLanguage("EN");
+		idInfoDTO5.setValue(null);
+		List<IdentityInfoDTO> idInfoList4 = new ArrayList<>();
+		idInfoList4.add(idInfoDTO5);
+		
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		idDTO.setDateOfBirth(idInfoList1);
+		idDTO.setDateOfBirthType(idInfoList2);
+		idDTO.setGender(idInfoList4);
+		idDTO.setAge(idInfoList3);
+		
+		authTypeDTO.setOtp(true);
+		PinInfo pin = new PinInfo();
+		pin.setType("OTP");
+		pin.setType("");
+		List<PinInfo> pinInfo = new ArrayList<>();
+		pinInfo.add(pin);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		authRequestDTO.setPinInfo(pinInfo);
+		authRequestValidator.validate(authRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+}
