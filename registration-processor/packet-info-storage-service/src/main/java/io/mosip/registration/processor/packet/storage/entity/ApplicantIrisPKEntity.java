@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.packet.storage.entity;
-import java.io.Serializable;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -9,9 +9,10 @@ import javax.persistence.Embeddable;
  * 
  * @author Horteppa M1048399
  */
+
 @Embeddable
 public class ApplicantIrisPKEntity implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;

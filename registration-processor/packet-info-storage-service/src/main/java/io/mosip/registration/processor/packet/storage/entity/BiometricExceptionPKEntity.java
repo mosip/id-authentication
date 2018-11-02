@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -12,7 +11,7 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 public class BiometricExceptionPKEntity implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;

@@ -1,14 +1,13 @@
 package io.mosip.registration.processor.packet.storage.entity;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,7 +18,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Table(name = "applicant_demographic", schema = "regprc")
 public class ApplicantDemographicEntity extends BasePacketEntity<ApplicantDemographicPKEntity> implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -707,7 +706,7 @@ public class ApplicantDemographicEntity extends BasePacketEntity<ApplicantDemogr
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
+
 	/**
 	 * Gets the checks if is active.
 	 *
@@ -734,7 +733,7 @@ public class ApplicantDemographicEntity extends BasePacketEntity<ApplicantDemogr
 	public String getMiddleInitial() {
 		return middleInitial;
 	}
-	
+
 	/**
 	 * Sets the middle initial.
 	 *

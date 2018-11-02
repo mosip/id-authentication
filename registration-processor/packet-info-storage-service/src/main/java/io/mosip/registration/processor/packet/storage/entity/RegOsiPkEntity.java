@@ -11,7 +11,7 @@ import javax.persistence.Embeddable;
  */
 @Embeddable
 public class RegOsiPkEntity implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 

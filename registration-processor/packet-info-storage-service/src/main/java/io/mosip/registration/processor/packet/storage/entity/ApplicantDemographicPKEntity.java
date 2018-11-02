@@ -9,7 +9,7 @@ import javax.persistence.*;
  */
 @Embeddable
 public class ApplicantDemographicPKEntity implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;

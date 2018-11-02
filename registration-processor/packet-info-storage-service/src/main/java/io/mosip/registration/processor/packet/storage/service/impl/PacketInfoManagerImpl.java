@@ -4,12 +4,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
@@ -65,7 +63,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	/** The Constant DEMOGRAPHIC_APPLICANT. */
 	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
 			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
-	
+
 	/** The applicant document repository. */
 	@Autowired
 	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
@@ -100,21 +98,21 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 
 	/** The event id. */
 	private String eventId = "";
-	
+
 	/** The event name. */
 	private String eventName = "";
-	
+
 	/** The event type. */
 	private String eventType = "";
-	
+
 	/** The description. */
 	String description = "";
-	
+
 	/** The core audit request builder. */
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
-	
+
 	/** The file system adapter. */
 	private FileSystemAdapter<InputStream, Boolean> fileSystemAdapter = new FilesystemCephAdapterImpl();
 
@@ -152,17 +150,17 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			eventId = EventId.RPR_402.toString();
 			eventName = EventName.UPDATE.toString();
 			eventType = EventType.BUSINESS.toString();
-			
+
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
 			description = isTransactionSuccessful ? "packet-meta-data saved Success"
 					: "packet-metadata Failure";
-			
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
-					}
+		}
 
 	}
 
@@ -197,7 +195,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		} finally {
 			description = isTransactionSuccessful ? "Demographic-data saved Success"
 					: "Demographic Failed to save";
-			
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 

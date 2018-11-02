@@ -3,11 +3,9 @@ package io.mosip.registration.processor.packet.storage.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,7 +17,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Table(name = "applicant_fingerprint", schema = "regprc")
 public class ApplicantFingerprintEntity extends BasePacketEntity<ApplicantFingerprintPKEntity> implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 

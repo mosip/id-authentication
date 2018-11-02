@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import io.mosip.registration.processor.core.packet.dto.DemoInLocalLang;
 import io.mosip.registration.processor.core.packet.dto.DemoInUserLang;
 import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
@@ -360,7 +358,7 @@ public class PacketInfoMapper {
 	public static RegCenterMachineEntity convertRegCenterMachineToEntity(MetaData metaData) {
 		RegCenterMachinePKEntity regCenterMachinePKEntity = new RegCenterMachinePKEntity();
 		regCenterMachinePKEntity.setRegId(metaData.getRegistrationId());
-		
+
 		RegCenterMachineEntity regCenterMachineEntity = new RegCenterMachineEntity();
 		regCenterMachineEntity.setCntrId("Center 1");
 		regCenterMachineEntity.setMachineId("Machine 1");
