@@ -71,9 +71,6 @@ public class Decryptor {
 		try {
 			byte[] in = IOUtils.toByteArray(encryptedPacket);
 			splitKeyEncryptedData(in);
-			eventId = EventId.RPR_402.toString();
-			eventName = EventName.UPDATE.toString();
-			eventType = EventType.BUSINESS.toString();
 			byte[] aeskey = MosipDecryptor.asymmetricPrivateDecrypt(readPrivatekey(registrationId), sessionKey,
 					MosipSecurityMethod.RSA_WITH_PKCS1PADDING);
 			byte[] aesDecryptedData = MosipDecryptor.symmetricDecrypt(aeskey, encryptedData,
@@ -81,19 +78,19 @@ public class Decryptor {
 			outstream = new ByteArrayInputStream(aesDecryptedData);
 			isTransactionSuccessful=true;
 		} catch (IOException | MosipInvalidDataException | MosipInvalidKeyException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
 					.getErrorMessage(),
 					e);
 		} finally {
-			description = isTransactionSuccessful ? "Decryption of packet completed successfully for registration Id :"+registrationId
-					: "Decryption of packet failured for registration Id: "+registrationId;
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
+			
+			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
+			eventName=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString() : EventName.EXCEPTION.toString();	
+			eventType=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();	
+			description = isTransactionSuccessful ? "Decryption of packet completed successfully for registration Id :"+registrationId : "Decryption of packet failured for registration Id: "+registrationId;
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,registrationId);
+		
 		}
 		return outstream;
 	}
@@ -112,24 +109,20 @@ public class Decryptor {
 		try {
 			fileInputStream = new FileInputStream(new File(privateKey + registrationId + "/private.key"));
 			rprivateKey = IOUtils.toByteArray(fileInputStream);
-			eventId = EventId.RPR_401.toString();
-			eventName = EventName.GET.toString();
-			eventType = EventType.BUSINESS.toString();
 			isTransactionSuccessful=true;
 		} catch (IOException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 			throw new PacketDecryptionFailureException(
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
 					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
 					.getErrorMessage(),
 					e);
 		}finally {
-			description = isTransactionSuccessful ? "Read private key from private key file success for registration Id :"+registrationId
-					: "Read private key from private key file failured for registration Id: "+registrationId;
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
+			
+			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
+			eventName=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString() : EventName.EXCEPTION.toString();	
+			eventType=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();	
+			description = isTransactionSuccessful ? "Read private key from private key file success for registration Id :"+registrationId : "Read private key from private key file failured for registration Id: "+registrationId;
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,registrationId);
 		}
 
 		return rprivateKey;

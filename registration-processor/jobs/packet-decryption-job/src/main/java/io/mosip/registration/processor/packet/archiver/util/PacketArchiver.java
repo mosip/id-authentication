@@ -2,6 +2,9 @@ package io.mosip.registration.processor.packet.archiver.util;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
@@ -15,6 +18,7 @@ import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotF
 import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
 import io.mosip.registration.processor.packet.archiver.util.exception.constant.PacketNotFoundExceptionConstant;
 import io.mosip.registration.processor.packet.archiver.util.exception.constant.UnableToAccessPathExceptionConstant;
+import io.mosip.registration.processor.packet.decryptor.job.messagesender.DecryptionMessageSender;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 
 /**
@@ -25,27 +29,23 @@ import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 @Component
 public class PacketArchiver {
 
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = LoggerFactory.getLogger(PacketArchiver.class);
+
 	/** The filesystem ceph adapter impl. */
 	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl = new FilesystemCephAdapterImpl();
 
 	/** The filemanager. */
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
-	
-	/** The event id. */
-	private String eventId = "";
-	
-	/** The event name. */
-	private String eventName = "";
-	
-	/** The event type. */
-	private String eventType = "";
-	
+
 	/** The core audit request builder. */
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
-	
+	/** The Constant LOGDISPLAY. */
+	private static final String LOGDISPLAY = "{} - {} - {}";
+
 	/** The is transaction successful. */
 	private boolean isTransactionSuccessful = false;
 	/**
@@ -62,41 +62,34 @@ public class PacketArchiver {
 	 */
 	public void archivePacket(String registrationId)
 			throws IOException, UnableToAccessPathException, PacketNotFoundException {
-		String description = " ";
+		String description = "";
+		String eventId = "";
+		String eventName = "";
+		String eventType = "";
 		InputStream encryptedpacket = filesystemCephAdapterImpl.getPacket(registrationId);
 
-		if (encryptedpacket != null) {
-			try {
+		try {
+			if (encryptedpacket != null) {
 				filemanager.put(registrationId, encryptedpacket, DirectoryPathDto.ARCHIVE_LOCATION);
-				eventId = EventId.RPR_407.toString();
-				eventName = EventName.ADD.toString();
-				eventType = EventType.BUSINESS.toString();
 				isTransactionSuccessful=true;
-			} catch (IOException e) {
-				eventId = EventId.RPR_405.toString();
-				eventName = EventName.EXCEPTION.toString();
-				eventType = EventType.SYSTEM.toString();
-				throw new UnableToAccessPathException(
-						UnableToAccessPathExceptionConstant.UNABLE_TO_ACCESS_PATH_ERROR_CODE.getErrorCode(),
-						UnableToAccessPathExceptionConstant.UNABLE_TO_ACCESS_PATH_ERROR_CODE.getErrorMessage(),
-						e.getCause());
-			} finally {
-				description = isTransactionSuccessful ? "The file is successfully copied to VM for registration Id :"+registrationId
-						: "The file copying to VM is failured for registration Id: "+registrationId;
-				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-						registrationId);
-			}
-		} else {
-			eventId = EventId.RPR_401.toString();
-			eventName = EventName.GET.toString();
-			eventType = EventType.BUSINESS.toString();
-			description = "Packet not found in DFS";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					registrationId);
-			throw new PacketNotFoundException(PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorCode(),
-					PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorMessage());
-		}
+			} else {
 
+				throw new PacketNotFoundException(PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorCode(),
+						PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorMessage());
+			}
+
+		} catch (IOException e) {
+			LOGGER.error(LOGDISPLAY,"Packet archive failed", e);
+			throw new UnableToAccessPathException(UnableToAccessPathExceptionConstant.UNABLE_TO_ACCESS_PATH_ERROR_CODE.getErrorCode(),UnableToAccessPathExceptionConstant.UNABLE_TO_ACCESS_PATH_ERROR_CODE.getErrorMessage(),e.getCause());
+		} finally {
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName=	eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString(): EventName.EXCEPTION.toString();	
+			eventType=	eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString(): EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "The file is successfully copied to VM for registration Id :"+registrationId : "The file copying to VM is failured for registration Id: "+registrationId;
+
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,registrationId);
+		}
 	}
 
 }

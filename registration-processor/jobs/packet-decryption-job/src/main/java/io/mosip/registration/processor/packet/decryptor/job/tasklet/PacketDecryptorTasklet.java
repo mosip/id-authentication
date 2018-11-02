@@ -103,11 +103,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 		List<RegistrationStatusDto> dtolist = null;
 
 		try {
-			dtolist = registrationStatusService
-					.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
-			eventId = EventId.RPR_401.toString();
-			eventName = EventName.GET.toString();
-			eventType = EventType.BUSINESS.toString();
+			dtolist = registrationStatusService.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 
 			if (!(dtolist.isEmpty())) {
 				dtolist.forEach(dto -> {
@@ -115,9 +111,6 @@ public class PacketDecryptorTasklet implements Tasklet {
 						decyptpacket(dto);
 						isTransactionSuccessful = true;
 					} catch (TablenotAccessibleException e) {
-						eventId = EventId.RPR_405.toString();
-						eventName = EventName.EXCEPTION.toString();
-						eventType = EventType.SYSTEM.toString();
 						LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e.getMessage(), e);
 					} catch (PacketDecryptionFailureException e) {
 						LOGGER.error(LOGDISPLAY, e.getErrorCode(), e.getErrorText(), e);
@@ -125,35 +118,23 @@ public class PacketDecryptorTasklet implements Tasklet {
 						dto.setStatusComment("packet is in status packet for decryption failed");
 						dto.setUpdatedBy(USER);
 						registrationStatusService.updateRegistrationStatus(dto);
-						eventId = EventId.RPR_405.toString();
-						eventName = EventName.EXCEPTION.toString();
-						eventType = EventType.SYSTEM.toString();
 					} catch (IOException e) {
-						eventId = EventId.RPR_405.toString();
-						eventName = EventName.EXCEPTION.toString();
-						eventType = EventType.SYSTEM.toString();
 						LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e.getMessage(), e);
 					}
 				});
 			} else if (dtolist.isEmpty()) {
-				eventId = EventId.RPR_405.toString();
-				eventName = EventName.EXCEPTION.toString();
-				eventType = EventType.SYSTEM.toString();
 				LOGGER.info("There are currently no files to be decrypted");
 			}
 
 		} catch (TablenotAccessibleException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
 		} finally {
 
-			description = isTransactionSuccessful ? "Packet uploaded to file system"
-					: "Packet uploading to file system is unsuccessfull";
-
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString());
+			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
+			eventName=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString() : EventName.EXCEPTION.toString();	
+			eventType=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();	
+			description = isTransactionSuccessful ? "Packet uploaded to file system" : "Packet uploading to file system is unsuccessful";
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.MULTIPLE_ID.toString());
 		}
 		return RepeatStatus.FINISHED;
 	}
