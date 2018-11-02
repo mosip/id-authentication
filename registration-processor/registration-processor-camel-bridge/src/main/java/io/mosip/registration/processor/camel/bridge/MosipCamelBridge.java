@@ -44,9 +44,9 @@ public class MosipCamelBridge extends AbstractVerticle {
 	@Override
 	public void start() throws Exception {
 
-		vertx.eventBus().consumer(MessageBusAddress.ERROR.getAddress(), message -> {
-			log.error("ERROR while doing operation >> " + message.body());
-		});
+		vertx.eventBus().consumer(MessageBusAddress.ERROR.getAddress(),
+				message -> log.error("ERROR while doing operation >> " + message.body()));
+
 		CamelContext camelContext = new DefaultCamelContext();
 
 		camelContext.addRoutes(new MosipBridgeRoutes());

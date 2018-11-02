@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import io.mosip.registration.processor.camel.bridge.MosipCamelBridge;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.exception.ConfigurationServerFailureException;
 import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticleErrorCodes;
@@ -23,8 +24,6 @@ import io.vertx.core.json.JsonObject;
  */
 public class BridgeUtil {
 
-	private static String URL = "http://104.211.212.28:51000/registration-processor-camel-bridge/dev/DEV";
-
 	private static JsonObject bridgeConfiguration = null;
 
 	private BridgeUtil() {
@@ -36,11 +35,11 @@ public class BridgeUtil {
 	 * locally
 	 */
 	public static void getConfiguration() {
-
+		String url = PropertyFileUtil.getProperty(MosipCamelBridge.class, "bootstrap.properties", "url");
 		CompletableFuture<JsonObject> configuration = new CompletableFuture<>();
 
 		ConfigStoreOptions configStoreOptions = new ConfigStoreOptions().setType("spring-config-server")
-				.setConfig(new JsonObject().put("url", URL).put("timeout", 70000));
+				.setConfig(new JsonObject().put("url", url).put("timeout", 70000));
 
 		ConfigRetriever configRetriever = ConfigRetriever.create(Vertx.vertx(),
 				new ConfigRetrieverOptions().addStore(configStoreOptions));
