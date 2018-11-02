@@ -2,7 +2,7 @@ package io.mosip.registration.processor.quality.check.service.impl;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +18,7 @@ import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.quality.check.code.QualityCheckerStatusCode;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
+import io.mosip.registration.processor.quality.check.dao.QCUserInfoDao;
 import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
@@ -33,6 +34,9 @@ import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 public class QualityCheckManagerImpl implements QualityCheckManager<String, ApplicantInfoDto, QCUserDto> {
 	@Autowired
 	private ApplicantInfoDao applicantInfoDao;
+	
+	@Autowired
+	private QCUserInfoDao qcUserInfoDao;
 
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
@@ -42,7 +46,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 
 	@Override
 	public void assignQCUser(String applicantRegistrationId) {
-		List<String> qcUsersList = Arrays.asList("qc001", "qc002", "qc003");
+		List<String> qcUsersList = qcUserInfoDao.getAllQcuserIds();
 		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
 		QCUserDto qcUserDto = new QCUserDto();
 		qcUserDto.setQcUserId(qcUserId);

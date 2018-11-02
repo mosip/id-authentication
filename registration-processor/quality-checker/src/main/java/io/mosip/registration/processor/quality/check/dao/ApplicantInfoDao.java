@@ -26,7 +26,7 @@ import io.mosip.registration.processor.quality.check.repository.QcuserRegReposit
 
 @Component
 public class ApplicantInfoDao {
-	/** The registration sync status. */
+	/** The registration information. */
 
 	/** The Constant AND. */
 	public static final String AND = "AND";
