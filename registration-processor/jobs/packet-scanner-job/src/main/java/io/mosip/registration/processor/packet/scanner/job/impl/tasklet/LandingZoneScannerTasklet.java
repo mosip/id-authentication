@@ -69,7 +69,7 @@ public class LandingZoneScannerTasklet implements Tasklet {
 
 	/** The Constant VIRUS_SCAN_NOT_ACCESSIBLE. */
 	private static final String VIRUS_SCAN_NOT_ACCESSIBLE = "The Virus Scan Path set by the System is not accessible";
-	
+
 	/** The Constant ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE. */
 	private static final String ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status table is not accessible";
 
@@ -90,9 +90,6 @@ public class LandingZoneScannerTasklet implements Tasklet {
 
 			getEnrols = this.registrationStatusService
 					.findbyfilesByThreshold(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
-			eventId = EventId.RPR_401.toString();
-			eventName = EventName.GET.toString();
-			eventType = EventType.BUSINESS.toString();
 			if (!(getEnrols.isEmpty())) {
 				getEnrols.forEach(dto -> {
 					try {
@@ -108,44 +105,43 @@ public class LandingZoneScannerTasklet implements Tasklet {
 
 							this.filemanager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN,
 									dto.getRegistrationId());
-							eventId = EventId.RPR_403.toString();
-							eventName = EventName.DELETE.toString();
-							eventType = EventType.BUSINESS.toString();
 							isTransactionSuccessful = true;
 
 							LOGGER.info(LOGDISPLAY, dto.getRegistrationId(), "moved successfully to virus scan.");
 						}
 					} catch (TablenotAccessibleException e) {
-						eventId = EventId.RPR_405.toString();
-						eventName = EventName.EXCEPTION.toString();
-						eventType = EventType.SYSTEM.toString();
+
 						LOGGER.error(LOGDISPLAY, ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE, e);
 					} catch (IOException | FileNotFoundInDestinationException e) {
-						eventId = EventId.RPR_405.toString();
-						eventName = EventName.EXCEPTION.toString();
-						eventType = EventType.SYSTEM.toString();
+
 						LOGGER.error(LOGDISPLAY, VIRUS_SCAN_NOT_ACCESSIBLE, e);
 					}
 
 				});
 			} else if (getEnrols.isEmpty()) {
-				eventId = EventId.RPR_401.toString();
-				eventName = EventName.GET.toString();
-				eventType = EventType.BUSINESS.toString();
+
 				LOGGER.info("There are currently no files to be moved");
 			}
 		} catch (TablenotAccessibleException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
+
 			LOGGER.error(LOGDISPLAY, ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE, e);
 		}
 		finally{
-			String description = isTransactionSuccessful ? "File moved from landing zone to virusscan zone successfully"
-					: "File moveing from landing zone to virusscan zone failed";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+			if (!(getEnrols.isEmpty())) {
+				eventId = isTransactionSuccessful ? EventId.RPR_403.toString() : EventId.RPR_405.toString();
+				eventName=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventName.DELETE.toString(): EventName.EXCEPTION.toString();	
+				eventType=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventType.BUSINESS.toString(): EventType.SYSTEM.toString();
+			} else if (getEnrols.isEmpty()) {
+
+				eventId = EventId.RPR_401.toString();
+				eventName = EventName.GET.toString();
+				eventType = EventType.BUSINESS.toString();
+			}
+
+			String description = isTransactionSuccessful ? "File moved from landing zone to virusscan zone successfully" : "File moveing from landing zone to virusscan zone failed";
+
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.NO_ID.toString());
 		}
 		return RepeatStatus.FINISHED;
 	}

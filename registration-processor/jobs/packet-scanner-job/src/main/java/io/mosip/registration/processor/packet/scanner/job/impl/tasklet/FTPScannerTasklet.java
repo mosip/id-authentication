@@ -54,7 +54,7 @@ public class FTPScannerTasklet implements Tasklet {
 
 	/** The Constant FTP_NOT_ACCESSIBLE. */
 	private static final String FTP_NOT_ACCESSIBLE = "The FTP Path set by the System is not accessible";
-	
+
 	/** The Constant DUPLICATE_UPLOAD. */
 	private static final String DUPLICATE_UPLOAD = "Duplicate file uploading to landing zone";
 
@@ -102,9 +102,6 @@ public class FTPScannerTasklet implements Tasklet {
 				packetHandlerService.storePacket(multipartFile);
 				this.filemanager.cleanUpFile(DirectoryPathDto.FTP_ZONE, DirectoryPathDto.LANDING_ZONE,
 						filepathName.getFileName().toString().split("\\.")[0], childFolder);
-				eventId = EventId.RPR_403.toString();
-				eventName = EventName.DELETE.toString();
-				eventType = EventType.BUSINESS.toString();
 				isTransactionSuccessful = true;
 
 			} catch (FileNotFoundInDestinationException e) {
@@ -112,24 +109,24 @@ public class FTPScannerTasklet implements Tasklet {
 			} catch (DuplicateUploadRequestException e) {
 				this.filemanager.cleanUpFile(DirectoryPathDto.FTP_ZONE, DirectoryPathDto.LANDING_ZONE,
 						filepathName.getFileName().toString().split("\\.")[0], childFolder);
-				eventId = EventId.RPR_405.toString();
-				eventName = EventName.EXCEPTION.toString();
-				eventType = EventType.SYSTEM.toString();
 				LOGGER.error(LOGDISPLAY, DUPLICATE_UPLOAD, e);
 			} catch (IOException e) {
 				FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(FTP_NOT_ACCESSIBLE,
 						e);
-				eventId = EventId.RPR_405.toString();
-				eventName = EventName.EXCEPTION.toString();
-				eventType = EventType.SYSTEM.toString();
 				LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 						ftpNotAccessibleException);
 			}finally{
-				String description = isTransactionSuccessful ? "File moved from FTP zone to landing zone successfully"
-						: "File moving from FTP zone to landing zone  Failed";
 
-				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-						AuditLogConstant.NO_ID.toString());
+				if(isTransactionSuccessful) {
+					eventId = EventId.RPR_403.toString();
+				}else {
+					eventId = EventId.RPR_405.toString();
+				}
+				eventName=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventName.DELETE.toString(): EventName.EXCEPTION.toString();	
+				eventType=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventType.BUSINESS.toString(): EventType.SYSTEM.toString();
+				String description = isTransactionSuccessful ? "File moved from FTP zone to landing zone successfully" : "File moving from FTP zone to landing zone  Failed";
+
+				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.NO_ID.toString());
 			}
 		});
 
@@ -153,17 +150,11 @@ public class FTPScannerTasklet implements Tasklet {
 						&& (file.list().length == 0)) {
 					try {
 						Files.delete(file.toPath());
-						eventId = EventId.RPR_403.toString();
-						eventName = EventName.DELETE.toString();
-						eventType = EventType.BUSINESS.toString();
 						isTransactionSuccessful = true;
 
 					} catch (IOException e) {
 						FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
 								FTP_NOT_ACCESSIBLE, e);
-						eventId = EventId.RPR_405.toString();
-						eventName = EventName.EXCEPTION.toString();
-						eventType = EventType.SYSTEM.toString();
 						LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 								ftpNotAccessibleException);
 					}
@@ -171,16 +162,15 @@ public class FTPScannerTasklet implements Tasklet {
 			});
 			deletepath.close();
 		} catch (IOException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 			FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(FTP_NOT_ACCESSIBLE, e);
 			LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 					ftpNotAccessibleException);
 		}finally {	
 
-			String description = isTransactionSuccessful ? "Deleted empty folder from FTP zone successfully after all the files are copied"
-					: "Deleting empty folder from FTP zone Failed";
+			eventId = isTransactionSuccessful ? EventId.RPR_403.toString() : EventId.RPR_405.toString();
+			eventName=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventName.DELETE.toString(): EventName.EXCEPTION.toString();	
+			eventType=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventType.BUSINESS.toString(): EventType.SYSTEM.toString();
+			String description = isTransactionSuccessful ? "Deleted empty folder from FTP zone successfully after all the files are copied" : "Deleting empty folder from FTP zone Failed";
 
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
