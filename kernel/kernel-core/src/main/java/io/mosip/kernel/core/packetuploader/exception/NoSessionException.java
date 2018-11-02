@@ -18,14 +18,12 @@ public class NoSessionException extends BaseUncheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param exceptionConstants
-	 *            exception code constant
+	 * @param errorCode
+	 * @param errorMessage
 	 * @param cause
-	 *            cause of exception
 	 */
-	public NoSessionException(PacketUploaderExceptionConstant exceptionConstants, Throwable cause) {
-		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage()
-				+ PacketUploaderConstant.EXCEPTTION_BREAKER.getValue() + cause.getMessage());
+	public NoSessionException(String errorCode, String errorMessage, Throwable cause) {
+		super(errorCode, errorMessage, cause);
 	}
 
 }

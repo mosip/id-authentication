@@ -18,11 +18,12 @@ public class EmptyPathException extends BaseUncheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param exceptionConstants
-	 *            exception code constant
+	 * @param errorCode
+	 * @param errorMessage
+	 * @param cause
 	 */
-	public EmptyPathException(PacketUploaderExceptionConstant exceptionConstants) {
-		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage());
+	public EmptyPathException(String errorCode, String errorMessage, Throwable cause) {
+		super(errorCode, errorMessage, cause);
 	}
 
 }

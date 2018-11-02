@@ -18,10 +18,11 @@ public class PacketSizeException extends BaseUncheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param exceptionConstants
-	 *            exception code constant
+	 * @param errorCode
+	 * @param errorMessage
+	 * @param cause
 	 */
-	public PacketSizeException(PacketUploaderExceptionConstant exceptionConstants) {
-		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage());
+	public PacketSizeException(String errorCode, String errorMessage, Throwable cause) {
+		super(errorCode, errorMessage, cause);
 	}
 }

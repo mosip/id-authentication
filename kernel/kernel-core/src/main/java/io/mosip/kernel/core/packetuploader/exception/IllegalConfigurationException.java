@@ -18,11 +18,12 @@ public class IllegalConfigurationException extends BaseUncheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param exceptionConstants
-	 *            exception code constant
+	 * @param errorCode
+	 * @param errorMessage
+	 * @param cause
 	 */
-	public IllegalConfigurationException(PacketUploaderExceptionConstant exceptionConstants) {
-		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage());
+	public IllegalConfigurationException(String errorCode, String errorMessage, Throwable cause) {
+		super(errorCode, errorMessage, cause);
 	}
 
 }

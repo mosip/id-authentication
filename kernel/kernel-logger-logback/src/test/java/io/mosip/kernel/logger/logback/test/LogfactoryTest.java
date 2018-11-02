@@ -51,7 +51,7 @@ public class LogfactoryTest {
 				"/rollingfileappender.xml").getFile();
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultConsoleLoggerClazz() {
 		mosipConsoleAppender.setAppenderName("testConsoleappender");
 		mosipConsoleAppender.setImmediateFlush(true);
@@ -62,7 +62,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultConsoleLoggerName() {
 		mosipConsoleAppender.setAppenderName("testConsoleappender");
 		mosipConsoleAppender.setImmediateFlush(true);
@@ -73,7 +73,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultConsoleLoggerClazzImplementation() {
 		mosipConsoleAppender.setAppenderName("testConsoleappender");
 		mosipConsoleAppender.setImmediateFlush(true);
@@ -83,7 +83,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetDefaultConsoleLoggerClazzImplementationExcepTion() {
 		mosipConsoleAppender.setAppenderName("testConsoleappender");
 		mosipConsoleAppender.setImmediateFlush(true);
@@ -94,7 +94,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultConsoleLoggerNameImplementation() {
 		mosipConsoleAppender.setAppenderName("testConsoleappender");
 		mosipConsoleAppender.setImmediateFlush(true);
@@ -105,7 +105,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetDefaultConsoleLoggerNameImplementationExcepTion() {
 		mosipConsoleAppender.setAppenderName("testConsoleappender");
 		mosipConsoleAppender.setImmediateFlush(true);
@@ -114,7 +114,7 @@ public class LogfactoryTest {
 				null, "MosipLogfactoryTest"), isA(Logger.class));
 	}
 
-	//@Test(expected = ClassNameNotFoundException.class)
+	@Test(expected = ClassNameNotFoundException.class)
 	public void testgetDefaultConsoleLoggerNameWithTargetNameException() {
 		mosipConsoleAppender.setAppenderName("testConsoleappender");
 		mosipConsoleAppender.setImmediateFlush(true);
@@ -122,7 +122,7 @@ public class LogfactoryTest {
 		Logfactory.getDefaultConsoleLogger(mosipConsoleAppender, "");
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerClassWithoutRolling() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -133,7 +133,7 @@ public class LogfactoryTest {
 				LogfactoryTest.class), isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerNameWithoutRolling() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -144,7 +144,7 @@ public class LogfactoryTest {
 				"MosipLogfactoryTest"), isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerClassWithoutRollingImplementation() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -156,7 +156,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerNameWithoutRollingImplementation() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -169,7 +169,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetDefaultFileLoggerClassWithoutRollingImplementationException() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -180,7 +180,7 @@ public class LogfactoryTest {
 				LogfactoryTest.class), isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetDefaultFileLoggerNameWithoutRollingImplementationException() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -191,7 +191,7 @@ public class LogfactoryTest {
 				"MosipLogfactoryTest"), isA(Logger.class));
 	}
 
-	//@Test(expected = ClassNameNotFoundException.class)
+	@Test(expected = ClassNameNotFoundException.class)
 	public void testgetDefaultFileLoggerNameWithoutRollingNameException() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -201,7 +201,7 @@ public class LogfactoryTest {
 		Logfactory.getDefaultFileLogger(mosipFileAppender, "");
 	}
 
-	//@Test(expected = FileNameNotProvided.class)
+	@Test(expected = FileNameNotProvided.class)
 	public void testgetDefaultFileLoggerNameWithoutRollingFileNullException() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -212,7 +212,7 @@ public class LogfactoryTest {
 				"MosipLogfactoryTest");
 	}
 
-	//@Test(expected = FileNameNotProvided.class)
+	@Test(expected = FileNameNotProvided.class)
 	public void testgetDefaultFileLoggerNameWithoutRollingFileEmptyException() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -223,7 +223,7 @@ public class LogfactoryTest {
 				"MosipLogfactoryTest");
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerClazzWithRolling() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -240,7 +240,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerNameWithRolling() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -257,7 +257,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerClazzWithRollingImplementation() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -273,7 +273,7 @@ public class LogfactoryTest {
 				LogfactoryTest.class), isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerNameWithRollingImplementation() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -291,7 +291,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetDefaultFileLoggerClazzWithRollingImplementationException() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -307,7 +307,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetDefaultFileLoggerNameWithRollingImplementationException() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -324,7 +324,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerClazzWithFullRolling() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -342,7 +342,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerNameWithFullRolling() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -360,7 +360,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test(expected = FileNameNotProvided.class)
+	@Test(expected = FileNameNotProvided.class)
 	public void testgetDefaultFileLoggerNameWithRollingFileNullException() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -376,7 +376,7 @@ public class LogfactoryTest {
 				"MosipLogfactoryTest");
 	}
 
-	//@Test(expected = FileNameNotProvided.class)
+	@Test(expected = FileNameNotProvided.class)
 	public void testgetDefaultFileLoggerNameWithRollingFileEmptyException() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -392,7 +392,7 @@ public class LogfactoryTest {
 				"MosipLogfactoryTest");
 	}
 
-	//@Test(expected = EmptyPatternException.class)
+	@Test(expected = EmptyPatternException.class)
 	public void testgetDefaultFileLoggerNameWithRollingNullFilePattern() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -407,7 +407,7 @@ public class LogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	//@Test(expected = EmptyPatternException.class)
+	@Test(expected = EmptyPatternException.class)
 	public void testgetDefaultFileLoggerNameWithRollingEmptyFilePattern() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -422,7 +422,7 @@ public class LogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	//@Test(expected = PatternSyntaxException.class)
+	@Test(expected = PatternSyntaxException.class)
 	public void testgetDefaultFileLoggerNameWithRollingWrongFilePattern() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -437,7 +437,7 @@ public class LogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	//@Test(expected = PatternSyntaxException.class)
+	@Test(expected = PatternSyntaxException.class)
 	public void testgetDefaultFileLoggerNameWithRollingWrongFileNamePattern() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -452,7 +452,7 @@ public class LogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	//@Test(expected = ClassNameNotFoundException.class)
+	@Test(expected = ClassNameNotFoundException.class)
 	public void testgetDefaultFileLoggerNameWithRollingClassMissing() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -480,7 +480,7 @@ public class LogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	//@Test(expected = FileNameNotProvided.class)
+	@Test(expected = FileNameNotProvided.class)
 	public void testgetDefaultFileLoggerNameWithRollingNullConstraintsException() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -494,7 +494,7 @@ public class LogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	//@Test(expected = FileNameNotProvided.class)
+	@Test(expected = FileNameNotProvided.class)
 	public void testgetDefaultFileLoggerNameWithRollingEmptyConstraintsException() {
 		mosipRollingFileAppender.setAppenderName("testFileappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -508,7 +508,7 @@ public class LogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	//@Test(expected = PatternSyntaxException.class)
+	@Test(expected = PatternSyntaxException.class)
 	public void testgetDefaultFileLoggerNameWithRollingNotIConstraintsException() {
 		mosipRollingFileAppender.setAppenderName("testFileRollingappender");
 		mosipRollingFileAppender.setAppend(true);
@@ -536,7 +536,7 @@ public class LogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultConsoleLoggerDebugCall() {
 		Logger mosipLogger = Mockito.mock(Logger.class);
 		mosipLogger.debug(Mockito.anyString(), Mockito.anyString(),
@@ -546,7 +546,7 @@ public class LogfactoryTest {
 
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultConsoleLoggerTraceCall() {
 		Logger mosipLogger = Mockito.mock(Logger.class);
 		mosipLogger.trace(Mockito.anyString(), Mockito.anyString(),
@@ -556,7 +556,7 @@ public class LogfactoryTest {
 
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultConsoleLoggerErrorCall() {
 		Logger mosipLogger = Mockito.mock(Logger.class);
 		mosipLogger.error(Mockito.anyString(), Mockito.anyString(),
@@ -566,7 +566,7 @@ public class LogfactoryTest {
 
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultConsoleLoggerWarnCall() {
 		Logger mosipLogger = Mockito.mock(Logger.class);
 		mosipLogger.warn(Mockito.anyString(), Mockito.anyString(),
@@ -576,7 +576,7 @@ public class LogfactoryTest {
 
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultConsoleLoggerInfoCall() {
 		Logger mosipLogger = Mockito.mock(Logger.class);
 		mosipLogger.info(Mockito.anyString(), Mockito.anyString(),
@@ -585,7 +585,7 @@ public class LogfactoryTest {
 				Mockito.anyString(), Mockito.anyString());
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerDebugCall() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -597,7 +597,7 @@ public class LogfactoryTest {
 		mosipLogger.debug("sessionid", "idType", "id", "description");
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerTraceCall() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -610,7 +610,7 @@ public class LogfactoryTest {
 
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerErrorCall() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -623,7 +623,7 @@ public class LogfactoryTest {
 
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerWarnCall() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -636,7 +636,7 @@ public class LogfactoryTest {
 
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerInfoCall() {
 		mosipFileAppender.setAppenderName("testFileappender");
 		mosipFileAppender.setAppend(true);
@@ -648,45 +648,45 @@ public class LogfactoryTest {
 		mosipLogger.info("sessionid", "idType", "id", "description");
 	}
 
-	//@Test
+	@Test
 	public void testgetFileConsoleLoggerClazzImplementation() {
 		assertThat(Logfactory.getConsoleLogger(consoleAppenderFile,
 				LoggerMethod.MOSIPLOGBACK, LogfactoryTest.class),
 				isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetFileConsoleLoggerClazzImplementationExcepTion() {
 		Logfactory.getConsoleLogger(consoleAppenderFile, null,
 				LogfactoryTest.class);
 	}
 
-	//@Test
+	@Test
 	public void testgetFileLoggerClazzImplementation() {
 		assertThat(Logfactory.getFileLogger(fileAppenderFile,
 				LoggerMethod.MOSIPLOGBACK, LogfactoryTest.class),
 				isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetFileLoggerClazzImplementationExcepTion() {
 		Logfactory.getFileLogger(fileAppenderFile, null,
 				LogfactoryTest.class);
 	}
 
-	//@Test
+	@Test
 	public void testgetRollingFileConsoleLoggerClazzImplementation() {
 		assertThat(Logfactory.getRollingFileLogger(
 				rollingFileAppenderFile, LoggerMethod.MOSIPLOGBACK,
 				LogfactoryTest.class), isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetRollingFileConsoleLoggerClazzImplementationExcepTion() {
 		Logfactory.getRollingFileLogger(rollingFileAppenderFile, null,
 				LogfactoryTest.class);
 	}
-	//@Test
+	@Test
 	public void testgetNameFileConsoleLoggerClazzImplementation() {
 		assertThat(
 				Logfactory.getConsoleLogger(consoleAppenderFile,
@@ -694,13 +694,13 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetNameFileConsoleLoggerClazzImplementationExcepTion() {
 		Logfactory.getConsoleLogger(consoleAppenderFile, null,
 				"MosipLogfactoryTest");
 	}
 
-	//@Test
+	@Test
 	public void testgetNameFileLoggerClazzImplementation() {
 		assertThat(
 				Logfactory.getFileLogger(fileAppenderFile,
@@ -708,26 +708,26 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetNameFileLoggerClazzImplementationExcepTion() {
 		Logfactory.getFileLogger(fileAppenderFile, null,
 				"MosipLogfactoryTest");
 	}
 
-	//@Test
+	@Test
 	public void testgetNameRollingFileConsoleLoggerClazzImplementation() {
 		assertThat(Logfactory.getRollingFileLogger(
 				rollingFileAppenderFile, LoggerMethod.MOSIPLOGBACK,
 				"MosipLogfactoryTest"), isA(Logger.class));
 	}
 
-	//@Test(expected = ImplementationNotFound.class)
+	@Test(expected = ImplementationNotFound.class)
 	public void testgetNameRollingFileConsoleLoggerClazzImplementationExcepTion() {
 		Logfactory.getRollingFileLogger(rollingFileAppenderFile, null,
 				"MosipLogfactoryTest");
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileConsoleLoggerClazzImplementation() {
 		assertThat(
 				Logfactory.getDefaultConsoleLogger(
@@ -735,13 +735,13 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultFileLoggerClazzImplementation() {
 		assertThat(Logfactory.getDefaultFileLogger(fileAppenderFile,
 				LogfactoryTest.class), isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetDefaultRollingFileConsoleLoggerClazzImplementation() {
 		assertThat(
 				Logfactory.getDefaultRollingFileLogger(
@@ -749,7 +749,7 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetNameDefaultFileConsoleLoggerClazzImplementation() {
 		assertThat(
 				Logfactory.getDefaultConsoleLogger(
@@ -757,20 +757,20 @@ public class LogfactoryTest {
 				isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetNameDefaultFileLoggerClazzImplementation() {
 		assertThat(Logfactory.getDefaultFileLogger(fileAppenderFile,
 				"MosipLogfactoryTest"), isA(Logger.class));
 	}
 
-	//@Test
+	@Test
 	public void testgetNameDefaultRollingFileConsoleLoggerClazzImplementation() {
 		assertThat(
 				Logfactory.getDefaultRollingFileLogger(
 						rollingFileAppenderFile, "MosipLogfactoryTest"),
 				isA(Logger.class));
 	}
-	//@Test(expected = XMLConfigurationParseException.class)
+	@Test(expected = XMLConfigurationParseException.class)
 	public void testgetNameDefaultRollingFileConsoleLoggerClazzImplementationParseException()
 			throws IOException {
 		rollingFileAppenderFile = new ClassPathResource(

@@ -18,11 +18,12 @@ public class NullPathException extends BaseUncheckedException {
 	/**
 	 * Constructor for this class
 	 * 
-	 * @param exceptionConstants
-	 *            exception code constant
+	 * @param errorCode
+	 * @param errorMessage
+	 * @param cause
 	 */
-	public NullPathException(PacketUploaderExceptionConstant exceptionConstants) {
-		super(exceptionConstants.getErrorCode(), exceptionConstants.getErrorMessage());
+	public NullPathException(String errorCode, String errorMessage, Throwable cause) {
+		super(errorCode, errorMessage, cause);
 	}
 
 }
