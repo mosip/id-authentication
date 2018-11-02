@@ -184,7 +184,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			}
 			//Event constants for audit log
 			eventId = EventId.RPR_407.toString();
-			eventName = EventName.SAVE.toString();
+			eventName = EventName.ADD.toString();
 			eventType = EventType.BUSINESS.toString();
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {

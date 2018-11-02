@@ -26,7 +26,7 @@ public enum EventName {
 	AUTHENTICATION,
 
 	/** The save. */
-	SAVE,
+	ADD,
 
 	/** The Trigger. */
 	TRIGGER,

@@ -135,7 +135,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			isTransactionSuccessful = true;
 			//Event constants for audit log
 			eventId = EventId.RPR_407.toString();
-			eventName = EventName.SAVE.toString();
+			eventName = EventName.ADD.toString();
 			eventType = EventType.BUSINESS.toString();
 			TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
 					null, TransactionTypeCode.CREATE.toString(), "Added registration status record",
@@ -174,7 +174,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 				isTransactionSuccessful = true;
 				//Event constants for audit log
 				eventId = EventId.RPR_407.toString();
-				eventName = EventName.SAVE.toString();
+				eventName = EventName.ADD.toString();
 				eventType = EventType.BUSINESS.toString();
 				TransactionDto transactionDto = new TransactionDto(generateId(),
 						registrationStatusDto.getRegistrationId(), latestTransactionId,

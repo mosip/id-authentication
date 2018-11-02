@@ -114,7 +114,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 					storageFlag = true;
 					isTransactionSuccessful = true;
 					eventId=EventId.RPR_407.toString();
-					eventName=EventName.SAVE.toString();
+					eventName=EventName.ADD.toString();
 					eventType=EventType.BUSINESS.toString();
 				} catch (IOException e) {
 					logger.error(e.getMessage());
