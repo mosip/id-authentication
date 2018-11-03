@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.otpmanager.OtpmanagerBootApplication;
-import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentExceptionHandler;
+import io.mosip.kernel.otpmanager.exception.InvalidArgumentExceptionHandler;
 import io.mosip.kernel.otpmanager.service.impl.OtpGeneratorServiceImpl;
 import io.mosip.kernel.otpmanager.service.impl.OtpValidatorServiceImpl;
 
@@ -40,7 +40,7 @@ public class ExceptionTest {
 
 	@Test
 	public void testForExceptionWhenKeyIsNull() throws Exception {
-		when(service.getOtp(Mockito.any())).thenThrow(OtpInvalidArgumentExceptionHandler.class);
+		when(service.getOtp(Mockito.any())).thenThrow(InvalidArgumentExceptionHandler.class);
 		String json = "{\"key\":null}";
 		mockMvc.perform(post("/otpmanager/otps").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isNotAcceptable())
@@ -50,7 +50,7 @@ public class ExceptionTest {
 	@Test
 	public void testForExceptionWhenKeyLengthInvalid() throws Exception {
 		when(validatorService.validateOtp(Mockito.any(), Mockito.any()))
-				.thenThrow(OtpInvalidArgumentExceptionHandler.class);
+				.thenThrow(InvalidArgumentExceptionHandler.class);
 		mockMvc.perform(get("/otpmanager/otps?key=sa&otp=3212").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable());
 	}

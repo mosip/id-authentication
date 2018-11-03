@@ -47,7 +47,7 @@ public class PacketUploaderServiceImpl implements PacketUploaderService {
 	 * .springframework.web.multipart.MultipartFile)
 	 */
 	@Override
-	public PacketUploaderResponceDTO storePacket(MultipartFile packet) throws IOException {
+	public PacketUploaderResponceDTO upload(MultipartFile packet) throws IOException {
 		packetUploaderUtils.check(packet);
 		String fileName = packet.getOriginalFilename();
 		Path packetStorageLocation = Paths.get(packetFileStorageProperties.getUploadDir()).toAbsolutePath().normalize()

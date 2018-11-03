@@ -17,11 +17,11 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
-import io.mosip.kernel.crypto.jce.algorithm.AES;
-import io.mosip.kernel.crypto.jce.algorithm.RSA;
 import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
-import io.mosip.kernel.crypto.jce.util.SecurityUtils;
+import io.mosip.kernel.crypto.jce.processor.AESProcessor;
+import io.mosip.kernel.crypto.jce.processor.RSAProcessor;
+import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 
 /**
  * Factory class for Mosip Encryptor
@@ -41,9 +41,9 @@ public class EncryptorImpl implements Encryptor<PrivateKey, PublicKey, SecretKey
 	 */
 	@Override
 	public byte[] asymmetricPrivateEncrypt(PrivateKey privateKey, byte[] data, SecurityMethod mosipSecurityMethod) {
-		SecurityUtils.checkMethod(mosipSecurityMethod);
+		CryptoUtils.checkMethod(mosipSecurityMethod);
 		if (mosipSecurityMethod == SecurityMethod.RSA_WITH_PKCS1PADDING) {
-			return RSA.rsaWithPKCS1Padding(privateKey, data, Cipher.ENCRYPT_MODE);
+			return RSAProcessor.rsaWithPKCS1Padding(privateKey, data, Cipher.ENCRYPT_MODE);
 		} else {
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
@@ -61,10 +61,10 @@ public class EncryptorImpl implements Encryptor<PrivateKey, PublicKey, SecretKey
 	 */
 	@Override
 	public byte[] asymmetricPublicEncrypt(PublicKey publicKey, byte[] data, SecurityMethod mosipSecurityMethod) {
-		SecurityUtils.checkMethod(mosipSecurityMethod);
+		CryptoUtils.checkMethod(mosipSecurityMethod);
 
 		if (mosipSecurityMethod == SecurityMethod.RSA_WITH_PKCS1PADDING) {
-			return RSA.rsaWithPKCS1Padding(publicKey, data, Cipher.ENCRYPT_MODE);
+			return RSAProcessor.rsaWithPKCS1Padding(publicKey, data, Cipher.ENCRYPT_MODE);
 		} else {
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
@@ -80,9 +80,9 @@ public class EncryptorImpl implements Encryptor<PrivateKey, PublicKey, SecretKey
 	 */
 	@Override
 	public byte[] symmetricEncrypt(SecretKey key, byte[] data, SecurityMethod mosipSecurityMethod) {
-		SecurityUtils.checkMethod(mosipSecurityMethod);
+		CryptoUtils.checkMethod(mosipSecurityMethod);
 		if (mosipSecurityMethod == SecurityMethod.AES_WITH_CBC_AND_PKCS5PADDING) {
-			return AES.aesWithCBCandPKCS5Padding(key, data, Cipher.ENCRYPT_MODE);
+			return AESProcessor.aesWithCBCandPKCS5Padding(key, data, Cipher.ENCRYPT_MODE);
 		} else {
 			throw new NoSuchAlgorithmException(
 					SecurityExceptionCodeConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),

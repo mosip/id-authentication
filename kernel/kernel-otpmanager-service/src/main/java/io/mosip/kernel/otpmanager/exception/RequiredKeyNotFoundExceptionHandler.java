@@ -21,7 +21,7 @@ public class RequiredKeyNotFoundExceptionHandler extends BaseUncheckedException 
 	/**
 	 * This variable holds the MosipErrors list.
 	 */
-	private final List<Errors> list;
+	private final List<Error> list;
 
 	/**
 	 * Constructor for MosipRequiredKeyNotFoundExceptionHandler class.
@@ -29,7 +29,7 @@ public class RequiredKeyNotFoundExceptionHandler extends BaseUncheckedException 
 	 * @param list
 	 *            The error list.
 	 */
-	public RequiredKeyNotFoundExceptionHandler(List<Errors> list) {
+	public RequiredKeyNotFoundExceptionHandler(List<Error> list) {
 		this.list = list;
 	}
 
@@ -38,7 +38,7 @@ public class RequiredKeyNotFoundExceptionHandler extends BaseUncheckedException 
 	 * 
 	 * @return The error list.
 	 */
-	public List<Errors> getList() {
+	public List<Error> getList() {
 		return list;
 	}
 }

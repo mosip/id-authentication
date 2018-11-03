@@ -37,7 +37,7 @@ public class PacketUploaderServiceImplTest {
 		doNothing().when(packetUploaderUtils).check(file);
 		doReturn(new ClassPathResource("/").getFile().toPath().toString()).when(packetFileStorageProperties)
 				.getUploadDir();
-		assertThat(packetUploaderServiceImpl.storePacket(file), isA(PacketUploaderResponceDTO.class));
+		assertThat(packetUploaderServiceImpl.upload(file), isA(PacketUploaderResponceDTO.class));
 	}
 
 }

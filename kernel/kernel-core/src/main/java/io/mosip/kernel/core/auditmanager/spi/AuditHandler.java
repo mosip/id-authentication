@@ -16,6 +16,6 @@ public interface AuditHandler<T> {
 	 *            The {@link AuditRequest}
 	 * @return true - if {@link AuditRequest} is successfully written
 	 */
-	boolean writeAudit(T auditRequest);
+	boolean addAudit(T auditRequest);
 
 }

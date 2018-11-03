@@ -37,7 +37,7 @@ public class OtpGeneratorController {
 	 * @return The generated OTP as DTO response.
 	 */
 	@PostMapping(value = "/otpmanager/otps")
-	public ResponseEntity<OtpGeneratorResponseDto> generateOtp(@Valid @RequestBody OtpGeneratorRequestDto otpDto) {
+	public ResponseEntity<OtpGeneratorResponseDto> getOtp(@Valid @RequestBody OtpGeneratorRequestDto otpDto) {
 		return new ResponseEntity<>(otpGeneratorService.getOtp(otpDto), HttpStatus.CREATED);
 	}
 }

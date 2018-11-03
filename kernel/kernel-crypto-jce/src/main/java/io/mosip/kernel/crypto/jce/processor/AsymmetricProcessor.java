@@ -14,7 +14,7 @@ import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
-import io.mosip.kernel.crypto.jce.util.SecurityUtils;
+import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 
 /**
  * Asymmetric Encryption/Decryption processor
@@ -45,7 +45,7 @@ public class AsymmetricProcessor {
 	 */
 	protected static byte[] process(SecurityMethod method, Key key, byte[] data, int mode) {
 		Cipher cipher = init(key, mode, method);
-		SecurityUtils.verifyData(data);
+		CryptoUtils.verifyData(data);
 		return processData(cipher, data, 0, data.length);
 	}
 

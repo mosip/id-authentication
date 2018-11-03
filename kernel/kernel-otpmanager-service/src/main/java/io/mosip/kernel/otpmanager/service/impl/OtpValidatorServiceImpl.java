@@ -16,8 +16,8 @@ import io.mosip.kernel.otpmanager.constant.OtpExpiryConstants;
 import io.mosip.kernel.otpmanager.constant.OtpStatusConstants;
 import io.mosip.kernel.otpmanager.constant.SqlQueryConstants;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
-import io.mosip.kernel.otpmanager.exception.Errors;
-import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentExceptionHandler;
+import io.mosip.kernel.otpmanager.exception.Error;
+import io.mosip.kernel.otpmanager.exception.InvalidArgumentExceptionHandler;
 import io.mosip.kernel.otpmanager.exception.ResourceNotFoundExceptionHandler;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
 import io.mosip.kernel.otpmanager.service.OtpValidatorService;
@@ -59,10 +59,10 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 		 * exception.
 		 */
 		if (otpResponse == null) {
-			List<Errors> validationErrorsList = new ArrayList<>();
-			validationErrorsList.add(new Errors(OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(),
+			List<Error> validationErrorsList = new ArrayList<>();
+			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorMessage()));
-			throw new OtpInvalidArgumentExceptionHandler(validationErrorsList);
+			throw new InvalidArgumentExceptionHandler(validationErrorsList);
 
 		}
 
@@ -83,8 +83,8 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 		try {
 			resource = ResourceBundle.getBundle(OtpExpiryConstants.OTP_PROPERTIES_FILE_NAME.getStringProperty());
 		} catch (MissingResourceException exception) {
-			List<Errors> validationErrorsList = new ArrayList<>();
-			validationErrorsList.add(new Errors(OtpErrorConstants.OTP_VAL_RESOURCE_NOT_FOUND.getErrorCode(),
+			List<Error> validationErrorsList = new ArrayList<>();
+			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_RESOURCE_NOT_FOUND.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_RESOURCE_NOT_FOUND.getErrorMessage()));
 			throw new ResourceNotFoundExceptionHandler(validationErrorsList);
 		}

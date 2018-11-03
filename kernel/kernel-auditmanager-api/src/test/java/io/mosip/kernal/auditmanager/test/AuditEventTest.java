@@ -46,9 +46,9 @@ public class AuditEventTest {
 				.setModuleName("moduleName").setSessionUserId("sessionUserId").setSessionUserName("sessionUserName");
 
 		AuditRequestDto auditRequest = auditRequestBuilder.build();
-		auditHandlerImpl.writeAudit(auditRequest);
+		auditHandlerImpl.addAudit(auditRequest);
 
-		assertThat(auditHandlerImpl.writeAudit(auditRequestBuilder.build()), is(true));
+		assertThat(auditHandlerImpl.addAudit(auditRequestBuilder.build()), is(true));
 	}
 
 	@Test(expected = AuditManagerException.class)
@@ -65,7 +65,7 @@ public class AuditEventTest {
 				.setSessionUserName("sessionUserName");
 
 		AuditRequestDto auditRequest = auditRequestBuilder.build();
-		auditHandlerImpl.writeAudit(auditRequest);
+		auditHandlerImpl.addAudit(auditRequest);
 
 	}
 

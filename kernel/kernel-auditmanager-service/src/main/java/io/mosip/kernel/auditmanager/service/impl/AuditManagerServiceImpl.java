@@ -37,7 +37,7 @@ public class AuditManagerServiceImpl implements AuditManagerService {
 	@Override
 	public AuditResponseDto addAudit(AuditRequestDto auditRequestDto) {
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
-		auditResponseDto.setStatus(auditHandler.writeAudit(auditRequestDto));
+		auditResponseDto.setStatus(auditHandler.addAudit(auditRequestDto));
 		return auditResponseDto;
 	}
 }

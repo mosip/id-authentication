@@ -10,8 +10,8 @@ import com.jcraft.jsch.SftpException;
 import io.mosip.kernel.core.packetuploader.exception.ConnectionException;
 import io.mosip.kernel.core.packetuploader.exception.NoSessionException;
 import io.mosip.kernel.core.packetuploader.exception.SFTPException;
-import io.mosip.kernel.packetuploader.sftp.channel.SftpChannel;
-import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderConfiguration;
+import io.mosip.kernel.packetuploader.sftp.model.SFTPChannel;
+import io.mosip.kernel.packetuploader.sftp.model.SFTPServer;
 import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderConstant;
 import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderExceptionConstant;
 import io.mosip.kernel.packetuploader.sftp.util.PacketUploaderUtils;
@@ -33,26 +33,26 @@ public class PacketUploader {
 	/**
 	 * This creates and connects SFTP channel based on configutaions
 	 * 
-	 * @param configuration
-	 *            {@link PacketUploaderConfiguration} provided by user
-	 * @return configured {@link SftpChannel} instance
+	 * @param sftpServer
+	 *            {@link SFTPServer} provided by user
+	 * @return configured {@link SFTPChannel} instance
 	 * @throws ConnectionException
 	 *             to be thrown when there is a exception during connection with
 	 *             server
 	 */
-	public static SftpChannel createSFTPChannel(PacketUploaderConfiguration configuration) throws ConnectionException {
-		PacketUploaderUtils.checkConfiguration(configuration);
+	public static SFTPChannel createSFTPChannel(SFTPServer sftpServer) throws ConnectionException {
+		PacketUploaderUtils.checkConfiguration(sftpServer);
 
 		JSch jsch = new JSch();
-		if (configuration.getPrivateKeyFileName() != null) {
-			PacketUploaderUtils.addIdentity(jsch, configuration);
+		if (sftpServer.getPrivateKeyFileName() != null) {
+			PacketUploaderUtils.addIdentity(jsch, sftpServer);
 		}
-		Session session = PacketUploaderUtils.configureSession(jsch, configuration);
-		SftpChannel sftpChannel = null;
+		Session session = PacketUploaderUtils.configureSession(jsch, sftpServer);
+		SFTPChannel sftpChannel = null;
 		try {
 			session.connect();
 			Channel channel = session.openChannel(PacketUploaderConstant.STR_SFTP.getValue());
-			sftpChannel = new SftpChannel((ChannelSftp) channel, configuration);
+			sftpChannel = new SFTPChannel((ChannelSftp) channel, sftpServer);
 			channel.connect();
 		} catch (JSchException e) {
 			throw new ConnectionException(PacketUploaderExceptionConstant.MOSIP_CONNECTION_EXCEPTION.getErrorCode(),
@@ -66,14 +66,14 @@ public class PacketUploader {
 	 * should be already present)</i>
 	 * 
 	 * @param sftpChannel
-	 *            configured {@link SftpChannel} instance
+	 *            configured {@link SFTPChannel} instance
 	 * @param source
 	 *            path of packet to be uploaded
 	 */
-	public static void upload(SftpChannel sftpChannel, String source) {
+	public static void upload(SFTPChannel sftpChannel, String source) {
 		ChannelSftp channelSftp = sftpChannel.getChannelSftp();
 		PacketUploaderUtils.check(source);
-		String target = sftpChannel.getConfiguration().getSftpRemoteDirectory();
+		String target = sftpChannel.getSftpServer().getSftpRemoteDirectory();
 		try {
 			channelSftp.put(source, target);
 		} catch (SftpException e) {
@@ -86,9 +86,9 @@ public class PacketUploader {
 	 * This releases the obtained Connection to server
 	 * 
 	 * @param sftpChannel
-	 *            configured {@link SftpChannel} instance
+	 *            configured {@link SFTPChannel} instance
 	 */
-	public static void releaseConnection(SftpChannel sftpChannel) {
+	public static void releaseConnection(SFTPChannel sftpChannel) {
 		ChannelSftp channelSftp = sftpChannel.getChannelSftp();
 		Session session = null;
 		try {

@@ -23,7 +23,7 @@ import io.mosip.kernel.crypto.bouncycastle.constant.SecurityExceptionCodeConstan
 import io.mosip.kernel.crypto.bouncycastle.constant.SecurityMethod;
 import io.mosip.kernel.crypto.bouncycastle.impl.DecryptorImpl;
 import io.mosip.kernel.crypto.bouncycastle.impl.EncryptorImpl;
-import io.mosip.kernel.crypto.bouncycastle.util.SecurityUtils;
+import io.mosip.kernel.crypto.bouncycastle.util.CryptoUtils;
 
 /**
  * Asymmetric Encryption/Decryption processor
@@ -64,7 +64,7 @@ public class AsymmetricProcessor {
 	protected static byte[] processHybrid(AsymmetricBlockCipher asymmetricBlockCipher, AsymmetricKeyParameter key,
 			byte[] data, boolean mode) {
 		init(asymmetricBlockCipher, key, mode);
-		SecurityUtils.verifyData(data);
+		CryptoUtils.verifyData(data);
 		int blockSize = asymmetricBlockCipher.getInputBlockSize();
 		byte[] symmetricKey = null;
 		byte[] output = null;
@@ -111,7 +111,7 @@ public class AsymmetricProcessor {
 	protected static byte[] process(AsymmetricBlockCipher asymmetricBlockCipher, AsymmetricKeyParameter key,
 			byte[] data, boolean mode) {
 		init(asymmetricBlockCipher, key, mode);
-		SecurityUtils.verifyData(data);
+		CryptoUtils.verifyData(data);
 		return processData(asymmetricBlockCipher, data, 0, data.length);
 	}
 

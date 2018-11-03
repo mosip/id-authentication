@@ -24,7 +24,7 @@ import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
-import io.mosip.kernel.crypto.jce.util.SecurityUtils;
+import io.mosip.kernel.crypto.jce.util.CryptoUtils;
 
 /**
  * Symmetric Encryption/Decryption processor
@@ -78,7 +78,7 @@ public class SymmetricProcessor {
 	 * @return Processed array
 	 */
 	private static byte[] encrypt(SecurityMethod method, SecretKey key, byte[] data, int mode) {
-		SecurityUtils.verifyData(data);
+		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
 		byte[] output = null;
 		byte[] randomIV = null;
@@ -140,7 +140,7 @@ public class SymmetricProcessor {
 	 * @return Processed array
 	 */
 	private static byte[] decrypt(SecurityMethod method, SecretKey key, byte[] data, int mode) {
-		SecurityUtils.verifyData(data);
+		CryptoUtils.verifyData(data);
 		Cipher cipher = null;
 		try {
 			cipher = Cipher.getInstance(method.getValue());

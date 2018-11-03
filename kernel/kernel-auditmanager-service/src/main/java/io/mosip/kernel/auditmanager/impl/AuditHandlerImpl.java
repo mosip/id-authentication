@@ -42,7 +42,7 @@ public class AuditHandlerImpl implements AuditHandler<AuditRequestDto> {
 	 * core.audit.dto.AuditRequest)
 	 */
 	@Override
-	public boolean writeAudit(AuditRequestDto auditRequest) {
+	public boolean addAudit(AuditRequestDto auditRequest) {
 		
 		AuditUtils.validateAuditRequest(auditRequest);
 

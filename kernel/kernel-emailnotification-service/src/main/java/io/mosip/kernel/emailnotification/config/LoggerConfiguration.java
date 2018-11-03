@@ -2,14 +2,14 @@ package io.mosip.kernel.emailnotification.config;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.emailnotification.constant.MailNotifierConstants;
-import io.mosip.kernel.emailnotification.exception.MailNotifierControllerAdvice;
+import io.mosip.kernel.emailnotification.exception.ApiExceptionHandler;
 import io.mosip.kernel.logger.logback.appender.ConsoleAppender;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
 
 
 /**
  * Logger configuration for using {@link Logger} and logging(in console)
- * exceptions which are not handled through controller advice {@link MailNotifierControllerAdvice}.
+ * exceptions which are not handled through controller advice {@link ApiExceptionHandler}.
  * 
  * @author Sagar Mahapatra
  * @since 1.0.0

@@ -9,8 +9,8 @@ import java.util.List;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
 import io.mosip.kernel.otpmanager.constant.OtpPropertyConstants;
-import io.mosip.kernel.otpmanager.exception.Errors;
-import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentExceptionHandler;
+import io.mosip.kernel.otpmanager.exception.Error;
+import io.mosip.kernel.otpmanager.exception.InvalidArgumentExceptionHandler;
 
 /**
  * This utility class defines some of the utility methods used in OTP
@@ -59,27 +59,27 @@ public class OtpManagerUtils {
 	 * @param otp The OTP to be validated against the given key.
 	 */
 	public static void validateOtpRequestArguments(String key, String otp) {
-		List<Errors> validationErrorsList = new ArrayList<>();
+		List<Error> validationErrorsList = new ArrayList<>();
 		if (key == null || key.isEmpty()) {
-			validationErrorsList.add(new Errors(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
+			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
 		} else {
 			if ((key.length() < Integer.parseInt(OtpPropertyConstants.KEY_MIN_LENGTH.getProperty()))
 					|| (key.length() > Integer.parseInt(OtpPropertyConstants.KEY_MAX_LENGTH.getProperty()))) {
-				validationErrorsList.add(new Errors(OtpErrorConstants.OTP_VAL_ILLEGAL_KEY_INPUT.getErrorCode(),
+				validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_ILLEGAL_KEY_INPUT.getErrorCode(),
 						OtpErrorConstants.OTP_VAL_ILLEGAL_KEY_INPUT.getErrorMessage()));
 			}
 		}
 		if (otp == null || otp.isEmpty()) {
-			validationErrorsList.add(new Errors(OtpErrorConstants.OTP_VAL_INVALID_OTP_INPUT.getErrorCode(),
+			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_INVALID_OTP_INPUT.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_INVALID_OTP_INPUT.getErrorMessage()));
 		}
 		if ((otp != null) && (!StringUtils.isNumeric(otp))) {
-			validationErrorsList.add(new Errors(OtpErrorConstants.OTP_VAL_ILLEGAL_OTP_INPUT.getErrorCode(),
+			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_ILLEGAL_OTP_INPUT.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_ILLEGAL_OTP_INPUT.getErrorMessage()));
 		}
 		if (!validationErrorsList.isEmpty()) {
-			throw new OtpInvalidArgumentExceptionHandler(validationErrorsList);
+			throw new InvalidArgumentExceptionHandler(validationErrorsList);
 		}
 	}
 }

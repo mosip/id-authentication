@@ -23,6 +23,6 @@ public interface PacketUploaderService {
 	 * @return {@link PacketUploaderResponceDTO} with file information
 	 * @throws IOException 
 	 */
-	PacketUploaderResponceDTO storePacket(MultipartFile packet) throws IOException;
+	PacketUploaderResponceDTO upload(MultipartFile packet) throws IOException;
 
 }

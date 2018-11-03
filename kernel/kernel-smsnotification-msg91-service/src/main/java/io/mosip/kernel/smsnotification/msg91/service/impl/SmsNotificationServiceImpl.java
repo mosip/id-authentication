@@ -9,8 +9,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.smsnotification.msg91.constant.SmsExceptionConstants;
-import io.mosip.kernel.smsnotification.msg91.constant.SmsPropertyConstants;
+import io.mosip.kernel.smsnotification.msg91.constant.SmsExceptionConstant;
+import io.mosip.kernel.smsnotification.msg91.constant.SmsPropertyConstant;
 import io.mosip.kernel.smsnotification.msg91.dto.SmsResponseDto;
 import io.mosip.kernel.smsnotification.msg91.dto.SmsServerResponseDto;
 import io.mosip.kernel.smsnotification.msg91.exception.InvalidNumberException;
@@ -62,25 +62,25 @@ public class SmsNotificationServiceImpl implements SmsNotificationService{
 
 		if (!StringUtils.isNumeric(contactNumber) || contactNumber.length() < Integer.parseInt(length)
 				|| contactNumber.length() > Integer.parseInt(length)) {
-			throw new InvalidNumberException(SmsExceptionConstants.SMS_INVALID_CONTACT_NUMBER.getErrorCode(),
-					SmsExceptionConstants.SMS_INVALID_CONTACT_NUMBER.getErrorMessage());
+			throw new InvalidNumberException(SmsExceptionConstant.SMS_INVALID_CONTACT_NUMBER.getErrorCode(),
+					SmsExceptionConstant.SMS_INVALID_CONTACT_NUMBER.getErrorMessage());
 		}
 
 		RestTemplate restTemplate = restTemplateBuilder.build();
 		SmsResponseDto result = new SmsResponseDto();
 		ResponseEntity<SmsServerResponseDto> response = null;
 		UriComponentsBuilder sms = UriComponentsBuilder.fromHttpUrl(api)
-				.queryParam(SmsPropertyConstants.AUTH_KEY.getProperty(), authkey)
-				.queryParam(SmsPropertyConstants.SMS_MESSAGE.getProperty(), contentMessage)
-				.queryParam(SmsPropertyConstants.ROUTE.getProperty(), route)
-				.queryParam(SmsPropertyConstants.SENDER_ID.getProperty(), senderId)
-				.queryParam(SmsPropertyConstants.RECIPIENT_NUMBER.getProperty(), contactNumber)
-				.queryParam(SmsPropertyConstants.COUNTRY_CODE.getProperty(), countryCode);
+				.queryParam(SmsPropertyConstant.AUTH_KEY.getProperty(), authkey)
+				.queryParam(SmsPropertyConstant.SMS_MESSAGE.getProperty(), contentMessage)
+				.queryParam(SmsPropertyConstant.ROUTE.getProperty(), route)
+				.queryParam(SmsPropertyConstant.SENDER_ID.getProperty(), senderId)
+				.queryParam(SmsPropertyConstant.RECIPIENT_NUMBER.getProperty(), contactNumber)
+				.queryParam(SmsPropertyConstant.COUNTRY_CODE.getProperty(), countryCode);
 
 		response = restTemplate.getForEntity(sms.toUriString(), SmsServerResponseDto.class);
 
-		if (response.getBody().getType().equals(SmsPropertyConstants.VENDOR_RESPONSE_SUCCESS.getProperty())) {
-			result.setMessage(SmsPropertyConstants.SUCCESS_RESPONSE.getProperty());
+		if (response.getBody().getType().equals(SmsPropertyConstant.VENDOR_RESPONSE_SUCCESS.getProperty())) {
+			result.setMessage(SmsPropertyConstant.SUCCESS_RESPONSE.getProperty());
 			result.setStatus(response.getBody().getType());
 		}
 		return result;

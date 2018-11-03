@@ -31,7 +31,7 @@ public class PacketUploaderControllerTest {
 	public void uploadTest() throws IOException {
 		MultipartFile file = new MockMultipartFile("testFile.zip", "testFile.zip", null, new byte[1100]);
 		PacketUploaderResponceDTO responceDTO = new PacketUploaderResponceDTO("testFile.zip", 1400);
-		doReturn(responceDTO).when(service).storePacket(file);
+		doReturn(responceDTO).when(service).upload(file);
 		assertThat(controller.upload(file), is(new ResponseEntity<>(responceDTO, HttpStatus.CREATED)));
 	}
 

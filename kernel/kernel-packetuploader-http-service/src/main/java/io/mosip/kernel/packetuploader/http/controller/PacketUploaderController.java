@@ -37,7 +37,7 @@ public class PacketUploaderController {
 	 */
 	@PostMapping("/uploads")
 	public ResponseEntity<PacketUploaderResponceDTO> upload(MultipartFile packet) throws IOException {
-		return new ResponseEntity<>(service.storePacket(packet), HttpStatus.CREATED);
+		return new ResponseEntity<>(service.upload(packet), HttpStatus.CREATED);
 	}
 
 }

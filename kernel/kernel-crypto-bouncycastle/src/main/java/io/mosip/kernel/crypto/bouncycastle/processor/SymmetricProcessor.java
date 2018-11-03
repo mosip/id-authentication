@@ -18,7 +18,7 @@ import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullKeyException;
 import io.mosip.kernel.crypto.bouncycastle.constant.SecurityExceptionCodeConstant;
-import io.mosip.kernel.crypto.bouncycastle.util.SecurityUtils;
+import io.mosip.kernel.crypto.bouncycastle.util.CryptoUtils;
 
 /**
  * Symmetric Encryption/Decryption processor
@@ -58,7 +58,7 @@ public class SymmetricProcessor {
 					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_SIZE_EXCEPTION.getErrorCode(),
 					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_SIZE_EXCEPTION.getErrorMessage());
 		}
-		SecurityUtils.verifyData(data);
+		CryptoUtils.verifyData(data);
 		byte[] output = new byte[cipher.getOutputSize(data.length)];
 		int processedBytes = cipher.processBytes(data, 0, data.length, output, 0);
 		try {

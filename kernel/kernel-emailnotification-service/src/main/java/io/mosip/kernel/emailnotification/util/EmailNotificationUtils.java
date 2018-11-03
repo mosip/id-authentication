@@ -19,9 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.emailnotification.constant.MailNotifierArgumentErrorConstants;
 import io.mosip.kernel.emailnotification.constant.MailNotifierConstants;
-import io.mosip.kernel.emailnotification.exception.AsyncCaughtExceptionHandler;
-import io.mosip.kernel.emailnotification.exception.Errors;
-import io.mosip.kernel.emailnotification.exception.MailNotifierInvalidArgumentsException;
+import io.mosip.kernel.emailnotification.exception.NotificationException;
+import io.mosip.kernel.emailnotification.exception.Error;
+import io.mosip.kernel.emailnotification.exception.InvalidArgumentsException;
 
 /**
  * This class provides with the utility methods for email-notifier service.
@@ -57,7 +57,7 @@ public class EmailNotificationUtils {
 			try {
 				helper.addAttachment(attachment.getOriginalFilename(), new ByteArrayResource(attachment.getBytes()));
 			} catch (MessagingException | IOException exception) {
-				throw new AsyncCaughtExceptionHandler(exception);
+				throw new NotificationException(exception);
 			}
 		});
 	}
@@ -73,16 +73,16 @@ public class EmailNotificationUtils {
 	 *            the content to be validated.
 	 */
 	public static void validateMailArguments(String[] mailTo, String mailSubject, String mailContent) {
-		Set<Errors> validationErrorsList = new HashSet<>();
+		Set<Error> validationErrorsList = new HashSet<>();
 		if (mailTo == null || mailTo.length == Integer.parseInt(MailNotifierConstants.DIGIT_ZERO.getValue())) {
 			validationErrorsList
-					.add(new Errors(MailNotifierArgumentErrorConstants.RECEIVER_ADDRESS_NOT_FOUND.getErrorCode(),
+					.add(new Error(MailNotifierArgumentErrorConstants.RECEIVER_ADDRESS_NOT_FOUND.getErrorCode(),
 							MailNotifierArgumentErrorConstants.RECEIVER_ADDRESS_NOT_FOUND.getErrorMessage()));
 		} else {
 			List<String> tos = Arrays.asList(mailTo);
 			tos.forEach(to -> {
 				if (to.trim().isEmpty()) {
-					validationErrorsList.add(new Errors(
+					validationErrorsList.add(new Error(
 							MailNotifierArgumentErrorConstants.RECEIVER_ADDRESS_NOT_FOUND.getErrorCode(),
 							MailNotifierArgumentErrorConstants.RECEIVER_ADDRESS_NOT_FOUND.getErrorMessage()));
 				}
@@ -90,16 +90,16 @@ public class EmailNotificationUtils {
 		}
 		if (mailSubject == null || mailSubject.trim().isEmpty()) {
 			validationErrorsList
-					.add(new Errors(MailNotifierArgumentErrorConstants.SUBJECT_NOT_FOUND.getErrorCode(),
+					.add(new Error(MailNotifierArgumentErrorConstants.SUBJECT_NOT_FOUND.getErrorCode(),
 							MailNotifierArgumentErrorConstants.SUBJECT_NOT_FOUND.getErrorMessage()));
 		}
 		if (mailContent == null || mailContent.trim().isEmpty()) {
 			validationErrorsList
-					.add(new Errors(MailNotifierArgumentErrorConstants.CONTENT_NOT_FOUND.getErrorCode(),
+					.add(new Error(MailNotifierArgumentErrorConstants.CONTENT_NOT_FOUND.getErrorCode(),
 							MailNotifierArgumentErrorConstants.CONTENT_NOT_FOUND.getErrorMessage()));
 		}
 		if (!validationErrorsList.isEmpty()) {
-			throw new MailNotifierInvalidArgumentsException(new ArrayList<Errors>(validationErrorsList));
+			throw new InvalidArgumentsException(new ArrayList<Error>(validationErrorsList));
 		}
 	}
 }

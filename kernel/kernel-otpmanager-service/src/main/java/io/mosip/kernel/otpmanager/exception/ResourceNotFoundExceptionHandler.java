@@ -21,7 +21,7 @@ public class ResourceNotFoundExceptionHandler extends BaseUncheckedException {
 	/**
 	 * This variable holds the MosipErrors list.
 	 */
-	private final List<Errors> list;
+	private final List<Error> list;
 
 	/**
 	 * Constructor for MosipResourceNotFoundExceptionHandler class.
@@ -29,7 +29,7 @@ public class ResourceNotFoundExceptionHandler extends BaseUncheckedException {
 	 * @param list
 	 *            The error list.
 	 */
-	public ResourceNotFoundExceptionHandler(List<Errors> list) {
+	public ResourceNotFoundExceptionHandler(List<Error> list) {
 		this.list = list;
 	}
 
@@ -38,7 +38,7 @@ public class ResourceNotFoundExceptionHandler extends BaseUncheckedException {
 	 * 
 	 * @return The error list.
 	 */
-	public List<Errors> getList() {
+	public List<Error> getList() {
 		return list;
 	}
 }

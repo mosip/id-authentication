@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 
-import io.mosip.kernel.emailnotification.exception.MailNotifierAsyncHandler;
+import io.mosip.kernel.emailnotification.exception.EmailNotificationAsyncHandler;
 
 
 /**
@@ -18,10 +18,10 @@ import io.mosip.kernel.emailnotification.exception.MailNotifierAsyncHandler;
 @Configuration
 public class AsyncConfiguration implements AsyncConfigurer {
 	/**
-	 * Autowired reference for {@link MailNotifierAsyncHandler}
+	 * Autowired reference for {@link EmailNotificationAsyncHandler}
 	 */
 	@Autowired
-	MailNotifierAsyncHandler mailNotifierAsyncHandler;
+	EmailNotificationAsyncHandler mailNotifierAsyncHandler;
 
 	/*
 	 * (non-Javadoc)

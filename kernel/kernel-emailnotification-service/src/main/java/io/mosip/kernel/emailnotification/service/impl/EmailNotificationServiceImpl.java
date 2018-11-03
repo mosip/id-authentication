@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.emailnotification.constant.MailNotifierConstants;
 import io.mosip.kernel.emailnotification.dto.ResponseDto;
-import io.mosip.kernel.emailnotification.exception.AsyncCaughtExceptionHandler;
+import io.mosip.kernel.emailnotification.exception.NotificationException;
 import io.mosip.kernel.emailnotification.service.EmailNotificationService;
 import io.mosip.kernel.emailnotification.util.EmailNotificationUtils;
 
@@ -35,7 +35,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService{
 	 * Autowired reference for {@link EmailNotificationUtils}
 	 */
 	@Autowired
-	EmailNotificationUtils mailNotifierUtils;
+	EmailNotificationUtils emailNotificationUtils;
 
 	/**
 	 * SendEmail
@@ -74,18 +74,18 @@ public class EmailNotificationServiceImpl implements EmailNotificationService{
 			}
 			helper.setText(mailContent);
 		} catch (MessagingException exception) {
-			throw new AsyncCaughtExceptionHandler(exception);
+			throw new NotificationException(exception);
 		}
 		if (attachments != null) {
 			/**
 			 * Adds attachments.
 			 */
-			mailNotifierUtils.addAttachments(attachments, helper);
+			emailNotificationUtils.addAttachments(attachments, helper);
 		}
 		/**
 		 * Sends the mail.
 		 */
-		mailNotifierUtils.sendMessage(message, emailSender);
+		emailNotificationUtils.sendMessage(message, emailSender);
 		dto.setStatus(MailNotifierConstants.MESSAGE_REQUEST_SENT.getValue());
 		return CompletableFuture.completedFuture(dto);
 	}

@@ -17,7 +17,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
-import io.mosip.kernel.otpmanager.exception.OtpInvalidArgumentExceptionHandler;
+import io.mosip.kernel.otpmanager.exception.InvalidArgumentExceptionHandler;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
 import io.mosip.kernel.otpmanager.service.impl.OtpValidatorServiceImpl;
 
@@ -47,7 +47,7 @@ public class ValidatorServiceTest {
 		verify(repository, times(1)).findById(OtpEntity.class, key);
 	}
 
-	@Test(expected = OtpInvalidArgumentExceptionHandler.class)
+	@Test(expected = InvalidArgumentExceptionHandler.class)
 	public void testForException() throws Exception {
 		String key = "testKey";
 		String otp = "1234";

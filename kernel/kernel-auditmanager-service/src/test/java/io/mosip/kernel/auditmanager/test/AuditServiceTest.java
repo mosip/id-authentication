@@ -51,7 +51,7 @@ public class AuditServiceTest {
 
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		auditResponseDto.setStatus(true);
-		when(handler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
+		when(handler.addAudit(ArgumentMatchers.any())).thenReturn(true);
 		assertThat(service.addAudit(auditRequestDto), is(auditResponseDto));
 	}
 

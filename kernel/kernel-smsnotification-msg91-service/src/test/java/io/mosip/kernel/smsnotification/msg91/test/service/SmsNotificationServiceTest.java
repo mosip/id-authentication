@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.smsnotification.msg91.SmsNotificationBootApplication;
-import io.mosip.kernel.smsnotification.msg91.constant.SmsPropertyConstants;
+import io.mosip.kernel.smsnotification.msg91.constant.SmsPropertyConstant;
 import io.mosip.kernel.smsnotification.msg91.dto.SmsResponseDto;
 import io.mosip.kernel.smsnotification.msg91.dto.SmsServerResponseDto;
 import io.mosip.kernel.smsnotification.msg91.exception.InvalidNumberException;
@@ -59,12 +59,12 @@ public class SmsNotificationServiceTest {
 	public void sendSmsNotificationTest() {
 
 		UriComponentsBuilder sms = UriComponentsBuilder.fromHttpUrl(api)
-				.queryParam(SmsPropertyConstants.AUTH_KEY.getProperty(), authkey)
-				.queryParam(SmsPropertyConstants.SMS_MESSAGE.getProperty(), "your otp is 4646")
-				.queryParam(SmsPropertyConstants.ROUTE.getProperty(), route)
-				.queryParam(SmsPropertyConstants.SENDER_ID.getProperty(), senderId)
-				.queryParam(SmsPropertyConstants.RECIPIENT_NUMBER.getProperty(), "8987876473")
-				.queryParam(SmsPropertyConstants.COUNTRY_CODE.getProperty(), countryCode);
+				.queryParam(SmsPropertyConstant.AUTH_KEY.getProperty(), authkey)
+				.queryParam(SmsPropertyConstant.SMS_MESSAGE.getProperty(), "your otp is 4646")
+				.queryParam(SmsPropertyConstant.ROUTE.getProperty(), route)
+				.queryParam(SmsPropertyConstant.SENDER_ID.getProperty(), senderId)
+				.queryParam(SmsPropertyConstant.RECIPIENT_NUMBER.getProperty(), "8987876473")
+				.queryParam(SmsPropertyConstant.COUNTRY_CODE.getProperty(), countryCode);
 
 		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
 

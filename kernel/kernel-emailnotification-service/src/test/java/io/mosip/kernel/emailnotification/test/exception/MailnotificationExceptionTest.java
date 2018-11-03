@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.emailnotification.NotificationEmailBootApplication;
-import io.mosip.kernel.emailnotification.exception.AsyncCaughtExceptionHandler;
+import io.mosip.kernel.emailnotification.exception.NotificationException;
 import io.mosip.kernel.emailnotification.service.impl.EmailNotificationServiceImpl;
 import io.mosip.kernel.emailnotification.util.EmailNotificationUtils;
 
@@ -88,7 +88,7 @@ public class MailnotificationExceptionTest {
 		String[] mailCc = { "testcc@gmail.com" };
 		String mailSubject = "test subject";
 		MultipartFile[] attachments = null;
-		doThrow(new AsyncCaughtExceptionHandler(new IOException())).when(utils).addAttachments(Mockito.any(),
+		doThrow(new NotificationException(new IOException())).when(utils).addAttachments(Mockito.any(),
 				Mockito.any());
 		service.sendEmail(mailTo, mailCc, mailSubject, mailContent, attachments);
 	}

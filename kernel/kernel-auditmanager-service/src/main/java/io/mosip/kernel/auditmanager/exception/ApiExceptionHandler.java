@@ -28,9 +28,9 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErrorItem> handle(MethodArgumentNotValidException e) {
+	public ResponseEntity<Error> handle(MethodArgumentNotValidException e) {
 
-		ErrorItem error = new ErrorItem();
+		Error error = new Error();
 		error.setMessage(AuditErrorCode.HANDLEREXCEPTION.getErrorMessage());
 		error.setCode(AuditErrorCode.HANDLEREXCEPTION.getErrorCode());
 
@@ -46,9 +46,9 @@ public class ApiExceptionHandler {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(InvalidFormatException.class)
-	public ResponseEntity<ErrorItem> handle(InvalidFormatException e) {
+	public ResponseEntity<Error> handle(InvalidFormatException e) {
 
-		ErrorItem error = new ErrorItem();
+		Error error = new Error();
 		error.setMessage(AuditErrorCode.INVALIDFORMAT.getErrorMessage());
 		error.setCode(AuditErrorCode.INVALIDFORMAT.getErrorCode());
 

@@ -42,7 +42,7 @@ public class PacketUploaderExceptionTest {
 	public void uploadFilSizeException() throws IOException, Exception {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet4.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet4.zip").getFile().toPath()));
-		when(service.storePacket(packet)).thenThrow(MaxUploadSizeExceededException.class);
+		when(service.upload(packet)).thenThrow(MaxUploadSizeExceededException.class);
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.code", isA(String.class)));
 	}
@@ -51,7 +51,7 @@ public class PacketUploaderExceptionTest {
 	public void uploadFilSizeMinException() throws IOException, Exception {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet4.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/aa.txt").getFile().toPath()));
-		when(service.storePacket(packet)).thenThrow(MaxUploadSizeExceededException.class);
+		when(service.upload(packet)).thenThrow(MaxUploadSizeExceededException.class);
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isBadRequest())
 				.andExpect(jsonPath("$.code", isA(String.class)));
 	}
@@ -60,7 +60,7 @@ public class PacketUploaderExceptionTest {
 	public void uploadFileDirectoryException() throws IOException, Exception {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet.zip").getFile().toPath()));
-		when(service.storePacket(packet)).thenThrow(DirectoryNotEmptyException.class);
+		when(service.upload(packet)).thenThrow(DirectoryNotEmptyException.class);
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
 				.andExpect(jsonPath("$.code", isA(String.class)));
 	}
@@ -69,7 +69,7 @@ public class PacketUploaderExceptionTest {
 	public void uploadSecurityException() throws IOException, Exception {
 		MockMultipartFile packet = new MockMultipartFile("packet", "packet.zip", "multipart/data",
 				Files.readAllBytes(new ClassPathResource("/packet.zip").getFile().toPath()));
-		when(service.storePacket(packet)).thenThrow(PacketLocationSecurityException.class);
+		when(service.upload(packet)).thenThrow(PacketLocationSecurityException.class);
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/uploads").file(packet)).andExpect(status().isInternalServerError())
 				.andExpect(jsonPath("$.code", isA(String.class)));
 	}
