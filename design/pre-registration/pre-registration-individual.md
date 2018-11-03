@@ -288,23 +288,23 @@ Success / Error Code
 > While processing the Pre-Registration if there is any error or successfully
 > then send the respective success or error code to the UI from API layer as  Response object.
 
-  **Code**          **Type**   **Message**
-  ----------------- ---------- -----------------------------------------
-  0000                   Success    Packet Successfully created
-  PRG_PAM_001   Error      Unable create the pre-registration.
-  PRG_PAM_002   Error      Registration table not accessible
-  PRG_PAM_003   Error      Delete operation not allowed
-  PRG_PAM_004   Error      Failed to delete the registration
-  PRG_PAM_005   Error      Unable to fetch the registartions
-  PRG_PAM_006   Error      Document failed to upload
-  PRG_PAM_007   Error      Document exceeding premitted size
-  PRG_PAM_008   Error      Document type not supported
-  PRG_PAM_009   Error      Document invalid format
-  PRG_PAM_010   Error      Document failed in virus scan
-  PRG_PAM_011   Error      Document failed in quality check
-  PRG_PAM_012   Error      Document failed in encryption
-  PRG_PAM_013   Error      Document failed in decryption
-  PRG_PAM_014   Error      Document not present
+  Code   |       Type  | Message|
+-----|----------|-------------|
+  0000      |             Success |   Packet Successfully created
+  PRG_PAM_001 |  Error |     Unable create the pre-registration.
+  PRG_PAM_002  | Error  |    Registration table not accessible
+  PRG_PAM_003 |  Error  |    Delete operation not allowed
+  PRG_PAM_004  | Error  |    Failed to delete the registration
+  PRG_PAM_005 |  Error  |    Unable to fetch the registartions
+  PRG_PAM_006  | Error  |    Document failed to upload
+  PRG_PAM_007  | Error  |    Document exceeding premitted size
+  PRG_PAM_008 |  Error   |   Document type not supported
+  PRG_PAM_009 |  Error   |   Document invalid format
+  PRG_PAM_010  | Error   |   Document failed in virus scan
+  PRG_PAM_011  | Error    |  Document failed in quality check
+  PRG_PAM_012  | Error   |   Document failed in encryption
+  PRG_PAM_013 |  Error   |   Document failed in decryption
+  PRG_PAM_014 |  Error   |   Document not present
 
 Dependency Modules
 ==================
