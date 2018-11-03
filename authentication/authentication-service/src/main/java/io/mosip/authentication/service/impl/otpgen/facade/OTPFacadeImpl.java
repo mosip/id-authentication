@@ -158,7 +158,6 @@ public class OTPFacadeImpl implements OTPFacade {
 		boolean isOtpFlooded = false;
 			String uniqueID = otpRequestDto.getIdvId();
 			Date requestTime = dateHelper.convertStringToDate(otpRequestDto.getReqTime());
-			System.err.println(requestTime);
 			Date addMinutesInOtpRequestDTime = addMinutes(requestTime, -1);
 
 			if (autntxnrepository.countRequestDTime(requestTime, addMinutesInOtpRequestDTime, uniqueID) > 3) {

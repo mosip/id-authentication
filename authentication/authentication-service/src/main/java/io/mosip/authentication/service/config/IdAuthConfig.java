@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.LocaleResolver;
@@ -20,7 +20,6 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
  *
  */
 @Configuration
-@PropertySource(value = { "classpath:ValidationMessages.properties" })
 public class IdAuthConfig implements WebMvcConfigurer {
 
 	@Autowired
@@ -29,7 +28,8 @@ public class IdAuthConfig implements WebMvcConfigurer {
 	   @Bean
 	    public LocaleResolver localeResolver() {
 	        SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
-	        Locale locale = new Locale(environment.getProperty("mosip.primary.lang-code")); // TODO change key
+	        Locale locale = new Locale(environment.getProperty("mosip.errormessages.default-lang"));
+	        LocaleContextHolder.setLocale(locale);
 	        sessionLocaleResolver.setDefaultLocale(locale);
 	        return sessionLocaleResolver;
 	    }

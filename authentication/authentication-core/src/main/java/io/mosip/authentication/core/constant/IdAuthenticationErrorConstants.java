@@ -41,9 +41,9 @@ public enum IdAuthenticationErrorConstants {
     INVALID_RETURN_TYPE("IDA-RST-003", "returnType is empty"),
     INVALID_REST_SERVICE("IDA-RST-004", "Rest service name is empty or invalid"),
     INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"),
-    CLIENT_ERROR("IDA-RST-001", "4XX - Client Error occured"),
-    SERVER_ERROR("IDA-RST-002", "5XX - Server Error occured"),
-    CONNECTION_TIMED_OUT("IDA-RST-003", "Connection timed out"),
+    CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occured"),
+    SERVER_ERROR("IDA-RST-007", "5XX - Server Error occured"),
+    CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
 
 	INVALID_AUTH_REQUEST("IDA-RQV-101", "Invalid Auth Request"),
 	UNKNOWN_ERROR("IDA-MLC-101", "Unknown error occured"),
@@ -51,6 +51,7 @@ public enum IdAuthenticationErrorConstants {
 	// Demo Validation 
 	INVALID_FULL_ADDRESS_REQUEST("IDA-DEA-015", "Required Full Address(fad) attribute is missing"),
 	INVALID_ADDRESS_REQUEST("IDA-DEA-014", "Required Address(ad) attribute is missing"),
+	DOB_TYPE_MISMATCH("IDA-DEA-033", "Demographic data – DOB Type (pi) did not match"),
 	AD_FAD_MUTUALLY_EXCULUSIVE("IDA-AD-RQV-003", "Full Address and Address are mutually exclusive"),
 	INVALID_PERSONAL_INFORMATION("IDA-PRSNL-RQV-001", "Atleat one valid attribute should be present");
 	

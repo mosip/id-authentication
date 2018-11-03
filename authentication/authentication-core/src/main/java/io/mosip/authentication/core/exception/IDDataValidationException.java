@@ -1,5 +1,9 @@
 package io.mosip.authentication.core.exception;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
@@ -9,6 +13,8 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  * @author Manoj SP
  */
 public class IDDataValidationException extends IdAuthenticationBusinessException {
+	
+	private final transient List<Object[]> args;
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7248433575478299970L;
@@ -18,6 +24,7 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
 	 */
 	public IDDataValidationException() {
 		super();
+		args = new ArrayList<>();
 	}
 
 	/**
@@ -27,6 +34,7 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
 	 */
 	public IDDataValidationException(IdAuthenticationErrorConstants exceptionConstant) {
 		super(exceptionConstant);
+		args = new ArrayList<>();
 	}
 
 	/**
@@ -37,6 +45,7 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
 	 */
 	public IDDataValidationException(IdAuthenticationErrorConstants exceptionConstant, Throwable rootCause) {
 		super(exceptionConstant, rootCause);
+		args = new ArrayList<>();
 	}
 	
 	/**
@@ -48,6 +57,7 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
 	 */
 	public IDDataValidationException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
+		args = new ArrayList<>();
 	}
 	
 	/**
@@ -60,6 +70,15 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
 	 */
 	public IDDataValidationException(String errorCode, String errorMessage, Throwable cause) {
 		super(errorCode, errorMessage, cause);
+		args = new ArrayList<>();
 	}
-
+	
+	public void addInfo(String errorCode, String errorMessage, Object... args) {
+		super.addInfo(errorCode, String.format(Optional.ofNullable(errorMessage).orElseGet(() -> ""), args));
+		this.args.add(args);
+	}
+	
+	public List<Object[]> getArgs() {
+		return args;
+	}
 }

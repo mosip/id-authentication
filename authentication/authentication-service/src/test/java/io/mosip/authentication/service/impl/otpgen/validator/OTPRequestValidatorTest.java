@@ -159,14 +159,17 @@ public class OTPRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
-	public void testInvalidTimestamp() {
+	public void testTimeout() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setIdvIdType("abcd");
-		OtpRequestDTO.setReqTime(new Date("1/1/2017").toInstant().toString());
+		OtpRequestDTO.setReqTime(new Date("1/1/2017").toInstant().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		OtpRequestDTO.setIdvId("5371843613598211");
 		otpRequestValidator.validate(OtpRequestDTO, errors);
+		errors.getAllErrors().forEach(System.err::println);
 		assertTrue(errors.hasErrors());
 	}
 

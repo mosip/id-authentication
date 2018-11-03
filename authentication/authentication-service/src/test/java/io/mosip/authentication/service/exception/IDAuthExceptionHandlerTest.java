@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,12 +14,14 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
@@ -28,6 +31,10 @@ import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
+/**
+ * @author Manoj SP
+ *
+ */
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
@@ -39,9 +46,16 @@ public class IDAuthExceptionHandlerTest {
 
 	@Mock
 	private Errors errors;
-
+	
 	@InjectMocks
 	private IdAuthExceptionHandler handler;
+	
+	@Before
+	public void before() {
+		   ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+		   source.setBasename("errormessages");
+		   ReflectionTestUtils.setField(handler, "messageSource", source);
+	}
 
 	@Test
 	public void testHandleAllException() {
@@ -54,7 +68,7 @@ public class IDAuthExceptionHandlerTest {
 			assertEquals("Unknown error occured", e.getErrorMessage());
 		});
 	}
-
+	
 	@Test
 	public void testHandleExceptionInternal() {
 		ResponseEntity<Object> handleExceptionInternal = handler.handleExceptionInternal(
@@ -63,8 +77,8 @@ public class IDAuthExceptionHandlerTest {
 		AuthResponseDTO response = (AuthResponseDTO) handleExceptionInternal.getBody();
 		List<AuthError> errorCode = response.getErr();
 		errorCode.forEach(e -> {
-			assertEquals("Http Media Type Not Supported Exception", e.getErrorCode());
-			assertEquals("Http Media Type Not Supported Exception", e.getErrorMessage());
+			assertEquals("IDA-RQV-101", e.getErrorCode());
+			assertEquals("Invalid Auth Request", e.getErrorMessage());
 		});
 	}
 
