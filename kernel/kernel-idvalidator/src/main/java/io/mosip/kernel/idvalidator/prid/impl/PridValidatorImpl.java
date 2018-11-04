@@ -42,7 +42,7 @@ public class PridValidatorImpl implements IdValidator<String> {
 	 */
 
 	@PostConstruct
-	public void preparNumaricRegEx() {
+	private void pridValidatorImplPostConstruct() {
 		numaricRegEx = "\\d{" + pridLength + "}";
 	}
 

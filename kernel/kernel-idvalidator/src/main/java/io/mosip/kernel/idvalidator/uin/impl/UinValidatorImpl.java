@@ -43,7 +43,7 @@ public class UinValidatorImpl implements IdValidator<String> {
 	 * Method to prepare regular expressions for checking UIN has only digits.
 	 */
 	@PostConstruct
-	public void preparNumaricRegEx() {
+	private void uinValidatorImplnumaricRegEx() {
 		numaricRegEx = "\\d{" + uinLength + "}";
 	}
 

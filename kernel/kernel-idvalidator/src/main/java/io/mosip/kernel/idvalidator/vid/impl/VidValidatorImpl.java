@@ -39,7 +39,7 @@ public class VidValidatorImpl implements IdValidator<String> {
 	 * Method to prepare regular expressions for checking UIN has only digits.
 	 */
 	@PostConstruct
-	public void preparNumaricRegEx() {
+	private void VidValidatorImplPostConstruct() {
 		numaricRegEx = "\\d{" + vidLength + "}";
 	}
 

@@ -79,7 +79,7 @@ public class EmailValidatorImpl implements EmailValidator<String> {
 	private String emailRegex;
 
 	@PostConstruct
-	public void preparEmailRegEx() {
+	private void emailValidatorImplPostConstruct() {
 
 		emailRegex = "^[a-zA-Z0-9][a-zA-Z0-9" + unserNameSpecialChar + "]+(?:\\.[a-zA-Z0-9" + unserNameSpecialChar
 				+ "]+)*@(?:[a-zA-Z" + domainSpecialChar + "]+\\.)+[a-zA-Z]{" + domainExtMinLength + ","

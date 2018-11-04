@@ -55,7 +55,7 @@ public class PhoneValidatorImpl implements PhoneValidator<String> {
 	private String phoneRegex;
 
 	@PostConstruct
-	public void prepareRegEx() {
+	private void phoneValidatorImplPostConstruct() {
 		phoneRegex = "[\\d" + phoneSpecialChar + "]{" + phoneMinLength + "," + phoneMaxLength + "}";
 		
 	}
