@@ -288,6 +288,7 @@ Success / Error Code
 > While processing the Pre-Registration if there is any error or successfully
 > then send the respective success or error code to the UI from API layer as  Response object.
 
+
  Code   |       Type  | Message|
 -----|----------|-------------|
    0000          |    Success  |  Packet Successfully created
@@ -307,6 +308,7 @@ Success / Error Code
   PRG_PAM_DOC_014  | Error   |   Document not present
   PRG_PAM_DOC_015 |  Error   |   Document failed to delete
   PRG_PAM_DOC_016  | Error   |   Document failed to copy
+
 
 Dependency Modules
 ==================
