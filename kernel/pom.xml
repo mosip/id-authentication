@@ -94,8 +94,7 @@
 		<module>kernel-idgenerator-uin</module>
 		<module>kernel-idgenerator-vid</module>
 		<module>kernel-idgenerator-tokenid</module>
-		<module>kernel-packetuploader-sftp</module>
-		<module>kernel-packetserver-sftp</module>
+		<module>kernel-packetuploader-sftp-jsch</module>	
 		<module>kernel-idvalidator</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-virusscanner-clamav</module>
@@ -108,7 +107,8 @@
 		<module>kernel-datamapper-orika</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
-		<module>kernel-packetuploader-http-service</module>
+		<module>kernel-packetserver-sftp</module>
+		<module>kernel-packetserver-http</module>
 		<module>kernel-emailnotification-service</module>
 		<module>kernel-smsnotification-msg91-service</module>
 		

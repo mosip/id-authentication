@@ -6,7 +6,7 @@ package io.mosip.kernel.pdfgenerator.itext.constant;
  * @since 1.0.0
  */
 
-public enum PdfGeneratorExceptionCodeConstant {
+public enum PDFGeneratorExceptionCodeConstant {
 	 PDF_EXCEPTION("KER-PDG-001", "Pdf generation failed");
 	/**
 	 * This variable holds the error code.
@@ -26,7 +26,7 @@ public enum PdfGeneratorExceptionCodeConstant {
 	 * @param errorMessage
 	 *            the error message.
 	 */
-	PdfGeneratorExceptionCodeConstant(String errorCode, String errorMessage) {
+	PDFGeneratorExceptionCodeConstant(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}

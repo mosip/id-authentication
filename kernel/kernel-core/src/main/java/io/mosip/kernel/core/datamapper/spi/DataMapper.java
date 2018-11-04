@@ -2,7 +2,6 @@ package io.mosip.kernel.core.datamapper.spi;
 
 import java.util.List;
 
-import io.mosip.kernel.core.datamapper.converter.DataConverter;
 import io.mosip.kernel.core.datamapper.model.IncludeDataField;
 
 /**

@@ -1,4 +1,4 @@
-package io.mosip.kernel.core.datamapper.converter;
+package io.mosip.kernel.core.datamapper.spi;
 
 /**
  * This performs the conversion of source into a new instance of destination type.

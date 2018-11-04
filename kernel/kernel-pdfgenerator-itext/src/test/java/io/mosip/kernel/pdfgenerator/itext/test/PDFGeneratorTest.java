@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.pdfgenerator.exception.PdfGeneratorException;
+import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 
@@ -48,7 +48,7 @@ public class PDFGeneratorTest {
 
 	}
 
-	@Test(expected = PdfGeneratorException.class)
+	@Test(expected = PDFGeneratorException.class)
 	public void testPdfGeneratorExceptionInInputStream() throws IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		String inputFileName = classLoader.getResource("emptyFile.html").getFile();
@@ -82,7 +82,7 @@ public class PDFGeneratorTest {
 		}
 	}
 
-	@Test(expected = PdfGeneratorException.class)
+	@Test(expected = PDFGeneratorException.class)
 	public void testPDFGeneratorGenericExceptionWithTemplateAsString() throws IOException {
 		ClassLoader classLoader = getClass().getClassLoader();
 		String inputFileName = classLoader.getResource("emptyFile.html").getFile();
@@ -108,7 +108,7 @@ public class PDFGeneratorTest {
 		assertTrue(tempoutFile.exists());
 	}
 
-	@Test(expected = PdfGeneratorException.class)
+	@Test(expected = PDFGeneratorException.class)
 	public void testPdfGeneratorExceptionInFile() throws IOException {
 		String outputPath = System.getProperty("user.dir");
 		ClassLoader classLoader = getClass().getClassLoader();

@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 
 import com.itextpdf.html2pdf.HtmlConverter;
 
-import io.mosip.kernel.core.pdfgenerator.exception.PdfGeneratorException;
+import io.mosip.kernel.core.pdfgenerator.exception.PDFGeneratorException;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
-import io.mosip.kernel.pdfgenerator.itext.constant.PdfGeneratorExceptionCodeConstant;
+import io.mosip.kernel.pdfgenerator.itext.constant.PDFGeneratorExceptionCodeConstant;
 
 /**
  * The PdfGeneratorImpl is the class you will use most when converting processed
@@ -49,7 +49,7 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		try {
 			HtmlConverter.convertToPdf(is, os);
 		} catch (Exception e) {
-			throw new PdfGeneratorException(PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
+			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
 					e.getMessage());
 		}
 		return os;
@@ -77,8 +77,8 @@ public class PDFGeneratorImpl implements PDFGenerator {
 		try {
 			HtmlConverter.convertToPdf(template, os);
 		} catch (Exception e) {
-			throw new PdfGeneratorException(PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
+			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
+					PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
 		}
 		return os;
 	}
@@ -103,8 +103,8 @@ public class PDFGeneratorImpl implements PDFGenerator {
 			HtmlConverter.convertToPdf(new File(templatePath), outputFile);
 
 		} catch (Exception e) {
-			throw new PdfGeneratorException(PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
-					PdfGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
+			throw new PDFGeneratorException(PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorCode(),
+					PDFGeneratorExceptionCodeConstant.PDF_EXCEPTION.getErrorMessage(), e);
 		}
 
 	}

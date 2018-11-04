@@ -9,7 +9,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  *
  */
 
-public class PdfGeneratorException extends BaseUncheckedException{
+public class PDFGeneratorException extends BaseUncheckedException{
 	
 	private static final long serialVersionUID = -6138841548758442351L;
    
@@ -25,7 +25,7 @@ public class PdfGeneratorException extends BaseUncheckedException{
 	 * @param cause
 	 *            The cause
 	 */
-	public PdfGeneratorException(String errorCode, String errorMessage, Throwable cause) {
+	public PDFGeneratorException(String errorCode, String errorMessage, Throwable cause) {
 		super(errorCode, errorMessage, cause);
 	}
 
@@ -38,7 +38,7 @@ public class PdfGeneratorException extends BaseUncheckedException{
 	 * @param errorMessage
 	 *            The errormessage
 	 */
-	public PdfGeneratorException(String errorCode, String errorMessage) {
+	public PDFGeneratorException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 }

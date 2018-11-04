@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.datamapper.converter.DataConverter;
 import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.model.IncludeDataField;
+import io.mosip.kernel.core.datamapper.spi.DataConverter;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.datamapper.orika.config.MapClassBuilder;
 import io.mosip.kernel.datamapper.orika.constant.DataMapperErrorCodes;
