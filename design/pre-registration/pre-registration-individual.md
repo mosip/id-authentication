@@ -291,20 +291,22 @@ Success / Error Code
   Code   |       Type  | Message|
 -----|----------|-------------|
   0000      |             Success |   Packet Successfully created
-  PRG_PAM_001 |  Error |     Unable create the pre-registration.
-  PRG_PAM_002  | Error  |    Registration table not accessible
-  PRG_PAM_003 |  Error  |    Delete operation not allowed
-  PRG_PAM_004  | Error  |    Failed to delete the registration
-  PRG_PAM_005 |  Error  |    Unable to fetch the registartions
-  PRG_PAM_006  | Error  |    Document failed to upload
-  PRG_PAM_007  | Error  |    Document exceeding premitted size
-  PRG_PAM_008 |  Error   |   Document type not supported
-  PRG_PAM_009 |  Error   |   Document invalid format
-  PRG_PAM_010  | Error   |   Document failed in virus scan
-  PRG_PAM_011  | Error    |  Document failed in quality check
-  PRG_PAM_012  | Error   |   Document failed in encryption
-  PRG_PAM_013 |  Error   |   Document failed in decryption
-  PRG_PAM_014 |  Error   |   Document not present
+  PRG_PAM_APP_001 |  Error   |   Unable create the pre-registration.
+  PRG_PAM_APP_002  | Error   |   Registration table not accessible
+  PRG_PAM_APP_003 |  Error   |   Delete operation not allowed
+  PRG_PAM_APP_004  | Error   |   Failed to delete the registration
+  PRG_PAM_APP_005 |  Error    |  Unable to fetch the registartions
+  PRG_PAM_DOC_006 |  Error   |   Document failed to upload
+  PRG_PAM_DOC_007  | Error   |   Document exceeding premitted size
+  PRG_PAM_DOC_008 |  Error   |   Document type not supported
+  PRG_PAM_DOC_009  | Error   |   Document invalid format
+  PRG_PAM_DOC_010 |  Error    |  Document failed in virus scan
+  PRG_PAM_DOC_011 |  Error   |  Document failed in quality check
+  PRG_PAM_DOC_012  | Error   |   Document failed in encryption
+  PRG_PAM_DOC_013  | Error    |  Document failed in decryption
+  PRG_PAM_DOC_014  | Error   |   Document not present
+  PRG_PAM_DOC_015 |  Error   |   Document failed to delete
+  PRG_PAM_DOC_016  | Error   |   Document failed to copy
 
 Dependency Modules
 ==================
