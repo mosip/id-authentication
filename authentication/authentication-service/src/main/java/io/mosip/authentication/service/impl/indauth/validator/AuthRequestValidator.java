@@ -1,12 +1,10 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
 import java.text.ParseException;
-import static java.util.AbstractMap.SimpleEntry;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
-import java.util.AbstractMap;
-import java.util.HashMap;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -377,7 +375,8 @@ public class AuthRequestValidator extends IdAuthValidator {
 		}
 	}
 
-	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {return Optional.ofNullable(authreqdto.getPinInfo())
+	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
+		return Optional.ofNullable(authreqdto.getPinInfo())
 				.flatMap(pinInfos -> pinInfos.stream()
 						.filter(pinInfo -> pinInfo.getType() != null
 								&& pinInfo.getType().equals(PinType.OTP.getType()))
