@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,6 +137,7 @@ public class RegistrationController extends BaseController {
 		ageFieldValidations();
 		ageValidationInDatePicker();
 		dateFormatter();
+		loadAddressFromPreviousEntry();
 
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Getting the list of countries");
@@ -145,6 +147,28 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Exiting the REGISTRATION_CONTROLLER");
 	}
 
+	/**
+	 * 
+	 * Loading the address detail from previous entry
+	 * 
+	 */
+	public void loadAddressFromPreviousEntry() {
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Loading address from previous entry");
+		Map<String, Object> sessionMapObject =  SessionContext.getInstance().getMapObject();
+		AddressDTO addressDto = (AddressDTO) sessionMapObject.get("PrevAddress");
+		if(addressDto!=null) {
+			LocationDTO locationDto = addressDto.getLocationDTO();
+			//country.setValue(locationDto.getLine4());
+			state.setValue(locationDto.getProvince());
+			district.setValue(locationDto.getCity());
+			region.setValue(locationDto.getRegion());
+			pin.setValue(locationDto.getPostalCode());
+		}
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
+	}
+	
 	/**
 	 * 
 	 * Saving the detail into concerned DTO'S
