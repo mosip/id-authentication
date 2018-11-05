@@ -71,6 +71,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setStatusTimestamp(time);
 			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
 			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
+			registration.setUploadCount((short) 1);
 			// TODO: Get from Session Context - Reg Center
 			registration.setIndividualName(individualName);
 			registration.setIsActive(true);
@@ -175,35 +176,83 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.RegistrationDAO#getPacketsToBeSynched(java.util.List)
+	 */
+	public List<Registration> getPacketsToBeSynched(List<String> statusCodes) {
+		return registrationRepository.findByClientStatusCodeIn(statusCodes);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.dao.RegistrationDAO#getRegistrationByStatus(java.util.
+	 * List)
+	 */
 	@Override
 	public List<Registration> getRegistrationByStatus(List<String> packetStatus) {
-		LOGGER.debug("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", 
-				APPLICATION_NAME, APPLICATION_ID, 
+		logger.debug("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"got the packet details by id");
-		
-		return registrationRepository.findByClientStatusCodeIn(packetStatus);
+
+		return registrationRepository.findByClientStatusCodeOrServerStatusCodeOrFileUploadStatusOrderByCrDtimeAsc(
+				packetStatus.get(0), packetStatus.get(1), packetStatus.get(2));
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.mosip.registration.dao.RegistrationDAO#updateRegStatus(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.mosip.registration.dao.RegistrationDAO#updateRegStatus(java.lang.String)
 	 */
-	public Registration updateRegStatus(String regId, String status) {
-		LOGGER.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", 
-				APPLICATION_NAME, APPLICATION_ID, 
+	public Registration updateRegStatus(Registration registrationPacket) {
+		logger.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the packet details in the Registation table");
-		
+
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		
-		Registration reg = registrationRepository.getOne(regId);
-		if(status.equals("P")) {
-			reg.setClientStatusCode("P");
-			reg.setFileUploadStatus("S");
-		} else {
-			reg.setFileUploadStatus("E");
-		}
+
+		Registration reg = registrationRepository.getOne(registrationPacket.getId());
+		reg.setClientStatusCode(registrationPacket.getClientStatusCode());
+		reg.setFileUploadStatus(registrationPacket.getFileUploadStatus());
 		reg.setIsActive(true);
 		reg.setUploadTimestamp(timestamp);
+		reg.setClientStatusTimestamp(timestamp);
+		reg.setRegistrationTransaction(buildRegistrationTransaction(reg));
 		return registrationRepository.update(reg);
+	}
+
+	public Registration updatePacketSyncStatus(Registration packet) {
+		logger.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+				"Updating the packet details in the Registation table");
+
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		Registration reg = registrationRepository.getOne(packet.getId());
+		reg.setClientStatusCode(RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode());
+		reg.setIsActive(true);
+		reg.setUploadTimestamp(timestamp);
+		reg.setRegistrationTransaction(buildRegistrationTransaction(reg));
+		return registrationRepository.update(reg);
+	}
+
+	private List<RegistrationTransaction> buildRegistrationTransaction(Registration registrationPacket) {
+		logger.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
+				APPLICATION_ID, "Packet encryption had been ended");
+
+		Timestamp time = new Timestamp(System.currentTimeMillis());
+		RegistrationTransaction regTransaction = new RegistrationTransaction();
+		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
+		regTransaction.setRegId(registrationPacket.getId());
+		regTransaction.setIsActive(true);
+		regTransaction.setTrnTypeCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+		regTransaction.setStatusCode(registrationPacket.getClientStatusCode());
+		regTransaction.setCrBy("mosip");
+		regTransaction.setCrDtime(time);
+		List<RegistrationTransaction> registrationTransaction = new ArrayList<>();
+		registrationTransaction.add(regTransaction);
+		logger.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
+				APPLICATION_ID, "Packet encryption had been ended");
+
+		return registrationTransaction;
 	}
 
 }

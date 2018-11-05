@@ -31,5 +31,5 @@ public interface PacketUploadService {
 	 * @param packetStatus
 	 * @return
 	 */
-	 Boolean updateStatus(Map<String, String> packetStatus);
+	 Boolean updateStatus(List<Registration> packetUploadStatus);
 }

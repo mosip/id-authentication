@@ -6,15 +6,12 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,92 +23,99 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.dao.RegTransactionDAO;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
-import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PacketUploadService;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.RestClientUtil;
 
-
 /**
  * 
- * This class will update the packet status in the table after the Packets got
- * uploaded in the FTP server.
+ * This class will update the packet status in the table and also push the
+ * packets to the server.
  * 
- * @author M1046564
+ * @author SaravanaKumar G
  *
  */
 @Service
 @Transactional
 public class PacketUploadServiceImpl implements PacketUploadService {
-	/** Object for Logger. */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketUploadServiceImpl.class);
-
-	private static final List<String> PACKET_STATUS = Arrays.asList("I", "H", "A", "S");
-	
-	private static final String packetType = "file";
 
 	@Autowired
 	private RegistrationDAO registrationDAO;
 
 	@Autowired
-	private RegTransactionDAO regTransactionDAO;
-
-	@Autowired
 	private RestClientUtil restClientUtil;
-	
-	@Autowired
-	private Environment environment;
 
+	@Value("${PACKET_UPLOAD_URL}")
+	String urlPath;
+
+	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketUploadServiceImpl.class); 
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.PacketUploadService#getSynchedPackets()
+	 */
+	@SuppressWarnings("unchecked")
 	public List<Registration> getSynchedPackets() {
-		return registrationDAO.getRegistrationByStatus(PACKET_STATUS);
+		LOGGER.debug("REGISTRATION - GET_SYNCHED_PACKETS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching synched packets from the database");
+		return registrationDAO.getRegistrationByStatus(RegistrationConstants.getStatus());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.PacketUploadService#pushPacket(java.io.File)
+	 */
 	public Object pushPacket(File packet) throws URISyntaxException, RegBaseCheckedException {
+		LOGGER.debug("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Push packets to the server");
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
-		String uriPath = environment.getProperty("PACKET_UPLOAD_URL");
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		map.add(packetType, new FileSystemResource(packet));
+		map.add(RegistrationConstants.PACKET_TYPE, new FileSystemResource(packet));
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
 		requestHTTPDTO.setHttpEntity(requestEntity);
 		requestHTTPDTO.setClazz(Object.class);
-		requestHTTPDTO.setUri(new URI(uriPath));
+		requestHTTPDTO.setUri(new URI(urlPath));
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
 		Object response = null;
 		try {
 			response = restClientUtil.invoke(requestHTTPDTO);
 		} catch (HttpClientErrorException e) {
+			LOGGER.error("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+					e.getRawStatusCode()+"Http error while pushing packets to the server");
 			throw new RegBaseCheckedException(Integer.toString(e.getRawStatusCode()), e.getStatusText());
 		} catch (RuntimeException e) {
-			throw new RegBaseUncheckedException("400", "Unable to push the packets");
+			LOGGER.error("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+					e.getMessage()+"Runtime error while pushing packets to the server");
+			throw new RegBaseUncheckedException(RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorCode(), RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorMessage());
 		}
 		return response;
 
 	}
 
-	/**
-	 * This method is used to update the packet status that are uploaded.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param uploadedPackets
-	 * @return
+	 * @see
+	 * io.mosip.registration.service.PacketUploadService#updateStatus(java.util.
+	 * List)
 	 */
-	public Boolean updateStatus(Map<String, String> packetStatus) {
+	public Boolean updateStatus(List<Registration> packetsUploadStatus) {
 		LOGGER.debug("REGISTRATION - UPDATE_STATUS - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Update the status of the uploaded packet");
-		List<RegistrationTransaction> registrationTransactions = new ArrayList<>();
-		for (Map.Entry<String, String> status : packetStatus.entrySet()) {
-			String regId = status.getKey();
-			String statusCode = status.getValue();
-			registrationDAO.updateRegStatus(regId, statusCode);
-			registrationTransactions.add(regTransactionDAO.buildRegTrans(regId, statusCode));
+		for (Registration registrationPacket : packetsUploadStatus) {
+			registrationDAO.updateRegStatus(registrationPacket);
 		}
-		regTransactionDAO.insertPacketTransDetails(registrationTransactions);
 		return true;
 
 	}

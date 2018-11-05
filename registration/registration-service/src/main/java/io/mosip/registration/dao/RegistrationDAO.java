@@ -3,6 +3,7 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
@@ -78,5 +79,17 @@ public interface RegistrationDAO {
 	 * @param regId
 	 * @return
 	 */
-	Registration updateRegStatus(String regId, String status);
+	Registration updateRegStatus(Registration packetStatus);
+	
+	/**Fetch the packets that needs to be Synched with the server.
+	 * @param statusCodes
+	 * @return
+	 */
+	List<Registration> getPacketsToBeSynched(List<String> statusCodes);
+	
+	/**Update the Packet sync status in the database
+	 * @param packet
+	 * @return
+	 */
+	Registration updatePacketSyncStatus(Registration packet);
 }

@@ -8,25 +8,32 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.PacketUploadStatusDTO;
+import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PacketUploadService;
+import io.mosip.registration.service.PacketSynchService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -43,31 +50,79 @@ public class PacketUploadController extends BaseController {
 	@FXML
 	private TableView<PacketUploadStatusDTO> table;
 
+	@FXML
+	private ProgressIndicator progressIndicator;
+
 	@Autowired
 	private PacketUploadService packetUploadService;
 
-	/** Object for Logger. */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketUploadController.class);
+	@Autowired
+	private PacketSynchService packetSynchService;
+
+	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketUploadController.class); 
 
 	/**
-	 * Validate the Username, Password and Packet Path
+	 * This method is used to Sync as well as upload the packets.
 	 * 
-	 * @param event
 	 */
-	public void validate(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - VALIDATE_USER_INPUT_DETAILS - PACKET_UPLOAD_CONTROLLER",
-				APPLICATION_NAME, APPLICATION_ID,
-				"Validating the user input details");
+	public void syncAndUploadPacket() {
+		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Sync the packets and push it to the server");
+		table.getItems().clear();
+		table.refresh();
+		service.reset();
+		packetSync();
+		progressIndicator.progressProperty().bind(service.progressProperty());
+		service.start();
+		service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent t) {
+				String status = service.getValue();
+				if (!status.equals(RegistrationConstants.EMPTY)) {
+					String[] displayStatus = status.split("-");
+					if (RegistrationConstants.PACKET_SYNC_ERROR.equals(displayStatus[0])) {
+						generateAlert(displayStatus[0], AlertType.ERROR, displayStatus[1]);
+					} else {
+						generateAlert(displayStatus[0], AlertType.INFORMATION, displayStatus[1]);
+					}
 
-		Map<String, String> statusMap = new HashMap<>();
-		try {
-			statusMap = handleUpload();
-			if (!statusMap.isEmpty()) {
-				generateAlert("INFO", AlertType.INFORMATION, "Packets Uploaded Successfully");
-				displayData(populateTableData(statusMap));
+				}
 			}
-		} catch (RegBaseCheckedException regBaseCheckedException) {
-			generateAlert("Error", Alert.AlertType.ERROR, regBaseCheckedException.getErrorText());
+		});
+
+	}
+
+	/**
+	 * This method is used to synch the local packets with the server
+	 * 
+	 */
+	private void packetSync() {
+		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Sync the packets to the server");
+		try {
+			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
+			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
+			if (!packetsToBeSynched.isEmpty()) {
+				for (Registration packetToBeSynch : packetsToBeSynched) {
+					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
+					syncDto.setLangCode("ENG");
+					syncDto.setStatusComment("Pre synch");
+					syncDto.setRegistrationId(packetToBeSynch.getId());
+					syncDto.setParentRegistrationId(packetToBeSynch.getId());
+					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
+					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
+					syncDtoList.add(syncDto);
+				}
+			}
+			Object response = packetSynchService.syncPacketsToServer(syncDtoList);
+			if (response != null) {
+				packetSynchService.updateSyncStatus(packetsToBeSynched);
+			}
+		} catch (RegBaseUncheckedException | RegBaseCheckedException | MosipJsonProcessingException
+				| URISyntaxException e) {
+			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, "Error while Synching packets to the server");
+			generateAlert("Error", AlertType.ERROR, e.getMessage());
 		}
 	}
 
@@ -77,8 +132,8 @@ public class PacketUploadController extends BaseController {
 	 * @param tableData
 	 */
 	private void displayData(List<PacketUploadStatusDTO> tableData) {
-		LOGGER.debug("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "To display all the ui data");
+		LOGGER.debug("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"To display all the ui data");
 		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
 		uploadStatusColumn.setCellValueFactory(new PropertyValueFactory<>("uploadStatus"));
 
@@ -87,76 +142,130 @@ public class PacketUploadController extends BaseController {
 	}
 
 	/**
-	 * All the Packet upload functionalities are done here
-	 * 
-	 * @param packetUploadDto
-	 * @return
-	 * @throws IDISBaseCheckedException
-	 */
-	private Map<String, String> handleUpload() throws RegBaseCheckedException {
-		LOGGER.debug("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
-				APPLICATION_NAME, APPLICATION_ID,
-				"Handling all the packet upload activities");
-		List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
-		Map<String, String> uploadStatusMap = new HashMap<String, String>();
-		if (!synchedPackets.isEmpty()) {
-			for (Registration synchedPacket : synchedPackets) {
-				String ackFileName = synchedPacket.getAckFilename();
-				int lastIndex = ackFileName.indexOf("_Ack");
-				String packetPath = ackFileName.substring(0, lastIndex);
-				File packet = new File(packetPath + ".zip");
-				String[] packetName = packet.getName().split("\\.");
-				try {
-					Object response = packetUploadService.pushPacket(packet);
-					String responseCode = response.toString();
-					if (responseCode.equals("PACKET_UPLOADED_TO_LANDING_ZONE")) {
-						uploadStatusMap.put(packetName[0], "P");
-					}
-
-				} catch (URISyntaxException e) {
-					e.printStackTrace();
-				} catch (RegBaseCheckedException e) {
-					uploadStatusMap.put(packetName[0], "E");
-				} catch (RuntimeException e) {
-					generateAlert("Error", Alert.AlertType.ERROR, "Unable to push packets to the server.");
-					break;
-				}
-			}
-			packetUploadService.updateStatus(uploadStatusMap);
-		} else {
-			generateAlert("INFO", Alert.AlertType.INFORMATION, "No packets to upload");
-		}
-
-		return uploadStatusMap;
-
-	}
-
-	/**
 	 * To populate the data for the UI table
 	 * 
 	 * @param verifiedPackets
 	 * @return
 	 */
-	private List<PacketUploadStatusDTO> populateTableData(Map<String, String> packetStatus) {
-		LOGGER.debug("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER",
-				APPLICATION_NAME, APPLICATION_ID,
-				"Populating the table data with the Updated details");
+	private List<PacketUploadStatusDTO> populateTableData(List<Registration> packetStatus) {
+		LOGGER.debug("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Populating the table data with the Updated details");
 		List<PacketUploadStatusDTO> listUploadStatus = new ArrayList<>();
 		PacketUploadStatusDTO packetUploadStatusDTO;
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 		String date = simpleDateFormat.format(new Date());
-		for (Map.Entry<String, String> status : packetStatus.entrySet()) {
+		for (Registration registrationPacket : packetStatus) {
 			packetUploadStatusDTO = new PacketUploadStatusDTO();
-			if (status.getValue().equals("P")) {
+			if (RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode()
+					.equals(registrationPacket.getClientStatusCode())) {
 				packetUploadStatusDTO.setUploadStatus("Uploaded");
 			} else {
 				packetUploadStatusDTO.setUploadStatus("Error");
 			}
 			packetUploadStatusDTO.setUploadTime(date);
-			packetUploadStatusDTO.setFileName(status.getKey());
+			packetUploadStatusDTO.setFileName(registrationPacket.getId());
 			listUploadStatus.add(packetUploadStatusDTO);
 		}
 		return listUploadStatus;
 	}
 
+	/**
+	 * This anonymous service class will do the packet upload as well as the upload
+	 * progress.
+	 * 
+	 */
+	Service<String> service = new Service<String>() {
+		@Override
+		protected Task<String> createTask() {
+			return /**
+					 * @author SaravanaKumar
+					 *
+					 */
+			new Task<String>() {
+				/*
+				 * (non-Javadoc)
+				 * 
+				 * @see javafx.concurrent.Task#call()
+				 */
+				@Override
+				protected String call() {
+
+					LOGGER.debug("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+							APPLICATION_ID, "Handling all the packet upload activities");
+					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
+					List<Registration> packetUploadList = new ArrayList<>();
+					String status = "";
+					if (!synchedPackets.isEmpty()) {
+						progressIndicator.setVisible(true);
+						for (int i = 0; i < synchedPackets.size(); i++) {
+							Registration synchedPacket = synchedPackets.get(i);
+							synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
+							String ackFileName = synchedPacket.getAckFilename();
+							int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
+							String packetPath = ackFileName.substring(0, lastIndex);
+							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
+							try {
+								if (("R".equals(synchedPacket.getServerStatusCode()) && synchedPacket
+										.getServerStatusTimestamp().compareTo(synchedPacket.getUploadTimestamp()) == 1)
+										|| "S".equals(synchedPacket.getClientStatusCode())
+										|| "E".equals(synchedPacket.getFileUploadStatus())) {
+									Object response = packetUploadService.pushPacket(packet);
+									String responseCode = response.toString();
+									if (responseCode.equals("PACKET_UPLOADED_TO_LANDING_ZONE")) {
+										synchedPacket.setClientStatusCode(
+												RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+										synchedPacket.setFileUploadStatus(
+												RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+
+									} else {
+										synchedPacket.setFileUploadStatus(
+												RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+									}
+								}
+
+							} catch (URISyntaxException e) {
+
+								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
+										APPLICATION_NAME, APPLICATION_ID, "Error in uri syntax");
+								status = "Error-Unable to push packets to the server.";
+							} catch (RegBaseCheckedException e) {
+								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
+										APPLICATION_NAME, APPLICATION_ID, "Error while pushing packets to the server");
+								synchedPacket.setFileUploadStatus(
+										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
+								packetUploadList.add(synchedPacket);
+							} catch (RuntimeException e) {
+								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
+										APPLICATION_NAME, APPLICATION_ID,
+										"Run time error while connecting to the server");
+								if (i == 0) {
+									status = "Error-Unable to push packets to the server.";
+								} else if (i > 0) {
+									status = "Error-Unable to push some packets to the server.";
+								}
+								for (int count = i; count < synchedPackets.size(); count++) {
+									synchedPacket = synchedPackets.get(count);
+									synchedPacket.setFileUploadStatus(
+											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+									synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
+									packetUploadList.add(synchedPacket);
+								}
+								break;
+							}
+							packetUploadList.add(synchedPacket);
+							this.updateProgress(i, synchedPackets.size());
+						}
+						packetUploadService.updateStatus(packetUploadList);
+						progressIndicator.setVisible(false);
+						displayData(populateTableData(packetUploadList));
+					} else {
+						status = "Info-No packets to upload.";
+					}
+
+					return status;
+				}
+			};
+		}
+	};
 }

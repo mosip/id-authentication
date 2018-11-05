@@ -45,7 +45,9 @@ public enum RegistrationExceptions {
 	REG_UI_LOGOUT_IO_EXCEPTION("REG-UI-SHE-009", "Unable to logout"),
 	REG_ACK_TEMPLATE_IO_EXCEPTION("REG-UI-SHE-010","Unable to write the image file"),
 	REG_UI_AUTHORIZATION_EXCEPTION("REG-ROA-010","You are not authorized to access this feature"),
-	REG_UI_APPROVE_SCREEN_EXCEPTION("REG-APS-011","Unable to load Approval screen");
+	REG_UI_APPROVE_SCREEN_EXCEPTION("REG-APS-011","Unable to load Approval screen"),
+	REG_PACKET_SYNC_EXCEPTION("REG-PSS-001","Unable to Sync Packets to the server"),
+	REG_PACKET_UPLOAD_ERROR("REG-PUS-001","Unable to Push Packets to the server");
 
 
 	/**

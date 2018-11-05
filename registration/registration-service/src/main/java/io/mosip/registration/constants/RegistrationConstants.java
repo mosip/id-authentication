@@ -398,6 +398,12 @@ public class RegistrationConstants {
 			return Arrays.asList(pins);
 		}
 		
+		// Upload Packet
+
+		public static List getStatus() {
+			String[] packetStatus = { "S", "resend", "E" };
+			return Arrays.asList(packetStatus);
+		}
 		//Exceptions
 		
 		private static final String REG_UI_CODE = "REG-UI";
@@ -411,6 +417,12 @@ public class RegistrationConstants {
 		
 		public static final String BIOMETRIC_IMAGE = "Image";
 		public static final String BIOMETRIC_TYPE = "Type";
+//Packet Upload
+		public static final String PACKET_TYPE = "file";
+		public static final String PACKET_STATUS_PRE_SYNC="PRE_SYNC";
+		public static final String PACKET_STATUS_SYNC_TYPE="NEW_REGISTRATION";
+		public static final String ACKNOWLEDGEMENT_FILE = "_Ack";
+		public static final String PACKET_SYNC_ERROR="Error";
 
 	
 }

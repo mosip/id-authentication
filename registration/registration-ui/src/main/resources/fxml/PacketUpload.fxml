@@ -13,11 +13,12 @@
           <TableColumn fx:id="uploadStatusColumn" prefWidth="400.0" text="Upload Status" />
         </columns>
       </TableView>
-      <Button fx:id="formValidationButton" layoutX="770.0" layoutY="70.0" mnemonicParsing="false" onAction="#validate" text="Upload" />
+      <Button fx:id="formValidationButton" layoutX="770.0" layoutY="70.0" mnemonicParsing="false" onAction="#syncAndUploadPacket" text="Upload" />
       <Label layoutX="379.0" layoutY="31.0" prefHeight="39.0" prefWidth="161.0" text="Upload Packet">
          <font>
             <Font size="23.0" />
          </font>
       </Label>
+      <ProgressIndicator fx:id="progressIndicator" layoutX="394.0" layoutY="62.0" prefHeight="109.0" prefWidth="90.0" progress="0.0" visible="false" />
    </children>
 </AnchorPane>
