@@ -23,13 +23,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.spi.idgenerator.MosipPridGenerator;
+import io.mosip.kernel.core.spi.idgenerator.PridGenerator;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.preregistration.application.dao.RegistrationDao;
@@ -69,7 +66,7 @@ public class PreRegistrationServiceTest {
 	private RegistrationDao registrationDao;
 
 	@Mock
-	private MosipPridGenerator<String> pridGenerator;
+	private PridGenerator<String> pridGenerator;
 
 	private RegistrationDto regDto = new RegistrationDto();
 	private NameDto nameDto = new NameDto();

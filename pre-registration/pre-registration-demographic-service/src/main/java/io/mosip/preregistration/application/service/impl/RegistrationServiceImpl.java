@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.idgenerator.MosipPridGenerator;
+import io.mosip.kernel.core.spi.idgenerator.PridGenerator;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.preregistration.application.dao.RegistrationDao;
 import io.mosip.preregistration.application.dto.RegistrationDto;
@@ -47,7 +47,7 @@ public class RegistrationServiceImpl implements RegistrationService<String, Regi
 	 * Field for {@link #MosipPridGenerator<String>}
 	 */
 	@Autowired
-	private MosipPridGenerator<String> pridGenerator;
+	private PridGenerator<String> pridGenerator;
 
 	/**
 	 * Field for {@link #RegistrationRepositary}

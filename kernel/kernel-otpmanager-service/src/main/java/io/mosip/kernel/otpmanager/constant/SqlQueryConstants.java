@@ -1,7 +1,7 @@
 package io.mosip.kernel.otpmanager.constant;
 
 /**
- * This enum provides all the constants required for SQL query operations.
+ * This ENUM provides all the constants required for SQL query operations.
  * 
  * @author Sagar Mahapatra
  * @author Ritesh Sinha

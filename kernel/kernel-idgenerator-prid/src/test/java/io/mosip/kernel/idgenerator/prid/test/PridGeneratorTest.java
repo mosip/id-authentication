@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.spi.idgenerator.MosipPridGenerator;
+import io.mosip.kernel.core.spi.idgenerator.PridGenerator;
 
 /**
  * Test class for PridGenerator class
@@ -26,7 +26,7 @@ public class PridGeneratorTest {
 	private int pridLength;
 
 	@Autowired
-	private MosipPridGenerator<String> mosipPridGenerator;
+	private PridGenerator<String> mosipPridGenerator;
 
 	@Test
 	public void notNullTest() {
