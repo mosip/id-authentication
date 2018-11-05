@@ -1,11 +1,5 @@
 package io.mosip.authentication.core.dto.otpgen;
 
-import java.util.Date;
-
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
 import lombok.Data;
 
 /**
@@ -20,21 +14,16 @@ public class OtpRequestDTO  {
 
 	private String id;
 
-	@NotNull
-	private String idType;
-
-	@Digits(fraction = 1, integer = 1)
 	private String ver;
 
-	@Pattern(regexp = "^[A-Z0-9]{10}")
+	private String idvId;
+
+	private String idvIdType;
+
 	private String muaCode;
 
-	@Pattern(regexp = "^[A-Z0-9]{10}")
+	private String reqTime;
+
 	private String txnID;
-
-	private Date reqTime;
-
-	@Pattern(regexp = "^[A-Z0-9]{10}")
-	private String msaLicenseKey;
 
 }

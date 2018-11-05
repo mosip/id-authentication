@@ -12,14 +12,14 @@ import lombok.Data;
 public class AuthTypeDTO {
 
 	/** For personal identity Authentication */
-	private boolean pi;
+	private boolean personalIdentity;
 
 	/** For address Authentication */
-	private boolean ad;
+	private boolean address;
 
 	/** For Full address Authentication */
-	private boolean fad;
-
+	private boolean fullAddress;
+	
 	/** For biometric Authentication */
 	private boolean bio;
 
@@ -28,5 +28,16 @@ public class AuthTypeDTO {
 
 	/** For pin Authentication */
 	private boolean pin;
+	
+	/** For FingerPrint Authentication */
+	private boolean fingerprint;
+	
+	/** For Iris Authentication */
+	private boolean iris;
+	 
+	/** For Face Authentication  */
+	private boolean face;
+
+	
 
 }

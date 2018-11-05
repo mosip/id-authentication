@@ -1,4 +1,4 @@
-package io.mosip.authentication.core.spi.idauth.service;
+package io.mosip.authentication.core.spi.id.service;
 
 import org.springframework.stereotype.Service;
 

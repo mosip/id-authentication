@@ -1,7 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * Generic class to normalize individual name, address.
  *

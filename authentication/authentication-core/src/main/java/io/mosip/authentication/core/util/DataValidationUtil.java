@@ -29,7 +29,7 @@ public final class DataValidationUtil {
 			IDDataValidationException exception = new IDDataValidationException();
 			errors.getAllErrors()
 			.forEach(error -> exception.addInfo(error.getCode(),
-					error.getDefaultMessage()));
+					error.getDefaultMessage(), error.getArguments()));
 			throw exception;
 		}
 	}

@@ -1,9 +1,12 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -11,10 +14,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
-import io.mosip.authentication.core.dto.indauth.DemoDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalAddressDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalFullAddressDTO;
-import io.mosip.authentication.core.dto.indauth.PersonalIdentityDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
+import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.service.config.IDAMappingConfig;
 
 /**
  * @author Arun Bose The Enum DemoMatchType.
@@ -24,143 +28,123 @@ public enum DemoMatchType implements MatchType {
 
 	// @formatter:off
 
-	/** The addr pri. */
-	ADDR_PRI(setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
-			demo -> Optional.of(demo).map(DemoDTO::getFad).map(PersonalFullAddressDTO::getAddrPri),
-			(entity, locationInfoFetcher) -> concatDemo(entity.getAddrLine1(), entity.getAddrLine2(),
-					entity.getAddrLine3(),
-					locationInfoFetcher.getLocation(LocationLevel.CITY, entity.getLocationCode()).orElse(""),
-					locationInfoFetcher.getLocation(LocationLevel.STATE, entity.getLocationCode()).orElse(""),
-					locationInfoFetcher.getLocation(LocationLevel.COUNTRY, entity.getLocationCode()).orElse(""),
-					locationInfoFetcher.getLocation(LocationLevel.ZIPCODE, entity.getLocationCode()).orElse("")),
-			AuthUsageDataBit.USED_FAD_ADDR_PRI, AuthUsageDataBit.MATCHED_FAD_ADDR_PRI),
+	/** Primary Name Match Type */
+	NAME_PRI(IdMapping.NAME, setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI,
+			Function.identity()),
 
-	NAME_PRI(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL),
-			demo -> Optional.of(demo).map(DemoDTO::getPi).map(PersonalIdentityDTO::getNamePri),
-			(entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(), entity.getMiddleName(),
-					entity.getLastName()),
-			AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI),
+	NAME_SEC(IdMapping.NAME, setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC,
+			Function.identity()),
 
-	//
-	// /** The addr sec. */
-	// ADDR_SEC(setOf(FullAddressMatchingStrategy.EXACT,
-	// FullAddressMatchingStrategy.PARTIAL),
-	// demo -> Optional.of(demo)
-	// .map(DemoDTO::getFad)
-	// .map(PersonalFullAddressDTO::getAddrSec),
-	// (entity, locationInfoFetcher) -> concatDemo(entity.getAddrLine1(),
-	// entity.getAddrLine2(),
-	// entity.getAddrLine3(),
-	// locationInfoFetcher.getLocation(LocationLevel.CITY,
-	// entity.getLocationCode()).orElse(""),
-	// locationInfoFetcher.getLocation(LocationLevel.STATE,
-	// entity.getLocationCode()).orElse(""),
-	// locationInfoFetcher.getLocation(LocationLevel.COUNTRY,
-	// entity.getLocationCode()).orElse(""),
-	// locationInfoFetcher.getLocation(LocationLevel.ZIPCODE,
-	// entity.getLocationCode()).orElse("")),
-	// AuthUsageDataBit.USED_FAD_ADDR_SEC, AuthUsageDataBit.MATCHED_FAD_ADDR_SEC),
-	//
-	// /** The name sec. */
-	// NAME_SEC(setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL),
-	// demo ->
-	// Optional.of(demo).map(DemoDTO::getPi).map(PersonalIdentityDTO::getNameSec),
-	// (entity, locationInfoFetcher) -> concatDemo(entity.getFirstName(),
-	// entity.getMiddleName(),
-	// entity.getLastName()),
-	// AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC),
+	DOB(IdMapping.DOB, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDateOfBirth, LanguageType.PRIMARY_LANG,
+			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
 
-	/** The gender. */
-	GENDER(setOf(GenderMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getPi).map(PersonalIdentityDTO::getGender),
-			(entity, locationInfoFetcher) -> entity.getGenderCode(), AuthUsageDataBit.USED_PI_GENDER,
-			AuthUsageDataBit.MATCHED_PI_GENDER),
+	DOBTYPE(IdMapping.DOBTYPE, setOf(DOBTypeMatchingStrategy.EXACT), IdentityDTO::getDateOfBirthType,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_DOBTYPE, AuthUsageDataBit.MATCHED_DOB_TYPE,
+			Function.identity()),
 
-	/** The age. */
-	AGE(setOf(AgeMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getPi).map(PersonalIdentityDTO::getAge),
-			(DemoEntity entity, LocationInfoFetcher locationInfoFetcher) -> {
-				int age = Period.between(entity.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-						LocalDate.now()).getYears();
-				return Math.abs(age);
-			}, AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE),
+	AGE(IdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), IdentityDTO::getAge, LanguageType.PRIMARY_LANG,
+			AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE, demoValue -> {
+				int age = -1;
+				try {
+					age = Period.between(DOBMatchingStrategy.DATE_FORMAT.parse(demoValue).toInstant()
+							.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
+				} catch (ParseException e) {
+					// FIXME log the exception
+				}
+				return String.valueOf(Math.abs(age));
+			}),
 
-	/** The dob. */
-	DOB(setOf(DOBMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getPi).map(PersonalIdentityDTO::getDob),
-			(entity, locationInfoFetcher) -> entity.getDob(), AuthUsageDataBit.USED_PI_DOB,
-			AuthUsageDataBit.MATCHED_PI_DOB),
+	GENDER(IdMapping.GENDER, setOf(GenderMatchingStrategy.EXACT), IdentityDTO::getGender, LanguageType.PRIMARY_LANG,
+			AuthUsageDataBit.USED_PI_GENDER, AuthUsageDataBit.MATCHED_PI_GENDER, Function.identity()),
 
-	/** The mobile. */
-	MOBILE(setOf(PhoneNoMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getPi).map(PersonalIdentityDTO::getPhone),
-			(entity, locationInfoFetcher) -> entity.getMobile(), AuthUsageDataBit.USED_PI_PHONE,
-			AuthUsageDataBit.MATCHED_PI_PHONE),
+	PHONE(IdMapping.PHONE, setOf(PhoneNoMatchingStrategy.EXACT), IdentityDTO::getPhoneNumber, LanguageType.PRIMARY_LANG,
+			AuthUsageDataBit.USED_PI_PHONE, AuthUsageDataBit.MATCHED_PI_PHONE, Function.identity()),
 
-	/** The email. */
-	EMAIL(setOf(EmailMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getPi).map(PersonalIdentityDTO::getEmail),
-			(entity, locationInfoFetcher) -> entity.getEmail(), AuthUsageDataBit.USED_PI_EMAIL,
-			AuthUsageDataBit.MATCHED_PI_EMAIL),
+	EMAIL(IdMapping.EMAIL, setOf(EmailMatchingStrategy.EXACT), IdentityDTO::getEmailId, LanguageType.PRIMARY_LANG,
+			AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL, Function.identity()),
+
+	ADDR_LINE1_PRI(IdMapping.ADDRESSLINE1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine1,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE1_PRI,
+			AuthUsageDataBit.MATCHED_AD_ADDR_LINE1_PRI, Function.identity()),
 
 	/** The addr line1 pri. */
-	ADDR_LINE1_PRI(setOf(AddressMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getAd).map(PersonalAddressDTO::getAddrLine1Pri),
-			(entity, locationInfoFetcher) -> entity.getAddrLine1(), AuthUsageDataBit.USED_AD_ADDR_LINE1_PRI,
-			AuthUsageDataBit.MATCHED_AD_ADDR_LINE1_PRI),
+	ADDR_LINE1_SEC(IdMapping.ADDRESSLINE1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine1,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE1_SEC,
+			AuthUsageDataBit.MATCHED_AD_ADDR_LINE1_SEC, Function.identity()),
 
 	/** The addr line2 pri. */
-	ADDR_LINE2_PRI(setOf(AddressMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getAd).map(PersonalAddressDTO::getAddrLine2Pri),
-			(entity, locationInfoFetcher) -> entity.getAddrLine2(), AuthUsageDataBit.USED_AD_ADDR_LINE2_PRI,
-			AuthUsageDataBit.MATCHED_AD_ADDR_LINE2_PRI),
+	ADDR_LINE2_PRI(IdMapping.ADDRESSLINE2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine2,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE2_PRI,
+			AuthUsageDataBit.MATCHED_AD_ADDR_LINE2_PRI, Function.identity()),
+
+	/** The addr line2 pri. */
+	ADDR_LINE2_SEC(IdMapping.ADDRESSLINE2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine2,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE2_SEC,
+			AuthUsageDataBit.MATCHED_AD_ADDR_LINE2_SEC, Function.identity()),
 
 	/** The addr line3 pri. */
-	ADDR_LINE3_PRI(setOf(AddressMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getAd).map(PersonalAddressDTO::getAddrLine3Pri),
-			(entity, locationInfoFetcher) -> entity.getAddrLine3(), AuthUsageDataBit.USED_AD_ADDR_LINE3_PRI,
-			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_PRI),
+	ADDR_LINE3_PRI(IdMapping.ADDRESSLINE3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine3,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE3_PRI,
+			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_PRI, Function.identity()),
 
-	/** The city pri. */
-	CITY_PRI(setOf(AddressMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getAd).map(PersonalAddressDTO::getCityPri),
-			(entity, locationInfoFetcher) -> locationInfoFetcher
-					.getLocation(LocationLevel.CITY, entity.getLocationCode()).orElse(""),
-			AuthUsageDataBit.USED_AD_ADDR_CITY_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_CITY_PRI),
+	/** The addr line3 pri. */
+	ADDR_LINE3_SEC(IdMapping.ADDRESSLINE3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine3,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE3_SEC,
+			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_SEC, Function.identity()),
 
-	/** The state pri. */
-	STATE_PRI(setOf(AddressMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getAd).map(PersonalAddressDTO::getStatePri),
-			(entity, locationInfoFetcher) -> locationInfoFetcher
-					.getLocation(LocationLevel.STATE, entity.getLocationCode()).orElse(""),
-			AuthUsageDataBit.USED_AD_ADDR_STATE_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_STATE_PRI),
+	LOCATION1_PRI(IdMapping.LOCATION1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation1,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_LOCATION1_PRI, AuthUsageDataBit.MATCHED_LOCATION1_PRI,
+			Function.identity()),
 
-	/** The country pri. */
-	COUNTRY_PRI(setOf(AddressMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getAd).map(PersonalAddressDTO::getCountryPri),
-			(entity, locationInfoFetcher) -> locationInfoFetcher
-					.getLocation(LocationLevel.COUNTRY, entity.getLocationCode()).orElse(""),
-			AuthUsageDataBit.USED_AD_ADDR_COUNTRY_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_COUNTRY_PRI),
+	LOCATION1_SEC(IdMapping.LOCATION1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation1,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_LOCATION1_SEC, AuthUsageDataBit.MATCHED_LOCATION1_SEC,
+			Function.identity()),
+
+	LOCATION2_PRI(IdMapping.LOCATION2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation2,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_LOCATION2_PRI, AuthUsageDataBit.MATCHED_LOCATION2_PRI,
+			Function.identity()),
+
+	LOCATION2_SEC(IdMapping.LOCATION2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation2,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_LOCATION2_SEC, AuthUsageDataBit.MATCHED_LOCATION2_SEC,
+			Function.identity()),
+
+	LOCATION3_PRI(IdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_LOCATION3_PRI, AuthUsageDataBit.MATCHED_LOCATION3_PRI,
+			Function.identity()),
+
+	LOCATION3_SEC(IdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_LOCATION3_SEC, AuthUsageDataBit.MATCHED_LOCATION3_SEC,
+			Function.identity()),
 
 	/** The pincode pri. */
-	PINCODE_PRI(setOf(AddressMatchingStrategy.EXACT),
-			demo -> Optional.of(demo).map(DemoDTO::getAd).map(PersonalAddressDTO::getPinCodePri),
-			(entity, locationInfoFetcher) -> locationInfoFetcher
-					.getLocation(LocationLevel.ZIPCODE, entity.getLocationCode()).orElse(""),
-			AuthUsageDataBit.USED_AD_ADDR_PINCODE_PRI, AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE_PRI)
+	PINCODE_PRI(IdMapping.PINCODE, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getPinCode,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_ADDR_PINCODE_PRI,
+			AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE_PRI, Function.identity()),
+
+	/** The pincode pri. */
+	PINCODE_SEC(IdMapping.PINCODE, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getPinCode,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_ADDR_PINCODE_SEC,
+			AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE_SEC, Function.identity()),
+
+	/** Primary Address MatchType */
+	ADDR_PRI(IdMapping.FULLADDRESS, setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
+			IdentityDTO::getFullAddress, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_FAD_ADDR_PRI,
+			AuthUsageDataBit.MATCHED_FAD_ADDR_PRI, Function.identity()),
+
+	ADDR_SEC(IdMapping.FULLADDRESS, setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
+			IdentityDTO::getFullAddress, LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_FAD_ADDR_SEC,
+			AuthUsageDataBit.MATCHED_FAD_ADDR_SEC, Function.identity()),
 
 	// @formatter:on
-
 	;
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
 
-	/** The demo info. */
-	private Function<DemoDTO, Optional<Object>> demoInfo;
-
 	/** The entity info. */
-	private DemoEntityInfoFetcher entityInfo;
+	private Function<String, String> entityInfoFetcher;
 
 	/** The used bit. */
 	private AuthUsageDataBit usedBit;
@@ -168,34 +152,52 @@ public enum DemoMatchType implements MatchType {
 	/** The matched bit. */
 	private AuthUsageDataBit matchedBit;
 
+	private LanguageType langType;
+
+	private Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction;
+
+	private IdMapping idMapping;
+
 	/**
 	 * Instantiates a new demo match type.
 	 *
-	 * @param allowedMatchingStrategy
-	 *            the allowed matching strategy
-	 * @param demoInfo
-	 *            the demo info
-	 * @param entityInfo
-	 *            the entity info
-	 * @param usedBit
-	 *            the used bit
-	 * @param matchedBit
-	 *            the matched bit
+	 * @param allowedMatchingStrategy the allowed matching strategy
+	 * @param demoInfo                the demo info
+	 * @param entityInfo              the entity info
+	 * @param usedBit                 the used bit
+	 * @param matchedBit              the matched bit
 	 */
-	DemoMatchType(Set<MatchingStrategy> allowedMatchingStrategy, Function<DemoDTO, Optional<Object>> demoInfo,
-			DemoEntityInfoFetcher entityInfo, AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit) {
+	DemoMatchType(IdMapping idMapping, Set<MatchingStrategy> allowedMatchingStrategy,
+			Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction, LanguageType langType,
+			AuthUsageDataBit usedBit, AuthUsageDataBit matchedBit, Function<String, String> entityInfoFetcher) {
+		this.idMapping = idMapping;
+		this.identityInfoFunction = identityInfoFunction;
+		this.langType = langType;
 		this.allowedMatchingStrategy = Collections.unmodifiableSet(allowedMatchingStrategy);
-		this.demoInfo = demoInfo;
-		this.entityInfo = entityInfo;
+		this.entityInfoFetcher = entityInfoFetcher;
 		this.usedBit = usedBit;
 		this.matchedBit = matchedBit;
+	}
+
+	public Optional<Object> getIdentityInfo(IdentityDTO identity, Function<LanguageType, String> languageFetcher) {
+		String language = languageFetcher.apply(this.getLanguageType());
+		return Optional.of(identity).flatMap(identityDTO -> getInfo(identityInfoFunction.apply(identityDTO), language));
+	}
+
+	private static Optional<Object> getInfo(List<IdentityInfoDTO> identityInfos, String language) {
+		return identityInfos.parallelStream()
+				.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage()))
+				.<Object>map(IdentityInfoDTO::getValue).findAny();
+	}
+
+	public LanguageType getLanguageType() {
+		return langType;
 	}
 
 	/**
 	 * Gets the allowed matching strategy.
 	 *
-	 * @param matchStrategyType
-	 *            the match strategy type
+	 * @param matchStrategyType the match strategy type
 	 * @return the allowed matching strategy
 	 */
 	public Optional<MatchingStrategy> getAllowedMatchingStrategy(MatchingStrategyType matchStrategyType) {
@@ -203,21 +205,12 @@ public enum DemoMatchType implements MatchType {
 	}
 
 	/**
-	 * Gets the demo info.
-	 *
-	 * @return the demo info
-	 */
-	public Function<DemoDTO, Optional<Object>> getDemoInfoFetcher() {
-		return demoInfo;
-	}
-
-	/**
 	 * Gets the entity info.
 	 *
 	 * @return the entity info
 	 */
-	public DemoEntityInfoFetcher getEntityInfoFetcher() {
-		return entityInfo;
+	private Function<String, String> getEntityInfoFetcher() {
+		return entityInfoFetcher;
 	}
 
 	/**
@@ -241,13 +234,16 @@ public enum DemoMatchType implements MatchType {
 	/**
 	 * Sets the of.
 	 *
-	 * @param matchingStrategies
-	 *            the matching strategies
+	 * @param matchingStrategies the matching strategies
 	 * @return the sets the
 	 */
 	public static Set<MatchingStrategy> setOf(MatchingStrategy... matchingStrategies) {
 		return Stream.of(matchingStrategies).collect(Collectors.toSet());
 
+	}
+
+	public IdMapping getIdMapping() {
+		return idMapping;
 	}
 
 	public static String concatDemo(String... demoValues) {
@@ -260,9 +256,47 @@ public enum DemoMatchType implements MatchType {
 					demoBuilder.append(" ");
 				}
 			}
-
 		}
 		return demoBuilder.toString();
+	}
+
+	private static Optional<IdentityValue> getIdentityValue(String name, String languageCode,
+			Map<String, List<IdentityInfoDTO>> demoInfo) {
+		List<IdentityInfoDTO> identityInfoList = demoInfo.get(name);
+		if (identityInfoList != null && !identityInfoList.isEmpty()) {
+			return identityInfoList.stream().filter(
+					idinfo -> idinfo.getLanguage() != null && idinfo.getLanguage().equalsIgnoreCase(languageCode))
+					.map(idInfo -> new IdentityValue(languageCode, idInfo.getValue())).findAny();
+		}
+
+		return Optional.empty();
+	}
+
+	private static List<String> getIdMappingValue(IdMapping idMapping, IDAMappingConfig idMappingConfig) {
+		return idMapping.getMappingFunction().apply(idMappingConfig);
+	}
+
+	private static List<IdentityValue> getDemoValue(List<String> propertyNames, String languageCode,
+			Map<String, List<IdentityInfoDTO>> demoEntity) {
+		return propertyNames.stream().map(propName -> getIdentityValue(propName, languageCode, demoEntity))
+				.filter(val -> val.isPresent()).<IdentityValue>map(Optional::get).collect(Collectors.toList());
+	}
+
+	public IdentityValue getEntityInfo(Map<String, List<IdentityInfoDTO>> demoEntity,
+			Function<LanguageType, String> languageCodeFetcher, Function<String, Optional<String>> languageNameFetcher,
+			LocationInfoFetcher locationInfoFetcher, IDAMappingConfig idMappingConfig) {
+		String languageCode = languageCodeFetcher.apply(getLanguageType());
+		Optional<String> languageName = languageNameFetcher.apply(languageCode);
+		List<String> propertyNames = getIdMappingValue(getIdMapping(), idMappingConfig);
+		List<IdentityValue> demoValues = getDemoValue(propertyNames, languageCode, demoEntity);
+		String[] demoValuesStr = demoValues.stream().map(IdentityValue::getValue).toArray(size -> new String[size]);
+		String demoValue = concatDemo(demoValuesStr);
+		String entityInfo = getEntityInfoFetcher().apply(demoValue);
+		return new IdentityValue(languageName.orElse(""), entityInfo);
+	}
+	
+	public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
+		return identityInfoFunction;
 	}
 
 }

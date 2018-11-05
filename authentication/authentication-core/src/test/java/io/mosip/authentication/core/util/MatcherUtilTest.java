@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.codec.EncoderException;
+import org.hamcrest.core.Is;
 import org.junit.Test;
 
 /**
@@ -118,6 +120,24 @@ public class MatcherUtilTest {
 		String dateInString = "10/08/2018";
 		Date date = sdf.parse(dateInString);
 		int value = MatcherUtil.doExactMatch(date, new Date());
+		assertNotEquals(100, value);
+	}
+	
+	@Test
+	public void testDoPhoneticsMatch_Exact() throws EncoderException {
+		String refInfoName = "فاس-الدار البيضاء";
+		String entityInfoName = "فاس-الدار البيضاء";
+		String language = "arabic";
+		int value = MatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
+		assertEquals(100, value);
+	}
+	
+	@Test
+	public void testDoPhoneticsMatch_Partial() throws EncoderException {
+		String refInfoName = "فاس-الدار البيضاء";
+		String entityInfoName = "-الدار البيضاء";
+		String language = "arabic";
+		int value = MatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName, language);
 		assertNotEquals(100, value);
 	}
 }
