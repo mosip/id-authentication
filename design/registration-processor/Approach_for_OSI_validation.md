@@ -64,7 +64,7 @@ The key solution considerations are -
                      TRUE : valid individual.
                      FALSE : invalid individual.
     ```
-- TODO : Password validation - Registration-processor has to support password validation as well. The Kernel will provide rest API inside IAM module which will validate user password. Registration-Processor will create a dummy service to complete own implementation. Once the Kernel service is ready then integrate with the actual API. The API spec is not yet ready from Kernel hence mock will be created by processor.
+- TODO : Password validation - Registration-processor has to support password validation as well. The Kernel will provide rest API inside IAM module which will validate user password. Registration-Processor will create a dummy service to complete own implementation. Once the Kernel service is ready then integrate with the actual API. 
 - On successful validation send request to osi_bus out address. On failure send response to error queue. If any internal error happens during validation then send response to retry queue. In case of failure the registration-client has to resend the packet. Make sure the failure status is mapped to external status as 'resend'
 - Update the packet status in "Registration-status" table for both successful and failed validation.
 
