@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,6 +147,7 @@ public class RegistrationController extends BaseController {
 		ageFieldValidations();
 		ageValidationInDatePicker();
 		dateFormatter();
+		loadAddressFromPreviousEntry();
 
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Getting the list of countries");
@@ -155,6 +157,24 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Exiting the REGISTRATION_CONTROLLER");
 	}
 
+	/**
+	 * 
+	 * Loading the address detail from previous entry
+	 * 
+	 */
+	public void loadAddressFromPreviousEntry() {
+		Map<String, Object> sessionMapObject =  SessionContext.getInstance().getMapObject();
+		AddressDTO addressDto = (AddressDTO) sessionMapObject.get("PrevAddress");
+		if(addressDto!=null) {
+			LocationDTO locationDto = addressDto.getLocationDTO();
+			country.setValue(locationDto.getLine4());
+			state.setValue(locationDto.getLine5());
+			district.setValue(locationDto.getLine6());
+			region.setValue(locationDto.getLine7());
+			pin.setValue(locationDto.getLine8());
+		}
+	}
+	
 	/**
 	 * 
 	 * Saving the detail into concerned DTO'S
