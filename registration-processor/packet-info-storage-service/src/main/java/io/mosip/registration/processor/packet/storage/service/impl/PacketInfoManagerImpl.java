@@ -33,6 +33,8 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantFingerprintEntity;
@@ -54,7 +56,7 @@ import lombok.Cleanup;
  *
  */
 @Service
-public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demographic, MetaData> {
+public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demographic, MetaData, ApplicantInfoDto> {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
 
@@ -93,6 +95,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
+	
+	@Autowired
+	private PacketInfoDao packetInfoDao;
 
 	private FileSystemAdapter<InputStream, Boolean> fileSystemAdapter = new FilesystemCephAdapterImpl();
 
@@ -168,6 +173,29 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 					AuditLogTempConstant.EVENT_TYPE.toString());
 		}
 
+	}
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#getPacketsforQCUser(java.lang.String)
+	 */
+	@Override
+	public List<ApplicantInfoDto> getPacketsforQCUser(String qcUserId) {
+		boolean isTransactionSuccessful = false;
+		List<ApplicantInfoDto> applicantInfoDtoList = null;
+		try {
+			applicantInfoDtoList = packetInfoDao.getPacketsforQCUser(qcUserId);
+			isTransactionSuccessful = true;
+			return applicantInfoDtoList;
+		} catch (DataAccessLayerException e) {
+			throw new TablenotAccessibleException("Table Not Accessible", e);
+		} finally {
+			String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
+					: "description--Demographic Failed to save";
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
+		}
 	}
 
 	/**
