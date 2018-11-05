@@ -1,7 +1,7 @@
-## kernel-pdfgenerator-itext
+## kernel-batch-framework
 
  
- 1- [Background & Design](../../design/kernel/kernel-pdfgenerator.md)
+ 1- [Background & Design](../../design/kernel/kernel-batch-framework.md)
  
 
  2- [API Documentation <TBA>](TBA)

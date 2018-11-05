@@ -1,7 +1,7 @@
-## kernel-pdfgenerator-itext
+## kernel-emailnotification-smtp
 
  
- 1- [Background & Design](../../design/kernel/kernel-pdfgenerator.md)
+ 1- [Background & Design](../../design/kernel/kernel-emailnotification.md)
  
 
  2- [API Documentation <TBA>](TBA)

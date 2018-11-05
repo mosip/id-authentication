@@ -1,7 +1,7 @@
-## kernel-pdfgenerator-itext
+## kernel-otpmanager-service
 
  
- 1- [Background & Design](../../design/kernel/kernel-pdfgenerator.md)
+ 1- [Background & Design](../../design/kernel/kernel-otpmanager.md)
  
 
  2- [API Documentation <TBA>](TBA)
