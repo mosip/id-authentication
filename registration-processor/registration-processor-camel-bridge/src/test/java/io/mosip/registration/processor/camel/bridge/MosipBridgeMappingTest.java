@@ -46,7 +46,7 @@ public class MosipBridgeMappingTest {
 				.choice().when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS.getAddress()))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress()));
 				
@@ -63,7 +63,7 @@ public class MosipBridgeMappingTest {
 			 options.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress()))
 							.toVertx(MessageBusAddress.ERROR.getAddress()))
 					.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
-							.toVertx(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
+							.toVertx(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
 					.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN.getAddress()))
 							.toVertx(MessageBusAddress.STRUCTURE_BUS_IN.getAddress()))
 					.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS.getAddress()))

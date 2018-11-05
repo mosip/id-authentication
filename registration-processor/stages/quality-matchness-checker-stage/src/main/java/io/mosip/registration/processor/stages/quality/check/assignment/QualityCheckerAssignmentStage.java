@@ -13,6 +13,8 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
+
+
 /**
  * @author Jyoti Prakash Nayak M1030448
  *

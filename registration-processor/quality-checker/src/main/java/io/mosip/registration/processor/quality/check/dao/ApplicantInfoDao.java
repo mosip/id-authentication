@@ -19,9 +19,6 @@ import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotograph
 import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdPKEntity;
-import io.mosip.registration.processor.quality.check.entity.RoleListEntity;
-import io.mosip.registration.processor.quality.check.entity.UserDetailEntity;
-import io.mosip.registration.processor.quality.check.entity.UserRoleEntity;
 import io.mosip.registration.processor.quality.check.repository.QcuserRegRepositary;
 
 @Component
@@ -57,15 +54,6 @@ public class ApplicantInfoDao {
 
 	@Autowired
 	private QcuserRegRepositary<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
-
-	@Autowired
-	private QcuserRegRepositary<RoleListEntity, String> roleListRegRepositary;
-
-	@Autowired
-	private QcuserRegRepositary<UserDetailEntity, String> userDetailRepositary;
-
-	@Autowired
-	private QcuserRegRepositary<UserRoleEntity, String> userRoleRepositary;
 
 	private List<Object[]> applicantInfo = new ArrayList<>();
 
@@ -117,7 +105,7 @@ public class ApplicantInfoDao {
 		return photographDto;
 	}
 
-	/*
+	/**
 	 * private BiometericData
 	 * convertEntityTotBiometericDto(ApplicantFingerprintEntity object) {
 	 * BiometericData bioData = new BiometericData(); FingerprintData

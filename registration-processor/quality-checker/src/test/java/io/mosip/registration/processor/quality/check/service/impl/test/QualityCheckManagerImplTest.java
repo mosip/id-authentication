@@ -149,8 +149,7 @@ public class QualityCheckManagerImplTest {
 
 		List<QCUserDto> dtolist = qualityCheckManager.updateQCUserStatus(qcUserDtos);
 
-		assertEquals("Verifing decision status . Expected value is ACCEPTED", dtolist.get(0).getDecisionStatus(),
-				DecisionStatus.ACCEPTED);
+		assertEquals(DecisionStatus.ACCEPTED, dtolist.get(0).getDecisionStatus());
 
 	}
 
