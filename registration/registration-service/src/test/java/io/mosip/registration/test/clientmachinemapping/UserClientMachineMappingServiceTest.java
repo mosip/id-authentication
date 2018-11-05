@@ -45,10 +45,6 @@ public class UserClientMachineMappingServiceTest {
 	@Mock
 	MachineMappingDAO machineMappingDAO;
 
-	@Mock
-	MosipLogger logger;
-	private MosipRollingFileAppender mosipRollingFileAppender;
-
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -60,23 +56,6 @@ public class UserClientMachineMappingServiceTest {
 
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
-		mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.invokeMethod(mapMachineServiceImpl, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.setField(mapMachineServiceImpl, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegistrationSystemPropertiesChecker.class, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
@@ -88,7 +67,7 @@ public class UserClientMachineMappingServiceTest {
 		String machineID = RegistrationSystemPropertiesChecker.getMachineId();
 
 		Mockito.when(machineMappingDAO.getStationID(Mockito.anyString())).thenReturn("StationID");
- 
+
 		Mockito.when(machineMappingDAO.getCenterID(Mockito.anyString())).thenReturn("CenterID107");
 
 		List<RegistrationUserDetail> userDetailsList = new ArrayList<>();
@@ -130,19 +109,14 @@ public class UserClientMachineMappingServiceTest {
 
 	@Test
 	public void viewFailureTest() throws RegBaseCheckedException {
-		RegBaseCheckedException baseCheckedException=new RegBaseCheckedException("101","No record Found");		
+		RegBaseCheckedException baseCheckedException = new RegBaseCheckedException("101", "No record Found");
 		Mockito.when(machineMappingDAO.getStationID(Mockito.anyString())).thenReturn(baseCheckedException.getMessage());
-		ResponseDTO res=mapMachineServiceImpl.view();
-		Assert.assertSame("No Records Found",res.getErrorResponseDTOs().get(0).getMessage());
+		ResponseDTO res = mapMachineServiceImpl.view();
+		Assert.assertSame("No Records Found", res.getErrorResponseDTOs().get(0).getMessage());
 	}
-	
+
 	@Test
 	public void updateTest() {
-		ReflectionTestUtils.setField(mapMachineServiceImpl, "LOGGER", logger);
-
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
-
 		UserMachineMappingDTO machineMappingDTO = new UserMachineMappingDTO("ID123", "Nm123", "ADmin", "ACTIVE",
 				"CNTR123", "STN123", "MCHN123");
 		UserMachineMapping user = new UserMachineMapping();
@@ -164,11 +138,6 @@ public class UserClientMachineMappingServiceTest {
 
 	@Test
 	public void saveTest() {
-		ReflectionTestUtils.setField(mapMachineServiceImpl, "LOGGER", logger);
-
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
-
 		UserMachineMappingDTO machineMappingDTO = new UserMachineMappingDTO("ID123", "Nm123", "ADmin", "IN-ACTIVE",
 				"CNTR123", "STN123", "MCHN123");
 		UserMachineMapping user = new UserMachineMapping();
@@ -190,11 +159,6 @@ public class UserClientMachineMappingServiceTest {
 
 	@Test
 	public void saveOrUpdateFailureTest() {
-		ReflectionTestUtils.setField(mapMachineServiceImpl, "LOGGER", logger);
-
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
-
 		UserMachineMappingDTO machineMappingDTO = new UserMachineMappingDTO("ID123", "Nm123", "ADmin", "IN-ACTIVE",
 				"CNTR123", "STN123", "MCHN123");
 		UserMachineMapping user = new UserMachineMapping();

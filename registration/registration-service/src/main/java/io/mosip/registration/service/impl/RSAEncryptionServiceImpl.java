@@ -8,8 +8,7 @@ import io.mosip.kernel.core.security.encryption.MosipEncryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -36,12 +35,7 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 	@Autowired
 	public RSAKeyGenerator rsaKeyGenerator;
 
-	private static MosipLogger logger;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(RSAEncryptionServiceImpl.class);
 
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionService#encrypt(byte[])
@@ -49,7 +43,7 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 	@Override
 	public byte[] encrypt(final byte[] sessionKey) throws RegBaseCheckedException {
 		try {
-			logger.debug(LOG_PKT_RSA_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_PKT_RSA_ENCRYPTION, APPLICATION_NAME, APPLICATION_ID,
 					"Packet RSA Encryption had been called");
 			
 			// TODO: Will be removed upon KeyManager is implemented in Kernel App

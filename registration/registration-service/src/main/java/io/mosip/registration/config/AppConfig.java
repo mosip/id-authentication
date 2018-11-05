@@ -1,19 +1,21 @@
 package io.mosip.registration.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.ResourceBundle;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.auditmanager.config.AuditConfig;
+import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 
 /**
  * Spring Configuration class for Registration-Service Module
@@ -23,34 +25,33 @@ import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
  *
  */
 @Configuration
-@Import({HibernateDaoConfig.class, AuditConfig.class})
+@Import({ HibernateDaoConfig.class, AuditConfig.class })
 @EnableJpaRepositories(basePackages = "io.mosip.registration.", repositoryBaseClass = HibernateRepositoryImpl.class)
 @ComponentScan("io.mosip.registration.")
 @PropertySource("application.properties")
 public class AppConfig {
-	
-	@Autowired
-	private Environment environment;
-	
-	@Bean(name = "mosipRollingFileAppender")
-	public MosipRollingFileAppender getFileAppender() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName(environment.getProperty("log4j.appender.Appender"));
-		mosipRollingFileAppender.setFileName(environment.getProperty("log4j.appender.Appender.file"));
-		mosipRollingFileAppender.setFileNamePattern(environment.getProperty("log4j.appender.Appender.filePattern"));
-		mosipRollingFileAppender.setMaxFileSize(environment.getProperty("log4j.appender.Appender.maxFileSize"));
-		mosipRollingFileAppender.setTotalCap(environment.getProperty("log4j.appender.Appender.totalCap"));
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
 
-		return mosipRollingFileAppender;
+	private static final MosipRollingFileAppender MOSIP_ROLLING_APPENDER = new MosipRollingFileAppender();
 
+	static {
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4J");
+		MOSIP_ROLLING_APPENDER.setAppenderName(resourceBundle.getString("log4j.appender.Appender"));
+		MOSIP_ROLLING_APPENDER.setFileName(resourceBundle.getString("log4j.appender.Appender.file"));
+		MOSIP_ROLLING_APPENDER.setFileNamePattern(resourceBundle.getString("log4j.appender.Appender.filePattern"));
+		MOSIP_ROLLING_APPENDER.setMaxFileSize(resourceBundle.getString("log4j.appender.Appender.maxFileSize"));
+		MOSIP_ROLLING_APPENDER.setTotalCap(resourceBundle.getString("log4j.appender.Appender.totalCap"));
+		MOSIP_ROLLING_APPENDER.setMaxHistory(10);
+		MOSIP_ROLLING_APPENDER.setImmediateFlush(true);
+		MOSIP_ROLLING_APPENDER.setPrudent(true);
 	}
-	
+
+	public static MosipLogger getLogger(Class<?> className) {
+		return MosipLogfactory.getMosipDefaultRollingFileLogger(MOSIP_ROLLING_APPENDER, className);
+	}
+
 	@Bean
-	public RestTemplate getRestTemplate(){
+	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
 	}
-	
+
 }

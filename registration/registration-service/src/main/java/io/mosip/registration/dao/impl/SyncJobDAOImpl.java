@@ -10,9 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
@@ -51,21 +50,10 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 	/**
 	 * Object for Logger
 	 */
-	private static MosipLogger LOGGER;
-
-	/**
-	 * Initializing logger
-	 * 
-	 * @param mosipRollingFileAppender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(SyncJobDAOImpl.class);
 
 	@Autowired
 	private AuditFactory auditFactory;
-
 	/*
 	 * (non-Javadoc)
 	 * 

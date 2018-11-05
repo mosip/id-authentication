@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -15,13 +15,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.dao.impl.AuditDAOImpl;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegAuditRepository;
 
@@ -36,28 +32,10 @@ public class AuditDAOTest {
 	private AuditDAOImpl auditDAO;
 	@Mock
 	private RegAuditRepository auditRepository;
-	@Mock
-	private MosipRollingFileAppender mosipRollingFileAppender;
-	@Mock
-	private MosipLogger logger;
-	List<Audit> audits;
+	private static List<Audit> audits;
 
-	@Before
-	public void initialize() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
-		ReflectionTestUtils.invokeMethod(auditDAO, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		
+	@BeforeClass
+	public static void initialize() {
 		new ArrayList<>();
 		audits = new LinkedList<>();
 		Audit audit = new Audit();

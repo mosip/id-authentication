@@ -16,8 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dto.PacketUploadStatusDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -48,18 +47,7 @@ public class PacketUploadController extends BaseController {
 	private PacketUploadService packetUploadService;
 
 	/** Object for Logger. */
-	private static MosipLogger LOGGER;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param mosipRollingFileAppender
-	 *            the mosip rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketUploadController.class);
 
 	/**
 	 * Validate the Username, Password and Packet Path

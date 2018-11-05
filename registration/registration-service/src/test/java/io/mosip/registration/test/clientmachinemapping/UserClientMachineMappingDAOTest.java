@@ -18,10 +18,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
@@ -49,10 +46,6 @@ public class UserClientMachineMappingDAOTest {
 	@Mock
 	private UserMachineMappingRepository machineMappingRepository;
 
-	@Mock
-	private MosipLogger logger;
-	private MosipRollingFileAppender mosipRollingFileAppender;
-
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
@@ -70,32 +63,12 @@ public class UserClientMachineMappingDAOTest {
 
 	@Before
 	public void initialize() throws IOException, URISyntaxException {
-		mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.invokeMethod(machineMappingDAOImpl, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.setField(machineMappingDAOImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test
 	public void updateTest() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(machineMappingDAOImpl, "LOGGER", logger);
-
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 
 		UserMachineMapping machineMapping = new UserMachineMapping();
 		Mockito.when(machineMappingRepository.update(Mockito.any(UserMachineMapping.class))).thenReturn(machineMapping);
@@ -104,55 +77,43 @@ public class UserClientMachineMappingDAOTest {
 
 	@Test
 	public void savetest() {
-		ReflectionTestUtils.setField(machineMappingDAOImpl, "LOGGER", logger);
-
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
-
 		UserMachineMapping machineMapping = new UserMachineMapping();
 		Mockito.when(machineMappingRepository.save(Mockito.any(UserMachineMapping.class))).thenReturn(machineMapping);
 		Assert.assertSame(machineMappingDAOImpl.save(machineMapping), RegistrationConstants.MACHINE_MAPPING_CREATED);
 	}
+
 	@Test(expected = RegBaseUncheckedException.class)
 	public void saveFailuretest() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(machineMappingDAOImpl, "LOGGER", logger);
-
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 
 		UserMachineMapping machineMapping = new UserMachineMapping();
-		Mockito.when(machineMappingRepository.save(Mockito.any(UserMachineMapping.class))).thenThrow(RuntimeException.class);
+		Mockito.when(machineMappingRepository.save(Mockito.any(UserMachineMapping.class)))
+				.thenThrow(RuntimeException.class);
 		machineMappingDAOImpl.save(machineMapping);
 	}
+
 	@Test(expected = RegBaseUncheckedException.class)
 	public void updateFailuretest() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(machineMappingDAOImpl, "LOGGER", logger);
-
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 
 		UserMachineMapping machineMapping = new UserMachineMapping();
-		Mockito.when(machineMappingRepository.update(Mockito.any(UserMachineMapping.class))).thenThrow(RuntimeException.class);
+		Mockito.when(machineMappingRepository.update(Mockito.any(UserMachineMapping.class)))
+				.thenThrow(RuntimeException.class);
 		machineMappingDAOImpl.update(machineMapping);
 	}
+
 	@Test(expected = RegBaseUncheckedException.class)
 	public void findByIDFailuretest() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(machineMappingDAOImpl, "LOGGER", logger);
-
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
-
 		UserMachineMappingID machineMapping = new UserMachineMappingID();
-		Mockito.when(machineMappingRepository.findById(Mockito.any(),Mockito.any())).thenThrow(RuntimeException.class);
+		Mockito.when(machineMappingRepository.findById(Mockito.any(), Mockito.any())).thenThrow(RuntimeException.class);
 		machineMappingDAOImpl.findByID(machineMapping);
 	}
-	
+
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getStationIDRunException() throws RegBaseCheckedException {
 		Mockito.when(machineMasterRepository.findByMacAddress(Mockito.anyString()))
 				.thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0B");
 	}
+
 	@Test
 	public void getStationID() throws RegBaseCheckedException {
 		MachineMaster machineMaster = new MachineMaster();
@@ -162,11 +123,14 @@ public class UserClientMachineMappingDAOTest {
 		String stationId = machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0C");
 		Assert.assertSame("StationID1947", stationId);
 	}
+
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getCenterIDRunExceptionTest() throws RegBaseCheckedException {
-		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenThrow(new RegBaseUncheckedException());
+		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString()))
+				.thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getCenterID("StationID1947");
 	}
+
 	@Test
 	public void getCenterID() throws RegBaseCheckedException {
 		CenterMachineId centerMachineId = new CenterMachineId();
@@ -183,10 +147,6 @@ public class UserClientMachineMappingDAOTest {
 
 	@Test
 	public void findByIDTest() {
-		ReflectionTestUtils.setField(machineMappingDAOImpl, "LOGGER", logger);
-
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 		UserMachineMappingID userID = new UserMachineMappingID();
 		userID.setUserID("USR1234");
 		userID.setCentreID("CNTR123");
@@ -199,11 +159,7 @@ public class UserClientMachineMappingDAOTest {
 	}
 
 	@Test
-	public void findByIDTestNull() { 
-		ReflectionTestUtils.setField(machineMappingDAOImpl, "LOGGER", logger);
-
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
+	public void findByIDTestNull() {
 		UserMachineMappingID userID = null;
 
 		UserMachineMapping machineMapping = new UserMachineMapping();
@@ -211,16 +167,15 @@ public class UserClientMachineMappingDAOTest {
 		Mockito.when(machineMappingRepository.save(Mockito.any(UserMachineMapping.class))).thenReturn(machineMapping);
 		Assert.assertNull(machineMappingDAOImpl.findByID(userID));
 	}
-	  
+
 	@Test(expected = RegBaseUncheckedException.class)
 	public void getUsersRunException() throws RegBaseCheckedException {
 		UserContext userContext = SessionContext.getInstance().getUserContext();
 		userContext.setUserId("ID007");
 		Mockito.when(userDetailRepository.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike("Center123",
 				RegistrationConstants.BLACKLISTED, userContext.getUserId())).thenThrow(new RegBaseUncheckedException());
-		machineMappingDAOImpl.getUsers("Center123");		
+		machineMappingDAOImpl.getUsers("Center123");
 	}
-	
 
 	@Test
 	public void getUsers() throws RegBaseCheckedException {
@@ -230,8 +185,8 @@ public class UserClientMachineMappingDAOTest {
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<>();
 
 		// Sample Data 1
-		Set<RegistrationUserRole> registrationUserRolesList = new HashSet();
-		Set<UserMachineMapping> regUserMachineMappingList = new HashSet();
+		Set<RegistrationUserRole> registrationUserRolesList = new HashSet<>();
+		Set<UserMachineMapping> regUserMachineMappingList = new HashSet<>();
 		UserMachineMappingID userMachineMappingID = new UserMachineMappingID();
 		userMachineMappingID.setCentreID("Center123");
 		userMachineMappingID.setMachineID("StationID1947");
@@ -259,8 +214,8 @@ public class UserClientMachineMappingDAOTest {
 		registrationUserDetail.setUserRole(registrationUserRolesList);
 
 		// Sample Data2
-		Set<RegistrationUserRole> registrationUserRolesList1 = new HashSet();
-		Set<UserMachineMapping> regUserMachineMappingList2 = new HashSet();
+		Set<RegistrationUserRole> registrationUserRolesList1 = new HashSet<>();
+		Set<UserMachineMapping> regUserMachineMappingList2 = new HashSet<>();
 		UserMachineMappingID userMachineMappingID1 = new UserMachineMappingID();
 		userMachineMappingID1.setCentreID("Center123");
 		userMachineMappingID1.setMachineID("StationID1947");

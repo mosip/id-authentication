@@ -10,13 +10,11 @@ import java.util.List;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.dao.TemplateDao;
 import io.mosip.registration.entity.Template;
@@ -26,14 +24,13 @@ import io.mosip.registration.entity.TemplateType;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.impl.TemplateServiceImpl;
 
-@RunWith(SpringRunner.class)
 public class TemplateServiceTest {
 
 	@Mock
-	TemplateDao templateDao;
+	private TemplateDao templateDao;
 	
 	@InjectMocks
-	TemplateServiceImpl templateService;
+	private TemplateServiceImpl templateService;
 	
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();

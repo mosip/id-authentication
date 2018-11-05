@@ -8,18 +8,15 @@ import java.net.URISyntaxException;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.test.util.datastub.DataProvider;
 import io.mosip.registration.util.acktemplate.VelocityPDFGenerator;
 
-@RunWith(SpringRunner.class)
 public class VelocityPDFGeneratorTest {
 
 	@InjectMocks

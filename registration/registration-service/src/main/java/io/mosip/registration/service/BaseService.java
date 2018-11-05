@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -19,9 +18,6 @@ public class BaseService {
 	 */
 	@Autowired
 	protected ServiceDelegateUtil serviceDelegateUtil;
-
-	/** Object for Logger. */
-	protected static MosipLogger LOGGER;
 
 	/**
 	 * create error response

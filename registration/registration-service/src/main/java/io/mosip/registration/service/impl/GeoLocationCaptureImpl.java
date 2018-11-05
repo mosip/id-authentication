@@ -7,12 +7,10 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.service.GeoLocationCapture;
 
 /**
@@ -24,18 +22,7 @@ public class GeoLocationCaptureImpl implements GeoLocationCapture {
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private static MosipLogger LOGGER;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param mosipRollingFileAppender
-	 *            the mosip rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(GeoLocationCaptureImpl.class);
 
 	/*
 	 * (non-Javadoc)

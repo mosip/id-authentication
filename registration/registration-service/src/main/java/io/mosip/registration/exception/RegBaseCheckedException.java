@@ -5,10 +5,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import io.mosip.registration.config.AppConfig;
 
 /**
  * The class to handle all the checked exception in REG
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Component;
  * @since 1.0.0
  *
  */
-@Component
 public class RegBaseCheckedException extends BaseCheckedException {
 
 	/**
@@ -27,12 +23,7 @@ public class RegBaseCheckedException extends BaseCheckedException {
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private static MosipLogger LOGGER;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(RegBaseCheckedException.class);
 
 	/**
 	 * Constructs a new checked exception

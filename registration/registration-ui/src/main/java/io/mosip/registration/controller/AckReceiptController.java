@@ -96,9 +96,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 		}
         
         registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(acknowledgement);
-        String acknowledgementReceiptName = registrationData.getRegistrationId().replaceAll("[^0-9]", "")+"_Ack";
         
-        registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(acknowledgementReceiptName);
+        registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(registrationData.getRegistrationId()+"_Ack."+RegistrationConstants.IMAGE_FORMAT);
         ResponseDTO response = packetHandlerService.handle(registrationData);
         
         generateAlert("Success",AlertType.INFORMATION, "Packet Created Successfully!");

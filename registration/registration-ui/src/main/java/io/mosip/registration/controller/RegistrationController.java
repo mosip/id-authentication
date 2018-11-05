@@ -10,12 +10,10 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.IntroducerType;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -52,12 +50,7 @@ public class RegistrationController extends BaseController {
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private static MosipLogger LOGGER;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationController.class);
 
 	@FXML
 	private TextField preRegistrationId;
@@ -129,9 +122,6 @@ public class RegistrationController extends BaseController {
 	private boolean isChild = false;
 
 	@Autowired
-	private Environment environment;
-
-	@Autowired
 	private RegistrationOfficerPacketController registrationOfficerPacketController;
 
 	@FXML
@@ -177,14 +167,13 @@ public class RegistrationController extends BaseController {
 			}
 			demographicInfoDTO.setAge(ageField.getText());
 			demographicInfoDTO.setGender(gender.getValue());
-			addressDto.setLine1(addressLine1.getText());
-			addressDto.setLine2(addressLine2.getText());
+			addressDto.setAddressLine1(addressLine1.getText());
+			addressDto.setAddressLine2(addressLine2.getText());
 			addressDto.setLine3(addressLine3.getText());
-			locationDto.setLine4(country.getValue());
-			locationDto.setLine5(state.getValue());
-			locationDto.setLine6(district.getValue());
-			locationDto.setLine7(region.getValue());
-			locationDto.setLine8(pin.getValue());
+			locationDto.setProvince(state.getValue());
+			locationDto.setCity(district.getValue());
+			locationDto.setRegion(region.getValue());
+			locationDto.setPostalCode(pin.getValue());
 			addressDto.setLocationDTO(locationDto);
 			demographicInfoDTO.setAddressDTO(addressDto);
 			demographicInfoDTO.setMobile(mobileNo.getText());
@@ -197,7 +186,7 @@ public class RegistrationController extends BaseController {
 					demographicDTO.setIntroducerUIN(uinId.getText());
 				}
 				osiDataDto.setIntroducerType(IntroducerType.PARENT.getCode());
-				osiDataDto.setIntroducerName(parentName.getText());
+				demographicInfoDTO.setParentOrGuardianName(parentName.getText());
 			}
 			demographicDTO.setDemoInUserLang(demographicInfoDTO);
 			osiDataDto.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());

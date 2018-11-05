@@ -2,8 +2,6 @@ package io.mosip.registration.dto.demographic;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import io.mosip.registration.dto.BaseDTO;
 
 /**
@@ -14,65 +12,20 @@ import io.mosip.registration.dto.BaseDTO;
  */
 public class DemographicInfoDTO extends BaseDTO {
 
-	private String firstName;
-	private String middleName;
-	private String lastName;
-	@JsonIgnore
-	private String fullName;
+	protected String fullName;
 	protected Date dateOfBirth;
 	protected String gender;
 	protected AddressDTO addressDTO;
 	protected String emailId;
-	protected String mobile;
+	protected String mobileNumber;
 	protected String landLine;
 	protected String languageCode;
 	protected boolean isChild;
 	protected String age;
-
-	/**
-	 * @return the firstName
-	 */
-	public String getFirstName() {
-		return firstName;
-	}
-
-	/**
-	 * @param firstName
-	 *            the firstName to set
-	 */
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	/**
-	 * @return the middleName
-	 */
-	public String getMiddleName() {
-		return middleName;
-	}
-
-	/**
-	 * @param middleName
-	 *            the middleName to set
-	 */
-	public void setMiddleName(String middleName) {
-		this.middleName = middleName;
-	}
-
-	/**
-	 * @return the lastName
-	 */
-	public String getLastName() {
-		return lastName;
-	}
-
-	/**
-	 * @param lastName
-	 *            the lastName to set
-	 */
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+	protected String localAdministrativeAuthority;
+	protected String cneOrPINNumber;
+	protected String parentOrGuardianName;
+	protected String parentOrGuardianRIDOrUIN;
 
 	/**
 	 * @return the fullName
@@ -153,7 +106,7 @@ public class DemographicInfoDTO extends BaseDTO {
 	 * @return the mobile
 	 */
 	public String getMobile() {
-		return mobile;
+		return mobileNumber;
 	}
 
 	/**
@@ -161,7 +114,7 @@ public class DemographicInfoDTO extends BaseDTO {
 	 *            the mobile to set
 	 */
 	public void setMobile(String mobile) {
-		this.mobile = mobile;
+		this.mobileNumber = mobile;
 	}
 
 	/**
@@ -222,6 +175,66 @@ public class DemographicInfoDTO extends BaseDTO {
 	 */
 	public void setAge(String age) {
 		this.age = age;
+	}
+
+	/**
+	 * @return the localAdministrativeAuthority
+	 */
+	public String getLocalAdministrativeAuthority() {
+		return localAdministrativeAuthority;
+	}
+
+	/**
+	 * @param localAdministrativeAuthority
+	 *            the localAdministrativeAuthority to set
+	 */
+	public void setLocalAdministrativeAuthority(String localAdministrativeAuthority) {
+		this.localAdministrativeAuthority = localAdministrativeAuthority;
+	}
+
+	/**
+	 * @return the cneOrPINNumber
+	 */
+	public String getCneOrPINNumber() {
+		return cneOrPINNumber;
+	}
+
+	/**
+	 * @param cneOrPINNumber
+	 *            the cneOrPINNumber to set
+	 */
+	public void setCneOrPINNumber(String cneOrPINNumber) {
+		this.cneOrPINNumber = cneOrPINNumber;
+	}
+
+	/**
+	 * @return the parentOrGuardianName
+	 */
+	public String getParentOrGuardianName() {
+		return parentOrGuardianName;
+	}
+
+	/**
+	 * @param parentOrGuardianName
+	 *            the parentOrGuardianName to set
+	 */
+	public void setParentOrGuardianName(String parentOrGuardianName) {
+		this.parentOrGuardianName = parentOrGuardianName;
+	}
+
+	/**
+	 * @return the parentOrGuardianRIDOrUIN
+	 */
+	public String getParentOrGuardianRIDOrUIN() {
+		return parentOrGuardianRIDOrUIN;
+	}
+
+	/**
+	 * @param parentOrGuardianRIDOrUIN
+	 *            the parentOrGuardianRIDOrUIN to set
+	 */
+	public void setParentOrGuardianRIDOrUIN(String parentOrGuardianRIDOrUIN) {
+		this.parentOrGuardianRIDOrUIN = parentOrGuardianRIDOrUIN;
 	}
 
 }

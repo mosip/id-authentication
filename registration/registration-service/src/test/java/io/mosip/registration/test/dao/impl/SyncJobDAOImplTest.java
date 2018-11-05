@@ -2,15 +2,11 @@ package io.mosip.registration.test.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doNothing;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -18,13 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.AppModule;
-import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
 import io.mosip.registration.dao.impl.SyncJobDAOImpl;
 import io.mosip.registration.entity.Registration;
@@ -36,9 +27,6 @@ public class SyncJobDAOImplTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
-	@Mock
-	private MosipLogger logger;
-	private MosipRollingFileAppender mosipRollingFileAppender;
 	@InjectMocks
 	private SyncJobDAOImpl syncJobDAOImpl;
 	@Mock
@@ -49,26 +37,6 @@ public class SyncJobDAOImplTest {
 	private SyncJobInfo syncJobnfo;
 	@Mock
 	private AuditFactoryImpl auditFactory;
-
-	@Before
-	public void initialize() throws IOException, URISyntaxException {
-		mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
-		ReflectionTestUtils.invokeMethod(syncJobDAOImpl, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.setField(syncJobDAOImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-	}
 
 	@Test
 	public void testGetSyncStatus() {

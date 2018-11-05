@@ -25,8 +25,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.RegTransactionDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
@@ -50,7 +49,7 @@ import io.mosip.registration.util.restclient.RestClientUtil;
 @Transactional
 public class PacketUploadServiceImpl implements PacketUploadService {
 	/** Object for Logger. */
-	private static MosipLogger LOGGER;
+	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketUploadServiceImpl.class);
 
 	private static final List<String> PACKET_STATUS = Arrays.asList("I", "H", "A", "S");
 	
@@ -67,11 +66,6 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	
 	@Autowired
 	private Environment environment;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
 
 	public List<Registration> getSynchedPackets() {
 		return registrationDAO.getRegistrationByStatus(PACKET_STATUS);

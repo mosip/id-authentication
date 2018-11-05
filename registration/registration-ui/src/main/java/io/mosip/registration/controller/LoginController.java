@@ -19,8 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.LoginUserDTO;
@@ -59,18 +58,7 @@ public class LoginController extends BaseController {
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private static MosipLogger LOGGER;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param mosipRollingFileAppender
-	 *            the mosip rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(LoginController.class);
 
 	/**
 	 * To get the Sequence of which Login screen to be displayed

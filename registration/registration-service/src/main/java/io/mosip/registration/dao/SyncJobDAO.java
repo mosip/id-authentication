@@ -3,8 +3,6 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.entity.SyncControl;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 /**
  * DAO class for SyncJobDAO.

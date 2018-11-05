@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.entity.RegistrationScreenAuthorization;
@@ -29,12 +28,7 @@ public class RegistrationScreenAuthorizationDAOImpl implements RegistrationScree
 	/**
 	 * Instance of LOGGER
 	 */
-	private static MosipLogger LOGGER;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationScreenAuthorizationDAOImpl.class);
 
 	/** The registrationScreenAuthorization repository. */
 	@Autowired

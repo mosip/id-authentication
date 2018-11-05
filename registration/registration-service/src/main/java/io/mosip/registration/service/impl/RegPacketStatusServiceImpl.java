@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegPacketStatusDAO;
 import io.mosip.registration.dto.RegPacketStatusDTO;
@@ -37,16 +37,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 	@Autowired
 	private RegPacketStatusDAO regPacketStatusDAO;
 
-	/**
-	 * Initialize logger.
-	 *
-	 * @param mosipRollingFileAppender
-	 *            the mosip rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(RegPacketStatusServiceImpl.class);
 
 	/**
 	 * Get all registrationIDs for which the clientStatus is post-sync

@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.RegistrationUserPasswordDAO;
 import io.mosip.registration.entity.RegistrationUserPassword;
 import io.mosip.registration.repositories.RegistrationUserPasswordRepository;
@@ -27,12 +26,7 @@ public class RegistrationUserPasswordDAOImpl implements RegistrationUserPassword
 	/**
 	 * Instance of LOGGER
 	 */
-	private static MosipLogger LOGGER;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationUserPasswordDAOImpl.class);
 
 	/** The registrationUserPassword repository. */
 	@Autowired

@@ -17,9 +17,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -33,7 +30,6 @@ import io.mosip.registration.service.impl.AESEncryptionServiceImpl;
 import io.mosip.registration.util.keymanager.AESKeyManager;
 import io.mosip.registration.util.keymanager.impl.AESKeyManagerImpl;
 
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 public class AESEncryptionServiceTest {
@@ -49,37 +45,18 @@ public class AESEncryptionServiceTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@Mock
-	private MosipLogger logger;
-	@Mock
 	private AuditFactory auditFactory;
 	@Mock
 	private Environment environment;
 
-	List<String> seeds;
-	AESKeyManagerImpl aesKeyManagerImpl;
-	String keySplitter = "#Key_Splitter#";
+	private List<String> seeds;
+	private AESKeyManagerImpl aesKeyManagerImpl;
+	private String keySplitter = "#Key_Splitter#";
 
 	@Before
 	public void initialize() throws RegBaseCheckedException {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
-		ReflectionTestUtils.invokeMethod(aesEncryptionServiceImpl, "initializeLogger", mosipRollingFileAppender);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 
 		aesKeyManagerImpl = new AESKeyManagerImpl();
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(aesKeyManagerImpl, "logger", logger);
-		ReflectionTestUtils.setField(aesEncryptionServiceImpl, "logger", logger);
 		ReflectionTestUtils.setField(aesEncryptionServiceImpl, "environment", environment);
 		ReflectionTestUtils.setField(aesKeyManagerImpl, "environment", environment);
 

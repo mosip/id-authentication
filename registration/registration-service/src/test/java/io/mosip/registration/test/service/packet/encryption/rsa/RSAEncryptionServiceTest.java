@@ -5,23 +5,18 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -29,7 +24,6 @@ import io.mosip.registration.service.impl.RSAEncryptionServiceImpl;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
 
 import static io.mosip.registration.constants.RegistrationExceptions.REG_NO_SUCH_ALGORITHM_ERROR_CODE;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 public class RSAEncryptionServiceTest {
@@ -40,8 +34,6 @@ public class RSAEncryptionServiceTest {
 	private RSAKeyGenerator rsaKeyGenerator;
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
-	@Mock
-	private MosipLogger logger;
 
 	private static KeyPair keyPair;
 
@@ -60,27 +52,6 @@ public class RSAEncryptionServiceTest {
 		keyPairGenerator.initialize(2048);
 		// get key pair
 		keyPair = keyPairGenerator.genKeyPair();
-	}
-
-	@Before
-	public void initialize() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
-		ReflectionTestUtils.invokeMethod(rsaEncryptionServiceImpl, "initializeLogger", mosipRollingFileAppender);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
-
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(rsaEncryptionServiceImpl, "logger", logger);
 	}
 
 	@Test

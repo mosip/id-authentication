@@ -17,8 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
@@ -47,17 +46,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	/**
 	 * LOGGER for logging
 	 */
-	private static MosipLogger LOGGER;
-
-	/**
-	 * intializing logger
-	 * 
-	 * @param mosipRollingFileAppender appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(MapMachineServiceImpl.class);
 
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;

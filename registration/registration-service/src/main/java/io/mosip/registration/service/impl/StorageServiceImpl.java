@@ -19,8 +19,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -37,15 +36,10 @@ import io.mosip.registration.service.StorageService;
 @Service
 public class StorageServiceImpl implements StorageService {
 
-	private MosipLogger logger;
+	private static final MosipLogger LOGGER = AppConfig.getLogger(StorageServiceImpl.class);
 
 	@Autowired
 	private Environment environment;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
 
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.StorageService#storeToDisk(java.lang.String, byte[], byte[])
@@ -61,13 +55,13 @@ public class StorageServiceImpl implements StorageService {
 			// Storing the Encrypted Registration Packet as zip
 			FileUtils.copyToFile(new ByteArrayInputStream(packet), new File(filePath.concat(ZIP_FILE_EXTENSION)));
 
-			logger.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Encrypted packet saved");
+			LOGGER.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID, "Encrypted packet saved");
 
 			// Storing the Registration Acknowledge Receipt Image
 			FileUtils.copyToFile(new ByteArrayInputStream(ackReceipt),
 					new File(filePath.concat("_Ack.").concat(RegistrationConstants.IMAGE_FORMAT)));
 
-			logger.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_PKT_STORAGE, APPLICATION_NAME, APPLICATION_ID,
 					"Registration's Acknowledgement Receipt saved");
 
 			return filePath;

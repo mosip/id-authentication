@@ -26,10 +26,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.LinkedMultiValueMap;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.registration.dao.RegTransactionDAO;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
@@ -61,13 +59,9 @@ public class PacketUploadServiceTest {
 	
 	@InjectMocks
 	private PacketUploadServiceImpl packetUploadServiceImpl;
-
-	@Mock
-	private MosipLogger logger;
 	
 	@Test
 	public void testGetSynchedPackets() {
-		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
 		List<String> PACKET_STATUS = Arrays.asList("I", "H", "A", "S");
 		Registration registration=new Registration();
 		List<Registration> regList=new ArrayList<>();
@@ -80,7 +74,6 @@ public class PacketUploadServiceTest {
 	@Ignore
 	@Test
 	public void testPushPacket() throws URISyntaxException, RegBaseCheckedException {
-		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		File f=new File("");
 		map.add("file", new FileSystemResource(f));
@@ -99,7 +92,6 @@ public class PacketUploadServiceTest {
 
 	@Test
 	public void testUpdateStatus() {
-		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
 		Map<String, String> packetStatus= new HashMap<>();
 		packetStatus.put("1111111111", "P");
 		packetStatus.put("2222222", "E");

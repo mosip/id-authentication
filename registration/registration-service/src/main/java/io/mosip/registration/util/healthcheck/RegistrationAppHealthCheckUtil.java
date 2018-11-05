@@ -12,12 +12,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.util.reader.PropertyFileReader;
 import oshi.SystemInfo;
 import oshi.software.os.FileSystem;
@@ -30,10 +26,9 @@ import oshi.software.os.OperatingSystem;
  * @author Sivasankar Thalavai
  * @since 1.0.0
  */
-@Component
 public class RegistrationAppHealthCheckUtil {
 
-	private static MosipLogger LOGGER;
+	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationAppHealthCheckUtil.class);
 
 	private static SystemInfo systemInfo;
 	private static OperatingSystem operatingSystem;
@@ -41,11 +36,6 @@ public class RegistrationAppHealthCheckUtil {
 	static {
 		systemInfo = new SystemInfo();
 		operatingSystem = systemInfo.getOperatingSystem();
-	}
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
 	}
 
 	private RegistrationAppHealthCheckUtil() {

@@ -2,17 +2,16 @@ package io.mosip.registration.service.impl;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
-import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -24,9 +23,10 @@ import io.mosip.registration.dto.json.demo.Demographic;
 import io.mosip.registration.dto.json.metadata.Audit;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
+import io.mosip.registration.dto.json.metadata.FieldValue;
+import io.mosip.registration.dto.json.metadata.FieldValueArray;
 import io.mosip.registration.dto.json.metadata.HashSequence;
-import io.mosip.registration.dto.json.metadata.OSIData;
-import io.mosip.registration.dto.json.metadata.PacketInfo;
+import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PacketCreationService;
@@ -56,12 +56,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private AuditDAO auditDAO;
 	@Autowired
 	private ZipCreationService zipCreationService;
-	private static MosipLogger logger;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketCreationServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}
@@ -77,7 +72,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	 */
 	@Override
 	public byte[] create(RegistrationDTO registrationDTO) throws RegBaseCheckedException {
-		logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
+		LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been called");
 		
 		try {
 			String rid = registrationDTO.getRegistrationId();
@@ -94,7 +89,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					javaObjectToJsonString(MAPPER_FACADE.map(registrationDTO.getDemographicDTO(), Demographic.class))
 							.getBytes());
 
-			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Demographic Json created successfully");
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Demographic Json created successfully");
 			auditFactory.audit(AuditEvent.PACKET_DEMO_JSON_CREATED, AppModule.PACKET_CREATOR,
 					"Demographic JSON created successfully", REGISTRATION_ID, rid);
 
@@ -105,21 +100,30 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			jsonsMap.put(RegistrationConstants.HASHING_JSON_NAME, HMACGeneration.generatePacketDTOHash(registrationDTO,
 					jsonsMap.get(DEMOGRPAHIC_JSON_NAME), hashSequence));
 
-			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "HMAC File generated successfully");
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "HMAC File generated successfully");
 			auditFactory.audit(AuditEvent.PACKET_HMAC_FILE_CREATED, AppModule.PACKET_CREATOR,
 					"Packet HMAC File created successfully", REGISTRATION_ID, rid);
 
 			// Generating Packet Meta-Info JSON as byte array
-			PacketInfo packetInfo = MAPPER_FACADE.map(registrationDTO, PacketInfo.class);
-			// Generate HMAC for RegistrationId
-			packetInfo.getMetaData().setRegistrationIdHash(HMACUtils.digestAsPlainText(
-					HMACUtils.generateHash(packetInfo.getMetaData().getRegistrationId().getBytes())));
-			packetInfo.setHashSequence(hashSequence);
-			packetInfo.setCheckSumMap(CheckSumUtil.getCheckSumMap());
-			packetInfo.setOsiData(MAPPER_FACADE.convert(registrationDTO, OSIData.class, "osiDataConverter"));
+			PacketMetaInfo packetInfo = MAPPER_FACADE.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
+			
+			// Add HashSequence
+			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
+			
+			// Add Checksum to PacketMetaInfo JSON
+			List<FieldValue> checkSums = new LinkedList<>();
+			Map<String, String> checkSumMap = CheckSumUtil.getCheckSumMap();
+			for (String key: checkSumMap.keySet()) {
+				FieldValue fieldValue = new FieldValue();
+				fieldValue.setLabel(key);
+				fieldValue.setValue(checkSumMap.get(key));
+				checkSums.add(fieldValue);
+			}
+			packetInfo.getIdentity().setCheckSum(checkSums);
+			
 			jsonsMap.put(RegistrationConstants.PACKET_META_JSON_NAME, javaObjectToJsonString(packetInfo).getBytes());
 
-			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Registration Packet Meta-Info JSON generated successfully");
 			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, AppModule.PACKET_CREATOR,
 					"Packet Meta-Data JSON created successfully", REGISTRATION_ID, rid);
@@ -129,7 +133,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					javaObjectToJsonString(MAPPER_FACADE.mapAsList(registrationDTO.getAuditDTOs(), Audit.class))
 							.getBytes());
 
-			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
 					"Registration Packet Meta-Info JSON generated successfully");
 			auditFactory.audit(AuditEvent.PACKET_META_JSON_CREATED, AppModule.PACKET_CREATOR,
 					"Packet Meta-Data JSON created successfully", REGISTRATION_ID, rid);
@@ -137,7 +141,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			// Creating in-memory zip file for Packet Encryption
 			byte[] packetZipBytes = zipCreationService.createPacket(registrationDTO, jsonsMap);
 
-			logger.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been ended");
+			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Registration Creation had been ended");
 			auditFactory.audit(AuditEvent.PACKET_INTERNAL_ZIP, AppModule.PACKET_CREATOR,
 					"Packet Internal Zip File created successfully", REGISTRATION_ID, rid);
 
@@ -151,4 +155,27 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		}
 	}
 
+	
+	private List<FieldValueArray> buildHashSequence(HashSequence hashSequence) {
+		List<FieldValueArray> hashSequenceList = new LinkedList<>();
+		// Add Sequence of Applicant Biometric
+		FieldValueArray fieldValueArray = new FieldValueArray();
+		fieldValueArray.setLabel("applicantBiometricSequence");
+		fieldValueArray.setValue(hashSequence.getBiometricSequence().getApplicant());
+		hashSequenceList.add(fieldValueArray);
+		
+		// Add Sequence of Introducer Biometric
+		fieldValueArray = new FieldValueArray();
+		fieldValueArray.setLabel("introducerBiometricSequence");
+		fieldValueArray.setValue(hashSequence.getBiometricSequence().getIntroducer());
+		hashSequenceList.add(fieldValueArray);
+		
+		// Add Sequence of Applicant Demographic
+		fieldValueArray = new FieldValueArray();
+		fieldValueArray.setLabel("applicantDemographicSequence");
+		fieldValueArray.setValue(hashSequence.getBiometricSequence().getIntroducer());
+		hashSequenceList.add(fieldValueArray);
+		
+		return hashSequenceList;
+	}
 }

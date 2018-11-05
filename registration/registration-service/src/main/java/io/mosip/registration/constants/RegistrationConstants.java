@@ -251,6 +251,7 @@ public class RegistrationConstants {
 	public static final String MACHINE_MAPPING_USERLIST_RUN_TIME_EXCEPTION=REG_SERVICE_CODE+"UMM-222";	
 	public static final String SYNC_STATUS_VALIDATE=REG_SERVICE_CODE+"SSV-223";
 	public static final String MACHINE_MASTER_RECORD_NOT_FOUND=REG_SERVICE_CODE+"MMD-224";
+	public static final String PACKET_META_CONVERTOR = REG_SERVICE_CODE + "PMC-225";
 
 	
 	/***********UI Constants**********/
@@ -403,6 +404,9 @@ public class RegistrationConstants {
 		public static final String REG_UI_SHEDULER_RUNTIME_EXCEPTION = REG_UI_CODE + "SHE-004";
 		public static final String REG_UI_BASE_CNTRLR_IO_EXCEPTION = REG_UI_CODE+"BAS-005";
 		public static final String REG_UI_VIEW_ACK_FORM_IO_EXCEPTION = REG_UI_CODE+"VAF-006";
+		
+		public static final String BIOMETRIC_IMAGE = "Image";
+		public static final String BIOMETRIC_TYPE = "Type";
 
 	
 }

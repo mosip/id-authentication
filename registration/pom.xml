@@ -60,7 +60,8 @@
 			src/main/java/io/mosip/registration/dto/**/*,
 			src/main/java/io/mosip/registration/constants/**/*,
 			src/main/java/io/mosip/registration/entity/**/*,
-			src/main/java/io/mosip/registration/exception/**/*
+			src/main/java/io/mosip/registration/exception/**/*,
+			src/main/java/io/mosip/registration/config/**/*
 		</sonar.exclusions>
 	</properties>
 	
@@ -175,12 +176,12 @@
 			</dependency>
 			
 			<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>javafx</artifactId>
-			<version>${javafx.version}</version>
-			<systemPath>${project.basedir}/src/main/resources/fx_lib/jfxrt.jar</systemPath>
-			<scope>system</scope>
-		</dependency>
+				<groupId>com.oracle</groupId>
+				<artifactId>javafx</artifactId>
+				<version>${javafx.version}</version>
+				<systemPath>${project.basedir}/src/main/resources/fx_lib/jfxrt.jar</systemPath>
+				<scope>system</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

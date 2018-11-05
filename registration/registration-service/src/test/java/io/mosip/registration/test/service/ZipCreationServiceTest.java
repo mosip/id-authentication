@@ -1,22 +1,16 @@
 package io.mosip.registration.test.service;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.test.util.datastub.DataProvider;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -35,31 +29,15 @@ public class ZipCreationServiceTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
 	private ZipCreationServiceImpl zipCreationService;
-	private RegistrationDTO registrationDTO;
-	private MosipRollingFileAppender mosipRollingFileAppender;
-	@Mock
-	private MosipLogger logger;
+	private static RegistrationDTO registrationDTO;
 	
-	@Before
-	public void initialize() throws IOException, URISyntaxException, RegBaseCheckedException {
+	@BeforeClass
+	public static void initialize() throws RegBaseCheckedException {
 		registrationDTO = DataProvider.getPacketDTO();
-		mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
 	}
 	
 	@Test
 	public void testPacketZipCreator() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(ZipCreationServiceImpl.class, "logger", logger);
 		Map<String, byte[]> jsonMap = new HashMap<>();
 		jsonMap.put(DEMOGRPAHIC_JSON_NAME, "Demo".getBytes());
 		jsonMap.put(PACKET_META_JSON_NAME, "Registration".getBytes());
@@ -72,8 +50,6 @@ public class ZipCreationServiceTest {
 	
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testException() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(zipCreationService, "logger", logger);
-		ReflectionTestUtils.invokeMethod(zipCreationService, "initializeLogger", mosipRollingFileAppender);
 		zipCreationService.createPacket(registrationDTO, new HashMap<String, byte[]>());
 	}
 	

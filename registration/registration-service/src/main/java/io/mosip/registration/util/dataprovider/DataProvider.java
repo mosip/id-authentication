@@ -10,7 +10,6 @@ import java.util.UUID;
 
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.AuditDTO;
-import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.RegistrationMetaDataDTO;
 import io.mosip.registration.dto.biometric.BiometricDTO;
@@ -18,14 +17,12 @@ import io.mosip.registration.dto.biometric.BiometricExceptionDTO;
 import io.mosip.registration.dto.biometric.BiometricInfoDTO;
 import io.mosip.registration.dto.biometric.FingerprintDetailsDTO;
 import io.mosip.registration.dto.biometric.IrisDetailsDTO;
-import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
-import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.DocumentDetailsDTO;
-import io.mosip.registration.dto.demographic.LocationDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.util.kernal.RIDGenerator;
+
 public class DataProvider {
 
 	public static final String PERMANANENT = "Permananent";
@@ -164,33 +161,7 @@ public class DataProvider {
 
 	private static DemographicDTO getDemographicDTO(DemographicDTO demographicDTO) throws RegBaseCheckedException {
 		demographicDTO.setApplicantDocumentDTO(DataProvider.setApplicantDocumentDTO());
-		demographicDTO.setIntroducerRID("2018234500321157812");
-		demographicDTO.setIntroducerUIN("2018234500321");
 		return demographicDTO;
-	}
-
-	private static DemographicInfoDTO getDemoInLocalLang() {
-		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-		demographicInfoDTO.setFirstName("John");
-		demographicInfoDTO.setMiddleName("Lawernce");
-		demographicInfoDTO.setLastName("Jr");
-		//demographicInfoDTO.setDateOfBirth(new Date());
-		demographicInfoDTO.setEmailId("john.lawerence@gmail.com");
-		demographicInfoDTO.setGender("Male");
-		demographicInfoDTO.setLanguageCode("en");
-		demographicInfoDTO.setChild(false);
-		demographicInfoDTO.setMobile("8889992233");
-		AddressDTO addressDTO = new AddressDTO();
-		addressDTO.setLine1("1");
-		addressDTO.setLine2("2");
-		LocationDTO locationDTO = new LocationDTO();
-		locationDTO.setLine6("Chennai");
-		locationDTO.setLine5("TN");
-		locationDTO.setLine4("IN");
-		addressDTO.setLocationDTO(locationDTO);
-		demographicInfoDTO.setAddressDTO(addressDTO);
-
-		return demographicInfoDTO;
 	}
 
 	private static ApplicantDocumentDTO setApplicantDocumentDTO() throws RegBaseCheckedException {
@@ -240,16 +211,6 @@ public class DataProvider {
 		registrationMetaDataDTO.setGeoLatitudeLoc(13.0049);
 		registrationMetaDataDTO.setGeoLongitudeLoc(80.24492);
 		return registrationMetaDataDTO;
-	}
-
-	private static OSIDataDTO getOsiDataDTO() {
-		OSIDataDTO osiDataDTO = new OSIDataDTO();
-		osiDataDTO.setOperatorID("op0r0s12");
-		osiDataDTO.setSupervisorID("s9ju2jhu");
-		osiDataDTO.setSupervisorName("Ram Paul");
-		osiDataDTO.setIntroducerType("HoF");
-		osiDataDTO.setIntroducerName("Joan Arc");
-		return osiDataDTO;
 	}
 
 	private static List<AuditDTO> getAuditDTOs() {

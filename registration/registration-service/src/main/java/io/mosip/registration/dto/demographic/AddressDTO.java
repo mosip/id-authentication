@@ -6,58 +6,59 @@ import io.mosip.registration.dto.BaseDTO;
  * This class used to capture the Address of the Individual
  * 
  * @author Dinesh Asokan
+ * @author Balaji Sridharan
  * @since 1.0.0
  */
 public class AddressDTO extends BaseDTO {
 
-	protected String line1;
-	protected String line2;
-	protected String line3;
+	protected String addressLine1;
+	protected String addressLine2;
+	protected String addressLine3;
 	protected LocationDTO locationDTO;
 
 	/**
-	 * @return the line1
+	 * @return the addressLine1
 	 */
-	public String getLine1() {
-		return line1;
+	public String getAddressLine1() {
+		return addressLine1;
 	}
 
 	/**
-	 * @param line1
-	 *            the line1 to set
+	 * @param addressLine1
+	 *            the addressLine1 to set
 	 */
-	public void setLine1(String line1) {
-		this.line1 = line1;
+	public void setAddressLine1(String addressLine1) {
+		this.addressLine1 = addressLine1;
 	}
 
 	/**
-	 * @return the line2
+	 * @return the addressLine2
 	 */
-	public String getLine2() {
-		return line2;
+	public String getAddressLine2() {
+		return addressLine2;
 	}
 
 	/**
-	 * @param line2
-	 *            the line2 to set
+	 * @param addressLine2
+	 *            the addressLine2 to set
 	 */
-	public void setLine2(String line2) {
-		this.line2 = line2;
+	public void setAddressLine2(String addressLine2) {
+		this.addressLine2 = addressLine2;
 	}
 
 	/**
-	 * @return the line3
+	 * @return the addressLine3
 	 */
-	public String getLine3() {
-		return line3;
+	public String getAddressLine3() {
+		return addressLine3;
 	}
 
 	/**
-	 * @param line3
-	 *            the line3 to set
+	 * @param addressLine3
+	 *            the addressLine3 to set
 	 */
-	public void setLine3(String line3) {
-		this.line3 = line3;
+	public void setLine3(String addressLine3) {
+		this.addressLine3 = addressLine3;
 	}
 
 	/**

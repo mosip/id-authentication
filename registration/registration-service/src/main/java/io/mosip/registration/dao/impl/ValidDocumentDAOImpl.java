@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.ValidDocumentDAO;
 import io.mosip.registration.entity.ValidDocument;
 import io.mosip.registration.repositories.ValidDocumentRepository;
@@ -28,17 +27,7 @@ public class ValidDocumentDAOImpl implements ValidDocumentDAO {
 	@Autowired
 	private ValidDocumentRepository validDocumentRepository;
 	/** instance of {@link MosipLogger} */
-	private static MosipLogger LOGGER;
-
-	/**
-	 * Initialize the logger
-	 * 
-	 * @param mosipRollingFileAppender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(ValidDocumentDAOImpl.class);
 
 	/**
 	 * (non-javadoc)

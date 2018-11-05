@@ -15,8 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationTransactionType;
@@ -46,18 +45,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	private RegistrationRepository registrationRepository;
 
 	/** Object for Logger. */
-	private static MosipLogger logger;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param mosipRollingFileAppender
-	 *            the mosip rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationDAOImpl.class);
 
 	/*
 	 * (non-Javadoc)
@@ -68,7 +56,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	@Override
 	public void save(String zipFileName, String individualName) throws RegBaseCheckedException {
 		try {
-			logger.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID,
 					"Save Registartion had been started");
 
 			Timestamp time = new Timestamp(System.currentTimeMillis());
@@ -102,7 +90,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 			registrationRepository.create(registration);
 			
-			logger.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_SAVE_PKT, APPLICATION_NAME, APPLICATION_ID,
 					"Save Registration had been ended");
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.CREATE_PACKET_ENTITY,
@@ -121,7 +109,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	public Registration updateStatus(String id, String clientStatusCode, String approverUsrId, String statusComments,
 			String approverRoleCode) {
 		try {
-			logger.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
+			LOGGER.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
 					APPLICATION_ID, "Packet updation has been started");
 
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -148,7 +136,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registrationTxn.setCrDtime(timestamp);
 			registrationTransaction.add(registrationTxn);
 
-			logger.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
+			LOGGER.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
 					APPLICATION_ID, "Packet updation has been ended");
 			
 			return registrationRepository.update(registration);
@@ -167,7 +155,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 */
 	@Override
 	public List<Registration> getEnrollmentByStatus(String status) {
-		logger.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
+		LOGGER.debug("REGISTRATION - BY_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Retriving packets based on status");
 		
 		return registrationRepository.findByclientStatusCode(status);
@@ -180,7 +168,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 */
 	@Override
 	public List<Registration> approvalList() {
-		logger.debug("REGISTRATION - CREATED_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
+		LOGGER.debug("REGISTRATION - CREATED_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Retriving packets based on created status");
 		
 		return registrationRepository.findByclientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
@@ -189,7 +177,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 	@Override
 	public List<Registration> getRegistrationByStatus(List<String> packetStatus) {
-		logger.debug("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", 
+		LOGGER.debug("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", 
 				APPLICATION_NAME, APPLICATION_ID, 
 				"got the packet details by id");
 		
@@ -200,7 +188,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 * @see org.mosip.registration.dao.RegistrationDAO#updateRegStatus(java.lang.String)
 	 */
 	public Registration updateRegStatus(String regId, String status) {
-		logger.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", 
+		LOGGER.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", 
 				APPLICATION_NAME, APPLICATION_ID, 
 				"Updating the packet details in the Registation table");
 		

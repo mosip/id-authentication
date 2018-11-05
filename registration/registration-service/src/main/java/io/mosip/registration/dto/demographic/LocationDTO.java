@@ -11,85 +11,69 @@ import io.mosip.registration.dto.BaseDTO;
  */
 public class LocationDTO extends BaseDTO {
 
-	protected String line4;
-	protected String line5;
-	protected String line6;
-	protected String line7;
-	protected String line8;
+	protected String region;
+	protected String city;
+	protected String province;
+	protected String postalCode;
 
 	/**
-	 * @return the line4
+	 * @return the region
 	 */
-	public String getLine4() {
-		return line4;
+	public String getRegion() {
+		return region;
 	}
 
 	/**
-	 * @param line4
-	 *            the line4 to set
+	 * @param region
+	 *            the region to set
 	 */
-	public void setLine4(String line4) {
-		this.line4 = line4;
+	public void setRegion(String region) {
+		this.region = region;
 	}
 
 	/**
-	 * @return the line5
+	 * @return the province
 	 */
-	public String getLine5() {
-		return line5;
+	public String getProvince() {
+		return province;
 	}
 
 	/**
-	 * @param line5
-	 *            the line5 to set
+	 * @param province
+	 *            the province to set
 	 */
-	public void setLine5(String line5) {
-		this.line5 = line5;
+	public void setProvince(String province) {
+		this.province = province;
 	}
 
 	/**
-	 * @return the line6
+	 * @return the city
 	 */
-	public String getLine6() {
-		return line6;
+	public String getCity() {
+		return city;
 	}
 
 	/**
-	 * @param line6
-	 *            the line6 to set
+	 * @param city
+	 *            the city to set
 	 */
-	public void setLine6(String line6) {
-		this.line6 = line6;
+	public void setCity(String city) {
+		this.city = city;
 	}
 
 	/**
-	 * @return the line7
+	 * @return the postalCode
 	 */
-	public String getLine7() {
-		return line7;
+	public String getPostalCode() {
+		return postalCode;
 	}
 
 	/**
-	 * @param line7
-	 *            the line7 to set
+	 * @param postalCode
+	 *            the postalCode to set
 	 */
-	public void setLine7(String line7) {
-		this.line7 = line7;
-	}
-
-	/**
-	 * @return the line8
-	 */
-	public String getLine8() {
-		return line8;
-	}
-
-	/**
-	 * @param line8
-	 *            the line8 to set
-	 */
-	public void setLine8(String line8) {
-		this.line8 = line8;
+	public void setPostalCode(String postalCode) {
+		this.postalCode = postalCode;
 	}
 
 }

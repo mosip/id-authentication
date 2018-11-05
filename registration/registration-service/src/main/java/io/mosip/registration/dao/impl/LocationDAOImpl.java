@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.LocationDAO;
 import io.mosip.registration.entity.Location;
 import io.mosip.registration.repositories.LocationRepository;
@@ -28,17 +27,7 @@ public class LocationDAOImpl implements LocationDAO {
 	@Autowired
 	private LocationRepository locationRepository;
 	/** instance of {@link MosipLogger} */
-	private static MosipLogger LOGGER;
-
-	/** 
-	 * Initialize logger
-	 * 
-	 * @param mosipRollingFileAppender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(LocationDAOImpl.class);
 
 	/**
 	 * (non-javadoc)

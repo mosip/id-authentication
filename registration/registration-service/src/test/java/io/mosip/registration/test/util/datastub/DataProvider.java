@@ -72,7 +72,7 @@ public class DataProvider {
 		biometricDTO.setApplicantBiometricDTO(DataProvider.buildBioMerticDTO(DataProvider.APPLICANT));
 		biometricDTO.setIntroducerBiometricDTO(DataProvider.buildBioMerticDTO("introducer"));
 		biometricDTO.setSupervisorBiometricDTO(DataProvider.buildBioMerticDTO("supervisor"));
-		biometricDTO.setOperatorBiometricDTO(DataProvider.buildBioMerticDTO("operator"));
+		biometricDTO.setOperatorBiometricDTO(DataProvider.buildBioMerticDTO("registrationOfficer"));
 		return biometricDTO;
 	}
 
@@ -93,14 +93,14 @@ public class DataProvider {
 		List<FingerprintDetailsDTO> fingerList = new ArrayList<>();
 
 		if (personType.equals(DataProvider.APPLICANT)) {
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "BothThumbs", 85.0, false,
-					"BothThumbs", 0));
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "LeftPalm", 80.0, false,
-					"LeftPalm", 3));
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "RightPalm", 95.0, false,
-					"RightPalm", 2));
+			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "BothThumbs.jpg", 85.0, false,
+					"thumbs", 0));
+			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "LeftPalm.jpg", 80.0, false,
+					"leftSlap", 3));
+			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "RightPalm.jpg", 95.0, false,
+					"rightSlap", 2));
 		} else {
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "LeftThumb", 0, false,
+			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, personType + "LeftThumb.jpg", 0, false,
 					"LeftThumb", 0));
 		}
 
@@ -142,7 +142,7 @@ public class DataProvider {
 
 	private static List<IrisDetailsDTO> getIrisDetailsDTO() throws RegBaseCheckedException {
 		List<IrisDetailsDTO> irisList = new ArrayList<>();
-		irisList.add(DataProvider.buildIrisDetailsDTO("/eye.jpg", "LeftEye", "LeftEye", false, 79.0));
+		irisList.add(DataProvider.buildIrisDetailsDTO("/eye.jpg", "LeftEye.jpg", "leftEye", false, 79.0));
 
 		return irisList;
 	}
@@ -177,9 +177,6 @@ public class DataProvider {
 
 	private static DemographicInfoDTO getDemoInLocalLang() {
 		DemographicInfoDTO demographicInfoDTO = new DemographicInfoDTO();
-		demographicInfoDTO.setFirstName("John");
-		demographicInfoDTO.setMiddleName("Lawernce");
-		demographicInfoDTO.setLastName("Jr");
 		demographicInfoDTO.setFullName("John Lawernce Jr");
 		//demographicInfoDTO.setDateOfBirth(new Date());
 		demographicInfoDTO.setEmailId("john.lawerence@gmail.com");
@@ -188,12 +185,12 @@ public class DataProvider {
 		demographicInfoDTO.setChild(false);
 		demographicInfoDTO.setMobile("8889992233");
 		AddressDTO addressDTO = new AddressDTO();
-		addressDTO.setLine1("1");
-		addressDTO.setLine2("2");
+		addressDTO.setAddressLine1("1");
+		addressDTO.setAddressLine2("2");
 		LocationDTO locationDTO = new LocationDTO();
-		locationDTO.setLine6("Chennai");
-		locationDTO.setLine5("TN");
-		locationDTO.setLine4("IN");
+		locationDTO.setRegion("Taramani");
+		locationDTO.setCity("Chennai");
+		locationDTO.setProvince("TN");
 		addressDTO.setLocationDTO(locationDTO);
 		demographicInfoDTO.setAddressDTO(addressDTO);
 
@@ -204,14 +201,14 @@ public class DataProvider {
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
 		applicantDocumentDTO.setDocumentDetailsDTO(DataProvider.getDocumentDetailsDTO());
 		applicantDocumentDTO.setPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
-		applicantDocumentDTO.setPhotographName("ApplicantPhoto");
+		applicantDocumentDTO.setPhotographName("ApplicantPhoto.jpg");
 		applicantDocumentDTO.setHasExceptionPhoto(true);
 		applicantDocumentDTO.setExceptionPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
-		applicantDocumentDTO.setExceptionPhotoName("ExceptionPhoto");
+		applicantDocumentDTO.setExceptionPhotoName("ExceptionPhoto.jpg");
 		applicantDocumentDTO.setQualityScore(89.0);
 		applicantDocumentDTO.setNumRetry(1);
 		applicantDocumentDTO.setAcknowledgeReceipt(DataProvider.getImageBytes("/acknowledgementReceipt.jpg"));
-		applicantDocumentDTO.setAcknowledgeReceiptName("RegistrationAcknowledgement");
+		applicantDocumentDTO.setAcknowledgeReceiptName("RegistrationAcknowledgement.jpg");
 		return applicantDocumentDTO;
 	}
 
@@ -221,14 +218,14 @@ public class DataProvider {
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setDocumentName("ProofOfIdentity");
+		documentDetailsDTO.setDocumentName("ProofOfIdentity.jpg");
 		documentDetailsDTO.setDocumentCategory("PoI");
 		documentDetailsDTO.setDocumentOwner("Self");
 		documentDetailsDTO.setDocumentType("PAN");
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setDocumentName("ProofOfAddress");
+		documentDetailsResidenceDTO.setDocumentName("ProofOfAddress.jpg");
 		documentDetailsResidenceDTO.setDocumentCategory("PoA");
 		documentDetailsResidenceDTO.setDocumentOwner("hof");
 		documentDetailsResidenceDTO.setDocumentType("passport");
@@ -242,10 +239,14 @@ public class DataProvider {
 	private static RegistrationMetaDataDTO getRegistrationMetaDataDTO() {
 
 		RegistrationMetaDataDTO registrationMetaDataDTO = new RegistrationMetaDataDTO();
-		registrationMetaDataDTO.setRegistrationCategory("Document Based");
-		registrationMetaDataDTO.setApplicationType("New Registration");
+		registrationMetaDataDTO.setRegistrationCategory("Parent");
+		registrationMetaDataDTO.setApplicationType("Child");
 		registrationMetaDataDTO.setGeoLatitudeLoc(13.0049);
 		registrationMetaDataDTO.setGeoLongitudeLoc(80.24492);
+		registrationMetaDataDTO.setCenterId("12245");
+		registrationMetaDataDTO.setMachineId("yyeqy26356");
+		registrationMetaDataDTO.setRegistrationCategory("New");
+		
 		return registrationMetaDataDTO;
 	}
 
@@ -253,9 +254,6 @@ public class DataProvider {
 		OSIDataDTO osiDataDTO = new OSIDataDTO();
 		osiDataDTO.setOperatorID("op0r0s12");
 		osiDataDTO.setSupervisorID("s9ju2jhu");
-		osiDataDTO.setSupervisorName("Ram Paul");
-		osiDataDTO.setIntroducerType("HoF");
-		osiDataDTO.setIntroducerName("Joan Arc");
 		return osiDataDTO;
 	}
 

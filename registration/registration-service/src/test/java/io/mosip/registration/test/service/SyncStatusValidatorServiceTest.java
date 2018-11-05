@@ -25,8 +25,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
@@ -41,15 +39,11 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.GeoLocationCapture;
 import io.mosip.registration.service.impl.SyncStatusValidatorServiceImpl;
-import io.mosip.registration.test.config.SpringConfiguration;
 
-public class SyncStatusValidatorServiceTest extends SpringConfiguration {
+public class SyncStatusValidatorServiceTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
-	@Mock
-	private MosipLogger logger;
-	private MosipRollingFileAppender mosipRollingFileAppender;
 	@InjectMocks
 	private SyncStatusValidatorServiceImpl syncStatusValidatorServiceImpl;
 	@Mock
@@ -78,20 +72,6 @@ public class SyncStatusValidatorServiceTest extends SpringConfiguration {
 		maplastTime.put("lastCapturedTime", lastCapturedTime);
 		SessionContext.getInstance().setMapObject(maplastTime);
 
-		mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
-		ReflectionTestUtils.invokeMethod(syncStatusValidatorServiceImpl, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}

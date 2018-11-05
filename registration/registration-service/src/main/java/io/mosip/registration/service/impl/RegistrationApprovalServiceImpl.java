@@ -6,22 +6,20 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModule;
-import io.mosip.registration.constants.AuditEvent;
-import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
-import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.RegistrationApprovalService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationApprovalUiDto;
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.service.RegistrationApprovalService;
 
 /**
  * {@code RegistrationApprovalServiceImpl} is the registration approval service
@@ -41,17 +39,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 	/**
 	 * Object for Logger
 	 */
-	private static MosipLogger LOGGER;
-
-	/**
-	 * Initializing logger
-	 * 
-	 * @param mosipRollingFileAppender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationApprovalServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}

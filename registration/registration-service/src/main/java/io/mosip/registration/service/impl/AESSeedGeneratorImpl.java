@@ -8,12 +8,10 @@ import static java.lang.System.currentTimeMillis;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -34,12 +32,7 @@ public class AESSeedGeneratorImpl implements AESSeedGenerator {
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private static MosipLogger logger;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(AESSeedGeneratorImpl.class);
 
 	/**
 	 * (non-Javadoc)
@@ -48,7 +41,7 @@ public class AESSeedGeneratorImpl implements AESSeedGenerator {
 	 */
 	@Override
 	public List<String> generateAESKeySeeds() throws RegBaseCheckedException {
-		logger.debug(LOG_PKT_AES_SEEDS, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_PKT_AES_SEEDS, APPLICATION_NAME, APPLICATION_ID,
 				"Generating seeds for AES Encryption had been started");
 		try {
 			List<String> aesKeySeeds = new LinkedList<>();
@@ -56,7 +49,7 @@ public class AESSeedGeneratorImpl implements AESSeedGenerator {
 			aesKeySeeds.add(SessionContext.getInstance().getUserContext().getName());
 			aesKeySeeds.add(String.valueOf(currentTimeMillis()));
 			
-			logger.debug(LOG_PKT_AES_SEEDS, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LOG_PKT_AES_SEEDS, APPLICATION_NAME, APPLICATION_ID,
 					"Generating seeds for AES Encryption had been ended");
 			
 			return aesKeySeeds;

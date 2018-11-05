@@ -4,10 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -15,15 +13,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.dao.impl.DocumentCategoryDAOImpl;
 import io.mosip.registration.entity.DocumentCategory;
 import io.mosip.registration.entity.GenericId;
-import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.DocumentCategoryRepository;
 
 public class DocumentCategoryDAOImplTest {
@@ -34,40 +27,16 @@ public class DocumentCategoryDAOImplTest {
 	private DocumentCategoryDAOImpl registrationDocumentCategoryDAOImpl;
 	@Mock
 	private DocumentCategoryRepository registrationDocumentCategoryRepository;
-	@Mock
-	private MosipLogger logger;
-
-	MosipRollingFileAppender mosipRollingFileAppender;
-
-	@Before
-	public void setUp() {
-		mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.invokeMethod(registrationDocumentCategoryDAOImpl, "initializeLogger",
-				mosipRollingFileAppender);
-
-	}
 
 	@Test
 	public void test() {
-		ReflectionTestUtils.setField(registrationDocumentCategoryDAOImpl, "LOGGER", logger);
-
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		DocumentCategory documentCategory = new DocumentCategory();
 		documentCategory.setDescription("description");
 		documentCategory.setName("name");
-		documentCategory.setCreatedTimesZone(new Timestamp(new Date().getTime()));
+		documentCategory.setCreatedTimesZone(timestamp);
 		documentCategory.setCreatedBy("createdBy");
-		documentCategory.setDeletedTimesZone(new Timestamp(new Date().getTime()));
+		documentCategory.setDeletedTimesZone(timestamp);
 		documentCategory.setLanguageCode("languageCode");
 		GenericId genericId = new GenericId();
 		genericId.setActive(true);

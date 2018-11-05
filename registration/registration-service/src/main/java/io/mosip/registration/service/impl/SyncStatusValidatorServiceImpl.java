@@ -16,9 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -78,17 +77,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 	/** Object for Logger. */
 
-	private static MosipLogger LOGGER;
-
-	/**
-	 * Initializing logger.
-	 *
-	 * @param mosipRollingFileAppender the mosip rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(SyncStatusValidatorServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}

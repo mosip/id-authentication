@@ -1,8 +1,5 @@
 package io.mosip.registration.test.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -11,8 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -29,28 +24,11 @@ public class StorageServiceTest {
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	@InjectMocks
 	private StorageServiceImpl storageService;
-	private MosipRollingFileAppender mosipRollingFileAppender;
-	@Mock
-	private MosipLogger logger;
 	@Mock
 	private Environment environment;
 	
 	@Before
 	public void initialize() {
-		mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
-		ReflectionTestUtils.invokeMethod(storageService, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(storageService, "logger", logger);
 		ReflectionTestUtils.setField(storageService, "environment", environment);
 		
 		when(environment.getProperty(RegistrationConstants.PACKET_STORE_LOCATION)).thenReturn("PacketStore");
@@ -59,12 +37,6 @@ public class StorageServiceTest {
 	
 	@Test
 	public void testLocalStorage() throws RegBaseCheckedException {
-		Map<String, byte[]> jsonMap = new HashMap<>();
-		jsonMap.put(RegistrationConstants.DEMOGRPAHIC_JSON_NAME, "Demo".getBytes());
-		jsonMap.put(RegistrationConstants.PACKET_META_JSON_NAME, "Registration".getBytes());
-		jsonMap.put(RegistrationConstants.ENROLLMENT_META_JSON_NAME, "Enrollment".getBytes());
-		jsonMap.put(RegistrationConstants.HASHING_JSON_NAME, "HASHCode".getBytes());
-		jsonMap.put(RegistrationConstants.AUDIT_JSON_FILE, "Audit Events".getBytes());
 		Assert.assertNotNull(storageService.storeToDisk("1234567890123", "demo".getBytes(), "Image".getBytes()));		
 	}
 	

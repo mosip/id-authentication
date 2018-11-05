@@ -11,8 +11,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 
 /**
  * This is a general method which gives the response for all httpmethod
@@ -32,12 +31,7 @@ public class RestClientUtil {
 		@Autowired 
 		 RestTemplate restTemplate;
 		 
-		 private static MosipLogger LOGGER;
-
-			@Autowired
-			private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-				LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-			}
+		 private static final MosipLogger LOGGER = AppConfig.getLogger(RestClientUtil.class);
 		 
 	/**
 	 * Actual exchange using rest template

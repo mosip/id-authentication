@@ -8,8 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.AuditDAO;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -32,18 +31,7 @@ public class AuditDAOImpl implements AuditDAO {
 	private RegAuditRepository regAuditRepository;
 
 	/** Object for Logger. */
-	private static MosipLogger logger;
-
-	/**
-	 * Initialize logger.
-	 *
-	 * @param mosipRollingFileAppender
-	 *            the mosip rolling file appender
-	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(AuditDAOImpl.class);
 
 	/*
 	 * (non-Javadoc)
@@ -52,7 +40,7 @@ public class AuditDAOImpl implements AuditDAO {
 	 */
 	@Override
 	public List<Audit> getAllUnsyncAudits() {
-		logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "Fetching the list of unsync'ed Audits");
 		try {
 			return regAuditRepository.findAllUnsyncAudits();
@@ -70,7 +58,7 @@ public class AuditDAOImpl implements AuditDAO {
 	@Override
 	@Transactional
 	public int updateSyncAudits(List<String> auditUUIDs) {
-		logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "updateSyncAudits has been started");
 		
 		int updatedCount = 0;
@@ -91,7 +79,7 @@ public class AuditDAOImpl implements AuditDAO {
 					runtimeException.toString());
 		}
 		
-		logger.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
+		LOGGER.debug(LOG_AUDIT_DAO, APPLICATION_NAME,
 				APPLICATION_ID, "updateSyncAudits has been ended");
 		
 		return updatedCount;

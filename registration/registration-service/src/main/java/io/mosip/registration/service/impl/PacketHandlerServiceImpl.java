@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -53,12 +52,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private static MosipLogger logger;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketHandlerServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}
@@ -75,7 +69,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 	 */
 	@Override
 	public ResponseDTO handle(RegistrationDTO registrationDTO) {
-		logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been called");
+		LOGGER.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been called");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		String rid = registrationDTO == null ? "RID" : registrationDTO.getRegistrationId();
@@ -85,7 +79,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 
 			// 2.encrypt packet
 			if (inMemoryZipFile != null && inMemoryZipFile.length > 0) {
-				logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 						"Registration Packet had been created successfully");
 
 				responseDTO = packetEncryptionService.encrypt(registrationDTO, inMemoryZipFile);
@@ -97,7 +91,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 				errorResponseDTOs.add(errorResponseDTO);
 				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 
-				logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
+				LOGGER.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID,
 						"Error in creating Registration Packet");
 				auditFactory.audit(AuditEvent.PACKET_INTERNAL_ERROR, AppModule.PACKET_HANDLER, INTERNAL_SERVER_ERROR,
 						REGISTRATION_ID, rid);
@@ -123,7 +117,7 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 			errorResponseDTOs.add(errorResponseDTO);
 			responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 		}
-		logger.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been ended");
+		LOGGER.debug(LOG_PKT_HANLDER, APPLICATION_NAME, APPLICATION_ID, "Registration Handler had been ended");
 
 		return responseDTO;
 	}

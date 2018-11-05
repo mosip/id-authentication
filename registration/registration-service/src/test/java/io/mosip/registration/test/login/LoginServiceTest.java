@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -20,10 +19,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
@@ -45,7 +41,6 @@ import io.mosip.registration.entity.RegistrationScreenAuthorizationId;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.entity.RegistrationUserPassword;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationAppLoginRepository;
 import io.mosip.registration.repositories.RegistrationCenterRepository;
 import io.mosip.registration.repositories.RegistrationScreenAuthorizationRepository;
@@ -58,10 +53,6 @@ public class LoginServiceTest {
 
 	@Mock
 	private ServiceDelegateUtil serviceDelegateUtil;
-
-	@Mock
-	private MosipLogger logger;
-	private MosipRollingFileAppender mosipRollingFileAppender;
 
 	@Mock
 	private AuditFactoryImpl auditFactory;
@@ -102,29 +93,8 @@ public class LoginServiceTest {
 	@Mock
 	private RegistrationScreenAuthorizationDAO registrationScreenAuthorizationDAO;
 	
-	@Before
-	public void initialize() {
-		mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-		
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.invokeMethod(loginServiceImpl, "initializeLogger", mosipRollingFileAppender);
-	}
-	
 	@Test
 	public void getModesOfLoginTest() {
-
-		ReflectionTestUtils.setField(loginServiceImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
@@ -147,10 +117,6 @@ public class LoginServiceTest {
 	@Test
 	public void validateUserPasswordTest() {
 
-		ReflectionTestUtils.setField(loginServiceImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
-
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
@@ -166,10 +132,6 @@ public class LoginServiceTest {
 
 	@Test
 	public void getUserDetailTest() {
-
-		ReflectionTestUtils.setField(loginServiceImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
@@ -188,10 +150,6 @@ public class LoginServiceTest {
 	@Test
 	public void getRegistrationCenterDetailsTest() {
 
-		ReflectionTestUtils.setField(loginServiceImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
-
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
@@ -209,10 +167,6 @@ public class LoginServiceTest {
 
 	@Test
 	public void getScreenAuthorizationDetailsTest() {
-
-		ReflectionTestUtils.setField(loginServiceImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
@@ -245,9 +199,6 @@ public class LoginServiceTest {
 		otpGeneratorRequestDto.setKey("yash");
 		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
 		otpGeneratorResponseDto.setOtp("09876");
-		ReflectionTestUtils.setField(loginServiceImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDto.class)))
 				.thenReturn(otpGeneratorResponseDto);
 
@@ -262,9 +213,6 @@ public class LoginServiceTest {
 		OtpGeneratorResponseDto otpGeneratorResponseDto = null;
 		when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(OtpGeneratorRequestDto.class)))
 				.thenReturn(otpGeneratorResponseDto);
-		ReflectionTestUtils.setField(loginServiceImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 
 		Assert.assertNotNull(loginServiceImpl.getOTP(otpGeneratorRequestDto.getKey()).getErrorResponseDTOs());
 
@@ -276,9 +224,6 @@ public class LoginServiceTest {
 		OtpValidatorResponseDto otpGeneratorRequestDto = new OtpValidatorResponseDto();
 		otpGeneratorRequestDto.setOrdMessage("OTP is valid");
 		otpGeneratorRequestDto.setstatus("true");
-		ReflectionTestUtils.setField(loginServiceImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap())).thenReturn(otpGeneratorRequestDto);
 		Assert.assertNotNull(loginServiceImpl.validateOTP("yashReddy683", "099887").getSuccessResponseDTO());
 
@@ -290,9 +235,6 @@ public class LoginServiceTest {
 		OtpValidatorResponseDto otpGeneratorRequestDto = new OtpValidatorResponseDto();
 		otpGeneratorRequestDto.setOrdMessage("OTP is valid");
 		otpGeneratorRequestDto.setstatus("false");
-		ReflectionTestUtils.setField(loginServiceImpl, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 		when(serviceDelegateUtil.get(Mockito.anyString(), Mockito.anyMap())).thenReturn(otpGeneratorRequestDto);
 
 		Assert.assertNotNull(loginServiceImpl.validateOTP("yashReddy683", "099887").getErrorResponseDTOs());

@@ -20,8 +20,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -43,12 +42,7 @@ public class AESKeyManagerImpl implements AESKeyManager {
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private MosipLogger logger;
-
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		logger = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private static final MosipLogger LOGGER = AppConfig.getLogger(AESKeyManagerImpl.class);
 
 	/*
 	 * (non-Javadoc)
@@ -56,7 +50,7 @@ public class AESKeyManagerImpl implements AESKeyManager {
 	 * @see com.mosip.client.service.KeyManager#generateKey()
 	 */
 	public SecretKey generateSessionKey(final List<String> aesKeySeeds) throws RegBaseCheckedException {
-		logger.debug(LOG_PKT_AES_KEY_GENERATION, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_PKT_AES_KEY_GENERATION, APPLICATION_NAME, APPLICATION_ID,
 				"Generating AES Encryption had been started");
 		try {
 			// Concatenate the seeds for AES Session Key
@@ -71,7 +65,7 @@ public class AESKeyManagerImpl implements AESKeyManager {
 			final KeyGenerator aesKeyGenerator = KeyGenerator.getInstance(environment.getProperty(AES_KEY_MANAGER_ALG));
 			aesKeyGenerator.init(Integer.parseInt(environment.getProperty(AES_SESSION_KEY_LENGTH)),
 					new SecureRandom(seedArray));
-			logger.debug(LOG_PKT_AES_KEY_GENERATION, APPLICATION_NAME,
+			LOGGER.debug(LOG_PKT_AES_KEY_GENERATION, APPLICATION_NAME,
 					APPLICATION_ID, "Generating AES Encryption had been ended");
 			return aesKeyGenerator.generateKey();
 		} catch (NoSuchAlgorithmException noSuchAlgorithmException) {

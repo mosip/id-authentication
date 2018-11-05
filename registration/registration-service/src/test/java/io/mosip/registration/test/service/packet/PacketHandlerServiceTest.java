@@ -9,13 +9,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
-import io.mosip.registration.constants.AppModule;
-import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -36,31 +31,11 @@ public class PacketHandlerServiceTest {
 	private PacketEncryptionService packetEncryptionService;
 	@Mock
 	private AuditFactoryImpl auditFactory;
-	@Mock
-	private MosipRollingFileAppender mosipRollingFileAppender;
-	@Mock
-	private MosipLogger logger;
-	ResponseDTO mockedSuccessResponse;
+	private ResponseDTO mockedSuccessResponse;
 
 	@Before
 	public void initialize() {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
-		ReflectionTestUtils.invokeMethod(packetHandlerServiceImpl, "initializeLogger", mosipRollingFileAppender);
 		mockedSuccessResponse = new ResponseDTO();
-		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class),
-				Mockito.any(AppModule.class), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(packetHandlerServiceImpl, "logger", logger);
 	}
 
 	@Test

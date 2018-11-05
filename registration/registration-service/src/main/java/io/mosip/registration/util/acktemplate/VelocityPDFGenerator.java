@@ -69,13 +69,13 @@ public class VelocityPDFGenerator {
 		}
 		velocityContext.put(RegistrationConstants.TEMPLATE_GENDER, registration.getDemographicDTO().getDemoInUserLang().getGender());
 		velocityContext.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLine1());
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine1());
 		velocityContext.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLine2());
-		velocityContext.put(RegistrationConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine6());
-		velocityContext.put(RegistrationConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine5());
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine2());
+		velocityContext.put(RegistrationConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getCity());
+		velocityContext.put(RegistrationConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getProvince());
 		velocityContext.put(RegistrationConstants.TEMPLATE_COUNTRY,
-				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getLine4());
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getRegion());
 		velocityContext.put(RegistrationConstants.TEMPLATE_MOBILE, registration.getDemographicDTO().getDemoInUserLang().getMobile());
 		String email = registration.getDemographicDTO().getDemoInUserLang().getEmailId();
 		if (email == null || email == RegistrationConstants.EMPTY) {
