@@ -144,16 +144,23 @@ The key non-functional requirements are
 
 
 **Class Diagram**
+
 ![pre-registration appliaction service class diagram](_images/_class_diagram/_class_diagram/pre-registration-appliaction-service-classDiagram.png)
 
 ![pre-registration document service class diagram](_images/_class_diagram/_class_diagram/pre-registration-document-service-classDiagram.png)
 
 **Sequence Diagram**
+
 ![pre-registration appliaction create](_sequence_diagram/pre-registration-appliaction-create.png)
+
 ![pre-registration get all appliaction](_sequence_diagram/pre-registration-get-all-appliaction.png)
+
 ![pre-registration upload document](_sequence_diagram/pre-registration-upload-document.png)
+
 ![pre-registration get document](_sequence_diagram/pre-registration-get-document.png)
+
 ![pre-registration delete document](_sequence_diagram/pre-registration-delete-document.png)
+
 ![pre-registration copy document](_sequence_diagram/pre-registration-copy-document.png)
 
 **Success / Error Code** 
@@ -195,8 +202,8 @@ Component Name | Module Name | Description |
 
 **User Story References**
 
-  **User Story No.** |  **Reference Link**
-  -----|----------|-------------|
+  **User Story No.** |  **Reference Link** |
+  -----|----------|
   **MOS-623**      |     <https://mosipid.atlassian.net/browse/MOS-623>
   **MOS-626**      |     <https://mosipid.atlassian.net/browse/MOS-626>
   **MOS-805**       |    <https://mosipid.atlassian.net/browse/MOS-805>
