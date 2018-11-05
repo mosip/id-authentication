@@ -4,6 +4,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTHORIZATION_EXCEPTION;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_HOMEPAGE_IO_EXCEPTION;
+import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_LOGOUT_IO_EXCEPTION;
 
 import java.io.IOException;
 
@@ -86,26 +87,14 @@ public class RegistrationOfficerDetailsController extends BaseController {
 			SessionContext.destroySession();
 			SchedulerUtil.stopScheduler();
 
-			String fxmlPath = null;
-			switch (initialMode) {
-			case RegistrationConstants.OTP:
-				fxmlPath = RegistrationConstants.LOGIN_OTP_PAGE;
-				break;
-			case RegistrationConstants.LOGIN_METHOD_PWORD:
-				fxmlPath = RegistrationConstants.LOGIN_PWORD_PAGE;
-				break;
-			default:
-				fxmlPath = RegistrationConstants.LOGIN_PWORD_PAGE;
-			}
-
 			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-			AnchorPane loginType = BaseController.load(getClass().getResource(fxmlPath));
-			loginpage.setCenter(loginType);
-			RegistrationAppInitialization.getScene().setRoot(loginpage);
-
-		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - UI - Logout ", APPLICATION_NAME,
-					APPLICATION_ID, ioException.getMessage());
+			LoginController loginController = RegistrationAppInitialization.getApplicationContext().getBean(LoginController.class);
+			loginController.loadLoginScreen(initialMode);
+			LoginController.getScene().setRoot(loginpage);
+			
+		} catch (IOException ioException) {			
+			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, REG_UI_LOGOUT_IO_EXCEPTION.getErrorMessage());
 		}
 	}
 
@@ -119,9 +108,13 @@ public class RegistrationOfficerDetailsController extends BaseController {
 					APPLICATION_NAME, APPLICATION_ID, "Redirecting to Home page");
 
 			VBox homePage = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-			RegistrationAppInitialization.getScene().setRoot(homePage);
+			LoginController.getScene().setRoot(homePage);
 
 		} catch (IOException | RuntimeException exception) {
+			
+			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());
+			
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());
 		}

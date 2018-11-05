@@ -119,8 +119,26 @@
 			<artifactId>javafx</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>com.machinezoo.sourceafis</groupId>
+			<artifactId>sourceafis</artifactId>
+			<version>${sourceafis.version}</version>
+		</dependency>
+		<!-- MANTRA Biometric device -->
+		<dependency>
+			<groupId>Mantra</groupId>
+			<artifactId>MFS100</artifactId>
+			<version>1.0</version>
+		</dependency>
 	</dependencies>
-
+	
+	<repositories>
+		<repository>
+			<id>local-maven-repo</id>
+			<url>file:///${basedir}/lib</url>
+		</repository>
+	</repositories>
+	
 	<build>
 		<plugins>
 			<plugin>

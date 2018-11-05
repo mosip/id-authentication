@@ -2,23 +2,13 @@ package io.mosip.registration.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 
-import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.RegistrationUserDetail;
-import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
-import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.SyncStatusValidatorService;
-import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -39,23 +29,10 @@ import javafx.util.Duration;
  * @since 1.0.0
  *
  */
-@PropertySource("classpath:application.properties")
 public class BaseController {
 
 	@Autowired
-	private LoginService loginService;
-	
-	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
-
-	@Value("${TIME_OUT_INTERVAL:30}")
-	private long timeoutInterval;
-
-	@Value("${IDEAL_TIME}")
-	private long idealTime;
-
-	@Value("${REFRESHED_LOGIN_TIME}")
-	private long refreshedLoginTime;
 
 	protected static Stage stage;
 
@@ -145,63 +122,8 @@ public class BaseController {
 
 	}
 
-	/**
-	 * Setting values for Session context and User context and Initial info for
-	 * Login
-	 * 
-	 * @param userId
-	 *            entered userId
-	 * @throws RegBaseCheckedException 
-	 */
-	protected String setInitialLoginInfoAndSessionContext(String userId) throws RegBaseCheckedException {
-		RegistrationUserDetail userDetail = loginService.getUserDetail(userId);
-		String result = null;
-		List<String> roleList = new ArrayList<>();
-
-		userDetail.getUserRole().forEach(roleCode -> {
-			if(roleCode.getIsActive()) {
-				roleList.add(String
-						.valueOf(roleCode.getRegistrationUserRoleID().getRoleCode()));
-			}
-		});
-
-		// Checking roles
-		if (roleList.isEmpty()) {
-			result = RegistrationConstants.ROLES_EMPTY;
-		} else if (roleList.contains(RegistrationConstants.ADMIN_ROLE)) {
-			result = RegistrationConstants.SUCCESS_MSG;
-		} else {
-			// checking for machine mapping
-			if (!getCenterMachineStatus(userDetail)) {
-				result = RegistrationConstants.MACHINE_MAPPING;
-			} else {
-				result = RegistrationConstants.SUCCESS_MSG;
-			}
-		}
-		if (result != null && result.equalsIgnoreCase(RegistrationConstants.SUCCESS_MSG)) {
-			SessionContext sessionContext = SessionContext.getInstance();
-
-			sessionContext.setLoginTime(new Date());
-			sessionContext.setRefreshedLoginTime(refreshedLoginTime);
-			sessionContext.setIdealTime(idealTime);
-			sessionContext.setTimeoutInterval(timeoutInterval);
-
-			SessionContext.UserContext userContext = sessionContext.getUserContext();
-			userContext.setUserId(userId);
-			userContext.setName(userDetail.getName());
-			userContext.setRoles(roleList);
-			userContext.setRegistrationCenterDetailDTO(
-					loginService.getRegistrationCenterDetails(userDetail.getCntrId()));
-
-			String userRole = !userContext.getRoles().isEmpty() ? userContext.getRoles().get(0) : null;
-			userContext.setAuthorizationDTO(loginService.getScreenAuthorizationDetails(userRole));
-
-		}
-		return result;
-	}
-	
 	protected ResponseDTO validateSyncStatus() {
-		
+
 		return syncStatusValidatorService.validateSyncStatus();
 	}
 
@@ -219,39 +141,6 @@ public class BaseController {
 	}
 
 	/**
-	 * Fetching and Validating machine and center id
-	 * 
-	 * @param userDetail
-	 *            the userDetail
-	 * @return boolean
-	 * @throws RegBaseCheckedException 
-	 */
-	private boolean getCenterMachineStatus(RegistrationUserDetail userDetail) throws RegBaseCheckedException {
-		List<String> machineList = new ArrayList<>();
-		List<String> centerList = new ArrayList<>();
-		userDetail.getUserMachineMapping().forEach(machineMapping -> {
-				if(machineMapping.getIsActive()) {
-					machineList.add(machineMapping.getUserMachineMappingId().getMachineID());
-					centerList.add(machineMapping.getUserMachineMappingId().getCentreID());
-				} 
-			});
-		return machineList.contains(RegistrationSystemPropertiesChecker.getMachineId()) && centerList.contains(userDetail.getCntrId());
-	}
-
-	/**
-	 * Validating user status
-	 * 
-	 * @param userId
-	 *            the userId
-	 * @return boolean
-	 */
-	protected boolean validateUserStatus(String userId) {
-		RegistrationUserDetail userDetail = loginService.getUserDetail(userId);
-		return userDetail.getUserStatus() != null
-				&& userDetail.getUserStatus().equalsIgnoreCase(RegistrationConstants.BLOCKED);
-	}
-	
-	/**
 	 * Regex validation with specified field and pattern
 	 * 
 	 * @param field
@@ -259,14 +148,13 @@ public class BaseController {
 	 * @param regexPattern
 	 *            pattern need to checked
 	 */
-	protected boolean validateRegex(Control field,String regexPattern) {
-		if(field instanceof TextField) {
-			if(!((TextField) field).getText().matches(regexPattern))
+	protected boolean validateRegex(Control field, String regexPattern) {
+		if (field instanceof TextField) {
+			if (!((TextField) field).getText().matches(regexPattern))
 				return true;
-		}
-		else {
-			if(field instanceof PasswordField) {
-				if(!((PasswordField) field).getText().matches(regexPattern))
+		} else {
+			if (field instanceof PasswordField) {
+				if (!((PasswordField) field).getText().matches(regexPattern))
 					return true;
 			}
 		}

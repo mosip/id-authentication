@@ -96,9 +96,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 							errorMessage.toString().trim());
 
 				} else {
-					RegistrationAppInitialization.getScene().setRoot(createRoot);
+					LoginController.getScene().setRoot(createRoot);
 					ClassLoader loader = Thread.currentThread().getContextClassLoader();
-					RegistrationAppInitialization.getScene().getStylesheets()
+					LoginController.getScene().getStylesheets()
 							.add(loader.getResource("application.css").toExternalForm());
 				}
 			}

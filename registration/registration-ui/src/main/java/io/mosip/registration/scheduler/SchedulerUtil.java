@@ -22,6 +22,7 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.controller.BaseController;
+import io.mosip.registration.controller.LoginController;
 import io.mosip.registration.controller.RegistrationAppInitialization;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -119,7 +120,7 @@ public class SchedulerUtil {
 								LOGGER.error("REGISTRATION - UI", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 							}
 							
-							RegistrationAppInitialization.getScene().setRoot(content);
+							LoginController.getScene().setRoot(content);
 						}
 					});
 				}

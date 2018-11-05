@@ -50,6 +50,9 @@
 		<!-- Derby Version -->
 		<apache.derby.version>10.13.1.1</apache.derby.version>
 		
+		<!-- sourceafis Version -->
+		<sourceafis.version>3.4.0</sourceafis.version>
+		
 		<sonar.exclusions>
 			src/main/java/io/mosip/registration/util/**/*,
 			src/main/java/io/mosip/registration/repositories/**/*,

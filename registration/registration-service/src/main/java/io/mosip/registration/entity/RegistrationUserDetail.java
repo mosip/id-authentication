@@ -56,6 +56,9 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")
 	private Set<UserMachineMapping> userMachineMapping;
 
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "registrationUserDetail")
+	private Set<UserBiometric> userBiometric;
+
 	/**
 	 * @return the userRole
 	 */
@@ -85,6 +88,21 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	public void setUserMachineMapping(Set<UserMachineMapping> userMachineMapping) {
 		this.userMachineMapping = userMachineMapping;
 
+	}
+
+	/**
+	 * @return the userBiometric
+	 */
+	public Set<UserBiometric> getUserBiometric() {
+		return userBiometric;
+	}
+
+	/**
+	 * @param userBiometric
+	 *            the userBiometric to set
+	 */
+	public void setUserBiometric(Set<UserBiometric> userBiometric) {
+		this.userBiometric = userBiometric;
 	}
 
 	/**

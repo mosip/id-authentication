@@ -258,8 +258,6 @@ public class RegistrationConstants {
 	//paths of FXML pages to be loaded
 		public static final String ERROR_PAGE = "/fxml/ErrorPage.fxml";
 		public static final String INITIAL_PAGE = "/fxml/RegistrationLogin.fxml";
-		public static final String LOGIN_PWORD_PAGE = "/fxml/LoginWithCredentials.fxml";
-		public static final String LOGIN_OTP_PAGE = "/fxml/LoginWithOTP.fxml";
 		public static final String HOME_PAGE = "/fxml/RegistrationOfficerLayout.fxml";
 		public static final String HEADER_PAGE = "/fxml/Header.fxml";
 		public static final String UPDATE_PAGE = "/fxml/UpdateLayout.fxml";
@@ -277,7 +275,8 @@ public class RegistrationConstants {
 		public static final String CSS_FILE_PATH = "application.css";
 		// Login
 		public static final String LOGIN_METHOD_PWORD = "PWD";
-		public static final String OTP = "OTP";
+		public static final String LOGIN_METHOD_OTP = "OTP";
+		public static final String LOGIN_METHOD_BIO = "BIO";
 		public static final String BLOCKED = "BLOCKED";
 		public static final String MISSING_MANDATOTY_FIELDS = "Missing mandatory fields";
 		public static final String USERNAME_FIELD_EMPTY = "UserName is required";
@@ -294,6 +293,11 @@ public class RegistrationConstants {
 		public static final String LOGIN_INITIAL_SCREEN = "initialMode";
 		public static final String LOGIN_INITIAL_VAL = "1";
 		public static final String HH_MM_SS = "HH:mm:ss";
+		//Login FingerPrint
+		public static final String DEVICE_FP_NOT_FOUND = "Fingerprint device not found.";
+		public static final String FINGER_PRINT_CAPTURE = "Please place your finger on device.";
+		public static final String FINGER_PRINT_MATCH = "Fingerprint match not found.";
+		public static final String DEVICE_INFO_MESSAGE = "Device Information";		
 
 		// Authorization Info
 		public static final String AUTHORIZATION_ALERT_TITLE = "Authorization Alert";

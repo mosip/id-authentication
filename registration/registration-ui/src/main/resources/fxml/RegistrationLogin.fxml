@@ -63,7 +63,27 @@
 		</AnchorPane>
 	</left>
 	<center>
-		
+		<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="500.0">
+			<children>
+				<Label layoutX="107.0" layoutY="92.0" text="Registration Login" AnchorPane.leftAnchor="107.0" AnchorPane.topAnchor="92.0">
+					<font>
+						<Font size="23.0" />
+					</font>
+				</Label>
+				<TextField fx:id="userId" layoutX="106.0" layoutY="151.0" prefHeight="39.0" prefWidth="221.0" promptText="RO Username" AnchorPane.leftAnchor="106.0" />
+				<PasswordField fx:id="password" layoutX="106.0" layoutY="206.0" prefHeight="39.0" prefWidth="221.0" promptText="RO Password" AnchorPane.leftAnchor="106.0" />
+				<Button fx:id="submit" alignment="CENTER" layoutX="246.0" layoutY="260.0" mnemonicParsing="false" onAction="#validateCredentials" prefHeight="30.0" prefWidth="81.0" text="Submit" />
+				<Button fx:id="getOTP" layoutX="106.0" layoutY="260.0" mnemonicParsing="false" onAction="#generateOtp" prefHeight="30.0" prefWidth="89.0" text="Get OTP" />
+				<Button fx:id="resend" layoutX="108.0" layoutY="260.0" mnemonicParsing="false" onAction="#generateOtp" prefHeight="30.0" prefWidth="105.0" text="Resend OTP" visible="false" />
+				<Label fx:id="otpValidity" layoutX="106.0" layoutY="310.0" prefHeight="18.0" prefWidth="136.0" text="otp_validity_in_mins" />
+				<Label fx:id="fingerprint" layoutX="107.0" layoutY="121.0" prefHeight="27.0" prefWidth="127.0" text="with fingerprint" />
+				<ImageView fx:id="fingerImage" fitHeight="99.0" fitWidth="92.0" layoutX="107.0" layoutY="205.0" pickOnBounds="true" preserveRatio="true" visible="false">
+					<image>
+						<Image url="@../images/fingerprint.jpg" />
+					</image>
+				</ImageView>
+			</children>
+		</AnchorPane>
 	</center>
 	<bottom>
 		<HBox id="footer-section">

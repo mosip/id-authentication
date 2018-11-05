@@ -55,12 +55,16 @@ public class RegistrationOfficerController extends BaseController implements Ini
 					.load(getClass().getResource(RegistrationConstants.OFFICER_PACKET_PAGE));
 			mainBox.getChildren().add(optionRoot);
 
-			RegistrationAppInitialization.getScene().setRoot(mainBox);
+			LoginController.getScene().setRoot(mainBox);
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			RegistrationAppInitialization.getScene().getStylesheets()
+			LoginController.getScene().getStylesheets()
 					.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 
 		} catch (IOException | RuntimeException exception) {
+			
+			LOGGER.error("REGISTRATION - HOME_PAGE - REGISTRATION_OFFICER_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());
+			
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());
 		}
