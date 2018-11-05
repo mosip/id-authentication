@@ -1,8 +1,8 @@
 
-# Approach for Data Sync with Registartion Client
+# Approach for create pre-registration
 
 **Background**
-	Exposing the REST API to create pre-registration for a citizen, where the data captured in the pre-registration portal should be stored.
+- Exposing the REST API to create pre-registration for a citizen, where the data captured in the pre-registration portal should be stored.
 
 The target users are -
    - Pre-Registration portal
