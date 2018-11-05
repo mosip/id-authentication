@@ -29,7 +29,7 @@ The key solution considerations are -
 - In camel bridge after successful packet structure validation the request will be routed to user-machine-center-validator by default. Create router and request processor to map the request to umc_bus address.
 - Add new methods in PacketInfoManager to fetch the user, machine and center details from table.
 - Registration processor would check if user/center/machine was valid during creation of the packet. On successful validation, registration-processor will further validate if the user was assigned to the same machine of same center during packet creation time. For this kernel will lookup in user-machine-center lookup table and return information. 
-- Use apache rest client to call [Master-data-APIs](https://github.com/mosip/mosip/wiki/2.4-Master-data-APIs#234-document-formats-master-api). 
+- Create rest client using RestTemplate to call [Master-data-APIs](https://github.com/mosip/mosip/wiki/2.4-Master-data-APIs#234-document-formats-master-api). 
     1. Verify CENTER was active on packet creation date/time.
     ### Resource URL
     ### `GET /registrationcentershistory/{id}/{languagecode}/{eff_dtimes}`
