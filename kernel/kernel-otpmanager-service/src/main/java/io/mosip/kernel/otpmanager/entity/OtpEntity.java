@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import io.mosip.kernel.otpmanager.constant.OtpStatusConstants;
+import lombok.Data;
 
 /**
  * The entity class for OTP.
@@ -18,148 +19,80 @@ import io.mosip.kernel.otpmanager.constant.OtpStatusConstants;
  *
  */
 @Entity
-@Table(name = "otp_data")
+@Data
+@Table(name = "otp_transaction", schema = "kernel")
 public class OtpEntity {
 	/**
 	 * The variable that holds the unique ID.
 	 */
 	@Id
-	@Column(name = "key_id")
-	private String keyId;
-
-	/**
-	 * The variable that holds the generated OTP.
-	 */
-	@Column(name = "generated_otp", nullable = false)
-	private String generatedOtp;
-
-	/**
-	 * The variable that holds the number of validation attempts.
-	 */
-	@Column(name = "num_of_attempt", nullable = false)
-	private int numOfAttempt;
-
-	/**
-	 * The variable that holds the time at which the OTP was generated.
-	 */
-	@Column(name = "generation_time", nullable = false)
-	private LocalDateTime generationTime;
-
-	/**
-	 * The variable that holds the status of the OTP. It can be UNUSED, CONSUMED,
-	 * MAX_ATTEMPT_REACHED.
-	 */
-	@Column(name = "otp_status", nullable = false)
-	private String otpStatus;
+	@Column(name = "id")
+	private String id;
 
 	/**
 	 * The variable that holds the time at which the OTP validation was last
 	 * attempted. The default value is the generation time.
 	 */
-	@Column(name = "validation_time", nullable = false)
-	private LocalDateTime validationTime;
+	@Column(name = "upd_dtimes", nullable = false)
+	private LocalDateTime updatedDtimes;
+
+	/**
+	 * The variable that holds the generated OTP.
+	 */
+	@Column(name = "otp", length = 8)
+	private String otp;
+
+	/**
+	 * The variable that holds the number of validation attempts.
+	 */
+	@Column(name = "validation_retry_count", nullable = false)
+	private int validationRetryCount;
+
+	/**
+	 * The variable that holds the time at which the OTP was generated.
+	 */
+	@Column(name = "generated_dtimes")
+	private LocalDateTime generatedDtimes;
+
+	/**
+	 * The variable that holds the status of the OTP.
+	 */
+	@Column(name = "status_code")
+	private String statusCode;
+
+	@Column(name = "ref_id")
+	private String refId;
+
+	@Column(name = "ref_id_type")
+	private String refIdType;
+
+	@Column(name = "expiry_dtimes")
+	private LocalDateTime expiryDTimes;
+
+	@Column(name = "lang_code", length = 3)
+	private String langCode;
+
+	@Column(name = "cr_by")
+	private String createdBy;
+
+	@Column(name = "upd_by")
+	private String updatedBy;
+
+	@Column(name = "cr_dtimes", nullable = false)
+	private LocalDateTime crDtimes;
+
+	@Column(name = "del_dtimes", nullable = false)
+	private LocalDateTime delDtimes;
+
+	@Column(name = "is_deleted")
+	private boolean isDeleted;
 
 	/**
 	 * The default constructor for OtpEntity.
 	 */
 	public OtpEntity() {
-		generationTime = LocalDateTime.now();
-		validationTime = generationTime;
-		otpStatus = OtpStatusConstants.UNUSED_OTP.getProperty();
-	}
-
-	/**
-	 * Setter for keyId.
-	 * 
-	 * @param keyId
-	 *            The keyId to be set.
-	 */
-	public void setKeyId(String keyId) {
-		this.keyId = keyId;
-	}
-
-	/**
-	 * Getter for generated OTP.
-	 * 
-	 * @return The generated OTP.
-	 */
-	public String getGeneratedOtp() {
-		return generatedOtp;
-	}
-
-	/**
-	 * Setter for generated OTP.
-	 * 
-	 * @param generatedOtp
-	 *            The OTP to be set.
-	 */
-	public void setGeneratedOtp(String generatedOtp) {
-		this.generatedOtp = generatedOtp;
-	}
-
-	/**
-	 * Getter for number of OTP validation attempts.
-	 * 
-	 * @return The number of OTP validation attempts.
-	 */
-	public int getNumOfAttempt() {
-		return numOfAttempt;
-	}
-
-	/**
-	 * Setter to increment the number of OTP validation attempts.
-	 * 
-	 * @param numOfAttempt
-	 *            The number of attempts to be set.
-	 */
-	public void setNumOfAttempt(int numOfAttempt) {
-		this.numOfAttempt = numOfAttempt;
-	}
-
-	/**
-	 * Getter for OTP generation time.
-	 * 
-	 * @return The OTP generation time.
-	 */
-	public LocalDateTime getGenerationTime() {
-		return generationTime;
-	}
-
-	/**
-	 * Getter for the present OTP status.
-	 * 
-	 * @return The OTP status.
-	 */
-	public String getOtpStatus() {
-		return otpStatus;
-	}
-
-	/**
-	 * Setter for OTP status.
-	 * 
-	 * @param otpStatus
-	 *            The OTP status to be set.
-	 */
-	public void setOtpStatus(String otpStatus) {
-		this.otpStatus = otpStatus;
-	}
-
-	/**
-	 * Getter for validation time.
-	 * 
-	 * @return The time at which OTP validation was attempted.
-	 */
-	public LocalDateTime getValidationTime() {
-		return validationTime;
-	}
-
-	/**
-	 * Setter for validation time.
-	 * 
-	 * @param validationTime
-	 *            The time at which OTP validation was attempted.
-	 */
-	public void setValidationTime(LocalDateTime validationTime) {
-		this.validationTime = validationTime;
+		generatedDtimes = LocalDateTime.now();
+		updatedDtimes = generatedDtimes;
+		statusCode = OtpStatusConstants.UNUSED_OTP.getProperty();
 	}
 }

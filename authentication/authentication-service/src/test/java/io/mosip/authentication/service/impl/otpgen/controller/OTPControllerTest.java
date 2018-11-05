@@ -128,7 +128,6 @@ public class OTPControllerTest {
 	public void testConstraintVoilation() throws IdAuthenticationAppException {
 		boolean hasError = true;
 		otpRequestDto = getOtpRequestDTO();
-		otpRequestDto.setMsaLicenseKey("54645");
 		otpResponseDTO = getOtpResponseDTO();
 
 		Set<ConstraintViolation<OtpRequestDTO>> violations = validator.validate(otpRequestDto);
@@ -197,12 +196,11 @@ public class OTPControllerTest {
 
 	private OtpRequestDTO getOtpRequestDTO() {
 		OtpRequestDTO otpRequestDto = new OtpRequestDTO();
-		otpRequestDto.setMsaLicenseKey("1234567890");
 		otpRequestDto.setMuaCode("1234567890");
-		otpRequestDto.setIdType(IdType.UIN.getType());
+		otpRequestDto.setIdvIdType(IdType.UIN.getType());
 		// otpRequestDto.setRequestTime(new Date());
 		otpRequestDto.setTxnID("1234567890");
-		otpRequestDto.setId("1234567890");
+		otpRequestDto.setIdvId("1234567890");
 		otpRequestDto.setVer("1.0");
 
 		return otpRequestDto;

@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.core.idgenerator.exception.InValidUinException;
 import io.mosip.kernel.core.idgenerator.spi.VidGenerator;
 
+
 /**
  * @author M1043226
  * @since 1.0.0

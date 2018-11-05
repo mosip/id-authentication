@@ -1,24 +1,23 @@
 package io.mosip.kernel.otpmanager.service.impl;
 
 import java.time.LocalDateTime;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.otpmanager.constant.OtpErrorConstants;
-import io.mosip.kernel.otpmanager.constant.OtpExpiryConstants;
 import io.mosip.kernel.otpmanager.constant.OtpStatusConstants;
 import io.mosip.kernel.otpmanager.constant.SqlQueryConstants;
+import io.mosip.kernel.otpmanager.dto.OtpValidatorResponseDto;
 import io.mosip.kernel.otpmanager.entity.OtpEntity;
 import io.mosip.kernel.otpmanager.exception.Error;
-import io.mosip.kernel.otpmanager.exception.InvalidArgumentExceptionHandler;
-import io.mosip.kernel.otpmanager.exception.ResourceNotFoundExceptionHandler;
+import io.mosip.kernel.otpmanager.exception.RequiredKeyNotFoundException;
 import io.mosip.kernel.otpmanager.repository.OtpRepository;
 import io.mosip.kernel.otpmanager.service.OtpValidatorService;
 import io.mosip.kernel.otpmanager.util.OtpManagerUtils;
@@ -39,20 +38,43 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 	@Autowired
 	OtpRepository otpRepository;
 
+	/**
+	 * The reference that autowires OtpManagerUtils.
+	 */
+	@Autowired
+	OtpManagerUtils otpUtils;
+
+	@Value("${mosip.kernel.otp.validation-attempt-threshold}")
+	String numberOfValidationAttemptsAllowed;
+
+	@Value("${mosip.kernel.otp.key-freeze-time}")
+	String keyFreezeDuration;
+
+	@Value("${mosip.kernel.otp.expiry-time}")
+	String otpExpiryLimit;
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * io.mosip.kernel.otpmanagerservice.service.OtpValidatorService#validateOtp(
-	 * java.lang.String, java.lang.String)
+	 * io.mosip.kernel.otpmanager.service.OtpValidatorService#validateOtp(java.lang.
+	 * String, java.lang.String)
 	 */
 	@Override
-	public boolean validateOtp(String key, String otp) {
+	public ResponseEntity<OtpValidatorResponseDto> validateOtp(String key, String otp) {
 		// This method validates the input parameters.
-		OtpManagerUtils.validateOtpRequestArguments(key, otp);
+		otpUtils.validateOtpRequestArguments(key, otp);
+		OtpValidatorResponseDto responseDto;
+
+		ResponseEntity<OtpValidatorResponseDto> validationResponseEntity;
 
 		// The OTP entity for a specific key.
 		OtpEntity otpResponse = otpRepository.findById(OtpEntity.class, key);
+
+		responseDto = new OtpValidatorResponseDto();
+		responseDto.setMessage(OtpStatusConstants.FAILURE_MESSAGE.getProperty());
+		responseDto.setStatus(OtpStatusConstants.FAILURE_STATUS.getProperty());
+		validationResponseEntity = new ResponseEntity<>(responseDto, HttpStatus.NOT_ACCEPTABLE);
 
 		/*
 		 * Checking whether the key exists in repository or not. If not, throw an
@@ -62,100 +84,130 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 			List<Error> validationErrorsList = new ArrayList<>();
 			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_KEY_NOT_FOUND.getErrorMessage()));
-			throw new InvalidArgumentExceptionHandler(validationErrorsList);
+
+			throw new RequiredKeyNotFoundException(validationErrorsList);
 
 		}
-
-		// This variable holds the entity class name, required to update the data.
-		String otpEntityClassName = OtpEntity.class.getSimpleName();
-
 		// This variable holds the update query to be performed.
 		String updateString;
-
-		// This variable holds the result of OTP validation.
-		boolean isValidationSuccess = false;
-
 		// This variable holds the count of number
-		int attemptCount = otpResponse.getNumOfAttempt();
 
-		// Creating ResourceBundle object to read data from properties file.
-		ResourceBundle resource;
-		try {
-			resource = ResourceBundle.getBundle(OtpExpiryConstants.OTP_PROPERTIES_FILE_NAME.getStringProperty());
-		} catch (MissingResourceException exception) {
-			List<Error> validationErrorsList = new ArrayList<>();
-			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_RESOURCE_NOT_FOUND.getErrorCode(),
-					OtpErrorConstants.OTP_VAL_RESOURCE_NOT_FOUND.getErrorMessage()));
-			throw new ResourceNotFoundExceptionHandler(validationErrorsList);
+		int attemptCount = otpResponse.getValidationRetryCount();
+		if ((OtpManagerUtils.timeDifferenceInSeconds(otpResponse.getGeneratedDtimes(),
+				OtpManagerUtils.getCurrentLocalDateTime())) > (Integer.parseInt(otpExpiryLimit))) {
+
+			responseDto.setStatus(OtpStatusConstants.FAILURE_STATUS.getProperty());
+			responseDto.setMessage(OtpStatusConstants.OTP_EXPIRED_STATUS.getProperty());
+			return new ResponseEntity<>(responseDto, HttpStatus.NOT_ACCEPTABLE);
 		}
-		// This variable holds the number of validation attempts allowed.
-		int numberOfValidationAttemptsAllowed = Integer
-				.parseInt(resource.getString(OtpExpiryConstants.ALLOWED_NUMBER_OF_ATTEMPTS.getStringProperty()));
-
 		// This condition increases the validation attempt count.
-		if ((attemptCount < numberOfValidationAttemptsAllowed)
-				&& (otpResponse.getOtpStatus().equals(OtpStatusConstants.UNUSED_OTP.getProperty()))) {
-			updateString = SqlQueryConstants.UPDATE.getProperty() + " " + otpEntityClassName
-					+ " SET num_of_attempt = :newNumOfAttempt,"
-					+ "validation_time = :newValidationTime WHERE key_id=:id";
+		if ((attemptCount < Integer.parseInt(numberOfValidationAttemptsAllowed))
+				&& (otpResponse.getStatusCode().equals(OtpStatusConstants.UNUSED_OTP.getProperty()))) {
+			updateString = SqlQueryConstants.UPDATE.getProperty() + " " + OtpEntity.class.getSimpleName()
+					+ " SET validation_retry_count = :newNumOfAttempt,"
+					+ "upd_dtimes = :newValidationTime WHERE id=:id";
 			HashMap<String, Object> updateMap = createUpdateMap(key, null, attemptCount + 1, LocalDateTime.now());
 			updateData(updateString, updateMap);
 		}
-
 		/*
 		 * This condition freezes the key for a certain time, if the validation attempt
 		 * reaches the maximum allowed limit.
 		 */
-		if (attemptCount == numberOfValidationAttemptsAllowed) {
-			updateString = SqlQueryConstants.UPDATE.getProperty() + " " + otpEntityClassName
-					+ " SET otp_status = :newOtpStatus," + "validation_time = :newValidationTime,"
-					+ "num_of_attempt = :newNumOfAttempt WHERE key_id=:id";
-			HashMap<String, Object> updateMap = createUpdateMap(key, OtpStatusConstants.KEY_FREEZED.getProperty(),
-					Integer.valueOf(OtpExpiryConstants.DEFAULT_NUM_OF_ATTEMPT.getProperty()),
+		if (attemptCount == Integer.parseInt(numberOfValidationAttemptsAllowed)) {
+			updateString = SqlQueryConstants.UPDATE.getProperty() + " " + OtpEntity.class.getSimpleName()
+					+ " SET status_code = :newOtpStatus," + "upd_dtimes = :newValidationTime,"
+					+ "validation_retry_count = :newNumOfAttempt WHERE id=:id";
+			HashMap<String, Object> updateMap = createUpdateMap(key, OtpStatusConstants.KEY_FREEZED.getProperty(), 0,
 					OtpManagerUtils.getCurrentLocalDateTime());
 			updateData(updateString, updateMap);
+			responseDto.setStatus(OtpStatusConstants.FAILURE_STATUS.getProperty());
+			responseDto.setMessage(OtpStatusConstants.FAILURE_AND_FREEZED_MESSAGE.getProperty());
+			validationResponseEntity = new ResponseEntity<>(responseDto, HttpStatus.NOT_ACCEPTABLE);
+			return validationResponseEntity;
 
 		}
-
-		/*
-		 * This condition un-freezes the key, after the pre-defined freeze period is
-		 * crossed.
-		 */
-		if ((otpResponse.getOtpStatus().equals(OtpStatusConstants.KEY_FREEZED.getProperty())
-				&& ((OtpManagerUtils.timeDifferenceInSeconds(otpResponse.getValidationTime(),
-						OtpManagerUtils.getCurrentLocalDateTime())) > (Integer.parseInt(
-								resource.getString(OtpExpiryConstants.USER_FREEZE_DURATION.getStringProperty())))))) {
-			updateString = SqlQueryConstants.UPDATE.getProperty() + " " + otpEntityClassName
-					+ " SET otp_status = :newOtpStatus," + " num_of_attempt = :newNumOfAttempt,"
-					+ " validation_time = :newValidationTime WHERE key_id=:id";
-			HashMap<String, Object> updateMap = createUpdateMap(key, OtpStatusConstants.UNUSED_OTP.getProperty(),
-					Integer.valueOf(attemptCount + 1), OtpManagerUtils.getCurrentLocalDateTime());
-			if (otp.equals(otpResponse.getGeneratedOtp())) {
-				isValidationSuccess = true;
-				otpRepository.deleteById(key);
-			} else {
-				updateData(updateString, updateMap);
-			}
-		}
-
+		validationResponseEntity = unFreezeKey(key, otp, otpResponse, attemptCount, responseDto,
+				validationResponseEntity);
 		/*
 		 * This condition validates the OTP if neither the key is in freezed condition,
-		 * nor the OTP has expired. If the OTP validation is successful, the entire
+		 * nor the OTP has expired. If the OTP validation is successful the specific
+		 * message is returned as response and the entire record is deleted. If the OTP
+		 * is expired, the specific message is returned as response and the entire
 		 * record is deleted.
 		 */
-		if ((otpResponse.getGeneratedOtp().equals(otp))
-				&& (otpResponse.getOtpStatus().equals(OtpStatusConstants.UNUSED_OTP.getProperty()))
-				&& ((OtpManagerUtils.timeDifferenceInSeconds(otpResponse.getGenerationTime(),
-						OtpManagerUtils.getCurrentLocalDateTime())) <= (Integer.parseInt(
-								resource.getString(OtpExpiryConstants.OTP_EXPIRY_TIME_LIMIT.getStringProperty()))))) {
+		if ((otpResponse.getOtp().equals(otp))
+				&& (otpResponse.getStatusCode().equals(OtpStatusConstants.UNUSED_OTP.getProperty())
+						&& ((OtpManagerUtils.timeDifferenceInSeconds(otpResponse.getGeneratedDtimes(),
+								OtpManagerUtils.getCurrentLocalDateTime())) <= (Integer.parseInt(otpExpiryLimit))))) {
+			responseDto.setStatus(OtpStatusConstants.SUCCESS_STATUS.getProperty());
+			responseDto.setMessage(OtpStatusConstants.SUCCESS_MESSAGE.getProperty());
 			otpRepository.deleteById(key);
-			isValidationSuccess = true;
+			return new ResponseEntity<>(responseDto, HttpStatus.OK);
 		}
-		return isValidationSuccess;
+		return validationResponseEntity;
 	}
 
-	// This method creates UPDATE map required for UPDATE operation.
-	HashMap<String, Object> createUpdateMap(String key, String status, Integer newNumberOfAttempt,
+	/**
+	 * This method handles the freeze conditions i.e., If the key is freezed, it
+	 * blocks the validation for the assigned freeze period. If the key is freezed
+	 * and has completed the freeze time, it unfreezes the key.
+	 * 
+	 * @param key
+	 *            the key.
+	 * @param otp
+	 *            the OTP.
+	 * @param otpResponse
+	 *            the OTP response.
+	 * @param attemptCount
+	 *            the attempt count.
+	 * @param responseDto
+	 *            the response dto.
+	 * @param validationResponseEntity
+	 *            the validation response entity.
+	 * @return
+	 */
+	private ResponseEntity<OtpValidatorResponseDto> unFreezeKey(String key, String otp, OtpEntity otpResponse,
+			int attemptCount, OtpValidatorResponseDto responseDto,
+			ResponseEntity<OtpValidatorResponseDto> validationResponseEntity) {
+		String updateString;
+		if (otpResponse.getStatusCode().equals(OtpStatusConstants.KEY_FREEZED.getProperty())) {
+			if ((OtpManagerUtils.timeDifferenceInSeconds(otpResponse.getUpdatedDtimes(),
+					OtpManagerUtils.getCurrentLocalDateTime())) > (Integer.parseInt(keyFreezeDuration))) {
+				updateString = SqlQueryConstants.UPDATE.getProperty() + " " + OtpEntity.class.getSimpleName()
+						+ " SET status_code = :newOtpStatus," + " validation_retry_count = :newNumOfAttempt,"
+						+ " upd_dtimes = :newValidationTime WHERE id=:id";
+				HashMap<String, Object> updateMap = createUpdateMap(key, OtpStatusConstants.UNUSED_OTP.getProperty(),
+						Integer.valueOf(attemptCount + 1), OtpManagerUtils.getCurrentLocalDateTime());
+				if (otp.equals(otpResponse.getOtp())) {
+					responseDto.setStatus(OtpStatusConstants.SUCCESS_STATUS.getProperty());
+					responseDto.setMessage(OtpStatusConstants.SUCCESS_MESSAGE.getProperty());
+					validationResponseEntity = new ResponseEntity<>(responseDto, HttpStatus.OK);
+					otpRepository.deleteById(key);
+				} else {
+					updateData(updateString, updateMap);
+				}
+			} else {
+				responseDto.setMessage(OtpStatusConstants.FAILURE_AND_FREEZED_MESSAGE.getProperty());
+				validationResponseEntity = new ResponseEntity<>(responseDto, HttpStatus.NOT_ACCEPTABLE);
+			}
+		}
+		return validationResponseEntity;
+	}
+
+	/**
+	 * This method creates the UPDATE map required for UPDATE operations.
+	 * 
+	 * @param key
+	 *            the key to be updated.
+	 * @param status
+	 *            the status to be updated.
+	 * @param newNumberOfAttempt
+	 *            the new number of attempt value.
+	 * @param localDateTime
+	 *            the new LocalDateTime.
+	 * @return
+	 */
+	private HashMap<String, Object> createUpdateMap(String key, String status, Integer newNumberOfAttempt,
 			LocalDateTime localDateTime) {
 		HashMap<String, Object> updateMap = new HashMap<>();
 		if (key != null) {
@@ -173,8 +225,15 @@ public class OtpValidatorServiceImpl implements OtpValidatorService {
 		return updateMap;
 	}
 
-	// This method handles UPDATE query operations.
-	void updateData(String updateString, HashMap<String, Object> updateMap) {
+	/**
+	 * This method handles UPDATE query operations.
+	 * 
+	 * @param updateString
+	 *            the query string.
+	 * @param updateMap
+	 *            the query map.
+	 */
+	private void updateData(String updateString, HashMap<String, Object> updateMap) {
 		otpRepository.createQueryUpdateOrDelete(updateString, updateMap);
 	}
 }

@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 
+
 /**
  * Test class for PridGenerator class
  * 

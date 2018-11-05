@@ -9,7 +9,11 @@ import java.util.function.ToIntBiFunction;
 
 import org.junit.Test;
 
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
+
 public class PhoneNoMatchingStrategyTest {
+
+	private IdentityValue identityValue = new IdentityValue();
 
 	/**
 	 * Check for Exact type matched with Enum value of PhoneNo Matching Strategy
@@ -40,7 +44,7 @@ public class PhoneNoMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, Object> matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, IdentityValue> matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -50,12 +54,16 @@ public class PhoneNoMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();		
-		int value = matchFunction.applyAsInt("9876543210","9876543210");
+		ToIntBiFunction<Object, IdentityValue> matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
+
+		identityValue.setValue("9876543210");
+		int value = matchFunction.applyAsInt("9876543210", identityValue);
 		assertEquals(100, value);
-		int value1 = matchFunction.applyAsInt("+91-9876543210","+91-9876543210");
+		identityValue.setValue("+91-9876543210");
+		int value1 = matchFunction.applyAsInt("+91-9876543210", identityValue);
 		assertEquals(100, value1);
-		int value2 = matchFunction.applyAsInt("413-3432-321","413-3432-321");
+		identityValue.setValue("413-3432-321");
+		int value2 = matchFunction.applyAsInt("413-3432-321", identityValue);
 		assertEquals(100, value2);
 	}
 
@@ -65,27 +73,32 @@ public class PhoneNoMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
-		
-		int value = matchFunction.applyAsInt("9789438210","1234567890");
+
+		ToIntBiFunction<Object, IdentityValue> matchFunction = PhoneNoMatchingStrategy.EXACT.getMatchFunction();
+
+		identityValue.setValue("1234567890");
+		int value = matchFunction.applyAsInt("9789438210", identityValue);
 		assertEquals(0, value);
-		
-		int value1 = matchFunction.applyAsInt("76348798","783248712");
+
+		identityValue.setValue("783248712");
+		int value1 = matchFunction.applyAsInt("76348798", identityValue);
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.applyAsInt("789-7389-783","9832-129-322");
+		identityValue.setValue("9832-129-322");
+		int value2 = matchFunction.applyAsInt("789-7389-783", identityValue);
 		assertEquals(0, value2);
-		
-		int value3 = matchFunction.applyAsInt("+91-1234567890","1234567890");
+
+		identityValue.setValue("1234567890");
+		int value3 = matchFunction.applyAsInt("+91-1234567890", identityValue);
 		assertEquals(0, value3);
-		
-		int value4 = matchFunction.applyAsInt(1,2);
+
+		identityValue.setValue("2");
+		int value4 = matchFunction.applyAsInt(1, identityValue);
 		assertEquals(0, value4);
-		
-		int value5 = matchFunction.applyAsInt(1,"123434545");
+
+		identityValue.setValue("123434545");
+		int value5 = matchFunction.applyAsInt(1, identityValue);
 		assertEquals(0, value5);
-		
-		int value6 = matchFunction.applyAsInt("9768456423",1);
-		assertEquals(0, value6);
+
 	}
 }

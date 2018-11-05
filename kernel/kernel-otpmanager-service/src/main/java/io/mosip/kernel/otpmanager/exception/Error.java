@@ -14,15 +14,14 @@ public class Error implements Serializable {
 	 * Serializable version ID.
 	 */
 	private static final long serialVersionUID = -7725390540618015762L;
-	
+
 	/**
 	 * The error code.
 	 */
 	private String errorCode;
-	
-	
+
 	/**
-	 *The error message.
+	 * The error message.
 	 */
 	private String errorMessage;
 

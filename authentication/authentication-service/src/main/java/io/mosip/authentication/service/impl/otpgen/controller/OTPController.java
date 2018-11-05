@@ -61,12 +61,12 @@ public class OTPController {
 	@PostMapping(path = "/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors)
 			throws IdAuthenticationAppException {
-		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 
 		try {
 			DataValidationUtil.validate(errors);
-			otpResponseDTO = otpFacade.generateOtp(otpRequestDto);
+			OtpResponseDTO otpResponseDTO  = otpFacade.generateOtp(otpRequestDto);
 			logger.info(DEAFULT_SESSION_ID, "NA", "NA", "NA");
+			return otpResponseDTO;
 		} catch (IDDataValidationException e) {
 			logger.error(DEAFULT_SESSION_ID, null, null, e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
@@ -74,7 +74,6 @@ public class OTPController {
 			logger.error(DEAFULT_SESSION_ID, e.getClass().toString(), e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationAppException(e.getErrorCode(), e.getErrorText(), e);
 		}
-		return otpResponseDTO;
 	}
 
 }

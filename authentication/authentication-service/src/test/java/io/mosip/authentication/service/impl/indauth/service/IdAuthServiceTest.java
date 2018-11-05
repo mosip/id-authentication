@@ -35,7 +35,7 @@ import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.impl.idauth.service.impl.IdAuthServiceImpl;
+import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 

@@ -85,7 +85,7 @@
 
 	<modules>
 		<module>kernel-core</module>
-		<module>kernel-config-server</module>
+
 		<module>kernel-logger-logback</module>
 		<module>kernel-dataaccess-hibernate</module>
 		<module>kernel-auditmanager-api</module>
@@ -94,7 +94,7 @@
 		<module>kernel-idgenerator-uin</module>
 		<module>kernel-idgenerator-vid</module>
 		<module>kernel-idgenerator-tokenid</module>
-		<module>kernel-packetuploader-sftp-jsch</module>	
+		<module>kernel-packetuploader-sftp-jsch</module>
 		<module>kernel-idvalidator</module>
 		<module>kernel-datavalidator</module>
 		<module>kernel-virusscanner-clamav</module>
@@ -105,13 +105,17 @@
 		<module>kernel-templatemanager-freemarker</module>
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-datamapper-orika</module>
+
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
-		<module>kernel-packetserver-sftp</module>
-		<module>kernel-packetserver-http</module>
 		<module>kernel-emailnotification-service</module>
 		<module>kernel-smsnotification-msg91-service</module>
-		
+
+		<module>kernel-batch-framework</module>
+		<module>kernel-batch-server</module>
+		<module>kernel-config-server</module>
+		<module>kernel-packetserver-sftp</module>
+		<module>kernel-packetserver-http</module>
 	</modules>
 
 	<profiles>
@@ -277,4 +281,56 @@
 			</plugin>
 		</plugins>
 	</build>
+	<repositories>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>http://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>http://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>http://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>http://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>http://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>http://repo.spring.io/release</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
