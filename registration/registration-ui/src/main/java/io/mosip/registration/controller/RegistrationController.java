@@ -163,6 +163,8 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	public void loadAddressFromPreviousEntry() {
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Loading address from previous entry");
 		Map<String, Object> sessionMapObject =  SessionContext.getInstance().getMapObject();
 		AddressDTO addressDto = (AddressDTO) sessionMapObject.get("PrevAddress");
 		if(addressDto!=null) {
@@ -173,6 +175,8 @@ public class RegistrationController extends BaseController {
 			region.setValue(locationDto.getLine7());
 			pin.setValue(locationDto.getLine8());
 		}
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
 	}
 	
 	/**
