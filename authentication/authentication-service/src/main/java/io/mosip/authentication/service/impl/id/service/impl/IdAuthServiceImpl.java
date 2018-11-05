@@ -1,4 +1,4 @@
-package io.mosip.authentication.service.impl.idauth.service.impl;
+package io.mosip.authentication.service.impl.id.service.impl;
 
 import java.util.Date;
 import java.util.Optional;
@@ -15,7 +15,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
 import io.mosip.authentication.core.util.dto.AuditResponseDto;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;

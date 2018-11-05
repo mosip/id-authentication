@@ -5,6 +5,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.function.ToIntBiFunction;
 
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.util.MatcherUtil;
 
 /**
@@ -12,16 +13,16 @@ import io.mosip.authentication.core.util.MatcherUtil;
  *
  */
 public enum GenderMatchingStrategy implements MatchingStrategy {
-	
-	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo) -> {
-		if (reqInfo instanceof String && entityInfo instanceof String) {
-			return MatcherUtil.doExactMatch((String) reqInfo, (String) entityInfo);
+
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, IdentityValue entityInfo) -> {
+		if (reqInfo instanceof String) {
+			return MatcherUtil.doExactMatch((String) reqInfo, entityInfo.getValue());
 		} else {
 			return 0;
 		}
 	});
-	
-	private final ToIntBiFunction<Object, Object> matchFunction;
+
+	private final ToIntBiFunction<Object, IdentityValue> matchFunction;
 
 	private final MatchingStrategyType matchStrategyType;
 
@@ -31,7 +32,8 @@ public enum GenderMatchingStrategy implements MatchingStrategy {
 	 * @param matchValue
 	 * @param matchFunction
 	 */
-	GenderMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
+	GenderMatchingStrategy(MatchingStrategyType matchStrategyType,
+			ToIntBiFunction<Object, IdentityValue> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
@@ -42,7 +44,7 @@ public enum GenderMatchingStrategy implements MatchingStrategy {
 	}
 
 	@Override
-	public ToIntBiFunction<Object, Object> getMatchFunction() {
+	public ToIntBiFunction<Object, IdentityValue> getMatchFunction() {
 		return matchFunction;
 	}
 

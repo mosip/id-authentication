@@ -9,7 +9,11 @@ import java.util.function.ToIntBiFunction;
 
 import org.junit.Test;
 
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
+
 public class GenderMatchingStrategyTest {
+
+	private IdentityValue identityValue = new IdentityValue();
 
 	/**
 	 * Check for Exact type matched with Enum value of Gender Matching Strategy
@@ -40,7 +44,7 @@ public class GenderMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, Object> matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, IdentityValue> matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -50,14 +54,22 @@ public class GenderMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();		
-		int value = matchFunction.applyAsInt("M","M");
+
+		ToIntBiFunction<Object, IdentityValue> matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();
+		identityValue.setValue("M");
+		int value = matchFunction.applyAsInt("M", identityValue);
 		assertEquals(100, value);
-		int value1 = matchFunction.applyAsInt("F","F");
+
+		identityValue.setValue("F");
+		int value1 = matchFunction.applyAsInt("F", identityValue);
 		assertEquals(100, value1);
-		int value2 = matchFunction.applyAsInt("Male","Male");
+
+		identityValue.setValue("Male");
+		int value2 = matchFunction.applyAsInt("Male", identityValue);
 		assertEquals(100, value2);
-		int value3 = matchFunction.applyAsInt("Female","Female");
+
+		identityValue.setValue("Female");
+		int value3 = matchFunction.applyAsInt("Female", identityValue);
 		assertEquals(100, value3);
 	}
 
@@ -67,32 +79,29 @@ public class GenderMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();
-		
-		int value = matchFunction.applyAsInt("M","F");
+
+		ToIntBiFunction<Object, IdentityValue> matchFunction = GenderMatchingStrategy.EXACT.getMatchFunction();
+
+		identityValue.setValue("F");
+		int value = matchFunction.applyAsInt("M", identityValue);
 		assertEquals(0, value);
-		
-		int value1 = matchFunction.applyAsInt("F","Female");
+
+		identityValue.setValue("Female");
+		int value1 = matchFunction.applyAsInt("F", identityValue);
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.applyAsInt("Male","M");
+		identityValue.setValue("M");
+		int value2 = matchFunction.applyAsInt("Male", identityValue);
 		assertEquals(0, value2);
-		
-		int value3 = matchFunction.applyAsInt("Female","Male");
+
+		identityValue.setValue("Male");
+		int value3 = matchFunction.applyAsInt("Female", identityValue);
 		assertEquals(0, value3);
-		
-		int value4 = matchFunction.applyAsInt(1,2);
+
+		identityValue.setValue("2");
+		int value4 = matchFunction.applyAsInt(1, identityValue);
 		assertEquals(0, value4);
-		
-		int value5 = matchFunction.applyAsInt(1,"Male");
-		assertEquals(0, value5);
-		
-		int value6 = matchFunction.applyAsInt("Female",1);
-		assertEquals(0, value6);
+
 	}
-
-
-
-
 
 }
