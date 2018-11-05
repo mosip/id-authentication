@@ -13,7 +13,7 @@
 
 	<packaging>jar</packaging>
 
-	<name>kernel-packetserver-http-service</name>
+	<name>kernel-packetserver-http</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
