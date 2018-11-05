@@ -14,13 +14,15 @@ public enum RegistrationClientStatusCode {
 	UIN_UPDATE("U"), 
 	UIN_LOST("L"),
 	UPLOADED_SUCCESSFULLY("P"), 
+	UPLOAD_SUCCESS_STATUS("S"),
+	UPLOAD_ERROR_STATUS("E"),
 	META_INFO_SYN_SERVER("S"),
 	DELETED("D"),
 	APPROVED("A"), 
 	REJECTED("I"), 
 	ON_HOLD("H"), 
 	SERVER_VALIDATED("V"), 
-	PACKET_ERROR("E");
+	PACKET_ERROR("E"); 
 
 	/**
 	 * @param code

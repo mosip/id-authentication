@@ -1,4 +1,4 @@
-package io.mosip.registration.service.impl;
+package io.mosip.registration.service;
 
 import java.net.URISyntaxException;
 import java.util.List;

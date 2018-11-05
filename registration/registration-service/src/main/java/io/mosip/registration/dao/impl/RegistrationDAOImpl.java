@@ -8,6 +8,7 @@ import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -192,7 +193,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 */
 	@Override
 	public List<Registration> getRegistrationByStatus(List<String> packetStatus) {
-		logger.debug("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION - GET_PACKET_DETAILS_BY_ID - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"got the packet details by id");
 
 		return registrationRepository.findByClientStatusCodeOrServerStatusCodeOrFileUploadStatusOrderByCrDtimeAsc(
@@ -206,7 +207,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 * org.mosip.registration.dao.RegistrationDAO#updateRegStatus(java.lang.String)
 	 */
 	public Registration updateRegStatus(Registration registrationPacket) {
-		logger.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the packet details in the Registation table");
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -222,7 +223,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	}
 
 	public Registration updatePacketSyncStatus(Registration packet) {
-		logger.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION - UPDATE_THE_PACKET_STATUS - REGISTRATION_DAO", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the packet details in the Registation table");
 
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -235,7 +236,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	}
 
 	private List<RegistrationTransaction> buildRegistrationTransaction(Registration registrationPacket) {
-		logger.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
+		LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Packet encryption had been ended");
 
 		Timestamp time = new Timestamp(System.currentTimeMillis());
@@ -249,7 +250,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		regTransaction.setCrDtime(time);
 		List<RegistrationTransaction> registrationTransaction = new ArrayList<>();
 		registrationTransaction.add(regTransaction);
-		logger.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
+		LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Packet encryption had been ended");
 
 		return registrationTransaction;

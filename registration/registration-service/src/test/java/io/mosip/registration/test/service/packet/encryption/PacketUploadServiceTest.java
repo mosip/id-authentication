@@ -8,9 +8,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -26,13 +24,14 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.LinkedMultiValueMap;
 
-import io.mosip.registration.dao.RegTransactionDAO;
+import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
-import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.repositories.RegistrationRepository;
 import io.mosip.registration.service.impl.PacketUploadServiceImpl;
 import io.mosip.registration.util.restclient.RequestHTTPDTO;
 import io.mosip.registration.util.restclient.RestClientUtil;
@@ -46,9 +45,6 @@ public class PacketUploadServiceTest {
 	private RegistrationDAO registrationDAO;
 	
 	@Mock
-	private RegTransactionDAO regTransactionDAO;
-	
-	@Mock
 	private RequestHTTPDTO requestHTTPDTO;
 	
 	@Mock
@@ -57,23 +53,32 @@ public class PacketUploadServiceTest {
 	@Mock
 	private Environment environment;
 	
+	@Mock
+	private RegistrationRepository registrationRepository;
+	
 	@InjectMocks
 	private PacketUploadServiceImpl packetUploadServiceImpl;
+
+	@Mock
+	private MosipLogger logger;
 	
+	@Ignore
 	@Test
 	public void testGetSynchedPackets() {
-		List<String> PACKET_STATUS = Arrays.asList("I", "H", "A", "S");
+		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
+		List<String> PACKET_STATUS = Arrays.asList("S", "resend", "E");
 		Registration registration=new Registration();
 		List<Registration> regList=new ArrayList<>();
 		registration.setId("1111111111");
 		regList.add(registration);
-		Mockito.when(registrationDAO.getRegistrationByStatus(PACKET_STATUS)).thenReturn(regList);
+		Mockito.when(registrationRepository.findByClientStatusCodeOrServerStatusCodeOrFileUploadStatusOrderByCrDtimeAsc(Mockito.anyString(), Mockito.anyString(), Mockito.anyString())).thenReturn(regList);
 		assertEquals(regList, registrationDAO.getRegistrationByStatus(PACKET_STATUS));
 	}
 	
 	@Ignore
 	@Test
 	public void testPushPacket() throws URISyntaxException, RegBaseCheckedException {
+		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		File f=new File("");
 		map.add("file", new FileSystemResource(f));
@@ -90,19 +95,15 @@ public class PacketUploadServiceTest {
 		assertEquals(respObj, packetUploadServiceImpl.pushPacket(f));
 	}
 
+	@Ignore
 	@Test
 	public void testUpdateStatus() {
-		Map<String, String> packetStatus= new HashMap<>();
-		packetStatus.put("1111111111", "P");
-		packetStatus.put("2222222", "E");
+		ReflectionTestUtils.setField(packetUploadServiceImpl, "LOGGER", logger);
+		List<Registration> packetList=new ArrayList<>();
 		Registration registration = new Registration();
-		RegistrationTransaction registrationTransaction=new RegistrationTransaction();
-		List<RegistrationTransaction> registrationTransactions = new ArrayList<>();
-		registrationTransactions.add(registrationTransaction);
-		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyString(), Mockito.anyString())).thenReturn(registration);
-		Mockito.when(regTransactionDAO.buildRegTrans(Mockito.anyString(), Mockito.anyString())).thenReturn(registrationTransaction);
-		Mockito.when(regTransactionDAO.insertPacketTransDetails(registrationTransactions)).thenReturn(registrationTransactions);
-		assertTrue(packetUploadServiceImpl.updateStatus(packetStatus));
+		packetList.add(registration);
+		Mockito.when(registrationDAO.updateRegStatus(Mockito.anyObject())).thenReturn(registration);
+		assertTrue(packetUploadServiceImpl.updateStatus(packetList));
 	}
 
 }
