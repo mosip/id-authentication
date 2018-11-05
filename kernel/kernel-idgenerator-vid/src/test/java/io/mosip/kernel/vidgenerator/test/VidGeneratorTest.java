@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.spi.idgenerator.MosipVidGenerator;
+import io.mosip.kernel.core.spi.idgenerator.VidGenerator;
 import io.mosip.kernel.vidgenerator.exception.InValidUinException;
 
 /**
@@ -24,7 +24,7 @@ public class VidGeneratorTest {
 	@Value("${mosip.kernel.vid.length}")
 	private int vidLength;
 	@Autowired
-	MosipVidGenerator<String> vidGenerator;
+	VidGenerator<String> vidGenerator;
 
 	@Test(expected = InValidUinException.class)
 	public void UinNotValidExceptionTest() {

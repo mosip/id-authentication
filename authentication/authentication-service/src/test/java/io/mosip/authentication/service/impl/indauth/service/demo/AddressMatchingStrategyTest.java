@@ -9,11 +9,17 @@ import java.util.function.ToIntBiFunction;
 
 import org.junit.Test;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
+
 /**
  * 
  * @author Dinesh Karuppiah
  */
 public class AddressMatchingStrategyTest {
+
+	private IdentityValue identityValue = new IdentityValue();
 
 	/**
 	 * Check for Exact type matched with Enum value of Name Matching Strategy
@@ -44,7 +50,7 @@ public class AddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, Object> matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, IdentityValue> matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -54,8 +60,9 @@ public class AddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.applyAsInt("no 1 second street chennai", "no 1 second street chennai");
+		ToIntBiFunction<Object, IdentityValue> matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
+		identityValue.setValue("no 1 second street chennai");
+		int value = matchFunction.applyAsInt("no 1 second street chennai", identityValue);
 		assertEquals(100, value);
 	}
 
@@ -65,15 +72,16 @@ public class AddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.applyAsInt(2, 2);
+
+		ToIntBiFunction<Object, IdentityValue> matchFunction = AddressMatchingStrategy.EXACT.getMatchFunction();
+		identityValue.setValue("2");
+		int value = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value);
 
-		int value1 = matchFunction.applyAsInt(2, "no 1 second street chennai");
+		identityValue.setValue("no 1 second street chennai");
+		int value1 = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.applyAsInt("no 1 second street chennai", 2);
-		assertEquals(0, value2);
 	}
 
 }

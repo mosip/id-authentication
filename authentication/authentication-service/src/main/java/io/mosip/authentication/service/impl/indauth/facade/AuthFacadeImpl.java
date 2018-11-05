@@ -3,13 +3,17 @@
  */
 package io.mosip.authentication.service.impl.indauth.facade;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
@@ -17,7 +21,7 @@ import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.core.spi.idauth.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
@@ -56,11 +60,10 @@ public class AuthFacadeImpl implements AuthFacade {
 	/**
 	 * Process the authorisation type and authorisation response is returned.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return the auth response DTO
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	@Override
@@ -70,7 +73,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, refId);
 
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
-		authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdType())
+		authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
 				.setReqTime(authRequestDTO.getReqTime()).setVersion(authRequestDTO.getVer());
 
 		authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
@@ -88,13 +91,11 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * called according to authorisation type. reference Id is returned in
 	 * AuthRequestDTO.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param refId
-	 *            the ref id
+	 * @param authRequestDTO the auth request DTO
+	 * @param refId          the ref id
 	 * @return the list
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public List<AuthStatusInfo> processAuthType(AuthRequestDTO authRequestDTO, String refId)
 			throws IdAuthenticationBusinessException {
@@ -107,8 +108,8 @@ public class AuthFacadeImpl implements AuthFacade {
 			logger.info(DEFAULT_SESSION_ID, "IDA", AUTH_FACADE, "OTP Authentication status : " + otpValidationStatus);
 		}
 
-		if (authRequestDTO.getAuthType().isPi() || authRequestDTO.getAuthType().isAd()
-				|| authRequestDTO.getAuthType().isFad()) {
+		if (authRequestDTO.getAuthType().isPersonalIdentity() || authRequestDTO.getAuthType().isAddress()
+				|| authRequestDTO.getAuthType().isFullAddress()) {
 			AuthStatusInfo demoValidationStatus = demoAuthService.getDemoStatus(authRequestDTO, refId);
 			authStatusList.add(demoValidationStatus);
 			// TODO log authStatus - authType, response
@@ -124,27 +125,25 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * Process the IdType and validates the Idtype and upon validation reference Id
 	 * is returned in AuthRequestDTO.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return the string
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 
 	public String processIdType(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
 		String refId = null;
-		String reqType = authRequestDTO.getIdType();
+		String reqType = authRequestDTO.getIdvIdType();
 		if (reqType.equals(IdType.UIN.getType())) {
 			try {
-				refId = idAuthService.validateUIN(authRequestDTO.getId());
+				refId = idAuthService.validateUIN(authRequestDTO.getIdvId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 			}
 		} else {
-
 			try {
-				refId = idAuthService.validateVID(authRequestDTO.getId());
+				refId = idAuthService.validateVID(authRequestDTO.getIdvId());
 			} catch (IdValidationFailedException e) {
 				logger.error(null, null, null, e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_VID, e);
@@ -161,4 +160,18 @@ public class AuthFacadeImpl implements AuthFacade {
 	private void auditData() {
 		// TODO Update audit details
 	}
+	
+	@Override
+	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO) {
+		
+		String s=LocalDateTime.now()
+			       .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+		AuthResponseDTO authResponseTspDto=new AuthResponseDTO();
+		authResponseTspDto.setStatus(true);
+		authResponseTspDto.setErr(Collections.emptyList());
+		authResponseTspDto.setResTime(s);
+		authResponseTspDto.setTxnID(authRequestDTO.getTxnID());
+		return authResponseTspDto;
+	}
+	
 }

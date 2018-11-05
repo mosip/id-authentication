@@ -11,6 +11,21 @@ import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
  *
  */
 public final class IdaLogger {
+	
+	private static MosipRollingFileAppender mosipRollingFileAppender;
+	
+	static {
+		mosipRollingFileAppender = new MosipRollingFileAppender();
+		mosipRollingFileAppender.setAppend(true);
+		mosipRollingFileAppender.setAppenderName("fileappender");
+		mosipRollingFileAppender.setFileName("logs/id-auth.log");
+		mosipRollingFileAppender.setFileNamePattern("logs/id-auth-%d{yyyy-MM-dd}-%i.log");
+		mosipRollingFileAppender.setImmediateFlush(true);
+		mosipRollingFileAppender.setMaxFileSize("1mb");
+		mosipRollingFileAppender.setMaxHistory(3);
+		mosipRollingFileAppender.setPrudent(false);
+		mosipRollingFileAppender.setTotalCap("10mb");
+	}
 
 	/**
 	 * Instantiates a new ida logger.
@@ -26,16 +41,6 @@ public final class IdaLogger {
 	 * @return the logger
 	 */
 	public static MosipLogger getLogger(Class<?> clazz) {
-		MosipRollingFileAppender mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppend(true);
-		mosipRollingFileAppender.setAppenderName("fileappender");
-		mosipRollingFileAppender.setFileName("logs/id-auth.log");
-		mosipRollingFileAppender.setFileNamePattern("logs/id-auth-%d{yyyy-MM-dd}-%i.log");
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setMaxFileSize("1mb");
-		mosipRollingFileAppender.setMaxHistory(3);
-		mosipRollingFileAppender.setPrudent(true);
-		mosipRollingFileAppender.setTotalCap("10mb");
 		return MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, clazz);
 	}
 }

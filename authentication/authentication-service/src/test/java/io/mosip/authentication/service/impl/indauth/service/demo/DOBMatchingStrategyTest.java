@@ -13,13 +13,17 @@ import java.util.function.ToIntBiFunction;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
+
 public class DOBMatchingStrategyTest {
 	SimpleDateFormat sdf = null;
+	private IdentityValue identityValue = new IdentityValue();
 
 	@Before
 	public void setup() {
 		sdf = new SimpleDateFormat("yyyy-MM-dd");
 	}
+
 	/**
 	 * Check for Exact type matched with Enum value of DOB Matching Strategy
 	 */
@@ -49,7 +53,7 @@ public class DOBMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, Object> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, IdentityValue> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -59,14 +63,12 @@ public class DOBMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, IdentityValue> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 		int value = -1;
-		try {
-			value = matchFunction.applyAsInt("1993-02-07", sdf.parse("1993-02-07"));
-		} catch (ParseException e) {
-			
-		}
-				
+
+		identityValue.setValue("1993-02-07");
+		value = matchFunction.applyAsInt("1993-02-07", identityValue);
+
 		assertEquals(100, value);
 	}
 
@@ -76,25 +78,19 @@ public class DOBMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
-		try {
-			int value = matchFunction.applyAsInt("1993-02-07", sdf.parse("1993-02-27"));
-			assertEquals(0, value);
+		ToIntBiFunction<Object, IdentityValue> matchFunction = DOBMatchingStrategy.EXACT.getMatchFunction();
 
-			int value1 = matchFunction.applyAsInt(2, sdf.parse("1993-02-07"));
-			assertEquals(0, value1);
+		identityValue.setValue("1993-02-27");
+		int value = matchFunction.applyAsInt("1993-02-07", identityValue);
+		assertEquals(0, value);
 
-			int value2 = matchFunction.applyAsInt("1993-02-07", null);
-			assertEquals(0, value2);
+		identityValue.setValue("1993-02-07");
+		int value1 = matchFunction.applyAsInt(2, identityValue);
+		assertEquals(0, value1);
 
-			int value3 = matchFunction.applyAsInt(null, null);
-			assertEquals(0, value3);
+		int value3 = matchFunction.applyAsInt(null, null);
+		assertEquals(0, value3);
 
-
-			matchFunction.applyAsInt("xyz", new Date());
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
 	}
 
 }

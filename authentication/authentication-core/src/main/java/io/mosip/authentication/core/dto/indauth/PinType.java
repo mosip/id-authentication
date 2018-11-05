@@ -19,7 +19,7 @@ public enum PinType {
 	OTP("OTP"),
 	
 	/** The pin. */
-	PIN("pin");
+	PIN("SPIN");
 
 	/** The type. */
 	private String type;

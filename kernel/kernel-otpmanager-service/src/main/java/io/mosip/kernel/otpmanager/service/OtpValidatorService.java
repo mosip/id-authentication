@@ -1,5 +1,9 @@
 package io.mosip.kernel.otpmanager.service;
 
+import org.springframework.http.ResponseEntity;
+
+import io.mosip.kernel.otpmanager.dto.OtpValidatorResponseDto;
+
 /**
  * This interface provides the methods which can be used for OTP validation.
  * 
@@ -13,14 +17,14 @@ public interface OtpValidatorService {
 	 * OTP.
 	 * 
 	 * @param key
-	 *            The key against which the given OTP needs to be validated.
+	 *            the key against which the given OTP needs to be validated.
 	 * @param otp
-	 *            The given OTP that will be validated against the generated OTP.
-	 * @return Returns true if the given OTP matches against the existing OTP.
-	 *         Returns false if the given OTP doesn't matches against the existing
-	 *         OTP. Returns false if the given OTP matches against the existing OTP
-	 *         but the expiry limit is reached. Returns false if the given OTP
+	 *            the given OTP that will be validated against the generated OTP.
+	 * @return returns true if the given OTP matches against the existing OTP.
+	 *         returns false if the given OTP doesn't matches against the existing
+	 *         OTP. returns false if the given OTP matches against the existing OTP
+	 *         but the expiry limit is reached. returns false if the given OTP
 	 *         matches against the existing OTP but the OTP is consumed.
 	 */
-	public boolean validateOtp(String key, String otp);
+	public ResponseEntity<OtpValidatorResponseDto> validateOtp(String key, String otp);
 }

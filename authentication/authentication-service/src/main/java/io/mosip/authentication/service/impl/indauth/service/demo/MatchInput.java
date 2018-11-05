@@ -27,9 +27,5 @@ public class MatchInput {
 	/** The match value. */
 	private Integer matchValue;
 
-	
-	
-	
-	
 
 }

@@ -9,6 +9,8 @@ import java.util.function.ToIntBiFunction;
 
 import org.junit.Test;
 
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
+
 /**
  * 
  * @author Dinesh Karuppiah
@@ -18,6 +20,8 @@ public class NameMatchingStrategyTest {
 	/**
 	 * Check for Exact type matched with Enum value of Name Matching Strategy
 	 */
+
+	private IdentityValue identityValue = new IdentityValue();
 
 	@Test
 	public void TestValidExactMatchingStrategytype() {
@@ -45,7 +49,7 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -55,8 +59,10 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.applyAsInt("dinesh karuppiah", "dinesh karuppiah");
+		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+
+		identityValue.setValue("dinesh karuppiah");
+		int value = matchFunction.applyAsInt("dinesh karuppiah", identityValue);
 		assertEquals(100, value);
 	}
 
@@ -66,15 +72,13 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.applyAsInt(2, 2);
+		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.EXACT.getMatchFunction();
+		identityValue.setValue("2");
+		int value = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value);
-
-		int value1 = matchFunction.applyAsInt(2, "dinesh");
+		identityValue.setValue("dinesh");
+		int value1 = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value1);
-
-		int value2 = matchFunction.applyAsInt("dinesh", 2);
-		assertEquals(0, value2);
 	}
 
 	/**
@@ -106,7 +110,7 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPartialMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -116,8 +120,9 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidPartialMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
-		int value = matchFunction.applyAsInt("dinesh thiagarajan", "dinesh karuppiah");
+		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		identityValue.setValue("dinesh karuppiah");
+		int value = matchFunction.applyAsInt("dinesh thiagarajan", identityValue);
 		assertEquals(33, value);
 	}
 
@@ -126,15 +131,14 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidPartialMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
-		int value = matchFunction.applyAsInt(2, 2);
+
+		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.PARTIAL.getMatchFunction();
+		identityValue.setValue("2");
+		int value = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value);
-
-		int value1 = matchFunction.applyAsInt(2, "dinesh");
+		identityValue.setValue("dinesh");
+		int value1 = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value1);
-
-		int value2 = matchFunction.applyAsInt("dinesh", 2);
-		assertEquals(0, value2);
 	}
 
 	/**
@@ -158,8 +162,9 @@ public class NameMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPhoneticsMatchValue() {
-		ToIntBiFunction<Object, Object> matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
-		int value = matchFunction.applyAsInt(2, 2);
+		ToIntBiFunction<Object, IdentityValue> matchFunction = NameMatchingStrategy.PHONETICS.getMatchFunction();
+		identityValue.setValue("2");
+		int value = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value);
 	}
 

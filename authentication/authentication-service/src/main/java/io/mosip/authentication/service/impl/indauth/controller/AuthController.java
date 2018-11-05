@@ -1,5 +1,6 @@
 package io.mosip.authentication.service.impl.indauth.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
@@ -20,7 +21,6 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
-import io.mosip.authentication.service.impl.indauth.validator.DemoValidator;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -42,22 +42,18 @@ public class AuthController {
 	@Autowired
 	private AuthRequestValidator authRequestValidator;
 
-	/** The demo validator. */
-	@Autowired
-	private DemoValidator demoValidator;
-
 	/** The auth facade. */
 	@Autowired
 	private AuthFacade authFacade;
+	
 
 	/**
-	 * Inits the binder.
 	 *
 	 * @param binder the binder
 	 */
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
-		binder.addValidators(authRequestValidator, demoValidator);
+		binder.addValidators(authRequestValidator);
 	}
 
 	/**
@@ -91,4 +87,5 @@ public class AuthController {
 
 		return authResponsedto;
 	}
+	
 }
