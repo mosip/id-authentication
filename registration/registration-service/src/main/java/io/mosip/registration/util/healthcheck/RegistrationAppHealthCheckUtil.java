@@ -14,7 +14,6 @@ import java.util.List;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.util.reader.PropertyFileReader;
 import oshi.SystemInfo;
 import oshi.software.os.FileSystem;
 import oshi.software.os.OSFileStore;
@@ -56,8 +55,8 @@ public class RegistrationAppHealthCheckUtil {
 		try {
 			HttpURLConnection connection = null;
 			System.setProperty("java.net.useSystemProxies", "true");
-			int timeout = Integer.parseInt(PropertyFileReader.getPropertyValue("ONLINE_CONNECT_URL_TIMEOUT"));
-			URL url = new URL(PropertyFileReader.getPropertyValue("ONLINE_CONNECT_URL"));
+			int timeout = Integer.parseInt(AppConfig.getApplicationProperty("ONLINE_CONNECT_URL_TIMEOUT"));
+			URL url = new URL(AppConfig.getApplicationProperty("ONLINE_CONNECT_URL"));
 			List<Proxy> proxyList = ProxySelector.getDefault().select(new URI(url.toString()));
 			Proxy proxy = proxyList.get(0);
 			connection = (HttpURLConnection) url.openConnection(proxy);
@@ -90,7 +89,7 @@ public class RegistrationAppHealthCheckUtil {
 		FileSystem fileSystem = operatingSystem.getFileSystem();
 		String currentDirectory = System.getProperty("user.dir").substring(0, 3);
 		OSFileStore[] fileStores = fileSystem.getFileStores();
-		Long diskSpaceThreshold = Long.valueOf(PropertyFileReader.getPropertyValue("DISK_SPACE"));
+		Long diskSpaceThreshold = Long.valueOf(AppConfig.getApplicationProperty("DISK_SPACE"));
 		for (OSFileStore fs : fileStores) {
 			if (currentDirectory.equalsIgnoreCase(fs.getMount())) {
 				if (fs.getUsableSpace() > diskSpaceThreshold) {

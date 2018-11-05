@@ -32,7 +32,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
  *
  */
 @Component("serviceDelegateUtil")
-@PropertySource(value = "classpath:application.properties")
+@PropertySource(value = "classpath:spring.properties")
 public class ServiceDelegateUtil {
 
 	@Autowired
