@@ -2,7 +2,7 @@ package io.mosip.kernel.masterdata.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 /**
- * Custom exception in case lang code not passed
+ * Custom exception in case mapping fails
  * @author Abhishek Kumar
  * @version 1.0.0
  * @since 06-11-2018

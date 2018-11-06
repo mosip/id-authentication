@@ -12,6 +12,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * blacklisted word entity
+ * 
+ * @author Abhishek Kumar
+ * @version 1.0.0
+ * @since 06-11-2018
+ */
 @Entity
 @Table(name = "blacklisted_words", schema = "master")
 @Data

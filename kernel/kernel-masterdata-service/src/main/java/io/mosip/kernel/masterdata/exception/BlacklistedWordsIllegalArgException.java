@@ -1,16 +1,18 @@
 package io.mosip.kernel.masterdata.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
+
 /**
- * Custom exception in case mapping fails
+ * Custom exception in case argument is invalid
+ * 
  * @author Abhishek Kumar
  * @version 1.0.0
  * @since 06-11-2018
  */
-public class BlacklistedWordsIllegalArgException extends BaseUncheckedException{
+public class BlacklistedWordsIllegalArgException extends BaseUncheckedException {
 
 	/**
-	 * generated  serialVersionUID
+	 * generated serialVersionUID
 	 */
 	private static final long serialVersionUID = 8910349505307579500L;
 
