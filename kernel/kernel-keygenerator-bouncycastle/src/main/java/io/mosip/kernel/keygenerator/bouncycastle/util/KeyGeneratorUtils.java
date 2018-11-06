@@ -9,7 +9,6 @@ import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
-import io.mosip.kernel.keygenerator.bouncycastle.config.KeyGeneratorConfig;
 import io.mosip.kernel.keygenerator.bouncycastle.constant.KeyGeneratorExceptionConstant;
 
 /**
@@ -43,18 +42,18 @@ public class KeyGeneratorUtils {
 	 *            algorithm and size configuration {@link KeyGeneratorConfig}
 	 * @return configured {@link KeyGenerator} instance
 	 */
-	public static javax.crypto.KeyGenerator getKeyGenerator(KeyGeneratorConfig config) {
+	public static javax.crypto.KeyGenerator getKeyGenerator(String algorithmName,int keylength) {
 
 		javax.crypto.KeyGenerator generator = null;
 		try {
-			generator = javax.crypto.KeyGenerator.getInstance(config.getAlgorithmName(), provider);
+			generator = javax.crypto.KeyGenerator.getInstance(algorithmName, provider);
 		} catch (java.security.NoSuchAlgorithmException e) {
 			throw new NoSuchAlgorithmException(
 					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
 					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
 		}
 		SecureRandom random = new SecureRandom();
-		generator.init(Integer.parseInt(config.getSize()), random);
+		generator.init(keylength, random);
 		return generator;
 	}
 
@@ -65,18 +64,18 @@ public class KeyGeneratorUtils {
 	 *            algorithm and size configuration {@link KeyGeneratorConfig}
 	 * @return configured {@link KeyPairGenerator} instance
 	 */
-	public static KeyPairGenerator getKeyPairGenerator(KeyGeneratorConfig config) {
+	public static KeyPairGenerator getKeyPairGenerator(String algorithmName,int keylength) {
 
 		KeyPairGenerator generator = null;
 		try {
-			generator = KeyPairGenerator.getInstance(config.getAlgorithmName(), provider);
+			generator = KeyPairGenerator.getInstance(algorithmName, provider);
 		} catch (java.security.NoSuchAlgorithmException e) {
 			throw new NoSuchAlgorithmException(
 					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
 					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
 		}
 		SecureRandom random = new SecureRandom();
-		generator.initialize(Integer.parseInt(config.getSize()), random);
+		generator.initialize(keylength, random);
 		return generator;
 	}
 
