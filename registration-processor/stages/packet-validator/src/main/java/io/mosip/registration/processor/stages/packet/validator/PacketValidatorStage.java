@@ -23,6 +23,7 @@ import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.exception.utils.ExceptionMessages;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
 import io.mosip.registration.processor.stages.utils.FilesValidation;
@@ -55,7 +56,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
 	@Autowired
-	private PacketInfoManager<PacketInfo, Demographic, MetaData> packetInfoManager;
+	private PacketInfoManager<PacketInfo, Demographic, MetaData,ApplicantInfoDto> packetInfoManager;
 
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
