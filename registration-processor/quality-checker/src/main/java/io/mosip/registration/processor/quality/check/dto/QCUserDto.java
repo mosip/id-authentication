@@ -1,8 +1,6 @@
 package io.mosip.registration.processor.quality.check.dto;
 
 import java.io.Serializable;
-
-import lombok.Data;
 public class QCUserDto implements Serializable{
 
 	/**

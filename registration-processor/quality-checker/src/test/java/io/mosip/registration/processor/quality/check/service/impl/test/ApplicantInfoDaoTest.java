@@ -1,12 +1,14 @@
-/*package io.mosip.registration.processor.quality.check.service.impl.test;
+package io.mosip.registration.processor.quality.check.service.impl.test;
 
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertEquals;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,9 +19,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
-import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
+import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
 import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
@@ -34,7 +35,7 @@ import io.mosip.registration.processor.quality.check.repository.QcuserRegReposit
 public class ApplicantInfoDaoTest {
 	
 	@InjectMocks
-	private ApplicantInfoDao ApplicantInfoDao;
+	private ApplicantInfoDao applicantInfoDao;
 
 	@Mock
 	private QcuserRegRepositary<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
@@ -50,14 +51,13 @@ public class ApplicantInfoDaoTest {
 
 	QcuserRegistrationIdEntity qcuserRegistrationIdEntity1;
 	QcuserRegistrationIdEntity qcuserRegistrationIdEntity2;
-	private Photograph photograph=mock(Photograph.class);
-	private DemographicInfo demographicInfo=mock(DemographicInfo.class);
+	
 	@Before
 	public void setUp() {
 		qcuserRegistrationIdEntity1=new QcuserRegistrationIdEntity();
 		QcuserRegistrationIdPKEntity pkid1=new QcuserRegistrationIdPKEntity();
 		pkid1.setUsrId("qc001");
-		pkid1.setUsrId("2018782130000116102018124324");
+		pkid1.setRegId("2018782130000116102018124324");
 		qcuserRegistrationIdEntity1.setCrBy("MOSIP_SYSTEM"); 
 		qcuserRegistrationIdEntity1.setIsActive(true);
 		qcuserRegistrationIdEntity1.setId(pkid1);
@@ -70,7 +70,7 @@ public class ApplicantInfoDaoTest {
 		qcuserRegistrationIdEntity2=new QcuserRegistrationIdEntity();
 		QcuserRegistrationIdPKEntity pkid2=new QcuserRegistrationIdPKEntity();
 		pkid2.setUsrId("qc001");
-		pkid2.setUsrId("2018782130000116102018124325");
+		pkid2.setRegId("2018782130000116102018124325");
 		qcuserRegistrationIdEntity2.setCrBy("MOSIP_SYSTEM"); 
 		qcuserRegistrationIdEntity2.setIsActive(true);
 		qcuserRegistrationIdEntity2.setId(pkid2);
@@ -82,22 +82,98 @@ public class ApplicantInfoDaoTest {
 		
 		Mockito.when(qcuserRegRepositary.findByUserId(ArgumentMatchers.anyString())).
 				thenReturn(Arrays.asList(qcuserRegistrationIdEntity1,qcuserRegistrationIdEntity2));
+		
+		Mockito.when(qcuserRegRepositary.save(ArgumentMatchers.any(QcuserRegistrationIdEntity.class)))
+				.thenReturn(qcuserRegistrationIdEntity1);
+		Map<String, Object> params = new HashMap<>();
+		params.put("QCUserId", pkid1);
+		params.put("isActive", Boolean.TRUE);
+		params.put("isDeleted", Boolean.FALSE);
+		Mockito.when(qcuserRegRepositary.createQuerySelect(ArgumentMatchers.any(),
+				ArgumentMatchers.any())).thenReturn(Arrays.asList(qcuserRegistrationIdEntity1));
+		
 	}
 	
 	@Test
-	public void getPacketsforQCUser() {
-		List<ApplicantInfoDto> applicantInfoDtoList = new ArrayList<>();
-		ApplicantInfoDto applicantInfoDto = new ApplicantInfoDto();
-		applicantInfoDto.setApplicantPhoto(photograph);
-		applicantInfoDto.setDemoInLocalLang(demographicInfo);
-		applicantInfoDto.setDemoInUserLang(demographicInfo);
-		ApplicantPhotographEntity applicantPhotographEntity=new ApplicantPhotographEntity();
-		ApplicantDemographicEntity applicantDemographicEntity=new ApplicantDemographicEntity();
-		List<Object[]> applicantInfo = new ArrayList();
-		applicantInfo.add(applicantPhotographEntity);
+	public void getPacketsforQCUserDemographic() {
+		
+		
+		ApplicantDemographicEntity[] applicantDemographicEntity=new ApplicantDemographicEntity[2];
+		ApplicantDemographicPKEntity pk1= new ApplicantDemographicPKEntity();
+		pk1.setLangCode("en");
+		
+		
+		pk1.setRegId("2018782130000116102018124325");
+		
+		applicantDemographicEntity[0] = new ApplicantDemographicEntity();
+		applicantDemographicEntity[0].setId(pk1);
+		applicantDemographicEntity[0].setApplicantType("qc_user");
+		applicantDemographicEntity[0].setCrBy("MOSIP_SYSTEM");
+		applicantDemographicEntity[0].setCrDtimesz(LocalDateTime.now());
+		applicantDemographicEntity[0].setGenderCode("female");
+		applicantDemographicEntity[0].setLocationCode("dhe");
+		applicantDemographicEntity[0].setPreRegId("1001");
+		ApplicantDemographicPKEntity pk2= new ApplicantDemographicPKEntity();
+		pk2.setLangCode("use");
+		pk2.setRegId("2018782130000116102018124325");
+		applicantDemographicEntity[1] = new ApplicantDemographicEntity();
+
+		applicantDemographicEntity[1].setId(pk2);
+		applicantDemographicEntity[1].setApplicantType("qc_user");
+		applicantDemographicEntity[1].setCrBy("MOSIP_SYSTEM");
+		applicantDemographicEntity[1].setCrDtimesz(LocalDateTime.now());
+		applicantDemographicEntity[1].setGenderCode("female");
+		applicantDemographicEntity[1].setLocationCode("dhe");
+		applicantDemographicEntity[1].setPreRegId("1001");
+	    List<Object[]> applicantInfo = new ArrayList<>();
+	    
 		applicantInfo.add(applicantDemographicEntity);
-		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.anyString())).
+		
+		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.any())).
 					thenReturn(applicantInfo);
+		
+		List<ApplicantInfoDto>  listDto= applicantInfoDao.getPacketsforQCUser("qc001");
+		assertEquals("female",listDto.get(0).getDemoInLocalLang().getGender());
+		
+		
+		
 	}
+	@Test
+	public void getPacketsforQCUserPhotographic() {
+		ApplicantPhotographEntity[] applicantPhotographEntity=new ApplicantPhotographEntity[1];
+		applicantPhotographEntity[0]=new ApplicantPhotographEntity();
+		applicantPhotographEntity[0].setImageName("new_image");;
+		applicantPhotographEntity[0].setExcpPhotoName("new_image");
+		applicantPhotographEntity[0].setNoOfRetry(2);
+		applicantPhotographEntity[0].setHasExcpPhotograph(true);
+		applicantPhotographEntity[0].setQualityScore(new BigDecimal(123456123456.78));
+		List<Object[]> applicantInfo2 = new ArrayList<>();
+		applicantInfo2.add(applicantPhotographEntity);
+		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.any())).
+		thenReturn(applicantInfo2);
+		List<ApplicantInfoDto>  listDto= applicantInfoDao.getPacketsforQCUser("qc001");
+		assertEquals(true,listDto.get(0).getApplicantPhoto().isHasExceptionPhoto());
+	}
+	@Test
+	public void save() {
+		QcuserRegistrationIdEntity rEntity = applicantInfoDao.save(qcuserRegistrationIdEntity1);
+		assertEquals(qcuserRegistrationIdEntity1, rEntity);
+
+	}
+	
+	@Test
+	public void update() {
+		QcuserRegistrationIdEntity rEntity = applicantInfoDao.update(qcuserRegistrationIdEntity1);
+		assertEquals(qcuserRegistrationIdEntity1, rEntity);
+
+	}
+	
+	@Test
+	public void findByIdTest() {
+		QcuserRegistrationIdEntity rEntity = applicantInfoDao.findById(qcuserRegistrationIdEntity1.
+				getId().getUsrId(), qcuserRegistrationIdEntity1.getId().getRegId());
+		assertEquals(qcuserRegistrationIdEntity1, rEntity);
+
+	}
+
 }
-*/

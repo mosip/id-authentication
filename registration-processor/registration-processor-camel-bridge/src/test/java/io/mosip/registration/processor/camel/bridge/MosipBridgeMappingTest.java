@@ -62,7 +62,7 @@ public class MosipBridgeMappingTest {
 		
 			 options.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress()))
 							.toVertx(MessageBusAddress.ERROR.getAddress()))
-					.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
+					.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
 							.toVertx(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
 					.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN.getAddress()))
 							.toVertx(MessageBusAddress.STRUCTURE_BUS_IN.getAddress()))

@@ -22,6 +22,5 @@ public interface QcuserRegRepositary<T extends BaseQcuserEntity<?>, E> extends B
             + " WHERE ade.id.regId=:regId")
     public List<Object[]> getApplicantInfo(@Param("regId") String regId);
 	
-	/*@Query("SELECT afe FROM  ApplicantFingerprintEntity afe WHERE afe.id= ?1")
-    public List<Object> getApplicantInfo(String regId);*/
+	
 }

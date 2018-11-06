@@ -35,6 +35,7 @@ import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
@@ -53,7 +54,7 @@ public class PacketValidatorStageTest {
 	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
-	PacketInfoManager<PacketInfo, Demographic, MetaData> packetinfomanager;
+	PacketInfoManager<PacketInfo, Demographic, MetaData,ApplicantInfoDto> packetinfomanager;
 
 	@InjectMocks
 	private PacketValidatorStage packetValidatorStage;
