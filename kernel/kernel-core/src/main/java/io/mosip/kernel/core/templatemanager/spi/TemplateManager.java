@@ -16,7 +16,7 @@ public interface TemplateManager {
 	/**
 	 * Method to merge template , where template content will be pass as inputSteam
 	 * 
-	 * @param is
+	 * @param template
 	 *            the {@link InputStream} is template content .
 	 * @param values
 	 *            as Map&lt;String,Object &gt; where key will be placeholder name

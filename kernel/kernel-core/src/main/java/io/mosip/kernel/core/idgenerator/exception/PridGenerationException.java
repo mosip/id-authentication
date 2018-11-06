@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author M1037462
- * @see 1.0.0
  *
  */
 @Component

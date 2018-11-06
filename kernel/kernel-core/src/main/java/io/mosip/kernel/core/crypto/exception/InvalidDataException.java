@@ -20,11 +20,14 @@ public class InvalidDataException extends BaseUncheckedException {
 	 * Unique id for serialization
 	 */
 	private static final long serialVersionUID = 1650218542197755276L;
-	
+
 	/**
 	 * Constructor with errorCode and errorMessage
+	 * 
 	 * @param errorCode
+	 *            The errorcode for this exception
 	 * @param errorMessage
+	 *            The error message for this exception
 	 */
 
 	public InvalidDataException(String errorCode, String errorMessage) {

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.notification.spi.EmailNotification;
 import io.mosip.kernel.emailnotification.dto.ResponseDto;
-import io.mosip.kernel.emailnotification.service.EmailNotificationService;
 
 /**
  * Controller class for sending mail.
@@ -26,7 +26,7 @@ public class EmailNotificationController {
 	 * Autowired reference for MailNotifierService.
 	 */
 	@Autowired
-	EmailNotificationService emailNotificationService;
+	EmailNotification<MultipartFile[], CompletableFuture<ResponseDto>> emailNotificationService;
 
 	/**
 	 * @param mailTo
@@ -43,8 +43,8 @@ public class EmailNotificationController {
 	 * @return the dto response.
 	 */
 	@PostMapping(value = "/notification/email", consumes = "multipart/form-data")
-	public @ResponseBody CompletableFuture<ResponseEntity<ResponseDto>> sendMail(String[] mailTo,
-			String[] mailCc, String mailSubject, String mailContent, MultipartFile[] attachments) {
+	public @ResponseBody CompletableFuture<ResponseEntity<ResponseDto>> sendMail(String[] mailTo, String[] mailCc,
+			String mailSubject, String mailContent, MultipartFile[] attachments) {
 		return emailNotificationService.sendEmail(mailTo, mailCc, mailSubject, mailContent, attachments)
 				.thenApplyAsync(responseDto -> new ResponseEntity<>(responseDto, HttpStatus.ACCEPTED));
 	}
