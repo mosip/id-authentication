@@ -48,4 +48,4 @@ This service can be used to send sms through configured SMS gateway. Service has
 ## Implementation
 
 
-**kernel-smsnotification-msg91** [README](../../kernel/kernel-smsnotification-msg91/README.md)
+**kernel-smsnotification-msg91-service** [README](../../kernel/kernel-smsnotification-msg91-service/README.md)

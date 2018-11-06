@@ -466,9 +466,9 @@ public class LogfactoryTest {
 				.getDefaultRollingFileLogger(mosipRollingFileAppender, "");
 	}
 
-	//@Test(expected = IllegalStateException.class)
+	@Test(expected = IllegalStateException.class)
 	public void testgetDefaultFileLoggerNameWithRollingIllegalState() {
-		mosipRollingFileAppender.setAppenderName("testFileappender");
+		mosipRollingFileAppender.setAppenderName("testRollingFileappender");
 		mosipRollingFileAppender.setAppend(true);
 		mosipRollingFileAppender.setFileName(FILENAME);
 		mosipRollingFileAppender.setImmediateFlush(true);
@@ -522,9 +522,9 @@ public class LogfactoryTest {
 				mosipRollingFileAppender, "MosipLogfactoryTest");
 	}
 
-	//@Test(expected = IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testgetDefaultFileLoggerNameWithRollingIllegalArgumentException() {
-		mosipRollingFileAppender.setAppenderName("testFileappender");
+		mosipRollingFileAppender.setAppenderName("testRollingFileappenderIllegalArgumentException");
 		mosipRollingFileAppender.setAppend(true);
 		mosipRollingFileAppender.setFileName(FILENAME);
 		mosipRollingFileAppender.setImmediateFlush(true);

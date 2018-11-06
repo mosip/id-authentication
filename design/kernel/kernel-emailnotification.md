@@ -52,4 +52,4 @@ This service can be used to send email through configured SMTP server. Service h
 ## Implementation
 
 
-**kernel-emailnotification-service** [README](../../kernel/kernel-emailnotification-smtp/README.md)
+**kernel-emailnotification-service** [README](../../kernel/kernel-emailnotification-service/README.md)
