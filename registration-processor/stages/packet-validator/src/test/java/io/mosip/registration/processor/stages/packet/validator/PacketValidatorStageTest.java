@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,12 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.packet.dto.BiometricSequence;
 import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.DemographicSequence;
@@ -43,7 +48,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PacketValidatorStageTest {
 
-	@Mock
+	@Mock 
 	private InputStream inputStream;
 
 	@Mock
@@ -58,6 +63,13 @@ public class PacketValidatorStageTest {
 	@InjectMocks
 	private PacketValidatorStage packetValidatorStage;
 
+	@Mock
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+
+	/** The audit handler. */
+	@Mock
+	private AuditHandler<AuditRequestDto> auditHandler;
+	
 	private PacketInfo packetInfo;
 
 	private Demographic demographicinfo;
@@ -97,6 +109,21 @@ public class PacketValidatorStageTest {
 		hashSequence.setBiometricSequence(biometricSequence);
 		hashSequence.setDemographicSequence(demographicSequence);
 		packetInfo.setHashSequence(hashSequence);
+		
+		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		AuditRequestDto auditRequest1 = new AuditRequestDto();
+
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+		f.setAccessible(true);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
+
+		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+		f1.setAccessible(true);
+		f1.set(auditRequestBuilder, auditRequest1);
+
+		Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
+		f2.setAccessible(true);
+		f2.set(coreAuditRequestBuilder, auditHandler);
 	}
 
 	@Test

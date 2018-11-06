@@ -9,8 +9,9 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
 /**
- * @author Mukul Puspam
+ * The Class PropertyFileUtil.
  *
+ * @author Mukul Puspam
  */
 public class PropertyFileUtil {
 
@@ -20,6 +21,14 @@ public class PropertyFileUtil {
 
 	}
 
+	/**
+	 * Gets the property.
+	 *
+	 * @param clazz the clazz
+	 * @param fileName the file name
+	 * @param key the key
+	 * @return the property
+	 */
 	public static String getProperty(Class<?> clazz, String fileName, String key) {
 
 		Properties prop = new Properties();

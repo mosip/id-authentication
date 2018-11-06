@@ -17,7 +17,6 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
  * internal/system erroe
  *
  * @author Jyoti Prakash Nayak
- *
  */
 @RefreshScope
 @Component
@@ -34,7 +33,7 @@ public class RetryStage extends MosipVerticleManager {
 	private MosipEventBus mosipEventBus;
 
 	/**
-	 * method to deploy retry-stage
+	 * method to deploy retry-stage.
 	 */
 	public void deployVerticle() {
 		this.mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);

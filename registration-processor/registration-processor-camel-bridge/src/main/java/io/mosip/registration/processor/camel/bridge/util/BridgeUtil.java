@@ -17,7 +17,7 @@ import io.vertx.core.json.JsonObject;
 
 /**
  * This class interacts with config server and gets the required values
- * 
+ *
  * @author Pranav Kumar
  * @since 0.0.1
  *
@@ -65,7 +65,7 @@ public class BridgeUtil {
 
 	/**
 	 * This method returns the camel endpoint along with component
-	 * 
+	 *
 	 * @param messageBusAddress
 	 *            The address to be used for endpoint
 	 * @return The address as per the configured camel component
@@ -80,7 +80,7 @@ public class BridgeUtil {
 
 	/**
 	 * This method returns the address for localhost
-	 * 
+	 *
 	 * @return The address for localhost
 	 */
 	public static String getLocalHost() {
@@ -92,7 +92,7 @@ public class BridgeUtil {
 
 	/**
 	 * This method returns the configured IP and port range for Vertx clustering
-	 * 
+	 *
 	 * @return the configured IP and port range for Vertx clustering as a List
 	 */
 	public static List<String> getIpAddressPortRange() {

@@ -20,8 +20,9 @@ import org.springframework.stereotype.Component;
 /**
  * Scheduler class for executing the jobs
  *
- * @author M1030448
+ * Scheduler class for executing the jobs.
  *
+ * @author M1030448
  */
 
 @RefreshScope
@@ -29,21 +30,32 @@ import org.springframework.stereotype.Component;
 @EnableScheduling
 public class PacketScannerBatchJobScheduler {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketScannerBatchJobScheduler.class);
 
+	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {} - {}";
 
 	private static final String JOB_STATUS = "Job's status";
 
+
+	/** The Constant JOB_STATUS. */
+	private static final String JOB_STATUS = "Job's status" ;
+
+	/** The job launcher. */
 	@Autowired
 	private JobLauncher jobLauncher;
 
+	/** The landing zone scanner job. */
 	@Autowired
 	private Job landingZoneScannerJob;
 
+	/** The virus scanner job. */
 	@Autowired
 	private Job virusScannerJob;
 
+
+	/** The ftp scanner job. */
 	@Autowired
 	private Job ftpScannerJob;
 

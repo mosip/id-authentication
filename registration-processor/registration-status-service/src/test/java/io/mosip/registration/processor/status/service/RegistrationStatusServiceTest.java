@@ -24,6 +24,11 @@ import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.constant.HibernateErrorCodes;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -63,6 +68,9 @@ public class RegistrationStatusServiceTest {
 	@Mock
 	private AuditHandler<AuditRequestDto> auditHandler;
 
+	@Mock
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -89,13 +97,13 @@ public class RegistrationStatusServiceTest {
 		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
 				.thenReturn(transactionEntity);
 
-		Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
+		//Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-		Field f = RegistrationStatusServiceImpl.class.getDeclaredField("auditRequestBuilder");
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f.setAccessible(true);
-		f.set(registrationStatusService, auditRequestBuilder);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
 		f1.set(auditRequestBuilder, auditRequest1);
@@ -103,7 +111,7 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void getRegistrationStatusSuccessTest() {
+	public void testGetRegistrationStatusSuccess() {
 
 		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
 		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getStatusCode());
@@ -135,7 +143,7 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void addRegistrationStatusTest() {
+	public void testAddRegistrationStatusSuccess() {
 
 		registrationStatusService.addRegistrationStatus(registrationStatusDto);
 		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
@@ -151,7 +159,7 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void updateRegistrationStatusSuccessTest() {
+	public void testUpdateRegistrationStatusSuccess() {
 		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
@@ -168,7 +176,7 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void getByStatus() {
+	public void testGetByStatusSuccess() {
 		Mockito.when(registrationStatusDao.getEnrolmentStatusByStatusCode(ArgumentMatchers.any())).thenReturn(entities);
 		List<InternalRegistrationStatusDto> list = registrationStatusService
 				.getByStatus("PACKET_UPLOADED_TO_LANDING_ZONE");
@@ -184,7 +192,7 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void getByIds() {
+	public void testGetByIdsSuccess() {
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
 		List<RegistrationStatusDto> list = registrationStatusService.getByIds("1001,1000");
 		assertEquals("PROCESSING", list.get(0).getStatusCode());

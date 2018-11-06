@@ -2,8 +2,6 @@ package io.mosip.registration.processor.packet.receiver.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.OffsetDateTime;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +9,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
@@ -22,7 +20,6 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
-import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -31,34 +28,54 @@ import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
+
+/**
+ * The Class PacketReceiverServiceImpl.
+ *
+ */
 @RefreshScope
 @Component
 public class PacketReceiverServiceImpl implements PacketReceiverService<MultipartFile, Boolean> {
 
+	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(PacketReceiverServiceImpl.class);
+
+	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+
+    /** The file extension. */
 	@Value("${registration.processor.file.extension}")
 	private String fileExtension;
 
+    /** The max file size. */
 	@Value("${registration.processor.max.file.size}")
 	private int maxFileSize;
 
+	/** The file manager. */
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
 
+
+	/** The sync registration service. */
 	@Autowired
 	private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
 
 	@Autowired
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The core audit request builder. */
 	@Autowired
-	private AuditRequestBuilder auditRequestBuilder;
+	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
-	@Autowired
-	private AuditHandler<AuditRequestDto> auditHandler;
+	/** The event id. */
+	private String eventId = "";
 
+	/** The event name. */
+	private String eventName = "";
+
+	/** The event type. */
+	private String eventType = "";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -117,42 +134,67 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 		} else {
 			throw new DuplicateUploadRequestException(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());
 		}
+					RegistrationStatusDto dto = new RegistrationStatusDto();
+					dto.setRegistrationId(registrationId);
+					dto.setRegistrationType(RegistrationType.NEW.toString());
+					dto.setReferenceRegistrationId(null);
+					dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+					dto.setLangCode("eng");
+					dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_LANDING_ZONE status");
+					dto.setIsActive(true);
+					dto.setCreatedBy(USER);
+					dto.setIsDeleted(false);
+					registrationStatusService.addRegistrationStatus(dto);
+					storageFlag = true;
+					isTransactionSuccessful = true;
+					eventId=EventId.RPR_407.toString();
+					eventName=EventName.ADD.toString();
+					eventType=EventType.BUSINESS.toString();
+				} catch (IOException e) {
+					logger.error(e.getMessage());
+					eventId=EventId.RPR_405.toString();
+					eventName=EventName.EXCEPTION.toString();
+					eventType=EventType.SYSTEM.toString();
+				}finally {
+
+					String description = isTransactionSuccessful
+							? "Packet registration status updated successfully"
+							: "Packet registration status updation unsuccessfull";
+					coreAuditRequestBuilder.createAuditRequestBuilder(description,eventId,eventName,eventType, registrationId);
+
+				}
+			} else {
+				throw new DuplicateUploadRequestException(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());
+			}
 		return storageFlag;
 	}
 
+	/**
+	 * Gets the file extension.
+	 *
+	 * @return the file extension
+	 */
 	public String getFileExtension() {
 		return this.fileExtension;
 	}
 
+	/**
+	 * Gets the max file size.
+	 *
+	 * @return the max file size
+	 */
 	public long getMaxFileSize() {
 		return this.maxFileSize * 1024L * 1024;
 	}
 
 	/**
 	 * Checks if registration id is already present in registration status table.
-	 * 
-	 * @param enrolmentId
-	 * @return
+	 *
+	 * @param enrolmentId the enrolment id
+	 * @return the boolean
 	 */
 	private Boolean isDuplicatePacket(String enrolmentId) {
 		return registrationStatusService.getRegistrationStatus(enrolmentId) != null;
-	}
-
-	private void createAuditRequestBuilder(String applicationId, String applicationName, String description,
-			String eventId, String eventName, String eventType) {
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
-				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
-				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-				.setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(AuditLogTempConstant.ID.toString())
-				.setIdType(AuditLogTempConstant.ID_TYPE.toString())
-				.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-				.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-				.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-				.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
-
-		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-		auditHandler.writeAudit(auditRequestDto);
 	}
 
 }

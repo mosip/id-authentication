@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.mosip.registration.processor.stages.packet.validator;
 
 import java.io.IOException;
@@ -16,6 +13,11 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.packet.dto.Demographic;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
 import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
@@ -36,29 +38,36 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
 /**
- * @author M1022006
+ * The Class PacketValidatorStage.
  *
+ * @author M1022006
  */
 
 @RefreshScope
 @Service
 public class PacketValidatorStage extends MosipVerticleManager {
 
+	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
+	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(PacketValidatorStage.class);
 
 	@Autowired
 	FilesystemCephAdapterImpl adapter;
 
+	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
+	/** The file manager. */
 	@Autowired
 	FileManager<DirectoryPathDto, InputStream> fileManager;
 
+	/** The registration status service. */
 	@Autowired
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
+	/** The packet info manager. */
 	@Autowired
 	private PacketInfoManager<PacketInfo, Demographic, MetaData> packetInfoManager;
 
@@ -68,18 +77,37 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
+	/** The event id. */
+	private String eventId = "";
+
+	/** The event name. */
+	private String eventName = "";
+
+	/** The event type. */
+	private String eventType = "";
+
+	/** The core audit request builder. */
+	@Autowired
+	CoreAuditRequestBuilder coreAuditRequestBuilder;
+
+	/**
+	 * Deploy verticle.
+	 */
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		this.consumeAndSend(mosipEventBus, MessageBusAddress.STRUCTURE_BUS_IN, MessageBusAddress.STRUCTURE_BUS_OUT);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.core.spi.eventbus.EventBusManager#process(java.lang.Object)
+	 */
 	@Override
 	public MessageDTO process(MessageDTO object) {
 		object.setMessageBusAddress(MessageBusAddress.STRUCTURE_BUS_IN);
 		object.setIsValid(Boolean.FALSE);
 		object.setInternalError(Boolean.FALSE);
 		String registrationId = object.getRid();
-
+		String description = "";
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
 		try {
 
@@ -96,16 +124,14 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter);
 				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId, packetInfo);
 				if (!isCheckSumValidated) {
-					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION);
+					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);
 				}
-
 			} else {
-				registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION);
-
+				registrationStatusDto.setStatusComment(StatusMessage.PACKET_FILES_VALIDATION_FAILURE);
 			}
 			if (isFilesValidated && isCheckSumValidated) {
 				object.setIsValid(Boolean.TRUE);
-				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION);
+				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
 				registrationStatusDto
 						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_SUCCESSFULL.toString());
 				packetInfoManager.savePacketData(packetInfo);
@@ -127,16 +153,40 @@ public class PacketValidatorStage extends MosipVerticleManager {
 						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_FAILED.toString());
 
 			}
+			if (!isFilesValidated) {
+				description = "File validation Failed for registration id : " + registrationId;
+			} else if (!isCheckSumValidated) {
+				description = "Checksum validation failed for registration id : " + registrationId;
+			} else {
+				description = "Packet validation successful for registration id : " + registrationId;
+			}
+
+			eventId = EventId.RPR_402.toString();
+			eventName = EventName.UPDATE.toString();
+			eventType = EventType.BUSINESS.toString();
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
 		} catch (IOException e) {
 			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), e);
 			object.setInternalError(Boolean.TRUE);
+			description = "Internal error occured while processing registration  id : " + registrationId;
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
 
 		} catch (Exception ex) {
 			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), ex);
 			object.setInternalError(Boolean.TRUE);
+			description = "Internal error occured while processing registration  id : " + registrationId;
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.SYSTEM.toString();
+		} finally {
+
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					registrationId);
+
 		}
 
 		return object;

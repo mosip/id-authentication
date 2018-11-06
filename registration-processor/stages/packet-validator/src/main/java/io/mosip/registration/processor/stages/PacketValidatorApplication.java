@@ -8,6 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.mosip.registration.processor.stages.packet.validator.PacketValidatorStage;
 
+/**
+ * The Class PacketValidatorApplication.
+ */
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.stages",
 		"io.mosip.registration.processor.status", "io.mosip.registration.processor.packet.manager",
 		"io.mosip.registration.processor.packet.storage",
@@ -15,13 +18,22 @@ import io.mosip.registration.processor.stages.packet.validator.PacketValidatorSt
 
 public class PacketValidatorApplication {
 
+	/** The validatebean. */
 	@Autowired
 	private PacketValidatorStage validatebean;
 
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(PacketValidatorApplication.class, args);
 	}
 
+	/**
+	 * Deploy verticle.
+	 */
 	@PostConstruct
 	public void deployVerticle() {
 		validatebean.deployVerticle();

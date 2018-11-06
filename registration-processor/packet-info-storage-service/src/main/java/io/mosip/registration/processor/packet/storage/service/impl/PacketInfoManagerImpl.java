@@ -3,19 +3,18 @@ package io.mosip.registration.processor.packet.storage.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.OffsetDateTime;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
-
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.AuditLogConstant;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.packet.dto.BiometericData;
 import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.Document;
@@ -44,10 +43,10 @@ import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
-import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 
 /**
- * 
+ * The Class PacketInfoManagerImpl.
+ *
  * @author Horteppa M1048399
  * @author Girish Yarru
  *
@@ -57,45 +56,70 @@ import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 @Service
 public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demographic, MetaData> {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
 
+	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
+	/** The Constant DEMOGRAPHIC_APPLICANT. */
 	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
 			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
+
+	/** The applicant document repository. */
 	@Autowired
 	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
 
+	/** The biometric exception repository. */
 	@Autowired
 	private BasePacketRepository<BiometricExceptionEntity, String> biometricExceptionRepository;
 
+	/** The applicant fingerprint repository. */
 	@Autowired
 	private BasePacketRepository<ApplicantFingerprintEntity, String> applicantFingerprintRepository;
 
+	/** The applicant iris repository. */
 	@Autowired
 	private BasePacketRepository<ApplicantIrisEntity, String> applicantIrisRepository;
 
+	/** The applicant photograph repository. */
 	@Autowired
 	private BasePacketRepository<ApplicantPhotographEntity, String> applicantPhotographRepository;
 
+	/** The reg osi repository. */
 	@Autowired
 	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
 
+	/** The applicant demographic repository. */
 	@Autowired
 	private BasePacketRepository<ApplicantDemographicEntity, String> applicantDemographicRepository;
 
+	/** The reg center machine repository. */
 	@Autowired
 	private BasePacketRepository<RegCenterMachineEntity, String> regCenterMachineRepository;
 
-	@Autowired
-	private AuditRequestBuilder auditRequestBuilder;
+	/** The event id. */
+	private String eventId = "";
 
+	/** The event name. */
+	private String eventName = "";
+
+	/** The event type. */
+	private String eventType = "";
+
+	/** The description. */
+	String description = "";
+
+	/** The core audit request builder. */
 	@Autowired
-	private AuditHandler<AuditRequestDto> auditHandler;
+	CoreAuditRequestBuilder coreAuditRequestBuilder;
+
+	;
 
 	@Autowired
 	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
+	/** The meta data. */
 	private MetaData metaData;
 
 	/*
@@ -125,15 +149,20 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			saveRegCenterData(metaData);
 
 			isTransactionSuccessful = true;
+			//Event constants for audit log
+			eventId = EventId.RPR_402.toString();
+			eventName = EventName.UPDATE.toString();
+			eventType = EventType.BUSINESS.toString();
+
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			String description = isTransactionSuccessful ? "description--packet-meta-data saved Success"
-					: "description--packet-metadata Failure";
-			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());
+			description = isTransactionSuccessful ? "packet-meta-data saved Success"
+					: "packet-metadata Failure";
+
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
+
 		}
 
 	}
@@ -156,16 +185,23 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 				applicantDemographicRepository.save(applicantDemographicEntity);
 				LOGGER.info(applicantDemographicEntity.getId().getRegId() + " --> Demographic  DATA SAVED");
 			}
+			//Event constants for audit log
+			eventId = EventId.RPR_407.toString();
+			eventName = EventName.ADD.toString();
+			eventType = EventType.BUSINESS.toString();
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
+			eventId = EventId.RPR_405.toString();
+			eventName = EventName.EXCEPTION.toString();
+			eventType = EventType.BUSINESS.toString();
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
-					: "description--Demographic Failed to save";
-			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());
+			description = isTransactionSuccessful ? "Demographic-data saved Success"
+					: "Demographic Failed to save";
+
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
+
 		}
 
 	}
@@ -338,20 +374,4 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		return os.toByteArray();
 	}
 
-	private void createAuditRequestBuilder(String applicationId, String applicationName, String description,
-			String eventId, String eventName, String eventType) {
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
-				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
-				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-				.setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(AuditLogTempConstant.ID.toString())
-				.setIdType(AuditLogTempConstant.ID_TYPE.toString())
-				.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-				.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-				.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-				.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
-
-		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-		auditHandler.writeAudit(auditRequestDto);
-	}
 }

@@ -35,6 +35,7 @@ import io.vertx.spi.cluster.ignite.IgniteClusterManager;
 public abstract class MosipVerticleManager extends AbstractVerticle
 		implements EventBusManager<MosipEventBus, MessageBusAddress, MessageDTO> {
 
+	/** The logger. */
 	private Logger logger = LoggerFactory.getLogger(MosipVerticleManager.class);
 
 	/*
@@ -108,6 +109,8 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	}
 
 	/**
+	 * Send.
+	 *
 	 * @param mosipEventBus
 	 *            The Eventbus instance for communication
 	 * @param toAddress
@@ -123,6 +126,8 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	}
 
 	/**
+	 * Consume.
+	 *
 	 * @param mosipEventBus
 	 *            The Eventbus instance for communication
 	 * @param fromAddress

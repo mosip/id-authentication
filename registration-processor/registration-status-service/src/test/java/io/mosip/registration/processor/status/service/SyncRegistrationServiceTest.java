@@ -23,6 +23,7 @@ import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.constant.HibernateErrorCodes;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncStatusDto;
@@ -63,6 +64,9 @@ public class SyncRegistrationServiceTest {
 	/** The sync registration service. */
 	@InjectMocks
 	private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService = new SyncRegistrationServiceImpl();
+	
+	@Mock
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
 
 	/**
 	 * Setup.
@@ -113,17 +117,17 @@ public class SyncRegistrationServiceTest {
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-		Field f = SyncRegistrationServiceImpl.class.getDeclaredField("auditRequestBuilder");
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f.setAccessible(true);
-		f.set(syncRegistrationService, auditRequestBuilder);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
 
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
 		f1.set(auditRequestBuilder, auditRequest1);
 
-		Field f2 = SyncRegistrationServiceImpl.class.getDeclaredField("auditHandler");
+		Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
 		f2.setAccessible(true);
-		f2.set(syncRegistrationService, auditHandler);
+		f2.set(coreAuditRequestBuilder, auditHandler);
 
 	}
 
@@ -133,7 +137,7 @@ public class SyncRegistrationServiceTest {
 	 * @return the sync registration status test
 	 */
 	@Test
-	public void getSyncRegistrationStatusSuccessTest() {
+	public void testGetSyncRegistrationStatusSuccess() {
 
 		Mockito.when(syncRegistrationDao.save(ArgumentMatchers.any())).thenReturn(syncRegistrationEntity);
 		List<SyncRegistrationDto> syncRegistrationDtos = syncRegistrationService.sync(entities);
@@ -156,7 +160,7 @@ public class SyncRegistrationServiceTest {
 	 *             the tablenot accessible exception
 	 */
 	@Test(expected = TablenotAccessibleException.class)
-	public void getSyncRegistrationStatusFailureTest() throws TablenotAccessibleException {
+	public void testGetSyncRegistrationStatusFailure() throws TablenotAccessibleException {
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCodes.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(syncRegistrationDao.save(ArgumentMatchers.any())).thenThrow(exp);
@@ -168,7 +172,7 @@ public class SyncRegistrationServiceTest {
 	 * Checks if is present success test.
 	 */
 	@Test
-	public void isPresentSuccessTest() {
+	public void testIsPresentSuccess() {
 		Mockito.when(syncRegistrationDao.findById(ArgumentMatchers.any())).thenReturn(syncRegistrationEntity);
 		boolean result = syncRegistrationService.isPresent("1001");
 		assertEquals("Verifing if Registration Id is present in DB. Expected value is true", true, result);
@@ -178,7 +182,7 @@ public class SyncRegistrationServiceTest {
 	 * Checks if is present success test.
 	 */
 	@Test
-	public void isPresentFailureTest() {
+	public void testIsPresentFailure() {
 		Mockito.when(syncRegistrationDao.findById(ArgumentMatchers.any())).thenReturn(null);
 		boolean result = syncRegistrationService.isPresent("15");
 		assertEquals("Verifing if Registration Id is present in DB. Expected value is False", false, result);

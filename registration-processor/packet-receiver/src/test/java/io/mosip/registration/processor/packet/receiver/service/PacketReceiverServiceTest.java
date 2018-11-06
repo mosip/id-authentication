@@ -37,6 +37,7 @@ import ch.qos.logback.core.Appender;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
@@ -79,8 +80,13 @@ public class PacketReceiverServiceTest {
 	@Rule
 	public ExpectedException exceptionRule = ExpectedException.none();
 
+	@Mock
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	
 	@InjectMocks
 	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl() {
+	
+		
 		@Override
 		public String getFileExtension() {
 			return fileExtension;
@@ -124,9 +130,9 @@ public class PacketReceiverServiceTest {
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-		Field f = PacketReceiverServiceImpl.class.getDeclaredField("auditRequestBuilder");
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f.setAccessible(true);
-		f.set(packetReceiverService, auditRequestBuilder);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
 		f1.set(auditRequestBuilder, auditRequest1);
