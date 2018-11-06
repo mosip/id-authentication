@@ -17,6 +17,10 @@ import io.mosip.kernel.masterdata.exception.BiometricAttributeNotFoundException;
 import io.mosip.kernel.masterdata.exception.BiometricTypeFetchException;
 import io.mosip.kernel.masterdata.exception.BiometricTypeMappingException;
 import io.mosip.kernel.masterdata.exception.BiometricTypeNotFoundException;
+import io.mosip.kernel.masterdata.exception.BlacklistedWordsFetchException;
+import io.mosip.kernel.masterdata.exception.BlacklistedWordsIllegalArgException;
+import io.mosip.kernel.masterdata.exception.BlacklistedWordsMappingException;
+import io.mosip.kernel.masterdata.exception.NoBlacklistedWordsFoundException;
 import io.mosip.kernel.masterdata.exception.DocumentCategoryFetchException;
 import io.mosip.kernel.masterdata.exception.DocumentCategoryNotFoundException;
 import io.mosip.kernel.masterdata.exception.GenderTypeFetchException;
@@ -315,6 +319,38 @@ public class MasterDataControllerAdvice {
 	@ExceptionHandler(MachineHistoryMappingException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> machineHistoryMappingException(
 			final MachineHistoryMappingException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(BlacklistedWordsMappingException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> blacklistedWordsMappingException(
+			final BlacklistedWordsMappingException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(BlacklistedWordsFetchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> blacklistedWordsFetchException(
+			final BlacklistedWordsFetchException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(NoBlacklistedWordsFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> noBlacklistedWordsFoundException(
+			final NoBlacklistedWordsFoundException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(BlacklistedWordsIllegalArgException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> blacklistedWordsIllegalArgException(
+			final BlacklistedWordsIllegalArgException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
