@@ -10,18 +10,10 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  */
 public class PacketSizeException extends BaseUncheckedException {
 
-	/**
-	 * Constant id for serialization
-	 */
+
 	private static final long serialVersionUID = 3585613514626311385L;
 
-	/**
-	 * Constructor for this class
-	 * 
-	 * @param errorCode
-	 * @param errorMessage
-	 * @param cause
-	 */
+
 	public PacketSizeException(String errorCode, String errorMessage, Throwable cause) {
 		super(errorCode, errorMessage, cause);
 	}

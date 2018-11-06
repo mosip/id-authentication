@@ -8,15 +8,9 @@ package io.mosip.kernel.core.notification.spi;
  *
  */
 
-public interface SmsNotificationService<D> {
+public interface SmsNotification<D> {
 
-	/**
-	 * SendSmsNotification
-	 * 
-	 * @param contactNumber
-	 * @param contentMessage
-	 * @return
-	 */
+
 	public D sendSmsNotification(String contactNumber, String contentMessage);
 
 }

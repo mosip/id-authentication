@@ -7,7 +7,7 @@ package io.mosip.kernel.core.otpmanager.spi;
  * @since 1.0.0
  *
  */
-public interface OtpGeneratorService<S, D> {
+public interface OtpGenerator<S, D> {
 	/**
 	 * This method can be used to generate OTP against a particular key. OTP against
 	 * a particular key is generated only if the key is not freezed.

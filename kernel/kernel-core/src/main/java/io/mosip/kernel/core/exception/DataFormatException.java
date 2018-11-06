@@ -6,25 +6,15 @@ package io.mosip.kernel.core.exception;
  */
 public class DataFormatException extends IOException {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1762806620894866489L;
 
-	/**
-	 * @param errorCode
-	 * @param errorMessage
-	 * @param rootCause
-	 */
+
 	public DataFormatException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 
 	}
 
-	/**
-	 * @param errorCode
-	 * @param errorMessage
-	 */
+
 	public DataFormatException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 

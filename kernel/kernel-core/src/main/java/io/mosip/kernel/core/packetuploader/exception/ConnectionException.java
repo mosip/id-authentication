@@ -10,18 +10,9 @@ import io.mosip.kernel.core.exception.BaseCheckedException;
  */
 public class ConnectionException extends BaseCheckedException {
 
-	/**
-	 * Constant id for serialization
-	 */
 	private static final long serialVersionUID = 3585613514626311385L;
 
-	/**
-	 * Constructor for this class
-	 * 
-	 * @param errorCode
-	 * @param errorMessage
-	 * @param cause
-	 */
+
 	public ConnectionException(String errorCode, String errorMessage, Throwable cause) {
 		super(errorCode, errorMessage, cause);
 	}

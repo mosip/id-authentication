@@ -7,7 +7,7 @@ package io.mosip.kernel.core.otpmanager.spi;
  * @since 1.0.0
  *
  */
-public interface OtpValidatorService<D> {
+public interface OtpValidator<D> {
 	/**
 	 * This method can be used to validate OTP against an existing key and a given
 	 * OTP.

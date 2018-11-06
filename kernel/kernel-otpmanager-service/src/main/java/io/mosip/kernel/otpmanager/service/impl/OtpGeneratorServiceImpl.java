@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.otpmanager.spi.OtpGeneratorService;
+import io.mosip.kernel.core.otpmanager.spi.OtpGenerator;
 import io.mosip.kernel.otpmanager.constant.OtpStatusConstants;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorRequestDto;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorResponseDto;
@@ -25,7 +25,7 @@ import io.mosip.kernel.otpmanager.util.OtpManagerUtils;
  */
 @Service
 public class OtpGeneratorServiceImpl
-		implements OtpGeneratorService<OtpGeneratorRequestDto, OtpGeneratorResponseDto> {
+		implements OtpGenerator<OtpGeneratorRequestDto, OtpGeneratorResponseDto> {
 	/**
 	 * The reference that autowires OtpRepository class.
 	 */

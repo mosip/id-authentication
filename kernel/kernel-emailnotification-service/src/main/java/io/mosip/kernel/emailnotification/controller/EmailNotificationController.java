@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.kernel.core.notification.spi.EmailNotificationService;
+import io.mosip.kernel.core.notification.spi.EmailNotification;
 import io.mosip.kernel.emailnotification.dto.ResponseDto;
 
 /**
@@ -26,7 +26,7 @@ public class EmailNotificationController {
 	 * Autowired reference for MailNotifierService.
 	 */
 	@Autowired
-	EmailNotificationService<MultipartFile[], CompletableFuture<ResponseDto>> emailNotificationService;
+	EmailNotification<MultipartFile[], CompletableFuture<ResponseDto>> emailNotificationService;
 
 	/**
 	 * @param mailTo

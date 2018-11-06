@@ -10,18 +10,9 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  */
 public class SFTPException extends BaseUncheckedException {
 
-	/**
-	 * Constant id for serialization
-	 */
 	private static final long serialVersionUID = -4917690212566752247L;
 
-	/**
-	 * Constructor for this class
-	 * 
-	 * @param errorCode
-	 * @param errorMessage
-	 * @param cause
-	 */
+
 	public SFTPException(String errorCode, String errorMessage, Throwable cause) {
 		super(errorCode, errorMessage, cause);
 	}

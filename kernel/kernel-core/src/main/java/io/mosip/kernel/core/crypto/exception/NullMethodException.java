@@ -26,8 +26,11 @@ public class NullMethodException extends BaseUncheckedException {
 
 	/**
 	 * Constructor with errorCode and errorMessage
+	 * 
 	 * @param errorCode
+	 *            The errorcode for this exception
 	 * @param errorMessage
+	 *            The error message for this exception
 	 */
 
 	public NullMethodException(String errorCode, String errorMessage) {

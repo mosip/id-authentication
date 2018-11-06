@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.core.notification.spi.SmsNotificationService;
+import io.mosip.kernel.core.notification.spi.SmsNotification;
 import io.mosip.kernel.smsnotification.dto.SmsRequestDto;
 import io.mosip.kernel.smsnotification.dto.SmsResponseDto;
 
@@ -30,7 +30,7 @@ public class SmsNotificationController {
 	 * The reference that autowire sms notification service class.
 	 */
 	@Autowired
-	SmsNotificationService<SmsResponseDto> smsNotifierService;
+	SmsNotification<SmsResponseDto> smsNotifierService;
 
 	/**
 	 * This method sends sms to the contact number provided.

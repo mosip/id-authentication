@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.mosip.kernel.core.notification.spi.SmsNotificationService;
+import io.mosip.kernel.core.notification.spi.SmsNotification;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.smsnotification.constant.SmsExceptionConstant;
 import io.mosip.kernel.smsnotification.constant.SmsPropertyConstant;
@@ -24,7 +24,7 @@ import io.mosip.kernel.smsnotification.exception.InvalidNumberException;
  *
  */
 @Service
-public class SmsNotificationServiceImpl implements SmsNotificationService<SmsResponseDto>{
+public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDto>{
 
 	/**
 	 * The reference that autowired rest template builder.

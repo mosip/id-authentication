@@ -11,7 +11,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.kernel.core.notification.spi.EmailNotificationService;
+import io.mosip.kernel.core.notification.spi.EmailNotification;
 import io.mosip.kernel.emailnotification.constant.MailNotifierConstants;
 import io.mosip.kernel.emailnotification.dto.ResponseDto;
 import io.mosip.kernel.emailnotification.exception.NotificationException;
@@ -24,7 +24,7 @@ import io.mosip.kernel.emailnotification.util.EmailNotificationUtils;
  * @since 1.0.0
  */
 @Service
-public class EmailNotificationServiceImpl implements EmailNotificationService<MultipartFile[],CompletableFuture<ResponseDto>>{
+public class EmailNotificationServiceImpl implements EmailNotification<MultipartFile[],CompletableFuture<ResponseDto>>{
 	/**
 	 * Autowired reference for {@link JavaMailSender}
 	 */
