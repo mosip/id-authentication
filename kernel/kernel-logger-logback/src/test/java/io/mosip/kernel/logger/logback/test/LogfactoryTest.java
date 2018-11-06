@@ -231,7 +231,7 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
 		mosipRollingFileAppender
-				.setFileNamePattern("testFileappender-%d{ss}.txt");
+				.setFileNamePattern("src/test/resources/testFileappender-%d{ss}.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
 		assertThat(
@@ -248,7 +248,7 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
 		mosipRollingFileAppender
-				.setFileNamePattern("testFileappender-%d{ss}.txt");
+				.setFileNamePattern("src/test/resources/testFileappender-%d{ss}.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
 		assertThat(
@@ -265,7 +265,7 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
 		mosipRollingFileAppender
-				.setFileNamePattern("testFileappender-%d{ss}.txt");
+				.setFileNamePattern("src/test/resources/testFileappender-%d{ss}.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
 		assertThat(Logfactory.getRollingFileLogger(
@@ -281,7 +281,7 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
 		mosipRollingFileAppender
-				.setFileNamePattern("testFileappender-%d{ss}.txt");
+				.setFileNamePattern("src/test/resources/testFileappender-%d{ss}.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
 		assertThat(
@@ -299,7 +299,7 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
 		mosipRollingFileAppender
-				.setFileNamePattern("testFileappender-%d{ss}.txt");
+				.setFileNamePattern("src/test/resources/testFileappender-%d{ss}.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
 		assertThat(Logfactory.getRollingFileLogger(
@@ -315,7 +315,7 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
 		mosipRollingFileAppender
-				.setFileNamePattern("testFileappender-%d{ss}.txt");
+				.setFileNamePattern("src/test/resources/testFileappender-%d{ss}.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
 		assertThat(
@@ -332,7 +332,7 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
 		mosipRollingFileAppender
-				.setFileNamePattern("testFileappender-%d{ss}-%i.txt");
+				.setFileNamePattern("src/test/resources/testFileappender-%d{ss}-%i.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
 		mosipRollingFileAppender.setMaxFileSize("10kb");
@@ -350,7 +350,7 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
 		mosipRollingFileAppender
-				.setFileNamePattern("testFileappender-%d{ss}-%i.txt");
+				.setFileNamePattern("src/test/resources/testFileappender-%d{ss}-%i.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
 		mosipRollingFileAppender.setMaxFileSize("10kb");
@@ -368,7 +368,7 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
 		mosipRollingFileAppender
-				.setFileNamePattern("testFileappender-%d{ss}-%i.txt");
+				.setFileNamePattern("src/test/resources/testFileappender-%d{ss}-%i.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
 		mosipRollingFileAppender.setMaxFileSize("10kb");
@@ -384,7 +384,7 @@ public class LogfactoryTest {
 		mosipRollingFileAppender.setImmediateFlush(true);
 		mosipRollingFileAppender.setPrudent(false);
 		mosipRollingFileAppender
-				.setFileNamePattern("testFileappender-%d{ss}-%i.txt");
+				.setFileNamePattern("src/test/resources/testFileappender-%d{ss}-%i.txt");
 		mosipRollingFileAppender.setMaxHistory(5);
 		mosipRollingFileAppender.setTotalCap("100KB");
 		mosipRollingFileAppender.setMaxFileSize("10kb");
