@@ -27,8 +27,8 @@ public class BiometricAttributeController {
 	@Autowired
 	BiometricAttributeService biometricAttributeService;
 
-	@ApiOperation(value = "fetch all the biometric attributes avialbale for specific BiometricType")
-	@GetMapping("/biometricattributes/{biometrictypecode}/{languagecode}")
+	@ApiOperation(value = "Fetch all the biometric attributes avialbale for specific BiometricType")
+	@GetMapping("/getbiometricattributesbyauthtype/{languagecode}/{biometrictypecode}")
 	public BiometricTypeResponseDto getBiometricAttributesByBiometricType(
 			@PathVariable("languagecode") String languageCode,
 			@PathVariable("biometrictypecode") String biometricTypeCode) {
