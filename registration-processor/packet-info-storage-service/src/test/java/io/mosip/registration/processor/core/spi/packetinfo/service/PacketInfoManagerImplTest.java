@@ -43,6 +43,7 @@ import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentPKEntity;
@@ -59,7 +60,7 @@ import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoMan
 @RunWith(MockitoJUnitRunner.class)
 public class PacketInfoManagerImplTest {
 	@InjectMocks
-	PacketInfoManager<PacketInfo, Demographic, MetaData> packetInfoManagerImpl = new PacketInfoManagerImpl();
+	PacketInfoManager<PacketInfo, Demographic, MetaData,ApplicantInfoDto> packetInfoManagerImpl = new PacketInfoManagerImpl();
 
 	@Mock
 	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
