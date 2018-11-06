@@ -21,6 +21,7 @@ import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 
 /**
+ * blacklisted words service implementation
  * 
  * @author Abhishek Kumar
  * @version 1.0.0
@@ -35,6 +36,12 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 	@Autowired
 	private ObjectMapperUtil mapperUtil;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.BlacklistedWordsService#
+	 * getAllBlacklistedWordsBylangCode(java.lang.String)
+	 */
 	@Override
 	public BlacklistedWordsResponseDto getAllBlacklistedWordsBylangCode(String langCode) {
 		List<BlacklistedWordsDto> wordsDto = null;
