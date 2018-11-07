@@ -1,10 +1,14 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.LoggerConstants.DEVICE_ONBOARD_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOARD_ERROR_MSG;
+import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOARD_EXCEPTION_ALERT;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTHORIZATION_EXCEPTION;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_HOMEPAGE_IO_EXCEPTION;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_LOGOUT_IO_EXCEPTION;
+import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION;
 
 import java.io.IOException;
 
@@ -31,6 +35,7 @@ import javafx.scene.layout.VBox;
  * Class for Registration Officer details
  * 
  * @author Sravya Surampalli
+ * @author Balaji Sridharan
  * @since 1.0.0
  *
  */
@@ -170,6 +175,44 @@ public class RegistrationOfficerDetailsController extends BaseController {
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - UI - Officer Sync Packet Status ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
+		}
+	}
+	
+	/**
+	 * Redirects to Device On-Boarding UI Page.
+	 * 
+	 * @param actionEvent
+	 *            is an action event
+	 */
+	public void onBoardDevice(ActionEvent actionEvent) {
+		LOGGER.debug(DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION, APPLICATION_NAME, APPLICATION_ID,
+				"Navigating to Device Onboarding Page");
+
+		try {
+			AnchorPane onBoardRoot = BaseController
+					.load(getClass().getResource(RegistrationConstants.DEVICE_ONBOARDING_PAGE));
+
+			if (!validateScreenAuthorization(onBoardRoot.getId())) {
+				generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
+						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+						RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
+						REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
+			} else {
+				VBox pane = (VBox) menu.getParent().getParent().getParent();
+				Object parent = pane.getChildren().get(0);
+				pane.getChildren().clear();
+				pane.getChildren().add((Node) parent);
+				pane.getChildren().add(onBoardRoot);
+			}
+		} catch (IOException ioException) {
+			LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.DEVICE_ONBOARD_LOADING_DEVICES_EXCEPTION
+							+ "-> Exception while navigating to Device Onboarding page:" + ioException.getMessage());
+
+			generateAlert(DEVICE_ONBOARD_EXCEPTION_ALERT, AlertType.ERROR, DEVICE_ONBOARD_ERROR_MSG);
+		} finally {
+			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Navigation to Device Onboarding page completed");
 		}
 	}
 

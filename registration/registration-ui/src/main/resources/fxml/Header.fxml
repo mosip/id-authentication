@@ -65,6 +65,8 @@
 								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#onBoardUser" text="On Board User" />
 								<SeparatorMenuItem />
+								<MenuItem mnemonicParsing="false" onAction="#onBoardDevice" text="Device Onboarding" />
+								<SeparatorMenuItem />
 								<MenuItem mnemonicParsing="false" onAction="#redirectHome" text="Home" />
 							</items>
 						</Menu>
