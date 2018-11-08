@@ -35,10 +35,11 @@ import io.mosip.registration.processor.core.packet.dto.DemographicSequence;
 import io.mosip.registration.processor.core.packet.dto.HashSequence;
 import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -48,17 +49,17 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
 public class PacketValidatorStageTest {
 
-	@Mock 
+	@Mock
 	private InputStream inputStream;
 
 	@Mock
-	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
+	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
 
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
-	PacketInfoManager<PacketInfo, Demographic, MetaData> packetinfomanager;
+	PacketInfoManager<PacketInfo, Demographic, MetaData, ApplicantInfoDto> packetinfomanager;
 
 	@InjectMocks
 	private PacketValidatorStage packetValidatorStage;
@@ -69,7 +70,7 @@ public class PacketValidatorStageTest {
 	/** The audit handler. */
 	@Mock
 	private AuditHandler<AuditRequestDto> auditHandler;
-	
+
 	private PacketInfo packetInfo;
 
 	private Demographic demographicinfo;
@@ -109,7 +110,7 @@ public class PacketValidatorStageTest {
 		hashSequence.setBiometricSequence(biometricSequence);
 		hashSequence.setDemographicSequence(demographicSequence);
 		packetInfo.setHashSequence(hashSequence);
-		
+
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 

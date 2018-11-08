@@ -31,6 +31,7 @@ public class RetryVerticleApplicationTests {
 		retryStage.deployVerticle();
 		vertx = retryStage.getEventBus(RetryStage.class, "", "").getEventbus();
 		revertx = retryStage.getEventBus(RetryStage.class, "", "").getEventbus();
+		;
 		dto.setRid("1001");
 		dto.setRetryCount(null);
 		dto.setIsValid(false);

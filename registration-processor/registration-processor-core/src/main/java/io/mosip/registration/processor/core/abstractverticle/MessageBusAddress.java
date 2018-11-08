@@ -81,5 +81,6 @@ public class MessageBusAddress implements Serializable {
 
 	/** The Constant ERROR. */
 	public static final MessageBusAddress ERROR = new MessageBusAddress("error");
+	public static final MessageBusAddress QUALITY_CHECK_BUS = new MessageBusAddress("quality_check_bus");
 
 }

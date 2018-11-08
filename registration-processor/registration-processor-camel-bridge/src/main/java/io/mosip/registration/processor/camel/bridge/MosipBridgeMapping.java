@@ -32,6 +32,8 @@ public class MosipBridgeMapping {
 								.toVertx(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
 				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN))
 						.toVertx(MessageBusAddress.STRUCTURE_BUS_IN.getAddress()))
+				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS))
+						.toVertx(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
 				.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
 						.toVertx(MessageBusAddress.RETRY_BUS.getAddress()))
 

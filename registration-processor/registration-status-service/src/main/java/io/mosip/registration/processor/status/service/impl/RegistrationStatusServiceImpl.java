@@ -11,14 +11,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
-import io.mosip.registration.processor.status.code.AuditLogTempConstant;
-import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -34,7 +33,8 @@ import io.mosip.registration.processor.status.utilities.RegistrationStatusMapUti
  * The Class RegistrationStatusServiceImpl.
  */
 @Component
-public class RegistrationStatusServiceImpl implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
+public class RegistrationStatusServiceImpl
+		implements RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> {
 
 	@Value("${registration.processor.landingZone_To_VirusScan_Interval_Threshhold_time}")
 
@@ -66,8 +66,12 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.status.service.RegistrationStatusService#getRegistrationStatus(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
+	 * getRegistrationStatus(java.lang.Object)
 	 */
 	@Override
 	public InternalRegistrationStatusDto getRegistrationStatus(String registrationId) {
@@ -75,7 +79,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		try {
 			RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
 			isTransactionSuccessful = true;
-			//Event constants for audit log
+			// Event constants for audit log
 			eventId = EventId.RPR_401.toString();
 			eventName = EventName.GET.toString();
 			eventType = EventType.BUSINESS.toString();
@@ -95,8 +99,12 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.status.service.RegistrationStatusService#findbyfilesByThreshold(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
+	 * findbyfilesByThreshold(java.lang.String)
 	 */
 	@Override
 	public List<InternalRegistrationStatusDto> findbyfilesByThreshold(String statusCode) {
@@ -105,7 +113,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			List<RegistrationStatusEntity> entities = registrationStatusDao.findbyfilesByThreshold(statusCode,
 					getThreshholdTime());
 			isTransactionSuccessful = true;
-			//Event constants for audit log
+			// Event constants for audit log
 			eventId = EventId.RPR_401.toString();
 			eventName = EventName.GET.toString();
 			eventType = EventType.BUSINESS.toString();
@@ -126,8 +134,12 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.status.service.RegistrationStatusService#addRegistrationStatus(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
+	 * addRegistrationStatus(java.lang.Object)
 	 */
 	@Override
 	public void addRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto) {
@@ -138,7 +150,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
 			registrationStatusDao.save(entity);
 			isTransactionSuccessful = true;
-			//Event constants for audit log
+			// Event constants for audit log
 			eventId = EventId.RPR_407.toString();
 			eventName = EventName.ADD.toString();
 			eventType = EventType.BUSINESS.toString();
@@ -163,8 +175,12 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.status.service.RegistrationStatusService#updateRegistrationStatus(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
+	 * updateRegistrationStatus(java.lang.Object)
 	 */
 	@Override
 	public void updateRegistrationStatus(InternalRegistrationStatusDto registrationStatusDto) {
@@ -177,7 +193,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 				RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
 				registrationStatusDao.save(entity);
 				isTransactionSuccessful = true;
-				//Event constants for audit log
+				// Event constants for audit log
 				eventId = EventId.RPR_407.toString();
 				eventName = EventName.ADD.toString();
 				eventType = EventType.BUSINESS.toString();
@@ -205,8 +221,12 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.status.service.RegistrationStatusService#getByStatus(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
+	 * getByStatus(java.lang.String)
 	 */
 	@Override
 	public List<InternalRegistrationStatusDto> getByStatus(String status) {
@@ -215,7 +235,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
 					.getEnrolmentStatusByStatusCode(status);
 			isTransactionSuccessful = true;
-			//Event constants for audit log
+			// Event constants for audit log
 			eventId = EventId.RPR_401.toString();
 			eventName = EventName.GET.toString();
 			eventType = EventType.BUSINESS.toString();
@@ -236,8 +256,12 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.processor.status.service.RegistrationStatusService#getByIds(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
+	 * getByIds(java.lang.String)
 	 */
 	@Override
 	public List<RegistrationStatusDto> getByIds(String ids) {
@@ -248,14 +272,14 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
 					.getByIds(registrationIds);
 			isTransactionSuccessful = true;
-            //Event constants for audit log
-            eventId = EventId.RPR_401.toString();
-            eventName = EventName.GET.toString();
-            eventType = EventType.BUSINESS.toString();
+			// Event constants for audit log
+			eventId = EventId.RPR_401.toString();
+			eventName = EventName.GET.toString();
+			eventType = EventType.BUSINESS.toString();
 			return convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList);
 
 		} catch (DataAccessLayerException e) {
-			//Event constants for audit log
+			// Event constants for audit log
 			eventId = EventId.RPR_405.toString();
 			eventName = EventName.EXCEPTION.toString();
 			eventType = EventType.SYSTEM.toString();
@@ -347,7 +371,8 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 	/**
 	 * Gets the latest transaction id.
 	 *
-	 * @param registrationId the registration id
+	 * @param registrationId
+	 *            the registration id
 	 * @return the latest transaction id
 	 */
 	private String getLatestTransactionId(String registrationId) {

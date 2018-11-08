@@ -38,9 +38,22 @@ public class MosipBridgeRoutes extends RouteBuilder {
 				.when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(true))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(true))
-				.to(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN))
+				.to(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS))
 				.when(header(MessageEnum.IS_VALID.getParameter()).isEqualTo(false))
 				.to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR));
+
+		// Demographic validation to Biometric validation routing
+		/*
+		 * from(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_OUT.getAddress(
+		 * ))).process(validateDemographic)
+		 * .choice().when(header(MessageEnum.INTERNAL_ERROR.getParameter()).isEqualTo(
+		 * true))
+		 * .to(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS.getAddress())).choice(
+		 * ) .when(header("hasValidDemographic").isEqualTo(true))
+		 * .to(BridgeUtil.getEndpoint(MessageBusAddress.BIOMETRIC_BUS_IN.getAddress()))
+		 * .when(header("hasValidDemographic").isEqualTo(false))
+		 * .to(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress()));
+		 */
 
 	}
 }

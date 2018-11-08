@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.awaitility.Awaitility;
+import org.awaitility.Duration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,6 +58,7 @@ public class PacketScannerBatchJobSchedulerTest {
 	@Mock
 	private Job ftpScannerJob;
 
+	@SuppressWarnings("unchecked")
 	final Appender<ILoggingEvent> mockAppender = mock(Appender.class);
 
 	@Before
@@ -70,19 +72,22 @@ public class PacketScannerBatchJobSchedulerTest {
 
 	/*@Test
 	public void testLandingZoneScannerJobScheduler() {
-		Awaitility.await().untilAsserted(
+		Awaitility.await().atMost(Duration.FIVE_SECONDS).untilAsserted(
 				() -> verify(packetScannerBatchJobSchedulerJob, times(1)).landingZoneScannerJobScheduler());
 	}
-     */
-	/*
-	 * @Test public void testVirusScannerJobScheduler() { Awaitility.await()
-	 * .untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob,
-	 * times(1)).virusScannerJobScheduler()); }
-	 * 
-	 * @Test public void testFtpJobScheduler() { Awaitility.await().untilAsserted(()
-	 * -> verify(packetScannerBatchJobSchedulerJob, times(1)).ftpJobScheduler()); }
-	 */
 
+	@Test
+	public void testVirusScannerJobScheduler() {
+		Awaitility.await().atMost(Duration.FIVE_SECONDS)
+				.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).virusScannerJobScheduler());
+	}
+
+	@Test
+	public void testFtpJobScheduler() {
+		Awaitility.await().atMost(Duration.FIVE_SECONDS)
+				.untilAsserted(() -> verify(packetScannerBatchJobSchedulerJob, times(1)).ftpJobScheduler());
+	}
+*/
 	@Test
 	public void testInvalidJobParameters() throws Exception {
 		Mockito.doThrow(JobParametersInvalidException.class).when(jobLauncher).run(any(Job.class),

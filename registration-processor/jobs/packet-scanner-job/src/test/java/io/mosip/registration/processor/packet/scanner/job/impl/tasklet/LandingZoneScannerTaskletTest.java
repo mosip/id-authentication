@@ -66,12 +66,12 @@ public class LandingZoneScannerTaskletTest {
 
 	private List<InternalRegistrationStatusDto> list;
 
-
 	@Mock
 	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
 
 	@Before
-	public void setup() {
+	public void setup()
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		dto1 = new InternalRegistrationStatusDto();
 		dto1.setRegistrationId("1001");
 		dto1.setStatusComment("landingZone");
@@ -87,17 +87,15 @@ public class LandingZoneScannerTaskletTest {
 		dto2.setUpdateDateTime(null);
 
 		list = new ArrayList<InternalRegistrationStatusDto>();
-        AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-        AuditRequestDto auditRequest1 = new AuditRequestDto();
+		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-        Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-        f.setAccessible(true);
-        f.set(coreAuditRequestBuilder, auditRequestBuilder);
-        Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-        f1.setAccessible(true);
-        f1.set(auditRequestBuilder, auditRequest1);
-
-
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+		f.setAccessible(true);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
+		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+		f1.setAccessible(true);
+		f1.set(auditRequestBuilder, auditRequest1);
 
 	}
 
@@ -114,7 +112,8 @@ public class LandingZoneScannerTaskletTest {
 		Mockito.doNothing().when(filemanager).cleanUpFile(any(DirectoryPathDto.class), any(DirectoryPathDto.class),
 				any(String.class));
 
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
+		Mockito.doNothing().when(registrationStatusService)
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 
 		RepeatStatus status = landingZoneToVirusScanTasklet.execute(stepContribution, chunkContext);
 		Assert.assertEquals(RepeatStatus.FINISHED, status);

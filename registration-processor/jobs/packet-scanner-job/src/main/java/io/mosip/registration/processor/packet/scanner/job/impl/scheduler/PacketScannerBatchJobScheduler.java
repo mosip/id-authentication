@@ -36,11 +36,8 @@ public class PacketScannerBatchJobScheduler {
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {} - {}";
 
-	private static final String JOB_STATUS = "Job's status";
-
-
 	/** The Constant JOB_STATUS. */
-	private static final String JOB_STATUS = "Job's status" ;
+	private static final String JOB_STATUS = "Job's status";
 
 	/** The job launcher. */
 	@Autowired
@@ -53,7 +50,6 @@ public class PacketScannerBatchJobScheduler {
 	/** The virus scanner job. */
 	@Autowired
 	private Job virusScannerJob;
-
 
 	/** The ftp scanner job. */
 	@Autowired

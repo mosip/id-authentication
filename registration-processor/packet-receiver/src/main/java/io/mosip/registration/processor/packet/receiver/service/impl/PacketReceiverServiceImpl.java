@@ -28,7 +28,6 @@ import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.status.service.SyncRegistrationService;
 
-
 /**
  * The Class PacketReceiverServiceImpl.
  *
@@ -43,19 +42,17 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
-
-    /** The file extension. */
+	/** The file extension. */
 	@Value("${registration.processor.file.extension}")
 	private String fileExtension;
 
-    /** The max file size. */
+	/** The max file size. */
 	@Value("${registration.processor.max.file.size}")
 	private int maxFileSize;
 
 	/** The file manager. */
 	@Autowired
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
-
 
 	/** The sync registration service. */
 	@Autowired
@@ -76,6 +73,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 	/** The event type. */
 	private String eventType = "";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -134,40 +132,39 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 		} else {
 			throw new DuplicateUploadRequestException(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());
 		}
-					RegistrationStatusDto dto = new RegistrationStatusDto();
-					dto.setRegistrationId(registrationId);
-					dto.setRegistrationType(RegistrationType.NEW.toString());
-					dto.setReferenceRegistrationId(null);
-					dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
-					dto.setLangCode("eng");
-					dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_LANDING_ZONE status");
-					dto.setIsActive(true);
-					dto.setCreatedBy(USER);
-					dto.setIsDeleted(false);
-					registrationStatusService.addRegistrationStatus(dto);
-					storageFlag = true;
-					isTransactionSuccessful = true;
-					eventId=EventId.RPR_407.toString();
-					eventName=EventName.ADD.toString();
-					eventType=EventType.BUSINESS.toString();
-				} catch (IOException e) {
+		InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
+		dto.setRegistrationId(registrationId);
+		dto.setRegistrationType(RegistrationType.NEW.toString());
+		dto.setReferenceRegistrationId(null);
+		dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
+		dto.setLangCode("eng");
+		dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_LANDING_ZONE status");
+		dto.setIsActive(true);
+		dto.setCreatedBy(USER);
+		dto.setIsDeleted(false);
+		registrationStatusService.addRegistrationStatus(dto);
+		storageFlag = true;
+		isTransactionSuccessful = true;
+		eventId = EventId.RPR_407.toString();
+		eventName = EventName.ADD.toString();
+		eventType = EventType.BUSINESS.toString();
+	}catch(
+
+	IOException e)
+	{
 					logger.error(e.getMessage());
 					eventId=EventId.RPR_405.toString();
 					eventName=EventName.EXCEPTION.toString();
 					eventType=EventType.SYSTEM.toString();
-				}finally {
+				}finally
+	{
 
-					String description = isTransactionSuccessful
-							? "Packet registration status updated successfully"
-							: "Packet registration status updation unsuccessfull";
-					coreAuditRequestBuilder.createAuditRequestBuilder(description,eventId,eventName,eventType, registrationId);
+		String description = isTransactionSuccessful ? "Packet registration status updated successfully"
+				: "Packet registration status updation unsuccessfull";
+		coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId);
 
-				}
-			} else {
-				throw new DuplicateUploadRequestException(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());
-			}
-		return storageFlag;
 	}
+	}else{throw new DuplicateUploadRequestException(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());}return storageFlag;}
 
 	/**
 	 * Gets the file extension.
@@ -190,7 +187,8 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	/**
 	 * Checks if registration id is already present in registration status table.
 	 *
-	 * @param enrolmentId the enrolment id
+	 * @param enrolmentId
+	 *            the enrolment id
 	 * @return the boolean
 	 */
 	private Boolean isDuplicatePacket(String enrolmentId) {

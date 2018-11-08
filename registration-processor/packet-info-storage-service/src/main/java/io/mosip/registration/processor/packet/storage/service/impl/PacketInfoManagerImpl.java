@@ -3,12 +3,17 @@ package io.mosip.registration.processor.packet.storage.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.OffsetDateTime;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
+
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
@@ -29,9 +34,11 @@ import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.OsiData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantFingerprintEntity;
@@ -43,6 +50,8 @@ import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+import io.mosip.registration.processor.status.code.AuditLogTempConstant;
+import lombok.Cleanup;
 
 /**
  * The Class PacketInfoManagerImpl.
@@ -54,15 +63,15 @@ import io.mosip.registration.processor.packet.storage.repository.BasePacketRepos
 
 @RefreshScope
 @Service
-public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demographic, MetaData> {
+public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demographic, MetaData, ApplicantInfoDto> {
 
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
 
-	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
-	/** The Constant DEMOGRAPHIC_APPLICANT. */
+	public static final String LOG_FORMATTER = "{} - {}";
+
 	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
 			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
 
@@ -117,7 +126,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	;
 
 	@Autowired
-	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
+	private AuditHandler<AuditRequestDto> auditHandler;
+
+	@Autowired
+	private PacketInfoDao packetInfoDao;
+	@Autowired
+	FileSystemAdapter<InputStream, Boolean> filesystemCephAdapter;
 
 	/** The meta data. */
 	private MetaData metaData;
@@ -149,7 +163,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			saveRegCenterData(metaData);
 
 			isTransactionSuccessful = true;
-			//Event constants for audit log
+			// Event constants for audit log
 			eventId = EventId.RPR_402.toString();
 			eventName = EventName.UPDATE.toString();
 			eventType = EventType.BUSINESS.toString();
@@ -157,12 +171,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			description = isTransactionSuccessful ? "packet-meta-data saved Success"
-					: "packet-metadata Failure";
-
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
-
+			String description = isTransactionSuccessful ? "description--packet-meta-data saved Success"
+					: "description--packet-metadata Failure";
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
 		}
 
 	}
@@ -183,9 +197,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 					.convertDemographicDtoToEntity(demographicInfo, metaData);
 			for (ApplicantDemographicEntity applicantDemographicEntity : applicantDemographicEntities) {
 				applicantDemographicRepository.save(applicantDemographicEntity);
-				LOGGER.info(applicantDemographicEntity.getId().getRegId() + " --> Demographic  DATA SAVED");
+				LOGGER.info(LOG_FORMATTER, applicantDemographicEntity.getId().getRegId(), " Demographic  DATA SAVED");
 			}
-			//Event constants for audit log
+			// Event constants for audit log
 			eventId = EventId.RPR_407.toString();
 			eventName = EventName.ADD.toString();
 			eventType = EventType.BUSINESS.toString();
@@ -196,14 +210,40 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			eventType = EventType.BUSINESS.toString();
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			description = isTransactionSuccessful ? "Demographic-data saved Success"
-					: "Demographic Failed to save";
+			description = isTransactionSuccessful ? "Demographic-data saved Success" : "Demographic Failed to save";
 
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
 		}
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
+	 * getPacketsforQCUser(java.lang.String)
+	 */
+	@Override
+	public List<ApplicantInfoDto> getPacketsforQCUser(String qcUserId) {
+		boolean isTransactionSuccessful = false;
+		List<ApplicantInfoDto> applicantInfoDtoList = null;
+		try {
+			applicantInfoDtoList = packetInfoDao.getPacketsforQCUser(qcUserId);
+			isTransactionSuccessful = true;
+			return applicantInfoDtoList;
+		} catch (DataAccessLayerException e) {
+			throw new TablenotAccessibleException("Table Not Accessible", e);
+		} finally {
+			String description = isTransactionSuccessful ? "description--QcUser packet Info fetched Success"
+					: "description--QcUser packet Info fetched Failed";
+			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
+					AuditLogTempConstant.EVENT_TYPE.toString());
+		}
 	}
 
 	/**
@@ -230,14 +270,14 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		irisList.forEach(iris -> {
 			ApplicantIrisEntity applicantIrisEntity = PacketInfoMapper.convertIrisDtoToEntity(iris, metaData);
 			applicantIrisRepository.save(applicantIrisEntity);
-			LOGGER.info(applicantIrisEntity.getId().getRegId() + " --> Applicant Iris DATA SAVED");
+			LOGGER.info(LOG_FORMATTER, applicantIrisEntity.getId().getRegId(), " Applicant Iris DATA SAVED");
 		});
 
 		exceptionIrisList.forEach(exceptionIris -> {
 			BiometricExceptionEntity biometricIrisExceptionEntity = PacketInfoMapper
 					.convertBiometricExcDtoToEntity(exceptionIris, metaData);
 			biometricExceptionRepository.save(biometricIrisExceptionEntity);
-			LOGGER.info(biometricIrisExceptionEntity.getId().getRegId() + " --> Applicant Iris DATA SAVED");
+			LOGGER.info(LOG_FORMATTER, biometricIrisExceptionEntity.getId().getRegId(), " Applicant Iris DATA SAVED");
 		});
 	}
 
@@ -255,7 +295,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			ApplicantFingerprintEntity fingerprintEntity = PacketInfoMapper.convertFingerprintDtoToEntity(fingerprint,
 					metaData);
 			applicantFingerprintRepository.save(fingerprintEntity);
-			LOGGER.info(fingerprintEntity.getId().getRegId() + " --> Fingerprint DATA SAVED");
+			LOGGER.info(LOG_FORMATTER, fingerprintEntity.getId().getRegId(), " Fingerprint DATA SAVED");
 
 		});
 
@@ -263,7 +303,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			BiometricExceptionEntity biometricExceptionEntity = PacketInfoMapper
 					.convertBiometricExceptioDtoToEntity(exceptionFingerprint, metaData);
 			biometricExceptionRepository.save(biometricExceptionEntity);
-			LOGGER.info(biometricExceptionEntity.getId().getRegId() + " --> Biometric Exception DATA SAVED");
+			LOGGER.info(LOG_FORMATTER, biometricExceptionEntity.getId().getRegId(), "  Biometric Exception DATA SAVED");
 		});
 	}
 
@@ -308,7 +348,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 
 		applicantDocumentEntity.setDocStore(getDocumentAsByteArray(metaData.getRegistrationId(), fileName));
 		applicantDocumentRepository.save(applicantDocumentEntity);
-		LOGGER.info(applicantDocumentEntity.getId().getRegId() + " --> Document Demographic DATA SAVED");
+		LOGGER.info(LOG_FORMATTER, applicantDocumentEntity.getId().getRegId(), "  Document Demographic DATA SAVED");
 	}
 
 	/**
@@ -320,7 +360,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private void saveOsiData(OsiData osiData) {
 		RegOsiEntity regOsiEntity = PacketInfoMapper.convertOsiDataToEntity(osiData, metaData);
 		regOsiRepository.save(regOsiEntity);
-		LOGGER.info(regOsiEntity.getId() + " --> Applicant OSI DATA SAVED");
+		LOGGER.info(LOG_FORMATTER, regOsiEntity.getId(), "  Applicant OSI DATA SAVED");
 	}
 
 	/**
@@ -333,7 +373,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		ApplicantPhotographEntity applicantPhotographEntity = PacketInfoMapper
 				.convertPhotoGraphDtoToEntity(photoGraphData, metaData);
 		applicantPhotographRepository.save(applicantPhotographEntity);
-		LOGGER.info(applicantPhotographEntity.getId().getRegId() + " --> Applicant Photograph DATA SAVED");
+		LOGGER.info(LOG_FORMATTER, applicantPhotographEntity.getId().getRegId(), " Applicant Photograph DATA SAVED");
 	}
 
 	/**
@@ -359,19 +399,38 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	 * @return the document as byte array
 	 */
 	private byte[] getDocumentAsByteArray(String registrationId, String documentName) {
-
-		InputStream in = filesystemCephAdapterImpl.getFile(registrationId, documentName);
-		byte[] buffer = new byte[1024];
-		int len;
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		try {
+			@Cleanup
+			InputStream in = filesystemCephAdapter.getFile(registrationId, documentName);
+			byte[] buffer = new byte[1024];
+			int len;
+			@Cleanup
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			while ((len = in.read(buffer)) != -1) {
 				os.write(buffer, 0, len);
 			}
+			return os.toByteArray();
 		} catch (IOException e) {
-			LOGGER.error("Error While reading  inputstream file", e);
+			LOGGER.error(LOG_FORMATTER, "Error While reading  inputstream file", e);
+			return new byte[1];
 		}
-		return os.toByteArray();
+
 	}
 
+	private void createAuditRequestBuilder(String applicationId, String applicationName, String description,
+			String eventId, String eventName, String eventType) {
+		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
+				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
+				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
+				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
+				.setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(AuditLogTempConstant.ID.toString())
+				.setIdType(AuditLogTempConstant.ID_TYPE.toString())
+				.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
+				.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
+				.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
+				.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
+
+		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
+		auditHandler.writeAudit(auditRequestDto);
+	}
 }

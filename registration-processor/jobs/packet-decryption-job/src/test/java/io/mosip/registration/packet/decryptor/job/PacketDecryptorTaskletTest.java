@@ -32,11 +32,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
@@ -100,7 +99,8 @@ public class PacketDecryptorTaskletTest {
 	List<InternalRegistrationStatusDto> list;
 
 	@Mock
-    private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+
 	/**
 	 * Setup.
 	 *
@@ -116,21 +116,22 @@ public class PacketDecryptorTaskletTest {
 	 * @throws IllegalArgumentException
 	 */
 	@Before
-	public void setup() throws UnableToAccessPathException, PacketNotFoundException, IOException {
+	public void setup() throws UnableToAccessPathException, PacketNotFoundException, IOException, NoSuchFieldException,
+			SecurityException, IllegalArgumentException, IllegalAccessException {
 		dto = new InternalRegistrationStatusDto();
 		dto.setRegistrationId("1001");
 		dto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
 		dto.setRetryCount(0);
 		list = new ArrayList<InternalRegistrationStatusDto>();
-        AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-        AuditRequestDto auditRequest1 = new AuditRequestDto();
+		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-        Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-        f.setAccessible(true);
-        f.set(coreAuditRequestBuilder, auditRequestBuilder);
-        Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-        f1.setAccessible(true);
-        f1.set(auditRequestBuilder, auditRequest1);
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+		f.setAccessible(true);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
+		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+		f1.setAccessible(true);
+		f1.set(auditRequestBuilder, auditRequest1);
 	}
 
 	/**
