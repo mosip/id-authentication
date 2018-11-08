@@ -1,6 +1,6 @@
 package io.mosip.kernel.auditmanager.entity;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -46,7 +46,7 @@ public class Audit extends BaseAudit {
 
 	@NotNull
 	@Column(name = "action_dtimesz", nullable = false, updatable = false)
-	private OffsetDateTime actionTimeStamp;
+	private LocalDateTime actionTimeStamp;
 
 	@NotNull
 	@Size(min = 1, max = 32)
