@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -90,26 +91,65 @@ public class DemoMatchTypeTest {
 		assertEquals(matchStrategy.get(), AgeMatchingStrategy.EXACT);
 	}
 
+	@Ignore
 	@Test
 	public void TestFullAddress() {
-		String tmpAddress = "no 1 gandhi street chennai india";
-//		DemoEntity demoEntity = new DemoEntity();
-//		demoEntity.setAddrLine1("no 1");
-//		demoEntity.setAddrLine2("gandhi street");
-//		demoEntity.setLocationCode("CHNN");
+		String tmpAddress = "exemple d'adresse ligne 1 exemple d'adresse ligne 2 exemple d'adresse ligne 3 Casablanca Tanger-Tétouan-Al Hoceima Fès-Meknès";
+		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
+		IdentityInfoDTO identityInfo1 = new IdentityInfoDTO();
+		identityInfo1.setLanguage("FR");
+		identityInfo1.setValue("exemple d'adresse ligne 1");
+		List<IdentityInfoDTO> addressLine1 = new ArrayList<>();
+		addressLine1.add(identityInfo1);
+		demoEntity.put("addressLine1", addressLine1);
+
+		IdentityInfoDTO identityInfoDTO2 = new IdentityInfoDTO();
+		identityInfoDTO2.setLanguage("FR");
+		identityInfoDTO2.setValue("exemple d'adresse ligne 2");
+		List<IdentityInfoDTO> addressLine2 = new ArrayList<>();
+		addressLine2.add(identityInfoDTO2);
+		demoEntity.put("addressLine2", addressLine2);
 		
-//		Map<String, List<IdentityInfoDTO>> demoEntity=new HashMap<>();
-//		IdentityInfoDTO identityInfoDTO=new IdentityInfoDTO();
-//		LocationInfoFetcher locationInfoFetcher = Mockito.mock(LocationInfoFetcher.class);
-//		Function<LanguageType, String> languageCodeFetcher;
-//		Function<LanguageType, String> languageNameFetcher;
-//		IDAMappingConfig idaMappingConfig;
-//		Mockito.when(locationInfoFetcher.getLocation(LocationLevel.CITY, demoEntity.getLocationCode()))
-//				.thenReturn(Optional.of("chennai"));
-//		Mockito.when(locationInfoFetcher.getLocation(LocationLevel.COUNTRY, demoEntity.getLocationCode()))
-//				.thenReturn(Optional.of("india"));
-//		assertEquals(tmpAddress, DemoMatchType.ADDR_PRI.getEntityInfo(demoEntity, languageCodeFetcher, languageNameFetcher, locationInfoFetcher, idaMappingConfig);
-//				.toString().trim());
+		IdentityInfoDTO identityInfoDTO3 = new IdentityInfoDTO();
+		identityInfoDTO3.setLanguage("FR");
+		identityInfoDTO3.setValue("exemple d'adresse ligne 3");
+		List<IdentityInfoDTO> addressLine3 = new ArrayList<>();
+		addressLine3.add(identityInfoDTO2);
+		demoEntity.put("addressLine3", addressLine3);
+		
+		IdentityInfoDTO location1 = new IdentityInfoDTO();
+		location1.setLanguage("FR");
+		location1.setValue("Casablanca");
+		List<IdentityInfoDTO> location1list = new ArrayList<>();
+		location1list.add(identityInfoDTO2);
+		demoEntity.put("location1", location1list);
+		
+		IdentityInfoDTO location2 = new IdentityInfoDTO();
+		location2.setLanguage("FR");
+		location2.setValue("Tanger-Tétouan-Al Hoceima");
+		List<IdentityInfoDTO> location2list = new ArrayList<>();
+		location2list.add(identityInfoDTO2);
+		demoEntity.put("location2", location2list);
+		
+		IdentityInfoDTO location3 = new IdentityInfoDTO();
+		location3.setLanguage("FR");
+		location3.setValue("Fès-Meknès");
+		List<IdentityInfoDTO> location3list = new ArrayList<>();
+		location3list.add(identityInfoDTO2);
+		demoEntity.put("location3", location3list);
+		
+		
+		
+		Function<LanguageType, String> languageCodeFetcher = obj -> "FR";
+		Function<String, Optional<String>> languageNameFetcher = obj -> Optional.of("french");
+
+		LocationInfoFetcher locationInfoFetcher = null;
+		IDAMappingConfig idMappingConfig = new IDAMappingConfig();
+		List<String> fullAddress = new ArrayList<>();
+		fullAddress.add(tmpAddress);
+		idMappingConfig.setFullAddress(fullAddress);
+		assertEquals(tmpAddress, DemoMatchType.ADDR_SEC.getEntityInfo(demoEntity, languageCodeFetcher,
+				languageNameFetcher, locationInfoFetcher, idMappingConfig));
 	}
 
 	@Test

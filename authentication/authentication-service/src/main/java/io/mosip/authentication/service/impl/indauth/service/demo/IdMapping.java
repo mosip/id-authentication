@@ -1,7 +1,9 @@
 package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import io.mosip.authentication.service.config.IDAMappingConfig;
 
@@ -43,6 +45,10 @@ public enum IdMapping {
 
 	public Function<IDAMappingConfig, List<String>> getMappingFunction() {
 		return mappingFunction;
+	}
+	
+	public static Optional<IdMapping> getIdMapping(String name) {
+		return Stream.of(values()).filter(m -> m.getIdname().equals(name)).findAny();
 	}
 
 }

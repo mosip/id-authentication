@@ -99,6 +99,7 @@ public class KycAuthRequestValidatorTest {
 		assertFalse(KycAuthRequestValidator.supports(KycAuthRequestValidator.class));
 	}
 
+	@Ignore
 	@Test
 	public void testValidateAuthRequest() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();

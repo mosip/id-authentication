@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -185,9 +186,12 @@ public enum DemoMatchType implements MatchType {
 	}
 
 	private static Optional<Object> getInfo(List<IdentityInfoDTO> identityInfos, String language) {
-		return identityInfos.parallelStream()
-				.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage()))
-				.<Object>map(IdentityInfoDTO::getValue).findAny();
+		if (identityInfos != null && !identityInfos.isEmpty()) {
+			return identityInfos.parallelStream()
+					.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage()))
+					.<Object>map(IdentityInfoDTO::getValue).findAny();
+		}
+		return Optional.empty();
 	}
 
 	public LanguageType getLanguageType() {
@@ -273,7 +277,18 @@ public enum DemoMatchType implements MatchType {
 	}
 
 	private static List<String> getIdMappingValue(IdMapping idMapping, IDAMappingConfig idMappingConfig) {
-		return idMapping.getMappingFunction().apply(idMappingConfig);
+		List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig);
+		List<String> fullMapping = new ArrayList<>();
+		for (String mappingStr : mappings) {
+			Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr);
+			if(mappingInternal.isPresent()) {
+				List<String> internalMapping = getIdMappingValue(mappingInternal.get(), idMappingConfig);
+				fullMapping.addAll(internalMapping);
+			} else {
+				fullMapping.add(mappingStr);
+			}
+		}
+		return fullMapping;
 	}
 
 	private static List<IdentityValue> getDemoValue(List<String> propertyNames, String languageCode,
@@ -294,7 +309,8 @@ public enum DemoMatchType implements MatchType {
 		String entityInfo = getEntityInfoFetcher().apply(demoValue);
 		return new IdentityValue(languageName.orElse(""), entityInfo);
 	}
-	
+
+	@Override
 	public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
 		return identityInfoFunction;
 	}
