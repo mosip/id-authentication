@@ -443,5 +443,6 @@ public class RegistrationConstants {
 	public static final String ONBOARD_MAPPED_DEVICES = "mappedDevices";
 	public static final String DEVICE_ONBOARD_EXCEPTION_ALERT = "Device Onboarding Error";
 	public static final String DEVICE_ONBOARD_ERROR_MSG = "Internal error in Device Onboarding.";
+	public static final String ONBOARD_DEVICES_MAP = "onBoardDevicesMap";
 
 }

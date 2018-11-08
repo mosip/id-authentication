@@ -7,13 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.DeviceDTO;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -77,6 +81,13 @@ public class DeviceOnboardController extends BaseController implements Initializ
 	private Circle unmapDevice;
 	private static final MosipLogger LOGGER = AppConfig.getLogger(DeviceOnboardController.class);
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
+	 * java.util.ResourceBundle)
+	 * 
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -103,6 +114,27 @@ public class DeviceOnboardController extends BaseController implements Initializ
 			// Tables
 			availableDevices.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 			mappedDevices.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+			// Bind Event Handlers to Search Device Button
+			filterDevices.textProperty()
+					.addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+						@SuppressWarnings("unchecked")
+						Map<String, List<DeviceDTO>> devicesMap = (Map<String, List<DeviceDTO>>) SessionContext
+								.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_DEVICES_MAP);
+						if (devicesMap != null) {
+							if (RegistrationConstants.EMPTY.equals(newValue)) {
+								populateDevices(devicesMap.get(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES),
+										devicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES));
+							} else if (newValue.length() < oldValue.length()) {
+								populateDevices(
+										filterDevices(devicesMap.get(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES)),
+										filterDevices(devicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES)));
+							} else {
+								populateDevices(filterDevices(availableDevices.getItems()),
+										filterDevices(mappedDevices.getItems()));
+							}
+						}
+					});
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					RegistrationConstants.DEVICE_ONBOARD_INITIALIZATION_EXCEPTION + "-> Exception while initializing:"
@@ -132,19 +164,19 @@ public class DeviceOnboardController extends BaseController implements Initializ
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Loading list of available and mapped " + deviceTypes.getValue() + " devices");
 
+			// Reset the Search TextField
+			filterDevices.setText(RegistrationConstants.EMPTY);
+			
 			// Get the selected Device Type
 			String selectedDeviceType = deviceTypes.getValue();
 
 			// Get the list of Available and Mapped Devices for selected Device Type
 			Map<String, List<DeviceDTO>> devicesMap = getDevices(selectedDeviceType);
+			SessionContext.getInstance().getMapObject().put(RegistrationConstants.ONBOARD_DEVICES_MAP, devicesMap);
 
-			// Set the Available Devices
-			this.availableDevices.setItems(
-					FXCollections.observableArrayList(devicesMap.get(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES)));
-
-			// Set the Mapped Devices
-			this.mappedDevices.setItems(
-					FXCollections.observableArrayList(devicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES)));
+			// Populate the Available Devices and Mapped Devices Tables
+			populateDevices(devicesMap.get(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES),
+					devicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES));
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					RegistrationConstants.DEVICE_ONBOARD_LOADING_DEVICES_EXCEPTION
@@ -156,6 +188,14 @@ public class DeviceOnboardController extends BaseController implements Initializ
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Loading list of available and mapped " + deviceTypes.getValue() + " devices completed");
 		}
+	}
+
+	private void populateDevices(List<DeviceDTO> availableDevices, List<DeviceDTO> mappedDevices) {
+		// Set the Available Devices
+		this.availableDevices.setItems(FXCollections.observableArrayList(availableDevices));
+
+		// Set the Mapped Devices
+		this.mappedDevices.setItems(FXCollections.observableArrayList(mappedDevices));
 	}
 
 	/**
@@ -240,6 +280,9 @@ public class DeviceOnboardController extends BaseController implements Initializ
 		LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 				"Navigating to Registration Home Page");
 		try {
+			// Remove the Onboard Devices from Session Context
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
+
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
 			LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
@@ -251,6 +294,15 @@ public class DeviceOnboardController extends BaseController implements Initializ
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					"Navigation to Registration Home page completed");
 		}
+	}
+
+	private List<DeviceDTO> filterDevices(List<DeviceDTO> devices) {
+		String searchTerm = filterDevices.getText();
+		return devices.parallelStream()
+				.filter(deviceDTO -> (StringUtils.containsIgnoreCase(deviceDTO.getManufacturerName(), searchTerm)
+						|| StringUtils.containsIgnoreCase(deviceDTO.getModelName(), searchTerm)
+						|| StringUtils.containsIgnoreCase(deviceDTO.getSerialNo(), searchTerm)))
+				.collect(Collectors.toList());
 	}
 
 	private Map<String, List<DeviceDTO>> getDevices(String deviceType) {
