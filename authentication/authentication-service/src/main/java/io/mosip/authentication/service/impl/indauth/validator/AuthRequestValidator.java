@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,6 +24,7 @@ import org.springframework.validation.Errors;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
+import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
@@ -37,8 +39,10 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.GenderType;
 import io.mosip.authentication.service.impl.indauth.service.demo.IdMapping;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
-import io.mosip.authentication.service.validator.IdAuthValidator;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
+import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
+import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
 /**
  * 
@@ -46,9 +50,10 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
  * {@code AuthRequestValidator} validates AuthRequestDTO
  * 
  * @author Arun Bose
+ * 
  */
 @Component
-public class AuthRequestValidator extends IdAuthValidator {
+public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	private static final String PIN_INFO = "pinInfo";
 
@@ -57,6 +62,14 @@ public class AuthRequestValidator extends IdAuthValidator {
 	private static final String AUTH_REQUEST = "authRequest";
 
 	private static final String AUTH_TYPE = "authType";
+	
+	private static final String IDV_ID_TYPE = "idvIdType";
+
+	private static final String IDV_ID = "idvId";
+	
+	/** The Constant TXN_ID. */
+	private static final String TXN_ID = "txnID";
+
 
 	/** The Constant MISSING_INPUT_PARAMETER. */
 	private static final String MISSING_INPUT_PARAMETER = "MISSING_INPUT_PARAMETER - ";
@@ -88,6 +101,25 @@ public class AuthRequestValidator extends IdAuthValidator {
 	private static final Integer OTP_LENGTH = 6;
 
 	private static final String INVALID_AUTH_REQUEST = "INVALID_AUTH_REQUEST-No auth type found";
+	
+	/** The Constant ID_AUTH_VALIDATOR. */
+	private static final String ID_AUTH_VALIDATOR = "ID_AUTH_VALIDATOR";
+	
+
+	/** The Constant A_Z0_9_10. */
+	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Z0-9]{10}");
+	
+	/** The Constant MUA_CODE. */
+	private static final String MUA_CODE = "muaCode";
+	
+	/** The uin validator. */
+	@Autowired
+	private UinValidatorImpl uinValidator;
+
+	/** The vid validator. */
+	@Autowired
+	private VidValidatorImpl vidValidator;
+
 
 	/** The mosip logger. */
 	private static MosipLogger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
@@ -101,11 +133,14 @@ public class AuthRequestValidator extends IdAuthValidator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return AuthRequestDTO.class.equals(clazz);
+	//	return AuthRequestDTO.class.equals(clazz);
+		return AuthRequestDTO.class.isAssignableFrom(clazz);
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) {
+		super.validate(target, errors);
+		
 		AuthRequestDTO authRequestDto = (AuthRequestDTO) target;
 		if (authRequestDto != null) {
 			validateReqTime(authRequestDto.getReqTime(), errors);
@@ -115,10 +150,6 @@ public class AuthRequestValidator extends IdAuthValidator {
 			}
 
 			if (!errors.hasErrors()) {
-
-				validateId(authRequestDto.getId(), errors);
-
-				validateVer(authRequestDto.getVer(), errors);
 
 				validateIdvId(authRequestDto.getIdvId(), authRequestDto.getIdvIdType(), errors);
 
@@ -382,6 +413,111 @@ public class AuthRequestValidator extends IdAuthValidator {
 								&& pinInfo.getType().equals(PinType.OTP.getType()))
 						.findAny())
 				.map(PinInfo::getValue);
+	}
+	
+	
+	/** Adding IdAuthValidator Methods in AuthRequestValidator Class**/
+	
+	
+	
+	/**
+	 * Validate individual's id - check whether id is null or not and if valid,
+	 * validates idType and UIN/VID.
+	 *
+	 * @param id            the id
+	 * @param idType the id type
+	 * @param idFieldName the id field name
+	 * @param idTypeFieldName the id type field name
+	 * @param errors            the errors
+	 */
+	protected void validateIdvId(String id, String idType, Errors errors) {
+		if (Objects.isNull(id)) {
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID);
+			errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {IDV_ID},
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		} else {
+			validateIdtypeUinVid(id, idType, errors);
+		}
+	}
+	
+	/**
+	 * Validate mua code - check whether it is of length 10 and alphanumeric.
+	 *
+	 * @param muaCode            the mua code
+	 * @param errors            the errors
+	 */
+	protected void validateMuaCode(String muaCode, Errors errors) {
+		if (Objects.isNull(muaCode)) {
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + MUA_CODE);
+			errors.rejectValue(MUA_CODE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {MUA_CODE},
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		} else if (!A_Z0_9_10.matcher(muaCode).matches()) {
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
+					"INVALID_INPUT_PARAMETER - muaCode - value -> " + muaCode);
+			errors.rejectValue(MUA_CODE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new Object[] {MUA_CODE},
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		}
+	}
+
+	
+	private void validateIdtypeUinVid(String id, String idType, Errors errors) {
+		if (Objects.isNull(idType)) {
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + IDV_ID_TYPE);
+			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {IDV_ID_TYPE},
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		} else if (idType.equals(IdType.UIN.getType())) {
+			try {
+				uinValidator.validateId(id);
+			} catch (MosipInvalidIDException e) {
+				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
+				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(), 
+						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
+			}
+		} else if (idType.equals(IdType.VID.getType())) {
+			try {
+				vidValidator.validateId(id);
+			} catch (MosipInvalidIDException e) {
+				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
+				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_VID.getErrorMessage());
+			}
+		} else {
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "INCORRECT_IDTYPE - " + idType);
+			errors.rejectValue(IDV_ID_TYPE, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new Object[] {IDV_ID_TYPE},
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		}
+	}
+	
+	/**
+	 * Validate txn id - check whether it is of length 10 and alphanumeric.
+	 *
+	 * @param txnID            the txn ID
+	 * @param errors            the errors
+	 */
+	protected void validateTxnId(String txnID, Errors errors) {
+		if (Objects.isNull(txnID)) {
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + TXN_ID);
+			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {TXN_ID},
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		} else if (!A_Z0_9_10.matcher(txnID).matches()) {
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
+					"INVALID_INPUT_PARAMETER - txnID - value -> " + txnID);
+			errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new Object[] {TXN_ID},
+					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		}
+	}
+	/**
+	 * Validate req time.
+	 *
+	 * @param reqTime            the req time
+	 * @param errors            the errors
+	 */
+	protected void validateReqTime(String reqTime, Errors errors) {
+		if (Objects.isNull(reqTime)) {
+			mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + REQ_TIME);
+			errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), new Object[] {REQ_TIME},
+					IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
+		} 
 	}
 
 }

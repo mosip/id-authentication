@@ -12,11 +12,7 @@ import lombok.Data;
  * @author Rakesh Roshan
  */
 @Data
-public class AuthRequestDTO {
-
-	private String id;
-	
-	private String ver;
+public class AuthRequestDTO extends BaseAuthRequestDTO {
 
 	private String idvId;
 

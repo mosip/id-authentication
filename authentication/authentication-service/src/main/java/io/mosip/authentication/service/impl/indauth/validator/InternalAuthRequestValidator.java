@@ -44,6 +44,7 @@ public class InternalAuthRequestValidator implements Validator {
 			AuthRequestDTO requestDTO = (AuthRequestDTO) authRequestDTO;
 			validateIdvId(requestDTO, errors);
 			validateRequest(requestDTO, errors);
+			validateDate(requestDTO, errors);
 		}
 	}
 
@@ -138,20 +139,12 @@ public class InternalAuthRequestValidator implements Validator {
 	}
 
 	public boolean validateIris(AuthRequestDTO authRequestDTO) {
-		if (authRequestDTO.getRequest().getIdentity().getLeftEye().isEmpty() != false
-				|| authRequestDTO.getRequest().getIdentity().getRightEye().isEmpty() != false) {
-			return true;
-		} else {
-			return false;
-		}
+		return (!authRequestDTO.getRequest().getIdentity().getLeftEye().isEmpty()
+				|| !authRequestDTO.getRequest().getIdentity().getRightEye().isEmpty());
 	}
 
 	public boolean validateFace(AuthRequestDTO authRequestDTO) {
-		if (authRequestDTO.getRequest().getIdentity().getFace().isEmpty() != false) {
-			return true;
-		} else {
-			return false;
-		}
+		return (!authRequestDTO.getRequest().getIdentity().getFace().isEmpty());
 	}
 
 	public void validateUinVin(AuthRequestDTO authRequestDTO, String refId, Errors errors)  {

@@ -17,12 +17,9 @@ import lombok.Data;
  * @author Rakesh Roshan
  */
 @Data
-public class AuthResponseDTO  {
+public class AuthResponseDTO extends BaseAuthResponseDTO {
 
-	private boolean status;
-	private List<AuthError> err;
-	private String txnID;
-	private String resTime;
+
 	private AuthResponseInfo info;
 
 }
