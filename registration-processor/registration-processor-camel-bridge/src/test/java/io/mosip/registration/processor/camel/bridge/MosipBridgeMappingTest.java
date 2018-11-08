@@ -62,10 +62,12 @@ public class MosipBridgeMappingTest {
 		
 			 options.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.ERROR.getAddress()))
 							.toVertx(MessageBusAddress.ERROR.getAddress()))
-					.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
-							.toVertx(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
+			 		.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
+						.toVertx(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress()))
 					.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.STRUCTURE_BUS_IN.getAddress()))
 							.toVertx(MessageBusAddress.STRUCTURE_BUS_IN.getAddress()))
+					.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
+							.toVertx(MessageBusAddress.QUALITY_CHECK_BUS.getAddress()))
 					.addInboundMapping(InboundMapping.fromCamel(BridgeUtil.getEndpoint(MessageBusAddress.RETRY_BUS.getAddress()))
 							.toVertx(MessageBusAddress.RETRY_BUS.getAddress()))
 
@@ -101,6 +103,8 @@ public class MosipBridgeMappingTest {
 					mosipBridgeMapping.getMapping(camelContext).getInboundMappings().get(2).getAddress());
 			assertEquals(options.getInboundMappings().get(3).getAddress(),
 					mosipBridgeMapping.getMapping(camelContext).getInboundMappings().get(3).getAddress());
+			assertEquals(options.getInboundMappings().get(4).getAddress(),
+					mosipBridgeMapping.getMapping(camelContext).getInboundMappings().get(4).getAddress());
 			
 		}
 }
