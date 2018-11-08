@@ -29,7 +29,7 @@ public class BaseAudit {
 	@Column(name = "log_id", nullable = false, updatable = false)
 	private String uuid;
 
-	@Column(name = "log_dtimesz", nullable = false, updatable = false)
+	@Column(name = "log_dtimes", nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
 	/**

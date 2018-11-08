@@ -45,7 +45,7 @@ public class Audit extends BaseAudit {
 	private String eventType;
 
 	@NotNull
-	@Column(name = "action_dtimesz", nullable = false, updatable = false)
+	@Column(name = "action_dtimes", nullable = false, updatable = false)
 	private LocalDateTime actionTimeStamp;
 
 	@NotNull
