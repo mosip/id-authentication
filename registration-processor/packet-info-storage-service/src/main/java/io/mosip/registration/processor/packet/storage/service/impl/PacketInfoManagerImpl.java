@@ -189,8 +189,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
-					: "description--Demographic Failed to save";
+			String description = isTransactionSuccessful ? "description--QcUser packet Info fetched Success"
+					: "description--QcUser packet Info fetched Failed";
 			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
 					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
 					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
