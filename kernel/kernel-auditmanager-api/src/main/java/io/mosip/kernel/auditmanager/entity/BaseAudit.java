@@ -1,6 +1,6 @@
 package io.mosip.kernel.auditmanager.entity;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -30,14 +30,14 @@ public class BaseAudit {
 	private String uuid;
 
 	@Column(name = "log_dtimesz", nullable = false, updatable = false)
-	private OffsetDateTime createdAt; // ,columnDefinition= "TIMESTAMP WITH TIME ZONE"
+	private LocalDateTime createdAt;
 
 	/**
 	 * Constructor to initialize {@link BaseAudit} with uuid and timestamp
 	 */
 	public BaseAudit() {
 		uuid = UUID.randomUUID().toString();
-		createdAt = OffsetDateTime.now();
+		createdAt = LocalDateTime.now();
 	}
 
 }
