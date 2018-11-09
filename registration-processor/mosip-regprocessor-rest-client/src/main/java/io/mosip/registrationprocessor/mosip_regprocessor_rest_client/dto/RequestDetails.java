@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import org.springframework.http.HttpMethod;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class RequestDetails.
  * @author Rishabh Keshari
