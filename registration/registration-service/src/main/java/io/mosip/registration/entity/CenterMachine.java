@@ -27,7 +27,7 @@ public class CenterMachine {
 	private CenterMachineId centerMachineId;
 
 	@Column(name = "is_active", nullable = false)
-	private boolean isActive;
+	private Boolean isActive;
 	@Column(name = "cr_by", length = 24, nullable = false)
 	private String createdBy;
 	@Column(name = "cr_dtimesz", nullable = false)
@@ -37,7 +37,7 @@ public class CenterMachine {
 	@Column(name = "upd_dtimesz")
 	private Timestamp updatedDateTime;
 	@Column(name = "is_deleted")
-	private boolean isDeleted;
+	private Boolean isDeleted;
 	@Column(name = "del_dtimesz")
 	private Timestamp deletedDateTime;
 
@@ -49,11 +49,11 @@ public class CenterMachine {
 		this.centerMachineId = centerMachineId;
 	}
 
-	public boolean isActive() {
+	public Boolean isActive() {
 		return isActive;
 	}
 
-	public void setActive(boolean isActive) {
+	public void setActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
 
@@ -89,11 +89,11 @@ public class CenterMachine {
 		this.updatedDateTime = updatedDateTime;
 	}
 
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
 
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
