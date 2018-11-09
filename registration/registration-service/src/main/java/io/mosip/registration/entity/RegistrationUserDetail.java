@@ -43,7 +43,7 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	private String lastLoginMethod;
 	@Column(name = "is_deleted", nullable = true, updatable = false)
 	@Type(type = "true_false")
-	private boolean isDeleted;
+	private Boolean isDeleted;
 	@Column(name = "del_dtimes", nullable = true, updatable = false)
 	private Timestamp delDtimes;
 	@Column(name = "user_status", length = 64, nullable = true, updatable = false)
@@ -228,7 +228,7 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
 
@@ -236,7 +236,7 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	 * @param isDeleted
 	 *            the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
