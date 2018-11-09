@@ -28,21 +28,21 @@ The key solution considerations are
   4. The decryption of data happens inside the key manager module.
   5. The public key is returned to the requester.
 
-- Sequence diagrams are as follows,
+##2.1 Sequence diagrams are as follows,
 
-## 2.1 Pre-registration  Registration
+### 2.1.1 Pre-registration  Registration
 
 ![Sequence Diagram](_images/kernel_keymanager_Seq_Prereg_Reg_diagram.png)
 
-## 2.2 Registration -\&gt; Registration Processor
+### 2.1.2 Registration -\&gt; Registration Processor
 
 ![Sequence Diagram](_images/kernel_keymanager_Seq_Reg_RegProc_diagram.png)
 
-## 2.3 TSP  IDA:
+### 2.1.3 TSP  IDA:
 
 ![Sequence Diagram](_images/kernel_keymanager_Seq_TSP_IDA_diagram.png)
 
-## 2.4 IDA  Kernel
+### 2.1.4 IDA  Kernel
 
 ![Sequence Diagram](_images/kernel_keymanager_Seq_IDA_Kernel_diagram.png)
 
