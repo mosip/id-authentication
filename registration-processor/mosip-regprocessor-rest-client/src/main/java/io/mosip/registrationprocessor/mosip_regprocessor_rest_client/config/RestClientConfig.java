@@ -14,9 +14,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class RestClientConfig {
 	@Bean
 	public Docket packetUploaderApis() {
-		return new Docket(DocumentationType.SWAGGER_2).groupName("Rest Client").select()
+		return new Docket(DocumentationType.SWAGGER_2).groupName("Rest-Client").select()
 				.apis(RequestHandlerSelectors
-						.basePackage("io.mosip.registration.processor.rest.client.controller"))
+						.basePackage("io.mosip.registrationprocessor.mosip_regprocessor_rest_client.controller"))
 				.paths(PathSelectors.ant("/v0.1/registration-processor/rest-client/*")).build();
 	}
 
