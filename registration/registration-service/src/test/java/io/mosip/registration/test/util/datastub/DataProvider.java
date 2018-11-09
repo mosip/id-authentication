@@ -2,7 +2,7 @@ package io.mosip.registration.test.util.datastub;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -272,7 +272,7 @@ public class DataProvider {
 
 	private static void addAuditDTOToList(List<AuditDTO> auditDTOList, String eventName, String eventType,
 			String description) {
-		OffsetDateTime dateTime = OffsetDateTime.now();
+		LocalDateTime dateTime = LocalDateTime.now();
 
 		AuditDTO audit = new AuditDTO();
 
