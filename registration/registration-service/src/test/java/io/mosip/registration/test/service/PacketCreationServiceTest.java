@@ -54,8 +54,6 @@ public class PacketCreationServiceTest {
 	public void testCreatePacket() throws RegBaseCheckedException, IOException, URISyntaxException {
 		Mockito.doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
-		Mockito.when(auditDAO.getAllUnsyncAudits())
-				.thenReturn(CustomObjectMapper.MAPPER_FACADE.mapAsList(registrationDTO.getAuditDTOs(), Audit.class));
 		Mockito.when(zipCreationService.createPacket(Mockito.any(RegistrationDTO.class), Mockito.anyMap()))
 				.thenReturn("zip".getBytes());
 

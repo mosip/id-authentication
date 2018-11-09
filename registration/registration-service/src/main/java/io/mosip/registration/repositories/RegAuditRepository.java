@@ -23,7 +23,7 @@ public interface RegAuditRepository extends BaseRepository<Audit, Long> {
 	 * 
 	 * @return the list of unsynchronized {@link Audit}
 	 */
-	@Query(value = "SELECT * FROM AUDIT.AUDIT_LOG_APP WHERE IS_SYNC IS NULL", nativeQuery = true)
+	@Query(value = "SELECT * FROM AUDIT.APP_AUDIT_LOG WHERE IS_SYNC IS NULL", nativeQuery = true)
 	List<Audit> findAllUnsyncAudits();
 
 	/**
@@ -34,6 +34,6 @@ public interface RegAuditRepository extends BaseRepository<Audit, Long> {
 	 * @return returns the number of records updated
 	 */
 	@Modifying
-	@Query(value = "UPDATE AUDIT.AUDIT_LOG_APP a SET a.IS_SYNC = true WHERE a.LOG_ID IN :audits", nativeQuery = true)
+	@Query(value = "UPDATE AUDIT.APP_AUDIT_LOG a SET a.IS_SYNC = true WHERE a.LOG_ID IN :audits", nativeQuery = true)
 	int updateSyncAudits(@Param("audits") List<String> auditUUIDs);
 }
