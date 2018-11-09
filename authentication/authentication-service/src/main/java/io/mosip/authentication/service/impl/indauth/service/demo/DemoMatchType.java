@@ -19,7 +19,9 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.kernel.core.spi.logger.MosipLogger;
 
 /**
  * @author Arun Bose The Enum DemoMatchType.
@@ -34,17 +36,21 @@ public enum DemoMatchType implements MatchType {
 			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI,
 			Function.identity()),
 
+	/** Secondary Name Match Type */
 	NAME_SEC(IdMapping.NAME, setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
 			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC,
 			Function.identity()),
 
+	/** Secondary Date of Birth Match Type */
 	DOB(IdMapping.DOB, setOf(DOBMatchingStrategy.EXACT), IdentityDTO::getDateOfBirth, LanguageType.PRIMARY_LANG,
 			AuthUsageDataBit.USED_PI_DOB, AuthUsageDataBit.MATCHED_PI_DOB, Function.identity()),
 
+	/** Secondary Date of Birth Type Match */
 	DOBTYPE(IdMapping.DOBTYPE, setOf(DOBTypeMatchingStrategy.EXACT), IdentityDTO::getDateOfBirthType,
 			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_DOBTYPE, AuthUsageDataBit.MATCHED_DOB_TYPE,
 			Function.identity()),
 
+	/** Secondary Date of Birth Type Match */
 	AGE(IdMapping.AGE, setOf(AgeMatchingStrategy.EXACT), IdentityDTO::getAge, LanguageType.PRIMARY_LANG,
 			AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE, demoValue -> {
 				int age = -1;
@@ -57,12 +63,13 @@ public enum DemoMatchType implements MatchType {
 				return String.valueOf(Math.abs(age));
 			}),
 
+	/** Gender Match Type */
 	GENDER(IdMapping.GENDER, setOf(GenderMatchingStrategy.EXACT), IdentityDTO::getGender, LanguageType.PRIMARY_LANG,
 			AuthUsageDataBit.USED_PI_GENDER, AuthUsageDataBit.MATCHED_PI_GENDER, Function.identity()),
-
+	/** Phone Match Type */
 	PHONE(IdMapping.PHONE, setOf(PhoneNoMatchingStrategy.EXACT), IdentityDTO::getPhoneNumber, LanguageType.PRIMARY_LANG,
 			AuthUsageDataBit.USED_PI_PHONE, AuthUsageDataBit.MATCHED_PI_PHONE, Function.identity()),
-
+	/** E-mail Match Type */
 	EMAIL(IdMapping.EMAIL, setOf(EmailMatchingStrategy.EXACT), IdentityDTO::getEmailId, LanguageType.PRIMARY_LANG,
 			AuthUsageDataBit.USED_PI_EMAIL, AuthUsageDataBit.MATCHED_PI_EMAIL, Function.identity()),
 
@@ -94,27 +101,27 @@ public enum DemoMatchType implements MatchType {
 	ADDR_LINE3_SEC(IdMapping.ADDRESSLINE3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getAddressLine3,
 			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_ADDR_LINE3_SEC,
 			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_SEC, Function.identity()),
-
+	/** Location1 Match Type primary */
 	LOCATION1_PRI(IdMapping.LOCATION1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation1,
 			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_LOCATION1_PRI, AuthUsageDataBit.MATCHED_LOCATION1_PRI,
 			Function.identity()),
-
+	/** Location1 Match Type secondary */
 	LOCATION1_SEC(IdMapping.LOCATION1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation1,
 			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_LOCATION1_SEC, AuthUsageDataBit.MATCHED_LOCATION1_SEC,
 			Function.identity()),
-
+	/** Location2 Match Type primary */
 	LOCATION2_PRI(IdMapping.LOCATION2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation2,
 			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_LOCATION2_PRI, AuthUsageDataBit.MATCHED_LOCATION2_PRI,
 			Function.identity()),
-
+	/** Location2 Match Type secondary */
 	LOCATION2_SEC(IdMapping.LOCATION2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation2,
 			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_LOCATION2_SEC, AuthUsageDataBit.MATCHED_LOCATION2_SEC,
 			Function.identity()),
-
+	/** Location3 Match Type primary */
 	LOCATION3_PRI(IdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3,
 			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_LOCATION3_PRI, AuthUsageDataBit.MATCHED_LOCATION3_PRI,
 			Function.identity()),
-
+	/** Location3 Match Type secondary */
 	LOCATION3_SEC(IdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3,
 			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_LOCATION3_SEC, AuthUsageDataBit.MATCHED_LOCATION3_SEC,
 			Function.identity()),
@@ -133,7 +140,7 @@ public enum DemoMatchType implements MatchType {
 	ADDR_PRI(IdMapping.FULLADDRESS, setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
 			IdentityDTO::getFullAddress, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_FAD_ADDR_PRI,
 			AuthUsageDataBit.MATCHED_FAD_ADDR_PRI, Function.identity()),
-
+	/** Secondary Address MatchType */
 	ADDR_SEC(IdMapping.FULLADDRESS, setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
 			IdentityDTO::getFullAddress, LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_FAD_ADDR_SEC,
 			AuthUsageDataBit.MATCHED_FAD_ADDR_SEC, Function.identity()),
@@ -158,6 +165,8 @@ public enum DemoMatchType implements MatchType {
 	private Function<IdentityDTO, List<IdentityInfoDTO>> identityInfoFunction;
 
 	private IdMapping idMapping;
+
+	private static MosipLogger logger = IdaLogger.getLogger(DemoMatchType.class);
 
 	/**
 	 * Instantiates a new demo match type.
@@ -281,7 +290,7 @@ public enum DemoMatchType implements MatchType {
 		List<String> fullMapping = new ArrayList<>();
 		for (String mappingStr : mappings) {
 			Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr);
-			if(mappingInternal.isPresent()) {
+			if (mappingInternal.isPresent()) {
 				List<String> internalMapping = getIdMappingValue(mappingInternal.get(), idMappingConfig);
 				fullMapping.addAll(internalMapping);
 			} else {

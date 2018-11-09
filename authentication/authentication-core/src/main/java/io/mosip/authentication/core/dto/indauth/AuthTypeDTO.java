@@ -7,6 +7,7 @@ import lombok.Data;
  * then <b>otp</b> attribute set as <b>true</b>
  * 
  * @author Rakesh Roshan
+ * @author Dinesh Karuppiah.T
  */
 @Data
 public class AuthTypeDTO {

@@ -2,12 +2,14 @@ package io.mosip.authentication.service.impl.indauth.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -18,7 +20,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -38,7 +39,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdInfoService;
 import io.mosip.authentication.service.config.IDAMappingConfig;
-import io.mosip.authentication.service.factory.IDAMappingFactory;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
@@ -78,7 +78,11 @@ public class DemoAuthServiceTest {
 		ReflectionTestUtils.setField(demomatcher, "idMappingConfig", idMappingConfig);
 	}
 
-	@Ignore
+	@Test
+	public void test() {
+		System.err.println(environment.getProperty("mosip.secondary.lang-code"));
+	}
+
 	@Test
 	public void fadMatchInputtest() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {
@@ -423,34 +427,6 @@ public class DemoAuthServiceTest {
 		Mockito.when(idInfoService.getIdInfo(Mockito.anyString())).thenReturn(null);
 		AuthRequestDTO authRequestDTO = generateData();
 		AuthStatusInfo authStatusInfo = demoAuthServiceImpl.getDemoStatus(authRequestDTO, "121212");
-	}
-
-	@Test
-	public void TestgetLocation() throws NoSuchMethodException, SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
-//		LocationEntity cityLocationEntity = new LocationEntity();
-//		cityLocationEntity.setLangcode("EN");
-//		cityLocationEntity.setCode("CHN");
-//		cityLocationEntity.setName("CNENNAI");
-//		cityLocationEntity.setHierarchylevelname("CITY");
-//		cityLocationEntity.setParentloccode("TN");
-//		
-//		LocationEntity stateLocationEntity = new LocationEntity();
-//		stateLocationEntity.setLangcode("EN");
-//		stateLocationEntity.setCode("TN");
-//		stateLocationEntity.setName("TAMILNADU");
-//		stateLocationEntity.setHierarchylevelname("STATE");
-//		stateLocationEntity.setParentloccode("IND");
-//		
-//		Mockito.when(locRepository.findByCodeAndIsActive("CHN", true))
-//				.thenReturn(Optional.of(cityLocationEntity));
-//		Mockito.when(locRepository.findByCodeAndIsActive("TN", true))
-//				.thenReturn(Optional.of(stateLocationEntity));
-//		Optional<String> optvalue = demoAuthServiceImpl.getLocation(LocationLevel.CITY, "CHN");
-//		assertEquals(cityLocationEntity.getName(), optvalue.get());
-//		optvalue = demoAuthServiceImpl.getLocation(LocationLevel.STATE, "CHN");
-//		assertEquals(stateLocationEntity.getName(), optvalue.get());
-//		assertFalse(demoAuthServiceImpl.getLocation(LocationLevel.STATE, "CHNNN").isPresent());
 	}
 
 }

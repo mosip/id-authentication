@@ -54,7 +54,7 @@ public enum AuthType {
 
 	FAD_PRI("fullAddress", setOf(DemoMatchType.ADDR_PRI), LanguageType.PRIMARY_LANG, AuthTypeDTO::isFullAddress),
 
-	FAD_SEC("fullAddress", setOf(DemoMatchType.ADDR_PRI), LanguageType.SECONDARY_LANG, AuthTypeDTO::isFullAddress),
+	FAD_SEC("fullAddress", setOf(DemoMatchType.ADDR_SEC), LanguageType.SECONDARY_LANG, AuthTypeDTO::isFullAddress),
 
 //	
 
