@@ -49,12 +49,24 @@ public class KycServiceImpl implements KycService{
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo, isSecLangInfoRequired);
 		kycInfo.setIdentity(filteredIdentityInfo);
 		if(ePrintReq) {
-			String ePrintInfo = generatePrintableKyc(eKycType,kycInfo.getIdentity());
+			String maskedUin = uin;			
+			if(env.getProperty("uin.masking.required", Boolean.class)) {
+				maskedUin = generateMaskedUIN(uin, env.getProperty("uin.masking.charcount", Integer.class));
+			}
+			String ePrintInfo = generatePrintableKyc(eKycType,kycInfo.getIdentity(), maskedUin);
 			kycInfo.setEPrint(ePrintInfo);			
 		}
 		return kycInfo;
 	}
 	
+	private String generateMaskedUIN(String uin, int maskNo) {
+		char[] uinChar = uin.toCharArray();
+		for(int i=0; i<maskNo; i++) {
+			uinChar[i] = 'X';
+		}
+		return String.valueOf(uinChar);
+	}
+
 	private Map<String, List<IdentityInfoDTO>> retrieveIdentityFromIdRepo(String uin) throws IdAuthenticationBusinessException{
 		Map<String, List<IdentityInfoDTO>> identity = null;
 		try {
@@ -95,7 +107,7 @@ public class KycServiceImpl implements KycService{
 		return identityInfo;
 	}
 	
-	private String generatePrintableKyc(String eKycType, Map<String, List<IdentityInfoDTO>> identity) {
+	private String generatePrintableKyc(String eKycType, Map<String, List<IdentityInfoDTO>> identity, String maskedUin) {
 		String pdfDetails;
 		
 		if(eKycType.equals(LIMITED_KYC)) {

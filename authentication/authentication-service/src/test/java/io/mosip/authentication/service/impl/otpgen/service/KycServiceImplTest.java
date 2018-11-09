@@ -54,7 +54,7 @@ public class KycServiceImplTest {
 	@Test
 	public void validUIN() {
 		try {
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323", "limited KYC", true, false);
+			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", "limited KYC", true, false);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			// TODO Auto-generated catch block
