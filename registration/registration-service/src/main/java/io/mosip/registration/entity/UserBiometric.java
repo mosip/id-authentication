@@ -40,7 +40,7 @@ public class UserBiometric extends RegistrationCommonFields {
 	private int numberOfRetry;
 	@Column(name = "is_deleted", nullable = true, updatable = false)
 	@Type(type = "true_false")
-	private boolean isDeleted;
+	private Boolean isDeleted;
 	@Column(name = "del_dtimes", nullable = true, updatable = false)
 	private Timestamp delDtimes;
 
@@ -149,7 +149,7 @@ public class UserBiometric extends RegistrationCommonFields {
 	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
 
@@ -157,7 +157,7 @@ public class UserBiometric extends RegistrationCommonFields {
 	 * @param isDeleted
 	 *            the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 

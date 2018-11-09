@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="onBoardRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="487.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.DeviceOnboardController">
+   <children>
+      <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="11.0" layoutY="1.0" onMouseClicked="#goToHome" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Home.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <Label layoutX="32.0" layoutY="1.0" text="/" />
+      <Label layoutX="45.0" layoutY="1.0" text="Device Onboarding" />
+      <Label layoutX="393.0" layoutY="20.0" text="Device Onboarding" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <TextField fx:id="filterDevices" layoutX="10.0" layoutY="57.0" prefHeight="39.0" prefWidth="306.0" promptText="Search" />
+      <ComboBox fx:id="deviceTypes" layoutX="363.0" layoutY="57.0" onAction="#loadDevices" prefHeight="39.0" prefWidth="251.0" promptText="Device Type" />
+      <TableView fx:id="availableDevices" layoutX="10.0" layoutY="134.0" prefHeight="288.0" prefWidth="408.0">
+        <columns>
+          <TableColumn fx:id="availableDeviceName" prefWidth="170.0" text="Manufacturer Name" />
+          <TableColumn fx:id="availableDeviceModel" minWidth="0.0" prefWidth="120.0" text="Model Name" />
+            <TableColumn fx:id="availableDeviceSerial" prefWidth="120.0" resizable="false" text="Serial No." />
+        </columns>
+      </TableView>
+      <TableView fx:id="mappedDevices" layoutX="528.0" layoutY="134.0" prefHeight="288.0" prefWidth="408.0">
+        <columns>
+          <TableColumn fx:id="mappedDeviceName" prefWidth="170.0" text="Manufacturer Name" />
+          <TableColumn fx:id="mappedDeviceModel" prefWidth="120.0" text="Model Name" />
+            <TableColumn fx:id="mappedDeviceSerial" prefWidth="120.0" resizable="false" text="Serial No." />
+        </columns>
+      </TableView>
+      <Label layoutX="10.0" layoutY="107.0" text="Available Devices" />
+      <Label layoutX="531.0" layoutY="107.0" text="Mapped Devices" />
+      <Button fx:id="submitOnboardDevices" layoutX="855.0" layoutY="434.0" mnemonicParsing="false" text="Submit" textAlignment="CENTER" />
+      <Circle fx:id="mapDevice" layoutX="475.0" layoutY="198.0" onMouseClicked="#mapAvailableDevices" radius="19.0" stroke="BLACK" strokeType="INSIDE" />
+      <Circle fx:id="unmapDevice" fill="WHITE" layoutX="475.0" layoutY="392.0" onMouseClicked="#unmapMappedDevices" radius="19.0" stroke="BLACK" strokeType="INSIDE" />
+   </children>
+</AnchorPane>
