@@ -34,13 +34,9 @@ public class AppConfig {
 	private static final MosipRollingFileAppender MOSIP_ROLLING_APPENDER = new MosipRollingFileAppender();
 
 	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("application");
-	private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
 	
 	static {
-<<<<<<< HEAD
-=======
 		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
->>>>>>> branch 'DEV_SPRINT5_OMSAI_REG_CLIENT_IMPL' of https://github.com/mosip/mosip
 		MOSIP_ROLLING_APPENDER.setAppenderName(resourceBundle.getString("log4j.appender.Appender"));
 		MOSIP_ROLLING_APPENDER.setFileName(resourceBundle.getString("log4j.appender.Appender.file"));
 		MOSIP_ROLLING_APPENDER.setFileNamePattern(resourceBundle.getString("log4j.appender.Appender.filePattern"));
