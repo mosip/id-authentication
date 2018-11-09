@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.DeviceDTO;
@@ -30,9 +32,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Circle;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
@@ -49,7 +51,7 @@ import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOA
  * @since 1.0.0
  */
 @Controller
-public class DeviceOnboardController extends BaseController implements Initializable {
+public class DeviceMappingController extends BaseController implements Initializable {
 
 	@FXML
 	private AnchorPane onBoardRoot;
@@ -76,10 +78,10 @@ public class DeviceOnboardController extends BaseController implements Initializ
 	@FXML
 	private Button submitOnboardDevices;
 	@FXML
-	private Circle mapDevice;
+	private ImageView mapDevice;
 	@FXML
-	private Circle unmapDevice;
-	private static final MosipLogger LOGGER = AppConfig.getLogger(DeviceOnboardController.class);
+	private ImageView unmapDevice;
+	private static final MosipLogger LOGGER = AppConfig.getLogger(DeviceMappingController.class);
 
 	/*
 	 * (non-Javadoc)
@@ -94,6 +96,10 @@ public class DeviceOnboardController extends BaseController implements Initializ
 				"Initializing Device On-boarding Page");
 
 		try {
+			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES_TYPES, AppModule.DEVICE_ONBOARD,
+					"Get the types of onboarding devices", SessionContext.getInstance().getUserContext().getUserId(),
+					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
+			
 			// Set the Device Types
 			deviceTypes.getItems()
 					.addAll(FXCollections.observableArrayList(RegistrationConstants.ONBOARD_DEVICE_TYPES));
@@ -169,6 +175,11 @@ public class DeviceOnboardController extends BaseController implements Initializ
 			
 			// Get the selected Device Type
 			String selectedDeviceType = deviceTypes.getValue();
+			
+			auditFactory.audit(AuditEvent.GET_ONBOARDING_DEVICES, AppModule.DEVICE_ONBOARD,
+					"Get the available and mapped devices for ".concat(selectedDeviceType),
+					SessionContext.getInstance().getUserContext().getUserId(),
+					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 
 			// Get the list of Available and Mapped Devices for selected Device Type
 			Map<String, List<DeviceDTO>> devicesMap = getDevices(selectedDeviceType);
@@ -295,9 +306,42 @@ public class DeviceOnboardController extends BaseController implements Initializ
 					"Navigation to Registration Home page completed");
 		}
 	}
+	
+	/**
+	 * Submit the updated mapping of Onboarding Devices for Registration Machine
+	 * 
+	 * @param actionEvent
+	 *            the {@link ActionEvent} object
+	 */
+	@FXML
+	private void submit(ActionEvent actionEvent) {
+		LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+				"Updating the mapping of onboarding devices for Registration Machine");
+
+		try {
+			auditFactory.audit(AuditEvent.UPDATE_DEVICES_ONBOARDING, AppModule.DEVICE_ONBOARD,
+					String.format("Updating mapping of %s devices", filterDevices.getText()),
+					SessionContext.getInstance().getUserContext().getUserId(),
+					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
+			
+			// Add Mapping
+		} catch (RuntimeException runtimeException) {
+			LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.DEVICE_ONBOARD_HOME_NAVIGATION_EXCEPTION
+							+ "-> Exception while updating the mapping of onboarding devices :"
+							+ runtimeException.getMessage());
+
+			generateAlert(DEVICE_ONBOARD_EXCEPTION_ALERT, AlertType.ERROR, DEVICE_ONBOARD_ERROR_MSG);
+		} finally {
+			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+					"Mapping of onboarding devices for Registration Machine completed");
+		}
+	}
 
 	private List<DeviceDTO> filterDevices(List<DeviceDTO> devices) {
+		// Get the search term
 		String searchTerm = filterDevices.getText();
+		
 		return devices.parallelStream()
 				.filter(deviceDTO -> (StringUtils.containsIgnoreCase(deviceDTO.getManufacturerName(), searchTerm)
 						|| StringUtils.containsIgnoreCase(deviceDTO.getModelName(), searchTerm)

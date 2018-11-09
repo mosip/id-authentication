@@ -269,7 +269,7 @@ public class RegistrationConstants {
 	public static final String SYNC_STATUS = "/fxml/RegPacketStatus.fxml";
 	public static final String ONHOLD_PAGE = "/fxml/OnholdComment.fxml";
 	public static final String REJECTION_PAGE = "/fxml/RejectionComment.fxml";
-	public static final String DEVICE_ONBOARDING_PAGE = "/fxml/DeviceOnboarding.fxml";
+	public static final String DEVICE_ONBOARDING_PAGE = "/fxml/DeviceMachineMapping.fxml";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
@@ -444,5 +444,6 @@ public class RegistrationConstants {
 	public static final String DEVICE_ONBOARD_EXCEPTION_ALERT = "Device Onboarding Error";
 	public static final String DEVICE_ONBOARD_ERROR_MSG = "Internal error in Device Onboarding.";
 	public static final String ONBOARD_DEVICES_MAP = "onBoardDevicesMap";
+	public static final String ONBOARD_DEVICES_REF_ID_TYPE = "UserID";
 
 }
