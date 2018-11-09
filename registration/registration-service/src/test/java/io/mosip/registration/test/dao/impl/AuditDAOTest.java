@@ -1,5 +1,6 @@
 package io.mosip.registration.test.dao.impl;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,11 +41,11 @@ public class AuditDAOTest {
 		audits = new LinkedList<>();
 		Audit audit = new Audit();
 		audit.setUuid(UUID.randomUUID().toString());
-		audit.setCreatedAt(OffsetDateTime.now());
+		audit.setCreatedAt(LocalDateTime.now());
 		audits.add(audit);
 		audit = new Audit();
 		audit.setUuid(UUID.randomUUID().toString());
-		audit.setCreatedAt(OffsetDateTime.now());
+		audit.setCreatedAt(LocalDateTime.now());
 		audits.add(audit);
 	}
 	

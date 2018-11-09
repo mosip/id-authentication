@@ -1,5 +1,6 @@
 package io.mosip.registration.mapper;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 import io.mosip.registration.dto.demographic.AddressDTO;
@@ -37,6 +38,7 @@ public class CustomObjectMapper extends ConfigurableMapper {
 	@Override
 	public void configure(MapperFactory mapperFactory) {
 		ConverterFactory converterFactory = mapperFactory.getConverterFactory();
+		converterFactory.registerConverter(new PassThroughConverter(LocalDateTime.class));
 		converterFactory.registerConverter(new PassThroughConverter(OffsetDateTime.class));
 		converterFactory.registerConverter("packetMetaInfo", new PacketMetaInfoConverter());
 
