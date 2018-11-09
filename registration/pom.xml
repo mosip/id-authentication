@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -49,10 +50,10 @@
 		<mosip.core.kernel.version>1.0.0-SNAPSHOT</mosip.core.kernel.version>
 		<!-- Derby Version -->
 		<apache.derby.version>10.13.1.1</apache.derby.version>
-		
+
 		<!-- sourceafis Version -->
 		<sourceafis.version>3.4.0</sourceafis.version>
-		
+
 		<sonar.exclusions>
 			src/main/java/io/mosip/registration/util/**/*,
 			src/main/java/io/mosip/registration/repositories/**/*,
@@ -67,7 +68,7 @@
 			src/main/java/io/mosip/registration/config/**/*
 		</sonar.exclusions>
 	</properties>
-	
+
 	<modules>
 		<module>registration-service</module>
 		<module>registration-ui</module>
@@ -177,7 +178,7 @@
 				<artifactId>jackson-mapper-asl</artifactId>
 				<version>${jackson.mapper.asl.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.oracle</groupId>
 				<artifactId>javafx</artifactId>
@@ -217,6 +218,8 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<mainClass>io.mosip.registration.controller.RegistrationAppInitialization</mainClass>
+							<classpathPrefix>dependency-jars/</classpathPrefix>
 						</manifest>
 						<manifestEntries>
 							<Project-Name>${project.name}</Project-Name>
@@ -233,6 +236,25 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>
+								${project.build.directory}/dependency-jars/
+							</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -261,33 +283,33 @@
 		</plugins>
 	</build>
 	<profiles>
-        <profile>
-               <id>DEV</id>
-                <properties>
-                        <sonar.host.url>http://13.76.43.109:9000</sonar.host.url>
-                        <sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
-                        <sonar.projectName>Registration-DEV</sonar.projectName>
-                        <sonar.projectVersion>master</sonar.projectVersion>
-                        <sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-                        <!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->
-                        <sonar.jacoco.reportPaths>
-                                target/jacoco.exec
-                        </sonar.jacoco.reportPaths>
-                </properties>
-        </profile>
-        <profile>
-                <id>LOCAL</id>
-                <properties>
-                        <sonar.host.url>http://104.215.158.154:9000</sonar.host.url>
-                        <sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
-                        <sonar.projectName>Registration-LOCAL</sonar.projectName>
-                        <sonar.projectVersion>master</sonar.projectVersion>
-                        <sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-                        <!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->
-                        <sonar.jacoco.reportPaths>
-                                target/jacoco.exec
-                        </sonar.jacoco.reportPaths>
-                </properties>
-        </profile>
-    </profiles>
+		<profile>
+			<id>DEV</id>
+			<properties>
+				<sonar.host.url>http://13.76.43.109:9000</sonar.host.url>
+				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				<sonar.projectName>Registration-DEV</sonar.projectName>
+				<sonar.projectVersion>master</sonar.projectVersion>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+		<profile>
+			<id>LOCAL</id>
+			<properties>
+				<sonar.host.url>http://104.215.158.154:9000</sonar.host.url>
+				<sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
+				<sonar.projectName>Registration-LOCAL</sonar.projectName>
+				<sonar.projectVersion>master</sonar.projectVersion>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<!-- <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions> -->
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+	</profiles>
 </project>

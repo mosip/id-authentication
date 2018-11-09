@@ -26,17 +26,17 @@ import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
  */
 @Configuration
 @Import({ HibernateDaoConfig.class, AuditConfig.class })
-@EnableJpaRepositories(basePackages = "io.mosip.registration.", repositoryBaseClass = HibernateRepositoryImpl.class)
-@ComponentScan("io.mosip.registration.")
+@EnableJpaRepositories(basePackages = "io.mosip.registration", repositoryBaseClass = HibernateRepositoryImpl.class)
+@ComponentScan("io.mosip.registration")
 @PropertySource("spring.properties")
 public class AppConfig {
 
 	private static final MosipRollingFileAppender MOSIP_ROLLING_APPENDER = new MosipRollingFileAppender();
 
 	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("application");
+	private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
 	
 	static {
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4J");
 		MOSIP_ROLLING_APPENDER.setAppenderName(resourceBundle.getString("log4j.appender.Appender"));
 		MOSIP_ROLLING_APPENDER.setFileName(resourceBundle.getString("log4j.appender.Appender.file"));
 		MOSIP_ROLLING_APPENDER.setFileNamePattern(resourceBundle.getString("log4j.appender.Appender.filePattern"));
