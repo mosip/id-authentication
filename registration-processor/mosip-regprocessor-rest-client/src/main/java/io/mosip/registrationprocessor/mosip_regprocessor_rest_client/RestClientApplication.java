@@ -8,8 +8,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -20,8 +18,9 @@ import io.mosip.registrationprocessor.mosip_regprocessor_rest_client.utils.Gener
 @SpringBootApplication
 @PropertySource({ "classpath:rest-client-application.properties" })
 public class RestClientApplication implements CommandLineRunner {
-@Autowired
-private GenericRestClient genericRestClient;
+	@Autowired
+	private GenericRestClient genericRestClient;
+
 	public static void main(String[] args) {
 		SpringApplication.run(RestClientApplication.class, args);
 	}
@@ -49,7 +48,8 @@ private GenericRestClient genericRestClient;
 		List<SyncRegistrationDto> syncRegistrationDto = new ArrayList<>();
 		syncRegistrationDto.add(dto1);
 		// Generic POST Client
-		List<SyncRegistrationDto> postResult = genericRestClient.genericPostClient(postURI, syncRegistrationDto,syncRegistrationDto.getClass());
+		List<SyncRegistrationDto> postResult = genericRestClient.genericPostClient(postURI, syncRegistrationDto,
+				syncRegistrationDto.getClass());
 		System.out.println(postResult);
 	}
 
