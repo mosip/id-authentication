@@ -36,7 +36,7 @@ public class AppConfig {
 	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("application");
 	
 	static {
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4J");
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
 		MOSIP_ROLLING_APPENDER.setAppenderName(resourceBundle.getString("log4j.appender.Appender"));
 		MOSIP_ROLLING_APPENDER.setFileName(resourceBundle.getString("log4j.appender.Appender.file"));
 		MOSIP_ROLLING_APPENDER.setFileNamePattern(resourceBundle.getString("log4j.appender.Appender.filePattern"));
