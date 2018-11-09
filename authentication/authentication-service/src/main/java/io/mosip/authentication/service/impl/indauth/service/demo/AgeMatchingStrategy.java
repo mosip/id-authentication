@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.function.ToIntBiFunction;
 
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.util.MatcherUtil;
 
 /**
@@ -10,18 +11,18 @@ import io.mosip.authentication.core.util.MatcherUtil;
  * @author Sanjay Murali
  */
 public enum AgeMatchingStrategy implements MatchingStrategy {
-	
+
 	/** The exact. */
-	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo) -> {
-		if (reqInfo instanceof Integer && entityInfo instanceof Integer) {
-			return MatcherUtil.doLessThanEqualToMatch((int) reqInfo, (int) entityInfo);
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, IdentityValue entityInfo) -> {
+		if (reqInfo instanceof Integer) {
+			return MatcherUtil.doLessThanEqualToMatch((int) reqInfo, (int) Integer.parseInt(entityInfo.getValue()));
 		} else {
 			return 0;
 		}
 	});
-	
+
 	/** The match function. */
-	private final ToIntBiFunction<Object, Object> matchFunction;
+	private final ToIntBiFunction<Object, IdentityValue> matchFunction;
 
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
@@ -30,26 +31,34 @@ public enum AgeMatchingStrategy implements MatchingStrategy {
 	 * Instantiates a new age matching strategy.
 	 *
 	 * @param matchStrategyType the match strategy type
-	 * @param matchFunction the match function
+	 * @param matchFunction     the match function
 	 */
-	private AgeMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
+	AgeMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, IdentityValue> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#getType()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#
+	 * getType()
 	 */
 	@Override
 	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#getMatchFunction()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#
+	 * getMatchFunction()
 	 */
 	@Override
-	public ToIntBiFunction<Object, Object> getMatchFunction() {
+	public ToIntBiFunction<Object, IdentityValue> getMatchFunction() {
 		return matchFunction;
 	}
 

@@ -29,7 +29,7 @@ public class SwaggerConfig {
 	@Bean
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.any())
-				.paths(PathSelectors.regex("(?!/error.*).*")).build();
+				.paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build();
 	}
 
 }

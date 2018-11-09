@@ -3,6 +3,7 @@ package io.mosip.registration.test.service.packet.encryption;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -19,60 +20,33 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.appender.MosipRollingFileAppender;
-import io.mosip.registration.audit.AuditFactory;
-import io.mosip.registration.constants.AppModuleEnum;
-import io.mosip.registration.constants.AuditEventEnum;
+import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.RegistrationApprovalUiDto;
-import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.RegistrationApprovalService;
-import io.mosip.registration.test.util.datastub.DataProvider;
-
+import io.mosip.registration.service.impl.RegistrationApprovalServiceImpl;
 
 public class RegistrationApprovalServiceTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
-	@Mock
-	private MosipLogger logger;
-	private MosipRollingFileAppender mosipRollingFileAppender;
 	@InjectMocks
-	private RegistrationApprovalService registrationApprovalService;
+	private RegistrationApprovalServiceImpl registrationApprovalServiceImpl;
 	@Mock
 	private RegistrationApprovalUiDto registrationApprovalUiDto;
 	@Mock
-	private AuditFactory auditFactory;
+	private AuditFactoryImpl auditFactory;
 	@Mock
 	RegistrationDAO registrationDAO;
-	RegistrationDTO registrationDTO;
 
 	@Before
-	public void initialize() throws IOException, URISyntaxException {
-		mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
-
-		registrationDTO = DataProvider.getPacketDTO();
-
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.invokeMethod(registrationApprovalService, "initializeLogger", mosipRollingFileAppender);
-		ReflectionTestUtils.setField(registrationApprovalService, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
-		doNothing().when(auditFactory).audit(Mockito.any(AuditEventEnum.class), Mockito.any(AppModuleEnum.class),
+	public void initialize() throws IOException, URISyntaxException, RegBaseCheckedException {
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 	}
 
@@ -96,9 +70,9 @@ public class RegistrationApprovalServiceTest {
 		
 		Mockito.when(registrationDAO.approvalList()).thenReturn(details);
 		
-		ReflectionTestUtils.setField(registrationApprovalService, "registrationDAO", registrationDAO); 
+		ReflectionTestUtils.setField(registrationApprovalServiceImpl, "registrationDAO", registrationDAO); 
 				
-		List<RegistrationApprovalUiDto> allEnrollments = registrationApprovalService.getAllEnrollments();
+		List<RegistrationApprovalUiDto> allEnrollments = registrationApprovalServiceImpl.getAllEnrollments();
 		assertTrue(allEnrollments.size() > 0);
 		assertEquals("123456",allEnrollments.get(0).getId());
 		assertEquals("R",allEnrollments.get(0).getType() );
@@ -129,9 +103,9 @@ public class RegistrationApprovalServiceTest {
 		
 		Mockito.when(registrationDAO.getEnrollmentByStatus("R")).thenReturn(details);
 		
-		ReflectionTestUtils.setField(registrationApprovalService, "registrationDAO", registrationDAO); 
+		ReflectionTestUtils.setField(registrationApprovalServiceImpl, "registrationDAO", registrationDAO); 
 		
-		List<Registration> enrollmentsByStatus = registrationApprovalService.getEnrollmentByStatus("R");
+		List<Registration> enrollmentsByStatus = registrationApprovalServiceImpl.getEnrollmentByStatus("R");
 		assertTrue(enrollmentsByStatus.size() > 0);
 		assertEquals("123456",enrollmentsByStatus.get(0).getId());
 		assertEquals("R",enrollmentsByStatus.get(0).getClientStatusCode() );
@@ -161,9 +135,9 @@ public class RegistrationApprovalServiceTest {
 		
 		Mockito.when(registrationDAO.updateStatus("123456", "R", "Mosip1214", "", "Mosip1214")).thenReturn(regobject);
 		
-		ReflectionTestUtils.setField(registrationApprovalService, "registrationDAO", registrationDAO); 
+		ReflectionTestUtils.setField(registrationApprovalServiceImpl, "registrationDAO", registrationDAO); 
 		
-		Boolean updateStatus = registrationApprovalService.packetUpdateStatus("123456", "R", "Mosip1214", "", "Mosip1214");
+		Boolean updateStatus = registrationApprovalServiceImpl.packetUpdateStatus("123456", "R", "Mosip1214", "", "Mosip1214");
 		assertTrue(updateStatus);
 	}
 	
@@ -172,10 +146,18 @@ public class RegistrationApprovalServiceTest {
 		
 		Mockito.when(registrationDAO.updateStatus("", "", "", "", "")).thenReturn(null);
 		
-		ReflectionTestUtils.setField(registrationApprovalService, "registrationDAO", registrationDAO); 
+		ReflectionTestUtils.setField(registrationApprovalServiceImpl, "registrationDAO", registrationDAO); 
 		
-		Boolean updateStatus = registrationApprovalService.packetUpdateStatus("", "", "", "", "");
+		Boolean updateStatus = registrationApprovalServiceImpl.packetUpdateStatus("", "", "", "", "");
 		assertTrue(!updateStatus);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Test(expected = RegBaseUncheckedException.class)
+	public void testValidateException() throws RegBaseUncheckedException {
+		when(registrationDAO.approvalList()).thenThrow(RegBaseUncheckedException.class);
+		registrationApprovalServiceImpl.getAllEnrollments();
+	}
+
 
 }

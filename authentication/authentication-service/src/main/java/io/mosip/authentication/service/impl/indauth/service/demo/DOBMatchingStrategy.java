@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.function.ToIntBiFunction;
 
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.util.MatcherUtil;
 
 /**
@@ -13,26 +14,27 @@ import io.mosip.authentication.core.util.MatcherUtil;
  * @author Sanjay Murali
  */
 public enum DOBMatchingStrategy implements MatchingStrategy {
-	
+
 	/** The exact. */
-	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo) -> {
-		if (reqInfo instanceof String && entityInfo instanceof Date) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, IdentityValue entityInfo) -> {
+		if (reqInfo instanceof String) {
 			try {
-				Date entityInfoDate = (Date)entityInfo;
-				Date reqInfoDate = sdf.parse((String) reqInfo);
-				return MatcherUtil.doExactMatch(reqInfoDate,entityInfoDate);
+				Date entityInfoDate = getDateFormat().parse(entityInfo.getValue());
+				Date reqInfoDate = getDateFormat().parse((String) reqInfo);
+				return MatcherUtil.doExactMatch(reqInfoDate, entityInfoDate);
 			} catch (ParseException e) {
 				/** The match function. */
-				//FIXME
+				// FIXME
 				return 0;
 			}
-		} 
+		}
 		return 0;
 	});
+
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
 	
-	
-	private final ToIntBiFunction<Object, Object> matchFunction;
+	private final ToIntBiFunction<Object, IdentityValue> matchFunction;
 
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
@@ -41,27 +43,39 @@ public enum DOBMatchingStrategy implements MatchingStrategy {
 	 * Instantiates a new DOB matching strategy.
 	 *
 	 * @param matchStrategyType the match strategy type
-	 * @param matchFunction the match function
+	 * @param matchFunction     the match function
 	 */
-	private DOBMatchingStrategy(MatchingStrategyType matchStrategyType,  ToIntBiFunction<Object, Object> matchFunction) {
+	DOBMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, IdentityValue> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#getType()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#
+	 * getType()
 	 */
 	@Override
 	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#getMatchFunction()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#
+	 * getMatchFunction()
 	 */
 	@Override
-	public ToIntBiFunction<Object, Object> getMatchFunction() {
+	public ToIntBiFunction<Object, IdentityValue> getMatchFunction() {
 		return matchFunction;
+	}
+	
+	public static SimpleDateFormat getDateFormat() {
+		return DATE_FORMAT;
 	}
 
 }

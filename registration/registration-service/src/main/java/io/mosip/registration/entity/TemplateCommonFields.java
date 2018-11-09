@@ -13,7 +13,7 @@ public class TemplateCommonFields {
 	protected String descr;
 	@Column(name="is_active")
 	@Type(type= "true_false")
-	protected boolean isActive;
+	protected Boolean isActive;
 	@Column(name="cr_by")
 	protected String crBy;
 	@Column(name="cr_dtimes")
@@ -23,7 +23,7 @@ public class TemplateCommonFields {
 	@Column(name="upd_dtimes")
 	protected Date updDtimes;
 	@Column(name="is_deleted")
-	protected boolean isDeleted;
+	protected Boolean isDeleted;
 	@Column(name="del_dtimes")
 	protected Date delDtimes;
 	

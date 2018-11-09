@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.mosip.kernel.dataaccess.config.impl.HibernateDaoConfig
+io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig

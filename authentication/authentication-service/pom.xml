@@ -84,6 +84,11 @@
 			<version>${commons.lang.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -104,6 +109,7 @@
 				<executions>
 					<execution>
 						<goals>
+						    <goal>build-info</goal>
 							<goal>repackage</goal>
 						</goals>
 					</execution>

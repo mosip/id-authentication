@@ -1,5 +1,9 @@
 package io.mosip.registration.test.dao.impl;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,39 +20,42 @@ import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
 
 public class RegistrationUserDetailDAOTest {
-	
+
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	
 	@InjectMocks
 	private RegistrationUserDetailDAOImpl registrationUserDetailDAOImpl;
-	
+
 	@Mock
 	private RegistrationUserDetailRepository registrationUserDetailRepository;
-	
+
 	@Test
-	public void getUserDetailSuccessTest(){
+	public void getUserDetailSuccessTest() {
+
 		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
 		registrationUserDetail.setName("Sravya");
 		registrationUserDetail.setCntrId("000567");
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
 		registrationUserDetailList.add(registrationUserDetail);
-		
-		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue(Mockito.anyString())).thenReturn(registrationUserDetailList);
-			
-		registrationUserDetailDAOImpl.getUserDetail(Mockito.anyString());
+
+		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue("mosip"))
+				.thenReturn(registrationUserDetailList);
+		assertTrue(!registrationUserDetailList.isEmpty());
+		assertNotNull(registrationUserDetailDAOImpl.getUserDetail("mosip"));
 	}
-	
+
 	@Test
-	public void getUserDetailFailureTest(){
+	public void getUserDetailFailureTest() {
+
 		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
 		registrationUserDetailList.add(registrationUserDetail);
-		
-		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue(Mockito.anyString())).thenReturn(registrationUserDetailList);
-			
-		registrationUserDetailDAOImpl.getUserDetail(Mockito.anyString());
+
+		Mockito.when(registrationUserDetailRepository.findByIdAndIsActiveTrue("mosip"))
+				.thenReturn(registrationUserDetailList);
+		assertFalse(registrationUserDetailList.isEmpty());
+		assertNotNull(registrationUserDetailDAOImpl.getUserDetail("mosip"));
 	}
-	
 
 }

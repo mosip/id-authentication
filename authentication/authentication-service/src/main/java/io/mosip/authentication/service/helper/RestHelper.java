@@ -21,6 +21,7 @@ import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
+import lombok.NoArgsConstructor;
 import reactor.core.publisher.Mono;
 
 /**
@@ -29,13 +30,8 @@ import reactor.core.publisher.Mono;
  * @author Manoj SP
  */
 @Component
+@NoArgsConstructor
 public class RestHelper {
-
-	/**
-	 * Instantiates a new rest helper.
-	 */
-	private RestHelper() {
-	}
 
 	/** The Constant METHOD_REQUEST_SYNC. */
 	private static final String METHOD_REQUEST_SYNC = "requestSync";
@@ -60,7 +56,7 @@ public class RestHelper {
 
 	/** The mosipLogger. */
 	private static MosipLogger mosipLogger = IdaLogger.getLogger(RestHelper.class);
-
+	
 	/**
 	 * Request to send/receive HTTP requests and return the response synchronously.
 	 *

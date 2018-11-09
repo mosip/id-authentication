@@ -15,7 +15,7 @@ import io.mosip.kernel.emailnotification.smtp.exception.MailNotifierAsyncHandler
 public class MailNotifierLoggerTest {
 	@Test
 	public void testLogger() {
-		MosipLogger logger = LoggerConfiguration.logConfig(MailNotifierAsyncHandler.class);
-		logger.info("", "", "", "Testing Logging");		
+		MosipLogger mosipLogger = LoggerConfiguration.logConfig(MailNotifierAsyncHandler.class);
+		mosipLogger.info("", "", "", "Testing Logging");		
 	}
 }

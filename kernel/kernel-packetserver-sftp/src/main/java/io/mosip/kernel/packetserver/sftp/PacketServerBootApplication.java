@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.context.annotation.PropertySource;
 
 /**
  * Packet Server spring boot application
@@ -14,7 +13,6 @@ import org.springframework.context.annotation.PropertySource;
  * @since 1.0.0
  */
 @SpringBootApplication
-@PropertySource(value = {"classpath:packet-server-configuration.properties"})
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,
 		HibernateJpaAutoConfiguration.class})
 public class PacketServerBootApplication {

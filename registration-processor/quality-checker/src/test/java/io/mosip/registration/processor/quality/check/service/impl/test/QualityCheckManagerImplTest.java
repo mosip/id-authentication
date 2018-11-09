@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +24,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.kernel.dataaccess.constant.HibernateErrorCodes;
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
@@ -106,7 +106,7 @@ public class QualityCheckManagerImplTest {
 		Mockito.when(qcUserInfoDao.getAllQcuserIds()).thenReturn(qcuserlist);
 		
 		
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(applicantInfoDao.save(ArgumentMatchers.any(QcuserRegistrationIdEntity.class)))
 				.thenThrow(exp);
@@ -125,7 +125,7 @@ public class QualityCheckManagerImplTest {
 	
 	@Test(expected = TablenotAccessibleException.class)
 	public void getPacketsforQCUserFailureTest(){
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(applicantInfoDao.getPacketsforQCUser(ArgumentMatchers.anyString())).thenThrow(exp);
 		qualityCheckManager.getPacketsforQCUser("qc001");
@@ -182,7 +182,7 @@ public class QualityCheckManagerImplTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void updateQCUserStatusDataAccessLayerExceptionTest() {
 		qcUserDtos.add(qCUserDto1);
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCodes.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(applicantInfoDao.findById(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
 				.thenThrow(exp);

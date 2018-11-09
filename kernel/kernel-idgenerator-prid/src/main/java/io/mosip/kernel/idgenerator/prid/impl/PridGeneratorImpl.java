@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.idgenerator.MosipPridGenerator;
+import io.mosip.kernel.core.spi.idgenerator.PridGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.kernel.idgenerator.prid.cache.PridCacheManager;
@@ -27,7 +27,7 @@ import io.mosip.kernel.idgenerator.prid.repository.PridRepository;
  *
  */
 @Component
-public class PridGeneratorImpl implements MosipPridGenerator<String> {
+public class PridGeneratorImpl implements PridGenerator<String> {
 	@Value("${mosip.kernel.prid.length}")
 	private int pridLength;
 	@Autowired

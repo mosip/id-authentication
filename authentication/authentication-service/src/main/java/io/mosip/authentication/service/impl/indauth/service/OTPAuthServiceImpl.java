@@ -11,6 +11,11 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.PinInfo;
+import io.mosip.authentication.core.dto.indauth.PinType;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -22,6 +27,7 @@ import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilde
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
+import lombok.NoArgsConstructor;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -31,13 +37,8 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
  */
 
 @Service
+@NoArgsConstructor
 public class OTPAuthServiceImpl implements OTPAuthService {
-
-	/**
-	 * Instantiates a new OTP auth service impl.
-	 */
-	private OTPAuthServiceImpl() {
-	}
 
 	/** The Constant METHOD_VALIDATE_OTP. */
 	private static final String METHOD_VALIDATE_OTP = "validateOtp";
@@ -58,7 +59,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	private AuditRequestFactory auditreqfactory;
 
 	/** The mosipLogger. */
-	private MosipLogger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
+	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
 
 	/** The env. */
 	@Autowired
@@ -80,22 +81,35 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String txnId = authreqdto.getTxnID();
 		String UIN = authreqdto.getId();
 		String TSPCode = authreqdto.getMuaCode();
-		String otp = authreqdto.getPii().getPin().getValue();
-		boolean isValidRequest = validateTxnId(txnId, UIN);
-		if (isValidRequest) {
-			mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
-			String OtpKey = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
-			String key = Optional.ofNullable(OtpKey)
-					.orElseThrow(() -> new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
-			isOtpValid = otpManager.validateOtp(otp, key);
+		Optional<String> otp = getOtpValue(authreqdto);
+		if (otp.isPresent()) {
+			boolean isValidRequest = validateTxnId(txnId, UIN);
+			if (isValidRequest) {
+				mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
+				String OtpKey = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
+				String key = Optional.ofNullable(OtpKey).orElseThrow(
+						() -> new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
+				isOtpValid = otpManager.validateOtp(otp.get(), key);
+			} else {
+				mosipLogger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID",
+						getClass().toString());
+				mosipLogger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
+				throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
+			}
 		} else {
-			mosipLogger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID", getClass().toString());
-			mosipLogger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
-			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
-
+			// FIXME throw otp is not specified
 		}
 
 		return constructAuthStatusInfo(isOtpValid);
+	}
+
+	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
+		return Optional.ofNullable(authreqdto.getPinInfo())
+				.flatMap(pinInfos -> 
+						pinInfos.stream()
+								.filter(pinInfo -> pinInfo.getType() != null && pinInfo.getType().equalsIgnoreCase(PinType.OTP.getType()))
+								.findAny())
+				.map(PinInfo::getValue);
 	}
 
 	/**
@@ -104,7 +118,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	 * @param isOtpValid the is otp valid
 	 * @return the auth status info
 	 */
-	private AuthStatusInfo constructAuthStatusInfo(boolean isOtpValid) {
+	private static AuthStatusInfo constructAuthStatusInfo(boolean isOtpValid) {
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		statusInfoBuilder.setStatus(isOtpValid).addAuthUsageDataBits(AuthUsageDataBit.USED_OTP);
 

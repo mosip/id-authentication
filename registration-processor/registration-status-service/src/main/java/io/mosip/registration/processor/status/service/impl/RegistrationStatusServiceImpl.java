@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
@@ -68,7 +71,7 @@ public class RegistrationStatusServiceImpl
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
 	 * getRegistrationStatus(java.lang.Object)
@@ -83,7 +86,7 @@ public class RegistrationStatusServiceImpl
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
-			
+
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
 					: EventName.EXCEPTION.toString();
@@ -92,7 +95,7 @@ public class RegistrationStatusServiceImpl
 			description = isTransactionSuccessful
 					? "Get registration status by registration id is successful"
 					: "Get registration status by registration id is unsuccessful";
-			
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
 		}
@@ -100,7 +103,7 @@ public class RegistrationStatusServiceImpl
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
 	 * findbyfilesByThreshold(java.lang.String)
@@ -125,7 +128,7 @@ public class RegistrationStatusServiceImpl
 			description = isTransactionSuccessful
 					? "Find files by threshold time and statuscode is successful"
 					: "Find files by threshold time and statuscode is unsuccessful";
-			
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
@@ -134,7 +137,7 @@ public class RegistrationStatusServiceImpl
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
 	 * addRegistrationStatus(java.lang.Object)
@@ -157,7 +160,7 @@ public class RegistrationStatusServiceImpl
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Could not add Information to table", e);
 		} finally {
-			
+
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
@@ -165,8 +168,8 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Registration status added successfully"
-					: "Failure in adding registration status to registration table";	
-			
+					: "Failure in adding registration status to registration table";
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
 		}
@@ -174,7 +177,7 @@ public class RegistrationStatusServiceImpl
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
 	 * updateRegistrationStatus(java.lang.Object)
@@ -201,7 +204,7 @@ public class RegistrationStatusServiceImpl
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Could not update Information to table", e);
 		} finally {
-			
+
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
@@ -209,8 +212,8 @@ public class RegistrationStatusServiceImpl
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful
 					? "Updated registration status successfully"
-					: "Updated registration status unsuccessfully";	
-			
+					: "Updated registration status unsuccessfully";
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
 
@@ -219,7 +222,7 @@ public class RegistrationStatusServiceImpl
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
 	 * getByStatus(java.lang.String)
@@ -235,7 +238,7 @@ public class RegistrationStatusServiceImpl
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
-			
+
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
 					: EventName.EXCEPTION.toString();
@@ -251,7 +254,7 @@ public class RegistrationStatusServiceImpl
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.status.service.RegistrationStatusService#
 	 * getByIds(java.lang.String)

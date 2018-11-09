@@ -29,7 +29,7 @@ import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.packetserver.sftp.constant.PacketServerExceptionConstants;
+import io.mosip.kernel.packetserver.sftp.constant.PacketServerExceptionConstant;
 import io.mosip.kernel.packetserver.sftp.exception.MosipIllegalStateException;
 import io.mosip.kernel.packetserver.sftp.exception.MosipInvalidSpecException;
 import io.mosip.kernel.packetserver.sftp.util.PacketUtils;
@@ -56,37 +56,37 @@ public class PacketServer {
 	/**
 	 * Host name for server
 	 */
-	@Value("${packetserver.host}")
+	@Value("${mosip.kernel.packetserver.host}")
 	private String host;
 	/**
 	 * Port Number
 	 */
-	@Value("${packetserver.port}")
+	@Value("${mosip.kernel.packetserver.port}")
 	private int port;
 	/**
 	 * Public key for private key authentication
 	 */
-	@Value("${packetserver.publicKey}")
+	@Value("${mosip.kernel.packetserver.publicKey}")
 	private String publicKey;
 	/**
 	 * Host key file name
 	 */
-	@Value("${packetserver.keyPairGenerator}")
+	@Value("${mosip.kernel.packetserver.keyPairGenerator}")
 	private String hostKeyFileName;
 	/**
 	 * SFTP home location
 	 */
-	@Value("${packetserver.sftpRemoteDirectory}")
+	@Value("${mosip.kernel.packetserver.sftpRemoteDirectory}")
 	private String sftpRemoteDirectory;
 	/**
 	 * Username for authentication
 	 */
-	@Value("${packetserver.username}")
+	@Value("${mosip.kernel.packetserver.username}")
 	private String username;
 	/**
 	 * Password for authentication
 	 */
-	@Value("${packetserver.password}")
+	@Value("${mosip.kernel.packetserver.password}")
 	private String password;
 
 	/**
@@ -137,7 +137,7 @@ public class PacketServer {
 			key = kf.generatePublic(spec);
 		} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 			throw new MosipInvalidSpecException(
-					PacketServerExceptionConstants.MOSIP_INVALID_SPEC_EXCEPTION);
+					PacketServerExceptionConstant.MOSIP_INVALID_SPEC_EXCEPTION);
 		}
 		return key;
 	}
@@ -150,7 +150,7 @@ public class PacketServer {
 			this.server.start();
 		} catch (IOException e) {
 			throw new MosipIllegalStateException(
-					PacketServerExceptionConstants.MOSIP_ILLEGAL_STATE_EXCEPTION,
+					PacketServerExceptionConstant.MOSIP_ILLEGAL_STATE_EXCEPTION,
 					e.getCause());
 		}
 	}
@@ -164,7 +164,7 @@ public class PacketServer {
 			server.stop(false);
 		} catch (IOException e) {
 			throw new MosipIllegalStateException(
-					PacketServerExceptionConstants.MOSIP_ILLEGAL_STATE_EXCEPTION,
+					PacketServerExceptionConstant.MOSIP_ILLEGAL_STATE_EXCEPTION,
 					e.getCause());
 		}
 	}

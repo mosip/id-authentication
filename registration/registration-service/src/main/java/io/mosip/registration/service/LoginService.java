@@ -1,10 +1,11 @@
 package io.mosip.registration.service;
 
-import java.util.List;
 import java.util.Map;
 
+import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.RegistrationUserDetail;
 
 /**
  * Service Class for Login
@@ -14,7 +15,7 @@ import io.mosip.registration.dto.ResponseDTO;
  *
  */
 public interface LoginService {
-	
+
 	/**
 	 * get login modes
 	 * 
@@ -26,9 +27,9 @@ public interface LoginService {
 	 * validating user credentials
 	 * 
 	 * @param userId
-	 * 		  entered userId
+	 *            entered userId
 	 * @param hashPassword
-	 * 		  entered password with hashing		
+	 *            entered password with hashing
 	 * @return boolean true or false
 	 */
 	boolean validateUserPassword(String userId, String hashPassword);
@@ -37,39 +38,28 @@ public interface LoginService {
 	 * fetching user details
 	 * 
 	 * @param userId
-	 * 		  entered userId 		
-	 * @return map with user details
+	 *            entered userId
+	 * @return RegistrationUserDetail
 	 */
-	Map<String, String> getUserDetail(String userId);
-
-	/**
-	 * fetching registration center name
-	 * 
-	 * @param centerId
-	 * 		  centerId corresponding to entered userId
-	 * @return String center name
-	 */
-	String getCenterName(String centerId);
-
+	RegistrationUserDetail getUserDetail(String userId);
+	
 	/**
 	 * fetching registration center details
 	 * 
 	 * @param centerId
-	 * 		  centerId corresponding to entered userId
+	 *            centerId corresponding to entered userId
 	 * @return RegistrationCenterDetailDTO center details
 	 */
 	RegistrationCenterDetailDTO getRegistrationCenterDetails(String centerId);
 
 	/**
-	 * fetching registration user roles
+	 * fetching registration screen authorization details
 	 * 
 	 * @param userId
-	 * 		  entered userId 		
-	 * @return List of user roles
+	 *            entered userId
+	 * @return AuthorizationDTO authorization details
 	 */
-	List<String> getRoles(String userId);
-	
-	String getBlockedUserCheck(String userId);
+	AuthorizationDTO getScreenAuthorizationDetails(String userId);
 
 	/**
 	 * get otp
@@ -78,8 +68,7 @@ public interface LoginService {
 	 *            eoUserName to generate OTP
 	 * @return Response success or Error
 	 */
-	public ResponseDTO getOTP(String key);
-
+	ResponseDTO getOTP(String key);
 
 	/**
 	 * OTP validation entered by user
@@ -91,6 +80,6 @@ public interface LoginService {
 	 * @return Response success or error
 	 */
 
-	public ResponseDTO validateOTP(String key, String otp);
+	ResponseDTO validateOTP(String key, String otp);
 
 }

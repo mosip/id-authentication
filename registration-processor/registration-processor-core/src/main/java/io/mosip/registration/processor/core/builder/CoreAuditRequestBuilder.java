@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.core.builder;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class CoreAuditRequestBuilder {
 	 */
 	public void createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
 			String registrationId) {
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now())
+		auditRequestBuilder.setActionTimeStamp(LocalDateTime.now())
 				.setApplicationId(AuditLogConstant.MOSIP_4.toString())
 				.setApplicationName(AuditLogConstant.REGISTRATION_PROCESSOR.toString())
 				.setCreatedBy(AuditLogConstant.SYSTEM.toString()).setDescription(description).setEventId(eventId)

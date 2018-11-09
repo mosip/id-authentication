@@ -1,14 +1,11 @@
 package io.mosip.registration.entity;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import io.mosip.registration.entity.RegistrationCommonFields;
-import io.mosip.registration.entity.RegistrationUserPasswordID;
 
 /**
  * RegistrationUserPassword entity details
@@ -20,38 +17,73 @@ import io.mosip.registration.entity.RegistrationUserPasswordID;
 @Table(schema = "reg", name = "user_pwd")
 public class RegistrationUserPassword extends RegistrationCommonFields {
 	@EmbeddedId
-	private RegistrationUserPasswordID registrationUserPasswordID;
+	private RegistrationUserPasswordId registrationUserPasswordId;
 
-	@Column(name = "pwd_expiry_dtimes", nullable = false, updatable = false)
-	private OffsetDateTime pwdExpiryDtimes;
-	@Column(name = "status_code", length = 64, nullable = true, updatable = false)
+	@Column(name = "pwd", length = 512, nullable = false, updatable = false)
+	private String pwd;
+	@Column(name = "pwd_expiry_dtimes", nullable = true, updatable = false)
+	private Timestamp pwdExpiryDtimes;
+	@Column(name = "status_code", length = 64, nullable = false, updatable = false)
 	private String statusCode;
-	@Column(name = "lang_code", length = 3, nullable = false, updatable = false)
-	private String langCode;
-	
-	public RegistrationUserPasswordID getRegistrationUserPasswordID() {
-		return registrationUserPasswordID;
+
+	/**
+	 * @return the registrationUserPasswordId
+	 */
+	public RegistrationUserPasswordId getRegistrationUserPasswordId() {
+		return registrationUserPasswordId;
 	}
-	public void setRegistrationUserPasswordID(RegistrationUserPasswordID registrationUserPasswordID) {
-		this.registrationUserPasswordID = registrationUserPasswordID;
+
+	/**
+	 * @param registrationUserPasswordId
+	 *            the registrationUserPasswordId to set
+	 */
+	public void setRegistrationUserPasswordId(RegistrationUserPasswordId registrationUserPasswordId) {
+		this.registrationUserPasswordId = registrationUserPasswordId;
 	}
-	public OffsetDateTime getPwdExpiryDtimes() {
+
+	/**
+	 * @return the pwd
+	 */
+	public String getPwd() {
+		return pwd;
+	}
+
+	/**
+	 * @param pwd
+	 *            the pwd to set
+	 */
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+
+	/**
+	 * @return the pwdExpiryDtimes
+	 */
+	public Timestamp getPwdExpiryDtimes() {
 		return pwdExpiryDtimes;
 	}
-	public void setPwdExpiryDtimes(OffsetDateTime pwdExpiryDtimes) {
+
+	/**
+	 * @param pwdExpiryDtimes
+	 *            the pwdExpiryDtimes to set
+	 */
+	public void setPwdExpiryDtimes(Timestamp pwdExpiryDtimes) {
 		this.pwdExpiryDtimes = pwdExpiryDtimes;
 	}
+
+	/**
+	 * @return the statusCode
+	 */
 	public String getStatusCode() {
 		return statusCode;
 	}
+
+	/**
+	 * @param statusCode
+	 *            the statusCode to set
+	 */
 	public void setStatusCode(String statusCode) {
 		this.statusCode = statusCode;
 	}
-	public String getLangCode() {
-		return langCode;
-	}
-	public void setLangCode(String langCode) {
-		this.langCode = langCode;
-	}
-	
+
 }

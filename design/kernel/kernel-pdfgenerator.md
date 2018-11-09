@@ -2,36 +2,41 @@
 
 #### Background
 
-This Application can be use when converting plain/html template to PDF. This application contain a series of methods that accept template as:-
+This application can be used converting plain/html template to PDF. It contains several methods that accept template as:
 
-Input Stream
+- Input Stream
 
-File
 
-String
+- File
+
+
+- String
 
 
 #### Solution
 
+
+
 **The key solution considerations are**
 
-- Create a project which generates pdf from provided template using pdf generator API.
 
-- Create a interface PdfGenerator having required method declaration to generate pdf document.
-
-- This pdf generator can be used in any MOSP Module to generate pdf after adding PdfGrenerate to their class path.
+- Create an interface PDFGenerator having required method declaration to generate PDF document, which will be exposed to the other applications.
 
 
+- Create a project which implements PDFGenerator from provided template based on iText API.
 
-**The solution can be**
 
-- Create a project which will have PdfGenerator implementation based on iText API.
+- PDF generator can be used in any MOSIP module to generate pdf after adding PDFGrenerate implementation to their class path.
 
-- Create a wrapper interface in the Core SPI, which will be exposed to the caller.
-
-- The jar file of the pdfgenerator-itext implementation has to be added in the class path of the caller.
 
 
 **Class Diagram**
 
-![Class Diagram](_images/kernel_pdfgenerator_itext.png)
+
+![Class Diagram](_images/kernel-pdfgenerator-cd.png)
+
+
+## Implementation
+
+
+**kernel-pdfgenerator-itext** [README](../../kernel/kernel-pdfgenerator-itext/README.md)

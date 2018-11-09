@@ -2,29 +2,39 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.function.ToIntBiFunction;
 
+import org.hibernate.boot.jaxb.hbm.spi.EntityInfo;
+
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.util.MatcherUtil;
 
 public enum FullAddressMatchingStrategy implements MatchingStrategy {
 
-	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo) -> {
-		if (reqInfo instanceof String && entityInfo instanceof String) {
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, IdentityValue entityInfo) -> {
+		if (reqInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
+			String entityInfoName = DemoNormalizer.normalizeAddress(entityInfo.getValue());
 			return MatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
 			return 0;
 		}
-	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, Object entityInfo) -> {
-		if (reqInfo instanceof String && entityInfo instanceof String) {
+	}), PARTIAL(MatchingStrategyType.PARTIAL, (Object reqInfo, IdentityValue entityInfo) -> {
+		if (reqInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
+			String entityInfoName = DemoNormalizer.normalizeAddress(entityInfo.getValue());
 			return MatcherUtil.doPartialMatch(refInfoName, entityInfoName);
 		} else {
 			return 0;
 		}
-	}), PHONETICS(MatchingStrategyType.PHONETICS, (reqInfo, entityInfo) -> 0);
-
-	private final ToIntBiFunction<Object, Object> matchFunction;
+	}), PHONETICS(MatchingStrategyType.PHONETICS, (Object reqInfo, IdentityValue entityInfo) -> {
+		if (reqInfo instanceof String) {
+			String refInfoName = DemoNormalizer.normalizeName((String) reqInfo);
+			String entityInfoName = DemoNormalizer.normalizeName(entityInfo.getValue());
+			return MatcherUtil.doPhoneticsMatch(refInfoName, entityInfoName,entityInfo.getLanguage());
+		} else {
+			return 0;
+		}
+	});
+	private final ToIntBiFunction<Object, IdentityValue> matchFunction;
 
 	private final MatchingStrategyType matchStrategyType;
 
@@ -34,7 +44,8 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 	 * @param matchStrategyType
 	 * @param matchFunction
 	 */
-	private FullAddressMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
+	FullAddressMatchingStrategy(MatchingStrategyType matchStrategyType,
+			ToIntBiFunction<Object, IdentityValue> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
@@ -45,7 +56,7 @@ public enum FullAddressMatchingStrategy implements MatchingStrategy {
 	}
 
 	@Override
-	public ToIntBiFunction<Object, Object> getMatchFunction() {
+	public ToIntBiFunction<Object, IdentityValue> getMatchFunction() {
 		return matchFunction;
 	}
 }

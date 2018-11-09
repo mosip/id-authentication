@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.kernel.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
@@ -123,7 +123,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 
 	@Autowired
 	private PacketInfoDao packetInfoDao;
-	
+
 	@Autowired
 	FileSystemAdapter<InputStream, Boolean> filesystemCephAdapter;
 
@@ -160,7 +160,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			
+
 			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
@@ -168,7 +168,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "Packet meta data saved successfully"
 					: "Packet meta data unsuccessful";
-			
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
@@ -197,7 +197,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			
+
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
@@ -205,7 +205,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "Demographic data saved successfully"
 					: "Demographic data Failed to save";
-			
+
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
@@ -215,7 +215,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
 	 * getPacketsforQCUser(java.lang.String)

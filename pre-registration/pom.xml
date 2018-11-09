@@ -8,8 +8,8 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>pre-registration</artifactId>
-
+	<groupId>io.mosip.preregistration</groupId>
+	<artifactId>pre-registration-parent</artifactId>
 	<packaging>pom</packaging>
 
 	<name>pre-registration</name>
@@ -25,6 +25,7 @@
 		<spring.version>5.0.4.RELEASE</spring.version>
 		<spring.boot.version>2.0.2.RELEASE</spring.boot.version>
 		<spring.data.version>2.0.9.RELEASE</spring.data.version>
+		<spring-cloud-config.version>2.0.0.RELEASE</spring-cloud-config.version>
 
 		<!-- Miscellaneous -->
 		<javax.validation-api.version>2.0.1.Final</javax.validation-api.version>
@@ -32,7 +33,7 @@
 
 		<!-- Swagger -->
 		<swagger.version>2.9.2</swagger.version>
-		
+
 		<!-- Data Access -->
 		<eclipselink.version>2.5.0</eclipselink.version>
 		<mysql.connector.version>5.1.46</mysql.connector.version>
@@ -58,42 +59,45 @@
 		<lombok.version>1.16.18</lombok.version>
 	</properties>
 	<modules>
-		<module>registration-web-service</module>
-		<module>registration-web</module>
-		<module>registration</module>
-		<module>core</module>
+		<module>pre-registration-core</module>
+		<module>pre-registration-document-service</module>
+		<module>pre-registration-demographic-service</module>
+        <module>pre-registration-auth-service</module>
+ 		<!-- <module>pre-registration-booking</module>
+		<module>pre-registration-datasync</module> -->
+		
 	</modules>
-	
+
 	<profiles>
-                <profile>
-                       <id>DEV</id>
-                        <properties>
-                                <sonar.host.url>http://13.76.43.109:9000</sonar.host.url>
-                                <sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
-                                <sonar.projectName>MOSIP Parent Module-DEV</sonar.projectName>
-                                <sonar.projectVersion>master</sonar.projectVersion>
-                                <sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-                                <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions>
-                                <sonar.jacoco.reportPaths>
-                                        target/jacoco.exec
-                                </sonar.jacoco.reportPaths>
-                        </properties>
-                </profile>
-                <profile>
-                        <id>LOCAL</id>
-                        <properties>
-                                <sonar.host.url>http://104.215.158.154:9000</sonar.host.url>
-                                <sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
-                                <sonar.projectName>MOSIP Parent Module-Local</sonar.projectName>
-                                <sonar.projectVersion>master</sonar.projectVersion>
-                                <sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-                                <sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions>
-                                <sonar.jacoco.reportPaths>
-                                        target/jacoco.exec
-                                </sonar.jacoco.reportPaths>
-                        </properties>
-                </profile>
-    </profiles>
+		<profile>
+			<id>DEV</id>
+			<properties>
+				<sonar.host.url>http://13.76.43.109:9000</sonar.host.url>
+				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
+				<sonar.projectName>MOSIP Parent Module-DEV</sonar.projectName>
+				<sonar.projectVersion>master</sonar.projectVersion>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+		<profile>
+			<id>LOCAL</id>
+			<properties>
+				<sonar.host.url>http://104.215.158.154:9000</sonar.host.url>
+				<sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
+				<sonar.projectName>MOSIP Parent Module-Local</sonar.projectName>
+				<sonar.projectVersion>master</sonar.projectVersion>
+				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
+				<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*</sonar.exclusions>
+				<sonar.jacoco.reportPaths>
+					target/jacoco.exec
+				</sonar.jacoco.reportPaths>
+			</properties>
+		</profile>
+	</profiles>
 
 
 	<build>

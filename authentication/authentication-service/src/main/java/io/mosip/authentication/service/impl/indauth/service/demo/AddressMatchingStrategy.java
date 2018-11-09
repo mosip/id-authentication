@@ -2,6 +2,7 @@ package io.mosip.authentication.service.impl.indauth.service.demo;
 
 import java.util.function.ToIntBiFunction;
 
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.util.MatcherUtil;
 
 /**
@@ -12,10 +13,10 @@ import io.mosip.authentication.core.util.MatcherUtil;
 public enum AddressMatchingStrategy implements MatchingStrategy {
 
 	/** The exact. */
-	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, Object entityInfo) -> {
-		if (reqInfo instanceof String && entityInfo instanceof String) {
+	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, IdentityValue entityInfo) -> {
+		if (reqInfo instanceof String) {
 			String refInfoName = DemoNormalizer.normalizeAddress((String) reqInfo);
-			String entityInfoName = DemoNormalizer.normalizeAddress((String) entityInfo);
+			String entityInfoName = DemoNormalizer.normalizeAddress(entityInfo.getValue());
 			return MatcherUtil.doExactMatch(refInfoName, entityInfoName);
 		} else {
 			return 0;
@@ -23,7 +24,7 @@ public enum AddressMatchingStrategy implements MatchingStrategy {
 	});
 
 	/** The match function. */
-	private final ToIntBiFunction<Object, Object> matchFunction;
+	private final ToIntBiFunction<Object, IdentityValue> matchFunction;
 
 	/** The match strategy type. */
 	private final MatchingStrategyType matchStrategyType;
@@ -32,26 +33,35 @@ public enum AddressMatchingStrategy implements MatchingStrategy {
 	 * Constructor for Address Matching Strategy.
 	 *
 	 * @param matchStrategyType the match strategy type
-	 * @param matchFunction the match function
+	 * @param matchFunction     the match function
 	 */
-	private AddressMatchingStrategy(MatchingStrategyType matchStrategyType, ToIntBiFunction<Object, Object> matchFunction) {
+	AddressMatchingStrategy(MatchingStrategyType matchStrategyType,
+			ToIntBiFunction<Object, IdentityValue> matchFunction) {
 		this.matchFunction = matchFunction;
 		this.matchStrategyType = matchStrategyType;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#getType()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#
+	 * getType()
 	 */
 	@Override
 	public MatchingStrategyType getType() {
 		return matchStrategyType;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#getMatchFunction()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategy#
+	 * getMatchFunction()
 	 */
 	@Override
-	public ToIntBiFunction<Object, Object> getMatchFunction() {
+	public ToIntBiFunction<Object, IdentityValue> getMatchFunction() {
 		return matchFunction;
 	}
 }

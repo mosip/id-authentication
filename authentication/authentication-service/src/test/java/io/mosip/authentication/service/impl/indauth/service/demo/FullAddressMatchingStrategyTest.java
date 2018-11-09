@@ -9,6 +9,8 @@ import java.util.function.ToIntBiFunction;
 
 import org.junit.Test;
 
+import io.mosip.authentication.core.dto.indauth.IdentityValue;
+
 /**
  * 
  * @author Dinesh Karuppiah
@@ -44,7 +46,7 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestExactMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, IdentityValue> matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -54,9 +56,11 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		ToIntBiFunction<Object, IdentityValue> matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		IdentityValue identityValue = new IdentityValue();
+		identityValue.setValue("a k Chowdary Beach view colony apt 12 main st TamilNadu 560055");
 		int value = matchFunction.applyAsInt("a k Chowdary Beach view colony apt 12 main st TamilNadu 560055",
-				"a k Chowdary Beach view colony apt 12 main st TamilNadu 560055");
+				identityValue);
 		assertEquals(100, value);
 	}
 
@@ -66,15 +70,18 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidExactMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
-		int value = matchFunction.applyAsInt(2, 2);
+		ToIntBiFunction<Object, IdentityValue> matchFunction = FullAddressMatchingStrategy.EXACT.getMatchFunction();
+		IdentityValue identityValue = new IdentityValue();
+		identityValue.setValue("2");
+		int value = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value);
-
-		int value1 = matchFunction.applyAsInt(2, "no 1 second street chennai");
+		identityValue = new IdentityValue();
+		identityValue.setValue("no 1 second street chennai");
+		int value1 = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value1);
+		identityValue = new IdentityValue();
+		identityValue.setValue("no 1 second street chennai");
 
-		int value2 = matchFunction.applyAsInt("no 1 second street chennai", 2);
-		assertEquals(0, value2);
 	}
 
 	/**
@@ -106,7 +113,7 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPartialMatchingStrategyfunctionisNull() {
-		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
+		ToIntBiFunction<Object, IdentityValue> matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
 		matchFunction = null;
 		assertNull(matchFunction);
 	}
@@ -116,8 +123,10 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestValidPartialMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
-		int value = matchFunction.applyAsInt("no 1 second street chennai", "no 1 second");
+		ToIntBiFunction<Object, IdentityValue> matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
+		IdentityValue identityValue = new IdentityValue();
+		identityValue.setValue("no IdentityValue1 second street chennai");
+		int value = matchFunction.applyAsInt("street chennai", identityValue);
 		assertEquals(50, value);
 	}
 
@@ -126,15 +135,15 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestInvalidPartialMatchingStrategyFunction() {
-		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
-		int value = matchFunction.applyAsInt(2, 2);
+		ToIntBiFunction<Object, IdentityValue> matchFunction = FullAddressMatchingStrategy.PARTIAL.getMatchFunction();
+		IdentityValue identityValue = new IdentityValue();
+		identityValue.setValue("2");
+		int value = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value);
 
-		int value1 = matchFunction.applyAsInt(2, "no 1 second street chennai");
+		int value1 = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value1);
 
-		int value2 = matchFunction.applyAsInt("no 1 second street chennai", 2);
-		assertEquals(0, value2);
 	}
 
 	/**
@@ -158,8 +167,10 @@ public class FullAddressMatchingStrategyTest {
 	 */
 	@Test
 	public void TestPhoneticsMatchValue() {
-		ToIntBiFunction<Object, Object> matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
-		int value = matchFunction.applyAsInt(2, 2);
+		ToIntBiFunction<Object, IdentityValue> matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
+		IdentityValue identityValue = new IdentityValue();
+		identityValue.setValue("2");
+		int value = matchFunction.applyAsInt(2, identityValue);
 		assertEquals(0, value);
 	}
 }

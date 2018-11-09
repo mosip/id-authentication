@@ -1,10 +1,11 @@
+
 package io.mosip.registration.controller;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import io.mosip.registration.constants.RegistrationUIExceptionCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationApprovalUiDto;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import javafx.beans.property.DoubleProperty;
@@ -40,7 +41,7 @@ public class ViewAcknowledgementController extends TableCell<RegistrationApprova
 	 * @param table
 	 */
 	public ViewAcknowledgementController(TableView<RegistrationApprovalUiDto> table) {
-
+		
 		paddedButton.setPadding(new Insets(3));
 		paddedButton.getChildren().add(link);
 		mainHolder.getChildren().add(paddedButton);
@@ -52,7 +53,7 @@ public class ViewAcknowledgementController extends TableCell<RegistrationApprova
 				try {
 					showAck(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath());
 				} catch (IOException ioException) {
-					throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_VIEW_ACK_FORM_IO_EXCEPTION,
+					throw new RegBaseUncheckedException(RegistrationConstants.REG_UI_VIEW_ACK_FORM_IO_EXCEPTION,
 							"Unable to view the acknowledgemnt form", ioException);
 				}
 			}

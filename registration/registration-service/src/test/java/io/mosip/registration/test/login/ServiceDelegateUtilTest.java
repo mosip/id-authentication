@@ -1,7 +1,6 @@
 package io.mosip.registration.test.login;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.net.URISyntaxException;
@@ -17,11 +16,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.core.env.Environment;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.registration.constants.RegConstants;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.OtpGeneratorRequestDto;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -30,38 +27,29 @@ import io.mosip.registration.util.restclient.ServiceDelegateUtil;
 
 public class ServiceDelegateUtilTest {
 	@Mock
-	RestClientUtil restClientUtil;
-	
-	@Mock
-	MosipLogger logger;
+	private RestClientUtil restClientUtil;
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 
 	@InjectMocks
-	ServiceDelegateUtil delegateUtil;
+	private ServiceDelegateUtil delegateUtil;
 
 	@Mock
-	Environment environment;
+	private Environment environment;
 
 	@Test
 	public void getURITest() {
-		ReflectionTestUtils.setField(delegateUtil, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 		
 		Map<String, String> requestParamMap = new HashMap<String, String>();
-		requestParamMap.put(RegConstants.USERNAME_KEY, "yashReddy");
-		requestParamMap.put(RegConstants.OTP_GENERATED, "099887");
+		requestParamMap.put(RegistrationConstants.USERNAME_KEY, "yashReddy");
+		requestParamMap.put(RegistrationConstants.OTP_GENERATED, "099887");
 		Assert.assertEquals(delegateUtil.getUri(requestParamMap, "http://localhost:8080/otpmanager/otps").toString(),
 				"http://localhost:8080/otpmanager/otps?otp=099887&key=yashReddy");
 	}
 
 	@Test
 	public void getRequestTest() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(delegateUtil, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 		
 		ResponseDTO response = new ResponseDTO();
 		when(environment.getProperty("otp_validator.service.httpmethod")).thenReturn("GET");
@@ -73,18 +61,13 @@ public class ServiceDelegateUtilTest {
 		
 		when(restClientUtil.invoke(Mockito.any())).thenReturn(response);
 		Map<String, String> requestParamMap = new HashMap<String, String>();
-		requestParamMap.put(RegConstants.USERNAME_KEY, "yashReddy");
-		requestParamMap.put(RegConstants.OTP_GENERATED, "099886");
+		requestParamMap.put(RegistrationConstants.USERNAME_KEY, "yashReddy");
+		requestParamMap.put(RegistrationConstants.OTP_GENERATED, "099886");
 		assertNotNull(delegateUtil.get("otp_validator", requestParamMap));
 	}
 
 	@Test
 	public void postRequestTest() throws URISyntaxException, HttpClientErrorException, RegBaseCheckedException {
-		
-
-		ReflectionTestUtils.setField(delegateUtil, "LOGGER", logger);
-		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.anyString());
 		
 		ResponseDTO response = new ResponseDTO();
 		when(environment.getProperty("otp_generator.service.httpmethod")).thenReturn("POST");
