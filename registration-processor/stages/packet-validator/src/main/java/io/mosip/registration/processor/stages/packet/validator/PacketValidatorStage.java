@@ -15,12 +15,11 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
-import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
-import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
+import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
@@ -81,15 +80,6 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 
-	/** The event id. */
-	private String eventId = "";
-
-	/** The event name. */
-	private String eventName = "";
-
-	/** The event type. */
-	private String eventType = "";
-
 	/** The core audit request builder. */
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
@@ -112,6 +102,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 		object.setInternalError(Boolean.FALSE);
 		String registrationId = object.getRid();
 		String description = "";
+		boolean isTransactionSuccessful = false;
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
 		try {
 
@@ -164,29 +155,28 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			} else {
 				description = "Packet validation successful for registration id : " + registrationId;
 			}
-
-			eventId = EventId.RPR_402.toString();
-			eventName = EventName.UPDATE.toString();
-			eventType = EventType.BUSINESS.toString();
 			registrationStatusDto.setUpdatedBy(USER);
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
-
+			isTransactionSuccessful = true;
 		} catch (IOException e) {
 			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), e);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 
 		} catch (Exception ex) {
 			log.error(ExceptionMessages.STRUCTURAL_VALIDATION_FAILED.name(), ex);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 		} finally {
+
+			String eventId = "";
+			String eventName = "";
+			String eventType = "";
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
 
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);

@@ -65,15 +65,6 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
-	/** The event id. */
-	private String eventId = "";
-
-	/** The event name. */
-	private String eventName = "";
-
-	/** The event type. */
-	private String eventType = "";
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -118,53 +109,26 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 			} catch (IOException e) {
 				logger.error(e.getMessage());
 			} finally {
-				String description = "";
-				if (isTransactionSuccessful) {
-					description = "description--packet-receiver Success";
-				} else {
-					description = "description--packet-receiver Failure";
-				}
-				createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-						AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-						AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-						AuditLogTempConstant.EVENT_TYPE.toString());
+				String eventId = "";
+				String eventName = "";
+				String eventType = "";
+				eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+				eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+						: EventName.EXCEPTION.toString();
+				eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+						: EventType.SYSTEM.toString();
+				String description = isTransactionSuccessful ? "Packet registration status updated successfully"
+						: "Packet registration status updation unsuccessful";
+
+				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+						registrationId);
 			}
 		} else {
 			throw new DuplicateUploadRequestException(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());
 		}
-		InternalRegistrationStatusDto dto = new InternalRegistrationStatusDto();
-		dto.setRegistrationId(registrationId);
-		dto.setRegistrationType(RegistrationType.NEW.toString());
-		dto.setReferenceRegistrationId(null);
-		dto.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
-		dto.setLangCode("eng");
-		dto.setStatusComment("Packet is in PACKET_UPLOADED_TO_LANDING_ZONE status");
-		dto.setIsActive(true);
-		dto.setCreatedBy(USER);
-		dto.setIsDeleted(false);
-		registrationStatusService.addRegistrationStatus(dto);
-		storageFlag = true;
-		isTransactionSuccessful = true;
-		eventId = EventId.RPR_407.toString();
-		eventName = EventName.ADD.toString();
-		eventType = EventType.BUSINESS.toString();
-	}catch(
 
-	IOException e)
-	{
-					logger.error(e.getMessage());
-					eventId=EventId.RPR_405.toString();
-					eventName=EventName.EXCEPTION.toString();
-					eventType=EventType.SYSTEM.toString();
-				}finally
-	{
-
-		String description = isTransactionSuccessful ? "Packet registration status updated successfully"
-				: "Packet registration status updation unsuccessfull";
-		coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType, registrationId);
-
+		return storageFlag;
 	}
-	}else{throw new DuplicateUploadRequestException(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString());}return storageFlag;}
 
 	/**
 	 * Gets the file extension.

@@ -99,12 +99,10 @@ public class FTPScannerTasklet implements Tasklet {
 			String pattern = Pattern.quote(System.getProperty("file.separator"));
 			String[] directory = filepathName.getParent().toString().split(pattern);
 			String childFolder = directory[directory.length - 1];
-			try {
-				FileInputStream input = new FileInputStream(file);
+			try(FileInputStream input = new FileInputStream(file)){	
 				MultipartFile multipartFile = new MockMultipartFile("file", file.getName(), "mixed/multipart",
 						IOUtils.toByteArray(input));
 				packetHandlerService.storePacket(multipartFile);
-				input.close();
 				this.filemanager.cleanUpFile(DirectoryPathDto.FTP_ZONE, DirectoryPathDto.LANDING_ZONE,
 						filepathName.getFileName().toString().split("\\.")[0], childFolder);
 				isTransactionSuccessful = true;
@@ -121,12 +119,8 @@ public class FTPScannerTasklet implements Tasklet {
 				LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 						ftpNotAccessibleException);
 			}finally{
-
-				if(isTransactionSuccessful) {
-					eventId = EventId.RPR_403.toString();
-				}else {
-					eventId = EventId.RPR_405.toString();
-				}
+				
+				eventId = isTransactionSuccessful ? EventId.RPR_403.toString() : EventId.RPR_405.toString();
 				eventName=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventName.DELETE.toString(): EventName.EXCEPTION.toString();
 				eventType=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventType.BUSINESS.toString(): EventType.SYSTEM.toString();
 				String description = isTransactionSuccessful ? "File moved from FTP zone to landing zone successfully" : "File moving from FTP zone to landing zone  Failed";

@@ -90,31 +90,33 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 					syncRegistration.setCreateDateTime(existingSyncRegistration.getCreateDateTime());
 					syncRegistration = syncRegistrationDao.update(syncRegistration);
 					eventId = EventId.RPR_402.toString();
-					eventName = EventName.UPDATE.toString();
-					eventType = EventType.BUSINESS.toString();
 				} else {
 					// first time sync registration
 					syncRegistration = convertDtoToEntity(registrationDto);
 					syncRegistration.setId(RegistrationUtility.generateId());
 					syncRegistration = syncRegistrationDao.save(syncRegistration);
 					eventId = EventId.RPR_407.toString();
-					eventName = EventName.ADD.toString();
-					eventType = EventType.BUSINESS.toString();
 				}
 				list.add(convertEntityToDto(syncRegistration));
 			}
 			isTransactionSuccessful = true;
 			return list;
 		} catch (DataAccessLayerException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException(TABLE_NOT_ACCESSIBLE, e);
 		} finally {
-
-			String description = isTransactionSuccessful
-					? "Registartion Id's are successfully synched in Sync Registration table"
-					: "Registartion Id's syn is unsuccessfull";
+			
+			String  description = "";
+			if (isTransactionSuccessful) {
+				eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+						: EventName.ADD.toString();
+				eventType = EventType.BUSINESS.toString();
+				description = "Registartion Id's are successfully synched in Sync Registration table";
+			} else {
+				eventId = EventId.RPR_405.toString();
+				eventName = EventName.EXCEPTION.toString();
+				eventType = EventType.SYSTEM.toString();
+				description = "Registartion Id's syn is unsuccessful";
+			}
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 

@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.packet.scanner.job",
 		"io.mosip.registration.processor.status", "io.mosip.registration.processor.packet.manager",
 		"io.mosip.registration.processor.packet.receiver", "io.mosip.kernel.virus.scanner",
-		"io.mosip.registration.processor.filesystem.ceph.adapter.impl" })
+		"io.mosip.registration.processor.filesystem.ceph.adapter.impl", "io.mosip.registration.processor.core" })
 
 public class PacketScannerApplication {
 

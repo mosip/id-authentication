@@ -127,7 +127,6 @@ public class VirusScannerTasklet implements Tasklet {
             eventName=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString() : EventName.EXCEPTION.toString();
             eventType=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
             description = isTransactionSuccessful ? "Packet uploaded to virus scanner successfully"	: "Packet uploading to virus scanner failed";
-
             coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.MULTIPLE_ID.toString());
         }
 
@@ -228,7 +227,6 @@ public class VirusScannerTasklet implements Tasklet {
 			eventName=	eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString(): EventName.EXCEPTION.toString();
 			eventType=	eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString(): EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "Packet successfully saved to packet store" : "Failed to save packet in packet store";
-
 
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());

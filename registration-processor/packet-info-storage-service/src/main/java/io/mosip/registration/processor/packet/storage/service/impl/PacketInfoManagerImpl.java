@@ -3,7 +3,6 @@ package io.mosip.registration.processor.packet.storage.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -50,7 +49,6 @@ import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
-import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 import lombok.Cleanup;
 
 /**
@@ -123,13 +121,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
-	;
-
-	@Autowired
-	private AuditHandler<AuditRequestDto> auditHandler;
-
 	@Autowired
 	private PacketInfoDao packetInfoDao;
+	
 	@Autowired
 	FileSystemAdapter<InputStream, Boolean> filesystemCephAdapter;
 
@@ -161,22 +155,22 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			savePhotoGraph(photoGraphData);
 			saveOsiData(osiData);
 			saveRegCenterData(metaData);
-
 			isTransactionSuccessful = true;
-			// Event constants for audit log
-			eventId = EventId.RPR_402.toString();
-			eventName = EventName.UPDATE.toString();
-			eventType = EventType.BUSINESS.toString();
 
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			String description = isTransactionSuccessful ? "description--packet-meta-data saved Success"
-					: "description--packet-metadata Failure";
-			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());
+			
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "Packet meta data saved successfully"
+					: "Packet meta data unsuccessful";
+			
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
 		}
 
 	}
@@ -199,19 +193,19 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 				applicantDemographicRepository.save(applicantDemographicEntity);
 				LOGGER.info(LOG_FORMATTER, applicantDemographicEntity.getId().getRegId(), " Demographic  DATA SAVED");
 			}
-			// Event constants for audit log
-			eventId = EventId.RPR_407.toString();
-			eventName = EventName.ADD.toString();
-			eventType = EventType.BUSINESS.toString();
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.BUSINESS.toString();
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			description = isTransactionSuccessful ? "Demographic-data saved Success" : "Demographic Failed to save";
-
+			
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "Demographic data saved successfully"
+					: "Demographic data Failed to save";
+			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
@@ -237,12 +231,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			String description = isTransactionSuccessful ? "description--QcUser packet Info fetched Success"
+/*			String description = isTransactionSuccessful ? "description--QcUser packet Info fetched Success"
 					: "description--QcUser packet Info fetched Failed";
 			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
 					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
 					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());
+					AuditLogTempConstant.EVENT_TYPE.toString());*/
 		}
 	}
 
@@ -415,22 +409,5 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			return new byte[1];
 		}
 
-	}
-
-	private void createAuditRequestBuilder(String applicationId, String applicationName, String description,
-			String eventId, String eventName, String eventType) {
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
-				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
-				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-				.setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(AuditLogTempConstant.ID.toString())
-				.setIdType(AuditLogTempConstant.ID_TYPE.toString())
-				.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-				.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-				.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-				.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
-
-		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-		auditHandler.writeAudit(auditRequestDto);
 	}
 }

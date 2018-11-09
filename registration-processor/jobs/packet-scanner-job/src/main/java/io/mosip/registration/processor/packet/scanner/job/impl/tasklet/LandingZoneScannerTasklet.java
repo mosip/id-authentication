@@ -141,7 +141,6 @@ public class LandingZoneScannerTasklet implements Tasklet {
 			}
 
 			String description = isTransactionSuccessful ? "File moved from landing zone to virusscan zone successfully" : "File moveing from landing zone to virusscan zone failed";
-
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.NO_ID.toString());
 		}
 		return RepeatStatus.FINISHED;

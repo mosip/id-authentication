@@ -79,21 +79,20 @@ public class RegistrationStatusServiceImpl
 		try {
 			RegistrationStatusEntity entity = registrationStatusDao.findById(registrationId);
 			isTransactionSuccessful = true;
-			// Event constants for audit log
-			eventId = EventId.RPR_401.toString();
-			eventName = EventName.GET.toString();
-			eventType = EventType.BUSINESS.toString();
 			return entity != null ? convertEntityToDto(entity) : null;
 		} catch (DataAccessLayerException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
-
-			description = isTransactionSuccessful ? "Get registration status by registration id is successfull"
-					: "Get registration status by registration id is unsuccessfull";
-
+			
+			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful
+					? "Get registration status by registration id is successful"
+					: "Get registration status by registration id is unsuccessful";
+			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
 		}
@@ -113,21 +112,20 @@ public class RegistrationStatusServiceImpl
 			List<RegistrationStatusEntity> entities = registrationStatusDao.findbyfilesByThreshold(statusCode,
 					getThreshholdTime());
 			isTransactionSuccessful = true;
-			// Event constants for audit log
-			eventId = EventId.RPR_401.toString();
-			eventName = EventName.GET.toString();
-			eventType = EventType.BUSINESS.toString();
 			return convertEntityListToDtoList(entities);
 		} catch (DataAccessLayerException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
 
-			description = isTransactionSuccessful ? "Find files by threshold time and statuscode is successfull"
-					: "Find files by threshold time and statuscode is unsuccessfull";
-
+			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful
+					? "Find files by threshold time and statuscode is successful"
+					: "Find files by threshold time and statuscode is unsuccessful";
+			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
@@ -150,10 +148,6 @@ public class RegistrationStatusServiceImpl
 			RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
 			registrationStatusDao.save(entity);
 			isTransactionSuccessful = true;
-			// Event constants for audit log
-			eventId = EventId.RPR_407.toString();
-			eventName = EventName.ADD.toString();
-			eventType = EventType.BUSINESS.toString();
 			TransactionDto transactionDto = new TransactionDto(transactionId, registrationStatusDto.getRegistrationId(),
 					null, TransactionTypeCode.CREATE.toString(), "Added registration status record",
 					registrationStatusDto.getStatusCode(), registrationStatusDto.getStatusComment());
@@ -161,15 +155,18 @@ public class RegistrationStatusServiceImpl
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
 		} catch (DataAccessLayerException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException("Could not add Information to table", e);
 		} finally {
-
-			description = isTransactionSuccessful ? "Registration status added successfully"
-					: "Registration status unsuccessfull";
-
+			
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful
+					? "Registration status added successfully"
+					: "Failure in adding registration status to registration table";	
+			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
 		}
@@ -193,10 +190,6 @@ public class RegistrationStatusServiceImpl
 				RegistrationStatusEntity entity = convertDtoToEntity(registrationStatusDto);
 				registrationStatusDao.save(entity);
 				isTransactionSuccessful = true;
-				// Event constants for audit log
-				eventId = EventId.RPR_407.toString();
-				eventName = EventName.ADD.toString();
-				eventType = EventType.BUSINESS.toString();
 				TransactionDto transactionDto = new TransactionDto(generateId(),
 						registrationStatusDto.getRegistrationId(), latestTransactionId,
 						TransactionTypeCode.UPDATE.toString(), "updated registration status record",
@@ -206,15 +199,18 @@ public class RegistrationStatusServiceImpl
 				transcationStatusService.addRegistrationTransaction(transactionDto);
 			}
 		} catch (DataAccessLayerException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException("Could not update Information to table", e);
 		} finally {
-
-			description = isTransactionSuccessful ? "Updated registration status successfully"
-					: "Updated registration status unsuccessfully";
-
+			
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful
+					? "Updated registration status successfully"
+					: "Updated registration status unsuccessfully";	
+			
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
 
@@ -235,24 +231,21 @@ public class RegistrationStatusServiceImpl
 			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
 					.getEnrolmentStatusByStatusCode(status);
 			isTransactionSuccessful = true;
-			// Event constants for audit log
-			eventId = EventId.RPR_401.toString();
-			eventName = EventName.GET.toString();
-			eventType = EventType.BUSINESS.toString();
 			return convertEntityListToDtoList(registrationStatusEntityList);
 		} catch (DataAccessLayerException e) {
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
-
-			description = isTransactionSuccessful ? "Get list of registration status by status successfully"
+			
+			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful
+					? "Get list of registration status by status successfully"
 					: "Get list of registration status by status unsuccessfully";
-
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
-
 		}
 	}
 
@@ -272,23 +265,20 @@ public class RegistrationStatusServiceImpl
 			List<RegistrationStatusEntity> registrationStatusEntityList = registrationStatusDao
 					.getByIds(registrationIds);
 			isTransactionSuccessful = true;
-			// Event constants for audit log
-			eventId = EventId.RPR_401.toString();
-			eventName = EventName.GET.toString();
-			eventType = EventType.BUSINESS.toString();
 			return convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList);
 
 		} catch (DataAccessLayerException e) {
-			// Event constants for audit log
-			eventId = EventId.RPR_405.toString();
-			eventName = EventName.EXCEPTION.toString();
-			eventType = EventType.SYSTEM.toString();
 			throw new TablenotAccessibleException(COULD_NOT_GET, e);
 		} finally {
 
-			description = isTransactionSuccessful ? "Get list of registration status by registration id successfully"
+			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful
+					? "Get list of registration status by registration id successfully"
 					: "Get list of registration status by registration id unsuccessfully";
-
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}

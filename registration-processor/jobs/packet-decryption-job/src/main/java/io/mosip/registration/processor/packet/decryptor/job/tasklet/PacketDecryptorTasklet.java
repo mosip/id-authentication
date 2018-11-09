@@ -77,18 +77,6 @@ public class PacketDecryptorTasklet implements Tasklet {
 	@Autowired
 	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
-	/** The event id. */
-	private String eventId = "";
-
-	/** The event name. */
-	private String eventName = "";
-
-	/** The event type. */
-	private String eventType = "";
-
-	/** The description. */
-	private String description = "";
-
 	/** The is transaction successful. */
 	private boolean isTransactionSuccessful = false;
 
@@ -132,7 +120,10 @@ public class PacketDecryptorTasklet implements Tasklet {
 		} catch (TablenotAccessibleException e) {
 			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
 		} finally {
-
+			String eventId = "";
+			String eventName = "";
+			String eventType = "";
+			String description = "";
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
 			eventName=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString() : EventName.EXCEPTION.toString();
 			eventType=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
