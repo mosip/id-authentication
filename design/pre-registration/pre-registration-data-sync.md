@@ -45,6 +45,27 @@ The key non-functional requirements are
 
 - decrypting the demograpgic JSON object and uploaded document and stored it in database and send as zip.
 
+**NFRs -**
+
+1.  Pre registration would expose Datasynch service. this is REST over HTTPS.
+
+2. Registration client would call the service
+
+3. the result would be fetched from DB and zipped information delivered.
+
+4. security architecture would depict the security scenarios other than HTTPS.
+
+
+1. :multiple clients and pre registration is source of data.
+
+2.  registration client should be online to get the data.
+
+3.  NO intermidiate server to suport mobility of registration client.
+
+4.  HTTPS provides end point security.
+
+ 
+
 **Solution**
 
 **Reterive all pre-registration Ids :**

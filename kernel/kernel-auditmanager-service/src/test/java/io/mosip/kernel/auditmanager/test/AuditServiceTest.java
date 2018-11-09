@@ -4,7 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,12 +12,12 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.auditmanager.service.impl.AuditManagerServiceImpl;
+import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 
 @RunWith(SpringRunner.class)
 public class AuditServiceTest {
@@ -32,7 +32,7 @@ public class AuditServiceTest {
 	public void auditServiceTest() {
 
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
-		auditRequestDto.setActionTimeStamp(OffsetDateTime.now());
+		auditRequestDto.setActionTimeStamp(LocalDateTime.now());
 		auditRequestDto.setApplicationId("applicationId");
 		auditRequestDto.setApplicationName("applicationName");
 		auditRequestDto.setCreatedBy("createdBy");
