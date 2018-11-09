@@ -82,7 +82,7 @@ public class AuthFacadeImplTest {
 		String refId="1234";
 		boolean authStatus=false;
 		AuthResponseDTO authResponseDTO=new AuthResponseDTO();
-		authResponseDTO.setStatus(false);
+		authResponseDTO.setStatus("n");
 		AuthRequestDTO authRequestDTO=new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setId("1234567");

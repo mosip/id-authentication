@@ -31,7 +31,7 @@ public class AuthResponseBuilder {
 	/** The response DTO. */
 	private final AuthResponseDTO responseDTO;
 	
-	/** The auth status infos. */
+	/** The auth status infos. */ 
 	private List<AuthStatusInfo> authStatusInfos;
 
 	/**
@@ -135,7 +135,9 @@ public class AuthResponseBuilder {
 	public AuthResponseDTO build() {
 		assertNotBuilt();
 		boolean status = !authStatusInfos.isEmpty() && authStatusInfos.stream().allMatch(AuthStatusInfo::isStatus);
-		responseDTO.setStatus(status);
+		if(status)
+		responseDTO.setStatus("y");
+		else responseDTO.setStatus("n");
 
 		responseDTO.setResTime(Instant.now().toString());
 

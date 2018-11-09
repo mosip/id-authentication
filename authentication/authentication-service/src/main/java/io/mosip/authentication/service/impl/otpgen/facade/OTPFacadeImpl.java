@@ -106,9 +106,10 @@ public class OTPFacadeImpl implements OTPFacade {
 			mosipLogger.info("NA", "NA", "NA", "generated OTP is: " + otp);
 			Optional<DemoEntity> demoEntity = demoRepository.findById(refId);
 			otpResponseDTO.setStatus("Y");
-			otpResponseDTO.setTxnID(txnID);
+			otpResponseDTO.setTxnId(txnID);
 			if (demoEntity.isPresent()) {
-				otpResponseDTO.setResponseTime(formateDate(new Date(), env.getProperty("datetime.pattern")));
+				String dateString= formatDate(new Date(), env.getProperty("datetime.pattern"));
+				otpResponseDTO.setResTime(dateString);
 				otpResponseDTO.setMaskedEmail(maskEmail(demoEntity.get().getEmail()));
 				otpResponseDTO.setMaskedMobile(maskMobile(demoEntity.get().getMobile()));
 			}
@@ -187,20 +188,12 @@ public class OTPFacadeImpl implements OTPFacade {
 	 *
 	 * @param date
 	 *            the date
-	 * @param formate
+	 * @param format
 	 *            the formate
 	 * @return the date
 	 */
-	private Date formateDate(Date date, String formate) {
-		Date formatedDate = new Date();
-		String formatDate = DateUtils.formatDate(date, formate);
-		try {
-			formatedDate = new SimpleDateFormat(formate).parse(formatDate);
-			return formatedDate;
-		} catch (ParseException e) {
-			mosipLogger.error(SESSION_ID, "ParseException", e.getMessage(), "Date formate parse Exception");
-		}
-		return formatedDate;
+	private String formatDate(Date date, String format) {
+		return new SimpleDateFormat(format).format(date);
 	}
 
 	/**

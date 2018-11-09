@@ -195,8 +195,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
 		AuthResponseDTO authResp = new AuthResponseDTO();
-
-		authResp.setStatus(false);
+		/** Status Modified to String */
+		authResp.setStatus("n");
 
 		if (ex instanceof BaseCheckedException) {
 			Locale locale = LocaleContextHolder.getLocale();

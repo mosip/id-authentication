@@ -3,6 +3,7 @@ package io.mosip.authentication.service.impl.otpgen.controller;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
 
@@ -209,7 +210,7 @@ public class OTPControllerTest {
 	private OtpResponseDTO getOtpResponseDTO() {
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		otpResponseDTO.setStatus("OTP_GENERATED");
-		otpResponseDTO.setResponseTime(new Date());
+		otpResponseDTO.setResTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 
 		return otpResponseDTO;
 	}

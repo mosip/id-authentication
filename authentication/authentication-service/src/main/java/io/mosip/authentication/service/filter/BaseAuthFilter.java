@@ -173,7 +173,7 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 	protected RESPONSE_DTO createResponseDTO(IdAuthenticationAppException e) {
 		AuthResponseDTO authResp = new AuthResponseDTO();
 
-		authResp.setStatus(false);
+		authResp.setStatus("n");
 
 		List<String> errorMessages = e.getErrorTexts();
 

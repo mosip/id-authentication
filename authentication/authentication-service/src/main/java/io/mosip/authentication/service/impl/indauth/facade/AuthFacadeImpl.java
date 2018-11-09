@@ -81,7 +81,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		auditData();
 		AuthResponseDTO authResponseDTO = authResponseBuilder.build();
 		logger.info(DEFAULT_SESSION_ID, "IDA", AUTH_FACADE,
-				"authenticateApplicant status : " + authResponseDTO.isStatus());
+				"authenticateApplicant status : " + authResponseDTO.getStatus());
 		return authResponseDTO;
 
 	}
@@ -167,7 +167,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		String s=LocalDateTime.now()
 			       .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
 		AuthResponseDTO authResponseTspDto=new AuthResponseDTO();
-		authResponseTspDto.setStatus(true);
+		authResponseTspDto.setStatus("y");
 		authResponseTspDto.setErr(Collections.emptyList());
 		authResponseTspDto.setResTime(s);
 		authResponseTspDto.setTxnID(authRequestDTO.getTxnID());

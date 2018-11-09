@@ -214,7 +214,7 @@ public class OTPFacadeImplTest {
 	private OtpResponseDTO getOtpResponseDTO() {
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		otpResponseDTO.setStatus("OTP_GENERATED");
-		otpResponseDTO.setResponseTime(new Date());
+		otpResponseDTO.setResTime(new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date()));
 
 		return otpResponseDTO;
 	}
