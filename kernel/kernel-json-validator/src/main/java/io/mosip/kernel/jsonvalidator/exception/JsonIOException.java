@@ -3,7 +3,7 @@ package io.mosip.kernel.jsonvalidator.exception;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 
 /**
- * Exception class when there is any IO interrupt while reading JSON object.
+ * Exception class when there is any IO interrupt while reading JSON String.
  * 
  * @author Swati Raj
  * @since 1.0.0

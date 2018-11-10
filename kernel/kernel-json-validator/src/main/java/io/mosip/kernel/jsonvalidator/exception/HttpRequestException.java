@@ -14,7 +14,7 @@ public class HttpRequestException extends BaseUncheckedException {
 	/**
 	 * Generated serialization ID.
 	 */
-	private static final long serialVersionUID = 795618868850353876L;
+	private static final long serialVersionUID = -3969580195047347788L;
 
 	/**
 	 * Constructor for HttpRequestException class.

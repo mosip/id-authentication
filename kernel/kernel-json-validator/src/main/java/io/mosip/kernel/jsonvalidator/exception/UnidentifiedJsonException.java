@@ -17,7 +17,7 @@ public class UnidentifiedJsonException extends BaseUncheckedException {
 	private static final long serialVersionUID = 43640357502304975L;
 	
 	/**
-	 * Constructor for MosipUnidentifiedJsonException class.
+	 * Constructor for UnidentifiedJsonException class.
 	 * 
 	 * @param errorCode
 	 *            the error code of the exception.

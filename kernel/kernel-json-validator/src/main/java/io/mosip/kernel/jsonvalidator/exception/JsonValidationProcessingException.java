@@ -17,7 +17,7 @@ public class JsonValidationProcessingException extends BaseCheckedException {
 	private static final long serialVersionUID = -3849227719514230853L;
 
 	/**
-	 * Constructor for MosipJsonValidationProcessingException class.
+	 * Constructor for JsonValidationProcessingException class.
 	 * 
 	 * @param errorCode
 	 *            the error code of the exception.
