@@ -36,17 +36,11 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${spring.boot.version}</version>
-				<configuration>
-					<executable>true</executable>
-				</configuration>
 				<executions>
 					<execution>
 						<goals>
 							<goal>repackage</goal>
 						</goals>
-						<configuration>
-							<classifier>exec</classifier>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Class for Json Validation Response having status as String and warnings of Validation as ArrayList
+ * Class for Json Validator Response having status as String and warnings of Validation as ArrayList
  * 
  * @author Swati Raj
  * @since 1.0.0
