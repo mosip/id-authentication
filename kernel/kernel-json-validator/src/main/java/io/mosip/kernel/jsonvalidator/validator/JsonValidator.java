@@ -52,7 +52,8 @@ public class JsonValidator {
 	 *            JSON as string that has to be Validated against the schema.
 	 * @param schemaName
 	 *            name of the schema file against which JSON needs to be validated,
-	 *            the schema file should be present in your config server storage.
+	 *            the schema file should be present in your config server storage or
+	 *            local storage, which ever option is selected in properties file.
 	 * @return JsonValidationResponseDto containing 'valid' variable as boolean and
 	 *         'warnings' arraylist
 	 * @throws HttpRequestException
@@ -66,10 +67,16 @@ public class JsonValidator {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JsonValidator.class);
 
+	/*
+	 * Address of Spring cloud config server for getting the schema file
+	 */
 	@Value("${config.server.file.storage.uri}")
 	private  String configServerFileStorageURL;
 
-
+    /*
+     * Property source from which schema file has to be taken, can be either CONFIG_SERVER
+     * or LOCAL
+     */
 	@Value("${property.source}")
 	private  String propertySource;
 
@@ -77,7 +84,13 @@ public class JsonValidator {
 			throws HttpRequestException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonObjectNode = null;
+		JsonNode jsonSchemaNode = null;
+		ProcessingReport report = null;
+		ArrayList<String> reportWarnings = new ArrayList<String>();
 		try {
+			/**
+			 * creating a JsonSchema node from json string provided.
+			 */
 			jsonObjectNode = mapper.readTree(jsonString);
 		} catch (IOException e) {
 			throw new JsonIOException(JsonValidatorErrorConstant.JSON_IO_EXCEPTION.getErrorCode(),
@@ -89,10 +102,6 @@ public class JsonValidator {
 					JsonValidatorErrorConstant.NULL_JSON_NODE_EXCEPTION.getMessage());
 		}
 		LOGGER.debug(jsonObjectNode.toString());
-		JsonNode jsonSchemaNode = null;
-		ProcessingReport report = null;
-		ArrayList<String> reportWarnings = new ArrayList<String>();
-
 		/**
 		 * If the property source selected is configuration server.
 		 * In this scenario schema is coming from Config Server, whose location has to be mentioned in the bootstrap.properties by
@@ -135,7 +144,7 @@ public class JsonValidator {
 		}
 		/**
 		 * If the property source selected is local.
-		 * In this scenario schema is coming from local resources.
+		 * In this scenario schema is coming from local resource location.
 		 */
 		else if(JsonValidatorPropertySourceConstant.LOCAL.getPropertySource().equals(propertySource)) {
 			try {
