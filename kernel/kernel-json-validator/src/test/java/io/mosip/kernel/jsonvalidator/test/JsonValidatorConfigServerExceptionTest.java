@@ -17,6 +17,7 @@ import io.mosip.kernel.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.jsonvalidator.exception.JsonValidationProcessingException;
 import io.mosip.kernel.jsonvalidator.exception.NullJsonNodeException;
+import io.mosip.kernel.jsonvalidator.exception.NullJsonSchemaException;
 import io.mosip.kernel.jsonvalidator.exception.UnidentifiedJsonException;
 import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
 
@@ -28,22 +29,23 @@ import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
  */
 
 @RunWith(MockitoJUnitRunner.class)
-public class JsonValidatorExceptionTestForLocalPropertySource {
+public class JsonValidatorConfigServerExceptionTest {
 
 	@InjectMocks
 	JsonValidator jsonValidator;
-
+	
 	@Before
 	public void setup() {
-		ReflectionTestUtils.setField(jsonValidator, "propertySource", "LOCAL");
+	    ReflectionTestUtils.setField(jsonValidator, "configServerFileStorageURL", "http://104.211.212.28:51000/*/default/DEV/");
+	    ReflectionTestUtils.setField(jsonValidator, "propertySource", "CONFIG_SERVER");
 	}
-
+	
 	@Test
 	public void testWhenValidJsonProvided()
 			throws HttpRequestException, JsonValidationProcessingException, IOException, JsonIOException, JsonSchemaIOException, FileIOException {
 		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
 		String jsonString = jsonSchemaNode.toString();
-		String schemaName = "schema.json";
+		String schemaName = "mosip-identity-json-schema.json";
 		JsonValidatorResponseDto validationResponse = jsonValidator.validateJson(jsonString, schemaName);
 		Boolean isValid =  validationResponse.isValid();
 		assertEquals(isValid, true);
@@ -53,7 +55,7 @@ public class JsonValidatorExceptionTestForLocalPropertySource {
 	public void testForEmptyJsonString()
 			throws JsonValidationProcessingException, HttpRequestException, JsonIOException, JsonSchemaIOException, FileIOException {
 		String jsonString = "";
-		String schemaName = "schema.json";
+		String schemaName = "mosip-identity-json-schema.json";
 		jsonValidator.validateJson(jsonString, schemaName);
 
 	}
@@ -62,7 +64,16 @@ public class JsonValidatorExceptionTestForLocalPropertySource {
 	public void testForinvalidJsonString()
 			throws HttpRequestException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		String jsonString = "{";
-		String schemaName = "schema.json";
+		String schemaName = "mosip-identity-json-schema.json";
+		jsonValidator.validateJson(jsonString, schemaName);
+	}
+
+	@Test(expected = HttpRequestException.class)
+	public void testForInvalidSchemaFileName()
+			throws HttpRequestException, JsonValidationProcessingException, JsonIOException, IOException, JsonSchemaIOException, FileIOException {
+		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
+		String jsonString = jsonSchemaNode.toString();
+		String schemaName = "some-random-schema.json";
 		jsonValidator.validateJson(jsonString, schemaName);
 	}
 
@@ -71,15 +82,25 @@ public class JsonValidatorExceptionTestForLocalPropertySource {
 			throws HttpRequestException, JsonValidationProcessingException, JsonIOException, IOException, JsonSchemaIOException, FileIOException {
 		JsonNode jsonSchemaNode = JsonLoader.fromResource("/invalid-json.json");
 		String jsonString = jsonSchemaNode.toString();
-		String schemaName = "schema.json";
+		String schemaName = "mosip-identity-json-schema.json";
 		jsonValidator.validateJson(jsonString, schemaName);
 	}
-	@Test(expected = FileIOException.class)
-	public void testForinvalidSchemaFile()
-			throws HttpRequestException, JsonValidationProcessingException, JsonIOException, IOException, JsonSchemaIOException, FileIOException {
+	@Test(expected = NullJsonSchemaException.class)
+	public void testForNullJsonSchemaSyntax()
+			throws HttpRequestException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IOException {
 		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
 		String jsonString = jsonSchemaNode.toString();
-		String schemaName = "some-random-schema.json";
+		String schemaName = "kernel-json-validator-null-schema-for-testing.json";
 		jsonValidator.validateJson(jsonString, schemaName);
 	}
+	@Test(expected = JsonSchemaIOException.class)
+	public void testForInvalidJsonSchemaSyntax()
+			throws HttpRequestException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IOException {
+		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
+		String jsonString = jsonSchemaNode.toString();
+		String schemaName = "kernel-json-validator-invalid-syntax-schema-for-testing.json";
+		jsonValidator.validateJson(jsonString, schemaName);
+	}
+	
+
 }

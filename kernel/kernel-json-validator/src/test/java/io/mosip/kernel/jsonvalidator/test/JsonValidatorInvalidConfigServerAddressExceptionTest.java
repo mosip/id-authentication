@@ -25,7 +25,7 @@ import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
  */
 
 @RunWith(MockitoJUnitRunner.class)
-public class JsonValidatorExceptionTestForInvalidConfigServerAddress {
+public class JsonValidatorInvalidConfigServerAddressExceptionTest {
 
 	@InjectMocks
 	JsonValidator jsonValidator;
