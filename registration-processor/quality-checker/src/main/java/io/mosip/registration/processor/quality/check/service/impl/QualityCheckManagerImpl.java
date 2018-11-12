@@ -14,6 +14,7 @@ import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
+import io.mosip.registration.processor.quality.check.client.QCUsersClient;
 import io.mosip.registration.processor.quality.check.code.QualityCheckerStatusCode;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
 import io.mosip.registration.processor.quality.check.dao.QCUserInfoDao;
@@ -26,7 +27,7 @@ import io.mosip.registration.processor.quality.check.exception.InvalidQcUserIdEx
 import io.mosip.registration.processor.quality.check.exception.InvalidRegistrationIdException;
 import io.mosip.registration.processor.quality.check.exception.ResultNotFoundException;
 import io.mosip.registration.processor.quality.check.exception.TablenotAccessibleException;
-//import io.mosip.registration.processor.status.code.AuditLogTempConstant;
+
 
 @Component
 public class QualityCheckManagerImpl implements QualityCheckManager<String, ApplicantInfoDto, QCUserDto> {
@@ -34,7 +35,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 	private ApplicantInfoDao applicantInfoDao;
 
 	@Autowired
-	private QCUserInfoDao qcUserInfoDao;
+	private QCUsersClient qcUsersClient;
 
 	@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
@@ -44,7 +45,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 
 	@Override
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
-		List<String> qcUsersList = qcUserInfoDao.getAllQcuserIds();
+		List<String> qcUsersList = qcUsersClient.getAllQcuserIds();
 		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
 		QCUserDto qcUserDto = new QCUserDto();
 		qcUserDto.setQcUserId(qcUserId);
