@@ -198,7 +198,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		String refId = processIdType(kycAuthRequestDTO.getAuthRequest());
 		KycInfo info = kycService.retrieveKycInfo(refId,
 				KycType.getEkycAuthType(env.getProperty("ekyc.type")), kycAuthRequestDTO.isEPrintReq(),
-				kycAuthRequestDTO.isRequiredSecondary());
+				kycAuthRequestDTO.isSecLangReq());
 		KycAuthResponseDTO kycAuthResponseDTO=new KycAuthResponseDTO();
 		kycAuthResponseDTO.getResponse().setKyc(info);
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
