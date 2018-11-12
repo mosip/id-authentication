@@ -27,7 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.LinkedMultiValueMap;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -60,7 +60,7 @@ public class PacketUploadServiceTest {
 	private PacketUploadServiceImpl packetUploadServiceImpl;
 
 	@Mock
-	private MosipLogger logger;
+	private Logger logger;
 	
 	@Ignore
 	@Test

@@ -36,7 +36,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -125,7 +125,7 @@ public class PacketReceiverServiceTest {
 
 		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
 		Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
-		Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
+		Mockito.doReturn(true).when(auditHandler).addAudit(ArgumentMatchers.any());
 		
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();

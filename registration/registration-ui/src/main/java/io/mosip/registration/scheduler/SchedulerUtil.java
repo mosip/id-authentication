@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -42,9 +42,9 @@ import javafx.scene.layout.BorderPane;
 public class SchedulerUtil {
 
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(SchedulerUtil.class);
+	private static final Logger LOGGER = AppConfig.getLogger(SchedulerUtil.class);
 
 	private static long startTime = System.currentTimeMillis();
 	private static long refreshTime;

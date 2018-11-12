@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.idgenerator.PridGenerator;
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.application.dao.RegistrationDao;
 import io.mosip.preregistration.application.dto.RegistrationDto;
 import io.mosip.preregistration.application.dto.ResponseDto;

@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.DocumentCategoryDAO;
 import io.mosip.registration.entity.DocumentCategory;
@@ -26,8 +26,8 @@ public class DocumentCategoryDAOImpl implements DocumentCategoryDAO {
 	/** instance of {@link DocumentCategoryRepository} */
 	@Autowired
 	private DocumentCategoryRepository documentCategoryRepository;
-	/** instance of {@link MosipLogger} */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(DocumentCategoryDAOImpl.class);
+	/** instance of {@link Logger} */
+	private static final Logger LOGGER = AppConfig.getLogger(DocumentCategoryDAOImpl.class);
 
 	/**
 	 * (non-javadoc)

@@ -4,7 +4,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 
 /**
@@ -21,9 +21,9 @@ public class RegBaseCheckedException extends BaseCheckedException {
 	 */
 	private static final long serialVersionUID = 7381314129809012005L;
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RegBaseCheckedException.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RegBaseCheckedException.class);
 
 	/**
 	 * Constructs a new checked exception

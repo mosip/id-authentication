@@ -122,7 +122,7 @@ public final class TextMatcherUtil {
 	 * the result is true, else false.
 	 *
 	 * TODO 1. need to validate the language given is supported or not. 2. need to
-	 * log exceptions using MosipLogger
+	 * log exceptions using Logger
 	 * 
 	 * @param inputString  the input string
 	 * @param storedString the stored string

@@ -34,7 +34,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The Class IDAExceptionHandler - ControllerAdvice to handle
@@ -62,7 +62,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The mosip logger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(IdAuthExceptionHandler.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthExceptionHandler.class);
 
 	/**
 	 * Instantiates a new id auth exception handler.

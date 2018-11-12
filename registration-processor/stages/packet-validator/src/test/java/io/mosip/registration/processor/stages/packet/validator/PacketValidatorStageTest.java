@@ -25,7 +25,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;

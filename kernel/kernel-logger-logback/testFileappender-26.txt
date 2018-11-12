@@ -1,0 +1,1 @@
+2018-11-12T23:52:26+05:30 - [io.mosip.kernel.logger.logback.test.LogfactoryTest] - WARN  - sessionid - idType - id - description

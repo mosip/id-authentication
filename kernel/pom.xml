@@ -41,7 +41,7 @@
 		<modelmapper.version>2.1.1</modelmapper.version>
 		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
 		<json.schema.validator.version>2.2.10</json.schema.validator.version>
-		
+
 
 		<!-- Swagger -->
 		<swagger.version>2.9.2</swagger.version>
@@ -110,6 +110,7 @@
 		<module>kernel-pdfgenerator-itext</module>
 		<module>kernel-datamapper-orika</module>
 
+		<module>kernel-masterdata-service</module>
 		<module>kernel-auditmanager-service</module>
 		<module>kernel-otpmanager-service</module>
 		<module>kernel-emailnotification-service</module>
@@ -120,7 +121,7 @@
 		<module>kernel-config-server</module>
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-packetserver-http</module>
-		
+
 	</modules>
 
 	<profiles>

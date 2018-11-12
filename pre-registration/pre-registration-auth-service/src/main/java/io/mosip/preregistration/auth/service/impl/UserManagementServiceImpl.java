@@ -34,12 +34,12 @@ public class UserManagementServiceImpl implements UserManagementService {
 	String resourceUrl;
 */
 	/*@SuppressWarnings("unused")
-	private static MosipLogger LOGGER;
+	private static Logger LOGGER;
 
-	public MosipLogger getLogger() {
+	public Logger getLogger() {
 		mosipFileAppender.setAppenderName("userManagementServiceImpl");
 		mosipFileAppender.setFileName("UserManagementService.txt");
-		return MosipLogfactory.getMosipDefaultFileLogger(mosipFileAppender, UserManagementServiceImpl.class);
+		return Logfactory.getFileLogger(mosipFileAppender, UserManagementServiceImpl.class);
 	}
 */
 	@Autowired

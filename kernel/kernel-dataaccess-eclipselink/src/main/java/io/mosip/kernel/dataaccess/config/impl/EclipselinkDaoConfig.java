@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 
 import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.eclipse.persistence.logging.SessionLog;
-import io.mosip.kernel.core.spi.dataaccess.config.BaseDaoConfig;
+import io.mosip.kernel.core.dataaccess.spi.config.BaseDaoConfig;
 import io.mosip.kernel.dataaccess.constants.EclipselinkPersistenceConstants;
 import io.mosip.kernel.dataaccess.repository.impl.EclipselinkRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;

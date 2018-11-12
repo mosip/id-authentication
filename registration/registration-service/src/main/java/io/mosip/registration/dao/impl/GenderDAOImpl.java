@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.GenderDAO;
 import io.mosip.registration.entity.Gender;
@@ -29,8 +29,8 @@ public class GenderDAOImpl implements GenderDAO {
 	@Autowired
 	private GenderRepository registrationGenderRepository;
 
-	/** instance of {@link MosipLogger} */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(GenderDAOImpl.class);
+	/** instance of {@link Logger} */
+	private static final Logger LOGGER = AppConfig.getLogger(GenderDAOImpl.class);
 
 	/**
 	 * (non-javadoc)
