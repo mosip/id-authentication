@@ -5,9 +5,14 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_APPROVE_SCREEN_EXCEPTION;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTHORIZATION_EXCEPTION;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.ListResourceBundle;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +25,7 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.resourceBundle.labels_us_EN;
 import io.mosip.registration.service.TemplateService;
 import io.mosip.registration.util.acktemplate.VelocityPDFGenerator;
 import io.mosip.registration.util.dataprovider.DataProvider;
@@ -69,8 +75,9 @@ public class RegistrationOfficerPacketController extends BaseController {
 	public void createPacket(ActionEvent event) {
 
 		try {
-			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE));
-
+			ResourceBundle bundle = ResourceBundle.getBundle("resourceBundle/labels");
+			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE), bundle);
+			
 			LOGGER.debug("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID,
 					"Validating Create Packet screen for specific role");
