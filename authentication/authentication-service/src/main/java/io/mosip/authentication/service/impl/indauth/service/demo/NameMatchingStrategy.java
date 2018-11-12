@@ -7,7 +7,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
 
 /**
  * 
- * @author Dinesh Karuppiah
+ * @author Dinesh Karuppiah.T
  */
 
 public enum NameMatchingStrategy implements MatchingStrategy {

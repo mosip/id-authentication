@@ -133,8 +133,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	@Override
 	public boolean supports(Class<?> clazz) {
-	//	return AuthRequestDTO.class.equals(clazz);
-		return AuthRequestDTO.class.isAssignableFrom(clazz);
+		return AuthRequestDTO.class.equals(clazz);
 	}
 
 	@Override

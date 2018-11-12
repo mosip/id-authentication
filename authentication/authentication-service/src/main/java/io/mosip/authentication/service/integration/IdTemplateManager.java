@@ -12,6 +12,10 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.kernel.core.spi.pdfgenerator.PdfGenerator;
 import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
+/**
+ * 
+ * @author Dinesh Karuppiah.T
+ */
 
 @Component
 public class IdTemplateManager {
