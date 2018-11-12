@@ -14,7 +14,7 @@ import io.mosip.kernel.crypto.jce.constant.SecurityExceptionCodeConstant;
 import io.mosip.kernel.crypto.jce.constant.SecurityMethod;
 
 /**
- * Utility class for security
+ * Utility class for crypto
  * 
  * @author Urvil Joshi
  * @since 1.0.0
