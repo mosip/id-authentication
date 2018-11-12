@@ -1,5 +1,6 @@
 package io.mosip.registration.processor.status.service.impl;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -267,7 +268,7 @@ public class RegistrationStatusServiceImpl implements RegistrationStatusService<
 
 	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,
 			String eventId, String eventName, String eventType) {
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
+		auditRequestBuilder.setActionTimeStamp(LocalDateTime.now()).setApplicationId(applicationId)
 				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
 				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
 				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
