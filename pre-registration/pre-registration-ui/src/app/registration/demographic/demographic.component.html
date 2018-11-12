@@ -1,0 +1,79 @@
+<mat-accordion class="expansion">
+  <div *ngFor="let applicant of numbers; let i = index">
+    <mat-expansion-panel [expanded]="step === applicant" (opened)="setStep(applicant)" hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Demographic Details {{applicant + 1}}
+          <img *ngIf="applicant === 0" src="../../../assets/primary.png" alt="Smiley face" style="margin: 2px 0 0 10px ;"
+            height="20" width="60">
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <form formArrayName="userForm" (ngSubmit)="onSubmit()">
+        <div class="user-container">
+          <mat-form-field>
+            <input matInput placeholder="Full Name">
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Address Line 1">
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Address Line 2">
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Address Line 3">
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-select placeholder="Region">
+              <mat-option value="option">Option</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-select placeholder="Province">
+              <mat-option value="option">Option</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-select placeholder="City">
+              <mat-option value="option">Option</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-select placeholder="Local Administrative Authority">
+              <mat-option value="option">Option</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Postal Code">
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Mobile Phone">
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Email Id">
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="CNIE/PIN">
+          </mat-form-field>
+        </div>
+      </form>
+
+      <mat-action-row>
+        <button *ngIf="step !== 0 " mat-button color="warn" (click)="prevStep()">Previous</button>
+        <button mat-button color="primary" (click)="nextStep()">Next</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+
+  </div>
+</mat-accordion>

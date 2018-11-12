@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Number of Applicants</h1>
+<div mat-dialog-content>
+  <p>The details of the first applicant will be treated as primary</p>
+  <mat-form-field>
+    <input matInput type="number" pattern="^[1-9]+[0-9]*$" [(ngModel)]="applicantNumber">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="applicantNumber" cdkFocusInitial>Ok</button>
+</div>
+

@@ -1,0 +1,19 @@
+.expansion .mat-expansion-panel-header-title,
+.expansion .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.expansion .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .user-container > * {
+    width: 100%;
+  }
+  

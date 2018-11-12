@@ -1,0 +1,15 @@
+.example-container {
+  height: 400px;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}
+
+
+.highlight{
+  /* font-weight: 900; */
+  /* font-size: 1.02em; */
+  background: #d9d9d9; /* green */
+}
