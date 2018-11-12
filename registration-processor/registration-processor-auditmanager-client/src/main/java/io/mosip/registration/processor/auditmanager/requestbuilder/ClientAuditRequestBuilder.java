@@ -1,6 +1,8 @@
 package io.mosip.registration.processor.auditmanager.requestbuilder;
 
-import java.time.OffsetDateTime;
+
+
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,7 +38,7 @@ public class ClientAuditRequestBuilder {
 		
 		AuditRequestDto auditRequestDto= new AuditRequestDto();
 		auditRequestDto.setDescription(description);
-		auditRequestDto.setActionTimeStamp(OffsetDateTime.now());
+		auditRequestDto.setActionTimeStamp(LocalDateTime.now());
 		auditRequestDto.setApplicationId(AuditLogConstant.MOSIP_4.toString());
 		auditRequestDto.setApplicationName(AuditLogConstant.REGISTRATION_PROCESSOR.toString());
 		auditRequestDto.setCreatedBy(AuditLogConstant.SYSTEM.toString());

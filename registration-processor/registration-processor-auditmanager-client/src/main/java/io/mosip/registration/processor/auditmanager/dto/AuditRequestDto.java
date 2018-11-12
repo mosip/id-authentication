@@ -1,6 +1,6 @@
 package io.mosip.registration.processor.auditmanager.dto;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -36,7 +36,7 @@ public class AuditRequestDto {
 	private String eventType;
 
 	@NotNull
-	private OffsetDateTime actionTimeStamp;
+	private LocalDateTime actionTimeStamp;
 
 	@NotNull
 	@Size(min = 1, max = 32)

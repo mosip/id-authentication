@@ -79,6 +79,12 @@
 			<artifactId>registration-processor-core</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-auditmanager-client</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

@@ -25,8 +25,8 @@ public class AuditmanagerClient {
 	public AuditResponseDto addAudit( AuditRequestDto auditRequestDto){
 		
 		ResponseEntity<AuditResponseDto> responseEntity = new RestTemplate().postForEntity(
-				auditManagerServiceHost,(Object)auditRequestDto,
-		        AuditResponseDto.class);
+				auditManagerServiceHost,auditRequestDto,
+				AuditResponseDto.class);
 		
 		return responseEntity.getBody();
 		
