@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Scheduler class for executing the jobs
+ * 
  * @author M1030448
  *
  */
@@ -28,30 +29,30 @@ public class VirusScannerJobScheduler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VirusScannerJobScheduler.class);
 
 	private static final String LOGDISPLAY = "{} - {} - {}";
-	
-	private static final String JOB_STATUS = "Job's status" ;
-	
+
+	private static final String JOB_STATUS = "Job's status";
+
 	@Autowired
-	private JobLauncher jobLauncher;	
+	private JobLauncher jobLauncher;
 
 	@Autowired
 	private Job virusScannerJob;
-		
+
 	/**
-	 * virusScannerJobScheduler runs the virusScannerJob as per given cron schedule 
+	 * virusScannerJobScheduler runs the virusScannerJob as per given cron schedule
 	 */
-	@Scheduled(cron = "${virusscan.cron.job.schedule}")
+	@Scheduled(cron = "${registration.processor.virusscan.cron.job.schedule}")
 	public void virusScannerJobScheduler() {
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
 
 		try {
 			JobExecution jobExecution = jobLauncher.run(virusScannerJob, jobParameters);
-			LOGGER.info(LOGDISPLAY,JOB_STATUS , jobExecution.getId() , jobExecution.getStatus());
+			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId(), jobExecution.getStatus());
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
-			LOGGER.error(LOGDISPLAY,"virusScannerJobScheduler failed to execute", e);
+			LOGGER.error(LOGDISPLAY, "virusScannerJobScheduler failed to execute", e);
 		}
 	}
-		
+
 }

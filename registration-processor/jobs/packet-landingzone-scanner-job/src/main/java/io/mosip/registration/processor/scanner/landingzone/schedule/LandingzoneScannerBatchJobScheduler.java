@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Scheduler class for executing the jobs
+ * 
  * @author M1030448
  *
  */
@@ -28,34 +29,32 @@ public class LandingzoneScannerBatchJobScheduler {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LandingzoneScannerBatchJobScheduler.class);
 
 	private static final String LOGDISPLAY = "{} - {} - {}";
-	
-	private static final String JOB_STATUS = "Job's status" ;
-	
+
+	private static final String JOB_STATUS = "Job's status";
+
 	@Autowired
 	private JobLauncher jobLauncher;
 
 	@Autowired
 	private Job landingZoneScannerJob;
 
-	
-
 	/**
-	 * landingZoneScannerJobScheduler runs the landingZoneScannerJob as per given cron schedule 
+	 * landingZoneScannerJobScheduler runs the landingZoneScannerJob as per given
+	 * cron schedule
 	 */
-	@Scheduled(cron = "${landingzone.cron.job.schedule}")
+	@Scheduled(cron = "${registration.processor.landingzone.cron.job.schedule}")
 	public void landingZoneScannerJobScheduler() {
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
 
 		try {
 			JobExecution jobExecution = jobLauncher.run(landingZoneScannerJob, jobParameters);
-			
-			LOGGER.info(LOGDISPLAY,JOB_STATUS, jobExecution.getId(),jobExecution.getStatus());
+
+			LOGGER.info(LOGDISPLAY, JOB_STATUS, jobExecution.getId(), jobExecution.getStatus());
 		} catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
 				| JobParametersInvalidException e) {
-			LOGGER.error(LOGDISPLAY,"landingZoneScannerJobScheduler failed to execute", e);
+			LOGGER.error(LOGDISPLAY, "landingZoneScannerJobScheduler failed to execute", e);
 		}
 	}
 
-	
 }

@@ -35,9 +35,9 @@ import io.mosip.registration.processor.core.packet.dto.DemographicSequence;
 import io.mosip.registration.processor.core.packet.dto.HashSequence;
 import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -53,7 +53,7 @@ public class PacketValidatorStageTest {
 	private InputStream inputStream;
 
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl;
+	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
