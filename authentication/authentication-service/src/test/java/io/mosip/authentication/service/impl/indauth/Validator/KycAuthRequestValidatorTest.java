@@ -64,10 +64,10 @@ public class KycAuthRequestValidatorTest {
 
 	@InjectMocks
 	KycAuthRequestValidator KycAuthRequestValidator;
-	
+
 	@InjectMocks
 	AuthRequestValidator authRequestValidator;
-	
+
 	@Mock
 	UinValidatorImpl uinValidator;
 
@@ -83,10 +83,9 @@ public class KycAuthRequestValidatorTest {
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(authRequestValidator, "env", env);
-		 ReflectionTestUtils.setField(dateHelper, "env", env);
-		 ReflectionTestUtils.setField(authRequestValidator, "dateHelper",
-		 dateHelper);
-		 ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);
+		ReflectionTestUtils.setField(dateHelper, "env", env);
+		ReflectionTestUtils.setField(authRequestValidator, "dateHelper", dateHelper);
+		ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);
 	}
 
 	@Test
@@ -137,10 +136,9 @@ public class KycAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
-		//System.err.println("ERROR"+kycAuthRequestDTO);
+		// System.err.println("ERROR"+kycAuthRequestDTO);
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
-		
-		
+
 		assertFalse(errors.hasErrors());
 	}
 
@@ -178,6 +176,7 @@ public class KycAuthRequestValidatorTest {
 		authRequestDTO.setAuthType(authTypeDTO);
 		authRequestDTO.setRequest(reqDTO);
 		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
+		kycAuthRequestDTO.setEKycAuthType("O");
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "baseAuthRequestDTO");
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
 		assertTrue(errors.hasErrors());

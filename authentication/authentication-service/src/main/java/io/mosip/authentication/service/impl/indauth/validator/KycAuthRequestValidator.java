@@ -35,7 +35,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	private static final String VALIDATE = "VALIDATE";
 
 	/** The Constant ID_AUTH_VALIDATOR. */
-	private static final String AUTH_REQUEST_VALIDATOR = "AUTH_REQUEST_VALIDATOR";
+	private static final String KYC_REQUEST_VALIDATOR = "AUTH_REQUEST_VALIDATOR";
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
@@ -54,28 +54,29 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		if (kycAuthRequestDTO != null) {
 			validateConsentReq(kycAuthRequestDTO, errors);
 			if (kycAuthRequestDTO.getAuthRequest() == null) {
-				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+				mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
 								AUTH_REQUEST));
 			} else {
 				authRequestValidator.validate(kycAuthRequestDTO.getAuthRequest(), errors);
 			}
-			
-			boolean isValidAuthtype = kycAuthRequestDTO.getEKycAuthType()
-								.chars()
-								.mapToObj(i -> (char)i)
-								.map(String::valueOf)
-								.allMatch(authTypeStr -> EkycAuthType.getEkycAuthType(authTypeStr)
-														.filter(eAuthType -> eAuthType.getAuthTypePredicate()
-																.test(kycAuthRequestDTO.getAuthRequest().getAuthType()))
-														.isPresent());
-			
-			if(!isValidAuthtype) {
-				//throw error
+
+			boolean isValidAuthtype = kycAuthRequestDTO.getEKycAuthType().chars().mapToObj(i -> (char) i)
+					.map(String::valueOf)
+					.allMatch(authTypeStr -> EkycAuthType.getEkycAuthType(authTypeStr).filter(eAuthType -> eAuthType
+							.getAuthTypePredicate().test(kycAuthRequestDTO.getAuthRequest().getAuthType()))
+							.isPresent());
+
+			if (!isValidAuthtype) {
+				mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+								AUTH_REQUEST));
 			}
-								
+
 		} else {
-			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 		}
 
 	}
