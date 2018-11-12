@@ -15,6 +15,8 @@ public class KycAuthRequestDTO extends BaseAuthRequestDTO {
 	
 	private boolean ePrintReq;
 	
+	private String eKycAuthType;
+	
 	private AuthRequestDTO authRequest; 
 	
 	

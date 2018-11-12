@@ -1,17 +1,13 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
-import java.security.InvalidParameterException;
-
-import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.EkycAuthType;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 
 /**
@@ -64,6 +60,20 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 			} else {
 				authRequestValidator.validate(kycAuthRequestDTO.getAuthRequest(), errors);
 			}
+			
+			boolean isValidAuthtype = kycAuthRequestDTO.getEKycAuthType()
+								.chars()
+								.mapToObj(i -> (char)i)
+								.map(String::valueOf)
+								.allMatch(authTypeStr -> EkycAuthType.getEkycAuthType(authTypeStr)
+														.filter(eAuthType -> eAuthType.getAuthTypePredicate()
+																.test(kycAuthRequestDTO.getAuthRequest().getAuthType()))
+														.isPresent());
+			
+			if(!isValidAuthtype) {
+				//throw error
+			}
+								
 		} else {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 		}

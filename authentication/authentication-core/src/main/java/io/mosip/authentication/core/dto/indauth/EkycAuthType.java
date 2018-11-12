@@ -33,16 +33,17 @@ public enum EkycAuthType {
 	
 	
 	String type;
-	private Predicate<AuthTypeDTO> checkAuthType;
+	private Predicate<AuthTypeDTO> authTypePredicate;
 	
 	/**
 	 * Instantiates a new EkycAuthType.
 	 *
-	 * @param type the EkycAuthType
+	 * @param type the type
+	 * @param type the authTypePredicate
 	 */
-	private EkycAuthType(String type, Predicate<AuthTypeDTO> checkAuthType) {
+	private EkycAuthType(String type, Predicate<AuthTypeDTO> authTypePredicate) {
 		this.type = type;
-		this.checkAuthType = checkAuthType;
+		this.authTypePredicate = authTypePredicate;
 	}
 	
 	/**
@@ -71,8 +72,8 @@ public enum EkycAuthType {
 	 * Get the predicate to check the auth type
 	 * @return the predicate
 	 */
-	public Predicate<AuthTypeDTO> getCheckAuthType() {
-		return checkAuthType;
+	public Predicate<AuthTypeDTO> getAuthTypePredicate() {
+		return authTypePredicate;
 	}
 	
 }
