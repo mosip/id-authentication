@@ -4,7 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ public class AuditControllerTest {
 	public void generateOtpTest() throws Exception {
 
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
-		auditRequestDto.setActionTimeStamp(OffsetDateTime.now());
+		auditRequestDto.setActionTimeStamp(LocalDateTime.now());
 		auditRequestDto.setApplicationId("applicationId");
 		auditRequestDto.setApplicationName("applicationName");
 		auditRequestDto.setCreatedBy("createdBy");

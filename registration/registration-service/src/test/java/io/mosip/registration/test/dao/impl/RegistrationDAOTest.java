@@ -4,12 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.time.OffsetDateTime;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,11 +20,9 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.registration.constants.RegClientStatusCode;
-import io.mosip.registration.constants.RegTranType;
-import io.mosip.registration.dao.RegTransactionDAO;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.constants.RegistrationTransactionType;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.impl.RegistrationDAOImpl;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
@@ -36,87 +35,66 @@ import io.mosip.registration.repositories.RegistrationRepository;
 public class RegistrationDAOTest {
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
-	@Mock
-	private MosipLogger logger;
-	private MosipRollingFileAppender mosipRollingFileAppender;
 	@InjectMocks
 	private RegistrationDAOImpl registrationDAOImpl;
 	@Mock
 	private RegistrationRepository registrationRepository;
 	@Mock
 	private RegTransactionRepository regTransactionRepository;
-	@Mock
-	private RegTransactionDAO regTransactionDAO;
 	private RegistrationTransaction regTransaction;
 	
 	@Before
-	public void initialize() {
-		mosipRollingFileAppender = new MosipRollingFileAppender();
-		mosipRollingFileAppender.setAppenderName("org.apache.log4j.RollingFileAppender");
-		mosipRollingFileAppender.setFileName("logs");
-		mosipRollingFileAppender.setFileNamePattern("logs/registration-processor-%d{yyyy-MM-dd-HH-mm}-%i.log");
-		mosipRollingFileAppender.setMaxFileSize("1MB");
-		mosipRollingFileAppender.setTotalCap("10MB");
-		mosipRollingFileAppender.setMaxHistory(10);
-		mosipRollingFileAppender.setImmediateFlush(true);
-		mosipRollingFileAppender.setPrudent(true);
+	public void initialize() throws InstantiationException, IllegalAccessException {
 		
-		OffsetDateTime time = OffsetDateTime.now();
+		Timestamp time = new Timestamp(System.currentTimeMillis());
 		regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId("11111");
-		regTransaction.setTrnTypeCode(RegClientStatusCode.CREATED.getCode());
-		regTransaction.setStatusCode(RegClientStatusCode.CREATED.getCode());
+		regTransaction.setTrnTypeCode(RegistrationClientStatusCode.CREATED.getCode());
+		regTransaction.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 		regTransaction.setCrBy("Officer");
 		regTransaction.setCrDtime(time);
 		
-		ReflectionTestUtils.setField(RegBaseUncheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.setField(RegBaseCheckedException.class, "LOGGER", logger);
-		ReflectionTestUtils.invokeMethod(registrationDAOImpl, "initializeLogger", mosipRollingFileAppender);
+		SessionContext.getInstance().getUserContext().setUserId("mosip");
+		SessionContext.getInstance().getUserContext().setName("mosip");
 	}
 
 	@Test
 	public void testSaveRegistration() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(registrationDAOImpl, "LOGGER", logger);
-
-		when(regTransactionDAO.save(Mockito.anyString())).thenReturn(regTransaction);
 		when(registrationRepository.create(Mockito.any(Registration.class))).thenReturn(new Registration());
-		registrationDAOImpl.save("D:/Packet Store/28-Sep-2018/111111", "Applicant");
+		registrationDAOImpl.save("../PacketStore/28-Sep-2018/111111", "Applicant");
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Test(expected = RegBaseUncheckedException.class)
 	public void testTransactionException() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(registrationDAOImpl, "LOGGER", logger);
 		when(registrationRepository.create(Mockito.any(Registration.class))).thenThrow(RegBaseUncheckedException.class);
 		registrationDAOImpl.save("file", "Invalid");
 	}
-	
+	@Ignore
 	@Test
-	public void getRegistrationByIdTest() {
-		ReflectionTestUtils.setField(registrationDAOImpl, "LOGGER", logger);
+	public void getRegistrationByStatusTest() {
 		
 		List<Registration> packetLists = new ArrayList<>();
 		packetLists.add(new Registration());
-		when(registrationRepository.findByIdIn(Mockito.anyListOf(String.class))).thenReturn(packetLists);
+		when(registrationRepository.findByClientStatusCodeIn(Mockito.anyListOf(String.class))).thenReturn(packetLists);
 		List<String> packetNames=new ArrayList<>();
-		registrationDAOImpl.getRegistrationById(packetNames);
+		assertEquals(packetLists, registrationDAOImpl.getRegistrationByStatus(packetNames));  
 	}
 	
 	@Test
 	public void updateRegStatusTest() {
-		ReflectionTestUtils.setField(registrationDAOImpl, "LOGGER", logger);
 		Registration updatedPacket=new Registration();
+		updatedPacket.setClientStatusCode("P");
 		Mockito.when(registrationRepository.getOne(Mockito.anyString())).thenReturn(updatedPacket);
-		registrationDAOImpl.updateRegStatus("111111");
-		assertEquals("P", updatedPacket.getClientStatusCode());
+		Mockito.when(registrationRepository.update(updatedPacket)).thenReturn(updatedPacket);
+		assertEquals(updatedPacket, registrationDAOImpl.updateRegStatus(updatedPacket));
 	}
 	
 	@Test
 	public void testUpdateStatusRegistration() throws RegBaseCheckedException {
-		ReflectionTestUtils.setField(registrationDAOImpl, "LOGGER", logger);
 		
-		OffsetDateTime timestamp = OffsetDateTime.now();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		
 		Registration regobjectrequest = new Registration();
 		regobjectrequest.setId("123456");
@@ -143,10 +121,10 @@ public class RegistrationDAOTest {
 		
 		List<RegistrationTransaction> registrationTransaction = new ArrayList<>();
 		RegistrationTransaction registrationTxn = new RegistrationTransaction();
-		registrationTxn.setTrnTypeCode(RegTranType.UPDATED.getCode());
+		registrationTxn.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 		registrationTxn.setLangCode("ENG");
 		registrationTxn.setIsActive(true);
-		registrationTxn.setStatusCode(RegClientStatusCode.APPROVED.getCode());
+		registrationTxn.setStatusCode(RegistrationClientStatusCode.APPROVED.getCode());
 		registrationTxn.setStatusComment("");
 		registrationTxn.setCrBy("Mosip1214");
 		registrationTxn.setCrDtime(timestamp);
@@ -163,7 +141,6 @@ public class RegistrationDAOTest {
 
 	@Test
 	public void testApprovalListRegistration() {
-		ReflectionTestUtils.setField(registrationDAOImpl, "LOGGER", logger);
 		
 		List<Registration> details = new ArrayList<>();
 		Registration regobject = new Registration();
@@ -195,7 +172,6 @@ public class RegistrationDAOTest {
 	
 	@Test
 	public void testGetRegistrationsByStatus() {
-		ReflectionTestUtils.setField(registrationDAOImpl, "LOGGER", logger);
 		
 		List<Registration> details = new ArrayList<>();
 		Registration regobject = new Registration();

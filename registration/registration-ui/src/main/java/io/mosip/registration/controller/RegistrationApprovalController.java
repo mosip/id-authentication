@@ -1,27 +1,31 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
-import io.mosip.registration.constants.RegistrationUIExceptionCode;
-import io.mosip.registration.constants.RegistrationUIExceptionEnum;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationExceptions;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationApprovalUiDto;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.RegistrationApprovalService;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,31 +36,35 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Pagination;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
+import javafx.stage.StageStyle;
 
 /**
- *{@code RegistrationApprovalController} is the controller class for Registration approval.
+ * {@code RegistrationApprovalController} is the controller class for
+ * Registration approval.
  *
  * @author Mahesh Kumar
  */
 @Controller
 public class RegistrationApprovalController extends BaseController implements Initializable {
 
+	/** items per page. */
+	@Value("${Items_per_page}")
+	private int itemsPerPage;
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private static MosipLogger LOGGER;
-	
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-	}
+	private MosipLogger LOGGER = AppConfig.getLogger(RegistrationApprovalController.class);
+
 	/**
 	 * object for Registration approval service class
 	 */
@@ -64,7 +72,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	private RegistrationApprovalService registration;
 
 	/**
-	 *Table to display the created packets 
+	 * Table to display the created packets
 	 */
 	@FXML
 	private TableView<RegistrationApprovalUiDto> table;
@@ -124,17 +132,31 @@ public class RegistrationApprovalController extends BaseController implements In
 	@FXML
 	private Button onHoldBtn;
 
-	int itemsPerPage = 1;
-	List<RegistrationApprovalUiDto> listData = null;
+	/** The image view. */
+	@FXML
+	private ImageView imageView;
 
-	/* (non-Javadoc)
-	 * @see javafx.fxml.Initializable#initialize(java.net.URL, java.util.ResourceBundle)
+	/** The approve registration root sub pane. */
+	@FXML
+	private AnchorPane approveRegistrationRootSubPane;
+	
+	/** The image anchor pane. */
+	@FXML
+	private AnchorPane imageAnchorPane;
+
+	/** The list data. */
+	private List<RegistrationApprovalUiDto> listData = null;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
+	 * java.util.ResourceBundle)
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_APPROVAL_CONTROLLER", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Page loading has been started");
-
+		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_APPROVAL_CONTROLLER",
+				APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		reloadTableView();
 	}
 
@@ -142,9 +164,11 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * Method to reload table
 	 */
 	public void reloadTableView() {
-		approvalBtn.disableProperty().set(true);
-		rejectionBtn.disableProperty().set(true);
-		onHoldBtn.disableProperty().set(true);
+		
+		approvalBtn.setVisible(false);
+		rejectionBtn.setVisible(false);
+		onHoldBtn.setVisible(false);
+		imageAnchorPane.setVisible(false);
 
 		id.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("id"));
 		type.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalUiDto, String>("type"));
@@ -154,22 +178,37 @@ public class RegistrationApprovalController extends BaseController implements In
 		acknowledgementFormPath.setCellValueFactory(
 				new PropertyValueFactory<RegistrationApprovalUiDto, String>("acknowledgementFormPath"));
 
-		expand.setCellFactory(
-				new Callback<TableColumn<RegistrationApprovalUiDto, Boolean>, TableCell<RegistrationApprovalUiDto, Boolean>>() {
-
-					@Override
-					public TableCell<RegistrationApprovalUiDto, Boolean> call(
-							TableColumn<RegistrationApprovalUiDto, Boolean> col) {
-
-						return new ViewAcknowledgementController(table);
-					}
-				});
-
 		tablePagination();
 
-		approvalBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
-		rejectionBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
-		onHoldBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
+		table.setOnMouseClicked((MouseEvent event) -> {
+			if (event.getClickCount() == 1) {
+				viewAck();
+			}
+		});
+	}
+
+	/**
+	 * Viewing RegistrationAcknowledgement on selecting the Registration record
+	 */
+	public void viewAck() {
+		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Displaying the Acknowledgement form image beside the Table");
+		if (table.getSelectionModel().getSelectedItem() != null) {
+			imageAnchorPane.setVisible(true);
+			approvalBtn.setVisible(true);
+			rejectionBtn.setVisible(true);
+			onHoldBtn.setVisible(true);
+			FileInputStream file;
+			try {
+				file = new FileInputStream(
+						new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()));
+				imageView.setImage(new Image(file));
+			} catch (FileNotFoundException fileNotFoundException) {
+				LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
+						APPLICATION_NAME, APPLICATION_ID,
+						fileNotFoundException.getMessage());			}
+
+		}
 	}
 
 	private Node createPage(int pageIndex) {
@@ -182,24 +221,75 @@ public class RegistrationApprovalController extends BaseController implements In
 	}
 
 	/**
+	 * 
+	 * Opens the home page screen
+	 * 
+	 */
+	public void goToHomePage() {
+		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Going to home page");
+
+		try {
+			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED",
+					APPLICATION_NAME, APPLICATION_ID,
+					ioException.getMessage());
+		}
+	}
+
+	/**
+	 * Opening registration acknowledgement form on clicking on image.
+	 */
+	public void openAckForm() {
+		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Opening the Acknowledgement Form");
+
+		try {
+			Stage primaryStage = new Stage();
+			autoCloseStage(primaryStage);
+			FileInputStream file = new FileInputStream(
+					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()));
+			primaryStage.setTitle(RegistrationConstants.ACKNOWLEDGEMENT_FORM_TITLE);
+			ImageView newimageView = new ImageView(new Image(file));
+			HBox hbox = new HBox(newimageView);
+			Scene scene = new Scene(hbox, 800, 600);
+			primaryStage.setScene(scene);
+			primaryStage.initModality(Modality.WINDOW_MODAL);
+			primaryStage.initOwner(stage);
+			primaryStage.resizableProperty().set(false);
+			primaryStage.show();
+		} catch (FileNotFoundException fileNotFoundException) {
+			LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
+					APPLICATION_NAME, APPLICATION_ID,
+					fileNotFoundException.getMessage());
+		}
+
+	}
+
+	/**
 	 * Event method for Approving packet
+	 * 
 	 * @param event
 	 */
 	public void approvePacket(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Packet updation has been started");
-		
+		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION", APPLICATION_NAME,
+				APPLICATION_ID, "Packet updation has been started");
+
 		RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 
-		if (registration.packetUpdateStatus(regData.getId(), "A", "mahesh123", "", "mahesh123")) {
+		String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
+		String approverRoleCode = SessionContext.getInstance().getUserContext().getRoles().get(0);
+		if (registration.packetUpdateStatus(regData.getId(), RegistrationClientStatusCode.APPROVED.getCode(), approverUserId, "",
+				approverRoleCode)) {
 			listData = registration.getAllEnrollments();
-			generateAlert("Status", AlertType.INFORMATION, "Registration Approved successfully..");
+			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.APPROVED_STATUS_MESSAGE);
 			tablePagination();
 		} else {
-			generateAlert("Status", AlertType.INFORMATION, "");
+			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.APPROVED_STATUS_FAILURE_MESSAGE);
 		}
-		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Packet updation has been ended");
+		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_", APPLICATION_NAME,
+				APPLICATION_ID, "Packet updation has been ended");
 	}
 
 	/**
@@ -207,10 +297,15 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * 
 	 */
 	public void tablePagination() {
-		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Pagination has been started");
+		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME,
+				APPLICATION_ID, "Pagination has been started");
 		listData = registration.getAllEnrollments();
-		if (listData.size() != 0) {
+		approvalBtn.setVisible(false);
+		rejectionBtn.setVisible(false);
+		onHoldBtn.setVisible(false);
+		imageAnchorPane.setVisible(false);
+		imageView.imageProperty().set(null);
+		if (!listData.isEmpty()) {
 			int pageCount = 0;
 			if (listData.size() % itemsPerPage == 0) {
 				pageCount = (listData.size() / itemsPerPage);
@@ -220,79 +315,91 @@ public class RegistrationApprovalController extends BaseController implements In
 			pagination.setPageCount(pageCount);
 			pagination.setPageFactory(this::createPage);
 		} else {
-			pagination.disableProperty().set(true);
-			approvalBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
-			rejectionBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
-			onHoldBtn.disableProperty().bind(Bindings.isEmpty(table.getSelectionModel().getSelectedItems()));
-			table.setPlaceholder(new Label("No Packets for approval"));
+			approveRegistrationRootSubPane.disableProperty().set(true);
+			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
+			table.getItems().remove(table.getSelectionModel().getSelectedItem());
+			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.PLACEHOLDER_LABEL);
+			
 		}
-		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Pagination has been ended");
+		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME,
+				APPLICATION_ID, "Pagination has been ended");
 	}
 
 	/**
-	 * Event method for packet Rejection 
+	 * Event method for packet Rejection
+	 * 
 	 * @param event
 	 * @throws RegBaseCheckedException
 	 */
 	public void rejectPacket(ActionEvent event) throws RegBaseCheckedException {
 		try {
-			LOGGER.debug("REGISTRATION - REJECTION_PACKET - REGISTRATION", getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "Rejection of packet has been started");
-			
+			LOGGER.debug("REGISTRATION - REJECTION_PACKET - REGISTRATION", APPLICATION_NAME,
+					APPLICATION_ID, "Rejection of packet has been started");
+
 			RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 			Stage primarystage = new Stage();
-			AnchorPane rejectRoot = BaseController.load(getClass().getResource("/fxml/RejectionComment.fxml"));
+			primarystage.initStyle(StageStyle.UNDECORATED);
+			AnchorPane rejectRoot = BaseController.load(getClass().getResource(RegistrationConstants.REJECTION_PAGE));
 			RejectionController rejectionController = (RejectionController) RegistrationAppInitialization
-					.getApplicationContext().getBean("rejectionController");
+					.getApplicationContext().getBean(RegistrationConstants.REJECTION_BEAN_NAME);
 
 			rejectionController.initData(regData.getId(), primarystage);
 			Scene scene = new Scene(rejectRoot);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primarystage.setScene(scene);
+			primarystage.initModality(Modality.WINDOW_MODAL);
+			primarystage.initOwner(stage);
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
 		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
-					RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
+			throw new RegBaseCheckedException(RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
+					RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
 		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_LOGIN_LOADER_EXCEPTION,
+			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION,
 					runtimeException.getMessage());
 		}
-		LOGGER.debug("REGISTRATION - REJECTION_PACKET - REGISTRATION", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "Rejection of packet has been ended");
+		LOGGER.debug("REGISTRATION - REJECTION_PACKET - REGISTRATION", APPLICATION_NAME,
+				APPLICATION_ID, "Rejection of packet has been ended");
 
 	}
 
 	/**
 	 * Event method for OnHolding Packet
+	 * 
 	 * @param event
 	 * @throws RegBaseCheckedException
 	 */
 	public void onHoldPacket(ActionEvent event) throws RegBaseCheckedException {
 		try {
-			LOGGER.debug("REGISTRATION - ONHOLD_PACKET - REGISTRATION", getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "OnHold of packet has been started");
-			
+			LOGGER.debug("REGISTRATION - ONHOLD_PACKET - REGISTRATION", APPLICATION_NAME,
+					APPLICATION_ID, "OnHold of packet has been started");
+
 			RegistrationApprovalUiDto regData = table.getSelectionModel().getSelectedItem();
 			Stage primarystage = new Stage();
-			AnchorPane holdRoot = BaseController.load(getClass().getResource("/fxml/OnholdComment.fxml"));
+			primarystage.initStyle(StageStyle.UNDECORATED);
+			AnchorPane holdRoot = BaseController.load(getClass().getResource(RegistrationConstants.ONHOLD_PAGE));
 			OnHoldController onHoldController = (OnHoldController) RegistrationAppInitialization.getApplicationContext()
-					.getBean("onHoldController");
+					.getBean(RegistrationConstants.ONHOLD_BEAN_NAME);
 
 			onHoldController.initData(regData.getId(), primarystage);
 			Scene scene = new Scene(holdRoot);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primarystage.setScene(scene);
+			primarystage.initModality(Modality.WINDOW_MODAL);
+			primarystage.initOwner(stage);
 			primarystage.show();
 			primarystage.resizableProperty().set(false);
 		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
-					RegistrationUIExceptionEnum.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
-		}catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationUIExceptionCode.REG_UI_LOGIN_LOADER_EXCEPTION,
+			throw new RegBaseCheckedException(RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
+					RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION,
 					runtimeException.getMessage());
-		} 
-		LOGGER.debug("REGISTRATION - ONHOLD_PACKET - REGISTRATION", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "OnHold of packet has been ended");
-	
+		}
+		LOGGER.debug("REGISTRATION - ONHOLD_PACKET - REGISTRATION", APPLICATION_NAME,
+				APPLICATION_ID, "OnHold of packet has been ended");
+
 	}
 }

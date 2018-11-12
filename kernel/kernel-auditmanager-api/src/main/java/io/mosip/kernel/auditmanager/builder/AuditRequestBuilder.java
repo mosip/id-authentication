@@ -1,6 +1,6 @@
 package io.mosip.kernel.auditmanager.builder;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
@@ -38,7 +38,7 @@ public class AuditRequestBuilder {
 	 * 
 	 * @return {@link AuditRequestBuilder}
 	 */
-	public AuditRequestBuilder setActionTimeStamp(OffsetDateTime actionTimeStamp) {
+	public AuditRequestBuilder setActionTimeStamp(LocalDateTime actionTimeStamp) {
 		auditRequest.setActionTimeStamp(actionTimeStamp);
 		return this;
 	}
