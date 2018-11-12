@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
@@ -33,8 +31,8 @@ import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.OsiData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
@@ -125,7 +123,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private PacketInfoDao packetInfoDao;
 
 	@Autowired
-	FileSystemAdapter<InputStream, Boolean> filesystemCephAdapter;
+	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	/** The meta data. */
 	private MetaData metaData;
@@ -231,12 +229,16 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-/*			String description = isTransactionSuccessful ? "description--QcUser packet Info fetched Success"
-					: "description--QcUser packet Info fetched Failed";
-			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());*/
+			/*
+			 * String description = isTransactionSuccessful ?
+			 * "description--QcUser packet Info fetched Success" :
+			 * "description--QcUser packet Info fetched Failed";
+			 * createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
+			 * AuditLogTempConstant.APPLICATION_NAME.toString(), description,
+			 * AuditLogTempConstant.EVENT_ID.toString(),
+			 * AuditLogTempConstant.EVENT_TYPE.toString(),
+			 * AuditLogTempConstant.EVENT_TYPE.toString());
+			 */
 		}
 	}
 
@@ -395,7 +397,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private byte[] getDocumentAsByteArray(String registrationId, String documentName) {
 		try {
 			@Cleanup
-			InputStream in = filesystemCephAdapter.getFile(registrationId, documentName);
+			InputStream in = filesystemCephAdapterImpl.getFile(registrationId, documentName);
 			byte[] buffer = new byte[1024];
 			int len;
 			@Cleanup

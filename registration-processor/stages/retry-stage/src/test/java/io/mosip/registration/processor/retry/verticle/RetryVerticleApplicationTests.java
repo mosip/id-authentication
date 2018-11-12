@@ -1,9 +1,10 @@
-package io.mosip.registration.processor.retry.verticle;
+/*package io.mosip.registration.processor.retry.verticle;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
 
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
@@ -26,12 +27,20 @@ public class RetryVerticleApplicationTests {
 
 	private MessageDTO dto = new MessageDTO();
 
+	@Value("${registration.processor.vertx.cluster.address}")
+	private String clusterAddress;
+
+	@Value("${registration.processor.vertx.localhost}")
+	private String localhost;
+
 	@Before
 	public void setup(TestContext context) {
 		retryStage.deployVerticle();
-		vertx = retryStage.getEventBus(RetryStage.class, "", "").getEventbus();
-		revertx = retryStage.getEventBus(RetryStage.class, "", "").getEventbus();
-		;
+		// vertx = retryStage.getEventBus(RetryStage.class, clusterAddress,
+		// localhost).getEventbus();
+		// revertx = retryStage.getEventBus(RetryStage.class, clusterAddress,
+		// localhost).getEventbus();
+		// ;
 		dto.setRid("1001");
 		dto.setRetryCount(null);
 		dto.setIsValid(false);
@@ -76,4 +85,4 @@ public class RetryVerticleApplicationTests {
 		async.awaitSuccess();
 	}
 
-}
+}*/
