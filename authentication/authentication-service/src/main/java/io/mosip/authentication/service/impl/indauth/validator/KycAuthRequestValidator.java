@@ -44,6 +44,8 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SESSION_ID";
 
+	private static final String CONSENT_REQ = "consentReq";
+
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return KycAuthRequestDTO.class.equals(clazz);
@@ -62,9 +64,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 			} else {
 				authRequestValidator.validate(kycAuthRequestDTO.getAuthRequest(), errors);
 			}
-		} else
-
-		{
+		} else {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 		}
 
@@ -72,9 +72,9 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	public void validateConsentReq(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
 		if (!kycAuthRequestDTO.isConsentReq()) {
-			errors.rejectValue("consentReq", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					new Object[] { "consentReq" },
-					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			errors.rejectValue(CONSENT_REQ, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+							CONSENT_REQ));
 		}
 	}
 
