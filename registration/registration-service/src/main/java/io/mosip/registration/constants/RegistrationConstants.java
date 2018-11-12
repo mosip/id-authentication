@@ -119,9 +119,6 @@ public class RegistrationConstants {
 	public static final String GENERATED_OTP = "Generated OTP : ";
 
 	/** Velocity Template Generator Constants */
-	public static final String RESOURCE_LOADER = "file";
-	public static final String FILE_RESOURCE_LOADER_CLASS = "file.resource.loader.class";
-	public static final String FILE_RESOURCE_LOADER_PATH = "file.resource.loader.path";
 	public static final String TEMPLATE_REGISTRATION_ID = "RegId";
 	public static final String TEMPLATE_DATE_FORMAT = "dd/MM/yyyy";
 	public static final String TEMPLATE_DATE = "Date";
@@ -219,6 +216,7 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_SYNC_REGISTRATION_ID = "registrationId";
 	public static final String PACKET_STATUS_SYNC_STATUS_CODE = "statusCode";
 	public static final String PACKET_STATUS_SYNC_ERROR_RESPONSE = "No Status Available";
+	public static final String PACKET_STATUS_CODE_PROCESSED = "processed";
 
 	/** Exception codes **/
 	private static final String REG_SERVICE_CODE = "REG-SER-";
