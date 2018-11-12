@@ -3,7 +3,7 @@
 CREATE TABLE uin.uin_detail_h(
 	uin_ref_id character varying(28) NOT NULL,
 	eff_dtimes timestamp NOT NULL,
-	uin_data character(28) NOT NULL,
+	uin_data bytea NOT NULL,
 	is_active boolean NOT NULL,
 	cr_by character varying(32) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
