@@ -1,11 +1,16 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +22,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoServiceImpl;
+import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 
 /**
@@ -28,13 +34,23 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 @Service
 public class KycServiceImpl implements KycService{
 	
+	private static final String LABEL_SEC = "_label_sec";
+
+	private static final String LABEL_PRI = "_label_pri";
+
 	private static final String LIMITED_KYC = "limited KYC";
 
 	@Autowired
 	Environment env;
 	
 	@Autowired
+	private MessageSource messageSource;
+	
+	@Autowired
 	private IdInfoServiceImpl idInfoServiceImpl;
+	
+	@Autowired
+	private IdTemplateManager idTemplateManager;
 	
 	/** The mosip logger. */
 	private static MosipLogger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);
@@ -49,16 +65,17 @@ public class KycServiceImpl implements KycService{
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo, isSecLangInfoRequired);
 		kycInfo.setIdentity(filteredIdentityInfo);
 		if(ePrintReq) {
-			String maskedUin = uin;			
+			Object maskedUin = uin;			
 			if(env.getProperty("uin.masking.required", Boolean.class)) {
 				maskedUin = generateMaskedUIN(uin, env.getProperty("uin.masking.charcount", Integer.class));
 			}
-			String ePrintInfo = generatePrintableKyc(eKycType,kycInfo.getIdentity(), maskedUin);
+			Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
+			String ePrintInfo = generatePrintableKyc(eKycType,pdfDetails);
 			kycInfo.setEPrint(ePrintInfo);			
 		}
 		return kycInfo;
 	}
-	
+
 	private String generateMaskedUIN(String uin, int maskNo) {
 		char[] uinChar = uin.toCharArray();
 		for(int i=0; i<maskNo; i++) {
@@ -107,20 +124,48 @@ public class KycServiceImpl implements KycService{
 		return identityInfo;
 	}
 	
-	private String generatePrintableKyc(String eKycType, Map<String, List<IdentityInfoDTO>> identity, String maskedUin) {
-		String pdfDetails;
-		
-		if(eKycType.equals(LIMITED_KYC)) {
-			//fix me -> notification service to be implemented
-			pdfDetails = generatePDF(env.getProperty("ekyc.type.limitedkyc"),identity);
-		}else {
-			pdfDetails = generatePDF(env.getProperty("ekyc.template.fullkyc"),identity);
+	private Map<String, Object> generatePDFDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Object maskedUin) {
+		String primaryLanguage = env.getProperty("mosip.primary.lang-code");
+		String secondaryLanguage = env.getProperty("mosip.secondary.lang-code");
+		Map<String, Object> pdfDetails = new HashMap<>();
+		filteredIdentityInfo
+			    .entrySet()
+			    .stream()
+			    .forEach(e -> e.getValue().stream().forEach(v -> {
+			    	if(v.getLanguage().equalsIgnoreCase(primaryLanguage)) {
+			    		pdfDetails.put(e.getKey().concat("_pri"), v.getValue());
+			    		pdfDetails.put(e.getKey().concat(LABEL_PRI), 
+			    				messageSource.getMessage(e.getKey().concat(LABEL_PRI), null, LocaleContextHolder.getLocale()));
+			    	}else if(v.getLanguage().equalsIgnoreCase(secondaryLanguage)) {
+			    		pdfDetails.put(e.getKey().concat("_sec"), v.getValue());
+			    		pdfDetails.put(e.getKey().concat(LABEL_SEC), 
+			    				messageSource.getMessage(e.getKey().concat(LABEL_SEC), null, new Locale(secondaryLanguage)));
+			    	}
+			    }));
+		pdfDetails.put("uin_pri", maskedUin);
+		pdfDetails.put("uin_label_pri", messageSource.getMessage("uin_label_pri", null, LocaleContextHolder.getLocale()));
+		pdfDetails.put("uin_sec", maskedUin);
+		pdfDetails.put("uin_label_sec", messageSource.getMessage("uin_label_sec", null, new Locale(secondaryLanguage)));
+		pdfDetails.put("name_label_pri", messageSource.getMessage("name_label_pri", null, LocaleContextHolder.getLocale()));
+		pdfDetails.put("name_label_sec", messageSource.getMessage("name_label_sec", null, new Locale(secondaryLanguage)));
+		return pdfDetails;
+	}
+
+	private String generatePrintableKyc(String eKycType, Map<String, Object> identity) throws IdAuthenticationBusinessException {
+		String pdfDetails = null;
+		try {
+			if(eKycType.equals(LIMITED_KYC)) {
+				pdfDetails =  idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc"), identity);
+
+			}else {
+				pdfDetails = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc"), identity);
+			}
+		} catch (IOException e) {
+			mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 		return pdfDetails;
 	}
 
-	private String generatePDF(String pdfDetails, Map<String, List<IdentityInfoDTO>> identity) {
-		return pdfDetails;
-	}
 
 }

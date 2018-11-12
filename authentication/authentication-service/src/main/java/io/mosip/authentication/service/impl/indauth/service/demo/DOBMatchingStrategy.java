@@ -14,6 +14,7 @@ import io.mosip.authentication.core.util.MatcherUtil;
  * @author Sanjay Murali
  */
 public enum DOBMatchingStrategy implements MatchingStrategy {
+	
 
 	/** The exact. */
 	EXACT(MatchingStrategyType.EXACT, (Object reqInfo, IdentityValue entityInfo) -> {
