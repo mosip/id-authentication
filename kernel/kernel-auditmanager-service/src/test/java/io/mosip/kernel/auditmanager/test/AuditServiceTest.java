@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.auditmanager.service.impl.AuditManagerServiceImpl;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
 
 @RunWith(SpringRunner.class)
 public class AuditServiceTest {
@@ -51,9 +51,8 @@ public class AuditServiceTest {
 
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		auditResponseDto.setStatus(true);
-		when(handler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
+		when(handler.addAudit(ArgumentMatchers.any())).thenReturn(true);
 		assertThat(service.addAudit(auditRequestDto), is(auditResponseDto));
 	}
-
 
 }

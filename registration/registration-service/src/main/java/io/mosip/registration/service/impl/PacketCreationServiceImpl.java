@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +56,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 	private AuditDAO auditDAO;
 	@Autowired
 	private ZipCreationService zipCreationService;
-	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketCreationServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(PacketCreationServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}
@@ -146,7 +146,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 					"Packet Internal Zip File created successfully", REGISTRATION_ID, rid);
 
 			return packetZipBytes;
-		} catch (MosipJsonProcessingException mosipJsonProcessingException) {
+		} catch (JsonProcessingException mosipJsonProcessingException) {
 			throw new RegBaseCheckedException(RegistrationExceptions.REG_JSON_PROCESSING_EXCEPTION.getErrorCode(),
 					RegistrationExceptions.REG_JSON_PROCESSING_EXCEPTION.getErrorMessage());
 		} catch (RuntimeException runtimeException) {

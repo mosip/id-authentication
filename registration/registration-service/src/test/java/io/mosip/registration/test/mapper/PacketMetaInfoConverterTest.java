@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -24,7 +24,7 @@ public class PacketMetaInfoConverterTest {
 	}
 	
 	@Test
-	public void convertTest() throws MosipJsonProcessingException {
+	public void convertTest() throws JsonProcessingException {
 		PacketMetaInfo packetMetaInfo = mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
 		Assert.assertNotNull(packetMetaInfo.getIdentity().getLeftEye());
 		Assert.assertNull(packetMetaInfo.getIdentity().getRightEye());

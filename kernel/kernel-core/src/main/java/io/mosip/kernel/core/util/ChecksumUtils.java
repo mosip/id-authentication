@@ -11,7 +11,7 @@ package io.mosip.kernel.core.util;
 public final class ChecksumUtils {
 
 	/**
-	 * Private constructor for MosipIdChecksum
+	 * Private constructor for IdChecksum
 	 */
 	private ChecksumUtils() {
 	}
@@ -39,9 +39,12 @@ public final class ChecksumUtils {
 	/**
 	 * Generates the Verhoeff checksum digit for the provided numeric string.
 	 * 
+	 *  * @param num 
+	 *               Number input
 	 * @return The generated Verhoeff checksum digit for the provided numeric
 	 *         string.
 	 */
+	
 	public static String generateChecksumDigit(String num) {
 		int c = 0;
 		int[] myArray = stringToReversedIntArray(num);

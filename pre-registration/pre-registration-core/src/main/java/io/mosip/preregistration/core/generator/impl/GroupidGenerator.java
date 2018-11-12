@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.core.util.IdFilterUtils;
 import io.mosip.preregistration.core.cache.GroupidCacheManager;
 import io.mosip.preregistration.core.constant.GroupidGeneratorConstants;
 import io.mosip.preregistration.core.constant.GroupidGeneratorErrorCodes;
@@ -17,6 +16,7 @@ import io.mosip.preregistration.core.entity.Groupid;
 import io.mosip.preregistration.core.exceptions.GroupidGenerationException;
 import io.mosip.preregistration.core.generator.MosipGroupIdGenerator;
 import io.mosip.preregistration.core.repository.GroupidRepository;
+import io.mosip.preregistration.core.util.IdFilterUtils;
 
 /**
  * GroupidGenerator to generate Groupid This class will return a T digit Groupid

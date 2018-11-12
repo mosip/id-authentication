@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -27,9 +27,9 @@ import javafx.stage.Stage;
 public class RegistrationAppInitialization extends Application {
 
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationAppInitialization.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationAppInitialization.class);
 
 	private static ApplicationContext applicationContext;
 

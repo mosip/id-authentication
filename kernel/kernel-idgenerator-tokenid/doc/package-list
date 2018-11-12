@@ -1,8 +1,0 @@
-io.mosip.kernel.idgenerator.tokenid.cache
-io.mosip.kernel.idgenerator.tokenid.cache.impl
-io.mosip.kernel.idgenerator.tokenid.constant
-io.mosip.kernel.idgenerator.tokenid.entity
-io.mosip.kernel.idgenerator.tokenid.exception
-io.mosip.kernel.idgenerator.tokenid.impl
-io.mosip.kernel.idgenerator.tokenid.repository
-io.mosip.kernel.idgenerator.tokenid.util

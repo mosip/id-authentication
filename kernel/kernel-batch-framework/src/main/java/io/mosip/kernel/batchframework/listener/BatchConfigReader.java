@@ -13,9 +13,10 @@ import io.mosip.kernel.batchframework.config.LoggerConfiguration;
 import io.mosip.kernel.batchframework.constant.BatchExceptionConstant;
 import io.mosip.kernel.batchframework.constant.BatchPropertyConstant;
 import io.mosip.kernel.batchframework.launcher.BatchJobLauncher;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.FileUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
+
 
 /**
  * This configuration class reads the property value from class path and start
@@ -54,8 +55,8 @@ public class BatchConfigReader {
 				+ BatchPropertyConstant.BATCH_JOB_FILE.getProperty());
 		try {
 			FileUtils.writeLines(file, Arrays.asList(fileText));
-		} catch (MosipIOException e) {
-			MosipLogger logger = LoggerConfiguration.logConfig(BatchConfigReader.class);
+		} catch (IOException e) {
+			Logger logger = LoggerConfiguration.logConfig(BatchConfigReader.class);
 			logger.error(BatchPropertyConstant.EMPTY_STRING.getProperty(),
 					BatchPropertyConstant.ERROR_CODE.getProperty(), BatchExceptionConstant.INPUT_OUTPUT.getErrorCode(),
 					e.getMessage());

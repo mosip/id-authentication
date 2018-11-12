@@ -21,10 +21,10 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import freemarker.template.Template;
-import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
+import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
+import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.freemarker.builder.TemplateConfigureBuilder;
-import io.mosip.kernel.templatemanager.freemarker.exception.TemplateParsingException;
-import io.mosip.kernel.templatemanager.freemarker.exception.TemplateResourceNotFoundException;
 
 @RunWith(SpringRunner.class)
 public class TemplatemanagerTest {

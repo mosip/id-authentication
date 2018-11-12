@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -14,13 +15,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
-import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -57,7 +58,7 @@ public class VirusScannerTasklet implements Tasklet {
 
 	/** The virus scanner service. */
 	@Autowired
-	VirusScannerService<Boolean, String> virusScannerService;
+	VirusScanner<Boolean, String> virusScannerImpl;
 
 	/** The file manager. */
 	@Autowired
@@ -138,7 +139,7 @@ public class VirusScannerTasklet implements Tasklet {
 			boolean isClean = false;
 
 			try {
-				isClean = virusScannerService.scanFile(filepath);
+				isClean = virusScannerImpl.scanFile(filepath);
 				if (isClean) {
 					sendToDFS(file, entry);
 				} else {

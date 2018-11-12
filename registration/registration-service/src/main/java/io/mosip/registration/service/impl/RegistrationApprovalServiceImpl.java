@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AppModule;
@@ -39,7 +39,7 @@ public class RegistrationApprovalServiceImpl implements RegistrationApprovalServ
 	/**
 	 * Object for Logger
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationApprovalServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationApprovalServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}

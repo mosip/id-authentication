@@ -17,13 +17,13 @@ import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import io.mosip.kernel.crypto.bouncycastle.constant.MosipSecurityExceptionCodeConstant;
-import io.mosip.kernel.crypto.bouncycastle.constant.MosipSecurityMethod;
-import io.mosip.kernel.crypto.bouncycastle.decryption.DecryptorImpl;
-import io.mosip.kernel.crypto.bouncycastle.encryption.EncryptorImpl;
-import io.mosip.kernel.crypto.bouncycastle.exception.MosipInvalidDataException;
-import io.mosip.kernel.crypto.bouncycastle.exception.MosipInvalidKeyException;
-import io.mosip.kernel.crypto.bouncycastle.util.SecurityUtils;
+import io.mosip.kernel.core.crypto.exception.InvalidDataException;
+import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
+import io.mosip.kernel.crypto.bouncycastle.constant.SecurityExceptionCodeConstant;
+import io.mosip.kernel.crypto.bouncycastle.constant.SecurityMethod;
+import io.mosip.kernel.crypto.bouncycastle.impl.DecryptorImpl;
+import io.mosip.kernel.crypto.bouncycastle.impl.EncryptorImpl;
+import io.mosip.kernel.crypto.bouncycastle.util.CryptoUtils;
 
 /**
  * Asymmetric Encryption/Decryption processor
@@ -61,11 +61,10 @@ public class AsymmetricProcessor {
 	 *            if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
-	protected static byte[] processHybrid(
-			AsymmetricBlockCipher asymmetricBlockCipher,
-			AsymmetricKeyParameter key, byte[] data, boolean mode) {
+	protected static byte[] processHybrid(AsymmetricBlockCipher asymmetricBlockCipher, AsymmetricKeyParameter key,
+			byte[] data, boolean mode) {
 		init(asymmetricBlockCipher, key, mode);
-		SecurityUtils.verifyData(data);
+		CryptoUtils.verifyData(data);
 		int blockSize = asymmetricBlockCipher.getInputBlockSize();
 		byte[] symmetricKey = null;
 		byte[] output = null;
@@ -77,28 +76,21 @@ public class AsymmetricProcessor {
 			else
 				symmetricKey = generateSymetricKey(16);
 
-			byte[] encryptedSymmetricData = MOSIPENCRYPTOR.symmetricEncrypt(
-					symmetricKey, data,
-					MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
+			byte[] encryptedSymmetricData = MOSIPENCRYPTOR.symmetricEncrypt(symmetricKey, data,
+					SecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
 
-			byte[] encryptedSymmetricKey = processData(asymmetricBlockCipher,
-					symmetricKey, 0, symmetricKey.length);
+			byte[] encryptedSymmetricKey = processData(asymmetricBlockCipher, symmetricKey, 0, symmetricKey.length);
 
-			output = new byte[asymmetricBlockCipher.getOutputBlockSize()
-					+ encryptedSymmetricData.length];
-			System.arraycopy(encryptedSymmetricKey, 0, output, 0,
-					encryptedSymmetricKey.length);
-			System.arraycopy(encryptedSymmetricData, 0, output,
-					encryptedSymmetricKey.length,
+			output = new byte[asymmetricBlockCipher.getOutputBlockSize() + encryptedSymmetricData.length];
+			System.arraycopy(encryptedSymmetricKey, 0, output, 0, encryptedSymmetricKey.length);
+			System.arraycopy(encryptedSymmetricData, 0, output, encryptedSymmetricKey.length,
 					encryptedSymmetricData.length);
 		} else {
-			symmetricKey = processData(asymmetricBlockCipher, data, 0,
-					blockSize);
+			symmetricKey = processData(asymmetricBlockCipher, data, 0, blockSize);
 			byte[] encrptedData = new byte[data.length - blockSize];
-			System.arraycopy(data, blockSize, encrptedData, 0,
-					encrptedData.length);
+			System.arraycopy(data, blockSize, encrptedData, 0, encrptedData.length);
 			output = MOSIPDECRYPTOR.symmetricDecrypt(symmetricKey, encrptedData,
-					MosipSecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
+					SecurityMethod.AES_WITH_CBC_AND_PKCS7PADDING);
 		}
 		return output;
 	}
@@ -116,10 +108,10 @@ public class AsymmetricProcessor {
 	 *            if true process mode is Encrypt ,else process mode is Decrypt
 	 * @return Processed array
 	 */
-	protected static byte[] process(AsymmetricBlockCipher asymmetricBlockCipher,
-			AsymmetricKeyParameter key, byte[] data, boolean mode) {
+	protected static byte[] process(AsymmetricBlockCipher asymmetricBlockCipher, AsymmetricKeyParameter key,
+			byte[] data, boolean mode) {
 		init(asymmetricBlockCipher, key, mode);
-		SecurityUtils.verifyData(data);
+		CryptoUtils.verifyData(data);
 		return processData(asymmetricBlockCipher, data, 0, data.length);
 	}
 
@@ -133,8 +125,7 @@ public class AsymmetricProcessor {
 	 * @param mode
 	 *            if true process mode is Encrypt ,else process mode is Decrypt
 	 */
-	private static void init(AsymmetricBlockCipher asymmetricBlockCipher,
-			AsymmetricKeyParameter key, boolean mode) {
+	private static void init(AsymmetricBlockCipher asymmetricBlockCipher, AsymmetricKeyParameter key, boolean mode) {
 		Security.addProvider(new BouncyCastleProvider());
 		asymmetricBlockCipher.init(mode, key);
 	}
@@ -152,26 +143,30 @@ public class AsymmetricProcessor {
 	 *            limit of processing
 	 * @return Processed Array
 	 */
-	private static byte[] processData(
-			AsymmetricBlockCipher asymmetricBlockCipher, byte[] data, int start,
-			int end) {
+	private static byte[] processData(AsymmetricBlockCipher asymmetricBlockCipher, byte[] data, int start, int end) {
 		try {
 			return asymmetricBlockCipher.processBlock(data, start, end);
 		} catch (InvalidCipherTextException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION);
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_ENCRYPTED_DATA_CORRUPT_EXCEPTION
+							.getErrorMessage());
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION);
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_EXCEPTION.getErrorMessage());
 		} catch (DataLengthException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_LENGTH_EXCEPTION);
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_LENGTH_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_LENGTH_EXCEPTION.getErrorMessage());
 		} catch (IllegalArgumentException e) {
-			throw new MosipInvalidDataException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION);
+			throw new InvalidDataException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_DATA_LENGTH_EXCEPTION.getErrorMessage());
 		} catch (ArithmeticException e) {
-			throw new MosipInvalidKeyException(
-					MosipSecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION);
+			throw new InvalidKeyException(
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorCode(),
+					SecurityExceptionCodeConstant.MOSIP_INVALID_KEY_CORRUPT_EXCEPTION.getErrorMessage());
 		}
 
 	}

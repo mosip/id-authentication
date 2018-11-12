@@ -7,9 +7,9 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.SoftCacheStorage;
 import freemarker.template.Configuration;
-import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
+import io.mosip.kernel.core.templatemanager.exception.TemplateConfigurationException;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.freemarker.constant.TemplateManagerExceptionCodeConstant;
-import io.mosip.kernel.templatemanager.freemarker.exception.TemplateConfigurationException;
 import io.mosip.kernel.templatemanager.freemarker.impl.TemplateManagerImpl;
 import lombok.Getter;
 

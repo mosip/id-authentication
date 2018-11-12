@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.IntroducerType;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -49,9 +49,9 @@ import javafx.util.StringConverter;
 public class RegistrationController extends BaseController {
 
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationController.class);
 
 	@FXML
 	private TextField preRegistrationId;

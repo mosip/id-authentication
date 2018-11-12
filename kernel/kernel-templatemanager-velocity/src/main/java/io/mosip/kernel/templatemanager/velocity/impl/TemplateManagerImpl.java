@@ -15,13 +15,14 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
+import io.mosip.kernel.core.templatemanager.exception.TemplateMethodInvocationException;
+import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
+import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.constant.TemplateManagerConstant;
 import io.mosip.kernel.templatemanager.velocity.constant.TemplateManagerExceptionCodeConstant;
-import io.mosip.kernel.templatemanager.velocity.exception.TemplateMethodInvocationException;
-import io.mosip.kernel.templatemanager.velocity.exception.TemplateParsingException;
-import io.mosip.kernel.templatemanager.velocity.exception.TemplateResourceNotFoundException;
 import io.mosip.kernel.templatemanager.velocity.util.TemplateManagerUtil;
 
 /**
@@ -40,6 +41,7 @@ import io.mosip.kernel.templatemanager.velocity.util.TemplateManagerUtil;
  * @version 1.0.0
  * @since 2018-10-01
  */
+@Component
 public class TemplateManagerImpl implements TemplateManager {
 	private static final String DEFAULT_ENCODING_TYPE = "UTF-8";
 	private VelocityEngine velocityEngine;

@@ -9,7 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
@@ -77,7 +77,7 @@ public class CustomObjectMapperTest {
 	}
 	
 	@Test
-	public void convertTest() throws MosipJsonProcessingException {
+	public void convertTest() throws JsonProcessingException {
 		PacketMetaInfo packetMetaInfo = mapperFacade.convert(registrationDTO, PacketMetaInfo.class, "packetMetaInfo");
 		System.out.println(JsonUtils.javaObjectToJsonString(packetMetaInfo));
 	}

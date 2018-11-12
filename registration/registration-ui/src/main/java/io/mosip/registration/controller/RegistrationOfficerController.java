@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import javafx.fxml.FXML;
@@ -30,9 +30,9 @@ import javafx.scene.layout.VBox;
 @Component
 public class RegistrationOfficerController extends BaseController implements Initializable {
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationOfficerController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationOfficerController.class);
 
 	@FXML
 	private VBox mainBox;

@@ -22,8 +22,9 @@ import io.mosip.kernel.batchframework.exception.ClientErrorException;
 import io.mosip.kernel.batchframework.exception.EmptyJobDescriptionException;
 import io.mosip.kernel.batchframework.exception.InvalidFileUriException;
 import io.mosip.kernel.batchframework.exception.InvalidJobDescriptionException;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.FileUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
+
 
 /**
  * This class registers and launches the batch job jars in cloud data flow
@@ -64,7 +65,7 @@ public class BatchJobLauncher {
 		try {
 			jobDescription = FileUtils.readLines(file, Charset.forName(BatchPropertyConstant.CHARSET.getProperty()));
 
-		} catch (MosipIOException e) {
+		} catch (IOException e) {
 			throw new InvalidFileUriException(BatchExceptionConstant.INVALID_URI.getErrorCode(),
 					BatchExceptionConstant.INVALID_URI.getErrorMessage(), e.getCause());
 		}

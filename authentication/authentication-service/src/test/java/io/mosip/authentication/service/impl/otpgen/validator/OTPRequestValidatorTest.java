@@ -31,10 +31,10 @@ import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
-import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
 /**
  * @author Manoj SP
@@ -64,7 +64,7 @@ public class OTPRequestValidatorTest {
 	VidValidatorImpl vidValidator;
 
 	@InjectMocks
-	MosipRollingFileAppender idaRollingFileAppender;
+	RollingFileAppender idaRollingFileAppender;
 
 	@InjectMocks
 	private OTPRequestValidator otpRequestValidator;
@@ -109,7 +109,7 @@ public class OTPRequestValidatorTest {
 
 	@Test
 	public void testInvalidUin() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setIdvIdType(IdType.UIN.getType());
@@ -121,7 +121,7 @@ public class OTPRequestValidatorTest {
 
 	@Test
 	public void testValidVid() {
-		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		Mockito.when(uinValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		OtpRequestDTO.setId("id");
 		OtpRequestDTO.setVer("1.1");
@@ -138,7 +138,7 @@ public class OTPRequestValidatorTest {
 
 	@Test
 	public void testInvalidVid() {
-		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new MosipInvalidIDException("id", "code"));
+		Mockito.when(vidValidator.validateId(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO, "OtpRequestDTO");
 		OtpRequestDTO.setIdvIdType(IdType.VID.getType());

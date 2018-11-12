@@ -1,6 +1,6 @@
 package io.mosip.kernel.idgenerator.uin.repository;
 
-import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.idgenerator.uin.entity.UinEntity;
 
 import org.springframework.data.jpa.repository.Query;

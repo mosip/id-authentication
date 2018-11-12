@@ -16,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.FileUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -36,7 +36,7 @@ import io.mosip.registration.service.StorageService;
 @Service
 public class StorageServiceImpl implements StorageService {
 
-	private static final MosipLogger LOGGER = AppConfig.getLogger(StorageServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(StorageServiceImpl.class);
 
 	@Autowired
 	private Environment environment;
@@ -65,7 +65,7 @@ public class StorageServiceImpl implements StorageService {
 					"Registration's Acknowledgement Receipt saved");
 
 			return filePath;
-		} catch (MosipIOException ioException) {
+		} catch (IOException ioException) {
 			throw new RegBaseCheckedException(REG_IO_EXCEPTION.getErrorCode(), REG_IO_EXCEPTION.getErrorMessage());
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.ENCRYPTED_PACKET_STORAGE,

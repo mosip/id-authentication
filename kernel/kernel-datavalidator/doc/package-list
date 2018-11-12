@@ -1,7 +1,0 @@
-io.mosip.kernel.datavalidator
-io.mosip.kernel.datavalidator.email.constant
-io.mosip.kernel.datavalidator.email.exception
-io.mosip.kernel.datavalidator.email.impl
-io.mosip.kernel.datavalidator.phone.constant
-io.mosip.kernel.datavalidator.phone.exception
-io.mosip.kernel.datavalidator.phone.impl

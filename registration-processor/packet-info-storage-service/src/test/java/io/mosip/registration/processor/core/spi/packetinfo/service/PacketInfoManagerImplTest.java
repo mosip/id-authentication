@@ -21,9 +21,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.packet.dto.AddressDTO;
 import io.mosip.registration.processor.core.packet.dto.BiometericData;
@@ -308,10 +308,11 @@ public class PacketInfoManagerImplTest {
 		AuditHandler<AuditRequestDto> auditHandler = new AuditHandler<AuditRequestDto>() {
 
 			@Override
-			public boolean writeAudit(AuditRequestDto arg0) {
+			public boolean addAudit(AuditRequestDto arg0) {
 
 				return true;
 			}
+
 		};
 		Field f1 = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f1.setAccessible(true);
@@ -356,7 +357,7 @@ public class PacketInfoManagerImplTest {
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void testDemographicFailureCase() {
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 		Mockito.when(applicantDemographicRepository.save(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.saveDemographicData(demographicInfo, metaData);
