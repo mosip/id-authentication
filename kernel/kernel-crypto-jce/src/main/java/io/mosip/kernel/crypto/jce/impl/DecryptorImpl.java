@@ -32,10 +32,10 @@ import io.mosip.kernel.crypto.jce.processor.SymmetricProcessor;
 @Component
 public class DecryptorImpl implements Decryptor<PrivateKey, PublicKey, SecretKey> {
 	
-	@Value("${mosip.kernel.crypto.jce.symmetric.algorithm.name}")
+	@Value("${mosip.kernel.crypto.jce.symmetric-algorithm-name}")
 	private String symmetricAlgorithm;
 
-	@Value("${mosip.kernel.crypto.jce.asymmetric.algorithm.name}")
+	@Value("${mosip.kernel.crypto.jce.asymmetric-algorithm-name}")
 	private String asymmetricAlgorithm;
 	
 	/*
