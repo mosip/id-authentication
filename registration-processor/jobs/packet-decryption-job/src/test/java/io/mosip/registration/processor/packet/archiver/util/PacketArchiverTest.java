@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
@@ -34,7 +35,7 @@ public class PacketArchiverTest {
 
 	/** The filesystem ceph adapter impl. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> filesystemCephAdapterImpl = new FilesystemCephAdapterImpl();
+	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	/** The filemanager. */
 	@Mock
@@ -58,6 +59,9 @@ public class PacketArchiverTest {
 	/** The registration id. */
 	private String registrationId = "1001";
 
+	@Mock
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+
 	/**
 	 * Setup.
 	 *
@@ -74,15 +78,21 @@ public class PacketArchiverTest {
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
+
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-		Field f = PacketArchiver.class.getDeclaredField("auditRequestBuilder");
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f.setAccessible(true);
-		f.set(packetArchiver, auditRequestBuilder);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
+
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
 		f1.set(auditRequestBuilder, auditRequest1);
+
+		Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
+		f2.setAccessible(true);
+		f2.set(coreAuditRequestBuilder, auditHandler);
 	}
 
 	/**

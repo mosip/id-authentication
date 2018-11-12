@@ -40,6 +40,8 @@
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 		<modelmapper.version>2.1.1</modelmapper.version>
 		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
+		<json.schema.validator.version>2.2.10</json.schema.validator.version>
+		
 
 		<!-- Swagger -->
 		<swagger.version>2.9.2</swagger.version>
@@ -66,6 +68,7 @@
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<jackson.databind>2.9.6</jackson.databind>
+		<json.utility.version>20180130</json.utility.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -97,6 +100,7 @@
 		<module>kernel-packetuploader-sftp-jsch</module>
 		<module>kernel-idvalidator</module>
 		<module>kernel-datavalidator</module>
+		<module>kernel-json-validator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-keygenerator-bouncycastle</module>
 		<module>kernel-crypto-bouncycastle</module>
@@ -116,6 +120,7 @@
 		<module>kernel-config-server</module>
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-packetserver-http</module>
+		
 	</modules>
 
 	<profiles>

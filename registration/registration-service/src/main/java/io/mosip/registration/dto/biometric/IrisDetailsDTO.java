@@ -1,5 +1,7 @@
 package io.mosip.registration.dto.biometric;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.mosip.registration.dto.BaseDTO;
 
 /**
@@ -9,84 +11,42 @@ import io.mosip.registration.dto.BaseDTO;
  * @since 1.0.0
  */
 public class IrisDetailsDTO extends BaseDTO {
+	
+	@JsonIgnore
 	private byte[] iris;
-	protected String irisName;
+	protected String irisImageName;
 	protected double qualityScore;
 	protected boolean isForceCaptured;
 	protected String irisType;
-
-	/**
-	 * @return the iris
-	 */
 	public byte[] getIris() {
 		return iris;
 	}
-
-	/**
-	 * @param iris
-	 *            the iris to set
-	 */
 	public void setIris(byte[] iris) {
 		this.iris = iris;
 	}
-
-	/**
-	 * @return the irisName
-	 */
-	public String getIrisName() {
-		return irisName;
+	public String getIrisImageName() {
+		return irisImageName;
 	}
-
-	/**
-	 * @param irisName
-	 *            the irisName to set
-	 */
-	public void setIrisName(String irisName) {
-		this.irisName = irisName;
+	public void setIrisImageName(String irisImageName) {
+		this.irisImageName = irisImageName;
 	}
-
-	/**
-	 * @return the qualityScore
-	 */
 	public double getQualityScore() {
 		return qualityScore;
 	}
-
-	/**
-	 * @param qualityScore
-	 *            the qualityScore to set
-	 */
 	public void setQualityScore(double qualityScore) {
 		this.qualityScore = qualityScore;
 	}
-
-	/**
-	 * @return the isForceCaptured
-	 */
 	public boolean isForceCaptured() {
 		return isForceCaptured;
 	}
-
-	/**
-	 * @param isForceCaptured
-	 *            the isForceCaptured to set
-	 */
 	public void setForceCaptured(boolean isForceCaptured) {
 		this.isForceCaptured = isForceCaptured;
 	}
-
-	/**
-	 * @return the irisType
-	 */
 	public String getIrisType() {
 		return irisType;
 	}
-
-	/**
-	 * @param irisType
-	 *            the irisType to set
-	 */
 	public void setIrisType(String irisType) {
 		this.irisType = irisType;
 	}
+	
 }

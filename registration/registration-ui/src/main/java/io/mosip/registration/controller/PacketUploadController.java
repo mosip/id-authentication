@@ -1,127 +1,128 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
-import io.mosip.registration.dto.PacketUploadDTO;
+import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
+import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationClientStatusCode;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.PacketUploadStatusDTO;
+import io.mosip.registration.dto.SyncRegistrationDTO;
+import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PacketUploadService;
-import io.mosip.registration.util.kernal.FTPUploadManager;
+import io.mosip.registration.service.PacketSynchService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 
 @Controller
 public class PacketUploadController extends BaseController {
 
 	@FXML
-	private TextField username;
+	private TableColumn<PacketUploadStatusDTO, String> fileNameColumn;
 
 	@FXML
-	private TextField password;
-
-	@FXML
-	private TextField filepath;
-
-	@FXML
-	private TableColumn<PacketUploadStatusDTO, String> fileName;
-
-	@FXML
-	private TableColumn<PacketUploadStatusDTO, String> status;
-
-	@FXML
-	private TableColumn<PacketUploadStatusDTO, String> time;
+	private TableColumn<PacketUploadStatusDTO, String> uploadStatusColumn;
 
 	@FXML
 	private TableView<PacketUploadStatusDTO> table;
 
 	@FXML
-	private ProgressBar progressBar;
+	private ProgressIndicator progressIndicator;
 
 	@Autowired
 	private PacketUploadService packetUploadService;
 
 	@Autowired
-	private FTPUploadManager ftpUploadManager;
+	private PacketSynchService packetSynchService;
 
-	@Value("${FTP_USER_ID}")
-	private String ftpId;
-
-	@Value("${FTP_PASSWORD}")
-	private String ftpPassword;
-
-	/** Object for Logger. */
-	private static MosipLogger LOGGER;
+	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketUploadController.class); 
 
 	/**
-	 * Initialize logger.
-	 *
-	 * @param mosipRollingFileAppender
-	 *            the mosip rolling file appender
+	 * This method is used to Sync as well as upload the packets.
+	 * 
 	 */
-	@Autowired
-	private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-		LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
+	public void syncAndUploadPacket() {
+		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_AND_PUSH_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Sync the packets and push it to the server");
+		table.getItems().clear();
+		table.refresh();
+		service.reset();
+		packetSync();
+		progressIndicator.progressProperty().bind(service.progressProperty());
+		service.start();
+		service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent t) {
+				String status = service.getValue();
+				if (!status.equals(RegistrationConstants.EMPTY)) {
+					String[] displayStatus = status.split("-");
+					if (RegistrationConstants.PACKET_SYNC_ERROR.equals(displayStatus[0])) {
+						generateAlert(displayStatus[0], AlertType.ERROR, displayStatus[1]);
+					} else {
+						generateAlert(displayStatus[0], AlertType.INFORMATION, displayStatus[1]);
+					}
+
+				}
+			}
+		});
+
 	}
 
 	/**
-	 * Validate the Username, Password and Packet Path
+	 * This method is used to synch the local packets with the server
 	 * 
-	 * @param event
 	 */
-	public void validate(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - VALIDATE_USER_INPUT_DETAILS - PACKET_UPLOAD_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
-				"Validating the user input details");
-		PacketUploadDTO packetdto = new PacketUploadDTO();
-
-		if (ftpId.equals(username.getText()) && ftpPassword.equals(password.getText())) {
-			if (filepath.getText() == null || filepath.getText().isEmpty()) {
-				generateAlert("INFO", Alert.AlertType.INFORMATION, "Please select the packet folder");
-				return;
-			}
-			packetdto.setUserid(username.getText());
-			packetdto.setPassword(password.getText());
-			packetdto.setFilepath(filepath.getText());
-			List<File> verifiedPackets = new ArrayList<>();
-			try {
-				verifiedPackets = handleUpload(packetdto);
-				if (!verifiedPackets.isEmpty()) {
-					generateAlert("INFO", AlertType.INFORMATION, "Packets Uploaded Successfully");
-					displayData(populateTableData(verifiedPackets));
+	private void packetSync() {
+		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Sync the packets to the server");
+		try {
+			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
+			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
+			if (!packetsToBeSynched.isEmpty()) {
+				for (Registration packetToBeSynch : packetsToBeSynched) {
+					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
+					syncDto.setLangCode("ENG");
+					syncDto.setStatusComment("Pre synch");
+					syncDto.setRegistrationId(packetToBeSynch.getId());
+					syncDto.setParentRegistrationId(packetToBeSynch.getId());
+					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
+					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
+					syncDtoList.add(syncDto);
 				}
-			} catch (RegBaseCheckedException regBaseCheckedException) {
-				generateAlert("Error", Alert.AlertType.ERROR, regBaseCheckedException.getErrorText());
 			}
-		} else {
-			generateAlert("INFO", Alert.AlertType.INFORMATION, "UserName and Password Mismatch");
+			Object response = packetSynchService.syncPacketsToServer(syncDtoList);
+			if (response != null) {
+				packetSynchService.updateSyncStatus(packetsToBeSynched);
+			}
+		} catch (RegBaseUncheckedException | RegBaseCheckedException | MosipJsonProcessingException
+				| URISyntaxException e) {
+			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, "Error while Synching packets to the server");
+			generateAlert("Error", AlertType.ERROR, e.getMessage());
 		}
 	}
 
@@ -131,70 +132,13 @@ public class PacketUploadController extends BaseController {
 	 * @param tableData
 	 */
 	private void displayData(List<PacketUploadStatusDTO> tableData) {
-		LOGGER.debug("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "To display all the ui data");
-		fileName.setCellValueFactory(new PropertyValueFactory<>("fileName"));
-		status.setCellValueFactory(new PropertyValueFactory<>("uploadStatus"));
-		time.setCellValueFactory(new PropertyValueFactory<>("uploadTime"));
+		LOGGER.debug("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"To display all the ui data");
+		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
+		uploadStatusColumn.setCellValueFactory(new PropertyValueFactory<>("uploadStatus"));
 
 		ObservableList<PacketUploadStatusDTO> list = FXCollections.observableArrayList(tableData);
 		table.setItems(list);
-	}
-
-	/**
-	 * To browse the packet source path in the UI
-	 * 
-	 * @param event
-	 */
-	public void browse(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - BROWSE_FOLDER - PACKET_UPLOAD_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
-				"TO select the packet location in the UI");
-		final DirectoryChooser directoryChooser = new DirectoryChooser();
-		Stage stage = new Stage();
-		File dir = directoryChooser.showDialog(stage);
-		if (dir != null) {
-			filepath.setText(dir.getAbsolutePath());
-		}
-	}
-
-	/**
-	 * All the Packet upload functionalities are done here
-	 * 
-	 * @param packetUploadDto
-	 * @return
-	 * @throws IDISBaseCheckedException
-	 */
-	private List<File> handleUpload(PacketUploadDTO packetUploadDto) throws RegBaseCheckedException {
-		LOGGER.debug("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
-				"Handling all the packet upload activities");
-		Map<String, File> packetMap = new HashMap<>();
-		List<String> packetNames = new ArrayList<>();
-		List<File> verifiedPackets = new ArrayList<>();
-		File packetPath = new File(packetUploadDto.getFilepath());
-		File[] localPacketList = packetPath.listFiles();
-		if (localPacketList.length > 0) {
-			for (File packet : localPacketList) {
-
-				if (packet.getName().endsWith(".zip")) {
-					String[] packetName = packet.getName().split("\\.");
-					packetNames.add(packetName[0]);
-					packetMap.put(packetName[0], packet);
-				}
-			}
-			verifiedPackets = packetUploadService.verifyPacket(packetNames, packetMap);
-			if (!verifiedPackets.isEmpty()) {
-				String[] filePath = packetUploadDto.getFilepath().split("\\\\");
-				ftpUploadManager.pushPacket(verifiedPackets, filePath[filePath.length - 1], packetUploadDto);
-				packetUploadService.updateStatus(verifiedPackets);
-			} else {
-				generateAlert("INFO", Alert.AlertType.INFORMATION, "No files needs to upload");
-			}
-		} else {
-			generateAlert("INFO", Alert.AlertType.INFORMATION, "No files Present in the selected folder");
-		}
-		return verifiedPackets;
 	}
 
 	/**
@@ -203,22 +147,125 @@ public class PacketUploadController extends BaseController {
 	 * @param verifiedPackets
 	 * @return
 	 */
-	private List<PacketUploadStatusDTO> populateTableData(List<File> verifiedPackets) {
-		LOGGER.debug("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER",
-				getPropertyValue(APPLICATION_NAME), getPropertyValue(APPLICATION_ID),
-				"Populating the table data with the Updated details");
+	private List<PacketUploadStatusDTO> populateTableData(List<Registration> packetStatus) {
+		LOGGER.debug("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Populating the table data with the Updated details");
 		List<PacketUploadStatusDTO> listUploadStatus = new ArrayList<>();
 		PacketUploadStatusDTO packetUploadStatusDTO;
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 		String date = simpleDateFormat.format(new Date());
-		for (File f : verifiedPackets) {
+		for (Registration registrationPacket : packetStatus) {
 			packetUploadStatusDTO = new PacketUploadStatusDTO();
-			packetUploadStatusDTO.setUploadStatus("Uploaded");
+			if (RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode()
+					.equals(registrationPacket.getClientStatusCode())) {
+				packetUploadStatusDTO.setUploadStatus("Uploaded");
+			} else {
+				packetUploadStatusDTO.setUploadStatus("Error");
+			}
 			packetUploadStatusDTO.setUploadTime(date);
-			packetUploadStatusDTO.setFileName(f.getName());
+			packetUploadStatusDTO.setFileName(registrationPacket.getId());
 			listUploadStatus.add(packetUploadStatusDTO);
 		}
 		return listUploadStatus;
 	}
 
+	/**
+	 * This anonymous service class will do the packet upload as well as the upload
+	 * progress.
+	 * 
+	 */
+	Service<String> service = new Service<String>() {
+		@Override
+		protected Task<String> createTask() {
+			return /**
+					 * @author SaravanaKumar
+					 *
+					 */
+			new Task<String>() {
+				/*
+				 * (non-Javadoc)
+				 * 
+				 * @see javafx.concurrent.Task#call()
+				 */
+				@Override
+				protected String call() {
+
+					LOGGER.debug("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+							APPLICATION_ID, "Handling all the packet upload activities");
+					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
+					List<Registration> packetUploadList = new ArrayList<>();
+					String status = "";
+					if (!synchedPackets.isEmpty()) {
+						progressIndicator.setVisible(true);
+						for (int i = 0; i < synchedPackets.size(); i++) {
+							Registration synchedPacket = synchedPackets.get(i);
+							synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
+							String ackFileName = synchedPacket.getAckFilename();
+							int lastIndex = ackFileName.indexOf(RegistrationConstants.ACKNOWLEDGEMENT_FILE);
+							String packetPath = ackFileName.substring(0, lastIndex);
+							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
+							try {
+								if (("R".equals(synchedPacket.getServerStatusCode()) && synchedPacket
+										.getServerStatusTimestamp().compareTo(synchedPacket.getUploadTimestamp()) == 1)
+										|| "S".equals(synchedPacket.getClientStatusCode())
+										|| "E".equals(synchedPacket.getFileUploadStatus())) {
+									Object response = packetUploadService.pushPacket(packet);
+									String responseCode = response.toString();
+									if (responseCode.equals("PACKET_UPLOADED_TO_LANDING_ZONE")) {
+										synchedPacket.setClientStatusCode(
+												RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+										synchedPacket.setFileUploadStatus(
+												RegistrationClientStatusCode.UPLOAD_SUCCESS_STATUS.getCode());
+
+									} else {
+										synchedPacket.setFileUploadStatus(
+												RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+									}
+								}
+
+							} catch (URISyntaxException e) {
+
+								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
+										APPLICATION_NAME, APPLICATION_ID, "Error in uri syntax");
+								status = "Error-Unable to push packets to the server.";
+							} catch (RegBaseCheckedException e) {
+								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
+										APPLICATION_NAME, APPLICATION_ID, "Error while pushing packets to the server");
+								synchedPacket.setFileUploadStatus(
+										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
+								packetUploadList.add(synchedPacket);
+							} catch (RuntimeException e) {
+								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
+										APPLICATION_NAME, APPLICATION_ID,
+										"Run time error while connecting to the server");
+								if (i == 0) {
+									status = "Error-Unable to push packets to the server.";
+								} else if (i > 0) {
+									status = "Error-Unable to push some packets to the server.";
+								}
+								for (int count = i; count < synchedPackets.size(); count++) {
+									synchedPacket = synchedPackets.get(count);
+									synchedPacket.setFileUploadStatus(
+											RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
+									synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
+									packetUploadList.add(synchedPacket);
+								}
+								break;
+							}
+							packetUploadList.add(synchedPacket);
+							this.updateProgress(i, synchedPackets.size());
+						}
+						packetUploadService.updateStatus(packetUploadList);
+						progressIndicator.setVisible(false);
+						displayData(populateTableData(packetUploadList));
+					} else {
+						status = "Info-No packets to upload.";
+					}
+
+					return status;
+				}
+			};
+		}
+	};
 }

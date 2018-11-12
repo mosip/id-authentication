@@ -1,6 +1,6 @@
 package io.mosip.registration.dto;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 /**
  * This class is to capture the time duration for each event
@@ -11,11 +11,11 @@ import java.time.OffsetDateTime;
  */
 public class AuditDTO extends BaseDTO {
 	protected String uuid;
-	protected OffsetDateTime createdAt;
+	protected LocalDateTime createdAt;
 	protected String eventId;
 	protected String eventName;
 	protected String eventType;
-	protected OffsetDateTime actionTimeStamp;
+	protected LocalDateTime actionTimeStamp;
 	protected String hostName;
 	protected String hostIp;
 	protected String applicationId;
@@ -47,7 +47,7 @@ public class AuditDTO extends BaseDTO {
 	/**
 	 * @return the createdAt
 	 */
-	public OffsetDateTime getCreatedAt() {
+	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
@@ -55,7 +55,7 @@ public class AuditDTO extends BaseDTO {
 	 * @param createdAt
 	 *            the createdAt to set
 	 */
-	public void setCreatedAt(OffsetDateTime createdAt) {
+	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
 
@@ -107,7 +107,7 @@ public class AuditDTO extends BaseDTO {
 	/**
 	 * @return the actionTimeStamp
 	 */
-	public OffsetDateTime getActionTimeStamp() {
+	public LocalDateTime getActionTimeStamp() {
 		return actionTimeStamp;
 	}
 
@@ -115,7 +115,7 @@ public class AuditDTO extends BaseDTO {
 	 * @param actionTimeStamp
 	 *            the actionTimeStamp to set
 	 */
-	public void setActionTimeStamp(OffsetDateTime actionTimeStamp) {
+	public void setActionTimeStamp(LocalDateTime actionTimeStamp) {
 		this.actionTimeStamp = actionTimeStamp;
 	}
 

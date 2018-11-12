@@ -17,7 +17,7 @@ public interface RegistrationAppLoginDAO {
 	 * 
 	 * @return Map of Login modes along with the sequence
 	 */
-	public Map<String,Object> getModesOfLogin();
+	Map<String,Object> getModesOfLogin();
 	
 }
 

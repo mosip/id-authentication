@@ -10,6 +10,7 @@ import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
@@ -28,6 +29,7 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.Connec
  * @author Pranav Kumar
  * @since 0.0.1
  */
+@Service
 public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream, Boolean> {
 
 	private AmazonS3 conn;
@@ -41,9 +43,9 @@ public class FilesystemCephAdapterImpl implements FileSystemAdapter<InputStream,
 	/**
 	 * Constructor to get Connection to CEPH instance
 	 */
-	public FilesystemCephAdapterImpl() {
+	public FilesystemCephAdapterImpl(ConnectionUtil connectionUtil) {
 		if (conn == null) {
-			this.conn = ConnectionUtil.getConnection();
+			this.conn = connectionUtil.getConnection();
 		}
 	}
 

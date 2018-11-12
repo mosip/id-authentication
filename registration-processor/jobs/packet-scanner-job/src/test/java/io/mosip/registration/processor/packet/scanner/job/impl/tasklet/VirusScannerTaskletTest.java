@@ -9,6 +9,7 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +31,17 @@ import org.springframework.core.env.Environment;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.scanner.job.exception.DFSNotAccessibleException;
 import io.mosip.registration.processor.packet.scanner.job.exception.RetryFolderNotAccessibleException;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -53,10 +59,10 @@ public class VirusScannerTaskletTest {
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
 
 	@Mock
-	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> adapter;
+	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	@Mock
 	private VirusScannerService<Boolean, String> virusScanner;
@@ -67,21 +73,34 @@ public class VirusScannerTaskletTest {
 	@MockBean
 	private ChunkContext chunkContext;
 
+	@Mock
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+
 	@Before
 	public void setup() throws Exception {
 
-		RegistrationStatusDto entry = new RegistrationStatusDto();
+		InternalRegistrationStatusDto entry = new InternalRegistrationStatusDto();
 		entry.setRegistrationId("1000.zip");
 		entry.setRetryCount(0);
 		entry.setStatusComment("Landing");
 
-		List<RegistrationStatusDto> sample = new ArrayList<RegistrationStatusDto>();
+		List<InternalRegistrationStatusDto> sample = new ArrayList<InternalRegistrationStatusDto>();
 		sample.add(entry);
 
 		Mockito.when(
 				registrationStatusService.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_VIRUS_SCAN.toString()))
 				.thenReturn(sample);
 		Mockito.when(env.getProperty(DirectoryPathDto.VIRUS_SCAN.toString())).thenReturn("/resources/Disk/sde");
+
+		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		AuditRequestDto auditRequest1 = new AuditRequestDto();
+
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+		f.setAccessible(true);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
+		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+		f1.setAccessible(true);
+		f1.set(auditRequestBuilder, auditRequest1);
 
 	}
 
@@ -140,7 +159,8 @@ public class VirusScannerTaskletTest {
 		root.addAppender(mockAppender);
 
 		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
-		Mockito.doThrow(DFSNotAccessibleException.class).when(adapter).storePacket(anyString(), any(File.class));
+		Mockito.doThrow(DFSNotAccessibleException.class).when(filesystemCephAdapterImpl).storePacket(anyString(),
+				any(File.class));
 
 		virusScannerTasklet.execute(stepContribution, chunkContext);
 

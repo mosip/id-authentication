@@ -13,103 +13,42 @@ import io.mosip.registration.dto.BaseDTO;
  *
  */
 public class BiometricInfoDTO extends BaseDTO {
-	// Fingerprint with Exceptions and Number of retries
+	// Fingerprint with Exceptions
 	private List<FingerprintDetailsDTO> fingerprintDetailsDTO;
-	private int numOfFingerPrintRetry;
-	private List<ExceptionFingerprintDetailsDTO> exceptionFingerprintDetailsDTO;
+	private List<BiometricExceptionDTO> fingerPrintBiometricExceptionDTO;
 
-	// Iris with exceptions and number of retries
+	// Iris with Exceptions
 	private List<IrisDetailsDTO> irisDetailsDTO;
 	private int numOfIrisRetry;
-	private List<ExceptionIrisDetailsDTO> exceptionIrisDetailsDTO;
-
-	/**
-	 * @return the fingerprintDetailsDTO
-	 */
+	private List<BiometricExceptionDTO> irisBiometricExceptionDTO;
 	public List<FingerprintDetailsDTO> getFingerprintDetailsDTO() {
 		return fingerprintDetailsDTO;
 	}
-
-	/**
-	 * @param fingerprintDetailsDTO
-	 *            the fingerprintDetailsDTO to set
-	 */
 	public void setFingerprintDetailsDTO(List<FingerprintDetailsDTO> fingerprintDetailsDTO) {
 		this.fingerprintDetailsDTO = fingerprintDetailsDTO;
 	}
-
-	/**
-	 * @return the numOfFingerPrintRetry
-	 */
-	public int getNumOfFingerPrintRetry() {
-		return numOfFingerPrintRetry;
+	public List<BiometricExceptionDTO> getFingerPrintBiometricExceptionDTO() {
+		return fingerPrintBiometricExceptionDTO;
 	}
-
-	/**
-	 * @param numOfFingerPrintRetry
-	 *            the numOfFingerPrintRetry to set
-	 */
-	public void setNumOfFingerPrintRetry(int numOfFingerPrintRetry) {
-		this.numOfFingerPrintRetry = numOfFingerPrintRetry;
+	public void setFingerPrintBiometricExceptionDTO(List<BiometricExceptionDTO> fingerPrintBiometricExceptionDTO) {
+		this.fingerPrintBiometricExceptionDTO = fingerPrintBiometricExceptionDTO;
 	}
-
-	/**
-	 * @return the exceptionFingerprintDetailsDTO
-	 */
-	public List<ExceptionFingerprintDetailsDTO> getExceptionFingerprintDetailsDTO() {
-		return exceptionFingerprintDetailsDTO;
-	}
-
-	/**
-	 * @param exceptionFingerprintDetailsDTO
-	 *            the exceptionFingerprintDetailsDTO to set
-	 */
-	public void setExceptionFingerprintDetailsDTO(List<ExceptionFingerprintDetailsDTO> exceptionFingerprintDetailsDTO) {
-		this.exceptionFingerprintDetailsDTO = exceptionFingerprintDetailsDTO;
-	}
-
-	/**
-	 * @return the irisDetailsDTO
-	 */
 	public List<IrisDetailsDTO> getIrisDetailsDTO() {
 		return irisDetailsDTO;
 	}
-
-	/**
-	 * @param irisDetailsDTO
-	 *            the irisDetailsDTO to set
-	 */
 	public void setIrisDetailsDTO(List<IrisDetailsDTO> irisDetailsDTO) {
 		this.irisDetailsDTO = irisDetailsDTO;
 	}
-
-	/**
-	 * @return the numOfIrisRetry
-	 */
 	public int getNumOfIrisRetry() {
 		return numOfIrisRetry;
 	}
-
-	/**
-	 * @param numOfIrisRetry
-	 *            the numOfIrisRetry to set
-	 */
 	public void setNumOfIrisRetry(int numOfIrisRetry) {
 		this.numOfIrisRetry = numOfIrisRetry;
 	}
-
-	/**
-	 * @return the exceptionIrisDetailsDTO
-	 */
-	public List<ExceptionIrisDetailsDTO> getExceptionIrisDetailsDTO() {
-		return exceptionIrisDetailsDTO;
+	public List<BiometricExceptionDTO> getIrisBiometricExceptionDTO() {
+		return irisBiometricExceptionDTO;
 	}
-
-	/**
-	 * @param exceptionIrisDetailsDTO
-	 *            the exceptionIrisDetailsDTO to set
-	 */
-	public void setExceptionIrisDetailsDTO(List<ExceptionIrisDetailsDTO> exceptionIrisDetailsDTO) {
-		this.exceptionIrisDetailsDTO = exceptionIrisDetailsDTO;
-	}
+	public void setIrisBiometricExceptionDTO(List<BiometricExceptionDTO> irisBiometricExceptionDTO) {
+		this.irisBiometricExceptionDTO = irisBiometricExceptionDTO;
+	}	
 }

@@ -15,6 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.test.context.ContextConfiguration;
+
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
@@ -23,7 +27,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.RegistrationStatusEntity;
@@ -37,16 +43,16 @@ import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;;
 
 @RunWith(MockitoJUnitRunner.class)
 @DataJpaTest
-@TestPropertySource({ "classpath:status-application.properties" })
+@RefreshScope
 @ContextConfiguration
 public class RegistrationStatusServiceTest {
 
-	private RegistrationStatusDto registrationStatusDto;
+	private InternalRegistrationStatusDto registrationStatusDto;
 	private RegistrationStatusEntity registrationStatusEntity;
 	private List<RegistrationStatusEntity> entities;
 	private static final int threshholdTime = 48;
 	@InjectMocks
-	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService = new RegistrationStatusServiceImpl() {
+	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService = new RegistrationStatusServiceImpl() {
 		@Override
 		public int getThreshholdTime() {
 			return threshholdTime;
@@ -65,10 +71,13 @@ public class RegistrationStatusServiceTest {
 	@Mock
 	private AuditHandler<AuditRequestDto> auditHandler;
 
+	@Mock
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		registrationStatusDto = new RegistrationStatusDto();
+		registrationStatusDto = new InternalRegistrationStatusDto();
 		registrationStatusDto.setIsActive(true);
 		registrationStatusDto.setStatusCode("PACKET_UPLOADED_TO_LANDING_ZONE");
 		registrationStatusDto.setCreateDateTime(LocalDateTime.now());
@@ -91,13 +100,13 @@ public class RegistrationStatusServiceTest {
 		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
 				.thenReturn(transactionEntity);
 
-		Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
+		//Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-		Field f = RegistrationStatusServiceImpl.class.getDeclaredField("auditRequestBuilder");
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f.setAccessible(true);
-		f.set(registrationStatusService, auditRequestBuilder);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
 		f1.set(auditRequestBuilder, auditRequest1);
@@ -105,9 +114,9 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void getRegistrationStatusSuccessTest() {
+	public void testGetRegistrationStatusSuccess() {
 
-		RegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
+		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
 		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getStatusCode());
 
 	}
@@ -123,7 +132,7 @@ public class RegistrationStatusServiceTest {
 
 	@Test
 	public void findbyfilesByThresholdSuccessTest() {
-		List<RegistrationStatusDto> list = registrationStatusService
+		List<InternalRegistrationStatusDto> list = registrationStatusService
 				.findbyfilesByThreshold("PACKET_UPLOADED_TO_LANDING_ZONE");
 		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
 	}
@@ -139,10 +148,10 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void addRegistrationStatusTest() {
+	public void testAddRegistrationStatusSuccess() {
 
 		registrationStatusService.addRegistrationStatus(registrationStatusDto);
-		RegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
+		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
 		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getStatusCode());
 	}
 
@@ -156,10 +165,10 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void updateRegistrationStatusSuccessTest() {
+	public void testUpdateRegistrationStatusSuccess() {
 		registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 
-		RegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
+		InternalRegistrationStatusDto dto = registrationStatusService.getRegistrationStatus("1001");
 		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", dto.getStatusCode());
 	}
 
@@ -174,9 +183,10 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void getByStatus() {
+	public void testGetByStatusSuccess() {
 		Mockito.when(registrationStatusDao.getEnrolmentStatusByStatusCode(ArgumentMatchers.any())).thenReturn(entities);
-		List<RegistrationStatusDto> list = registrationStatusService.getByStatus("PACKET_UPLOADED_TO_LANDING_ZONE");
+		List<InternalRegistrationStatusDto> list = registrationStatusService
+				.getByStatus("PACKET_UPLOADED_TO_LANDING_ZONE");
 		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
 	}
 
@@ -190,10 +200,10 @@ public class RegistrationStatusServiceTest {
 	}
 
 	@Test
-	public void getByIds() {
+	public void testGetByIdsSuccess() {
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenReturn(entities);
 		List<RegistrationStatusDto> list = registrationStatusService.getByIds("1001,1000");
-		assertEquals("PACKET_UPLOADED_TO_LANDING_ZONE", list.get(0).getStatusCode());
+		assertEquals("PROCESSING", list.get(0).getStatusCode());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)

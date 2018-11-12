@@ -4,7 +4,6 @@
 package io.mosip.registration.processor.status.service.impl;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,11 @@ import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
-import io.mosip.registration.processor.status.code.AuditLogTempConstant;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.AuditLogConstant;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncStatusDto;
@@ -30,6 +33,7 @@ import io.mosip.registration.processor.status.utilities.RegistrationUtility;
  *
  * @author M1048399
  * @author M1048219
+ * @author M1047487
  */
 @Component
 public class SyncRegistrationServiceImpl implements SyncRegistrationService<SyncRegistrationDto> {
@@ -40,17 +44,22 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/** The Constant CREATED_BY. */
 	private static final String CREATED_BY = "MOSIP";
 
+	/** The event id. */
+	private String eventId = "";
+
+	/** The event name. */
+	private String eventName = "";
+
+	/** The event type. */
+	private String eventType = "";
+
 	/** The sync registration dao. */
 	@Autowired
 	private SyncRegistrationDao syncRegistrationDao;
 
-	/** The audit request builder. */
+	/** The core audit request builder. */
 	@Autowired
-	private AuditRequestBuilder auditRequestBuilder;
-
-	/** The audit handler. */
-	@Autowired
-	private AuditHandler<AuditRequestDto> auditHandler;
+	CoreAuditRequestBuilder coreAuditRequestBuilder;
 
 	/**
 	 * Instantiates a new sync registration service impl.
@@ -83,11 +92,13 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 					syncRegistration.setId(existingSyncRegistration.getId());
 					syncRegistration.setCreateDateTime(existingSyncRegistration.getCreateDateTime());
 					syncRegistration = syncRegistrationDao.update(syncRegistration);
+					eventId = EventId.RPR_402.toString();
 				} else {
 					// first time sync registration
 					syncRegistration = convertDtoToEntity(registrationDto);
 					syncRegistration.setId(RegistrationUtility.generateId());
 					syncRegistration = syncRegistrationDao.save(syncRegistration);
+					eventId = EventId.RPR_407.toString();
 				}
 				list.add(convertEntityToDto(syncRegistration));
 			}
@@ -97,11 +108,21 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			throw new TablenotAccessibleException(TABLE_NOT_ACCESSIBLE, e);
 		} finally {
 
-			String description = isTransactionSuccessful ? "description--sync Success" : "description--sync Failure";
-			createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-					AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-					AuditLogTempConstant.EVENT_ID.toString(), AuditLogTempConstant.EVENT_TYPE.toString(),
-					AuditLogTempConstant.EVENT_TYPE.toString());
+			String  description = "";
+			if (isTransactionSuccessful) {
+				eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+						: EventName.ADD.toString();
+				eventType = EventType.BUSINESS.toString();
+				description = "Registartion Id's are successfully synched in Sync Registration table";
+			} else {
+				eventId = EventId.RPR_405.toString();
+				eventName = EventName.EXCEPTION.toString();
+				eventType = EventType.SYSTEM.toString();
+				description = "Registartion Id's syn is unsuccessful";
+			}
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.MULTIPLE_ID.toString());
+
 		}
 
 	}
@@ -175,38 +196,5 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 		}
 
 		return syncRegistrationEntity;
-	}
-
-	/**
-	 * Creates the audit request builder.
-	 *
-	 * @param applicationId
-	 *            the application id
-	 * @param applicationName
-	 *            the application name
-	 * @param description
-	 *            the description
-	 * @param eventId
-	 *            the event id
-	 * @param eventName
-	 *            the event name
-	 * @param eventType
-	 *            the event type
-	 */
-	public void createAuditRequestBuilder(String applicationId, String applicationName, String description,
-			String eventId, String eventName, String eventType) {
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId(applicationId)
-				.setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.CREATED_BY.toString())
-				.setDescription(description).setEventId(eventId).setEventName(eventName).setEventType(eventType)
-				.setHostIp(AuditLogTempConstant.HOST_IP.toString())
-				.setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(AuditLogTempConstant.ID.toString())
-				.setIdType(AuditLogTempConstant.ID_TYPE.toString())
-				.setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-				.setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-				.setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-				.setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
-
-		AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-		auditHandler.writeAudit(auditRequestDto);
 	}
 }
