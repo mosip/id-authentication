@@ -29,6 +29,9 @@ import io.mosip.kernel.masterdata.exception.GenderTypeNotFoundException;
 import io.mosip.kernel.masterdata.exception.HolidayFetchException;
 import io.mosip.kernel.masterdata.exception.HolidayMappingException;
 import io.mosip.kernel.masterdata.exception.InvalidDateTimeFormatException;
+import io.mosip.kernel.masterdata.exception.LanguageFetchException;
+import io.mosip.kernel.masterdata.exception.LanguageMappingException;
+import io.mosip.kernel.masterdata.exception.LanguageNotFoundException;
 import io.mosip.kernel.masterdata.exception.LocationDatabaseException;
 import io.mosip.kernel.masterdata.exception.LocationRecordsNotFoundException;
 import io.mosip.kernel.masterdata.exception.MachineDetailFetchException;
@@ -354,6 +357,51 @@ public class MasterDataControllerAdvice {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	/**
+	 * This method handle when exception occur while fetching Language.
+	 * 
+	 * @param e
+	 *            is of type LanguageFetchException
+	 * @return ResponseEntity
+	 */
+	@ExceptionHandler(LanguageFetchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> handleLanguageFetchException(
+			final LanguageFetchException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	/**
+	 * This method handle when exception due to not record found.
+	 * 
+	 * @param e
+	 *            is of type LanguageNotFoundException
+	 * @return ResponseEntity
+	 */
+	@ExceptionHandler(LanguageNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> handleLanguageNotFoundException(
+			final LanguageNotFoundException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NO_CONTENT);
+	}
+
+	/**
+	 * This method handle when exception while mapping Language.
+	 * 
+	 * @param e
+	 *            is of type LanguageMappingException
+	 * @return ResponseEntity
+	 */
+	@ExceptionHandler(LanguageMappingException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> handleLanguageMappingException(
+			final LanguageMappingException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
 }

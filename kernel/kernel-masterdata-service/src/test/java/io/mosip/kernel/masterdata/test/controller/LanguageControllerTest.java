@@ -18,6 +18,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
+import io.mosip.kernel.masterdata.exception.LanguageFetchException;
+import io.mosip.kernel.masterdata.exception.LanguageMappingException;
+import io.mosip.kernel.masterdata.exception.LanguageNotFoundException;
 import io.mosip.kernel.masterdata.service.LanguageService;
 
 @RunWith(SpringRunner.class)
@@ -47,6 +50,33 @@ public class LanguageControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/languages"))
 				.andExpect(MockMvcResultMatchers.content().json(RESPONSE_BODY_ALL))
 				.andExpect(MockMvcResultMatchers.status().isOk());
+
+	}
+
+	@Test
+	public void testGetAllLanguagesForLanguageNotFoundException() throws Exception {
+		Mockito.when(languageService.getAllLaguages())
+				.thenThrow(new LanguageNotFoundException("KER-MAS-0987", "No Language found"));
+		mockMvc.perform(MockMvcRequestBuilders.get("/languages"))
+				.andExpect(MockMvcResultMatchers.status().isNoContent());
+
+	}
+
+	@Test
+	public void testGetAllLanguagesForLanguageFetchException() throws Exception {
+		Mockito.when(languageService.getAllLaguages())
+				.thenThrow(new LanguageFetchException("KER-MAS-0988", "Error occured while fetching language"));
+		mockMvc.perform(MockMvcRequestBuilders.get("/languages"))
+				.andExpect(MockMvcResultMatchers.status().isServiceUnavailable());
+	}
+
+	@Test
+	public void testGetAllLanguagesForLanguageMatchingException() throws Exception {
+		Mockito.when(languageService.getAllLaguages())
+				.thenThrow(new LanguageMappingException("KER-MAS-0999", "Error occured while mapping language"));
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/languages"))
+				.andExpect(MockMvcResultMatchers.status().isServiceUnavailable());
 
 	}
 
