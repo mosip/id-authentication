@@ -13,5 +13,5 @@ public class KycResponseDTO {
 	
 	private AuthResponseDTO auth;
 	
-	private KycInfoDTO kyc;
+	private KycInfo kyc;
 }

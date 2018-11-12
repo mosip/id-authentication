@@ -18,6 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.dto.indauth.KycInfo;
+import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
@@ -54,7 +55,7 @@ public class KycServiceImplTest {
 	@Test
 	public void validUIN() {
 		try {
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", "limited KYC", true, false);
+			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121",KycType.FULL, true, false);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			// TODO Auto-generated catch block
@@ -65,7 +66,7 @@ public class KycServiceImplTest {
 	@Test
 	public void validUIN2() {
 		try {
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323", "full KYC", true, false);
+			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323",KycType.FULL, true, false);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			// TODO Auto-generated catch block
