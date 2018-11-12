@@ -1,8 +1,7 @@
 package io.mosip.authentication.core.dto.indauth;
 
-import java.util.List;
-
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * {@code AuthResponseDTO} is used for collect response from
@@ -10,15 +9,15 @@ import lombok.Data;
  * operation.In result send
  * {@link AuthResponseDTO#status},{@link AuthResponseDTO#errorCode},
  * {@link AuthResponseDTO#txnID},
- * {@link AuthResponseDTO#responseTime},{@link AuthResponseDTO#info}
+ * {@link AuthResponseDTO#responseTime},{@link AuthResponseDTO#inf	o}
  * 
  * 
  * 
  * @author Rakesh Roshan
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class AuthResponseDTO extends BaseAuthResponseDTO {
-
 
 	private AuthResponseInfo info;
 

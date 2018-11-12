@@ -26,6 +26,12 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.service.config.IDAMappingConfig;
 
+
+/**
+ * DemoMatchTypeTest
+ *
+ * @author Rakesh Roshan
+ */
 public class DemoMatchTypeTest {
 
 	SimpleDateFormat sdf = null;
@@ -213,6 +219,17 @@ public class DemoMatchTypeTest {
 	}
 
 	@Test
+	public void testPrimaryNameWithSecondaryLanguage() {
+		LanguageType languageType = DemoMatchType.NAME_PRI.getLanguageType();
+		assertEquals(languageType.name(), LanguageType.PRIMARY_LANG.name());
+	}
+	@Test
+	public void testPrimaryNameWithUnmatchedLanguage() {
+		LanguageType languageType = DemoMatchType.NAME_PRI.getLanguageType();
+		assertNotEquals(languageType.name(), LanguageType.SECONDARY_LANG.name());
+	}
+	
+	@Test
 	public void TestpriName() {
 ////		DemoEntity demoEntity = new DemoEntity();
 ////		demoEntity.setFirstName("dinesh");
@@ -242,6 +259,30 @@ public class DemoMatchTypeTest {
 //
 //	}
 
+	@Test
+	public void testSecondaryNameisExact() {
+		Optional<MatchingStrategy> allowedMatchingStrategy = DemoMatchType.NAME_SEC.
+				getAllowedMatchingStrategy(NameMatchingStrategy.EXACT.getType());
+		assertEquals(allowedMatchingStrategy.get(), NameMatchingStrategy.EXACT);
+	}
+	
+	@Test
+	public void testSecondaryNameForUnmatchedMatchingStrategy() {
+		Optional<MatchingStrategy> allowedMatchingStrategy = DemoMatchType.NAME_SEC.
+				getAllowedMatchingStrategy(NameMatchingStrategy.EXACT.getType());
+		assertNotEquals(allowedMatchingStrategy.get(), NameMatchingStrategy.PARTIAL);
+	}
+	@Test
+	public void testSecondaryNameWithSecondaryLanguage() {
+		LanguageType languageType = DemoMatchType.NAME_SEC.getLanguageType();
+		assertEquals(languageType.name(), LanguageType.SECONDARY_LANG.name());
+	}
+	@Test
+	public void testSecondaryNameWithUnmatchedLanguage() {
+		LanguageType languageType = DemoMatchType.NAME_SEC.getLanguageType();
+		assertNotEquals(languageType.name(), LanguageType.PRIMARY_LANG.name());
+	}
+	
 	@Test
 	public void TestGenderMatchStrategyisNotNull() {
 		assertNotNull(GenderMatchingStrategy.EXACT);
