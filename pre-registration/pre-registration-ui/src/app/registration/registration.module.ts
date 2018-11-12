@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import { RegistrationComponent } from './registration.component';
+// import { RegistrationComponent } from './dashboard/dashboard.component';
 import { DemographicComponent } from './demographic/demographic.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { TimeSelectionComponent } from './time-selection/time-selection.component';
@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
+import { DashBoardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   imports: [
@@ -28,12 +29,12 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   entryComponents: [DialougComponent],
   declarations: [
-    RegistrationComponent,
     DemographicComponent,
     FileUploadComponent,
     TimeSelectionComponent,
     CenterSelectionComponent,
-    DialougComponent
+    DialougComponent,
+    DashBoardComponent
   ]
 })
 export class RegistrationModule { }

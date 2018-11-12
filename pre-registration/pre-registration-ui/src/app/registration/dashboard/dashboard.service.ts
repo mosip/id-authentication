@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 
-import { Applicant } from './registration.modal';
+import { Applicant } from './dashboard.modal';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class RegistrationService {
       'https://pre-reg-df354.firebaseio.com/applications.json', {
       observe: 'body',
       responseType: 'json'
-    })
+    });
   }
 
 }

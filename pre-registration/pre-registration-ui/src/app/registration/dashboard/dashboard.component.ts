@@ -1,20 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 
 import { MatTableDataSource, } from '@angular/material/table';
-import { SelectionModel } from '@angular/cdk/collections'
-import { Applicant } from '../registration/registration.modal';
+import { SelectionModel } from '@angular/cdk/collections';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { DialougComponent } from './dialoug/dialoug.component';
+import { DialougComponent } from '../dialoug/dialoug.component';
 import { MatDialog } from '@angular/material';
-import { RegistrationService } from './registration.service';
+import { RegistrationService } from './dashboard.service';
+import { Applicant } from './dashboard.modal';
 
 
 @Component({
   selector: 'app-registration',
-  templateUrl: './registration.component.html',
-  styleUrls: ['./registration.component.css']
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css']
 })
-export class RegistrationComponent implements OnInit {
+export class DashBoardComponent implements OnInit {
 
 
   users: Applicant[] = [];
@@ -24,9 +24,13 @@ export class RegistrationComponent implements OnInit {
   //   { applicationID: '10', name: 'Neon', appointmentDateTime: '20.1797', status: 'Ne' },
   // ];
 
+  displayedColumns: string[] = ['select', 'appId', 'name', 'dateTime', 'status', 'operation'];
+  dataSource = new MatTableDataSource<Applicant>(this.users);
+  selection = new SelectionModel<Applicant>(true, []);
 
 
-  isNewApplication: boolean = false;
+
+  isNewApplication = false;
   loginId = '';
   isFetched = false;
 
@@ -49,18 +53,16 @@ export class RegistrationComponent implements OnInit {
     this.regService.getUsers().
       subscribe(
         (applicants: Applicant[]) => {
-          for (let user of applicants) {
+          for (const user of applicants) {
             this.users.push(new Applicant(user['pre-registration-id'],
               user['fullname'], user['appointment_dtimesz'], user['status_code']));
           }
           this.isFetched = true;
         }
-      );;
+      );
   }
 
-  displayedColumns: string[] = ['select', 'appId', 'name', 'dateTime', 'status', 'operation'];
-  dataSource = new MatTableDataSource<Applicant>(this.users);
-  selection = new SelectionModel<Applicant>(true, []);
+
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -88,7 +90,7 @@ export class RegistrationComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(numberOfApplicant => {
       if (numberOfApplicant != null) {
-        this.router.navigate(['demographic', numberOfApplicant], { relativeTo: this.route });
+        this.router.navigate(['../demographic', numberOfApplicant], { relativeTo: this.route });
         this.isNewApplication = true;
       }
     });
@@ -108,6 +110,6 @@ export class RegistrationComponent implements OnInit {
   }
 
   onHome() {
-    this.router.navigate([''])
+    this.router.navigate(['']);
   }
 }

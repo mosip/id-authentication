@@ -19,7 +19,7 @@ import { AuthModule } from './auth/auth.module';
     AppRoutingModule,
     RegistrationModule,
     CoreModule,
-    AuthModule,   
+    AuthModule
   ],
   providers: [AuthService],
   bootstrap: [AppComponent]
