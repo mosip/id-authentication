@@ -1,20 +1,22 @@
 -- object: uin.uin_detail | type: TABLE --
 -- DROP TABLE IF EXISTS uin.uin_detail CASCADE;
 CREATE TABLE uin.uin_detail(
+	uin_ref_id character varying(28) NOT NULL,
 	uin_data json NOT NULL,
-	is_active uin._active NOT NULL,
-	cr_by uin._by NOT NULL,
-	cr_dtimes uin._dtimes NOT NULL,
-	upd_by uin._by,
-	upd_dtimes uin._dtimes,
-	is_deleted uin._active,
-	del_dtimes uin._dtimes,
-	uin_ref_id uin._uinvid
+	is_active boolean NOT NULL,
+	cr_by character varying(32) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(32),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT uind_pk PRIMARY KEY (uin_ref_id)
+
 );
 -- ddl-end --
-COMMENT ON TABLE uin.uin_detail IS 'Table to store UIN object';
+COMMENT ON TABLE uin.uin_detail IS 'Table to store details of the UINs. This table will contain the data of an individual in json structure.';
 -- ddl-end --
-COMMENT ON COLUMN uin.uin_detail.uin_data IS 'This filed contains the json packet of the individual''s information';
+COMMENT ON COLUMN uin.uin_detail.uin_data IS 'Data about the individual in json structure. This field contains data like demographic, biometric, iris, etc. The data is stored in multiple languages inside the json file.';
 -- ddl-end --
 COMMENT ON COLUMN uin.uin_detail.is_active IS 'Record active status';
 -- ddl-end --
@@ -32,4 +34,17 @@ COMMENT ON COLUMN uin.uin_detail.del_dtimes IS 'Record deleted datetime';
 -- ddl-end --
 ALTER TABLE uin.uin_detail OWNER TO appadmin;
 -- ddl-end --
+
+-- object: uind_uin_fk | type: CONSTRAINT --
+-- ALTER TABLE uin.uin_detail DROP CONSTRAINT IF EXISTS uind_uin_fk CASCADE;
+ALTER TABLE uin.uin_detail ADD CONSTRAINT uind_uin_fk FOREIGN KEY (uin_ref_id)
+REFERENCES uin.uin (uin_ref_id) MATCH FULL
+ON DELETE SET NULL ON UPDATE CASCADE;
+-- ddl-end --
+
+-- object: uind_uk | type: CONSTRAINT --
+-- ALTER TABLE uin.uin_detail DROP CONSTRAINT IF EXISTS uind_uk CASCADE;
+ALTER TABLE uin.uin_detail ADD CONSTRAINT uind_uk UNIQUE (uin_ref_id);
+-- ddl-end --
+
 

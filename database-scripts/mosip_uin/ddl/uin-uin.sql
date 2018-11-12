@@ -1,15 +1,15 @@
 -- object: uin.uin | type: TABLE --
 -- DROP TABLE IF EXISTS uin.uin CASCADE;
 CREATE TABLE uin.uin(
-	uin_ref_id uin._uinvid NOT NULL,
-	uin uin._uinvid NOT NULL,
-	is_active uin._active NOT NULL,
-	cr_by uin._by NOT NULL,
-	cr_dtimes uin._dtimes NOT NULL,
-	upd_by uin._by,
-	upd_dtimes uin._dtimes,
-	is_deleted uin._active,
-	del_dtimes uin._dtimes,
+	uin_ref_id character varying(28) NOT NULL,
+	uin character(28) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(32) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(32),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
 	CONSTRAINT uin_pk PRIMARY KEY (uin_ref_id),
 	CONSTRAINT uin_uk UNIQUE (uin)
 
@@ -37,3 +37,4 @@ COMMENT ON COLUMN uin.uin.del_dtimes IS 'Record deleted datetime';
 -- ddl-end --
 ALTER TABLE uin.uin OWNER TO appadmin;
 -- ddl-end --
+

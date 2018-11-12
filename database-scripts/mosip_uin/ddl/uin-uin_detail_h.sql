@@ -1,27 +1,27 @@
 -- object: uin.uin_detail_h | type: TABLE --
 -- DROP TABLE IF EXISTS uin.uin_detail_h CASCADE;
 CREATE TABLE uin.uin_detail_h(
-	uin_ref_id uin._uinvid NOT NULL,
-	eff_dtimes uin._dtimes NOT NULL,
-	uin_data json NOT NULL,
-	is_active uin._active NOT NULL,
-	cr_by uin._by NOT NULL,
-	cr_dtimes uin._dtimes NOT NULL,
-	upd_by uin._by,
-	upd_dtimes uin._dtimes,
-	is_deleted uin._active,
-	del_dtimes uin._dtimes,
-	CONSTRAINT uindh_pk PRIMARY KEY (uin_ref_id,eff_dtimes)
+	uin_ref_id character varying(28) NOT NULL,
+	eff_dtimes timestamp NOT NULL,
+	uin_data character(28) NOT NULL,
+	is_active boolean NOT NULL,
+	cr_by character varying(32) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(32),
+	upd_dtimes timestamp,
+	is_deleted boolean,
+	del_dtimes timestamp,
+	CONSTRAINT uind_h_pk PRIMARY KEY (uin_ref_id,eff_dtimes)
 
 );
 -- ddl-end --
-COMMENT ON TABLE uin.uin_detail_h IS 'Table to store UIN object';
+COMMENT ON TABLE uin.uin_detail_h IS 'History of the changes to the individual details. individual data is stored in json structure.';
 -- ddl-end --
-COMMENT ON COLUMN uin.uin_detail_h.uin_ref_id IS 'UIN reference key';
+COMMENT ON COLUMN uin.uin_detail_h.uin_ref_id IS 'UIN reference id of an individual from uin table. ';
 -- ddl-end --
-COMMENT ON COLUMN uin.uin_detail_h.eff_dtimes IS 'Effective datetime from when this record is valid';
+COMMENT ON COLUMN uin.uin_detail_h.eff_dtimes IS 'When an individual''s inforamtion is changed, the history of changes is maintained in this table. Record active effective datetime.';
 -- ddl-end --
-COMMENT ON COLUMN uin.uin_detail_h.uin_data IS 'This filed contains the json packet of the individual''s information';
+COMMENT ON COLUMN uin.uin_detail_h.uin_data IS 'Data about the individual in json structure. This field contains data like demographic, biometric, iris, etc. The data is stored in multiple languages inside the json file.';
 -- ddl-end --
 COMMENT ON COLUMN uin.uin_detail_h.is_active IS 'Record active status';
 -- ddl-end --
