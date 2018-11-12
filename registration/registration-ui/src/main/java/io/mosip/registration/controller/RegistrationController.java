@@ -143,10 +143,10 @@ public class RegistrationController extends BaseController {
 	private Accordion accord;
 
 	@FXML
-	private AnchorPane detail1;
+	private AnchorPane demoGraphicPane1;
 
 	@FXML
-	private AnchorPane detail2;
+	private AnchorPane demoGraphicPane2;
 
 	@FXML
 	private AnchorPane anchor_pane_registration;
@@ -177,7 +177,7 @@ public class RegistrationController extends BaseController {
 		loadAddressFromPreviousEntry();
 		populateTheLocalLangFields();
 		loadLanguageSpecificKeyboard();
-		detail1.getChildren().add(keyboardNode);
+		demoGraphicPane1.getChildren().add(keyboardNode);
 		keyboardNode.setVisible(false);
 	}
 
@@ -213,7 +213,7 @@ public class RegistrationController extends BaseController {
 		if (validatePaneOne()) {
 			demoGraphicTitlePane1.setContent(null);
 			demoGraphicTitlePane1.setExpanded(false);
-			demoGraphicTitlePane1.setContent(detail2);
+			demoGraphicTitlePane1.setContent(demoGraphicPane2);
 			demoGraphicTitlePane1.setExpanded(true);
 			anchor_pane_registration.setMaxHeight(700);
 		}
