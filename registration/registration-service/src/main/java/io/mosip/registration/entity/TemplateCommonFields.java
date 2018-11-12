@@ -23,6 +23,7 @@ public class TemplateCommonFields {
 	@Column(name="upd_dtimes")
 	protected Date updDtimes;
 	@Column(name="is_deleted")
+	@Type(type= "true_false")
 	protected Boolean isDeleted;
 	@Column(name="del_dtimes")
 	protected Date delDtimes;
