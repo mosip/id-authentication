@@ -90,7 +90,7 @@ export class DashBoardComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(numberOfApplicant => {
       if (numberOfApplicant != null) {
-        this.router.navigate(['../demographic', numberOfApplicant], { relativeTo: this.route });
+        this.router.navigate(['demographic', numberOfApplicant], { relativeTo: this.route });
         this.isNewApplication = true;
       }
     });

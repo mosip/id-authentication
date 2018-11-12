@@ -15,6 +15,7 @@ import { MaterialModule } from '../material.module';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { DashBoardComponent } from './dashboard/dashboard.component';
+import { ParentComponent } from './parent/parent.component';
 
 @NgModule({
   imports: [
@@ -34,7 +35,8 @@ import { DashBoardComponent } from './dashboard/dashboard.component';
     TimeSelectionComponent,
     CenterSelectionComponent,
     DialougComponent,
-    DashBoardComponent
+    DashBoardComponent,
+    ParentComponent
   ]
 })
 export class RegistrationModule { }
