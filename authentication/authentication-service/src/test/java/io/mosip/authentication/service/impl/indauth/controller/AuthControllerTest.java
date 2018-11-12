@@ -69,7 +69,7 @@ public class AuthControllerTest {
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
 		ReflectionTestUtils.setField(restFactory, "env", env);
-		ReflectionTestUtils.invokeMethod(authController, "initBinder", binder);
+		ReflectionTestUtils.invokeMethod(authController, "initAuthRequestBinder", binder);
 	}
 	
 	/*

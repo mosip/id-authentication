@@ -6,10 +6,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Objects;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.kernel.core.spi.pdfgenerator.PdfGenerator;
@@ -19,7 +16,6 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder
 @Component
 public class IdTemplateManager {
 
-	@Autowired
 	private PdfGenerator pdfGenerator;
 
 	private static final String CLASSPATH = "classpath";

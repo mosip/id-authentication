@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
+import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
@@ -67,7 +68,7 @@ public class KycServiceImplTest {
 	public void validUIN() {
 		try {
 			Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.anyMap())).thenReturn("pdf generated");
-			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", "limited KYC", true, false);
+			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException | IOException e) {
 			e.printStackTrace();
@@ -78,7 +79,7 @@ public class KycServiceImplTest {
 	public void validUIN2() {
 		try {
 			Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.anyMap())).thenReturn("pdf generated");
-			KycInfo k = kycServiceImpl.retrieveKycInfo("1223232345665", "full KYC", true, true);
+			KycInfo k = kycServiceImpl.retrieveKycInfo("1223232345665", KycType.FULL, true, true);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException | IOException e) {
 			// TODO Auto-generated catch block

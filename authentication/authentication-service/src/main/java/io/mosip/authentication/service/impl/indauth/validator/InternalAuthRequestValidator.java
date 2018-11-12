@@ -15,8 +15,6 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.service.helper.DateHelper;
-import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
 /**
  * Validator for internal authentication request
@@ -81,7 +79,7 @@ public class InternalAuthRequestValidator implements Validator {
 		AuthTypeDTO authTypeDTO = authRequestDTO.getAuthType();
 		if (authTypeDTO != null) {
 
-			if (authRequestDTO.getAuthType().isFingerprint()) {
+			if (authRequestDTO.getAuthType().isFingerPrint()) {
 
 				boolean finger = validateFinger(authRequestDTO);
 				if (!finger) {

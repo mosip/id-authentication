@@ -10,12 +10,15 @@ import lombok.Data;
 
 @Data
 public class KycAuthRequestDTO extends BaseAuthRequestDTO {
-	
+
 	private boolean consentReq;
-	
+
 	private boolean ePrintReq;
-	
-	private AuthRequestDTO authRequest; 
-	
-	
+
+	private boolean requiredSecondary;
+
+	private String eKycAuthType;
+
+	private AuthRequestDTO authRequest;
+
 }

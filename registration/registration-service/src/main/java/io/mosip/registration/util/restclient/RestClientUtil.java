@@ -1,8 +1,7 @@
 package io.mosip.registration.util.restclient;
 
-import static io.mosip.registration.constants.RegConstants.APPLICATION_ID;
-import static io.mosip.registration.constants.RegConstants.APPLICATION_NAME;
-import static io.mosip.registration.util.reader.PropertyFileReader.getPropertyValue;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +11,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.config.AppConfig;
 
 /**
  * This is a general method which gives the response for all httpmethod
@@ -33,12 +31,7 @@ public class RestClientUtil {
 		@Autowired 
 		 RestTemplate restTemplate;
 		 
-		 private static MosipLogger LOGGER;
-
-			@Autowired
-			private void initializeLogger(MosipRollingFileAppender mosipRollingFileAppender) {
-				LOGGER = MosipLogfactory.getMosipDefaultRollingFileLogger(mosipRollingFileAppender, this.getClass());
-			}
+		 private static final MosipLogger LOGGER = AppConfig.getLogger(RestClientUtil.class);
 		 
 	/**
 	 * Actual exchange using rest template
@@ -49,8 +42,8 @@ public class RestClientUtil {
 	 * @throws HttpServerErrorException when server exception from server
 	 */
 	public Object invoke(RequestHTTPDTO requestHTTPDTO) throws HttpClientErrorException, HttpServerErrorException {
-		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", getPropertyValue(APPLICATION_NAME),
-				getPropertyValue(APPLICATION_ID), "invoke method called");
+		LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME,
+				APPLICATION_ID, "invoke method called");
 
 		ResponseEntity<?> responseEntity = null;
 		Object responseBody=null;
@@ -61,9 +54,8 @@ public class RestClientUtil {
 					responseBody=responseEntity.getBody();
 				}
 			}
-			LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", getPropertyValue(APPLICATION_NAME),
-					getPropertyValue(APPLICATION_ID), "invoke method ended");
-
+			LOGGER.debug("REGISTRATION - REST_CLIENT_UTIL - INVOKE", APPLICATION_NAME,
+					APPLICATION_ID, "invoke method ended");
 			
 		return responseBody;
 

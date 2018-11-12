@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
+import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
@@ -59,7 +60,7 @@ public class KycServiceImpl implements KycService{
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	@Override
-	public KycInfo retrieveKycInfo(String uin, String eKycType, boolean ePrintReq, boolean isSecLangInfoRequired) throws IdAuthenticationBusinessException {
+	public KycInfo retrieveKycInfo(String uin, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired) throws IdAuthenticationBusinessException {
 		KycInfo kycInfo = new KycInfo();
 		Map<String, List<IdentityInfoDTO>> identityInfo = retrieveIdentityFromIdRepo(uin);
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo, isSecLangInfoRequired);
@@ -95,11 +96,11 @@ public class KycServiceImpl implements KycService{
 		return identity;
 	}
 	
-	private Map<String, List<IdentityInfoDTO>> constructIdentityInfo(String eKycType, Map<String, List<IdentityInfoDTO>> identity, boolean isSecLangInfoRequired){
+	private Map<String, List<IdentityInfoDTO>> constructIdentityInfo(KycType eKycType, Map<String, List<IdentityInfoDTO>> identity, boolean isSecLangInfoRequired){
 		Map<String, List<IdentityInfoDTO>> identityInfo;
 		String kycTypeKey;
 
-		if(eKycType.equals(LIMITED_KYC)) {
+		if(eKycType == KycType.LIMITED) {
 			 kycTypeKey = "ekyc.type.limitedkyc";
 		}else {
 			kycTypeKey = "ekyc.type.fullkyc";
@@ -124,6 +125,7 @@ public class KycServiceImpl implements KycService{
 		return identityInfo;
 	}
 	
+
 	private Map<String, Object> generatePDFDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Object maskedUin) {
 		String primaryLanguage = env.getProperty("mosip.primary.lang-code");
 		String secondaryLanguage = env.getProperty("mosip.secondary.lang-code");
@@ -151,10 +153,10 @@ public class KycServiceImpl implements KycService{
 		return pdfDetails;
 	}
 
-	private String generatePrintableKyc(String eKycType, Map<String, Object> identity) throws IdAuthenticationBusinessException {
+	private String generatePrintableKyc(KycType eKycType, Map<String, Object> identity) throws IdAuthenticationBusinessException {
 		String pdfDetails = null;
 		try {
-			if(eKycType.equals(LIMITED_KYC)) {
+			if(eKycType == KycType.LIMITED) {
 				pdfDetails =  idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc"), identity);
 
 			}else {

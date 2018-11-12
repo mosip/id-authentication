@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
+import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
 /**
@@ -25,5 +27,7 @@ public interface AuthFacade {
 	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest) throws IdAuthenticationBusinessException;
 	
 	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO);
+	
+	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO) throws IdAuthenticationBusinessException;
 
 }
