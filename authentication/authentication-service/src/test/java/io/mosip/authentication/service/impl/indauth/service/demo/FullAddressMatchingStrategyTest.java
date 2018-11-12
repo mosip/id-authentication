@@ -163,7 +163,7 @@ public class FullAddressMatchingStrategyTest {
 	}
 
 	/**
-	 * Assert Phonetics Match Value via doMatch method
+	 * Assert Phonetics Match Value via doPhoneticsMatch method
 	 */
 	@Test
 	public void TestPhoneticsMatchValue() {
@@ -171,6 +171,49 @@ public class FullAddressMatchingStrategyTest {
 		IdentityValue identityValue = new IdentityValue();
 		identityValue.setValue("2");
 		int value = matchFunction.applyAsInt(2, identityValue);
+		assertEquals(0, value);
+	}
+	
+
+	/**
+	 * Assert Phonetics Match Value via doPhoneticsMatch method
+	 */
+	@Test
+	public void TestPhoneticsMatchValueWithLanguageCode_Return_NotMatched() {
+		
+		ToIntBiFunction<Object, IdentityValue> matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
+		IdentityValue identityValue = new IdentityValue();
+		identityValue.setValue("2");
+		identityValue.setLanguage("ar");
+		int value = matchFunction.applyAsInt(2, identityValue);
+		assertEquals(0, value);
+
+	}
+	
+
+	/**
+	 * Assert Phonetics Match Value via doPhoneticsMatch method
+	 */
+	@Test
+	public void TestPhoneticsMatchValueWithLanguageName_ReturnWithMatchValue() {
+		ToIntBiFunction<Object, IdentityValue> matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
+		IdentityValue identityValue = new IdentityValue();
+		identityValue.setValue("misop*");
+		identityValue.setLanguage("arabic");
+		int value = matchFunction.applyAsInt("mos", identityValue);
+		assertEquals(20, value);
+	}
+	
+	/**
+	 * Assert Phonetics Match Value via doPhoneticsMatch method
+	 */
+	@Test
+	public void TestPhoneticsMatchWithLanguageNameAndReqInfoAsInteger_Return_NotMatched() {
+		ToIntBiFunction<Object, IdentityValue> matchFunction = FullAddressMatchingStrategy.PHONETICS.getMatchFunction();
+		IdentityValue identityValue = new IdentityValue();
+		identityValue.setValue("misop*");
+		identityValue.setLanguage("arabic");
+		int value = matchFunction.applyAsInt(5, identityValue);
 		assertEquals(0, value);
 	}
 }
