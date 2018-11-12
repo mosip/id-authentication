@@ -116,6 +116,9 @@
 		<module>kernel-config-server</module>
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-packetserver-http</module>
+		
+		<module>kernel-keymanager-softhsm</module>
+		<module>kernel-keymanager-service</module>
 	</modules>
 
 	<profiles>
