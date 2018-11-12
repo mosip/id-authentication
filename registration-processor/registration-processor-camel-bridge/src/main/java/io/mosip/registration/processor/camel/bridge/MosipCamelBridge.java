@@ -1,10 +1,8 @@
 package io.mosip.registration.processor.camel.bridge;
 
 import java.util.concurrent.ExecutionException;
-
 import org.apache.camel.CamelContext;
 import org.apache.camel.impl.DefaultCamelContext;
-
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.vertx.camel.CamelBridge;
 import io.vertx.core.AbstractVerticle;
@@ -32,7 +30,7 @@ public class MosipCamelBridge extends AbstractVerticle {
 	 * @throws ExecutionException
 	 *             the execution exception
 	 */
-	public static void main(String[] args) throws InterruptedException, ExecutionException {
+	public static void main(String[] args) {
 		MosipBridgeFactory.getEventBus();
 	}
 
@@ -44,9 +42,9 @@ public class MosipCamelBridge extends AbstractVerticle {
 	@Override
 	public void start() throws Exception {
 
-		vertx.eventBus().consumer(MessageBusAddress.ERROR.getAddress(), message -> {
-			log.error("ERROR while doing operation >> " + message.body());
-		});
+		vertx.eventBus().consumer(MessageBusAddress.ERROR.getAddress(),
+				message -> log.error("ERROR while doing operation >> " + message.body()));
+
 		CamelContext camelContext = new DefaultCamelContext();
 
 		camelContext.addRoutes(new MosipBridgeRoutes());

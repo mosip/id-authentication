@@ -4,7 +4,6 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
-import io.vertx.core.Vertx;
 
 public class ConsumerVerticle extends MosipVerticleManager {
 	private MessageDTO messageDTO;
@@ -35,7 +34,7 @@ public class ConsumerVerticle extends MosipVerticleManager {
 	}
 
 	public MosipEventBus deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass());
+		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), "", "");
 		return mosipEventBus;
 	}
 

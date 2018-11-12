@@ -21,9 +21,9 @@ public interface EventBusManager<T, U, V> {
 	 * @param instance
 	 *            The class for which eventBus is needed
 	 * @return The EventBus instance
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
-	public T getEventBus(Class<?> clazz);
+	public T getEventBus(Class<?> clazz, String clusterAddress, String localhost);
 
 	/**
 	 * This method consumes a message from an address, processes it and forwards the

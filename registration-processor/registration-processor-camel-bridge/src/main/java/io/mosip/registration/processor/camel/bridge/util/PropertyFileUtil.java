@@ -5,12 +5,30 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+
 /**
- * @author Mukul Puspam
+ * The Class PropertyFileUtil.
  *
+ * @author Mukul Puspam
  */
 public class PropertyFileUtil {
 
+	static Logger log = LoggerFactory.getLogger(PropertyFileUtil.class);
+
+	private PropertyFileUtil() {
+
+	}
+
+	/**
+	 * Gets the property.
+	 *
+	 * @param clazz the clazz
+	 * @param fileName the file name
+	 * @param key the key
+	 * @return the property
+	 */
 	public static String getProperty(Class<?> clazz, String fileName, String key) {
 
 		Properties prop = new Properties();
@@ -22,9 +40,9 @@ public class PropertyFileUtil {
 				throw new FileNotFoundException("File Not available " + fileName);
 			}
 			prop.load(input);
-			value = prop.getProperty("component");
+			value = prop.getProperty(key);
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			log.error("Failed to read properties: " + ex.getCause());
 		}
 		return value;
 	}

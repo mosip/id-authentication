@@ -18,6 +18,9 @@
 	<modules>
 		<module>packet-scanner-job</module>
 		<module>packet-decryption-job</module>
+		<module>packet-ftp-scanner-job</module>
+		<module>packet-landingzone-scanner-job</module>
+		<module>packet-virus-scanner-job</module>
 	</modules>
 
 </project>

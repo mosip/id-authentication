@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +27,15 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
+import io.mosip.kernel.auditmanager.request.AuditRequestDto;
+import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
@@ -38,8 +43,10 @@ import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAc
 import io.mosip.registration.processor.packet.decryptor.job.Decryptor;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
+import io.mosip.registration.processor.packet.decryptor.job.messagesender.DecryptionMessageSender;
 import io.mosip.registration.processor.packet.decryptor.job.tasklet.PacketDecryptorTasklet;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -48,6 +55,7 @@ import io.mosip.registration.processor.status.service.RegistrationStatusService;
  * The Class PacketDecryptorTaskletTest.
  * 
  */
+@RefreshScope
 @RunWith(SpringRunner.class)
 public class PacketDecryptorTaskletTest {
 
@@ -60,12 +68,14 @@ public class PacketDecryptorTaskletTest {
 
 	/** The registration status service. */
 	@Mock
-	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The adapter. */
 	@Mock
-	private FileSystemAdapter<InputStream, Boolean> adapter = new FilesystemCephAdapterImpl();
+	FilesystemCephAdapterImpl adapter;
 
+	@Mock
+	private DecryptionMessageSender decryptionMessageSender;
 	/** The decryptor. */
 	@Mock
 	private Decryptor decryptor;
@@ -83,10 +93,13 @@ public class PacketDecryptorTaskletTest {
 	ChunkContext chunkContext;
 
 	/** The dto. */
-	RegistrationStatusDto dto;
+	InternalRegistrationStatusDto dto;
 
 	/** The list. */
-	List<RegistrationStatusDto> list;
+	List<InternalRegistrationStatusDto> list;
+
+	@Mock
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
 
 	/**
 	 * Setup.
@@ -97,14 +110,28 @@ public class PacketDecryptorTaskletTest {
 	 *             the packet not found exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
 	 */
 	@Before
-	public void setup() throws UnableToAccessPathException, PacketNotFoundException, IOException {
-		dto = new RegistrationStatusDto();
+	public void setup() throws UnableToAccessPathException, PacketNotFoundException, IOException, NoSuchFieldException,
+			SecurityException, IllegalArgumentException, IllegalAccessException {
+		dto = new InternalRegistrationStatusDto();
 		dto.setRegistrationId("1001");
 		dto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
 		dto.setRetryCount(0);
-		list = new ArrayList<RegistrationStatusDto>();
+		list = new ArrayList<InternalRegistrationStatusDto>();
+		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		AuditRequestDto auditRequest1 = new AuditRequestDto();
+
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+		f.setAccessible(true);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
+		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+		f1.setAccessible(true);
+		f1.set(auditRequestBuilder, auditRequest1);
 	}
 
 	/**
@@ -137,8 +164,10 @@ public class PacketDecryptorTaskletTest {
 
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
 
-		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any(RegistrationStatusDto.class));
+		Mockito.doNothing().when(registrationStatusService)
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 
+		Mockito.doNothing().when(decryptionMessageSender).sendMessage(any(MessageDTO.class));
 		RepeatStatus status = packetDecryptorTasklet.execute(stepContribution, chunkContext);
 		Assert.assertEquals(RepeatStatus.FINISHED, status);
 		verify(mockAppender).doAppend(argThat(new ArgumentMatcher<ILoggingEvent>() {
@@ -300,7 +329,7 @@ public class PacketDecryptorTaskletTest {
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenReturn(stream);
 
 		Mockito.doThrow(TablenotAccessibleException.class).when(registrationStatusService)
-				.updateRegistrationStatus(any(RegistrationStatusDto.class));
+				.updateRegistrationStatus(any(InternalRegistrationStatusDto.class));
 
 		RepeatStatus status = packetDecryptorTasklet.execute(stepContribution, chunkContext);
 		Assert.assertEquals(RepeatStatus.FINISHED, status);
