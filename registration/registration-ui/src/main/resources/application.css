@@ -4,16 +4,61 @@
     -fx-background-color: #ffffff;
 }
 
+#DemographicPane{
+ 	-fx-padding: 10;
+	-fx-border-color: black;
+    -fx-background-color : white;
+    -fx-border-width: 0 1 1 1;
+    
+}
+
+
+
 #anchor-pane {
 	-fx-background-color: #f8f9fa;
 }
 
+#virtualKeyboard {
+	-fx-background-color: white;
+}
+
+.accordion .title > .arrow-button .arrow{
+    -fx-translate-x: 750;
+	-fx-shape: "M 10,150 L 70,10 L 130,150 z";    
+    
+}
+
+.accordion > .titled-pane {
+    -fx-padding: 0 0 0.5em 0;
+}
+
+.accordion > .titled-pane > .title{
+    -fx-background-color : white;
+    -fx-border-color: black;
+    -fx-border-width : 1 1 0 1;
+}
+
+.accordion >.titled-pane:collapsed > .title
+{
+	
+    -fx-border-width : 1 1 1 1;
+    -fx-border-color: black;
+    
+
+}
+
 #anchor-pane-registration .text-field {		
-	-fx-background-color: -fx-text-box-border, -fx-background;
+	-fx-background-color: white;
 	-fx-border-color: black;
 	-fx-background-insets: 0,0 0 1 0;
   	-fx-border-width: 0 0 1 0;	
 }	
+
+#anchor-pane-registration{
+	-fx-background-color: white;
+	-fx-border-color: red;
+	
+}
 
 #anchor-pane-registration .text-field:focused{
 	-fx-border-color: red;
@@ -28,15 +73,6 @@
 
 #homeReg{
 	-fx-font-size:15px;
-}
-
-#Detail{
- 	-fx-padding: 10;
-	-fx-border-color:black;
-    -fx-border-width: 1;
-    -fx-border-style : solid inside;
-    -fx-border-insets: 5;
-    
 }
 
 #hbox {
@@ -108,37 +144,4 @@
 #imageAnchorPane{
 	 -fx-border-width: 1.0;
 	-fx-border-color: black;
-}
-#onHoldPane, #rejectionPane{
-	-fx-border-width: 1 1 1 1;
-	-fx-border-color: black;
-}
-#onHoldLabelAnchorPane, #rejectionLabelPane{
-	-fx-background-color:#808080;
-}
-#onHoldAnchorPane, #rejectionAnchorPane{
-	-fx-background-color:#ffffff;
-}
-#onHoldComboBox, #rejectionComboBox{
-	-fx-background-color:#ffffff;
-	-fx-border-width: 0 0 1 0;
-	-fx-border-color: black;
-	-fx-font-size: 14px;
-}
-#submit, #rejectionSubmit, #approvalBtn ,#rejectionBtn ,#onHoldBtn{
-	-fx-background-color:#ffffff; 
-    -fx-background-radius: 6,5;
-    -fx-background-insets: 0,1;
-    -fx-text-fill: black;
-    -fx-font-size: 10px;
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
-}
-#exitButton, #rejectionExit{
-	 -fx-border-color: transparent;
-     -fx-padding: 4 0 4 0;
-     -fx-text-fill: black;
-}
-#table{
-	-fx-text-fill: black;
-    -fx-font-size: 14px;
 } 
