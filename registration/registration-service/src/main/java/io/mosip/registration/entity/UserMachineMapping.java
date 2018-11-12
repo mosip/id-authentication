@@ -28,7 +28,7 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	private RegistrationUserDetail registrationUserDetail;
 
 	@Column(name = "is_deleted")
-	private boolean isDeleted;
+	private Boolean isDeleted;
 
 	@Column(name = "del_dtimesz")
 	private Timestamp deletedDateTime;
@@ -66,7 +66,7 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
 
@@ -74,7 +74,7 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	 * @param isDeleted
 	 *            the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 

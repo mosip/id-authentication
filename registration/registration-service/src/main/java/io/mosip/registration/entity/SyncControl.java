@@ -33,7 +33,7 @@ public class SyncControl {
 	private String langCode;
 	@Column(name="IS_ACTIVE", nullable=false, updatable=true)
 	@Type(type= "true_false")
-	private boolean isActive;
+	private Boolean isActive;
 	@Column(name="CR_BY", length=24, nullable=false, updatable=true)
 	private String crBy;
 	@Column(name="CR_DTIMESZ", nullable=false, updatable=true)
@@ -43,7 +43,7 @@ public class SyncControl {
 	@Column(name="UPD_DTIMESZ", nullable=true, updatable=true)
 	private Timestamp updDtime;
 	@Column(name="IS_DELETED", nullable=true, updatable=true)
-	private boolean isDeleted;
+	private Boolean isDeleted;
 	@Column(name="DEL_DTIMESZ", nullable=true, updatable=true)
 	private Timestamp delDtime;
 	public String getsyncJobId() {
@@ -82,10 +82,10 @@ public class SyncControl {
 	public void setLangCode(String langCode) {
 		this.langCode = langCode;
 	}
-	public boolean isActive() {
+	public Boolean isActive() {
 		return isActive;
 	}
-	public void setActive(boolean isActive) {
+	public void setActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
 	public String getCrBy() {
@@ -112,10 +112,10 @@ public class SyncControl {
 	public void setUpdDtime(Timestamp updDtime) {
 		this.updDtime = updDtime;
 	}
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 	public Timestamp getDelDtime() {

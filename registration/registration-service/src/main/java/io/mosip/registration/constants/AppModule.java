@@ -26,7 +26,10 @@ public enum AppModule {
 	SCREEN_AUTH("REG-SCR_14","Screen AUthorization"), 
 	PACKET_RETRIVE("REG-PRO-15","Packet Retrive for Approval"), 
 	PACKET_UPDATE("REG-PRO-16","Update Packet"), 
-	SYNC_VALIDATE("REG-PRO-17","Sync service"); 
+	SYNC_VALIDATE("REG-PRO-17","Sync service"),
+	
+	// Device Onboarding
+	DEVICE_ONBOARD("REG-UI-18", "Device Onboarding");
 
 	/**
 	 * The constructor

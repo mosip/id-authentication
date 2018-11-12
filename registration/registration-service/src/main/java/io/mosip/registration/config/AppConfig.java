@@ -26,8 +26,8 @@ import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
  */
 @Configuration
 @Import({ HibernateDaoConfig.class, AuditConfig.class })
-@EnableJpaRepositories(basePackages = "io.mosip.registration.", repositoryBaseClass = HibernateRepositoryImpl.class)
-@ComponentScan("io.mosip.registration.")
+@EnableJpaRepositories(basePackages = "io.mosip.registration", repositoryBaseClass = HibernateRepositoryImpl.class)
+@ComponentScan("io.mosip.registration")
 @PropertySource("spring.properties")
 public class AppConfig {
 

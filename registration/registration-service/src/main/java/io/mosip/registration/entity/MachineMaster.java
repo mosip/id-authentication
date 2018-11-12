@@ -33,7 +33,7 @@ public class MachineMaster extends RegistrationCommonFields {
 	@Column(name = "lang_code", length = 3, nullable = false)
 	private String langCode;
 	@Column(name = "is_deleted")
-	private boolean isDeleted;
+	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp deletedDateTime;
 	
@@ -99,14 +99,14 @@ public class MachineMaster extends RegistrationCommonFields {
 	/**
 	 * @return the isDeleted
 	 */
-	public boolean isDeleted() {
+	public Boolean isDeleted() {
 		return isDeleted;
 	}
 
 	/**
 	 * @param isDeleted the isDeleted to set
 	 */
-	public void setDeleted(boolean isDeleted) {
+	public void setDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 

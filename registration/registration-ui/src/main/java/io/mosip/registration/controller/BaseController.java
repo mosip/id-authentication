@@ -5,6 +5,7 @@ import java.net.URL;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.scheduler.SchedulerUtil;
@@ -14,6 +15,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Control;
@@ -33,6 +35,8 @@ public class BaseController {
 
 	@Autowired
 	private SyncStatusValidatorService syncStatusValidatorService;
+	@Autowired
+	protected AuditFactory auditFactory;
 
 	protected static Stage stage;
 
