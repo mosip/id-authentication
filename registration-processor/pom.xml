@@ -114,6 +114,7 @@
     	<module>stages</module>
     	<module>packet-info-storage-service</module>
     	<module>quality-checker</module>
+		<module>registration-processor-auditmanager-client</module>
   </modules>
 
 	<profiles>
