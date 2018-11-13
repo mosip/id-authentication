@@ -2,7 +2,6 @@
 
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,8 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DeviceDto;
-import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
+import io.mosip.kernel.masterdata.dto.DeviceLangCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceService;
 
 /**
@@ -30,21 +29,13 @@ public class DeviceController {
 	private DeviceService deviceService;
 
 	/**
-	 * Get api to fetch a all device details
+	 * Get api to fetch a all device details based on language code
 	 * 
 	 * @return all device details
 	 */
-
-	@GetMapping
-	public List<DeviceDto> getDeviceAll() {
-		return deviceService.getDeviceAll();
-
-	}
-	
 	@GetMapping(value = "/{langcode}")
-	public List<DeviceDto> getDeviceIdLang(@PathVariable("langcode") String langCode) {
+	public DeviceResponseDto getDeviceLang(@PathVariable("langcode") String langCode) {
 		return deviceService.getDeviceLangCode(langCode);
-
 	}
 	
 	/**
@@ -53,7 +44,7 @@ public class DeviceController {
 	 * @return all device details
 	 */
 	@GetMapping(value = "/{langcode}/{deviceType}")
-	public List<DeviceLangCodeDtypeDto> getDeviceLangCodeAndDeviceType(@PathVariable("langcode") String langCode, @PathVariable("deviceType") String deviceType) {
+	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(@PathVariable("langcode") String langCode, @PathVariable("deviceType") String deviceType) {
 		return deviceService.getDeviceLangCodeAndDeviceType(langCode, deviceType);
 
 	}

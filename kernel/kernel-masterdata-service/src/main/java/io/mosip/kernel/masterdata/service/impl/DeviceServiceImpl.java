@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.masterdata.constant.DeviceErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
+import io.mosip.kernel.masterdata.dto.DeviceLangCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
 import io.mosip.kernel.masterdata.exception.DeviceFetchException;
 import io.mosip.kernel.masterdata.exception.DeviceMappingException;
@@ -45,9 +47,11 @@ public class DeviceServiceImpl implements DeviceService {
 
 
 	/**
-	 * Method used for fetch all Device details
+	 * Method used for fetch all Device details based on given language code
 	 * 
-	 * @return DeviceDto returning all Device Detail
+	 * @return DeviceDto returning Device Details based on given language code
+	 * 
+	 * @param langCode pass language as string
 	 * 
 	 * @throws DeviceFetchException
 	 *             While Fetching Device Detail If fails to fetch required Device
@@ -60,45 +64,19 @@ public class DeviceServiceImpl implements DeviceService {
 	 *             If given required Device ID and language not found
 	 * 
 	 */
-
-	@Override
-	public List<DeviceDto> getDeviceAll() {
-		List<Device> deviceList = null;
-		List<DeviceDto> deviceDtoList = null;
-		try {
-			deviceList = deviceRepository.findAll();
-
-		} catch (DataAccessException dataAccessLayerException) {
-			throw new DeviceFetchException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage());
-		}
-		if (deviceList != null && !deviceList.isEmpty() ) {
-			try {
-				deviceDtoList = objectMapperUtil.mapAll(deviceList,DeviceDto.class);
-			}catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new DeviceMappingException(
-						DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorCode(),
-						DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorMessage());
-			}
-		} else {
-			throw new DeviceNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
-					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
-		}
-		return deviceDtoList;
-	}
-	
 	
 	@Override
-	public List<DeviceDto> getDeviceLangCode(String langCode) {
+	public DeviceResponseDto getDeviceLangCode(String langCode) {
 		List<Device> deviceList = null;
 		List<DeviceDto> deviceDtoList = null;
+		DeviceResponseDto deviceResponseDto = new DeviceResponseDto();
 		try {
 			deviceList = deviceRepository.findByLangCode(langCode);
 		} catch (DataAccessException dataAccessLayerException) {
 			throw new DeviceFetchException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (deviceList != null) {
+		if (deviceList != null && !deviceList.isEmpty()) {
 			try {
 				deviceDtoList = objectMapperUtil.mapAll(deviceList,DeviceDto.class);
 			}catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
@@ -110,7 +88,8 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new DeviceNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return deviceDtoList;
+		deviceResponseDto.setDevices(deviceDtoList);
+		return deviceResponseDto;
 	}
 	
 	
@@ -135,10 +114,11 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	
 	@Override
-	public List<DeviceLangCodeDtypeDto> getDeviceLangCodeAndDeviceType(String langCode, String dtypeCode) {
+	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(String langCode, String dtypeCode) {
 
 		List<Object[]> objectList = null;
 		List<DeviceLangCodeDtypeDto> deviceLangCodeDtypeDtoList = null;
+		DeviceLangCodeResponseDto deviceLangCodeResponseDto = new DeviceLangCodeResponseDto();
 		try {
 			objectList = deviceRepository.findByLangCodeAndDtypeCode(langCode, dtypeCode);
 		} catch (DataAccessException dataAccessLayerException) {
@@ -157,7 +137,8 @@ public class DeviceServiceImpl implements DeviceService {
 			throw new DeviceNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return deviceLangCodeDtypeDtoList;
+		deviceLangCodeResponseDto.setDevices(deviceLangCodeDtypeDtoList);
+		return deviceLangCodeResponseDto;
 	}
 
 }

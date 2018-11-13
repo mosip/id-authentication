@@ -1,9 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
-import java.util.List;
 
-import io.mosip.kernel.masterdata.dto.DeviceDto;
-import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
+import io.mosip.kernel.masterdata.dto.DeviceLangCodeResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceResponseDto;
 
 /**
  * This interface has abstract methods to fetch a Device Details
@@ -21,11 +20,8 @@ public interface DeviceService {
 	 * @return Returning all Devices Details
 	 *
 	 */
-	List<DeviceDto> getDeviceAll();
+	DeviceResponseDto getDeviceLangCode(String langCode);
 	
-	
-	List<DeviceDto> getDeviceLangCode(String langCode);
-	
-	List<DeviceLangCodeDtypeDto> getDeviceLangCodeAndDeviceType(String langCode, String devideTypeCode);
+	DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(String langCode, String devideTypeCode);
 }
 

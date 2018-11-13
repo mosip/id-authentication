@@ -365,7 +365,7 @@ public class MasterDataControllerAdvice {
 			final DeviceNotFoundException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
-		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(BlacklistedWordsMappingException.class)
