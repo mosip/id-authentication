@@ -100,7 +100,6 @@ public class KycAuthRequestValidatorTest {
 		assertFalse(KycAuthRequestValidator.supports(KycAuthRequestValidator.class));
 	}
 
-	@Ignore
 	@Test
 	public void testValidateAuthRequest() {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
@@ -200,7 +199,6 @@ public class KycAuthRequestValidatorTest {
 		assertTrue(errors.hasErrors());
 	}
 
-	@Ignore
 	@Test
 	public void TestMUAPermissionisNotAvail() {
 		MockEnvironment mockenv = new MockEnvironment();
@@ -210,9 +208,11 @@ public class KycAuthRequestValidatorTest {
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		kycAuthRequestDTO.setConsentReq(true);
 		kycAuthRequestDTO.setEPrintReq(true);
+		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setVer("1.1");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("23456789012344");
+		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -223,11 +223,12 @@ public class KycAuthRequestValidatorTest {
 		authRequestDTO.setReqHmac("zdskfkdsnj");
 		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setOtp(true);
 		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
 		idInfoDTO.setLanguage("EN");
 		idInfoDTO.setValue("John");
 		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
-		idInfoDTO1.setLanguage("AR");
+		idInfoDTO1.setLanguage("FR");
 		idInfoDTO1.setValue("Mike");
 		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
 		idInfoList.add(idInfoDTO);
@@ -240,10 +241,192 @@ public class KycAuthRequestValidatorTest {
 		authRequestDTO.setRequest(reqDTO);
 		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
 		kycAuthRequestDTO.setEKycAuthType("O");
+		PinInfo pinInfo = new PinInfo();
+		pinInfo.setType("OTP");
+		pinInfo.setValue("123456");
+		List<PinInfo> otplist = new ArrayList<>();
+		otplist.add(pinInfo);
+		authRequestDTO.setPinInfo(otplist);
 		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
 		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
-		System.err.println(errors);
+		assertTrue(errors.hasErrors());
+	}
 
+	@Test
+	public void TestInvalidAuthType() {
+		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		kycAuthRequestDTO.setConsentReq(true);
+		kycAuthRequestDTO.setEPrintReq(true);
+		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setVer("1.1");
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("234567890123");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setOtp(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
+		kycAuthRequestDTO.setEKycAuthType("P");
+		PinInfo pinInfo = new PinInfo();
+		pinInfo.setType("OTP");
+		pinInfo.setValue("123456");
+		List<PinInfo> otplist = new ArrayList<>();
+		otplist.add(pinInfo);
+		authRequestDTO.setPinInfo(otplist);
+		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
+		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void TesteKYCAuthTypeisNull() {
+		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		kycAuthRequestDTO.setEKycAuthType(null);
+		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
+		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void TestkycAuthRequestDtoisNull() {
+		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
+		kycAuthRequestDTO = null;
+		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void TestkycvalidateAuthType() {
+		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		kycAuthRequestDTO.setConsentReq(true);
+		kycAuthRequestDTO.setEPrintReq(true);
+		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setVer("1.1");
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("234567890123");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setOtp(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
+		kycAuthRequestDTO.setEKycAuthType("O");
+		PinInfo pinInfo = new PinInfo();
+		pinInfo.setType("OTP");
+		pinInfo.setValue("123456");
+		List<PinInfo> otplist = new ArrayList<>();
+		otplist.add(pinInfo);
+		authRequestDTO.setPinInfo(otplist);
+		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
+		kycAuthRequestDTO.setEKycAuthType(null);
+		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+		System.out.println(errors);
+	}
+
+	@Test
+	public void TestkycAuthRequestisNull() {
+		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
+		kycAuthRequestDTO.setAuthRequest(null);
+		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void TestInvalidConsentReq() {
+		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+		kycAuthRequestDTO.setConsentReq(true);
+		kycAuthRequestDTO.setEPrintReq(true);
+		kycAuthRequestDTO.setId("id");
+		kycAuthRequestDTO.setVer("1.1");
+		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+		authRequestDTO.setIdvIdType(IdType.UIN.getType());
+		authRequestDTO.setIdvId("234567890123");
+		ZoneOffset offset = ZoneOffset.MAX;
+		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
+		authRequestDTO.setId("id");
+		authRequestDTO.setVer("1.1");
+		authRequestDTO.setMuaCode("1234567890");
+		authRequestDTO.setTxnID("1234567890");
+		authRequestDTO.setReqHmac("zdskfkdsnj");
+		AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+		authTypeDTO.setPersonalIdentity(true);
+		authTypeDTO.setOtp(true);
+		IdentityInfoDTO idInfoDTO = new IdentityInfoDTO();
+		idInfoDTO.setLanguage("EN");
+		idInfoDTO.setValue("John");
+		IdentityInfoDTO idInfoDTO1 = new IdentityInfoDTO();
+		idInfoDTO1.setLanguage("FR");
+		idInfoDTO1.setValue("Mike");
+		List<IdentityInfoDTO> idInfoList = new ArrayList<>();
+		idInfoList.add(idInfoDTO);
+		idInfoList.add(idInfoDTO1);
+		IdentityDTO idDTO = new IdentityDTO();
+		idDTO.setName(idInfoList);
+		RequestDTO reqDTO = new RequestDTO();
+		reqDTO.setIdentity(idDTO);
+		authRequestDTO.setAuthType(authTypeDTO);
+		authRequestDTO.setRequest(reqDTO);
+		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
+		kycAuthRequestDTO.setEKycAuthType("O");
+		kycAuthRequestDTO.setConsentReq(false);
+		PinInfo pinInfo = new PinInfo();
+		pinInfo.setType("OTP");
+		pinInfo.setValue("123456");
+		List<PinInfo> otplist = new ArrayList<>();
+		otplist.add(pinInfo);
+		authRequestDTO.setPinInfo(otplist);
+		Errors errors = new BeanPropertyBindingResult(kycAuthRequestDTO, "kycAuthRequestDTO");
+		KycAuthRequestValidator.validate(kycAuthRequestDTO, errors);
+		assertTrue(errors.hasErrors());
 	}
 
 }

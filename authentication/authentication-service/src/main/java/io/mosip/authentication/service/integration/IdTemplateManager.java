@@ -9,9 +9,12 @@ import java.util.Objects;
 import org.springframework.stereotype.Component;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.spi.logger.MosipLogger;
 import io.mosip.kernel.core.spi.pdfgenerator.PdfGenerator;
 import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
+
 /**
  * 
  * @author Dinesh Karuppiah.T
@@ -28,6 +31,8 @@ public class IdTemplateManager {
 
 	private static final String TEMPLATES = "/templates";
 
+	private static MosipLogger logger = IdaLogger.getLogger(IdTemplateManager.class);
+
 	private TemplateManager templateManager = new TemplateConfigureBuilder().encodingType(ENCODE_TYPE)
 			.enableCache(false).resourcePath(TEMPLATES).resourceLoader(CLASSPATH).build();
 
@@ -39,7 +44,11 @@ public class IdTemplateManager {
 		if (isTemplateAvail) {
 			return writer.toString();
 		} else {
-			// FIXME template not available
+			try {
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISSING_TEMPLATE_CONFIG);
+			} catch (IdAuthenticationBusinessException e) {
+				logger.error("NA", "Inside Apply Template >>>>>", e.getErrorCode(), e.getErrorText());
+			}
 		}
 		return "";
 	}
@@ -51,8 +60,8 @@ public class IdTemplateManager {
 			Objects.requireNonNull(template);
 			return pdfGenerator.generate(new ByteArrayInputStream(template.getBytes()));
 		} catch (IOException e) {
-			// FIXME throw new business exception
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AD_FAD_MUTUALLY_EXCULUSIVE, e);
+			logger.error("NA", "Inside generatePDF >>>>>", e.getMessage(), e.getMessage());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PDF_NOT_GENERATED, e);
 		}
 
 	}

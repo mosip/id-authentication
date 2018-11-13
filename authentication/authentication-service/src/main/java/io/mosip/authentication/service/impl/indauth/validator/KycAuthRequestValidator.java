@@ -8,6 +8,7 @@ import org.springframework.validation.Errors;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.EkycAuthType;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
+import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 
@@ -66,17 +67,17 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) target;
 		if (kycAuthRequestDTO != null) {
 
-			validateConsentReq(kycAuthRequestDTO, errors);
+			if (kycAuthRequestDTO.getAuthRequest() != null) {
+				authRequestValidator.validate(kycAuthRequestDTO.getAuthRequest(), errors);
+			} else {
+				mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_AUTH_REQUEST + AUTH_REQUEST);
+				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+								AUTH_REQUEST));
+			}
 
 			if (!errors.hasErrors()) {
-				if (kycAuthRequestDTO.getAuthRequest() != null) {
-					authRequestValidator.validate(kycAuthRequestDTO.getAuthRequest(), errors);
-				} else {
-					mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_AUTH_REQUEST + AUTH_REQUEST);
-					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-									AUTH_REQUEST));
-				}
+				validateConsentReq(kycAuthRequestDTO, errors);
 			}
 
 			if (!errors.hasErrors()) {
@@ -97,7 +98,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	private void validateMUAPermission(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
 		String accesslevel = env.getProperty(ACCESS_LEVEL);
-		if (accesslevel.equalsIgnoreCase("none")) {
+		if (accesslevel.equals(KycType.NONE.getType())) {
 			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorMessage(), AUTH_REQUEST));
