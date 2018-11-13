@@ -24,6 +24,8 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoServiceImpl;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 
@@ -51,6 +53,9 @@ public class KycServiceImpl implements KycService{
 	
 	@Autowired
 	private IdTemplateManager idTemplateManager;
+	
+	@Autowired
+	private DemoHelper demoHelper;
 	
 	/** The mosip logger. */
 	private static MosipLogger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);
@@ -141,6 +146,8 @@ public class KycServiceImpl implements KycService{
 		pdfDetails.put("uin_label_sec", messageSource.getMessage("uin_label_sec", null, new Locale(secondaryLanguage)));
 		pdfDetails.put("name_label_pri", messageSource.getMessage("name_label_pri", null, LocaleContextHolder.getLocale()));
 		pdfDetails.put("name_label_sec", messageSource.getMessage("name_label_sec", null, new Locale(secondaryLanguage)));
+		pdfDetails.put("name_pri", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, filteredIdentityInfo).getValue());
+		pdfDetails.put("name_sec", demoHelper.getEntityInfo(DemoMatchType.NAME_SEC, filteredIdentityInfo).getValue());
 		return pdfDetails;
 	}
 
