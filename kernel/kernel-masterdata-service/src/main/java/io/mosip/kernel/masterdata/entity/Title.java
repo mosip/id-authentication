@@ -17,6 +17,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class mapping title to master data
+ * 
+ * @author Sidhant Agarwal
+ * @since 1.0.0
+ *
+ */
 @NamedNativeQueries({
 		@NamedNativeQuery(name = "Title.getThroughLanguageCode", query = "select code, name, descr , lang_code , is_active , cr_by , cr_dtimes , upd_by , upd_dtimes ,is_deleted , del_dtimes from master.title where lang_code = ?1", resultClass = Title.class) })
 

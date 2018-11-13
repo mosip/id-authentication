@@ -2,6 +2,13 @@ package io.mosip.kernel.masterdata.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
+/**
+ * Exception when entity not properly mapped
+ * 
+ * @author Sidhant Agarwal
+ * @since 1.0.0
+ *
+ */
 public class TitleMappingException extends BaseUncheckedException {
 
 	private static final long serialVersionUID = -1154778480214449100L;

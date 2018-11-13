@@ -21,6 +21,13 @@ import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.TitleId;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
 
+/**
+ * Integration testing to fetch titles from master db
+ * 
+ * @author Sidhant Agarwal
+ * @since 1.0.0
+ *
+ */
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
