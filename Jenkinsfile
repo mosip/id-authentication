@@ -23,9 +23,9 @@ node{
         buildInfo = Artifactory.newBuildInfo()
 	buildInfo.env.capture = true 
    }
-  stage ('Package') 
+  stage ('Packaging') 
 	{
-        rtMaven.run pom: 'DEV/kernel/pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: 'DEV/kernel/pom.xml', goals: 'clean install sonar:sonar', buildInfo: buildInfo
     }
 	
 	stage ('Publish build info') {
