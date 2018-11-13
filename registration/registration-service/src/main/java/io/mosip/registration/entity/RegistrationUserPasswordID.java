@@ -12,29 +12,43 @@ import javax.persistence.Embeddable;
  * @since 1.0.0
  */
 @Embeddable
-public class RegistrationUserPasswordID implements Serializable {
-	
+public class RegistrationUserPasswordId implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	@Column(name = "usr_id", length = 64, nullable = false, updatable = false)
 	private String usrId;
-	@Column(name = "pwd", length = 512, nullable = false, updatable = false)
-	private String pwd;
+	@Column(name = "lang_code", length = 3, nullable = false, updatable = false)
+	private String langCode;
 
+	/**
+	 * @return the usrId
+	 */
 	public String getUsrId() {
 		return usrId;
 	}
 
+	/**
+	 * @param usrId
+	 *            the usrId to set
+	 */
 	public void setUsrId(String usrId) {
 		this.usrId = usrId;
 	}
 
-	public String getPwd() {
-		return pwd;
+	/**
+	 * @return the langCode
+	 */
+	public String getLangCode() {
+		return langCode;
 	}
 
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
+	/**
+	 * @param langCode
+	 *            the langCode to set
+	 */
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
 	}
 
 }

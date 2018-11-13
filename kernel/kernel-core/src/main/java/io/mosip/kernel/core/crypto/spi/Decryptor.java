@@ -35,6 +35,7 @@ public interface Decryptor<K,P,S,T> {
 	 * @param key                 key for decryption
 	 * @param data                data for decryption
 	 * @param mosipSecurityMethod security method for processing
+	 * @return Processed array
 	 */
 	byte[] symmetricDecrypt(S key, byte[] data, T mosipSecurityMethod);
 

@@ -1,7 +1,7 @@
 package io.mosip.kernel.core.auditmanager.spi;
 
 /**
- * Interface with function to write {@link AuditRequest}
+ * Interface with function to write AuditRequest
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
@@ -10,11 +10,11 @@ package io.mosip.kernel.core.auditmanager.spi;
 public interface AuditHandler<T> {
 
 	/**
-	 * Function to write {@link AuditRequest}
+	 * Function to write AuditRequest
 	 * 
 	 * @param auditRequest
-	 *            The {@link AuditRequest}
-	 * @return true - if {@link AuditRequest} is successfully written
+	 *            The AuditRequest
+	 * @return true - if AuditRequest is successfully written
 	 */
 	boolean addAudit(T auditRequest);
 

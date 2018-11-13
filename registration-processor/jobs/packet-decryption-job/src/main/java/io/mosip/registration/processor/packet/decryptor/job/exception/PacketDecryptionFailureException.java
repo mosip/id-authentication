@@ -13,7 +13,7 @@ public class PacketDecryptionFailureException extends BaseCheckedException{
 	 * Serializable version Id
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * @param code
 	 *            Error Code Corresponds to Particular Exception

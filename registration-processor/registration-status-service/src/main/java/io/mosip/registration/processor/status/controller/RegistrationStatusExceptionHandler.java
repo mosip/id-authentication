@@ -11,10 +11,22 @@ import org.springframework.web.context.request.WebRequest;
 import io.mosip.registration.processor.status.dto.ExceptionJSONInfo;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 
+/**
+ * The Class RegistrationStatusExceptionHandler.
+ */
 @RestControllerAdvice
 public class RegistrationStatusExceptionHandler {
+	
+	/** The Constant log. */
 	private static final Logger log = LoggerFactory.getLogger(RegistrationStatusExceptionHandler.class);
 
+	/**
+	 * Duplicateentry.
+	 *
+	 * @param Exception as e
+	 * @param WebRequest as request
+	 * @return the response entity
+	 */
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<ExceptionJSONInfo> duplicateentry(final TablenotAccessibleException e, WebRequest request) {
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(e.getErrorCode(), e.getErrorText());

@@ -10,26 +10,46 @@ import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
+/**
+ * The Class FilesValidation.
+ */
 public class FilesValidation {
 
+	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
+	/** The Constant DEMOGRAPHIC_APPLICANT. */
 	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
 			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
 
+	/** The Constant BIOMETRIC_APPLICANT. */
 	public static final String BIOMETRIC_APPLICANT = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
 			+ PacketFiles.APPLICANT.name() + FILE_SEPARATOR;
 
+	/** The Constant BIOMETRIC_INTRODUCER. */
 	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
 			+ PacketFiles.INTRODUCER.name() + FILE_SEPARATOR;
 
+	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	/**
+	 * Instantiates a new files validation.
+	 *
+	 * @param adapter the adapter
+	 */
 	public FilesValidation(FileSystemAdapter<InputStream, Boolean> adapter) {
 
 		this.adapter = adapter;
 	}
 
+	/**
+	 * Files validation.
+	 *
+	 * @param registrationId the registration id
+	 * @param packetInfo the packet info
+	 * @return true, if successful
+	 */
 	public boolean filesValidation(String registrationId, PacketInfo packetInfo) {
 		boolean filesValidated = false;
 
@@ -40,6 +60,13 @@ public class FilesValidation {
 
 	}
 
+	/**
+	 * Validate hash sequence.
+	 *
+	 * @param registrationId the registration id
+	 * @param hashSequence the hash sequence
+	 * @return true, if successful
+	 */
 	private boolean validateHashSequence(String registrationId, HashSequence hashSequence) {
 		boolean isHashSequenceValidated = false;
 
@@ -51,6 +78,13 @@ public class FilesValidation {
 		return isHashSequenceValidated;
 	}
 
+	/**
+	 * Validate demographic sequence.
+	 *
+	 * @param registrationId the registration id
+	 * @param demographicSequence the demographic sequence
+	 * @return true, if successful
+	 */
 	private boolean validateDemographicSequence(String registrationId, DemographicSequence demographicSequence) {
 		boolean isDemographicSequenceValidated = false;
 		for (String applicantFile : demographicSequence.getApplicant()) {
@@ -79,6 +113,13 @@ public class FilesValidation {
 		return isDemographicSequenceValidated;
 	}
 
+	/**
+	 * Validate biometric sequence.
+	 *
+	 * @param registrationId the registration id
+	 * @param biometricSequence the biometric sequence
+	 * @return true, if successful
+	 */
 	private boolean validateBiometricSequence(String registrationId, BiometricSequence biometricSequence) {
 
 		boolean isBiometricSequenceValidated = false;
@@ -91,6 +132,13 @@ public class FilesValidation {
 		return isBiometricSequenceValidated;
 	}
 
+	/**
+	 * Validate biometric introducer.
+	 *
+	 * @param registrationId the registration id
+	 * @param introducer the introducer
+	 * @return true, if successful
+	 */
 	private boolean validateBiometricIntroducer(String registrationId, List<String> introducer) {
 		boolean isIntroducerValidated = false;
 
@@ -114,6 +162,13 @@ public class FilesValidation {
 		return isIntroducerValidated;
 	}
 
+	/**
+	 * Validate biometric applicant.
+	 *
+	 * @param registrationId the registration id
+	 * @param applicant the applicant
+	 * @return true, if successful
+	 */
 	private boolean validateBiometricApplicant(String registrationId, List<String> applicant) {
 		boolean isApplicantValidated = false;
 

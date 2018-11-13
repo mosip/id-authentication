@@ -14,11 +14,7 @@ package io.mosip.kernel.core.datavalidator.spi;
  */
 public interface EmailValidator<T> {
 
-	/**
-	 * Function to generate an Id
-	 * 
-	 * @return  The boolean value true or false depends on validation
-	 */
+
 	boolean validateEmail(T email);
 
 }

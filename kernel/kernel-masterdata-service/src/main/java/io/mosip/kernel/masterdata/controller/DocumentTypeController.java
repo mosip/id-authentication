@@ -26,8 +26,8 @@ public class DocumentTypeController {
 	@Autowired
 	DocumentTypeService documentTypeService;
 
-	@ApiOperation(value = "fetch all the  valid doucment type avialbale for specific document category code ")
-	@GetMapping("/documenttypes/{documentcategoryCode}/{langCode}/")
+	@ApiOperation(value = "Fetch all the  valid doucment type avialbale for specific document category code ")
+	@GetMapping("/documenttypes/{documentcategoryCode}/{langCode}")
 	public ValidDocumentTypeResponseDto getDoucmentTypesForDocumentCategoryAndLangCode(
 			@PathVariable("langCode") String langCode,
 			@PathVariable("documentcategoryCode") String documentcategoryCode) {

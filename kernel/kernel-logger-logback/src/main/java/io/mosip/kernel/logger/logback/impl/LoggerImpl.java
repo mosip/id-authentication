@@ -300,7 +300,7 @@ public class LoggerImpl implements Logger {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.core.logging.MosipLogger#debug(java.lang.String,
+	 * @see io.mosip.kernel.core.logging.Logger#debug(java.lang.String,
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -312,7 +312,7 @@ public class LoggerImpl implements Logger {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.core.logging.MosipLogger#warn(java.lang.String,
+	 * @see io.mosip.kernel.core.logging.Logger#warn(java.lang.String,
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -324,7 +324,7 @@ public class LoggerImpl implements Logger {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.core.logging.MosipLogger#error(java.lang.String,
+	 * @see io.mosip.kernel.core.logging.Logger#error(java.lang.String,
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -336,7 +336,7 @@ public class LoggerImpl implements Logger {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.core.logging.MosipLogger#info(java.lang.String,
+	 * @see io.mosip.kernel.core.logging.Logger#info(java.lang.String,
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -348,7 +348,7 @@ public class LoggerImpl implements Logger {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.core.logging.MosipLogger#trace(java.lang.String,
+	 * @see io.mosip.kernel.core.logging.Logger#trace(java.lang.String,
 	 * java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override

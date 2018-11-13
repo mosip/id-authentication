@@ -19,7 +19,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.InternalAuthRequestValidator;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
@@ -33,7 +33,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class InternelAuthController {
 
 	/** The mosipLogger. */
-	private MosipLogger mosipLogger = IdaLogger.getLogger(InternelAuthController.class);
+	private Logger mosipLogger = IdaLogger.getLogger(InternelAuthController.class);
 
 	/** The auth request validator. */
 

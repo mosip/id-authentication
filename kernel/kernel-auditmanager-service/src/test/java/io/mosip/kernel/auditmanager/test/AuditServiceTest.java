@@ -4,7 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ public class AuditServiceTest {
 	public void auditServiceTest() {
 
 		AuditRequestDto auditRequestDto = new AuditRequestDto();
-		auditRequestDto.setActionTimeStamp(OffsetDateTime.now());
+		auditRequestDto.setActionTimeStamp(LocalDateTime.now());
 		auditRequestDto.setApplicationId("applicationId");
 		auditRequestDto.setApplicationName("applicationName");
 		auditRequestDto.setCreatedBy("createdBy");
@@ -54,6 +54,5 @@ public class AuditServiceTest {
 		when(handler.addAudit(ArgumentMatchers.any())).thenReturn(true);
 		assertThat(service.addAudit(auditRequestDto), is(auditResponseDto));
 	}
-
 
 }

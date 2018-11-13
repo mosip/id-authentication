@@ -8,11 +8,7 @@ package io.mosip.kernel.core.idgenerator.spi;
  *
  */
 public interface VidGenerator<T> {
-	/**
-	 * Function to generate an Id
-	 * 
-	 * @return The generated id
-	 */
+
 	T generateId(String uin);
 
 }

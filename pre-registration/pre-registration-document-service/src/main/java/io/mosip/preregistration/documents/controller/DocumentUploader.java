@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
-import io.mosip.kernel.core.util.exception.MosipJsonParseException;
+import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
+import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.documents.code.StatusCodes;
 import io.mosip.preregistration.documents.dto.DocumentDto;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
@@ -49,7 +49,7 @@ public class DocumentUploader {
 	public ResponseEntity<Map<String, String>> fileUpload(
 			@RequestPart(value = "documentString", required = true) String documentString,
 			@RequestPart(value = "file", required = true) MultipartFile file)
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 		
 		System.out.println("documentString::"+documentString);
 		DocumentDto documentDto = (DocumentDto) JsonUtils.jsonStringToJavaObject(DocumentDto.class, documentString);

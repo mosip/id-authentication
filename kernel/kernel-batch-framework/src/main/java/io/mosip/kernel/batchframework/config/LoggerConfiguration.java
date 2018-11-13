@@ -6,7 +6,7 @@ import io.mosip.kernel.logger.logback.appender.ConsoleAppender;
 import io.mosip.kernel.logger.logback.factory.Logfactory;
 
 /**
- * Logger configuration for using {@link MosipLogger} and logging(in console)
+ * Logger configuration for using {@link Logger} and logging(in console)
  * exceptions which are not handled through controller advice.
  * 
  * @author Ritesh Sinha

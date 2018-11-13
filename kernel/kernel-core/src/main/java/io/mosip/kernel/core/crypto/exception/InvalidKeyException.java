@@ -28,7 +28,9 @@ public class InvalidKeyException extends BaseUncheckedException {
 	 * Constructor with errorCode and errorMessage
 	 * 
 	 * @param errorCode
+	 *            The errorcode for this exception
 	 * @param errorMessage
+	 *            The error message for this exception
 	 */
 	public InvalidKeyException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);

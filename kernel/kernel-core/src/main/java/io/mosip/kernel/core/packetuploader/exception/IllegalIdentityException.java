@@ -10,18 +10,9 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  */
 public class IllegalIdentityException extends BaseUncheckedException {
 
-	/**
-	 * Constant id for serialization
-	 */
 	private static final long serialVersionUID = -7665593898258210837L;
 
-	/**
-	 * Constructor for this class
-	 * 
-	 * @param errorCode
-	 * @param errorMessage
-	 * @param cause
-	 */
+
 	public IllegalIdentityException(String errorCode, String errorMessage, Throwable cause) {
 		super(errorCode, errorMessage, cause);
 	}

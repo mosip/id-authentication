@@ -1,10 +1,49 @@
 package io.mosip.registration.dto.json.metadata;
 
+/**
+ * This class contains the attributes to be displayed for Photograph object in
+ * PacketMetaInfo JSON
+ * 
+ * @author Balaji Sridharan
+ * @since 1.0.0
+ */
 public class Photograph {
 
+	private String language;
+	private String label;
 	private String photographName;
-	private boolean hasExceptionPhoto;
-	private String exceptionPhotoName;
+	private int numRetry;
+	private double qualityScore;
+
+	/**
+	 * @return the language
+	 */
+	public String getLanguage() {
+		return language;
+	}
+
+	/**
+	 * @param language
+	 *            the language to set
+	 */
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	/**
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * @param label
+	 *            the label to set
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
 
 	/**
 	 * @return the photographName
@@ -22,33 +61,33 @@ public class Photograph {
 	}
 
 	/**
-	 * @return the hasExceptionPhoto
+	 * @return the numRetry
 	 */
-	public boolean isHasExceptionPhoto() {
-		return hasExceptionPhoto;
+	public int getNumRetry() {
+		return numRetry;
 	}
 
 	/**
-	 * @param hasExceptionPhoto
-	 *            the hasExceptionPhoto to set
+	 * @param numRetry
+	 *            the numRetry to set
 	 */
-	public void setHasExceptionPhoto(boolean hasExceptionPhoto) {
-		this.hasExceptionPhoto = hasExceptionPhoto;
+	public void setNumRetry(int numRetry) {
+		this.numRetry = numRetry;
 	}
 
 	/**
-	 * @return the exceptionPhotoName
+	 * @return the qualityScore
 	 */
-	public String getExceptionPhotoName() {
-		return exceptionPhotoName;
+	public double getQualityScore() {
+		return qualityScore;
 	}
 
 	/**
-	 * @param exceptionPhotoName
-	 *            the exceptionPhotoName to set
+	 * @param qualityScore
+	 *            the qualityScore to set
 	 */
-	public void setExceptionPhotoName(String exceptionPhotoName) {
-		this.exceptionPhotoName = exceptionPhotoName;
+	public void setQualityScore(double qualityScore) {
+		this.qualityScore = qualityScore;
 	}
 
 }

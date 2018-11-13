@@ -3,7 +3,7 @@ package io.mosip.kernal.auditmanager.test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +39,7 @@ public class AuditEventTest {
 
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 
-		auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId("applicationId")
+		auditRequestBuilder.setActionTimeStamp(LocalDateTime.now()).setApplicationId("applicationId")
 				.setApplicationName("applicationName").setCreatedBy("createdBy").setDescription("description")
 				.setEventId("eventId").setEventName("eventName").setEventType("eventType").setHostIp("hostIp")
 				.setHostName("hostName").setId("id").setIdType("idType").setModuleId("moduleId")

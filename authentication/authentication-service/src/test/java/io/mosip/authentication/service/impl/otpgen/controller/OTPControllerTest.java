@@ -38,7 +38,7 @@ import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * Test functionality
@@ -58,7 +58,7 @@ public class OTPControllerTest {
 	@Mock
 	OtpResponseDTO otpResponseDTO;
 	@Mock
-	MosipLogger LOGGER;
+	Logger LOGGER;
 	@Mock
 	BindingResult result;
 	@Mock

@@ -9,6 +9,9 @@ public interface PDFGenerator {
 	 * This method will convert InputStream to OutputStream
 	 * 
 	 * @param is
+	 *            the processedTemplate in the form of a {@link InputStream}
+	 * @throws IOException
+	 *             throws IOException
 	 * @return outpustStream
 	 */
 	public OutputStream generate(InputStream is) throws IOException;
@@ -20,6 +23,7 @@ public interface PDFGenerator {
 	 *            the processedTemplate in the form of a {@link String}
 	 * @return OutputStream
 	 * @throws IOException
+	 *             throws IOException
 	 */
 	public OutputStream generate(String template) throws IOException;
 
@@ -28,9 +32,13 @@ public interface PDFGenerator {
 	 * save to the given path with given fileName.
 	 * 
 	 * @param templatePath
+	 *     the processedTemplate in the form of a {@link String}
 	 * @param outputFilePath
+	 *                     Output File Path
 	 * @param outputFileName
+	 * 			Output File Name
 	 * @throws IOException
+	 *             throws IOException
 	 */
 	public void generate(String templatePath, String outputFilePath, String outputFileName) throws IOException;
 
