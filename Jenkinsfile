@@ -4,6 +4,8 @@ node{
    	def buildInfo
 	def branch = 'DEV'
 	def projectToBuild = 'kernel'
+	def registry = 'codeguna/mosip'
+	def registryCredential = '0b561449-5504-42bf-bbb9-df38f2a2909a'
    
 	stage ('SCM') {
 	dir(branch) { checkout([$class: 'GitSCM',
@@ -31,4 +33,24 @@ node{
 	stage ('Publish build info') {
         server.publishBuildInfo buildInfo
     }
+	 stage('Build image') {
+	 dir(branch) {
+	 docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
+     def buildName = registry + ":kernel-auditmanager-service-$BUILD_NUMBER"
+     newApp = docker.build(buildName, '-f DEV/kernel/kernel-auditmanager-service/Dockerfile kernel/kernel-auditmanager-service/')
+     newApp.push()
+   }
+  }
+ }
+ 
+ stage('Register image') {
+
+  docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
+   newApp.push 'kernel-auditmanager-service-latest'
+  }
+ }
+ stage('Remove image from local') {
+  sh "docker rmi $registry:kernel-auditmanager-service-$BUILD_NUMBER"
+  sh "docker rmi registry.hub.docker.com/$registry:kernel-auditmanager-service-$BUILD_NUMBER"
+ }
 }
