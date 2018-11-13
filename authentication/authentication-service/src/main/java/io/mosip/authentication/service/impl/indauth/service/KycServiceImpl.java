@@ -22,6 +22,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
+import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoServiceImpl;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
@@ -38,8 +39,6 @@ public class KycServiceImpl implements KycService{
 	private static final String LABEL_SEC = "_label_sec";
 
 	private static final String LABEL_PRI = "_label_pri";
-
-	private static final String LIMITED_KYC = "limited KYC";
 
 	@Autowired
 	Environment env;
@@ -68,21 +67,13 @@ public class KycServiceImpl implements KycService{
 		if(ePrintReq) {
 			Object maskedUin = uin;			
 			if(env.getProperty("uin.masking.required", Boolean.class)) {
-				maskedUin = generateMaskedUIN(uin, env.getProperty("uin.masking.charcount", Integer.class));
+				maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
 			}
 			Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
 			String ePrintInfo = generatePrintableKyc(eKycType,pdfDetails);
 			kycInfo.setEPrint(ePrintInfo);			
 		}
 		return kycInfo;
-	}
-
-	private String generateMaskedUIN(String uin, int maskNo) {
-		char[] uinChar = uin.toCharArray();
-		for(int i=0; i<maskNo; i++) {
-			uinChar[i] = 'X';
-		}
-		return String.valueOf(uinChar);
 	}
 
 	private Map<String, List<IdentityInfoDTO>> retrieveIdentityFromIdRepo(String uin) throws IdAuthenticationBusinessException{

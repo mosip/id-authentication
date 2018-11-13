@@ -8,9 +8,6 @@ import lombok.Data;
 public class IdentityDTO {
 
 	List<IdentityInfoDTO> name;
-	List<IdentityInfoDTO> firstName;
-	List<IdentityInfoDTO> middleName;
-	List<IdentityInfoDTO> lastName;
 	List<IdentityInfoDTO> dateOfBirth;
 	List<IdentityInfoDTO> dateOfBirthType;
 	List<IdentityInfoDTO> age;

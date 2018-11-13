@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -42,6 +43,18 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	private static final String CONSENT_REQ = "consentReq";
 
+	private static final String ACCESS_LEVEL = "ekyc.mua.accesslevel";
+
+	private static final String INVALID_AUTH_REQUEST = "Invalid Auth Request";
+
+	private static final String AUTH_TYPE = "eKycAuthType";
+
+	private static final String MISSING_INPUT_PARAMETER = "Missing Input Parameter";
+
+	/** The env. */
+	@Autowired
+	private Environment env;
+
 	@Override
 	public boolean supports(Class<?> clazz) {
 		return KycAuthRequestDTO.class.equals(clazz);
@@ -52,40 +65,70 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		super.validate(target, errors);
 		KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) target;
 		if (kycAuthRequestDTO != null) {
+
 			validateConsentReq(kycAuthRequestDTO, errors);
-			if (kycAuthRequestDTO.getAuthRequest() == null) {
-				mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
-				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-								AUTH_REQUEST));
-			} else {
-				authRequestValidator.validate(kycAuthRequestDTO.getAuthRequest(), errors);
+
+			if (!errors.hasErrors()) {
+				if (kycAuthRequestDTO.getAuthRequest() != null) {
+					authRequestValidator.validate(kycAuthRequestDTO.getAuthRequest(), errors);
+				} else {
+					mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_AUTH_REQUEST + AUTH_REQUEST);
+					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+									AUTH_REQUEST));
+				}
 			}
 
+			if (!errors.hasErrors()) {
+				validateAuthType(errors, kycAuthRequestDTO);
+			}
+
+			if (!errors.hasErrors()) {
+				validateMUAPermission(errors, kycAuthRequestDTO);
+			}
+
+		} else {
+			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), AUTH_REQUEST));
+		}
+
+	}
+
+	private void validateMUAPermission(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
+		String accesslevel = env.getProperty(ACCESS_LEVEL);
+		if (accesslevel.equalsIgnoreCase("none")) {
+			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorMessage(), AUTH_REQUEST));
+		}
+	}
+
+	private void validateAuthType(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
+		if (kycAuthRequestDTO.getEKycAuthType() != null) {
 			boolean isValidAuthtype = kycAuthRequestDTO.getEKycAuthType().chars().mapToObj(i -> (char) i)
 					.map(String::valueOf)
 					.allMatch(authTypeStr -> EkycAuthType.getEkycAuthType(authTypeStr).filter(eAuthType -> eAuthType
 							.getAuthTypePredicate().test(kycAuthRequestDTO.getAuthRequest().getAuthType()))
 							.isPresent());
-
 			if (!isValidAuthtype) {
-				mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
-				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-								AUTH_REQUEST));
+				mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_TYPE);
+				errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_EKYC_AUTHTYPE.getErrorMessage(),
+								AUTH_TYPE));
 			}
-
 		} else {
-			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
+			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + AUTH_TYPE);
+			errors.rejectValue(AUTH_TYPE, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), AUTH_TYPE));
 		}
 
 	}
 
-	public void validateConsentReq(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
+	private void validateConsentReq(KycAuthRequestDTO kycAuthRequestDTO, Errors errors) {
 		if (!kycAuthRequestDTO.isConsentReq()) {
-			errors.rejectValue(CONSENT_REQ, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
-							CONSENT_REQ));
+			errors.rejectValue(CONSENT_REQ, IdAuthenticationErrorConstants.INVALID_EKYC_CONCENT.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_EKYC_CONCENT.getErrorMessage(), CONSENT_REQ));
 		}
 	}
 

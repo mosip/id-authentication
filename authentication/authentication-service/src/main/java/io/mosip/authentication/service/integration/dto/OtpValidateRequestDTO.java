@@ -6,7 +6,7 @@ import lombok.Data;
 
 /**
  * 
- * @author Dinesh Karuppiah
+ * @author Dinesh Karuppiah.T
  */
 @Data
 public class OtpValidateRequestDTO {
