@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
@@ -47,5 +48,28 @@ public class ObjectMapperUtil {
 			holidayDtos.add(dto);
 		}
 		return holidayDtos;
+	}
+	
+	
+	public List<DeviceLangCodeDtypeDto> mapDeviceDto(List<Object[]> objects) {
+		
+		List<DeviceLangCodeDtypeDto> deviceLangCodeDtypeDtoList = new ArrayList<>();
+		for (Object[] arr : objects) {
+			
+			DeviceLangCodeDtypeDto deviceLangCodeDtypeDto = new DeviceLangCodeDtypeDto();
+		
+			deviceLangCodeDtypeDto.setId((String)arr[0]);
+			deviceLangCodeDtypeDto.setName((String)arr[1]);
+			deviceLangCodeDtypeDto.setMacAddress((String)arr[2]);
+			deviceLangCodeDtypeDto.setSerialNum((String)arr[3]);
+			deviceLangCodeDtypeDto.setIpAddress((String)arr[4]);
+			deviceLangCodeDtypeDto.setDspecId((String)arr[5]);
+			deviceLangCodeDtypeDto.setLangCode((String)arr[6]);
+			deviceLangCodeDtypeDto.setActive((boolean)arr[7]);
+			deviceLangCodeDtypeDto.setDeviceTypeCode((String)arr[8]);
+			deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
+			
+		}
+		return deviceLangCodeDtypeDtoList;
 	}
 }
