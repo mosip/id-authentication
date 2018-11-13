@@ -2,6 +2,7 @@ package io.mosip.registration.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -63,6 +64,17 @@ public class BaseController {
 	 */
 	public static <T> T load(URL url) throws IOException {
 		FXMLLoader loader = new FXMLLoader(url);
+		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
+		return loader.load();
+	}
+	
+	/**
+	 * Loading FXML files along with beans
+	 * 
+	 * @return
+	 */
+	public static <T> T load(URL url, ResourceBundle resource) throws IOException {
+		FXMLLoader loader = new FXMLLoader(url, resource);
 		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
 		return loader.load();
 	}
