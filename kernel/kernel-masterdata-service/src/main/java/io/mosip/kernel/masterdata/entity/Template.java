@@ -12,6 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Neha
+ * @since 1.0.0
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,8 +35,8 @@ public class Template implements Serializable {
 	@Column(name = "name", nullable = false, length = 128)
 	private String name;
 
-	@Column(name = "description", length = 256)
-	private String descr;
+	@Column(name = "descr", length = 256)
+	private String description;
 
 	@Column(name = "file_format_code", length = 36)
 	private String fileFormatCode;
@@ -73,6 +77,6 @@ public class Template implements Serializable {
 	@Column(name = "is_deleted", nullable = false)
 	private boolean isDeleted;
 
-	@Column(name = "del_times")
+	@Column(name = "del_dtimes")
 	private LocalDateTime deletedTimestamp;
 }
