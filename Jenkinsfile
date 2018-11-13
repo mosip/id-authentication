@@ -17,15 +17,15 @@ node{
 	}
 	
    stage ('Artifactory configuration') {
-		rtMaven.tool = 'M2_HOME' // Tool name from Jenkins configuration
+	rtMaven.tool = 'M2_HOME'
         rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
         rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
         buildInfo = Artifactory.newBuildInfo()
-		buildInfo.env.capture = true
-		}
-	stage ('SonarQube Analysis') 
-	withSonarQubeEnv('sonar'){
-        rtMaven.run pom: 'pom.xml', goals: 'clean install sonar:sonar', buildInfo: buildInfo
+	buildInfo.env.capture = true 
+   }
+  stage ('Package') 
+	{
+        rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
     }
 	
 	stage ('Publish build info') {
