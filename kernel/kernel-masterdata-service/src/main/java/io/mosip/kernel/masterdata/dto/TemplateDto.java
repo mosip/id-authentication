@@ -21,7 +21,7 @@ public class TemplateDto {
 
 	private String name;
 
-	private String descr;
+	private String description;
 
 	private String fileFormatCode;
 
