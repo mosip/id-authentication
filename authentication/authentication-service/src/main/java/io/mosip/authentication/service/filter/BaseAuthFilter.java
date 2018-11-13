@@ -2,6 +2,7 @@ package io.mosip.authentication.service.filter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +18,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -64,10 +67,10 @@ public abstract class BaseAuthFilter implements Filter {
 				(HttpServletRequest) request);
 
 		try {
-			ObjectWriter objectWriter = new ObjectMapper().writerWithDefaultPrettyPrinter();
-			
-			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n" + objectWriter
-					.writeValueAsString(decodedRequest(getRequestBody(requestWrapper.getInputStream()))));
+			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
+
+			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n"
+					+ objectWriter.writeValueAsString(decodedRequest(getRequestBody(requestWrapper.getInputStream()))));
 			requestWrapper.resetInputStream();
 
 			requestWrapper.replaceData(objectWriter
@@ -77,6 +80,8 @@ public abstract class BaseAuthFilter implements Filter {
 			CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
 
 			chain.doFilter(requestWrapper, responseWrapper);
+
+			requestWrapper.resetInputStream();
 
 			response.getWriter().write(
 					mapper.writeValueAsString(encodedResponse(setTxnId(getRequestBody(requestWrapper.getInputStream()),
@@ -104,7 +109,7 @@ public abstract class BaseAuthFilter implements Filter {
 
 	private Map<String, Object> getRequestBody(InputStream inputStream) throws IdAuthenticationAppException {
 		try {
-			return mapper.readValue(inputStream, new TypeReference<Map<String, Object>>() {
+			return mapper.readValue(IOUtils.toString(inputStream, Charset.defaultCharset()), new TypeReference<Map<String, Object>>() {
 			});
 		} catch (IOException | ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
@@ -137,6 +142,7 @@ public abstract class BaseAuthFilter implements Filter {
 
 	protected Object decode(String stringToDecode) throws IdAuthenticationAppException {
 		try {
+			System.err.println(stringToDecode);
 			if (stringToDecode != null) {
 				return mapper.readValue(Base64.getDecoder().decode(stringToDecode),
 						new TypeReference<Map<String, Object>>() {

@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.controller;
 
-import org.apache.logging.log4j.CloseableThreadContext.Instance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
@@ -10,7 +9,9 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
@@ -43,6 +44,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class AuthController {
 
+	private static final String SESSION_ID = "sessionId";
+
 	/** The mosipLogger. */
 	private MosipLogger mosipLogger = IdaLogger.getLogger(AuthController.class);
 
@@ -65,9 +68,9 @@ public class AuthController {
 	 * @param binder
 	 *            the binder
 	 */
-	@InitBinder("authRequest")
+	@InitBinder("authRequestDTO")
 	private void initAuthRequestBinder(WebDataBinder binder) {
-		binder.addValidators(authRequestValidator);
+		binder.setValidator(authRequestValidator);
 	}
 	
 	/**
@@ -75,7 +78,7 @@ public class AuthController {
 	 * @param binder
 	 *            the binder
 	 */
-	@InitBinder("kycRequest")
+	@InitBinder("kycAuthRequestDTO")
 	private void initKycBinder(WebDataBinder binder) {
 		binder.addValidators(kycReqValidator);
 	}
@@ -96,7 +99,7 @@ public class AuthController {
 	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
-	public AuthResponseDTO authenticateApplication(@ModelAttribute("authRequest") @Validated @RequestBody AuthRequestDTO authrequestdto,
+	public AuthResponseDTO authenticateApplication(@Validated @RequestBody AuthRequestDTO authrequestdto,
 			@ApiIgnore Errors errors) throws IdAuthenticationAppException {
 		AuthResponseDTO authResponsedto = null;
 
@@ -105,10 +108,10 @@ public class AuthController {
 
 			authResponsedto = authFacade.authenticateApplicant(authrequestdto);
 		} catch (IDDataValidationException e) {
-			mosipLogger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
 		}
 
@@ -128,7 +131,7 @@ public class AuthController {
 	@ApiOperation(value = "eKyc Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
-	public KycAuthResponseDTO processKyc(@ModelAttribute("kycRequest") @Validated @RequestBody KycAuthRequestDTO kycAuthRequestDTO,
+	public KycAuthResponseDTO processKyc(@Validated @RequestBody KycAuthRequestDTO kycAuthRequestDTO,
 			@ApiIgnore Errors errors) throws IdAuthenticationBusinessException, IdAuthenticationAppException {
 		AuthResponseDTO authResponseDTO = null;
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
@@ -143,10 +146,10 @@ public class AuthController {
 				kycAuthResponseDTO.getResponse().setAuth(authResponseDTO);
 			}
 		} catch (IDDataValidationException e) {
-			mosipLogger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		} catch (IdAuthenticationBusinessException e) {
-			mosipLogger.error("sessionId", null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
 		}
 
