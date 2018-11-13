@@ -50,8 +50,6 @@ export class DashBoardComponent implements OnInit {
   }
 
   initUsers() {
-    this.users = [];
-    this.isFetched = false;
     this.regService.getUsers().
       subscribe(
         (applicants: Applicant[]) => {
@@ -60,6 +58,7 @@ export class DashBoardComponent implements OnInit {
               user['fullname'], user['appointment_dtimesz'], user['status_code']));
           }
           this.isFetched = true;
+          console.log(applicants);
         }
       );
   }
@@ -126,7 +125,16 @@ export class DashBoardComponent implements OnInit {
               message: 'Action was completed successfully'
             };
             dialogRef = this.openDialog(message, '250px');
-            this.initUsers();
+            const index = this.users.indexOf(element);
+            this.users.splice(index, 1);
+            this.dataSource._updateChangeSubscription();
+          } else {
+            const message = {
+              case: 'MESSAGE',
+              title: 'Error',
+              message: 'Action could not be completed'
+            };
+            dialogRef = this.openDialog(message, '250px');
           }
         });
       }
