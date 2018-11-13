@@ -18,9 +18,4 @@ public interface QcuserRegRepositary<T extends BaseQcuserEntity<?>, E> extends B
 	@Query("SELECT qcUser.id FROM UserDetailEntity qcUser WHERE qcUser.isActive=TRUE")
 	public List<E> findAllUserIds();
 	
-	@Query("SELECT ape,ade FROM ApplicantPhotographEntity ape, ApplicantDemographicEntity ade"
-            + " WHERE ade.id.regId=:regId")
-    public List<Object[]> getApplicantInfo(@Param("regId") String regId);
-	
-	
 }

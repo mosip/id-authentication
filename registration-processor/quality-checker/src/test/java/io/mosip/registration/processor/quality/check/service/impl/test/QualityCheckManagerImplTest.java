@@ -1,8 +1,6 @@
 package io.mosip.registration.processor.quality.check.service.impl.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
@@ -10,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,17 +20,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
-import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
+import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
+import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
 import io.mosip.registration.processor.quality.check.dao.QCUserInfoDao;
-import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
-import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdEntity;
-import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdPKEntity;
-import io.mosip.registration.processor.quality.check.entity.UserDetailPKEntity;
 import io.mosip.registration.processor.quality.check.exception.InvalidQcUserIdException;
 import io.mosip.registration.processor.quality.check.exception.InvalidRegistrationIdException;
 import io.mosip.registration.processor.quality.check.exception.ResultNotFoundException;
@@ -44,7 +38,7 @@ import io.mosip.registration.processor.quality.check.service.impl.QualityCheckMa
 @RunWith(MockitoJUnitRunner.class)
 public class QualityCheckManagerImplTest {
 	@InjectMocks
-	QualityCheckManager<String, ApplicantInfoDto, QCUserDto> qualityCheckManager = new QualityCheckManagerImpl();
+	QualityCheckManager<String, QCUserDto> qualityCheckManager = new QualityCheckManagerImpl();
 
 	@Mock
 	private ApplicantInfoDao applicantInfoDao;
@@ -112,7 +106,7 @@ public class QualityCheckManagerImplTest {
 				.thenThrow(exp);
 		qualityCheckManager.assignQCUser("2018782130000116102018124324");
 	}
-	@Test
+	/*@Test
 	public void getPacketsforQCUserTest(){
 		ApplicantInfoDto applicantInfoDto=new ApplicantInfoDto();
 		applicantInfoDto.setApplicantPhoto(mock(Photograph.class));
@@ -121,16 +115,16 @@ public class QualityCheckManagerImplTest {
 		Mockito.when(applicantInfoDao.getPacketsforQCUser(ArgumentMatchers.anyString())).thenReturn(Arrays.asList(applicantInfoDto));
 		List<ApplicantInfoDto> list=qualityCheckManager.getPacketsforQCUser("qc001");
 		assertFalse(list.isEmpty());
-	}
+	}*/
 	
-	@Test(expected = TablenotAccessibleException.class)
+	/*@Test(expected = TablenotAccessibleException.class)
 	public void getPacketsforQCUserFailureTest(){
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(applicantInfoDao.getPacketsforQCUser(ArgumentMatchers.anyString())).thenThrow(exp);
 		qualityCheckManager.getPacketsforQCUser("qc001");
 		
-	}
+	}*/
 	@Test
 	public void updateQCUserStatusTest() {
 

@@ -13,7 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
  * @author M1048399 The persistent class for the user_role database table.
  */
 @Entity
-@Table(name = "user_role", schema = "regprc")
+@Table(name = "user_role", schema = "master")
 public class UserRoleEntity extends BaseQcuserEntity<UserRolePKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 

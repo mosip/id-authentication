@@ -6,23 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
+import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
+import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
 import io.mosip.registration.processor.quality.check.client.QCUsersClient;
 import io.mosip.registration.processor.quality.check.code.QualityCheckerStatusCode;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
-import io.mosip.registration.processor.quality.check.dao.QCUserInfoDao;
-import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
-import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdEntity;
-import io.mosip.registration.processor.quality.check.entity.QcuserRegistrationIdPKEntity;
 import io.mosip.registration.processor.quality.check.exception.InvalidQcUserIdException;
 import io.mosip.registration.processor.quality.check.exception.InvalidRegistrationIdException;
 import io.mosip.registration.processor.quality.check.exception.ResultNotFoundException;
@@ -30,19 +25,19 @@ import io.mosip.registration.processor.quality.check.exception.TablenotAccessibl
 
 
 @Component
-public class QualityCheckManagerImpl implements QualityCheckManager<String, ApplicantInfoDto, QCUserDto> {
+public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUserDto> {
 	@Autowired
 	private ApplicantInfoDao applicantInfoDao;
 
 	@Autowired
 	private QCUsersClient qcUsersClient;
 
-	@Autowired
+	/*@Autowired
 	private AuditRequestBuilder auditRequestBuilder;
 
 	@Autowired
 	private AuditHandler<AuditRequestDto> auditHandler;
-
+*/
 	@Override
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
 		List<String> qcUsersList = qcUsersClient.getAllQcuserIds();
@@ -55,30 +50,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 		return qcUserDto;
 	}
 
-	@Override
-	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
-		boolean isTransactionSuccessful = false;
-		List<ApplicantInfoDto> applicantInfoDtoList = null;
-		try {
-			applicantInfoDtoList = applicantInfoDao.getPacketsforQCUser(qcuserId);
-			isTransactionSuccessful = true;
-		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Table Not Accessible", e);
-		} finally {
-			String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
-					: "description--Demographic Failed to save";
-			/*
-			 * createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-			 * AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-			 * AuditLogTempConstant.EVENT_ID.toString(),
-			 * AuditLogTempConstant.EVENT_TYPE.toString(),
-			 * AuditLogTempConstant.EVENT_TYPE.toString());
-			 */
-		}
-		return applicantInfoDtoList;
-
-	}
-
+	
 	@Override
 	public List<QCUserDto> updateQCUserStatus(List<QCUserDto> qcUserDtos) {
 		boolean isTransactionSuccessful = false;

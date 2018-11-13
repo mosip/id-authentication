@@ -16,7 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp;
  * 
  */
 @Entity
-@Table(name="qcuser_registration_id", schema = "regprc")
+@Table(name="qcuser_registration", schema = "regprc")
 public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrationIdPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 

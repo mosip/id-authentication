@@ -28,18 +28,9 @@ import io.swagger.annotations.ApiResponses;
 public class QualityCheckerController {
 
 	@Autowired
-	private QualityCheckManager<String, ApplicantInfoDto, QCUserDto> qualityCheckManger;
+	private QualityCheckManager<String, QCUserDto> qualityCheckManger;
 
-	@GetMapping(path = "/getexceptiondata", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Get the exception entity", response = QualityCheckerStatusCode.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Assigned packets fetched successfully"),
-			@ApiResponse(code = 400, message = "Unable to fetch the Exception Data") })
-	public ResponseEntity<List<ApplicantInfoDto>> getPacketsforQCUser(
-			@RequestParam(value = "qcuserId", required = true) String qcuserId) {
-		List<ApplicantInfoDto> packets = qualityCheckManger.getPacketsforQCUser(qcuserId);
-		return ResponseEntity.status(HttpStatus.OK).body(packets);
-	}
-
+	
 	@PostMapping(path = "/decisionStatus", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the QCUser entity", response = QualityCheckerStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "QC User Entity decision status successfully updated") })

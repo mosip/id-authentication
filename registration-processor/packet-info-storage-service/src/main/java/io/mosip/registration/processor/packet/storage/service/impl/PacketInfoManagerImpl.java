@@ -116,8 +116,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	String description = "";
 
 	/** The core audit request builder. */
-	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	/*@Autowired
+	CoreAuditRequestBuilder coreAuditRequestBuilder;*/
 
 	@Autowired
 	private PacketInfoDao packetInfoDao;
@@ -167,8 +167,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			description = isTransactionSuccessful ? "Packet meta data saved successfully"
 					: "Packet meta data unsuccessful";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+			/*coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());*/
 		}
 
 	}
@@ -204,8 +204,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			description = isTransactionSuccessful ? "Demographic data saved successfully"
 					: "Demographic data Failed to save";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
+			/*coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());*/
 
 		}
 
