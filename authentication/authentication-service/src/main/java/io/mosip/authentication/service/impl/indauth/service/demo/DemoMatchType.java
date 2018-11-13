@@ -4,10 +4,8 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -17,10 +15,8 @@ import java.util.stream.Stream;
 import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
-import io.mosip.authentication.core.dto.indauth.IdentityValue;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.authentication.service.config.IDAMappingConfig;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 
 /**
@@ -189,20 +185,6 @@ public enum DemoMatchType implements MatchType {
 		this.matchedBit = matchedBit;
 	}
 
-	public Optional<Object> getIdentityInfo(IdentityDTO identity, Function<LanguageType, String> languageFetcher) {
-		String language = languageFetcher.apply(this.getLanguageType());
-		return Optional.of(identity).flatMap(identityDTO -> getInfo(identityInfoFunction.apply(identityDTO), language));
-	}
-
-	private static Optional<Object> getInfo(List<IdentityInfoDTO> identityInfos, String language) {
-		if (identityInfos != null && !identityInfos.isEmpty()) {
-			return identityInfos.parallelStream()
-					.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage()))
-					.<Object>map(IdentityInfoDTO::getValue).findAny();
-		}
-		return Optional.empty();
-	}
-
 	public LanguageType getLanguageType() {
 		return langType;
 	}
@@ -222,7 +204,7 @@ public enum DemoMatchType implements MatchType {
 	 *
 	 * @return the entity info
 	 */
-	private Function<String, String> getEntityInfoFetcher() {
+	public Function<String, String> getEntityInfoFetcher() {
 		return entityInfoFetcher;
 	}
 
@@ -259,65 +241,6 @@ public enum DemoMatchType implements MatchType {
 		return idMapping;
 	}
 
-	public static String concatDemo(String... demoValues) {
-		StringBuilder demoBuilder = new StringBuilder();
-		for (int i = 0; i < demoValues.length; i++) {
-			String demo = demoValues[i];
-			if (null != demo && demo.length() > 0) {
-				demoBuilder.append(demo);
-				if (i < demoValues.length - 1) {
-					demoBuilder.append(" ");
-				}
-			}
-		}
-		return demoBuilder.toString();
-	}
-
-	private static Optional<IdentityValue> getIdentityValue(String name, String languageCode,
-			Map<String, List<IdentityInfoDTO>> demoInfo) {
-		List<IdentityInfoDTO> identityInfoList = demoInfo.get(name);
-		if (identityInfoList != null && !identityInfoList.isEmpty()) {
-			return identityInfoList.stream().filter(
-					idinfo -> idinfo.getLanguage() != null && idinfo.getLanguage().equalsIgnoreCase(languageCode))
-					.map(idInfo -> new IdentityValue(languageCode, idInfo.getValue())).findAny();
-		}
-
-		return Optional.empty();
-	}
-
-	private static List<String> getIdMappingValue(IdMapping idMapping, IDAMappingConfig idMappingConfig) {
-		List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig);
-		List<String> fullMapping = new ArrayList<>();
-		for (String mappingStr : mappings) {
-			Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr);
-			if (mappingInternal.isPresent()) {
-				List<String> internalMapping = getIdMappingValue(mappingInternal.get(), idMappingConfig);
-				fullMapping.addAll(internalMapping);
-			} else {
-				fullMapping.add(mappingStr);
-			}
-		}
-		return fullMapping;
-	}
-
-	private static List<IdentityValue> getDemoValue(List<String> propertyNames, String languageCode,
-			Map<String, List<IdentityInfoDTO>> demoEntity) {
-		return propertyNames.stream().map(propName -> getIdentityValue(propName, languageCode, demoEntity))
-				.filter(val -> val.isPresent()).<IdentityValue>map(Optional::get).collect(Collectors.toList());
-	}
-
-	public IdentityValue getEntityInfo(Map<String, List<IdentityInfoDTO>> demoEntity,
-			Function<LanguageType, String> languageCodeFetcher, Function<String, Optional<String>> languageNameFetcher,
-			LocationInfoFetcher locationInfoFetcher, IDAMappingConfig idMappingConfig) {
-		String languageCode = languageCodeFetcher.apply(getLanguageType());
-		Optional<String> languageName = languageNameFetcher.apply(languageCode);
-		List<String> propertyNames = getIdMappingValue(getIdMapping(), idMappingConfig);
-		List<IdentityValue> demoValues = getDemoValue(propertyNames, languageCode, demoEntity);
-		String[] demoValuesStr = demoValues.stream().map(IdentityValue::getValue).toArray(size -> new String[size]);
-		String demoValue = concatDemo(demoValuesStr);
-		String entityInfo = getEntityInfoFetcher().apply(demoValue);
-		return new IdentityValue(languageName.orElse(""), entityInfo);
-	}
 
 	@Override
 	public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
