@@ -2,7 +2,11 @@ package io.mosip.authentication.service.impl.indauth.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -19,7 +24,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.kernel.core.spi.pdfgenerator.PdfGenerator;
 import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
+import io.mosip.kernel.pdfgenerator.itext.impl.PdfGeneratorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
 
 /**
@@ -30,8 +37,11 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PdfGeneratorImpl.class })
 public class TemplatesTest {
+	
+	@Autowired
+	private PdfGenerator pdfGenerator;
 	
 	private static String resultEKYCFullPri = "<html>\r\n" + 
 			"<head>\r\n" + 
@@ -179,17 +189,6 @@ public class TemplatesTest {
 				.build();
 	}
 	
-	@Test
-	public void testFullKYCTemplatePri() throws IdAuthenticationBusinessException, IOException {
-		Map<String, Object> valueMap = getTemplateValueMap();
-		
-		StringWriter stringWriter = new StringWriter();
-		templateManager.merge("templates/ekyc-full-pri-template.html", stringWriter, valueMap);
-		
-		
-		assertEquals(resultEKYCFullPri,stringWriter.toString());
-	}
-
 	private Map<String, Object> getTemplateValueMap() {
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("uin_label_pri", "UIN");
@@ -219,8 +218,75 @@ public class TemplatesTest {
 		valueMap.put("location3_pri", "India");
 		valueMap.put("pinCode_label_pri", "Pincode");
 		valueMap.put("pinCode_pri", "600017");
+		
+		
+		
+		
+		valueMap.put("uin_label_sec", "UIN");
+		valueMap.put("uin_sec", "1234567890");
+		valueMap.put("name_label_sec", "name");
+		valueMap.put("name_sec", "Sathish Kumar");
+		valueMap.put("dob_label_sec", "Date of Birth");
+		valueMap.put("dob_sec", "15/04/1991");
+		valueMap.put("gender_label_sec", "Gender");
+		valueMap.put("gender_sec", "M");
+		valueMap.put("phoneNumber_label_sec", "Phone No.");
+		valueMap.put("phoneNumber_sec", "988287272");
+		valueMap.put("emailId_label_sec", "Email Id");
+		valueMap.put("emailId_sec", "sathisk@abc.com");
+		
+		valueMap.put("addressLine1_label_sec", "Address Line1");
+		valueMap.put("addressLine1_sec", "14, Madhan Street");
+		valueMap.put("addressLine2_label_sec", "Address Line2");
+		valueMap.put("addressLine2_sec", "Ram Avenue");
+		valueMap.put("addressLine3_label_sec", "Address Line3");
+		valueMap.put("addressLine3_sec", "T Nagar");
+		valueMap.put("location1_label_sec", "City");
+		valueMap.put("location1_sec", "Chennai");
+		valueMap.put("location2_label_sec", "State");
+		valueMap.put("location2_sec", "Tamil Nadu");
+		valueMap.put("location3_label_sec", "Country");
+		valueMap.put("location3_sec", "India");
+		valueMap.put("pinCode_label_sec", "Pincode");
+		valueMap.put("pinCode_sec", "600017");
+		
 		return valueMap;
 	}
+
+	
+	@Test
+	public void testFullKYCTemplatePri() throws IdAuthenticationBusinessException, IOException {
+		Map<String, Object> valueMap = getTemplateValueMap();
+		
+		StringWriter stringWriter = new StringWriter();
+		templateManager.merge("templates/ekyc-full-pri-template.html", stringWriter, valueMap);
+		
+		
+		assertEquals(resultEKYCFullPri,stringWriter.toString());
+	}
+	
+	@Test
+	public void testFullKYCTemplateSec() throws IdAuthenticationBusinessException, IOException {
+		Map<String, Object> valueMap = getTemplateValueMap();
+		
+		StringWriter stringWriter = new StringWriter();
+		templateManager.merge("templates/ekyc-full-sec-template.html", stringWriter, valueMap);
+		
+		
+		assertEquals(resultEKYCFullPri,stringWriter.toString());
+	}
+	
+	@Test
+	public void testFullKYCTemplatePriSec() throws IdAuthenticationBusinessException, IOException {
+		Map<String, Object> valueMap = getTemplateValueMap();
+		
+		StringWriter stringWriter = new StringWriter();
+		templateManager.merge("templates/ekyc-full-pri-sec-template.html", stringWriter, valueMap);
+		
+		
+		assertEquals(resultEKYCFullPri,stringWriter.toString());
+	}
+	
 	
 	@Test
 	public void testPdfGen() throws IOException {
@@ -229,8 +295,14 @@ public class TemplatesTest {
 		StringWriter stringWriter = new StringWriter();
 		templateManager.merge("templates/ekyc-full-pri-template.html", stringWriter, valueMap);
 		
+		ByteArrayOutputStream baos = (ByteArrayOutputStream)pdfGenerator.generate(stringWriter.toString());
+		byte[] byteArray = baos.toByteArray();
 		
-
+		try(FileOutputStream fileOutputStream = new FileOutputStream(System.getProperty("user.dir") + File.separator + "ekyc-full-pri-template.pdf");) {
+			fileOutputStream.write(byteArray);
+			fileOutputStream.flush();
+		}
+		
 	}
 
 }
