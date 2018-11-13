@@ -50,6 +50,8 @@ export class DashBoardComponent implements OnInit {
   }
 
   initUsers() {
+    this.users = [];
+    this.isFetched = false;
     this.regService.getUsers().
       subscribe(
         (applicants: Applicant[]) => {
@@ -79,26 +81,56 @@ export class DashBoardComponent implements OnInit {
   }
 
   onNewApplication() {
-    this.openDialog();
+    const data = {
+      case: 'APPLICANTS'
+    };
+  const dialogRef =  this.openDialog(data, `250px`);
+  dialogRef.afterClosed().subscribe(numberOfApplicant => {
+    if (numberOfApplicant != null) {
+      this.router.navigate(['demographic', numberOfApplicant], { relativeTo: this.route });
+      this.isNewApplication = true;
+    }
+  });
   }
 
 
-  openDialog(): void {
+  openDialog(data, width) {
     const dialogRef = this.dialog.open(DialougComponent, {
-      width: '250px',
+      width: width,
+      data: data
     });
+    return dialogRef;
+  }
 
-    dialogRef.afterClosed().subscribe(numberOfApplicant => {
-      if (numberOfApplicant != null) {
-        this.router.navigate(['demographic', numberOfApplicant], { relativeTo: this.route });
-        this.isNewApplication = true;
+  onDelete(element) {
+    const data = {
+      case: 'DISCARD'
+    };
+    let dialogRef = this.openDialog(data, `350px`);
+    dialogRef.afterClosed().subscribe(selectedOption => {
+      if (selectedOption !== undefined) {
+        console.log(selectedOption, element);
+        const body = {
+          case: 'CONFIRMATION',
+          title: 'Confirm',
+          message: 'The selected application will be deleted. Please confirm.'
+        };
+        dialogRef = this.openDialog(body, '250px');
+        dialogRef.afterClosed().subscribe(confirm => {
+          if (confirm) {
+            console.log(confirm);
+            // Api will be called here, status will be checked and then message displayed
+            const message = {
+              case: 'MESSAGE',
+              title: 'Success',
+              message: 'Action was completed successfully'
+            };
+            dialogRef = this.openDialog(message, '250px');
+            this.initUsers();
+          }
+        });
       }
     });
-  }
-
-  onDelete() {
-    console.log('On delete');
-
   }
 
   onModifyData() {
