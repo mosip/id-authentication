@@ -33,6 +33,7 @@ import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
  * @since 1.0.0
  *
  */
+@SuppressWarnings("unchecked")
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
@@ -62,7 +63,7 @@ public class DocumentCategoryServiceExceptionTest {
 		documentCategory1.setName("POI");
 		documentCategory1.setLangCode("ENG");
 		documentCategory1.setActive(true);
-		documentCategory1.setDeleted(false);
+		documentCategory1.setIsDeleted(false);
 		documentCategory1.setDescription(null);
 		documentCategory1.setCreatedBy("Neha");
 		documentCategory1.setUpdatedBy(null);
@@ -72,7 +73,7 @@ public class DocumentCategoryServiceExceptionTest {
 		documentCategory2.setName("POR");
 		documentCategory2.setLangCode("ENG");
 		documentCategory2.setActive(true);
-		documentCategory2.setDeleted(false);
+		documentCategory2.setIsDeleted(false);
 		documentCategory2.setDescription(null);
 		documentCategory2.setCreatedBy("Neha");
 		documentCategory2.setUpdatedBy(null);
@@ -87,7 +88,6 @@ public class DocumentCategoryServiceExceptionTest {
 		documentCategoryService.getAllDocumentCategory();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test(expected = DocumentCategoryMappingException.class)
 	public void getAllDocumentCategorysMappingException() {
 		Mockito.when(documentCategoryRepository.findAll(DocumentCategory.class)).thenReturn(documentCategoryList);
@@ -107,7 +107,6 @@ public class DocumentCategoryServiceExceptionTest {
 		documentCategoryService.getAllDocumentCategoryByLaguageCode(Mockito.anyString());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test(expected = DocumentCategoryMappingException.class)
 	public void getAllDocumentCategoryByLaguageCodeMappingException() {
 		Mockito.when(documentCategoryRepository.findAllByLangCode(Mockito.anyString())).thenReturn(documentCategoryList);
@@ -127,7 +126,6 @@ public class DocumentCategoryServiceExceptionTest {
 		documentCategoryService.getDocumentCategoryByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test(expected = DocumentCategoryMappingException.class)
 	public void getDocumentCategoryByCodeAndLangCodeMappingException() {
 		Mockito.when(documentCategoryRepository.findByCodeAndLangCode(Mockito.anyString(), Mockito.anyString())).thenReturn(documentCategory1);
