@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,12 +92,30 @@ public class DemoMatchTypeTest {
 	}
 
 	@Test
-	public void TestAgeisExist() {
+	public void TestAgeIsExist() {
 		Optional<MatchingStrategy> matchStrategy = DemoMatchType.AGE
 				.getAllowedMatchingStrategy(AgeMatchingStrategy.EXACT.getType());
 		assertEquals(matchStrategy.get(), AgeMatchingStrategy.EXACT);
 	}
 
+	@Test
+	public void testAgeIsExistBetweenPeriod() throws ParseException {
+
+		String dob = "2000-09-25";
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(sdf.parse(dob));
+		int dobYear = calendar.get(Calendar.YEAR);
+		int curYear = Calendar.getInstance().get(Calendar.YEAR);
+		int currentAge = curYear - dobYear;
+
+		Function<String, String> entityInfoFetcher = DemoMatchType.AGE.getEntityInfoFetcher();
+		String age = entityInfoFetcher.apply(dob);
+		System.out.println(entityInfoFetcher);
+		assertEquals(age, String.valueOf(currentAge));
+	}
+	
 	@Ignore
 	@Test
 	public void TestFullAddress() {
