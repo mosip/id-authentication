@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Time } from '@angular/common';
 
 @Component({
@@ -14,6 +14,23 @@ export class DemographicComponent implements OnInit {
   numberOfApplicants: number;
   userForm: FormGroup;
   numbers: number[];
+
+  isPrimary = false;
+  fullName = '';
+  gender = 'male';
+  addressLine1 = '';
+  addressLine2 = '';
+  addressLine3 = '';
+  region = '';
+  province = '';
+  city = '';
+  localAdministrativeAuthority = '';
+  email = '';
+  dob: Date;
+  age: number;
+  postalCode: number;
+  mobilePhone: number;
+  pin: number;
 
   constructor(private route: ActivatedRoute,
     private router: Router) { }
@@ -30,37 +47,37 @@ export class DemographicComponent implements OnInit {
   }
 
   initForm() {
-    let isPrimary = false;
-    let fullName = '';
-    let gender = '';
-    let addressLine1 = '';
-    let addressLine2 = '';
-    let addressLine3 = '';
-    let region = '';
-    let province = '';
-    let city = '';
-    let localAdministrativeAuthority = '';
-    let email = '';
-    let dob: Time;
-    let age: number;
-    let postalCode: number;
-    let mobilePhone: number;
-    let pin: number;
 
+    if (this.step === 0){
+      console.log(this.step);
+      
+      this.isPrimary = true;
+    }
+    else{
+      console.log(this.step + "else");
+      
+      this.isPrimary = false;
+    }
     this.userForm = new FormGroup({
-      'isPrimary' : new FormControl(isPrimary),
-      'fullName': new FormControl(fullName, Validators.required),
-      'gender': new FormControl(gender, Validators.required),
-      'addressLine1': new FormControl(addressLine1, Validators.required),
-      'addressLine2': new FormControl(addressLine2),
-      'addressLine3': new FormControl(addressLine3),
-      'region': new FormControl(region, Validators.required),
-      'province': new FormControl(province, Validators.required),
-      'city': new FormControl(city, Validators.required),
-      'localAdministrativeAuthority': new FormControl(localAdministrativeAuthority, Validators.required),
-      'email': new FormControl(email, Validators.required),
-    });
+      'isPrimary': new FormControl(this.isPrimary),
+      'fullName': new FormControl(this.fullName, Validators.required),
+      'gender': new FormControl(this.gender),
+      'addressLine1': new FormControl(this.addressLine1, Validators.required),
+      'addressLine2': new FormControl(this.addressLine2),
+      'addressLine3': new FormControl(this.addressLine3),
+      'region': new FormControl(this.region, Validators.required),
+      'province': new FormControl(this.province, Validators.required),
+      'city': new FormControl(this.city, Validators.required),
+      'localAdministrativeAuthority': new FormControl(this.localAdministrativeAuthority, Validators.required),
+      'email': new FormControl(this.email, Validators.required),
+      'age': new FormControl(this.age, Validators.required),
+      'dob': new FormControl(this.dob),
+      'postalCode': new FormControl(this.postalCode, Validators.required),
+      'mobilePhone': new FormControl(this.mobilePhone, Validators.required),
+      'pin': new FormControl(this.pin, Validators.required)
+    })
 
+    this.isPrimary = false;
   }
 
 
@@ -69,8 +86,7 @@ export class DemographicComponent implements OnInit {
   }
 
   nextStep() {
-    if (this.step == this.numbers.length - 1)
-      this.saveForm();
+    this.saveForm();
     this.step++;
   }
 
@@ -80,6 +96,19 @@ export class DemographicComponent implements OnInit {
 
   saveForm() {
     console.log("save Form");
+    // console.log(this.userForm.get('gender'));
+    console.log(this.userForm);
+  }
 
+  onGenderChange(value) {
+    if (value.checked === true) {
+      this.gender = 'female';
+    } else {
+      this.gender = 'male';
+    }
+  }
+
+  onDOBChange(value) {
+    console.log(value);
   }
 }

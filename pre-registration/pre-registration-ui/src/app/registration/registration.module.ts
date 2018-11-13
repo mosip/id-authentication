@@ -10,9 +10,8 @@ import { TimeSelectionComponent } from './time-selection/time-selection.componen
 import { CenterSelectionComponent } from './center-selection/center-selection.component';
 import { RegistrationRoutingModule } from './registration-routing.module';
 import { DialougComponent } from './dialoug/dialoug.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
-import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { DashBoardComponent } from './dashboard/dashboard.component';
 import { ParentComponent } from './parent/parent.component';
@@ -21,6 +20,7 @@ import { ParentComponent } from './parent/parent.component';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     RegistrationRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
