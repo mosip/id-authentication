@@ -684,7 +684,7 @@ public class RegistrationController extends BaseController {
 											RegistrationConstants.PROVINCE_EMPTY);
 									province.requestFocus();
 								} else {
-									if (validateRegex(postalCode, "\\d{1,2}")) {
+									if (validateRegex(postalCode, "\\d++")) {
 										generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 												RegistrationConstants.POSTAL_CODE_EMPTY);
 										postalCode.requestFocus();
@@ -694,7 +694,7 @@ public class RegistrationController extends BaseController {
 													RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY);
 											localAdminAuthority.requestFocus();
 										} else {
-											if (validateRegex(mobileNo, "\\d{1,2}")) {
+											if (validateRegex(mobileNo, "\\d++")) {
 												generateAlert("Error",
 														AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 														RegistrationConstants.MOBILE_NUMBER_EMPTY,
