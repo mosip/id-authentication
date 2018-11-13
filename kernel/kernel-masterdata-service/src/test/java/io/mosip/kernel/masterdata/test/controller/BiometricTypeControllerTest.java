@@ -83,7 +83,7 @@ public class BiometricTypeControllerTest {
 
 		Mockito.when(biometricTypeService.getAllBiometricTypes()).thenReturn(biometricTypeDtoList);
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/all"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes"))
 				.andExpect(MockMvcResultMatchers.content().json(EXPECTED_LIST))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
@@ -92,7 +92,7 @@ public class BiometricTypeControllerTest {
 	public void fetchAllBiometricTypeUsingLangCodeTest() throws Exception {
 		Mockito.when(biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString()))
 				.thenReturn(biometricTypeDtoList);
-		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/all/ENG"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/ENG"))
 				.andExpect(MockMvcResultMatchers.content().json(EXPECTED_LIST))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
