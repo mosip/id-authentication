@@ -74,6 +74,11 @@ class ResettableStreamHttpServletRequest extends
 			return new BufferedReader(new InputStreamReader(servletStream));
 		}
 		
+		public void replaceData(byte[] newData) {
+			rawData = newData;
+			servletStream.stream = new ByteArrayInputStream(rawData);
+		}
+		
 
 		/**
 		 * The Class ResettableServletInputStream.
@@ -150,4 +155,5 @@ class ResettableStreamHttpServletRequest extends
 				
 			}
 		}
+		
 	}
