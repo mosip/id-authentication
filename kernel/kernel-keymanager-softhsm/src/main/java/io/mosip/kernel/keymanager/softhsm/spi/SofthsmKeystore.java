@@ -1,10 +1,11 @@
 /**
  * 
  */
-package io.mosip.kernel.keymanager.softhsm;
+package io.mosip.kernel.keymanager.softhsm.spi;
 
 import java.io.IOException;
 import java.security.Key;
+import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.KeyStoreException;
@@ -34,11 +35,11 @@ public interface SofthsmKeystore {
 	void addProvider(Provider provider);
 
 	/**
+	 * @param keystoreType
 	 * @param provider
 	 * @return
-	 * @throws KeyStoreException
 	 */
-	KeyStore getKeystoreInstance(Provider provider);
+	KeyStore getKeystoreInstance(String keystoreType, Provider provider);
 
 	/**
 	 * @param keyStorePassword
@@ -69,6 +70,7 @@ public interface SofthsmKeystore {
 	PrivateKeyEntry getAsymmetricKey(String alias);
 
 	/**
+	 * @param keyPair
 	 * @param alias
 	 * @param keyStorePassword
 	 * @throws NoSuchAlgorithmException
@@ -76,7 +78,7 @@ public interface SofthsmKeystore {
 	 * @throws IOException
 	 * @throws CertificateException
 	 */
-	void createAsymmetricKey(String alias);
+	void storeAsymmetricKey(KeyPair keyPair, String alias);
 
 	/**
 	 * @param alias
@@ -89,6 +91,7 @@ public interface SofthsmKeystore {
 	SecretKey getSymmetricKey(String alias);
 
 	/**
+	 * @param secretKey
 	 * @param alias
 	 * @param keyStorePassword
 	 * @throws KeyStoreException
@@ -96,13 +99,18 @@ public interface SofthsmKeystore {
 	 * @throws CertificateException
 	 * @throws IOException
 	 */
-	void createSymmetricKey(String alias);
+	void storeSymmetricKey(SecretKey secretKey, String alias);
+
+	/**
+	 * @param alias
+	 */
+	void deleteKey(String alias);
 
 	/**
 	 * @param alias
 	 * @return
 	 */
-	Key getKeyByAlias(String alias);
+	Key getKey(String alias);
 
 	/**
 	 * @param alias

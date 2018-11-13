@@ -3,7 +3,6 @@ package io.mosip.kernel.keymanager.softhsm.impl;
 import java.io.IOException;
 import java.security.Key;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 import java.security.KeyStore.PrivateKeyEntry;
@@ -14,7 +13,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
 import java.security.PublicKey;
-import java.security.SecureRandom;
 import java.security.Security;
 import java.security.UnrecoverableEntryException;
 import java.security.UnrecoverableKeyException;
@@ -26,10 +24,12 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-import io.mosip.kernel.keymanager.softhsm.SofthsmKeystore;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import io.mosip.kernel.keymanager.softhsm.spi.SofthsmKeystore;
 import io.mosip.kernel.keymanager.softhsm.util.X509CertUtil;
 import sun.security.pkcs11.SunPKCS11;
 import sun.security.x509.X509CertImpl;
@@ -39,19 +39,23 @@ import sun.security.x509.X509CertImpl;
  * @since 1.0.0
  *
  */
+@Component
 public class SofthsmKeystoreImpl implements SofthsmKeystore {
 
 	private static final Logger LOGGER = Logger.getLogger(SofthsmKeystoreImpl.class.getName());
 
-	private static final String PKCS11 = "PKCS11";
-	private static final String SOFTHSM2_CONF = "D:\\SoftHSM2\\etc\\softhsm2-demo.conf";
-	private static final char[] KEYSTORE_PASS = "1234".toCharArray();
-	private KeyStore keyStore;
+	private final String keystorePass;
 
-	public SofthsmKeystoreImpl() {
-		Provider provider = new SunPKCS11(SOFTHSM2_CONF);
+	private final KeyStore keyStore;
+
+	public SofthsmKeystoreImpl(@Value("${mosip.kernel.keymanager.softhsm.config-path}") String configPath,
+			@Value("${mosip.kernel.keymanager.softhsm.keystore-type}") String keystoreType,
+			@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}") String keystorePass) {
+
+		Provider provider = new SunPKCS11(configPath);
 		addProvider(provider);
-		keyStore = getKeystoreInstance(provider);
+		this.keyStore = getKeystoreInstance(keystoreType, provider);
+		this.keystorePass = keystorePass;
 		loadKeystore();
 	}
 
@@ -76,7 +80,7 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	public void loadKeystore() {
 
 		try {
-			keyStore.load(null, KEYSTORE_PASS);
+			keyStore.load(null, keystorePass.toCharArray());
 		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
 			LOGGER.info(e.getMessage());
 		}
@@ -90,10 +94,10 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	 * io.mosip.softhsm.impl.MosipSoftHS#getKeystoreInstance(java.security.Provider)
 	 */
 	@Override
-	public KeyStore getKeystoreInstance(Provider provider) {
+	public KeyStore getKeystoreInstance(String keystoreType, Provider provider) {
 		KeyStore mosipKeyStore = null;
 		try {
-			mosipKeyStore = KeyStore.getInstance(PKCS11, provider);
+			mosipKeyStore = KeyStore.getInstance(keystoreType, provider);
 		} catch (KeyStoreException e) {
 			LOGGER.info(e.getMessage());
 		}
@@ -122,10 +126,10 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	 * @see io.mosip.keystore.MosipKeystore#getKeyByAlias(java.lang.String)
 	 */
 	@Override
-	public Key getKeyByAlias(String alias) {
+	public Key getKey(String alias) {
 		Key key = null;
 		try {
-			key = keyStore.getKey(alias, KEYSTORE_PASS);
+			key = keyStore.getKey(alias, keystorePass.toCharArray());
 		} catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
 			LOGGER.info(e.getMessage());
 		}
@@ -143,7 +147,7 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		PrivateKeyEntry privateKeyEntry = null;
 		try {
 			if (keyStore.entryInstanceOf(alias, PrivateKeyEntry.class)) {
-				ProtectionParameter password = new PasswordProtection(KEYSTORE_PASS);
+				ProtectionParameter password = new PasswordProtection(keystorePass.toCharArray());
 				privateKeyEntry = (PrivateKeyEntry) keyStore.getEntry(alias, password);
 			} else {
 				LOGGER.info("alias does not exists");
@@ -197,27 +201,18 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	 * char[])
 	 */
 	@Override
-	public void createAsymmetricKey(String alias) {
-
-		KeyPairGenerator keyPairGenerator = null;
-		try {
-			keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-		} catch (NoSuchAlgorithmException e) {
-			LOGGER.info(e.getMessage());
-		}
-		keyPairGenerator.initialize(2048);
-		KeyPair keyPair = keyPairGenerator.generateKeyPair();
+	public void storeAsymmetricKey(KeyPair keyPair, String alias) {
 
 		X509CertImpl x509CertImpl = X509CertUtil.generateX509Certificate(keyPair);
 		X509Certificate[] chain = new X509Certificate[1];
 		chain[0] = x509CertImpl;
 
 		PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivate(), chain);
-		ProtectionParameter password = new PasswordProtection(KEYSTORE_PASS);
+		ProtectionParameter password = new PasswordProtection(keystorePass.toCharArray());
 
 		try {
 			keyStore.setEntry(alias, privateKeyEntry, password);
-			keyStore.store(null, KEYSTORE_PASS);
+			keyStore.store(null, keystorePass.toCharArray());
 		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
 			LOGGER.info(e.getMessage());
 		}
@@ -234,7 +229,7 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		SecretKey secretKey = null;
 		try {
 			if (keyStore.entryInstanceOf(alias, SecretKeyEntry.class)) {
-				ProtectionParameter password = new PasswordProtection(KEYSTORE_PASS);
+				ProtectionParameter password = new PasswordProtection(keystorePass.toCharArray());
 				SecretKeyEntry retrivedSecret = (SecretKeyEntry) keyStore.getEntry(alias, password);
 				secretKey = retrivedSecret.getSecretKey();
 			} else {
@@ -253,27 +248,30 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	 * char[])
 	 */
 	@Override
-	public void createSymmetricKey(String alias) {
-
-		KeyGenerator keyGenerator = null;
-		try {
-			keyGenerator = KeyGenerator.getInstance("AES");
-		} catch (NoSuchAlgorithmException e) {
-			LOGGER.info(e.getMessage());
-		}
-		SecureRandom secureRandom = new SecureRandom();
-		int keyBitSize = 256;
-		keyGenerator.init(keyBitSize, secureRandom);
-		SecretKey secretKey = keyGenerator.generateKey();
+	public void storeSymmetricKey(SecretKey secretKey, String alias) {
 
 		SecretKeyEntry secret = new SecretKeyEntry(secretKey);
-		ProtectionParameter password = new PasswordProtection(KEYSTORE_PASS);
+		ProtectionParameter password = new PasswordProtection(keystorePass.toCharArray());
 		try {
 			keyStore.setEntry(alias, secret, password);
-			keyStore.store(null, KEYSTORE_PASS);
+			keyStore.store(null, keystorePass.toCharArray());
 		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
 			LOGGER.info(e.getMessage());
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.keymanager.softhsm.SofthsmKeystore#deleteKey(java.lang.
+	 * String)
+	 */
+	@Override
+	public void deleteKey(String alias) {
+		try {
+			keyStore.deleteEntry(alias);
+		} catch (KeyStoreException e) {
+			LOGGER.info(e.getMessage());
+		}
+	}
 }
