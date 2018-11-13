@@ -18,13 +18,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.preregistration.documents.dto.DocumentDto;
 import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
+import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentNotValidException;
 import io.mosip.preregistration.documents.service.DocumentUploadService;
 
 @RunWith(SpringRunner.class)
-public class DocumentNotValidExceptionTest {
+public class DocumentNotFoundTest {
 
-	private static final String DOCUMENT_INVALID_FORMAT = "This is document format is invalid exception";
+	private static final String DOCUMENT_Not_FOUND = "This is document not found exception";
 
 	@Mock
 	private DocumentUploadService documentUploadService;
@@ -33,38 +34,32 @@ public class DocumentNotValidExceptionTest {
 	private MockMultipartFile multiPartFile;
 
 	@Test
-	public void notValidException() throws FileNotFoundException, IOException {
+	public void notFoundException() throws FileNotFoundException, IOException {
 
-		DocumentNotValidException documentNotValidException = new DocumentNotValidException(DOCUMENT_INVALID_FORMAT);
+		DocumentNotFoundException documentNotFoundException = new DocumentNotFoundException(DOCUMENT_Not_FOUND);
 
-		DocumentDto documentDto = new DocumentDto("48690172097498",
-				"address",
-				"POA",
-				"PDF",
-				"Draft",
-				"ENG",
-				"Jagadishwari",
-				"Jagadishwari");
-		
+		DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Draft", "ENG",
+				"Jagadishwari", "Jagadishwari");
+
 		ClassLoader classLoader = getClass().getClassLoader();
 
 		File file = new File(classLoader.getResource("Doc.pdf").getFile());
 
-		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart",
-				new FileInputStream(file));
+		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
 
 		Mockito.when(documentUploadService.uploadDoucment(multiPartFile, documentDto))
-				.thenThrow(documentNotValidException);
+				.thenThrow(documentNotFoundException);
 		try {
 
 			documentUploadService.uploadDoucment(multiPartFile, documentDto);
 			fail();
 
-		} catch (DocumentNotValidException e) {
-			assertThat("Should throw dopcument invalid exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM‌_004.toString()));
-			assertThat("Should throw dopcument invalid exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(DOCUMENT_INVALID_FORMAT));
+		} catch (DocumentNotFoundException e) {
+			assertThat("Should throw dopcument not found exception with correct error codes",
+					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM‌_006.toString()));
+			assertThat("Should throw dopcument not found exception with correct messages",
+					e.getErrorText().equalsIgnoreCase(DOCUMENT_Not_FOUND));
 		}
+
 	}
 }

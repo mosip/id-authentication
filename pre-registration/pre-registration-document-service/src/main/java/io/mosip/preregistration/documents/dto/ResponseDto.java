@@ -1,4 +1,4 @@
-package io.mosip.preregistration.application.dto;
+package io.mosip.preregistration.documents.dto;
 
 import java.io.Serializable;
 import java.sql.Timestamp;

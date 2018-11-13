@@ -21,7 +21,7 @@ public class DemographicConfig {
 	public Docket registrationStatusBean() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration").select()
 				.apis(RequestHandlerSelectors.basePackage("io.mosip.preregistration.application.controller"))
-				.paths(PathSelectors.ant("/v0.1/pre-registration/registration/*")).build();
+				.paths(PathSelectors.ant("/v0.1/pre-registration/*")).build();
 	}
 
 }
