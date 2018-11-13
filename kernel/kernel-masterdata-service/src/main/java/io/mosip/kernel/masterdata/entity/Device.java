@@ -3,12 +3,10 @@ package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;

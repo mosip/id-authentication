@@ -4,6 +4,7 @@
  */
 package io.mosip.kernel.masterdata.dto;
 
+
 import lombok.Data;
 
 /**
@@ -37,6 +38,10 @@ public class DeviceDto {
 	 * Field for device mac address
 	 */
 	private String macAddress;
+	/**
+	 * Field for device ip address
+	 */
+	private String ipAddress;
 	/**
 	 * Field for language code
 	 */
