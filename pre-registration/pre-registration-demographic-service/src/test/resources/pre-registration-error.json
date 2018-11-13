@@ -1,0 +1,182 @@
+{
+"identity": {
+"FullName": [{
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"dateOfBirth": [
+				{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"gender":[
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+		"addressLine1": [
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"addressLine2": [
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"addressLine3": [
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"region": [
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"province": [
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"city": [
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"postalcode": [
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"localAdministrativeAuthority": [
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"emailId": [
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"mobileNumber":[
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"CNEOrPINNumber": [
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		],
+				"age": [
+{
+				"language": "ar",
+				"label": "الاسم الاول",
+				"value": "ابراهيم"
+			},
+			{
+				"language": "fr",
+				"label": "Prénom",
+				"value": "Ibrahim"
+			}
+		]
+		}
+		}

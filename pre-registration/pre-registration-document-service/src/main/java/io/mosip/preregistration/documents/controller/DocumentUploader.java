@@ -1,8 +1,5 @@
 package io.mosip.preregistration.documents.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.util.exception.JsonMappingException;
-import io.mosip.kernel.core.util.exception.JsonParseException;
-import io.mosip.preregistration.documents.code.StatusCodes;
+import io.mosip.kernel.core.util.exception.MosipIOException;
+import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
+import io.mosip.kernel.core.util.exception.MosipJsonParseException;
 import io.mosip.preregistration.documents.dto.DocumentDto;
+import io.mosip.preregistration.documents.dto.ResponseDto;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.service.DocumentUploadService;
 import io.swagger.annotations.Api;
@@ -43,50 +40,84 @@ public class DocumentUploader {
 	@Autowired
 	private DocumentUploadService documentUploadService;
 
-	@PostMapping(path = "/documents", consumes = {
-			"multipart/form-data" })
+	/**
+	 * @param documentString
+	 * @param file
+	 * @return response in a format specified in API document
+	 * @throws MosipJsonParseException
+	 * @throws MosipJsonMappingException
+	 * @throws MosipIOException
+	 */
+	@PostMapping(path = "/documents", consumes = { "multipart/form-data" })
 	@ResponseBody
-	public ResponseEntity<Map<String, String>> fileUpload(
+	public ResponseEntity<ResponseDto<DocumentDto>> fileUpload(
 			@RequestPart(value = "documentString", required = true) String documentString,
 			@RequestPart(value = "file", required = true) MultipartFile file)
-			throws JsonParseException, JsonMappingException, IOException {
-		
-		System.out.println("documentString::"+documentString);
+			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+
+		ResponseDto<DocumentDto> responseDto = new ResponseDto<DocumentDto>();
+
+		System.out.println("documentString::" + documentString);
 		DocumentDto documentDto = (DocumentDto) JsonUtils.jsonStringToJavaObject(DocumentDto.class, documentString);
 
-		Map<String, String> response = documentUploadService.uploadDoucment(file, documentDto);
+		responseDto = documentUploadService.uploadDoucment(file, documentDto);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 
 	}
 
+	/**
+	 * @param cat_type
+	 * @param source_prId
+	 * @param destination_preId
+	 * @return response in a format specified in API document
+	 */
+	@SuppressWarnings("rawtypes")
 	@PostMapping(path = "/copy_documents", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<Map<String, String>> copyDocument(@RequestParam String cat_type, @RequestParam String source_prId,
-			@RequestParam String destination_preId) {
+	public ResponseEntity<ResponseDto> copyDocument(@RequestParam String cat_type,
+			@RequestParam String source_prId, @RequestParam String destination_preId) {
+		ResponseDto<DocumentEntity> responseDto = new ResponseDto<DocumentEntity>();
+		responseDto = documentUploadService.copyDoucment(cat_type, source_prId, destination_preId);
 
-		Map<String, String> response = documentUploadService.copyDoucment(cat_type, source_prId, destination_preId);
-
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 
 	}
 	
-	@GetMapping(path="/get_document",produces=MediaType.APPLICATION_JSON_VALUE)
+	/**
+	 * @param preId
+	 * @return response in a format specified in API document
+	 */
+	@SuppressWarnings("rawtypes")
+	@GetMapping(path = "/get_document", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<DocumentEntity>> getAllDocumentforPreid(@RequestParam String preId){
-		
-		List<DocumentEntity> response=documentUploadService.getAllDocumentForPreId(preId);
-		
+	public ResponseEntity<ResponseDto> getAllDocumentforPreid(@RequestParam String preId) {
+
+		ResponseDto response = documentUploadService.getAllDocumentForPreId(preId);
+
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
-	
-	@DeleteMapping(path="/delete_document",produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<StatusCodes> deleteDocument(@RequestParam Integer documentId){
-		
-		documentUploadService.deleteDocument(documentId);
-		
-		return ResponseEntity.ok().body(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL);
-		
+
+	/**
+	 * @param documentId
+	 * @return response in a format specified in API document
+	 */
+	@SuppressWarnings("rawtypes")
+	@DeleteMapping(path = "/delete_document", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ResponseDto> deleteDocument(@RequestParam String documentId) {
+		ResponseDto responseDto = documentUploadService.deleteDocument(documentId);
+		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+
 	}
 
+	/**
+	 * @param preId
+	 * @return response in a format specified in API document
+	 */
+	@SuppressWarnings("rawtypes")
+	@DeleteMapping(path = "/deleteAllByPreRegId", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity deleteAllByPreId(@RequestParam String preId) {
+		ResponseDto responseDto = documentUploadService.deleteAllByPreId(preId);
+		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+	}
 }
