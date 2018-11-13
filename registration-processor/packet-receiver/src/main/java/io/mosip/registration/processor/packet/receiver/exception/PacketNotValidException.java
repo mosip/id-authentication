@@ -25,7 +25,7 @@ public class PacketNotValidException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public PacketNotValidException(String message) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_INVALID_PACKET, message);
+		super(IISPlatformErrorCodes.RPR_PKR_INVALID_PACKET, message);
 	}
 
 	/**
@@ -35,6 +35,6 @@ public class PacketNotValidException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public PacketNotValidException(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_INVALID_PACKET, message, cause);
+		super(IISPlatformErrorCodes.RPR_PKR_INVALID_PACKET, message, cause);
 	}
 }

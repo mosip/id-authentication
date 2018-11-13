@@ -53,7 +53,7 @@ public class ValidationExceptionTest {
 
 		}  catch (ValidationException e) {
 			assertThat("Should throw Validation Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_VALIDATION_ERROR));
+					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.RPR_PKR_VALIDATION_ERROR));
 			assertThat("Should throw Validation Exception  with correct messages",
 					e.getErrorText().equalsIgnoreCase(VALIDATION_EXCEPTION));
 

@@ -80,7 +80,7 @@ public class DuplicateUploadExceptionTest {
 			fail();
 		} catch (DuplicateUploadRequestException e) {
 			assertThat("Should throw duplicate exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_DUPLICATE_UPLOAD));
+					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.RPR_PKR_DUPLICATE_UPLOAD));
 			assertThat("Should throw duplicate exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()));
 

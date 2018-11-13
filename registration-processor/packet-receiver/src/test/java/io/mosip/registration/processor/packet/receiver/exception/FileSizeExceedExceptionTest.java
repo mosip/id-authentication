@@ -55,7 +55,7 @@ public class FileSizeExceedExceptionTest {
 
 		} catch (FileSizeExceedException e) {
 			assertThat("Should throw FileSizeExceed exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_FILE_SIZE_EXCEED));
+					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.RPR_PKR_FILE_SIZE_EXCEEDED));
 			assertThat("Should throw FileSizeExceed exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(FILE_SIZE_EXCEED_EXCEPTION));
 

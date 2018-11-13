@@ -24,7 +24,7 @@ public class PacketNotSyncException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public PacketNotSyncException(String message) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_PACKET_NOT_SYNC, message);
+		super(IISPlatformErrorCodes.RPR_PKR_PACKET_NOT_SYNC, message);
 	}
 
 	/**
@@ -34,6 +34,6 @@ public class PacketNotSyncException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public PacketNotSyncException(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_PACKET_NOT_SYNC + EMPTY_SPACE, message, cause);
+		super(IISPlatformErrorCodes.RPR_PKR_PACKET_NOT_SYNC + EMPTY_SPACE, message, cause);
 	}
 }

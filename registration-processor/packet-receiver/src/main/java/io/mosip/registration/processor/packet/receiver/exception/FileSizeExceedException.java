@@ -27,7 +27,7 @@ public class FileSizeExceedException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public FileSizeExceedException(String message) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_FILE_SIZE_EXCEED, message);
+		super(IISPlatformErrorCodes.RPR_PKR_FILE_SIZE_EXCEEDED, message);
 	}
 
 	/**
@@ -37,6 +37,6 @@ public class FileSizeExceedException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public FileSizeExceedException(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_FILE_SIZE_EXCEED + EMPTY_SPACE, message, cause);
+		super(IISPlatformErrorCodes.RPR_PKR_FILE_SIZE_EXCEEDED + EMPTY_SPACE, message, cause);
 	}
 }

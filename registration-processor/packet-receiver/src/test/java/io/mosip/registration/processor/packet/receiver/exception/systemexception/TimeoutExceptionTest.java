@@ -55,7 +55,7 @@ public class TimeoutExceptionTest {
 
 		} catch (TimeoutException e) {
 			assertThat("Should throw Timeout Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_TIMEOUT));
+					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.RPR_PKR_TIMEOUT));
 			assertThat("Should throw Timeout Exception  with correct messages",
 					e.getErrorText().equalsIgnoreCase(TIMEOUT_EXCEPTION));
 

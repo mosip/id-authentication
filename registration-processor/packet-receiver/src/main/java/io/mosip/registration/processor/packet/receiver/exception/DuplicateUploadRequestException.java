@@ -25,7 +25,7 @@ public class DuplicateUploadRequestException extends BaseUncheckedException {
 	 * @param msg the msg
 	 */
 	public DuplicateUploadRequestException(String msg) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_DUPLICATE_UPLOAD, msg);
+		super(IISPlatformErrorCodes.RPR_PKR_DUPLICATE_UPLOAD, msg);
 	}
 
 	/**
@@ -35,6 +35,6 @@ public class DuplicateUploadRequestException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public DuplicateUploadRequestException(String msg, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_DUPLICATE_UPLOAD + EMPTY_SPACE, msg, cause);
+		super(IISPlatformErrorCodes.RPR_PKR_DUPLICATE_UPLOAD + EMPTY_SPACE, msg, cause);
 	}
 }

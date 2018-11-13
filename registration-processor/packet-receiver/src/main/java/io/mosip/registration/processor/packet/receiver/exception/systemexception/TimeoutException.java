@@ -26,7 +26,7 @@ public class TimeoutException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public TimeoutException(String message) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_TIMEOUT, message);
+		super(IISPlatformErrorCodes.RPR_PKR_TIMEOUT, message);
 	}
 	
 	/**
@@ -36,9 +36,6 @@ public class TimeoutException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public TimeoutException(String message,Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_TIMEOUT + EMPTY_SPACE, message,cause);
+		super(IISPlatformErrorCodes.RPR_PKR_TIMEOUT + EMPTY_SPACE, message,cause);
 	}
-	
-	
-
 }

@@ -25,7 +25,7 @@ public class UnexpectedException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public UnexpectedException(String message) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_UNEXCEPTED_ERROR, message);
+		super(IISPlatformErrorCodes.RPR_PKR_UNEXCEPTED_ERROR, message);
 	}
 
 	/**
@@ -35,6 +35,6 @@ public class UnexpectedException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public UnexpectedException(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_UNEXCEPTED_ERROR + EMPTY_SPACE, message, cause);
+		super(IISPlatformErrorCodes.RPR_PKR_UNEXCEPTED_ERROR + EMPTY_SPACE, message, cause);
 	}
 }

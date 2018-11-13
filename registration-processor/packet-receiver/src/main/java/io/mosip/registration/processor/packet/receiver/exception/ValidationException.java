@@ -25,7 +25,7 @@ public class ValidationException extends BaseUncheckedException{
 	 * @param message the message
 	 */
 	public ValidationException(String message) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_VALIDATION_ERROR, message);
+		super(IISPlatformErrorCodes.RPR_PKR_VALIDATION_ERROR, message);
 	}
 
 	/**
@@ -35,6 +35,6 @@ public class ValidationException extends BaseUncheckedException{
 	 * @param cause the cause
 	 */
 	public ValidationException(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_VALIDATION_ERROR + EMPTY_SPACE, message, cause);
+		super(IISPlatformErrorCodes.RPR_PKR_VALIDATION_ERROR + EMPTY_SPACE, message, cause);
 	}
 }

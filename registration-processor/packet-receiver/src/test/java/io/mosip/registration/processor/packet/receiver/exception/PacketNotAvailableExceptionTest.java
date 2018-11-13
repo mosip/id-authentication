@@ -54,7 +54,7 @@ public class PacketNotAvailableExceptionTest {
 			fail();
 		} catch (PacketNotAvailableException e) {
 			assertThat("Should throw packet_not_available exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_PACKET_NOT_AVAILABLE));
+					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE));
 			assertThat("Should throw packet_not_available exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(PACKET_NOT_AVAILABLE_EXCEPTION));
 

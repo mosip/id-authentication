@@ -53,7 +53,7 @@ public class UnexceptedExceptionTest {
 			packetHandlerService.storePacket(file);
 		} catch (UnexpectedException e) {
 			assertThat("Should throw Unexpected Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_UNEXCEPTED_ERROR));
+					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.RPR_PKR_UNEXCEPTED_ERROR));
 			assertThat("Should throw Unexpected Exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(UNEXCEPTED_EXCEPTION));
 		}

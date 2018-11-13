@@ -54,7 +54,7 @@ public class PacketNotValidExceptionTest {
 
 		} catch (PacketNotValidException e) {
 			assertThat("Should throw PacketNotValid Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_ATU_INVALID_PACKET));
+					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.RPR_PKR_INVALID_PACKET));
 			assertThat("Should throw PacketNotValid Exception  with correct messages",
 					e.getErrorText().equalsIgnoreCase(PACKET_NOT_VALID_EXCEPTION));
 

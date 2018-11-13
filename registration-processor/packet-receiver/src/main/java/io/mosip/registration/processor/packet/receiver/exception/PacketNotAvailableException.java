@@ -26,7 +26,7 @@ public class PacketNotAvailableException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public PacketNotAvailableException(String message) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_PACKET_NOT_AVAILABLE, message);
+		super(IISPlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE, message);
 	}
 
 	/**
@@ -36,6 +36,6 @@ public class PacketNotAvailableException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public PacketNotAvailableException(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_PACKET_NOT_AVAILABLE + EMPTY_SPACE, message, cause);
+		super(IISPlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE + EMPTY_SPACE, message, cause);
 	}
 }
