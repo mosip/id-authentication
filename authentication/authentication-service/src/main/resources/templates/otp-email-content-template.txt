@@ -1,2 +1,2 @@
-Dear <Name>,
-OTP for UIN  XXXXXXXX5423 is <OTP> and is valid for <x> minutes. (Generated at the <Response Timestamp of OTP>) Trigger)
+Dear $name,
+OTP for UIN  $uin is $otp and is valid for $validTime minutes. (Generated at $datetimestamp)

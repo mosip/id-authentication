@@ -1,1 +1,1 @@
-UIN XXXXXXXX5423: OTP Request
+UIN $uin: OTP Request
