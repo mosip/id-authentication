@@ -5,7 +5,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { DialougComponent } from '../dialoug/dialoug.component';
 import { MatDialog } from '@angular/material';
-import { RegistrationService } from './dashboard.service';
+import { RegistrationService } from '../registration.service';
 import { Applicant } from './dashboard.modal';
 
 

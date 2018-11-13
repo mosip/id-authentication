@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
-
-import { Applicant } from './dashboard.modal';
+import { HttpClient } from '@angular/common/http'
+import { Applicant } from './dashboard/dashboard.modal';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +11,10 @@ export class RegistrationService {
 
 
   getUsers() {
-     return this.httpClient.get<Applicant[]>(
+    return this.httpClient.get<Applicant[]>(
       'https://pre-reg-df354.firebaseio.com/applications.json', {
-      observe: 'body',
-      responseType: 'json'
-    });
+        observe: 'body',
+        responseType: 'json'
+      });
   }
-
 }

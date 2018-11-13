@@ -18,7 +18,12 @@
   }
 
   .wrapper{
+    width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap:1em;
+  }
+  
+  .mat-form-field{
+    width: 300px;
   }
