@@ -1,17 +1,14 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.RegistrationConstants.ACKNOWLEDGEMENT_TEMPLATE;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_APPROVE_SCREEN_EXCEPTION;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTHORIZATION_EXCEPTION;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
-import java.util.ListResourceBundle;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
@@ -121,7 +118,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 			registrationDTO = DataProvider.getPacketDTO(registrationDTO);
 			ackReceiptController.setRegistrationData(registrationDTO);
 
-			String ackTemplateText = templateService.createReceipt();
+			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
 			Writer writer = velocityGenerator.generateTemplate(ackTemplateText, registrationDTO);
 			ackReceiptController.setStringWriter(writer);
 

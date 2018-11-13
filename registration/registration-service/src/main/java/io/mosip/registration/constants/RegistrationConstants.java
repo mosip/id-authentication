@@ -139,7 +139,9 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "BiometricsCaptured";
 	public static final String TEMPLATE_HANDS_IMAGE_PATH = "src/main/resources/images/hands.jpg";
-
+	public static final String TEMPLATE_RESIDENT_NAME="ResidentName";
+	public static final String TEMPLATE_POSTAL_CODE="PostalCode";
+	
 	// Exception Code for Components
 	public static final String PACKET_CREATION_EXP_CODE = "PCC-";
 	public static final String PACKET_UPLOAD_EXP_CODE = "PAU-";
@@ -445,5 +447,14 @@ public class RegistrationConstants {
 	public static final String DEVICE_ONBOARD_ERROR_MSG = "Internal error in Device Onboarding.";
 	public static final String ONBOARD_DEVICES_MAP = "onBoardDevicesMap";
 	public static final String ONBOARD_DEVICES_REF_ID_TYPE = "UserID";
+
+	//Template Name
+	public static final String ACKNOWLEDGEMENT_TEMPLATE = "Ack Template";
+	public static final String NOTIFICATION_TEMPLATE = "Notification Template";
+	
+	//Notification Service
+	public static final String EMAIL_SUBJECT = "MOSIP REGISTRATION NOTIFICATION";
+	public static final String EMAIL_SERVICE="email";
+	public static final String SMS_SERVICE="sms";
 
 }

@@ -19,7 +19,11 @@ import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.NotificationService;
 import io.mosip.registration.service.PacketHandlerService;
+import io.mosip.registration.service.TemplateService;
+import io.mosip.registration.util.acktemplate.VelocityPDFGenerator;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -38,19 +42,25 @@ import javafx.stage.Stage;
  *
  */
 @Controller
-public class AckReceiptController extends BaseController implements Initializable{
-	
+public class AckReceiptController extends BaseController implements Initializable {
+
 	@Autowired
 	private PacketHandlerService packetHandlerService;
 	@Autowired
 	private RegistrationOfficerDetailsController officerDetailsController;
-	
+	@Autowired
+	private TemplateService templateService;
+	@Autowired
+	private NotificationService notificationService;
+
+	private VelocityPDFGenerator velocityGenerator = new VelocityPDFGenerator();
+
 	private RegistrationDTO registrationData;
 	private Writer stringWriter;
 
 	@FXML
 	private WebView webView;
-	
+
 	private WebEngine engine;
 
 	public RegistrationDTO getRegistrationData() {
@@ -77,41 +87,64 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		engine = webView.getEngine(); 
-		engine.loadContent(stringWriter.toString());		
+
+		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+			String notificationTemplate = "";
+			try {
+				notificationTemplate = templateService.getHtmlTemplate("Notification Template");
+
+				Writer writeNotificationTemplate = velocityGenerator.generateNotificationTemplate(notificationTemplate,
+						getRegistrationData());
+				String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
+				if (!number.isEmpty() || number == RegistrationConstants.EMPTY) {
+					// notificationService.sendSMS(writeNotificationTemplate.toString(),number);
+				}
+				String emailId = getRegistrationData().getDemographicDTO().getDemoInUserLang().getEmailId();
+				if (!emailId.isEmpty() || emailId == RegistrationConstants.EMPTY) {
+					// notificationService.sendEmail(writeNotificationTemplate.toString(), emailId);
+				}
+			} catch (RegBaseCheckedException regBaseCheckedException) {
+				// TODO Auto-generated catch block
+			}
+		}
+		engine = webView.getEngine();
+		engine.loadContent(stringWriter.toString());
 	}
-	
+
 	@FXML
 	public void saveReceipt(ActionEvent event) throws RegBaseCheckedException {
 		WritableImage ackImage = webView.snapshot(null, null);
 
-		byte[] acknowledgement; 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		byte[] acknowledgement;
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        try {
-        	ImageIO.write(SwingFXUtils.fromFXImage(ackImage, null), RegistrationConstants.IMAGE_FORMAT, byteArrayOutputStream);
-        	acknowledgement = byteArrayOutputStream.toByteArray();
+		try {
+			ImageIO.write(SwingFXUtils.fromFXImage(ackImage, null), RegistrationConstants.IMAGE_FORMAT,
+					byteArrayOutputStream);
+			acknowledgement = byteArrayOutputStream.toByteArray();
 		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorCode(), RegistrationExceptions.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorMessage());
+			throw new RegBaseCheckedException(RegistrationExceptions.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorCode(),
+					RegistrationExceptions.REG_ACK_TEMPLATE_IO_EXCEPTION.getErrorMessage());
 		}
-        
-        registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(acknowledgement);
-        
-        registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(registrationData.getRegistrationId()+"_Ack."+RegistrationConstants.IMAGE_FORMAT);
-        ResponseDTO response = packetHandlerService.handle(registrationData);
-        
-        generateAlert("Success",AlertType.INFORMATION, "Packet Created Successfully!");
-      //Adding individual address to session context
-        if(response.getSuccessResponseDTO().getCode().equals("Success")) {
-             AddressDTO addressDTO = registrationData.getDemographicDTO().getDemoInLocalLang().getAddressDTO();           
-             Map<String, Object> addr= SessionContext.getInstance().getMapObject();
-             addr.put("PrevAddress", addressDTO);
-             SessionContext.getInstance().setMapObject(addr);
-        } 
 
-        Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
-        stage.close();
-        
-        officerDetailsController.redirectHome(event);
+		registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceipt(acknowledgement);
+
+		registrationData.getDemographicDTO().getApplicantDocumentDTO().setAcknowledgeReceiptName(
+				registrationData.getRegistrationId() + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
+		ResponseDTO response = packetHandlerService.handle(registrationData);
+
+		generateAlert("Success", AlertType.INFORMATION, "Packet Created Successfully!");
+		// Adding individual address to session context
+		if (response.getSuccessResponseDTO().getCode().equals("Success")) {
+			AddressDTO addressDTO = registrationData.getDemographicDTO().getDemoInLocalLang().getAddressDTO();
+			Map<String, Object> addr = SessionContext.getInstance().getMapObject();
+			addr.put("PrevAddress", addressDTO);
+			SessionContext.getInstance().setMapObject(addr);
+		}
+
+		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
+		stage.close();
+
+		officerDetailsController.redirectHome(event);
 	}
 }
