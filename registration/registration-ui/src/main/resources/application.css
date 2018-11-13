@@ -144,4 +144,19 @@
 #imageAnchorPane{
 	 -fx-border-width: 1.0;
 	-fx-border-color: black;
-} 
+}
+
+/* Device Onboarding */
+.inputFields {
+	-fx-background-color: white;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 1 0;
+}
+
+.inputFieldNoBorder {
+  	-fx-border-width: 0 0 0 0;
+}
+
+.inputFieldBottomBorder {
+  	-fx-border-width: 0 0 1 0;
+}

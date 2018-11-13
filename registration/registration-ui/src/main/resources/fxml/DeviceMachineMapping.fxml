@@ -28,25 +28,40 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="filterDevices" layoutX="10.0" layoutY="57.0" prefHeight="39.0" prefWidth="306.0" promptText="Search" />
-      <ComboBox fx:id="deviceTypes" layoutX="363.0" layoutY="57.0" onAction="#loadDevices" prefHeight="39.0" prefWidth="251.0" promptText="Device Type" />
+      <TextField fx:id="searchField" layoutX="10.0" layoutY="57.0" prefHeight="39.0" prefWidth="306.0" promptText="Search">
+         <styleClass>
+            <String fx:value="inputFields" />
+            <String fx:value="inputFieldBottomBorder" />
+         </styleClass></TextField>
+      <ComboBox fx:id="deviceTypes" layoutX="363.0" layoutY="57.0" onAction="#loadDevices" prefHeight="39.0" prefWidth="251.0" promptText="Device Type">
+         <styleClass>
+            <String fx:value="inputFields" />
+            <String fx:value="inputFieldBottomBorder" />
+         </styleClass></ComboBox>
       <TableView fx:id="availableDevices" layoutX="10.0" layoutY="134.0" prefHeight="288.0" prefWidth="420.0">
         <columns>
           <TableColumn fx:id="availableDeviceName" prefWidth="170.0" text="Manufacturer Name" />
           <TableColumn fx:id="availableDeviceModel" minWidth="0.0" prefWidth="120.0" text="Model Name" />
-            <TableColumn fx:id="availableDeviceSerial" prefWidth="120.0" resizable="false" text="Serial No." />
+            <TableColumn fx:id="availableDeviceSerial" prefWidth="110.0" resizable="false" text="Serial No." />
         </columns>
       </TableView>
       <TableView fx:id="mappedDevices" layoutX="520.0" layoutY="134.0" prefHeight="288.0" prefWidth="420.0">
         <columns>
           <TableColumn fx:id="mappedDeviceName" prefWidth="170.0" text="Manufacturer Name" />
           <TableColumn fx:id="mappedDeviceModel" prefWidth="120.0" text="Model Name" />
-            <TableColumn fx:id="mappedDeviceSerial" prefWidth="120.0" resizable="false" text="Serial No." />
+            <TableColumn fx:id="mappedDeviceSerial" prefWidth="110.0" resizable="false" text="Serial No." />
         </columns>
       </TableView>
       <Label layoutX="10.0" layoutY="107.0" text="Available Devices" />
       <Label layoutX="531.0" layoutY="107.0" text="Mapped Devices" />
-      <Button fx:id="submitOnboardDevices" layoutX="880.0" layoutY="434.0" mnemonicParsing="false" text="Submit" textAlignment="CENTER" />
+      <Button fx:id="submitOnboardDevices" layoutX="885.0" layoutY="434.0" mnemonicParsing="false" onAction="#submit" text="Submit" textAlignment="CENTER">
+         <styleClass>
+            <String fx:value="inputFields" />
+            <String fx:value="inputFieldNoBorder" />
+         </styleClass>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></Button>
       <ImageView fx:id="mapDevice" fitHeight="25.0" fitWidth="25.0" layoutX="463.0" layoutY="169.0" onMouseClicked="#mapAvailableDevices" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/map-device.png" />

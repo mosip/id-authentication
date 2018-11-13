@@ -25,7 +25,6 @@ import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.resourceBundle.labels_us_EN;
 import io.mosip.registration.service.TemplateService;
 import io.mosip.registration.util.acktemplate.VelocityPDFGenerator;
 import io.mosip.registration.util.dataprovider.DataProvider;

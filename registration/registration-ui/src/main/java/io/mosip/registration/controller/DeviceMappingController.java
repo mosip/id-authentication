@@ -56,7 +56,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 	@FXML
 	private AnchorPane onBoardRoot;
 	@FXML
-	private TextField filterDevices;
+	private TextField searchField;
 	@FXML
 	private ComboBox<String> deviceTypes;
 	@FXML
@@ -122,22 +122,22 @@ public class DeviceMappingController extends BaseController implements Initializ
 			mappedDevices.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 			// Bind Event Handlers to Search Device Button
-			filterDevices.textProperty()
+			searchField.textProperty()
 					.addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
 						@SuppressWarnings("unchecked")
 						Map<String, List<DeviceDTO>> devicesMap = (Map<String, List<DeviceDTO>>) SessionContext
 								.getInstance().getMapObject().get(RegistrationConstants.ONBOARD_DEVICES_MAP);
 						if (devicesMap != null) {
 							if (RegistrationConstants.EMPTY.equals(newValue)) {
-								populateDevices(devicesMap.get(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES),
-										devicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES));
+								populateDevices(
+										filterDevices(devicesMap.get(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES)),
+										mappedDevices.getItems());
 							} else if (newValue.length() < oldValue.length()) {
 								populateDevices(
 										filterDevices(devicesMap.get(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES)),
-										filterDevices(devicesMap.get(RegistrationConstants.ONBOARD_MAPPED_DEVICES)));
+										mappedDevices.getItems());
 							} else {
-								populateDevices(filterDevices(availableDevices.getItems()),
-										filterDevices(mappedDevices.getItems()));
+								populateDevices(filterDevices(availableDevices.getItems()), mappedDevices.getItems());
 							}
 						}
 					});
@@ -171,7 +171,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					"Loading list of available and mapped " + deviceTypes.getValue() + " devices");
 
 			// Reset the Search TextField
-			filterDevices.setText(RegistrationConstants.EMPTY);
+			searchField.setText(RegistrationConstants.EMPTY);
 			
 			// Get the selected Device Type
 			String selectedDeviceType = deviceTypes.getValue();
@@ -320,11 +320,12 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 		try {
 			auditFactory.audit(AuditEvent.UPDATE_DEVICES_ONBOARDING, AppModule.DEVICE_ONBOARD,
-					String.format("Updating mapping of %s devices", filterDevices.getText()),
+					String.format("Updating mapping of %s devices", searchField.getText()),
 					SessionContext.getInstance().getUserContext().getUserId(),
 					RegistrationConstants.ONBOARD_DEVICES_REF_ID_TYPE);
 			
 			// Add Mapping
+			List<DeviceDTO> updatedDeviceMapping = mappedDevices.getSelectionModel().getSelectedItems();
 		} catch (RuntimeException runtimeException) {
 			LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 					RegistrationConstants.DEVICE_ONBOARD_HOME_NAVIGATION_EXCEPTION
@@ -340,13 +341,23 @@ public class DeviceMappingController extends BaseController implements Initializ
 
 	private List<DeviceDTO> filterDevices(List<DeviceDTO> devices) {
 		// Get the search term
-		String searchTerm = filterDevices.getText();
-		
-		return devices.parallelStream()
-				.filter(deviceDTO -> (StringUtils.containsIgnoreCase(deviceDTO.getManufacturerName(), searchTerm)
-						|| StringUtils.containsIgnoreCase(deviceDTO.getModelName(), searchTerm)
-						|| StringUtils.containsIgnoreCase(deviceDTO.getSerialNo(), searchTerm)))
-				.collect(Collectors.toList());
+		String searchTerm = searchField.getText();
+
+		List<DeviceDTO> filteredDevices;
+
+		if (searchTerm.isEmpty()) {
+			filteredDevices = devices;
+		} else {
+			filteredDevices = devices.parallelStream()
+					.filter(deviceDTO -> (StringUtils.containsIgnoreCase(deviceDTO.getManufacturerName(), searchTerm)
+							|| StringUtils.containsIgnoreCase(deviceDTO.getModelName(), searchTerm)
+							|| StringUtils.containsIgnoreCase(deviceDTO.getSerialNo(), searchTerm)))
+					.collect(Collectors.toList());
+		}
+
+		filteredDevices.removeAll((List<DeviceDTO>) mappedDevices.getItems());
+
+		return filteredDevices;
 	}
 
 	private Map<String, List<DeviceDTO>> getDevices(String deviceType) {
@@ -356,6 +367,21 @@ public class DeviceMappingController extends BaseController implements Initializ
 		availDevices.add(getDeviceDTO("Samsung", "999XYZ", "1234ABCD"));
 		availDevices.add(getDeviceDTO("LG", "998XYZ", "1235ABCD"));
 		availDevices.add(getDeviceDTO("Onida", "997XYZ", "1236ABCD"));
+		availDevices.add(getDeviceDTO("Samsung", "999XYZ", "1237ABCD"));
+		availDevices.add(getDeviceDTO("LG", "998XYZ", "1238ABCD"));
+		availDevices.add(getDeviceDTO("Onida", "997XYZ", "1239ABCD"));
+		availDevices.add(getDeviceDTO("Samsung", "999XYZ", "1240ABCD"));
+		availDevices.add(getDeviceDTO("LG", "998XYZ", "1241ABCD"));
+		availDevices.add(getDeviceDTO("Onida", "997XYZ", "1242ABCD"));
+		availDevices.add(getDeviceDTO("Samsung", "999XYZ", "1243ABCD"));
+		availDevices.add(getDeviceDTO("LG", "998XYZ", "1245ABCD"));
+		availDevices.add(getDeviceDTO("Onida", "997XYZ", "1246ABCD"));
+		availDevices.add(getDeviceDTO("Samsung", "999XYZ", "1247ABCD"));
+		availDevices.add(getDeviceDTO("LG", "998XYZ", "1248ABCD"));
+		availDevices.add(getDeviceDTO("Onida", "997XYZ", "1249ABCD"));
+		availDevices.add(getDeviceDTO("Samsung", "999XYZ", "1250ABCD"));
+		availDevices.add(getDeviceDTO("LG", "998XYZ", "1251ABCD"));
+		availDevices.add(getDeviceDTO("Onida", "997XYZ", "1252ABCD"));
 		List<DeviceDTO> mapDevices = new ArrayList<>();
 		deviceMap.put(RegistrationConstants.ONBOARD_MAPPED_DEVICES, mapDevices);
 		mapDevices.add(getDeviceDTO("Samsung", "996XYZ", "1237ABCD"));
