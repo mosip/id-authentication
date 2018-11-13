@@ -39,6 +39,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdInfoService;
 import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
@@ -54,6 +55,9 @@ public class DemoAuthServiceTest {
 
 	@Autowired
 	private Environment environment;
+	
+	@InjectMocks
+	private DemoHelper demoHelper;
 
 	@InjectMocks
 	private DemoAuthServiceImpl demoAuthServiceImpl;
@@ -74,8 +78,15 @@ public class DemoAuthServiceTest {
 
 	@Before
 	public void before() {
+		
+		ReflectionTestUtils.setField(demoHelper, "environment", environment);
+		ReflectionTestUtils.setField(demoHelper, "idMappingConfig", idMappingConfig);
+		
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "environment", environment);
-		ReflectionTestUtils.setField(demomatcher, "idMappingConfig", idMappingConfig);
+		ReflectionTestUtils.setField(demoAuthServiceImpl, "demoHelper", demoHelper);
+		
+		ReflectionTestUtils.setField(demomatcher, "demoHelper", demoHelper);
+		
 	}
 
 	@Test
