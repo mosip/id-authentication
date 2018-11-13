@@ -14,6 +14,7 @@ import { MaterialModule } from '../material.module';
 import { HttpClientModule } from '@angular/common/http';
 import { DashBoardComponent } from './dashboard/dashboard.component';
 import { ParentComponent } from './parent/parent.component';
+import { EscapeHtmlPipe } from '../shared/keep-html.pipe';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { ParentComponent } from './parent/parent.component';
     CenterSelectionComponent,
     DialougComponent,
     DashBoardComponent,
-    ParentComponent
+    ParentComponent,
+    EscapeHtmlPipe
   ]
 })
 export class RegistrationModule { }
