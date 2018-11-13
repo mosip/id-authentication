@@ -42,8 +42,8 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 	 */
 	public CharResponseWrapper(HttpServletResponse response) throws IOException {
 		super(response);
-		writer = response.getWriter();
-		output = new ByteArrayOutputStream();
+		this.writer = response.getWriter();
+		this.output = new ByteArrayOutputStream();
 	}
 	
 	/* (non-Javadoc)

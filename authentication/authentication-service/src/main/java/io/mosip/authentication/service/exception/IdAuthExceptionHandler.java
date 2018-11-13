@@ -18,6 +18,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
+import io.mosip.authentication.core.dto.indauth.BaseAuthResponseDTO;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -132,7 +134,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 						+ Optional.ofNullable(status).orElseGet(() -> HttpStatus.INTERNAL_SERVER_ERROR).toString()
 						+ "\n" + ExceptionUtils.getStackTrace(ex));
 
-		if (ex instanceof ServletException || ex instanceof BeansException) {
+		if (ex instanceof ServletException || ex instanceof BeansException
+				|| ex instanceof HttpMessageConversionException) {
 			// FIXME needs to be invalid request as it is response for both otp and auth
 			ex = new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
@@ -194,9 +197,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		mosipLogger.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
-		AuthResponseDTO authResp = new AuthResponseDTO();
-		/** Status Modified to String */
-		authResp.setStatus("n");
+		BaseAuthResponseDTO authResp = new BaseAuthResponseDTO();
+		
+
+		authResp.setStatus("false");
 
 		if (ex instanceof BaseCheckedException) {
 			Locale locale = LocaleContextHolder.getLocale();
