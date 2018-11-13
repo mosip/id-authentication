@@ -12,7 +12,7 @@ import io.vertx.core.json.JsonObject;
  * @author Pranav Kumar
  * @since 0.0.1
  */
-public class StructureValidationProcessor implements Processor {
+public class ValidationProcessor implements Processor {
 
 	/*
 	 * (non-Javadoc)

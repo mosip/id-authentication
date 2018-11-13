@@ -83,4 +83,10 @@ public class MessageBusAddress implements Serializable {
 	public static final MessageBusAddress ERROR = new MessageBusAddress("error");
 	public static final MessageBusAddress QUALITY_CHECK_BUS = new MessageBusAddress("quality_check_bus");
 
+	/** The Constant STRUCTURE_BUS_IN. */
+	public static final MessageBusAddress OSI_BUS_IN = new MessageBusAddress("osi-bus-in");
+
+	/** The Constant STRUCTURE_BUS_OUT. */
+	public static final MessageBusAddress OSI_BUS_OUT = new MessageBusAddress("osi-bus-out");
+
 }

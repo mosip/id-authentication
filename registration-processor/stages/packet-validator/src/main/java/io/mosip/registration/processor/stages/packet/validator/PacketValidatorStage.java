@@ -62,9 +62,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	/** The Constant USER. */
 	private static final String USER = "MOSIP_SYSTEM";
 
-	/** The file manager. */
-	@Autowired
-	FileManager<DirectoryPathDto, InputStream> fileManager;
+
 
 	/** The registration status service. */
 	@Autowired
