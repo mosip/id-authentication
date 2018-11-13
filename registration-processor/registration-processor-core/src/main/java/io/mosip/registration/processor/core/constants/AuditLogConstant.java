@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.code;
+package io.mosip.registration.processor.core.constants;
 
 /**
  * The Enum AuditLogConstant.

@@ -18,8 +18,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
@@ -55,7 +54,7 @@ public class FileSizeExceedExceptionTest {
 
 		} catch (FileSizeExceedException e) {
 			assertThat("Should throw FileSizeExceed exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.RPR_PKR_FILE_SIZE_EXCEEDED));
+					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_FILE_SIZE_EXCEEDED));
 			assertThat("Should throw FileSizeExceed exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(FILE_SIZE_EXCEED_EXCEPTION));
 

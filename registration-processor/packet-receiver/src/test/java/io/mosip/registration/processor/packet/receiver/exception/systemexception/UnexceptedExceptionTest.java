@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -18,8 +17,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.packet.receiver.exception.systemexception.UnexpectedException;
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
@@ -53,7 +51,7 @@ public class UnexceptedExceptionTest {
 			packetHandlerService.storePacket(file);
 		} catch (UnexpectedException e) {
 			assertThat("Should throw Unexpected Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.RPR_PKR_UNEXCEPTED_ERROR));
+					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_UNEXCEPTED_ERROR));
 			assertThat("Should throw Unexpected Exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(UNEXCEPTED_EXCEPTION));
 		}

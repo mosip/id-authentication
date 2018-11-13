@@ -16,11 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.packet.receiver.exception.PacketNotAvailableException;
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
@@ -54,7 +52,7 @@ public class PacketNotAvailableExceptionTest {
 			fail();
 		} catch (PacketNotAvailableException e) {
 			assertThat("Should throw packet_not_available exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE));
+					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE));
 			assertThat("Should throw packet_not_available exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(PACKET_NOT_AVAILABLE_EXCEPTION));
 

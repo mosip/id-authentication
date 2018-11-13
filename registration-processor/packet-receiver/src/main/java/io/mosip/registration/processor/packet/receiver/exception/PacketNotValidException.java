@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.receiver.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 
 /**
  * PacketNotValidException occurs when the file received
@@ -25,7 +25,7 @@ public class PacketNotValidException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public PacketNotValidException(String message) {
-		super(IISPlatformErrorCodes.RPR_PKR_INVALID_PACKET, message);
+		super(RPRPlatformErrorCodes.RPR_PKR_INVALID_PACKET, message);
 	}
 
 	/**
@@ -35,6 +35,6 @@ public class PacketNotValidException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public PacketNotValidException(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.RPR_PKR_INVALID_PACKET, message, cause);
+		super(RPRPlatformErrorCodes.RPR_PKR_INVALID_PACKET, message, cause);
 	}
 }

@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.storage.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.storage.exception.code.PacketMetaInfoErrorCode;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 
 /**
  * The Class TablenotAccessibleException.
@@ -24,7 +24,7 @@ public class TablenotAccessibleException extends BaseUncheckedException {
 	 * @param errorMessage the error message
 	 */
 	public TablenotAccessibleException(String errorMessage) {
-		super(PacketMetaInfoErrorCode.TABLE_NOT_ACCESSIBLE, errorMessage);
+		super(RPRPlatformErrorCodes.RPR_PIS_TABLE_NOT_ACCESSIBLE, errorMessage);
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class TablenotAccessibleException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public TablenotAccessibleException(String message, Throwable cause) {
-		super(PacketMetaInfoErrorCode.TABLE_NOT_ACCESSIBLE, message, cause);
+		super(RPRPlatformErrorCodes.RPR_PIS_TABLE_NOT_ACCESSIBLE, message, cause);
 	}
 
 }

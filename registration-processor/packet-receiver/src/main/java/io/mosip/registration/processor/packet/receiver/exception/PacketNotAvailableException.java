@@ -1,8 +1,7 @@
 package io.mosip.registration.processor.packet.receiver.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 
 /**
  * PacketNotAvailableException occurs when the file is
@@ -26,7 +25,7 @@ public class PacketNotAvailableException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public PacketNotAvailableException(String message) {
-		super(IISPlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE, message);
+		super(RPRPlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE, message);
 	}
 
 	/**
@@ -36,6 +35,6 @@ public class PacketNotAvailableException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public PacketNotAvailableException(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE + EMPTY_SPACE, message, cause);
+		super(RPRPlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE + EMPTY_SPACE, message, cause);
 	}
 }

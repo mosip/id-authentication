@@ -1,14 +1,14 @@
-package io.mosip.registration.processor.packet.receiver.exception.utils;
+/*package io.mosip.registration.processor.packet.receiver.exception.utils;
 
-/**
+*//**
  * Internal Packet handler error codes.
  *
- */
+ *//*
 public final class IISPlatformErrorCodes {
 
-	/**
+	*//**
 	 * Instantiates a new IIS platform error codes.
-	 */
+	 *//*
 	//PacketReciever 
 	private static final String RPR_REGISTRATION_PROCESSOR_PREFIX = "RPR-";
 	private static final String RPR_PACKET_RECEIVER_MODULE = "PKR-";
@@ -38,7 +38,7 @@ public final class IISPlatformErrorCodes {
 		throw new IllegalStateException("Utility class");
 	}
 
-	/** The Constant IIS_EPU_ATU_SYSTEM_MODULE. */
+	*//** The Constant IIS_EPU_ATU_SYSTEM_MODULE. *//*
 	// System Exceptions
 	private static final String RPR_PKR_SYSTEM_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "SYSTEM_";
 	public static final String RPR_PKR_UNEXCEPTED_ERROR = RPR_PKR_SYSTEM_MODULE + "UNEXCEPTED_ERROR";
@@ -48,3 +48,4 @@ public final class IISPlatformErrorCodes {
 	public static final String RPR_PKR_TIMEOUT = RPR_PKR_SYSTEM_MODULE + "TIMEOUT";
 
 }
+*/

@@ -21,7 +21,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -80,7 +80,7 @@ public class DuplicateUploadExceptionTest {
 			fail();
 		} catch (DuplicateUploadRequestException e) {
 			assertThat("Should throw duplicate exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.RPR_PKR_DUPLICATE_UPLOAD));
+					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_DUPLICATE_UPLOAD));
 			assertThat("Should throw duplicate exception with correct messages",
 					e.getErrorText().equalsIgnoreCase(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()));
 

@@ -12,10 +12,11 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.code.AuditLogConstant;
-import io.mosip.registration.processor.core.code.EventId;
-import io.mosip.registration.processor.core.code.EventName;
-import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.constants.AuditLogConstant;
+import io.mosip.registration.processor.core.constants.EventId;
+import io.mosip.registration.processor.core.constants.EventName;
+import io.mosip.registration.processor.core.constants.EventType;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
@@ -81,7 +82,7 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return entity != null ? convertEntityToDto(entity) : null;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(COULD_NOT_GET, e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -114,7 +115,7 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return convertEntityListToDtoList(entities);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(COULD_NOT_GET, e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -155,7 +156,7 @@ public class RegistrationStatusServiceImpl
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Could not add Information to table", e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -199,7 +200,7 @@ public class RegistrationStatusServiceImpl
 				transcationStatusService.addRegistrationTransaction(transactionDto);
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Could not update Information to table", e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -233,7 +234,7 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return convertEntityListToDtoList(registrationStatusEntityList);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(COULD_NOT_GET, e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -268,7 +269,7 @@ public class RegistrationStatusServiceImpl
 			return convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList);
 
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(COULD_NOT_GET, e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
