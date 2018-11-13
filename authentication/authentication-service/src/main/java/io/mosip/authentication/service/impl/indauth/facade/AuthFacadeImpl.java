@@ -3,11 +3,22 @@
  */
 package io.mosip.authentication.service.impl.indauth.facade;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -18,19 +29,30 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthStatusInfo;
 import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.IdInfoService;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
+import io.mosip.authentication.core.util.MaskUtil;
+import io.mosip.authentication.service.entity.UinEntity;
+import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
+import io.mosip.authentication.service.impl.indauth.builder.AuthType;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
+import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
+import io.mosip.authentication.service.integration.NotificationManager;
+import io.mosip.authentication.service.integration.NotificationType;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 
 /**
@@ -58,7 +80,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	/** The demo auth service. */
 	@Autowired
-	private DemoAuthService demoAuthService;
+	private DemoHelper demoHelper;
 
 	/** The id auth service. */
 	@Autowired
@@ -70,6 +92,19 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	@Autowired
 	Environment env;
+	
+	@Autowired
+	NotificationManager notificationManager;
+	
+	@Autowired
+	IdInfoService idInfoService;
+	
+	@Autowired
+	DemoAuthService demoAuthService;
+	
+	@Autowired
+	IdAuthServiceImpl idAuthServiceImpl;
+	
 
 	/**
 	 * Process the authorisation type and authorisation response is returned.
@@ -79,11 +114,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @return the auth response DTO
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
+	 * @throws IdAuthenticationDaoException 
+	 * @throws ParseException 
 	 */
 
 	@Override
 	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO)
-			throws IdAuthenticationBusinessException {
+			throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		String refId = processIdType(authRequestDTO);
 		List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, refId);
 
@@ -97,6 +134,49 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseDTO authResponseDTO = authResponseBuilder.build();
 		logger.info(DEFAULT_SESSION_ID, "IDA", AUTH_FACADE,
 				"authenticateApplicant status : " + authResponseDTO.getStatus());
+		
+		NotificationType valueOne=NotificationType.valueOf(env.getProperty("notification.email"));
+		NotificationType valueTwo=NotificationType.valueOf(env.getProperty("notification.sms"));
+
+		Set<NotificationType> notificationType=new HashSet<NotificationType>();
+		notificationType.add(valueOne);
+		notificationType.add(valueTwo);
+		Map<String, List<IdentityInfoDTO>>  idInfo=idInfoService.getIdInfo(refId);
+		Map<String,Object> values=new HashMap(); 
+		values.put("NAME", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI,idInfo).getValue());
+		values.put("PHONE",MaskUtil.generateMaskValue(demoHelper.getEntityInfo(DemoMatchType.PHONE,idInfo).getValue(), 8));
+		values.put("EMAIL", MaskUtil.generateMaskValue(demoHelper.getEntityInfo(DemoMatchType.EMAIL,idInfo).getValue(), 8));
+		String dateTime=authResponseDTO.getResTime();
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"); 
+		Date date1;
+		String changedTime="";
+		String changedDate="";
+		try {
+			date1 = (Date)formatter.parse(dateTime);
+			SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
+			SimpleDateFormat date = new SimpleDateFormat("dd-MM-yyyy");
+			changedTime = time.format(date1);
+			changedDate=date.format(date1);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		values.put("DATE", changedDate);
+		values.put("TIME", changedTime);
+		Optional<UinEntity> uinEntity=idAuthServiceImpl.getUIN(refId);
+		values.put("UIN", uinEntity.get().getId());
+		String authTypeStr = Stream.of(AuthType.values())
+				.filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
+				.map(AuthType::getType)
+				.collect(Collectors.joining(",")); 
+		if(authResponseDTO.getStatus().equals("y"))
+		{
+			values.put("STATUS", "Success");
+		}
+		else
+		{
+			values.put("STATUS","Failed");
+		}
+	//	notificationManager.sendNotification(notificationType,values,Uin);
 		return authResponseDTO;
 
 	}

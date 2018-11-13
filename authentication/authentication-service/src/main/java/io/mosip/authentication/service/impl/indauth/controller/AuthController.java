@@ -18,6 +18,7 @@ import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
@@ -90,6 +91,7 @@ public class AuthController {
 	 * @return AuthResponseDTO
 	 * @throws IdAuthenticationAppException
 	 *             the id authentication app exception
+	 * @throws IdAuthenticationDaoException 
 	 */
 
 	@PostMapping(path = "/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -97,7 +99,7 @@ public class AuthController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
 	public AuthResponseDTO authenticateApplication(@Validated @RequestBody AuthRequestDTO authrequestdto,
-			@ApiIgnore Errors errors) throws IdAuthenticationAppException {
+			@ApiIgnore Errors errors) throws IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthResponseDTO authResponsedto = null;
 
 		try {
@@ -121,6 +123,7 @@ public class AuthController {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 * @throws IdAuthenticationAppException
+	 * @throws IdAuthenticationDaoException 
 	 * 
 	 * 
 	 */
@@ -129,7 +132,7 @@ public class AuthController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
 	public KycAuthResponseDTO processKyc(@Validated @RequestBody KycAuthRequestDTO kycAuthRequestDTO,
-			@ApiIgnore Errors errors) throws IdAuthenticationBusinessException, IdAuthenticationAppException {
+			@ApiIgnore Errors errors) throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
 		AuthResponseDTO authResponseDTO = null;
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 

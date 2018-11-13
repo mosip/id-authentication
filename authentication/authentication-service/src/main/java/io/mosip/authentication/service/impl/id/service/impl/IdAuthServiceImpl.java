@@ -176,5 +176,10 @@ public class IdAuthServiceImpl implements IdAuthService {
 			throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
 		}
 	}
+	
+		public Optional<UinEntity> getUIN(String uinRefId) {
+				return uinRepository.findByUinRefId(uinRefId);
+			} 
+
 
 }

@@ -23,6 +23,7 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
@@ -77,7 +78,7 @@ public class AuthControllerTest {
 	 * Errors in the AuthRequestValidator is handled here and exception is thrown
 	 */
 	@Test(expected=IdAuthenticationAppException.class)
-	public void showRequestValidator() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+	public void showRequestValidator() throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO=new AuthRequestDTO();
 		Errors error = new BindException(authReqDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
@@ -86,7 +87,7 @@ public class AuthControllerTest {
 	}
 	
 	@Test(expected=IdAuthenticationAppException.class)
-	public void authenticationFailed() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+	public void authenticationFailed() throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO=new AuthRequestDTO();
 		Mockito.when(authFacade.authenticateApplicant(authReqDTO)).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
 		authController.authenticateApplication(authReqDTO, error);
@@ -94,7 +95,7 @@ public class AuthControllerTest {
 	}
   
 	@Test
-	public void authenticationSuccess() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+	public void authenticationSuccess() throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		AuthRequestDTO authReqDTO=new AuthRequestDTO();
 		Mockito.when(authFacade.authenticateApplicant(authReqDTO)).thenReturn(new AuthResponseDTO());
 		authController.authenticateApplication(authReqDTO, error);

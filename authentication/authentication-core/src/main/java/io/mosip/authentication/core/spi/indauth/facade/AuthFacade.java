@@ -7,6 +7,7 @@ import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 
 /**
  * The Interface AuthFacade.
@@ -24,7 +25,7 @@ public interface AuthFacade {
 	 * @return the auth response DTO
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest) throws IdAuthenticationBusinessException;
+	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest) throws IdAuthenticationBusinessException,IdAuthenticationDaoException;
 	
 	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO);
 	

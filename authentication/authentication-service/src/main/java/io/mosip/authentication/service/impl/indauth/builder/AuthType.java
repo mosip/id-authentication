@@ -24,13 +24,6 @@ public enum AuthType {
 
 	// @formatter:off
 
-//
-//	/** The pi */
-//	AD("ad", setOf(DemoMatchType.ADDR_LINE1_PRI, DemoMatchType.ADDR_LINE2_PRI, DemoMatchType.ADDR_LINE3_PRI,
-//			DemoMatchType.CITY_PRI, DemoMatchType.STATE_PRI, DemoMatchType.COUNTRY_PRI, DemoMatchType.PINCODE_PRI),
-//			authReq -> Optional.of(authReq).map(AuthRequestDTO::getAuthType).map(AuthTypeDTO::isAd).orElse(false),
-//			authReq -> Optional.of(MatchingStrategyType.EXACT.getType()),
-//			authReq -> Optional.of(getDefaultExactMatchValue())),
 
 	AD_PRI("address",
 			setOf(DemoMatchType.ADDR_LINE1_PRI, DemoMatchType.ADDR_LINE2_PRI, DemoMatchType.ADDR_LINE3_PRI,
@@ -56,18 +49,8 @@ public enum AuthType {
 
 	FAD_SEC("fullAddress", setOf(DemoMatchType.ADDR_SEC), LanguageType.SECONDARY_LANG, AuthTypeDTO::isFullAddress),
 
-//	
+	OTP("otp", Collections.emptySet(), LanguageType.PRIMARY_LANG, AuthTypeDTO::isOtp) 
 
-//	/** The fad pri. *
-//	FAD_PRI("fadPri", setOf(DemoMatchType.ADDR_PRI),
-//			authReq -> Optional.of(authReq).map(AuthRequestDTO::getAuthType).map(AuthTypeDTO::isFad).orElse(false),
-//			authReq -> Optional.of(authReq).map(AuthRequestDTO::getPii).map(PersonalIdentityDataDTO::getDemo)
-//					.map(DemoDTO::getFad).map(PersonalFullAddressDTO::getMsPri),
-//			authReq -> Optional.of(authReq).map(AuthRequestDTO::getPii).map(PersonalIdentityDataDTO::getDemo)
-//					.map(DemoDTO::getFad).map(PersonalFullAddressDTO::getMtPri)),
-
-	// /** The bio. */
-	// BIO("bio", Collections.emptySet())
 
 	/**  */
 	// @formatter:on
