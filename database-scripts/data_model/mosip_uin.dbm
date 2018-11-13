@@ -237,14 +237,10 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="uin"/>
 	<role name="appadmin"/>
 	<comment><![CDATA[Table to store details of the UINs. This table will contain the data of an individual in json structure.]]></comment>
-	<position x="488" y="42"/>
+	<position x="56" y="286"/>
 	<column name="uin_data" not-null="true">
 		<type name="bytea" length="28"/>
 		<comment><![CDATA[Data about the individual in json structure. This field contains data like demographic, biometric, iris, etc. The data is stored in multiple languages inside the json file.]]></comment>
-	</column>
-	<column name="status_code" not-null="true">
-		<type name="character varying" length="32"/>
-		<comment><![CDATA[Status code of the UIN. Though we have Status code in UIN table, we are replicating it in detail table as we need to keep history.This field refers to the master list of status defined in master schema.]]></comment>
 	</column>
 	<column name="cr_by" not-null="true">
 		<type name="character varying" length="32"/>
@@ -297,7 +293,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="uin"/>
 	<role name="appadmin"/>
 	<comment><![CDATA[History of the changes to the individual details. individual data is stored in json structure.]]></comment>
-	<position x="983" y="68"/>
+	<position x="507" y="290"/>
 	<column name="uin_ref_id" alias="uid" not-null="true">
 		<type name="character varying" length="28"/>
 		<comment><![CDATA[UIN reference id of an individual from uin table. ]]></comment>
@@ -309,10 +305,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="uin_data" not-null="true">
 		<type name="bytea" length="28"/>
 		<comment><![CDATA[Data about the individual in json structure. This field contains data like demographic, biometric, iris, etc. The data is stored in multiple languages inside the json file.]]></comment>
-	</column>
-	<column name="status_code" not-null="true">
-		<type name="character varying" length="32"/>
-		<comment><![CDATA[Status code of the UIN. Though we have Status code in UIN table, we are replicating it in detail table as we need to keep history.This field refers to the master list of status defined in master schema.]]></comment>
 	</column>
 	<column name="cr_by" not-null="true">
 		<type name="character varying" length="32"/>
@@ -340,6 +332,59 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<constraint name="uind_h_pk" type="pk-constr" alias="uindhpk" table="uin.uin_detail_h">
 		<columns names="uin_ref_id,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="uin_h" alias="uinh">
+	<schema name="uin"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[History table to store UINs of individuals and its status change. This table will not contain any data related to an individuals other than status.]]></comment>
+	<position x="504" y="42"/>
+	<column name="uin_ref_id" not-null="true">
+		<type name="character varying" length="28"/>
+		<comment><![CDATA[UIN reference identification, a unique identity field that will be used in all reference tables.]]></comment>
+	</column>
+	<column name="eff_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Effective datetime ]]></comment>
+	</column>
+	<column name="uin" not-null="true">
+		<type name="character" length="28"/>
+		<comment><![CDATA[Unique identification number of an individual]]></comment>
+	</column>
+	<column name="status_code" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Status code of the UIN. This field refers to the master list of status defined in master schema.]]></comment>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[record created by]]></comment>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record created datetime]]></comment>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+		<comment><![CDATA[Record updated by]]></comment>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[record updated datetime]]></comment>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Field to indicate whether the record is deleted (soft delete) or not.]]></comment>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Record deleted datetime]]></comment>
+	</column>
+	<constraint name="uinh_pk" type="pk-constr" table="uin.uin_h">
+		<columns names="uin_ref_id,eff_dtimes" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uinh_uk" type="uq-constr" table="uin.uin_h">
+		<columns names="uin" ref-type="src-columns"/>
 	</constraint>
 </table>
 
