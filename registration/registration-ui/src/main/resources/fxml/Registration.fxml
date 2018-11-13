@@ -25,13 +25,36 @@
             			<Image url="@../images/Pre-Registration.PNG" />
          			 </image>
                   </ImageView>
+                  <AnchorPane id="demographicPane" fx:id="demoGraphicPane2" layoutX="14.0" layoutY="55.0" prefHeight="400.0" prefWidth="806.0" visible="false">
+                 	<children>
+                 	 <AnchorPane fx:id="childSpecificFields" layoutX="22.0" layoutY="14.0" prefHeight="85.0" prefWidth="417.0" visible="false">
+                         <children>
+                            <Label layoutX="27.0" layoutY="14.0" text="Parent/Guardian Name" />
+                            <TextField fx:id="parentName" layoutX="27.0" layoutY="43.0" prefHeight="30.0" prefWidth="150.0" />
+                            <Label layoutX="266.0" layoutY="14.0" text="UIN ID" />
+                            <TextField fx:id="uinId" layoutX="209.0" layoutY="43.0" prefHeight="30.0" prefWidth="155.0" />
+                         </children>
+                   </AnchorPane>
+                        <ComboBox layoutX="45.0" layoutY="114.0" prefWidth="150.0" promptText="POA Document" />
+                        <Label layoutX="232.0" layoutY="114.0" text="Label" />
+                        <Button layoutX="300.0" layoutY="114.0" mnemonicParsing="false" text="Scan" />
+                        <ComboBox layoutX="45.0" layoutY="164.0" prefWidth="150.0" promptText="POA Document" />
+                        <Label layoutX="231.0" layoutY="164.0" text="Label" />
+                        <Button layoutX="300.0" layoutY="164.0" mnemonicParsing="false" text="Scan" />
+                        <ComboBox layoutX="45.0" layoutY="214.0" prefWidth="150.0" promptText="POA Document" />
+                        <Label layoutX="231.0" layoutY="214.0" text="Label" />
+                        <Button layoutX="300.0" layoutY="214.0" mnemonicParsing="false" text="Scan" />
+
+                        <Button layoutX="576.0" layoutY="351.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
+                 	</children>
+                  </AnchorPane>
                </children>
             </AnchorPane>
-            <Accordion fx:id="accord" layoutX="80.0" layoutY="65.0" pickOnBounds="false">
+            <Accordion id="registrationAccordian" fx:id="accord" layoutX="80.0" layoutY="65.0" pickOnBounds="false" visible="true">
               <panes>
-                  <TitledPane fx:id="demoGraphicTitlePane1" text="Demographic">
+                  <TitledPane fx:id="demoGraphicTitlePane" text="Demographic">
                      <content>
-                        <AnchorPane id="DemographicPane" fx:id="demoGraphicPane1" prefHeight="800.0" prefWidth="806.0" visible="true">
+                        <AnchorPane id="demographicPane" fx:id="demoGraphicPane1" prefHeight="800.0" prefWidth="806.0" visible="true">
                            <children>
                               <Label layoutX="45.0" layoutY="1.0" prefHeight="10.0" prefWidth="320.0" text="%search_for_Pre_registration_id" />
                               <TextField fx:id="preRegistrationId" layoutX="44.0" layoutY="20.0" prefHeight="10.0" prefWidth="220.00" />
@@ -118,33 +141,17 @@
                            </children>
                         </AnchorPane>
                      </content></TitledPane>
-                  <TitledPane fx:id="demoGraphicTitlePane2" text="Demographic">
+                  <TitledPane fx:id="biometricTitlePane" text="Applicant Biometrics">
                      <content>
-                        <AnchorPane fx:id="childSpecificFields1" prefHeight="85.0" prefWidth="417.0" visible="false">
+                        <AnchorPane id="demographicPane" prefHeight="85.0" prefWidth="417.0" visible="false">
                            <children>
-                              <Label layoutX="27.0" layoutY="14.0" text="%parent_or_guardian_name" />
-                              <TextField fx:id="parentName1" layoutX="27.0" layoutY="43.0" prefHeight="30.0" prefWidth="150.0" />
-                              <Label layoutX="266.0" layoutY="14.0" text="%uin_id" />
-                              <TextField fx:id="uinId1" layoutX="209.0" layoutY="43.0" prefHeight="30.0" prefWidth="155.0" />
+                              <Label layoutX="27.0" layoutY="14.0" text="Biometric Fields...." />
                            </children>
                         </AnchorPane>
                      </content>
                   </TitledPane>
               </panes>
             </Accordion>
-            <AnchorPane id="DemographicPane" fx:id="demoGraphicPane2" prefHeight="400.0" prefWidth="806.0" visible="false">
-           	<children>
-           	 <AnchorPane fx:id="childSpecificFields" layoutX="14.0" layoutY="293.0" prefHeight="85.0" prefWidth="417.0" visible="false">
-                   <children>
-                      <Label layoutX="27.0" layoutY="14.0" text="Parent/Guardian Name" />
-                      <TextField fx:id="parentName" layoutX="27.0" layoutY="43.0" prefHeight="30.0" prefWidth="150.0" />
-                      <Label layoutX="266.0" layoutY="14.0" text="UIN ID" />
-                      <TextField fx:id="uinId" layoutX="209.0" layoutY="43.0" prefHeight="30.0" prefWidth="155.0" />
-                   </children>
-             </AnchorPane>
-                  <Button layoutX="273.0" layoutY="400.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
-           	</children>
-            </AnchorPane>
              </children>
     </AnchorPane>
   </content>
