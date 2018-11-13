@@ -77,13 +77,13 @@ public class DemoHelper {
 		return Optional.empty();
 	}
 
-	private List<String> getIdMappingValue(IdMapping idMapping, IDAMappingConfig idMappingConfig) {
+	public List<String> getIdMappingValue(IdMapping idMapping) {
 		List<String> mappings = idMapping.getMappingFunction().apply(idMappingConfig);
 		List<String> fullMapping = new ArrayList<>();
 		for (String mappingStr : mappings) {
 			Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr);
 			if (mappingInternal.isPresent()) {
-				List<String> internalMapping = getIdMappingValue(mappingInternal.get(), idMappingConfig);
+				List<String> internalMapping = getIdMappingValue(mappingInternal.get());
 				fullMapping.addAll(internalMapping);
 			} else {
 				fullMapping.add(mappingStr);
@@ -101,15 +101,15 @@ public class DemoHelper {
 	public IdentityValue getEntityInfo(DemoMatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity) {
 		String languageCode = getLanguageCode(matchType.getLanguageType());
 		Optional<String> languageName = getLanguageName(languageCode);
-		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping(), idMappingConfig);
+		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping());
 		List<IdentityValue> demoValues = getDemoValue(propertyNames, languageCode, demoEntity);
 		String[] demoValuesStr = demoValues.stream().map(IdentityValue::getValue).toArray(size -> new String[size]);
-		String demoValue = concatDemo(demoValuesStr);
+		String demoValue = concatValues(demoValuesStr);
 		String entityInfo = matchType.getEntityInfoFetcher().apply(demoValue);
 		return new IdentityValue(languageName.orElse(""), entityInfo);
 	}
 	
-	public static String concatDemo(String... demoValues) {
+	public static String concatValues(String... demoValues) {
 		StringBuilder demoBuilder = new StringBuilder();
 		for (int i = 0; i < demoValues.length; i++) {
 			String demo = demoValues[i];
