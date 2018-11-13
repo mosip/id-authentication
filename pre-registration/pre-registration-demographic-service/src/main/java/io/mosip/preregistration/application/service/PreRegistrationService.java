@@ -22,9 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.mosip.kernel.core.spi.idgenerator.PridGenerator;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.jsonvalidator.dto.JsonValidatorResponseDto;
 import io.mosip.kernel.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;

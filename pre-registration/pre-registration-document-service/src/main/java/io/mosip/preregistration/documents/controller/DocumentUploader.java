@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipJsonMappingException;
-import io.mosip.kernel.core.util.exception.MosipJsonParseException;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
+import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.preregistration.documents.dto.DocumentDto;
 import io.mosip.preregistration.documents.dto.ResponseDto;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
@@ -44,6 +44,7 @@ public class DocumentUploader {
 	 * @param documentString
 	 * @param file
 	 * @return response in a format specified in API document
+	 * @throws IOException 
 	 * @throws MosipJsonParseException
 	 * @throws MosipJsonMappingException
 	 * @throws MosipIOException
@@ -53,7 +54,7 @@ public class DocumentUploader {
 	public ResponseEntity<ResponseDto<DocumentDto>> fileUpload(
 			@RequestPart(value = "documentString", required = true) String documentString,
 			@RequestPart(value = "file", required = true) MultipartFile file)
-			throws MosipJsonParseException, MosipJsonMappingException, MosipIOException {
+			throws JsonParseException, JsonMappingException, IOException {
 
 		ResponseDto<DocumentDto> responseDto = new ResponseDto<DocumentDto>();
 
