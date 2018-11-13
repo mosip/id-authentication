@@ -20,7 +20,6 @@ import io.mosip.kernel.masterdata.exception.BiometricTypeNotFoundException;
 import io.mosip.kernel.masterdata.exception.BlacklistedWordsFetchException;
 import io.mosip.kernel.masterdata.exception.BlacklistedWordsIllegalArgException;
 import io.mosip.kernel.masterdata.exception.BlacklistedWordsMappingException;
-import io.mosip.kernel.masterdata.exception.NoBlacklistedWordsFoundException;
 import io.mosip.kernel.masterdata.exception.DocumentCategoryFetchException;
 import io.mosip.kernel.masterdata.exception.DocumentCategoryNotFoundException;
 import io.mosip.kernel.masterdata.exception.GenderTypeFetchException;
@@ -40,6 +39,7 @@ import io.mosip.kernel.masterdata.exception.MachineDetailNotFoundException;
 import io.mosip.kernel.masterdata.exception.MachineHistoryFetchException;
 import io.mosip.kernel.masterdata.exception.MachineHistoryMappingException;
 import io.mosip.kernel.masterdata.exception.MachineHistroyNotFoundException;
+import io.mosip.kernel.masterdata.exception.NoBlacklistedWordsFoundException;
 import io.mosip.kernel.masterdata.exception.NoHolidayDataFoundException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterFetchException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterMappingException;
@@ -47,6 +47,9 @@ import io.mosip.kernel.masterdata.exception.RegistrationCenterNotFoundException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingFetchHistoryException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingHistoryException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingNotFoundHistoryException;
+import io.mosip.kernel.masterdata.exception.TitleFetchException;
+import io.mosip.kernel.masterdata.exception.TitleMappingException;
+import io.mosip.kernel.masterdata.exception.TitleNotFoundException;
 
 /**
  * Rest Controller Advice for Master Data
@@ -402,6 +405,30 @@ public class MasterDataControllerAdvice {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.SERVICE_UNAVAILABLE);
+	}
+	
+	@ExceptionHandler(TitleFetchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleFetchException(
+			final TitleFetchException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(TitleNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleNotFoundException(
+			final TitleNotFoundException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(TitleMappingException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleMappingException(
+			final TitleMappingException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
 
 }
