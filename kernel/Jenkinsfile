@@ -37,9 +37,9 @@ node {
   buildInfo.env.capture = true
  }
  
- stage('mvn-clean-install') {
-  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo  
- }
+stage ('mvn-clean-install') {
+        rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+}
 
  stage('SonarQube Analysis') {
   def mvnHome = tool name: 'M2_HOME', type: 'maven'
