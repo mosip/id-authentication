@@ -59,9 +59,9 @@ public class TemplateServiceExceptionTest {
 		template.setTemplateTypeCode("EMAIL");
 		template.setLanguageCode("HIN");
 		template.setCreatedBy("Neha");
-		template.setCreatedTimestamp(LocalDateTime.of(2018, Month.NOVEMBER, 12, 0, 0, 0));
+		template.setCreatedtimes(LocalDateTime.of(2018, Month.NOVEMBER, 12, 0, 0, 0));
 		template.setActive(true);
-		template.setDeleted(false);
+		template.setIsDeleted(false);
 
 		templateList.add(template);
 	}
