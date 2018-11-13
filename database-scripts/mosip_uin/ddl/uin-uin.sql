@@ -3,7 +3,7 @@
 CREATE TABLE uin.uin(
 	uin_ref_id character varying(28) NOT NULL,
 	uin character(28) NOT NULL,
-	is_active boolean NOT NULL,
+	status_code character varying(32) NOT NULL,
 	cr_by character varying(32) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(32),
@@ -21,7 +21,7 @@ COMMENT ON COLUMN uin.uin.uin_ref_id IS 'UIN reference identification, a unique 
 -- ddl-end --
 COMMENT ON COLUMN uin.uin.uin IS 'Unique identification number of an individual';
 -- ddl-end --
-COMMENT ON COLUMN uin.uin.is_active IS 'Record active status';
+COMMENT ON COLUMN uin.uin.status_code IS 'Status code of the UIN. This field refers to the master list of status defined in master schema.';
 -- ddl-end --
 COMMENT ON COLUMN uin.uin.cr_by IS 'record created by';
 -- ddl-end --

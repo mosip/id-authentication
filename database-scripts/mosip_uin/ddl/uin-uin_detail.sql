@@ -3,7 +3,7 @@
 CREATE TABLE uin.uin_detail(
 	uin_ref_id character varying(28) NOT NULL,
 	uin_data bytea NOT NULL,
-	is_active boolean NOT NULL,
+	status_code character varying(32) NOT NULL,
 	cr_by character varying(32) NOT NULL,
 	cr_dtimes timestamp NOT NULL,
 	upd_by character varying(32),
@@ -18,7 +18,7 @@ COMMENT ON TABLE uin.uin_detail IS 'Table to store details of the UINs. This tab
 -- ddl-end --
 COMMENT ON COLUMN uin.uin_detail.uin_data IS 'Data about the individual in json structure. This field contains data like demographic, biometric, iris, etc. The data is stored in multiple languages inside the json file.';
 -- ddl-end --
-COMMENT ON COLUMN uin.uin_detail.is_active IS 'Record active status';
+COMMENT ON COLUMN uin.uin_detail.status_code IS 'Status code of the UIN. Though we have Status code in UIN table, we are replicating it in detail table as we need to keep history.This field refers to the master list of status defined in master schema.';
 -- ddl-end --
 COMMENT ON COLUMN uin.uin_detail.cr_by IS 'record created by';
 -- ddl-end --
