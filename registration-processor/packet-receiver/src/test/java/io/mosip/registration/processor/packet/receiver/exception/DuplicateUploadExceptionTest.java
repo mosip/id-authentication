@@ -22,9 +22,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -82,7 +82,7 @@ public class DuplicateUploadExceptionTest {
 			assertThat("Should throw duplicate exception with correct error codes",
 					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_DUPLICATE_UPLOAD));
 			assertThat("Should throw duplicate exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(RegistrationStatusCode.DUPLICATE_PACKET_RECIEVED.toString()));
+					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.DUPLICATE_PACKET_RECIEVED.getValue()));
 
 		}
 	}

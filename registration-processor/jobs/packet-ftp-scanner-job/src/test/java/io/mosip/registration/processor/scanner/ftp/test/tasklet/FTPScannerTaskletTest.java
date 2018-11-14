@@ -129,7 +129,7 @@ public class FTPScannerTaskletTest {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
 				return ((LoggingEvent) argument).getFormattedMessage()
-						.contains("IIS_GEN_FILE_NOT_FOUND_IN_DESTINATION");
+						.contains("RPR-PKM-003");
 			}
 		}));
 

@@ -18,11 +18,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
 public class ValidationExceptionTest {
-	private static final String VALIDATION_EXCEPTION = "This is validation exception";
+
 	private static final Logger log = LoggerFactory.getLogger(ValidationExceptionTest.class);
 	
 	@Mock
@@ -31,7 +32,7 @@ public class ValidationExceptionTest {
 	@Test
 	public void TestValidationException() {
 		
-		ValidationException ex = new ValidationException(VALIDATION_EXCEPTION);
+		ValidationException ex = new ValidationException(RPRPlatformErrorMessages.VALIDATION_EXCEPTION.getValue());
 		
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -54,7 +55,7 @@ public class ValidationExceptionTest {
 			assertThat("Should throw Validation Exception with correct error codes",
 					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_VALIDATION_ERROR));
 			assertThat("Should throw Validation Exception  with correct messages",
-					e.getErrorText().equalsIgnoreCase(VALIDATION_EXCEPTION));
+					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.VALIDATION_EXCEPTION.getValue()));
 
 		}
 	}

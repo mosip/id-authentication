@@ -19,19 +19,21 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
 public class TimeoutExceptionTest {
-	private static final String TIMEOUT_EXCEPTION = "This is Timeout exception";
+
 	private static final Logger log = LoggerFactory.getLogger(TimeoutExceptionTest.class);
+	
 	@Mock
 	private PacketReceiverService<MultipartFile, Boolean> packetHandlerService;
 
 	@Test
 	public void TestTimeoutException() {
 
-		TimeoutException ex = new TimeoutException(TIMEOUT_EXCEPTION);
+		TimeoutException ex = new TimeoutException(RPRPlatformErrorMessages.TIMEOUT_EXCEPTION.getValue());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -56,7 +58,7 @@ public class TimeoutExceptionTest {
 			assertThat("Should throw Timeout Exception with correct error codes",
 					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_TIMEOUT));
 			assertThat("Should throw Timeout Exception  with correct messages",
-					e.getErrorText().equalsIgnoreCase(TIMEOUT_EXCEPTION));
+					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.TIMEOUT_EXCEPTION.getValue()));
 
 		}
 	}

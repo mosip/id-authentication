@@ -4,7 +4,7 @@
 package io.mosip.registration.processor.packet.manager.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 
 
 /**
@@ -33,7 +33,7 @@ public class FileNotFoundInSourceException extends BaseUncheckedException{
 	 * @param errorMessage the error message
 	 */
 	public FileNotFoundInSourceException(String errorMessage) {
-		super(IISPlatformErrorCodes.IIS_EPU_FSS_FILE_NOT_FOUND_IN_SOURCE, errorMessage);
+		super(RPRPlatformErrorCodes.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE, errorMessage);
 	}
 
 	/**
@@ -43,7 +43,7 @@ public class FileNotFoundInSourceException extends BaseUncheckedException{
 	 * @param cause the cause
 	 */
 	public FileNotFoundInSourceException(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_FSS_FILE_NOT_FOUND_IN_SOURCE + EMPTY_SPACE, message, cause);
+		super(RPRPlatformErrorCodes.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE + EMPTY_SPACE, message, cause);
 
 	}
 

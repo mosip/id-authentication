@@ -15,10 +15,11 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.BadGatewayException;
-import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatformErrorCodes;
 
 /**
  * @author M1022006
@@ -26,8 +27,6 @@ import io.mosip.registration.processor.packet.manager.exception.utils.IISPlatfor
  */
 @RunWith(SpringRunner.class)
 public class BadGatewayExceptionTest {
-
-	private static final String BADGATEWAY_EXCEPTION = "This is a BadGateway exception";
 
 	@MockBean
 	private FileManager<DirectoryPathDto, File> fileManager;
@@ -44,7 +43,7 @@ public class BadGatewayExceptionTest {
 	@Test
 	public void TestBadGatewayException() throws FileNotFoundException, IOException {
 		String fileName = "sample";
-		BadGatewayException ex = new BadGatewayException(BADGATEWAY_EXCEPTION);
+		BadGatewayException ex = new BadGatewayException(RPRPlatformErrorMessages.BAD_GATEWAY.getValue());
 
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
@@ -53,9 +52,9 @@ public class BadGatewayExceptionTest {
 			fail();
 		} catch (BadGatewayException e) {
 			assertThat("Should throw Bad Gateway exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(IISPlatformErrorCodes.IIS_EPU_FSS_BAD_GATEWAY));
+					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKM_BAD_GATEWAY));
 			assertThat("Should throw  Bad Gateway exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(BADGATEWAY_EXCEPTION));
+					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.BAD_GATEWAY.getValue()));
 		}
 
 	}

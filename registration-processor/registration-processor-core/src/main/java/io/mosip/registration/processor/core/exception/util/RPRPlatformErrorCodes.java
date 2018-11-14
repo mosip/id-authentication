@@ -17,6 +17,7 @@ public final class RPRPlatformErrorCodes {
 	private static final String RPR_REGISTRATION_STATUS_MODULE = "RGS-";
 	private static final String RPR_PACKET_INFO_STORAGE_MODULE = "PIS-";
 	private static final String RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE = "FAC-";
+	private static final String RPR_PACKET_MANAGER_MODULE = "PKM-";
 
 	private static final String ERROR_CODE1 = "001";
 	private static final String ERROR_CODE2 = "002";
@@ -45,6 +46,17 @@ public final class RPRPlatformErrorCodes {
 	private static final String ERROR_CODE16 = "004";
 	private static final String ERROR_CODE17 = "005";
 	
+	//**************************Packet Manager***********************************// 
+	private static final String ERROR_CODE18 = "001";
+	private static final String ERROR_CODE19 = "002";
+	private static final String ERROR_CODE20 = "003";
+	private static final String ERROR_CODE21 = "004";
+	//system exception codes
+	private static final String ERROR_CODE22 = "005";
+	private static final String ERROR_CODE23 = "006";
+	private static final String ERROR_CODE24 = "007";
+	private static final String ERROR_CODE25 = "008";
+	private static final String ERROR_CODE26 = "010";
 
 	//**************************PacketReciever***********************************// 
 	//Generic Exception
@@ -94,6 +106,22 @@ public final class RPRPlatformErrorCodes {
 	public static final String RPR_FAC_TIMEOUT = RPR_FILESYSTEM_ADAPTOR_CEPH_ERROR_CODE + ERROR_CODE16;
 	public static final String RPR_FAC_UNEXCEPTED_ERROR = RPR_FILESYSTEM_ADAPTOR_CEPH_ERROR_CODE + ERROR_CODE17;
 	
+	//**************************Packet Manager***********************************//
+	private static final String RPR_PACKET_MANAGER_ERROR_CODE = RPR_REGISTRATION_PROCESSOR_PREFIX
+			+ RPR_PACKET_MANAGER_MODULE;
+	
+	public static final String RPR_PKM_CORE_KERNEL_NOT_RESPONDING = RPR_PACKET_MANAGER_ERROR_CODE + ERROR_CODE18;
+	public static final String RPR_PKM_FILE_PATH_NOT_ACCESSIBLE = RPR_PACKET_MANAGER_ERROR_CODE + ERROR_CODE19;
+	public static final String RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION = RPR_PACKET_MANAGER_ERROR_CODE + ERROR_CODE20;
+	public static final String RPR_PKM_FILE_NOT_FOUND_IN_SOURCE = RPR_PACKET_MANAGER_ERROR_CODE + ERROR_CODE21;
+	
+	//System Exceptions
+	public static final String RPR_PKM_UNEXCEPTED_ERROR = RPR_PACKET_MANAGER_ERROR_CODE + ERROR_CODE22;
+	public static final String RPR_PKM_BAD_GATEWAY = RPR_PACKET_MANAGER_ERROR_CODE + ERROR_CODE23;
+	public static final String RPR_PKM_SERVICE_UNAVAILABLE  = RPR_PACKET_MANAGER_ERROR_CODE + ERROR_CODE24;
+	public static final String RPR_PKM_SERVER_ERROR = RPR_PACKET_MANAGER_ERROR_CODE + ERROR_CODE25;
+	public static final String RPR_PKM_TIMEOUT  = RPR_PACKET_MANAGER_ERROR_CODE + ERROR_CODE26;
+
 	
 	/** The Constant IIS_EPU_ATU_SYSTEM_MODULE. */
 	// System Exceptions

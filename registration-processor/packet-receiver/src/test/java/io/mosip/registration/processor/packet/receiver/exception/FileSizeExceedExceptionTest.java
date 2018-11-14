@@ -19,11 +19,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
 public class FileSizeExceedExceptionTest {
-	private static final String FILE_SIZE_EXCEED_EXCEPTION = "This is file size exceed exception";
+	
 	private static final Logger log = LoggerFactory.getLogger(FileSizeExceedExceptionTest.class);
 
 	@Mock
@@ -32,7 +33,8 @@ public class FileSizeExceedExceptionTest {
 	@Test
 	public void TestFileSizeExceedException() {
 
-		FileSizeExceedException ex = new FileSizeExceedException(FILE_SIZE_EXCEED_EXCEPTION);
+		FileSizeExceedException ex = new FileSizeExceedException(
+				RPRPlatformErrorMessages.FILE_SIZE_EXCEED_EXCEPTION.getValue());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -56,7 +58,7 @@ public class FileSizeExceedExceptionTest {
 			assertThat("Should throw FileSizeExceed exception with correct error codes",
 					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_FILE_SIZE_EXCEEDED));
 			assertThat("Should throw FileSizeExceed exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(FILE_SIZE_EXCEED_EXCEPTION));
+					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.FILE_SIZE_EXCEED_EXCEPTION.getValue()));
 
 		}
 	}

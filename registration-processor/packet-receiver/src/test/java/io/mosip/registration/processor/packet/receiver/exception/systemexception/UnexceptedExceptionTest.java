@@ -18,11 +18,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
 public class UnexceptedExceptionTest {
-	private static final String UNEXCEPTED_EXCEPTION = "This is unexcepted exception";
+
 	private static final Logger log = LoggerFactory.getLogger(UnexceptedExceptionTest.class);
 
 	@Mock
@@ -31,7 +32,7 @@ public class UnexceptedExceptionTest {
 	@Test
 	public void TestUnexceptedException() {
 
-		UnexpectedException ex = new UnexpectedException(UNEXCEPTED_EXCEPTION);
+		UnexpectedException ex = new UnexpectedException(RPRPlatformErrorMessages.UNEXCEPTED_EXCEPTION.getValue());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -53,7 +54,7 @@ public class UnexceptedExceptionTest {
 			assertThat("Should throw Unexpected Exception with correct error codes",
 					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_UNEXCEPTED_ERROR));
 			assertThat("Should throw Unexpected Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(UNEXCEPTED_EXCEPTION));
+					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.UNEXCEPTED_EXCEPTION.getValue()));
 		}
 	}
 }
