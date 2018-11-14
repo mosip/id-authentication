@@ -130,6 +130,18 @@
 			<artifactId>MFS100</artifactId>
 			<version>1.0</version>
 		</dependency>
+		
+		<!-- QuartzJobBean in spring-context-support.jar -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+
+		<!-- Quartz framework -->
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+		</dependency>
 	</dependencies>
 	
 	<repositories>

@@ -139,14 +139,15 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "BiometricsCaptured";
 	public static final String TEMPLATE_HANDS_IMAGE_PATH = "src/main/resources/images/hands.jpg";
-	public static final String TEMPLATE_RESIDENT_NAME="ResidentName";
-	public static final String TEMPLATE_POSTAL_CODE="PostalCode";
-	
+	public static final String TEMPLATE_RESIDENT_NAME = "ResidentName";
+	public static final String TEMPLATE_POSTAL_CODE = "PostalCode";
+
 	// Exception Code for Components
 	public static final String PACKET_CREATION_EXP_CODE = "PCC-";
 	public static final String PACKET_UPLOAD_EXP_CODE = "PAU-";
 	public static final String REG_ACK_EXP_CODE = "ACK-";
 	public static final String DEVICE_ONBOARD_EXP_CODE = "DVO-";
+	public static final String SYNC_JOB_EXP_CODE = "SYN-";
 
 	// Constants for Audits
 	public static final String INTERNAL_SERVER_ERROR = "Internal error while creating packet";
@@ -253,6 +254,14 @@ public class RegistrationConstants {
 	public static final String MACHINE_MASTER_RECORD_NOT_FOUND = REG_SERVICE_CODE + "MMD-224";
 	public static final String PACKET_META_CONVERTOR = REG_SERVICE_CODE + "PMC-225";
 
+	// #Exceptions SyncJobs
+	public static final String SYNC_TRANSACTION_NULL_POINTER_EXCEPTION = REG_SERVICE_CODE + "RPS-BTM-226";
+	public static final String SYNC_JOB_RUN_TIME_EXCEPTION = REG_SERVICE_CODE + "RPS-JTD-227";
+	public static final String PACKET_SYNC__STATUS_READER_NULL_POINTER_EXCEPTION = REG_SERVICE_CODE + "RPS-PSJ-228";
+	public static final String BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION = REG_SERVICE_CODE + "RPS-BJ-229";
+	public static final String BASE_JOB_NULL_POINTER_EXCEPTION = REG_SERVICE_CODE + "RPS-BJ-229";
+
+	
 	/*********** UI Constants **********/
 	// paths of FXML pages to be loaded
 	public static final String ERROR_PAGE = "/fxml/ErrorPage.fxml";
@@ -450,15 +459,15 @@ public class RegistrationConstants {
 	public static final String ONBOARD_DEVICES_MAP = "onBoardDevicesMap";
 	public static final String ONBOARD_DEVICES_REF_ID_TYPE = "UserID";
 
-	//Template Name
+	// Template Name
 	public static final String ACKNOWLEDGEMENT_TEMPLATE = "Ack Template";
 	public static final String NOTIFICATION_TEMPLATE = "Notification Template";
-	
-	//Notification Service
+
+	// Notification Service
 	public static final String EMAIL_SUBJECT = "MOSIP REGISTRATION NOTIFICATION";
-	public static final String EMAIL_SERVICE="email";
-	public static final String SMS_SERVICE="sms";
-	
+	public static final String EMAIL_SERVICE = "email";
+	public static final String SMS_SERVICE = "sms";
+
 	// Global configuration parameters
 	public static final List<String> INVALID_LOGIN_PARAMS = Arrays.asList("INVALID_LOGIN_COUNT", "INVALID_LOGIN_TIME");
 	public static final String INVALID_LOGIN_COUNT = "INVALID_LOGIN_COUNT";
@@ -466,5 +475,25 @@ public class RegistrationConstants {
 
 	// Lock User account
 	public static final String USER_ACCOUNT_LOCK_MESSAGE = "Your account has been temporarily locked as you have made 5 unsuccessful login attempts. Please try logging in after 30 minutes.";
+
+	// Spring Batch-Jobs
+	public static final String JOB_TRIGGER_STARTED = "Trigger started";
+	public static final String JOB_TRIGGER_COMPLETED = "Trigger completed";
+	public static final String JOB_EXECUTION_STARTED = "Execution started";
+	public static final String JOB_EXECUTION_COMPLETED = "Execution completed";
+	public static final String JOB_TRIGGER_FAILED = "Trigger failed";
+	public static final String JOB_EXECUTION_FAILED = "Execution failed";
+	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";
+	public static final String JOB_TRIGGER_POINT_USER = "User";
+	public static final String BATCH_JOB_CODE = "Sync Job Alert";
+	public static final String BATCH_JOB_START_SUCCESS_MESSAGE = "Jobs started successfully";
+	public static final String BATCH_JOB_STOP_SUCCESS_MESSAGE = "Jobs stopped successfully";
+
+	public static final String BATCH_JOBS_CONFIG_LOGGER_TITLE = "REGISTRATION - Job Configuration Service";
+	public static final String BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE = "REGISTRATION - Sync Transaction Manager";
+	public static final String BATCH_JOBS_TRIGGER_LOGGER_TITLE = "REGISTRATION - Job Trigger Listener";
+	public static final String BATCH_JOBS_PROCESS_LOGGER_TITLE = "REGISTRATION - Job Process Listener";
+	public static final String PACKET_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Packet Sync Status Job";
+	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";
 
 }

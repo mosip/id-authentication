@@ -2,12 +2,16 @@ package io.mosip.registration.config;
 
 import java.util.ResourceBundle;
 
+import org.quartz.JobListener;
+import org.quartz.TriggerListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.auditmanager.config.AuditConfig;
@@ -16,6 +20,8 @@ import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
 import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
 import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.registration.jobs.JobProcessListener;
+import io.mosip.registration.jobs.JobTriggerListener;
 
 /**
  * Spring Configuration class for Registration-Service Module
@@ -34,9 +40,21 @@ public class AppConfig {
 	private static final MosipRollingFileAppender MOSIP_ROLLING_APPENDER = new MosipRollingFileAppender();
 
 	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("application");
-	
+
+	/**
+	 * Job processor
+	 */
+	@Autowired
+	private JobProcessListener jobProcessListener;
+
+	/**
+	 * Job Trigger
+	 */
+	@Autowired
+	private JobTriggerListener commonTriggerListener;
+
 	static {
-		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4j");
+		ResourceBundle resourceBundle = ResourceBundle.getBundle("log4J");
 		MOSIP_ROLLING_APPENDER.setAppenderName(resourceBundle.getString("log4j.appender.Appender"));
 		MOSIP_ROLLING_APPENDER.setFileName(resourceBundle.getString("log4j.appender.Appender.file"));
 		MOSIP_ROLLING_APPENDER.setFileNamePattern(resourceBundle.getString("log4j.appender.Appender.filePattern"));
@@ -50,7 +68,7 @@ public class AppConfig {
 	public static MosipLogger getLogger(Class<?> className) {
 		return MosipLogfactory.getMosipDefaultRollingFileLogger(MOSIP_ROLLING_APPENDER, className);
 	}
-	
+
 	public static String getApplicationProperty(String property) {
 		return applicationProperties.getString(property);
 	}
@@ -60,4 +78,16 @@ public class AppConfig {
 		return new RestTemplate();
 	}
 
+	/**
+	 * scheduler factory bean used to shedule the batch jobs
+	 * 
+	 * @return scheduler factory which includes job detail and trigger detail
+	 */
+	@Bean(name = "schedulerFactoryBean")
+	public SchedulerFactoryBean getSchedulerFactoryBean() {
+		SchedulerFactoryBean schFactoryBean = new SchedulerFactoryBean();
+		schFactoryBean.setGlobalTriggerListeners(new TriggerListener[] { commonTriggerListener });
+		schFactoryBean.setGlobalJobListeners(new JobListener[] { jobProcessListener });
+		return schFactoryBean;
+	}
 }
