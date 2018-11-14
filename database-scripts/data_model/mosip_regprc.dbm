@@ -883,7 +883,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 	</column>
 	<constraint name="idemog_pk" type="pk-constr" table="regprc.individual_demographic_dedup">
-		<columns names="ref_id_type,ref_id" ref-type="src-columns"/>
+		<columns names="ref_id_type,ref_id,lang_code" ref-type="src-columns"/>
 	</constraint>
 </table>
 

@@ -24,7 +24,7 @@ CREATE TABLE regprc.individual_demographic_dedup(
 	upd_dtimes timestamp,
 	is_deleted boolean,
 	del_dtimes timestamp,
-	CONSTRAINT idemog_pk PRIMARY KEY (ref_id_type,ref_id)
+	CONSTRAINT idemog_pk PRIMARY KEY (ref_id_type,ref_id,lang_code)
 
 );
 -- ddl-end --
