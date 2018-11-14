@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -212,6 +214,20 @@ public class LoginServiceTest {
 
 		Assert.assertNotNull(loginServiceImpl.validateOTP("yashReddy683", "099887").getErrorResponseDTOs());
 
+	}
+
+	@Test
+	public void updateLoginParamsTest() {
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(registrationUserDetailDAO).updateLoginParams(Mockito.any(RegistrationUserDetail.class));
+		
+		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
+		registrationUserDetail.setId("mosip");
+		registrationUserDetail.setUnsuccessfulLoginCount(0);
+		registrationUserDetail.setUserlockTillDtimes(new Timestamp(new Date().getTime()));
+		
+		loginServiceImpl.updateLoginParams(registrationUserDetail);
 	}
 
 }
