@@ -40,7 +40,7 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "name", nullable = false, length = 128)
 	private String name;
 
-	@Column(name = "cntr_typ_code", length = 36)
+	@Column(name = "cntrtyp_code", length = 36)
 	private String centerTypeCode;
 
 	@Column(name = "addr_line1", length = 256)
