@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.keymanager.softhsm.spi;
+package io.mosip.kernel.core.keymanager.spi;
 
 import java.io.IOException;
 import java.security.Key;
