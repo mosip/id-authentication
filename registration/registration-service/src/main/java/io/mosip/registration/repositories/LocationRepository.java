@@ -5,7 +5,7 @@ import io.mosip.registration.entity.GenericId;
 import io.mosip.registration.entity.Location;
 
 /**
- * 
+ * Location repository
  * @author Brahmananda Reddy
  *
  */

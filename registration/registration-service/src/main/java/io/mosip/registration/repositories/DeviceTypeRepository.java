@@ -16,5 +16,6 @@ import io.mosip.registration.entity.RegDeviceTypeId;
 public interface DeviceTypeRepository extends BaseRepository<DeviceType, RegDeviceTypeId> {
 
 	List<DeviceType> findByIsActiveTrue();
+	
 
 }
