@@ -102,4 +102,14 @@ public class RegistrationCenterController {
 		return registrationCenterService.getRegistrationCentersByIDAndLangCode(registrationCenterId, langCode);
 	}
 
+	/**
+	 * Function to fetch all registration centers.
+	 * 
+	 * @return {@link RegistrationCenterResponseDto}
+	 */
+	@GetMapping("/registrationcenters")
+	public RegistrationCenterResponseDto getAllRegistrationCentersDetails() {
+		return registrationCenterService.getAllRegistrationCenters();
+	}
+
 }
