@@ -53,6 +53,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.NotificationType;
+import io.mosip.authentication.service.integration.SenderType;
 import io.mosip.kernel.core.spi.logger.MosipLogger;
 
 /**
@@ -92,19 +93,18 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	@Autowired
 	Environment env;
-	
+
 	@Autowired
 	NotificationManager notificationManager;
-	
+
 	@Autowired
 	IdInfoService idInfoService;
-	
+
 	@Autowired
 	DemoAuthService demoAuthService;
-	
+
 	@Autowired
 	IdAuthServiceImpl idAuthServiceImpl;
-	
 
 	/**
 	 * Process the authorisation type and authorisation response is returned.
@@ -114,13 +114,22 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * @return the auth response DTO
 	 * @throws IdAuthenticationBusinessException
 	 *             the id authentication business exception
-	 * @throws IdAuthenticationDaoException 
-	 * @throws ParseException 
+	 * @throws IdAuthenticationDaoException
+	 * @throws ParseException
 	 */
 
 	@Override
 	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
+
+		/** Property to get the email Notification type */
+		String emailproperty = env.getProperty("notification.email");
+
+		/** Property to get the sms Notification type */
+		String smsproperty = env.getProperty("notification.sms");
+
+		String ismaskRequired = env.getProperty("uin.masking.required");
+
 		String refId = processIdType(authRequestDTO);
 		List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, refId);
 
@@ -134,49 +143,60 @@ public class AuthFacadeImpl implements AuthFacade {
 		AuthResponseDTO authResponseDTO = authResponseBuilder.build();
 		logger.info(DEFAULT_SESSION_ID, "IDA", AUTH_FACADE,
 				"authenticateApplicant status : " + authResponseDTO.getStatus());
-		
-		NotificationType valueOne=NotificationType.valueOf(env.getProperty("notification.email"));
-		NotificationType valueTwo=NotificationType.valueOf(env.getProperty("notification.sms"));
 
-		Set<NotificationType> notificationType=new HashSet<NotificationType>();
-		notificationType.add(valueOne);
-		notificationType.add(valueTwo);
-		Map<String, List<IdentityInfoDTO>>  idInfo=idInfoService.getIdInfo(refId);
-		Map<String,Object> values=new HashMap(); 
-		values.put("NAME", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI,idInfo).getValue());
-		values.put("PHONE",MaskUtil.generateMaskValue(demoHelper.getEntityInfo(DemoMatchType.PHONE,idInfo).getValue(), 8));
-		values.put("EMAIL", MaskUtil.generateMaskValue(demoHelper.getEntityInfo(DemoMatchType.EMAIL,idInfo).getValue(), 8));
-		String dateTime=authResponseDTO.getResTime();
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"); 
+		NotificationType emailNotification = NotificationType.valueOf(emailproperty);
+		NotificationType smsNotification = NotificationType.valueOf(smsproperty);
+		Set<NotificationType> notificationType = new HashSet<>();
+		notificationType.add(emailNotification);
+		notificationType.add(smsNotification);
+		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(refId);
+		Map<String, Object> values = new HashMap();
+		values.put("NAME", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
+		String dateTime = authResponseDTO.getResTime();
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		Date date1;
-		String changedTime="";
-		String changedDate="";
+		String changedTime = "";
+		String changedDate = "";
+
 		try {
-			date1 = (Date)formatter.parse(dateTime);
+			date1 = formatter.parse(dateTime);
 			SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
 			SimpleDateFormat date = new SimpleDateFormat("dd-MM-yyyy");
 			changedTime = time.format(date1);
-			changedDate=date.format(date1);
+			changedDate = date.format(date1);
 		} catch (ParseException e) {
-			e.printStackTrace();
+			logger.error(DEFAULT_SESSION_ID, "IDA", AUTH_FACADE, e.getMessage());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, e);
 		}
 		values.put("DATE", changedDate);
 		values.put("TIME", changedTime);
-		Optional<UinEntity> uinEntity=idAuthServiceImpl.getUIN(refId);
-		values.put("UIN", uinEntity.get().getId());
-		String authTypeStr = Stream.of(AuthType.values())
-				.filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
-				.map(AuthType::getType)
-				.collect(Collectors.joining(",")); 
-		if(authResponseDTO.getStatus().equals("y"))
-		{
+		Optional<UinEntity> uinEntity = idAuthServiceImpl.getUIN(refId);
+		values.put("UIN", Optional.ofNullable(uinEntity.get().getId()));
+		values.put("AUTHTYPE",
+				Stream.of(AuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
+						.map(AuthType::getType).collect(Collectors.joining(",")));
+		if (authResponseDTO.getStatus().equals("y")) {
 			values.put("STATUS", "Success");
+		} else {
+			values.put("STATUS", "Failed");
 		}
-		else
-		{
-			values.put("STATUS","Failed");
+
+		String phoneNumber = null;
+		String email = null;
+
+		if (ismaskRequired.equals("true")) {
+			phoneNumber = MaskUtil.generateMaskValue(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo).getValue(),
+					Integer.parseInt(env.getProperty("uin.masking.charcount")));
+			email = MaskUtil.generateMaskValue(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo).getValue(),
+					Integer.parseInt(env.getProperty("uin.masking.charcount")));
+		} else {
+			phoneNumber = demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo).getValue();
+			email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo).getValue();
 		}
-	//	notificationManager.sendNotification(notificationType,values,Uin);
+
+		String type = SenderType.AUTH.getName();
+
+		notificationManager.sendNotification(notificationType, values, email, phoneNumber, type);
 		return authResponseDTO;
 
 	}
@@ -271,15 +291,13 @@ public class AuthFacadeImpl implements AuthFacade {
 		return authResponseTspDto;
 	}
 
-	
 	@Override
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO)
 			throws IdAuthenticationBusinessException {
 		String refId = processIdType(kycAuthRequestDTO.getAuthRequest());
-		KycInfo info = kycService.retrieveKycInfo(refId,
-				KycType.getEkycAuthType(env.getProperty("ekyc.type")), kycAuthRequestDTO.isEPrintReq(),
-				kycAuthRequestDTO.isSecLangReq());
-		KycAuthResponseDTO kycAuthResponseDTO=new KycAuthResponseDTO();
+		KycInfo info = kycService.retrieveKycInfo(refId, KycType.getEkycAuthType(env.getProperty("ekyc.type")),
+				kycAuthRequestDTO.isEPrintReq(), kycAuthRequestDTO.isSecLangReq());
+		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.getResponse().setKyc(info);
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 		return kycAuthResponseDTO;
