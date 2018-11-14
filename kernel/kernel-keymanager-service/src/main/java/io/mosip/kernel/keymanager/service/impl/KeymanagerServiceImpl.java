@@ -1,8 +1,10 @@
 package io.mosip.kernel.keymanager.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.keymanager.dto.KeymanagerResponseDto;
 import io.mosip.kernel.keymanager.service.KeymanagerService;
 
 /**
@@ -15,14 +17,35 @@ import io.mosip.kernel.keymanager.service.KeymanagerService;
  */
 @Service
 public class KeymanagerServiceImpl implements KeymanagerService {
-	/**
-	 * The reference that autowires KeymanagerRepository class.
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.keymanager.service.KeymanagerService#getPublicKey(java.lang.
+	 * String, java.time.LocalDateTime, java.util.Optional)
 	 */
-//	@Autowired
-//	private KeymanagerRepository keymanagerRepository;
+	@Override
+	public byte[] getPublicKey(String appId, LocalDateTime timeStamp, Optional<String> machineId) {
 
+		byte[] publicKey = "urvil".getBytes();
 
-	public KeymanagerResponseDto getPublicKey() {
-		return null;
+		return publicKey;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.keymanager.service.KeymanagerService#decryptSymmetricKey(java
+	 * .lang.String, java.time.LocalDateTime, java.util.Optional, byte[])
+	 */
+	@Override
+	public byte[] decryptSymmetricKey(String appId, LocalDateTime timeStamp, Optional<String> machineId,
+			byte[] encryptedSymmetricKey) {
+
+		byte[] decryptSymmetricKey = "urvil".getBytes();
+
+		return decryptSymmetricKey;
 	}
 }

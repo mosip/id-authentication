@@ -1,6 +1,7 @@
 package io.mosip.kernel.keymanager.service;
 
-import io.mosip.kernel.keymanager.dto.KeymanagerResponseDto;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * This interface provides the methods which can be used for Key management
@@ -11,5 +12,21 @@ import io.mosip.kernel.keymanager.dto.KeymanagerResponseDto;
  */
 public interface KeymanagerService {
 
-	public KeymanagerResponseDto getPublicKey();
+	/**
+	 * @param appId
+	 * @param timeStamp
+	 * @param machineId
+	 * @param encryptedSymmetricKey
+	 * @return
+	 */
+	public byte[] decryptSymmetricKey(String appId, LocalDateTime timeStamp, Optional<String> machineId,
+			byte[] encryptedSymmetricKey);
+
+	/**
+	 * @param appId
+	 * @param timeStamp
+	 * @param machineId
+	 * @return
+	 */
+	public byte[] getPublicKey(String appId, LocalDateTime timeStamp, Optional<String> machineId);
 }
