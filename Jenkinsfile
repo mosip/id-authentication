@@ -27,16 +27,16 @@ node{
         buildInfo = Artifactory.newBuildInfo()
 	buildInfo.env.capture = true 
    }
-  stage ('Packaging') 
+  stage ('Maven Compile') 
 	{
-        rtMaven.run pom: 'DEV/kernel/pom.xml', goals: 'clean install -Dmaven.test.skip=true', buildInfo: buildInfo
+        rtMaven.run pom: 'DEV/kernel/pom.xml', goals: 'clean install', buildInfo: buildInfo
     }	
   stage('SonarQube Analysis') {
 	withSonarQubeEnv('sonar') { 
-          sh "${mvnHome}/bin/mvn sonar:sonar"
+          rtMaven.run pom: 'DEV/kernel/pom.xml', goals: 'sonar:sonar', buildInfo: buildInfo
         }	}
-		
-	stage ('Publish build info') {
+  		
+	stage ('Publish') {
         server.publishBuildInfo buildInfo
     }
 	 stage('Build image') {
