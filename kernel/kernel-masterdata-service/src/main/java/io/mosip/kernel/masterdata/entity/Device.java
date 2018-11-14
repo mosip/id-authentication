@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.entity;
 
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -114,8 +113,5 @@ public class Device implements Serializable {
 	 */
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedtime;
-	
-
 
 }
-

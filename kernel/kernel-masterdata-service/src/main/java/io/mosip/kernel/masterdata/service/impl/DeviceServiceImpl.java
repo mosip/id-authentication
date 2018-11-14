@@ -43,15 +43,14 @@ public class DeviceServiceImpl implements DeviceService {
 	 */
 	@Autowired
 	ObjectMapperUtil objectMapperUtil;
-	
-
 
 	/**
 	 * Method used for fetch all Device details based on given language code
 	 * 
 	 * @return DeviceDto returning Device Details based on given language code
 	 * 
-	 * @param langCode pass language as string
+	 * @param langCode
+	 *            pass language as string
 	 * 
 	 * @throws DeviceFetchException
 	 *             While Fetching Device Detail If fails to fetch required Device
@@ -64,7 +63,7 @@ public class DeviceServiceImpl implements DeviceService {
 	 *             If given required Device ID and language not found
 	 * 
 	 */
-	
+
 	@Override
 	public DeviceResponseDto getDeviceLangCode(String langCode) {
 		List<Device> deviceList = null;
@@ -78,10 +77,9 @@ public class DeviceServiceImpl implements DeviceService {
 		}
 		if (deviceList != null && !deviceList.isEmpty()) {
 			try {
-				deviceDtoList = objectMapperUtil.mapAll(deviceList,DeviceDto.class);
-			}catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new DeviceMappingException(
-						DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorCode(),
+				deviceDtoList = objectMapperUtil.mapAll(deviceList, DeviceDto.class);
+			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
+				throw new DeviceMappingException(DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorCode(),
 						DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorMessage());
 			}
 		} else {
@@ -91,17 +89,18 @@ public class DeviceServiceImpl implements DeviceService {
 		deviceResponseDto.setDevices(deviceDtoList);
 		return deviceResponseDto;
 	}
-	
-	
+
 	/**
-	 * Method used for fetch all Device details based on given language code and Device type
+	 * Method used for fetch all Device details based on given language code and
+	 * Device type
 	 * 
-	 * @return DeviceDto returning all Device Detail based on language code and Device type
+	 * @return DeviceDto returning all Device Detail based on language code and
+	 *         Device type
 	 * 
-	 * @param langCode 
-	 * 					pass language code as String
-	 * @param dtypeCode 
-	 * 					pass Device type as String
+	 * @param langCode
+	 *            pass language code as String
+	 * @param dtypeCode
+	 *            pass Device type as String
 	 * 
 	 * @throws DeviceFetchException
 	 *             While Fetching Device Detail If fails to fetch required Device
@@ -112,7 +111,7 @@ public class DeviceServiceImpl implements DeviceService {
 	 *             If given required Device ID and language not found
 	 * 
 	 */
-	
+
 	@Override
 	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(String langCode, String dtypeCode) {
 
@@ -128,9 +127,8 @@ public class DeviceServiceImpl implements DeviceService {
 		if (objectList != null && !objectList.isEmpty()) {
 			try {
 				deviceLangCodeDtypeDtoList = objectMapperUtil.mapDeviceDto(objectList);
-			}catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new DeviceMappingException(
-						DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorCode(),
+			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
+				throw new DeviceMappingException(DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorCode(),
 						DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorMessage());
 			}
 		} else {

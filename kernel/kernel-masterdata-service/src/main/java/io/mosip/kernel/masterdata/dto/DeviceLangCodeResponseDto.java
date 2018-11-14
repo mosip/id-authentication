@@ -1,5 +1,4 @@
 
-
 package io.mosip.kernel.masterdata.dto;
 
 import java.util.List;

@@ -53,6 +53,8 @@ import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMapping
 import io.mosip.kernel.masterdata.exception.DeviceFetchException;
 import io.mosip.kernel.masterdata.exception.DeviceMappingException;
 import io.mosip.kernel.masterdata.exception.DeviceNotFoundException;
+import io.mosip.kernel.masterdata.exception.DeviceSpecificationDataFatchException;
+import io.mosip.kernel.masterdata.exception.DeviceSpecificationNotFoundException;
 import io.mosip.kernel.masterdata.exception.TemplateFetchException;
 import io.mosip.kernel.masterdata.exception.TemplateMappingException;
 import io.mosip.kernel.masterdata.exception.TemplateNotFoundException;
@@ -152,7 +154,6 @@ public class MasterDataControllerAdvice {
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
 
-	
 	@ExceptionHandler(LocationDatabaseException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> locationHierarchyDatabaseException(
 			final LocationDatabaseException e) {
@@ -331,7 +332,7 @@ public class MasterDataControllerAdvice {
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
-	
+
 	@ExceptionHandler(MachineHistroyNotFoundException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> machineHistoryNotFoundException(
 			final MachineHistroyNotFoundException e) {
@@ -348,24 +349,21 @@ public class MasterDataControllerAdvice {
 	 * @return the response entity.
 	 */
 	@ExceptionHandler(DeviceFetchException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deviceFetchException(
-			final DeviceFetchException e) {
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deviceFetchException(final DeviceFetchException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
-	
+
 	@ExceptionHandler(DeviceMappingException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deviceMappingException(
-			final DeviceMappingException e) {
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deviceMappingException(final DeviceMappingException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
-	
+
 	@ExceptionHandler(DeviceNotFoundException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deviceNotFoundException(
-			final DeviceNotFoundException e) {
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deviceNotFoundException(final DeviceNotFoundException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
@@ -402,23 +400,21 @@ public class MasterDataControllerAdvice {
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
-	
+
 	@ExceptionHandler(ReasonsFetchException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> reasonsFetchException(
-			final ReasonsFetchException e) {
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> reasonsFetchException(final ReasonsFetchException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
-	
+
 	@ExceptionHandler(ReasonsMappingException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> reasonsMappingException(
-			final ReasonsMappingException e) {
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> reasonsMappingException(final ReasonsMappingException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
-	
+
 	@ExceptionHandler(ReasonsNotFoundException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> reasonsNotFoundException(
 			final ReasonsNotFoundException e) {
@@ -516,4 +512,20 @@ public class MasterDataControllerAdvice {
 		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 	}
 
+	
+	@ExceptionHandler(DeviceSpecificationNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deiceSpecificationNotFoundException(
+			final DeviceSpecificationNotFoundException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(DeviceSpecificationDataFatchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deviceSpecificationDataFatchException(
+			final DeviceSpecificationDataFatchException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
 }

@@ -1,7 +1,5 @@
 
-
 package io.mosip.kernel.masterdata.controller;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,17 +35,17 @@ public class DeviceController {
 	public DeviceResponseDto getDeviceLang(@PathVariable("langcode") String langCode) {
 		return deviceService.getDeviceLangCode(langCode);
 	}
-	
+
 	/**
 	 * Get api to fetch a all device details based on device type and language code
 	 * 
 	 * @return all device details
 	 */
 	@GetMapping(value = "/{langcode}/{deviceType}")
-	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(@PathVariable("langcode") String langCode, @PathVariable("deviceType") String deviceType) {
+	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(@PathVariable("langcode") String langCode,
+			@PathVariable("deviceType") String deviceType) {
 		return deviceService.getDeviceLangCodeAndDeviceType(langCode, deviceType);
 
 	}
 
 }
-

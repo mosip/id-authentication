@@ -52,9 +52,7 @@ public class DeviceLangCodeDtypeDto {
 	/**
 	 * Field for device type
 	 */
-	
+
 	private String deviceTypeCode;
 
 }
-
-

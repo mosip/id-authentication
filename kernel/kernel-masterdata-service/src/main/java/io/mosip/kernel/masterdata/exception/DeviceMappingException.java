@@ -29,4 +29,3 @@ public class DeviceMappingException extends BaseUncheckedException {
 	}
 
 }
-

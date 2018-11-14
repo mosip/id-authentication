@@ -23,12 +23,8 @@ import io.mosip.kernel.masterdata.dto.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceService;
 
-
 @RunWith(MockitoJUnitRunner.class)
 public class DeviceControllerTest {
-	
-
-	
 
 	@InjectMocks
 	private DeviceController deviceController;
@@ -42,12 +38,10 @@ public class DeviceControllerTest {
 		MockitoAnnotations.initMocks(this);
 	}
 
-
-
 	@Test
 	public void testGetDeviceLang() {
 		List<DeviceDto> deviceDtoList = new ArrayList<>();
-		DeviceDto  deviceDto = new DeviceDto();
+		DeviceDto deviceDto = new DeviceDto();
 		deviceDto.setId("1001");
 		deviceDto.setName("laptop");
 		deviceDto.setSerialNum("1234567890");
@@ -65,26 +59,23 @@ public class DeviceControllerTest {
 		Assert.assertNotNull(actual);
 		assertTrue(actual.getDevices().size() > 0);
 	}
-	
-	
+
 	@Test
 	public void testGetDeviceLangCodeAndDeviceType() {
 		DeviceLangCodeDtypeDto deviceLangCodeDtypeDto = new DeviceLangCodeDtypeDto();
 		List<DeviceLangCodeDtypeDto> deviceLangCodeDtypeDtoList = new ArrayList<>();
 		deviceLangCodeDtypeDto.setId("1001");
 		deviceLangCodeDtypeDto.setName("Laptop");
-		
+
 		deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
 		DeviceLangCodeResponseDto deviceLangCodeResponseDto = new DeviceLangCodeResponseDto();
 		deviceLangCodeResponseDto.setDevices(deviceLangCodeDtypeDtoList);
-		Mockito.when(deviceService.getDeviceLangCodeAndDeviceType(Mockito.anyString(), Mockito.anyString())).thenReturn(deviceLangCodeResponseDto);
-		DeviceLangCodeResponseDto actual = deviceController.getDeviceLangCodeAndDeviceType(Mockito.anyString(), Mockito.anyString());
+		Mockito.when(deviceService.getDeviceLangCodeAndDeviceType(Mockito.anyString(), Mockito.anyString()))
+				.thenReturn(deviceLangCodeResponseDto);
+		DeviceLangCodeResponseDto actual = deviceController.getDeviceLangCodeAndDeviceType(Mockito.anyString(),
+				Mockito.anyString());
 		Assert.assertNotNull(actual);
 		assertTrue(actual.getDevices().size() > 0);
 	}
-	
-	
-	
-	
-	
+
 }

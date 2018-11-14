@@ -145,7 +145,8 @@ public class DeviceSpecificationServiceTest {
 	public void dataAccessExceptionnDeviceSpecificationByDevicTypeCodeTest() {
 		String languageCode = "ENG";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCode(languageCode, deviceTypeCode)).thenThrow(DataAccessResourceFailureException.class);
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCode(languageCode, deviceTypeCode))
+				.thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 
 	}

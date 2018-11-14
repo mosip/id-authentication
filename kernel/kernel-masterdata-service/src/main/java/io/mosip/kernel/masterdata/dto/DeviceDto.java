@@ -4,7 +4,6 @@
  */
 package io.mosip.kernel.masterdata.dto;
 
-
 import lombok.Data;
 
 /**
@@ -52,4 +51,3 @@ public class DeviceDto {
 	private boolean isActive;
 
 }
-

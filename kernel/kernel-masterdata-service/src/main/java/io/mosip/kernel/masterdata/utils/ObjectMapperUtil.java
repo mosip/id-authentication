@@ -52,7 +52,7 @@ public class ObjectMapperUtil {
 
 		return holidayDtos;
 	}
-	
+
 	public List<ReasonCategoryDto> reasonConverter(List<ReasonCategory> reasonCategories) {
 		Objects.requireNonNull(reasonCategories, "list cannot be null");
 		List<ReasonCategoryDto> reasonCategoryDtos = null;
@@ -65,7 +65,6 @@ public class ObjectMapperUtil {
 		return reasonCategoryDtos;
 
 	}
-	
 
 	public List<DeviceLangCodeDtypeDto> mapDeviceDto(List<Object[]> objects) {
 
