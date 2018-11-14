@@ -32,16 +32,14 @@ import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
 import io.mosip.kernel.core.keymanager.exception.NoSuchSecurityProviderException;
 import io.mosip.kernel.core.keymanager.spi.SofthsmKeystore;
 import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeystoreErrorCode;
-import io.mosip.kernel.keymanager.softhsm.util.X509CertUtil;
+import io.mosip.kernel.keymanager.softhsm.util.CertificateUtility;
 import sun.security.pkcs11.SunPKCS11;
-import sun.security.x509.X509CertImpl;
 
 /**
  * SoftHSM Keystore implementation based on OpenDNSSEC that handles and stores
  * its cryptographic keys via the PKCS#11 interface. This is a software
- * implementation of a generic cryptographic device. SoftHSM is designed to meet
- * the requirements of OpenDNSSEC, but can also work together with other
- * cryptographic products because of the PKCS#11 interface.
+ * implementation of a generic cryptographic device. SoftHSM can work with other
+ * cryptographic device because of the PKCS#11 interface.
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
@@ -49,6 +47,30 @@ import sun.security.x509.X509CertImpl;
  */
 @Component
 public class SofthsmKeystoreImpl implements SofthsmKeystore {
+
+	/**
+	 * Common name for generating certificate
+	 */
+	@Value("${mosip.kernel.keymanager.softhsm.certificate.common-name}")
+	private String commonName;
+
+	/**
+	 * Organizational Unit for generating certificate
+	 */
+	@Value("${mosip.kernel.keymanager.softhsm.certificate.organizational-unit}")
+	private String organizationalUnit;
+
+	/**
+	 * Organization for generating certificate
+	 */
+	@Value("${mosip.kernel.keymanager.softhsm.certificate.organization}")
+	private String organization;
+
+	/**
+	 * Country for generating certificate
+	 */
+	@Value("${mosip.kernel.keymanager.softhsm.certificate.country}")
+	private String country;
 
 	/**
 	 * The keystore pass
@@ -61,7 +83,7 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	private final KeyStore keyStore;
 
 	/**
-	 * Constructor to initialise Softhsm Keystore
+	 * Constructor to initialize Softhsm Keystore
 	 * 
 	 * @param configPath
 	 *            The config path
@@ -99,23 +121,6 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#loadKeystore()
-	 */
-	@Override
-	public void loadKeystore() {
-
-		try {
-			keyStore.load(null, keystorePass.toCharArray());
-		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
-		}
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see
 	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getKeystoreInstance(java.
 	 * lang.String, java.security.Provider)
@@ -130,6 +135,23 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return mosipKeyStore;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#loadKeystore()
+	 */
+	@Override
+	public void loadKeystore() {
+
+		try {
+			keyStore.load(null, keystorePass.toCharArray());
+		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+		}
+
 	}
 
 	/*
@@ -242,12 +264,11 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	 * security.KeyPair, java.lang.String)
 	 */
 	@Override
-	public void storeAsymmetricKey(KeyPair keyPair, String alias) {
+	public void storeAsymmetricKey(KeyPair keyPair, String alias, int validDays) {
 
-		X509CertImpl x509CertImpl = X509CertUtil.generateX509Certificate(keyPair);
 		X509Certificate[] chain = new X509Certificate[1];
-		chain[0] = x509CertImpl;
-
+		chain[0] = CertificateUtility.generateX509Certificate(keyPair, commonName, organizationalUnit, organization,
+				country, validDays);
 		PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivate(), chain);
 		ProtectionParameter password = new PasswordProtection(keystorePass.toCharArray());
 
