@@ -12,6 +12,8 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
@@ -54,7 +56,7 @@ public class LandingZoneScannerTasklet implements Tasklet {
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	ClientAuditRequestBuilder clientAuditRequestBuilder;
 
 	/** The event id. */
 	private String eventId = "";
@@ -141,7 +143,7 @@ public class LandingZoneScannerTasklet implements Tasklet {
 			}
 
 			String description = isTransactionSuccessful ? "File moved from landing zone to virusscan zone successfully" : "File moveing from landing zone to virusscan zone failed";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.NO_ID.toString());
+			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.NO_ID.toString());
 		}
 		return RepeatStatus.FINISHED;
 	}

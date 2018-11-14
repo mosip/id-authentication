@@ -25,7 +25,7 @@ import io.mosip.registration.processor.quality.check.dto.QCUserDto;
 public class QualityCheckerAssignmentStage extends MosipVerticleManager {
 
 	@Autowired
-	QualityCheckManager<String, ApplicantInfoDto, QCUserDto> qualityCheckManager;
+	QualityCheckManager<String, QCUserDto> qualityCheckManager;
 
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;

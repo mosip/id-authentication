@@ -10,8 +10,8 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class QCUsersClient {
-	@Value("${qc-users-manger}")
-	private String qcUsersManagerHost;
+
+	private String qcUsersManagerHost="http://localhost:8081/v0.1/registration-processor/qc-users//qcUsersList"; 
 	
 	/**
 	 * Function to get all qcuserids

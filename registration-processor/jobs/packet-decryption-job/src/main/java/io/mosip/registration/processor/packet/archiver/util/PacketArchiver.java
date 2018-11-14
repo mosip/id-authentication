@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -46,7 +47,7 @@ public class PacketArchiver {
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	ClientAuditRequestBuilder clientAuditRequestBuilder;
 
 	/** The Constant LOGDISPLAY. */
 	private static final String LOGDISPLAY = "{} - {} - {}";
@@ -94,7 +95,7 @@ public class PacketArchiver {
 			eventType=	eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString(): EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "The file is successfully copied to VM for registration Id :"+registrationId : "The file copying to VM is failured for registration Id: "+registrationId;
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,registrationId);
+			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,registrationId);
 		}
 	}
 

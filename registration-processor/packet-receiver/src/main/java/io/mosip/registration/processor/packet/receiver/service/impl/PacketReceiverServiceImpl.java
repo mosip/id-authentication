@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -63,7 +65,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	ClientAuditRequestBuilder clientAuditRequestBuilder;
 
 	/*
 	 * (non-Javadoc)
@@ -120,7 +122,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				String description = isTransactionSuccessful ? "Packet registration status updated successfully"
 						: "Packet registration status updation unsuccessful";
 
-				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+				clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 						registrationId);
 			}
 		} else {

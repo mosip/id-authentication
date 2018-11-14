@@ -14,6 +14,7 @@ import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -52,7 +53,7 @@ public class Decryptor {
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	ClientAuditRequestBuilder clientAuditRequestBuilder;
 
 	/**
 	 * random method for decryption.
@@ -94,7 +95,7 @@ public class Decryptor {
 			eventName=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString() : EventName.EXCEPTION.toString();
 			eventType=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "Decryption of packet completed successfully for registration Id :"+registrationId : "Decryption of packet failured for registration Id: "+registrationId;
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,registrationId);
+			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,registrationId);
 
 		}
 		return outstream;
@@ -127,7 +128,7 @@ public class Decryptor {
 			eventName=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString() : EventName.EXCEPTION.toString();
 			eventType=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "Read private key from private key file success for registration Id :"+registrationId : "Read private key from private key file failured for registration Id: "+registrationId;
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,registrationId);
+			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,registrationId);
 		}
 
 		return rprivateKey;

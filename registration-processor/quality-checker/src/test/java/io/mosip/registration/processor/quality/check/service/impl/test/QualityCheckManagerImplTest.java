@@ -136,7 +136,7 @@ public class QualityCheckManagerImplTest {
 		entity.setCrDtimesz(LocalDateTime.now());
 		entity.setIsActive(true);
 		entity.setIsDeleted(false);
-		entity.setStatus(DecisionStatus.ACCEPTED.name());
+		entity.setStatus_code(DecisionStatus.ACCEPTED.name());
 		Mockito.when(applicantInfoDao.findById(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
 				.thenReturn(entity);
 		Mockito.when(applicantInfoDao.update(ArgumentMatchers.any())).thenReturn(entity);

@@ -62,7 +62,7 @@ public class ApplicantPhotographEntity extends BasePacketEntity<ApplicantPhotogr
 	private String crBy = "MOSIP_SYSTEM";
 
 	/** The cr dtimesz. */
-	@Column(name = "cr_dtimesz", nullable = false, updatable = false)
+	@Column(name = "cr_dtimes", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime crDtimesz;
 
@@ -71,12 +71,12 @@ public class ApplicantPhotographEntity extends BasePacketEntity<ApplicantPhotogr
 	private String updBy = "MOSIP_SYSTEM";
 
 	/** The upd dtimesz. */
-	@Column(name = "upd_dtimesz")
+	@Column(name = "upd_dtimes")
 	@UpdateTimestamp
 	private LocalDateTime updDtimesz;
 
 	/** The del dtimesz. */
-	@Column(name = "del_dtimesz")
+	@Column(name = "del_dtimes")
 	@UpdateTimestamp
 	private LocalDateTime delDtimesz;
 

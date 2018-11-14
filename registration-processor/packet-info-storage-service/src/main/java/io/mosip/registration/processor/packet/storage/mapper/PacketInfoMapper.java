@@ -282,9 +282,6 @@ public class PacketInfoMapper {
 
 		applicantDemographicEntity.setLocationCode("Location Code");
 		applicantDemographicEntity.setNationalId("National Id");
-		applicantDemographicEntity.setParentFullName("Parent Full Name");
-		applicantDemographicEntity.setParentRefId("ParentRefId");
-		applicantDemographicEntity.setParentRefIdType("ParentRefIdType");
 
 		applicantDemographicEntities.add(applicantDemographicEntity);
 
@@ -317,9 +314,6 @@ public class PacketInfoMapper {
 		applicantDemographicEntity.setMobile(demoInUserLang.getMobile());
 		applicantDemographicEntity.setLocationCode("Location Code");
 		applicantDemographicEntity.setNationalId("National Id");
-		applicantDemographicEntity.setParentFullName("Parent Full Name");
-		applicantDemographicEntity.setParentRefId("ParentRefId");
-		applicantDemographicEntity.setParentRefIdType("ParentRefIdType");
 
 		applicantDemographicEntities.add(applicantDemographicEntity);
 

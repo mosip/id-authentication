@@ -12,7 +12,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -116,8 +116,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	String description = "";
 
 	/** The core audit request builder. */
-	/*@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;*/
+	@Autowired
+	ClientAuditRequestBuilder clientAuditRequestBuilder;
 
 	@Autowired
 	private PacketInfoDao packetInfoDao;
@@ -167,8 +167,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			description = isTransactionSuccessful ? "Packet meta data saved successfully"
 					: "Packet meta data unsuccessful";
 
-			/*coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());*/
+			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
 		}
 
 	}
@@ -196,16 +196,16 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
 
-			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+			eventId = isTransactionSuccessful ? EventId.RPR_405.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_405.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_405.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "Demographic data saved successfully"
 					: "Demographic data Failed to save";
 
-			/*coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());*/
+			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
 
 		}
 
@@ -220,7 +220,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	 */
 	@Override
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcUserId) {
+		
 		boolean isTransactionSuccessful = false;
+		
 		List<ApplicantInfoDto> applicantInfoDtoList = null;
 		try {
 			applicantInfoDtoList = packetInfoDao.getPacketsforQCUser(qcUserId);
@@ -229,16 +231,16 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			/*
-			 * String description = isTransactionSuccessful ?
-			 * "description--QcUser packet Info fetched Success" :
-			 * "description--QcUser packet Info fetched Failed";
-			 * createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-			 * AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-			 * AuditLogTempConstant.EVENT_ID.toString(),
-			 * AuditLogTempConstant.EVENT_TYPE.toString(),
-			 * AuditLogTempConstant.EVENT_TYPE.toString());
-			 */
+			eventId = isTransactionSuccessful ? EventId.RPR_405.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_405.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_405.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "Packet data fetched successfully"
+					: "Packet data fetch fail";
+
+			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
 		}
 	}
 

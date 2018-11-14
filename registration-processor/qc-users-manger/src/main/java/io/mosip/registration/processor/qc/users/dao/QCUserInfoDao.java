@@ -83,10 +83,10 @@ public class QCUserInfoDao {
 		ure1.setId(urpk2);
 		
 		//roleRepositary.save(re);
-		qcuserRepositary.save(ue);
-		qcuserRepositary.save(ue1);
-		qcuserroleRepositary.save(ure);
-		qcuserroleRepositary.save(ure1);
+		//qcuserRepositary.save(ue);
+		//qcuserRepositary.save(ue1);
+		//qcuserroleRepositary.save(ure);
+		//qcuserroleRepositary.save(ure1);
 		return qcuserRepositary.findAllUserIds().stream()
 	              .map(UserDetailPKEntity::getId)
 	              .collect(Collectors.toList());

@@ -118,25 +118,9 @@ public class ApplicantDemographicEntity extends BasePacketEntity<ApplicantDemogr
 	@Column(name = "nationalid")
 	private String nationalId;
 
-	/** The parent full name. */
-	@Column(name = "parent_fullname")
-	private String parentFullName;
-
-	/** The parent ref id. */
-	@Column(name = "parent_ref_id")
-	private String parentRefId;
-
-	/** The parent ref id type. */
-	@Column(name = "parent_ref_id_type")
-	private String parentRefIdType;
-
 	/** The pre reg id. */
 	@Column(name = "prereg_id", nullable = false)
 	private String preRegId;
-
-	/** The status code. */
-	@Column(name = "status_code")
-	private String statusCode;
 
 	/** The sur name. */
 	@Column(name = "surname")
@@ -555,60 +539,6 @@ public class ApplicantDemographicEntity extends BasePacketEntity<ApplicantDemogr
 	}
 
 	/**
-	 * Gets the parent full name.
-	 *
-	 * @return the parent full name
-	 */
-	public String getParentFullName() {
-		return parentFullName;
-	}
-
-	/**
-	 * Sets the parent full name.
-	 *
-	 * @param parentFullname the new parent full name
-	 */
-	public void setParentFullName(String parentFullname) {
-		this.parentFullName = parentFullname;
-	}
-
-	/**
-	 * Gets the parent ref id.
-	 *
-	 * @return the parent ref id
-	 */
-	public String getParentRefId() {
-		return parentRefId;
-	}
-
-	/**
-	 * Sets the parent ref id.
-	 *
-	 * @param parentRefId the new parent ref id
-	 */
-	public void setParentRefId(String parentRefId) {
-		this.parentRefId = parentRefId;
-	}
-
-	/**
-	 * Gets the parent ref id type.
-	 *
-	 * @return the parent ref id type
-	 */
-	public String getParentRefIdType() {
-		return parentRefIdType;
-	}
-
-	/**
-	 * Sets the parent ref id type.
-	 *
-	 * @param parentRefIdType the new parent ref id type
-	 */
-	public void setParentRefIdType(String parentRefIdType) {
-		this.parentRefIdType = parentRefIdType;
-	}
-
-	/**
 	 * Gets the pre reg id.
 	 *
 	 * @return the pre reg id
@@ -624,24 +554,6 @@ public class ApplicantDemographicEntity extends BasePacketEntity<ApplicantDemogr
 	 */
 	public void setPreRegId(String preregId) {
 		this.preRegId = preregId;
-	}
-
-	/**
-	 * Gets the status code.
-	 *
-	 * @return the status code
-	 */
-	public String getStatusCode() {
-		return statusCode;
-	}
-
-	/**
-	 * Sets the status code.
-	 *
-	 * @param statusCode the new status code
-	 */
-	public void setStatusCode(String statusCode) {
-		this.statusCode = statusCode;
 	}
 
 	/**

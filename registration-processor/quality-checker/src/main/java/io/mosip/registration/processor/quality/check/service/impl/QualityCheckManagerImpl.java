@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.quality.check.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.AuditLogConstant;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
@@ -31,16 +38,25 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 
 	@Autowired
 	private QCUsersClient qcUsersClient;
-
-	/*@Autowired
-	private AuditRequestBuilder auditRequestBuilder;
-
+	
 	@Autowired
-	private AuditHandler<AuditRequestDto> auditHandler;
-*/
+	ClientAuditRequestBuilder clientAuditRequestBuilder;
+	
+	/** The event id. */
+	private String eventId = "";
+
+	/** The event name. */
+	private String eventName = "";
+
+	/** The event type. */
+	private String eventType = "";
+
+	String description = "";
+
 	@Override
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
-		List<String> qcUsersList = qcUsersClient.getAllQcuserIds();
+		List<String> qcUsersList = Arrays.asList("qc001","qc002","qc003");
+		//qcUsersClient.getAllQcuserIds();
 		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
 		QCUserDto qcUserDto = new QCUserDto();
 		qcUserDto.setQcUserId(qcUserId);
@@ -59,7 +75,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 			List<QCUserDto> resultDtos = new ArrayList<>();
 
 			map.forEach((k, v) -> {
-				k.setStatus(v.getDecisionStatus().name());
+				k.setStatus_code(v.getDecisionStatus().name());
 				QcuserRegistrationIdEntity entity = applicantInfoDao.update(k);
 				resultDtos.add(convertEntityToDto(entity));
 
@@ -70,15 +86,16 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			String description = isTransactionSuccessful ? "description--QC User status update successful"
+			description = isTransactionSuccessful ? "description--QC User status update successful"
 					: "description--QC User status update failed";
-			/*
-			 * createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-			 * AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-			 * AuditLogTempConstant.EVENT_ID.toString(),
-			 * AuditLogTempConstant.EVENT_TYPE.toString(),
-			 * AuditLogTempConstant.EVENT_TYPE.toString());
-			 */
+			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
 		}
 
 	}
@@ -119,15 +136,16 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("qcuser_registration_id Table Not Accessible", e);
 		} finally {
-			String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
+			description = isTransactionSuccessful ? "description--Demographic-data saved Success"
 					: "description--Demographic Failed to save";
-			/*
-			 * createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-			 * AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-			 * AuditLogTempConstant.EVENT_ID.toString(),
-			 * AuditLogTempConstant.EVENT_TYPE.toString(),
-			 * AuditLogTempConstant.EVENT_TYPE.toString());
-			 */
+			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
 		}
 	}
 
@@ -138,7 +156,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 		qcuserPKEntity.setUsrId(qcUserDto.getQcUserId());
 
 		qcUserEntity.setId(qcuserPKEntity);
-		qcUserEntity.setStatus(qcUserDto.getDecisionStatus().name());
+		qcUserEntity.setStatus_code(qcUserDto.getDecisionStatus().name());
 
 		return qcUserEntity;
 
@@ -148,29 +166,8 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 		QCUserDto dto = new QCUserDto();
 		dto.setQcUserId(entity.getId().getUsrId());
 		dto.setRegId(entity.getId().getRegId());
-		dto.setDecisionStatus(DecisionStatus.valueOf(entity.getStatus()));
+		dto.setDecisionStatus(DecisionStatus.valueOf(entity.getStatus_code()));
 		return dto;
 	}
 
-	/*
-	 * private void createAuditRequestBuilder(String applicationId, String
-	 * applicationName, String description, String eventId, String eventName, String
-	 * eventType) {
-	 * auditRequestBuilder.setActionTimeStamp(OffsetDateTime.now()).setApplicationId
-	 * (applicationId)
-	 * .setApplicationName(applicationName).setCreatedBy(AuditLogTempConstant.
-	 * CREATED_BY.toString())
-	 * .setDescription(description).setEventId(eventId).setEventName(eventName).
-	 * setEventType(eventType) .setHostIp(AuditLogTempConstant.HOST_IP.toString())
-	 * .setHostName(AuditLogTempConstant.HOST_NAME.toString()).setId(
-	 * AuditLogTempConstant.ID.toString())
-	 * .setIdType(AuditLogTempConstant.ID_TYPE.toString())
-	 * .setModuleId(AuditLogTempConstant.MODULE_ID.toString())
-	 * .setModuleName(AuditLogTempConstant.MODULE_NAME.toString())
-	 * .setSessionUserId(AuditLogTempConstant.SESSION_USER_ID.toString())
-	 * .setSessionUserName(AuditLogTempConstant.SESSION_USER_NAME.toString());
-	 * 
-	 * AuditRequestDto auditRequestDto = auditRequestBuilder.build();
-	 * auditHandler.writeAudit(auditRequestDto); }
-	 */
 }

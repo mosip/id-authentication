@@ -60,7 +60,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 	/** The core audit request builder. */
 	@Autowired
-	ClientAuditRequestBuilder coreAuditRequestBuilder;
+	ClientAuditRequestBuilder clientAuditRequestBuilder;
 
 	/**
 	 * Instantiates a new sync registration service impl.
@@ -99,7 +99,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 					syncRegistration = convertDtoToEntity(registrationDto);
 					syncRegistration.setId(RegistrationUtility.generateId());
 					syncRegistration = syncRegistrationDao.save(syncRegistration);
-					eventId = EventId.RPR_407.toString();
+					eventId = EventId.RPR_405.toString();
 				}
 				list.add(convertEntityToDto(syncRegistration));
 			}
@@ -121,7 +121,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				eventType = EventType.SYSTEM.toString();
 				description = "Registartion Id's syn is unsuccessful";
 			}
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 
 		}
