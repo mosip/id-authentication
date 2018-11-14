@@ -75,7 +75,7 @@ public class RegistrationCenterIntegrationExceptionTest {
 		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
-		holiday.setCreatedtime(specificDate);
+		holiday.setCreatedtimes(specificDate);
 		holiday.setHolidayDesc("Diwali");
 		holiday.setActive(true);
 
@@ -83,7 +83,7 @@ public class RegistrationCenterIntegrationExceptionTest {
 		holiday2.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
 		holiday2.setHolidayName("Diwali");
 		holiday2.setCreatedBy("John");
-		holiday2.setCreatedtime(specificDate);
+		holiday2.setCreatedtimes(specificDate);
 		holiday2.setHolidayDesc("Diwali");
 		holiday2.setActive(true);
 

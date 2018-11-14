@@ -81,14 +81,12 @@ public class LanguageServiceImplTest {
 		hinDto.setLanguageName("hindi");
 		hinDto.setLanguageFamily("hindi");
 		hinDto.setNativeName("hindi");
-		hinDto.setActive(Boolean.TRUE);
 
 		engDto = new LanguageDto();
 		engDto.setLanguageCode("en");
 		engDto.setLanguageName("english");
 		engDto.setLanguageFamily("english");
 		engDto.setNativeName("english");
-		engDto.setActive(Boolean.TRUE);
 
 		languageDtos.add(hinDto);
 		languageDtos.add(engDto);

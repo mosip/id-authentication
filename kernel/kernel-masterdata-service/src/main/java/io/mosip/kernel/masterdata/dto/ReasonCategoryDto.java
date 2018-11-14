@@ -20,9 +20,9 @@ public class ReasonCategoryDto {
 
 	private String languageCode;
 
-	private boolean isActive;
-
-	private boolean isDeleted;
+//	private boolean isActive;
+//
+//	private boolean isDeleted;
 
 	private List<ReasonListDto> reasonList = new ArrayList<ReasonListDto>();
 }

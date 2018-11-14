@@ -49,13 +49,13 @@ public class GenderTypeIntegrationTest {
 		genderId.setGenderName("David");
 		genderType.setActive(true);
 		genderType.setCreatedBy("Ajay");
-		genderType.setCreatedtime(null);
-		genderType.setDeleted(true);
-		genderType.setDeletedtime(null);
+		genderType.setCreatedtimes(null);
+		genderType.setIsDeleted(true);
+		genderType.setDeletedtimes(null);
 		genderType.setId(genderId);
 		genderType.setLanguageCode("ENG");
 		genderType.setUpdatedBy("Vijay");
-		genderType.setUpdatedtime(null);
+		genderType.setUpdatedtimes(null);
 		genderTypes.add(genderType);
 
 	}

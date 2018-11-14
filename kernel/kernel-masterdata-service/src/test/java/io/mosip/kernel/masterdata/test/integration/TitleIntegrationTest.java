@@ -44,12 +44,12 @@ public class TitleIntegrationTest {
 		titleId.setTitleCode("ABC");
 		title.setActive(true);
 		title.setCreatedBy("Ajay");
-		title.setCreatedtime(null);
+		title.setCreatedtimes(null);
 		title.setId(titleId);
 		title.setTitleDescription("AAAAAAAAAAAA");
 		title.setTitleName("HELLO");
 		title.setUpdatedBy("XYZ");
-		title.setUpdatedtime(null);
+		title.setUpdatedtimes(null);
 		titleList.add(title);
 
 	}

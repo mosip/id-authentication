@@ -90,7 +90,7 @@ public class RegistrationCenterControllerExceptionTest {
 		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
-		holiday.setCreatedtime(specificDate);
+		holiday.setCreatedtimes(specificDate);
 		holiday.setHolidayDesc("Diwali");
 		holiday.setActive(true);
 
