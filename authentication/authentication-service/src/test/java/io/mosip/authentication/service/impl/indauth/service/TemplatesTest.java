@@ -1,22 +1,22 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
@@ -40,6 +40,10 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PdfGeneratorImpl.class })
 public class TemplatesTest {
 	
+	private static final String PDF_BASE_DIR = System.getProperty("user.dir") + File.separator;
+
+	private static final String EKYC_FULL_PRI_FILE = PDF_BASE_DIR + "ekyc-full-pri-template.pdf";
+
 	@Autowired
 	private PdfGenerator pdfGenerator;
 	
@@ -176,13 +180,13 @@ public class TemplatesTest {
 			"</body>\r\n" + 
 			"</html>";
 	
-	private TemplateManager templateManager;
+	private static TemplateManager templateManager;
 	
 	@Autowired
 	Environment env;
 
-	@Before
-	public void before() {
+	@BeforeClass
+	public static void before() {
 		templateManager = new TemplateConfigureBuilder()
 				.enableCache(false)
 				.resourceLoader("classpath")
@@ -298,11 +302,25 @@ public class TemplatesTest {
 		ByteArrayOutputStream baos = (ByteArrayOutputStream)pdfGenerator.generate(stringWriter.toString());
 		byte[] byteArray = baos.toByteArray();
 		
-		try(FileOutputStream fileOutputStream = new FileOutputStream(System.getProperty("user.dir") + File.separator + "ekyc-full-pri-template.pdf");) {
+		File pdfFile = new File(EKYC_FULL_PRI_FILE);
+		
+		try(FileOutputStream fileOutputStream = new FileOutputStream(pdfFile);) {
 			fileOutputStream.write(byteArray);
 			fileOutputStream.flush();
 		}
 		
+		assertTrue(pdfFile.exists());
+		
+		
+	}
+	
+	@AfterClass
+	public static void cleanup() {
+		File pdfFile = new File(EKYC_FULL_PRI_FILE);
+		if(pdfFile.exists()) {
+			pdfFile.delete();
+		}
+
 	}
 
 }

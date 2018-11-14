@@ -1,2 +1,0 @@
-Dear <Name>,
-Your Authentication of UIN XXXXXXXX5423 using <Auth Type> on <Date> DD/MM/YYYY at <Time> HH:MM:SS  Hrs failed/passed at a device deployed by "MOSIP Services" .
