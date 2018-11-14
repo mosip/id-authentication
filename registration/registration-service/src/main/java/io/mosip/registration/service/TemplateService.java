@@ -15,17 +15,23 @@ public interface TemplateService {
 	 * types from database and chooses the required template for creation of
 	 * acknowledgement
 	 * 
+	 * * @param templateName 
+	 *            to define the template name
+	 * 
 	 * @return single template
 	 */
-	public Template getTemplate();
+	public Template getTemplate(String templateName);
 
 	/**
 	 * This method returns the data that is in the template which is chosen for
 	 * creating the acknowledgement
 	 * 
+	 * @param templateName 
+	 *            to define the template name
+	 * 
 	 * @return String which contains the template data
 	 * @throws RegBaseCheckedException
 	 */
-	public String createReceipt() throws RegBaseCheckedException;
+	public String getHtmlTemplate(String templateName) throws RegBaseCheckedException;
 	
 }

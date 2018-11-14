@@ -142,6 +142,60 @@ public class VelocityPDFGenerator {
 		Velocity.evaluate(velocityContext, writer, "Acknowledgement Template", templateReader);
 		return writer;
 	}
+	
+	/**
+	 * @param templateText
+	 *            - string which contains the data of template that is used to generate notification
+	 * @param registration
+	 *            - RegistrationDTO to display required fields on the template
+	 * @return writer - After mapping all the fields into the template, it is
+	 *         written into a StringWriter and returned
+	 */
+	public Writer generateNotificationTemplate(String templateText, RegistrationDTO registration) {
+		
+		Reader templateReader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(templateText.getBytes())));
+
+		VelocityContext velocityContext = new VelocityContext();
+		
+		velocityContext.put(RegistrationConstants.TEMPLATE_RESIDENT_NAME, registration.getDemographicDTO().getDemoInUserLang().getFullName());
+		velocityContext.put(RegistrationConstants.TEMPLATE_REGISTRATION_ID, registration.getRegistrationId());
+
+		SimpleDateFormat sdf = new SimpleDateFormat(RegistrationConstants.TEMPLATE_DATE_FORMAT);
+		String currentDate = sdf.format(new Date());
+
+		// map the respective fields with the values in the enrolmentDTO
+		velocityContext.put(RegistrationConstants.TEMPLATE_DATE, currentDate);
+		velocityContext.put(RegistrationConstants.TEMPLATE_FULL_NAME, registration.getDemographicDTO().getDemoInUserLang().getFullName());
+		Date dob = registration.getDemographicDTO().getDemoInUserLang().getDateOfBirth();
+		if(dob == null) {
+			velocityContext.put(RegistrationConstants.TEMPLATE_DOB, registration.getDemographicDTO().getDemoInUserLang().getAge());
+		} else {
+			velocityContext.put(RegistrationConstants.TEMPLATE_DOB, 
+					DateUtils.formatDate(dob, "dd-MM-YYYY"));
+		}
+		velocityContext.put(RegistrationConstants.TEMPLATE_GENDER, registration.getDemographicDTO().getDemoInUserLang().getGender());
+		velocityContext.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE1,
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine1());
+		velocityContext.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine2());
+		velocityContext.put(RegistrationConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getCity());
+		velocityContext.put(RegistrationConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getProvince());
+		velocityContext.put(RegistrationConstants.TEMPLATE_COUNTRY,
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getRegion());
+		velocityContext.put(RegistrationConstants.TEMPLATE_POSTAL_CODE,
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getPostalCode());
+		velocityContext.put(RegistrationConstants.TEMPLATE_MOBILE, registration.getDemographicDTO().getDemoInUserLang().getMobile());
+		String email = registration.getDemographicDTO().getDemoInUserLang().getEmailId();
+		if (email == null || email == RegistrationConstants.EMPTY) {
+			velocityContext.put(RegistrationConstants.TEMPLATE_EMAIL, RegistrationConstants.EMPTY);
+		} else {
+			velocityContext.put(RegistrationConstants.TEMPLATE_EMAIL, email);
+		}		
+
+		Writer writer = new StringWriter();
+		Velocity.evaluate(velocityContext, writer, RegistrationConstants.NOTIFICATION_TEMPLATE, templateReader);
+		return writer;
+	}
 
 	/**
 	 * @param enrolment

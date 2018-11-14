@@ -24,7 +24,8 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private TemplateDao templateDao;
 
-	public Template getTemplate() {
+	@Override
+	public Template getTemplate(String templateName) {
 		Template ackTemplate = new Template();
 
 		List<Template> templates = templateDao.getAllTemplates();
@@ -36,21 +37,23 @@ public class TemplateServiceImpl implements TemplateService {
 		 * template_file_format_code
 		 */
 		for (Template template : templates) {
+			if (template.getName().equals(templateName)) {
 			for (TemplateType type : templateTypes) {
-				if (template.getLangCode().equals(type.getPkTmpltCode().getLangCode())) {
+				if (template.getLangCode().equals(type.getPkTmpltCode().getLangCode()) && template.getTemplateTypCode().equals(type.getPkTmpltCode().getCode())) {
 					for (TemplateFileFormat fileFormat : templateFileFormats) {
-						if (template.getLangCode().equals(fileFormat.getPkTfftCode().getLangCode())) {
+						if (template.getLangCode().equals(fileFormat.getPkTfftCode().getLangCode()) && template.getFileFormatCode().equals(fileFormat.getPkTfftCode().getCode())) {
 							ackTemplate = template;
 						}
 					}
 				}
 			}
 		}
+		}
 		return ackTemplate;
 	}
 	
 
-	public String createReceipt() throws RegBaseCheckedException {
-		return getTemplate().getFileTxt();
+	public String getHtmlTemplate(String templateName) throws RegBaseCheckedException {
+		return getTemplate(templateName).getFileTxt();
 	}
 }

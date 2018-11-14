@@ -4,7 +4,11 @@
     -fx-background-color: #ffffff;
 }
 
-#DemographicPane{
+#anchor-pane {
+	-fx-background-color: #f8f9fa;
+}
+
+#demographicPane{
  	-fx-padding: 10;
 	-fx-border-color: black;
     -fx-background-color : white;
@@ -12,33 +16,27 @@
     
 }
 
-
-
-#anchor-pane {
-	-fx-background-color: #f8f9fa;
-}
-
 #virtualKeyboard {
 	-fx-background-color: white;
 }
 
-.accordion .title > .arrow-button .arrow{
+#registrationAccordian.accordion .title > .arrow-button .arrow{
     -fx-translate-x: 750;
 	-fx-shape: "M 10,150 L 70,10 L 130,150 z";    
     
 }
 
-.accordion > .titled-pane {
+#registrationAccordian.accordion > .titled-pane {
     -fx-padding: 0 0 0.5em 0;
 }
 
-.accordion > .titled-pane > .title{
+#registrationAccordian.accordion > .titled-pane > .title{
     -fx-background-color : white;
     -fx-border-color: black;
     -fx-border-width : 1 1 0 1;
 }
 
-.accordion >.titled-pane:collapsed > .title
+#registrationAccordian.accordion >.titled-pane:collapsed > .title
 {
 	
     -fx-border-width : 1 1 1 1;
@@ -144,4 +142,19 @@
 #imageAnchorPane{
 	 -fx-border-width: 1.0;
 	-fx-border-color: black;
-} 
+}
+
+/* Device Onboarding */
+.inputFields {
+	-fx-background-color: white;
+	-fx-border-color: black;
+	-fx-background-insets: 0,0 0 1 0;
+}
+
+.inputFieldNoBorder {
+  	-fx-border-width: 0 0 0 0;
+}
+
+.inputFieldBottomBorder {
+  	-fx-border-width: 0 0 1 0;
+}
