@@ -34,8 +34,8 @@ public class MachineDetailController {
 	 * @param langcode
 	 * @return machine detail based on given Machine ID and Language code
 	 */
-	@GetMapping(value = "/{langcode}/{machineid}")
-	public MachineDetailDto getMachineDetailIdLang(@PathVariable("machineid") String machineId,
+	@GetMapping(value = "/{id}/{langcode}")
+	public MachineDetailDto getMachineDetailIdLang(@PathVariable("id") String machineId,
 			@PathVariable("langcode") String langCode) {
 		return macService.getMachineDetailIdLang(machineId, langCode);
 
