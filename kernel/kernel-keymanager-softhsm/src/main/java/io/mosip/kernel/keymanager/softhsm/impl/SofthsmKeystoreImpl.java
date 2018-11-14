@@ -103,14 +103,19 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		loadKeystore();
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Adds a provider to the next position available.
 	 * 
-	 * @see
-	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#addProvider(java.security
-	 * .Provider)
+	 * If there is a security manager, the
+	 * java.lang.SecurityManager.checkSecurityAccess method is called with the
+	 * "insertProvider" permission target name to see if it's ok to add a new
+	 * provider. If this permission check is denied, checkSecurityAccess is called
+	 * again with the "insertProvider."+provider.getName() permission target name.
+	 * If both checks are denied, a SecurityException is thrown.
+	 * 
+	 * @param provider
+	 *            the provider to be added
 	 */
-	@Override
 	public void addProvider(Provider provider) {
 		if (-1 == Security.addProvider(provider)) {
 			throw new NoSuchSecurityProviderException(SofthsmKeystoreErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorCode(),
@@ -118,14 +123,19 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Returns a keystore object of the specified type.
 	 * 
-	 * @see
-	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getKeystoreInstance(java.
-	 * lang.String, java.security.Provider)
+	 * A new KeyStore object encapsulating the KeyStoreSpi implementation from the
+	 * specified Provider object is returned. Note that the specified Provider
+	 * object does not have to be registered in the provider list.
+	 * 
+	 * @param keystoreType
+	 *            the type of keystore
+	 * @param provider
+	 *            provider
+	 * @return a keystore object of the specified type.
 	 */
-	@Override
 	public KeyStore getKeystoreInstance(String keystoreType, Provider provider) {
 		KeyStore mosipKeyStore = null;
 		try {
@@ -137,12 +147,23 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		return mosipKeyStore;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
 	 * 
-	 * @see io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#loadKeystore()
+	 * 
+	 * Loads this KeyStore from the given input stream.
+	 * 
+	 * A password may be given to unlock the keystore (e.g. the keystore resides on
+	 * a hardware token device), or to check the integrity of the keystore data. If
+	 * a password is not given for integrity checking, then integrity checking is
+	 * not performed.
+	 * 
+	 * In order to create an empty keystore, or if the keystore cannot be
+	 * initialized from a stream, pass null as the stream argument.
+	 * 
+	 * Note that if this keystore has already been loaded, it is reinitialized and
+	 * loaded again from the given input stream.
+	 * 
 	 */
-	@Override
 	public void loadKeystore() {
 
 		try {
