@@ -17,10 +17,11 @@ import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
+import io.mosip.registration.processor.auditmanager.code.EventId;
+import io.mosip.registration.processor.auditmanager.code.EventName;
+import io.mosip.registration.processor.auditmanager.code.EventType;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.code.EventId;
-import io.mosip.registration.processor.core.code.EventName;
-import io.mosip.registration.processor.core.code.EventType;
+
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
 
