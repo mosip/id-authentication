@@ -243,22 +243,20 @@ public class LoginController extends BaseController implements Initializable, MF
 			// Server connection check
 			boolean serverStatus = getConnectionCheck(userDTO);
 			boolean offlineStatus = false;
+			RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
 
 			if (!serverStatus) {
 				LOGGER.debug("REGISTRATION - USER_PASSWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 						"Retrieving User Password from database");
 
-				RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
 				offlineStatus = userDetail.getRegistrationUserPassword().getPwd().equals(hashPassword);
 
 				LOGGER.debug("REGISTRATION - VALID_LOGIN_COUNT - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 						"Validating number of login attempts");
 
 				if (!offlineStatus) { 
-					validateInvalidLogin(userDetail, userId.getText());
-				} else {
-					updateSuccessLoginParams(userDetail, userId.getText(), RegistrationConstants.LOGIN_METHOD_PWORD);
-				}
+					validateInvalidLogin(userDetail, userId.getText(), RegistrationConstants.INCORRECT_PWORD);
+				} 
 			}
 			if (serverStatus || offlineStatus) {
 				if (validateUserStatus(userId.getText())) {
@@ -277,7 +275,7 @@ public class LoginController extends BaseController implements Initializable, MF
 
 						SessionContext sessionContext = SessionContext.getInstance();
 						loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
-						loadNextScreen(sessionContext);
+						loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
 
 					} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 						
@@ -351,6 +349,7 @@ public class LoginController extends BaseController implements Initializable, MF
 			responseDTO = loginService.validateOTP(userId.getText(), password.getText());
 
 			if (responseDTO != null) {
+				RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
 				if (responseDTO.getSuccessResponseDTO() != null) {
 					// // Validating User status
 					if (validateUserStatus(userId.getText())) {
@@ -360,8 +359,8 @@ public class LoginController extends BaseController implements Initializable, MF
 					} else {
 						try {
 							SessionContext sessionContext = SessionContext.getInstance();
-							loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
-							loadNextScreen(sessionContext);
+							loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_OTP);
+							loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_OTP);
 						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 							
 							LOGGER.error("REGISTRATION - LOGIN_OTP - LOGIN_CONTROLLER", APPLICATION_NAME,
@@ -378,9 +377,7 @@ public class LoginController extends BaseController implements Initializable, MF
 				} else {
 					// Generate invalid otp alert
 					ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-							AlertType.valueOf(errorResponseDTO.getCode()), RegistrationConstants.LOGIN_FAILURE,
-							errorResponseDTO.getMessage());
+					validateInvalidLogin(userDetail, userId.getText(), errorResponseDTO.getMessage());
 				}
 			}
 
@@ -595,8 +592,8 @@ public class LoginController extends BaseController implements Initializable, MF
 						} else {
 							try {
 								SessionContext sessionContext = SessionContext.getInstance();
-								loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
-								loadNextScreen(sessionContext);
+								loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_BIO);
+								loadNextScreen(detail, sessionContext, RegistrationConstants.LOGIN_METHOD_BIO);
 							} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
 								
 								LOGGER.error("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
@@ -609,9 +606,7 @@ public class LoginController extends BaseController implements Initializable, MF
 							}
 						}
 					} else {
-						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-								AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-								RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.FINGER_PRINT_MATCH);
+						validateInvalidLogin(detail, userId.getText(), RegistrationConstants.FINGER_PRINT_MATCH);
 					}
 				}
 			}
@@ -769,7 +764,7 @@ public class LoginController extends BaseController implements Initializable, MF
 	 * @param sessionContext
 	 *            the sessionContext
 	 */
-	private void loadNextScreen(SessionContext sessionContext) throws IOException, RegBaseCheckedException {
+	private void loadNextScreen(RegistrationUserDetail userDetail, SessionContext sessionContext, String loginMode) throws IOException, RegBaseCheckedException {
 
 		int counter = (int) sessionContext.getMapObject().get(RegistrationConstants.LOGIN_SEQUENCE);
 		counter++;
@@ -789,6 +784,7 @@ public class LoginController extends BaseController implements Initializable, MF
 
 				schedulerUtil.startSchedulerUtil();
 				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+				updateSuccessLoginParams(userDetail, userId.getText(), loginMode);
 			}
 		}
 	}
@@ -820,7 +816,7 @@ public class LoginController extends BaseController implements Initializable, MF
 	 *            entered userId
 	 * @return boolean
 	 */
-	private boolean validateInvalidLogin(RegistrationUserDetail registrationUserDetail, String userId) {
+	private boolean validateInvalidLogin(RegistrationUserDetail registrationUserDetail, String userId, String errorMessage) {
 		if (registrationUserDetail != null) {
 
 			LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
@@ -874,7 +870,7 @@ public class LoginController extends BaseController implements Initializable, MF
 				} else {
 					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
 							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.INCORRECT_PWORD);
+							RegistrationConstants.LOGIN_INFO_MESSAGE, errorMessage);
 				}
 				return true;
 			}
