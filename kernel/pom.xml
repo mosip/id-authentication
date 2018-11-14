@@ -116,6 +116,7 @@
 		<module>kernel-config-server</module>
 		<module>kernel-packetserver-sftp</module>
 		<module>kernel-packetserver-http</module>
+		<module>kernel-cryptography-service</module>
 	</modules>
 
 	<profiles>
