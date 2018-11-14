@@ -37,22 +37,22 @@ node {
   buildInfo.env.capture = true
  }
  
-stage ('mvn-clean-install') {
-        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: '-U clean install -DskipTests', buildInfo: buildInfo
+stage ('---------- mvn-clean-install ---------------') {
+        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -DskipTests', buildInfo: buildInfo
 }
 
- stage('SonarQube Analysis') {
+ stage('---------- SonarQube Analysis --------------') {
   def mvnHome = tool name: 'M2_HOME', type: 'maven'
   withSonarQubeEnv('sonar') {
    sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
   }
  }
 
- stage('Publish build info') {
+ stage('----------- Publish build info -------------') {
   server.publishBuildInfo buildInfo
  }
  
- stage('Build image') {
+ stage('------------ Build docker image ------------') {
   dir(branch) {
    docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
     def buildName = registry + ":kernel-auditmanager-service-$BUILD_NUMBER"
@@ -62,17 +62,15 @@ stage ('mvn-clean-install') {
   }
  }
  
- stage('Register image') {
+ stage('------------- Register docker image ----------------') {
 
   docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
    newApp.push 'kernel-auditmanager-service-latest'
   }
  }
- stage('Remove image from local') {
+ 
+ stage('------------- Remove docker image from local --------') {
   sh "docker rmi $registry:kernel-auditmanager-service-$BUILD_NUMBER"
   sh "docker rmi registry.hub.docker.com/$registry:kernel-auditmanager-service-$BUILD_NUMBER"
-
-
-
  }
 }
