@@ -14,6 +14,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
+import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
 
@@ -31,28 +32,30 @@ public class IdTemplateManager {
 
 	private static final String ENCODE_TYPE = "UTF-8";
 
-	private static final String TEMPLATES = "/templates";
+	private static final String TEMPLATES = "templates/";
 
 	private static Logger logger = IdaLogger.getLogger(IdTemplateManager.class);
 
 	private TemplateManager templateManager = new TemplateConfigureBuilder().encodingType(ENCODE_TYPE)
-			.enableCache(false).resourcePath(TEMPLATES).resourceLoader(CLASSPATH).build();
+			.enableCache(false).resourceLoader(CLASSPATH).build();
 
-	public String applyTemplate(String templateName, Map<String, Object> values) throws IOException {
+	public String applyTemplate(String templateName, Map<String, Object> values)
+			throws IdAuthenticationBusinessException, IOException {
+
 		Objects.requireNonNull(templateName);
 		Objects.requireNonNull(values);
 		StringWriter writer = new StringWriter();
-		boolean isTemplateAvail = templateManager.merge(templateName, writer, values);
+		boolean isTemplateAvail = false;
+		try {
+			isTemplateAvail = templateManager.merge(TEMPLATES + templateName, writer, values);
+		} catch (TemplateResourceNotFoundException e) {
+			logger.error("session id", "Id Type", e.getErrorCode(), e.getErrorText());
+		}
 		if (isTemplateAvail) {
 			return writer.toString();
 		} else {
-			try {
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISSING_TEMPLATE_CONFIG);
-			} catch (IdAuthenticationBusinessException e) {
-				logger.error("NA", "Inside Apply Template >>>>>", e.getErrorCode(), e.getErrorText());
-			}
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.MISSING_TEMPLATE_CONFIG);
 		}
-		return "";
 	}
 
 	public OutputStream generatePDF(String templateName, Map<String, Object> values)
