@@ -2,9 +2,11 @@ node{
 	def server = Artifactory.server 'ART'
    	def rtMaven = Artifactory.newMavenBuild()
    	def buildInfo
+	def mvnHome =  tool name: 'M2_HOME', type: 'maven'
 	def branch = 'DEV'
 	def projectToBuild = 'kernel'
 	def registry = 'codeguna/mosip'
+	
 	def registryCredential = '0b561449-5504-42bf-bbb9-df38f2a2909a'
    
 	stage ('SCM') {
@@ -27,9 +29,13 @@ node{
    }
   stage ('Packaging') 
 	{
-        rtMaven.run pom: 'DEV/kernel/pom.xml', goals: 'clean install sonar:sonar', buildInfo: buildInfo
-    }
-	
+        rtMaven.run pom: 'DEV/kernel/pom.xml', goals: 'clean install', buildInfo: buildInfo
+    }	
+  stage('SonarQube Analysis') {
+	withSonarQubeEnv('sonar') { 
+          sh "${mvnHome}/bin/mvn sonar:sonar"
+        }	}
+		
 	stage ('Publish build info') {
         server.publishBuildInfo buildInfo
     }
