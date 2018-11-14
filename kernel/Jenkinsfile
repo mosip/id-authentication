@@ -71,8 +71,8 @@ stage ('---------- mvn-clean-install ---------------') {
 				    newApp.push 'latest'
 				 }
 				sh "docker rmi $parentDirectory:$BUILD_NUMBER"
-  		  		sh "docker rmi $registryName/ $parentDirectory:$BUILD_NUMBER"
-                  		sh "docker rmi $registryName/ $parentDirectory"
+  		  		sh "docker rmi $registryName/$parentDirectory:$BUILD_NUMBER"
+                  		sh "docker rmi $registryName/$parentDirectory"
 				
 				}
 				
