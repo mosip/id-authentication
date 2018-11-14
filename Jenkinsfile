@@ -43,7 +43,7 @@ node{
 	 dir(branch) {
 	 docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
      def buildName = registry + ":kernel-auditmanager-service-$BUILD_NUMBER"
-     newApp = docker.build(buildName, '-f DEV/kernel/kernel-auditmanager-service/Dockerfile kernel/kernel-auditmanager-service/')
+     newApp = docker.build(buildName, '-f /kernel/kernel-auditmanager-service/Dockerfile kernel/kernel-auditmanager-service/')
      newApp.push()
    }
   }
