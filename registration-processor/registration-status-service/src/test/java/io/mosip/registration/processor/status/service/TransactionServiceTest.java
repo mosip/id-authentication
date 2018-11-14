@@ -11,7 +11,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
@@ -74,7 +75,7 @@ public class TransactionServiceTest {
 	@Test(expected = TransactionTableNotAccessibleException.class)
 	public void addRegistrationTransactionFailureCheck() throws Exception {
 		DataAccessLayerException exception = new DataAccessLayerException(
-				io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode.ERR_DATABASE, "errorMessage", new Exception());
+				io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage", new Exception());
 		Mockito.when(transactionRepositary.save(ArgumentMatchers.any())).thenThrow(exception);
 		transactionService.addRegistrationTransaction(transactionDto);
 	}

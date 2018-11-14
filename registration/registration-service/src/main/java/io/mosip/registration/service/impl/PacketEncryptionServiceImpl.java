@@ -3,7 +3,7 @@ package io.mosip.registration.service.impl;
 import java.util.LinkedList;
 import java.util.List;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +60,7 @@ public class PacketEncryptionServiceImpl implements PacketEncryptionService {
 	/**
 	 * Object for Logger
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketEncryptionServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(PacketEncryptionServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}

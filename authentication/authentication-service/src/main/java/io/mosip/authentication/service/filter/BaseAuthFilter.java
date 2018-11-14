@@ -29,7 +29,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ExceptionUtils;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * @author Manoj SP
@@ -47,7 +47,7 @@ public abstract class BaseAuthFilter implements Filter {
 
 	private static final String EMPTY_JSON_OBJ_STRING = "{";
 
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
 
 	private Instant requestTime;
 

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.service.GeoLocationCapture;
 
@@ -20,9 +20,9 @@ import io.mosip.registration.service.GeoLocationCapture;
 public class GeoLocationCaptureImpl implements GeoLocationCapture {
 
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(GeoLocationCaptureImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(GeoLocationCaptureImpl.class);
 
 	/*
 	 * (non-Javadoc)

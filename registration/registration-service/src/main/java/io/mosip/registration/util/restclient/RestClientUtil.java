@@ -10,7 +10,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 
 /**
@@ -31,7 +31,7 @@ public class RestClientUtil {
 		@Autowired 
 		 RestTemplate restTemplate;
 		 
-		 private static final MosipLogger LOGGER = AppConfig.getLogger(RestClientUtil.class);
+		 private static final Logger LOGGER = AppConfig.getLogger(RestClientUtil.class);
 		 
 	/**
 	 * Actual exchange using rest template

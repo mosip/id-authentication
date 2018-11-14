@@ -6,13 +6,15 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.Objects;
+
 import org.springframework.stereotype.Component;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.core.spi.pdfgenerator.PdfGenerator;
-import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
 
 /**
@@ -23,7 +25,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder
 @Component
 public class IdTemplateManager {
 
-	private PdfGenerator pdfGenerator;
+	private PDFGenerator pdfGenerator;
 
 	private static final String CLASSPATH = "classpath";
 
@@ -31,7 +33,7 @@ public class IdTemplateManager {
 
 	private static final String TEMPLATES = "/templates";
 
-	private static MosipLogger logger = IdaLogger.getLogger(IdTemplateManager.class);
+	private static Logger logger = IdaLogger.getLogger(IdTemplateManager.class);
 
 	private TemplateManager templateManager = new TemplateConfigureBuilder().encodingType(ENCODE_TYPE)
 			.enableCache(false).resourcePath(TEMPLATES).resourceLoader(CLASSPATH).build();

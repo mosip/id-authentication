@@ -21,7 +21,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.otpgen.validator.OTPRequestValidator;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import springfox.documentation.annotations.ApiIgnore;
 
 /**
@@ -34,7 +34,7 @@ public class OTPController {
 
 	private static final String DEAFULT_SESSION_ID = "sessionId";
 
-	private static MosipLogger logger = IdaLogger.getLogger(OTPController.class);
+	private static Logger logger = IdaLogger.getLogger(OTPController.class);
 
 	@Autowired
 	private OTPFacade otpFacade;

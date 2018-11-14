@@ -24,9 +24,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.kernel.core.spi.pdfgenerator.PdfGenerator;
-import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
-import io.mosip.kernel.pdfgenerator.itext.impl.PdfGeneratorImpl;
+import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
+import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
 
 /**
@@ -37,7 +37,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PdfGeneratorImpl.class })
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, PDFGeneratorImpl.class })
 public class TemplatesTest {
 	
 	private static final String PDF_BASE_DIR = System.getProperty("user.dir") + File.separator;
@@ -45,7 +45,7 @@ public class TemplatesTest {
 	private static final String EKYC_FULL_PRI_FILE = PDF_BASE_DIR + "ekyc-full-pri-template.pdf";
 
 	@Autowired
-	private PdfGenerator pdfGenerator;
+	private PDFGenerator pdfGenerator;
 	
 	private static String resultEKYCFullPri = "<html>\r\n" + 
 			"<head>\r\n" + 

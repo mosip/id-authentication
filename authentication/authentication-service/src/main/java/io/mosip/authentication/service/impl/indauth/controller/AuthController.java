@@ -25,7 +25,7 @@ import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
 import io.mosip.authentication.service.impl.indauth.validator.KycAuthRequestValidator;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -45,7 +45,7 @@ public class AuthController {
 	private static final String SESSION_ID = "sessionId";
 
 	/** The mosipLogger. */
-	private MosipLogger mosipLogger = IdaLogger.getLogger(AuthController.class);
+	private Logger mosipLogger = IdaLogger.getLogger(AuthController.class);
 
 	/** The auth request validator. */
 	@Autowired

@@ -26,7 +26,7 @@ import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The class validates the UIN and VID.
@@ -44,7 +44,7 @@ public class IdAuthServiceImpl implements IdAuthService {
 	private RestHelper restHelper;
 
 	/** The logger. */
-	private static MosipLogger logger = IdaLogger.getLogger(IdAuthServiceImpl.class);
+	private static Logger logger = IdaLogger.getLogger(IdAuthServiceImpl.class);
 
 	/** The rest factory. */
 	@Autowired

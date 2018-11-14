@@ -2,7 +2,7 @@ package io.mosip.kernel.datamapper.orika.config;
 
 import java.util.List;
 
-import io.mosip.kernel.core.spi.datamapper.model.IncludeDataField;
+import io.mosip.kernel.core.datamapper.model.IncludeDataField;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;

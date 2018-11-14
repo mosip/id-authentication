@@ -8,7 +8,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import javafx.fxml.FXML;
@@ -36,7 +36,7 @@ public class RegistrationOfficerUpdateController extends BaseController {
 	@FXML
 	private Label downloadDate;
 
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationOfficerUpdateController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationOfficerUpdateController.class);
 
 	/**
 	 * Mapping dates to corresponding fields

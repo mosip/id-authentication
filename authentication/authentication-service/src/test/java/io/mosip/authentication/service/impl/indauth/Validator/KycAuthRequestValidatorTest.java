@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -42,7 +41,7 @@ import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidat
 import io.mosip.authentication.service.impl.indauth.validator.KycAuthRequestValidator;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
+import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
 /**
  * 
@@ -61,7 +60,7 @@ public class KycAuthRequestValidatorTest {
 	Errors errors;
 
 	@InjectMocks
-	MosipRollingFileAppender appender;
+	RollingFileAppender appender;
 
 	@InjectMocks
 	KycAuthRequestValidator KycAuthRequestValidator;

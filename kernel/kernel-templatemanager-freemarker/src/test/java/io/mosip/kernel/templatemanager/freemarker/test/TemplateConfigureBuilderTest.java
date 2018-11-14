@@ -8,8 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.kernel.core.templatemanager.exception.TemplateConfigurationException;
 import io.mosip.kernel.templatemanager.freemarker.builder.TemplateConfigureBuilder;
-import io.mosip.kernel.templatemanager.freemarker.exception.TemplateConfigurationException;
 
 @RunWith(SpringRunner.class)
 public class TemplateConfigureBuilderTest {

@@ -3,14 +3,15 @@ package io.mosip.authentication.service.integration;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
@@ -18,7 +19,7 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.dto.MailRequestDto;
 import io.mosip.authentication.service.integration.dto.SmsRequestDto;
 import io.mosip.authentication.service.integration.dto.SmsResponseDto;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * 
@@ -40,7 +41,7 @@ public class NotificationManager {
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
-	private static MosipLogger logger = IdaLogger.getLogger(NotificationManager.class);
+	private static Logger logger = IdaLogger.getLogger(NotificationManager.class);
 
 	private static final String SENDER_AUTH = "auth";
 

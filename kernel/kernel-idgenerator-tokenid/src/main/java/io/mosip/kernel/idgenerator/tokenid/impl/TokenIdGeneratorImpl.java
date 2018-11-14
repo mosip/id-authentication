@@ -7,19 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.idgenerator.TokenIdGenerator;
+import io.mosip.kernel.core.idgenerator.exception.TokenIdGenerationException;
+import io.mosip.kernel.core.idgenerator.spi.TokenIdGenerator;
 import io.mosip.kernel.core.util.ChecksumUtils;
 import io.mosip.kernel.idgenerator.tokenid.cache.TokenIdCacheManager;
 import io.mosip.kernel.idgenerator.tokenid.constant.TokenIdGeneratorConstant;
 import io.mosip.kernel.idgenerator.tokenid.constant.TokenIdGeneratorErrorCode;
 import io.mosip.kernel.idgenerator.tokenid.entity.TokenId;
-import io.mosip.kernel.idgenerator.tokenid.exception.TokenIdGenerationException;
 import io.mosip.kernel.idgenerator.tokenid.repository.TokenIdRepository;
 import io.mosip.kernel.idgenerator.tokenid.util.TokenIdFilterUtils;
 
 /**
  * Class generates TokenId based on {@link RandomStringUtils}} and implements
- * {@link MosipTokenIdGenerator<T>}}
+ * {@link TokenIdGenerator<T>}}
  * 
  * @author Srinivasan
  *
@@ -49,7 +49,7 @@ public class TokenIdGeneratorImpl implements TokenIdGenerator<String> {
 	}
 
 	/**
-	 * Method is implementation method of{@link MosipTokenIdGenerator<T>}}
+	 * Method is implementation method of{@link TokenIdGenerator<T>}}
 	 * 
 	 * @return tokenId
 	 */

@@ -17,7 +17,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * @author Arun Bose The Enum DemoMatchType.
@@ -162,7 +162,7 @@ public enum DemoMatchType implements MatchType {
 
 	private IdMapping idMapping;
 
-	private static MosipLogger logger = IdaLogger.getLogger(DemoMatchType.class);
+	private static Logger logger = IdaLogger.getLogger(DemoMatchType.class);
 
 	/**
 	 * Instantiates a new demo match type.

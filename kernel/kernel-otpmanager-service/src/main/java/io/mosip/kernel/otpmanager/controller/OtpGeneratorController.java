@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.otpmanager.spi.OtpGenerator;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorRequestDto;
 import io.mosip.kernel.otpmanager.dto.OtpGeneratorResponseDto;
-import io.mosip.kernel.otpmanager.service.OtpGeneratorService;
 
 /**
  * This class provides controller methods for OTP generation.
@@ -27,7 +27,7 @@ public class OtpGeneratorController {
 	 * The reference that autowires the OtpGeneratorService class.
 	 */
 	@Autowired
-	OtpGeneratorService otpGeneratorService;
+	OtpGenerator<OtpGeneratorRequestDto, OtpGeneratorResponseDto> otpGeneratorService;
 
 	/**
 	 * This method handles the OTP generation.
@@ -36,6 +36,7 @@ public class OtpGeneratorController {
 	 *            The request DTO for OTP generation.
 	 * @return The generated OTP as DTO response.
 	 */
+
 	@PostMapping(value = "/otp/generate")
 	public ResponseEntity<OtpGeneratorResponseDto> generateOtp(@Valid @RequestBody OtpGeneratorRequestDto otpDto) {
 		return new ResponseEntity<>(otpGeneratorService.getOtp(otpDto), HttpStatus.CREATED);

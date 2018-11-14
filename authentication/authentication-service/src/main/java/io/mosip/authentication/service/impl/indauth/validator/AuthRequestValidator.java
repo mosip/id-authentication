@@ -39,8 +39,8 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.impl.indauth.service.demo.GenderType;
 import io.mosip.authentication.service.impl.indauth.service.demo.IdMapping;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
@@ -122,7 +122,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 
 	/** The mosip logger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
 
 	/** The env. */
 	@Autowired
@@ -467,7 +467,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		} else if (idType.equals(IdType.UIN.getType())) {
 			try {
 				uinValidator.validateId(id);
-			} catch (MosipInvalidIDException e) {
+			} catch (InvalidIDException e) {
 				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
 				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(), 
 						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
@@ -475,7 +475,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		} else if (idType.equals(IdType.VID.getType())) {
 			try {
 				vidValidator.validateId(id);
-			} catch (MosipInvalidIDException e) {
+			} catch (InvalidIDException e) {
 				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
 				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_VID.getErrorMessage());

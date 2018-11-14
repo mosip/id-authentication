@@ -31,9 +31,9 @@ import org.mosip.demo.repository.PersonRepository;
 import org.mosip.demo.service.SchedulingService;
 //import org.mosip.kernel.core.audit.builder.AuditRequestBuilder;
 //import org.mosip.kernel.core.audit.handler.AuditHandler;
-import org.mosip.kernel.core.logging.MosipLogger;
+import org.mosip.kernel.core.logging.Logger;
 import org.mosip.kernel.core.logging.appenders.MosipFileAppender;
-import org.mosip.kernel.core.logging.factory.MosipLogfactory;
+import org.mosip.kernel.core.logging.factory.Logfactory;
 import org.mosip.kernel.core.mosipsecurity.constants.MosipSecurityMethod;
 import org.mosip.kernel.core.mosipsecurity.decryption.MosipDecryptor;
 import org.mosip.kernel.core.mosipsecurity.encryption.MosipEncryptor;
@@ -94,7 +94,7 @@ public class SchedulingServiceImpl implements SchedulingService {
 	/**
 	 * Default Mosip console logger instance
 	 */
-	private static final MosipLogger LOGGER = MosipLogfactory.getMosipDefaultFileLogger(FILE_APPENDER,
+	private static final Logger LOGGER = Logfactory.getFileLogger(FILE_APPENDER,
 			SchedulingController.class);
 
 	/**

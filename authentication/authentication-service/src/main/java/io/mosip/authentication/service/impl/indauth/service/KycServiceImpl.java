@@ -27,7 +27,7 @@ import io.mosip.authentication.service.impl.id.service.impl.IdInfoServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The implementation of Kyc Authentication service.
@@ -58,7 +58,7 @@ public class KycServiceImpl implements KycService{
 	private DemoHelper demoHelper;
 	
 	/** The mosip logger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);
 	
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";

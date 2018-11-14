@@ -62,13 +62,17 @@ public class OtpManagerUtils {
 	 * @param otp
 	 *            The OTP to be validated against the given key.
 	 */
+
 	public void validateOtpRequestArguments(String key, String otp) {
+
 		List<Error> validationErrorsList = new ArrayList<>();
 		if (key == null || key.isEmpty()) {
 			validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorCode(),
 					OtpErrorConstants.OTP_VAL_INVALID_KEY_INPUT.getErrorMessage()));
 		} else {
+
 			if ((key.length() < Integer.parseInt(keyMinLength)) || (key.length() > Integer.parseInt(keyMaxLength))) {
+
 				validationErrorsList.add(new Error(OtpErrorConstants.OTP_VAL_ILLEGAL_KEY_INPUT.getErrorCode(),
 						OtpErrorConstants.OTP_VAL_ILLEGAL_KEY_INPUT.getErrorMessage()));
 			}
@@ -82,7 +86,9 @@ public class OtpManagerUtils {
 					OtpErrorConstants.OTP_VAL_ILLEGAL_OTP_INPUT.getErrorMessage()));
 		}
 		if (!validationErrorsList.isEmpty()) {
+
 			throw new OtpInvalidArgumentException(validationErrorsList);
+
 		}
 	}
 }

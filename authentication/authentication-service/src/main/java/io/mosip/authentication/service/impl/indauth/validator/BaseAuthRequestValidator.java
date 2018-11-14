@@ -10,7 +10,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.BaseAuthRequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.validator.IdAuthValidator;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 
 /**
@@ -22,7 +22,7 @@ import io.mosip.kernel.core.spi.logger.MosipLogger;
 public class BaseAuthRequestValidator implements Validator{
 	
 	/** The mosip logger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(IdAuthValidator.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthValidator.class);
 	
 	/** The Constant ID_AUTH_VALIDATOR. */
 	private static final String ID_AUTH_VALIDATOR = "ID_AUTH_VALIDATOR";

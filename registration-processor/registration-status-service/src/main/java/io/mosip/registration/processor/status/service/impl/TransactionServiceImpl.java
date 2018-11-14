@@ -3,19 +3,26 @@ package io.mosip.registration.processor.status.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.entity.TransactionEntity;
 import io.mosip.registration.processor.status.exception.TransactionTableNotAccessibleException;
 import io.mosip.registration.processor.status.repositary.RegistrationRepositary;
 import io.mosip.registration.processor.status.service.TransactionService;
 
+/**
+ * The Class TransactionServiceImpl.
+ */
 @Service
 public class TransactionServiceImpl implements TransactionService<TransactionDto> {
 
+	/** The transaction repositary. */
 	@Autowired
 	RegistrationRepositary<TransactionEntity, String> transactionRepositary;
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.processor.status.service.TransactionService#addRegistrationTransaction(java.lang.Object)
+	 */
 	@Override
 	public TransactionEntity addRegistrationTransaction(TransactionDto transactionStatusDto) {
 		try {
@@ -27,6 +34,12 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 
 	}
 
+	/**
+	 * Convert dto to entity.
+	 *
+	 * @param dto the dto
+	 * @return the transaction entity
+	 */
 	private TransactionEntity convertDtoToEntity(TransactionDto dto) {
 		TransactionEntity transcationEntity = new TransactionEntity(dto.getTransactionId(), dto.getRegistrationId(),
 				dto.getParentid(), dto.getTrntypecode(), dto.getStatusCode(), dto.getStatusComment());

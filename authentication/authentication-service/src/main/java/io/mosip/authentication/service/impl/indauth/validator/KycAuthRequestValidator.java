@@ -10,7 +10,7 @@ import io.mosip.authentication.core.dto.indauth.EkycAuthType;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * 
@@ -26,7 +26,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	private AuthRequestValidator authRequestValidator;
 
 	/** The mosip logger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(KycAuthRequestValidator.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(KycAuthRequestValidator.class);
 
 	private static final String AUTH_REQUEST = "authRequest";
 

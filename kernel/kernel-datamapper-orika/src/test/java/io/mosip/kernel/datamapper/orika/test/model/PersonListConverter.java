@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
-import io.mosip.kernel.core.spi.datamapper.converter.DataConverter;
+import io.mosip.kernel.core.datamapper.spi.DataConverter;
 
 public class PersonListConverter implements DataConverter<List<Person>, List<Personne>> {
 

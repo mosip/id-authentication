@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AppModule;
@@ -77,7 +77,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 
 	/** Object for Logger. */
 
-	private static final MosipLogger LOGGER = AppConfig.getLogger(SyncStatusValidatorServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(SyncStatusValidatorServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}

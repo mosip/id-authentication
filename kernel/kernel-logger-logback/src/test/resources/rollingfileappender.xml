@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<mosipRollingFileAppender
+<rollingFileAppender
 	appenderName="fileappenderRollingFile">
 	<append>true</append>
 	<fileName>src/test/resources/test.txt</fileName>
@@ -9,4 +9,4 @@
 	<maxFileSize>1kb</maxFileSize>
 	<maxHistory>3</maxHistory>
 	<totalCap>10mb</totalCap>
-</mosipRollingFileAppender>
+</rollingFileAppender>

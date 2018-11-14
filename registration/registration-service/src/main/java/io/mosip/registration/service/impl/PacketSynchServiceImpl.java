@@ -20,8 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -47,7 +47,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 	private static final List<String> PACKET_STATUS = Arrays.asList("A", "I");
 
-	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketSynchServiceImpl.class); 
+	private static final Logger LOGGER = AppConfig.getLogger(PacketSynchServiceImpl.class); 
 
 	/*
 	 * (non-Javadoc)
@@ -74,7 +74,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 	@Override
 	public Object syncPacketsToServer(List<SyncRegistrationDTO> syncDtoList)
-			throws RegBaseCheckedException, URISyntaxException, MosipJsonProcessingException {
+			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException {
 		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets to the server");
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();

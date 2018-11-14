@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -44,9 +44,9 @@ public class RejectionController extends BaseController implements Initializable
 	private Stage rejPrimarystage;
 			
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RejectionController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RejectionController.class);
 
 	/**
 	 * Object for RegistrationApprovalController
