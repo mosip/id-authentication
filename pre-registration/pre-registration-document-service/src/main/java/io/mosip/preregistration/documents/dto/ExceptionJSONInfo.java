@@ -18,17 +18,28 @@ public class ExceptionJSONInfo implements Serializable {
 	private String errorCode;
 	private String message;
 
+	/**
+	 * @param errorcode
+	 * @param message
+	 * 
+	 */
 	public ExceptionJSONInfo(String errorcode, String message) {
 		super();
 		errorCode = errorcode;
 		this.message = message;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getErrorcode() {
 		return errorCode;
 	}
 
 
+	/**
+	 * @return
+	 */
 	public String getMessage() {
 		return message;
 	}
