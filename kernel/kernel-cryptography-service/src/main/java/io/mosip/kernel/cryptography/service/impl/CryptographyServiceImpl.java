@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.crypto.spi.Decryptor;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
 import io.mosip.kernel.cryptography.constant.CryptographyConstant;
-import io.mosip.kernel.cryptography.dto.CryptographyRequestDto;
 import io.mosip.kernel.cryptography.dto.CryptographyResponseDto;
 import io.mosip.kernel.cryptography.service.CryptographyService;
 import io.mosip.kernel.cryptography.utils.CryptographyUtil;

@@ -50,7 +50,7 @@ public class CryptographyUtil {
 	public PublicKey getPublicKey(String applicationId,
 			Optional<String> machineId, LocalDateTime timeStamp) {
 		PublicKey key = null;
-		Map<String, String> uriParams = new HashMap<String, String>();
+		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", applicationId);
 		UriComponents uriComponents = UriComponentsBuilder
 				.fromHttpUrl(getPublicKeyUrl)
@@ -59,7 +59,6 @@ public class CryptographyUtil {
 
 		byte[] publicKey = restTemplate
 				.getForObject(uriComponents.toUriString(), byte[].class,uriParams);
-		System.out.println(new String(publicKey));
 		try {
 			key = KeyFactory.getInstance(asymmetricAlgorithmName)
 					.generatePublic(new X509EncodedKeySpec(publicKey));
@@ -82,7 +81,7 @@ public class CryptographyUtil {
 
 	public SecretKey getDecryptedSymmetricKey(String applicationId,
 			byte[] encryptedSymmetricKey, LocalDateTime timeStamp, Optional<String> machineId) {
-		Map<String, String> uriParams = new HashMap<String, String>();
+		Map<String, String> uriParams = new HashMap<>();
 		uriParams.put("applicationId", applicationId);
 		UriComponents uriComponents = UriComponentsBuilder
 				.fromHttpUrl(decryptSymmetricKeyUrl)
