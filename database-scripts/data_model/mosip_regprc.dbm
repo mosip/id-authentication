@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,0" last-zoom="1"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,816" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -120,7 +120,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[applicant_demographic table stores applicant demographic details]]></comment>
-	<position x="75" y="68"/>
+	<position x="75" y="38"/>
 	<column name="reg_id" not-null="true">
 		<type name="character varying" length="28"/>
 	</column>
@@ -166,7 +166,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[applicant_document table stores applicant demographic document proof submitted details]]></comment>
-	<position x="447.716" y="33"/>
+	<position x="437.716" y="33"/>
 	<column name="reg_id" not-null="true">
 		<type name="character varying" length="64"/>
 	</column>
@@ -221,7 +221,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[applicant_fingerprint table stores applicant fingerprint details]]></comment>
-	<position x="830.432" y="40"/>
+	<position x="830.432" y="39"/>
 	<column name="reg_id" not-null="true">
 		<type name="character varying" length="28"/>
 	</column>
@@ -270,7 +270,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[applicant_iris table stores applicant Iris details]]></comment>
-	<position x="1208.15" y="33"/>
+	<position x="1208.15" y="32"/>
 	<column name="reg_id" not-null="true">
 		<type name="character varying" length="28"/>
 	</column>
@@ -319,7 +319,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[applicant_photograph table stores applicant Photograph details]]></comment>
-	<position x="1529.86" y="50"/>
+	<position x="1529.86" y="49"/>
 	<column name="reg_id" not-null="true">
 		<type name="character varying" length="28"/>
 	</column>
@@ -377,7 +377,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[biometric_exception table stores applicant exceptions]]></comment>
-	<position x="60" y="412.25"/>
+	<position x="73" y="342.25"/>
 	<column name="reg_id" not-null="true">
 		<type name="character varying" length="28"/>
 	</column>
@@ -429,7 +429,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Diskspace Log table is to track idsvr server diskspace details for audit and reporting purposes ]]></comment>
-	<position x="416.716" y="391.25"/>
+	<position x="416.716" y="390.25"/>
 	<column name="log_dtimes" not-null="true">
 		<type name="timestamp" length="0"/>
 	</column>
@@ -466,7 +466,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[List of Registration to Process]]></comment>
-	<position x="1446.93" y="370.25"/>
+	<position x="1446.93" y="369.25"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -518,7 +518,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Registration Processor Transaction table is to store ALL  Registration Processor packet processing/process transaction details for ID issuance]]></comment>
-	<position x="1171.95" y="691.25"/>
+	<position x="1171.95" y="690.25"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -576,7 +576,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Registration Processor table is to store id issuance enrolment id and packet id details]]></comment>
-	<position x="836.565" y="406.25"/>
+	<position x="836.565" y="405.25"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="28"/>
 	</column>
@@ -634,7 +634,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[This table is used to store Registration center, Machine details for a individual registration]]></comment>
-	<position x="91" y="741.5"/>
+	<position x="91" y="740.5"/>
 	<column name="reg_id" not-null="true">
 		<type name="character varying" length="28"/>
 	</column>
@@ -683,7 +683,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[This table is used to store Operator, Supervisor and Introducers id while processing registration]]></comment>
-	<position x="467.016" y="691.5"/>
+	<position x="467.016" y="690.5"/>
 	<column name="reg_id" not-null="true">
 		<type name="character varying" length="28"/>
 	</column>
@@ -756,7 +756,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="regprc"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[Registration Process Transaction Type table, ]]></comment>
-	<position x="1591.03" y="643.5"/>
+	<position x="1591.03" y="642.5"/>
 	<column name="code" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Primary key of transaction code, with lang_cd for multi language ]]></comment>
@@ -790,6 +790,100 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 	<constraint name="pk_trntyp_code" type="pk-constr" table="regprc.transaction_type">
 		<columns names="code,lang_code" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<table name="individual_demographic_dedup" alias="idemog">
+	<schema name="regprc"/>
+	<role name="appadmin"/>
+	<comment><![CDATA[individual demographic table stores applicant demographic details for deduplication]]></comment>
+	<position x="93" y="1010"/>
+	<column name="ref_id_type" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[type of the reference id. It can have values like prereg_id, reg_id or uin_ref_id.]]></comment>
+	</column>
+	<column name="ref_id" not-null="true">
+		<type name="character varying" length="28"/>
+		<comment><![CDATA[Reference id can be registration id of new registrations or uin_ref_id of individuals whose uin is already generated]]></comment>
+	</column>
+	<column name="first_name">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[first name of an individual]]></comment>
+	</column>
+	<column name="middle_name">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Middle Name of an individual]]></comment>
+	</column>
+	<column name="last_name">
+		<type name="character varying" length="128"/>
+		<comment><![CDATA[Last Name of an individual]]></comment>
+	</column>
+	<column name="full_name">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Full Name of an individual]]></comment>
+	</column>
+	<column name="dob">
+		<type name="date" length="0"/>
+		<comment><![CDATA[DOB of an individual]]></comment>
+	</column>
+	<column name="gender">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Gender of an individual]]></comment>
+	</column>
+	<column name="address_line_1">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 1 of an individual]]></comment>
+	</column>
+	<column name="address_line_2">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 2 of an individual]]></comment>
+	</column>
+	<column name="address_line_3">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 3 of an individual]]></comment>
+	</column>
+	<column name="address_line_4">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 4 of an individual]]></comment>
+	</column>
+	<column name="address_line_5">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 5 of an individual]]></comment>
+	</column>
+	<column name="address_line_6">
+		<type name="character varying" length="256"/>
+		<comment><![CDATA[Address Line 6 of an individual]]></comment>
+	</column>
+	<column name="zip_code">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Zip / Pin / Postal Code of an individual]]></comment>
+	</column>
+	<column name="lang_code" not-null="true">
+		<type name="character varying" length="3"/>
+	</column>
+	<column name="is_active" not-null="true">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="cr_by" not-null="true">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="cr_dtimes" not-null="true">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="upd_by">
+		<type name="character varying" length="32"/>
+	</column>
+	<column name="upd_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<column name="is_deleted">
+		<type name="boolean" length="0"/>
+	</column>
+	<column name="del_dtimes">
+		<type name="timestamp" length="0"/>
+	</column>
+	<constraint name="idemog_pk" type="pk-constr" table="regprc.individual_demographic_dedup">
+		<columns names="ref_id_type,ref_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
