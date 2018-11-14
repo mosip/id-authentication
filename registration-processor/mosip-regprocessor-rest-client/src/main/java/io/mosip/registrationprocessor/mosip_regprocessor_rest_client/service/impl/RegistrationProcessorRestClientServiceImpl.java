@@ -26,7 +26,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	/** The rest api client. */
 	@Autowired
 	private RestApiClient restApiClient;
-	
+
 	/** The env. */
 	@Autowired
 	private Environment env;
@@ -37,12 +37,9 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	@Override
 	public Object getApi(ApiName apiName, RestUriConstant uri, String queryParamName, String queryParamValue, Class<?> responseType) {
 
-		String getURI=uri.getUri();
-		
-		String serverIpPort = env.getProperty(apiName.name());
-		
-		
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(getURI);
+		String getUri=uri.getUri();
+		String apiHostIpPort = env.getProperty(apiName.name());
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(apiHostIpPort+getUri);
 
 		if(! ( (queryParamName == null) || (("").equals(queryParamName))) ) {
 
@@ -57,16 +54,16 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 		return restApiClient.getApi(builder.toUriString(), responseType);
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService#postApi(io.mosip.registration.processor.core.code.ApiName, io.mosip.registration.processor.core.code.RestUriConstant, java.lang.String, java.lang.String, java.lang.Object, java.lang.Class)
 	 */
 	@Override
 	public Object postApi(ApiName apiName, RestUriConstant uri, String queryParamName, String queryParamValue, Object requestedData,Class<?> responseType) {
-		String postURI=RestUriConstant.regsync.getUri();
 		
-		
-		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(postURI);
+		String postUri=uri.getUri();
+		String apiHostIpPort = env.getProperty(apiName.name());
+		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(apiHostIpPort+postUri);
 
 		if(! ( (queryParamName == null) || (("").equals(queryParamName))) ) {
 			String [] queryParamNameArr=queryParamName.split(",");
