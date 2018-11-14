@@ -63,7 +63,7 @@ public class BiometricTypeServiceExceptionTest {
 		biometricType1.setActive(true);
 		biometricType1.setCreatedBy("Neha");
 		biometricType1.setUpdatedBy(null);
-		biometricType1.setDeleted(false);
+		biometricType1.setIsDeleted(false);
 
 		biometricType2.setCode("3");
 		biometricType2.setName("EYE SCAN");
@@ -72,7 +72,7 @@ public class BiometricTypeServiceExceptionTest {
 		biometricType2.setActive(true);
 		biometricType2.setCreatedBy("Neha");
 		biometricType2.setUpdatedBy(null);
-		biometricType2.setDeleted(false);
+		biometricType2.setIsDeleted(false);
 
 		biometricTypeList.add(biometricType1);
 		biometricTypeList.add(biometricType2);
