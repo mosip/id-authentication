@@ -39,7 +39,7 @@ public class RegistrationCenterIntegrationTest {
 	RegistrationCenterRepository repository;
 
 	RegistrationCenter center;
-	
+
 	RegistrationCenter centerBangaloreCentral;
 
 	List<RegistrationCenter> centers = new ArrayList<>();
@@ -89,14 +89,13 @@ public class RegistrationCenterIntegrationTest {
 		assertThat(returnResponse.getRegistrationCenters().get(0).getLatitude(), is("12.9180722"));
 		assertThat(returnResponse.getRegistrationCenters().get(0).getLongitude(), is("77.5028792"));
 	}
-	
+
 	@Test
 	public void getLocationSpecificRegistrationCentersTest() throws Exception {
 		centers.add(center);
 		when(repository.findByLocationCodeAndLanguageCode("BLR", "ENG")).thenReturn(centers);
 		MvcResult result = mockMvc
-				.perform(get("/getlocspecificregistrationcenters/ENG/BLR")
-						.contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		RegistrationCenterResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
@@ -104,15 +103,28 @@ public class RegistrationCenterIntegrationTest {
 		assertThat(returnResponse.getRegistrationCenters().get(0).getName(), is("bangalore"));
 		assertThat(returnResponse.getRegistrationCenters().get(0).getLongitude(), is("77.5028792"));
 	}
-	
+
 	@Test
 	public void getLocationSpecificMultipleRegistrationCentersTest() throws Exception {
 		centers.add(center);
 		centers.add(centerBangaloreCentral);
 		when(repository.findByLocationCodeAndLanguageCode("BLR", "ENG")).thenReturn(centers);
 		MvcResult result = mockMvc
-				.perform(get("/getlocspecificregistrationcenters/ENG/BLR")
-						.contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+		ObjectMapper mapper = new ObjectMapper();
+		RegistrationCenterResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
+				RegistrationCenterResponseDto.class);
+		assertThat(returnResponse.getRegistrationCenters().get(0).getName(), is("bangalore"));
+		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("Bangalore Central"));
+	}
+
+	@Test
+	public void getAllRegistrationCenterTest() throws Exception {
+		centers.add(center);
+		centers.add(centerBangaloreCentral);
+		when(repository.findAll(RegistrationCenter.class)).thenReturn(centers);
+		MvcResult result = mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		RegistrationCenterResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
