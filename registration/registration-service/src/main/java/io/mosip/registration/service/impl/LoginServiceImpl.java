@@ -22,7 +22,6 @@ import io.mosip.registration.dao.RegistrationAppLoginDAO;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dao.RegistrationScreenAuthorizationDAO;
 import io.mosip.registration.dao.RegistrationUserDetailDAO;
-import io.mosip.registration.dao.RegistrationUserPasswordDAO;
 import io.mosip.registration.dto.AuthorizationDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.OtpGeneratorRequestDto;
@@ -70,12 +69,6 @@ public class LoginServiceImpl implements LoginService {
 	private RegistrationAppLoginDAO registrationAppLoginDAO;
 
 	/**
-	 * Class to retrieve the Registration Officer Credentials from DB
-	 */
-	@Autowired
-	private RegistrationUserPasswordDAO registrationUserPasswordDAO;
-
-	/**
 	 * Class to retrieve the Registration Officer Details from DB
 	 */
 	@Autowired
@@ -110,26 +103,7 @@ public class LoginServiceImpl implements LoginService {
 
 		return registrationAppLoginDAO.getModesOfLogin();
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mosip.registration.service.login.LoginService#validateUserPassword(
-	 * java.lang.String,java.lang.String)
-	 */
-	@Override
-	public boolean validateUserPassword(String userId, String hashPassword) {
-		// Validating Registration Officer Credentials
-
-		LOGGER.debug("REGISTRATION - VALIDATECREDENTIALS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
-				"Validating User credentials");
-
-		auditFactory.audit(AuditEvent.VALIDATE_USER_CRED, AppModule.VALIDATE_USER,
-				"Validating User credentials", "refId", "refIdType");
-
-		return registrationUserPasswordDAO.getPassword(userId, hashPassword);
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -314,7 +288,20 @@ public class LoginServiceImpl implements LoginService {
           return response;
 
     }
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.LoginService#updateLoginParams(io.mosip.
+	 * registration.entity.RegistrationUserDetail)
+	 */
+	public void updateLoginParams(RegistrationUserDetail registrationUserDetail) {
 
+		LOGGER.debug("REGISTRATION - LOGIN - UPDATELOGINPARAMS", APPLICATION_NAME, APPLICATION_ID,
+				"Updating Login Params");
+
+		registrationUserDetailDAO.updateLoginParams(registrationUserDetail);
+	}
 
 	private ResponseDTO getErrorResponse(ResponseDTO response, final String message) {
 		// Create list of Error Response

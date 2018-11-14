@@ -132,7 +132,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 				"getUsers() ceneterID -> " + ceneterID);
 		try {
 			List<RegistrationUserDetail> registrationUserDetail = userDetailRepository
-					.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike(ceneterID,
+					.findByRegistrationCenterUserRegistrationCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike(ceneterID,
 							RegistrationConstants.BLACKLISTED,
 							SessionContext.getInstance().getUserContext().getUserId());
 			if (!registrationUserDetail.isEmpty()) {

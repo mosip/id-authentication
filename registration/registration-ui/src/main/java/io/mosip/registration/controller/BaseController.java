@@ -2,21 +2,26 @@ package io.mosip.registration.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.registration.audit.AuditFactory;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.GlobalContextParam;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.service.GlobalContextParamService;
 import io.mosip.registration.service.SyncStatusValidatorService;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Control;
@@ -38,6 +43,8 @@ public class BaseController {
 	private SyncStatusValidatorService syncStatusValidatorService;
 	@Autowired
 	protected AuditFactory auditFactory;
+	@Autowired
+	private GlobalContextParamService globalContextParamService;
 
 	protected static Stage stage;
 
@@ -185,7 +192,26 @@ public class BaseController {
 	protected void autoCloseStage(Stage stage) {
 			PauseTransition delay = new PauseTransition(Duration.seconds(5));
 			delay.setOnFinished( event -> stage.close() );
-			delay.play();  
+			delay.play();
+	}
+
+	/**
+	 * {@code globalParams} is to retrieve required global config parameters for
+	 * login from config table
+	 */
+	protected Map<String, Object> globalParams() {
+		List<GlobalContextParam> globalContextParam = globalContextParamService
+				.findInvalidLoginCount(RegistrationConstants.INVALID_LOGIN_PARAMS);
+		Map<String, Object> globalParamMap = new LinkedHashMap<>();
+		globalContextParam.forEach(param -> {
+			if (param.getName().equals(RegistrationConstants.INVALID_LOGIN_COUNT)) {
+				globalParamMap.put(RegistrationConstants.INVALID_LOGIN_COUNT, param.getVal());
+			}
+			if (param.getName().equals(RegistrationConstants.INVALID_LOGIN_TIME)) {
+				globalParamMap.put(RegistrationConstants.INVALID_LOGIN_TIME, param.getVal());
+			}
+		});
+		return globalParamMap;
 	}
 
 }

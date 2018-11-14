@@ -7,7 +7,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
 
 
 /**
@@ -31,7 +30,6 @@ public class GlobalContextParam extends RegistrationCommonFields {
 	@Column(name = "typ")
 	private String typ;
 	@Column(name = "is_deleted")
-	@Type(type= "true_false")
 	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;

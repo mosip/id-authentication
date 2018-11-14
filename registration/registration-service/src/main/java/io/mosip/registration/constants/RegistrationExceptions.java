@@ -39,7 +39,7 @@ public enum RegistrationExceptions {
 	REG_UI_SHEDULER_IOEXCEPTION_EXCEPTION("REG-UI-SHE-003", "Unable to load the screen"),
 	REG_UI_LOGIN_IO_EXCEPTION("LGN-UI-SHE-004", "IO Exception"),
 	REG_UI_LOGIN_RESOURCE_EXCEPTION("LGN-UI-SHE-005", "Unable to load the Resource"),
-	REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION("LGN-UI-SHE-006", "Unable to Initial Login Screen"),
+	REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION("LGN-UI-SHE-006", "Unable to load Initial Login Screen"),
 	REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION("LGN-UI-SHE-007", "Unable to load the Login Screen"),
 	REG_UI_HOMEPAGE_IO_EXCEPTION("REG-UI-SHE-008", "Unable to load the Home Screen"),
 	REG_UI_LOGOUT_IO_EXCEPTION("REG-UI-SHE-009", "Unable to logout"),

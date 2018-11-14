@@ -7,8 +7,6 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 /**
  * RegistrationScreenAuthorization entity details
  * 
@@ -22,13 +20,11 @@ public class RegistrationScreenAuthorization extends RegistrationCommonFields {
 	@EmbeddedId
 	private RegistrationScreenAuthorizationId registrationScreenAuthorizationId;
 
-	@Column(name = "is_permitted", nullable = true, updatable = false)
-	@Type(type = "true_false")
+	@Column(name = "is_permitted")
 	private Boolean isPermitted;
-	@Column(name = "is_deleted", nullable = true, updatable = true)
-	@Type(type = "true_false")
+	@Column(name = "is_deleted")
 	private Boolean isDeleted;
-	@Column(name = "del_dtimes", nullable = true, updatable = true)
+	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;
 
 	/**
