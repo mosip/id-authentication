@@ -31,7 +31,7 @@ public class DocumentTypeControllerTest {
 	@MockBean
 	private DocumentTypeService documentTypeService;
 
-	private final String expected = "{ \"documents\": [ { \"code\": \"addhar\", \"name\": \"adhar card\", \"description\": \"Uid\", \"langCode\": \"eng\", \"active\": true }, { \"code\": \"residensial\", \"name\": \"residensial_prof\", \"description\": \"document for residential prof\", \"langCode\": \"eng\", \"active\": true } ] }";
+	private final String expected = "{ \"documents\": [ { \"code\": \"addhar\", \"name\": \"adhar card\", \"description\": \"Uid\", \"langCode\": \"eng\", \"isActive\": true }, { \"code\": \"residensial\", \"name\": \"residensial_prof\", \"description\": \"document for residential prof\", \"langCode\": \"eng\", \"isActive\": true } ] }";
 
 	ValidDocumentTypeResponseDto validDocumentTypeResponseDto = null;
 

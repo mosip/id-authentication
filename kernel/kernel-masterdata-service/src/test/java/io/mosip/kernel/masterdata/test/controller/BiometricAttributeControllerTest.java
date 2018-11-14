@@ -33,7 +33,7 @@ public class BiometricAttributeControllerTest {
 	@MockBean
 	private BiometricAttributeService biometricAttributeService;
 
-	private final String expected = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"active\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"active\": true } ] }";
+	private final String expected = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"isActive\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"isActive\": true } ] }";
 
 	BiometricTypeResponseDto biometricTypeResponseDto = null;
 	List<BiometricAttributeDto> biometricattributes = null;
