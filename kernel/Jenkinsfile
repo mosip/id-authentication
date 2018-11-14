@@ -4,8 +4,7 @@ node {
  def buildInfo
  def branch = 'DEV'
  def projectToBuild = 'kernel'
- def registry = 'mosip/mosip-build-repos'
- def registryCredential = '4656e6d8-314f-4be5-8bd9-2bf45dce1ed5'
+ def registry = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
 
  stage('------- Checkout --------') {
   // Checkout only Kernel Module
@@ -54,8 +53,8 @@ stage ('---------- mvn-clean-install ---------------') {
  
  stage('------------ Build docker image ------------') {
   dir(branch) {
-   docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
-    def buildName = registry + ":kernel-auditmanager-service-$BUILD_NUMBER"
+   docker.withRegistry(registry) {
+    def buildName = "kernel-auditmanager-service:$BUILD_NUMBER"
     newApp = docker.build(buildName, '-f kernel/kernel-auditmanager-service/Dockerfile kernel/kernel-auditmanager-service/')
     newApp.push()
    }
@@ -64,13 +63,13 @@ stage ('---------- mvn-clean-install ---------------') {
  
  stage('------------- Register docker image ----------------') {
 
-  docker.withRegistry('https://registry.hub.docker.com', registryCredential) {
-   newApp.push 'kernel-auditmanager-service-latest'
+  docker.withRegistry(registry) {
+   newApp.push 'latest'
   }
  }
  
  stage('------------- Remove docker image from local --------') {
-  sh "docker rmi $registry:kernel-auditmanager-service-$BUILD_NUMBER"
-  sh "docker rmi registry.hub.docker.com/$registry:kernel-auditmanager-service-$BUILD_NUMBER"
+  sh "docker rmi kernel-auditmanager-service:$BUILD_NUMBER"
+  sh "docker rmi $registry/kernel-auditmanager-service:$BUILD_NUMBER"
  }
 }
