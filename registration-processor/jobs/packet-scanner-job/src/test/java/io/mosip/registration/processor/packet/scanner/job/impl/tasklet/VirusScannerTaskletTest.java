@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +30,7 @@ import org.springframework.core.env.Environment;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -74,7 +70,7 @@ public class VirusScannerTaskletTest {
 	private ChunkContext chunkContext;
 
 	@Mock
-	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private ClientAuditRequestBuilder clientAuditRequestBuilder = new ClientAuditRequestBuilder();
 
 	@Before
 	public void setup() throws Exception {
@@ -92,15 +88,15 @@ public class VirusScannerTaskletTest {
 				.thenReturn(sample);
 		Mockito.when(env.getProperty(DirectoryPathDto.VIRUS_SCAN.toString())).thenReturn("/resources/Disk/sde");
 
-		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
 		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f.setAccessible(true);
-		f.set(coreAuditRequestBuilder, auditRequestBuilder);
+		f.set(clientAuditRequestBuilder, auditRequestBuilder);
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
-		f1.set(auditRequestBuilder, auditRequest1);
+		f1.set(auditRequestBuilder, auditRequest1);*/
 
 	}
 

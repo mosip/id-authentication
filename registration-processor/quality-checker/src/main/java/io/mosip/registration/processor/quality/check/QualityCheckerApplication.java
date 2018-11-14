@@ -6,7 +6,6 @@ import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication(scanBasePackages= {"io.mosip.registration.processor.auditmanager",
 "io.mosip.registration.processor.quality.check"})
-@PropertySource("classpath:regprc-auditmanager-application.properties")
 public class QualityCheckerApplication {
 
 	public static void main(String[] args) {

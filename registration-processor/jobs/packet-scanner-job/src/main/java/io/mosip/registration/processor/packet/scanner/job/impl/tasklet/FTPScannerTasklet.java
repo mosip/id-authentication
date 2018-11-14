@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;

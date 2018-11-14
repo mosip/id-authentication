@@ -1,21 +1,23 @@
 package io.mosip.registration.processor.packet.decryptor.job;
 
 import static java.util.Arrays.copyOfRange;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;

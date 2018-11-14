@@ -1,16 +1,17 @@
 package io.mosip.registration.processor.packet.decryptor.job.messagesender;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
+
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -33,7 +34,7 @@ public class DecryptionMessageSender extends MosipVerticleManager {
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	ClientAuditRequestBuilder clientAuditRequestBuilder;
 
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
@@ -91,7 +92,7 @@ public class DecryptionMessageSender extends MosipVerticleManager {
 			String description = isTransactionSuccessful ? "Message triggered successfully"
 					: "Message triggering failed";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
 	}

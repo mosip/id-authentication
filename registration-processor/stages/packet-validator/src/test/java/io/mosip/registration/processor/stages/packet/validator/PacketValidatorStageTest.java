@@ -27,6 +27,7 @@ import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.packet.dto.BiometricSequence;
@@ -65,7 +66,7 @@ public class PacketValidatorStageTest {
 	private PacketValidatorStage packetValidatorStage;
 
 	@Mock
-	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private ClientAuditRequestBuilder clientAuditRequestBuilder = new ClientAuditRequestBuilder();
 
 	/** The audit handler. */
 	@Mock
@@ -111,12 +112,12 @@ public class PacketValidatorStageTest {
 		hashSequence.setDemographicSequence(demographicSequence);
 		packetInfo.setHashSequence(hashSequence);
 
-		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
 		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f.setAccessible(true);
-		f.set(coreAuditRequestBuilder, auditRequestBuilder);
+		f.set(clientAuditRequestBuilder, auditRequestBuilder);
 
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
@@ -124,7 +125,7 @@ public class PacketValidatorStageTest {
 
 		Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
 		f2.setAccessible(true);
-		f2.set(coreAuditRequestBuilder, auditHandler);
+		f2.set(clientAuditRequestBuilder, auditHandler);*/
 	}
 
 	@Test

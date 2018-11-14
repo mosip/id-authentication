@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.quality.check.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -55,8 +53,8 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 
 	@Override
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
-		List<String> qcUsersList = Arrays.asList("qc001","qc002","qc003");
-		//qcUsersClient.getAllQcuserIds();
+		List<String> qcUsersList = qcUsersClient.getAllQcuserIds();//Arrays.asList("qc001","qc002","qc003");
+		
 		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
 		QCUserDto qcUserDto = new QCUserDto();
 		qcUserDto.setQcUserId(qcUserId);

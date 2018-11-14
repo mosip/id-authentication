@@ -10,9 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -127,8 +125,8 @@ public class PacketInfoManagerImplTest {
 	@Mock
 	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
-	@InjectMocks
-	private PacketInfoDao applicantInfoDao;
+	@Mock
+	private PacketInfoDao packetInfoDao;
 	
 	
 	QcuserRegistrationIdEntity qcuserRegistrationIdEntity1;
@@ -415,7 +413,7 @@ public class PacketInfoManagerImplTest {
 		pk1.setLangCode("en");
 		
 		
-		pk1.setRegId("2018782130000116102018124325");
+		pk1.setRegId("2018782130000116102018124324");
 		
 		applicantDemographicEntity[0] = new ApplicantDemographicEntity();
 		applicantDemographicEntity[0].setId(pk1);
@@ -444,12 +442,54 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.any())).
 					thenReturn(applicantInfo);
 		
-		List<ApplicantInfoDto>  listDto= applicantInfoDao.getPacketsforQCUser("qc001");
+		List<ApplicantInfoDto>  listDto= packetInfoDao.getPacketsforQCUser("qc001");
 		assertEquals("female",listDto.get(0).getDemoInLocalLang().getGender());
-		
-		
-		
 	}
+	
+	@Test(expected = TablenotAccessibleException.class)
+	public void getPacketsforQCUserDemographicFailureCase() {
+		
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
+				new Exception());
+		
+		
+		ApplicantDemographicEntity[] applicantDemographicEntity=new ApplicantDemographicEntity[2];
+		ApplicantDemographicPKEntity pk1= new ApplicantDemographicPKEntity();
+		pk1.setLangCode("en");
+		
+		
+		pk1.setRegId("2018782130000116102018124325");
+		
+		applicantDemographicEntity[0] = new ApplicantDemographicEntity();
+		applicantDemographicEntity[0].setId(pk1);
+		applicantDemographicEntity[0].setApplicantType("qc_user");
+		applicantDemographicEntity[0].setCrBy("MOSIP_SYSTEM");
+		applicantDemographicEntity[0].setCrDtimesz(LocalDateTime.now());
+		applicantDemographicEntity[0].setGenderCode("female");
+		applicantDemographicEntity[0].setLocationCode("dhe");
+		applicantDemographicEntity[0].setPreRegId("1001");
+		ApplicantDemographicPKEntity pk2= new ApplicantDemographicPKEntity();
+		pk2.setLangCode("use");
+		pk2.setRegId("2018782130000116102018124325");
+		applicantDemographicEntity[1] = new ApplicantDemographicEntity();
+
+		applicantDemographicEntity[1].setId(pk2);
+		applicantDemographicEntity[1].setApplicantType("qc_user");
+		applicantDemographicEntity[1].setCrBy("MOSIP_SYSTEM");
+		applicantDemographicEntity[1].setCrDtimesz(LocalDateTime.now());
+		applicantDemographicEntity[1].setGenderCode("female");
+		applicantDemographicEntity[1].setLocationCode("dhe");
+		applicantDemographicEntity[1].setPreRegId("1001");
+	    List<Object[]> applicantInfo = new ArrayList<>();
+	    
+		applicantInfo.add(applicantDemographicEntity);
+		
+		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.any())).thenReturn(applicantInfo);
+		
+		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenThrow(exp);
+		packetInfoManagerImpl.getPacketsforQCUser("qcuser1");
+	}
+	
 	@Test
 	public void getPacketsforQCUserPhotographic() {
 		ApplicantPhotographEntity[] applicantPhotographEntity=new ApplicantPhotographEntity[1];
@@ -461,10 +501,30 @@ public class PacketInfoManagerImplTest {
 		applicantPhotographEntity[0].setQualityScore(new BigDecimal(123456123456.78));
 		List<Object[]> applicantInfo2 = new ArrayList<>();
 		applicantInfo2.add(applicantPhotographEntity);
-		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.any())).
-		thenReturn(applicantInfo2);
-		List<ApplicantInfoDto>  listDto= applicantInfoDao.getPacketsforQCUser("qc001");
+		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.any())).thenReturn(applicantInfo2);
+		List<ApplicantInfoDto>  listDto= packetInfoDao.getPacketsforQCUser("qc001");
 		assertEquals(true,listDto.get(0).getApplicantPhoto().isHasExceptionPhoto());
+	}
+	
+	@Test(expected = TablenotAccessibleException.class)
+	public void getPacketsforQCUserPhotographicfailureCase() {
+		
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
+				new Exception());
+		ApplicantPhotographEntity[] applicantPhotographEntity=new ApplicantPhotographEntity[1];
+		applicantPhotographEntity[0]=new ApplicantPhotographEntity();
+		applicantPhotographEntity[0].setImageName("new_image");;
+		applicantPhotographEntity[0].setExcpPhotoName("new_image");
+		applicantPhotographEntity[0].setNoOfRetry(2);
+		applicantPhotographEntity[0].setHasExcpPhotograph(true);
+		applicantPhotographEntity[0].setQualityScore(new BigDecimal(123456123456.78));
+		List<Object[]> applicantInfo2 = new ArrayList<>();
+		applicantInfo2.add(applicantPhotographEntity);
+		
+		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.any())).thenReturn(applicantInfo2);
+		
+		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenThrow(exp);
+		packetInfoManagerImpl.getPacketsforQCUser("qcuser1");
 	}
 
 }

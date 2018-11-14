@@ -2,7 +2,6 @@ package io.mosip.registration.processor.packet.archiver.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -17,8 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
@@ -60,7 +58,7 @@ public class PacketArchiverTest {
 	private String registrationId = "1001";
 
 	@Mock
-	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private ClientAuditRequestBuilder clientAuditRequestBuilder = new ClientAuditRequestBuilder();
 
 	/**
 	 * Setup.
@@ -79,12 +77,12 @@ public class PacketArchiverTest {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
 
-		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
 		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f.setAccessible(true);
-		f.set(coreAuditRequestBuilder, auditRequestBuilder);
+		f.set(clientAuditRequestBuilder, auditRequestBuilder);
 
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
@@ -92,7 +90,7 @@ public class PacketArchiverTest {
 
 		Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
 		f2.setAccessible(true);
-		f2.set(coreAuditRequestBuilder, auditHandler);
+		f2.set(clientAuditRequestBuilder, auditHandler);*/
 	}
 
 	/**
