@@ -46,11 +46,11 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 				APPLICATION_ID, "Fetching Registration Center details");
 
 		Optional<RegistrationCenter> registrationCenter = registrationCenterRepository
-				.findByRegistrationCenterIdCenterIdAndIsActiveTrue(centerId);
+				.findByCenterIdAndIsActiveTrue(centerId);
 		RegistrationCenterDetailDTO registrationCenterDetailDTO = new RegistrationCenterDetailDTO();
 		if (registrationCenter.isPresent()) {
 			registrationCenterDetailDTO
-					.setRegistrationCenterId(registrationCenter.get().getRegistrationCenterId().getCenterId());
+					.setRegistrationCenterId(registrationCenter.get().getCenterId());
 			registrationCenterDetailDTO.setRegistrationCenterName(registrationCenter.get().getCenterName());
 			registrationCenterDetailDTO.setRegsitrationCenterTypeCode(registrationCenter.get().getCntrTypCode());
 			registrationCenterDetailDTO.setRegistrationCenterAddrLine1(registrationCenter.get().getAddrLine1());
@@ -59,9 +59,13 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 			registrationCenterDetailDTO.setRegistrationCenterLatitude(registrationCenter.get().getLatitude());
 			registrationCenterDetailDTO.setRegistrationCenterLongitude(registrationCenter.get().getLongitude());
 			registrationCenterDetailDTO.setRegistrationCenterLocationCode(registrationCenter.get().getLocationCode());
-			registrationCenterDetailDTO
-					.setRegistrationCenterNumberOfStations(registrationCenter.get().getNumberOfStations());
+			registrationCenterDetailDTO.setRegistrationCenterContactPhone(registrationCenter.get().getContactPhone());
 			registrationCenterDetailDTO.setRegistrationCenterWorkingHours(registrationCenter.get().getWorkingHours());
+			registrationCenterDetailDTO.setRegistrationCenterNumberOfKiosks(registrationCenter.get().getNumberOfKiosks());
+			registrationCenterDetailDTO.setRegistrationCenterPerKioskProcessTime(registrationCenter.get().getPerKioskProcessTime());
+			registrationCenterDetailDTO.setRegistrationCenterHolidayLocCode(registrationCenter.get().getHolidayLocCode());
+			registrationCenterDetailDTO.setRegistrationCenterProcessEndTime(registrationCenter.get().getProcessStartTime());
+			registrationCenterDetailDTO.setRegistrationCenterProcessEndTime(registrationCenter.get().getProcessEndTime());
 		}
 
 		LOGGER.debug("REGISTRATION - CENTER_NAME - REGISTRATION_CENTER_DAO_IMPL", APPLICATION_NAME,

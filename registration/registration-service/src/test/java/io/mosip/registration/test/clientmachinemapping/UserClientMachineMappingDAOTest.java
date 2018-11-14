@@ -172,7 +172,7 @@ public class UserClientMachineMappingDAOTest {
 	public void getUsersRunException() throws RegBaseCheckedException {
 		UserContext userContext = SessionContext.getInstance().getUserContext();
 		userContext.setUserId("ID007");
-		Mockito.when(userDetailRepository.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike("Center123",
+		Mockito.when(userDetailRepository.findByRegistrationCenterUserRegistrationCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike("Center123",
 				RegistrationConstants.BLACKLISTED, userContext.getUserId())).thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getUsers("Center123");
 	}
@@ -206,10 +206,9 @@ public class UserClientMachineMappingDAOTest {
 		registrationUserRolesList.add(registrationUserRole);
 
 		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
-		registrationUserDetail.setCntrId("Center123");
 		registrationUserDetail.setId("ID007");
 		registrationUserDetail.setName("testName");
-		registrationUserDetail.setUserStatus("Active");
+		registrationUserDetail.setStatusCode("Active");
 		registrationUserDetail.setUserMachineMapping(regUserMachineMappingList);
 		registrationUserDetail.setUserRole(registrationUserRolesList);
 
@@ -236,17 +235,16 @@ public class UserClientMachineMappingDAOTest {
 		registrationUserRolesList1.add(registrationUserRole1);
 
 		RegistrationUserDetail registrationUserDetail1 = new RegistrationUserDetail();
-		registrationUserDetail1.setCntrId("Center123");
 		registrationUserDetail1.setId("ID008");
 		registrationUserDetail1.setName("testName1");
-		registrationUserDetail1.setUserStatus("Active");
+		registrationUserDetail1.setStatusCode("Active");
 		registrationUserDetail1.setUserMachineMapping(regUserMachineMappingList2);
 		registrationUserDetail1.setUserRole(registrationUserRolesList1);
 
 		registrationUserDetailList.add(registrationUserDetail);
 		registrationUserDetailList.add(registrationUserDetail1);
 
-		Mockito.when(userDetailRepository.findByCntrIdAndIsActiveTrueAndUserStatusNotLikeAndIdNotLike("Center123",
+		Mockito.when(userDetailRepository.findByRegistrationCenterUserRegistrationCenterUserIdRegcntrIdAndIsActiveTrueAndStatusCodeNotLikeAndIdNotLike("Center123",
 				RegistrationConstants.BLACKLISTED, userContext.getUserId())).thenReturn(registrationUserDetailList);
 
 		List<RegistrationUserDetail> details = machineMappingDAOImpl.getUsers("Center123");

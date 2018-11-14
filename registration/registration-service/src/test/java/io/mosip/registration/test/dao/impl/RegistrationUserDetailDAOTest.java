@@ -35,7 +35,6 @@ public class RegistrationUserDetailDAOTest {
 
 		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
 		registrationUserDetail.setName("Sravya");
-		registrationUserDetail.setCntrId("000567");
 		List<RegistrationUserDetail> registrationUserDetailList = new ArrayList<RegistrationUserDetail>();
 		registrationUserDetailList.add(registrationUserDetail);
 

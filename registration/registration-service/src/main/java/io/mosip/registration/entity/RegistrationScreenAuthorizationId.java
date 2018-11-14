@@ -16,11 +16,9 @@ public class RegistrationScreenAuthorizationId implements Serializable {
 
 	private static final long serialVersionUID = -8699602385381298607L;
 
-	@Column(name = "screen_id", length = 32, nullable = false, updatable = false)
+	@Column(name = "screen_id")
 	private String screenId;
-	@Column(name = "app_id", length = 32, nullable = false, updatable = false)
-	private String appId;
-	@Column(name = "role_code", length = 32, nullable = false, updatable = false)
+	@Column(name = "role_code")
 	private String roleCode;
 
 	/**
@@ -36,21 +34,6 @@ public class RegistrationScreenAuthorizationId implements Serializable {
 	 */
 	public void setScreenId(String screenId) {
 		this.screenId = screenId;
-	}
-
-	/**
-	 * @return the appId
-	 */
-	public String getAppId() {
-		return appId;
-	}
-
-	/**
-	 * @param appId
-	 *            the appId to set
-	 */
-	public void setAppId(String appId) {
-		this.appId = appId;
 	}
 
 	/**

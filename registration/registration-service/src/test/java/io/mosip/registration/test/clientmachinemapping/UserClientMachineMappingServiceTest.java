@@ -93,7 +93,6 @@ public class UserClientMachineMappingServiceTest {
 		userMachine.add(userMachineMapping);
 
 		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
-		registrationUserDetail.setCntrId("CenterID123");
 		registrationUserDetail.setId("ID123456");
 		registrationUserDetail.setName("Registration");
 		registrationUserDetail.setUserMachineMapping(userMachine);

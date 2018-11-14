@@ -282,7 +282,9 @@ public class RegistrationConstants {
 	public static final String USERNAME_FIELD_EMPTY = "UserName is required";
 	public static final String PWORD_FIELD_EMPTY = "Password is required";
 	public static final String CREDENTIALS_FIELD_EMPTY = "UserName and Password are required";
-	public static final String INCORRECT_PWORD = "Incorrect Password";
+	public static final String USRNAME_PWORD_LENGTH = "Length of Username/Password should not be greater than 50";
+	public static final String INCORRECT_PWORD = "Incorrect Username/Password";
+	public static final String USER_NOT_ONBOARDED = "You have not been onboarded to use this client.";
 	public static final String BLOCKED_USER_ERROR = "You are not authorized to perform registration.";
 	public static final String LOGIN_INFO_MESSAGE = "Login Information";
 	public static final String OTP_FIELD_EMPTY = "Please Enter OTP";
@@ -456,5 +458,13 @@ public class RegistrationConstants {
 	public static final String EMAIL_SUBJECT = "MOSIP REGISTRATION NOTIFICATION";
 	public static final String EMAIL_SERVICE="email";
 	public static final String SMS_SERVICE="sms";
+	
+	// Global configuration parameters
+	public static final List<String> INVALID_LOGIN_PARAMS = Arrays.asList("INVALID_LOGIN_COUNT", "INVALID_LOGIN_TIME");
+	public static final String INVALID_LOGIN_COUNT = "INVALID_LOGIN_COUNT";
+	public static final String INVALID_LOGIN_TIME = "INVALID_LOGIN_TIME";
+
+	// Lock User account
+	public static final String USER_ACCOUNT_LOCK_MESSAGE = "Your account has been temporarily locked as you have made 5 unsuccessful login attempts. Please try logging in after 30 minutes.";
 
 }

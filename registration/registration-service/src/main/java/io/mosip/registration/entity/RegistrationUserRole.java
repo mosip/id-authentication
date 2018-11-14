@@ -1,5 +1,6 @@
 package io.mosip.registration.entity;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -18,18 +19,13 @@ public class RegistrationUserRole extends RegistrationCommonFields {
 
 	@EmbeddedId
 	private RegistrationUserRoleID registrationUserRoleID;
-	
+
+	@Column(name = "lang_code")
+	private String langCode;
+
 	@ManyToOne
 	@JoinColumn(name = "usr_id", nullable = false, insertable = false, updatable = false)
-	private RegistrationUserDetail registrationUserDetail;	
-
-	public RegistrationUserDetail getRegistrationUserDetail() {
-		return registrationUserDetail;
-	}
-
-	public void setRegistrationUserDetail(RegistrationUserDetail registrationUserDetail) {
-		this.registrationUserDetail = registrationUserDetail;
-	}
+	private RegistrationUserDetail registrationUserDetail;
 
 	/**
 	 * @return the registrationUserRoleId
@@ -45,5 +41,35 @@ public class RegistrationUserRole extends RegistrationCommonFields {
 	public void setRegistrationUserRoleID(RegistrationUserRoleID registrationUserRoleID) {
 		this.registrationUserRoleID = registrationUserRoleID;
 	}
-	
+
+	/**
+	 * @return the langCode
+	 */
+	public String getLangCode() {
+		return langCode;
+	}
+
+	/**
+	 * @param langCode
+	 *            the langCode to set
+	 */
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
+
+	/**
+	 * @return the registrationUserDetail
+	 */
+	public RegistrationUserDetail getRegistrationUserDetail() {
+		return registrationUserDetail;
+	}
+
+	/**
+	 * @param registrationUserDetail
+	 *            the registrationUserDetail to set
+	 */
+	public void setRegistrationUserDetail(RegistrationUserDetail registrationUserDetail) {
+		this.registrationUserDetail = registrationUserDetail;
+	}
+
 }
