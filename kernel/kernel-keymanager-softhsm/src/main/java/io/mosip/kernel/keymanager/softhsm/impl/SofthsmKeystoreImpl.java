@@ -29,7 +29,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.keymanager.softhsm.spi.SofthsmKeystore;
+import io.mosip.kernel.core.keymanager.spi.SofthsmKeystore;
 import io.mosip.kernel.keymanager.softhsm.util.X509CertUtil;
 import sun.security.pkcs11.SunPKCS11;
 import sun.security.x509.X509CertImpl;

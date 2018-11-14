@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import io.mosip.kernel.keymanager.softhsm.spi.SofthsmKeystore;
+import io.mosip.kernel.core.keymanager.spi.SofthsmKeystore;
 
 @SpringBootApplication
 public class SoftHsmKeystoreDemo {
