@@ -29,7 +29,7 @@ node{
    }
   stage ('Maven Compile') 
 	{
-        rtMaven.run pom: 'DEV/kernel/pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: 'DEV/kernel/pom.xml', goals: 'clean install -Dmaven.test.skip=true', buildInfo: buildInfo
     }	
   stage('SonarQube Analysis') {
 	withSonarQubeEnv('sonar') { 
