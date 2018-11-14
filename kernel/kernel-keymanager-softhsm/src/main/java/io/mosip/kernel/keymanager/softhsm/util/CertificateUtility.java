@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
+import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeystoreConstant;
 import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeystoreErrorCode;
 import sun.security.x509.AlgorithmId;
 import sun.security.x509.CertificateAlgorithmId;
@@ -77,7 +78,8 @@ public class CertificateUtility {
 			info.set(X509CertInfo.ALGORITHM_ID, new CertificateAlgorithmId(algo));
 			cert = signCertificate(privkey, info);
 			algo = (AlgorithmId) cert.get(X509CertImpl.SIG_ALG);
-			info.set(CertificateAlgorithmId.NAME + "." + CertificateAlgorithmId.ALGORITHM, algo);
+			info.set(CertificateAlgorithmId.NAME + SofthsmKeystoreConstant.DOT + CertificateAlgorithmId.ALGORITHM,
+					algo);
 			cert = signCertificate(privkey, info);
 		} catch (IOException | CertificateException e) {
 			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
@@ -99,7 +101,7 @@ public class CertificateUtility {
 		X509CertImpl cert;
 		cert = new X509CertImpl(info);
 		try {
-			cert.sign(privkey, "SHA1withRSA");
+			cert.sign(privkey, SofthsmKeystoreConstant.SIGNATURE_ALGORITHM);
 		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
 				| SignatureException e) {
 			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),

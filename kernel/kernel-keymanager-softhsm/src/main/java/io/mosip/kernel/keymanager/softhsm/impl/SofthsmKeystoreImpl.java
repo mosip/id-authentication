@@ -34,7 +34,6 @@ import io.mosip.kernel.core.keymanager.spi.SofthsmKeystore;
 import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeystoreErrorCode;
 import io.mosip.kernel.keymanager.softhsm.util.CertificateUtility;
 import sun.security.pkcs11.SunPKCS11;
-import sun.security.x509.X509CertImpl;
 
 /**
  * SoftHSM Keystore implementation based on OpenDNSSEC that handles and stores
