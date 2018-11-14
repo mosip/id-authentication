@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.util;
+package io.mosip.registration.processor.auditmanager.util;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

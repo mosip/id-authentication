@@ -12,11 +12,11 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.registration.processor.auditmanager.code.AuditLogConstant;
+import io.mosip.registration.processor.auditmanager.code.EventId;
+import io.mosip.registration.processor.auditmanager.code.EventName;
+import io.mosip.registration.processor.auditmanager.code.EventType;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.code.AuditLogConstant;
-import io.mosip.registration.processor.core.code.EventId;
-import io.mosip.registration.processor.core.code.EventName;
-import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.packet.dto.BiometericData;
 import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.Document;
@@ -64,8 +64,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoManagerImpl.class);
 
-	public static final String FILE_SEPARATOR = "\\";
+	public static final String TABLE_NOT_ACCESIBLE = "Table Not Accessible";
 
+	public static final String FILE_SEPARATOR ="";
+	
 	public static final String LOG_FORMATTER = "{} - {}";
 
 	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
@@ -156,7 +158,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			isTransactionSuccessful = true;
 
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Table Not Accessible", e);
+			throw new TablenotAccessibleException(TABLE_NOT_ACCESIBLE, e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
@@ -193,13 +195,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			}
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Table Not Accessible", e);
+			throw new TablenotAccessibleException(TABLE_NOT_ACCESIBLE, e);
 		} finally {
 
-			eventId = isTransactionSuccessful ? EventId.RPR_405.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_405.toString()) ? EventName.ADD.toString()
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_405.toString()) ? EventType.BUSINESS.toString()
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "Demographic data saved successfully"
 					: "Demographic data Failed to save";
@@ -229,12 +231,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			isTransactionSuccessful = true;
 			return applicantInfoDtoList;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Table Not Accessible", e);
+			throw new TablenotAccessibleException(TABLE_NOT_ACCESIBLE, e);
 		} finally {
-			eventId = isTransactionSuccessful ? EventId.RPR_405.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_405.toString()) ? EventName.ADD.toString()
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.ADD.toString()
 					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_405.toString()) ? EventType.BUSINESS.toString()
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
 					: EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "Packet data fetched successfully"
 					: "Packet data fetch fail";
@@ -383,7 +385,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	private void saveRegCenterData(MetaData metaData) {
 		RegCenterMachineEntity regCenterMachineEntity = PacketInfoMapper.convertRegCenterMachineToEntity(metaData);
 		regCenterMachineRepository.save(regCenterMachineEntity);
-		LOGGER.info(regCenterMachineEntity.getId() + " --> Registration Center Machine DATA SAVED");
+		LOGGER.info(LOG_FORMATTER,regCenterMachineEntity.getId() , "  Registration Center Machine DATA SAVED");
 
 	}
 

@@ -8,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.auditmanager.client.AuditmanagerClient;
+import io.mosip.registration.processor.auditmanager.code.AuditLogConstant;
 import io.mosip.registration.processor.auditmanager.dto.AuditRequestDto;
-import io.mosip.registration.processor.core.code.AuditLogConstant;
-import io.mosip.registration.processor.core.util.ServerUtil;
+import io.mosip.registration.processor.auditmanager.util.ServerUtil;
+
 /**
  * The Class AuditRequestBuilder.
  * 

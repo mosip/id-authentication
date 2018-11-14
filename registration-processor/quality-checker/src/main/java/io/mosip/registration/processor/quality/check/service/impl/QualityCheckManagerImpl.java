@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.quality.check.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,15 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.registration.processor.auditmanager.code.AuditLogConstant;
+import io.mosip.registration.processor.auditmanager.code.EventId;
+import io.mosip.registration.processor.auditmanager.code.EventName;
+import io.mosip.registration.processor.auditmanager.code.EventType;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.code.AuditLogConstant;
-import io.mosip.registration.processor.core.code.EventId;
-import io.mosip.registration.processor.core.code.EventName;
-import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
-import io.mosip.registration.processor.quality.check.client.QCUsersClient;
 import io.mosip.registration.processor.quality.check.code.QualityCheckerStatusCode;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
 import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
@@ -34,8 +34,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	@Autowired
 	private ApplicantInfoDao applicantInfoDao;
 
-	@Autowired
-	private QCUsersClient qcUsersClient;
+	
 	
 	@Autowired
 	ClientAuditRequestBuilder clientAuditRequestBuilder;
@@ -53,7 +52,8 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 
 	@Override
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
-		List<String> qcUsersList = qcUsersClient.getAllQcuserIds();//Arrays.asList("qc001","qc002","qc003");
+		List<String> qcUsersList = Arrays.asList("qc001","qc002","qc003");
+		//qcUsersClient.getAllQcuserIds();
 		
 		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
 		QCUserDto qcUserDto = new QCUserDto();

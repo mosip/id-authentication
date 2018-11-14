@@ -74,8 +74,7 @@ public class ApplicantInfoDaoTest {
 		qcuserRegistrationIdEntity2.setIsDeleted(false);
 		qcuserRegistrationIdEntity2.setUpdDtimesz(LocalDateTime.now());
 		
-		Mockito.when(qcuserRegRepositary.findByUserId(ArgumentMatchers.anyString())).
-				thenReturn(Arrays.asList(qcuserRegistrationIdEntity1,qcuserRegistrationIdEntity2));
+		
 		
 		Mockito.when(qcuserRegRepositary.save(ArgumentMatchers.any(QcuserRegistrationIdEntity.class)))
 				.thenReturn(qcuserRegistrationIdEntity1);

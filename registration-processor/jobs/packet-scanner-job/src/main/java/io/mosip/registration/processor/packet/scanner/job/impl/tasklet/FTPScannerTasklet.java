@@ -23,11 +23,12 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.registration.processor.auditmanager.code.AuditLogConstant;
+import io.mosip.registration.processor.auditmanager.code.EventId;
+import io.mosip.registration.processor.auditmanager.code.EventName;
+import io.mosip.registration.processor.auditmanager.code.EventType;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.code.AuditLogConstant;
-import io.mosip.registration.processor.core.code.EventId;
-import io.mosip.registration.processor.core.code.EventName;
-import io.mosip.registration.processor.core.code.EventType;
+
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;

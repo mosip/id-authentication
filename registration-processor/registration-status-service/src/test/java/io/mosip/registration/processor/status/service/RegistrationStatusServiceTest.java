@@ -2,7 +2,6 @@ package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +18,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.ContextConfiguration;
 
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -58,14 +54,10 @@ public class RegistrationStatusServiceTest {
 	@Mock
 	private RegistrationStatusDao registrationStatusDao;
 
-	@Mock
-	private AuditRequestBuilder auditRequestBuilder;
+	
 
 	@Mock
-	private AuditHandler<AuditRequestDto> auditHandler;
-
-	@Mock
-	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private ClientAuditRequestBuilder coreAuditRequestBuilder = new ClientAuditRequestBuilder();
 
 	@Before
 	public void setup()

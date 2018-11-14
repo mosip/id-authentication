@@ -2,7 +2,6 @@ package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +15,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncStatusDto;
@@ -52,13 +47,7 @@ public class SyncRegistrationServiceTest {
 	@Mock
 	private SyncRegistrationDao syncRegistrationDao;
 
-	/** The audit request builder. */
-	@Mock
-	private AuditRequestBuilder auditRequestBuilder;
-
-	/** The audit handler. */
-	@Mock
-	private AuditHandler<AuditRequestDto> auditHandler;
+	
 
 	/** The sync registration service. */
 	@InjectMocks

@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.core.code;
+package io.mosip.registration.processor.auditmanager.code;
 
 /**
  * The Enum EventType.

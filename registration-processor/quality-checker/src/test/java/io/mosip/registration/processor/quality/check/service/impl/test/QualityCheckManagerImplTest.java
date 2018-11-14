@@ -68,22 +68,8 @@ public class QualityCheckManagerImplTest {
 		qCUserDto1.setRegId("2018782130000116102018124324");
 		qCUserDto1.setDecisionStatus(DecisionStatus.ACCEPTED);
 
-		AuditRequestBuilder auditRequestBuilder1 = new AuditRequestBuilder();
-		AuditHandler<AuditRequestDto> auditHandler = new AuditHandler<AuditRequestDto>() {
-
-			@Override
-			public boolean writeAudit(AuditRequestDto arg0) {
-
-				return true;
-			}
-		};
-		Field f1 = qualityCheckManager.getClass().getDeclaredField("auditRequestBuilder");
-		f1.setAccessible(true);
-		f1.set(qualityCheckManager, auditRequestBuilder1);
-
-		Field f2 = qualityCheckManager.getClass().getDeclaredField("auditHandler");
-		f2.setAccessible(true);
-		f2.set(qualityCheckManager, auditHandler);
+		
+		
 
 	}
 	@Test
