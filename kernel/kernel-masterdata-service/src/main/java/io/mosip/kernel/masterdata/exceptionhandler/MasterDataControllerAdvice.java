@@ -47,6 +47,9 @@ import io.mosip.kernel.masterdata.exception.RegistrationCenterNotFoundException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingFetchHistoryException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingHistoryException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingNotFoundHistoryException;
+import io.mosip.kernel.masterdata.exception.TemplateFetchException;
+import io.mosip.kernel.masterdata.exception.TemplateMappingException;
+import io.mosip.kernel.masterdata.exception.TemplateNotFoundException;
 import io.mosip.kernel.masterdata.exception.TitleFetchException;
 import io.mosip.kernel.masterdata.exception.TitleMappingException;
 import io.mosip.kernel.masterdata.exception.TitleNotFoundException;
@@ -406,29 +409,49 @@ public class MasterDataControllerAdvice {
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.SERVICE_UNAVAILABLE);
 	}
-	
+
 	@ExceptionHandler(TitleFetchException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleFetchException(
-			final TitleFetchException e) {
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleFetchException(final TitleFetchException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
 
 	@ExceptionHandler(TitleNotFoundException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleNotFoundException(
-			final TitleNotFoundException e) {
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleNotFoundException(final TitleNotFoundException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(TitleMappingException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleMappingException(
-			final TitleMappingException e) {
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleMappingException(final TitleMappingException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(TemplateFetchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> templateFetchException(final TemplateFetchException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(TemplateMappingException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> templateMappingException(
+			final TemplateMappingException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(TemplateNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> templateNotFoundException(
+			final TemplateNotFoundException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 	}
 
 }

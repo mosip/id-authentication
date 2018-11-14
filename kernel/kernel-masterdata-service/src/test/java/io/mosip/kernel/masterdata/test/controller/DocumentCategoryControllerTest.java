@@ -30,17 +30,27 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 @AutoConfigureMockMvc
 public class DocumentCategoryControllerTest {
 
-	private static final String EXPECTED_LIST = "[\r\n" + "  {\r\n" + "    \"code\": \"101\",\r\n"
-			+ "    \"name\": \"POI\",\r\n" + "    \"description\": null,\r\n" + "    \"langCode\": \"ENG\",\r\n"
-			+ "    \"createdBy\": \"Neha\",\r\n" + "    \"updatedBy\": null,\r\n" + "    \"active\": true,\r\n"
-			+ "    \"deleted\": false\r\n" + "  },\r\n" + "  {\r\n" + "    \"code\": \"102\",\r\n"
-			+ "    \"name\": \"POR\",\r\n" + "    \"description\": null,\r\n" + "    \"langCode\": \"ENG\",\r\n"
-			+ "    \"createdBy\": \"Neha\",\r\n" + "    \"updatedBy\": null,\r\n" + "    \"active\": true,\r\n"
-			+ "    \"deleted\": false\r\n" + "  }\r\n" + "]";
+	private static final String EXPECTED_LIST = "[\n" + 
+			"  {\n" + 
+			"    \"code\": \"101\",\n" + 
+			"    \"name\": \"POI\",\n" + 
+			"    \"description\": null,\n" + 
+			"    \"langCode\": \"ENG\"\n" + 
+			"  },\n" + 
+			"  {\n" + 
+			"    \"code\": \"102\",\n" + 
+			"    \"name\": \"POR\",\n" + 
+			"    \"description\": null,\n" + 
+			"    \"langCode\": \"ENG\"\n" + 
+			"  }\n" + 
+			"]";
 
-	private static final String EXPECTED_OBJECT = "{\r\n" + "  \"code\": \"101\",\r\n" + "  \"name\": \"POI\",\r\n"
-			+ "  \"description\": null,\r\n" + "  \"langCode\": \"ENG\",\r\n" + "  \"createdBy\": \"Neha\",\r\n"
-			+ "  \"updatedBy\": null,\r\n" + "  \"active\": true,\r\n" + "  \"deleted\": false\r\n" + "}";
+	private static final String EXPECTED_OBJECT = "{\n" + 
+			"    \"code\": \"101\",\n" + 
+			"    \"name\": \"POI\",\n" + 
+			"    \"description\": null,\n" + 
+			"    \"langCode\": \"ENG\"\n" + 
+			"  }";
 
 	private DocumentCategoryDto documentCategoryDto1;
 	private DocumentCategoryDto documentCategoryDto2;
@@ -60,21 +70,11 @@ public class DocumentCategoryControllerTest {
 		documentCategoryDto1.setCode("101");
 		documentCategoryDto1.setName("POI");
 		documentCategoryDto1.setLangCode("ENG");
-		documentCategoryDto1.setActive(true);
-		documentCategoryDto1.setDeleted(false);
-		documentCategoryDto1.setDescription(null);
-		documentCategoryDto1.setCreatedBy("Neha");
-		documentCategoryDto1.setUpdatedBy(null);
-
+	
 		documentCategoryDto2 = new DocumentCategoryDto();
 		documentCategoryDto2.setCode("102");
 		documentCategoryDto2.setName("POR");
 		documentCategoryDto2.setLangCode("ENG");
-		documentCategoryDto2.setActive(true);
-		documentCategoryDto2.setDeleted(false);
-		documentCategoryDto2.setDescription(null);
-		documentCategoryDto2.setCreatedBy("Neha");
-		documentCategoryDto2.setUpdatedBy(null);
 
 		documentCategoryDtoList.add(documentCategoryDto1);
 		documentCategoryDtoList.add(documentCategoryDto2);
@@ -85,7 +85,7 @@ public class DocumentCategoryControllerTest {
 
 		Mockito.when(service.getAllDocumentCategory()).thenReturn(documentCategoryDtoList);
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/all"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories"))
 				.andExpect(MockMvcResultMatchers.content().json(EXPECTED_LIST))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
@@ -96,7 +96,7 @@ public class DocumentCategoryControllerTest {
 		Mockito.when(service.getAllDocumentCategoryByLaguageCode(Mockito.anyString()))
 				.thenReturn(documentCategoryDtoList);
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/all/ENG"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/ENG"))
 				.andExpect(MockMvcResultMatchers.content().json(EXPECTED_LIST))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}

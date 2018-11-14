@@ -3,18 +3,18 @@ package io.mosip.kernel.masterdata.exception;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * Custom Exception Class in case of error while fetching template
+ * Custom Exception Class in case of error while fetching application details
  * 
  * @author Neha
  * @since 1.0.0
  *
  */
-public class TemplateFetchException extends BaseUncheckedException {
+public class ApplicationFetchException extends BaseUncheckedException {
 
 	/**
 	 * Generated serial version id
 	 */
-	private static final long serialVersionUID = -559306424003195247L;
+	private static final long serialVersionUID = 4951092021246585362L;
 
 	/**
 	 * Constructor to initialize exception
@@ -24,7 +24,7 @@ public class TemplateFetchException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            The error message for this exception
 	 */
-	public TemplateFetchException(String errorCode, String errorMessage) {
+	public ApplicationFetchException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 }
