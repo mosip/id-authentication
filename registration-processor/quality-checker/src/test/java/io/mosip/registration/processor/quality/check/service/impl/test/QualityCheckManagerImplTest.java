@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -22,11 +21,11 @@ import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
-import io.mosip.registration.processor.quality.check.dao.QCUserInfoDao;
 import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
 import io.mosip.registration.processor.quality.check.exception.InvalidQcUserIdException;
@@ -44,10 +43,9 @@ public class QualityCheckManagerImplTest {
 	private ApplicantInfoDao applicantInfoDao;
 
 	@Mock
-	private AuditRequestBuilder auditRequestBuilder;
+	private ClientAuditRequestBuilder auditRequestBuilder;
 
-	@Mock
-	private QCUserInfoDao qcUserInfoDao;
+
 	@Mock
 	private AuditHandler<AuditRequestDto> auditHandler;
 	private List<QCUserDto> qcUserDtos;
@@ -60,7 +58,7 @@ public class QualityCheckManagerImplTest {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		 
 		 
-		 qcuserlist=Arrays.asList("qc001","qc002","qc003");
+		
 		qcUserDtos = new ArrayList<>();
 		entity = new QcuserRegistrationIdEntity();
 		pkEntity = new QcuserRegistrationIdPKEntity();
@@ -90,14 +88,14 @@ public class QualityCheckManagerImplTest {
 	}
 	@Test
 	public void assignQCUserTest() {
-		Mockito.when(qcUserInfoDao.getAllQcuserIds()).thenReturn(qcuserlist);
+		
 		QCUserDto qcUserDto=qualityCheckManager.assignQCUser("2018782130000116102018124324");
 		assertEquals(DecisionStatus.PENDING, qcUserDto.getDecisionStatus());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void assignQCUserFailureTest() {
-		Mockito.when(qcUserInfoDao.getAllQcuserIds()).thenReturn(qcuserlist);
+		
 		
 		
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
@@ -106,25 +104,7 @@ public class QualityCheckManagerImplTest {
 				.thenThrow(exp);
 		qualityCheckManager.assignQCUser("2018782130000116102018124324");
 	}
-	/*@Test
-	public void getPacketsforQCUserTest(){
-		ApplicantInfoDto applicantInfoDto=new ApplicantInfoDto();
-		applicantInfoDto.setApplicantPhoto(mock(Photograph.class));
-		applicantInfoDto.setDemoInLocalLang(mock(DemographicInfo.class));
-		applicantInfoDto.setDemoInUserLang(mock(DemographicInfo.class));
-		Mockito.when(applicantInfoDao.getPacketsforQCUser(ArgumentMatchers.anyString())).thenReturn(Arrays.asList(applicantInfoDto));
-		List<ApplicantInfoDto> list=qualityCheckManager.getPacketsforQCUser("qc001");
-		assertFalse(list.isEmpty());
-	}*/
 	
-	/*@Test(expected = TablenotAccessibleException.class)
-	public void getPacketsforQCUserFailureTest(){
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
-				new Exception());
-		Mockito.when(applicantInfoDao.getPacketsforQCUser(ArgumentMatchers.anyString())).thenThrow(exp);
-		qualityCheckManager.getPacketsforQCUser("qc001");
-		
-	}*/
 	@Test
 	public void updateQCUserStatusTest() {
 
