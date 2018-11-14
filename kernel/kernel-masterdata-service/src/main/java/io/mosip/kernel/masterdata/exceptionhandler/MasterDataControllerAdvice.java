@@ -41,6 +41,9 @@ import io.mosip.kernel.masterdata.exception.MachineHistoryMappingException;
 import io.mosip.kernel.masterdata.exception.MachineHistroyNotFoundException;
 import io.mosip.kernel.masterdata.exception.NoBlacklistedWordsFoundException;
 import io.mosip.kernel.masterdata.exception.NoHolidayDataFoundException;
+import io.mosip.kernel.masterdata.exception.ReasonsFetchException;
+import io.mosip.kernel.masterdata.exception.ReasonsMappingException;
+import io.mosip.kernel.masterdata.exception.ReasonsNotFoundException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterFetchException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterMappingException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterNotFoundException;
@@ -360,6 +363,30 @@ public class MasterDataControllerAdvice {
 	@ExceptionHandler(BlacklistedWordsIllegalArgException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> blacklistedWordsIllegalArgException(
 			final BlacklistedWordsIllegalArgException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+	
+	@ExceptionHandler(ReasonsFetchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> reasonsFetchException(
+			final ReasonsFetchException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+	
+	@ExceptionHandler(ReasonsMappingException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> reasonsMappingException(
+			final ReasonsMappingException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+	
+	@ExceptionHandler(ReasonsNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> reasonsNotFoundException(
+			final ReasonsNotFoundException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);

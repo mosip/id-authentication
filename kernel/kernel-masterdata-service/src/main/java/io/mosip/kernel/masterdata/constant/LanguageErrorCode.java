@@ -1,8 +1,8 @@
 package io.mosip.kernel.masterdata.constant;
 
 public enum LanguageErrorCode {
-	NO_LANGUAGE_FOUND_EXCEPTION("KER-MSD-XXX", "No Language found"), LANGUAGE_FETCH_EXCEPTION("KER-MSD-XXX",
-			"Error occured while fetching language"), LANGUAGE_MAPPING_EXCEPTION("KER-MSD-XXX",
+	NO_LANGUAGE_FOUND_EXCEPTION("KER-MSD-49", "List of Languages does not exist"), LANGUAGE_FETCH_EXCEPTION("KER-MSD-50",
+			"Error occured while fetching language"), LANGUAGE_MAPPING_EXCEPTION("KER-MSD-51",
 					"Error occured while mapping language");
 
 	private final String errorCode;

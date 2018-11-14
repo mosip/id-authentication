@@ -14,8 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * The Audit Entity class with {@link #actor}, {@link #action}, {@link #origin},
- * {@link #device}, {@link #description} fields to be captured and recorded
+ * The Audit Entity class with required fields to be captured and recorded
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0

@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "appl_form_type", schema = "master")
-public class Application extends Base implements Serializable {
+public class Application extends BaseEntity implements Serializable {
 	/**
 	 * Generated serial version id
 	 */
