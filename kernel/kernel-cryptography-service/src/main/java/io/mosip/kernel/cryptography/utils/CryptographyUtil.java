@@ -51,7 +51,7 @@ public class CryptographyUtil {
 			Optional<String> machineId, LocalDateTime timeStamp) {
 		PublicKey key = null;
 		Map<String, String> uriParams = new HashMap<>();
-		uriParams.put("applicationId", applicationId);
+		uriParams.put("appId", applicationId);
 		UriComponents uriComponents = UriComponentsBuilder
 				.fromHttpUrl(getPublicKeyUrl)
                 .queryParam("machineId", machineId)
@@ -82,13 +82,12 @@ public class CryptographyUtil {
 	public SecretKey getDecryptedSymmetricKey(String applicationId,
 			byte[] encryptedSymmetricKey, LocalDateTime timeStamp, Optional<String> machineId) {
 		Map<String, String> uriParams = new HashMap<>();
-		uriParams.put("applicationId", applicationId);
+		uriParams.put("appId", applicationId);
 		UriComponents uriComponents = UriComponentsBuilder
 				.fromHttpUrl(decryptSymmetricKeyUrl)
-				.queryParam("data", encryptedSymmetricKey)
-                .queryParam("machineId", machineId)
+				.queryParam("machineId", machineId)
 				.queryParam("timeStamp", timeStamp).build();
-		byte[] decryptedSymmetricKey = restTemplate.postForObject(uriComponents.toUri(), null, byte[].class);
+		byte[] decryptedSymmetricKey = restTemplate.postForObject(uriComponents.toUriString(), encryptedSymmetricKey, byte[].class,uriParams);
 		return new SecretKeySpec(decryptedSymmetricKey, 0,
 				decryptedSymmetricKey.length, symmetricAlgorithmName);
 	}

@@ -25,13 +25,13 @@ public class CryptoraphyController {
 	CryptographyService cryptographyService; 
 	
 	@PostMapping(value="/encrypt/{applicationId}")
-	public CryptographyResponseDto encrypt(@PathVariable("applicationId") String applicationId,@RequestParam("data") byte[] data,@DateTimeFormat(iso=ISO.DATE_TIME)@RequestParam("timeStamp") LocalDateTime timeStamp,@RequestParam("machineId")Optional<String>machineId) {
+	public CryptographyResponseDto encrypt(@PathVariable("applicationId") String applicationId,@DateTimeFormat(iso=ISO.DATE_TIME)@RequestParam("timeStamp") LocalDateTime timeStamp,@RequestParam("machineId")Optional<String>machineId,@RequestBody byte[] data) {
 		return cryptographyService.encrypt(applicationId,data,timeStamp,machineId);
 	}
 	
 
 	@PostMapping(value="/decrypt/{applicationId}")
-	public CryptographyResponseDto decrypt(@PathVariable("applicationId") String applicationId,@RequestParam("data") byte[] data,@DateTimeFormat(iso=ISO.DATE_TIME)@RequestParam("timeStamp") LocalDateTime timeStamp,@RequestParam("machineId")Optional<String>machineId) {
+	public CryptographyResponseDto decrypt(@PathVariable("applicationId") String applicationId,@DateTimeFormat(iso=ISO.DATE_TIME)@RequestParam("timeStamp") LocalDateTime timeStamp,@RequestParam("machineId")Optional<String>machineId,@RequestBody byte[] data) {
 		return cryptographyService.decrypt(applicationId,data,timeStamp,machineId);
 	}
 }

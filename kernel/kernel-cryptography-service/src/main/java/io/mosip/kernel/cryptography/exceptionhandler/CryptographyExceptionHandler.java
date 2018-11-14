@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
+import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 
 /**
  * Rest Controller Advice for Cryptographic Service
@@ -34,6 +36,22 @@ public class CryptographyExceptionHandler {
 	@ExceptionHandler(NullDataException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> nullDataException(
 			final NullDataException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+	
+	@ExceptionHandler(InvalidKeyException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> invalidKeyException(
+			final InvalidKeyException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+	
+	@ExceptionHandler(NoSuchAlgorithmException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> noSuchAlgorithmException(
+			final NoSuchAlgorithmException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
