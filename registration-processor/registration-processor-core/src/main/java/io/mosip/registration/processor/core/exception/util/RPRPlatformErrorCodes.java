@@ -18,6 +18,7 @@ public final class RPRPlatformErrorCodes {
 	private static final String RPR_PACKET_INFO_STORAGE_MODULE = "PIS-";
 	private static final String RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE = "FAC-";
 	private static final String RPR_PACKET_MANAGER_MODULE = "PKM-";
+	private static final String RPR_CAMEL_BRIDGE_MODULE = "CMB-";
 
 	private static final String ERROR_CODE1 = "001";
 	private static final String ERROR_CODE2 = "002";
@@ -57,6 +58,14 @@ public final class RPRPlatformErrorCodes {
 	private static final String ERROR_CODE24 = "007";
 	private static final String ERROR_CODE25 = "008";
 	private static final String ERROR_CODE26 = "010";
+	
+	//**************************Registration status camel bridge***********************************// 
+	private static final String ERROR_CODE27 = "001";
+	private static final String ERROR_CODE28 = "002";
+	private static final String ERROR_CODE29 = "003";
+	private static final String ERROR_CODE30 = "004";
+	
+	
 
 	//**************************PacketReciever***********************************// 
 	//Generic Exception
@@ -122,17 +131,16 @@ public final class RPRPlatformErrorCodes {
 	public static final String RPR_PKM_SERVER_ERROR = RPR_PACKET_MANAGER_ERROR_CODE + ERROR_CODE25;
 	public static final String RPR_PKM_TIMEOUT  = RPR_PACKET_MANAGER_ERROR_CODE + ERROR_CODE26;
 
+	//**************************Registration processor camel bridge***********************************//
+	private static final String RPR_CAMEL_BRIDGE_ERROR_CODE = RPR_REGISTRATION_PROCESSOR_PREFIX
+			+ RPR_CAMEL_BRIDGE_MODULE;
 	
-	/** The Constant IIS_EPU_ATU_SYSTEM_MODULE. */
-	// System Exceptions
-	//private static final String RPR_PKR_SYSTEM_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "SYSTEM_";
-	//public static final String RPR_PKR_UNEXCEPTED_ERROR = RPR_PKR_SYSTEM_MODULE + "UNEXCEPTED_ERROR";
-	//public static final String RPR_PKR_BAD_GATEWAY = RPR_PKR_SYSTEM_MODULE + "BAD_GATEWAY";
-	//public static final String RPR_PKR_SERVICE_UNAVAILABLE = RPR_PKR_SYSTEM_MODULE + "SERVICE_UNAVAILABLE";
-	//public static final String RPR_PKR_SERVER_ERROR = RPR_PKR_SYSTEM_MODULE + "SERVER_ERROR";
-	//public static final String RPR_PKR_TIMEOUT = RPR_PKR_SYSTEM_MODULE + "TIMEOUT";
-	
-	
+	public static final String RPR_CMB_DEPLOYMENT_FAILURE = RPR_CAMEL_BRIDGE_ERROR_CODE + ERROR_CODE27;
+	public static final String RPR_CMB_UNSUPPORTED_ENCODING = RPR_CAMEL_BRIDGE_ERROR_CODE + ERROR_CODE28;
+	public static final String RPR_CMB_CONFIGURATION_SERVER_FAILURE_EXCEPTION = RPR_CAMEL_BRIDGE_ERROR_CODE
+			+ ERROR_CODE29;
+	public static final String RPR_CMB_UNKNOWN_EXCEPTION = RPR_CAMEL_BRIDGE_ERROR_CODE + ERROR_CODE30;
+		
 	
 	private RPRPlatformErrorCodes() {
 		throw new IllegalStateException("Utility class");

@@ -27,6 +27,10 @@ public enum RPRPlatformErrorMessages {
 	FILE_NOT_FOUND_IN_SOURCE("The File is not present in source folder"),
 	FILE_SIZE_EXCEED_EXCEPTION("The File is size exceeded"),
 	
+	DEPLOYMENT_FAILURE("Deploymet Failure"),
+	UNSUPPORTED_ENCODING("Unsupported Encoding"),
+	CONFIGURATION_SERVER_FAILURE_EXCEPTION("Configuration Server Failure Exception"),
+	
 	UNEXCEPTED_EXCEPTION("Unexpected exception"), //System Exceptions
 	BAD_GATEWAY("Bad Gateway"),
 	SERVICE_UNAVAILABLE("Service Unavailable"),
