@@ -9,17 +9,19 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
+import io.mosip.registration.processor.core.code.RestUriConstant;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
-import io.mosip.registrationprocessor.mosip_regprocessor_rest_client.utils.GenericRestClient;
+import io.mosip.registrationprocessor.mosip_regprocessor_rest_client.service.impl.RegistrationProcessorRestClientServiceImpl;
+import io.mosip.registrationprocessor.mosip_regprocessor_rest_client.utils.RestApiClient;
 
 @SpringBootApplication
 @PropertySource({ "classpath:rest-client-application.properties" })
 public class RestClientApplication implements CommandLineRunner {
 	@Autowired
-	private GenericRestClient genericRestClient;
+	private RegistrationProcessorRestClientServiceImpl genericRestClient;
 
 	public static void main(String[] args) {
 		SpringApplication.run(RestClientApplication.class, args);
@@ -27,20 +29,20 @@ public class RestClientApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		final String getURI = "http://localhost:8080/v0.1/registration-processor/registration-status/registrationstatus";
+		final String getURI = "http://104.211.220.190:8080/v0.1/registration-processor/registration-status/registrationstatus";
 		List<RegistrationStatusDto> list = new ArrayList<>();
 		// Generic GET Client
-		List<RegistrationStatusDto> getResult = genericRestClient.genericGETClient(getURI, "registrationIds",
-				"2018782130000224092018121229", list.getClass());
-		System.out.println(getResult);
+		
+		//List<RegistrationStatusDto> getResult = (List<RegistrationStatusDto>) genericRestClient.getApi(RestUriConstant.regstatus, "registrationIds,","2018701130000410092018110751", list.getClass());
+		//System.out.println("Hello  "+getResult);
 
-		final String postURI = "http://localhost:8080/v0.1/registration-processor/registration-status/sync";
+		final String postURI = "http://104.211.220.190:8080/v0.1/registration-processor/registration-status/sync";
 		SyncRegistrationDto dto1 = new SyncRegistrationDto();
 		dto1.setIsActive(true);
 		dto1.setIsDeleted(false);
 		dto1.setLangCode("eng");
-		dto1.setParentRegistrationId("");
-		dto1.setRegistrationId("2018782130000224092018121229");
+		dto1.setParentRegistrationId("fsfdfs45");
+		dto1.setRegistrationId("agsg123");
 		dto1.setStatusComment("Uploaded to Virus Scanner");
 		dto1.setSyncStatus(SyncStatusDto.PRE_SYNC);
 		dto1.setSyncType(SyncTypeDto.NEW_REGISTRATION);
@@ -48,9 +50,8 @@ public class RestClientApplication implements CommandLineRunner {
 		List<SyncRegistrationDto> syncRegistrationDto = new ArrayList<>();
 		syncRegistrationDto.add(dto1);
 		// Generic POST Client
-		List<SyncRegistrationDto> postResult = genericRestClient.genericPostClient(postURI, syncRegistrationDto,
-				syncRegistrationDto.getClass());
-		System.out.println(postResult);
+		//List<SyncRegistrationDto> postResult = (List<SyncRegistrationDto>) genericRestClient.postApi(new RestUriConstant(postURI),"","", syncRegistrationDto,list.getClass());
+		//System.out.println(postResult);
 	}
 
 }
