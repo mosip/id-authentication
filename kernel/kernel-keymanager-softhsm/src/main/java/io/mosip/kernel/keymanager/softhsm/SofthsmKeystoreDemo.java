@@ -22,13 +22,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.mosip.kernel.core.keymanager.spi.SofthsmKeystore;
 
 @SpringBootApplication
-public class SoftHsmKeystoreDemo {
+public class SofthsmKeystoreDemo {
 
 	@Autowired
 	private SofthsmKeystore softhsmKeystore;
 
 	public static void main(String[] args) {
-		SpringApplication.run(SoftHsmKeystoreDemo.class, args);
+		SpringApplication.run(SofthsmKeystoreDemo.class, args);
 	}
 
 	@PostConstruct
