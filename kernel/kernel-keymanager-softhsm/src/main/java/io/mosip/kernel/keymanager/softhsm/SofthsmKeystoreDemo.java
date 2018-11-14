@@ -81,7 +81,7 @@ public class SofthsmKeystoreDemo {
 		keyPairGenerator.initialize(2048);
 		KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-		softhsmKeystore.storeAsymmetricKey(keyPair, "test-alias-private");
+		softhsmKeystore.storeAsymmetricKey(keyPair, "test-alias-private", 365);
 
 		PrivateKey privateKey = softhsmKeystore.getPrivateKey("test-alias-private");
 

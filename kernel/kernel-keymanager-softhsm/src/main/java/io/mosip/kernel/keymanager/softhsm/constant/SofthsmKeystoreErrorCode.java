@@ -12,7 +12,9 @@ public enum SofthsmKeystoreErrorCode {
 
 	KEYSTORE_PROCESSING_ERROR("KER-KMS-002", "Error occured in processing Keystore: "),
 
-	NO_SUCH_ALIAS("KER-KMS-003", "No such alias");
+	NO_SUCH_ALIAS("KER-KMS-003", "No such alias"),
+
+	CERTIFICATE_PROCESSING_ERROR("KER-KMS-004", "Error occured while processing exception: ");
 
 	/**
 	 * The error code

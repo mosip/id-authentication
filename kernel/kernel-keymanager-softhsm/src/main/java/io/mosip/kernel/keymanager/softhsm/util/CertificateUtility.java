@@ -1,6 +1,5 @@
 package io.mosip.kernel.keymanager.softhsm.util;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -14,8 +13,8 @@ import java.security.cert.CertificateException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
-
+import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
+import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeystoreErrorCode;
 import sun.security.x509.AlgorithmId;
 import sun.security.x509.CertificateAlgorithmId;
 import sun.security.x509.CertificateSerialNumber;
@@ -27,36 +26,46 @@ import sun.security.x509.X509CertImpl;
 import sun.security.x509.X509CertInfo;
 
 /**
+ * Certificate utility to generate and sign X509 Certificate
+ * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
  */
-public class X509CertUtil {
+public class CertificateUtility {
 
 	/**
-	 * 
+	 * Private constructor for CertificateUtility
 	 */
-	private X509CertUtil() {
+	private CertificateUtility() {
 	}
 
 	/**
+	 * Generate and sign X509 Certificate
+	 * 
 	 * @param keyPair
-	 * @return
+	 *            the keypair
+	 * @param validDays
+	 *            no of days
+	 * @param country
+	 *            country
+	 * @param organization
+	 *            organization
+	 * @param organizationalUnit
+	 *            organizationalUnit
+	 * @param commonName
+	 *            commonName
+	 * @return the certificate
 	 */
-	public static X509CertImpl generateX509Certificate(KeyPair keyPair) {
-
-		String commonName = "Mosip";
-		String organizationalUnit = "Mosip.io";
-		String organization = "IITB";
-		String country = "IND";
-		int validDays = 365;
+	public static X509CertImpl generateX509Certificate(KeyPair keyPair, String commonName, String organizationalUnit,
+			String organization, String country, int validDays) {
 
 		X509CertImpl cert = null;
 		try {
 			X500Name distinguishedName = new X500Name(commonName, organizationalUnit, organization, country);
 			PrivateKey privkey = keyPair.getPrivate();
 			X509CertInfo info = new X509CertInfo();
-			CertificateValidity interval = getCertificateValidity(validDays);
+			CertificateValidity interval = setCertificateValidity(validDays);
 			BigInteger sn = new BigInteger(64, new SecureRandom());
 			info.set(X509CertInfo.VALIDITY, interval);
 			info.set(X509CertInfo.SERIAL_NUMBER, new CertificateSerialNumber(sn));
@@ -70,52 +79,45 @@ public class X509CertUtil {
 			algo = (AlgorithmId) cert.get(X509CertImpl.SIG_ALG);
 			info.set(CertificateAlgorithmId.NAME + "." + CertificateAlgorithmId.ALGORITHM, algo);
 			cert = signCertificate(privkey, info);
-			// pemEncodeToFile("cert-demo.pem", cert);
-		} catch (IOException | NoSuchAlgorithmException | CertificateException | InvalidKeyException
-				| NoSuchProviderException | SignatureException e) {
-			e.printStackTrace();
+		} catch (IOException | CertificateException e) {
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return cert;
 	}
 
 	/**
+	 * Sign certificate with private key
+	 * 
 	 * @param privkey
+	 *            the private key
 	 * @param info
-	 * @return
-	 * @throws CertificateException
-	 * @throws NoSuchAlgorithmException
-	 * @throws InvalidKeyException
-	 * @throws NoSuchProviderException
-	 * @throws SignatureException
+	 *            the certificate info
+	 * @return the signed certificate
 	 */
-	private static X509CertImpl signCertificate(PrivateKey privkey, X509CertInfo info) throws CertificateException,
-			NoSuchAlgorithmException, InvalidKeyException, NoSuchProviderException, SignatureException {
+	private static X509CertImpl signCertificate(PrivateKey privkey, X509CertInfo info) {
 		X509CertImpl cert;
 		cert = new X509CertImpl(info);
-		cert.sign(privkey, "SHA1withRSA");
+		try {
+			cert.sign(privkey, "SHA1withRSA");
+		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
+				| SignatureException e) {
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+		}
 		return cert;
 	}
 
 	/**
+	 * Set certificate validity for specific duration
+	 * 
 	 * @param validDays
-	 * @return
+	 *            number of days
+	 * @return certificate validity
 	 */
-	private static CertificateValidity getCertificateValidity(int validDays) {
+	private static CertificateValidity setCertificateValidity(int validDays) {
 		LocalDateTime since = LocalDateTime.now();
 		LocalDateTime until = since.plusDays(validDays);
 		return new CertificateValidity(Timestamp.valueOf(since), Timestamp.valueOf(until));
-	}
-
-	/**
-	 * @param filename
-	 * @param obj
-	 */
-	public static void pemEncodeToFile(String filename, Object obj) {
-		try (JcaPEMWriter pw = new JcaPEMWriter(new FileWriter(filename))) {
-			pw.writeObject(obj);
-			pw.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }
