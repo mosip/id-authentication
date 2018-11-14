@@ -15,8 +15,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
@@ -29,7 +29,7 @@ import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PacketManagerApp.class)
-@TestPropertySource({"classpath:application.properties"})
+@RefreshScope
 public class FileManagerTest {
 
 	@Autowired

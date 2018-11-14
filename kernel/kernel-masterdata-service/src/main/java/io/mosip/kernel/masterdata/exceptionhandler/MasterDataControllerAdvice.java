@@ -20,7 +20,6 @@ import io.mosip.kernel.masterdata.exception.BiometricTypeNotFoundException;
 import io.mosip.kernel.masterdata.exception.BlacklistedWordsFetchException;
 import io.mosip.kernel.masterdata.exception.BlacklistedWordsIllegalArgException;
 import io.mosip.kernel.masterdata.exception.BlacklistedWordsMappingException;
-import io.mosip.kernel.masterdata.exception.NoBlacklistedWordsFoundException;
 import io.mosip.kernel.masterdata.exception.DocumentCategoryFetchException;
 import io.mosip.kernel.masterdata.exception.DocumentCategoryNotFoundException;
 import io.mosip.kernel.masterdata.exception.GenderTypeFetchException;
@@ -29,6 +28,9 @@ import io.mosip.kernel.masterdata.exception.GenderTypeNotFoundException;
 import io.mosip.kernel.masterdata.exception.HolidayFetchException;
 import io.mosip.kernel.masterdata.exception.HolidayMappingException;
 import io.mosip.kernel.masterdata.exception.InvalidDateTimeFormatException;
+import io.mosip.kernel.masterdata.exception.LanguageFetchException;
+import io.mosip.kernel.masterdata.exception.LanguageMappingException;
+import io.mosip.kernel.masterdata.exception.LanguageNotFoundException;
 import io.mosip.kernel.masterdata.exception.LocationDatabaseException;
 import io.mosip.kernel.masterdata.exception.LocationRecordsNotFoundException;
 import io.mosip.kernel.masterdata.exception.MachineDetailFetchException;
@@ -37,6 +39,7 @@ import io.mosip.kernel.masterdata.exception.MachineDetailNotFoundException;
 import io.mosip.kernel.masterdata.exception.MachineHistoryFetchException;
 import io.mosip.kernel.masterdata.exception.MachineHistoryMappingException;
 import io.mosip.kernel.masterdata.exception.MachineHistroyNotFoundException;
+import io.mosip.kernel.masterdata.exception.NoBlacklistedWordsFoundException;
 import io.mosip.kernel.masterdata.exception.NoHolidayDataFoundException;
 import io.mosip.kernel.masterdata.exception.ReasonsFetchException;
 import io.mosip.kernel.masterdata.exception.ReasonsMappingException;
@@ -47,6 +50,12 @@ import io.mosip.kernel.masterdata.exception.RegistrationCenterNotFoundException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingFetchHistoryException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingHistoryException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingNotFoundHistoryException;
+import io.mosip.kernel.masterdata.exception.TemplateFetchException;
+import io.mosip.kernel.masterdata.exception.TemplateMappingException;
+import io.mosip.kernel.masterdata.exception.TemplateNotFoundException;
+import io.mosip.kernel.masterdata.exception.TitleFetchException;
+import io.mosip.kernel.masterdata.exception.TitleMappingException;
+import io.mosip.kernel.masterdata.exception.TitleNotFoundException;
 
 /**
  * Rest Controller Advice for Master Data
@@ -381,6 +390,95 @@ public class MasterDataControllerAdvice {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	/**
+	 * This method handle when exception occur while fetching Language.
+	 * 
+	 * @param e
+	 *            is of type LanguageFetchException
+	 * @return ResponseEntity
+	 */
+	@ExceptionHandler(LanguageFetchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> handleLanguageFetchException(
+			final LanguageFetchException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	/**
+	 * This method handle when exception due to not record found.
+	 * 
+	 * @param e
+	 *            is of type LanguageNotFoundException
+	 * @return ResponseEntity
+	 */
+	@ExceptionHandler(LanguageNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> handleLanguageNotFoundException(
+			final LanguageNotFoundException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NO_CONTENT);
+	}
+
+	/**
+	 * This method handle when exception while mapping Language.
+	 * 
+	 * @param e
+	 *            is of type LanguageMappingException
+	 * @return ResponseEntity
+	 */
+	@ExceptionHandler(LanguageMappingException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> handleLanguageMappingException(
+			final LanguageMappingException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.SERVICE_UNAVAILABLE);
+	}
+
+	@ExceptionHandler(TitleFetchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleFetchException(final TitleFetchException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(TitleNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleNotFoundException(final TitleNotFoundException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(TitleMappingException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> titleMappingException(final TitleMappingException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(TemplateFetchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> templateFetchException(final TemplateFetchException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(TemplateMappingException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> templateMappingException(
+			final TemplateMappingException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(TemplateNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> templateNotFoundException(
+			final TemplateNotFoundException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 	}
 
 }

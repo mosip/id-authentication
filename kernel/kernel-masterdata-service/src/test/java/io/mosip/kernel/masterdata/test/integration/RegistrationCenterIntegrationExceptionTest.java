@@ -182,4 +182,30 @@ public class RegistrationCenterIntegrationExceptionTest {
 
 	}
 
+	@Test
+	public void getAllRegistrationCentersNotFoundExceptionTest() throws Exception {
+		when(repository.findAll(RegistrationCenter.class)).thenReturn(centers);
+
+		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+	}
+
+	@Test
+	public void getAllRegistrationCentersNotMappingExceptionTest() throws Exception {
+		centers.add(center);
+		when(repository.findAll(RegistrationCenter.class)).thenReturn(centers);
+		when(modelMapper.map(Mockito.any(), Mockito.eq(new TypeToken<List<RegistrationCenterDto>>() {
+		}.getType()))).thenThrow(IllegalArgumentException.class);
+		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotAcceptable());
+	}
+
+	@Test
+	public void getAllRegistrationCentersFetchExceptionTest() throws Exception {
+		when(repository.findAll(RegistrationCenter.class)).thenThrow(DataAccessLayerException.class);
+
+		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotAcceptable());
+	}
 }

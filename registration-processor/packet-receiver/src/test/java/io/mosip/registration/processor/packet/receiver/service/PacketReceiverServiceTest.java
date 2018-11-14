@@ -36,7 +36,8 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
@@ -44,6 +45,7 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -55,13 +57,13 @@ public class PacketReceiverServiceTest {
 	private static final String fileExtension = ".zip";
 
 	@Mock
-	private RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	private RegistrationStatusService<String, InternalRegistrationStatusDto,RegistrationStatusDto> registrationStatusService;
 
 	@Mock
 	private FileManager<DirectoryPathDto, InputStream> fileManager;
 
 	@Mock
-	private RegistrationStatusDto mockDto;
+	private InternalRegistrationStatusDto mockDto;
 
     @Mock
     private AuditRequestBuilder auditRequestBuilder;
@@ -78,8 +80,13 @@ public class PacketReceiverServiceTest {
 	@Rule
 	public ExpectedException exceptionRule = ExpectedException.none();
 
+	@Mock
+	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	
 	@InjectMocks
 	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl() {
+	
+		
 		@Override
 		public String getFileExtension() {
 			return fileExtension;
@@ -118,14 +125,14 @@ public class PacketReceiverServiceTest {
 
 		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
 		Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
-		Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
+		Mockito.doReturn(true).when(auditHandler).addAudit(ArgumentMatchers.any());
 		
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-		Field f = PacketReceiverServiceImpl.class.getDeclaredField("auditRequestBuilder");
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
 		f.setAccessible(true);
-		f.set(packetReceiverService, auditRequestBuilder);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
 		f1.set(auditRequestBuilder, auditRequest1);

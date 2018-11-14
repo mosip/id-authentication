@@ -27,7 +27,7 @@ This service can be used to generate and validate OTP based on configured busine
 
 
 
-- Response body model for POST **/otpmanager/otps**
+- Response body model for POST **/otp/generate**
 
 ```
 {
@@ -38,10 +38,10 @@ This service can be used to generate and validate OTP based on configured busine
 
 
 
-- Request for OTP validation GET **/otpmanager/otps?key=string&otp=029983**
+- Request for OTP validation GET **/otp/validate?key=string&otp=029983**
 
 
-- Response body model for GET **/otpmanager/otps?key=string&otp=029983**
+- Response body model for GET **/otp/validate?key=string&otp=029983**
 
 ```
 {

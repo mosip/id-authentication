@@ -11,14 +11,21 @@ import io.mosip.registration.dto.BaseDTO;
  * @since 1.0.0
  */
 public class DemographicInfoDTO extends BaseDTO {
+
 	protected String fullName;
 	protected Date dateOfBirth;
 	protected String gender;
 	protected AddressDTO addressDTO;
 	protected String emailId;
-	protected String mobile;
+	protected String mobileNumber;
+	protected String landLine;
 	protected String languageCode;
 	protected boolean isChild;
+	protected String age;
+	protected String localAdministrativeAuthority;
+	protected String cneOrPINNumber;
+	protected String parentOrGuardianName;
+	protected String parentOrGuardianRIDOrUIN;
 
 	/**
 	 * @return the fullName
@@ -99,7 +106,7 @@ public class DemographicInfoDTO extends BaseDTO {
 	 * @return the mobile
 	 */
 	public String getMobile() {
-		return mobile;
+		return mobileNumber;
 	}
 
 	/**
@@ -107,7 +114,22 @@ public class DemographicInfoDTO extends BaseDTO {
 	 *            the mobile to set
 	 */
 	public void setMobile(String mobile) {
-		this.mobile = mobile;
+		this.mobileNumber = mobile;
+	}
+
+	/**
+	 * @return the landLine
+	 */
+	public String getLandLine() {
+		return landLine;
+	}
+
+	/**
+	 * @param landLine
+	 *            the landLine to set
+	 */
+	public void setLandLine(String landLine) {
+		this.landLine = landLine;
 	}
 
 	/**
@@ -138,6 +160,81 @@ public class DemographicInfoDTO extends BaseDTO {
 	 */
 	public void setChild(boolean isChild) {
 		this.isChild = isChild;
+	}
+
+	/**
+	 * @return the age
+	 */
+	public String getAge() {
+		return age;
+	}
+
+	/**
+	 * @param age
+	 *            the age to set
+	 */
+	public void setAge(String age) {
+		this.age = age;
+	}
+
+	/**
+	 * @return the localAdministrativeAuthority
+	 */
+	public String getLocalAdministrativeAuthority() {
+		return localAdministrativeAuthority;
+	}
+
+	/**
+	 * @param localAdministrativeAuthority
+	 *            the localAdministrativeAuthority to set
+	 */
+	public void setLocalAdministrativeAuthority(String localAdministrativeAuthority) {
+		this.localAdministrativeAuthority = localAdministrativeAuthority;
+	}
+
+	/**
+	 * @return the cneOrPINNumber
+	 */
+	public String getCneOrPINNumber() {
+		return cneOrPINNumber;
+	}
+
+	/**
+	 * @param cneOrPINNumber
+	 *            the cneOrPINNumber to set
+	 */
+	public void setCneOrPINNumber(String cneOrPINNumber) {
+		this.cneOrPINNumber = cneOrPINNumber;
+	}
+
+	/**
+	 * @return the parentOrGuardianName
+	 */
+	public String getParentOrGuardianName() {
+		return parentOrGuardianName;
+	}
+
+	/**
+	 * @param parentOrGuardianName
+	 *            the parentOrGuardianName to set
+	 */
+	public void setParentOrGuardianName(String parentOrGuardianName) {
+		this.parentOrGuardianName = parentOrGuardianName;
+	}
+
+	/**
+	 * @return the parentOrGuardianRIDOrUIN
+	 */
+	public String getParentOrGuardianRIDOrUIN() {
+		return parentOrGuardianRIDOrUIN;
+	}
+
+	/**
+	 * @param parentOrGuardianRIDOrUIN
+	 *            the parentOrGuardianRIDOrUIN to set
+	 */
+	public void setParentOrGuardianRIDOrUIN(String parentOrGuardianRIDOrUIN) {
+		this.parentOrGuardianRIDOrUIN = parentOrGuardianRIDOrUIN;
 	}
 
 }

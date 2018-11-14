@@ -1,6 +1,6 @@
 package io.mosip.registration.dao;
 
-import java.util.Map;
+import io.mosip.registration.entity.RegistrationUserDetail;
 
 /**
  * DAO class for RegistrationUserDetail
@@ -11,16 +11,13 @@ import java.util.Map;
  */
 
 public interface RegistrationUserDetailDAO {
-	
+
 	/**
 	 * This method is used to get the User Details
 	 * 
-	 * @return Map of User deatils
+	 * @return {@link RegistrationUserDetail} based on the userId
 	 */
-	
-	public Map<String,String> getUserDetail(String userId);
-	
-	public String getBlockedUserCheck(String userId);
+
+	RegistrationUserDetail getUserDetail(String userId);
 
 }
-

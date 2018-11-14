@@ -26,7 +26,7 @@ import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.indauth.service.DemoAuthService;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.service.impl.indauth.builder.AuthResponseBuilder;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * This class provides the implementation of AuthFacade.
@@ -43,7 +43,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The logger. */
-	private static MosipLogger logger = IdaLogger.getLogger(AuthFacadeImpl.class);
+	private static Logger logger = IdaLogger.getLogger(AuthFacadeImpl.class);
 
 	/** The otp service. */
 	@Autowired

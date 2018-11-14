@@ -59,7 +59,7 @@ public class MosipCamelBridgeTest {
 		vertx.eventBus().send(MessageBusAddress.STRUCTURE_BUS_OUT.getAddress(), jsonObject);
 		vertx.eventBus().send(MessageBusAddress.BATCH_BUS.getAddress(), jsonObject);
 		
-		vertx.eventBus().send(MessageBusAddress.DEMOGRAPHIC_BUS_IN.getAddress(), jsonObject);
+		vertx.eventBus().send(MessageBusAddress.QUALITY_CHECK_BUS.getAddress(), jsonObject);
 		
 		vertx.eventBus().send(MessageBusAddress.ERROR.getAddress(), jsonObject);
 		vertx.eventBus().send(MessageBusAddress.RETRY_BUS.getAddress(), jsonObject);

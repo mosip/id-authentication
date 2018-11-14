@@ -153,8 +153,6 @@ Design Detail
 
 - The System will generate a Transaction ID and store all the Pre-Registration ids in table.
 
--  The System will calculate the count of the Pre-Registration IDs being sent.
-
 -  Pre-Registration will receive the List of Pre-Registration Ids and will send an Acknowledgement of the Receipt ("need to be check BA(Vyas)")
 
 -   Audit the exception/start/exit of the each stages of the reverse data sync mechanism using AuditManager component.

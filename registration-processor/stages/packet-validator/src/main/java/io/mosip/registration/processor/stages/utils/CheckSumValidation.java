@@ -11,21 +11,37 @@ import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 
 /**
- * @author M1048358 Alok Ranjan
+ * The Class CheckSumValidation.
  *
+ * @author M1048358 Alok Ranjan
  */
 
 public class CheckSumValidation {
 
+	/** The Constant HMAC_FILE. */
 	public static final String HMAC_FILE = "HMACFILE";
 
+	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	/**
+	 * Instantiates a new check sum validation.
+	 *
+	 * @param adapter the adapter
+	 */
 	public CheckSumValidation(FileSystemAdapter<InputStream, Boolean> adapter) {
 		this.adapter = adapter;
 
 	}
 
+	/**
+	 * Checksumvalidation.
+	 *
+	 * @param registrationId the registration id
+	 * @param packetInfo the packet info
+	 * @return true, if successful
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public boolean checksumvalidation(String registrationId, PacketInfo packetInfo) throws IOException {
 		HashSequence hashSequence = packetInfo.getHashSequence();
 

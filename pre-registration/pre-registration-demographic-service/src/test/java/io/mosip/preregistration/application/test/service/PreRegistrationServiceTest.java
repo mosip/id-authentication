@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.spi.idgenerator.PridGenerator;
+import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.preregistration.application.dao.RegistrationDao;
 import io.mosip.preregistration.application.dto.AddressDto;
 import io.mosip.preregistration.application.dto.ContactDto;
@@ -157,7 +157,7 @@ public class PreRegistrationServiceTest {
 	
 	@Test(expected = TablenotAccessibleException.class)
 	public void saveFailureCheck() throws Exception {
-		DataAccessLayerException exception = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE,RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
+		DataAccessLayerException exception = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
 
 		Mockito.when(registrationDao.save(Mockito.any())).thenThrow(exception);
 		registrationService.addRegistration(regDto,"125467364864");
@@ -195,7 +195,7 @@ public class PreRegistrationServiceTest {
 	public void getApplicationDetailsTransactionFailureCheck() throws Exception {
 		String userId = "9988905444";
 		DataAccessLayerException exception = 
-				new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE,RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
+				new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
 
 		Mockito.when(registrationRepository.noOfGroupIds(ArgumentMatchers.any())).thenThrow(exception);
 		registrationService.getApplicationDetails(userId);
