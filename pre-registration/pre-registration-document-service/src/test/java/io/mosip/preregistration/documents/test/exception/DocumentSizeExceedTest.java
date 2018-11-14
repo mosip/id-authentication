@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,19 +35,30 @@ public class DocumentSizeExceedTest {
 	private MockMultipartFile multiPartFile;
 
 	@Test
-	public void documentSizeExceedTest() throws FileNotFoundException, IOException {
+	public void documentSizeExceedTest() throws FileNotFoundException, IOException, URISyntaxException {
 
 		DocumentSizeExceedException exceedException = new DocumentSizeExceedException(
 				DOCUMENT_EXCEEDING_PERMITTED_SIZE);
 
-		DocumentDto documentDto = new DocumentDto("89076543215678", "address", "POA", "PDF", "SAVE", "ENG", "KISHAN", "KISHAN");
-
+//		DocumentDto documentDto = new DocumentDto("89076543215678", "address", "POA", "PDF", "SAVE", "ENG", "KISHAN", "KISHAN");
+//
+//		ClassLoader classLoader = getClass().getClassLoader();
+//
+//		File file = new File(classLoader.getResource("SampleSizeTest.pdf").getFile());
+//
+//		this.multiPartFile = new MockMultipartFile("file", "SampleSizeTest.pdf", "mixed/multipart",
+//				new FileInputStream(file));
+		
+		
+		DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Draft", "ENG",
+				"Jagadishwari", "Jagadishwari");
 		ClassLoader classLoader = getClass().getClassLoader();
 
-		File file = new File(classLoader.getResource("SampleSizeTest.pdf").getFile());
+		URI uri = new URI(classLoader.getResource("Doc.pdf").getFile().trim().replaceAll("\\u0020", "%20"));
+		File file = new File(uri.getPath());
 
-		this.multiPartFile = new MockMultipartFile("file", "SampleSizeTest.pdf", "mixed/multipart",
-				new FileInputStream(file));
+		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
+		
 		Mockito.when(documentUploadService.uploadDoucment(multiPartFile, documentDto)).thenThrow(exceedException);
 		try {
 

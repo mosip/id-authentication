@@ -49,7 +49,7 @@ public class DocumentCategoryServiceTest {
 		documentCategory1.setName("POI");
 		documentCategory1.setLangCode("ENG");
 		documentCategory1.setActive(true);
-		documentCategory1.setDeleted(false);
+		documentCategory1.setIsDeleted(false);
 		documentCategory1.setDescription(null);
 		documentCategory1.setCreatedBy("Neha");
 		documentCategory1.setUpdatedBy(null);
@@ -59,7 +59,7 @@ public class DocumentCategoryServiceTest {
 		documentCategory2.setName("POR");
 		documentCategory2.setLangCode("ENG");
 		documentCategory2.setActive(true);
-		documentCategory2.setDeleted(false);
+		documentCategory2.setIsDeleted(false);
 		documentCategory2.setDescription(null);
 		documentCategory2.setCreatedBy("Neha");
 		documentCategory2.setUpdatedBy(null);

@@ -13,8 +13,11 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
+import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
+import io.mosip.kernel.masterdata.dto.ReasonListDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
+import io.mosip.kernel.masterdata.entity.ReasonCategory;
 
 @Component
 public class ObjectMapperUtil {
@@ -49,6 +52,20 @@ public class ObjectMapperUtil {
 
 		return holidayDtos;
 	}
+	
+	public List<ReasonCategoryDto> reasonConverter(List<ReasonCategory> reasonCategories) {
+		Objects.requireNonNull(reasonCategories, "list cannot be null");
+		List<ReasonCategoryDto> reasonCategoryDtos = null;
+		reasonCategoryDtos = reasonCategories.stream()
+				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(), reasonCategory.getName(),
+						reasonCategory.getDescription(), reasonCategory.getLanguageCode(), reasonCategory.getIsActive(),
+						reasonCategory.getIsDeleted(), mapAll(reasonCategory.getReasons(), ReasonListDto.class)))
+				.collect(Collectors.toList());
+
+		return reasonCategoryDtos;
+
+	}
+	
 
 	public List<DeviceLangCodeDtypeDto> mapDeviceDto(List<Object[]> objects) {
 

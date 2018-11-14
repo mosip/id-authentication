@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * The Class PacketReceiverApplication.
  */
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.packet.receiver",
-		"io.mosip.registration.processor.status", "io.mosip.registration.processor.packet.manager" })
+		"io.mosip.registration.processor.status", "io.mosip.registration.processor.packet.manager","io.mosip.registration.processor.core" })
 
 public class PacketReceiverApplication {
 
