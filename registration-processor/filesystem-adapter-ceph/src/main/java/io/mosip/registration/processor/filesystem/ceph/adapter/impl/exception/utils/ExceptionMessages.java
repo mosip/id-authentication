@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.utils;
+/*package io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.utils;
 
 public enum ExceptionMessages {
 	
@@ -8,3 +8,4 @@ public enum ExceptionMessages {
 	INVALID_PACKET_FILE_NAME
 	
 }
+*/

@@ -16,6 +16,7 @@ public final class RPRPlatformErrorCodes {
 	private static final String RPR_PACKET_RECEIVER_MODULE = "PKR-";
 	private static final String RPR_REGISTRATION_STATUS_MODULE = "RGS-";
 	private static final String RPR_PACKET_INFO_STORAGE_MODULE = "PIS-";
+	private static final String RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE = "FAC-";
 
 	private static final String ERROR_CODE1 = "001";
 	private static final String ERROR_CODE2 = "002";
@@ -37,6 +38,12 @@ public final class RPRPlatformErrorCodes {
 	//**************************Packet Info Storage Service***********************************// 
 	private static final String ERROR_CODE12 = "001";
 	
+	//**************************File System Adapter Ceph***********************************// 
+	private static final String ERROR_CODE13 = "001";
+	private static final String ERROR_CODE14 = "002";
+	private static final String ERROR_CODE15 = "003";
+	private static final String ERROR_CODE16 = "004";
+	private static final String ERROR_CODE17 = "005";
 	
 
 	//**************************PacketReciever***********************************// 
@@ -71,7 +78,23 @@ public final class RPRPlatformErrorCodes {
 	public static final String RPR_PIS_TABLE_NOT_ACCESSIBLE = RPR_PACKET_INFO_STORAGE_ERROR_CODE
 			+ ERROR_CODE12;
 	
-
+	//**************************File System Adapter Ceph***********************************//
+	private static final String RPR_FILESYSTEM_ADAPTOR_CEPH_ERROR_CODE = RPR_REGISTRATION_PROCESSOR_PREFIX
+			+ RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE;
+	
+	public static final String RPR_FAC_CONNECTION_NOT_AVAILABLE = RPR_FILESYSTEM_ADAPTOR_CEPH_ERROR_CODE
+			+ ERROR_CODE13;
+	public static final String RPR_FAC_INVALID_CONNECTION_PARAMETERS = RPR_FILESYSTEM_ADAPTOR_CEPH_ERROR_CODE
+	 + ERROR_CODE14;
+	
+	public static final String RPR_FAC_PACKET_NOT_AVAILABLE = RPR_FILESYSTEM_ADAPTOR_CEPH_ERROR_CODE
+			 + ERROR_CODE15;
+	
+	//System Exception
+	public static final String RPR_FAC_TIMEOUT = RPR_FILESYSTEM_ADAPTOR_CEPH_ERROR_CODE + ERROR_CODE16;
+	public static final String RPR_FAC_UNEXCEPTED_ERROR = RPR_FILESYSTEM_ADAPTOR_CEPH_ERROR_CODE + ERROR_CODE17;
+	
+	
 	/** The Constant IIS_EPU_ATU_SYSTEM_MODULE. */
 	// System Exceptions
 	//private static final String RPR_PKR_SYSTEM_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "SYSTEM_";
