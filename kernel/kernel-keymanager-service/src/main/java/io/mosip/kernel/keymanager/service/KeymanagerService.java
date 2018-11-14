@@ -1,6 +1,5 @@
 package io.mosip.kernel.keymanager.service;
 
-import io.mosip.kernel.keymanager.dto.KeymanagerRequestDto;
 import io.mosip.kernel.keymanager.dto.KeymanagerResponseDto;
 
 /**
@@ -12,5 +11,5 @@ import io.mosip.kernel.keymanager.dto.KeymanagerResponseDto;
  */
 public interface KeymanagerService {
 
-	public KeymanagerResponseDto getKey(KeymanagerRequestDto otpDto);
+	public KeymanagerResponseDto getPublicKey();
 }
