@@ -2,6 +2,8 @@ package io.mosip.kernel.cryptography.service.impl;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import javax.crypto.SecretKey;
 
@@ -32,11 +34,12 @@ public class CryptographyServiceImpl implements CryptographyService {
 	@Autowired 
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 	
-	@Override
-	public CryptographyResponseDto encrypt(CryptographyRequestDto cryptographyRequestDto) {
+    @Override
+	public CryptographyResponseDto encrypt(String applicationId, byte[] data,
+			LocalDateTime timeStamp, Optional<String> machineId) {
 		SecretKey secretKey=keyGenerator.getSymmetricKey();
-		byte[] encryptedData=encryptor.symmetricEncrypt(secretKey, cryptographyRequestDto.getData());
-		PublicKey publicKey=cryptographyUtil.getPublicKey(cryptographyRequestDto);
+		byte[] encryptedData=encryptor.symmetricEncrypt(secretKey, data);
+		PublicKey publicKey=cryptographyUtil.getPublicKey(applicationId,machineId,timeStamp);
 		byte[] encryptedSymmetricKey=encryptor.asymmetricPublicEncrypt(publicKey, secretKey.getEncoded());
 		CryptographyResponseDto cryptographyResponseDto=new CryptographyResponseDto();
 		cryptographyResponseDto.setData(cryptographyUtil.combineByteArray(encryptedData, encryptedSymmetricKey));
@@ -44,13 +47,13 @@ public class CryptographyServiceImpl implements CryptographyService {
 	}
 
 	@Override
-	public CryptographyResponseDto decrypt(CryptographyRequestDto cryptographyRequestDto) {
-		byte[] data=cryptographyRequestDto.getData();
+	public CryptographyResponseDto decrypt(String applicationId, byte[] data,
+			LocalDateTime timeStamp, Optional<String> machineId) {
 		String[] splitedData=new String(data).split(CryptographyConstant.KEY_SPLITTER.getValue());
-		cryptographyRequestDto.setData(splitedData[0].getBytes());
-		SecretKey decryptedSymmetricKey=cryptographyUtil.getDecryptedSymmetricKey(cryptographyRequestDto);
-		decryptor.symmetricDecrypt(decryptedSymmetricKey, splitedData[1].getBytes());
-		return null;
+		SecretKey decryptedSymmetricKey=cryptographyUtil.getDecryptedSymmetricKey(applicationId,splitedData[0].getBytes(),timeStamp,machineId);
+		CryptographyResponseDto cryptographyResponseDto= new CryptographyResponseDto();
+	    cryptographyResponseDto.setData(decryptor.symmetricDecrypt(decryptedSymmetricKey, splitedData[1].getBytes()));	
+		return cryptographyResponseDto;
 	}
 
 }
