@@ -1,5 +1,7 @@
 package io.mosip.registration.dto.biometric;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.mosip.registration.dto.BaseDTO;
 
 /**
@@ -9,84 +11,49 @@ import io.mosip.registration.dto.BaseDTO;
  * @since 1.0.0
  */
 public class FingerprintDetailsDTO extends BaseDTO {
+	
+	@JsonIgnore
 	private byte[] fingerPrint;
-	protected String fingerPrintName;
+	protected String fingerprintImageName;
 	protected double qualityScore;
 	protected boolean isForceCaptured;
 	protected String fingerType;
-
-	/**
-	 * @return the fingerPrint
-	 */
+	protected int numRetry;
 	public byte[] getFingerPrint() {
 		return fingerPrint;
 	}
-
-	/**
-	 * @param fingerPrint
-	 *            the fingerPrint to set
-	 */
 	public void setFingerPrint(byte[] fingerPrint) {
 		this.fingerPrint = fingerPrint;
 	}
-
-	/**
-	 * @return the fingerPrintName
-	 */
-	public String getFingerPrintName() {
-		return fingerPrintName;
+	public String getFingerprintImageName() {
+		return fingerprintImageName;
 	}
-
-	/**
-	 * @param fingerPrintName
-	 *            the fingerPrintName to set
-	 */
-	public void setFingerPrintName(String fingerPrintName) {
-		this.fingerPrintName = fingerPrintName;
+	public void setFingerprintImageName(String fingerprintImageName) {
+		this.fingerprintImageName = fingerprintImageName;
 	}
-
-	/**
-	 * @return the qualityScore
-	 */
 	public double getQualityScore() {
 		return qualityScore;
 	}
-
-	/**
-	 * @param qualityScore
-	 *            the qualityScore to set
-	 */
 	public void setQualityScore(double qualityScore) {
 		this.qualityScore = qualityScore;
 	}
-
-	/**
-	 * @return the isForceCaptured
-	 */
 	public boolean isForceCaptured() {
 		return isForceCaptured;
 	}
-
-	/**
-	 * @param isForceCaptured
-	 *            the isForceCaptured to set
-	 */
 	public void setForceCaptured(boolean isForceCaptured) {
 		this.isForceCaptured = isForceCaptured;
 	}
-
-	/**
-	 * @return the fingerType
-	 */
 	public String getFingerType() {
 		return fingerType;
 	}
-
-	/**
-	 * @param fingerType
-	 *            the fingerType to set
-	 */
 	public void setFingerType(String fingerType) {
 		this.fingerType = fingerType;
 	}
+	public int getNumRetry() {
+		return numRetry;
+	}
+	public void setNumRetry(int numRetry) {
+		this.numRetry = numRetry;
+	}
+	
 }

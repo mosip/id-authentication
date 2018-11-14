@@ -8,8 +8,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import lombok.Data;
-
 /**
  * The enity class for Registration Transaction
  * 
@@ -19,7 +17,6 @@ import lombok.Data;
  */
 @Entity
 @Table(schema="REG", name="REGISTRATION_TRANSACTION")
-@Data
 public class RegistrationTransaction extends RegistrationCommonFields {
 
 	@Id
@@ -41,4 +38,53 @@ public class RegistrationTransaction extends RegistrationCommonFields {
 	private String langCode;
 	@Column(name="STATUS_COMMENT", length=1024, nullable=true, updatable=true)
 	private String statusComment;
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getRegId() {
+		return regId;
+	}
+	public void setRegId(String regId) {
+		this.regId = regId;
+	}
+	public String getParentRegTrnId() {
+		return parentRegTrnId;
+	}
+	public void setParentRegTrnId(String parentRegTrnId) {
+		this.parentRegTrnId = parentRegTrnId;
+	}
+	public String getTrnTypeCode() {
+		return trnTypeCode;
+	}
+	public void setTrnTypeCode(String trnTypeCode) {
+		this.trnTypeCode = trnTypeCode;
+	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+	public String getStatusCode() {
+		return statusCode;
+	}
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
+	}
+	public String getLangCode() {
+		return langCode;
+	}
+	public void setLangCode(String langCode) {
+		this.langCode = langCode;
+	}
+	public String getStatusComment() {
+		return statusComment;
+	}
+	public void setStatusComment(String statusComment) {
+		this.statusComment = statusComment;
+	}
+	
 }

@@ -21,7 +21,7 @@ import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import lombok.NoArgsConstructor;
 
 /**
@@ -46,7 +46,7 @@ public class RestRequestFactory {
 	private Environment env;
 
 	/** The logger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(RestRequestFactory.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(RestRequestFactory.class);
 	
 	/**
 	 * Builds the request.

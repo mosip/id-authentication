@@ -239,4 +239,43 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		response.setRegistrationCenters(registrationCenters);
 		return response;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * getAllRegistrationCenters()
+	 */
+	@Override
+	public RegistrationCenterResponseDto getAllRegistrationCenters() {
+		List<RegistrationCenter> registrationCentersList = null;
+		try {
+			registrationCentersList = registrationCenterRepository.findAll(RegistrationCenter.class);
+		} catch (DataAccessLayerException dataAccessLayerException) {
+			throw new RegistrationCenterFetchException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
+		}
+
+		if (registrationCentersList.isEmpty()) {
+			throw new RegistrationCenterNotFoundException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+
+		List<RegistrationCenterDto> registrationCenters = null;
+		try {
+			registrationCenters = modelMapper.map(registrationCentersList,
+					new TypeToken<List<RegistrationCenterDto>>() {
+					}.getType());
+		} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
+			throw new RegistrationCenterMappingException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorMessage());
+		}
+		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
+		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
+		return registrationCenterResponseDto;
+
+	}
 }

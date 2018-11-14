@@ -27,7 +27,7 @@ import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
 import io.mosip.authentication.service.repository.DemoRepository;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.kernel.core.util.StringUtils;
 
@@ -66,7 +66,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	private DateHelper dateHelper;
 
 	/** The mosip logger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPFacadeImpl.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(OTPFacadeImpl.class);
 
 	/**
 	 * Obtained OTP.

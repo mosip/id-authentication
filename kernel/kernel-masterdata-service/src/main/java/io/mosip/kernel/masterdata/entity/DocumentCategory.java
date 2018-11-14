@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -17,12 +17,13 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  *
  */
-@Data
 @Entity
 @Table(name = "doc_category", schema = "master")
+@EqualsAndHashCode(callSuper = false)
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DocumentCategory implements Serializable {
+public class DocumentCategory extends BaseEntity implements Serializable {
 
 	/**
 	 * Generated serialization id
@@ -41,26 +42,5 @@ public class DocumentCategory implements Serializable {
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-
-	@Column(name = "is_active", nullable = false)
-	private boolean isActive;
-
-	@Column(name = "cr_by", nullable = false, length = 24)
-	private String createdBy;
-
-	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdtimes;
-
-	@Column(name = "upd_by", length = 24)
-	private String updatedBy;
-
-	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedtimes;
-
-	@Column(name = "is_deleted")
-	private boolean isDeleted;
-
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedtimes;
 
 }

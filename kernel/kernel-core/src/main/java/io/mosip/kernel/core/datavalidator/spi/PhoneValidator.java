@@ -13,11 +13,7 @@ package io.mosip.kernel.core.datavalidator.spi;
  */
 public interface PhoneValidator<T> {
 
-	/**
-	 * Function to validate phone number
-	 * 
-	 * @return The boolean value true or false depends on validation
-	 */
+
 	boolean validatePhone(T phoneNum);
 
 }

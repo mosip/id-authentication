@@ -18,6 +18,7 @@ tmp/
 local.properties
 .loadpath
 .DS_Store
+reg/
 
 #not ignore files
 !jfxrt.jar

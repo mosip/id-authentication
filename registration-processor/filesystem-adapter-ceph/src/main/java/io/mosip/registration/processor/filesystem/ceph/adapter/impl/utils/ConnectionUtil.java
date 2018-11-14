@@ -1,11 +1,8 @@
 package io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Component;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -15,43 +12,39 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
-
 /**
- * @author Pranav Kumar
+ * This class gets connection to CEPH storage cluster
  * 
+ * @author Pranav Kumar
  * @since 0.0.1
  *
  */
+@RefreshScope
+@Component
 public class ConnectionUtil {
 
-	private static final String CONFIG_FILE_NAME = "config.properties";
-	private static AmazonS3 connection = null;
-	private static final Logger LOGGER = LoggerFactory.getLogger(FilesystemCephAdapterImpl.class);
+	private AmazonS3 connection;
 
-	private ConnectionUtil() {
+	@Value("${registration.processor.access-key}")
+	private String accessKey;
+
+	@Value("${registration.processor.secret-key}")
+	private String secretKey;
+
+	@Value("${registration.processor.endpoint}")
+	private String endpoint;
+
+	public ConnectionUtil() {
 
 	}
 
-	private static void initializeConnection() {
-		Properties properties = new Properties();
-		InputStream inputStream;
-		inputStream = ConnectionUtil.class.getClassLoader().getResourceAsStream(CONFIG_FILE_NAME);
-		try {
-			properties.load(inputStream);
-		} catch (IOException e) {
-			LOGGER.error("Unable to load config file");
-		}
-		String accessKey = properties.getProperty("access-key");
-		String secretKey = properties.getProperty("secret-key");
-		String endpoint = properties.getProperty("endpoint");
+	private void initializeConnection() {
 		AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
-		ConnectionUtil.connection = AmazonS3ClientBuilder.standard()
-				.withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+		connection = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
 				.withEndpointConfiguration(new EndpointConfiguration(endpoint, Regions.AP_SOUTH_1.toString())).build();
 	}
 
-	public static AmazonS3 getConnection() {
+	public AmazonS3 getConnection() {
 		if (connection == null) {
 			initializeConnection();
 		}

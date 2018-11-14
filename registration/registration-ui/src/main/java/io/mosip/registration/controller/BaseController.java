@@ -2,26 +2,25 @@ package io.mosip.registration.controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Date;
-import java.util.Map;
 
-import io.mosip.registration.controller.RegistrationAppInitialization;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dto.UserDTO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.scheduler.SchedulerUtil;
-import io.mosip.registration.service.LoginServiceImpl;
-import io.mosip.registration.ui.constants.RegistrationUIConstants;
+import io.mosip.registration.service.SyncStatusValidatorService;
+import javafx.animation.PauseTransition;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Control;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 /**
  * Base class for all controllers
@@ -30,25 +29,13 @@ import javafx.stage.Stage;
  * @since 1.0.0
  *
  */
-@PropertySource("classpath:registration.properties")
 public class BaseController {
 
 	@Autowired
-	private LoginServiceImpl loginServiceImpl;
+	private SyncStatusValidatorService syncStatusValidatorService;
 
-	public static final UserDTO userDTO = new UserDTO();
-
-	@Value("${TIME_OUT_INTERVAL:30}")
-	private long timeoutInterval;
-
-	@Value("${IDEAL_TIME}")
-	private long idealTime;
-
-	@Value("${REFRESHED_LOGIN_TIME}")
-	private long refreshedLoginTime;
-	
 	protected static Stage stage;
-	
+
 	/**
 	 * Adding events to the stage
 	 * 
@@ -66,7 +53,7 @@ public class BaseController {
 	}
 
 	/**
-	 * Loading FXML files along with beans 
+	 * Loading FXML files along with beans
 	 * 
 	 * @return
 	 */
@@ -135,33 +122,54 @@ public class BaseController {
 
 	}
 
+	protected ResponseDTO validateSyncStatus() {
+
+		return syncStatusValidatorService.validateSyncStatus();
+	}
+
 	/**
-	 * Setting values for Session context and User context
+	 * Validating Id for Screen Authorization
 	 * 
-	 * @return
+	 * @param screenId
+	 *            the screenId
+	 * @return boolean
 	 */
-	protected void setSessionContext(String userId) {
-		
-		Map<String, String> userDetail = loginServiceImpl.getUserDetail(userId);
+	protected boolean validateScreenAuthorization(String screenId) {
 
-		userDTO.setUsername(userDetail.get("name"));
-		userDTO.setUserId(userId);
-		userDTO.setCenterId(userDetail.get(RegistrationUIConstants.CENTER_ID));
-		userDTO.setCenterLocation(loginServiceImpl.getCenterName(userDetail.get(RegistrationUIConstants.CENTER_ID)));
+		return SessionContext.getInstance().getUserContext().getAuthorizationDTO().getAuthorizationScreenId()
+				.contains(screenId);
+	}
 
-		SessionContext sessionContext = SessionContext.getInstance();
-
-		sessionContext.setLoginTime(new Date());
-		sessionContext.setRefreshedLoginTime(refreshedLoginTime);
-		sessionContext.setIdealTime(timeoutInterval);
-		sessionContext.setTimeoutInterval(idealTime);
-		SessionContext.UserContext userContext = sessionContext.getUserContext();
-		userContext.setUserId(userId);
-		userContext.setName(userDetail.get("name"));
-		userContext.setRegistrationCenterDetailDTO(
-				loginServiceImpl.getRegistrationCenterDetails(userDetail.get(RegistrationUIConstants.CENTER_ID)));
-		userContext.setRoles(loginServiceImpl.getRoles(userId));
-		
+	/**
+	 * Regex validation with specified field and pattern
+	 * 
+	 * @param field
+	 *            concerned field
+	 * @param regexPattern
+	 *            pattern need to checked
+	 */
+	protected boolean validateRegex(Control field, String regexPattern) {
+		if (field instanceof TextField) {
+			if (!((TextField) field).getText().matches(regexPattern))
+				return true;
+		} else {
+			if (field instanceof PasswordField) {
+				if (!((PasswordField) field).getText().matches(regexPattern))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * {@code autoCloseStage} is to close the stage automatically 
+	 * by itself for a configured amount of time
+	 * @param stage
+	 */
+	protected void autoCloseStage(Stage stage) {
+			PauseTransition delay = new PauseTransition(Duration.seconds(5));
+			delay.setOnFinished( event -> stage.close() );
+			delay.play();  
 	}
 
 }

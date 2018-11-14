@@ -9,7 +9,7 @@ package io.mosip.kernel.masterdata.constant;
 public enum BiometricTypeErrorCode {
 	BIOMETRIC_TYPE_FETCH_EXCEPTION("KER-MSD-029",
 			"Error ocurred while fetching biometric types"), BIOMETRIC_TYPE_MAPPING_EXCEPTION("KER-MSD-030",
-					"Error occured while mapping registration centres"), BIOMETRIC_TYPE_NOT_FOUND("KER-MSD-045",
+					"Error occured while mapping biometric types"), BIOMETRIC_TYPE_NOT_FOUND("KER-MSD-045",
 							"No biometric types found.");
 
 	private final String errorCode;

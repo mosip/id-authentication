@@ -45,4 +45,4 @@ This application can be used as an alternative of SFTP server to upload files/pa
 ## Implementation
 
 
-**kernel-packetuploader-http** [README](../../kernel/kernel-packetuploader-http/README.md)
+**kernel-packetserver-http** [README](../../kernel/kernel-packetserver-http/README.md)

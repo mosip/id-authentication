@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 /**
  * Class handles TokenId generation Exception that which extends {@link BaseUncheckedException}
  * @author Srinivasan
- * @see 1.0.0
  *
  */
 @Component

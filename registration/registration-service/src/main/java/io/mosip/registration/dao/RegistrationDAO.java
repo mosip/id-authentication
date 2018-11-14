@@ -3,12 +3,15 @@ package io.mosip.registration.dao;
 import java.util.List;
 
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * DAO class for Repository
  * 
  * @author Balaji Sridharan
+ * @author Mahesh Kumar
+ * @author Saravanakumar Gnanaguru
  * @since 1.0.0
  *
  */
@@ -43,13 +46,13 @@ public interface RegistrationDAO {
 	 *            the user id of the approver
 	 * @param statusComments
 	 *            the status comments to be updated
-	 * @param updBy
-	 *            the user id of the user
+	 * @param approverRoleCode
+	 *            the approver role code
 	 * 
 	 * @return the updated {@link Registration} entity
 	 */
-	Registration updateStatus(String id, String clientStatus_code, String approverUsrId, String statusComments,
-			String updBy);
+	Registration updateStatus(String id, String clientStatusCode, String approverUsrId, String statusComments,
+			String approverRoleCode);
 
 	/**
 	 * This method retrieves the list of Registrations by status.
@@ -60,10 +63,6 @@ public interface RegistrationDAO {
 	 */
 	List<Registration> getEnrollmentByStatus(String status);
 
-	boolean upload(Object object);
-
-	List<String> view(String zipFileName);
-	
 	/**
 	 * 
 	 * This method is used to get the Packet details using the Id.
@@ -71,16 +70,26 @@ public interface RegistrationDAO {
 	 * @param packetNames
 	 * @return
 	 */
-	
-	List<Registration> getRegistrationById(List<String> packetNames);
-	
+	List<Registration> getRegistrationByStatus(List<String> packetStatus);
 	/**
 	 * 
-	 * This method is used to update the registration status in the Registration table.
+	 * This method is used to update the registration status in the Registration
+	 * table.
 	 * 
 	 * @param regId
 	 * @return
 	 */
+	Registration updateRegStatus(Registration packetStatus);
 	
-	Registration updateRegStatus(String regId);
+	/**Fetch the packets that needs to be Synched with the server.
+	 * @param statusCodes
+	 * @return
+	 */
+	List<Registration> getPacketsToBeSynched(List<String> statusCodes);
+	
+	/**Update the Packet sync status in the database
+	 * @param packet
+	 * @return
+	 */
+	Registration updatePacketSyncStatus(Registration packet);
 }

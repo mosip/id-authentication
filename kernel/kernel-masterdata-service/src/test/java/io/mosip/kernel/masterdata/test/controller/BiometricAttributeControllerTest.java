@@ -63,7 +63,7 @@ public class BiometricAttributeControllerTest {
 
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn((biometricattributes));
-		mockMvc.perform(MockMvcRequestBuilders.get("/biometricattributes/iric/eng"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/iric"))
 				.andExpect(MockMvcResultMatchers.content().json(expected))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 
@@ -74,7 +74,7 @@ public class BiometricAttributeControllerTest {
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new BiometricAttributeNotFoundException("KER-MAS-00000",
 						"No biometric attributes found for specified biometric code type and language code"));
-		mockMvc.perform(MockMvcRequestBuilders.get("/biometricattributes/face/eng"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/face"))
 				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
 	}
 
@@ -82,7 +82,7 @@ public class BiometricAttributeControllerTest {
 	public void testBiometricTypeFetchException() throws Exception {
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new BiometricTypeFetchException("KER-DOC-00000", "exception duringfatching data from db"));
-		mockMvc.perform(MockMvcRequestBuilders.get("/biometricattributes/iric/eng"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/iric"))
 				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
 	}
 

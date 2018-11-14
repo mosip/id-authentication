@@ -28,7 +28,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories
 	 */
-	@GetMapping("/all")
+	@GetMapping
 	public List<DocumentCategoryDto> fetchAllDocumentCategory() {
 		return documentCategoryService.getAllDocumentCategory();
 	}
@@ -38,7 +38,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories of a specific language
 	 */
-	@GetMapping("/all/{languagecode}")
+	@GetMapping("{languagecode}")
 	public List<DocumentCategoryDto> fetchAllDocumentCategoryUsingLangCode(
 			@PathVariable("languagecode") String langCode) {
 		return documentCategoryService.getAllDocumentCategoryByLaguageCode(langCode);

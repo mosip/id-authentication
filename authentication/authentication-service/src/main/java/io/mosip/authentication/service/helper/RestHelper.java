@@ -20,7 +20,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import lombok.NoArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -55,7 +55,7 @@ public class RestHelper {
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	/** The mosipLogger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(RestHelper.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(RestHelper.class);
 	
 	/**
 	 * Request to send/receive HTTP requests and return the response synchronously.

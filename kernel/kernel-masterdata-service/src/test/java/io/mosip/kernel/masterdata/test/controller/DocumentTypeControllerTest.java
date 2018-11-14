@@ -64,7 +64,7 @@ public class DocumentTypeControllerTest {
 
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn((documents));
-		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poa/eng/"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poa/eng"))
 				.andExpect(MockMvcResultMatchers.content().json(expected))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 
@@ -75,7 +75,7 @@ public class DocumentTypeControllerTest {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DocumentCategoryNotFoundException("KER-DOC-10001",
 						"No documents found for specified document category code and language code"));
-		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poc/eng/"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poc/eng"))
 				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
 	}
 
@@ -83,7 +83,7 @@ public class DocumentTypeControllerTest {
 	public void testDocumentCategoryFetchException() throws Exception {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString())).thenThrow(
 				new DocumentCategoryNotFoundException("KER-DOC-10000", "exception during fatching data from db"));
-		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poc/eng/"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poc/eng"))
 				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
 	}
 }

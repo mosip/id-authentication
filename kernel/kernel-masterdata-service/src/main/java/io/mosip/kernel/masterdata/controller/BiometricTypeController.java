@@ -30,7 +30,7 @@ public class BiometricTypeController {
 	 * 
 	 * @return All Biometric types
 	 */
-	@GetMapping("/all")
+	@GetMapping
 	public List<BiometricTypeDto> fetchAllBioMetricType() {
 		return biometricTypeService.getAllBiometricTypes();
 	}
@@ -40,7 +40,7 @@ public class BiometricTypeController {
 	 * 
 	 * @return All Biometric types of specific language
 	 */
-	@GetMapping("/all/{languagecode}")
+	@GetMapping("/{languagecode}")
 	public List<BiometricTypeDto> fetchAllBiometricTypeUsingLangCode(@PathVariable("languagecode") String langCode) {
 		return biometricTypeService.getAllBiometricTypesByLanguageCode(langCode);
 	}
