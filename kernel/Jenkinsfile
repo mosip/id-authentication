@@ -70,6 +70,7 @@ stage ('---------- mvn-clean-install ---------------') {
  
  stage('------------- Remove docker image from local --------') {
   sh "docker rmi kernel-auditmanager-service:$BUILD_NUMBER"
-  sh "docker rmi $registry/kernel-auditmanager-service:$BUILD_NUMBER"
+  sh "docker rmi mosip-dev-admin.southindia.cloudapp.azure.com:5000/kernel-auditmanager-service:$BUILD_NUMBER"
+  sh "docker rmi mosip-dev-admin.southindia.cloudapp.azure.com:5000/kernel-auditmanager-service"
  }
 }
