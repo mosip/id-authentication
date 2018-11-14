@@ -42,7 +42,7 @@ public class TitleIntegrationTest {
 		titleId = new TitleId();
 		titleId.setLanguageCode("ENG");
 		titleId.setTitleCode("ABC");
-		title.setActive(true);
+		title.setIsActive(true);
 		title.setCreatedBy("Ajay");
 		title.setCreatedtimes(null);
 		title.setId(titleId);

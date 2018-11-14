@@ -62,7 +62,7 @@ public class DocumentCategoryServiceExceptionTest {
 		documentCategory1.setCode("101");
 		documentCategory1.setName("POI");
 		documentCategory1.setLangCode("ENG");
-		documentCategory1.setActive(true);
+		documentCategory1.setIsActive(true);
 		documentCategory1.setIsDeleted(false);
 		documentCategory1.setDescription(null);
 		documentCategory1.setCreatedBy("Neha");
@@ -72,7 +72,7 @@ public class DocumentCategoryServiceExceptionTest {
 		documentCategory2.setCode("102");
 		documentCategory2.setName("POR");
 		documentCategory2.setLangCode("ENG");
-		documentCategory2.setActive(true);
+		documentCategory2.setIsActive(true);
 		documentCategory2.setIsDeleted(false);
 		documentCategory2.setDescription(null);
 		documentCategory2.setCreatedBy("Neha");

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -54,7 +53,7 @@ public class RegistrationCenterControllerTest {
 		registrationCenter.setAddressLine1("7th Street");
 		registrationCenter.setAddressLine2("Lane 2");
 		registrationCenter.setAddressLine3("Mylasandra-560001");
-		registrationCenter.setActive(true);
+		registrationCenter.setIsActive(true);
 		registrationCenter.setCenterTypeCode("PAR");
 		registrationCenter.setContactPhone("987654321");
 		registrationCenter.setCreatedBy("John");
@@ -76,7 +75,7 @@ public class RegistrationCenterControllerTest {
 		holiday.setCreatedBy("John");
 		holiday.setCreatedtimes(specificDate);
 		holiday.setHolidayDesc("Diwali");
-		holiday.setActive(true);
+		holiday.setIsActive(true);
 
 		holidays.add(holiday);
 

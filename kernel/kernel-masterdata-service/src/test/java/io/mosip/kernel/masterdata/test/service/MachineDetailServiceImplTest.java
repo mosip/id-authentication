@@ -55,7 +55,7 @@ public class MachineDetailServiceImplTest {
 		machineDetailDto.setSerialNum("1234567890");
 		machineDetailDto.setMacAddress("100.100.100.80");
 		machineDetailDto.setLangCode("ENG");
-		machineDetailDto.setActive(true);
+		machineDetailDto.setIsActive(true);
 
 		MachineDetail machineDetail = new MachineDetail();
 		machineDetail.setId("1000");
@@ -63,7 +63,7 @@ public class MachineDetailServiceImplTest {
 		machineDetail.setSerialNum("1234567890");
 		machineDetail.setMacAddress("100.100.100.80");
 		machineDetail.setLangCode("ENG");
-		machineDetail.setActive(true);
+		machineDetail.setIsActive(true);
 		Mockito.when(machineDetailsRepository.findAllByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineDetail);
 		Mockito.when(objectMapperUtil.map(machineDetail, MachineDetailDto.class)).thenReturn(machineDetailDto);
@@ -118,7 +118,7 @@ public class MachineDetailServiceImplTest {
 		machineDetailDto.setSerialNum("1234567890");
 		machineDetailDto.setMacAddress("100.100.100.80");
 		machineDetailDto.setLangCode("ENG");
-		machineDetailDto.setActive(true);
+		machineDetailDto.setIsActive(true);
 
 		machineDetailDtoList.add(machineDetailDto);
 		MachineDetail machineDetail = new MachineDetail();
@@ -127,7 +127,7 @@ public class MachineDetailServiceImplTest {
 		machineDetail.setSerialNum("1234567890");
 		machineDetail.setMacAddress("100.100.100.80");
 		machineDetail.setLangCode("ENG");
-		machineDetail.setActive(true);
+		machineDetail.setIsActive(true);
 
 		List<MachineDetail> machineDetailList = new ArrayList<MachineDetail>();
 		machineDetailList.add(machineDetail);

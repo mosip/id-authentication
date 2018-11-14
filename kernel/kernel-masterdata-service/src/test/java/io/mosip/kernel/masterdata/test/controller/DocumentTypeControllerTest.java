@@ -46,14 +46,14 @@ public class DocumentTypeControllerTest {
 		documentType.setName("adhar card");
 		documentType.setDescription("Uid");
 		documentType.setLangCode("eng");
-		documentType.setActive(true);
+		documentType.setIsActive(true);
 		documents.add(documentType);
 		DocumentTypeDto documentType1 = new DocumentTypeDto();
 		documentType1.setCode("residensial");
 		documentType1.setName("residensial_prof");
 		documentType1.setDescription("document for residential prof");
 		documentType1.setLangCode("eng");
-		documentType1.setActive(true);
+		documentType1.setIsActive(true);
 		documents.add(documentType1);
 		validDocumentTypeResponseDto = new ValidDocumentTypeResponseDto(documents);
 

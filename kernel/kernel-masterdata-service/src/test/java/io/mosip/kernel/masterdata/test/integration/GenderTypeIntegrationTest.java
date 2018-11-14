@@ -47,7 +47,7 @@ public class GenderTypeIntegrationTest {
 		genderId = new GenderTypeId();
 		genderId.setGenderCode("123");
 		genderId.setGenderName("David");
-		genderType.setActive(true);
+		genderType.setIsActive(true);
 		genderType.setCreatedBy("Ajay");
 		genderType.setCreatedtimes(null);
 		genderType.setIsDeleted(true);

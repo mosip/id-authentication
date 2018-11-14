@@ -61,14 +61,14 @@ public class LanguageServiceImplTest {
 		hin.setLanguageName("hindi");
 		hin.setLanguageFamily("hindi");
 		hin.setNativeName("hindi");
-		hin.setActive(Boolean.TRUE);
+		hin.setIsActive(Boolean.TRUE);
 
 		eng = new Language();
 		eng.setLanguageCode("en");
 		eng.setLanguageName("english");
 		eng.setLanguageFamily("english");
 		eng.setNativeName("english");
-		eng.setActive(Boolean.TRUE);
+		eng.setIsActive(Boolean.TRUE);
 
 		// adding language to list
 		languages.add(hin);

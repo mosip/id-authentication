@@ -40,6 +40,6 @@ public class MachineDetailDto {
 	/**
 	 * Field for is active
 	 */
-	private boolean isActive;
+	private Boolean isActive;
 
 }

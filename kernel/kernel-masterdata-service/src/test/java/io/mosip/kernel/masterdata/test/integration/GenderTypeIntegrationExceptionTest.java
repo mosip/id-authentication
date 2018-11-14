@@ -63,7 +63,7 @@ public class GenderTypeIntegrationExceptionTest {
 		genderId = new GenderTypeId();
 		genderId.setGenderCode("123");
 		genderId.setGenderName("Raj");
-		genderType.setActive(true);
+		genderType.setIsActive(true);
 		genderType.setCreatedBy("John");
 		genderType.setCreatedtimes(null);
 		genderType.setIsDeleted(true);

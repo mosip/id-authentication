@@ -52,7 +52,7 @@ public class LocationControllerTest {
 		locationHierarchyDto.setLanguageCode("HIN");
 		locationHierarchyDto.setCreatedBy("dfs");
 		locationHierarchyDto.setUpdatedBy("sdfsd");
-		locationHierarchyDto.setActive(true);
+		locationHierarchyDto.setIsActive(true);
 		locationHierarchies.add(locationHierarchyDto);
 		locationHierarchyDto.setLocationCode("KAR");
 		locationHierarchyDto.setLocationName("KARNATAKA");
@@ -62,7 +62,7 @@ public class LocationControllerTest {
 		locationHierarchyDto.setLanguageCode("KAN");
 		locationHierarchyDto.setCreatedBy("dfs");
 		locationHierarchyDto.setUpdatedBy("sdfsd");
-		locationHierarchyDto.setActive(true);
+		locationHierarchyDto.setIsActive(true);
 		locationHierarchies.add(locationHierarchyDto);
 		locationHierarchyResponseDto.setLocations(locationHierarchies);
 
