@@ -22,19 +22,27 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
+import io.mosip.kernel.core.keymanager.exception.NoSuchSecurityProviderException;
 import io.mosip.kernel.core.keymanager.spi.SofthsmKeystore;
+import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeystoreErrorCode;
 import io.mosip.kernel.keymanager.softhsm.util.X509CertUtil;
 import sun.security.pkcs11.SunPKCS11;
 import sun.security.x509.X509CertImpl;
 
 /**
+ * SoftHSM Keystore implementation based on OpenDNSSEC that handles and stores
+ * its cryptographic keys via the PKCS#11 interface. This is a software
+ * implementation of a generic cryptographic device. SoftHSM is designed to meet
+ * the requirements of OpenDNSSEC, but can also work together with other
+ * cryptographic products because of the PKCS#11 interface.
+ * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
@@ -42,12 +50,26 @@ import sun.security.x509.X509CertImpl;
 @Component
 public class SofthsmKeystoreImpl implements SofthsmKeystore {
 
-	private static final Logger LOGGER = Logger.getLogger(SofthsmKeystoreImpl.class.getName());
-
+	/**
+	 * The keystore pass
+	 */
 	private final String keystorePass;
 
+	/**
+	 * The Keystore instance
+	 */
 	private final KeyStore keyStore;
 
+	/**
+	 * Constructor to initialise Softhsm Keystore
+	 * 
+	 * @param configPath
+	 *            The config path
+	 * @param keystoreType
+	 *            The keystore pass
+	 * @param keystorePass
+	 *            The Keystore instance
+	 */
 	public SofthsmKeystoreImpl(@Value("${mosip.kernel.keymanager.softhsm.config-path}") String configPath,
 			@Value("${mosip.kernel.keymanager.softhsm.keystore-type}") String keystoreType,
 			@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}") String keystorePass) {
@@ -62,19 +84,22 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.softhsm.impl.MosipSoftHS#addProvider(java.security.Provider)
+	 * @see
+	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#addProvider(java.security
+	 * .Provider)
 	 */
 	@Override
 	public void addProvider(Provider provider) {
 		if (-1 == Security.addProvider(provider)) {
-			LOGGER.info("could not add security provider");
+			throw new NoSuchSecurityProviderException(SofthsmKeystoreErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorCode(),
+					SofthsmKeystoreErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorMessage());
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.softhsm.impl.MosipSoftHS#loadKeystore(char[])
+	 * @see io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#loadKeystore()
 	 */
 	@Override
 	public void loadKeystore() {
@@ -82,7 +107,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		try {
 			keyStore.load(null, keystorePass.toCharArray());
 		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
-			LOGGER.info(e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 
 	}
@@ -91,7 +117,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * io.mosip.softhsm.impl.MosipSoftHS#getKeystoreInstance(java.security.Provider)
+	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getKeystoreInstance(java.
+	 * lang.String, java.security.Provider)
 	 */
 	@Override
 	public KeyStore getKeystoreInstance(String keystoreType, Provider provider) {
@@ -99,7 +126,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		try {
 			mosipKeyStore = KeyStore.getInstance(keystoreType, provider);
 		} catch (KeyStoreException e) {
-			LOGGER.info(e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return mosipKeyStore;
 	}
@@ -107,7 +135,7 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.softhsm.impl.MosipSoftHS#getAllAlias(char[])
+	 * @see io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getAllAlias()
 	 */
 	@Override
 	public List<String> getAllAlias() {
@@ -115,7 +143,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		try {
 			enumeration = keyStore.aliases();
 		} catch (KeyStoreException e) {
-			LOGGER.info(e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return Collections.list(enumeration);
 	}
@@ -123,7 +152,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.keystore.MosipKeystore#getKeyByAlias(java.lang.String)
+	 * @see
+	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getKey(java.lang.String)
 	 */
 	@Override
 	public Key getKey(String alias) {
@@ -131,7 +161,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		try {
 			key = keyStore.getKey(alias, keystorePass.toCharArray());
 		} catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
-			LOGGER.info(e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return key;
 	}
@@ -139,8 +170,9 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.softhsm.impl.MosipSoftHS#getAsymmetricKey(java.lang.String,
-	 * char[])
+	 * @see
+	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getAsymmetricKey(java.
+	 * lang.String)
 	 */
 	@Override
 	public PrivateKeyEntry getAsymmetricKey(String alias) {
@@ -150,10 +182,12 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 				ProtectionParameter password = new PasswordProtection(keystorePass.toCharArray());
 				privateKeyEntry = (PrivateKeyEntry) keyStore.getEntry(alias, password);
 			} else {
-				LOGGER.info("alias does not exists");
+				throw new NoSuchSecurityProviderException(SofthsmKeystoreErrorCode.NO_SUCH_ALIAS.getErrorCode(),
+						SofthsmKeystoreErrorCode.NO_SUCH_ALIAS.getErrorMessage());
 			}
 		} catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
-			LOGGER.info(e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return privateKeyEntry;
 
@@ -162,7 +196,9 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.keystore.MosipKeystore#getPrivateKey(java.lang.String)
+	 * @see
+	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getPrivateKey(java.lang.
+	 * String)
 	 */
 	@Override
 	public PrivateKey getPrivateKey(String alias) {
@@ -173,7 +209,9 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.keystore.MosipKeystore#getPublicKey(java.lang.String)
+	 * @see
+	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getPublicKey(java.lang.
+	 * String)
 	 */
 	@Override
 	public PublicKey getPublicKey(String alias) {
@@ -185,7 +223,9 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.keystore.MosipKeystore#getCertificate(java.lang.String)
+	 * @see
+	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getCertificate(java.lang.
+	 * String)
 	 */
 	@Override
 	public Certificate getCertificate(String alias) {
@@ -197,8 +237,9 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.softhsm.impl.MosipSoftHS#storeAsymmetricKey(java.lang.String,
-	 * char[])
+	 * @see
+	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#storeAsymmetricKey(java.
+	 * security.KeyPair, java.lang.String)
 	 */
 	@Override
 	public void storeAsymmetricKey(KeyPair keyPair, String alias) {
@@ -214,15 +255,17 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 			keyStore.setEntry(alias, privateKeyEntry, password);
 			keyStore.store(null, keystorePass.toCharArray());
 		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
-			LOGGER.info(e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.softhsm.impl.MosipSoftHS#getSymmetricKey(java.lang.String,
-	 * char[])
+	 * @see
+	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#getSymmetricKey(java.lang
+	 * .String)
 	 */
 	@Override
 	public SecretKey getSymmetricKey(String alias) {
@@ -233,10 +276,12 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 				SecretKeyEntry retrivedSecret = (SecretKeyEntry) keyStore.getEntry(alias, password);
 				secretKey = retrivedSecret.getSecretKey();
 			} else {
-				LOGGER.info("alias does not exists");
+				throw new NoSuchSecurityProviderException(SofthsmKeystoreErrorCode.NO_SUCH_ALIAS.getErrorCode(),
+						SofthsmKeystoreErrorCode.NO_SUCH_ALIAS.getErrorMessage());
 			}
 		} catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
-			LOGGER.info(e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return secretKey;
 	}
@@ -244,8 +289,9 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.softhsm.impl.MosipSoftHS#storeSymmetricKey(java.lang.String,
-	 * char[])
+	 * @see
+	 * io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#storeSymmetricKey(javax.
+	 * crypto.SecretKey, java.lang.String)
 	 */
 	@Override
 	public void storeSymmetricKey(SecretKey secretKey, String alias) {
@@ -256,14 +302,15 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 			keyStore.setEntry(alias, secret, password);
 			keyStore.store(null, keystorePass.toCharArray());
 		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
-			LOGGER.info(e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see io.mosip.kernel.keymanager.softhsm.SofthsmKeystore#deleteKey(java.lang.
+	 * @see io.mosip.kernel.core.keymanager.spi.SofthsmKeystore#deleteKey(java.lang.
 	 * String)
 	 */
 	@Override
@@ -271,7 +318,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		try {
 			keyStore.deleteEntry(alias);
 		} catch (KeyStoreException e) {
-			LOGGER.info(e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 	}
 }
