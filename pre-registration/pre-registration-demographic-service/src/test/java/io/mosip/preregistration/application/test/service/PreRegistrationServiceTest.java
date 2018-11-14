@@ -45,9 +45,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import io.mosip.kernel.core.spi.idgenerator.PridGenerator;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.kernel.jsonvalidator.dto.JsonValidatorResponseDto;
 import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
 import io.mosip.preregistration.application.dao.PreRegistrationDao;
@@ -57,6 +57,7 @@ import io.mosip.preregistration.application.dto.ExceptionInfoDto;
 import io.mosip.preregistration.application.dto.ResponseDto;
 import io.mosip.preregistration.application.dto.ViewRegistrationResponseDto;
 import io.mosip.preregistration.application.entity.PreRegistrationEntity;
+import io.mosip.preregistration.application.errorcodes.ErrorCodes;
 import io.mosip.preregistration.application.exception.utils.PreRegistrationErrorMessages;
 import io.mosip.preregistration.application.repository.PreRegistrationRepository;
 import io.mosip.preregistration.application.service.PreRegistrationService;
@@ -168,7 +169,8 @@ public class PreRegistrationServiceTest {
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void saveFailureCheck() throws Exception {
-		DataAccessLayerException exception = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE,PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
+		DataAccessLayerException exception = new DataAccessLayerException("PRG_PAM‌_007",
+				PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
 		Mockito.when(jsonValidator.validateJson(jsonObject.toJSONString(),"mosip-prereg-identity-json-schema.json")).thenReturn(null);
 		Mockito.when(preRegistrationDao.save(Mockito.any())).thenThrow(exception);
 		preRegistrationService.addRegistration(jsonObject, "125467364864");
@@ -198,7 +200,7 @@ public class PreRegistrationServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getApplicationDetailsTransactionFailureCheck() throws Exception {
 		String userId = "9988905444";
-		DataAccessLayerException exception = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE,
+		DataAccessLayerException exception = new DataAccessLayerException("PRG_PAM‌_007",
 				PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
 
 		Mockito.when(preRegistrationRepository.findByuserId(ArgumentMatchers.any())).thenThrow(exception);
