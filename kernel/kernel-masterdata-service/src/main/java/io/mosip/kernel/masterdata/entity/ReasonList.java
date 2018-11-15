@@ -37,7 +37,8 @@ public class ReasonList implements Serializable {
 
 	@Column(name = "descr", length = 256)
 	private String description;
-
+    
+	@Id
 	@ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "rsncat_code")
 	private ReasonCategory reasonCategoryCode;

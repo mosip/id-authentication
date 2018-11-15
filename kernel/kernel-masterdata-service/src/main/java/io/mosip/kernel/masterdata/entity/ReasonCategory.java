@@ -3,11 +3,13 @@ package io.mosip.kernel.masterdata.entity;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -39,7 +41,7 @@ public class ReasonCategory implements Serializable {
 
 	@Column(name = "descr")
 	private String description;
-
+	
 	@Column(name = "lang_code")
 	private String languageCode;
 
@@ -82,7 +84,7 @@ public class ReasonCategory implements Serializable {
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedtime;
 
-	@OneToMany(mappedBy = "reasonCategoryCode", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ReasonList> reasons = new ArrayList<>() ;
+	@OneToMany(mappedBy = "reasonCategoryCode", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<ReasonList> reasons = new HashSet<>();
 
 }
