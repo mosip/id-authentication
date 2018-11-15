@@ -17,6 +17,8 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
  */
 @Repository
 public interface RegistrationCenterRepository extends BaseRepository<RegistrationCenter, String> {
+	
+	List<RegistrationCenter> findAllByIsActiveTrueAndIsDeletedFalse(Class<RegistrationCenter> entityClass);
 
 	/**
 	 * This method trigger query to fetch registration centers based on
@@ -62,4 +64,5 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 * @return List<RegistrationCenter> fetched from database
 	 */
 	List<RegistrationCenter> findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String locationCode, String languageCode);
+
 }
