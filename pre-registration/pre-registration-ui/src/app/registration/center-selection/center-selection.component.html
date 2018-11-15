@@ -2,11 +2,14 @@
 <div class="expansionPanelPlacer">
 <mat-accordion>
   <div class="spacer">
-      <mat-expansion-panel>
+      <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)">
           <mat-expansion-panel-header>
             <mat-panel-title>
               Center Selection
             </mat-panel-title>
+            <mat-panel-description *ngIf="showDescription">
+              {{selectedCentre.name}}
+            </mat-panel-description>
           </mat-expansion-panel-header>    
           <div>
               <mat-form-field>
@@ -80,21 +83,31 @@
             <p>Map will go here</p>
             <p>{{selectedCentre.name}} will be plotted on the map</p>
           </div>
-          <hr />
-          <div class="right-align">
-              <button mat-raised-button [disabled]="!enableNextButton">Next</button>
-          </div>
+          <mat-action-row>
+            <button mat-button color="primary" [disabled]="!enableNextButton" (click)="nextStep()">Next</button>
+          </mat-action-row>
         </mat-expansion-panel>
   </div>
   <div class="spacer">
-    <mat-expansion-panel>
+    <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Time Selection
         </mat-panel-title>
+        <mat-panel-description *ngIf="step === 1">
+          Applicant 5/5
+        </mat-panel-description>
       </mat-expansion-panel-header>
-  
-      <p>Time selection UI goes here</p>
+        <div *ngIf="selectedCentre !== null">
+          <app-time-selection></app-time-selection>
+        </div>
+        <div *ngIf="selectedCentre === null">
+          <p>Please select the centre first</p>
+        </div>
+          <mat-action-row>
+            <button mat-button color="warn" (click)="prevStep()">Previous</button>
+            <button mat-button color="primary" [disabled]="!enableNextButton" (click)="nextStep()">Book</button>
+          </mat-action-row>
   
     </mat-expansion-panel>
   </div>

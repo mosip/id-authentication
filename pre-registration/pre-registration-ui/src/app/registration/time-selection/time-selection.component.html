@@ -1,3 +1,40 @@
-<p>
-  time-selection works!
-</p>
+<div class="container">
+  <div class="left-button">
+      <a (click)="scrollLeft()"><i class="material-icons">arrow_back</i></a>
+  </div>
+  <div #widgetsContent class="middle">
+    <mat-card *ngFor="let number of numbers; let i = index" 
+              [ngClass]="number % 3 === 0 ? 'sizing disabled' : selectedTile === i ? 'sizing selected': 'sizing'"
+              (click)="dateSelected(i)">
+      <p>26th Oct</p>
+      <p>{{number}} spots</p>
+    </mat-card>
+  </div>
+  <div class="right-button">
+      <a (click)="scrollRight()"><i class="material-icons">arrow_forward</i></a>
+  </div>
+</div>
+  <div *ngIf="selectedTile !== null" class="container-card">
+    <div class="left-button-card">
+        <a (click)="scrollLeftCard()"><i class="material-icons">arrow_back</i></a>
+    </div>
+    <div #cardsContent class="middle-card">
+      <div *ngFor="let number of numbers; let i = index;">
+              <p>9 am</p>
+              <mat-card [ngClass]="selectedCard === i ? 'sizing-card selected' : 'sizing-card'"
+                        (click)="cardSelected(i)">
+                <p>Available: 0{{i}}</p>
+                <p>Selected: 00</p>
+                <ul class="list" *ngIf="i === 0">
+                  <li>name_1<i class="material-icons close-button-sizing">close</i></li>
+                  <li>name_2<i class="material-icons close-button-sizing">close</i></li>
+                  <li>name_3<i class="material-icons close-button-sizing">close</i></li>
+                  <li>more...</li>
+                </ul>
+              </mat-card>
+      </div>
+    </div>
+    <div class="right-button-card">
+        <a (click)="scrollRightCard()"><i class="material-icons">arrow_forward</i></a>
+    </div>
+    </div>

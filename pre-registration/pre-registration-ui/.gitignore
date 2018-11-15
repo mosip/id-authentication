@@ -27,3 +27,4 @@ local.properties
 *.useq
 /Key_Store/
 /Packet_Store/
+dist/*

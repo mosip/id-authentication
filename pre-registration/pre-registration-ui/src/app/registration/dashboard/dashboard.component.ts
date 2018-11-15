@@ -58,7 +58,6 @@ export class DashBoardComponent implements OnInit {
               user['fullname'], user['appointment_dtimesz'], user['status_code']));
           }
           this.isFetched = true;
-          console.log(applicants);
         }
       );
   }
@@ -107,7 +106,7 @@ export class DashBoardComponent implements OnInit {
     };
     let dialogRef = this.openDialog(data, `350px`);
     dialogRef.afterClosed().subscribe(selectedOption => {
-      if (selectedOption !== undefined) {
+      if (selectedOption !== null) {
         console.log(selectedOption, element);
         const body = {
           case: 'CONFIRMATION',
