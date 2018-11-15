@@ -16,13 +16,13 @@
                <children>
                   <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="35.00" layoutY="5.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
                   	 <image>
-            			<Image url="@../images/Home.PNG" />
+            			<Image url="@../images/Home.png" />
          			 </image>
                   </ImageView>
                   <Text id="homeReg" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Registration" />
                   <ImageView fitHeight="50.0" fitWidth="500.0" layoutX="280.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                   	<image>
-            			<Image url="@../images/Pre-Registration.PNG" />
+            			<Image url="@../images/Pre-Registration.png" />
          			 </image>
                   </ImageView>
                   <AnchorPane id="demographicPane" fx:id="demoGraphicPane2" layoutX="14.0" layoutY="55.0" prefHeight="400.0" prefWidth="806.0" visible="false">
@@ -115,17 +115,17 @@
                                     <Button layoutX="627.0" layoutY="283.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" prefHeight="20.0" prefWidth="70.0" text="%next" />
                                     <ImageView fitHeight="21.0" fitWidth="34.0" layoutX="703.0" layoutY="57.0" onMouseClicked="#adressLine1Focus" pickOnBounds="true" preserveRatio="true">
                                     	<image>
-                  						<Image url="@../images/keyboard.PNG" />
+                  						<Image url="@../images/keyboard.png" />
                			 			</image>
                                     </ImageView>
                                     <ImageView fitHeight="25.0" fitWidth="24.0" layoutX="703.0" layoutY="137.0" onMouseClicked="#adressLine2Focus" pickOnBounds="true" preserveRatio="true">
                                     	<image>
-              							<Image url="@../images/keyboard.PNG" />
+              							<Image url="@../images/keyboard.png" />
             			 					</image>
                                     </ImageView>
                                     <ImageView fitHeight="27.0" fitWidth="21.0" layoutX="702.0" layoutY="206.0" onMouseClicked="#adressLine3Focus" pickOnBounds="true" preserveRatio="true">
                                	     <image>
-              							<Image url="@../images/keyboard.PNG" />
+              							<Image url="@../images/keyboard.png" />
             			 					</image>
                                     </ImageView>
                                  </children>
@@ -134,7 +134,7 @@
                               <TextField id="fullName_lc" fx:id="fullName_lc" layoutX="435.0" layoutY="80.00" prefHeight="10.0" prefWidth="320.0" />
                               <ImageView fitHeight="22.0" fitWidth="27.0" layoutX="761.0" layoutY="117.0" onMouseClicked="#fullNameFocus" pickOnBounds="true" preserveRatio="true">
                               <image>
-              					<Image url="@../images/keyboard.PNG" />
+              					<Image url="@../images/keyboard.png" />
             			 			</image>
                                 
                                                 </ImageView>
