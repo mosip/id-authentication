@@ -52,7 +52,7 @@ public class SyncTransaction  extends RegistrationCommonFields{
 	private boolean isActive;
 	@Column(name = "is_deleted")
 	private boolean isDeleted;
-	@Column(name = "del_dtimesz")
+	@Column(name = "del_dtimes")
 	private Timestamp deletedDateTime;
 	public String getId() {
 		return id;

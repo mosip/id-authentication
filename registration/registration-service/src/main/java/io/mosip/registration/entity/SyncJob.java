@@ -38,7 +38,7 @@ public class SyncJob extends RegistrationCommonFields {
 	@Column(name = "is_deleted", nullable = false, updatable = true)
 	@Type(type = "true_false")
 	private Boolean isDeleted;
-	@Column(name = "del_dtimesz")
+	@Column(name = "del_dtimes")
 	private Timestamp deletedDateTime;
 
 	public String getId() {
