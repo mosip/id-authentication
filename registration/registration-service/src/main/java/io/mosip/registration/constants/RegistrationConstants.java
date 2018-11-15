@@ -279,6 +279,7 @@ public class RegistrationConstants {
 	public static final String ONHOLD_PAGE = "/fxml/OnholdComment.fxml";
 	public static final String REJECTION_PAGE = "/fxml/RejectionComment.fxml";
 	public static final String DEVICE_ONBOARDING_PAGE = "/fxml/DeviceMachineMapping.fxml";
+	public static final String USER_AUTHENTICATION = "/fxml/Authentication.fxml";
 
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
@@ -445,6 +446,7 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_SYNC_TYPE = "NEW_REGISTRATION";
 	public static final String ACKNOWLEDGEMENT_FILE = "_Ack";
 	public static final String PACKET_SYNC_ERROR = "Error";
+	public static final String RE_REGISTRATION_STATUS = "reregister";
 
 	// Device On-boarding
 	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint", "Iris", "Camera", "GPS",

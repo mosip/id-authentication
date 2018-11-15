@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.Logfactory;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.JobTransactionDAO;
 import io.mosip.registration.entity.SyncControl;
@@ -23,7 +22,7 @@ import io.mosip.registration.repositories.SyncTransactionRepository;
 public class JobTransactionDAOImpl implements JobTransactionDAO {
 
 	/** Object for Logger. */
-	private static Logger logger;
+	private static final Logger LOGGER = AppConfig.getLogger(JobTransactionDAOImpl.class);
 
 	@Autowired
 	private SyncTransactionRepository syncTranscRepository;

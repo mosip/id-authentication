@@ -92,4 +92,11 @@ public interface RegistrationDAO {
 	 * @return
 	 */
 	Registration updatePacketSyncStatus(Registration packet);
+	
+	/**
+	 * Get all the Re-Registration packets
+	 * @param status
+	 * @return
+	 */
+	List<Registration> getAllReRegistrationPackets(String[] status);
 }

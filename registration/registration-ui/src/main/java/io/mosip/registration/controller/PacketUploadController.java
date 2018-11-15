@@ -18,7 +18,7 @@ import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dto.PacketUploadStatusDTO;
+import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -42,13 +42,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 public class PacketUploadController extends BaseController {
 
 	@FXML
-	private TableColumn<PacketUploadStatusDTO, String> fileNameColumn;
+	private TableColumn<PacketStatusDTO, String> fileNameColumn;
 
 	@FXML
-	private TableColumn<PacketUploadStatusDTO, String> uploadStatusColumn;
+	private TableColumn<PacketStatusDTO, String> uploadStatusColumn;
 
 	@FXML
-	private TableView<PacketUploadStatusDTO> table;
+	private TableView<PacketStatusDTO> table;
 
 	@FXML
 	private ProgressIndicator progressIndicator;
@@ -118,7 +118,7 @@ public class PacketUploadController extends BaseController {
 			if (response != null) {
 				packetSynchService.updateSyncStatus(packetsToBeSynched);
 			}
-		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException
+		} catch (RegBaseUncheckedException | RegBaseCheckedException | MosipJsonProcessingException
 				| URISyntaxException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Error while Synching packets to the server");
@@ -131,13 +131,13 @@ public class PacketUploadController extends BaseController {
 	 * 
 	 * @param tableData
 	 */
-	private void displayData(List<PacketUploadStatusDTO> tableData) {
+	private void displayData(List<PacketStatusDTO> tableData) {
 		LOGGER.debug("REGISTRATION - DISPLAY_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"To display all the ui data");
 		fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("fileName"));
 		uploadStatusColumn.setCellValueFactory(new PropertyValueFactory<>("uploadStatus"));
 
-		ObservableList<PacketUploadStatusDTO> list = FXCollections.observableArrayList(tableData);
+		ObservableList<PacketStatusDTO> list = FXCollections.observableArrayList(tableData);
 		table.setItems(list);
 	}
 
@@ -147,15 +147,15 @@ public class PacketUploadController extends BaseController {
 	 * @param verifiedPackets
 	 * @return
 	 */
-	private List<PacketUploadStatusDTO> populateTableData(List<Registration> packetStatus) {
+	private List<PacketStatusDTO> populateTableData(List<Registration> packetStatus) {
 		LOGGER.debug("REGISTRATION - POPULATE_UI_TABLE_DATA - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Populating the table data with the Updated details");
-		List<PacketUploadStatusDTO> listUploadStatus = new ArrayList<>();
-		PacketUploadStatusDTO packetUploadStatusDTO;
+		List<PacketStatusDTO> listUploadStatus = new ArrayList<>();
+		PacketStatusDTO packetUploadStatusDTO;
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 		String date = simpleDateFormat.format(new Date());
 		for (Registration registrationPacket : packetStatus) {
-			packetUploadStatusDTO = new PacketUploadStatusDTO();
+			packetUploadStatusDTO = new PacketStatusDTO();
 			if (RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode()
 					.equals(registrationPacket.getClientStatusCode())) {
 				packetUploadStatusDTO.setUploadStatus("Uploaded");

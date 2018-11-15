@@ -6,11 +6,12 @@ import static org.mockito.Mockito.when;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -42,6 +43,11 @@ public class RegistrationDAOTest {
 	@Mock
 	private RegTransactionRepository regTransactionRepository;
 	private RegistrationTransaction regTransaction;
+	
+	@BeforeClass
+	public static void setUp() {
+		SessionContext.destroySession();
+	}
 	
 	@Before
 	public void initialize() throws InstantiationException, IllegalAccessException {
@@ -79,10 +85,11 @@ public class RegistrationDAOTest {
 	public void getRegistrationByStatusTest() {
 		
 		List<Registration> packetLists = new ArrayList<>();
-		packetLists.add(new Registration());
-		when(registrationRepository.findByClientStatusCodeIn(Mockito.anyListOf(String.class))).thenReturn(packetLists);
-		List<String> packetNames=new ArrayList<>();
-		assertEquals(packetLists, registrationDAOImpl.getRegistrationByStatus(packetNames));  
+		Registration reg=new Registration();
+		packetLists.add(reg);
+		List<String> packetNames=Arrays.asList("P","resend","E");
+		Mockito.when(registrationRepository.findByClientStatusCodeOrServerStatusCodeOrFileUploadStatusOrderByCrDtimeAsc("P","resend","E")).thenReturn(packetLists);
+		assertEquals(packetLists,registrationDAOImpl.getRegistrationByStatus(packetNames));  
 	}
 	
 	@Test

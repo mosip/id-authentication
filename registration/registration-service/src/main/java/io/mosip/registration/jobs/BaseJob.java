@@ -14,7 +14,6 @@ import io.mosip.registration.entity.SyncJob;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.manager.BaseTransactionManager;
-import io.mosip.registration.manager.impl.SyncTransactionManagerImpl;
 import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
 
 /**
@@ -73,9 +72,10 @@ public abstract class BaseJob extends QuartzJobBean {
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					noSuchBeanDefinitionException.getMessage());
 		} catch (NullPointerException nullPointerException) {
+			
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
 					nullPointerException.getMessage());
-
+			
 		}
 
 		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
