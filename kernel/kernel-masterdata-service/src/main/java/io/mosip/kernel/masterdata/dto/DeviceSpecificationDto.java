@@ -16,5 +16,5 @@ public class DeviceSpecificationDto {
 	private String minDriverversion;
 	private String description;
 	private String langCode;
-	private boolean isActive;
+	private Boolean isActive;
 }

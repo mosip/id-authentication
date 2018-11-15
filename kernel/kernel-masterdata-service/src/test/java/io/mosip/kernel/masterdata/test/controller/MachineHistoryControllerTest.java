@@ -61,7 +61,7 @@ public class MachineHistoryControllerTest {
 		machineHistoryDto.setSerialNum("1234567890");
 		machineHistoryDto.setMacAddress("100.100.100.80");
 		machineHistoryDto.setLangCode("ENG");
-		machineHistoryDto.setActive(true);
+		machineHistoryDto.setIsActive(true);
 		machineHistoryDtoList.add(machineHistoryDto);
 
 		Mockito.when(

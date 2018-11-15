@@ -33,7 +33,7 @@ public class BiometricAttributeControllerTest {
 	@MockBean
 	private BiometricAttributeService biometricAttributeService;
 
-	private final String expected = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"active\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"active\": true } ] }";
+	private final String expected = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"isActive\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"isActive\": true } ] }";
 
 	BiometricTypeResponseDto biometricTypeResponseDto = null;
 	List<BiometricAttributeDto> biometricattributes = null;
@@ -46,13 +46,13 @@ public class BiometricAttributeControllerTest {
 		biometricAttribute.setCode("iric_black");
 		biometricAttribute.setName("black");
 		biometricAttribute.setDescription(null);
-		biometricAttribute.setActive(true);
+		biometricAttribute.setIsActive(true);
 		biometricattributes.add(biometricAttribute);
 		BiometricAttributeDto biometricAttribute1 = new BiometricAttributeDto();
 		biometricAttribute1.setCode("iric_brown");
 		biometricAttribute1.setName("brown");
 		biometricAttribute.setDescription(null);
-		biometricAttribute1.setActive(true);
+		biometricAttribute1.setIsActive(true);
 		biometricattributes.add(biometricAttribute1);
 		biometricTypeResponseDto = new BiometricTypeResponseDto(biometricattributes);
 

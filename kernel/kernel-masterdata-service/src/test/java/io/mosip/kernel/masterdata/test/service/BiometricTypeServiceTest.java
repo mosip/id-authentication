@@ -47,7 +47,7 @@ public class BiometricTypeServiceTest {
 		biometricType1.setName("DNA MATCHING");
 		biometricType1.setDescription(null);
 		biometricType1.setLangCode("ENG");
-		biometricType1.setActive(true);
+		biometricType1.setIsActive(true);
 		biometricType1.setCreatedBy("Neha");
 		biometricType1.setUpdatedBy(null);
 		biometricType1.setIsDeleted(false);
@@ -56,7 +56,7 @@ public class BiometricTypeServiceTest {
 		biometricType2.setName("EYE SCAN");
 		biometricType2.setDescription(null);
 		biometricType2.setLangCode("ENG");
-		biometricType2.setActive(true);
+		biometricType2.setIsActive(true);
 		biometricType2.setCreatedBy("Neha");
 		biometricType2.setUpdatedBy(null);
 		biometricType2.setIsDeleted(false);

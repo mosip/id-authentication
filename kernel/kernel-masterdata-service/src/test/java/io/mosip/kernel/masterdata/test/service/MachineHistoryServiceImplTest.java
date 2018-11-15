@@ -33,7 +33,6 @@ public class MachineHistoryServiceImplTest {
 	@InjectMocks
 	private MachineHistoryServiceImpl machineHistoryServiceImpl;
 
-
 	@Mock
 	private MachineHistoryRepository machineHistoryRepository;
 
@@ -61,7 +60,7 @@ public class MachineHistoryServiceImplTest {
 		machineHistoryDto.setSerialNum("1234567890");
 		machineHistoryDto.setMacAddress("100.100.100.80");
 		machineHistoryDto.setLangCode("ENG");
-		machineHistoryDto.setActive(true);
+		machineHistoryDto.setIsActive(true);
 		machineHistoryDto.setCreatedBy("Admin");
 		machineHistoryDto.setCreatedtime(localDateTime);
 		machineHistoryDto.setUpdatedBy("Admin");
@@ -76,9 +75,9 @@ public class MachineHistoryServiceImplTest {
 		machineHistory.setSerialNum("1234567890");
 		machineHistory.setMacAddress("100.100.100.80");
 		machineHistory.setLangCode("ENG");
-		machineHistory.setActive(true);
+		machineHistory.setIsActive(true);
 		machineHistory.setCreatedBy("Admin");
-		machineHistory.setCreatedtime(localDateTime);
+		machineHistory.setCreatedtimes(localDateTime);
 		machineHistory.setUpdatedBy("Admin");
 		machineHistory.setIsDeleted(false);
 		machineHistory.setIpAddress("100.10.01.01");

@@ -27,7 +27,7 @@ import io.mosip.kernel.masterdata.service.LocationService;
 @AutoConfigureMockMvc
 public class LocationControllerTest {
 
-	private final String EXPECTED = "{\"locations\":[{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"active\":true},{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"active\":true}]}";
+	private final String EXPECTED = "{\"locations\":[{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
 	
 	@Autowired
 	MockMvc mockMvc;
@@ -52,7 +52,7 @@ public class LocationControllerTest {
 		locationHierarchyDto.setLanguageCode("HIN");
 		locationHierarchyDto.setCreatedBy("dfs");
 		locationHierarchyDto.setUpdatedBy("sdfsd");
-		locationHierarchyDto.setActive(true);
+		locationHierarchyDto.setIsActive(true);
 		locationHierarchies.add(locationHierarchyDto);
 		locationHierarchyDto.setLocationCode("KAR");
 		locationHierarchyDto.setLocationName("KARNATAKA");
@@ -62,7 +62,7 @@ public class LocationControllerTest {
 		locationHierarchyDto.setLanguageCode("KAN");
 		locationHierarchyDto.setCreatedBy("dfs");
 		locationHierarchyDto.setUpdatedBy("sdfsd");
-		locationHierarchyDto.setActive(true);
+		locationHierarchyDto.setIsActive(true);
 		locationHierarchies.add(locationHierarchyDto);
 		locationHierarchyResponseDto.setLocations(locationHierarchies);
 

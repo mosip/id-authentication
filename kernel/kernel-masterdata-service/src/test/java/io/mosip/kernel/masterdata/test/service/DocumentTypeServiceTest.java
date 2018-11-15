@@ -41,13 +41,13 @@ public class DocumentTypeServiceTest {
 		documentType.setCode("addhar");
 		documentType.setName("addhar_card");
 		documentType.setDescription("adhar_card_desc");
-		documentType.setActive(true);
+		documentType.setIsActive(true);
 		documents.add(documentType);
 		DocumentType documentType1 = new DocumentType();
 		documentType1.setCode("residensial");
 		documentType1.setName("residensial_proof");
 		documentType1.setDescription("residensial_proof_desc");
-		documentType1.setActive(true);
+		documentType1.setIsActive(true);
 		documents.add(documentType1);
 
 	}
