@@ -75,7 +75,11 @@ public interface SyncJobDAO {
 		public void setYetToExportCount(double yetToExportCount) {
 			this.yetToExportCount = yetToExportCount;
 		}
-
+		
 	}
 
+	public void update(SyncControl syncControl);
+	public void save(SyncControl syncControl);
+	
+	public SyncControl findById(String syncJobId);
 }

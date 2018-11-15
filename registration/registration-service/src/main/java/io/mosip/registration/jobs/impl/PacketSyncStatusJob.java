@@ -69,7 +69,7 @@ public class PacketSyncStatusJob extends BaseJob {
 				// Insert Sync Transaction
 				baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILED,
 						RegistrationConstants.JOB_EXECUTION_FAILED, triggerPoint,
-						JobConfigurationServiceImpl.SYNC_JOB_MAP.get("packetsyncstatusjob"));
+						JobConfigurationServiceImpl.SYNC_JOB_MAP.get("1"));
 
 			} catch (RegBaseUncheckedException regBaseUncheckedException) {
 				LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
