@@ -23,7 +23,7 @@ public interface DocumentRepository extends BaseRepository<DocumentEntity, Strin
 	
 	//public static final String record ="SELECT document FROM document.document WHERE document.preregid= :preId and document.doc_cat_code= :catCode";
 
-	public void deleteAllByPreregId(String preregId);
+//	public void deleteAllByPreregId(String preregId);
 
 	public boolean existsByPreregId(String preregId);
 
@@ -34,7 +34,9 @@ public interface DocumentRepository extends BaseRepository<DocumentEntity, Strin
 	@Query("SELECT d FROM DocumentEntity d WHERE d.preregId= :preId AND d.doc_cat_code= :catCode")
 	DocumentEntity findSingleDocument(@Param("preId")String preId,@Param("catCode") String catCode);
 	
-	Boolean deleteAllBydocumentId(Integer documentId);
+//	Boolean deleteAllBydocumentId(Integer documentId);
+	public Long deleteAllBydocumentId(Integer documentId);
 	
-	
+	public List<DocumentEntity> deleteAllBypreregId(String preregId);
+
 }

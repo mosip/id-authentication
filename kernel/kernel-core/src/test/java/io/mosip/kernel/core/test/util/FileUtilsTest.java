@@ -41,8 +41,6 @@ import io.mosip.kernel.core.util.FileUtils;
  */
 public class FileUtilsTest {
 	FileUtils fileutils;
-	
-	
 
 	@Test
 	public void byteCountToDisplaySizeTest() {
@@ -596,14 +594,6 @@ public class FileUtilsTest {
 		}
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void isSymlinkNullPTest() throws IOException {
-
-		File file = null;
-		assertFalse(FileUtils.isSymlink(file));
-
-	}
-
 	///////////////////////////////////////////////////////////
 
 	@Test
@@ -907,7 +897,7 @@ public class FileUtilsTest {
 
 			File file = folder.newFile();
 			FileUtils.openInputStream(file);
-		
+
 		} catch (java.io.IOException e) {
 
 		}
@@ -939,7 +929,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void openOutputStreamTest() throws IOException {
-		
+
 		try {
 			File file = folder.newFile();
 			FileUtils.openOutputStream(file);
@@ -966,7 +956,7 @@ public class FileUtilsTest {
 
 	@Test
 	public void openOutputStreamWithAppendTest() throws IOException {
-		
+
 		try {
 			File file = folder.newFile();
 			FileUtils.openOutputStream(file, true);
@@ -1091,7 +1081,7 @@ public class FileUtilsTest {
 	public void sizeOfTest() {
 		try {
 			File file = folder.newFile();
-			assertEquals(0,FileUtils.sizeOf(file));
+			assertEquals(0, FileUtils.sizeOf(file));
 		} catch (java.io.IOException e) {
 
 		}
@@ -1102,7 +1092,7 @@ public class FileUtilsTest {
 	public void sizeOfNullPTest() {
 
 		File file = null;
-		assertEquals(0,FileUtils.sizeOf(file));
+		assertEquals(0, FileUtils.sizeOf(file));
 
 	}
 
@@ -1110,7 +1100,7 @@ public class FileUtilsTest {
 	public void sizeOfIllegalArgTest() {
 
 		File file = new File("");
-		assertEquals(0,FileUtils.sizeOf(file));
+		assertEquals(0, FileUtils.sizeOf(file));
 
 	}
 
@@ -1120,7 +1110,7 @@ public class FileUtilsTest {
 	public void sizeOfDirectoryTest() {
 		try {
 			File dir = folder.newFolder();
-			assertEquals(0,FileUtils.sizeOfDirectory(dir));
+			assertEquals(0, FileUtils.sizeOfDirectory(dir));
 		} catch (java.io.IOException e) {
 
 		}
@@ -1131,7 +1121,7 @@ public class FileUtilsTest {
 	public void sizeOfDirectoryNullPTest() {
 
 		File dir = null;
-		assertEquals(0,FileUtils.sizeOfDirectory(dir));
+		assertEquals(0, FileUtils.sizeOfDirectory(dir));
 
 	}
 
@@ -1140,7 +1130,7 @@ public class FileUtilsTest {
 	@Test
 	public void toFileTest() {
 		try {
-		 FileUtils.toFile(new URL("http://www.example.com/docs/resource1.html"));
+			FileUtils.toFile(new URL("http://www.example.com/docs/resource1.html"));
 		} catch (MalformedURLException e) {
 
 		}

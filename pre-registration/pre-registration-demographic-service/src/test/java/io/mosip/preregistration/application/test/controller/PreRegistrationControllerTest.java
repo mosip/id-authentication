@@ -2,6 +2,9 @@ package io.mosip.preregistration.application.test.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,17 +29,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.jsonvalidator.dto.JsonValidatorResponseDto;
 import io.mosip.preregistration.application.controller.PreRegistrationController;
-import io.mosip.preregistration.application.dto.AddressDto;
-import io.mosip.preregistration.application.dto.ApplicationDto;
-import io.mosip.preregistration.application.dto.ContactDto;
-import io.mosip.preregistration.application.dto.NameDto;
-import io.mosip.preregistration.application.dto.RegistrationDto;
+import io.mosip.preregistration.application.dto.CreateDto;
+import io.mosip.preregistration.application.dto.ExceptionInfoDto;
 import io.mosip.preregistration.application.dto.ResponseDto;
 import io.mosip.preregistration.application.dto.ViewRegistrationResponseDto;
-import io.mosip.preregistration.application.service.RegistrationService;
+import io.mosip.preregistration.application.service.PreRegistrationService;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
-import io.mosip.preregistration.core.generator.MosipGroupIdGenerator;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(PreRegistrationController.class)
@@ -46,69 +48,38 @@ public class PreRegistrationControllerTest {
 	private MockMvc mockMvc;
 	
 	@MockBean
-	private RegistrationService<String,RegistrationDto> registrationService;
-	
-	@MockBean
-	private MosipGroupIdGenerator<String> groupIdGenerator;
-
-	private RegistrationDto regDto= new RegistrationDto();
-	private NameDto nameDto= new NameDto();
-	private ContactDto contactDto= new ContactDto();
-	private AddressDto addrDto= new AddressDto();
-	
-	private ApplicationDto appDto= new ApplicationDto();
-	
-	private List<RegistrationDto> applicationForms= new ArrayList<>();
+	private PreRegistrationService preRegistrationService;
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	private Object jsonObject=null;
+	
 	@Before
-	public void setup() {
-
-		nameDto.setFirstname("Rajath");
-		nameDto.setFullname("Rajath Kumar");
-		contactDto.setEmail("rajath.kr1249@gmail.com");
-		contactDto.setMobile("9480548558");
-		addrDto.setAddrLine1("global");
-		addrDto.setAddrLine2("Village");
-		addrDto.setLocationCode("1234");
-		regDto.setAddress(addrDto);
-		regDto.setContact(contactDto);
-		regDto.setName(nameDto);
-		regDto.setAge(10);
-        regDto.setIsPrimary(true);
-        regDto.setGroupId("123");
-        regDto.setPreRegistrationId("");
-        
-        logger.info("Registration DTO "+regDto);
-        applicationForms.add(regDto);
-        appDto.setApplications(applicationForms);
+	public void setup() throws FileNotFoundException, IOException, ParseException {
+        JsonValidatorResponseDto dto= new JsonValidatorResponseDto();
+		ClassLoader classLoader = getClass().getClassLoader();
+		JSONParser parser = new JSONParser();
+		File file = new File(classLoader.getResource("pre-registration.json").getFile());
+		jsonObject = parser.parse(new FileReader(file));
+		
 	}
 	
 	@Test
 	public void successSave() throws Exception {
 		logger.info("----------Successful save of application-------");		
-        ResponseDto response= new ResponseDto();
-        ObjectMapper mapperObj = new ObjectMapper();
-        String jsonStr="";
-        
-        try {
-             jsonStr = mapperObj.writeValueAsString(appDto);
+        ResponseDto<CreateDto> response = new ResponseDto();
+		List<CreateDto> saveList= new ArrayList<CreateDto>();
+		CreateDto createDto= new CreateDto();
 
-        } catch (IOException e) {
+		createDto.setPrId("22893647484937");
+        saveList.add(createDto);
+        response.setResponse(saveList);
 
-            e.printStackTrace();
-        }
-        response.setPrId("22893647484937");
-        response.setGroupId("986453847462");
-        List<ResponseDto> resList= new ArrayList<>();
-        resList.add(response);
-        Mockito.when(groupIdGenerator.generateGroupId()).thenReturn("986453847462");
-        Mockito.when(registrationService.addRegistration(Mockito.any(),Mockito.anyString())).thenReturn(response);
+        Mockito.when(preRegistrationService.addRegistration(Mockito.any(),Mockito.anyString())).thenReturn(response);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/applications")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
-				.content(jsonStr);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE).param("pre-id", "")
+				.content(jsonObject.toString() );
         logger.info("Resonse "+response);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
@@ -117,51 +88,31 @@ public class PreRegistrationControllerTest {
 	public void failureSave() throws Exception {
 		logger.info("----------Unsuccessful save of application-------");		
         ObjectMapper mapperObj = new ObjectMapper();
-        
-        String jsonStr="";
-        
-        try {
-             jsonStr = mapperObj.writeValueAsString(appDto);
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
+       
 		
-		Mockito.doThrow(new TablenotAccessibleException("ex")).when(registrationService).addRegistration(Mockito.any(RegistrationDto.class),Mockito.anyObject());
+		Mockito.doThrow(new TablenotAccessibleException("ex")).when(preRegistrationService).addRegistration(Mockito.any(),Mockito.anyString());
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/applications")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
-				.content(jsonStr);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE).param("pre-id", "")
+				.content(jsonObject.toString());
 		mockMvc.perform(requestBuilder).andExpect(status().isInternalServerError());
 	}
 	
 	@Test
 	public void successUpdate() throws Exception {
 		logger.info("----------Successful save of application-------");		
-        ResponseDto response= new ResponseDto();
-        regDto.setPreRegistrationId("22893647484937");
-        regDto.setGroupId("986453847462");
-        ObjectMapper mapperObj = new ObjectMapper();
-        String jsonStr="";
-        
-        try {
-             jsonStr = mapperObj.writeValueAsString(appDto);
+      
+        ResponseDto<CreateDto> response = new ResponseDto();
+		List<CreateDto> saveList= new ArrayList<CreateDto>();
+		CreateDto createDto= new CreateDto();
+		createDto.setPrId("22893647484937");
+        saveList.add(createDto);
+        response.setResponse(saveList);
+        Mockito.when(preRegistrationService.addRegistration(Mockito.any(),Mockito.anyString())).thenReturn(response);
 
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-        response.setPrId("22893647484937");
-        response.setGroupId("986453847462");
-        List<ResponseDto> resList= new ArrayList<>();
-        resList.add(response);
-        Mockito.when(groupIdGenerator.generateGroupId()).thenReturn("986453847462");
-        Mockito.when(registrationService.addRegistration(Mockito.any(),Mockito.anyString())).thenReturn(response);
-
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/registration/applications")
-				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
-				.content(jsonStr);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
+				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE).param("pre-id", "22893647484937")
+				.content(jsonObject.toString());
         logger.info("Resonse "+response);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
@@ -172,17 +123,23 @@ public class PreRegistrationControllerTest {
 
 		String userId = "9988905333";
 		ViewRegistrationResponseDto responseDto = new ViewRegistrationResponseDto();
-		List<ViewRegistrationResponseDto> response = new ArrayList<ViewRegistrationResponseDto>();
-		responseDto.setGroup_id("1234");
+		List<ViewRegistrationResponseDto> response = new ArrayList<>();
+		ExceptionInfoDto exceptionInfoDto=new ExceptionInfoDto();
+		List<ExceptionInfoDto> responseList = new ArrayList<>();
+		//responseDto.setGroup_id("1234");
 		responseDto.setFirstname("rupika");
-		responseDto.setNoOfRecords(1);
+		//responseDto.setNoOfRecords(1);
 		responseDto.setStatus_code("draft");
-		responseDto.setUpd_dtimesz("2018-10-08 00:00:00");
+		//responseDto.setUpd_dtimesz("2018-10-08 00:00:00");
 		response.add(responseDto);
+		exceptionInfoDto.setResponse(response);
+		exceptionInfoDto.setStatus(true);
+		responseList.add(exceptionInfoDto);
+		
 
-		Mockito.when(registrationService.getApplicationDetails(Mockito.anyString())).thenReturn(response);
+		Mockito.when(preRegistrationService.getApplicationDetails(Mockito.anyString())).thenReturn(responseList);
 
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/registration/applications/")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applications/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.param("userId", userId);
 
@@ -196,30 +153,33 @@ public class PreRegistrationControllerTest {
 		Map<String, String> response = new HashMap<String, String>();
 		response.put("1234", "12245");
 
-		Mockito.when(registrationService.getApplicationStatus(Mockito.anyString())).thenReturn(response);
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/registration/applicationStatus/")
+		Mockito.when(preRegistrationService.getApplicationStatus(Mockito.anyString())).thenReturn(response);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applicationStatus/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 				.param("groupId", groupId);
 
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
 	
+
 	@Test
 	public void discardIndividualTest() throws Exception {
-		 String groupId= "33";
-		 String[] preregIds= {"3"};
-		 ResponseDto response= new ResponseDto();
-		 response.setPrId("3");
-	     response.setGroupId("33");
-	     List<ResponseDto> resList= new ArrayList<>();
-	     resList.add(response);
-		Mockito.when(registrationService.deleteIndividual(ArgumentMatchers.any(),ArgumentMatchers.any())).thenReturn(resList);
+		 String preId= "3";
+		 ResponseDto<CreateDto> response = new ResponseDto();
+			List<CreateDto> saveList= new ArrayList<CreateDto>();
+			CreateDto createDto= new CreateDto();
+
+			createDto.setPrId("3");
+	        saveList.add(createDto);
+	        response.setResponse(saveList);
+		Mockito.when(preRegistrationService.deleteIndividual(ArgumentMatchers.any())).thenReturn(response);
 		
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/registration/applications")
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
-				.param("groupId", groupId).param("preregIds",preregIds);
+				.param("preId", preId);
 		mockMvc.perform(requestBuilder).andExpect(status().isOk());
 	}
+
 	
 //	@Test
 //	public void discardGroupTest() throws Exception {
@@ -231,7 +191,7 @@ public class PreRegistrationControllerTest {
 //	     resList.add(response);
 //		Mockito.when(registrationService.deleteGroup(ArgumentMatchers.any())).thenReturn(resList);
 //		
-//		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/registration/discardGroup")
+//		RequestBuilder requestBuilder = MockMvcRequestBuilders.delete("/v0.1/pre-registration/discardGroup")
 //				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE)
 //				.param("groupId", groupId);
 //		mockMvc.perform(requestBuilder).andExpect(status().isOk());

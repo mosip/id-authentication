@@ -62,7 +62,7 @@ public class ApplicationServiceExceptionTest {
 		application1.setName("pre-registeration");
 		application1.setDescription("Pre-registration Application Form");
 		application1.setLanguageCode("ENG");
-		application1.setActive(true);
+		application1.setIsActive(true);
 		application1.setCreatedBy("Neha");
 		application1.setUpdatedBy(null);
 		application1.setIsDeleted(false);
@@ -71,7 +71,7 @@ public class ApplicationServiceExceptionTest {
 		application2.setName("registeration");
 		application2.setDescription("Registeration Application Form");
 		application2.setLanguageCode("ENG");
-		application2.setActive(true);
+		application2.setIsActive(true);
 		application2.setCreatedBy("Neha");
 		application2.setUpdatedBy(null);
 		application2.setIsDeleted(false);
@@ -82,14 +82,14 @@ public class ApplicationServiceExceptionTest {
 
 	@Test(expected = ApplicationFetchException.class)
 	public void getAllApplicationFetchException() {
-		Mockito.when(applicationRepository.findAll(Mockito.eq(Application.class)))
+		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Application.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 		applicationService.getAllApplication();
 	}
 
 	@Test(expected = ApplicationMappingException.class)
 	public void getAllApplicationMappingException() {
-		Mockito.when(applicationRepository.findAll(Application.class)).thenReturn(applicationList);
+		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Application.class)).thenReturn(applicationList);
 		Mockito.when(objectMapperUtil.mapAll(applicationList, ApplicationDto.class))
 				.thenThrow(IllegalArgumentException.class, ConfigurationException.class, MappingException.class);
 		applicationService.getAllApplication();
@@ -98,20 +98,20 @@ public class ApplicationServiceExceptionTest {
 	@Test(expected = AppicationNotFoundException.class)
 	public void getAllApplicationNotFoundException() {
 		applicationList = new ArrayList<>();
-		Mockito.when(applicationRepository.findAll(Application.class)).thenReturn(applicationList);
+		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Application.class)).thenReturn(applicationList);
 		applicationService.getAllApplication();
 	}
 
 	@Test(expected = ApplicationFetchException.class)
 	public void getAllApplicationByLanguageCodeFetchException() {
-		Mockito.when(applicationRepository.findAllByLanguageCode(Mockito.anyString()))
+		Mockito.when(applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		applicationService.getAllApplicationByLanguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = ApplicationMappingException.class)
 	public void getAllApplicationByLanguageCodeMappingException() {
-		Mockito.when(applicationRepository.findAllByLanguageCode(Mockito.anyString())).thenReturn(applicationList);
+		Mockito.when(applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(applicationList);
 		Mockito.when(objectMapperUtil.mapAll(applicationList, ApplicationDto.class))
 				.thenThrow(IllegalArgumentException.class, ConfigurationException.class, MappingException.class);
 		applicationService.getAllApplicationByLanguageCode(Mockito.anyString());
@@ -119,21 +119,21 @@ public class ApplicationServiceExceptionTest {
 
 	@Test(expected = AppicationNotFoundException.class)
 	public void getAllApplicationByLanguageCodeNotFoundException() {
-		Mockito.when(applicationRepository.findAllByLanguageCode(Mockito.anyString()))
+		Mockito.when(applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(new ArrayList<Application>());
 		applicationService.getAllApplicationByLanguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = ApplicationFetchException.class)
 	public void getApplicationByCodeAndLangCodeFetchException() {
-		Mockito.when(applicationRepository.findByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(applicationRepository.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test(expected = ApplicationMappingException.class)
 	public void getApplicationByCodeAndLangCodeMappingException() {
-		Mockito.when(applicationRepository.findByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(applicationRepository.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(application1);
 		Mockito.when(modelMapper.map(application1, ApplicationDto.class)).thenThrow(IllegalArgumentException.class,
 				ConfigurationException.class, MappingException.class);
@@ -142,7 +142,7 @@ public class ApplicationServiceExceptionTest {
 
 	@Test(expected = AppicationNotFoundException.class)
 	public void getApplicationByCodeAndLangCodeNotFoundException() {
-		Mockito.when(applicationRepository.findByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(applicationRepository.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}

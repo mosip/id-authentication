@@ -41,12 +41,12 @@ public class BiometricAttributeServiceTest {
 		BiometricAttribute biometricAttribute = new BiometricAttribute();
 		biometricAttribute.setCode("iric_black");
 		biometricAttribute.setName("black");
-		biometricAttribute.setActive(true);
+		biometricAttribute.setIsActive(true);
 		biometricattributes.add(biometricAttribute);
 		BiometricAttribute biometricAttribute1 = new BiometricAttribute();
 		biometricAttribute1.setCode("iric_brown");
 		biometricAttribute1.setName("brown");
-		biometricAttribute1.setActive(true);
+		biometricAttribute1.setIsActive(true);
 		biometricattributes.add(biometricAttribute1);
 
 	}

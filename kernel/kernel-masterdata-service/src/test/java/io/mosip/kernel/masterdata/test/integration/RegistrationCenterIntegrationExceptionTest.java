@@ -75,17 +75,17 @@ public class RegistrationCenterIntegrationExceptionTest {
 		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
-		holiday.setCreatedtime(specificDate);
+		holiday.setCreatedtimes(specificDate);
 		holiday.setHolidayDesc("Diwali");
-		holiday.setActive(true);
+		holiday.setIsActive(true);
 
 		Holiday holiday2 = new Holiday();
 		holiday2.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
 		holiday2.setHolidayName("Diwali");
 		holiday2.setCreatedBy("John");
-		holiday2.setCreatedtime(specificDate);
+		holiday2.setCreatedtimes(specificDate);
 		holiday2.setHolidayDesc("Diwali");
-		holiday2.setActive(true);
+		holiday2.setIsActive(true);
 
 		holidays.add(holiday1);
 		holidays.add(holiday2);
@@ -94,7 +94,7 @@ public class RegistrationCenterIntegrationExceptionTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByIdAndLangCodeNotFoundExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCode("1", "ENG")).thenReturn(null);
+		when(repository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("1", "ENG")).thenReturn(null);
 
 		mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -103,7 +103,7 @@ public class RegistrationCenterIntegrationExceptionTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByIdAndLangCodeNotMappingExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCode("1", "ENG")).thenReturn(center);
+		when(repository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("1", "ENG")).thenReturn(center);
 		when(modelMapper.map(Mockito.any(), Mockito.eq(RegistrationCenterDto.class)))
 				.thenThrow(IllegalArgumentException.class);
 		mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
@@ -114,7 +114,8 @@ public class RegistrationCenterIntegrationExceptionTest {
 	@Test
 	public void getSpecificRegistrationCenterByIdAndLangCodeFetchExceptionTest() throws Exception {
 
-		when(repository.findByIdAndLanguageCode("1", "ENG")).thenThrow(DataAccessLayerException.class);
+		when(repository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("1", "ENG"))
+				.thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable());
@@ -154,7 +155,8 @@ public class RegistrationCenterIntegrationExceptionTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByLocationCodeAndLangCodeNotFoundExceptionTest() throws Exception {
-		when(repository.findByLocationCodeAndLanguageCode("ENG", "BLR")).thenReturn(null);
+		when(repository.findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("ENG", "BLR"))
+				.thenReturn(null);
 
 		mockMvc.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound());
@@ -164,7 +166,8 @@ public class RegistrationCenterIntegrationExceptionTest {
 	@Test
 	public void getSpecificRegistrationCenterByLocationCodeAndLangCodeNotMappingExceptionTest() throws Exception {
 		centers.add(center);
-		when(repository.findByLocationCodeAndLanguageCode("BLR", "ENG")).thenReturn(centers);
+		when(repository.findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("BLR", "ENG"))
+				.thenReturn(centers);
 		when(modelMapper.map(Mockito.any(), Mockito.eq(new TypeToken<List<RegistrationCenterDto>>() {
 		}.getType()))).thenThrow(IllegalArgumentException.class);
 		mockMvc.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
@@ -175,7 +178,8 @@ public class RegistrationCenterIntegrationExceptionTest {
 	@Test
 	public void getSpecificRegistrationCenterByLocationCodeAndLangCodeFetchExceptionTest() throws Exception {
 
-		when(repository.findByLocationCodeAndLanguageCode("BLR", "ENG")).thenThrow(DataAccessLayerException.class);
+		when(repository.findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("BLR", "ENG"))
+				.thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable());

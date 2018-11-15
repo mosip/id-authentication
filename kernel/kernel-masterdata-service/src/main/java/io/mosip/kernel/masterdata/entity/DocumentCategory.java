@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DocumentCategory extends Base implements Serializable {
+public class DocumentCategory extends BaseEntity implements Serializable {
 
 	/**
 	 * Generated serialization id

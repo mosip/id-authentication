@@ -17,6 +17,6 @@ public class BiometricAttributeDto {
 	private String code;
 	private String name;
 	private String description;
-	private boolean isActive;
+	private Boolean isActive;
 
 }

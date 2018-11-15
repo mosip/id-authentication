@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "template", schema = "master")
-public class Template extends Base implements Serializable {
+public class Template extends BaseEntity implements Serializable {
 
 	/**
 	 * Generated serialization id
@@ -59,4 +59,5 @@ public class Template extends Base implements Serializable {
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
+
 }

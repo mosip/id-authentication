@@ -70,7 +70,7 @@ public class RegistrationCenterControllerExceptionTest {
 		registrationCenter.setAddressLine1("7th Street");
 		registrationCenter.setAddressLine2("Lane 2");
 		registrationCenter.setAddressLine3("Mylasandra-560001");
-		registrationCenter.setActive(true);
+		registrationCenter.setIsActive(true);
 		registrationCenter.setCenterTypeCode("PAR");
 		registrationCenter.setContactPhone("987654321");
 		registrationCenter.setCreatedBy("John");
@@ -90,9 +90,9 @@ public class RegistrationCenterControllerExceptionTest {
 		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
-		holiday.setCreatedtime(specificDate);
+		holiday.setCreatedtimes(specificDate);
 		holiday.setHolidayDesc("Diwali");
-		holiday.setActive(true);
+		holiday.setIsActive(true);
 
 		holidays.add(holiday);
 
@@ -103,8 +103,8 @@ public class RegistrationCenterControllerExceptionTest {
 
 	@Test
 	public void testGetRegistrationCenterHolidaysHolidayRegMappingException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
-				.thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
+				anyString())).thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenReturn(holidays);
 		when(mapper.map(Mockito.any(), Mockito.eq(RegistrationCenterDto.class)))

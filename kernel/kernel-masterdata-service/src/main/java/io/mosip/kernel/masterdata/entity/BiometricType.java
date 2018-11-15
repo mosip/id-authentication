@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @EqualsAndHashCode(callSuper = false)
 @Table(name = "biometric_type", schema = "master")
-public class BiometricType extends Base implements Serializable {
+public class BiometricType extends BaseEntity implements Serializable {
 
 	/**
 	 * Generated serialization id
