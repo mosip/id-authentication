@@ -44,11 +44,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	/** The event id. */
 	private String eventId = "";
 
-	/** The event name. */
-	private String eventName = "";
-
-	/** The event type. */
-	private String eventType = "";
+	
 
 	/** The sync registration dao. */
 	@Autowired
@@ -74,7 +70,11 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 	 */
 	@Override
 	public List<SyncRegistrationDto> sync(List<SyncRegistrationDto> resgistrationDtos) {
-
+		
+		String eventName = "";
+		
+		String eventType = "";
+		
 		List<SyncRegistrationDto> list = new ArrayList<>();
 
 		boolean isTransactionSuccessful = false;
