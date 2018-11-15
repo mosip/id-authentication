@@ -1,7 +1,11 @@
 # Identity Repository Service
 
-**1. Background**
+**1. Background**   
+
+
 Identity Repository service can be used internally by products to create, read and update Identity information and to validate an input UIN. 
+
+
 
 ***1.1.Target users -***  
 - Registration Processor can use Identity Repo services to create and update Identity information associated with a UIN   
@@ -15,6 +19,8 @@ Identity Repository service can be used internally by products to create, read a
 -	Check status of UIN for validating a UIN
 
 ***1.3. Key non-functional requirements -***   
+
+
 -	Logging :
 	-	Log all the exceptions along with error code and short error message
 	-	As a security measure, Individual’s UIN should not be logged
@@ -24,17 +30,23 @@ Identity Repository service can be used internally by products to create, read a
 -	Exception :
 	-	Any error in storing or retrieval of Identity details should be handled with appropriate error code and message in the response  
 -	Security :
-	-	TBD
+	-	TBD   
 
+	
 **2. Solution **   
+
+
 The key solution considerations are   
 - Create a project which provides REST service to create, update and get Identity of Individual.   
 - REST service can be used by any MOSIP module to access these services through HTTP client.   
 
+
 **2.1. Class Diagram **   
 ![Class Diagram](_images/kernel-idrepo-cd.PNG)   
 
+
 **2.2. REST Services **   
+
 
 *** 2.2.1.	Create Identity ***
 MOSIP Products can use ID Repo API spec available here - [GitHub](https://github.com/mosip/mosip/wiki/ID-Repository-API) - to create Identity of an Individual    
@@ -48,6 +60,7 @@ c.	DEACTIVATED
 
 Below sequence diagram for create Identity service shows sequence of operations to create UIN and store corresponding Identity details.
 ![Create Identity Sequence Diagram](_images/kernel-idrepo-createid-sd.PNG)   
+
 
 *** 2.2.2.	Update Identity ***   
 
@@ -64,6 +77,7 @@ Default configuration of UIN status has REGISTERED, BLOCKED and DEACTIVATED. Thi
 Below sequence diagram shows sequence of operations to update UIN status.   
 ![Update Status Sequence Diagram](_images/kernel-idrepo-updatestatus-sd.PNG)    
 
+
 *** 2.2.3.	Get Identity ***   
 
 MOSIP Products can use ID Repo API spec available here - [GitHub](https://github.com/mosip/mosip/wiki/ID-Repository-API) - to retrieve Identity of an Individual by providing a UIN.    
@@ -73,9 +87,11 @@ MOSIP Products can use ID Repo API spec available here - [GitHub](https://github
 Below sequence diagram for create Identity service shows sequence of operations to retrieve Identity details associated with a UIN.   
 ![Get Identity Sequence Diagram](_images/kernel-idrepo-getidentity-sd.PNG)    
 
+
 **2.3.	Database Sharding**    
 
 UIN DB stores UIN and the corresponding identity details. In order to decrease load and increase search performance, UIN DB is horizontally partitioned into shards. Each shard is a separate database instance with same tables and rows in tables are distributed across shards.
 ID Repo provides default shard implementation where shards are decided based on starting character of UIN. Below diagram shows the approach for sharding UIN DB.
 
 ![UIN Database Sharding](_images/kernel-idrepo-databasesharding.PNG)   
+
