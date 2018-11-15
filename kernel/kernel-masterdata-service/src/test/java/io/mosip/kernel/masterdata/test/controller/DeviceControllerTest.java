@@ -2,9 +2,6 @@
 package io.mosip.kernel.masterdata.test.controller;
 
 import static org.junit.Assert.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataRetrievalFailureException;
-import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.masterdata.controller.DeviceController;
 import io.mosip.kernel.masterdata.dto.DeviceDto;
@@ -33,8 +27,7 @@ import io.mosip.kernel.masterdata.service.DeviceService;
 @RunWith(MockitoJUnitRunner.class)
 public class DeviceControllerTest {
 	
-	@Autowired
-	private MockMvc mockMvc;
+
 
 	@InjectMocks
 	private DeviceController deviceController;
