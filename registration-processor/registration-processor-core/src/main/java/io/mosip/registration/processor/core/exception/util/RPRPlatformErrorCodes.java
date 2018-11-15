@@ -19,6 +19,7 @@ public final class RPRPlatformErrorCodes {
 	private static final String RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE = "FAC-";
 	private static final String RPR_PACKET_MANAGER_MODULE = "PKM-";
 	private static final String RPR_CAMEL_BRIDGE_MODULE = "CMB-";
+	private static final String RPR_QUALITY_CHECKER_MODULE = "QCR-";
 
 	private static final String ERROR_CODE1 = "001";
 	private static final String ERROR_CODE2 = "002";
@@ -65,7 +66,11 @@ public final class RPRPlatformErrorCodes {
 	private static final String ERROR_CODE29 = "003";
 	private static final String ERROR_CODE30 = "004";
 	
-	
+	//**************************Quality Check***********************************//
+	private static final String ERROR_CODE31 = "001";
+	private static final String ERROR_CODE32 = "002";
+	private static final String ERROR_CODE33 = "003";
+	private static final String ERROR_CODE34 = "004";
 
 	//**************************PacketReciever***********************************// 
 	//Generic Exception
@@ -140,7 +145,18 @@ public final class RPRPlatformErrorCodes {
 	public static final String RPR_CMB_CONFIGURATION_SERVER_FAILURE_EXCEPTION = RPR_CAMEL_BRIDGE_ERROR_CODE
 			+ ERROR_CODE29;
 	public static final String RPR_CMB_UNKNOWN_EXCEPTION = RPR_CAMEL_BRIDGE_ERROR_CODE + ERROR_CODE30;
-		
+	
+	
+	//**************************Quality Check***********************************//
+	private static final String RPR_QUALITY_CHECKER_ERROR_CODE = RPR_REGISTRATION_PROCESSOR_PREFIX
+			+ RPR_QUALITY_CHECKER_MODULE;
+	public static final String RPR_QCR_RESULT_NOT_FOUND = RPR_QUALITY_CHECKER_ERROR_CODE + ERROR_CODE31;
+	public static final String RPR_QCR_INVALID_QC_USER_ID = RPR_QUALITY_CHECKER_ERROR_CODE + ERROR_CODE32;
+	public static final String RPR_QCR_INVALID_REGISTRATION_ID = RPR_QUALITY_CHECKER_ERROR_CODE + ERROR_CODE33;
+
+
+	
+	
 	
 	private RPRPlatformErrorCodes() {
 		throw new IllegalStateException("Utility class");

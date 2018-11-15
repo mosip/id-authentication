@@ -13,7 +13,7 @@ public enum RPRPlatformErrorMessages {
 	INVALID_PACKET_FORMAT("Invalid packet format"),
 	VALIDATION_EXCEPTION("Validation Exception"),
 	DUPLICATE_PACKET_RECIEVED("The request received is a duplicate request to upload a Packet"),
-	REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE("The Registration Table is not accessible"),
+	REGISTRATION_TABLE_NOT_ACCESSIBLE("The Registration Table is not accessible"),
 	TRANSACTION_TABLE_NOT_ACCESSIBLE("Transaction table is not accessible"),
 	CONNECTION_NOT_AVAILABLE("Connection to packet store not available"),
 	INVALID_CONNECTION_PARAMETERS("Invalid connection parameter"),
@@ -30,6 +30,10 @@ public enum RPRPlatformErrorMessages {
 	DEPLOYMENT_FAILURE("Deploymet Failure"),
 	UNSUPPORTED_ENCODING("Unsupported Encoding"),
 	CONFIGURATION_SERVER_FAILURE_EXCEPTION("Configuration Server Failure Exception"),
+	
+	RESULT_NOT_FOUND("Result not found"),
+	INVALID_QC_USER_ID("QC user is null"),
+	INVALID_REGISTRATION_ID("Registration Id is null"),
 	
 	UNEXCEPTED_EXCEPTION("Unexpected exception"), //System Exceptions
 	BAD_GATEWAY("Bad Gateway"),

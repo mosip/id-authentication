@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
-import io.mosip.registration.processor.quality.check.code.QualityCheckerStatusCode;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
 import io.mosip.registration.processor.quality.check.dao.QCUserInfoDao;
 import io.mosip.registration.processor.quality.check.dto.ApplicantInfoDto;
@@ -26,6 +26,7 @@ import io.mosip.registration.processor.quality.check.exception.InvalidQcUserIdEx
 import io.mosip.registration.processor.quality.check.exception.InvalidRegistrationIdException;
 import io.mosip.registration.processor.quality.check.exception.ResultNotFoundException;
 import io.mosip.registration.processor.quality.check.exception.TablenotAccessibleException;
+
 //import io.mosip.registration.processor.status.code.AuditLogTempConstant;
 
 @Component
@@ -62,7 +63,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 			applicantInfoDtoList = applicantInfoDao.getPacketsforQCUser(qcuserId);
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Table Not Accessible", e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 			String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
 					: "description--Demographic Failed to save";
@@ -95,7 +96,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 			return resultDtos;
 
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Table Not Accessible", e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 			String description = isTransactionSuccessful ? "description--QC User status update successful"
 					: "description--QC User status update failed";
@@ -116,17 +117,15 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 		qcUserDtos.forEach(dto -> {
 
 			if (dto.getQcUserId() == null || dto.getQcUserId().trim().isEmpty()) {
-				throw new InvalidQcUserIdException(
-						QualityCheckerStatusCode.INVALID_QC_USER_ID.name() + ": QC USER ID IS NULL");
+				throw new InvalidQcUserIdException(RPRPlatformErrorMessages.INVALID_QC_USER_ID.getValue());
 			}
 			if (dto.getRegId() == null || dto.getRegId().trim().isEmpty()) {
-				throw new InvalidRegistrationIdException(
-						QualityCheckerStatusCode.INVALID_REGISTRATION_ID.name() + ": REGISTRATION ID IS NULL");
+				throw new InvalidRegistrationIdException(RPRPlatformErrorMessages.INVALID_REGISTRATION_ID.getValue());
 			}
 
 			QcuserRegistrationIdEntity entity = applicantInfoDao.findById(dto.getQcUserId(), dto.getRegId());
 			if (entity == null) {
-				throw new ResultNotFoundException(QualityCheckerStatusCode.DATA_NOT_FOUND.name() + " FOR RID: "
+				throw new ResultNotFoundException(RPRPlatformErrorMessages.RESULT_NOT_FOUND.getValue() + " FOR RID: "
 						+ dto.getRegId() + " AND  FOR QC USER ID: " + dto.getQcUserId());
 			}
 			map.put(entity, dto);
@@ -144,7 +143,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, Appl
 
 			return convertEntityToDto(qcUserEntity);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("qcuser_registration_id Table Not Accessible", e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 			String description = isTransactionSuccessful ? "description--Demographic-data saved Success"
 					: "description--Demographic Failed to save";

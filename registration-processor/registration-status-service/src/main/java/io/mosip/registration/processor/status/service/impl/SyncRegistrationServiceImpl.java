@@ -103,7 +103,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			isTransactionSuccessful = true;
 			return list;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			String  description = "";

@@ -157,7 +157,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			isTransactionSuccessful = true;
 
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
@@ -194,7 +194,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			}
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -228,7 +228,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			isTransactionSuccessful = true;
 			return applicantInfoDtoList;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 			/*
 			 * String description = isTransactionSuccessful ?

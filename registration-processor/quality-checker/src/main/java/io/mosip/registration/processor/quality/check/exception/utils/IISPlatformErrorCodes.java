@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.quality.check.exception.utils;
+/*package io.mosip.registration.processor.quality.check.exception.utils;
 
 public final class IISPlatformErrorCodes {
 
@@ -22,3 +22,4 @@ public final class IISPlatformErrorCodes {
 	}
 
 }
+*/

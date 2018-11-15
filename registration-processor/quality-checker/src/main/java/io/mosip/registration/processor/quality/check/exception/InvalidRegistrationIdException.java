@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.quality.check.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.quality.check.exception.utils.IISPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 
 public class InvalidRegistrationIdException extends BaseUncheckedException {
 
@@ -15,10 +15,10 @@ public class InvalidRegistrationIdException extends BaseUncheckedException {
 	}
 
 	public InvalidRegistrationIdException(String message) {
-		super(IISPlatformErrorCodes.IIS_QCV_INVALID_REGISTRATION_ID, message);
+		super(RPRPlatformErrorCodes.RPR_QCR_INVALID_REGISTRATION_ID, message);
 	}
 
 	public InvalidRegistrationIdException(String message, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_QCV_INVALID_REGISTRATION_ID + EMPTY_SPACE, message, cause);
+		super(RPRPlatformErrorCodes.RPR_QCR_INVALID_REGISTRATION_ID + EMPTY_SPACE, message, cause);
 	}
 }
