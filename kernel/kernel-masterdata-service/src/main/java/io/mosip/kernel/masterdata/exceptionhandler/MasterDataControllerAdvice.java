@@ -157,13 +157,6 @@ public class MasterDataControllerAdvice {
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
 
-	@ExceptionHandler(MachineHistroyNotFoundException.class)
-	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> machineHistoryMappingException(
-			final MachineHistroyNotFoundException e) {
-		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
-		Map<String, ArrayList<ErrorBean>> map = setError(error);
-		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
-	}
 
 	@ExceptionHandler(LocationDatabaseException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> locationHierarchyDatabaseException(
