@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -46,7 +46,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	private RegistrationRepository registrationRepository;
 
 	/** Object for Logger. */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationDAOImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationDAOImpl.class);
 
 	/*
 	 * (non-Javadoc)

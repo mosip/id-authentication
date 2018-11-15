@@ -15,11 +15,11 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.auditmanager.config.AuditConfig;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.dataaccess.hibernate.config.HibernateDaoConfig;
 import io.mosip.kernel.dataaccess.hibernate.repository.impl.HibernateRepositoryImpl;
-import io.mosip.kernel.logger.logback.appender.MosipRollingFileAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
+import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
+import io.mosip.kernel.logger.logback.factory.Logfactory;
 import io.mosip.registration.jobs.JobProcessListener;
 import io.mosip.registration.jobs.JobTriggerListener;
 
@@ -37,7 +37,7 @@ import io.mosip.registration.jobs.JobTriggerListener;
 @PropertySource("spring.properties")
 public class AppConfig {
 
-	private static final MosipRollingFileAppender MOSIP_ROLLING_APPENDER = new MosipRollingFileAppender();
+	private static final RollingFileAppender MOSIP_ROLLING_APPENDER = new RollingFileAppender();
 
 	private static final ResourceBundle applicationProperties = ResourceBundle.getBundle("application");
 
@@ -65,8 +65,8 @@ public class AppConfig {
 		MOSIP_ROLLING_APPENDER.setPrudent(true);
 	}
 
-	public static MosipLogger getLogger(Class<?> className) {
-		return MosipLogfactory.getMosipDefaultRollingFileLogger(MOSIP_ROLLING_APPENDER, className);
+	public static Logger getLogger(Class<?> className) {
+		return Logfactory.getDefaultRollingFileLogger(MOSIP_ROLLING_APPENDER, className);
 	}
 
 	public static String getApplicationProperty(String property) {

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dto.EmailDTO;
@@ -36,7 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
 	/**
 	 * Instance of LOGGER
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(LoginServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(LoginServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}

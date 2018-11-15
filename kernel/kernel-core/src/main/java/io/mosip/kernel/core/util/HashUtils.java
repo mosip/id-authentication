@@ -3,7 +3,7 @@
  */
 package io.mosip.kernel.core.util;
 import io.mosip.kernel.core.util.constant.HashUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipHashUtilException;
+import io.mosip.kernel.core.util.exception.HashUtilException;
 
 /**
  * <p>
@@ -48,15 +48,15 @@ public class HashUtils {
 	 * with the given initializing odd number and multiplying odd number .
 	 * @param initialOddNumber an odd number used as the initial value
 	 * @param multiplierOddNumber an odd number used as the multiplier
-	 * @throws MosipHashUtilException   if the number is even
+	 * @throws HashUtilException   if the number is even
 	 */
-	public HashUtils(final long initialOddNumber, final long multiplierOddNumber) throws MosipHashUtilException {
+	public HashUtils(final long initialOddNumber, final long multiplierOddNumber) throws HashUtilException {
 		if(initialOddNumber%2 ==0 ) {
-			throw new MosipHashUtilException(
+			throw new HashUtilException(
 					HashUtilConstants.MOSIP_ILLEGAL_ARGUMENT_INITIALODDNUMBER_ERROR_CODE.getErrorCode(),
 					HashUtilConstants.MOSIP_ILLEGAL_ARGUMENT_INITIALODDNUMBER_ERROR_CODE.getErrorMessage());
 		}else if(multiplierOddNumber%2 ==0) {
-			throw new MosipHashUtilException(
+			throw new HashUtilException(
 					HashUtilConstants.MOSIP_ILLEGAL_ARGUMENT_MULTIPLIERODDNUMBER_ERROR_CODE.getErrorCode(),
 					HashUtilConstants.MOSIP_ILLEGAL_ARGUMENT_MULTIPLIERODDNUMBER_ERROR_CODE.getErrorMessage());
 		}else  {

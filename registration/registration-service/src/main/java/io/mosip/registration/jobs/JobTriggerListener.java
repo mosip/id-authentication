@@ -7,7 +7,7 @@ import org.quartz.listeners.TriggerListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -34,7 +34,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	/**
 	 * LOGGER for logging
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(JobTriggerListener.class);
+	private static final Logger LOGGER = AppConfig.getLogger(JobTriggerListener.class);
 
 	@Override
 	public void triggerMisfired(Trigger trigger) {

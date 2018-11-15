@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AppModule;
@@ -49,7 +49,7 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 	/**
 	 * Object for Logger
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(SyncJobDAOImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(SyncJobDAOImpl.class);
 
 	@Autowired
 	private AuditFactory auditFactory;

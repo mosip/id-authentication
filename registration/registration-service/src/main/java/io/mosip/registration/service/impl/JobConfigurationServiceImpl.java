@@ -19,7 +19,7 @@ import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.JobConfigDAO;
@@ -52,7 +52,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 	/**
 	 * LOGGER for logging
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(JobConfigurationServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(JobConfigurationServiceImpl.class);
 
 	/**
 	 * sync job map with key as jobID and value as SyncJob

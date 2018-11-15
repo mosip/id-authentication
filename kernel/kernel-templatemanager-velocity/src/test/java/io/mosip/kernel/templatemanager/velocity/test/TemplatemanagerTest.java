@@ -18,11 +18,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.spi.templatemanager.TemplateManager;
+import io.mosip.kernel.core.templatemanager.exception.TemplateMethodInvocationException;
+import io.mosip.kernel.core.templatemanager.exception.TemplateParsingException;
+import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
-import io.mosip.kernel.templatemanager.velocity.exception.TemplateMethodInvocationException;
-import io.mosip.kernel.templatemanager.velocity.exception.TemplateParsingException;
-import io.mosip.kernel.templatemanager.velocity.exception.TemplateResourceNotFoundException;
 
 @RunWith(SpringRunner.class)
 public class TemplatemanagerTest {

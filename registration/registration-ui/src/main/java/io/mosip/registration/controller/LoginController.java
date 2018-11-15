@@ -29,7 +29,7 @@ import com.machinezoo.sourceafis.FingerprintTemplate;
 import MFS100.FingerData;
 import MFS100.MFS100;
 import MFS100.MFS100Event;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -129,9 +129,9 @@ public class LoginController extends BaseController implements Initializable, MF
 	private static Scene scene;
 
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(LoginController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(LoginController.class);
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {

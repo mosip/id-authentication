@@ -13,8 +13,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -59,7 +59,7 @@ public class PacketUploadController extends BaseController {
 	@Autowired
 	private PacketSynchService packetSynchService;
 
-	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketUploadController.class); 
+	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadController.class); 
 
 	/**
 	 * This method is used to Sync as well as upload the packets.
@@ -118,7 +118,7 @@ public class PacketUploadController extends BaseController {
 			if (response != null) {
 				packetSynchService.updateSyncStatus(packetsToBeSynched);
 			}
-		} catch (RegBaseUncheckedException | RegBaseCheckedException | MosipJsonProcessingException
+		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException
 				| URISyntaxException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Error while Synching packets to the server");

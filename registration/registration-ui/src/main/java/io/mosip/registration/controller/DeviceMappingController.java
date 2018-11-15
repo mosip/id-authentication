@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AppModule;
@@ -81,7 +81,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 	private ImageView mapDevice;
 	@FXML
 	private ImageView unmapDevice;
-	private static final MosipLogger LOGGER = AppConfig.getLogger(DeviceMappingController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(DeviceMappingController.class);
 
 	/*
 	 * (non-Javadoc)

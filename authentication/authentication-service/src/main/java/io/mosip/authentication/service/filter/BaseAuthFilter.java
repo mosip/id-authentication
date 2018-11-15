@@ -36,7 +36,7 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * The Base Auth Filter that does all necessary authentication/authorization
@@ -59,7 +59,7 @@ public abstract class BaseAuthFilter<REQUEST_DTO, RESPONSE_DTO, AUTH_INFO> imple
 	private static final String SESSION_ID = "SessionId";
 
 	/** The mosip logger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(BaseAuthFilter.class);
 
 	/** The request time. */
 	private Instant requestTime;

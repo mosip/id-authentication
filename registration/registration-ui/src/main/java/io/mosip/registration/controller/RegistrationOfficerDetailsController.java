@@ -14,7 +14,7 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -43,9 +43,9 @@ import javafx.scene.layout.VBox;
 public class RegistrationOfficerDetailsController extends BaseController {
 
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationOfficerDetailsController.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationOfficerDetailsController.class);
 
 	@FXML
 	private Label registrationOfficerName;

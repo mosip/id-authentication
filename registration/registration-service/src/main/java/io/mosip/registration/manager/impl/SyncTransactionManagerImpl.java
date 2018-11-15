@@ -9,7 +9,7 @@ import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -38,7 +38,7 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 	/**
 	 * LOGGER for logging
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(SyncTransactionManagerImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(SyncTransactionManagerImpl.class);
 
 	// Need to be removed if the transaction table's primary key ID is Auto -
 	// Generatable

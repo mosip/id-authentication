@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.RegistrationCenterDAO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
@@ -27,7 +27,7 @@ public class RegistrationCenterDAOImpl implements RegistrationCenterDAO {
 	/**
 	 * Instance of LOGGER
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationCenterDAOImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationCenterDAOImpl.class);
 
 	/** The registrationCenter repository. */
 	@Autowired

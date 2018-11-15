@@ -6,7 +6,7 @@ import org.quartz.listeners.JobListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -33,7 +33,7 @@ public class JobProcessListener extends JobListenerSupport {
 	/**
 	 * LOGGER for logging
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(JobProcessListener.class);
+	private static final Logger LOGGER = AppConfig.getLogger(JobProcessListener.class);
 
 	/*
 	 * (non-Javadoc)

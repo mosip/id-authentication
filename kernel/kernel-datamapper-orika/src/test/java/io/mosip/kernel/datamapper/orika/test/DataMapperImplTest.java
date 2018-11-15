@@ -13,8 +13,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import io.mosip.kernel.core.spi.datamapper.model.IncludeDataField;
-import io.mosip.kernel.datamapper.orika.exception.DataMapperException;
+import io.mosip.kernel.core.datamapper.exception.DataMapperException;
+import io.mosip.kernel.core.datamapper.model.IncludeDataField;
 import io.mosip.kernel.datamapper.orika.impl.DataMapperImpl;
 import io.mosip.kernel.datamapper.orika.test.model.DestinationModel;
 import io.mosip.kernel.datamapper.orika.test.model.Person;

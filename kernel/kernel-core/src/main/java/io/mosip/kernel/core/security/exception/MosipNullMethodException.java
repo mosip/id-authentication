@@ -12,6 +12,7 @@ package io.mosip.kernel.core.security.exception;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.kernel.core.security.constants.MosipSecurityExceptionCodeConstants;
 
+
 /**
  * {@link Exception} to be thrown when key is null
  * 

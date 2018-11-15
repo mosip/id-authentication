@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.dao.JobConfigDAO;
 import io.mosip.registration.entity.SyncJob;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -23,7 +23,7 @@ public class JobConfigDAOImpl implements JobConfigDAO{
 	private JobConfigRepository jobConfigRepository;
 	
 	/** Object for Logger. */
-	private static MosipLogger LOGGER;
+	private static Logger LOGGER;
 
 	
 	/* (non-Javadoc)

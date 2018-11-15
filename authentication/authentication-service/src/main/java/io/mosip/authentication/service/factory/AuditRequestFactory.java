@@ -13,7 +13,7 @@ import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.AuditRequestDto;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import lombok.NoArgsConstructor;
 
 /**
@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class AuditRequestFactory {
 	
 	/** The mosipLogger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(AuditRequestFactory.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(AuditRequestFactory.class);
 
 	/** The env. */
 	@Autowired

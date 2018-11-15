@@ -8,12 +8,12 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.idvalidator.MosipIdValidator;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 import io.mosip.kernel.core.util.ChecksumUtils;
-import io.mosip.kernel.core.util.IdFilterUtils;
+
 import io.mosip.kernel.core.util.StringUtils;
-import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
-import io.mosip.kernel.idvalidator.prid.constant.MosipPridExceptionConstant;
+import io.mosip.kernel.idvalidator.prid.constant.PridExceptionConstant;
 
 /**
  * Class to validate the Given PRID in String format
@@ -23,7 +23,7 @@ import io.mosip.kernel.idvalidator.prid.constant.MosipPridExceptionConstant;
  * @since 1.0.0
  */
 @Component
-public class PridValidatorImpl implements MosipIdValidator<String> {
+public class PridValidatorImpl implements IdValidator<String> {
 
 	/**
 	 * This Field to hold the length of PRID Reading length of PRID from property
@@ -42,7 +42,7 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 	 */
 
 	@PostConstruct
-	public void preparNumaricRegEx() {
+	private void pridValidatorImplPostConstruct() {
 		numaricRegEx = "\\d{" + pridLength + "}";
 	}
 
@@ -64,18 +64,18 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 	 *            pass a PRID in String format example : String inputFile =
 	 *            "426789089018"
 	 * @return true if Id is valid
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered PRID is empty or null.
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered PRID contain any sequential and repeated block of
 	 *             number for 2 or more than two digits",
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered PRID length should be 14 digit.
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered PRID contain any alphanumeric characters
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered PRID should not match with checksum
-	 * @throws MosipInvalidIDException
+	 * @throws InvalidIDException
 	 *             If entered PRID contain Zero or One as first Digit.
 	 */
 
@@ -87,8 +87,8 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 		 * 
 		 */
 		if (StringUtils.isEmpty(id)) {
-			throw new MosipInvalidIDException(MosipPridExceptionConstant.PRID_VAL_INVALID_NULL.getErrorCode(),
-					MosipPridExceptionConstant.PRID_VAL_INVALID_NULL.getErrorMessage());
+			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_NULL.getErrorCode(),
+					PridExceptionConstant.PRID_VAL_INVALID_NULL.getErrorMessage());
 		}
 
 		/**
@@ -98,8 +98,8 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 		 */
 
 		if (id.length() != pridLength) {
-			throw new MosipInvalidIDException(MosipPridExceptionConstant.PRID_VAL_ILLEGAL_LENGTH.getErrorCode(),
-					MosipPridExceptionConstant.PRID_VAL_ILLEGAL_LENGTH.getErrorMessage());
+			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_ILLEGAL_LENGTH.getErrorCode(),
+					PridExceptionConstant.PRID_VAL_ILLEGAL_LENGTH.getErrorMessage());
 		}
 
 		/**
@@ -109,8 +109,8 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 		 */
 
 		if (!Pattern.matches(numaricRegEx, id)) {
-			throw new MosipInvalidIDException(MosipPridExceptionConstant.PRID_VAL_INVALID_DIGITS.getErrorCode(),
-					MosipPridExceptionConstant.PRID_VAL_INVALID_DIGITS.getErrorMessage());
+			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_DIGITS.getErrorCode(),
+					PridExceptionConstant.PRID_VAL_INVALID_DIGITS.getErrorMessage());
 		}
 		/**
 		 * 
@@ -119,40 +119,45 @@ public class PridValidatorImpl implements MosipIdValidator<String> {
 		 */
 
 		if (id.charAt(0) == CHAR_ZERO || id.charAt(0) == CHAR_ONE) {
-			throw new MosipInvalidIDException(MosipPridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorCode(),
-					MosipPridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorMessage());
+			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorCode(),
+					PridExceptionConstant.PRID_VAL_INVALID_ZERO_ONE.getErrorMessage());
 		}
+		
+		
+//TODO : Need to write logic for Sequence validation without using Generator's util		
+//		/**
+//		 * 
+//		 * The method isValidId(id) from IDFilter will validate the PRID for the
+//		 * following conditions
+//		 * 
+//		 * The PRID should not contain any sequential number for 2 or more than two
+//		 * digits
+//		 * 
+//		 * The PRID should not contain any repeating numbers for 2 or more than two
+//		 * digits
+//		 * 
+//		 * The PRID should not have repeated block of numbers for more than 2 digits
+//		 * 
+//		 */
+//
+//		if (!IdFilterUtils.isValidId(id)) {
+//			throw new InvalidIDException(
+//					PridExceptionConstant.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
+//					PridExceptionConstant.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
+//		}
+		
+		
 		/**
 		 * 
-		 * The method isValidId(id) from MosipIDFilter will validate the PRID for the
-		 * following conditions
-		 * 
-		 * The PRID should not contain any sequential number for 2 or more than two
-		 * digits
-		 * 
-		 * The PRID should not contain any repeating numbers for 2 or more than two
-		 * digits
-		 * 
-		 * The PRID should not have repeated block of numbers for more than 2 digits
-		 * 
-		 */
-
-		if (!IdFilterUtils.isValidId(id)) {
-			throw new MosipInvalidIDException(
-					MosipPridExceptionConstant.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorCode(),
-					MosipPridExceptionConstant.PRID_VAL_ILLEGAL_SEQUENCE_REPEATATIVE.getErrorMessage());
-		}
-		/**
-		 * 
-		 * The method validateChecksum(id) from MosipIdChecksum will validate
+		 * The method validateChecksum(id) from IdChecksum will validate
 		 * 
 		 * Validate the PRID by verifying the checksum
 		 * 
 		 */
 
 		if (!ChecksumUtils.validateChecksum(id)) {
-			throw new MosipInvalidIDException(MosipPridExceptionConstant.PRID_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
-					MosipPridExceptionConstant.PRID_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
+			throw new InvalidIDException(PridExceptionConstant.PRID_VAL_ILLEGAL_CHECKSUM.getErrorCode(),
+					PridExceptionConstant.PRID_VAL_ILLEGAL_CHECKSUM.getErrorMessage());
 		}
 
 		return true;

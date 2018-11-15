@@ -7,7 +7,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import io.mosip.kernel.core.util.HashUtils;
-import io.mosip.kernel.core.util.exception.MosipHashUtilException;
+import io.mosip.kernel.core.util.exception.HashUtilException;
 /**
  * This is a class for unit testing of various methods of HashUtil class.
  * @version 1.0   10 August 2018
@@ -16,29 +16,29 @@ import io.mosip.kernel.core.util.exception.MosipHashUtilException;
  */
 public class HashUtilTest {
 	/**
-	 * @throws MosipHashUtilException  HashUtil(int initialNumber, int multiplierNumber) 
+	 * @throws HashUtilException  HashUtil(int initialNumber, int multiplierNumber) 
 	 * will throw a MosipHashUtilException due to initialNumber  being an even number.
 	 */
-	@Test(expected=MosipHashUtilException.class)
-	public void testHashUtilconstructorExceptionforInitialNumber() throws MosipHashUtilException {	
+	@Test(expected=HashUtilException.class)
+	public void testHashUtilconstructorExceptionforInitialNumber() throws HashUtilException {	
 		new HashUtils(22,35);
 	}
 	/**
-	 * @throws MosipHashUtilException  HashUtil(int initialNumber, int multiplierNumber) 
+	 * @throws HashUtilException  HashUtil(int initialNumber, int multiplierNumber) 
 	 * will throw a MosipHashUtilException due to multiplierNumber  being an even number.
 	 */
-	@Test(expected=MosipHashUtilException.class)
-	public void testHashUtilconstructorExceptionforMultiplier() throws MosipHashUtilException {	
+	@Test(expected=HashUtilException.class)
+	public void testHashUtilconstructorExceptionforMultiplier() throws HashUtilException {	
 		new HashUtils(23,44);
 	}
 	/**
 	 * HashUtil.build() method will provide expected result if all accurate input parameters 
 	 * have been provided in one particular order
-	 * @throws MosipHashUtilException HashUtil(int initialNumber, int multiplierNumber) 
+	 * @throws HashUtilException HashUtil(int initialNumber, int multiplierNumber) 
 	 * will throw a MosipHashUtilException if the entered number  is an even number.
 	 */
 	@Test
-	public void testBuild() throws MosipHashUtilException {
+	public void testBuild() throws HashUtilException {
 		
 		short sh=121;
 		byte b=14;
@@ -73,11 +73,11 @@ public class HashUtilTest {
 	/**
 	 * HashUtil.toHashCode() method will provide expected result if all accurate input parameters 
 	 * have been provided in one particular order
-	 * @throws MosipHashUtilException HashUtil(int initialNumber, int multiplierNumber) 
+	 * @throws HashUtilException HashUtil(int initialNumber, int multiplierNumber) 
 	 * will throw a MosipHashUtilException if the entered number  is an even number.
 	 */
 	@Test
-	public void testToHashCode() throws MosipHashUtilException {
+	public void testToHashCode() throws HashUtilException {
 		short sh=121;
 		 byte b=14;
 		Object obj1=new	String[] {"Ra","sh"};

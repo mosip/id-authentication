@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.exception.utils.RegistrationStatusErrorCodes;
@@ -19,10 +20,10 @@ public class TableNotAccessibleExceptionTest {
 	private static final String TABLE_NOTACCESSIBLE = "Table not accessible exception";
 
 	@Mock
-	RegistrationStatusService<String, RegistrationStatusDto> registrationStatusService;
+	RegistrationStatusService<String, InternalRegistrationStatusDto,RegistrationStatusDto> registrationStatusService;
 
 	@MockBean
-	RegistrationStatusDto registrationStatusDto;
+	InternalRegistrationStatusDto registrationStatusDto;
 
 	@Test
 	public void TestTableNotAccessibleException() {

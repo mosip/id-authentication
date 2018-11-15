@@ -11,8 +11,8 @@ import org.springframework.validation.Validator;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.IdType;
 import io.mosip.authentication.core.logger.IdaLogger;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.idvalidator.exception.MosipInvalidIDException;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl;
 import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 
@@ -65,7 +65,7 @@ public abstract class IdAuthValidator implements Validator {
 	private static final Pattern A_Z0_9_10 = Pattern.compile("^[A-Z0-9]{10}");
 
 	/** The mosip logger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(IdAuthValidator.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(IdAuthValidator.class);
 
 	/** The uin validator. */
 	@Autowired
@@ -197,16 +197,16 @@ public abstract class IdAuthValidator implements Validator {
 		} else if (idType.equals(IdType.UIN.getType())) {
 			try {
 				uinValidator.validateId(id);
-			} catch (MosipInvalidIDException e) {
-				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
+			} catch (InvalidIDException e) {
+				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "InvalidIDException - " + e);
 				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode(), 
 						IdAuthenticationErrorConstants.INVALID_UIN.getErrorMessage());
 			}
 		} else if (idType.equals(IdType.VID.getType())) {
 			try {
 				vidValidator.validateId(id);
-			} catch (MosipInvalidIDException e) {
-				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "MosipInvalidIDException - " + e);
+			} catch (InvalidIDException e) {
+				mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, "InvalidIDException - " + e);
 				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_VID.getErrorMessage());
 			}

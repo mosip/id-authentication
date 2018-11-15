@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 public class TokenIdFilterUtils {
 
 	/**
-	 * Private constructor for MosipIdFilter
+	 * Private constructor for IdFilter
 	 */
 	private TokenIdFilterUtils() {
 	}

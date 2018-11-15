@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -46,7 +46,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	/**
 	 * LOGGER for logging
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(MapMachineServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(MapMachineServiceImpl.class);
 
 	@Autowired
 	private MachineMappingDAO machineMappingDAO;

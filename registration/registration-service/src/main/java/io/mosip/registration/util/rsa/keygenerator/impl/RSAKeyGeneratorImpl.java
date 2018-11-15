@@ -13,7 +13,7 @@ import java.security.PublicKey;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.FileUtils;
-import io.mosip.kernel.core.util.exception.MosipIOException;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.util.rsa.keygenerator.RSAKeyGenerator;
@@ -58,7 +58,7 @@ public class RSAKeyGeneratorImpl implements RSAKeyGenerator {
 
 			// save private key in private.key file
 			FileUtils.writeByteArrayToFile(new File(RegistrationConstants.RSA_PRIVATE_KEY_FILE), privateKey.getEncoded());
-		} catch (MosipIOException mosipIOException) {
+		} catch (IOException mosipIOException) {
 			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(), REG_IO_ERROR_CODE.getErrorMessage(),
 					mosipIOException);
 		}
@@ -75,7 +75,7 @@ public class RSAKeyGeneratorImpl implements RSAKeyGenerator {
 		try {
 			return FileUtils.readFileToByteArray(
 					new File(isPublic ? RegistrationConstants.RSA_PUBLIC_KEY_FILE : RegistrationConstants.RSA_PRIVATE_KEY_FILE));
-		} catch (MosipIOException mosipIOException) {
+		} catch (IOException mosipIOException) {
 			throw new RegBaseUncheckedException(REG_IO_ERROR_CODE.getErrorCode(), REG_IO_ERROR_CODE.getErrorMessage(),
 					mosipIOException);
 		}

@@ -11,7 +11,7 @@ import static java.io.File.separator;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationDTO;
@@ -40,7 +40,7 @@ import static io.mosip.registration.constants.RegistrationExceptions.REG_IO_EXCE
 public class ZipCreationServiceImpl implements ZipCreationService {
 
 	/** The logger. */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(ZipCreationServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(ZipCreationServiceImpl.class);
 
 	/*
 	 * (non-Javadoc)

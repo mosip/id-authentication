@@ -26,7 +26,7 @@ import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.impl.indauth.builder.AuthStatusInfoBuilder;
 import io.mosip.authentication.service.integration.OTPManager;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import lombok.NoArgsConstructor;
 
 // TODO: Auto-generated Javadoc
@@ -59,7 +59,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 	private AuditRequestFactory auditreqfactory;
 
 	/** The mosipLogger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(OTPAuthServiceImpl.class);
 
 	/** The env. */
 	@Autowired

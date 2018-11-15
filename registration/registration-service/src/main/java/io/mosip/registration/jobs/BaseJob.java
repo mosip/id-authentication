@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.ResponseDTO;
@@ -32,7 +32,7 @@ public abstract class BaseJob extends QuartzJobBean {
 	/**
 	 * LOGGER for logging
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(SyncTransaction.class);
+	private static final Logger LOGGER = AppConfig.getLogger(SyncTransaction.class);
 
 	/**
 	 * To get current job class
