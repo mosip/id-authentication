@@ -19,7 +19,7 @@ public class AuditLogRequestBuilder {
 
 	
 	@Autowired
-	private RegistrationProcessorRestClientService<Object> auditmanagerClient;
+	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	
 	/**
 	 * Creates the audit request builder.
@@ -54,7 +54,7 @@ public class AuditLogRequestBuilder {
 		auditRequestDto.setSessionUserName(null);
 		
 		
-		auditmanagerClient.postApi(ApiName.AUDIT, "", "", auditRequestDto, void.class);
+		registrationProcessorRestService.postApi(ApiName.AUDIT, "", "", auditRequestDto, void.class);
 	}
 
 }

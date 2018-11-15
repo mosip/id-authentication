@@ -1,9 +1,7 @@
 package io.mosip.registrationprocessor.mosip_regprocessor_rest_client.utils;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 
 /**
  * The Class RestApiClient.
@@ -12,7 +10,8 @@ import io.mosip.kernel.auditmanager.request.AuditRequestDto;
  */
 @Component
 public class RestApiClient{
-	private String auditManagerServiceHost="http://localhost:8081/auditmanager/audits";
+	
+	/** The rest template. */
 	RestTemplate restTemplate = new RestTemplate();
 	
 	/**
