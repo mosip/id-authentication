@@ -12,6 +12,9 @@ public enum ApiName {
 	/** The auth. */
 	AUTH,
 	
+	/** The authinternal. */
+	AUTHINTERNAL,
+	
 	/** The master data. */
 	MASTER_DATA, 
 	

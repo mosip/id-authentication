@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.core.spi.restclient;
 
 import io.mosip.registration.processor.core.code.ApiName;
-import io.mosip.registration.processor.core.code.RestUriConstant;
 
 /**
  * The Interface RegistrationProcessorRestClientService.
@@ -22,7 +21,7 @@ public interface RegistrationProcessorRestClientService<T> {
 	 * @param responseType the response type
 	 * @return the api
 	 */
-	public T getApi(ApiName apiName, RestUriConstant uri, String queryParam, String queryParamValue, Class<?> responseType);
+	public T getApi(ApiName apiName, String queryParam, String queryParamValue, Class<?> responseType);
 	
 	
 	/**
@@ -36,7 +35,7 @@ public interface RegistrationProcessorRestClientService<T> {
 	 * @param responseType the response type
 	 * @return the t
 	 */
-	public T postApi(ApiName apiName, RestUriConstant url, String queryParam, String queryParamValue,T requestedData, Class<?> responseType);
+	public T postApi(ApiName apiName, String queryParam, String queryParamValue,T requestedData, Class<?> responseType);
 
 
 }
