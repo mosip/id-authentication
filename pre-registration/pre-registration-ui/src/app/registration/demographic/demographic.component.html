@@ -2,13 +2,23 @@
   <div>
     <mat-accordion class="expansion">
       <div *ngFor="let applicant of numbers; let i = index">
-        <mat-expansion-panel [disabled]="!isDisabled[i]" [expanded]="step === applicant" (opened)="setStep(applicant)"
-          hideToggle>
+        <mat-expansion-panel
+          [disabled]="!isDisabled[i]"
+          [expanded]="step === applicant"
+          (opened)="setStep(applicant)"
+          hideToggle
+        >
           <mat-expansion-panel-header>
             <mat-panel-title>
-              Demographic Details {{applicant + 1}}
-              <img *ngIf="applicant === 0" src="../../../assets/primary.png" alt="Smiley face" style="margin: 2px 0 0 10px ;"
-                height="20" width="60">
+              Demographic Details {{ applicant + 1 }}
+              <img
+                *ngIf="applicant === 0"
+                src="../../../assets/primary.png"
+                alt="Smiley face"
+                style="margin: 2px 0 0 10px ;"
+                height="20"
+                width="60"
+              />
             </mat-panel-title>
           </mat-expansion-panel-header>
 
@@ -16,106 +26,126 @@
             <div class="user-container">
               <div>
                 <mat-form-field>
-                  <input matInput placeholder="Full Name" formControlName="fullName">
+                  <input matInput placeholder="{{demo.fullName}}" formControlName="fullName" />
                 </mat-form-field>
 
-                <span style="display:block;">
-                  <!-- <mat-form-field> -->
-                  <input (dateInput)="addDOB($event)" type="hidden" [matDatepicker]="picker" placeholder="Date Of Birth">
-                  <div *ngIf="showDate; then show else hidden"></div>
-                  <mat-datepicker-toggle [disabled]="!showDOB" [for]="picker"></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
-                  <!-- </mat-form-field> -->
-                  <mat-slide-toggle [checked]="checked" (change)="onDOBChange($event)">
-                    <mat-form-field style="width:3em">
-                      <input matInput placeholder="Age" formControlName="age">
-                      {{age}}
-                    </mat-form-field>
-                  </mat-slide-toggle>
+                <span>
+                  <mat-form-field style="width:150px;">
+                    <mat-select
+                      [(value)]="ageOrDobPref"
+                      placeholder="{{demo.dateOfBirth}}/{{demo.age}}"
+                      [(value)]="selected"
+                      (selectionChange)="onDOBChange($event.value)"
+                    >
+                      <mat-option value="age">Age</mat-option>
+                      <mat-option value="dob">DOB</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <div *ngIf="showCalender; then: dob; else: age"></div>
                 </span>
 
-                <ng-template #hidden>
-                  Date of Birth
+                <ng-template #dob>
+                  <input
+                    (dateInput)="addDOB($event)"
+                    type="hidden"
+                    [matDatepicker]="picker"
+                    placeholder="{{demo.dateOfBirth}}"
+                    formControlName="dob"
+                  />
+                  <div *ngIf="showDate; then: show; else: hidden"></div>
+                  <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
                 </ng-template>
 
-                <ng-template #show>
-                  {{dateSelected | date:'dd/MM/yyyy' }}
+                <ng-template #age>
+                  <mat-form-field style="width:3em; margin-left: 15%;">
+                    <input matInput placeholder="{{demo.age}}" formControlName="age" />
+                  </mat-form-field>
                 </ng-template>
+
+                <span style="display:block;"> </span>
+                <ng-template #hidden> {{ demo.dateOfBirth }} </ng-template>
+                <ng-template #show> {{ dateSelected }} </ng-template>
 
                 <div style="text-align: left; width:100%">
-                  <mat-button-toggle-group formControlName="gender" (change)="onGenderChange($event)" appearance="legacy"
-                    name="fontStyle" aria-label="Font Style">
+                  <mat-button-toggle-group
+                    formControlName="gender"
+                    (change)="onGenderChange($event)"
+                    appearance="legacy"
+                    name="fontStyle"
+                    aria-label="Font Style"
+                  >
                     <mat-button-toggle value="male">Male</mat-button-toggle>
                     <mat-button-toggle value="female">Female</mat-button-toggle>
                   </mat-button-toggle-group>
                 </div>
 
                 <mat-form-field>
-                  <input matInput placeholder="Address Line 1" formControlName="addressLine1">
+                  <input matInput placeholder="{{demo.addressLine1}}" formControlName="addressLine1" />
                 </mat-form-field>
                 <mat-form-field>
-                  <input matInput placeholder="Address Line 2" formControlName='addressLine2'>
+                  <input matInput placeholder="{{demo.addressLine2}}" formControlName="addressLine2" />
+                </mat-form-field>
+                <mat-form-field>
+                  <input matInput placeholder="{{demo.addressLine3}}" formControlName="addressLine3" />
                 </mat-form-field>
 
                 <mat-form-field>
-                  <input matInput placeholder="Address Line 3" formControlName='addressLine3'>
-                </mat-form-field>
-
-                <mat-form-field>
-                  <mat-select placeholder="Region" formControlName="region">
+                  <mat-select placeholder="{{demo.region}}" formControlName="region">
                     <mat-option value="option">Option</mat-option>
                   </mat-select>
                 </mat-form-field>
 
                 <mat-form-field>
-                  <mat-select placeholder="Province" formControlName="province">
+                  <mat-select placeholder="{{demo.province}}" formControlName="province">
                     <mat-option value="option">Option</mat-option>
                   </mat-select>
                 </mat-form-field>
 
                 <mat-form-field>
-                  <mat-select placeholder="City" formControlName="city">
+                  <mat-select placeholder="{{demo.city}}" formControlName="city">
                     <mat-option value="option">Option</mat-option>
                   </mat-select>
                 </mat-form-field>
 
                 <mat-form-field>
-                  <mat-select placeholder="Local Administrative Authority" formControlName="localAdministrativeAuthority">
+                  <mat-select
+                    placeholder="{{demo.localAdministrativeAuthority}}"
+                    formControlName="localAdministrativeAuthority"
+                  >
                     <mat-option value="option">Option</mat-option>
                   </mat-select>
                 </mat-form-field>
 
                 <mat-form-field>
-                  <input matInput placeholder="Postal Code" formControlName="postalCode">
+                  <input matInput placeholder="{{demo.postalCode}}" formControlName="postalCode" />
                 </mat-form-field>
 
                 <mat-form-field>
-                  <input matInput placeholder="Mobile Phone" formControlName="mobilePhone">
+                  <input matInput placeholder="{{demo.mobileNumber}}" formControlName="mobilePhone" />
                 </mat-form-field>
 
                 <mat-form-field>
-                  <input matInput placeholder="Email Id" formControlName="email">
+                  <input matInput placeholder="{{demo.emailId}}" formControlName="email" />
                 </mat-form-field>
 
                 <mat-form-field>
-                  <input matInput placeholder="CNIE/PIN" formControlName="pin">
+                  <input matInput placeholder="{{demo.CNEOrPINNumber}}" formControlName="pin" />
                 </mat-form-field>
               </div>
             </div>
           </form>
 
           <mat-action-row>
-            <button *ngIf="step !== 0 " mat-button color="warn" (click)="prevStep()">Previous</button>
-            <button mat-button color="primary" [disabled]="!userForm.valid" (click)="nextStep()">Next</button>
+            <button *ngIf="step !== 0" mat-button color="warn" (click)="prevStep()">Previous</button>
+            <button type="button" mat-button color="primary" [disabled]="!userForm.valid" (click)="nextStep()">
+              Next
+            </button>
           </mat-action-row>
         </mat-expansion-panel>
-
       </div>
     </mat-accordion>
   </div>
-  <div>
-
-    Transliterated placeholder
-
-  </div>
+  <div>Transliterated placeholder</div>
 </div>

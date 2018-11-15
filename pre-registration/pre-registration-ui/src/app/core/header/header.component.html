@@ -9,24 +9,26 @@
       <ul class="nav navbar-nav navbar-right">
         <ng-template [ngIf]="!authService.isAuthenticated()">
           <li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Select Language
-              <span class="caret"></span></button>
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+              Select Language <span class="caret"></span>
+            </button>
             <ul class="dropdown-menu">
-              <li *ngFor="let language of languages" [value]="language.value">{{language.viewValue}}</li>
+              <li *ngFor="let language of languages" [value]="language.value">{{ language.viewValue }}</li>
             </ul>
           </li>
         </ng-template>
         <li><a style="cursor: pointer;" (click)="onLogout()" *ngIf="authService.isAuthenticated()">Logout</a></li>
-
       </ul>
     </div>
   </div>
 </nav>
 
-<!-- <mat-toolbar>
-  <mat-toolbar-row style="background: #d9d9d9;">
-    <span class="nav" routerLinkActive="active"><a style="cursor: pointer;" routerLink="/about-us">About us</a></span>
-    <span class="nav" routerLinkActive="active"><a style="cursor: pointer;" routerLink="/faq">FAQ</a></span>
-    <span class="nav" routerLinkActive="active"><a style="cursor: pointer;" routerLink="/contact">Contact</a></span>
-  </mat-toolbar-row>
-</mat-toolbar> -->
+<!--
+  <mat-toolbar>
+    <mat-toolbar-row style="background: #d9d9d9;">
+      <span class="nav" routerLinkActive="active"><a style="cursor: pointer;" routerLink="/about-us">About us</a></span>
+      <span class="nav" routerLinkActive="active"><a style="cursor: pointer;" routerLink="/faq">FAQ</a></span>
+      <span class="nav" routerLinkActive="active"><a style="cursor: pointer;" routerLink="/contact">Contact</a></span>
+    </mat-toolbar-row>
+  </mat-toolbar>
+-->
