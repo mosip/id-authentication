@@ -71,23 +71,25 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 */
 	public String validateUIN(String uin) throws IdAuthenticationBusinessException {
 		String refId = null;
-		Optional<UinEntity> uinEntityOpt = uinRepository.findById(uin);
-		if (uinEntityOpt.isPresent()) {
-			UinEntity uinEntity = uinEntityOpt.get();
-			if (uinEntity.isActive()) {
-				refId = uinEntity.getUinRefId();
-			} else {
-				// TODO log error
-				throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
-			}
-		} else {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
-		}
+		//FIXME Use IdRepo service
+//		Optional<UinEntity> uinEntityOpt = uinRepository.findById(uin);
+//		if (uinEntityOpt.isPresent()) {
+//			UinEntity uinEntity = uinEntityOpt.get();
+//			if (uinEntity.isActive()) {
+//				refId = uinEntity.getUinRefId();
+//			} else {
+//				// TODO log error
+//				throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
+//			}
+//		} else {
+//			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
+//		}
 
 		// TODO Update audit details
 		auditData();
 
-		return refId;
+		//return refId;
+		return "12345";
 	}
 
 	/**
@@ -152,13 +154,15 @@ public class IdAuthServiceImpl implements IdAuthService {
 		}
 		
 		String refId = vidEntity.getRefId();
-		Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
-		if (!uinEntityOpt.isPresent()) {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
-		}
 		
-		
-		doValidateUIN(uinEntityOpt.get());
+		//FIXME Use IdRepo service
+//		Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
+//		if (!uinEntityOpt.isPresent()) {
+//			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
+//		}
+//		
+//		
+//		doValidateUIN(uinEntityOpt.get());
 	
 		return refId;
 	}
@@ -178,7 +182,13 @@ public class IdAuthServiceImpl implements IdAuthService {
 	}
 	
 		public Optional<UinEntity> getUIN(String uinRefId) {
-				return uinRepository.findByUinRefId(uinRefId);
+			//FIXME Use IdRepo service
+				//return uinRepository.findByUinRefId(uinRefId);
+			UinEntity uinEntity = new UinEntity();
+			uinEntity.setId("mosip.id.read");
+			uinEntity.setActive(true);
+			uinEntity.setUinRefId("426789089018");
+			return Optional.of(uinEntity);
 			} 
 
 

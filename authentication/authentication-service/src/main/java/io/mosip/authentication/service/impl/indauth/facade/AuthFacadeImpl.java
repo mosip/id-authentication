@@ -109,11 +109,10 @@ public class AuthFacadeImpl implements AuthFacade {
 	/**
 	 * Process the authorisation type and authorisation response is returned.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return the auth response DTO
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 * @throws IdAuthenticationDaoException
 	 * @throws ParseException
 	 */
@@ -153,7 +152,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		Map<String, Object> values = new HashMap();
 		values.put("NAME", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
 		String dateTime = authResponseDTO.getResTime();
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 		Date date1;
 		String changedTime = "";
 		String changedDate = "";
@@ -206,13 +205,11 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * called according to authorisation type. reference Id is returned in
 	 * AuthRequestDTO.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
-	 * @param refId
-	 *            the ref id
+	 * @param authRequestDTO the auth request DTO
+	 * @param refId          the ref id
 	 * @return the list
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
 	public List<AuthStatusInfo> processAuthType(AuthRequestDTO authRequestDTO, String refId)
 			throws IdAuthenticationBusinessException {
@@ -242,13 +239,11 @@ public class AuthFacadeImpl implements AuthFacade {
 	 * Process the IdType and validates the Idtype and upon validation reference Id
 	 * is returned in AuthRequestDTO.
 	 *
-	 * @param authRequestDTO
-	 *            the auth request DTO
+	 * @param authRequestDTO the auth request DTO
 	 * @return the string
-	 * @throws IdAuthenticationBusinessException
-	 *             the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
-
 	public String processIdType(AuthRequestDTO authRequestDTO) throws IdAuthenticationBusinessException {
 		String refId = null;
 		String reqType = authRequestDTO.getIdvIdType();

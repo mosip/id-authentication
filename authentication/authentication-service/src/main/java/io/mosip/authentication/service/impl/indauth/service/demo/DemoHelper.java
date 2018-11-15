@@ -82,7 +82,7 @@ public class DemoHelper {
 		List<String> fullMapping = new ArrayList<>();
 		for (String mappingStr : mappings) {
 			Optional<IdMapping> mappingInternal = IdMapping.getIdMapping(mappingStr);
-			if (mappingInternal.isPresent()) {
+			if (mappingInternal.isPresent() && idMapping != mappingInternal.get()) {
 				List<String> internalMapping = getIdMappingValue(mappingInternal.get());
 				fullMapping.addAll(internalMapping);
 			} else {
@@ -99,7 +99,7 @@ public class DemoHelper {
 	}
 
 	public IdentityValue getEntityInfo(DemoMatchType matchType, Map<String, List<IdentityInfoDTO>> demoEntity) {
-		String languageCode = getLanguageCode(matchType.getLanguageType());
+		String languageCode = getLanguageCode(matchType.getLanguageType()).toLowerCase();
 		Optional<String> languageName = getLanguageName(languageCode);
 		List<String> propertyNames = getIdMappingValue(matchType.getIdMapping());
 		List<IdentityValue> demoValues = getDemoValue(propertyNames, languageCode, demoEntity);

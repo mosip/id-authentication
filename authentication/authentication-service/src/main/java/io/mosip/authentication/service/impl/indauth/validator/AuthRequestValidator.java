@@ -340,9 +340,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	private void checkLangaugeDetails(MatchType demoMatchType, List<IdentityInfoDTO> identityInfos, Errors errors) {
-		String priLangCode = env.getProperty(PRIMARY_LANG_CODE);
-		String secLangCode = env.getProperty(SECONDARY_LANG_CODE);
-
+		String priLangCode = env.getProperty(PRIMARY_LANG_CODE).toLowerCase();
+		String secLangCode = env.getProperty(SECONDARY_LANG_CODE).toLowerCase();
+		
 		Map<String, Long> langCount = 
 				identityInfos.stream()
 				.map((IdentityInfoDTO idInfo) -> {
