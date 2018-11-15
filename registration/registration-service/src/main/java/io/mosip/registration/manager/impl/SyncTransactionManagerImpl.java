@@ -14,6 +14,8 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.JobTransactionDAO;
+import io.mosip.registration.dao.SyncJobDAO;
+import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJob;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -34,6 +36,9 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 
 	@Autowired
 	JobTransactionDAO jobTransactionDAO;
+
+	@Autowired
+	SyncJobDAO syncJobDAO;
 
 	/**
 	 * LOGGER for logging
@@ -124,63 +129,97 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 	}
 
 	@Override
-	public void createSyncTransaction(String status, String statusComment, String triggerPoint, SyncJob syncJob)
-			throws RegBaseUncheckedException {
+	public void createSyncTransaction(final String status, final String statusComment, final String triggerPoint,
+			final SyncJob syncJob) {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Create Sync Transaction started");
 
 		SyncTransaction syncTransaction = new SyncTransaction();
-		try {
-			// TODO to be auto generated and has to be remove from here
-			syncTransaction.setId(Integer.toString(random.nextInt(100)));
 
-			syncTransaction.setSyncJobId(syncJob.getId());
-			syncTransaction.setSyncDateTime(new Timestamp(System.currentTimeMillis()));
-			syncTransaction.setStatusCode(status);
-			syncTransaction.setStatusComment(statusComment);
+		SyncControl syncControl = syncJobDAO.findById(syncJob.getId());
 
-			// TODO
-			syncTransaction.setTriggerPoint(triggerPoint);
+		// TODO to be auto generated and has to be remove from here
+		String transactionId = Integer.toString(random.nextInt(10000));
+		syncTransaction.setId(transactionId);
 
-			syncTransaction.setSyncFrom(RegistrationSystemPropertiesChecker.getMachineId());
+		syncTransaction.setSyncJobId(syncJob.getId());
 
-			// TODO
-			syncTransaction.setSyncTo("SERVER???");
+		syncTransaction.setSyncDateTime(new Timestamp(System.currentTimeMillis()));
+		syncTransaction.setStatusCode(status);
+		syncTransaction.setStatusComment(statusComment);
 
-			syncTransaction.setMachmId(RegistrationSystemPropertiesChecker.getMachineId());
-			// syncTransaction.setCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
-			// .getRegistrationCenterId());
+		// TODO
+		syncTransaction.setTriggerPoint(triggerPoint);
 
-			// TODO
-			/*
-			 * syncTransaction.setRefId("REFID"); syncTransaction.setRefType("REFTYPE");
-			 * syncTransaction.setSyncParam("SyncParam");
-			 */
+		syncTransaction.setSyncFrom(RegistrationSystemPropertiesChecker.getMachineId());
 
-			// TODO
-			syncTransaction.setLangCode("EN");
+		// TODO
+		syncTransaction.setSyncTo("SERVER???");
 
-			syncTransaction.setActive(true);
+		syncTransaction.setMachmId(RegistrationSystemPropertiesChecker.getMachineId());
+		// syncTransaction.setCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
+		// .getRegistrationCenterId());
 
-			syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
-			syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		// TODO
+		/*
+		 * syncTransaction.setRefId("REFID"); syncTransaction.setRefType("REFTYPE");
+		 * syncTransaction.setSyncParam("SyncParam");
+		 */
 
-			// TODO
-			// update by and timez info
+		// TODO
+		syncTransaction.setLangCode("EN");
 
-			// TODO
-			// ISDeleted and Timez info
+		syncTransaction.setActive(true);
 
-			//
+		syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 
-			jobTransactionDAO.saveSyncTransaction(syncTransaction);
-		} catch (NullPointerException nullPointerException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_TRANSACTION_NULL_POINTER_EXCEPTION,
-					nullPointerException.getMessage());
-		}
+		syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
+
+		// TODO
+		// update by and timez info
+
+		// TODO
+		// ISDeleted and Timez info
+
+		jobTransactionDAO.saveSyncTransaction(syncTransaction);
+
+		syncControlTransaction(syncControl, syncTransaction);
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Create Sync Transaction Ended");
+
+	}
+
+	private void syncControlTransaction(SyncControl syncControl, SyncTransaction syncTransaction) {
+		//
+		boolean isCreated = syncControl != null;
+		if (syncControl == null) {
+			syncControl = new SyncControl();
+			syncControl.setSyncJobId(syncTransaction.getSyncJobId());
+			syncControl.setIsActive(true);
+			syncControl.setMachineId(RegistrationSystemPropertiesChecker.getMachineId());
+			/*
+			 * // syncControl.setCntrId(SessionContext.getInstance().getUserContext().
+			 * getRegistrationCenterDetailDTO() // .getRegistrationCenterId());
+			 */
+			syncControl.setLangCode("EN");
+
+			syncControl.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			syncControl.setCrDtime(new Timestamp(System.currentTimeMillis()));
+
+		} else {
+			syncControl.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
+			syncControl.setUpdDtimes(new Timestamp(System.currentTimeMillis()));
+
+		}
+		syncControl.setSynctrnId(syncTransaction.getId());
+		syncControl.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
+
+		if (isCreated) {
+			syncJobDAO.save(syncControl);
+		} else {
+			syncJobDAO.update(syncControl);
+		}
 
 	}
 

@@ -18,6 +18,7 @@ import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.entity.Registration;
+import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.RegistrationRepository;
 import io.mosip.registration.repositories.SyncJobRepository;
@@ -79,6 +80,21 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_STATUS_VALIDATE,
 					runtimeException.toString());
 		}
+	}
+	
+	@Override
+	public void update(SyncControl syncControl) {
+		syncStatusRepository.update(syncControl);
+	}
+
+	@Override
+	public void save(SyncControl syncControl) {
+		syncStatusRepository.save(syncControl);
+	}
+
+	@Override
+	public SyncControl findById(String syncJobId) {		
+		return syncStatusRepository.findBySyncJobId(syncJobId);		
 	}
 
 }

@@ -12,7 +12,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.manager.BaseTransactionManager;
-import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
 
 /**
  * This class gives the information of job trigger
@@ -39,7 +38,6 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	@Override
 	public void triggerMisfired(Trigger trigger) {
 
-		System.out.println("Trigger REJECTED -1");
 		
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger mis-fired started");
@@ -60,7 +58,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger mis-fired ended");
 
-		System.out.println("Trigger REJECTED -2");
+		System.out.println("Trigger REJECTED ");
 		
 		
 	}
@@ -73,7 +71,6 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	@Override
 	public void triggerFired(Trigger trigger, JobExecutionContext context) {
 
-		System.out.println("Trigger Fired -1");
 		
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger fired started");
@@ -91,7 +88,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger fired ended");
 
-		System.out.println("Trigger Fired -2");
+		System.out.println("Trigger Fired");
 		
 	}
 
@@ -99,7 +96,6 @@ public class JobTriggerListener extends TriggerListenerSupport {
 	public void triggerComplete(Trigger trigger, JobExecutionContext context,
 			CompletedExecutionInstruction triggerInstructionCode) {
 
-		System.out.println("Trigger Comp -1");
 		
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger completed started");
@@ -121,7 +117,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger completed ended");
 
-		System.out.println("Trigger Comp -2");
+		System.out.println("Trigger Completed");
 		
 	}
 
