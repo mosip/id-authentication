@@ -53,6 +53,11 @@ import io.mosip.kernel.masterdata.exception.RegistrationCenterNotFoundException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingFetchHistoryException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingHistoryException;
 import io.mosip.kernel.masterdata.exception.RegistrationCenterUserMachineMappingNotFoundHistoryException;
+import io.mosip.kernel.masterdata.exception.DeviceFetchException;
+import io.mosip.kernel.masterdata.exception.DeviceMappingException;
+import io.mosip.kernel.masterdata.exception.DeviceNotFoundException;
+import io.mosip.kernel.masterdata.exception.DeviceSpecificationDataFatchException;
+import io.mosip.kernel.masterdata.exception.DeviceSpecificationNotFoundException;
 import io.mosip.kernel.masterdata.exception.TemplateFetchException;
 import io.mosip.kernel.masterdata.exception.TemplateMappingException;
 import io.mosip.kernel.masterdata.exception.TemplateNotFoundException;
@@ -66,10 +71,6 @@ import io.mosip.kernel.masterdata.exception.TitleNotFoundException;
  * @author Dharmesh Khandelwal
  *
  * @since 1.0.0
- */
-/**
- * @author M1044542
- *
  */
 @RestControllerAdvice
 public class MasterDataControllerAdvice {
@@ -343,6 +344,42 @@ public class MasterDataControllerAdvice {
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
 	}
 
+	@ExceptionHandler(MachineHistroyNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> machineHistoryNotFoundException(
+			final MachineHistroyNotFoundException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	/**
+	 * This method handle DeviceFetchException.
+	 * 
+	 * @param e
+	 *            the exception
+	 * @return the response entity.
+	 */
+	@ExceptionHandler(DeviceFetchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deviceFetchException(final DeviceFetchException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(DeviceMappingException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deviceMappingException(final DeviceMappingException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(DeviceNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deviceNotFoundException(final DeviceNotFoundException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
+	}
+
 	@ExceptionHandler(BlacklistedWordsMappingException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> blacklistedWordsMappingException(
 			final BlacklistedWordsMappingException e) {
@@ -486,7 +523,24 @@ public class MasterDataControllerAdvice {
 		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 	}
 
-	/**
+	
+	@ExceptionHandler(DeviceSpecificationNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deiceSpecificationNotFoundException(
+			final DeviceSpecificationNotFoundException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(DeviceSpecificationDataFatchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> deviceSpecificationDataFatchException(
+			final DeviceSpecificationDataFatchException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+	
+		/**
 	 * This method handles {@link IdTypeFetchException}.
 	 * 
 	 * @param idTypeFetchException

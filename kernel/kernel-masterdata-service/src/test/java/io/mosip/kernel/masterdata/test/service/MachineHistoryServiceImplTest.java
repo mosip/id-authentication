@@ -18,6 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.dao.DataRetrievalFailureException;
 
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
+import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.MachineHistoryFetchException;
 import io.mosip.kernel.masterdata.exception.MachineHistoryMappingException;
@@ -53,6 +54,7 @@ public class MachineHistoryServiceImplTest {
 
 	@Test
 	public void testGetMachineHistoryIdLangEffectDtimes() throws InterruptedException {
+		MachineHistoryResponseDto machineHistoryResponseDto = new MachineHistoryResponseDto();
 		List<MachineHistoryDto> machineHistoryDtoList = new ArrayList<MachineHistoryDto>();
 		MachineHistoryDto machineHistoryDto = new MachineHistoryDto();
 		machineHistoryDto.setId("1000");
@@ -85,21 +87,22 @@ public class MachineHistoryServiceImplTest {
 
 		List<MachineHistory> machineHistoryList = new ArrayList<MachineHistory>();
 		machineHistoryList.add(machineHistory);
-		Mockito.when(machineHistoryRepository.findByIdAndLangCodeAndEffectDtimesLessThanEqual(Mockito.anyString(),
+		machineHistoryResponseDto.setMachineHistoryDetails(machineHistoryDtoList);
+		Mockito.when(machineHistoryRepository.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString(), Mockito.any(LocalDateTime.class))).thenReturn(machineHistoryList);
 		Mockito.when(stringToLocalDateTimeConverter.convert(Mockito.anyString())).thenReturn(localDateTime);
 		Mockito.when(objMapper.mapAll(machineHistoryList, MachineHistoryDto.class)).thenReturn(machineHistoryDtoList);
-		List<MachineHistoryDto> actual = machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG",
+		MachineHistoryResponseDto actual = machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG",
 				"2018-10-29T00:00:05");
 		Assert.assertNotNull(actual);
-		Assert.assertTrue(actual.size() > 0);
+		Assert.assertTrue(actual.getMachineHistoryDetails().size() > 0);
 
 	}
 
 	@Test(expected = MachineHistroyNotFoundException.class)
 	public void testGetMachineHistoryIdLangThrowsExcetion() {
 		Mockito.when(stringToLocalDateTimeConverter.convert(Mockito.anyString())).thenReturn(localDateTime);
-		Mockito.when(machineHistoryRepository.findByIdAndLangCodeAndEffectDtimesLessThanEqual(Mockito.anyString(),
+		Mockito.when(machineHistoryRepository.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString(), Mockito.any())).thenReturn(null);
 
 		machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-10-29T00:00:05");
@@ -109,7 +112,7 @@ public class MachineHistoryServiceImplTest {
 	@Test(expected = MachineHistoryFetchException.class)
 	public void testGetMachineHistoryIdLangThrowsDataAccessExcetion() {
 		Mockito.when(stringToLocalDateTimeConverter.convert(Mockito.anyString())).thenReturn(localDateTime);
-		Mockito.when(machineHistoryRepository.findByIdAndLangCodeAndEffectDtimesLessThanEqual(Mockito.anyString(),
+		Mockito.when(machineHistoryRepository.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString(), Mockito.any(LocalDateTime.class))).thenThrow(DataRetrievalFailureException.class);
 		machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-10-29T00:00:05");
 
@@ -117,6 +120,19 @@ public class MachineHistoryServiceImplTest {
 
 	@Test(expected = MachineHistoryMappingException.class)
 	public void testGetMachineHistoryIdLangThrowsIllegalArgumentExcetion() {
+
+		MachineHistory machineHistory = new MachineHistory();
+		machineHistory.setId("1000");
+		machineHistory.setName("HP");
+		machineHistory.setSerialNum("1234567890");
+		machineHistory.setMacAddress("100.100.100.80");
+		machineHistory.setLangCode("ENG");
+		machineHistory.setIsActive(true);
+
+		List<MachineHistory> machineHistoryList = new ArrayList<MachineHistory>();
+		machineHistoryList.add(machineHistory);
+		Mockito.when(machineHistoryRepository.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString(), Mockito.any())).thenReturn(machineHistoryList);
 		Mockito.when(objMapper.mapAll(machineHistoryList, MachineHistoryDto.class))
 				.thenThrow(IllegalArgumentException.class);
 		machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-10-29T00:00:05");
@@ -125,6 +141,18 @@ public class MachineHistoryServiceImplTest {
 
 	@Test(expected = MachineHistoryMappingException.class)
 	public void testGetMachineHistoryIdLangThrowsConfigurationExcetion() {
+		MachineHistory machineHistory = new MachineHistory();
+		machineHistory.setId("1000");
+		machineHistory.setName("HP");
+		machineHistory.setSerialNum("1234567890");
+		machineHistory.setMacAddress("100.100.100.80");
+		machineHistory.setLangCode("ENG");
+		machineHistory.setIsActive(true);
+
+		List<MachineHistory> machineHistoryList = new ArrayList<MachineHistory>();
+		machineHistoryList.add(machineHistory);
+		Mockito.when(machineHistoryRepository.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString(), Mockito.any())).thenReturn(machineHistoryList);
 		Mockito.when(objMapper.mapAll(machineHistoryList, MachineHistoryDto.class))
 				.thenThrow(ConfigurationException.class);
 		machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-10-29T00:00:05");
@@ -133,6 +161,18 @@ public class MachineHistoryServiceImplTest {
 
 	@Test(expected = MachineHistoryMappingException.class)
 	public void testGetMachineHistoryIdLangThrowsMappingExcetion() {
+		MachineHistory machineHistory = new MachineHistory();
+		machineHistory.setId("1000");
+		machineHistory.setName("HP");
+		machineHistory.setSerialNum("1234567890");
+		machineHistory.setMacAddress("100.100.100.80");
+		machineHistory.setLangCode("ENG");
+		machineHistory.setIsActive(true);
+
+		List<MachineHistory> machineHistoryList = new ArrayList<MachineHistory>();
+		machineHistoryList.add(machineHistory);
+		Mockito.when(machineHistoryRepository.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString(), Mockito.any())).thenReturn(machineHistoryList);
 		Mockito.when(objMapper.mapAll(machineHistoryList, MachineHistoryDto.class)).thenThrow(MappingException.class);
 		machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-10-29T00:00:05");
 

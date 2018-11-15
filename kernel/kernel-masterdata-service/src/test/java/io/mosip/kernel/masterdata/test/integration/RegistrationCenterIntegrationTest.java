@@ -125,7 +125,7 @@ public class RegistrationCenterIntegrationTest {
 	public void getAllRegistrationCenterTest() throws Exception {
 		centers.add(center);
 		centers.add(centerBangaloreCentral);
-		when(repository.findAll(RegistrationCenter.class)).thenReturn(centers);
+		when(repository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class)).thenReturn(centers);
 		MvcResult result = mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();

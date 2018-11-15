@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 
 /**
  * 
- * @author Uday Kumar
+ * @author Megha Tanga
  * @version 1.0.0
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeviceSpecificationResponseDto {
-	private List<DeviceSpecificationDto> devicespecifications;
+public class MachineDetailResponseDto {
+	private List<MachineDetailDto> machineDetails;
 }
+

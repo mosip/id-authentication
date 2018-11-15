@@ -34,6 +34,14 @@ public class MachineDetailDto {
 	 */
 	private String macAddress;
 	/**
+	 * Field for machine IP address
+	 */
+	private String ipAddress;
+	/**
+	 * Field for machine specification Id
+	 */
+	private String machineSpecId;
+	/**
 	 * Field for language code
 	 */
 	private String langCode;
