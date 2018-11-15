@@ -20,7 +20,7 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	private static final long serialVersionUID = 8686723876595925323L;
 
 	@EmbeddedId
-	@Column(name = "pk_cntrum_usr_id")
+	@Column(name = "pk_cntrmusr_usr_id")
 	private UserMachineMappingID userMachineMappingId;
 
 	@ManyToOne
@@ -30,7 +30,7 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
-	@Column(name = "del_dtimesz")
+	@Column(name = "del_dtimes")
 	private Timestamp deletedDateTime;
 
 	/**

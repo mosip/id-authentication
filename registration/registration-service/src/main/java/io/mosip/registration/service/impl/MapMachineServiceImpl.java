@@ -66,7 +66,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 		UserMachineMappingID userID = new UserMachineMappingID();
 		userID.setUserID(userMachineMappingDTO.getUserID());
 		userID.setCentreID(userMachineMappingDTO.getCentreID());
-		userID.setMachineID(userMachineMappingDTO.getMachineID());
+		userID.setMachineID(userMachineMappingDTO.getStationID());
 
 		boolean isActive = userMachineMappingDTO.getStatus()
 				.equalsIgnoreCase(RegistrationConstants.MACHINE_MAPPING_ACTIVE);
@@ -214,6 +214,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 		StringBuilder role = new StringBuilder();
 		String roleCode = "";
 		String status = RegistrationConstants.USER_IN_ACTIVE;
+		
 		if (!registrationUserDetail.getUserRole().isEmpty()) {
 			/* List of roles with comma separated */
 			registrationUserDetail.getUserRole().forEach(registrationUserRole -> role
@@ -224,7 +225,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 		}
 		if (!registrationUserDetail.getUserMachineMapping().isEmpty()) {
 			for (UserMachineMapping userMachineMapping : registrationUserDetail.getUserMachineMapping()) {
-				if (userMachineMapping.getUserMachineMappingId().getMachineID().equals(machineID)) {
+				if (userMachineMapping.getUserMachineMappingId().getMachineID().equals(stationID)) {
 					status = userMachineMapping.getIsActive() ? RegistrationConstants.USER_ACTIVE
 							: RegistrationConstants.USER_IN_ACTIVE;
 				}
