@@ -12,19 +12,23 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/** Entity class for User and Registration mappings
+/**
+ * Entity class for User and Registration mappings
+ * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0
  *
  */
-@Entity
-@Table(name = "reg_center_user_machine_h", schema = "master")
+@EqualsAndHashCode(callSuper = false)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationCenterUserMachineHistory implements Serializable {
+@Entity
+@Table(name = "reg_center_user_machine_h", schema = "master")
+public class RegistrationCenterUserMachineHistory extends BaseEntity implements Serializable {
 
 	/**
 	 * Generated Serial Id
@@ -40,48 +44,6 @@ public class RegistrationCenterUserMachineHistory implements Serializable {
 			@AttributeOverride(name = "usrId", column = @Column(name = "usr_id", nullable = false, length = 36)),
 			@AttributeOverride(name = "machineId", column = @Column(name = "machine_id", nullable = false, length = 36)) })
 	private RegistrationCenterUserMachineHistoryId id;
-
-	/**
-	 * Mapping is active or not
-	 */
-	@Column(name = "is_active", nullable = false)
-	private boolean isActive;
-
-	/**
-	 * Created By
-	 */
-	@Column(name = "cr_by", nullable = false, length = 24)
-	private String createdBy;
-
-	/**
-	 * Created Times
-	 */
-	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdtime;
-
-	/**
-	 * Updated By
-	 */
-	@Column(name = "upd_by", length = 24)
-	private String updatedBy;
-
-	/**
-	 * Updated Times
-	 */
-	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedtime;
-
-	/**
-	 *  Is Deleted or not
-	 */
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	/**
-	 * Deletion Times
-	 */
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedtime;
 
 	/**
 	 * Effective TimeStamp

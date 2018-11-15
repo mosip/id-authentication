@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -19,12 +19,13 @@ import lombok.NoArgsConstructor;
  * @version 1.0.0
  * @since 06-11-2018
  */
-@Entity
-@Table(name = "blacklisted_words", schema = "master")
+@EqualsAndHashCode(callSuper = false)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BlacklistedWords implements Serializable {
+@Entity
+@Table(name = "blacklisted_words", schema = "master")
+public class BlacklistedWords extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -402658536057675404L;
 
@@ -37,26 +38,5 @@ public class BlacklistedWords implements Serializable {
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-
-	@Column(name = "is_active", nullable = false)
-	private Boolean isActive;
-
-	@Column(name = "cr_by", nullable = false, length = 24)
-	private String createdBy;
-
-	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdDateTime;
-
-	@Column(name = "upd_by", length = 24)
-	private String updatedBy;
-
-	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedDateTime;
-
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedDateTime;
 
 }

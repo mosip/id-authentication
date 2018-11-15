@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.persistence.Column;
@@ -13,6 +12,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -21,14 +21,15 @@ import lombok.NoArgsConstructor;
  *
  */
 @NamedNativeQueries({
-		@NamedNativeQuery(name = "RegistrationCenter.findRegistrationCentersByLat", query = "SELECT id, name, cntr_typ_code, addr_line1, addr_line2, addr_line3,latitude, longitude, location_code,holiday_loc_code,contact_phone, number_of_stations,working_hours, lang_code, is_active, cr_by, cr_dtimesz, upd_by,upd_dtimesz, is_deleted, del_dtimesz FROM (SELECT r.id, r.name, r.cntr_typ_code, r.addr_line1, r.addr_line2, r.addr_line3,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.number_of_stations, r.working_hours, r.lang_code,r.is_active, r.cr_by, r.cr_dtimesz, r.upd_by,r.upd_dtimesz, r.is_deleted, r.del_dtimesz,(2 * 3961 * asin(sqrt((sin(radians((:latitude - CAST(r.latitude AS FLOAT)) / 2))) ^ 2 + cos(radians(CAST(r.latitude AS FLOAT))) * cos(radians(:latitude)) * (sin(radians((:longitude - CAST(r.longitude AS FLOAT)) / 2))) ^ 2))) AS distance FROM master.registration_center r) ss where distance < :proximitydistance and lang_code = :langcode order by distance asc;", resultClass = RegistrationCenter.class) })
+		@NamedNativeQuery(name = "RegistrationCenter.findRegistrationCentersByLat", query = "SELECT id, name, cntrtyp_code, addr_line1, addr_line2, addr_line3,number_of_kiosks,per_kiosk_process_time,process_end_time,process_start_time,latitude, longitude, location_code,holiday_loc_code,contact_phone,working_hours, lang_code, is_active, cr_by, cr_dtimes, upd_by,upd_dtimes, is_deleted, del_dtimes FROM (SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.process_end_time,r.process_start_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by, r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes,(2 * 3961 * asin(sqrt((sin(radians((:latitude - CAST(r.latitude AS FLOAT)) / 2))) ^ 2 + cos(radians(CAST(r.latitude AS FLOAT))) * cos(radians(:latitude)) * (sin(radians((:longitude - CAST(r.longitude AS FLOAT)) / 2))) ^ 2))) AS distance FROM master.registration_center r) ss where distance < :proximitydistance and lang_code = :langcode order by distance asc;", resultClass = RegistrationCenter.class) })
 
-@Entity
-@Table(name = "registration_center", schema = "master")
+@EqualsAndHashCode(callSuper = false)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationCenter implements Serializable {
+@Entity
+@Table(name = "registration_center", schema = "master")
+public class RegistrationCenter extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -8541947587557590379L;
 
@@ -84,24 +85,4 @@ public class RegistrationCenter implements Serializable {
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
 
-	@Column(name = "is_active", nullable = false)
-	private boolean isActive;
-
-	@Column(name = "cr_by", nullable = false, length = 24)
-	private String createdBy;
-
-	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdtimes;
-
-	@Column(name = "upd_by", length = 24)
-	private String updatedBy;
-
-	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedtimes;
-
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedtimes;
 }
