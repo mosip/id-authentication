@@ -66,11 +66,11 @@ public class SyncJobDAOImplTest {
 		registrationsList.add(registration2);
 
 		SyncControl syncControl1 = new SyncControl();
-		syncControl1.setsyncJobId("MDS_J00001");
-		syncControl1.setLastSyncDtimez(timestamp);
+		syncControl1.setSyncJobId("MDS_J00001");
+		syncControl1.setLastSyncDtimes(timestamp);
 		SyncControl syncControl2 = new SyncControl();
-		syncControl2.setsyncJobId("LER_J00009");
-		syncControl2.setLastSyncDtimez(timestamp);
+		syncControl2.setSyncJobId("LER_J00009");
+		syncControl2.setLastSyncDtimes(timestamp);
 
 		comparableList.add(syncControl1);
 		comparableList.add(syncControl2);
@@ -79,10 +79,10 @@ public class SyncJobDAOImplTest {
 		Mockito.when(registrationRepository.findByClientStatusCodeIn(statusCodes)).thenReturn(registrationsList);
 
 		syncJobnfo = syncJobDAOImpl.getSyncStatus();
-		assertEquals("MDS_J00001", syncJobnfo.getSyncControlList().get(0).getsyncJobId());
-		assertEquals("LER_J00009", syncJobnfo.getSyncControlList().get(1).getsyncJobId());
-		assertEquals(timestamp, syncJobnfo.getSyncControlList().get(0).getLastSyncDtimez());
-		assertEquals(timestamp, syncJobnfo.getSyncControlList().get(1).getLastSyncDtimez());
+		assertEquals("MDS_J00001", syncJobnfo.getSyncControlList().get(0).getSyncJobId());
+		assertEquals("LER_J00009", syncJobnfo.getSyncControlList().get(1).getSyncJobId());
+		assertEquals(timestamp, syncJobnfo.getSyncControlList().get(0).getLastSyncDtimes());
+		assertEquals(timestamp, syncJobnfo.getSyncControlList().get(1).getLastSyncDtimes());
 		if (syncJobnfo.getYetToExportCount() == registrationsList.size())
 			;
 		{

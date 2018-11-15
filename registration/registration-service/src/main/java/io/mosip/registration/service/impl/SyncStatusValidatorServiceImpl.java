@@ -122,16 +122,16 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 				for (SyncControl syncControl : syncJobInfo.getSyncControlList()) {
 
 					// Comment:
-					Date lastSyncDate = new Date(syncControl.getLastSyncDtimez().getTime());
+					Date lastSyncDate = new Date(syncControl.getLastSyncDtimes().getTime());
 
 					LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 							"Checking the actualdaysfrequency with the configured frequency [" + lastSyncDate + "]");
 
-					if (map.get(syncControl.getsyncJobId().trim()) <= getActualDays(lastSyncDate)) {
+					if (map.get(syncControl.getSyncJobId().trim()) <= getActualDays(lastSyncDate)) {
 
 						syncFailureCount++;
 
-						if (RegistrationConstants.OPT_TO_REG_LER_J00009.equals(syncControl.getsyncJobId().trim())) {
+						if (RegistrationConstants.OPT_TO_REG_LER_J00009.equals(syncControl.getSyncJobId().trim())) {
 							getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_002, RegistrationConstants.OPT_TO_REG_ICS‌_002_MSG,
 									RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 

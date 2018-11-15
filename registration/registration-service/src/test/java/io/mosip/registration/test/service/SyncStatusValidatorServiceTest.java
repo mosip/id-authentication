@@ -79,11 +79,11 @@ public class SyncStatusValidatorServiceTest {
 	@Test
 	public void testValidateSyncStatusFailureCase() {
 		SyncControl syncControl1 = new SyncControl();
-		syncControl1.setsyncJobId("MDS_J00001");
-		syncControl1.setLastSyncDtimez(new Timestamp(System.currentTimeMillis()));
+		syncControl1.setSyncJobId("MDS_J00001");
+		syncControl1.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
 		SyncControl syncControl2 = new SyncControl();
-		syncControl2.setsyncJobId("LER_J00009");
-		syncControl2.setLastSyncDtimez(new Timestamp(System.currentTimeMillis()));
+		syncControl2.setSyncJobId("LER_J00009");
+		syncControl2.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
 
 		List<SyncControl> listSync = new ArrayList<>();
 		listSync.add(syncControl1);
@@ -130,11 +130,11 @@ public class SyncStatusValidatorServiceTest {
 	@Test
 	public void testValidateSyncStatusSuccessCase() {
 		SyncControl syncControl1 = new SyncControl();
-		syncControl1.setsyncJobId("MDS_J00001");
-		syncControl1.setLastSyncDtimez(new Timestamp(System.currentTimeMillis()));
+		syncControl1.setSyncJobId("MDS_J00001");
+		syncControl1.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
 		SyncControl syncControl2 = new SyncControl();
-		syncControl2.setsyncJobId("LER_J00009");
-		syncControl2.setLastSyncDtimez(new Timestamp(System.currentTimeMillis()));
+		syncControl2.setSyncJobId("LER_J00009");
+		syncControl2.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
 
 		List<SyncControl> listSync = new ArrayList<>();
 		listSync.add(syncControl1);
@@ -165,11 +165,11 @@ public class SyncStatusValidatorServiceTest {
 	@Test
 	public void testValidateGpsSyncStatusFailureCase() {
 		SyncControl syncControl1 = new SyncControl();
-		syncControl1.setsyncJobId("MDS_J00001");
-		syncControl1.setLastSyncDtimez(new Timestamp(System.currentTimeMillis()));
+		syncControl1.setSyncJobId("MDS_J00001");
+		syncControl1.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
 		SyncControl syncControl2 = new SyncControl();
-		syncControl2.setsyncJobId("LER_J00009");
-		syncControl2.setLastSyncDtimez(new Timestamp(System.currentTimeMillis()));
+		syncControl2.setSyncJobId("LER_J00009");
+		syncControl2.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
 
 		List<SyncControl> listSync = new ArrayList<>();
 		listSync.add(syncControl1);

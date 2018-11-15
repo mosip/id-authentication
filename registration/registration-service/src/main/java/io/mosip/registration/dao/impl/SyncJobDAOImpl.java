@@ -36,8 +36,7 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 			RegistrationClientStatusCode.REJECTED.getCode(), RegistrationClientStatusCode.APPROVED.getCode(),
 			RegistrationClientStatusCode.CORRECTION.getCode(), RegistrationClientStatusCode.UIN_UPDATE.getCode(),
 			RegistrationClientStatusCode.UIN_LOST.getCode(),
-			RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode(), RegistrationClientStatusCode.ON_HOLD.getCode(),
-			RegistrationClientStatusCode.PACKET_ERROR.getCode());
+			RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode(), RegistrationClientStatusCode.ON_HOLD.getCode());
 
 	/** Object for Sync Status Repository. */
 	@Autowired
