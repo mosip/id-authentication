@@ -73,7 +73,6 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 				registrationTxn.setRegId(registration.getId());
 				registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
 				registrationTxn.setLangCode("EN");
-				registrationTxn.setIsActive(true);
 				registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 				registrationTxn.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
