@@ -29,7 +29,7 @@ public interface DeviceRepository extends BaseRepository<Device, String> {
 	 */
 
 	List<Device> findByLangCode(String langCode);
-	
+
 	/**
 	 * This method trigger query to fetch the Device detail for the given language
 	 * code and Device Type code.
