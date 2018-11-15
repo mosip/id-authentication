@@ -14,8 +14,12 @@ import io.mosip.kernel.masterdata.entity.MachineDetail;
  */
 
 public interface MachineDetailRepository extends BaseRepository<MachineDetail, String> {
-	
-	
+	/**
+	 * This method trigger query to fetch the all Machine details
+	 * code.
+	 * 
+	 * @return MachineDetail fetched from database
+	 */
 	List<MachineDetail> findAllByIsActiveTrueAndIsDeletedFalse();
 	/**
 	 * This method trigger query to fetch the Machine detail for the given machine id and language
