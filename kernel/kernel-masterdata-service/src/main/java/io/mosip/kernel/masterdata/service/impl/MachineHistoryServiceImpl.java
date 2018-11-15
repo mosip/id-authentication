@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.constant.MachineHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
+import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
 import io.mosip.kernel.masterdata.exception.MachineDetailFetchException;
 import io.mosip.kernel.masterdata.exception.MachineHistoryMappingException;
@@ -90,12 +91,13 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	 * 
 	 */
 	@Override
-	public List<MachineHistoryDto> getMachineHistroyIdLangEffDTime(String id, String langCode, String effDtime) {
+	public MachineHistoryResponseDto getMachineHistroyIdLangEffDTime(String id, String langCode, String effDtime) {
 
 		LocalDateTime lDateAndTime = stringToLocalDateTimeConverter.convert(effDtime);
 
 		List<MachineHistory> macHistoryList = null;
 		List<MachineHistoryDto> machineHistoryDtoList = null;
+		MachineHistoryResponseDto machineHistoryResponseDto = new MachineHistoryResponseDto();
 		try {
 			macHistoryList = macRepo.findByIdAndLangCodeAndEffectDtimesLessThanEqual(id, langCode, lDateAndTime);
 		} catch (DataAccessException dataAccessLayerException) {
@@ -103,7 +105,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (macHistoryList != null) {
+		if (macHistoryList != null && !macHistoryList.isEmpty()) {
 			try {
 				machineHistoryDtoList = objMapper.mapAll(macHistoryList, MachineHistoryDto.class);
 			}catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
@@ -116,6 +118,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 					MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return machineHistoryDtoList;
+		machineHistoryResponseDto.setMachineHistoryDetails(machineHistoryDtoList);
+		return machineHistoryResponseDto;
 	}
 }

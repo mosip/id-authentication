@@ -1,8 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
-import java.util.List;
 
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
 
 /**
  * This interface has abstract methods to fetch a Machine Details
@@ -32,5 +32,5 @@ public interface MachineDetailService {
 	 * @return Returning all Machines Details
 	 *
 	 */
-	List<MachineDetailDto> getMachineDetailAll();
+	MachineDetailResponseDto getMachineDetailAll();
 }

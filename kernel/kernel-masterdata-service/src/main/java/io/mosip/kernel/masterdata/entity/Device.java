@@ -64,7 +64,7 @@ public class Device implements Serializable {
 	 * Field for device specific id
 	 */
 	@Column(name = "dspec_id", nullable = false, length = 36)
-	private String dspecId;
+	private String deviceSpecId;
 
 	/**
 	 * Field for language code

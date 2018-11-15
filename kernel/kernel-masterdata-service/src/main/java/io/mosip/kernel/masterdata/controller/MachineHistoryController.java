@@ -5,7 +5,6 @@
 
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
+import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 
 /**
@@ -44,7 +43,7 @@ public class MachineHistoryController {
 	 *         code and effective date time
 	 */
 	@GetMapping(value = "/{id}/{languagecode}/{effdatetimes}")
-	public List<MachineHistoryDto> getMachineHistoryIdLangEff(@PathVariable("id") String machineId,
+	public MachineHistoryResponseDto getMachineHistoryIdLangEff(@PathVariable("id") String machineId,
 			@PathVariable("languagecode") String langCode, @PathVariable("effdatetimes") String dateAndTime) {
 
 		return macHistoryService.getMachineHistroyIdLangEffDTime(machineId, langCode, dateAndTime);

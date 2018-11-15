@@ -16,6 +16,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.masterdata.controller.MachineDetailController;
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
 import io.mosip.kernel.masterdata.service.MachineDetailService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -64,10 +65,12 @@ public class MachineDetailControllerTest {
 		machineDetailDto.setLangCode("ENG");
 		machineDetailDto.setActive(true);
 		machineDetailDtoList.add(machineDetailDto);
-		Mockito.when(macService.getMachineDetailAll()).thenReturn(machineDetailDtoList);
-		List<MachineDetailDto> actual = machineDetailController.getMachineDetailAll();
+		MachineDetailResponseDto machineDetailResponseDto = new MachineDetailResponseDto();
+		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
+		Mockito.when(macService.getMachineDetailAll()).thenReturn(machineDetailResponseDto);
+		MachineDetailResponseDto actual = machineDetailController.getMachineDetailAll();
 
 		Assert.assertNotNull(actual);
-		Assert.assertTrue(actual.size() > 0);
+		Assert.assertTrue(actual.getMachineDetails().size() > 0);
 	}
 }

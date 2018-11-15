@@ -32,7 +32,7 @@ public class DeviceDto {
 	/**
 	 * Field for device device specification Id
 	 */
-	private String dspecId;
+	private String deviceSpecId;
 	/**
 	 * Field for device mac address
 	 */

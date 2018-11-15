@@ -18,6 +18,7 @@ import org.modelmapper.MappingException;
 import org.springframework.dao.DataRetrievalFailureException;
 
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
 import io.mosip.kernel.masterdata.entity.MachineDetail;
 import io.mosip.kernel.masterdata.exception.MachineDetailFetchException;
 import io.mosip.kernel.masterdata.exception.MachineDetailMappingException;
@@ -119,8 +120,8 @@ public class MachineDetailServiceImplTest {
 		machineDetailDto.setMacAddress("100.100.100.80");
 		machineDetailDto.setLangCode("ENG");
 		machineDetailDto.setActive(true);
-
 		machineDetailDtoList.add(machineDetailDto);
+		
 		MachineDetail machineDetail = new MachineDetail();
 		machineDetail.setId("1000");
 		machineDetail.setName("HP");
@@ -134,10 +135,10 @@ public class MachineDetailServiceImplTest {
 		Mockito.when(machineDetailsRepository.findAll()).thenReturn(machineDetailList);
 		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
 				.thenReturn(machineDetailDtoList);
-		List<MachineDetailDto> actual = machineDetailServiceImpl.getMachineDetailAll();
+		MachineDetailResponseDto actual = machineDetailServiceImpl.getMachineDetailAll();
 
 		Assert.assertNotNull(actual);
-		Assert.assertTrue(actual.size() > 0);
+		Assert.assertTrue(actual.getMachineDetails().size() > 0);
 
 	}
 
@@ -157,6 +158,17 @@ public class MachineDetailServiceImplTest {
 
 	@Test(expected = MachineDetailMappingException.class)
 	public void testGetMachineDetailAllThrowsIllegalArgumentExcetion() {
+		MachineDetail machineDetail = new MachineDetail();
+		machineDetail.setId("1000");
+		machineDetail.setName("HP");
+		machineDetail.setSerialNum("1234567890");
+		machineDetail.setMacAddress("100.100.100.80");
+		machineDetail.setLangCode("ENG");
+		machineDetail.setActive(true);
+
+		List<MachineDetail> machineDetailList = new ArrayList<MachineDetail>();
+		machineDetailList.add(machineDetail);
+		Mockito.when(machineDetailsRepository.findAll()).thenReturn(machineDetailList);
 		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
 				.thenThrow(IllegalArgumentException.class);
 		machineDetailServiceImpl.getMachineDetailAll();
@@ -165,6 +177,17 @@ public class MachineDetailServiceImplTest {
 
 	@Test(expected = MachineDetailMappingException.class)
 	public void testGetMachineDetailAllThrowsMappingExcetion() {
+		MachineDetail machineDetail = new MachineDetail();
+		machineDetail.setId("1000");
+		machineDetail.setName("HP");
+		machineDetail.setSerialNum("1234567890");
+		machineDetail.setMacAddress("100.100.100.80");
+		machineDetail.setLangCode("ENG");
+		machineDetail.setActive(true);
+
+		List<MachineDetail> machineDetailList = new ArrayList<MachineDetail>();
+		machineDetailList.add(machineDetail);
+		Mockito.when(machineDetailsRepository.findAll()).thenReturn(machineDetailList);
 		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
 				.thenThrow(MappingException.class);
 		machineDetailServiceImpl.getMachineDetailAll();
