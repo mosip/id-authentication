@@ -66,7 +66,7 @@ public class MachineDetailServiceImplTest {
 		machineDetail.setMacAddress("100.100.100.80");
 		machineDetail.setLangCode("ENG");
 		machineDetail.setIsActive(true);
-		Mockito.when(machineDetailsRepository.findAllByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(machineDetailsRepository.findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineDetail);
 		Mockito.when(objectMapperUtil.map(machineDetail, MachineDetailDto.class)).thenReturn(machineDetailDto);
 		MachineDetailResponseIdDto actual = machineDetailServiceImpl.getMachineDetailIdLang(Mockito.anyString(),
@@ -78,7 +78,7 @@ public class MachineDetailServiceImplTest {
 
 	@Test(expected = MachineDetailNotFoundException.class)
 	public void testGetMachineDetailIdLangThrowsMachineNotFoundExcetion() {
-		Mockito.when(machineDetailsRepository.findAllByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(machineDetailsRepository.findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
 		machineDetailServiceImpl.getMachineDetailIdLang("1000", "ENG");
 
@@ -86,7 +86,7 @@ public class MachineDetailServiceImplTest {
 
 	@Test(expected = MachineDetailFetchException.class)
 	public void testGetMachineDetailIdLangThrowsDataAccessExcetion() {
-		Mockito.when(machineDetailsRepository.findAllByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(machineDetailsRepository.findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		machineDetailServiceImpl.getMachineDetailIdLang("1000", "ENG");
 
@@ -94,7 +94,7 @@ public class MachineDetailServiceImplTest {
 
 	@Test(expected = MachineDetailMappingException.class)
 	public void testGetMachineDetailIdLangThrowsIllegalArgumentExcetion() {
-		Mockito.when(machineDetailsRepository.findAllByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(machineDetailsRepository.findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineDetail);
 		Mockito.when(objectMapperUtil.map(machineDetail, MachineDetailDto.class))
 				.thenThrow(IllegalArgumentException.class);
@@ -104,7 +104,7 @@ public class MachineDetailServiceImplTest {
 
 	@Test(expected = MachineDetailMappingException.class)
 	public void testGetMachineDetailIdLangThrowsMappingExcetion() {
-		Mockito.when(machineDetailsRepository.findAllByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(machineDetailsRepository.findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineDetail);
 		Mockito.when(objectMapperUtil.map(machineDetail, MachineDetailDto.class)).thenThrow(MappingException.class);
 		machineDetailServiceImpl.getMachineDetailIdLang("1000", "ENG");
@@ -133,7 +133,7 @@ public class MachineDetailServiceImplTest {
 
 		List<MachineDetail> machineDetailList = new ArrayList<MachineDetail>();
 		machineDetailList.add(machineDetail);
-		Mockito.when(machineDetailsRepository.findAll()).thenReturn(machineDetailList);
+		Mockito.when(machineDetailsRepository.findAllByIsActiveTrueAndIsDeletedFalse()).thenReturn(machineDetailList);
 		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
 				.thenReturn(machineDetailDtoList);
 		MachineDetailResponseDto actual = machineDetailServiceImpl.getMachineDetailAll();
@@ -145,14 +145,14 @@ public class MachineDetailServiceImplTest {
 
 	@Test(expected = MachineDetailNotFoundException.class)
 	public void testGetMachineDetailAllThrowsMachineNotFoundExcetion() {
-		Mockito.when(machineDetailsRepository.findAll()).thenThrow(MachineDetailNotFoundException.class);
+		Mockito.when(machineDetailsRepository.findAllByIsActiveTrueAndIsDeletedFalse()).thenThrow(MachineDetailNotFoundException.class);
 		machineDetailServiceImpl.getMachineDetailAll();
 
 	}
 
 	@Test(expected = MachineDetailFetchException.class)
 	public void testGetMachineDetailAllThrowsDataAccessExcetion() {
-		Mockito.when(machineDetailsRepository.findAll()).thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(machineDetailsRepository.findAllByIsActiveTrueAndIsDeletedFalse()).thenThrow(DataRetrievalFailureException.class);
 		machineDetailServiceImpl.getMachineDetailAll();
 
 	}
@@ -169,7 +169,7 @@ public class MachineDetailServiceImplTest {
 
 		List<MachineDetail> machineDetailList = new ArrayList<MachineDetail>();
 		machineDetailList.add(machineDetail);
-		Mockito.when(machineDetailsRepository.findAll()).thenReturn(machineDetailList);
+		Mockito.when(machineDetailsRepository.findAllByIsActiveTrueAndIsDeletedFalse()).thenReturn(machineDetailList);
 		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
 				.thenThrow(IllegalArgumentException.class);
 		machineDetailServiceImpl.getMachineDetailAll();
@@ -188,7 +188,7 @@ public class MachineDetailServiceImplTest {
 
 		List<MachineDetail> machineDetailList = new ArrayList<MachineDetail>();
 		machineDetailList.add(machineDetail);
-		Mockito.when(machineDetailsRepository.findAll()).thenReturn(machineDetailList);
+		Mockito.when(machineDetailsRepository.findAllByIsActiveTrueAndIsDeletedFalse()).thenReturn(machineDetailList);
 		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
 				.thenThrow(MappingException.class);
 		machineDetailServiceImpl.getMachineDetailAll();
@@ -197,7 +197,7 @@ public class MachineDetailServiceImplTest {
 
 	@Test(expected = MachineDetailNotFoundException.class)
 	public void testGetMachineDetailAllThrowsMachineDetailNotFoundException() {
-		doReturn(null).when(machineDetailsRepository).findAll();
+		doReturn(null).when(machineDetailsRepository).findAllByIsActiveTrueAndIsDeletedFalse();
 		machineDetailServiceImpl.getMachineDetailAll();
 
 	}

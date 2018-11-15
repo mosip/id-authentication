@@ -72,7 +72,7 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 		MachineDetailDto machineDetailDto = null;
 		MachineDetailResponseIdDto machineDetailResponseIdDto = new MachineDetailResponseIdDto();
 		try {
-			machineDetail = machineDetailRepository.findAllByIdAndLangCode(id, langCode);
+			machineDetail = machineDetailRepository.findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(id, langCode);
 		} catch (DataAccessException dataAccessLayerException) {
 			throw new MachineDetailFetchException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
@@ -117,7 +117,7 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 		List<MachineDetailDto> machineDetailDtoList = null;
 		MachineDetailResponseDto machineDetailResponseDto = new MachineDetailResponseDto();
 		try {
-			machineDetailList = machineDetailRepository.findAll();
+			machineDetailList = machineDetailRepository.findAllByIsActiveTrueAndIsDeletedFalse();
 
 		} catch (DataAccessException dataAccessLayerException) {
 			throw new MachineDetailFetchException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),

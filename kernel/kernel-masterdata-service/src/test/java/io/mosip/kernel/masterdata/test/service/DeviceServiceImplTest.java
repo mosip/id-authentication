@@ -67,7 +67,7 @@ public class DeviceServiceImplTest {
 		deviceDto.setName("ENG");
 		List<DeviceDto> deviceDtoList = new ArrayList<>();
 		deviceDtoList.add(deviceDto);
-		Mockito.when(deviceRepository.findByLangCode(Mockito.anyString())).thenReturn(deviceList);
+		Mockito.when(deviceRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(deviceList);
 		Mockito.when(objectMapperUtil.mapAll(deviceList, DeviceDto.class)).thenReturn(deviceDtoList);
 		DeviceResponseDto actual = deviceServiceImpl.getDeviceLangCode("ENG");
 		assertNotNull(actual);
@@ -76,14 +76,14 @@ public class DeviceServiceImplTest {
 
 	@Test(expected = DeviceNotFoundException.class)
 	public void testGetDeviceLangCodeThrowsDeviceNotFoundException() {
-		doReturn(null).when(deviceRepository).findByLangCode(Mockito.anyString());
+		doReturn(null).when(deviceRepository).findByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString());
 		deviceServiceImpl.getDeviceLangCode("ENG");
 
 	}
 
 	@Test(expected = DeviceFetchException.class)
 	public void testGetMachineDetailAllThrowsDataAccessExcetion() {
-		Mockito.when(deviceRepository.findByLangCode(Mockito.anyString()))
+		Mockito.when(deviceRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		deviceServiceImpl.getDeviceLangCode("ENG");
 
@@ -96,7 +96,7 @@ public class DeviceServiceImplTest {
 		device.setName("Laptop");
 		List<Device> deviceList = new ArrayList<>();
 		deviceList.add(device);
-		Mockito.when(deviceRepository.findByLangCode(Mockito.anyString())).thenReturn(deviceList);
+		Mockito.when(deviceRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(deviceList);
 		Mockito.when(objectMapperUtil.mapAll(deviceList, DeviceDto.class)).thenThrow(IllegalArgumentException.class);
 		deviceServiceImpl.getDeviceLangCode("ENG");
 
@@ -109,7 +109,7 @@ public class DeviceServiceImplTest {
 		device.setName("Laptop");
 		List<Device> deviceList = new ArrayList<>();
 		deviceList.add(device);
-		Mockito.when(deviceRepository.findByLangCode(Mockito.anyString())).thenReturn(deviceList);
+		Mockito.when(deviceRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(deviceList);
 		Mockito.when(objectMapperUtil.mapAll(deviceList, DeviceDto.class)).thenThrow(MappingException.class);
 		deviceServiceImpl.getDeviceLangCode("ENG");
 
