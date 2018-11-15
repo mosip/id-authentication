@@ -17,12 +17,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.registration.processor.auditmanager.client.AuditmanagerClient;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.packet.dto.AddressDTO;
 import io.mosip.registration.processor.core.packet.dto.BiometericData;
@@ -63,11 +67,15 @@ import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoMan
 
 @RunWith(MockitoJUnitRunner.class)
 public class PacketInfoManagerImplTest {
-	@InjectMocks
+	@InjectMocks   
 	PacketInfoManager<PacketInfo, Demographic, MetaData,ApplicantInfoDto> packetInfoManagerImpl = new PacketInfoManagerImpl();
 
 	@Mock
-	ClientAuditRequestBuilder clientAuditRequestBuilder=new ClientAuditRequestBuilder();
+	ClientAuditRequestBuilder clientAuditRequestBuilder;
+	
+	@Mock
+	AuditmanagerClient auditmanagerClient;
+	
 	@Mock
 	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
 
@@ -128,6 +136,7 @@ public class PacketInfoManagerImplTest {
 	@Mock
 	private PacketInfoDao packetInfoDao;
 	
+	private List<ApplicantInfoDto>  listDto= new ArrayList<ApplicantInfoDto>();
 	
 	QcuserRegistrationIdEntity qcuserRegistrationIdEntity1;
 	QcuserRegistrationIdEntity qcuserRegistrationIdEntity2;
@@ -295,7 +304,7 @@ public class PacketInfoManagerImplTest {
 		demoInLocalLang.setDateOfBirth("1539674005050");
 
 		demoInLocalLang.setFullName("FullNametest");
-		demoInLocalLang.setGender("Male");
+		demoInLocalLang.setGender("male");
 
 		demoInLocalLang.setLanguageCode("eng");
 		demoInLocalLang.setMobile("9876543210");
@@ -311,30 +320,13 @@ public class PacketInfoManagerImplTest {
 		demoInUserLang.setLanguageCode("eng");
 
 		demoInLocalLang.setFullName("FullNameTest");
-		demoInLocalLang.setGender("Male");
+		demoInLocalLang.setGender("male");
 
 		demoInLocalLang.setMiddleName("middleNameTest");
 		demoInLocalLang.setMobile("9876543210");
 		demographicInfo.setDemoInUserLang(demoInUserLang);
 
-		/*AuditRequestBuilder auditRequestBuilder1 = new AuditRequestBuilder();
-		AuditHandler<AuditRequestDto> auditHandler = new AuditHandler<AuditRequestDto>() {
-
-			@Override
-			public boolean writeAudit(AuditRequestDto arg0) {
-
-				return true;
-			}
-		};*/
-		/*Field f1 = ClientAuditRequestBuilder.class.getDeclaredField("clientAuditRequestBuilder");
-		f1.setAccessible(true);
-		f1.set(clientAuditRequestBuilder, auditRequestBuilder1);*/
-
-		/*Field f2 = ClientAuditRequestBuilder.class.getDeclaredField("auditHandler");
-		f2.setAccessible(true);
-		f2.set(clientAuditRequestBuilder, auditHandler);*/
-
-		
+				
 		qcuserRegistrationIdEntity1=new QcuserRegistrationIdEntity();
 		QcuserRegistrationIdPKEntity pkid1=new QcuserRegistrationIdPKEntity();
 		pkid1.setUsrId("qc001");
@@ -361,8 +353,7 @@ public class PacketInfoManagerImplTest {
 		qcuserRegistrationIdEntity2.setIsDeleted(false);
 		qcuserRegistrationIdEntity2.setUpdDtimesz(LocalDateTime.now());
 		
-		Mockito.when(qcuserRegRepositary.findByUserId(ArgumentMatchers.anyString())).
-				thenReturn(Arrays.asList(qcuserRegistrationIdEntity1,qcuserRegistrationIdEntity2));
+		
 	}
 
 	@Test
@@ -403,48 +394,19 @@ public class PacketInfoManagerImplTest {
 		packetInfoManagerImpl.saveDemographicData(demographicInfo, metaData);
 
 	}
-	
 	@Test
 	public void getPacketsforQCUserDemographic() {
+		List<ApplicantInfoDto> list = new ArrayList<>();
+		ApplicantInfoDto dto = new ApplicantInfoDto();
+		dto.setApplicantPhoto(photograph);
+		dto.setDemoInLocalLang(demoInLocalLang);
+		dto.setDemoInUserLang(demoInUserLang);
+		list.add(dto);
+		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenReturn(list);
+		assertEquals("male",packetInfoManagerImpl.getPacketsforQCUser("qc001").get(0).getDemoInLocalLang().getGender());
 		
-		
-		ApplicantDemographicEntity[] applicantDemographicEntity=new ApplicantDemographicEntity[2];
-		ApplicantDemographicPKEntity pk1= new ApplicantDemographicPKEntity();
-		pk1.setLangCode("en");
-		
-		
-		pk1.setRegId("2018782130000116102018124324");
-		
-		applicantDemographicEntity[0] = new ApplicantDemographicEntity();
-		applicantDemographicEntity[0].setId(pk1);
-		applicantDemographicEntity[0].setApplicantType("qc_user");
-		applicantDemographicEntity[0].setCrBy("MOSIP_SYSTEM");
-		applicantDemographicEntity[0].setCrDtimesz(LocalDateTime.now());
-		applicantDemographicEntity[0].setGenderCode("female");
-		applicantDemographicEntity[0].setLocationCode("dhe");
-		applicantDemographicEntity[0].setPreRegId("1001");
-		ApplicantDemographicPKEntity pk2= new ApplicantDemographicPKEntity();
-		pk2.setLangCode("use");
-		pk2.setRegId("2018782130000116102018124325");
-		applicantDemographicEntity[1] = new ApplicantDemographicEntity();
-
-		applicantDemographicEntity[1].setId(pk2);
-		applicantDemographicEntity[1].setApplicantType("qc_user");
-		applicantDemographicEntity[1].setCrBy("MOSIP_SYSTEM");
-		applicantDemographicEntity[1].setCrDtimesz(LocalDateTime.now());
-		applicantDemographicEntity[1].setGenderCode("female");
-		applicantDemographicEntity[1].setLocationCode("dhe");
-		applicantDemographicEntity[1].setPreRegId("1001");
-	    List<Object[]> applicantInfo = new ArrayList<>();
-	    
-		applicantInfo.add(applicantDemographicEntity);
-		
-		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.any())).
-					thenReturn(applicantInfo);
-		
-		List<ApplicantInfoDto>  listDto= packetInfoDao.getPacketsforQCUser("qc001");
-		assertEquals("female",listDto.get(0).getDemoInLocalLang().getGender());
 	}
+
 	
 	@Test(expected = TablenotAccessibleException.class)
 	public void getPacketsforQCUserDemographicFailureCase() {
@@ -484,26 +446,23 @@ public class PacketInfoManagerImplTest {
 	    
 		applicantInfo.add(applicantDemographicEntity);
 		
-		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.any())).thenReturn(applicantInfo);
-		
 		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.getPacketsforQCUser("qcuser1");
 	}
 	
 	@Test
 	public void getPacketsforQCUserPhotographic() {
-		ApplicantPhotographEntity[] applicantPhotographEntity=new ApplicantPhotographEntity[1];
-		applicantPhotographEntity[0]=new ApplicantPhotographEntity();
-		applicantPhotographEntity[0].setImageName("new_image");;
-		applicantPhotographEntity[0].setExcpPhotoName("new_image");
-		applicantPhotographEntity[0].setNoOfRetry(2);
-		applicantPhotographEntity[0].setHasExcpPhotograph(true);
-		applicantPhotographEntity[0].setQualityScore(new BigDecimal(123456123456.78));
-		List<Object[]> applicantInfo2 = new ArrayList<>();
-		applicantInfo2.add(applicantPhotographEntity);
-		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.any())).thenReturn(applicantInfo2);
-		List<ApplicantInfoDto>  listDto= packetInfoDao.getPacketsforQCUser("qc001");
-		assertEquals(true,listDto.get(0).getApplicantPhoto().isHasExceptionPhoto());
+
+		List<ApplicantInfoDto> list = new ArrayList<>();
+		ApplicantInfoDto dto = new ApplicantInfoDto();
+		dto.setApplicantPhoto(photograph);
+		dto.setDemoInLocalLang(demoInLocalLang);
+		dto.setDemoInUserLang(demoInUserLang);
+		list.add(dto);
+		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenReturn(list);
+		assertEquals(true,packetInfoManagerImpl.getPacketsforQCUser("qc001").get(0).getApplicantPhoto().isHasExceptionPhoto());
+		
+		
 	}
 	
 	@Test(expected = TablenotAccessibleException.class)
@@ -520,8 +479,6 @@ public class PacketInfoManagerImplTest {
 		applicantPhotographEntity[0].setQualityScore(new BigDecimal(123456123456.78));
 		List<Object[]> applicantInfo2 = new ArrayList<>();
 		applicantInfo2.add(applicantPhotographEntity);
-		
-		Mockito.when(qcuserRegRepositary.getApplicantInfo(ArgumentMatchers.any())).thenReturn(applicantInfo2);
 		
 		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.getPacketsforQCUser("qcuser1");

@@ -13,7 +13,7 @@ import io.mosip.registration.processor.auditmanager.dto.AuditResponseDto;
 public class AuditmanagerClient {
 	
 	
-	private String auditManagerServiceHost="http://localhost:8081/auditmanager/audits";
+	private String auditManagerServiceHost="http://104.211.214.143:8081/auditmanager/audits";
 	/**
 	 * Function to add new audit
 	 * 
