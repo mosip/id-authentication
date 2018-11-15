@@ -103,8 +103,8 @@ public class RegistrationCenterControllerExceptionTest {
 
 	@Test
 	public void testGetRegistrationCenterHolidaysHolidayRegMappingException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
-				.thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
+				anyString())).thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenReturn(holidays);
 		when(mapper.map(Mockito.any(), Mockito.eq(RegistrationCenterDto.class)))
