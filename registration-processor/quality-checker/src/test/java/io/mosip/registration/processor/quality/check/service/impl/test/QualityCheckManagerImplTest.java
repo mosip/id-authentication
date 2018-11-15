@@ -2,7 +2,6 @@ package io.mosip.registration.processor.quality.check.service.impl.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
@@ -25,6 +23,7 @@ import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRe
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
+import io.mosip.registration.processor.quality.check.client.QCUsersClient;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
 import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
@@ -45,7 +44,9 @@ public class QualityCheckManagerImplTest {
 	@Mock
 	private ClientAuditRequestBuilder auditRequestBuilder;
 
-
+	@Mock
+	QCUsersClient qcUsersClient;
+	
 	@Mock
 	private AuditHandler<AuditRequestDto> auditHandler;
 	private List<QCUserDto> qcUserDtos;
@@ -58,7 +59,7 @@ public class QualityCheckManagerImplTest {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		 
 		 
-		
+		//List<String> qcUsersList = Arrays.asList("qc001","qc002","qc003");
 		qcUserDtos = new ArrayList<>();
 		entity = new QcuserRegistrationIdEntity();
 		pkEntity = new QcuserRegistrationIdPKEntity();
@@ -68,7 +69,7 @@ public class QualityCheckManagerImplTest {
 		qCUserDto1.setRegId("2018782130000116102018124324");
 		qCUserDto1.setDecisionStatus(DecisionStatus.ACCEPTED);
 
-		
+		//Mockito.when(qcUsersClient.getAllQcuserIds()).thenReturn(qcuserlist);
 		
 
 	}
