@@ -30,15 +30,17 @@ Identity Repository service can be used internally by products to create, read a
 -	Exception :
 	-	Any error in storing or retrieval of Identity details should be handled with appropriate error code and message in the response  
 -	Security :
-	-	TBD   
+	-	TBD     
+
 
 	
 **2. Solution **   
 
 
 The key solution considerations are   
-- Create a project which provides REST service to create, update and get Identity of Individual.   
-- REST service can be used by any MOSIP module to access these services through HTTP client.   
+- Create a project which provides REST service to create, update and get Identity of Individual         
+- REST service can be used by any MOSIP module to access these services through HTTP client       
+
 
 
 **2.1. Class Diagram **   
@@ -59,7 +61,8 @@ c.	DEACTIVATED
 3. Once UIN is generated, assign “REGISTERED” as UIN status. UIN, status and Identity details are then stored in UIN and UIN_detail table   
 
 Below sequence diagram for create Identity service shows sequence of operations to create UIN and store corresponding Identity details.
-![Create Identity Sequence Diagram](_images/kernel-idrepo-createid-sd.PNG)   
+![Create Identity Sequence Diagram](_images/kernel-idrepo-createid-sd.PNG)      
+
 
 
 *** 2.2.2.	Update Identity ***   
@@ -75,7 +78,7 @@ When UIN status is updated using Update ID API, the status is first validated ag
 Default configuration of UIN status has REGISTERED, BLOCKED and DEACTIVATED. This can be changed based on country’s requirements.   
 
 Below sequence diagram shows sequence of operations to update UIN status.   
-![Update Status Sequence Diagram](_images/kernel-idrepo-updatestatus-sd.PNG)    
+![Update Status Sequence Diagram](_images/kernel-idrepo-updatestatus-sd.PNG)       
 
 
 *** 2.2.3.	Get Identity ***   
@@ -83,6 +86,7 @@ Below sequence diagram shows sequence of operations to update UIN status.
 MOSIP Products can use ID Repo API spec available here - [GitHub](https://github.com/mosip/mosip/wiki/ID-Repository-API) - to retrieve Identity of an Individual by providing a UIN.    
 1. 	Integrate with Kernel UIN validator to validate UIN     
 2.	Once the request is successfully validated, retrieve Identity details in UIN and UIN_detail tables   
+
 
 Below sequence diagram for create Identity service shows sequence of operations to retrieve Identity details associated with a UIN.   
 ![Get Identity Sequence Diagram](_images/kernel-idrepo-getidentity-sd.PNG)    
@@ -93,5 +97,5 @@ Below sequence diagram for create Identity service shows sequence of operations 
 UIN DB stores UIN and the corresponding identity details. In order to decrease load and increase search performance, UIN DB is horizontally partitioned into shards. Each shard is a separate database instance with same tables and rows in tables are distributed across shards.
 ID Repo provides default shard implementation where shards are decided based on starting character of UIN. Below diagram shows the approach for sharding UIN DB.
 
-![UIN Database Sharding](_images/kernel-idrepo-databasesharding.PNG)   
+![UIN Database Sharding](_images/kernel-idrepo-databasesharding.png)   
 
