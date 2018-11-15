@@ -784,7 +784,7 @@ public class LoginController extends BaseController implements Initializable, MF
 
 				schedulerUtil.startSchedulerUtil();
 				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-				updateSuccessLoginParams(userDetail, userId.getText(), loginMode);
+				loginService.updateSuccessLoginParams(userDetail, userId.getText(), loginMode);
 			}
 		}
 	}
@@ -816,7 +816,8 @@ public class LoginController extends BaseController implements Initializable, MF
 	 *            entered userId
 	 * @return boolean
 	 */
-	private boolean validateInvalidLogin(RegistrationUserDetail registrationUserDetail, String userId, String errorMessage) {
+	private boolean validateInvalidLogin(RegistrationUserDetail registrationUserDetail, String userId,
+			String errorMessage) {
 		if (registrationUserDetail != null) {
 
 			LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
@@ -826,31 +827,28 @@ public class LoginController extends BaseController implements Initializable, MF
 					? registrationUserDetail.getUnsuccessfulLoginCount().intValue()
 					: 0;
 			Timestamp loginTime = registrationUserDetail.getUserlockTillDtimes();
+			Map<String, Object> globalParamsMap = globalParams();
+
 			int invalidLoginCount = Integer
-					.parseInt(String.valueOf(globalParams().get(RegistrationConstants.INVALID_LOGIN_COUNT)));
+					.parseInt(String.valueOf(globalParamsMap.get(RegistrationConstants.INVALID_LOGIN_COUNT)));
 			int invalidLoginTime = Integer
-					.parseInt(String.valueOf(globalParams().get(RegistrationConstants.INVALID_LOGIN_TIME)));
+					.parseInt(String.valueOf(globalParamsMap.get(RegistrationConstants.INVALID_LOGIN_TIME)));
 
 			LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
 					"validating invalid login params");
 
-			if (loginCount >= invalidLoginCount && loginTime != null
+			if (loginCount >= invalidLoginCount
 					&& compareTwoTimeStamps(loginTime, new Timestamp(new Date().getTime())) > invalidLoginTime) {
-				registrationUserDetail.setId(userId);
-				registrationUserDetail.setUnsuccessfulLoginCount(0);
 				loginCount = 0;
-				loginService.updateLoginParams(registrationUserDetail);
+				loginService.updateInvalidLoginParams(registrationUserDetail, userId, 0, null);
 			}
 
 			LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
 					"updating invalid login params to lock user account");
 
 			if (loginCount > invalidLoginCount) {
-				if (loginTime != null
-						&& compareTwoTimeStamps(loginTime, new Timestamp(new Date().getTime())) > invalidLoginTime) {
-					registrationUserDetail.setId(userId);
-					registrationUserDetail.setUnsuccessfulLoginCount(1);
-					loginService.updateLoginParams(registrationUserDetail);
+				if (compareTwoTimeStamps(loginTime, new Timestamp(new Date().getTime())) > invalidLoginTime) {
+					loginService.updateInvalidLoginParams(registrationUserDetail, userId, 1, null);
 					return false;
 				} else {
 					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
@@ -858,11 +856,8 @@ public class LoginController extends BaseController implements Initializable, MF
 							RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE);
 				}
 			} else {
-				registrationUserDetail.setId(userId);
-				registrationUserDetail.setUnsuccessfulLoginCount(loginCount + 1);
-				registrationUserDetail.setUserlockTillDtimes((new Timestamp(new Date().getTime())));
-
-				loginService.updateLoginParams(registrationUserDetail);
+				loginService.updateInvalidLoginParams(registrationUserDetail, userId, loginCount + 1,
+						(new Timestamp(new Date().getTime())));
 				if (loginCount == invalidLoginCount) {
 					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
 							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
@@ -889,33 +884,10 @@ public class LoginController extends BaseController implements Initializable, MF
 	 */
 	private long compareTwoTimeStamps(Timestamp currentTime, Timestamp storedTime) {
 
-		LOGGER.debug("REGISTRATION - LOGIN - UPDATELOGINPARAMS", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION - LOGIN - COMAPRE_TIME_STAMPS", APPLICATION_NAME, APPLICATION_ID,
 				"Comparing timestamps in case of invalid login attempts");
 
 		return (storedTime.getTime() - currentTime.getTime()) / (60 * 1000);
 	}
 
-	/**
-	 * update login params
-	 * 
-	 * @param registrationUserDetail
-	 *            user details
-	 * @param userId
-	 *            entered userId
-	 * @param loginMethod
-	 *            login method
-	 */
-	private void updateSuccessLoginParams(RegistrationUserDetail userDetail, String userId, String loginMethod) {
-
-		LOGGER.debug("REGISTRATION - LOGIN - UPDATELOGINPARAMS", APPLICATION_NAME, APPLICATION_ID,
-				"updating login params on success login");
-
-		userDetail.setId(userId);
-		userDetail.setLastLoginMethod(loginMethod);
-		userDetail.setLastLoginDtimes(new Timestamp(new Date().getTime()));
-		userDetail.setUnsuccessfulLoginCount(0);
-		loginService.updateLoginParams(userDetail);
-	}
-	
-	
 }

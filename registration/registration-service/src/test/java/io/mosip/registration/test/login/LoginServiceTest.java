@@ -217,7 +217,7 @@ public class LoginServiceTest {
 	}
 
 	@Test
-	public void updateLoginParamsTest() {
+	public void updateSuccessLoginParamsTest() {
 		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 		doNothing().when(registrationUserDetailDAO).updateLoginParams(Mockito.any(RegistrationUserDetail.class));
@@ -225,9 +225,23 @@ public class LoginServiceTest {
 		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
 		registrationUserDetail.setId("mosip");
 		registrationUserDetail.setUnsuccessfulLoginCount(0);
-		registrationUserDetail.setUserlockTillDtimes(new Timestamp(new Date().getTime()));
+		registrationUserDetail.setLastLoginDtimes(new Timestamp(new Date().getTime()));
+		registrationUserDetail.setLastLoginMethod("PWD");
 		
-		loginServiceImpl.updateLoginParams(registrationUserDetail);
+		loginServiceImpl.updateSuccessLoginParams(registrationUserDetail, "mosip", "PWD");
 	}
 
+	@Test
+	public void updateInvalidLoginParamsTest() {
+		doNothing().when(auditFactory).audit(Mockito.any(AuditEvent.class), Mockito.any(AppModule.class),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+		doNothing().when(registrationUserDetailDAO).updateLoginParams(Mockito.any(RegistrationUserDetail.class));
+		
+		RegistrationUserDetail registrationUserDetail = new RegistrationUserDetail();
+		registrationUserDetail.setId("mosip");
+		registrationUserDetail.setUnsuccessfulLoginCount(2);
+		registrationUserDetail.setUserlockTillDtimes(new Timestamp(new Date().getTime()));
+		
+		loginServiceImpl.updateInvalidLoginParams(registrationUserDetail, "mosip", 2, new Timestamp(new Date().getTime()));
+	}
 }

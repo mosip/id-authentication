@@ -3,6 +3,8 @@ package io.mosip.registration.service.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -292,17 +294,60 @@ public class LoginServiceImpl implements LoginService {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see
+	 * io.mosip.registration.service.LoginService#updateSuccessLoginParams(io.mosip.
+	 * registration.entity.RegistrationUserDetail, java.lang.String,
+	 * java.lang.String)
+	 */
+	public void updateSuccessLoginParams(RegistrationUserDetail registrationUserDetail, String userId,
+			String loginMethod) {
+
+		LOGGER.debug("REGISTRATION - UPDATELOGINPARAM_ONSUCCESS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"updating login params on success login");
+
+		registrationUserDetail.setId(userId);
+		registrationUserDetail.setLastLoginMethod(loginMethod);
+		registrationUserDetail.setLastLoginDtimes(new Timestamp(new Date().getTime()));
+		registrationUserDetail.setUnsuccessfulLoginCount(0);
+		updateLoginParams(registrationUserDetail);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.LoginService#updateInvalidLoginParams(io.mosip.
+	 * registration.entity.RegistrationUserDetail, java.lang.String, int,
+	 * java.sql.Timestamp)
+	 */
+	public void updateInvalidLoginParams(RegistrationUserDetail registrationUserDetail, String userId, int loginCount,
+			Timestamp loginTime) {
+
+		LOGGER.debug("REGISTRATION - UPDATELOGINPARAMS_ONFAILURE - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"updating login params incase of invalid login");
+
+		registrationUserDetail.setId(userId);
+		registrationUserDetail.setUnsuccessfulLoginCount(loginCount);
+		if (loginTime != null) {
+			registrationUserDetail.setUserlockTillDtimes(loginTime);
+		}
+		updateLoginParams(registrationUserDetail);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.registration.service.LoginService#updateLoginParams(io.mosip.
 	 * registration.entity.RegistrationUserDetail)
 	 */
-	public void updateLoginParams(RegistrationUserDetail registrationUserDetail) {
+	private void updateLoginParams(RegistrationUserDetail registrationUserDetail) {
 
-		LOGGER.debug("REGISTRATION - LOGIN - UPDATELOGINPARAMS", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug("REGISTRATION - UPDATELOGINPARAMS - LOGINSERVICE", APPLICATION_NAME, APPLICATION_ID,
 				"Updating Login Params");
 
 		registrationUserDetailDAO.updateLoginParams(registrationUserDetail);
 	}
-
+	
 	private ResponseDTO getErrorResponse(ResponseDTO response, final String message) {
 		// Create list of Error Response
 		LinkedList<ErrorResponseDTO> errorResponses = new LinkedList<ErrorResponseDTO>();

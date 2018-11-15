@@ -1,5 +1,6 @@
 package io.mosip.registration.service;
 
+import java.sql.Timestamp;
 import java.util.Map;
 
 import io.mosip.registration.dto.AuthorizationDTO;
@@ -72,10 +73,26 @@ public interface LoginService {
 	ResponseDTO validateOTP(String key, String otp);
 	
 	/**
-	 * updating login params
+	 *updating login params on invalid login attempts of login
+	 * 
+	 * @param registrationUserDetail
+	 *            user details
+	 * @param userId
+	 *            entered userId
+	 * @param logincount
+	 *            number of invalid logins
+	 * @param loginTime
+	 *            last login time
+	 */
+	void updateInvalidLoginParams(RegistrationUserDetail registrationUserDetail, String userId, int loginCount, Timestamp loginTime);
+		
+	/**
+	 * updating login params on success
 	 * 
 	 * @param registrationUserDetail
 	 *            entered user details
 	 */
-	void updateLoginParams(RegistrationUserDetail registrationUserDetail);
+	void updateSuccessLoginParams(RegistrationUserDetail registrationUserDetail, String userId, String loginMethod);
 }
+
+
