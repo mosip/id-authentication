@@ -32,8 +32,9 @@ public enum RPRPlatformErrorMessages {
 	CONFIGURATION_SERVER_FAILURE_EXCEPTION("Configuration Server Failure Exception"),
 	
 	RESULT_NOT_FOUND("Result not found"),
-	INVALID_QC_USER_ID("QC user is null"),
+	INVALID_QC_USER_ID("QC User is null"),
 	INVALID_REGISTRATION_ID("Registration Id is null"),
+	STRUCTURAL_VALIDATION_FAILED("Structural Validation Failed"),
 	
 	UNEXCEPTED_EXCEPTION("Unexpected exception"), //System Exceptions
 	BAD_GATEWAY("Bad Gateway"),
