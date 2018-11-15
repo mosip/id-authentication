@@ -216,11 +216,14 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 
 		Registration reg = registrationRepository.getOne(registrationPacket.getId());
 		reg.setClientStatusCode(registrationPacket.getClientStatusCode());
-		reg.setFileUploadStatus(registrationPacket.getFileUploadStatus());
+		if (registrationPacket.getFileUploadStatus() != null) {
+			reg.setFileUploadStatus(registrationPacket.getFileUploadStatus());
+		}
 		reg.setIsActive(true);
 		reg.setUploadTimestamp(timestamp);
 		reg.setClientStatusTimestamp(timestamp);
 		reg.setRegistrationTransaction(buildRegistrationTransaction(reg));
+		reg.setClientStatusComments(registrationPacket.getClientStatusComments());
 		return registrationRepository.update(reg);
 	}
 
@@ -245,16 +248,22 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId(registrationPacket.getId());
+		regTransaction.setIsActive(true);
 		regTransaction.setTrnTypeCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 		regTransaction.setStatusCode(registrationPacket.getClientStatusCode());
 		regTransaction.setCrBy("mosip");
 		regTransaction.setCrDtime(time);
+		regTransaction.setStatusComment(registrationPacket.getClientStatusComments());
 		List<RegistrationTransaction> registrationTransaction = new ArrayList<>();
 		registrationTransaction.add(regTransaction);
 		LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Packet encryption had been ended");
 
 		return registrationTransaction;
+	}
+
+	public List<Registration> getAllReRegistrationPackets(String[] status) {
+		return registrationRepository.findByClientStatusCodeAndServerStatusCode(status[0], status[1]);
 	}
 
 }
