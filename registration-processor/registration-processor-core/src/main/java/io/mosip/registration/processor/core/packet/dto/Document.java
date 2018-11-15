@@ -1,18 +1,49 @@
+/**
+ * 
+ */
 package io.mosip.registration.processor.core.packet.dto;
 
-import java.util.List;
-
-import lombok.Data;
-
 /**
- * Instantiates a new document.
+ * @author M1022006
+ *
  */
-@Data
 public class Document {
 
-	/** The document details. */
-	private List<DocumentDetail> documentDetails;
+	private String documentName;
+	private String documentCategory;
+	private String documentOwner;
+	private String documentType;
 
-	/** The registration ack copy. */
-	private String registrationAckCopy;
+	public String getDocumentName() {
+		return documentName;
+	}
+
+	public void setDocumentName(String documentName) {
+		this.documentName = documentName;
+	}
+
+	public String getDocumentCategory() {
+		return documentCategory;
+	}
+
+	public void setDocumentCategory(String documentCategory) {
+		this.documentCategory = documentCategory;
+	}
+
+	public String getDocumentOwner() {
+		return documentOwner;
+	}
+
+	public void setDocumentOwner(String documentOwner) {
+		this.documentOwner = documentOwner;
+	}
+
+	public String getDocumentType() {
+		return documentType;
+	}
+
+	public void setDocumentType(String documentType) {
+		this.documentType = documentType;
+	}
+
 }
