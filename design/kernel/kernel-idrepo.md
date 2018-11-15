@@ -29,11 +29,12 @@ Identity Repository service can be used internally by products to create, read a
 	-	Individual’s UIN should not be audited
 -	Exception :
 	-	Any error in storing or retrieval of Identity details should be handled with appropriate error code and message in the response  
--	Security :   TBD      
+-	Security :
+    
 
 
 
-**2. Solution **   
+**2. Solution **    
 
 
 The key solution considerations are   
@@ -59,7 +60,7 @@ b.	BLOCKED
 c.	DEACTIVATED   
 3. Once UIN is generated, assign “REGISTERED” as UIN status. UIN, status and Identity details are then stored in UIN and UIN_detail table   
 
-Below sequence diagram for create Identity service shows sequence of operations to create UIN and store corresponding Identity details.
+Below sequence diagram for create Identity service shows sequence of operations to create UIN and store corresponding Identity details.   
 ![Create Identity Sequence Diagram](_images/kernel-idrepo-createid-sd.PNG)      
 
 
