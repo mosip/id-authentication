@@ -678,7 +678,7 @@ public class LoginController extends BaseController implements Initializable, MF
 		
 		userDetail.getUserMachineMapping().forEach(machineMapping -> {
 			if (machineMapping.getIsActive()) {
-				machineList.add(machineMapping.getUserMachineMappingId().getMachineID());
+				machineList.add(machineMapping.getMachineMaster().getMacAddress());
 				centerList.add(machineMapping.getUserMachineMappingId().getCentreID());
 			}
 		});

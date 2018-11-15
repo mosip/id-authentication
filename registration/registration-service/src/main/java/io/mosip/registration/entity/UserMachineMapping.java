@@ -27,6 +27,10 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	@JoinColumn(name = "usr_id", nullable = false, insertable = false, updatable = false)
 	private RegistrationUserDetail registrationUserDetail;
 
+	@ManyToOne
+	@JoinColumn(name = "machine_id", nullable = false, insertable = false, updatable = false)
+	private MachineMaster machineMaster;
+
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
@@ -61,6 +65,21 @@ public class UserMachineMapping extends RegistrationCommonFields implements Seri
 	 */
 	public void setRegistrationUserDetail(RegistrationUserDetail registrationUserDetail) {
 		this.registrationUserDetail = registrationUserDetail;
+	}
+
+	/**
+	 * @return the machineMaster
+	 */
+	public MachineMaster getMachineMaster() {
+		return machineMaster;
+	}
+
+	/**
+	 * @param machineMaster
+	 *            the machineMaster to set
+	 */
+	public void setMachineMaster(MachineMaster machineMaster) {
+		this.machineMaster = machineMaster;
 	}
 
 	/**
