@@ -5,8 +5,6 @@ VOLUME /tmp
 
 ADD target/kernel-idgenerator-uin-1.0.0-SNAPSHOT.jar /KerneUinGeneratorService.jar
 
-RUN bash -c 'touch /KerneUinGeneratorService.jar'
-
 EXPOSE 8080
 
 ENTRYPOINT ["java","-jar","/KerneUinGeneratorService.jar"]

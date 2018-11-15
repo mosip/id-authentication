@@ -5,8 +5,6 @@ VOLUME /tmp
 
 ADD target/kernel-masterdata-service-1.0.0-SNAPSHOT.jar /KernelMasterdataService.jar
 
-RUN bash -c 'touch /KernelMasterdataService.jar'
-
 EXPOSE 8086
 
 ENTRYPOINT ["java","-jar","/KernelMasterdataService.jar"]
