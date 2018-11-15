@@ -152,7 +152,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		Map<String, Object> values = new HashMap();
 		values.put("NAME", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
 		String dateTime = authResponseDTO.getResTime();
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+		DateFormat formatter = new SimpleDateFormat(env.getProperty("datetime.pattern"));
 		Date date1;
 		String changedTime = "";
 		String changedDate = "";
