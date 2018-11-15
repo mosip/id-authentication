@@ -19,6 +19,7 @@ import org.springframework.dao.DataRetrievalFailureException;
 
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.entity.MachineDetail;
 import io.mosip.kernel.masterdata.exception.MachineDetailFetchException;
 import io.mosip.kernel.masterdata.exception.MachineDetailMappingException;
@@ -68,10 +69,10 @@ public class MachineDetailServiceImplTest {
 		Mockito.when(machineDetailsRepository.findAllByIdAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(machineDetail);
 		Mockito.when(objectMapperUtil.map(machineDetail, MachineDetailDto.class)).thenReturn(machineDetailDto);
-		MachineDetailDto actual = machineDetailServiceImpl.getMachineDetailIdLang(Mockito.anyString(),
+		MachineDetailResponseIdDto actual = machineDetailServiceImpl.getMachineDetailIdLang(Mockito.anyString(),
 				Mockito.anyString());
 		Assert.assertNotNull(actual);
-		Assert.assertEquals(machineDetailDto.getId(), actual.getId());
+		Assert.assertEquals(machineDetailDto.getId(), actual.getMachineDetail().getId());
 
 	}
 

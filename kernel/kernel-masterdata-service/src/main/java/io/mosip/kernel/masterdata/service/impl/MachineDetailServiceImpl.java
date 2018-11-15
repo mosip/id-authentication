@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.masterdata.constant.MachineDetailErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.entity.MachineDetail;
 import io.mosip.kernel.masterdata.exception.MachineDetailFetchException;
 import io.mosip.kernel.masterdata.exception.MachineDetailMappingException;
@@ -66,9 +67,10 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 	 * 
 	 */
 	@Override
-	public MachineDetailDto getMachineDetailIdLang(String id, String langCode) {
+	public MachineDetailResponseIdDto getMachineDetailIdLang(String id, String langCode) {
 		MachineDetail machineDetail = null;
 		MachineDetailDto machineDetailDto = null;
+		MachineDetailResponseIdDto machineDetailResponseIdDto = new MachineDetailResponseIdDto();
 		try {
 			machineDetail = machineDetailRepository.findAllByIdAndLangCode(id, langCode);
 		} catch (DataAccessException dataAccessLayerException) {
@@ -87,7 +89,8 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 			throw new MachineDetailNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return machineDetailDto;
+		machineDetailResponseIdDto.setMachineDetail(machineDetailDto);
+		return machineDetailResponseIdDto;
 
 	}
 

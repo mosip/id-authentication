@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.MachineDetailDto;
 import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.service.MachineDetailService;
 
 /**
@@ -35,7 +35,7 @@ public class MachineDetailController {
 	 * @return machine detail based on given Machine ID and Language code
 	 */
 	@GetMapping(value = "/{id}/{langcode}")
-	public MachineDetailDto getMachineDetailIdLang(@PathVariable("id") String machineId,
+	public MachineDetailResponseIdDto getMachineDetailIdLang(@PathVariable("id") String machineId,
 			@PathVariable("langcode") String langCode) {
 		return macService.getMachineDetailIdLang(machineId, langCode);
 
