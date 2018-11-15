@@ -20,5 +20,5 @@ public interface IdTypeRepository extends BaseRepository<IdType, String> {
 	 *            the language code.
 	 * @return the list of id types.
 	 */
-	List<IdType> findByLangCode(String languageCode);
+	List<IdType> findByLangCodeAndIsActiveTrueAndIsDeletedFalse(String languageCode);
 }

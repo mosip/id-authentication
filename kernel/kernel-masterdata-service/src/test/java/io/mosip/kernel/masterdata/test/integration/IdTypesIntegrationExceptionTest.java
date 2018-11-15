@@ -54,7 +54,7 @@ public class IdTypesIntegrationExceptionTest {
 
 	@Test
 	public void getIdTypesByLanguageCodeFetchExceptionTest() throws Exception {
-		when(idTypeRepository.findByLangCode("ENG")).thenThrow(DataAccessLayerException.class);
+		when(idTypeRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse("ENG")).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(get("/idtypes/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotAcceptable());
 	}
@@ -63,7 +63,7 @@ public class IdTypesIntegrationExceptionTest {
 	public void getIdTypesByLanguageCodeNotFoundExceptionTest() throws Exception {
 		List<IdType> idTypeList = new ArrayList<>();
 		idTypeList.add(idType);
-		when(idTypeRepository.findByLangCode("ENG")).thenReturn(idTypeList);
+		when(idTypeRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse("ENG")).thenReturn(idTypeList);
 		mockMvc.perform(get("/idtypes/HIN").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound())
 				.andReturn();
 	}
@@ -72,7 +72,7 @@ public class IdTypesIntegrationExceptionTest {
 	public void getIdTypesByLanguageCodeMappingExceptionTest() throws Exception {
 		List<IdType> idTypeList = new ArrayList<>();
 		idTypeList.add(idType);
-		when(idTypeRepository.findByLangCode("ENG")).thenReturn(idTypeList);
+		when(idTypeRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse("ENG")).thenReturn(idTypeList);
 		when(modelMapper.map(Mockito.any(), Mockito.eq(new TypeToken<List<IdTypeDto>>() {
 		}.getType()))).thenThrow(IllegalArgumentException.class);
 		mockMvc.perform(get("/idtypes/ENG").contentType(MediaType.APPLICATION_JSON))

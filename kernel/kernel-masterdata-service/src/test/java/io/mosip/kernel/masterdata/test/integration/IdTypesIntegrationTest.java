@@ -54,7 +54,7 @@ public class IdTypesIntegrationTest {
 	public void getIdTypesByLanguageCodeTest() throws Exception {
 		List<IdType> idTypeList = new ArrayList<>();
 		idTypeList.add(idType);
-		when(idTypeRepository.findByLangCode("ENG")).thenReturn(idTypeList);
+		when(idTypeRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse("ENG")).thenReturn(idTypeList);
 		MvcResult result = mockMvc.perform(get("/idtypes/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
