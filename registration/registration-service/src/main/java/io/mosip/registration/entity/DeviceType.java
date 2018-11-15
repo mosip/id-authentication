@@ -3,14 +3,14 @@ package io.mosip.registration.entity;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
-import javax.persistence.Embedded;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "device_type", schema = "reg")
-public class DeviceType {
-	@Embedded
+public class DeviceType extends RegistrationCommonFields{
+	@EmbeddedId
 	private RegDeviceTypeId regDeviceTypeId;
 	@Column(name = "name")
 	private String name;

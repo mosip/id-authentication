@@ -22,7 +22,7 @@ public class RegCenterDevice extends RegistrationCommonFields {
 	@EmbeddedId
 	private RegCenterDeviceId regCenterDeviceId;
 	@ManyToOne
-	@JoinColumn(name = "device_id", insertable = false)
+	@JoinColumn(name = "device_id", insertable = false, updatable = false)
 	private RegDeviceMaster regDeviceMaster;
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;

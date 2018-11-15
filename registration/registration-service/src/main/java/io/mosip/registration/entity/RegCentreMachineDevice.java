@@ -32,7 +32,7 @@ public class RegCentreMachineDevice extends RegistrationCommonFields implements 
 	@Column(name = "del_dtimes")
 	private Timestamp deletedTime;
 	@ManyToOne
-	@JoinColumn(name = "device_id", insertable = false)
+	@JoinColumn(name = "device_id", insertable = false, updatable = false)
 	private RegDeviceMaster regDeviceMaster;
 
 	/**

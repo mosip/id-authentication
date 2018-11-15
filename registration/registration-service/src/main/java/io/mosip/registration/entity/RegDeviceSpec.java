@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -42,7 +43,10 @@ public class RegDeviceSpec extends RegistrationCommonFields {
 	@Column(name = "del_dtimes")
 	private Timestamp deletedTime;
 	@ManyToOne
-	@JoinColumn(name = "dtyp_code")
+	@JoinColumns({
+		@JoinColumn(name = "dtyp_code",insertable = false, updatable = false),
+		@JoinColumn(name = "lang_code", insertable = false, updatable = false)
+	})
 	private RegDeviceType regDeviceType;
 
 	/**
