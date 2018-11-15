@@ -43,7 +43,7 @@ public enum DemoMatchType implements MatchType {
 
 	/** Secondary Date of Birth Type Match */
 	DOBTYPE(IdMapping.DOBTYPE, setOf(DOBTypeMatchingStrategy.EXACT), IdentityDTO::getDateOfBirthType,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_DOBTYPE, AuthUsageDataBit.MATCHED_DOB_TYPE,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_DOBTYPE, AuthUsageDataBit.MATCHED_PI_DOB_TYPE,
 			Function.identity()),
 
 	/** Secondary Date of Birth Type Match */
@@ -99,27 +99,27 @@ public enum DemoMatchType implements MatchType {
 			AuthUsageDataBit.MATCHED_AD_ADDR_LINE3_SEC, Function.identity()),
 	/** Location1 Match Type primary */
 	LOCATION1_PRI(IdMapping.LOCATION1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation1,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_LOCATION1_PRI, AuthUsageDataBit.MATCHED_LOCATION1_PRI,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_LOCATION1_PRI, AuthUsageDataBit.MATCHED_AD_LOCATION1_PRI,
 			Function.identity()),
 	/** Location1 Match Type secondary */
 	LOCATION1_SEC(IdMapping.LOCATION1, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation1,
-			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_LOCATION1_SEC, AuthUsageDataBit.MATCHED_LOCATION1_SEC,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_LOCATION1_SEC, AuthUsageDataBit.MATCHED_AD_LOCATION1_SEC,
 			Function.identity()),
 	/** Location2 Match Type primary */
 	LOCATION2_PRI(IdMapping.LOCATION2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation2,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_LOCATION2_PRI, AuthUsageDataBit.MATCHED_LOCATION2_PRI,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_LOCATION2_PRI, AuthUsageDataBit.MATCHED_AD_LOCATION2_PRI,
 			Function.identity()),
 	/** Location2 Match Type secondary */
 	LOCATION2_SEC(IdMapping.LOCATION2, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation2,
-			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_LOCATION2_SEC, AuthUsageDataBit.MATCHED_LOCATION2_SEC,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_LOCATION2_SEC, AuthUsageDataBit.MATCHED_AD_LOCATION2_SEC,
 			Function.identity()),
 	/** Location3 Match Type primary */
 	LOCATION3_PRI(IdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3,
-			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_LOCATION3_PRI, AuthUsageDataBit.MATCHED_LOCATION3_PRI,
+			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_AD_LOCATION3_PRI, AuthUsageDataBit.MATCHED_AD_LOCATION3_PRI,
 			Function.identity()),
 	/** Location3 Match Type secondary */
 	LOCATION3_SEC(IdMapping.LOCATION3, setOf(AddressMatchingStrategy.EXACT), IdentityDTO::getLocation3,
-			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_LOCATION3_SEC, AuthUsageDataBit.MATCHED_LOCATION3_SEC,
+			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_AD_LOCATION3_SEC, AuthUsageDataBit.MATCHED_AD_LOCATION3_SEC,
 			Function.identity()),
 
 	/** The pincode pri. */
