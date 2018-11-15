@@ -80,7 +80,7 @@ public class BiometricTypeServiceExceptionTest {
 
 	@Test(expected = BiometricTypeFetchException.class)
 	public void getAllBiometricTypesFetchException() {
-		Mockito.when(biometricTypeRepository.findAll(Mockito.eq(BiometricType.class)))
+		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(BiometricType.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getAllBiometricTypes();
 	}
@@ -88,7 +88,7 @@ public class BiometricTypeServiceExceptionTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = BiometricTypeMappingException.class)
 	public void getAllBiometricTypesMappingException() {
-		Mockito.when(biometricTypeRepository.findAll(BiometricType.class)).thenReturn(biometricTypeList);
+		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(BiometricType.class)).thenReturn(biometricTypeList);
 		Mockito.when(objectMapperUtil.mapAll(biometricTypeList, BiometricTypeDto.class))
 				.thenThrow(IllegalArgumentException.class, ConfigurationException.class, MappingException.class);
 		biometricTypeService.getAllBiometricTypes();
@@ -97,13 +97,13 @@ public class BiometricTypeServiceExceptionTest {
 	@Test(expected = BiometricTypeNotFoundException.class)
 	public void getAllBiometricTypesNotFoundException() {
 		biometricTypeList = new ArrayList<>();
-		Mockito.when(biometricTypeRepository.findAll(BiometricType.class)).thenReturn(biometricTypeList);
+		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(BiometricType.class)).thenReturn(biometricTypeList);
 		biometricTypeService.getAllBiometricTypes();
 	}
 
 	@Test(expected = BiometricTypeFetchException.class)
 	public void getAllBiometricTypesByLanguageCodeFetchException() {
-		Mockito.when(biometricTypeRepository.findAllByLangCode(Mockito.anyString()))
+		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString());
 	}
@@ -111,7 +111,7 @@ public class BiometricTypeServiceExceptionTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = BiometricTypeMappingException.class)
 	public void getAllBiometricTypesByLanguageCodeMappingException() {
-		Mockito.when(biometricTypeRepository.findAllByLangCode(Mockito.anyString())).thenReturn(biometricTypeList);
+		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(biometricTypeList);
 		Mockito.when(objectMapperUtil.mapAll(biometricTypeList, BiometricTypeDto.class))
 				.thenThrow(IllegalArgumentException.class, ConfigurationException.class, MappingException.class);
 		biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString());
@@ -119,14 +119,14 @@ public class BiometricTypeServiceExceptionTest {
 
 	@Test(expected = BiometricTypeNotFoundException.class)
 	public void getAllBiometricTypesByLanguageCodeNotFoundException() {
-		Mockito.when(biometricTypeRepository.findAllByLangCode(Mockito.anyString()))
+		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(new ArrayList<BiometricType>());
 		biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = BiometricTypeFetchException.class)
 	public void getBiometricTypeByCodeAndLangCodeFetchException() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
@@ -134,7 +134,7 @@ public class BiometricTypeServiceExceptionTest {
 	@SuppressWarnings("unchecked")
 	@Test(expected = BiometricTypeMappingException.class)
 	public void getBiometricTypeByCodeAndLangCodeMappingException() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(biometricType1);
 		Mockito.when(modelMapper.map(biometricType1, BiometricTypeDto.class)).thenThrow(IllegalArgumentException.class,
 				ConfigurationException.class, MappingException.class);
@@ -143,7 +143,7 @@ public class BiometricTypeServiceExceptionTest {
 
 	@Test(expected = BiometricTypeNotFoundException.class)
 	public void getBiometricTypeByCodeAndLangCodeNotFoundException() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
 		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
