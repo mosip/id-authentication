@@ -42,10 +42,25 @@ export class CenterSelectionComponent implements OnInit {
   selectedCentre = null;
   showMap = false;
   enableNextButton = false;
+  step = 0;
+  showDescription = false;
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  setStep(index: number) {
+    this.step = index;
+  }
+
+  nextStep() {
+    this.step++;
+    this.showDescription = true;
+  }
+
+  prevStep() {
+    this.step--;
   }
 
   showResults() {
@@ -59,7 +74,7 @@ export class CenterSelectionComponent implements OnInit {
     this.showMap = true;
   }
 
-  selectedRow(row: any) {
+  selectedRow(row) {
     this.selectedCentre = row;
     this.enableNextButton = true;
     console.log(row);

@@ -53,6 +53,14 @@ export class DashBoardComponent implements OnInit {
       this.isFetched = true;
       console.log(applicants);
     });
+    this.regService.getUsers().subscribe((applicants: Applicant[]) => {
+      for (const user of applicants) {
+        this.users.push(
+          new Applicant(user['pre-registration-id'], user['fullname'], user['appointment_dtimesz'], user['status_code'])
+        );
+      }
+      this.isFetched = true;
+    });
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -94,7 +102,7 @@ export class DashBoardComponent implements OnInit {
     };
     let dialogRef = this.openDialog(data, `350px`);
     dialogRef.afterClosed().subscribe(selectedOption => {
-      if (selectedOption !== undefined) {
+      if (selectedOption !== null) {
         console.log(selectedOption, element);
         const body = {
           case: 'CONFIRMATION',
