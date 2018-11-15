@@ -12,7 +12,8 @@ import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.service.MachineDetailService;
 
 /**
- * Controller with api to get Machine Details
+ * This controller class provides Machine  details based on user
+ * provided data.
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -23,12 +24,16 @@ import io.mosip.kernel.masterdata.service.MachineDetailService;
 @RequestMapping(value = "/machines")
 public class MachineDetailController {
 
+	/**
+	 * Reference to MachineDetailService.
+	 */
 	@Autowired
 	private MachineDetailService macService;
 
 	/**
-	 * Get api to fetch a machine details based on given Machine ID and Language
-	 * code
+	 * 
+	 * Function to fetch machine detail  based on given Machine ID and Language
+	 * code.
 	 * 
 	 * @param machineId
 	 * @param langcode
@@ -42,7 +47,7 @@ public class MachineDetailController {
 	}
 
 	/**
-	 * Get api to fetch a all machines details
+	 * Function to fetch a all machines details
 	 * 
 	 * @return all machines details
 	 */

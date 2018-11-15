@@ -23,6 +23,9 @@ import io.mosip.kernel.masterdata.service.DeviceService;
 @RequestMapping(value = "/devices")
 public class DeviceController {
 
+	/**
+	 * Reference to MachineDetailService.
+	 */
 	@Autowired
 	private DeviceService deviceService;
 

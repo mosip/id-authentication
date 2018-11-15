@@ -27,6 +27,9 @@ import io.mosip.kernel.masterdata.service.MachineHistoryService;
 @RequestMapping(value = "/machineshistory")
 public class MachineHistoryController {
 
+	/**
+	 * Reference to MachineHistroyService.
+	 */
 	@Autowired
 	private MachineHistoryService macHistoryService;
 
@@ -38,7 +41,9 @@ public class MachineHistoryController {
 	 *            machine Id
 	 * @param languagecode
 	 *            Language Code
-	 * 
+	 * @param effdatetimes
+	 * 				effective date and time 
+	 *  
 	 * @return returning machine history detail based on given Machine ID, Language
 	 *         code and effective date time
 	 */
