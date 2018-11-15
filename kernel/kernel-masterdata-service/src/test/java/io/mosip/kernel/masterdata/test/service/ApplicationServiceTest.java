@@ -67,7 +67,7 @@ public class ApplicationServiceTest {
 
 	@Test
 	public void getAllBiometricTypesSuccess() {
-		Mockito.when(applicationRepository.findAll(Mockito.eq(Application.class))).thenReturn(applicationList);
+		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Application.class))).thenReturn(applicationList);
 		List<ApplicationDto> applicationDtoList = applicationService.getAllApplication();
 		assertEquals(applicationList.get(0).getCode(), applicationDtoList.get(0).getCode());
 		assertEquals(applicationList.get(0).getName(), applicationDtoList.get(0).getName());
@@ -75,7 +75,7 @@ public class ApplicationServiceTest {
 
 	@Test
 	public void getAllBiometricTypesByLanguageCodeSuccess() {
-		Mockito.when(applicationRepository.findAllByLanguageCode(Mockito.anyString())).thenReturn(applicationList);
+		Mockito.when(applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(applicationList);
 		List<ApplicationDto> applicationDtoList = applicationService
 				.getAllApplicationByLanguageCode(Mockito.anyString());
 		assertEquals(applicationList.get(0).getCode(), applicationDtoList.get(0).getCode());
@@ -84,7 +84,7 @@ public class ApplicationServiceTest {
 
 	@Test
 	public void getBiometricTypeByCodeAndLangCodeSuccess() {
-		Mockito.when(applicationRepository.findByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(applicationRepository.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(application1);
 		ApplicationDto actual = applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(),
 				Mockito.anyString());

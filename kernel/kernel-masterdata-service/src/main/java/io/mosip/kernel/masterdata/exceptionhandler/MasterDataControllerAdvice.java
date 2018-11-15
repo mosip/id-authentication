@@ -27,6 +27,9 @@ import io.mosip.kernel.masterdata.exception.GenderTypeMappingException;
 import io.mosip.kernel.masterdata.exception.GenderTypeNotFoundException;
 import io.mosip.kernel.masterdata.exception.HolidayFetchException;
 import io.mosip.kernel.masterdata.exception.HolidayMappingException;
+import io.mosip.kernel.masterdata.exception.IdTypeFetchException;
+import io.mosip.kernel.masterdata.exception.IdTypeMappingException;
+import io.mosip.kernel.masterdata.exception.IdTypeNotFoundException;
 import io.mosip.kernel.masterdata.exception.InvalidDateTimeFormatException;
 import io.mosip.kernel.masterdata.exception.LanguageFetchException;
 import io.mosip.kernel.masterdata.exception.LanguageMappingException;
@@ -149,6 +152,14 @@ public class MasterDataControllerAdvice {
 	@ExceptionHandler(InvalidDateTimeFormatException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> machineHistoryInvalideDateTimeFormateException(
 			final InvalidDateTimeFormatException e) {
+		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	@ExceptionHandler(MachineHistroyNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> machineHistoryMappingException(
+			final MachineHistroyNotFoundException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
@@ -527,5 +538,50 @@ public class MasterDataControllerAdvice {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+	
+		/**
+	 * This method handles {@link IdTypeFetchException}.
+	 * 
+	 * @param idTypeFetchException
+	 *            the exception argument
+	 * @return the response entity.
+	 */
+	@ExceptionHandler(IdTypeFetchException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> idTypeFetchException(
+			final IdTypeFetchException idTypeFetchException) {
+		ErrorBean error = new ErrorBean(idTypeFetchException.getErrorCode(), idTypeFetchException.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	/**
+	 * This method handles {@link IdTypeMappingException}.
+	 * 
+	 * @param idTypeMappingException
+	 *            the exception argument
+	 * @return the response entity.
+	 */
+	@ExceptionHandler(IdTypeMappingException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> idTypeMappingException(
+			final IdTypeMappingException idTypeMappingException) {
+		ErrorBean error = new ErrorBean(idTypeMappingException.getErrorCode(), idTypeMappingException.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
+	}
+
+	/**
+	 * This method handles {@link IdTypeNotFoundException}.
+	 * 
+	 * @param idTypeNotFoundException
+	 *            the exception argument
+	 * @return the response entity.
+	 */
+	@ExceptionHandler(IdTypeNotFoundException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> idTypeNotFoundException(
+			final IdTypeNotFoundException idTypeNotFoundException) {
+		ErrorBean error = new ErrorBean(idTypeNotFoundException.getErrorCode(), idTypeNotFoundException.getErrorText());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 	}
 }

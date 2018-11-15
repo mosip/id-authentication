@@ -35,10 +35,15 @@ public class ApplicationServiceImpl implements ApplicationService {
 	
 	private List<ApplicationDto> applicationDtoList;
 	
+	/**
+	 * Get All Applications
+	 * 
+	 * @return {@link List<ApplicationDto>}
+	 */
 	@Override
 	public List<ApplicationDto> getAllApplication() {
 		try {
-			applicationList = applicationRepository.findAll(Application.class);
+			applicationList = applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Application.class);
 		} catch(DataAccessException e) {
 			throw new ApplicationFetchException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(), ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -54,11 +59,17 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationDtoList;
 	}
 
+	/**
+	 * Get All Applications by language  code
+	 * 
+	 * @param languageCode
+	 * @return {@link List<ApplicationDto>}
+	 */
 	@Override
 	public List<ApplicationDto> getAllApplicationByLanguageCode(String languageCode) {
 		
 		try {
-			applicationList = applicationRepository.findAllByLanguageCode(languageCode);
+			applicationList = applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
 		} catch(DataAccessException e) {
 			throw new ApplicationFetchException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(), ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -74,12 +85,19 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return applicationDtoList;
 	}
 
+	/**
+	 * Get An Application by code and language  code
+	 * 
+	 * @param code
+	 * @param languageCode
+	 * @return {@link ApplicationDto}
+	 */
 	@Override
 	public ApplicationDto getApplicationByCodeAndLanguageCode(String code, String languageCode) {
 		Application application;
 		ApplicationDto applicationDto;
 		try {
-			application = applicationRepository.findByCodeAndLanguageCode(code, languageCode);
+			application = applicationRepository.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(code, languageCode);
 		} catch(DataAccessException e) {
 			throw new ApplicationFetchException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(), ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage());
 		}

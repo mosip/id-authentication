@@ -45,18 +45,21 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	public List<TemplateDto> getAllTemplate() {
 		try {
-			templateList = templateRepository.findAll(Template.class);
-		} catch(DataAccessException exception) {
-			throw new TemplateFetchException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(), TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
+			templateList = templateRepository.findAllByIsActiveTrueAndIsDeletedFalse(Template.class);
+		} catch (DataAccessException exception) {
+			throw new TemplateFetchException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if(!(templateList.isEmpty())) {
+		if (!(templateList.isEmpty())) {
 			try {
 				templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
-			} catch(IllegalArgumentException | ConfigurationException | MappingException excetion) {
-				throw new TemplateMappingException(TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorCode(), TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorMessage());
+			} catch (IllegalArgumentException | ConfigurationException | MappingException excetion) {
+				throw new TemplateMappingException(TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorCode(),
+						TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorMessage());
 			}
 		} else {
-			throw new TemplateNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(), TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
+			throw new TemplateNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
 		return templateDtoList;
 	}
@@ -70,18 +73,21 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	public List<TemplateDto> getAllTemplateByLanguageCode(String languageCode) {
 		try {
-			templateList = templateRepository.findAllByLanguageCode(languageCode);
-		} catch(DataAccessException exception) {
-			throw new TemplateFetchException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(), TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
+			templateList = templateRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
+		} catch (DataAccessException exception) {
+			throw new TemplateFetchException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if(!(templateList.isEmpty())) {
+		if (!(templateList.isEmpty())) {
 			try {
 				templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
-			} catch(IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new TemplateMappingException(TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorCode(), TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorMessage());
+			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
+				throw new TemplateMappingException(TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorCode(),
+						TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorMessage());
 			}
 		} else {
-			throw new TemplateNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(), TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
+			throw new TemplateNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
 		return templateDtoList;
 	}
@@ -98,18 +104,22 @@ public class TemplateServiceImpl implements TemplateService {
 	public List<TemplateDto> getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
 		try {
-			templateList = templateRepository.findAllByLanguageCodeAndTemplateTypeCode(languageCode, templateTypeCode);
+			templateList = templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsActiveTrueAndIsDeletedFalse(
+					languageCode, templateTypeCode);
 		} catch (DataAccessException exception) {
-			throw new TemplateFetchException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(), TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
+			throw new TemplateFetchException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if(!(templateList.isEmpty())) {
+		if (!(templateList.isEmpty())) {
 			try {
 				templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
-			} catch(IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new TemplateMappingException(TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorCode(), TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorMessage());
+			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
+				throw new TemplateMappingException(TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorCode(),
+						TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorMessage());
 			}
 		} else {
-			throw new TemplateNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(), TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
+			throw new TemplateNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
 		return templateDtoList;
 	}

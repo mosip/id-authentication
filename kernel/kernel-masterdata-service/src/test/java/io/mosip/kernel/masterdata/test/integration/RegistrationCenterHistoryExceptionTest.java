@@ -59,7 +59,7 @@ public class RegistrationCenterHistoryExceptionTest {
 
 	@Test
 	public void getRegistrationCentersHistoryNotFoundExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse("1", "ENG",
 				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(null);
 		mockMvc.perform(get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
@@ -67,7 +67,7 @@ public class RegistrationCenterHistoryExceptionTest {
 	
 	@Test
 	public void getRegistrationCentersHistoryEmptyExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse("1", "ENG",
 				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(centers);
 		mockMvc.perform(get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
@@ -75,7 +75,7 @@ public class RegistrationCenterHistoryExceptionTest {
 
 	@Test
 	public void getRegistrationCentersHistoryFetchExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse("1", "ENG",
 				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
@@ -84,7 +84,7 @@ public class RegistrationCenterHistoryExceptionTest {
 	@Test
 	public void getRegistrationCentersHistoryExceptionTest() throws Exception {
 		centers.add(center);
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse("1", "ENG",
 				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(centers);
 		when(modelMapper.map(Mockito.any(),
 				Mockito.eq(new TypeToken<List<RegistrationCenterDto>>() {
