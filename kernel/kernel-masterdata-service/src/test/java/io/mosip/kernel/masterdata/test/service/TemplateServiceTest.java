@@ -53,7 +53,7 @@ public class TemplateServiceTest {
 		template.setLanguageCode("HIN");
 		template.setCreatedBy("Neha");
 		template.setCreatedtimes(LocalDateTime.of(2018, Month.NOVEMBER, 12, 0, 0, 0));
-		template.setActive(true);
+		template.setIsActive(true);
 		template.setIsDeleted(false);
 
 		templateList.add(template);

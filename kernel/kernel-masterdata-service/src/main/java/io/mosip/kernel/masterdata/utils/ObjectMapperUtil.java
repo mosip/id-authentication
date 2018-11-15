@@ -58,8 +58,8 @@ public class ObjectMapperUtil {
 		List<ReasonCategoryDto> reasonCategoryDtos = null;
 		reasonCategoryDtos = reasonCategories.stream()
 				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(), reasonCategory.getName(),
-						reasonCategory.getDescription(), reasonCategory.getLanguageCode(), reasonCategory.getIsActive(),
-						reasonCategory.getIsDeleted(), mapAll(reasonCategory.getReasons(), ReasonListDto.class)))
+						reasonCategory.getDescription(), reasonCategory.getLanguageCode(),
+						mapAll(reasonCategory.getReasons(), ReasonListDto.class)))
 				.collect(Collectors.toList());
 
 		return reasonCategoryDtos;

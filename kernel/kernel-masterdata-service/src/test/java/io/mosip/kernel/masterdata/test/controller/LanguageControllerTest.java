@@ -34,9 +34,7 @@ public class LanguageControllerTest {
 	@MockBean
 	private LanguageService languageService;
 
-	private static final String RESPONSE_BODY_ALL = "{ \"languages\": [   {"
-			+ "      \"languageCode\": \"hin\", \"languageName\": \"hindi\","
-			+ "      \"languageFamily\": \"hindi\",   \"nativeName\": \"hindi\", \"active\": true } " + "]}";
+	private static final String RESPONSE_BODY_ALL = "{ \"languages\": [   {      \"languageCode\": \"hin\", \"languageName\": \"hindi\",      \"languageFamily\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
 
 	private LanguageResponseDto respDto;
 	private List<LanguageDto> languages;
@@ -90,7 +88,6 @@ public class LanguageControllerTest {
 		hin.setLanguageName("hindi");
 		hin.setLanguageFamily("hindi");
 		hin.setNativeName("hindi");
-		hin.setActive(Boolean.TRUE);
 
 		// adding language to list
 		languages.add(hin);
@@ -98,4 +95,5 @@ public class LanguageControllerTest {
 		respDto.setLanguages(languages);
 
 	}
+
 }

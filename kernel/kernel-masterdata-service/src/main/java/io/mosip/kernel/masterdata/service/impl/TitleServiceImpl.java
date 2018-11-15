@@ -21,22 +21,38 @@ import io.mosip.kernel.masterdata.exception.TitleNotFoundException;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.service.TitleService;
 
+/**
+ * Implementing service class for fetching titles from master db
+ * 
+ * @author Sidhant Agarwal
+ * @since 1.0.0
+ *
+ */
 @Service
 public class TitleServiceImpl implements TitleService {
 
 	@Autowired
 	private TitleRepository titleRepository;
-	
 
 	@Autowired
 	private ModelMapper mapper;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.TitleService#getAllTitles()
+	 */
 	@Override
 	public TitleResponseDto getAllTitles() {
 		TitleResponseDto titleResponseDto = null;
 		List<TitleDto> titleDto = null;
 		List<Title> title = null;
-		title = titleRepository.findAll(Title.class);
+		try {
+			title = titleRepository.findAll(Title.class);
+		} catch (DataAccessLayerException e) {
+			throw new TitleFetchException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
+					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
+		}
 		if (!(title.isEmpty())) {
 			try {
 				titleDto = mapper.map(title, new TypeToken<List<TitleDto>>() {
@@ -55,8 +71,13 @@ public class TitleServiceImpl implements TitleService {
 
 	}
 
-	
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.TitleService#getByLanguageCode(java.lang.
+	 * String)
+	 */
 	@Override
 	public TitleResponseDto getByLanguageCode(String languageCode) {
 		TitleResponseDto titleResponseDto = null;

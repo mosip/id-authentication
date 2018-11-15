@@ -62,7 +62,7 @@ public class ApplicationServiceExceptionTest {
 		application1.setName("pre-registeration");
 		application1.setDescription("Pre-registration Application Form");
 		application1.setLanguageCode("ENG");
-		application1.setActive(true);
+		application1.setIsActive(true);
 		application1.setCreatedBy("Neha");
 		application1.setUpdatedBy(null);
 		application1.setIsDeleted(false);
@@ -71,7 +71,7 @@ public class ApplicationServiceExceptionTest {
 		application2.setName("registeration");
 		application2.setDescription("Registeration Application Form");
 		application2.setLanguageCode("ENG");
-		application2.setActive(true);
+		application2.setIsActive(true);
 		application2.setCreatedBy("Neha");
 		application2.setUpdatedBy(null);
 		application2.setIsDeleted(false);

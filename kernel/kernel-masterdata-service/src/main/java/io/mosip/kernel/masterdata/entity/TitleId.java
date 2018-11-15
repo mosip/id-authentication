@@ -9,6 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class to define composite primary key of table
+ * 
+ * @author Sidhant Agarwal
+ * @since 1.0.0
+ *
+ */
 @Embeddable
 @Data
 @NoArgsConstructor
@@ -21,6 +28,5 @@ public class TitleId implements Serializable {
 
 	@Column(name = "lang_code", unique = true, nullable = false, length = 3)
 	private String languageCode;
-
 
 }

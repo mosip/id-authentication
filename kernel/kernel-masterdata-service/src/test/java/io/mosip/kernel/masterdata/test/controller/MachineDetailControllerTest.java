@@ -44,7 +44,7 @@ public class MachineDetailControllerTest {
 		machineDetailDto.setSerialNum("1234567890");
 		machineDetailDto.setMacAddress("100.100.100.80");
 		machineDetailDto.setLangCode("ENG");
-		machineDetailDto.setActive(true);
+		machineDetailDto.setIsActive(true);
 
 		machineDetailResponseIdDto.setMachineDetail(machineDetailDto);
 		Mockito.when(macService.getMachineDetailIdLang(Mockito.anyString(), Mockito.anyString()))
@@ -66,7 +66,7 @@ public class MachineDetailControllerTest {
 		machineDetailDto.setSerialNum("1234567890");
 		machineDetailDto.setMacAddress("100.100.100.80");
 		machineDetailDto.setLangCode("ENG");
-		machineDetailDto.setActive(true);
+		machineDetailDto.setIsActive(true);
 		machineDetailDtoList.add(machineDetailDto);
 		MachineDetailResponseDto machineDetailResponseDto = new MachineDetailResponseDto();
 		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);

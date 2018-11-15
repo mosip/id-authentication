@@ -48,7 +48,7 @@ public class DeviceSpecificationServiceTest {
 		deviceSpecification.setMinDriverversion("window_10");
 		deviceSpecification.setDescription("laptop discription");
 		deviceSpecification.setLangCode("ENG");
-		deviceSpecification.setActive(true);
+		deviceSpecification.setIsActive(true);
 		deviceSpecifications.add(deviceSpecification);
 		DeviceSpecification deviceSpecification1 = new DeviceSpecification();
 		deviceSpecification1.setId("printer");
@@ -59,7 +59,7 @@ public class DeviceSpecificationServiceTest {
 		deviceSpecification1.setMinDriverversion("ver_5.0");
 		deviceSpecification1.setDescription("printer discription");
 		deviceSpecification1.setLangCode("ENG");
-		deviceSpecification1.setActive(true);
+		deviceSpecification1.setIsActive(true);
 		deviceSpecifications.add(deviceSpecification1);
 		deviceSpecificationListWithDeviceTypeCode = new ArrayList<DeviceSpecification>();
 		deviceSpecificationListWithDeviceTypeCode.add(deviceSpecification);

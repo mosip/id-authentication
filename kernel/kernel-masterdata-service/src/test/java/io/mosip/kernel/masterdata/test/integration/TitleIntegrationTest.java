@@ -21,6 +21,13 @@ import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.TitleId;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
 
+/**
+ * Integration testing to fetch titles from master db
+ * 
+ * @author Sidhant Agarwal
+ * @since 1.0.0
+ *
+ */
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -42,14 +49,14 @@ public class TitleIntegrationTest {
 		titleId = new TitleId();
 		titleId.setLanguageCode("ENG");
 		titleId.setTitleCode("ABC");
-		title.setActive(true);
+		title.setIsActive(true);
 		title.setCreatedBy("Ajay");
-		title.setCreatedtime(null);
+		title.setCreatedtimes(null);
 		title.setId(titleId);
 		title.setTitleDescription("AAAAAAAAAAAA");
 		title.setTitleName("HELLO");
 		title.setUpdatedBy("XYZ");
-		title.setUpdatedtime(null);
+		title.setUpdatedtimes(null);
 		titleList.add(title);
 
 	}
