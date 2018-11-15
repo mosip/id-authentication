@@ -41,45 +41,50 @@ stage ('---------- mvn-clean-install ---------------') {
         rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
 }
 
- stage('---------- SonarQube Analysis --------------') {
+stage('---------- SonarQube Analysis --------------') {
   def mvnHome = tool name: 'M2_HOME', type: 'maven'
   withSonarQubeEnv('sonar') {
    sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
   }
  }
 
- stage('----------- Publish build info -------------') {
+stage('----------- Publish build info -------------') {
   server.publishBuildInfo buildInfo
  }
  
-   	stage('-----------Docker image push and cleanup-----------') {
-		dir(branch) {
-				sh "find . -name 'Dockerfile'> directoryDockerFiles"
-				locationOfDockerFiles = readFile( "directoryDockerFiles" ).split( "\\r?\\n" );
-				sh "rm -f directoryDockerFiles"
-				for (int i=0; i < locationOfDockerFiles.size(); i++) {
-				echo locationOfDockerFiles[i]
-				def currentModule = locationOfDockerFiles[i]
-				sh "basename `dirname $currentModule` > parentDirectoryName"
-				parentDirectory = readFile('parentDirectoryName').trim()
-				docker.withRegistry(registryUrl) {
-				 echo "$currentModule"
-				 echo "$parentDirectory"
-				    def buildName = "$parentDirectory:$BUILD_NUMBER"
-				    newApp = docker.build(buildName, '-f '+locationOfDockerFiles[i]+' kernel/'+parentDirectory)
-				    newApp.push()
-				    newApp.push 'latest'
-				 }
-				sh "docker rmi $parentDirectory:$BUILD_NUMBER"
-  		  		sh "docker rmi $registryName/$parentDirectory:$BUILD_NUMBER"
-                  		sh "docker rmi $registryName/$parentDirectory"
-				
-				}
-				
-		}
-				
-                
+stage('-----------Docker image push and cleanup-----------') {
+	dir(branch) {
+			sh "find . -name 'Dockerfile'> directoryDockerFiles"
+			locationOfDockerFiles = readFile( "directoryDockerFiles" ).split( "\\r?\\n" );
+			sh "rm -f directoryDockerFiles"
+			for (int i=0; i < locationOfDockerFiles.size(); i++) {
+			echo locationOfDockerFiles[i]
+			def currentModule = locationOfDockerFiles[i]
+			sh "basename `dirname $currentModule` > parentDirectoryName"
+			parentDirectoryName = readFile('parentDirectoryName').trim()
+			sh "rm -f parentDirectoryName"
+			sh "dirname $currentModule > parentDirectoryPath"
+			parentDirectoryPath = readFile('parentDirectoryPath').trim()
+			sh "rm -f parentDirectoryPath"
+			docker.withRegistry(registryUrl) {
+			echo "$currentModule"
+			echo "$parentDirectoryName"
+			echo "$parentDirectoryPath"
+			def buildName = "$parentDirectoryName:$BUILD_NUMBER"
+			newApp = docker.build(buildName, '-f '+locationOfDockerFiles[i]+' '+parentDirectoryPath)
+			    newApp.push()
+			    newApp.push 'latest'
+			 }
+			sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
+			sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
+			sh "docker rmi $registryName/$parentDirectoryName"
+
+			}
+
 	}
+
+
+}
  
 
 }
