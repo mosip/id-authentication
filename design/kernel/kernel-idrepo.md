@@ -1,6 +1,6 @@
 # Identity Repository Service
 
-## 1. Background##       
+## 1. Background       
 
 
 Identity Repository service can be used internally by products to create, read and update Identity information and to validate an input UIN. 
@@ -32,7 +32,7 @@ Identity Repository service can be used internally by products to create, read a
 -	Security :    
     
 
-### 2.	Solution###    
+### 2.	Solution    
 
 
 The key solution considerations are   
@@ -40,14 +40,14 @@ The key solution considerations are
 - REST service can be used by any MOSIP module to access these services through HTTP client         
 
 
-**2.1.	Class Diagram **   
+**2.1.	Class Diagram**   
 ![Class Diagram](_images/kernel-idrepo-cd.PNG)   
 
 
-**2.2.	REST Services **   
+**2.2.	REST Services**   
 
 
-***2.2.1.	Create Identity ***     
+***2.2.1.	Create Identity***     
 
 MOSIP Products can use ID Repo API spec available here - [ID Repository API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API) - to create Identity of an Individual    
 
@@ -63,7 +63,7 @@ Below sequence diagram for create Identity service shows sequence of operations 
 
 
 
-***2.2.2.	Update Identity ***   
+***2.2.2.	Update Identity***   
 
 MOSIP Products can use ID Repo API spec available here - [ID Repository API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API) - to update Identity of an Individual    
 1. 	Integrate with Kernel UIN validator to validate UIN     
@@ -79,7 +79,7 @@ Below sequence diagram shows sequence of operations to update UIN status.
 ![Update Status Sequence Diagram](_images/kernel-idrepo-updatestatus-sd.PNG)       
 
 
-***2.2.3.	Get Identity ***   
+***2.2.3.	Get Identity***   
 
 MOSIP Products can use ID Repo API spec available here - [ID Repository API Spec](https://github.com/mosip/mosip/wiki/ID-Repository-API) - to retrieve Identity of an Individual by providing a UIN.    
 1. 	Integrate with Kernel UIN validator to validate UIN     
