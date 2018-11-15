@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Time } from '@angular/common';
+import { MatSlideToggleChange, MatButtonToggleChange, MatDatepickerInputEvent } from '@angular/material';
+import { RegistrationService } from '../registration.service';
 
 @Component({
   selector: 'app-demographic',
@@ -11,13 +13,22 @@ import { Time } from '@angular/common';
 export class DemographicComponent implements OnInit {
 
   step = 0;
+  @ViewChild('picker') date;
+  showAge = false;
+  showDOB = false;
+  dateSelected: Date
+  showDate = false;
   numberOfApplicants: number;
   userForm: FormGroup;
   numbers: number[];
+  isDisabled = [];
+  checked : boolean;
+  editMode = false;
+
 
   isPrimary = false;
   fullName = '';
-  gender = 'male';
+  gender = '';
   addressLine1 = '';
   addressLine2 = '';
   addressLine3 = '';
@@ -33,7 +44,7 @@ export class DemographicComponent implements OnInit {
   pin: number;
 
   constructor(private route: ActivatedRoute,
-    private router: Router) { }
+    private regService: RegistrationService) { }
 
   ngOnInit() {
     this.route.params
@@ -44,24 +55,20 @@ export class DemographicComponent implements OnInit {
           this.initForm();
         }
       );
+    this.isDisabled[0] = true;
   }
 
   initForm() {
-
-    if (this.step === 0){
-      console.log(this.step);
-      
+    if (this.step === 0) {
       this.isPrimary = true;
     }
-    else{
-      console.log(this.step + "else");
-      
+    else {
       this.isPrimary = false;
     }
     this.userForm = new FormGroup({
       'isPrimary': new FormControl(this.isPrimary),
       'fullName': new FormControl(this.fullName, Validators.required),
-      'gender': new FormControl(this.gender),
+      'gender': new FormControl(this.gender, Validators.required),
       'addressLine1': new FormControl(this.addressLine1, Validators.required),
       'addressLine2': new FormControl(this.addressLine2),
       'addressLine3': new FormControl(this.addressLine3),
@@ -69,46 +76,74 @@ export class DemographicComponent implements OnInit {
       'province': new FormControl(this.province, Validators.required),
       'city': new FormControl(this.city, Validators.required),
       'localAdministrativeAuthority': new FormControl(this.localAdministrativeAuthority, Validators.required),
-      'email': new FormControl(this.email, Validators.required),
-      'age': new FormControl(this.age, Validators.required),
-      'dob': new FormControl(this.dob),
+      'email': new FormControl(this.email),
+      'age': new FormControl(this.age),
+      // 'dob': new FormControl(this.dob),
       'postalCode': new FormControl(this.postalCode, Validators.required),
-      'mobilePhone': new FormControl(this.mobilePhone, Validators.required),
-      'pin': new FormControl(this.pin, Validators.required)
+      'mobilePhone': new FormControl(this.mobilePhone),
+      'pin': new FormControl(this.pin)
     })
-
-    this.isPrimary = false;
   }
-
 
   setStep(index: number) {
     this.step = index;
   }
 
   nextStep() {
-    this.saveForm();
+    this.onSubmit();
+    this.isDisabled[this.step] = true;
     this.step++;
+    this.initForm();
   }
 
   prevStep() {
+    this.editMode = true;
     this.step--;
   }
 
-  saveForm() {
-    console.log("save Form");
-    // console.log(this.userForm.get('gender'));
-    console.log(this.userForm);
-  }
-
-  onGenderChange(value) {
-    if (value.checked === true) {
-      this.gender = 'female';
+  onSubmit() {
+    if (this.editMode) {
+      // this.regService.updateRecipe(this.id, this.userForm.value);
     } else {
-      this.gender = 'male';
+      // this.regService.addRecipe(this.userForm.value);
     }
+    console.log(this.userForm.controls);
+
+    console.log("save Form");
   }
 
-  onDOBChange(value) {
+  onGenderChange(gender: MatButtonToggleChange) {
+    console.log(gender);
+    this.userForm.controls.gender.patchValue(gender.value);
+  }
+
+  addDOB(event: MatDatepickerInputEvent<Date>) {
+    console.log("date add " + event);
+    this.showDate = true;
+    this.dateSelected = event.value;
+    this.userForm.addControl("dob", new FormControl(this.dateSelected));
+  }
+
+  onDOBChange(value: MatSlideToggleChange) {
     console.log(value);
+
+    if (value.checked === true) {
+      // this.checked = true;
+      this.showAge = true;
+      this.showDOB = false;
+    } else {
+      this.showAge = false;
+      this.showDOB = true;
+      console.log(Date.now())
+      // var timeDiff = Math.abs(Date.now() - this.birthdate);
+      //Used Math.floor instead of Math.ceil
+      //so 26 years and 140 days would be considered as 26, not 27.
+      // this.age = Math.floor((timeDiff / (1000 * 3600 * 24))/365);
+      // this.checked = false;
+
+    }
+    // this.userForm.controls.dob.patchValue("female");
+    // this.userForm.controls.age.patchValue("male");
+
   }
 }

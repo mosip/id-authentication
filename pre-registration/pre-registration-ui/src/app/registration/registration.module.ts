@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-// import { RegistrationComponent } from './dashboard/dashboard.component';
 import { DemographicComponent } from './demographic/demographic.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { TimeSelectionComponent } from './time-selection/time-selection.component';

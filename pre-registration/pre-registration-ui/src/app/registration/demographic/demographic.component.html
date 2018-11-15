@@ -2,7 +2,8 @@
   <div>
     <mat-accordion class="expansion">
       <div *ngFor="let applicant of numbers; let i = index">
-        <mat-expansion-panel [expanded]="step === applicant" (opened)="setStep(applicant)" hideToggle>
+        <mat-expansion-panel [disabled]="!isDisabled[i]" [expanded]="step === applicant" (opened)="setStep(applicant)"
+          hideToggle>
           <mat-expansion-panel-header>
             <mat-panel-title>
               Demographic Details {{applicant + 1}}
@@ -11,7 +12,7 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
 
-          <form (ngSubmit)="saveForm()" [formGroup]="userForm">
+          <form [formGroup]="userForm">
             <div class="user-container">
               <div>
                 <mat-form-field>
@@ -19,23 +20,39 @@
                 </mat-form-field>
 
                 <span style="display:block;">
-                  <mat-form-field style="width:3em">
-                    <input matInput placeholder="Age" formControlName="age">
-                  </mat-form-field>
-                  <mat-slide-toggle (change)="onDOBChange($event)" formControlName="dob">
-                    dob
+                  <!-- <mat-form-field> -->
+                  <input (dateInput)="addDOB($event)" type="hidden" [matDatepicker]="picker" placeholder="Date Of Birth">
+                  <div *ngIf="showDate; then show else hidden"></div>
+                  <mat-datepicker-toggle [disabled]="!showDOB" [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                  <!-- </mat-form-field> -->
+                  <mat-slide-toggle [checked]="checked" (change)="onDOBChange($event)">
+                    <mat-form-field style="width:3em">
+                      <input matInput placeholder="Age" formControlName="age">
+                      {{age}}
+                    </mat-form-field>
                   </mat-slide-toggle>
                 </span>
 
-                <span style="display: block;">Male<mat-slide-toggle (change)="onGenderChange($event)" formControlName="gender">
-                    Female
-                  </mat-slide-toggle>
-                </span>
+                <ng-template #hidden>
+                  Date of Birth
+                </ng-template>
+
+                <ng-template #show>
+                  {{dateSelected | date:'dd/MM/yyyy' }}
+                </ng-template>
+
+                <div style="text-align: left; width:100%">
+                  <mat-button-toggle-group formControlName="gender" (change)="onGenderChange($event)" appearance="legacy"
+                    name="fontStyle" aria-label="Font Style">
+                    <mat-button-toggle value="male">Male</mat-button-toggle>
+                    <mat-button-toggle value="female">Female</mat-button-toggle>
+                  </mat-button-toggle-group>
+                </div>
 
                 <mat-form-field>
                   <input matInput placeholder="Address Line 1" formControlName="addressLine1">
                 </mat-form-field>
-
                 <mat-form-field>
                   <input matInput placeholder="Address Line 2" formControlName='addressLine2'>
                 </mat-form-field>
@@ -89,7 +106,7 @@
 
           <mat-action-row>
             <button *ngIf="step !== 0 " mat-button color="warn" (click)="prevStep()">Previous</button>
-            <button mat-button color="primary"  (click)="nextStep()">Next</button>
+            <button mat-button color="primary" [disabled]="!userForm.valid" (click)="nextStep()">Next</button>
           </mat-action-row>
         </mat-expansion-panel>
 
