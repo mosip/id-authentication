@@ -249,14 +249,14 @@ public class LoginController extends BaseController implements Initializable, MF
 				LOGGER.debug("REGISTRATION - USER_PASSWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 						"Retrieving User Password from database");
 
-				offlineStatus = userDetail.getRegistrationUserPassword().getPwd().equals(hashPassword);
-
 				LOGGER.debug("REGISTRATION - VALID_LOGIN_COUNT - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 						"Validating number of login attempts");
 
-				if (!offlineStatus) { 
-					validateInvalidLogin(userDetail, userId.getText(), RegistrationConstants.INCORRECT_PWORD);
-				} 
+				if (!userDetail.getRegistrationUserPassword().getPwd().equals(hashPassword)) { 
+					offlineStatus = validateInvalidLogin(userDetail, userId.getText(), RegistrationConstants.INCORRECT_PWORD);
+				} else {
+					offlineStatus = validateInvalidLogin(userDetail, userId.getText(), "");
+				}
 			}
 			if (serverStatus || offlineStatus) {
 				if (validateUserStatus(userId.getText())) {
@@ -350,7 +350,14 @@ public class LoginController extends BaseController implements Initializable, MF
 
 			if (responseDTO != null) {
 				RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
+				boolean otpLoginStatus = false;
 				if (responseDTO.getSuccessResponseDTO() != null) {
+					otpLoginStatus = validateInvalidLogin(userDetail, userId.getText(), "");
+				} else {
+					ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+					otpLoginStatus = validateInvalidLogin(userDetail, userId.getText(), errorResponseDTO.getMessage());
+				}
+				if (otpLoginStatus) {
 					// // Validating User status
 					if (validateUserStatus(userId.getText())) {
 						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
@@ -374,11 +381,7 @@ public class LoginController extends BaseController implements Initializable, MF
 
 					}
 
-				} else {
-					// Generate invalid otp alert
-					ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-					validateInvalidLogin(userDetail, userId.getText(), errorResponseDTO.getMessage());
-				}
+				} 
 			}
 
 		} else if (userId.getText().length() == 3) {
@@ -582,8 +585,13 @@ public class LoginController extends BaseController implements Initializable, MF
 					
 					LOGGER.debug("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
 							APPLICATION_ID, "Validating Fingerprint with minutia");
-					
+					boolean bioLoginStatus = false;
 					if (validateBiometric(minutia, detail)) {
+						bioLoginStatus = validateInvalidLogin(detail, userId.getText(), "");
+					} else {
+						bioLoginStatus = validateInvalidLogin(detail, userId.getText(), RegistrationConstants.FINGER_PRINT_MATCH);
+					}
+					if(bioLoginStatus) {
 						if (detail.getStatusCode() != null
 								&& detail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
 							generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
@@ -605,9 +613,7 @@ public class LoginController extends BaseController implements Initializable, MF
 										REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
 							}
 						}
-					} else {
-						validateInvalidLogin(detail, userId.getText(), RegistrationConstants.FINGER_PRINT_MATCH);
-					}
+					} 
 				}
 			}
 		});
@@ -849,25 +855,27 @@ public class LoginController extends BaseController implements Initializable, MF
 			if (loginCount > invalidLoginCount) {
 				if (compareTwoTimeStamps(loginTime, new Timestamp(new Date().getTime())) > invalidLoginTime) {
 					loginService.updateInvalidLoginParams(registrationUserDetail, userId, 1, null);
-					return false;
 				} else {
 					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
 							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 							RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE);
 				}
+				return false;
 			} else {
-				loginService.updateInvalidLoginParams(registrationUserDetail, userId, loginCount + 1,
-						(new Timestamp(new Date().getTime())));
-				if (loginCount == invalidLoginCount) {
-					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE);
-				} else {
-					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.LOGIN_INFO_MESSAGE, errorMessage);
-				}
-				return true;
+				if(!errorMessage.isEmpty()) {
+					loginService.updateInvalidLoginParams(registrationUserDetail, userId, loginCount + 1,
+							(new Timestamp(new Date().getTime())));
+					if (loginCount == invalidLoginCount) {
+						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+								AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+								RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE);
+					} else {
+						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+								AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+								RegistrationConstants.LOGIN_INFO_MESSAGE, errorMessage);
+					}
+					return false;
+				} 
 			}
 		}
 		return true;
