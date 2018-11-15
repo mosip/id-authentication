@@ -85,4 +85,7 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
 
+	@Column(name = "is_active", nullable = false)
+	private boolean isActive;
+
 }
