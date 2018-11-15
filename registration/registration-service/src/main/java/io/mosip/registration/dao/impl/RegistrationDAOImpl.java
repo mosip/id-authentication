@@ -73,17 +73,19 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			registration.setAckFilename(zipFileName + "_Ack." + RegistrationConstants.IMAGE_FORMAT);
 			registration.setClientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registration.setUploadCount((short) 1);
-			// TODO: Get from Session Context - Reg Center
+			registration.setRegCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterId());
 			registration.setIndividualName(individualName);
 			registration.setIsActive(true);
 			registration.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 			registration.setCrDtime(time);
+			registration.setRegUsrId(SessionContext.getInstance().getUserContext().getUserId());
+			registration.setApproverUsrId(SessionContext.getInstance().getUserContext().getUserId());
 
 			List<RegistrationTransaction> registrationTransactions = new ArrayList<>();
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
+			registrationTxn.setRegId(registration.getId());
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.CREATED.getCode());
 			registrationTxn.setLangCode("ENG");
-			registrationTxn.setIsActive(true);
 			registrationTxn.setStatusCode(RegistrationClientStatusCode.CREATED.getCode());
 			registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 			registrationTxn.setCrDtime(time);
@@ -129,9 +131,9 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			List<RegistrationTransaction> registrationTransaction = registration.getRegistrationTransaction();
 			
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
+			registrationTxn.setRegId(registration.getId());
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 			registrationTxn.setLangCode("ENG");
-			registrationTxn.setIsActive(true);
 			registrationTxn.setStatusCode(clientStatusCode);
 			registrationTxn.setStatusComment(statusComments);
 			registrationTxn.setCrBy(approverUsrId);
@@ -243,7 +245,6 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId(registrationPacket.getId());
-		regTransaction.setIsActive(true);
 		regTransaction.setTrnTypeCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 		regTransaction.setStatusCode(registrationPacket.getClientStatusCode());
 		regTransaction.setCrBy("mosip");

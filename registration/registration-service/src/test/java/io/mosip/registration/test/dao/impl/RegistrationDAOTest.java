@@ -18,12 +18,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationTransactionType;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.impl.RegistrationDAOImpl;
+import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.entity.RegistrationTransaction;
 import io.mosip.registration.entity.RegistrationUserDetail;
@@ -57,6 +57,9 @@ public class RegistrationDAOTest {
 		
 		SessionContext.getInstance().getUserContext().setUserId("mosip");
 		SessionContext.getInstance().getUserContext().setName("mosip");
+		RegistrationCenterDetailDTO center = new RegistrationCenterDetailDTO();
+		center.setRegistrationCenterId("abc123");
+		SessionContext.getInstance().getUserContext().setRegistrationCenterDetailDTO(center);
 	}
 
 	@Test
@@ -123,7 +126,6 @@ public class RegistrationDAOTest {
 		RegistrationTransaction registrationTxn = new RegistrationTransaction();
 		registrationTxn.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 		registrationTxn.setLangCode("ENG");
-		registrationTxn.setIsActive(true);
 		registrationTxn.setStatusCode(RegistrationClientStatusCode.APPROVED.getCode());
 		registrationTxn.setStatusComment("");
 		registrationTxn.setCrBy("Mosip1214");
