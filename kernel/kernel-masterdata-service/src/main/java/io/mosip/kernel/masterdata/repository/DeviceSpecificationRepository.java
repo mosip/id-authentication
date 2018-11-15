@@ -31,9 +31,9 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 * code and device Type Code.
 	 *
 	 * @param langCode
-	 *            languageCode provided by user
+	 *            LanguageCode provided by user
 	 * @param deviceTypeCode
-	 *            device Type Code provided by user
+	 *            Device Type Code provided by user
 	 *            
 	 * @return Device specific Details fetched from database
 	 */
