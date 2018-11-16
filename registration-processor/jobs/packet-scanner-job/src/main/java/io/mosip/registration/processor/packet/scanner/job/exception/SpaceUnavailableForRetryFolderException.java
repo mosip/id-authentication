@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.scanner.job.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.scanner.job.exception.utils.PacketScannerErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 /**
  * The Class SpaceUnavailableForRetryFolderException.
  */
@@ -16,7 +16,7 @@ public class SpaceUnavailableForRetryFolderException extends BaseUncheckedExcept
 	 * @param errorMessage the error message
 	 */
 	public SpaceUnavailableForRetryFolderException(String errorMessage) {
-		super(PacketScannerErrorCodes.IIS_EPP_EPV_SPACE_UNAVAILABLE_FOR_RETRY_FOLDER, errorMessage);
+		super(RPRPlatformErrorCodes.RPR_PSJ_SPACE_UNAVAILABLE_FOR_RETRY_FOLDER, errorMessage);
 	}
 
 	/**
@@ -26,7 +26,7 @@ public class SpaceUnavailableForRetryFolderException extends BaseUncheckedExcept
 	 * @param cause the cause
 	 */
 	public SpaceUnavailableForRetryFolderException(String message, Throwable cause) {
-		super(PacketScannerErrorCodes.IIS_EPP_EPV_SPACE_UNAVAILABLE_FOR_RETRY_FOLDER + EMPTY_SPACE, message, cause);
+		super(RPRPlatformErrorCodes.RPR_PSJ_SPACE_UNAVAILABLE_FOR_RETRY_FOLDER + EMPTY_SPACE, message, cause);
 	}
 
 }

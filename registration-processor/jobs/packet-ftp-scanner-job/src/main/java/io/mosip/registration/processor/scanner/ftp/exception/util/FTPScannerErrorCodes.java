@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.scanner.ftp.exception.util;
+/*package io.mosip.registration.processor.scanner.ftp.exception.util;
 
 public class FTPScannerErrorCodes {
 	private static final String IIS_EPP_EPV_PREFIX = "IIS_";
@@ -15,3 +15,4 @@ public class FTPScannerErrorCodes {
 		public static final String IIS_EPP_EPV_FTP_FOLDER_NOT_ACCESSIBLE = IIS_EPP_EPV_PREFIX_GEN_MODULE
 				+ "FTP_FOLDER_NOT_ACCESSIBLE";
 }
+*/

@@ -1,7 +1,7 @@
-package io.mosip.registration.processor.scanner.virusscanner.exception.utils;
-/**
+/*package io.mosip.registration.processor.scanner.virusscanner.exception.utils;
+*//**
  * The Class Packet Scanner Error Codes.
- */
+ *//*
 public final class VirusScannerErrorCodes {
 
 	private static final String IIS_EPP_EPV_PREFIX = "IIS_";
@@ -27,3 +27,4 @@ public final class VirusScannerErrorCodes {
 	
 
 }
+*/

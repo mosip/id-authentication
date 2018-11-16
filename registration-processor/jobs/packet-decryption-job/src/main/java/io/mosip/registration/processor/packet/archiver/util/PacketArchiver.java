@@ -2,27 +2,23 @@ package io.mosip.registration.processor.packet.archiver.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.constants.EventId;
 import io.mosip.registration.processor.core.constants.EventName;
 import io.mosip.registration.processor.core.constants.EventType;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
-import io.mosip.registration.processor.packet.archiver.util.exception.constant.PacketNotFoundExceptionConstant;
-import io.mosip.registration.processor.packet.archiver.util.exception.constant.UnableToAccessPathExceptionConstant;
-import io.mosip.registration.processor.packet.decryptor.job.messagesender.DecryptionMessageSender;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 
 /**
@@ -81,13 +77,12 @@ public class PacketArchiver {
 				isTransactionSuccessful=true;
 			} else {
 
-				throw new PacketNotFoundException(PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorCode(),
-						PacketNotFoundExceptionConstant.PACKET_NOT_FOUND_ERROR.getErrorMessage());
+				throw new PacketNotFoundException(RPRPlatformErrorMessages.PACKET_NOT_FOUND_EXCEPTION.getValue());
 			}
 
 		} catch (IOException e) {
 			LOGGER.error(LOGDISPLAY,"Packet archive failed", e);
-			throw new UnableToAccessPathException(UnableToAccessPathExceptionConstant.UNABLE_TO_ACCESS_PATH_ERROR_CODE.getErrorCode(),UnableToAccessPathExceptionConstant.UNABLE_TO_ACCESS_PATH_ERROR_CODE.getErrorMessage(),e.getCause());
+			throw new UnableToAccessPathException(RPRPlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();

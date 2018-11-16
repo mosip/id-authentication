@@ -151,7 +151,7 @@ public class PacketDecryptorTaskletTest {
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 
-		UnableToAccessPathException exception = new UnableToAccessPathException("", "Unable to access path Exception");
+		UnableToAccessPathException exception = new UnableToAccessPathException("Unable to access path Exception");
 		Mockito.doThrow(exception).when(packetArchiver).archivePacket(ArgumentMatchers.any());
 
 		Mockito.when(
@@ -196,7 +196,7 @@ public class PacketDecryptorTaskletTest {
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 
-		PacketNotFoundException exception = new PacketNotFoundException("", "Packet not found Exception");
+		PacketNotFoundException exception = new PacketNotFoundException("Packet not found Exception");
 		Mockito.doThrow(exception).when(packetArchiver).archivePacket(ArgumentMatchers.any());
 
 		Mockito.when(

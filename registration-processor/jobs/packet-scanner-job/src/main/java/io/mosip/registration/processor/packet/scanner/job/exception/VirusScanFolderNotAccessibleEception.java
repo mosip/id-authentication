@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.scanner.job.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.scanner.job.exception.utils.PacketScannerErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 
 /**
  * The Class VirusScanFolderNotAccessibleEception.
@@ -17,7 +17,7 @@ public class VirusScanFolderNotAccessibleEception extends BaseUncheckedException
 	 * @param errorMessage the error message
 	 */
 	public VirusScanFolderNotAccessibleEception(String errorMessage) {
-		super(PacketScannerErrorCodes.IIS_EPP_EPV_VIRUS_SCAN_FOLDER_NOT_ACCESSIBLE, errorMessage);
+		super(RPRPlatformErrorCodes.RPR_PSJ_VIRUS_SCAN_FOLDER_NOT_ACCESSIBLE, errorMessage);
 	}
 
 	/**
@@ -27,6 +27,6 @@ public class VirusScanFolderNotAccessibleEception extends BaseUncheckedException
 	 * @param cause the cause
 	 */
 	public VirusScanFolderNotAccessibleEception(String message, Throwable cause) {
-		super(PacketScannerErrorCodes.IIS_EPP_EPV_VIRUS_SCAN_FOLDER_NOT_ACCESSIBLE + EMPTY_SPACE, message, cause);
+		super(RPRPlatformErrorCodes.RPR_PSJ_VIRUS_SCAN_FOLDER_NOT_ACCESSIBLE + EMPTY_SPACE, message, cause);
 	}
 }

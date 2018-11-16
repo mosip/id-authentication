@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.scanner.job.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.scanner.job.exception.utils.PacketScannerErrorCodes;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
 /**
  * The Class VirusScanFailedException.
  */
@@ -16,7 +16,7 @@ public class VirusScanFailedException extends BaseUncheckedException {
 	 * @param errorMessage the error message
 	 */
 	public VirusScanFailedException(String errorMessage) {
-		super(PacketScannerErrorCodes.IIS_EPP_EPV_VIRUS_SCAN_FAILED, errorMessage);
+		super(RPRPlatformErrorCodes.RPR_PSJ_VIRUS_SCAN_FAILED, errorMessage);
 	}
 
 	/**
@@ -26,7 +26,7 @@ public class VirusScanFailedException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public VirusScanFailedException(String message, Throwable cause) {
-		super(PacketScannerErrorCodes.IIS_EPP_EPV_VIRUS_SCAN_FAILED + EMPTY_SPACE, message, cause);
+		super(RPRPlatformErrorCodes.RPR_PSJ_VIRUS_SCAN_FAILED + EMPTY_SPACE, message, cause);
 	}
 
 }
