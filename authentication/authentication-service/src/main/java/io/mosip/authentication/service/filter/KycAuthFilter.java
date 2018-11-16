@@ -32,9 +32,9 @@ public class KycAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> encodedResponse(Map<String, Object> responseBody)	throws IdAuthenticationAppException {
 		try {
-			responseBody.replace(KYC, encode((String) responseBody.get(KYC)));
-			responseBody.replace(AUTH, encode((String) responseBody.get(AUTH)));
-			responseBody.replace(RESPONSE, encode((String) responseBody.get(RESPONSE)));
+			responseBody.replace(KYC, encode(((Map<String, Object>) responseBody.get(RESPONSE)).get(KYC).toString()));
+			responseBody.replace(AUTH, encode(((Map<String, Object>) responseBody.get(RESPONSE)).get(AUTH).toString()));
+			responseBody.replace(RESPONSE, encode(responseBody.get(RESPONSE).toString()));
 			return responseBody;
 		} catch (ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
