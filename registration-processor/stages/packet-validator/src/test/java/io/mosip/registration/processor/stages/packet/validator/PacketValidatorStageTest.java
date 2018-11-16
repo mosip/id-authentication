@@ -29,17 +29,11 @@ import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.packet.dto.BiometricSequence;
-import io.mosip.registration.processor.core.packet.dto.Demographic;
-import io.mosip.registration.processor.core.packet.dto.DemographicSequence;
-import io.mosip.registration.processor.core.packet.dto.HashSequence;
-import io.mosip.registration.processor.core.packet.dto.MetaData;
-import io.mosip.registration.processor.core.packet.dto.PacketInfo;
-import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
-import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -58,8 +52,9 @@ public class PacketValidatorStageTest {
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	@Mock
-	PacketInfoManager<PacketInfo, Demographic, MetaData, ApplicantInfoDto> packetinfomanager;
+	// @Mock
+	// PacketInfoManager<PacketInfo, Demographic, MetaData, ApplicantInfoDto>
+	// packetinfomanager;
 
 	@InjectMocks
 	private PacketValidatorStage packetValidatorStage;
@@ -71,45 +66,37 @@ public class PacketValidatorStageTest {
 	@Mock
 	private AuditHandler<AuditRequestDto> auditHandler;
 
-	private PacketInfo packetInfo;
+	private Identity identity;
 
-	private Demographic demographicinfo;
+	// private Demographic demographicinfo;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		packetInfo = new PacketInfo();
-		HashSequence hashSequence = new HashSequence();
-		BiometricSequence biometricSequence = new BiometricSequence();
-		DemographicSequence demographicSequence = new DemographicSequence();
-		List<String> biometricApplicantList = new ArrayList<String>();
+		identity = new Identity();
 
-		biometricApplicantList.add(PacketFiles.LEFTPALM.name());
-		biometricApplicantList.add(PacketFiles.RIGHTPALM.name());
-		biometricApplicantList.add(PacketFiles.LEFTEYE.name());
-		biometricApplicantList.add(PacketFiles.RIGHTEYE.name());
-		biometricApplicantList.add(PacketFiles.BOTHTHUMBS.name());
+		List<FieldValueArray> fieldValueArrayList = new ArrayList<FieldValueArray>();
 
-		List<String> biometricIntroducerList = new ArrayList<String>();
-		biometricIntroducerList.add(PacketFiles.LEFTTHUMB.name());
-		biometricIntroducerList.add(PacketFiles.RIGHTTHUMB.name());
-		biometricIntroducerList.add(PacketFiles.LEFTEYE.name());
-		biometricIntroducerList.add(PacketFiles.RIGHTEYE.name());
-
-		List<String> demographicApplicantList = new ArrayList<String>();
-		demographicApplicantList.add(PacketFiles.DEMOGRAPHICINFO.name());
-		demographicApplicantList.add(PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name());
-		demographicApplicantList.add(PacketFiles.APPLICANTPHOTO.name());
-		demographicApplicantList.add(PacketFiles.PROOFOFADDRESS.name());
-		demographicApplicantList.add(PacketFiles.EXCEPTIONPHOTO.name());
-
-		biometricSequence.setApplicant(biometricApplicantList);
-		biometricSequence.setIntroducer(biometricIntroducerList);
-
-		demographicSequence.setApplicant(demographicApplicantList);
-		hashSequence.setBiometricSequence(biometricSequence);
-		hashSequence.setDemographicSequence(demographicSequence);
-		packetInfo.setHashSequence(hashSequence);
+		FieldValueArray applicantBiometric = new FieldValueArray();
+		applicantBiometric.setLabel(PacketFiles.APPLICANTBIOMETRICSEQUENCE.name());
+		List<String> applicantBiometricValues = new ArrayList<String>();
+		applicantBiometricValues.add(PacketFiles.BOTHTHUMBS.name());
+		applicantBiometric.setValue(applicantBiometricValues);
+		fieldValueArrayList.add(applicantBiometric);
+		FieldValueArray introducerBiometric = new FieldValueArray();
+		introducerBiometric.setLabel(PacketFiles.INTRODUCERBIOMETRICSEQUENCE.name());
+		List<String> introducerBiometricValues = new ArrayList<String>();
+		introducerBiometricValues.add("introducerLeftThumb");
+		introducerBiometric.setValue(introducerBiometricValues);
+		fieldValueArrayList.add(introducerBiometric);
+		FieldValueArray applicantDemographic = new FieldValueArray();
+		applicantDemographic.setLabel(PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name());
+		List<String> applicantDemographicValues = new ArrayList<String>();
+		applicantDemographicValues.add(PacketFiles.DEMOGRAPHICINFO.name());
+		applicantDemographicValues.add(PacketFiles.APPLICANTPHOTO.name());
+		applicantDemographic.setValue(applicantDemographicValues);
+		fieldValueArrayList.add(applicantDemographic);
+		identity.setHashSequence(fieldValueArrayList);
 
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
@@ -134,8 +121,7 @@ public class PacketValidatorStageTest {
 
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
-		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketInfo.class)
-				.thenReturn(packetInfo);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, Identity.class).thenReturn(identity);
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("2018701130000410092018110735");
@@ -152,10 +138,12 @@ public class PacketValidatorStageTest {
 		PowerMockito.doNothing().when(HMACUtils.class, "update", data);
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
-		Mockito.doNothing().when(packetinfomanager).savePacketData(packetInfo);
-		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, Demographic.class)
-				.thenReturn(demographicinfo);
-		Mockito.doNothing().when(packetinfomanager).saveDemographicData(demographicinfo, packetInfo.getMetaData());
+		// Mockito.doNothing().when(packetinfomanager).savePacketData(packetInfo);
+		// PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream,
+		// Demographic.class)
+		// .thenReturn(demographicinfo);
+		// Mockito.doNothing().when(packetinfomanager).saveDemographicData(demographicinfo,
+		// packetInfo.getMetaData());
 
 		MessageDTO messageDto = packetValidatorStage.process(dto);
 		assertTrue(messageDto.getIsValid());
@@ -169,8 +157,7 @@ public class PacketValidatorStageTest {
 
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
-		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketInfo.class)
-				.thenReturn(packetInfo);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, Identity.class).thenReturn(identity);
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("2018701130000410092018110735");
@@ -187,10 +174,12 @@ public class PacketValidatorStageTest {
 		PowerMockito.doNothing().when(HMACUtils.class, "update", data);
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
 
-		Mockito.doNothing().when(packetinfomanager).savePacketData(packetInfo);
-		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, Demographic.class)
-				.thenReturn(demographicinfo);
-		Mockito.doNothing().when(packetinfomanager).saveDemographicData(demographicinfo, packetInfo.getMetaData());
+		// Mockito.doNothing().when(packetinfomanager).savePacketData(packetInfo);
+		// PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream,
+		// Demographic.class)
+		// .thenReturn(demographicinfo);
+		// Mockito.doNothing().when(packetinfomanager).saveDemographicData(demographicinfo,
+		// packetInfo.getMetaData());
 
 		MessageDTO messageDto = packetValidatorStage.process(dto);
 		assertFalse(messageDto.getIsValid());
@@ -202,8 +191,7 @@ public class PacketValidatorStageTest {
 
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
-		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketInfo.class)
-				.thenReturn(packetInfo);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, Identity.class).thenReturn(identity);
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("2018701130000410092018110735");
@@ -222,10 +210,9 @@ public class PacketValidatorStageTest {
 
 		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
 		PowerMockito.mockStatic(JsonUtil.class);
-		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketInfo.class)
-				.thenReturn(packetInfo);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, Identity.class).thenReturn(identity);
 
-		packetInfo.setHashSequence(null);
+		identity.setHashSequence(null);
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("2018701130000410092018110735");
