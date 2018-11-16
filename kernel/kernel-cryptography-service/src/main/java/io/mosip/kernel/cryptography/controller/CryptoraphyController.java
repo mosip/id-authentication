@@ -1,34 +1,53 @@
+/*
+ * 
+ * 
+ * 
+ * 
+ */
 package io.mosip.kernel.cryptography.controller;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.cryptography.dto.CryptographyRequestDto;
 import io.mosip.kernel.cryptography.dto.CryptographyResponseDto;
 import io.mosip.kernel.cryptography.service.CryptographyService;
 
+/**
+ * @author Urvil Joshi
+ *
+ * @since 1.0.0
+ */
 @RestController
 public class CryptoraphyController {
 
+	/**
+	 * 
+	 */
 	@Autowired
-	CryptographyService cryptographyService; 
-	
-	@PostMapping(value="/encrypt/{applicationId}")
-	public CryptographyResponseDto encrypt(@PathVariable("applicationId") String applicationId,@DateTimeFormat(iso=ISO.DATE_TIME)@RequestParam("timeStamp") LocalDateTime timeStamp,@RequestParam("machineId")Optional<String>machineId,@RequestBody byte[] data) {
-		return cryptographyService.encrypt(applicationId,data,timeStamp,machineId);
-	}
-	
+	CryptographyService cryptographyService;
 
-	@PostMapping(value="/decrypt/{applicationId}")
-	public CryptographyResponseDto decrypt(@PathVariable("applicationId") String applicationId,@DateTimeFormat(iso=ISO.DATE_TIME)@RequestParam("timeStamp") LocalDateTime timeStamp,@RequestParam("machineId")Optional<String>machineId,@RequestBody byte[] data) {
-		return cryptographyService.decrypt(applicationId,data,timeStamp,machineId);
+	
+	/**
+	 * @param cryptographyRequestDto
+	 * @return
+	 */
+	@PostMapping(value = "/encrypt")
+	public CryptographyResponseDto encrypt(@RequestBody @Valid CryptographyRequestDto cryptographyRequestDto) {
+		return cryptographyService.encrypt(cryptographyRequestDto);
+	}
+
+	
+	/**
+	 * @param cryptographyRequestDto
+	 * @return
+	 */
+	@PostMapping(value = "/decrypt")
+	public CryptographyResponseDto decrypt(@RequestBody @Valid CryptographyRequestDto cryptographyRequestDto) {
+		return cryptographyService.decrypt(cryptographyRequestDto);
 	}
 }

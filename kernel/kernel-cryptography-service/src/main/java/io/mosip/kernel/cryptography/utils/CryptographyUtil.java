@@ -1,3 +1,9 @@
+/*
+ * 
+ * 
+ * 
+ * 
+ */
 package io.mosip.kernel.cryptography.utils;
 
 import java.security.KeyFactory;
@@ -5,10 +11,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -18,90 +20,121 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
-import io.mosip.kernel.cryptography.constant.CryptographyConstant;
 import io.mosip.kernel.cryptography.constant.CryptographyErrorCode;
+import io.mosip.kernel.cryptography.dto.CryptographyRequestDto;
+import io.mosip.kernel.cryptography.dto.KeyManagerPublicKeyRequestDto;
+import io.mosip.kernel.cryptography.dto.KeyManagerResponseDto;
+import io.mosip.kernel.cryptography.dto.KeymanagerSymmetricKeyRequestDto;
+import io.mosip.kernel.datamapper.orika.impl.DataMapperImpl;
 
+/**
+ * @author Urvil Joshi
+ *
+ * @since 1.0.0
+ */
 @Component
 public class CryptographyUtil {
 
+	/**
+	 * 
+	 */
 	@Value("${mosip.kernel.keygenerator.bouncycastle.asymmetric-algorithm-name}")
 	private String asymmetricAlgorithmName;
 
+	/**
+	 * 
+	 */
 	@Value("${mosip.kernel.keygenerator.bouncycastle.symmetric-algorithm-name}")
 	private String symmetricAlgorithmName;
 
+	/**
+	 * 
+	 */
 	@Value("${mosip.kernel.keymanager-service-getPublickey-url}")
 	private String getPublicKeyUrl;
 
+	/**
+	 * 
+	 */
 	@Value("${mosip.kernel.keymanager-service-decryptSymmetricKey-url}")
 	private String decryptSymmetricKeyUrl;
+	
+	/**
+	 * 
+	 */
+	@Value("${mosip.kernel.packet-key-splitter}")
+	private String keySplitter;
 
+	/**
+	 * Data Mapper instance.
+	 */
+	@Autowired
+	private DataMapperImpl dataMapperImpl;
+	
+	/**
+	 * 
+	 */
 	private RestTemplate restTemplate;
 
+	/**
+	 * @param builder
+	 */
 	@Autowired
 	public CryptographyUtil(RestTemplateBuilder builder) {
 		this.restTemplate = builder.build();
 	}
-
-	public PublicKey getPublicKey(String applicationId,
-			Optional<String> machineId, LocalDateTime timeStamp) {
+	
+	
+	/**
+	 * @param cryptographyRequestDto
+	 * @return
+	 */
+	public PublicKey getPublicKey(
+			CryptographyRequestDto cryptographyRequestDto) {
 		PublicKey key = null;
-		Map<String, String> uriParams = new HashMap<>();
-		uriParams.put("appId", applicationId);
-		UriComponents uriComponents = UriComponentsBuilder
-				.fromHttpUrl(getPublicKeyUrl)
-                .queryParam("machineId", machineId)
-				.queryParam("timeStamp", timeStamp).build();
+		KeyManagerPublicKeyRequestDto keyManagerPublicKeyRequestDto = dataMapperImpl
+				.map(cryptographyRequestDto,KeyManagerPublicKeyRequestDto.class, false, null, null,true);
 
-		byte[] publicKey = restTemplate
-				.getForObject(uriComponents.toUriString(), byte[].class,uriParams);
+		KeyManagerResponseDto keyManagerResponseDto = restTemplate.postForObject(getPublicKeyUrl, keyManagerPublicKeyRequestDto,KeyManagerResponseDto.class);
 		try {
-			key = KeyFactory.getInstance(asymmetricAlgorithmName)
-					.generatePublic(new X509EncodedKeySpec(publicKey));
+			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(keyManagerResponseDto.getKey()));
 		} catch (InvalidKeySpecException e) {
 			throw new InvalidKeyException(
-					CryptographyErrorCode.INVALID_SPEC_PUBLIC_KEY
-							.getErrorCode(),
-					CryptographyErrorCode.INVALID_SPEC_PUBLIC_KEY
-							.getErrorMessage());
+					CryptographyErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorCode(),
+					CryptographyErrorCode.INVALID_SPEC_PUBLIC_KEY.getErrorMessage());
 		} catch (NoSuchAlgorithmException e) {
 			throw new io.mosip.kernel.core.exception.NoSuchAlgorithmException(
-					CryptographyErrorCode.NO_SUCH_ALGORITHM_EXCEPTION
-							.getErrorCode(),
-					CryptographyErrorCode.NO_SUCH_ALGORITHM_EXCEPTION
-							.getErrorMessage());
+					CryptographyErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					CryptographyErrorCode.NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
 		}
-
 		return key;
 	}
 
-	public SecretKey getDecryptedSymmetricKey(String applicationId,
-			byte[] encryptedSymmetricKey, LocalDateTime timeStamp, Optional<String> machineId) {
-		Map<String, String> uriParams = new HashMap<>();
-		uriParams.put("appId", applicationId);
-		UriComponents uriComponents = UriComponentsBuilder
-				.fromHttpUrl(decryptSymmetricKeyUrl)
-				.queryParam("machineId", machineId)
-				.queryParam("timeStamp", timeStamp).build();
-		byte[] decryptedSymmetricKey = restTemplate.postForObject(uriComponents.toUriString(), encryptedSymmetricKey, byte[].class,uriParams);
-		return new SecretKeySpec(decryptedSymmetricKey, 0,
-				decryptedSymmetricKey.length, symmetricAlgorithmName);
+	
+	/**
+	 * @param cryptographyRequestDto
+	 * @return
+	 */
+	public SecretKey getDecryptedSymmetricKey(CryptographyRequestDto cryptographyRequestDto) {
+		KeymanagerSymmetricKeyRequestDto keyManagerPublicKeyRequestDto=dataMapperImpl.map(cryptographyRequestDto, KeymanagerSymmetricKeyRequestDto.class, false, null, null, true);
+		KeyManagerResponseDto keyManagerResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerPublicKeyRequestDto,KeyManagerResponseDto.class);
+		return new SecretKeySpec(keyManagerResponseDto.getKey(), 0,
+				keyManagerResponseDto.getKey().length, symmetricAlgorithmName);
 	}
 
+	/**
+	 * @param data
+	 * @param key
+	 * @return
+	 */
 	public byte[] combineByteArray(byte[] data, byte[] key) {
-		byte[] keySplitter = CryptographyConstant.KEY_SPLITTER.getValue()
-				.getBytes();
-		byte[] combinedArray = new byte[key.length + keySplitter.length
-				+ data.length];
+		byte[] keySplitterBytes =keySplitter.getBytes();
+		byte[] combinedArray = new byte[key.length + keySplitterBytes.length + data.length];
 		System.arraycopy(key, 0, combinedArray, 0, key.length);
-		System.arraycopy(keySplitter, 0, combinedArray, key.length,
-				keySplitter.length);
-		System.arraycopy(data, 0, combinedArray,
-				key.length + keySplitter.length, data.length);
+		System.arraycopy(keySplitterBytes, 0, combinedArray, key.length,keySplitterBytes.length);
+		System.arraycopy(data, 0, combinedArray,key.length + keySplitterBytes.length, data.length);
 		return combinedArray;
 	}
 

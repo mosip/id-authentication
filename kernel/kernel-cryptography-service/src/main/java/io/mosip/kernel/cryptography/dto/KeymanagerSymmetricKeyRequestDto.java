@@ -6,6 +6,9 @@
  */
 package io.mosip.kernel.cryptography.dto;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +21,19 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CryptographyResponseDto {
+public class KeymanagerSymmetricKeyRequestDto {
+/**
+ * 
+ */
+private String appId;
+/**
+ * 
+ */
+private Optional<String> machineId;
+/**
+ * 
+ */
+private LocalDateTime timeStamp;
 /**
  * 
  */
