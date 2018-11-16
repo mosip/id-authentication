@@ -45,7 +45,19 @@ public class MachineDetailController {
 		return macService.getMachineDetailIdLang(machineId, langCode);
 
 	}
+	/**
+	 * 
+	 * Function to fetch machine detail  based on given Language code
+	 * 
+	 * @param langcode
+	 * @return machine detail based on given Language code
+	 */
+	
+	@GetMapping(value = "/{langcode}")
+	public MachineDetailResponseDto getMachineDetailLang(@PathVariable("langcode") String langCode) {
+		return macService.getMachineDetailLang(langCode);
 
+	}
 	/**
 	 * Function to fetch a all machines details
 	 * 

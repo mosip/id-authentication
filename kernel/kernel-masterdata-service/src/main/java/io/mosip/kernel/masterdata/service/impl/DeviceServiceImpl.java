@@ -1,6 +1,7 @@
 
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.modelmapper.ConfigurationException;
@@ -15,6 +16,7 @@ import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
+import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.exception.DeviceFetchException;
 import io.mosip.kernel.masterdata.exception.DeviceMappingException;
 import io.mosip.kernel.masterdata.exception.DeviceNotFoundException;
@@ -139,4 +141,24 @@ public class DeviceServiceImpl implements DeviceService {
 		return deviceLangCodeResponseDto;
 	}
 
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

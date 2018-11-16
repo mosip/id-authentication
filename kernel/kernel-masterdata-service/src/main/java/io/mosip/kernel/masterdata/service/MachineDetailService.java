@@ -33,4 +33,14 @@ public interface MachineDetailService {
 	 *
 	 */
 	MachineDetailResponseDto getMachineDetailAll();
+	/**
+	 * This abstract method to fetch machine details for given
+	 * language code
+	 * 
+	 * @param langCode
+	 *            Language code given by user
+	 * @return Machine Detail for given machine id and language code
+	 *
+	 */
+	MachineDetailResponseDto getMachineDetailLang(String langCode);
 }

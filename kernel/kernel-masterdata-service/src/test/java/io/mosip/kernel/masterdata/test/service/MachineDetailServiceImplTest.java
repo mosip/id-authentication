@@ -201,5 +201,96 @@ public class MachineDetailServiceImplTest {
 		machineDetailServiceImpl.getMachineDetailAll();
 
 	}
+	
+	@Test
+	public void testGetMachineDetailLang() {
+		List<MachineDetailDto> machineDetailDtoList = new ArrayList<MachineDetailDto>();
+		MachineDetailDto machineDetailDto = new MachineDetailDto();
+		machineDetailDto.setId("1000");
+		machineDetailDto.setName("HP");
+		machineDetailDto.setSerialNum("1234567890");
+		machineDetailDto.setMacAddress("100.100.100.80");
+		machineDetailDto.setLangCode("ENG");
+		machineDetailDto.setIsActive(true);
+		machineDetailDtoList.add(machineDetailDto);
+		
+		MachineDetail machineDetail = new MachineDetail();
+		machineDetail.setId("1000");
+		machineDetail.setName("HP");
+		machineDetail.setSerialNum("1234567890");
+		machineDetail.setMacAddress("100.100.100.80");
+		machineDetail.setLangCode("ENG");
+		machineDetail.setIsActive(true);
+
+		List<MachineDetail> machineDetailList = new ArrayList<MachineDetail>();
+		machineDetailList.add(machineDetail);
+		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(machineDetailList);
+		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
+				.thenReturn(machineDetailDtoList);
+		MachineDetailResponseDto actual = machineDetailServiceImpl.getMachineDetailLang("ENG");
+
+		Assert.assertNotNull(actual);
+		Assert.assertTrue(actual.getMachineDetails().size() > 0);
+
+	}
+	
+	@Test(expected = MachineDetailNotFoundException.class)
+	public void testGetMachineDetailLangThrowsMachineNotFoundExcetion() {
+		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse("ENG")).thenThrow(MachineDetailNotFoundException.class);
+		machineDetailServiceImpl.getMachineDetailLang("ENG");
+
+	}
+
+	@Test(expected = MachineDetailFetchException.class)
+	public void testGetMachineDetailLangThrowsDataAccessExcetion() {
+		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse("ENG")).thenThrow(DataRetrievalFailureException.class);
+		machineDetailServiceImpl.getMachineDetailLang("ENG");
+
+	}
+	
+	@Test(expected = MachineDetailMappingException.class)
+	public void testGetMachineDetailLangThrowsIllegalArgumentExcetion() {
+		MachineDetail machineDetail = new MachineDetail();
+		machineDetail.setId("1000");
+		machineDetail.setName("HP");
+		machineDetail.setSerialNum("1234567890");
+		machineDetail.setMacAddress("100.100.100.80");
+		machineDetail.setLangCode("ENG");
+		machineDetail.setIsActive(true);
+
+		List<MachineDetail> machineDetailList = new ArrayList<MachineDetail>();
+		machineDetailList.add(machineDetail);
+		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse("ENG")).thenReturn(machineDetailList);
+		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
+				.thenThrow(IllegalArgumentException.class);
+		machineDetailServiceImpl.getMachineDetailLang("ENG");
+
+	}
+
+	@Test(expected = MachineDetailMappingException.class)
+	public void testGetMachineDetailLangThrowsMappingExcetion() {
+		MachineDetail machineDetail = new MachineDetail();
+		machineDetail.setId("1000");
+		machineDetail.setName("HP");
+		machineDetail.setSerialNum("1234567890");
+		machineDetail.setMacAddress("100.100.100.80");
+		machineDetail.setLangCode("ENG");
+		machineDetail.setIsActive(true);
+
+		List<MachineDetail> machineDetailList = new ArrayList<MachineDetail>();
+		machineDetailList.add(machineDetail);
+		Mockito.when(machineDetailsRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse("ENG")).thenReturn(machineDetailList);
+		Mockito.when(objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class))
+				.thenThrow(MappingException.class);
+		machineDetailServiceImpl.getMachineDetailLang("ENG");
+
+	}
+	
+	@Test(expected = MachineDetailNotFoundException.class)
+	public void testGetMachineDetailThrowsMachineDetailNotFoundException() {
+		doReturn(null).when(machineDetailsRepository).findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse("ENG");
+		machineDetailServiceImpl.getMachineDetailLang("ENG");
+
+	}
 
 }
