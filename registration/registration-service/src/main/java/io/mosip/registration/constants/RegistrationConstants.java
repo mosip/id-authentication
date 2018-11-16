@@ -395,12 +395,18 @@ public class RegistrationConstants {
 	public static final String REG_UI_SHEDULER_RUNTIME_EXCEPTION = REG_UI_CODE + "SHE-004";
 	public static final String REG_UI_BASE_CNTRLR_IO_EXCEPTION = REG_UI_CODE + "BAS-005";
 	public static final String REG_UI_VIEW_ACK_FORM_IO_EXCEPTION = REG_UI_CODE + "VAF-006";
+	// Exceptions for Device Onboarding
+	public static final String DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "ROD-001";
 	public static final String DEVICE_ONBOARD_INITIALIZATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-001";
 	public static final String DEVICE_ONBOARD_LOADING_DEVICES_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-002";
 	public static final String DEVICE_ONBOARD_MAPPING_DEVICES_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-003";
 	public static final String DEVICE_ONBOARD_UNMAPPING_DEVICES_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-004";
 	public static final String DEVICE_ONBOARD_HOME_NAVIGATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-005";
-	public static final String DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "ROD-001";
+	public static final String DEVICE_ONBOARD_DEVICE_GROUPING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-006";
+	public static final String DEVICE_ONBOARD_DEVICE_GROUP_UPDATE_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-007";
+	public static final String DEVICE_ONBOARD_DEVICE_FILTERING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-008";
+	public static final String DEVICE_ONBOARD_DEVICE_POPULATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-009";
+	public static final String DEVICE_ONBOARD_DEVICE_FETCHING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-010";
 
 	public static final String BIOMETRIC_IMAGE = "Image";
 	public static final String BIOMETRIC_TYPE = "Type";
@@ -426,6 +432,10 @@ public class RegistrationConstants {
 	public static final String DEVICE_ONBOARD_ERROR_MSG = "Internal error in Device Onboarding.";
 	public static final String ONBOARD_DEVICES_MAP = "onBoardDevicesMap";
 	public static final String ONBOARD_DEVICES_REF_ID_TYPE = "UserID";
+	public static final String ONBOARD_DEVICES_ADDED = "devicedAdded";
+	public static final String ONBOARD_DEVICES_REMOVED = "devicedRemoved";
+	public static final String ONBOARD_AVAILABLE_DEVICES_GROUP = "availableDeviceGroupMap";
+	public static final String ONBOARD_MAPPED_DEVICES_GROUP = "mappedDeviceGroupMap";
 
 	// Template Name
 	public static final String ACKNOWLEDGEMENT_TEMPLATE = "Ack Template";
