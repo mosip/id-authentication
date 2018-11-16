@@ -3,18 +3,17 @@ package io.mosip.kernel.masterdata.exception;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * Custom Exception Class in case of mapping failure of Machine Details
+ * Custom Exception Class in case of error while exception in services
  * 
- * @author Megha Tanga
- * @since 1.0.0
- *
+ * @author Bal Vikash Sharma
+ * @version 1.0.0
  */
-public class MachineDetailMappingException extends BaseUncheckedException {
+public class MasterDataServiceException extends BaseUncheckedException {
 
 	/**
 	 * Generated serial version id
 	 */
-	private static final long serialVersionUID = 635562471858855910L;
+	private static final long serialVersionUID = 8621530697947108810L;
 
 	/**
 	 * Constructor the initialize Handler exception
@@ -24,7 +23,7 @@ public class MachineDetailMappingException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            The error message for this exception
 	 */
-	public MachineDetailMappingException(String errorCode, String errorMessage) {
+	public MasterDataServiceException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 

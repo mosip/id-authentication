@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.masterdata.utils;
 
 import java.time.LocalDate;
@@ -70,7 +71,7 @@ public class ObjectMapperUtil {
 	}
 
 	public List<ReasonCategory> reasonConvertDtoToEntity(ReasonResponseDto reasonCategories) {
-		ReasonCategory reasonCategoryEntity = new ReasonCategory();
+		
 		Objects.requireNonNull(reasonCategories, "list cannot be null");
 		List<ReasonCategory> reasonCategoryDtos = null;
 
@@ -104,3 +105,5 @@ public class ObjectMapperUtil {
 		return deviceLangCodeDtypeDtoList;
 	}
 }
+
+

@@ -5,11 +5,11 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 /**
  * Customized exception for template not found
  * 
- * @author Neha
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
-public class TemplateNotFoundException extends BaseUncheckedException {
+public class RequestException extends BaseUncheckedException {
 
 	/**
 	 * Generated serial version id
@@ -24,7 +24,7 @@ public class TemplateNotFoundException extends BaseUncheckedException {
 	 * @param errorMessage
 	 *            The error message for this exception
 	 */
-	public TemplateNotFoundException(String errorCode, String errorMessage) {
+	public RequestException(String errorCode, String errorMessage) {
 		super(errorCode, errorMessage);
 	}
 }

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.entity.DocumentType;
-import io.mosip.kernel.masterdata.exception.DocumentCategoryFetchException;
-import io.mosip.kernel.masterdata.exception.DocumentCategoryNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -36,14 +36,14 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		try {
 			documents = documentTypeRepository.findByCodeAndLangCode(code, langCode);
 		} catch (DataAccessException e) {
-			throw new DocumentCategoryFetchException(
+			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (documents != null && !documents.isEmpty()) {
 			listOfDocumentTypeDto = mapperUtil.mapAll(documents, DocumentTypeDto.class);
 		} else {
-			throw new DocumentCategoryNotFoundException(
+			throw new DataNotFoundException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}

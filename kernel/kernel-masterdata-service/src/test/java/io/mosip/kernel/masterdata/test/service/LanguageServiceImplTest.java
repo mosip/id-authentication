@@ -10,8 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,9 +20,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
-import io.mosip.kernel.masterdata.exception.LanguageFetchException;
-import io.mosip.kernel.masterdata.exception.LanguageMappingException;
-import io.mosip.kernel.masterdata.exception.LanguageNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -105,31 +102,22 @@ public class LanguageServiceImplTest {
 		assertEquals(2, dto.getLanguages().size());
 	}
 
-	@Test(expected = LanguageNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void testLanguageNotFoundException() {
 		Mockito.when(languageRepository.findAll(Language.class)).thenReturn(null);
 		languageService.getAllLaguages();
 	}
 
-	@Test(expected = LanguageNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void testLanguageNotFoundExceptionWhenNoLanguagePresent() {
 		Mockito.when(languageRepository.findAll(Language.class)).thenReturn(new ArrayList<Language>());
 		languageService.getAllLaguages();
 	}
 
-	@Test(expected = LanguageFetchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void testLanguageFetchException() {
 		Mockito.when(languageRepository.findAll(Language.class))
 				.thenThrow(HibernateObjectRetrievalFailureException.class);
-		languageService.getAllLaguages();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test(expected = LanguageMappingException.class)
-	public void testLanguageMappingException() {
-		Mockito.when(languageRepository.findAll(Language.class)).thenReturn(languages);
-		Mockito.when(mapper.mapAll(languages, LanguageDto.class)).thenThrow(MappingException.class,
-				ConfigurationException.class, IllegalArgumentException.class);
 		languageService.getAllLaguages();
 	}
 

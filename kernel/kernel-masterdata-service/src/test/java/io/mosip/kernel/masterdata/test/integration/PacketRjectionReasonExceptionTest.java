@@ -13,8 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,7 +29,6 @@ import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 @SpringBootTest
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
-@SuppressWarnings("unchecked")
 public class PacketRjectionReasonExceptionTest {
 
 	@Autowired
@@ -39,7 +36,7 @@ public class PacketRjectionReasonExceptionTest {
 
 	@MockBean
 	ReasonRepository reasonRepository;
-	
+
 	@MockBean
 	ObjectMapperUtil mapperUtil;
 
@@ -68,61 +65,46 @@ public class PacketRjectionReasonExceptionTest {
 
 	@Test
 	public void getAllRjectionReasonFetchExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsActiveTrueAndIsDeletedFalse()).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/packetRejectionReasons")).andExpect(status().isNotAcceptable());
+		Mockito.when(reasonRepository.findReasonCategoryByIsActiveTrueAndIsDeletedFalse())
+				.thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/packetRejectionReasons")).andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeFetchExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG")).andExpect(status().isNotAcceptable());
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(
+				ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
+				.andExpect(status().isInternalServerError());
 	}
-	
-	
-	@Test
-	public void getAllRjectionReasonMappingExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsActiveTrueAndIsDeletedFalse()).thenReturn(reasoncategories);
-		Mockito.when(mapperUtil.reasonConverter(reasoncategories)).thenThrow(MappingException.class,
-				ConfigurationException.class, IllegalArgumentException.class);
-		mockMvc.perform(get("/packetRejectionReasons")).andExpect(status().isNotAcceptable());
-	}
-	
-	@Test
-	public void getRejectionReasonByCodeAndLangCodeMappingExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(reasoncategories);
-		Mockito.when(mapperUtil.reasonConverter(reasoncategories)).thenThrow(MappingException.class,
-				ConfigurationException.class, IllegalArgumentException.class);
-		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG")).andExpect(status().isNotAcceptable());
-	}
-	
+
 	@Test
 	public void getAllRjectionReasonRecordsNotFoundTest() throws Exception {
 		Mockito.when(reasonRepository.findReasonCategoryByIsActiveTrueAndIsDeletedFalse()).thenReturn(null);
-		mockMvc.perform(get("/packetRejectionReasons")).andExpect(status().isNotAcceptable());
+		mockMvc.perform(get("/packetRejectionReasons")).andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsNotFoundExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(null);
-		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}","RC1","ENG")).andExpect(status().isNotAcceptable());
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(
+				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(null);
+		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
+				.andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsEmptyExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(new ArrayList<ReasonCategory>());
-		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}","RC1","ENG")).andExpect(status().isNotAcceptable());
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(
+				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(new ArrayList<ReasonCategory>());
+		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
+				.andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	public void getAllRjectionReasonRecordsEmptyExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByIsActiveTrueAndIsDeletedFalse()).thenReturn(new ArrayList<ReasonCategory>());
-		mockMvc.perform(get("/packetRejectionReasons")).andExpect(status().isNotAcceptable());
+		Mockito.when(reasonRepository.findReasonCategoryByIsActiveTrueAndIsDeletedFalse())
+				.thenReturn(new ArrayList<ReasonCategory>());
+		mockMvc.perform(get("/packetRejectionReasons")).andExpect(status().isNotFound());
 	}
-	
-	
-	
+
 }

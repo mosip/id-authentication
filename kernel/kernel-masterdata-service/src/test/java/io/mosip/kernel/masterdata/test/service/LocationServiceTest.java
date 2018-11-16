@@ -18,8 +18,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.entity.Location;
-import io.mosip.kernel.masterdata.exception.LocationDatabaseException;
-import io.mosip.kernel.masterdata.exception.LocationRecordsNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
 
@@ -78,21 +78,21 @@ public class LocationServiceTest {
 
 	}
 
-	@Test(expected = LocationRecordsNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void noRecordsFoudExceptionTest() {
 		Mockito.when(locationHierarchyRepository.findAll()).thenReturn(null);
 		locationHierarchyService.getLocationDetails();
 
 	}
 	
-	@Test(expected = LocationRecordsNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void noRecordsFoudExceptionEmptyListTest() {
 		Mockito.when(locationHierarchyRepository.findAll()).thenReturn(new ArrayList<Location>());
 		locationHierarchyService.getLocationDetails();
 
 	}
 
-	@Test(expected = LocationDatabaseException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void dataAccessExceptionTestInGetAll() {
 		Mockito.when(locationHierarchyRepository.findAll()).thenThrow(DataRetrievalFailureException.class);
 		locationHierarchyService.getLocationDetails();
@@ -111,7 +111,7 @@ public class LocationServiceTest {
 
 	}
 
-	@Test(expected = LocationRecordsNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getLocationHierarchyExceptionTest() {
 		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCode("IND", "HIN"))
 				.thenReturn(null);
@@ -119,7 +119,7 @@ public class LocationServiceTest {
 
 	}
 	
-	@Test(expected = LocationRecordsNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getLocationHierarchyExceptionTestWithEmptyList() {
 		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCode("IND", "HIN"))
 				.thenReturn(new ArrayList<Location>());
@@ -127,7 +127,7 @@ public class LocationServiceTest {
 
 	}
 
-	@Test(expected = LocationDatabaseException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void locationHierarchyDataAccessExceptionTest() {
 		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCode("IND", "HIN"))
 				.thenThrow(DataRetrievalFailureException.class);
