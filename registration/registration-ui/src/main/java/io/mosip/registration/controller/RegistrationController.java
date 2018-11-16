@@ -698,28 +698,28 @@ public class RegistrationController extends BaseController {
 						} else {
 							if (validateRegex(region, "^.{6,50}$")) {
 								generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-										RegistrationConstants.REGION_EMPTY,"Only alphabets are allowed");
+										RegistrationConstants.REGION_EMPTY,RegistrationConstants.ONLY_ALPHABETS+" "+RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 								region.requestFocus();
 							} else {
 								if (validateRegex(city, "^.{6,10}$")) {
 									generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-											RegistrationConstants.CITY_EMPTY,"Only alphabets are allowed");
+											RegistrationConstants.CITY_EMPTY,RegistrationConstants.ONLY_ALPHABETS+" "+RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 									city.requestFocus();
 								} else {
 									if (validateRegex(province, "^.{6,10}$")) {
 										generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-												RegistrationConstants.PROVINCE_EMPTY,"Only alphabets are allowed");
+												RegistrationConstants.PROVINCE_EMPTY,RegistrationConstants.ONLY_ALPHABETS+" "+RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 										province.requestFocus();
 									} else {
 										if (validateRegex(postalCode, "\\d{5}")) {
 											generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-													RegistrationConstants.POSTAL_CODE_EMPTY,"Postal Code should not be more than 5 digit");
+													RegistrationConstants.POSTAL_CODE_EMPTY, RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
 											postalCode.requestFocus();
 										} else {
 											if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
 												generateAlert("Error",
 														AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-														RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,"Only alphabets are allowed");
+														RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,RegistrationConstants.ONLY_ALPHABETS);
 												localAdminAuthority.requestFocus();
 											} else {
 												if (validateRegex(mobileNo, "\\d{10}")) {
@@ -741,7 +741,7 @@ public class RegistrationController extends BaseController {
 															generateAlert("Error",
 																	AlertType
 																			.valueOf(RegistrationConstants.ALERT_ERROR),
-																	RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,"CNIE/PIN should not be more than 5 digits");
+																	RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
 															cni_or_pin_number.requestFocus();
 														} else {
 															gotoNext = true;
