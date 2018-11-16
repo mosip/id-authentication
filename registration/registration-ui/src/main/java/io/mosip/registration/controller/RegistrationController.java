@@ -208,7 +208,7 @@ public class RegistrationController extends BaseController {
 
 	private boolean toggleAgeOrDobField = false;
 
-	private boolean isChild = false;
+	private boolean isChild = true;
 
 	private static boolean isEditPage;
 
@@ -957,6 +957,9 @@ public class RegistrationController extends BaseController {
 						RegistrationConstants.AGE_EMPTY, RegistrationConstants.AGE_WARNING);
 				ageField.requestFocus();
 			} else {
+				if(Integer.parseInt(ageField.getText())<5) {
+					childSpecificFields.setVisible(true);
+				}
 				gotoNext = true;
 			}
 		} else if (!toggleAgeOrDobField) {
@@ -1023,4 +1026,29 @@ public class RegistrationController extends BaseController {
 		RegistrationController.isEditPage = isEditPage;
 	}
 
+	public void clickMe() {
+		fullName.setText("Taleev Aalam");
+		int age=3;
+		if(age<5) {
+			childSpecificFields.setVisible(true);
+			isChild=true;
+		}
+		ageField.setText(""+age);
+		toggleAgeOrDobField=true;
+		gender.setValue("MALE");
+		addressLine1.setText("Mind Tree Ltd");
+		addressLine2.setText("RamanuJan It park");
+		addressLine3.setText("Taramani");
+		region.setText("Taramani");
+		city.setText("Chennai");
+		province.setText("Tamilnadu");
+		postalCode.setText("60011");
+		localAdminAuthority.setText("MindTree");
+		mobileNo.setText("8667693837");
+		emailId.setText("taleev.aalam@mindtree.com");
+		cni_or_pin_number.setText("12345");
+		parentName.setText("Mokhtar");
+		uinId.setText("93939939");
+	}
+	
 }

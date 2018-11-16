@@ -142,6 +142,7 @@
                                 
                                                 </ImageView>
                               <Line endX="550.0" layoutX="227.0" layoutY="14.0" startX="-200.0" />
+                              <Button layoutX="435.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
                            </children>
                         </AnchorPane>
                      </content></TitledPane>
