@@ -34,6 +34,7 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
@@ -158,6 +159,7 @@ public class LoginController extends BaseController implements Initializable, MF
 		BaseController.stage = primaryStage;
 		String loginMode = null;
 
+
 		try {
 			Map<String, Object> userLoginMode = loginService.getModesOfLogin();
 
@@ -168,6 +170,10 @@ public class LoginController extends BaseController implements Initializable, MF
 			// To maintain the login mode sequence
 			SessionContext.getInstance().setMapObject(userLoginMode);
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.LOGIN_INITIAL_SCREEN, loginMode);
+			
+			//Load the property files for application and local language
+			ApplicationContext.getInstance().setApplicationLanguageBundle();
+		    ApplicationContext.getInstance().setLocalLanguageProperty();
 
 			LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					"Retrieved corresponding Login mode");

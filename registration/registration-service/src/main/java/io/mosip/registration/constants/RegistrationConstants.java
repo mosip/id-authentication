@@ -343,14 +343,17 @@ public class RegistrationConstants {
 	public static final String REGION_EMPTY = "Please Provide Region";
 	public static final String POSTAL_CODE_EMPTY = "Please Provide Postal Code";
 	public static final String MOBILE_NUMBER_EMPTY = "Please Provide Mobile Number";
-	public static final String MOBILE_NUMBER_EXAMPLE = "Example : 99-9854-2496";
+	public static final String MOBILE_NUMBER_EXAMPLE = "Example : 9908542409";
 	public static final String EMAIL_ID_EMPTY = "Please Provide Email Id";
-	public static final String EMAIL_ID_EXAMPLE = "Example : jack.daniel@gmail.com";
+	public static final String EMAIL_ID_EXAMPLE = "Example : xyz@xyz.com";
 	public static final String PARENT_NAME_EMPTY = "Please Provide Parent Name";
 	public static final String UIN_ID_EMPTY = "Please Provide Uin Id Of The Parent";
-	public static final String ADDRESS_LINE_WARNING = "Address should be between 6 and 20 characters";
+	public static final String ADDRESS_LINE_WARNING = "Address should be between 6 and 50 characters";
 	public static final String LOCAL_ADMIN_AUTHORITY_EMPTY = "Please Provide Local Admin Authority";
 	public static final String CNIE_OR_PIN_NUMBER_EMPTY = "Please Provide CNIE OR PIN NUMBER";
+	public static final String POA_DOCUMENT_EMPTY = "Please Provide POA Document";
+	public static final String POI_DOCUMENT_EMPTY = "Please Provide POI Document";
+	public static final String POR_DOCUMENT_EMPTY = "Please Provide POR Document";
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
@@ -375,44 +378,6 @@ public class RegistrationConstants {
 	public static final String REJECTION_BEAN_NAME = "rejectionController";
 	public static final String ONHOLD_BEAN_NAME = "onHoldController";
 	public static final String ERROR = "ERROR";
-
-	public static List getCountries() {
-
-		String countries[] = new String[] { "Morocco", "Zimbabwe", "Zambia", "Yemen", "Vietnam", "Venezuela",
-				"Vatican City (Holy See)", "Vanuatu", "Uzbekistan", "Uruguay" };
-
-		return Arrays.asList(countries);
-	}
-
-	public static List getStates() {
-
-		String states[] = new String[] { "Tanger-Tetouan-Al Hoceima", "Oriental", "Fès-Meknès", "Rabat-Salé-Kénitra",
-				"Béni Mellal-Khénifra" };
-
-		return Arrays.asList(states);
-	}
-
-	public static List getDistricts() {
-
-		String districts[] = new String[] { "Casablanca-Settat", "Marrakesh-Safi", "Drâa-Tafilalet", "Souss-Massa",
-				"Guelmim-Oued" };
-
-		return Arrays.asList(districts);
-	}
-
-	public static List getRegions() {
-
-		String regions[] = new String[] { "Tangier", "Oujda", "Fès", "Rabat", "Béni Mellal" };
-
-		return Arrays.asList(regions);
-	}
-
-	public static List getPins() {
-
-		String pins[] = new String[] { "80851", "80852", "80853", "80854", "80855" };
-
-		return Arrays.asList(pins);
-	}
 
 	// Upload Packet
 
@@ -516,5 +481,17 @@ public class RegistrationConstants {
 	public static final String GPS_DEVICE_MODEL = "BU343";
 	public static final String GPS_ERROR_CODE = "errorCode";
 	public static final String GPS_CAPTURING_EXCEPTION = "GPS_EXCEPTION";
+
+	public static List getPoaDocumentList() {
+		return Arrays.asList(new String[] { "Document1", "Document2", "Document3", "Document4" });
+	}
+
+	public static List getPoiDocumentList() {
+		return Arrays.asList(new String[] { "Document1", "Document2", "Document3", "Document4" });
+	}
+
+	public static List getPorDocumentList() {
+		return Arrays.asList(new String[] { "Document1", "Document2", "Document3", "Document4" });
+	}
 
 }
