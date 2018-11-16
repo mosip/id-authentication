@@ -1,23 +1,26 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @EqualsAndHashCode(callSuper = false)
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -38,11 +41,11 @@ public class ReasonCategory extends BaseEntity implements Serializable {
 
 	@Column(name = "descr")
 	private String description;
-
+	
 	@Column(name = "lang_code")
 	private String languageCode;
 
-	@OneToMany(mappedBy = "reasonCategoryCode", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ReasonList> reasons = new ArrayList<>();
+	@OneToMany(mappedBy = "reasonCategoryCode", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<ReasonList> reasons = new HashSet<>();
 
 }

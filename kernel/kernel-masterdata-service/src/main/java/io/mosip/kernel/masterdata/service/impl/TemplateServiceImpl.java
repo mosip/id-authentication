@@ -2,8 +2,6 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -11,9 +9,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.masterdata.constant.TemplateErrorCode;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.entity.Template;
-import io.mosip.kernel.masterdata.exception.TemplateFetchException;
-import io.mosip.kernel.masterdata.exception.TemplateMappingException;
-import io.mosip.kernel.masterdata.exception.TemplateNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -47,18 +44,13 @@ public class TemplateServiceImpl implements TemplateService {
 		try {
 			templateList = templateRepository.findAllByIsActiveTrueAndIsDeletedFalse(Template.class);
 		} catch (DataAccessException exception) {
-			throw new TemplateFetchException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (!(templateList.isEmpty())) {
-			try {
-				templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
-			} catch (IllegalArgumentException | ConfigurationException | MappingException excetion) {
-				throw new TemplateMappingException(TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorCode(),
-						TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorMessage());
-			}
+		if (templateList != null && !templateList.isEmpty()) {
+			templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
 		} else {
-			throw new TemplateNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
 		return templateDtoList;
@@ -75,18 +67,13 @@ public class TemplateServiceImpl implements TemplateService {
 		try {
 			templateList = templateRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
 		} catch (DataAccessException exception) {
-			throw new TemplateFetchException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (!(templateList.isEmpty())) {
-			try {
-				templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
-			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new TemplateMappingException(TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorCode(),
-						TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorMessage());
-			}
+		if (templateList != null && !templateList.isEmpty()) {
+			templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
 		} else {
-			throw new TemplateNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
 		return templateDtoList;
@@ -104,21 +91,15 @@ public class TemplateServiceImpl implements TemplateService {
 	public List<TemplateDto> getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
 		try {
-			templateList = templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsActiveTrueAndIsDeletedFalse(
-					languageCode, templateTypeCode);
+			templateList = templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsActiveTrueAndIsDeletedFalse(languageCode, templateTypeCode);
 		} catch (DataAccessException exception) {
-			throw new TemplateFetchException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (!(templateList.isEmpty())) {
-			try {
-				templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
-			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new TemplateMappingException(TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorCode(),
-						TemplateErrorCode.TEMPLATE_MAPPING_EXCEPTION.getErrorMessage());
-			}
+		if (templateList != null && !templateList.isEmpty()) {
+			templateDtoList = objectMapperUtil.mapAll(templateList, TemplateDto.class);
 		} else {
-			throw new TemplateNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
+			throw new DataNotFoundException(TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_NOT_FOUND.getErrorMessage());
 		}
 		return templateDtoList;

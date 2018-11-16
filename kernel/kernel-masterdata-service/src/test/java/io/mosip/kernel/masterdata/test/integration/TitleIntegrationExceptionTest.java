@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.test.integration;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.TitleId;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
@@ -78,23 +75,12 @@ public class TitleIntegrationExceptionTest {
 	}
 
 	@Test
-	public void testGetTitleByLanguageCodeMappingException() throws Exception {
-
-		Mockito.when(titleRepository.getThroughLanguageCode("ENG")).thenReturn(titleList);
-		when(modelMapper.map(Mockito.any(), Mockito.eq(new TypeToken<List<TitleDto>>() {
-		}.getType()))).thenThrow(IllegalArgumentException.class);
-		mockMvc.perform(get("/title/ENG").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
-
-	}
-
-	@Test
 	public void testGetTitleByLanguageCodeFetchException() throws Exception {
 
 		Mockito.when(titleRepository.getThroughLanguageCode("ENG")).thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/title/ENG").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
+				.andExpect(status().isInternalServerError());
 
 	}
 
@@ -110,21 +96,12 @@ public class TitleIntegrationExceptionTest {
 	}
 
 	@Test
-	public void testGetAllTitleMappingException() throws Exception {
-
-		Mockito.when(titleRepository.findAll(Title.class)).thenReturn(titleList);
-		when(modelMapper.map(Mockito.any(), Mockito.eq(new TypeToken<List<TitleDto>>() {
-		}.getType()))).thenThrow(IllegalArgumentException.class);
-		mockMvc.perform(get("/title").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable());
-
-	}
-
-	@Test
 	public void testGetAllTitleFetchException() throws Exception {
 
 		Mockito.when(titleRepository.findAll(Title.class)).thenThrow(DataAccessLayerException.class);
 
-		mockMvc.perform(get("/title").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable());
+		mockMvc.perform(get("/title").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
 
 	}
 

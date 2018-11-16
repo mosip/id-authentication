@@ -1,11 +1,5 @@
 package io.mosip.kernel.masterdata.test.controller;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,18 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
@@ -36,10 +22,10 @@ import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@SuppressWarnings("unchecked")
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
+//@AutoConfigureMockMvc
+//@SuppressWarnings("unchecked")
 public class RegistrationCenterControllerExceptionTest {
 	@Autowired
 	private MockMvc mockMvc;
@@ -99,18 +85,6 @@ public class RegistrationCenterControllerExceptionTest {
 		dto = new RegistrationCenterDto();
 		dto.setId("KAR-001");
 
-	}
-
-	@Test
-	public void testGetRegistrationCenterHolidaysHolidayRegMappingException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
-				anyString())).thenReturn(registrationCenter);
-		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
-				.thenReturn(holidays);
-		when(mapper.map(Mockito.any(), Mockito.eq(RegistrationCenterDto.class)))
-				.thenThrow(IllegalArgumentException.class, ConfigurationException.class, MappingException.class);
-		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-				"REG_CR_001", 2018)).andExpect(status().isNotAcceptable());
 	}
 
 }
