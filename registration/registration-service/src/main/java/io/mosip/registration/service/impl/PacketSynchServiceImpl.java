@@ -47,7 +47,7 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 	private static final List<String> PACKET_STATUS = Arrays.asList("A", "I");
 
-	private static final Logger LOGGER = AppConfig.getLogger(PacketSynchServiceImpl.class); 
+	private static final Logger LOGGER = AppConfig.getLogger(PacketSynchServiceImpl.class);
 
 	/*
 	 * (non-Javadoc)
@@ -75,8 +75,8 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	@Override
 	public Object syncPacketsToServer(List<SyncRegistrationDTO> syncDtoList)
 			throws RegBaseCheckedException, URISyntaxException, JsonProcessingException {
-		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
-				APPLICATION_ID, "Sync the packets to the server");
+		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Sync the packets to the server");
 		RequestHTTPDTO requestHTTPDTO = new RequestHTTPDTO();
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
@@ -92,11 +92,11 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 			response = restClientUtil.invoke(requestHTTPDTO);
 		} catch (HttpClientErrorException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, e.getRawStatusCode()+"Error in sync packets to the server");
+					APPLICATION_ID, e.getRawStatusCode() + "Error in sync packets to the server");
 			throw new RegBaseCheckedException(Integer.toString(e.getRawStatusCode()), e.getStatusText());
 		} catch (RuntimeException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
-					APPLICATION_ID, e.getMessage()+"Error in sync packets to the server");
+					APPLICATION_ID, e.getMessage() + "Error in sync and push packets to the server");
 			throw new RegBaseUncheckedException(RegistrationExceptions.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
 					RegistrationExceptions.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
 		}
@@ -114,8 +114,8 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 
 	@Override
 	public Boolean updateSyncStatus(List<Registration> synchedPackets) {
-		LOGGER.debug("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME,
-				APPLICATION_ID, "Updating the status of the synched packets to the database");
+		LOGGER.debug("REGISTRATION -UPDATE_SYNC_STATUS - PACKET_SYNC_SERVICE", APPLICATION_NAME, APPLICATION_ID,
+				"Updating the status of the synched packets to the database");
 		for (Registration syncPacket : synchedPackets) {
 			registrationDAO.updatePacketSyncStatus(syncPacket);
 		}

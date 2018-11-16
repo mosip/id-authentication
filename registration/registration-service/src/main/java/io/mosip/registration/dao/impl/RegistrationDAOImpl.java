@@ -231,12 +231,13 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId(registrationPacket.getId());
-		regTransaction.setTrnTypeCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
+		regTransaction.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 		regTransaction.setStatusCode(registrationPacket.getClientStatusCode());
+		regTransaction.setLangCode("ENG");
 		regTransaction.setCrBy("mosip");
 		regTransaction.setCrDtime(time);
 		regTransaction.setStatusComment(registrationPacket.getClientStatusComments());
-		List<RegistrationTransaction> registrationTransaction = new ArrayList<>();
+		List<RegistrationTransaction> registrationTransaction = registrationPacket.getRegistrationTransaction();
 		registrationTransaction.add(regTransaction);
 		LOGGER.debug("REGISTRATION - PACKET_ENCRYPTION - REGISTRATION_TRANSACTION_DAO", APPLICATION_NAME,
 				APPLICATION_ID, "Packet encryption had been ended");

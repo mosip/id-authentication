@@ -29,7 +29,13 @@ public enum AppModule {
 	SYNC_VALIDATE("REG-PRO-17","Sync service"),
 	
 	// Device Onboarding
-	DEVICE_ONBOARD("REG-UI-18", "Device Onboarding");
+	DEVICE_ONBOARD("REG-UI-18", "Device Onboarding"),
+	
+	//Packet Upload
+	PACKET_UPLOAD("REG-CTR-19", "Packet upload"),
+	
+	//Packet Sync
+	PACKET_SYNC("REG-CTR-20", "Sync Packets");
 
 	/**
 	 * The constructor

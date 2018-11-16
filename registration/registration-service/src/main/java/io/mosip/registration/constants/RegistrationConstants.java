@@ -446,6 +446,8 @@ public class RegistrationConstants {
 	public static final String ACKNOWLEDGEMENT_FILE = "_Ack";
 	public static final String PACKET_SYNC_ERROR = "Error";
 	public static final String RE_REGISTRATION_STATUS = "reregister";
+	public static final String PACKET_SYNC_REF_ID = "packetsync";
+	public static final String PACKET_UPLOAD_REF_ID = "packetUpload";
 
 	// Device On-boarding
 	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint", "Iris", "Camera", "GPS",

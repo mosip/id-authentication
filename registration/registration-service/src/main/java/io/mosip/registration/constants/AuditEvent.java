@@ -41,6 +41,13 @@ public enum AuditEvent {
 	PACKET_UPDATE("PKT_UPDATE", "Updating created packets status", "Packets which are in created state are updated"),
 	SYNC_GEO_VALIDATE("SYNC_INFO", "Geo Information validation", "Validating the geo information ended successfully"),
 	
+	
+	//Sync Packets
+	SYNC_SERVER("SYNC_INFO", "User", "Synchronize the packet status to the server"),
+	
+	//Packet Upload
+	PACKET_UPLOAD("PKT_UPLD", "User", "Upload the local packets to the server"),
+	
 	// Device Onboarding
 	GET_ONBOARDING_DEVICES_TYPES("DVC_TYP", "Get Devices Types", "Get the types of devices for device onboarding"),
 	GET_ONBOARDING_DEVICES("GET_DVC", "Get Devices", "Get the available and mapped devices for the requested device type"),

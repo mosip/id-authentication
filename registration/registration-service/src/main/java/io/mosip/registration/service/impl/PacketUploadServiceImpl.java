@@ -54,7 +54,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	@Value("${PACKET_UPLOAD_URL}")
 	String urlPath;
 
-	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadServiceImpl.class); 
+	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadServiceImpl.class);
 
 	/*
 	 * (non-Javadoc)
@@ -92,12 +92,13 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 			response = restClientUtil.invoke(requestHTTPDTO);
 		} catch (HttpClientErrorException e) {
 			LOGGER.error("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-					e.getRawStatusCode()+"Http error while pushing packets to the server");
+					e.getRawStatusCode() + "Http error while pushing packets to the server");
 			throw new RegBaseCheckedException(Integer.toString(e.getRawStatusCode()), e.getStatusText());
 		} catch (RuntimeException e) {
 			LOGGER.error("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
-					e.getMessage()+"Runtime error while pushing packets to the server");
-			throw new RegBaseUncheckedException(RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorCode(), RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorMessage());
+					e.getMessage() + "Runtime error while pushing packets to the server");
+			throw new RegBaseUncheckedException(RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorCode(),
+					RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorMessage());
 		}
 		return response;
 
