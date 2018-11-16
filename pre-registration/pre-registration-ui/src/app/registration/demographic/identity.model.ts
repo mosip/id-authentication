@@ -2,7 +2,7 @@ import { AttributeModel } from './attribute.model';
 
 export class IdentityModel {
   constructor(
-    public fullName: AttributeModel[],
+    public FullName: AttributeModel[],
     public dateOfBirth: AttributeModel[],
     public gender: AttributeModel[],
     public addressLine1: AttributeModel[],

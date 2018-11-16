@@ -48,25 +48,30 @@
                 <ng-template #dob>
                   <input
                     (dateInput)="addDOB($event)"
-                    type="hidden"
                     [matDatepicker]="picker"
                     placeholder="{{demo.dateOfBirth}}"
                     formControlName="dob"
+                    type="hidden"
                   />
-                  <div *ngIf="showDate; then: show; else: hidden"></div>
-                  <mat-datepicker-toggle [for]="picker"></mat-datepicker-toggle>
-                  <mat-datepicker #picker></mat-datepicker>
+                  <span>
+                    <div *ngIf="showDate; then: show; else: hidden"></div>
+                    <mat-datepicker-toggle style="width: 40px ;float: right;" [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </span>
                 </ng-template>
 
                 <ng-template #age>
-                  <mat-form-field style="width:3em; margin-left: 15%;">
-                    <input matInput placeholder="{{demo.age}}" formControlName="age" />
-                  </mat-form-field>
+                  <span *ngIf="ageOrDobPref !== ''">
+                    <mat-form-field style="width:3em; margin-left: 15%;">
+                      <input matInput placeholder="{{demo.age}}" formControlName="age" />
+                    </mat-form-field>
+                  </span>
                 </ng-template>
 
-                <span style="display:block;"> </span>
-                <ng-template #hidden> {{ demo.dateOfBirth }} </ng-template>
-                <ng-template #show> {{ dateSelected }} </ng-template>
+                <ng-template #hidden>
+                  <div style="width : 100px">{{ demo.dateOfBirth }}</div>
+                </ng-template>
+                <ng-template #show> {{ dateSelected | date: 'dd/MM/yyyy' }} </ng-template>
 
                 <div style="text-align: left; width:100%">
                   <mat-button-toggle-group

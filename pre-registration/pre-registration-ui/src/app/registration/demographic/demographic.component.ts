@@ -1,11 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { DatePipe } from '@angular/common';
 import { MatButtonToggleChange, MatDatepickerInputEvent } from '@angular/material';
 
 import { RegistrationService } from '../registration.service';
 import { DemoLabels } from './demographic.labels';
+import { IdentityModel } from './identity.model';
+import { AttributeModel } from './attribute.model';
+import { RequestModel } from './request.model';
+import { DemoIdentityModel } from './Demo.Identity.model';
 
 @Component({
   selector: 'app-demographic',
@@ -31,9 +34,9 @@ export class DemographicComponent implements OnInit {
     'CNE/PIN Number',
     'Age'
   );
-  ageOrDobPref = 'dob';
-  showCalender = true;
-  dateSelected: string;
+  ageOrDobPref = '';
+  showCalender: boolean;
+  dateSelected: Date;
   showDate = false;
   numberOfApplicants: number;
   userForm: FormGroup;
@@ -53,11 +56,11 @@ export class DemographicComponent implements OnInit {
   city = '';
   localAdministrativeAuthority = '';
   email = '';
-  dob: Date;
-  age: number;
-  postalCode: number;
-  mobilePhone: number;
-  pin: number;
+  dob: ' ';
+  age: ' ';
+  postalCode: '';
+  mobilePhone: '';
+  pin: ' ';
 
   constructor(private route: ActivatedRoute, private regService: RegistrationService) {}
 
@@ -90,11 +93,11 @@ export class DemographicComponent implements OnInit {
       city: new FormControl(this.city),
       localAdministrativeAuthority: new FormControl(this.localAdministrativeAuthority),
       email: new FormControl(this.email),
-      age: new FormControl(this.age),
-      dob: new FormControl(this.dob),
+      age: new FormControl('', Validators.required),
+      dob: new FormControl('', Validators.required),
       postalCode: new FormControl(this.postalCode, Validators.required),
-      mobilePhone: new FormControl(this.mobilePhone),
-      pin: new FormControl(this.pin)
+      mobilePhone: new FormControl(''),
+      pin: new FormControl('')
     });
   }
 
@@ -103,16 +106,7 @@ export class DemographicComponent implements OnInit {
   }
 
   nextStep() {
-    this.onSubmit().subscribe(
-      response => {
-        console.log(response);
-      },
-      error => console.log(error),
-      () => {
-        this.isDisabled[this.step] = true;
-        this.step++;
-      }
-    );
+    this.onSubmit();
   }
 
   prevStep() {
@@ -126,24 +120,60 @@ export class DemographicComponent implements OnInit {
     } else {
       // this.regService.addUser(this.userForm.value);
     }
-    return this.regService.addUser(this.userForm.value);
-    //  .subscribe(response => {
-    //     console.log(response);
-    // this.isDisabled[this.step] = true;
-    // this.step++;
-    //   });
+
+    const identity = new IdentityModel(
+      [new AttributeModel('en', this.demo.fullName, this.userForm.controls.fullName.value)],
+      [new AttributeModel('en', this.demo.dateOfBirth, this.userForm.controls.dob.value)],
+      [new AttributeModel('en', this.demo.gender, this.userForm.controls.gender.value)],
+      [new AttributeModel('en', this.demo.addressLine1, this.userForm.controls.addressLine1.value)],
+      [new AttributeModel('en', this.demo.addressLine2, this.userForm.controls.addressLine2.value)],
+      [new AttributeModel('en', this.demo.addressLine3, this.userForm.controls.addressLine3.value)],
+      [new AttributeModel('en', this.demo.region, this.userForm.controls.region.value)],
+      [new AttributeModel('en', this.demo.province, this.userForm.controls.province.value)],
+      [new AttributeModel('en', this.demo.city, this.userForm.controls.city.value)],
+      [new AttributeModel('en', this.demo.postalCode, this.userForm.controls.postalCode.value)],
+      [
+        new AttributeModel(
+          'en',
+          this.demo.localAdministrativeAuthority,
+          this.userForm.controls.localAdministrativeAuthority.value
+        )
+      ],
+      [new AttributeModel('en', this.demo.emailId, this.userForm.controls.email.value)],
+      [new AttributeModel('en', this.demo.mobileNumber, this.userForm.controls.mobilePhone.value)],
+      [new AttributeModel('en', this.demo.CNEOrPINNumber, this.userForm.controls.pin.value)],
+      [new AttributeModel('en', this.demo.age, this.userForm.controls.age.value)]
+    );
+
+    const req = new RequestModel(
+      '74297024836182',
+      'shashank',
+      '',
+      'updatedBy',
+      '',
+      'status201',
+      'lang-201',
+      new DemoIdentityModel(identity)
+    );
+
+    this.regService.addUser(req).subscribe(
+      response => {
+        console.log(response);
+      },
+      error => console.log(error),
+      () => {
+        this.isDisabled[this.step] = true;
+        this.step++;
+      }
+    );
   }
 
   onGenderChange(gender: MatButtonToggleChange) {
-    console.log(gender);
     this.userForm.controls.gender.patchValue(gender.value);
   }
 
   addDOB(event: MatDatepickerInputEvent<Date>) {
-    const pipe = new DatePipe('en-US');
-    const formattedDate = pipe.transform(event.value, 'dd/MM/yyyy');
-    console.log('test date' + formattedDate);
-    this.dateSelected = formattedDate;
+    this.dateSelected = event.value;
     this.showDate = true;
   }
 
@@ -151,9 +181,15 @@ export class DemographicComponent implements OnInit {
     console.log(value);
     if (value === 'age') {
       this.showCalender = false;
+      // this.userForm.controls.dob.reset();
+      // this.userForm.controls.dob.patchValue('');
+      this.userForm.controls.dob.clearValidators();
     }
     if (value === 'dob') {
       this.showCalender = true;
+      // this.userForm.controls.age.reset();
+      // this.userForm.controls.age.patchValue('');
+      this.userForm.controls.age.clearValidators();
     }
   }
 }
