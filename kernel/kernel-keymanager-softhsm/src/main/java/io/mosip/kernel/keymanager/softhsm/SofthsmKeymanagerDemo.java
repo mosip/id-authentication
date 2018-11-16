@@ -7,8 +7,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateExpiredException;
+import java.security.cert.CertificateNotYetValidException;
+import java.security.cert.X509Certificate;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -19,16 +21,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import io.mosip.kernel.core.keymanager.spi.SofthsmKeystore;
+import io.mosip.kernel.core.keymanager.spi.KeymanagerInterface;
 
 @SpringBootApplication
-public class SofthsmKeystoreDemo {
+public class SofthsmKeymanagerDemo {
 
 	@Autowired
-	private SofthsmKeystore softhsmKeystore;
+	private KeymanagerInterface softhsmKeystore;
 
 	public static void main(String[] args) {
-		SpringApplication.run(SofthsmKeystoreDemo.class, args);
+		SpringApplication.run(SofthsmKeymanagerDemo.class, args);
 	}
 
 	@PostConstruct
@@ -91,12 +93,16 @@ public class SofthsmKeystoreDemo {
 		PublicKey publicKey = softhsmKeystore.getPublicKey("test-alias-private");
 		System.out.println(publicKey.toString());
 		System.out.println(publicKey.getEncoded());
-
-		Certificate certificate = softhsmKeystore.getCertificate("test-alias-private");
-		System.out.println(certificate.toString());
+		
+		X509Certificate certificate = (X509Certificate) softhsmKeystore.getCertificate("test-alias-private");
 		try {
-			System.out.println(certificate.getEncoded());
-		} catch (CertificateEncodingException e) {
+			System.out.println("!!!!!!!!!!!!!!"+certificate.getSubjectX500Principal());
+			certificate.checkValidity();
+			certificate.checkValidity(new Date(1999, 12, 12));
+			System.out.println("@@@@@@@@@@2"+certificate.getIssuerDN());
+			System.out.println("##############"+certificate.getIssuerX500Principal());
+			System.out.println("$$$$$$$$$$$$$$$$"+certificate.getSubjectDN());
+		} catch (CertificateExpiredException | CertificateNotYetValidException e) {
 			e.printStackTrace();
 		}
 

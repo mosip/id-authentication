@@ -7,12 +7,12 @@ package io.mosip.kernel.keymanager.softhsm.constant;
  * @since 1.0.0
  *
  */
-public final class SofthsmKeystoreConstant {
+public final class SofthsmKeymanagerConstant {
 
 	/**
 	 * Private constructor for SofthsmKeystoreConstant
 	 */
-	private SofthsmKeystoreConstant() {
+	private SofthsmKeymanagerConstant() {
 	}
 
 	/**
