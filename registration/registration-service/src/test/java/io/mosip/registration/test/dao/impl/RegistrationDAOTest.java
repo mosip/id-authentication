@@ -80,7 +80,6 @@ public class RegistrationDAOTest {
 		when(registrationRepository.create(Mockito.any(Registration.class))).thenThrow(RegBaseUncheckedException.class);
 		registrationDAOImpl.save("file", "Invalid");
 	}
-	@Ignore
 	@Test
 	public void getRegistrationByStatusTest() {
 		

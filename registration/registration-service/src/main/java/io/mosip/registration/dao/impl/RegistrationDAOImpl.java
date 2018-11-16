@@ -248,7 +248,6 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		RegistrationTransaction regTransaction = new RegistrationTransaction();
 		regTransaction.setId(String.valueOf(UUID.randomUUID().getMostSignificantBits()));
 		regTransaction.setRegId(registrationPacket.getId());
-		regTransaction.setIsActive(true);
 		regTransaction.setTrnTypeCode(RegistrationClientStatusCode.UPLOADED_SUCCESSFULLY.getCode());
 		regTransaction.setStatusCode(registrationPacket.getClientStatusCode());
 		regTransaction.setCrBy("mosip");

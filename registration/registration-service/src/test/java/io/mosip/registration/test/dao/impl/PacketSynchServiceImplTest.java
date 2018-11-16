@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
-import io.mosip.kernel.core.util.exception.MosipJsonProcessingException;
+import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
@@ -63,7 +63,7 @@ public class PacketSynchServiceImplTest {
 
 	@Test
 	public void testSyncPacketsToServer()
-			throws RegBaseCheckedException, MosipJsonProcessingException, URISyntaxException {
+			throws RegBaseCheckedException, JsonProcessingException, URISyntaxException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
 		Object respObj = new Object();
@@ -81,7 +81,7 @@ public class PacketSynchServiceImplTest {
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
-	public void testHttpException() throws RegBaseCheckedException, MosipJsonProcessingException, URISyntaxException {
+	public void testHttpException() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
 		Object respObj = new Object();
@@ -91,7 +91,7 @@ public class PacketSynchServiceImplTest {
 	}
 	
 	@Test(expected = RegBaseUncheckedException.class)
-	public void testUnCheckedException() throws RegBaseCheckedException, MosipJsonProcessingException, URISyntaxException {
+	public void testUnCheckedException() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
 		Object respObj = new Object();

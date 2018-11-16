@@ -1,6 +1,6 @@
 package io.mosip.registration.dto;
 
-public class PacketUploadStatusDTO {
+public class PacketStatusDTO {
 
 	private String sourcePath;
 	private String fileName;
