@@ -34,10 +34,5 @@ public class JobTransactionDAOTest {
 		jobTransactionDAOImpl.saveSyncTransaction(syncTransaction);
 	}
 
-	@Test(expected = RegBaseUncheckedException.class)
-	public void saveExceptionTest()  {
-		SyncTransaction syncTransaction=new SyncTransaction();
-		Mockito.when(syncTranscRepository.save(Mockito.any())).thenThrow(RuntimeException.class);
-		jobTransactionDAOImpl.saveSyncTransaction(syncTransaction);
-	}
+	
 }

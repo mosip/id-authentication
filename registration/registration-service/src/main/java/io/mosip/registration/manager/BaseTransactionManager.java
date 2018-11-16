@@ -5,6 +5,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 
 import io.mosip.registration.entity.SyncJob;
+import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
@@ -38,11 +39,11 @@ public interface BaseTransactionManager {
 	/**
 	 * To get the job by using api name
 	 * 
-	 * @param apiName
-	 *            or bean name
+	 * @param jobId
+	 *            is a id of job
 	 * @return SyncJob the entity
 	 */
-	public SyncJob getJob(String apiName);
+	public SyncJob getJob(String jobId);
 
 	/**
 	 * To get the job by using trigger information
@@ -65,7 +66,8 @@ public interface BaseTransactionManager {
 	 * 
 	 * @param syncJob
 	 *            information
+	 * @return 
 	 */
-	public void createSyncTransaction(String status, String statusComment, String triggerPoint, SyncJob syncJob)
+	public SyncTransaction createSyncTransaction(String status, String statusComment, String triggerPoint, SyncJob syncJob)
 			throws RegBaseUncheckedException;
 }

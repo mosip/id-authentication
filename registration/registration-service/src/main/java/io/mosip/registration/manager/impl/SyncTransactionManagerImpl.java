@@ -55,13 +55,9 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 				RegistrationConstants.APPLICATION_ID, "Get Job started");
 
 		SyncJob syncJob = null;
-		try {
-			syncJob = getJob(context.getJobDetail());
 
-		} catch (NullPointerException nullPointerException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_TRANSACTION_NULL_POINTER_EXCEPTION,
-					nullPointerException.getMessage());
-		}
+		syncJob = getJob(context.getJobDetail());
+
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Job Ended");
 
@@ -69,18 +65,29 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 	}
 
 	@Override
-	public SyncJob getJob(String apiName) {
+	public SyncJob getJob(String jobId) {
+		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Get Job started");
+
+		SyncJob syncJob = JobConfigurationServiceImpl.SYNC_JOB_MAP.get(jobId);
+		
+		
+
+		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Get Job Ended");
+
+		return syncJob;
+	}
+
+	@Override
+	public SyncJob getJob(final Trigger trigger) {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Job started");
 
 		SyncJob syncJob = null;
-		try {
-			syncJob = JobConfigurationServiceImpl.SYNC_JOB_MAP.get(apiName.toLowerCase());
 
-		} catch (NullPointerException nullPointerException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_TRANSACTION_NULL_POINTER_EXCEPTION,
-					nullPointerException.getMessage());
-		}
+		syncJob = getJob((JobDetail) trigger.getJobDataMap().get("jobDetail"));
+
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Job Ended");
 
@@ -88,40 +95,14 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 	}
 
 	@Override
-	public SyncJob getJob(Trigger trigger) {
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Get Job started");
-
-		SyncJob syncJob = null;
-		try {
-			syncJob = getJob((JobDetail) trigger.getJobDataMap().get("jobDetail"));
-
-		} catch (NullPointerException nullPointerException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_TRANSACTION_NULL_POINTER_EXCEPTION,
-					nullPointerException.getMessage());
-		}
-		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "Get Job Ended");
-
-		return syncJob;
-	}
-
-	@Override
-	public SyncJob getJob(JobDetail jobDetail) {
+	public SyncJob getJob(final JobDetail jobDetail) {
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Job started");
 
-		SyncJob syncJob = null;
-		try {
+		String jobId = jobDetail.getKey().getName();
+		SyncJob syncJob = JobConfigurationServiceImpl.SYNC_JOB_MAP.get(jobId);
 
-			String jobId = jobDetail.getKey().getName();
-			syncJob = JobConfigurationServiceImpl.SYNC_JOB_MAP.get(jobId);
-
-		} catch (NullPointerException nullPointerException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_TRANSACTION_NULL_POINTER_EXCEPTION,
-					nullPointerException.getMessage());
-		}
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Get Job Ended");
 
@@ -129,65 +110,74 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 	}
 
 	@Override
-	public void createSyncTransaction(final String status, final String statusComment, final String triggerPoint,
+	public SyncTransaction createSyncTransaction(final String status, final String statusComment, final String triggerPoint,
 			final SyncJob syncJob) {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Create Sync Transaction started");
-
+		
+		
 		SyncTransaction syncTransaction = new SyncTransaction();
 
-		SyncControl syncControl = syncJobDAO.findById(syncJob.getId());
+		SyncControl syncControl = syncJobDAO.findBySyncJobId(syncJob.getId());
 
-		// TODO to be auto generated and has to be remove from here
-		String transactionId = Integer.toString(random.nextInt(10000));
-		syncTransaction.setId(transactionId);
+		try {
 
-		syncTransaction.setSyncJobId(syncJob.getId());
+			// TODO to be auto generated and has to be remove from here
+			String transactionId = Integer.toString(random.nextInt(10000));
+			syncTransaction.setId(transactionId);
 
-		syncTransaction.setSyncDateTime(new Timestamp(System.currentTimeMillis()));
-		syncTransaction.setStatusCode(status);
-		syncTransaction.setStatusComment(statusComment);
+			syncTransaction.setSyncJobId(syncJob.getId());
 
-		// TODO
-		syncTransaction.setTriggerPoint(triggerPoint);
+			syncTransaction.setSyncDateTime(new Timestamp(System.currentTimeMillis()));
+			syncTransaction.setStatusCode(status);
+			syncTransaction.setStatusComment(statusComment);
 
-		syncTransaction.setSyncFrom(RegistrationSystemPropertiesChecker.getMachineId());
+			// TODO
+			syncTransaction.setTriggerPoint(triggerPoint);
 
-		// TODO
-		syncTransaction.setSyncTo("SERVER???");
+			syncTransaction.setSyncFrom(RegistrationSystemPropertiesChecker.getMachineId());
 
-		syncTransaction.setMachmId(RegistrationSystemPropertiesChecker.getMachineId());
-		// syncTransaction.setCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
-		// .getRegistrationCenterId());
+			// TODO
+			syncTransaction.setSyncTo("SERVER???");
 
-		// TODO
-		/*
-		 * syncTransaction.setRefId("REFID"); syncTransaction.setRefType("REFTYPE");
-		 * syncTransaction.setSyncParam("SyncParam");
-		 */
+			syncTransaction.setMachmId(RegistrationSystemPropertiesChecker.getMachineId());
+			// syncTransaction.setCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
+			// .getRegistrationCenterId());
 
-		// TODO
-		syncTransaction.setLangCode("EN");
+			// TODO
+			/*
+			 * syncTransaction.setRefId("REFID"); syncTransaction.setRefType("REFTYPE");
+			 * syncTransaction.setSyncParam("SyncParam");
+			 */
 
-		syncTransaction.setActive(true);
+			// TODO
+			syncTransaction.setLangCode("EN");
 
-		syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+			syncTransaction.setActive(true);
 
-		syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
+			syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 
-		// TODO
-		// update by and timez info
+			syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
-		// TODO
-		// ISDeleted and Timez info
+			// TODO
+			// update by and timez info
 
-		jobTransactionDAO.saveSyncTransaction(syncTransaction);
+			// TODO
+			// ISDeleted and Timez info
 
-		syncControlTransaction(syncControl, syncTransaction);
+			jobTransactionDAO.saveSyncTransaction(syncTransaction);
+
+			syncControlTransaction(syncControl, syncTransaction);
+		} catch (NullPointerException nullPointerException) {
+			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_TRANSACTION_NULL_POINTER_EXCEPTION,
+					nullPointerException.getMessage());
+
+		}
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Create Sync Transaction Ended");
 
+		return syncTransaction;
 	}
 
 	private void syncControlTransaction(SyncControl syncControl, SyncTransaction syncTransaction) {

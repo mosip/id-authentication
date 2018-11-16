@@ -10,6 +10,8 @@ import org.mockito.junit.MockitoRule;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import io.mosip.registration.entity.SyncTransaction;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.JobProcessListener;
 import io.mosip.registration.manager.BaseTransactionManager;
 import static org.mockito.Mockito.doNothing;
@@ -27,6 +29,9 @@ public class JobProcessorListenerTest {
 	
 	@Mock
 	JobExecutionException jobExecutionException;
+	
+	@Mock
+	SyncTransaction syncTransaction;
 
 	
 	@InjectMocks
@@ -34,21 +39,42 @@ public class JobProcessorListenerTest {
 	
 	@Test
 	public void toBeExecutedTest() {
-		doNothing().when(transactionManager).createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(syncTransaction);
 		processListener.jobToBeExecuted(jobExecutionContext);
 
 	}
 	
 	@Test
 	public void toBeVetoedTest() {
-		doNothing().when(transactionManager).createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-		processListener.jobExecutionVetoed(jobExecutionContext);
+
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(syncTransaction);processListener.jobExecutionVetoed(jobExecutionContext);
 
 	}
 	
 	@Test
 	public void wasExecutedTest() {
-		doNothing().when(transactionManager).createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(syncTransaction);processListener.jobWasExecuted(jobExecutionContext, jobExecutionException);
+
+	}
+	
+	@Test
+	public void toBeExecutedExceptionTest() {
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
+		processListener.jobToBeExecuted(jobExecutionContext);
+
+	}
+	
+	@Test
+	public void toBeVetoedExceptionTest() {
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
+		processListener.jobExecutionVetoed(jobExecutionContext);
+
+	}
+	
+	@Test
+	public void wasExecutedExceptionTest() {
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
 		processListener.jobWasExecuted(jobExecutionContext, jobExecutionException);
 
 	}

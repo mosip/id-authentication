@@ -15,6 +15,8 @@ import org.quartz.Trigger;
 import org.quartz.Trigger.CompletedExecutionInstruction;
 import org.springframework.scheduling.TriggerContext;
 
+import io.mosip.registration.entity.SyncTransaction;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.JobProcessListener;
 import io.mosip.registration.jobs.JobTriggerListener;
 import io.mosip.registration.manager.BaseTransactionManager;
@@ -33,6 +35,8 @@ public class JobTriggerTest {
 	@Mock
 	JobExecutionContext jobExecutionContext;
 	
+	@Mock
+	SyncTransaction syncTransaction;
 	CompletedExecutionInstruction completedExecutionInstruction;
 	
 	@InjectMocks
@@ -40,21 +44,42 @@ public class JobTriggerTest {
 	
 	@Test
 	public void triggerMisFiredTest() {
-		doNothing().when(transactionManager).createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(syncTransaction);
 		jobTriggerListener.triggerMisfired(trigger);
 
 	}
 	
 	@Test
 	public void triggerCompleteTest() {
-		doNothing().when(transactionManager).createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(syncTransaction);
 		jobTriggerListener.triggerComplete(trigger, jobExecutionContext, completedExecutionInstruction);
 
 	}
 	
 	@Test
 	public void triggerFiredTest() {
-		doNothing().when(transactionManager).createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(syncTransaction);
+		jobTriggerListener.triggerFired(trigger, jobExecutionContext);
+
+	}
+	
+	@Test
+	public void triggerMisFiredExceptionTest() {
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
+		jobTriggerListener.triggerMisfired(trigger);
+
+	}
+	
+	@Test
+	public void triggerCompleteExceptionTest() {
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
+		jobTriggerListener.triggerComplete(trigger, jobExecutionContext, completedExecutionInstruction);
+
+	}
+	
+	@Test
+	public void triggerFiredExceptionTest() {
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
 		jobTriggerListener.triggerFired(trigger, jobExecutionContext);
 
 	}

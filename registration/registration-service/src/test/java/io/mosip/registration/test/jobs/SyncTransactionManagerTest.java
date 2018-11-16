@@ -150,7 +150,7 @@ public class SyncTransactionManagerTest {
 	public void createSyncTransactionTest() {
 		SyncTransaction syncTransaction=new SyncTransaction();
 		SyncControl syncControl=new SyncControl();
-		Mockito.when(syncJobDAO.findById(Mockito.anyString())).thenReturn(syncControl);
+		Mockito.when(syncJobDAO.findBySyncJobId(Mockito.anyString())).thenReturn(syncControl);
 		Mockito.when(jobTransactionDAO.saveSyncTransaction(syncTransaction)).thenReturn(syncTransaction);
 		syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", syncJob);
 	}
@@ -158,7 +158,7 @@ public class SyncTransactionManagerTest {
 	public void createSyncTransactionControlNullTest() {
 		SyncTransaction syncTransaction=new SyncTransaction();
 		SyncControl syncControl=null;
-		Mockito.when(syncJobDAO.findById(Mockito.anyString())).thenReturn(syncControl);
+		Mockito.when(syncJobDAO.findBySyncJobId(Mockito.anyString())).thenReturn(syncControl);
 		Mockito.when(jobTransactionDAO.saveSyncTransaction(syncTransaction)).thenReturn(syncTransaction);
 		syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", syncJob);
 	}
