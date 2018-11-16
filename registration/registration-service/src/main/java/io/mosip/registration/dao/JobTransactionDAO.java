@@ -19,7 +19,7 @@ public interface JobTransactionDAO {
 	 *            Details
 	 * @return
 	 */
-	String saveSyncTransaction(SyncTransaction syncTransaction);
+	SyncTransaction saveSyncTransaction(SyncTransaction syncTransaction);
 
 	/**
 	 * To upadte {@link SyncControl}

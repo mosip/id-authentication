@@ -192,7 +192,7 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 
 	private void syncControlTransaction(SyncControl syncControl, SyncTransaction syncTransaction) {
 		//
-		boolean isCreated = syncControl != null;
+		boolean isNotCreated = syncControl == null;
 		if (syncControl == null) {
 			syncControl = new SyncControl();
 			syncControl.setSyncJobId(syncTransaction.getSyncJobId());
@@ -215,7 +215,7 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 		syncControl.setSynctrnId(syncTransaction.getId());
 		syncControl.setLastSyncDtimes(new Timestamp(System.currentTimeMillis()));
 
-		if (isCreated) {
+		if (isNotCreated) {
 			syncJobDAO.save(syncControl);
 		} else {
 			syncJobDAO.update(syncControl);

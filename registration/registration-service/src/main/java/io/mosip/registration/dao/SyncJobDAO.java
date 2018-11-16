@@ -78,8 +78,8 @@ public interface SyncJobDAO {
 		
 	}
 
-	public void update(SyncControl syncControl);
-	public void save(SyncControl syncControl);
+	public SyncControl update(SyncControl syncControl);
+	public SyncControl save(SyncControl syncControl);
 	
 	public SyncControl findById(String syncJobId);
 }

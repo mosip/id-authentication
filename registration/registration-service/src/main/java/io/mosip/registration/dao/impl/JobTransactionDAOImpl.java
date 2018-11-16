@@ -28,14 +28,10 @@ public class JobTransactionDAOImpl implements JobTransactionDAO {
 	private SyncTransactionRepository syncTranscRepository;
 
 	@Override
-	public String saveSyncTransaction(SyncTransaction syncTransaction) {
-		try {
-			syncTranscRepository.save(syncTransaction);
-			return "SAVED";
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_JOB_RUN_TIME_EXCEPTION,
-					runtimeException.getMessage());
-		}
+	public SyncTransaction saveSyncTransaction(SyncTransaction syncTransaction) {
+
+		return syncTranscRepository.save(syncTransaction);
+
 	}
 
 	/*
@@ -46,7 +42,6 @@ public class JobTransactionDAOImpl implements JobTransactionDAO {
 	 */
 	@Override
 	public String upadteSyncControl(SyncControl syncControl) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
