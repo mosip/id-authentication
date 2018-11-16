@@ -327,9 +327,9 @@ public class RegistrationPendingActionController extends BaseController implemen
 
 			Stage primarystage = new Stage();
 			AnchorPane authRoot = BaseController.load(getClass().getResource("/fxml/Authentication.fxml"));
-			AuthenticationController authenticationController = (AuthenticationController) RegistrationAppInitialization
+			FingerPrintAuthenticationController fingerPrintAuthenticationController = (FingerPrintAuthenticationController) RegistrationAppInitialization
 					.getApplicationContext().getBean("authenticationController");
-			authenticationController.initData(primarystage, approvalmapList);
+			fingerPrintAuthenticationController.initData(primarystage, approvalmapList);
 			Scene scene = new Scene(authRoot);
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
