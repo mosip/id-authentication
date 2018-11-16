@@ -62,7 +62,7 @@ public class RegistrationCenterIntegrationExceptionTest {
 		center.setName("bangalore");
 		center.setLatitude("12.9180722");
 		center.setLongitude("77.5028792");
-		center.setLanguageCode("ENG");
+		//center.setLanguageCode("ENG");
 	}
 
 	@Before

@@ -76,9 +76,9 @@ public class RegistrationCenterControllerExceptionTest {
 		registrationCenter.setCreatedBy("John");
 		registrationCenter.setCreatedtimes(specificDate);
 		registrationCenter.setHolidayLocationCode("KAR");
-		registrationCenter.setLocationCode("KAR_59");
+		//registrationCenter.setLocationCode("KAR_59");
 		registrationCenter.setId("REG_CR_001");
-		registrationCenter.setLanguageCode("ENG");
+		//registrationCenter.setLanguageCode("ENG");
 		registrationCenter.setWorkingHours("9");
 		registrationCenter.setLatitude("12.87376");
 		registrationCenter.setLongitude("12.76372");

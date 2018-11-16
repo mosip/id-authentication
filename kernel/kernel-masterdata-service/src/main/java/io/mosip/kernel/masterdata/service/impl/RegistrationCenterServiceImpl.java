@@ -18,6 +18,8 @@ import io.mosip.kernel.masterdata.constant.MasterDataConstant;
 import io.mosip.kernel.masterdata.constant.RegistrationCenterErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -252,7 +254,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	public RegistrationCenterResponseDto getAllRegistrationCenters() {
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
-			registrationCentersList = registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class);
+			registrationCentersList = registrationCenterRepository
+					.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new RegistrationCenterFetchException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
@@ -279,5 +282,38 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
 		return registrationCenterResponseDto;
 
+	}
+
+	@Override
+	public RegistrationCenterHierarchyLevelResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
+			String hierarchyLevel, String text, String languageCode) {
+		List<RegistrationCenter> registrationCentersList = null;
+		try {
+			registrationCentersList = registrationCenterRepository
+					.findRegistrationCenter(languageCode, hierarchyLevel, text);
+
+		} catch (DataAccessLayerException dataAccessLayerException) {
+			throw new RegistrationCenterFetchException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (registrationCentersList.isEmpty()) {
+			throw new RegistrationCenterNotFoundException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
+		}
+		List<RegistrationCenterHierarchyLevelDto> registrationCentersDtoList = null;
+		try {
+			registrationCentersDtoList = modelMapper.map(registrationCentersList,
+					new TypeToken<List<RegistrationCenterHierarchyLevelDto>>() {
+					}.getType());
+		} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
+			throw new RegistrationCenterMappingException(
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorMessage());
+		}
+		RegistrationCenterHierarchyLevelResponseDto registrationCenterResponseDto = new RegistrationCenterHierarchyLevelResponseDto();
+		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
+		return registrationCenterResponseDto;
 	}
 }
