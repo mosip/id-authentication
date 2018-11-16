@@ -279,7 +279,9 @@ public class RegistrationConstants {
 	public static final String REJECTION_PAGE = "/fxml/RejectionComment.fxml";
 	public static final String DEVICE_ONBOARDING_PAGE = "/fxml/DeviceMachineMapping.fxml";
 	public static final String USER_AUTHENTICATION = "/fxml/Authentication.fxml";
-
+	public static final String DEMOGRAPHIC_PREVIEW = "/fxml/DemographicPreview.fxml";
+	public static final String BIOMETRIC_PREVIEW = "/fxml/BiometricPreview.fxml";
+	
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
 	// Login

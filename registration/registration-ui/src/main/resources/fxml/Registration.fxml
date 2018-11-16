@@ -48,7 +48,7 @@
                        <Button layoutX="300.0" layoutY="70.0" mnemonicParsing="false" onAction="#scanPorDocument" text="%scan" />
                       </children>
                    </AnchorPane>
-                   <Button layoutX="652.0" layoutY="369.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
+                   <Button fx:id="pane2NextBtn" layoutX="652.0" layoutY="369.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
                  	</children>
                   </AnchorPane>
                </children>
@@ -71,7 +71,7 @@
                                     <Label layoutX="130.0" layoutY="9.0" text="%dob" />
                                     <DatePicker fx:id="ageDatePicker" editable="false" layoutX="130.0" layoutY="25.0" onAction="#ageValidationInDatePicker" prefHeight="10.0" prefWidth="200.0" />
                                     <Label id="toggleLabel1" fx:id="toggleLabel1" layoutX="90.0" layoutY="25.0" prefHeight="15.0" prefWidth="15.0" text="" />
-                                    <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="10.0" text=""/>
+                                    <Label id="toggleLabel2" fx:id="toggleLabel2" layoutX="100.0" layoutY="25.0" prefHeight="15.0" prefWidth="10.0" text="" />
                                  </children>
                               </AnchorPane>
                               <Label layoutX="47.0" layoutY="175.0" text="%gender" />
@@ -115,7 +115,7 @@
                                     <TextField fx:id="addressLine2_lc" layoutX="410.0" layoutY="75.0" prefHeight="30.0" prefWidth="320.0" />
                                     <Label fx:id="addressLine3_lc_label" layoutX="410.0" layoutY="110.0" text="" />
                                     <TextField fx:id="addressLine3_lc" layoutX="410.0" layoutY="130.0" prefHeight="30.0" prefWidth="320.0" />
-                                    <Button layoutX="639.0" layoutY="435.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" prefHeight="20.0" prefWidth="70.0" text="%next" />
+                                    <Button fx:id="nextBtn" layoutX="639.0" layoutY="435.0" mnemonicParsing="false" onAction="#gotoSecondDemographicPane" prefHeight="20.0" prefWidth="70.0" text="%next" />
                                     <ImageView fitHeight="21.0" fitWidth="34.0" layoutX="739.0" layoutY="40.0" onMouseClicked="#adressLine1Focus" pickOnBounds="true" preserveRatio="true">
                                     	<image>
                   						<Image url="@../images/keyboard.PNG" />

@@ -60,7 +60,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@Autowired
 	private PacketHandlerService packetHandlerService;
 	@Autowired
-	private RegistrationOfficerDetailsController officerDetailsController;
+	private RegistrationController registrationController;
 	@Autowired
 	private TemplateService templateService;
 	@Autowired
@@ -186,7 +186,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
 		stage.close();
 
-		officerDetailsController.redirectHome(event);
+		registrationController.goToHomePage();
 	}
 
 	private void generateAlert(ResponseDTO responseDTO) {
