@@ -14,8 +14,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
-import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeystoreConstant;
-import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeystoreErrorCode;
+import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeymanagerConstant;
+import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeymanagerErrorCode;
 import sun.security.x509.AlgorithmId;
 import sun.security.x509.CertificateAlgorithmId;
 import sun.security.x509.CertificateSerialNumber;
@@ -78,12 +78,12 @@ public class CertificateUtility {
 			info.set(X509CertInfo.ALGORITHM_ID, new CertificateAlgorithmId(algo));
 			cert = signCertificate(privkey, info);
 			algo = (AlgorithmId) cert.get(X509CertImpl.SIG_ALG);
-			info.set(CertificateAlgorithmId.NAME + SofthsmKeystoreConstant.DOT + CertificateAlgorithmId.ALGORITHM,
+			info.set(CertificateAlgorithmId.NAME + SofthsmKeymanagerConstant.DOT + CertificateAlgorithmId.ALGORITHM,
 					algo);
 			cert = signCertificate(privkey, info);
 		} catch (IOException | CertificateException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return cert;
 	}
@@ -101,11 +101,11 @@ public class CertificateUtility {
 		X509CertImpl cert;
 		cert = new X509CertImpl(info);
 		try {
-			cert.sign(privkey, SofthsmKeystoreConstant.SIGNATURE_ALGORITHM);
+			cert.sign(privkey, SofthsmKeymanagerConstant.SIGNATURE_ALGORITHM);
 		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
 				| SignatureException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return cert;
 	}

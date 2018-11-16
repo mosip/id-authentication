@@ -19,6 +19,7 @@ public class KeymanagerBootApplication {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+
 		SpringApplication.run(KeymanagerBootApplication.class, args);
 	}
 }

@@ -7,7 +7,7 @@ package io.mosip.kernel.keymanager.softhsm.constant;
  * @since 1.0.0
  *
  */
-public enum SofthsmKeystoreErrorCode {
+public enum SofthsmKeymanagerErrorCode {
 	NO_SUCH_SECURITY_PROVIDER("KER-KMS-001", "No such security provider"),
 
 	KEYSTORE_PROCESSING_ERROR("KER-KMS-002", "Error occured in processing Keystore: "),
@@ -33,7 +33,7 @@ public enum SofthsmKeystoreErrorCode {
 	 * @param errorMessage
 	 *            the error message
 	 */
-	private SofthsmKeystoreErrorCode(final String errorCode, final String errorMessage) {
+	private SofthsmKeymanagerErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}

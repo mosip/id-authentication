@@ -1,14 +1,16 @@
 package io.mosip.kernel.keymanager.service.impl;
 
-import java.security.Key;
+import java.security.KeyPair;
+import java.security.PublicKey;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.keymanager.spi.SofthsmKeystore;
+import io.mosip.kernel.core.keymanager.spi.KeymanagerInterface;
+import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.kernel.keymanager.repository.KeymanagerRepository;
 import io.mosip.kernel.keymanager.service.KeymanagerService;
 
 /**
@@ -22,8 +24,23 @@ import io.mosip.kernel.keymanager.service.KeymanagerService;
 @Service
 public class KeymanagerServiceImpl implements KeymanagerService {
 
+	/**
+	 * Keystore to handles and store cryptographic keys.
+	 */
 	@Autowired
-	SofthsmKeystore softhsmKeystore;
+	KeymanagerInterface keymanagerInterface;
+
+	/**
+	 * KeyGenerator instance to generate asymmetric key pairs
+	 */
+	@Autowired
+	KeyGenerator keyGenerator;
+
+	/**
+	 * KeyGenerator instance to generate asymmetric key pairs
+	 */
+	@Autowired
+	KeymanagerRepository keymanagerRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -35,16 +52,17 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	@Override
 	public byte[] getPublicKey(String appId, LocalDateTime timeStamp, Optional<String> machineId) {
 
-		List<String> allAlias = softhsmKeystore.getAllAlias();
+		String alias = appId;
 
-		allAlias.forEach(alias -> {
-			Key key = softhsmKeystore.getKey(alias);
-			System.out.println(alias + "," + key);
-		});
+		keymanagerRepository.findByApplicationId(alias);
 
-		byte[] publicKey = "urvil".getBytes();
+		KeyPair keyPair = keyGenerator.getAsymmetricKey();
 
-		return publicKey;
+		keymanagerInterface.storeAsymmetricKey(keyPair, alias, 365);
+
+		PublicKey publicKey = keymanagerInterface.getPublicKey(alias);
+
+		return publicKey.getEncoded();
 	}
 
 	/*

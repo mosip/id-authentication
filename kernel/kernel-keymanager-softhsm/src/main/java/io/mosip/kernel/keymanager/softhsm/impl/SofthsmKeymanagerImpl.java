@@ -30,13 +30,13 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.keymanager.exception.KeystoreProcessingException;
 import io.mosip.kernel.core.keymanager.exception.NoSuchSecurityProviderException;
-import io.mosip.kernel.core.keymanager.spi.SofthsmKeystore;
-import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeystoreErrorCode;
+import io.mosip.kernel.core.keymanager.spi.KeymanagerInterface;
+import io.mosip.kernel.keymanager.softhsm.constant.SofthsmKeymanagerErrorCode;
 import io.mosip.kernel.keymanager.softhsm.util.CertificateUtility;
 import sun.security.pkcs11.SunPKCS11;
 
 /**
- * SoftHSM Keystore implementation based on OpenDNSSEC that handles and stores
+ * Softhsm Keymanager implementation based on OpenDNSSEC that handles and stores
  * its cryptographic keys via the PKCS#11 interface. This is a software
  * implementation of a generic cryptographic device. SoftHSM can work with other
  * cryptographic device because of the PKCS#11 interface.
@@ -46,7 +46,7 @@ import sun.security.pkcs11.SunPKCS11;
  *
  */
 @Component
-public class SofthsmKeystoreImpl implements SofthsmKeystore {
+public class SofthsmKeymanagerImpl implements KeymanagerInterface {
 
 	/**
 	 * Common name for generating certificate
@@ -92,7 +92,7 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	 * @param keystorePass
 	 *            The Keystore instance
 	 */
-	public SofthsmKeystoreImpl(@Value("${mosip.kernel.keymanager.softhsm.config-path}") String configPath,
+	public SofthsmKeymanagerImpl(@Value("${mosip.kernel.keymanager.softhsm.config-path}") String configPath,
 			@Value("${mosip.kernel.keymanager.softhsm.keystore-type}") String keystoreType,
 			@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}") String keystorePass) {
 
@@ -118,8 +118,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	 */
 	public void addProvider(Provider provider) {
 		if (-1 == Security.addProvider(provider)) {
-			throw new NoSuchSecurityProviderException(SofthsmKeystoreErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorCode(),
-					SofthsmKeystoreErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorMessage());
+			throw new NoSuchSecurityProviderException(SofthsmKeymanagerErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorCode(),
+					SofthsmKeymanagerErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorMessage());
 		}
 	}
 
@@ -141,8 +141,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		try {
 			mosipKeyStore = KeyStore.getInstance(keystoreType, provider);
 		} catch (KeyStoreException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return mosipKeyStore;
 	}
@@ -169,8 +169,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		try {
 			keyStore.load(null, keystorePass.toCharArray());
 		} catch (NoSuchAlgorithmException | CertificateException | IOException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 
 	}
@@ -186,8 +186,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		try {
 			enumeration = keyStore.aliases();
 		} catch (KeyStoreException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return Collections.list(enumeration);
 	}
@@ -204,8 +204,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		try {
 			key = keyStore.getKey(alias, keystorePass.toCharArray());
 		} catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return key;
 	}
@@ -225,12 +225,12 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 				ProtectionParameter password = new PasswordProtection(keystorePass.toCharArray());
 				privateKeyEntry = (PrivateKeyEntry) keyStore.getEntry(alias, password);
 			} else {
-				throw new NoSuchSecurityProviderException(SofthsmKeystoreErrorCode.NO_SUCH_ALIAS.getErrorCode(),
-						SofthsmKeystoreErrorCode.NO_SUCH_ALIAS.getErrorMessage());
+				throw new NoSuchSecurityProviderException(SofthsmKeymanagerErrorCode.NO_SUCH_ALIAS.getErrorCode(),
+						SofthsmKeymanagerErrorCode.NO_SUCH_ALIAS.getErrorMessage());
 			}
 		} catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return privateKeyEntry;
 
@@ -271,9 +271,9 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 	 * String)
 	 */
 	@Override
-	public Certificate getCertificate(String alias) {
+	public X509Certificate getCertificate(String alias) {
 		PrivateKeyEntry privateKeyEntry = getAsymmetricKey(alias);
-		Certificate[] certificates = privateKeyEntry.getCertificateChain();
+		X509Certificate[] certificates = (X509Certificate[]) privateKeyEntry.getCertificateChain();
 		return certificates[0];
 	}
 
@@ -297,8 +297,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 			keyStore.setEntry(alias, privateKeyEntry, password);
 			keyStore.store(null, keystorePass.toCharArray());
 		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 	}
 
@@ -318,12 +318,12 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 				SecretKeyEntry retrivedSecret = (SecretKeyEntry) keyStore.getEntry(alias, password);
 				secretKey = retrivedSecret.getSecretKey();
 			} else {
-				throw new NoSuchSecurityProviderException(SofthsmKeystoreErrorCode.NO_SUCH_ALIAS.getErrorCode(),
-						SofthsmKeystoreErrorCode.NO_SUCH_ALIAS.getErrorMessage());
+				throw new NoSuchSecurityProviderException(SofthsmKeymanagerErrorCode.NO_SUCH_ALIAS.getErrorCode(),
+						SofthsmKeymanagerErrorCode.NO_SUCH_ALIAS.getErrorMessage());
 			}
 		} catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return secretKey;
 	}
@@ -344,8 +344,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 			keyStore.setEntry(alias, secret, password);
 			keyStore.store(null, keystorePass.toCharArray());
 		} catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 	}
 
@@ -360,8 +360,8 @@ public class SofthsmKeystoreImpl implements SofthsmKeystore {
 		try {
 			keyStore.deleteEntry(alias);
 		} catch (KeyStoreException e) {
-			throw new KeystoreProcessingException(SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
-					SofthsmKeystoreErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
+			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
+					SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 	}
 }
