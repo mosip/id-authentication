@@ -17,8 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
-import io.mosip.kernel.masterdata.exception.DeviceSpecificationDataFatchException;
-import io.mosip.kernel.masterdata.exception.DeviceSpecificationNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 
@@ -78,7 +78,7 @@ public class DeviceSpecificationServiceTest {
 
 	}
 
-	@Test(expected = DeviceSpecificationNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void noRecordsFoudExceptionTest() {
 		List<DeviceSpecification> empityList = new ArrayList<DeviceSpecification>();
 		String languageCode = "FRN";
@@ -86,7 +86,7 @@ public class DeviceSpecificationServiceTest {
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
 	}
 
-	@Test(expected = DeviceSpecificationNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void noRecordsFoudExceptionForNullTest() {
 		String languageCode = "FRN";
 		Mockito.when(deviceSpecificationRepository.findByLangCode(languageCode)).thenReturn(null);
@@ -94,7 +94,7 @@ public class DeviceSpecificationServiceTest {
 
 	}
 
-	@Test(expected = DeviceSpecificationDataFatchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void dataAccessExceptionInGetAllTest() {
 		String languageCode = "eng";
 		Mockito.when(deviceSpecificationRepository.findByLangCode(languageCode))
@@ -121,7 +121,7 @@ public class DeviceSpecificationServiceTest {
 
 	}
 
-	@Test(expected = DeviceSpecificationNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void noRecordsFoudExceptionInDeviceSpecificationByDevicTypeCodeTest() {
 		List<DeviceSpecification> empityList = new ArrayList<DeviceSpecification>();
 		String languageCode = "FRN";
@@ -131,7 +131,7 @@ public class DeviceSpecificationServiceTest {
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 	}
 
-	@Test(expected = DeviceSpecificationNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void noRecordsFoudExceptionnDeviceSpecificationByDevicTypeCodeForNullTest() {
 		String languageCode = "FRN";
 		String deviceTypeCode = "operating_sys";
@@ -141,11 +141,12 @@ public class DeviceSpecificationServiceTest {
 
 	}
 
-	@Test(expected = DeviceSpecificationDataFatchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void dataAccessExceptionnDeviceSpecificationByDevicTypeCodeTest() {
 		String languageCode = "ENG";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCode(languageCode, deviceTypeCode)).thenThrow(DataAccessResourceFailureException.class);
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCode(languageCode, deviceTypeCode))
+				.thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 
 	}

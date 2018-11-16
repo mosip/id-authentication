@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
-import io.mosip.kernel.masterdata.exception.DeviceSpecificationDataFatchException;
-import io.mosip.kernel.masterdata.exception.DeviceSpecificationNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -29,7 +29,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		try {
 			deviceSpecificationsEntitys = deviceSpecificationRepository.findByLangCode(languageCode);
 		} catch (DataAccessException e) {
-			throw new DeviceSpecificationDataFatchException(
+			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -37,7 +37,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 			deviceSpecificationDtos = objMapper.mapAll(deviceSpecificationsEntitys, DeviceSpecificationDto.class);
 			return deviceSpecificationDtos;
 		} else {
-			throw new DeviceSpecificationNotFoundException(
+			throw new DataNotFoundException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
@@ -52,7 +52,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 			deviceSpecificationsEntitys = deviceSpecificationRepository.findByLangCodeAndDeviceTypeCode(languageCode,
 					deviceTypeCode);
 		} catch (DataAccessException e) {
-			throw new DeviceSpecificationDataFatchException(
+			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -60,7 +60,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 			deviceSpecificationDtos = objMapper.mapAll(deviceSpecificationsEntitys, DeviceSpecificationDto.class);
 			return deviceSpecificationDtos;
 		} else {
-			throw new DeviceSpecificationNotFoundException(
+			throw new DataNotFoundException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}

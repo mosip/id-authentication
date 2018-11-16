@@ -102,7 +102,7 @@ public class RegistrationCenterControllerTest {
 		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-				"REG_CR_001", 2017)).andExpect(status().isNotAcceptable());
+				"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -112,6 +112,6 @@ public class RegistrationCenterControllerTest {
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-				"REG_CR_001", 2018)).andExpect(status().isNotAcceptable());
+				"REG_CR_001", 2018)).andExpect(status().isInternalServerError());
 	}
 }

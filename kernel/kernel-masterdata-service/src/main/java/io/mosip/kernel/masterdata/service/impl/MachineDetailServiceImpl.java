@@ -2,8 +2,6 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -11,9 +9,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.masterdata.constant.MachineDetailErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
 import io.mosip.kernel.masterdata.entity.MachineDetail;
-import io.mosip.kernel.masterdata.exception.MachineDetailFetchException;
-import io.mosip.kernel.masterdata.exception.MachineDetailMappingException;
-import io.mosip.kernel.masterdata.exception.MachineDetailNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineDetailRepository;
 import io.mosip.kernel.masterdata.service.MachineDetailService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -71,19 +68,13 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 		try {
 			machineDetail = machineDetailRepository.findAllByIdAndLangCode(id, langCode);
 		} catch (DataAccessException dataAccessLayerException) {
-			throw new MachineDetailFetchException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (machineDetail != null) {
-			try {
 			machineDetailDto = objectMapperUtil.map(machineDetail, MachineDetailDto.class);
-			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new MachineDetailMappingException(
-						MachineDetailErrorCode.MACHINE_DETAIL_MAPPING_EXCEPTION.getErrorCode(),
-						MachineDetailErrorCode.MACHINE_DETAIL_MAPPING_EXCEPTION.getErrorMessage());
-			}
 		} else {
-			throw new MachineDetailNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		return machineDetailDto;
@@ -115,19 +106,13 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 			machineDetailList = machineDetailRepository.findAll();
 
 		} catch (DataAccessException dataAccessLayerException) {
-			throw new MachineDetailFetchException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (machineDetailList != null) {
-			try {
 			machineDetailDtoList = objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class);
-			}catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new MachineDetailMappingException(
-						MachineDetailErrorCode.MACHINE_DETAIL_MAPPING_EXCEPTION.getErrorCode(),
-						MachineDetailErrorCode.MACHINE_DETAIL_MAPPING_EXCEPTION.getErrorMessage());
-			}
 		} else {
-			throw new MachineDetailNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		return machineDetailDtoList;

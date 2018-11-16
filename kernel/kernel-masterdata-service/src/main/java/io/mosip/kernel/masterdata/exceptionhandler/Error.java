@@ -3,12 +3,12 @@ package io.mosip.kernel.masterdata.exceptionhandler;
 import lombok.Data;
 
 /**
- * @author Dharmesh Khandelwal
+ * @author Bal Vikash Sharma
  * @since 1.0.0
  *
  */
 @Data
-public class ErrorBean {
+public class Error {
 
 	/**
 	 * The error code.
@@ -27,7 +27,7 @@ public class ErrorBean {
 	 * @param errorMessage
 	 *            The error message.
 	 */
-	public ErrorBean(String errorCode, String errorMessage) {
+	public Error(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
 	}

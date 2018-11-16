@@ -12,7 +12,7 @@ import io.mosip.kernel.masterdata.constant.PacketRejectionReasonErrorCode;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonResponseDto;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
-import io.mosip.kernel.masterdata.exception.ReasonsFetchException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.ReasonRepository;
 import io.mosip.kernel.masterdata.service.ReasonService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -35,7 +35,7 @@ public class ReasonServiceImpl implements ReasonService {
 		try {
 			reasonCategories = reasonRepository.findAll();
 		} catch (DataAccessException e) {
-			throw new ReasonsFetchException(
+			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -43,12 +43,12 @@ public class ReasonServiceImpl implements ReasonService {
 			try {
 				reasonCategoryDtos = ObjectMapperUtil.reasonConverter(reasonCategories);
 			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new ReasonsFetchException(
+				throw new MasterDataServiceException(
 						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION.getErrorCode(),
 						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION.getErrorMessage());
 			}
 		} else {
-			throw new ReasonsFetchException(
+			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
 					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
 		}
@@ -67,7 +67,7 @@ public class ReasonServiceImpl implements ReasonService {
 		try {
 			reasonCategories = reasonRepository.findReasonCategoryByCodeAndLanguageCode(categoryCode, langCode);
 		} catch (DataAccessException e) {
-			throw new ReasonsFetchException(
+			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage());
 		}
@@ -75,13 +75,13 @@ public class ReasonServiceImpl implements ReasonService {
 			try {
 				reasonCategoryDtos = ObjectMapperUtil.reasonConverter(reasonCategories);
 			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new ReasonsFetchException(
+				throw new MasterDataServiceException(
 						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION.getErrorCode(),
 						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION.getErrorMessage());
 
 			}
 		} else {
-			throw new ReasonsFetchException(
+			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
 					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
 		}
@@ -89,7 +89,7 @@ public class ReasonServiceImpl implements ReasonService {
         }
         else
         {
-        	throw new ReasonsFetchException(
+        	throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_ARGUMENT_NOT_FOUND_EXCEPTION.getErrorCode(),
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_ARGUMENT_NOT_FOUND_EXCEPTION.getErrorMessage());	
         }

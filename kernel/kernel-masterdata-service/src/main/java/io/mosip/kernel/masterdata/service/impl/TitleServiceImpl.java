@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +13,8 @@ import io.mosip.kernel.masterdata.constant.TitleErrorCode;
 import io.mosip.kernel.masterdata.dto.TitleDto;
 import io.mosip.kernel.masterdata.dto.TitleResponseDto;
 import io.mosip.kernel.masterdata.entity.Title;
-import io.mosip.kernel.masterdata.exception.TitleFetchException;
-import io.mosip.kernel.masterdata.exception.TitleMappingException;
-import io.mosip.kernel.masterdata.exception.TitleNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.service.TitleService;
 
@@ -50,19 +47,14 @@ public class TitleServiceImpl implements TitleService {
 		try {
 			title = titleRepository.findAll(Title.class);
 		} catch (DataAccessLayerException e) {
-			throw new TitleFetchException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
 					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (!(title.isEmpty())) {
-			try {
-				titleDto = mapper.map(title, new TypeToken<List<TitleDto>>() {
-				}.getType());
-			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new TitleMappingException(TitleErrorCode.TITLE_MAPPING_EXCEPTION.getErrorCode(),
-						TitleErrorCode.TITLE_MAPPING_EXCEPTION.getErrorMessage());
-			}
+		if (title != null && !title.isEmpty()) {
+			titleDto = mapper.map(title, new TypeToken<List<TitleDto>>() {
+			}.getType());
 		} else {
-			throw new TitleNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
+			throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
 					TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
 		}
 		titleResponseDto = new TitleResponseDto();
@@ -87,20 +79,15 @@ public class TitleServiceImpl implements TitleService {
 		try {
 			title = titleRepository.getThroughLanguageCode(languageCode);
 		} catch (DataAccessLayerException e) {
-			throw new TitleFetchException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorCode(),
 					TitleErrorCode.TITLE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (title.isEmpty()) {
-			throw new TitleNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
+			throw new DataNotFoundException(TitleErrorCode.TITLE_NOT_FOUND.getErrorCode(),
 					TitleErrorCode.TITLE_NOT_FOUND.getErrorMessage());
 		}
-		try {
-			titleDto = mapper.map(title, new TypeToken<List<TitleDto>>() {
-			}.getType());
-		} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-			throw new TitleMappingException(TitleErrorCode.TITLE_MAPPING_EXCEPTION.getErrorCode(),
-					TitleErrorCode.TITLE_MAPPING_EXCEPTION.getErrorMessage());
-		}
+		titleDto = mapper.map(title, new TypeToken<List<TitleDto>>() {
+		}.getType());
 
 		titleResponseDto = new TitleResponseDto();
 		titleResponseDto.setTitleList(titleDto);

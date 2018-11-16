@@ -14,9 +14,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +24,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
@@ -100,16 +97,18 @@ public class RegistrationCenterIntegrationExceptionTest {
 				.andExpect(status().isNotFound());
 
 	}
-
-	@Test
-	public void getSpecificRegistrationCenterByIdAndLangCodeNotMappingExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCode("1", "ENG")).thenReturn(center);
-		when(modelMapper.map(Mockito.any(), Mockito.eq(RegistrationCenterDto.class)))
-				.thenThrow(IllegalArgumentException.class);
-		mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
-
-	}
+	//
+	// @Test
+	// public void
+	// getSpecificRegistrationCenterByIdAndLangCodeNotMappingExceptionTest() throws
+	// Exception {
+	// when(repository.findByIdAndLanguageCode("1", "ENG")).thenReturn(center);
+	// when(modelMapper.map(Mockito.any(), Mockito.eq(RegistrationCenterDto.class)))
+	// .thenThrow(IllegalArgumentException.class);
+	// mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
+	// .andExpect(status().isNotAcceptable());
+	//
+	// }
 
 	@Test
 	public void getSpecificRegistrationCenterByIdAndLangCodeFetchExceptionTest() throws Exception {
@@ -117,7 +116,7 @@ public class RegistrationCenterIntegrationExceptionTest {
 		when(repository.findByIdAndLanguageCode("1", "ENG")).thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
+				.andExpect(status().isInternalServerError());
 
 	}
 
@@ -133,23 +132,13 @@ public class RegistrationCenterIntegrationExceptionTest {
 		when(repository.findRegistrationCentersByLat(12.9180022, 77.5028892, 0.999785939, "ENG"))
 				.thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(get("/getcoordinatespecificregistrationcenters/ENG/77.5028892/12.9180022/1609")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
-	}
-
-	@Test
-	public void getCoordinateSpecificRegistrationCentersRegistrationCenterMappingExceptionTest() throws Exception {
-		centers.add(center);
-		when(repository.findRegistrationCentersByLat(12.9180022, 77.5028892, 0.999785939, "ENG")).thenReturn(centers);
-		when(modelMapper.map(Mockito.any(), Mockito.eq(new TypeToken<List<RegistrationCenterDto>>() {
-		}.getType()))).thenThrow(IllegalArgumentException.class);
-		mockMvc.perform(get("/getcoordinatespecificregistrationcenters/ENG/77.5028892/12.9180022/1609")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isInternalServerError()).andReturn();
 	}
 
 	@Test
 	public void getCoordinateSpecificRegistrationCentersNumberFormatExceptionTest() throws Exception {
 		mockMvc.perform(get("/getcoordinatespecificregistrationcenters/ENG/77.5028892/12.9180022/ae")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest()).andReturn();
 	}
 
 	@Test
@@ -161,16 +150,20 @@ public class RegistrationCenterIntegrationExceptionTest {
 
 	}
 
-	@Test
-	public void getSpecificRegistrationCenterByLocationCodeAndLangCodeNotMappingExceptionTest() throws Exception {
-		centers.add(center);
-		when(repository.findByLocationCodeAndLanguageCode("BLR", "ENG")).thenReturn(centers);
-		when(modelMapper.map(Mockito.any(), Mockito.eq(new TypeToken<List<RegistrationCenterDto>>() {
-		}.getType()))).thenThrow(IllegalArgumentException.class);
-		mockMvc.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
-
-	}
+	// @Test
+	// public void
+	// getSpecificRegistrationCenterByLocationCodeAndLangCodeNotMappingExceptionTest()
+	// throws Exception {
+	// centers.add(center);
+	// when(repository.findByLocationCodeAndLanguageCode("BLR",
+	// "ENG")).thenReturn(centers);
+	// when(modelMapper.map(Mockito.any(), Mockito.eq(new
+	// TypeToken<List<RegistrationCenterDto>>() {
+	// }.getType()))).thenThrow(IllegalArgumentException.class);
+	// mockMvc.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
+	// .andExpect(status().isNotAcceptable());
+	//
+	// }
 
 	@Test
 	public void getSpecificRegistrationCenterByLocationCodeAndLangCodeFetchExceptionTest() throws Exception {
@@ -178,7 +171,7 @@ public class RegistrationCenterIntegrationExceptionTest {
 		when(repository.findByLocationCodeAndLanguageCode("BLR", "ENG")).thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
+				.andExpect(status().isInternalServerError());
 
 	}
 
@@ -191,21 +184,23 @@ public class RegistrationCenterIntegrationExceptionTest {
 
 	}
 
-	@Test
-	public void getAllRegistrationCentersNotMappingExceptionTest() throws Exception {
-		centers.add(center);
-		when(repository.findAll(RegistrationCenter.class)).thenReturn(centers);
-		when(modelMapper.map(Mockito.any(), Mockito.eq(new TypeToken<List<RegistrationCenterDto>>() {
-		}.getType()))).thenThrow(IllegalArgumentException.class);
-		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
-	}
+	// @Test
+	// public void getAllRegistrationCentersNotMappingExceptionTest() throws
+	// Exception {
+	// centers.add(center);
+	// when(repository.findAll(RegistrationCenter.class)).thenReturn(centers);
+	// when(modelMapper.map(Mockito.any(), Mockito.eq(new
+	// TypeToken<List<RegistrationCenterDto>>() {
+	// }.getType()))).thenThrow(IllegalArgumentException.class);
+	// mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
+	// .andExpect(status().isNotAcceptable());
+	// }
 
 	@Test
 	public void getAllRegistrationCentersFetchExceptionTest() throws Exception {
 		when(repository.findAll(RegistrationCenter.class)).thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
+				.andExpect(status().isInternalServerError());
 	}
 }

@@ -8,8 +8,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -18,14 +16,11 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.masterdata.constant.MachineHistoryErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
 import io.mosip.kernel.masterdata.entity.MachineHistory;
-import io.mosip.kernel.masterdata.exception.MachineDetailFetchException;
-import io.mosip.kernel.masterdata.exception.MachineHistoryMappingException;
-import io.mosip.kernel.masterdata.exception.MachineHistroyNotFoundException;
-import io.mosip.kernel.masterdata.exception.MachineHistoryFetchException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
-
 import io.mosip.kernel.masterdata.utils.StringToLocalDateTimeConverter;
 
 /**
@@ -99,21 +94,13 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		try {
 			macHistoryList = macRepo.findByIdAndLangCodeAndEffectDtimesLessThanEqual(id, langCode, lDateAndTime);
 		} catch (DataAccessException dataAccessLayerException) {
-			throw new MachineHistoryFetchException(
-					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (macHistoryList != null) {
-			try {
-				machineHistoryDtoList = objMapper.mapAll(macHistoryList, MachineHistoryDto.class);
-			}catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new MachineHistoryMappingException(
-						MachineHistoryErrorCode.MACHINE_HISTORY_MAPPING_EXCEPTION.getErrorCode(),
-						MachineHistoryErrorCode.MACHINE_HISTORY_MAPPING_EXCEPTION.getErrorMessage());
-			}
+			machineHistoryDtoList = objMapper.mapAll(macHistoryList, MachineHistoryDto.class);
 		} else {
-			throw new MachineHistroyNotFoundException(
-					MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.MACHINE_HISTORY_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		return machineHistoryDtoList;
