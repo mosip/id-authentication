@@ -37,6 +37,10 @@ public class EODController extends BaseController implements Initializable {
 	@FXML
 	private AnchorPane pendingActionAnchorPane;
 	
+	/** The re Register anchor pane. */
+	@FXML
+	private AnchorPane reRegisterAnchorPane;
+	
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationOfficerPacketController.class);
 
@@ -50,12 +54,17 @@ public class EODController extends BaseController implements Initializable {
 					.load(getClass().getResource("/fxml/RegistrationPendingAction.fxml"));
 			Parent pendingApprovalRoot = BaseController
 					.load(getClass().getResource("/fxml/RegistrationPendingApproval.fxml"));
+			Parent reRegisterRoot = BaseController
+					.load(getClass().getResource("/fxml/ReRegistration.fxml"));
 
 			ObservableList<Node> approvalNodes = pendingApprovalAnchorPane.getChildren();
 			approvalNodes.add(pendingApprovalRoot);
 
 			ObservableList<Node> actionNodes = pendingActionAnchorPane.getChildren();
 			actionNodes.add(pendingActionRoot);
+			
+			ObservableList<Node> reregisterNodes = reRegisterAnchorPane.getChildren();
+			reregisterNodes.add(reRegisterRoot);
 
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - EOD - CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
