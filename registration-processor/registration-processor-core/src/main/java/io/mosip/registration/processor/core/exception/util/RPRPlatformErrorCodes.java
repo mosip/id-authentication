@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.core.exception.util;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Enum RPRPlatformErrorMessages.
  *
@@ -135,6 +134,7 @@ public final class RPRPlatformErrorCodes {
 			+ RPR_PACKET_DECRYPTION_JOB_MODULE;
 	public static final String RPR_PDJ_PACKET_NOT_FOUND = RPR_PACKET_DECRYPTION_JOB_ERROR_CODE + ERROR_CODE1;
 	public static final String RPR_PDJ_FILE_PATH_NOT_ACCESSIBLE = RPR_PACKET_DECRYPTION_JOB_ERROR_CODE + ERROR_CODE2;
+	public static final String RPR_PDJ_PACKET_DECRYPTION_FAILURE_ERROR_CODE = RPR_PACKET_DECRYPTION_JOB_ERROR_CODE + ERROR_CODE3;
 
 	/**
 	 * Instantiates a new RPR platform error codes.

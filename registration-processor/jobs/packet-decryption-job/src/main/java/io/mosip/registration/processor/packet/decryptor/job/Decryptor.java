@@ -1,15 +1,18 @@
 package io.mosip.registration.processor.packet.decryptor.job;
 
 import static java.util.Arrays.copyOfRange;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
@@ -18,8 +21,8 @@ import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.constants.EventId;
 import io.mosip.registration.processor.core.constants.EventName;
 import io.mosip.registration.processor.core.constants.EventType;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
-import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
 
 /**
  * Decryptor class for packet decryption.
@@ -82,11 +85,7 @@ public class Decryptor {
 			outstream = new ByteArrayInputStream(aesDecryptedData);
 			isTransactionSuccessful=true;
 		} catch (IOException | MosipInvalidDataException | MosipInvalidKeyException e) {
-
-			throw new PacketDecryptionFailureException(
-					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
-					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
-					.getErrorMessage(),
+			throw new PacketDecryptionFailureException(RPRPlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
 					e);
 		} finally {
 
@@ -116,10 +115,7 @@ public class Decryptor {
 			rprivateKey = IOUtils.toByteArray(fileInputStream);
 			isTransactionSuccessful=true;
 		} catch (IOException e) {
-			throw new PacketDecryptionFailureException(
-					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
-					PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
-					.getErrorMessage(),
+			throw new PacketDecryptionFailureException(RPRPlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
 					e);
 		}finally {
 

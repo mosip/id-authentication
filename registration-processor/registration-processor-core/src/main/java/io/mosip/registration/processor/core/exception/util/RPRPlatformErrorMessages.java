@@ -103,9 +103,13 @@ public enum RPRPlatformErrorMessages {
 	/** The ftp folder not accessible. */
 	FTP_FOLDER_NOT_ACCESSIBLE("FTP folder is not accessible"),
 	
+	/** The packet decryption failure. */
+	PACKET_DECRYPTION_FAILURE("The Decryption for the Packet has failed"),
+	
+	 //System Exceptions
 	/** The unexcepted exception. */
 	UNEXCEPTED_EXCEPTION("Unexpected exception"), /** The bad gateway. */
- //System Exceptions
+
 	BAD_GATEWAY("Bad Gateway"),
 	
 	/** The service unavailable. */

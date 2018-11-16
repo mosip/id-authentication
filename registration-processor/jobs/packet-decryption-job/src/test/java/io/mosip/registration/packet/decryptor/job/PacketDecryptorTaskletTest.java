@@ -36,13 +36,13 @@ import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
 import io.mosip.registration.processor.packet.decryptor.job.Decryptor;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
-import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
 import io.mosip.registration.processor.packet.decryptor.job.messagesender.DecryptionMessageSender;
 import io.mosip.registration.processor.packet.decryptor.job.tasklet.PacketDecryptorTasklet;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -247,9 +247,7 @@ public class PacketDecryptorTaskletTest {
 
 		Mockito.when(adapter.getPacket(any(String.class))).thenReturn(stream);
 
-		PacketDecryptionFailureException exception = new PacketDecryptionFailureException(
-				PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
-				PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorMessage(),
+		PacketDecryptionFailureException exception = new PacketDecryptionFailureException(RPRPlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
 				new IOException());
 
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenThrow(exception);
@@ -260,8 +258,7 @@ public class PacketDecryptorTaskletTest {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
 				return ((ILoggingEvent) argument).getFormattedMessage()
-						.contains(PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
-								.getErrorMessage());
+						.contains(RPRPlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue());
 			}
 		}));
 	}
