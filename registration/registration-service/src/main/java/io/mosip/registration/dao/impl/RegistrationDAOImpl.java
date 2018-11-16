@@ -110,33 +110,31 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 	 * java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Registration updateStatus(String id, String clientStatusCode, String approverUsrId, String statusComments,
-			String approverRoleCode) {
+	public Registration updateRegistration(String registrationID,String statusComments,String clientStatusCode) {
 		try {
 			LOGGER.debug("REGISTRATION - UPDATE_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
 					APPLICATION_ID, "Packet updation has been started");
 
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			Registration registration = registrationRepository.getOne(id);
+			Registration registration = registrationRepository.getOne(registrationID);
 			registration.setStatusCode(clientStatusCode);
 			registration.setStatusTimestamp(timestamp);
 			registration.setClientStatusCode(clientStatusCode);
 			registration.setClientStatusTimestamp(timestamp);
 			registration.setClientStatusComments(statusComments);
-			registration.setApproverUsrId(approverUsrId);
-			registration.setApproverRoleCode(approverRoleCode);
-			registration.setUpdBy(approverUsrId);
+			registration.setApproverUsrId(SessionContext.getInstance().getUserContext().getUserId());
+			registration.setApproverRoleCode(SessionContext.getInstance().getUserContext().getRoles().get(0));
+			registration.setUpdBy(SessionContext.getInstance().getUserContext().getUserId());
 			registration.setUpdDtimes(timestamp);
 			
 			List<RegistrationTransaction> registrationTransaction = registration.getRegistrationTransaction();
 			
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
-			registrationTxn.setRegId(registration.getId());
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 			registrationTxn.setLangCode("ENG");
 			registrationTxn.setStatusCode(clientStatusCode);
 			registrationTxn.setStatusComment(statusComments);
-			registrationTxn.setCrBy(approverUsrId);
+			registrationTxn.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
 			registrationTxn.setCrDtime(timestamp);
 			registrationTransaction.add(registrationTxn);
 
@@ -149,7 +147,6 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 					runtimeException.toString());
 		}
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -164,21 +161,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 		
 		return registrationRepository.findByclientStatusCode(status);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mosip.registration.dao.RegistrationDAO#approvalList()
-	 */
-	@Override
-	public List<Registration> approvalList() {
-		LOGGER.debug("REGISTRATION - CREATED_STATUS - REGISTRATION_DAO", APPLICATION_NAME,
-				APPLICATION_ID, "Retriving packets based on created status");
-		
-		return registrationRepository.findByclientStatusCode(RegistrationClientStatusCode.CREATED.getCode());
-	}
-
-
+	
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.dao.RegistrationDAO#getPacketsToBeSynched(java.util.List)
 	 */

@@ -14,5 +14,5 @@ import io.mosip.registration.entity.GlobalContextParam;
 public interface GlobalContextParamDAO {
 	
 	List<GlobalContextParam> findInvalidLoginCount(List<String> loginParams);
-
+	GlobalContextParam findRejectionOnholdComments(String status);
 }

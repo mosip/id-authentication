@@ -35,4 +35,9 @@ public class GlobalContextParamServiceImpl implements GlobalContextParamService 
 	public List<GlobalContextParam> findInvalidLoginCount(List<String> loginParams) {
 		return globalContextParamDAO.findInvalidLoginCount(loginParams);
 	}
+
+	@Override
+	public GlobalContextParam findRejectionOnholdComments(String status) {
+		return globalContextParamDAO.findRejectionOnholdComments(status);
+	}
 }

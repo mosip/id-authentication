@@ -24,4 +24,14 @@ public class GlobalContextParamDAOImpl implements GlobalContextParamDAO {
 	public List<GlobalContextParam> findInvalidLoginCount(List<String> loginParams){
 		return globalContextParamRepository.findByNameIn(loginParams);
 	}
+	
+
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.GlobalContextParamDAO#findRejectionOnholdComments(java.lang.String)
+	 */
+	@Override
+	public GlobalContextParam findRejectionOnholdComments(String status) {
+		return globalContextParamRepository.findByName(status);
+	}
+
 }

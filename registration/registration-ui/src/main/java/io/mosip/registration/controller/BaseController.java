@@ -213,5 +213,15 @@ public class BaseController {
 		});
 		return globalParamMap;
 	}
-
+	/**
+	 * 
+	 * Opens the home page screen
+	 * 
+	 */
+	public void goToHomePage() {
+		try {
+			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
+		} catch (IOException ioException) {
+		}
+	}
 }

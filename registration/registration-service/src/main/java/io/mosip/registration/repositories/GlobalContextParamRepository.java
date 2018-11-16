@@ -16,4 +16,12 @@ import io.mosip.registration.entity.GlobalContextParamId;
 public interface GlobalContextParamRepository extends BaseRepository<GlobalContextParam, GlobalContextParamId> {
 
 	List<GlobalContextParam> findByNameIn(List<String> loginParams);
+	
+	/**
+	 * Retrieving comments by status.
+	 *
+	 * @param status the status
+	 * @return the global context param
+	 */
+	GlobalContextParam findByName(String status);
 }

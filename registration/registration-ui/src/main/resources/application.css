@@ -158,3 +158,91 @@
 .inputFieldBottomBorder {
   	-fx-border-width: 0 0 1 0;
 }
+#imageAnchorPane,#pendingActionImageAnchorPane,#leftPalmAnchorPane,#rightPalmAnchorPane{
+	-fx-background-color:#ffffff;
+	 -fx-border-width: 1.0;
+	-fx-border-color: black;
+}
+#onHoldPane, #rejectionPane,#authenticateRootPane{
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: black;
+}
+#onHoldLabelAnchorPane, #rejectionLabelPane,#authenticateRootPane{
+	-fx-background-color:#808080;
+}
+#onHoldAnchorPane, #rejectionAnchorPane, #approveRegistrationRootSubPane,#authenticateRootSubPane{
+	-fx-background-color:#ffffff;
+}
+#pendingApprovalAnchorPane,#pendingActionAnchorPane,#approvalReportAnchorPane,#approveRegistrationRoot,#reRegisterAnchorPane{
+	-fx-background-color:#ffffff;
+	-fx-alignment: center ;
+	-fx-padding: 0 0 0 0;
+}
+#onHoldComboBox, #rejectionComboBox, #deviceCmbBox{
+	-fx-background-color:#ffffff;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: black;
+	-fx-font-size: 14px;
+}
+#submit, #rejectionSubmit, #approvalBtn ,#rejectionBtn ,#onHoldBtn,#submitBtn{
+	-fx-background-color:#ffffff; 
+    -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+#exitButton, #rejectionExit, #authExit{
+	 -fx-border-color: transparent;
+     -fx-padding: 4 0 4 0;
+     -fx-text-fill: black;
+}
+#table,#pendingActionTable{
+	-fx-text-fill: black;
+    -fx-font-size: 14px;
+}
+#approvalAccordian .title > .arrow-button .arrow{
+    -fx-translate-x: 870;
+}
+.titled-pane > .title 
+{
+  -fx-background-color: white;
+  -fx-border-width: 1 1 1 1;
+  -fx-border-color: #dcdcdc;
+  -fx-font-weight: bold;
+}
+#pendingApprovalTitledPane,#pendingActionTitledPane,#approvalReportTitledPane,#reRegisterTitledPane{
+	 -fx-background-color:#ffffff; 
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0 0 0.5em 0;
+}
+#table .scroll-bar:vertical > .increment-button,
+#table .scroll-bar:vertical > .decrement-button {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+#table .scroll-bar:horizontal > .increment-button,
+#table .scroll-bar:horizontal > .decrement-button {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+#pendingActionTable .scroll-bar:vertical > .increment-button,
+#pendingActionTable .scroll-bar:vertical > .decrement-button {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+#pendingActionTable .scroll-bar:horizontal > .increment-button,
+#pendingActionTable .scroll-bar:horizontal > .decrement-button {
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+} 
+

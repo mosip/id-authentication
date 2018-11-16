@@ -19,4 +19,12 @@ public interface GlobalContextParamService {
 	 * @return
 	 */
 	List<GlobalContextParam> findInvalidLoginCount(List<String> loginParams);
+	
+	/**
+	 * Fetching Rejection and on hold comments
+	 * @param status
+	 * @return
+	 */
+	GlobalContextParam findRejectionOnholdComments(String status);
+
 }

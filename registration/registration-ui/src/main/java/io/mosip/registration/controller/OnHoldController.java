@@ -4,6 +4,9 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +16,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.service.RegistrationApprovalService;
+import io.mosip.registration.dto.RegistrationApprovalDTO;
+import io.mosip.registration.entity.GlobalContextParam;
+import io.mosip.registration.service.GlobalContextParamService;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,6 +27,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 /**
@@ -34,12 +38,6 @@ import javafx.stage.Stage;
  */
 @Controller
 public class OnHoldController extends BaseController implements Initializable{
-
-	
-	/**
-	 * Registration Id
-	 */
-	private String regId = null;
 
 	/**
 	 * Stage
@@ -55,12 +53,11 @@ public class OnHoldController extends BaseController implements Initializable{
 	 * Object for RegistrationApprovalController
 	 */
 	@Autowired
-	private RegistrationApprovalController registrationController;
-	/**
-	 * Object for RegistrationApprovalService
-	 */
+	private RegistrationApprovalController registrationApprovalController;
+
 	@Autowired
-	private RegistrationApprovalService registration;
+	private GlobalContextParamService globalContextParamService;
+
 	/**
 	 * Combobox for for on hold reason
 	 */
@@ -71,59 +68,77 @@ public class OnHoldController extends BaseController implements Initializable{
 	 */
 	@FXML
 	private Button submit;
-	
+
 	@FXML
 	private Hyperlink exit;
 
-	 ObservableList<String> onHoldCommentslist=FXCollections.observableArrayList("Gender/Photo mismatch",
-	            "Partial Biometric",
-	            "Partial Iries",
-	            "Photo not clear",
-	            "Id not clear");
-	/* (non-Javadoc)
-	 * @see javafx.fxml.Initializable#initialize(java.net.URL, java.util.ResourceBundle)
+	private TableView<RegistrationApprovalDTO> onHoldTable;
+
+	private List<Map<String, String>> onHoldMapList;
+
+	private RegistrationApprovalDTO onHoldRegData;
+
+	/*
+	 * ObservableList<String>
+	 * onHoldCommentslist=FXCollections.observableArrayList("Gender/Photo mismatch",
+	 * "Partial Biometric", "Partial Iries", "Photo not clear", "Id not clear");
+	 */
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
+	 * java.util.ResourceBundle)
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Page loading has been started");
+		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"Page loading has been started");
+		GlobalContextParam globalContextParam = globalContextParamService
+				.findRejectionOnholdComments("ONHOLD_COMMENTS");
 		submit.disableProperty().set(true);
 		onHoldComboBox.getItems().clear();
-		onHoldComboBox.setItems(onHoldCommentslist);
+		onHoldComboBox.setItems(FXCollections.observableArrayList(globalContextParam.getVal().split(",")));
 
 	}
+
 	/**
 	 * Method to get the Stage and Registration Id from the other controller page
+	 * 
 	 * @param id
 	 * @param stage
 	 */
-	public void initData(String id,Stage stage) {
-	    regId=id;
-	    primarystage=stage;
-	  }
+	public void initData(RegistrationApprovalDTO regData, Stage stage, List<Map<String, String>> mapList,
+			TableView<RegistrationApprovalDTO> table) {
+		onHoldRegData = regData;
+		primarystage = stage;
+		onHoldMapList = mapList;
+		onHoldTable = table;
+	}
+
 	/**
-	 * {@code updatePacketStatus} is event class for updating packet status to onhold
+	 * {@code updatePacketStatus} is event class for updating packet status to
+	 * onhold
+	 * 
 	 * @param event
 	 */
 	public void updatePacketStatus(ActionEvent event) {
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Packet updation as on hold has been started");
-		String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
-		String approverRoleCode = SessionContext.getInstance().getUserContext().getRoles().get(0);
+		Map<String, String> map = new HashMap<>();
+		map.put("registrationID", onHoldRegData.getId());
+		map.put("statusCode", RegistrationClientStatusCode.ON_HOLD.getCode());
+		map.put("statusComment", onHoldComboBox.getSelectionModel().getSelectedItem());
+		onHoldMapList.add(map);
 
-		if(registration.packetUpdateStatus(regId, RegistrationClientStatusCode.ON_HOLD.getCode(),approverUserId, 
-				onHoldComboBox.getSelectionModel().getSelectedItem(), approverRoleCode)) {
-		generateAlert(RegistrationConstants.STATUS,AlertType.INFORMATION,RegistrationConstants.ONHOLD_STATUS_MESSAGE);
+		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.ONHOLD_STATUS_MESSAGE);
 		submit.disableProperty().set(true);
-		registrationController.tablePagination();
-	}
-	else {
-		generateAlert(RegistrationConstants.STATUS,AlertType.INFORMATION,RegistrationConstants.ONHOLD_STATUS_FAILURE_MESSAGE);
-	}
 		primarystage.close();
+		onHoldTable.getItems().remove(onHoldRegData);
+		registrationApprovalController.setInvisible();
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Packet updation as on hold has been ended");
 	}
+
 	/**
 	 * {@code rejectionWindowExit} is event class to exit from reason for rejection
 	 * pop up window.
@@ -132,9 +147,7 @@ public class OnHoldController extends BaseController implements Initializable{
 	 */
 	public void exitWindow(ActionEvent event) {
 		primarystage.close();
-																										
-																 
-  
+
 	}
 
 	/**

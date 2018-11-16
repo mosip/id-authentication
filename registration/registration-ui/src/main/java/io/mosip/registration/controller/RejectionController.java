@@ -4,6 +4,9 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +16,10 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.service.RegistrationApprovalService;
+import io.mosip.registration.dto.RegistrationApprovalDTO;
+import io.mosip.registration.entity.GlobalContextParam;
+import io.mosip.registration.service.GlobalContextParamService;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -24,6 +27,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 /**
@@ -33,11 +37,6 @@ import javafx.stage.Stage;
 */
 @Controller
 public class RejectionController extends BaseController implements Initializable{
-	/**
-	 * Registration Id
-	 */
-	private String regRejId = null;
-
 	/**
 	 * Stage
 	 */
@@ -52,12 +51,11 @@ public class RejectionController extends BaseController implements Initializable
 	 * Object for RegistrationApprovalController
 	 */
 	@Autowired
-	private RegistrationApprovalController rejRegistrationController;
-	/**
-	 * Object for RegistrationApprovalService
-	 */
+	private RegistrationApprovalController registrationApprovalController;
+	
 	@Autowired
-	private RegistrationApprovalService rejRegistration;
+	private GlobalContextParamService globalContextParamService;
+	
 	/**
 	 * Combobox for for rejection reason
 	 */
@@ -68,41 +66,51 @@ public class RejectionController extends BaseController implements Initializable
 	 */
 	@FXML
 	private Button rejectionSubmit;
-	
+
 	/**
 	 * HyperLink for Exit
 	 */
 	@FXML
 	private Hyperlink rejectionExit;
-	
-	ObservableList<String> rejectionCommentslist=FXCollections.observableArrayList("Correction not possible",
-            "Wrong Person",
-            "Invalid Data",
-            "Incorrect indroducer",
-            "Incorrect ID");
-	
-	/* (non-Javadoc)
-	 * @see javafx.fxml.Initializable#initialize(java.net.URL, java.util.ResourceBundle)
+
+	private TableView<RegistrationApprovalDTO> rejtable;
+
+	private List<Map<String, String>> rejectionmapList;
+
+	/** The rej reg data. */
+	private RegistrationApprovalDTO rejRegData;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
+	 * java.util.ResourceBundle)
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_REJECTION_CONTROLLER",
-				APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
+		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_REJECTION_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Page loading has been started");
+		GlobalContextParam globalContextParam = globalContextParamService.findRejectionOnholdComments("REJECT_COMMENTS");
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
-		rejectionComboBox.setItems(rejectionCommentslist);
+		rejectionComboBox.setItems(FXCollections.observableArrayList(globalContextParam.getVal().split(",")));
 	}
-	
+
 	/**
-	 * Method to get the Stage and Registration Id from the other controller page
-	 * 
-	 * @param id
-	 * @param stage
+	 * Method to get the Stage, Registration Data,Table Data and list map from the other controller page.
+	 *
+	 * @param regData 
+	 * @param stage 
+	 * @param mapList 
+	 * @param table 
 	 */
-	public void initData(String id,Stage stage) {
-		regRejId=id;
+	public void initData(RegistrationApprovalDTO regData,Stage stage,List<Map<String, String>> mapList,TableView<RegistrationApprovalDTO> table) {
+		rejRegData=regData;
 		rejPrimarystage = stage;
+		rejectionmapList=mapList;
+		rejtable=table;
 	}
+
 	/**
 	 * {@code updatePacketStatus} is event class for updating packet status to
 	 * reject
@@ -110,26 +118,23 @@ public class RejectionController extends BaseController implements Initializable
 	 * @param event
 	 */
 	public void packetUpdateStatus(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER",
-				APPLICATION_NAME, APPLICATION_ID,
-				"Packet updation as rejection has been started");
-		String approverUserId = SessionContext.getInstance().getUserContext().getUserId();
-		String approverRoleCode = SessionContext.getInstance().getUserContext().getRoles().get(0);
-		if(rejRegistration.packetUpdateStatus(regRejId, RegistrationClientStatusCode.REJECTED.getCode(),approverUserId, 
-				rejectionComboBox.getSelectionModel().getSelectedItem(), approverRoleCode)) {
+		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Packet updation as rejection has been started");
+		Map<String, String> map = new HashMap<>();
+		map.put("registrationID",rejRegData.getId()); 
+		map.put("statusCode", RegistrationClientStatusCode.REJECTED.getCode());
+		map.put("statusComment", rejectionComboBox.getSelectionModel().getSelectedItem());
+		rejectionmapList.add(map);
+
 		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.REJECTED_STATUS_MESSAGE);
-		rejectionSubmit.disableProperty().set(true);
-		rejRegistrationController.tablePagination();
-		
-		}
-		else {
-			generateAlert(RegistrationConstants.STATUS,AlertType.INFORMATION,RegistrationConstants.REJECTED_STATUS_FAILURE_MESSAGE);
-		}
+		rejectionSubmit.disableProperty().set(true);		
 		rejPrimarystage.close();
-		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER",
-				APPLICATION_NAME, APPLICATION_ID,
-				"Packet updation as rejection has been started");
+		rejtable.getItems().remove(rejRegData);
+		registrationApprovalController.setInvisible();
+		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Packet updation as rejection has been started");
 	}
+
 	/**
 	 * {@code rejectionWindowExit} is event class to exit from reason for rejection
 	 * pop up window.
@@ -137,9 +142,8 @@ public class RejectionController extends BaseController implements Initializable
 	 * @param event
 	 */
 	public void rejectionWindowExit(ActionEvent event) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_REJECTION_CONTROLLER",
-				APPLICATION_NAME, APPLICATION_ID,
-				"Rejection Popup window is closed");
+		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_REJECTION_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Rejection Popup window is closed");
 		rejPrimarystage.close();
 	}
 

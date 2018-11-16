@@ -40,11 +40,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -61,14 +61,8 @@ import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
-/**
- * {@code RegistrationApprovalController} is the controller class for
- * Registration approval.
- *
- * @author Mahesh Kumar
- */
 @Controller
-public class RegistrationApprovalController extends BaseController implements Initializable {
+public class RegistrationPendingActionController extends BaseController implements Initializable{
 
 	/**
 	 * Instance of {@link Logger}
@@ -79,13 +73,13 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * object for Registration approval service class
 	 */
 	@Autowired
-	private RegistrationApprovalService registration;
+	private RegistrationApprovalService registrationApprovalService;
 
 	/**
 	 * Table to display the created packets
 	 */
 	@FXML
-	private TableView<RegistrationApprovalDTO> table;
+	private TableView<RegistrationApprovalDTO> pendingActionTable;
 	/**
 	 * Registration Id column in the table
 	 */
@@ -110,15 +104,10 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * Button for on hold
 	 */
 	@FXML
-	private Button onHoldBtn;
-	/**
-	 * Button for on hold
-	 */
-	@FXML
 	private Button submitBtn;
 	/** The image view. */
 	@FXML
-	private ImageView imageView;
+	private ImageView pendingActionImageView;
 
 	/** The approve registration root sub pane. */
 	@FXML
@@ -126,7 +115,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	/** The image anchor pane. */
 	@FXML
-	private AnchorPane imageAnchorPane;
+	private AnchorPane pendingActionImageAnchorPane;
 
 	private List<Map<String, String>> approvalmapList = null;
 
@@ -157,7 +146,7 @@ public class RegistrationApprovalController extends BaseController implements In
 				new PropertyValueFactory<RegistrationApprovalDTO, String>("acknowledgementFormPath"));
 
 		populateTable();
-		table.setOnMouseClicked((MouseEvent event) -> {
+		pendingActionTable.setOnMouseClicked((MouseEvent event) -> {
 			if (event.getClickCount() == 1) {
 				viewAck();
 			}
@@ -173,19 +162,19 @@ public class RegistrationApprovalController extends BaseController implements In
 	private void viewAck() {
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form started");
-		if (table.getSelectionModel().getSelectedItem() != null) {
+		if (pendingActionTable.getSelectionModel().getSelectedItem() != null) {
 			if (!approvalmapList.isEmpty() ) {
 				submitBtn.setVisible(true);
 			}
-			imageAnchorPane.setVisible(true);
+			pendingActionImageAnchorPane.setVisible(true);
 			approvalBtn.setVisible(true);
 			rejectionBtn.setVisible(true);
-			onHoldBtn.setVisible(true);
+			
 			
 			try (FileInputStream file = new FileInputStream(
-					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()))) {
+					new File(pendingActionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()))) {
 				
-				imageView.setImage(new Image(file));
+				pendingActionImageView.setImage(new Image(file));
 			} catch (IOException ioException) {
 				LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
 						APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
@@ -213,7 +202,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			Group root = new Group();
 			Scene scene = new Scene(root, 800, 600);
 			FileInputStream file = new FileInputStream(
-					new File(table.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()));
+					new File(pendingActionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()));
 			primaryStage.setTitle(RegistrationConstants.ACKNOWLEDGEMENT_FORM_TITLE);
 			ImageView newimageView = new ImageView(new Image(file));
 			HBox hbox = new HBox(newimageView);
@@ -265,16 +254,17 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * 
 	 * @param event
 	 */
-	public void approvePacket(ActionEvent event) {
+	public void pendingActionApprovePacket(ActionEvent event) {
 		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Packet updation has been started");
+		RegistrationApprovalDTO regData = pendingActionTable.getSelectionModel().getSelectedItem();
 		Map<String, String> map = new HashMap<>();
-		map.put("registrationID", table.getSelectionModel().getSelectedItem().getId());
+		map.put("registrationID", regData.getId());
 		map.put("statusCode", RegistrationClientStatusCode.APPROVED.getCode());
 		map.put("statusComment", "");
 		approvalmapList.add(map);
 		
-		table.getItems().remove(table.getSelectionModel().getSelectedItem());
+		pendingActionTable.getItems().remove(pendingActionTable.getSelectionModel().getSelectedItem());
 		setInvisible();
 		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.APPROVED_STATUS_MESSAGE);
 		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_", APPLICATION_NAME, APPLICATION_ID,
@@ -288,15 +278,15 @@ public class RegistrationApprovalController extends BaseController implements In
 	public void populateTable() {
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
 				"table population has been started");
-		 List<RegistrationApprovalDTO> listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
+		 List<RegistrationApprovalDTO> listData = registrationApprovalService.getEnrollmentByStatus(RegistrationClientStatusCode.ON_HOLD.getCode());
 		setInvisible();
 		if (!listData.isEmpty()) {
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
-			table.setItems(oList);
+			pendingActionTable.setItems(oList);
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
-			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
-			table.getItems().remove(table.getSelectionModel().getSelectedItem());
+			pendingActionTable.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
+			pendingActionTable.getItems().remove(pendingActionTable.getSelectionModel().getSelectedItem());
 			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.PLACEHOLDER_LABEL);
 
 		}
@@ -310,7 +300,7 @@ public class RegistrationApprovalController extends BaseController implements In
 	 * @param event
 	 * @throws RegBaseCheckedException
 	 */
-	public void rejectPacket(ActionEvent event) throws RegBaseCheckedException {
+	public void pendingActionRejectPacket(ActionEvent event) throws RegBaseCheckedException {
 		try {
 			LOGGER.debug("REGISTRATION - REJECTION_PACKET - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 					"Rejection of packet has been started");
@@ -320,8 +310,8 @@ public class RegistrationApprovalController extends BaseController implements In
 			RejectionController rejectionController = (RejectionController) RegistrationAppInitialization
 					.getApplicationContext().getBean(RegistrationConstants.REJECTION_BEAN_NAME);
 
-			rejectionController.initData(table.getSelectionModel().getSelectedItem(), primarystage, approvalmapList, table);
-			LoadStage(primarystage, RegistrationConstants.REJECTION_PAGE, table.getSelectionModel().getSelectedItem());
+			rejectionController.initData(pendingActionTable.getSelectionModel().getSelectedItem(), primarystage, approvalmapList, pendingActionTable);
+			LoadStage(primarystage, RegistrationConstants.REJECTION_PAGE, pendingActionTable.getSelectionModel().getSelectedItem());
 
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
@@ -331,31 +321,7 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	}
 
-	/**
-	 * Event method for OnHolding Packet
-	 * 
-	 * @param event
-	 * @throws RegBaseCheckedException
-	 */
-	public void onHoldPacket(ActionEvent event) throws RegBaseCheckedException {
-		try {
-			LOGGER.debug("REGISTRATION - ONHOLD_PACKET - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
-					"OnHold of packet has been started");
-
-			Stage primarystage = new Stage();
-			primarystage.initStyle(StageStyle.UNDECORATED);
-			OnHoldController onHoldController = (OnHoldController) RegistrationAppInitialization.getApplicationContext()
-					.getBean(RegistrationConstants.ONHOLD_BEAN_NAME);
-			onHoldController.initData(table.getSelectionModel().getSelectedItem(), primarystage, approvalmapList, table);
-			LoadStage(primarystage, RegistrationConstants.ONHOLD_PAGE, table.getSelectionModel().getSelectedItem());
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
-		}
-		LOGGER.debug("REGISTRATION - ONHOLD_PACKET - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
-				"OnHold of packet has been ended");
-	}
-
-	public void submit(ActionEvent event) throws RegBaseCheckedException {
+	public void pendingActionSubmit(ActionEvent event) throws RegBaseCheckedException {
 
 		try {
 
@@ -403,14 +369,13 @@ public class RegistrationApprovalController extends BaseController implements In
 		return primarystage;
 	}
 	
-	public void setInvisible() {
+	private void setInvisible() {
 		if (approvalmapList == null) {
 			submitBtn.setVisible(false);
 		}
 		approvalBtn.setVisible(false);
 		rejectionBtn.setVisible(false);
-		onHoldBtn.setVisible(false);
-		imageAnchorPane.setVisible(false);
-		imageView.imageProperty().set(null);
+		pendingActionImageAnchorPane.setVisible(false);
+		pendingActionImageView.imageProperty().set(null);
 	}
 }
