@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -22,6 +23,7 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.device.GPSUtill.GPSPosition;
 
+@Ignore
 public class GPSIntegrationImplTest {
 
 	@Rule
