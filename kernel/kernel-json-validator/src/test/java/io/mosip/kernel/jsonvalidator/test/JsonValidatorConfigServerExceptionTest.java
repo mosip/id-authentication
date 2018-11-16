@@ -2,6 +2,9 @@ package io.mosip.kernel.jsonvalidator.test;
 
 import static org.junit.Assert.assertEquals;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,14 +33,18 @@ import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JsonValidatorConfigServerExceptionTest {
-
+	
+	String propertySourceString = "propertySource";
+	String configServerFileStorageURLString = "configServerFileStorageURL";
 	@InjectMocks
 	JsonValidator jsonValidator;
 	
 	@Before
 	public void setup() {
-	    ReflectionTestUtils.setField(jsonValidator, "configServerFileStorageURL", "http://104.211.212.28:51000/*/default/DEV/");
-	    ReflectionTestUtils.setField(jsonValidator, "propertySource", "CONFIG_SERVER");
+
+			ReflectionTestUtils.setField(jsonValidator, propertySourceString, "CONFIG_SERVER");
+			ReflectionTestUtils.setField(jsonValidator, configServerFileStorageURLString, "http://104.211.212.28:51000/*/default/DEV/");
+
 	}
 	
 	@Test
@@ -48,7 +55,7 @@ public class JsonValidatorConfigServerExceptionTest {
 		String schemaName = "mosip-identity-json-schema.json";
 		JsonValidatorResponseDto validationResponse = jsonValidator.validateJson(jsonString, schemaName);
 		Boolean isValid =  validationResponse.isValid();
-		assertEquals(isValid, true);
+		assertEquals(true, isValid);
 	}
 
 	@Test(expected = NullJsonNodeException.class)
