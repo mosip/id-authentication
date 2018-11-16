@@ -11,6 +11,11 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.stages.osivalidator.exception.utils.ExceptionMessages;
+import io.mosip.registration.processor.status.code.RegistrationStatusCode;
+import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
+import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
+import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -30,6 +35,9 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	@Autowired
 	OSIValidator osiValidator;
 
+	@Autowired
+	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -46,18 +54,34 @@ public class OSIValidatorStage extends MosipVerticleManager {
 
 		String registrationId = object.getRid();
 		boolean isValidOSI = false;
-
+		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
+				.getRegistrationStatus(registrationId);
+		osiValidator.registrationStatusDto = registrationStatusDto;
 		try {
 			isValidOSI = osiValidator.isValidOSI(registrationId);
+			registrationStatusDto = osiValidator.registrationStatusDto;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(ExceptionMessages.OSI_VALIDATION_FAILED.name(), e);
+			object.setInternalError(Boolean.TRUE);
+
+		} catch (Exception e) {
+			log.error(ExceptionMessages.OSI_VALIDATION_FAILED.name(), e);
+			object.setInternalError(Boolean.TRUE);
 		}
 
 		if (isValidOSI) {
-
+			object.setIsValid(Boolean.TRUE);
+			// registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_SUCCESSFUL.toString());
 		} else {
+			object.setIsValid(Boolean.FALSE);
+			if (registrationStatusDto.getRetryCount() == null) {
+				registrationStatusDto.setRetryCount(0);
+			} else {
+				registrationStatusDto.setRetryCount(registrationStatusDto.getRetryCount() + 1);
+			}
 
+			registrationStatusDto.setStatusCode(RegistrationStatusCode.PACKET_OSI_VALIDATION_FAILED.toString());
 		}
 		return object;
 	}
