@@ -24,11 +24,11 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
+import io.mosip.registration.device.IGPSIntegrator;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.GeoLocationCapture;
 import io.mosip.registration.service.SyncStatusValidatorService;
 
 /**
@@ -71,9 +71,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	@Autowired
 	private SyncJobDAO syncJObDao;
 
-	/** Object for GeoLocationCapture class. */
 	@Autowired
-	private GeoLocationCapture geoLocationCapture;
+	private IGPSIntegrator gpsIntegrator;
 
 	/** Object for Logger. */
 
@@ -132,7 +131,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 						syncFailureCount++;
 
 						if (RegistrationConstants.OPT_TO_REG_LER_J00009.equals(syncControl.getSyncJobId().trim())) {
-							getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_002, RegistrationConstants.OPT_TO_REG_ICS‌_002_MSG,
+							getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_002,
+									RegistrationConstants.OPT_TO_REG_ICS‌_002_MSG,
 									RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 
 						}
@@ -140,8 +140,9 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 				}
 
 				if (syncFailureCount > 0) {
-					getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_001, RegistrationConstants.OPT_TO_REG_ICS‌_001_MSG,
-							RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+					getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_001,
+							RegistrationConstants.OPT_TO_REG_ICS‌_001_MSG, RegistrationConstants.OPT_TO_REG_INFOTYPE,
+							errorResponseDTOList);
 				}
 			}
 
@@ -154,8 +155,9 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 						"Validating yet to export packets frequency with the configured limit count", "refId",
 						"refIdType");
 
-				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_003, RegistrationConstants.OPT_TO_REG_ICS‌_003_MSG,
-						RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_003,
+						RegistrationConstants.OPT_TO_REG_ICS‌_003_MSG, RegistrationConstants.OPT_TO_REG_INFOTYPE,
+						errorResponseDTOList);
 			}
 
 			if (RegistrationConstants.OPT_TO_REG_GEO_FLAG_SINGLETIME.equals(geoFrequnecyFlag)) {
@@ -185,7 +187,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	}
 
 	/**
-	 * {@code isCapturedForTheDay} is to capture time for first time login for the day.
+	 * {@code isCapturedForTheDay} is to capture time for first time login for the
+	 * day.
 	 * 
 	 * @return boolean
 	 */
@@ -212,8 +215,6 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Validating the geo location of machine w.r.t registration center started");
 
-		Map<String, Object> map = geoLocationCapture.getLatLongDtls();
-
 		double centerLatitude = Double.parseDouble(SessionContext.getInstance().getUserContext()
 				.getRegistrationCenterDetailDTO().getRegistrationCenterLatitude());
 
@@ -223,17 +224,21 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Getting the center latitude and longitudes from session conext");
 
-		double distance = actualDistance(centerLatitude, centerLongitude, map);
+		Map<String, Object> gpsMapDetails = gpsIntegrator.getLatLongDtls(centerLatitude, centerLongitude);
 
-		if (RegistrationConstants.OPT_TO_REG_SUCCESS.equals(map.get(RegistrationConstants.OPT_TO_REG_ERROR_MESSAGE))) {
+		if (RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG
+				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
 
-			if (machnToCenterDistance <= distance) {
+			if (machnToCenterDistance <= Double
+					.parseDouble(gpsMapDetails.get(RegistrationConstants.GPS_DISTANCE).toString())) {
 
-				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_004, RegistrationConstants.OPT_TO_REG_ICS‌_004_MSG,
-						RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+				getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_004,
+						RegistrationConstants.OPT_TO_REG_ICS‌_004_MSG, RegistrationConstants.OPT_TO_REG_INFOTYPE,
+						errorResponseDTOList);
 			} else {
 
-				SessionContext.getInstance().getMapObject().put(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME, Instant.now());
+				SessionContext.getInstance().getMapObject().put(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME,
+						Instant.now());
 			}
 		} else {
 			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_005, RegistrationConstants.OPT_TO_REG_ICS‌_005_MSG,
@@ -249,44 +254,10 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	}
 
 	/**
-	 * {@code actualDistance} is to calculate the distance between the given
-	 * latitudes and longitudes.
+	 * {@code getActualDays} will calculate the difference of days between the given
+	 * date and present date.
 	 *
-	 * @param fromlat from latitude
-	 * @param fromlng from longitude
-	 * @param tolat   to latitude
-	 * @param tolng   to longitude
-	 * @return double
-	 */
-	private double actualDistance(double fromlat, double fromlng, Map<String, Object> map) {
-
-		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-				"Calculation of distance between the geo location of machine and registration center started");
-
-		double earthRadius = RegistrationConstants.OPT_TO_REG_EARTH_RADIUS;
-		double distanceLat = Math.toRadians((double) map.get(RegistrationConstants.OPT_TO_REG_LATITUDE) - fromlat);
-		double distanceLng = Math.toRadians((double) map.get(RegistrationConstants.OPT_TO_REG_LONGITUDE) - fromlng);
-
-		double tempDist = Math.sin(distanceLat / 2) * Math.sin(distanceLat / 2)
-				+ Math.cos(Math.toRadians(fromlat)) * Math.cos(Math.toRadians((double) map.get(RegistrationConstants.OPT_TO_REG_LATITUDE)))
-						* Math.sin(distanceLng / 2) * Math.sin(distanceLng / 2);
-
-		double radius = 2 * Math.atan2(Math.sqrt(tempDist), Math.sqrt(1 - tempDist));
-
-		double rounding = earthRadius * radius * RegistrationConstants.OPT_TO_REG_METER_CONVERSN / 1000;
-
-		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
-				"Calculation of distance between the geo location of machine and registration center started");
-
-		return Math.round(rounding * 10000.0) / 10000.0;
-
-	}
-
-	/**
-	 *{@code getActualDays} will calculate the difference of days between the given date and present date.
-	 *
-	 * @param lastSyncDate 
-	 * 					date
+	 * @param lastSyncDate date
 	 * @return the number of days
 	 */
 	private int getActualDays(Date lastSyncDate) {

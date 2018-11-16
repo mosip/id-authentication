@@ -28,9 +28,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.dao.SyncJobDAO.SyncJobInfo;
+import io.mosip.registration.device.IGPSIntegrator;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationCenterDetailDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -52,6 +54,9 @@ public class SyncStatusValidatorServiceTest {
 	private SyncJobInfo syncJobnfo;
 	@Mock
 	private GeoLocationCapture geoLocationCapture;
+	@Mock
+	private IGPSIntegrator gpsIntegrator;
+
 	@Mock
 	private AuditFactory auditFactory;
 
@@ -92,9 +97,9 @@ public class SyncStatusValidatorServiceTest {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("latitude", 12.99194);
 		map.put("longitude", 80.2471);
-		map.put("errorMessage", "success");
+		map.put(RegistrationConstants.GPS_DISTANCE, 550.9);
+		map.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
 
-		Mockito.when(geoLocationCapture.getLatLongDtls()).thenReturn(map);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "geoFrequnecyFlag", "Y");
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "mdsJobId", 1);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 1);
@@ -104,6 +109,8 @@ public class SyncStatusValidatorServiceTest {
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
+
+		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble())).thenReturn(map);
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
@@ -143,14 +150,16 @@ public class SyncStatusValidatorServiceTest {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("latitude", 12.99194);
 		map.put("longitude", 80.2471);
-		map.put("errorMessage", "success");
+		map.put(RegistrationConstants.GPS_DISTANCE, 55.9);
+		map.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
 
-		Mockito.when(geoLocationCapture.getLatLongDtls()).thenReturn(map);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "geoFrequnecyFlag", "N");
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "mdsJobId", 20);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "lerJobId", 20);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 215);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 100);
+
+		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble())).thenReturn(map);
 
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
@@ -178,9 +187,8 @@ public class SyncStatusValidatorServiceTest {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("latitude", 0.0);
 		map.put("longitude", 0.0);
-		map.put("errorMessage", "failure");
-
-		Mockito.when(geoLocationCapture.getLatLongDtls()).thenReturn(map);
+		map.put(RegistrationConstants.GPS_DISTANCE, 0.0);
+		map.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_FAILURE_MSG);
 
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "geoFrequnecyFlag", "Y");
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "mdsJobId", 1);
@@ -191,6 +199,8 @@ public class SyncStatusValidatorServiceTest {
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
+
+		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble())).thenReturn(map);
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();

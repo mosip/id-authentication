@@ -261,7 +261,6 @@ public class RegistrationConstants {
 	public static final String BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION = REG_SERVICE_CODE + "RPS-BJ-229";
 	public static final String BASE_JOB_NULL_POINTER_EXCEPTION = REG_SERVICE_CODE + "RPS-BJ-229";
 
-	
 	/*********** UI Constants **********/
 	// paths of FXML pages to be loaded
 	public static final String ERROR_PAGE = "/fxml/ErrorPage.fxml";
@@ -497,5 +496,23 @@ public class RegistrationConstants {
 	public static final String BATCH_JOBS_PROCESS_LOGGER_TITLE = "REGISTRATION - Job Process Listener";
 	public static final String PACKET_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Packet Sync Status Job";
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";
+
+	// GPS Device
+	public static final String GPS_LOGGER = "GPS-Device-Information";
+	public static final String GPS_LATITUDE = "latitude";
+	public static final String GPS_LONGITUDE = "longitude";
+	public static final String GPS_DISTANCE = "distance";
+	public static final String GPS_CAPTURE_ERROR_MSG = "gpsErrorMessage";
+	public static final String GPS_CAPTURE_SUCCESS = "gpsCaptureSuccess";
+	public static final String GPS_CAPTURE_FAILURE = "gpsCaptureFailure";
+	public static final String GPS_CAPTURE_FAILURE_MSG = "GPS signal is weak please capture again";
+	public static final String GPS_CAPTURE_SUCCESS_MSG = "GPS signal Captured Sucessfullty";
+	public static final String GPS_DEVICE_CONNECTION_FAILURE_ERRO_MSG = "GPS device not found. Please connect an on-boarded GPS device.";
+	public static final String GPS_REG_LGE‌_002 = "REG-LGE‌-002";
+	public static final String GPS_SERIAL_PORT = "COM4";
+	public static final String GPS_PORT_TIMEOUT = "1000";
+	public static final String GPS_DEVICE_MODEL = "BU343";
+	public static final String GPS_ERROR_CODE = "errorCode";
+	public static final String GPS_CAPTURING_EXCEPTION = "GPS_EXCEPTION";
 
 }
