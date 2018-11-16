@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -32,8 +31,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
@@ -41,6 +42,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
 /**
@@ -161,12 +163,6 @@ public class RegistrationController extends BaseController {
 	private AnchorPane demoGraphicPane1;
 
 	@FXML
-	private AnchorPane demoGraphicPane2;
-
-	@FXML
-	private AnchorPane anchor_pane_registration;
-
-	@FXML
 	private ComboBox<String> poaDocuments;
 
 	@FXML
@@ -187,12 +183,34 @@ public class RegistrationController extends BaseController {
 	@FXML
 	private AnchorPane documentFields;
 
+	@FXML
+	private Button nextBtn;
+
+	@FXML
+	private Button pane2NextBtn;
+
+	@FXML
+	private VBox demoGraphicVBox;
+
+	@FXML
+	private AnchorPane demoGraphicPane2;
+
+	@FXML
+	private AnchorPane anchor_pane_registration;
+
+	private static AnchorPane demoGraphicPane1Content;
+
+	private static AnchorPane demoGraphicPane2Content;
+
+	public static RegistrationDTO registrationDTOContent;
+
+	public static DatePicker ageDatePickerContent;
+
 	private boolean toggleAgeOrDobField = false;
 
 	private boolean isChild = false;
 
-	@Autowired
-	private RegistrationOfficerPacketController registrationOfficerPacketController;
+	private static boolean isEditPage;
 
 	VirtualKeyboard keyboard = new VirtualKeyboard();
 
@@ -218,6 +236,48 @@ public class RegistrationController extends BaseController {
 			keyboardNode.setVisible(false);
 			loadLocalLanguageFields();
 			loadListOfDocuments();
+
+			if (isEditPage && registrationDTOContent != null) {
+				DemographicDTO demographicDTO = registrationDTOContent.getDemographicDTO();
+				DemographicInfoDTO demographicInfoDTO = demographicDTO.getDemoInUserLang();
+
+				AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
+				LocationDTO locationDTO = addressDTO.getLocationDTO();
+				fullName.setText(demographicInfoDTO.getFullName());
+				if (demographicInfoDTO.getDateOfBirth() != null && ageDatePickerContent != null) {
+					ageDatePicker.setValue(ageDatePickerContent.getValue());
+				} else {
+					switchedOn.set(true);
+					ageDatePicker.setDisable(true);
+					ageField.setDisable(false);
+					ageField.setText(demographicInfoDTO.getAge());
+
+				}
+				gender.setValue(demographicInfoDTO.getGender());
+				addressLine1.setText(addressDTO.getAddressLine1());
+				addressLine2.setText(addressDTO.getAddressLine2());
+				addressLine3.setText(addressDTO.getAddressLine3());
+				province.setText(locationDTO.getProvince());
+				city.setText(locationDTO.getCity());
+				region.setText(locationDTO.getRegion());
+				postalCode.setText(locationDTO.getPostalCode());
+				mobileNo.setText(demographicInfoDTO.getMobile());
+				emailId.setText(demographicInfoDTO.getEmailId());
+				cni_or_pin_number.setText(demographicInfoDTO.getCneOrPINNumber());
+				localAdminAuthority.setText(demographicInfoDTO.getLocalAdministrativeAuthority());
+				if (demographicDTO.getIntroducerRID() != null) {
+					uinId.setText(demographicDTO.getIntroducerRID());
+				} else {
+					uinId.setText(demographicDTO.getIntroducerUIN());
+				}
+				parentName.setText(demographicInfoDTO.getParentOrGuardianName());
+				preRegistrationId.setText(registrationDTOContent.getPreRegistrationId());
+
+				isEditPage = false;
+				ageFieldValidations();
+				ageValidationInDatePicker();
+
+			}
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID,
@@ -349,7 +409,7 @@ public class RegistrationController extends BaseController {
 			demographicInfoDTO.setEmailId(emailId.getText());
 			demographicInfoDTO.setChild(isChild);
 			demographicInfoDTO.setCneOrPINNumber(cni_or_pin_number.getText());
-			demographicInfoDTO.setCneOrPINNumber(localAdminAuthority.getText());
+			demographicInfoDTO.setLocalAdministrativeAuthority(localAdminAuthority.getText());
 			if (isChild) {
 				if (uinId.getText().length() == 28) {
 					demographicDTO.setIntroducerRID(uinId.getText());
@@ -369,9 +429,32 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					"Saved the fields to DTO");
 
-			registrationOfficerPacketController.showReciept(registrationDTO);
+			try {
+				demoGraphicPane1Content = demoGraphicPane1;
+				demoGraphicPane2Content = demoGraphicPane2;
+				registrationDTOContent = registrationDTO;
+				if (ageDatePicker.getValue() != null) {
+					ageDatePickerContent = new DatePicker();
+					ageDatePickerContent.setValue(ageDatePicker.getValue());
+				}
+				nextBtn.setVisible(false);
+				pane2NextBtn.setVisible(false);
+				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
+			} catch (IOException ioException) {
+				LOGGER.error("REGISTRATION - UI- Demographic Preview ", APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
+			}
+
 		}
 
+	}
+
+	public static void loadScreen(String screen) throws IOException {
+		Parent createRoot = BaseController.load(RegistrationController.class.getResource(screen),
+				ApplicationContext.getInstance().getApplicationLanguageBundle());
+		LoginController.getScene().setRoot(createRoot);
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		LoginController.getScene().getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 	}
 
 	/**
@@ -656,7 +739,11 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "Going to home page");
 
 		try {
-			BaseController.load(getClass().getResource("/fxml/RegistrationOfficerLayout.fxml"));
+			isEditPage = false;
+			demoGraphicPane1Content = null;
+			demoGraphicPane2Content = null;
+			ageDatePickerContent = null;
+			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - REGSITRATION_HOME_PAGE_LAYOUT_LOADING_FAILED", APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, ioException.getMessage());
@@ -698,28 +785,34 @@ public class RegistrationController extends BaseController {
 						} else {
 							if (validateRegex(region, "^.{6,50}$")) {
 								generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-										RegistrationConstants.REGION_EMPTY,RegistrationConstants.ONLY_ALPHABETS+" "+RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+										RegistrationConstants.REGION_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
+												+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 								region.requestFocus();
 							} else {
 								if (validateRegex(city, "^.{6,10}$")) {
 									generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-											RegistrationConstants.CITY_EMPTY,RegistrationConstants.ONLY_ALPHABETS+" "+RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+											RegistrationConstants.CITY_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
+													+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 									city.requestFocus();
 								} else {
 									if (validateRegex(province, "^.{6,10}$")) {
 										generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-												RegistrationConstants.PROVINCE_EMPTY,RegistrationConstants.ONLY_ALPHABETS+" "+RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+												RegistrationConstants.PROVINCE_EMPTY,
+												RegistrationConstants.ONLY_ALPHABETS + " "
+														+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
 										province.requestFocus();
 									} else {
 										if (validateRegex(postalCode, "\\d{5}")) {
 											generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-													RegistrationConstants.POSTAL_CODE_EMPTY, RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
+													RegistrationConstants.POSTAL_CODE_EMPTY,
+													RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
 											postalCode.requestFocus();
 										} else {
 											if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
 												generateAlert("Error",
 														AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-														RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,RegistrationConstants.ONLY_ALPHABETS);
+														RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,
+														RegistrationConstants.ONLY_ALPHABETS);
 												localAdminAuthority.requestFocus();
 											} else {
 												if (validateRegex(mobileNo, "\\d{10}")) {
@@ -741,7 +834,8 @@ public class RegistrationController extends BaseController {
 															generateAlert("Error",
 																	AlertType
 																			.valueOf(RegistrationConstants.ALERT_ERROR),
-																	RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
+																	RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,
+																	RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
 															cni_or_pin_number.requestFocus();
 														} else {
 															gotoNext = true;
@@ -911,6 +1005,22 @@ public class RegistrationController extends BaseController {
 			por_label.setText(porDocuments.getValue());
 			;
 		}
+	}
+
+	public static AnchorPane getDemoGraphicContent() {
+		return demoGraphicPane1Content;
+	}
+
+	public static AnchorPane getDemoGraphicPane2Content() {
+		return demoGraphicPane2Content;
+	}
+
+	public static boolean isEditPage() {
+		return isEditPage;
+	}
+
+	public static void setEditPage(boolean isEditPage) {
+		RegistrationController.isEditPage = isEditPage;
 	}
 
 }
