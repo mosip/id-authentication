@@ -51,7 +51,7 @@ public abstract class BaseJob extends QuartzJobBean {
 	 */
 	@Async
 	@Override
-	protected void executeInternal(JobExecutionContext context) {
+	public void executeInternal(JobExecutionContext context) {
 		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execute internal started");
 		BaseTransactionManager baseTransactionManager = null;
@@ -72,6 +72,7 @@ public abstract class BaseJob extends QuartzJobBean {
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					noSuchBeanDefinitionException.getMessage());
 		} catch (NullPointerException nullPointerException) {
+			nullPointerException.printStackTrace();
 			
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
 					nullPointerException.getMessage());
