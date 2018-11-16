@@ -118,7 +118,7 @@ public class PacketUploadController extends BaseController {
 			if (response != null) {
 				packetSynchService.updateSyncStatus(packetsToBeSynched);
 			}
-		} catch (RegBaseUncheckedException | RegBaseCheckedException | MosipJsonProcessingException
+		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException
 				| URISyntaxException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Error while Synching packets to the server");
