@@ -28,7 +28,6 @@ public class ReasonServiceImpl implements ReasonService {
 	@Autowired
 	ObjectMapperUtil ObjectMapperUtil;
 
-	
 	@Override
 	public ReasonResponseDto getAllReasons() {
 		List<ReasonCategory> reasonCategories = null;
@@ -67,34 +66,40 @@ public class ReasonServiceImpl implements ReasonService {
 		List<ReasonCategory> reasonCategories = null;
 		List<ReasonCategoryDto> reasonCategoryDtos = null;
 		ReasonResponseDto reasonResponseDto = new ReasonResponseDto();
-		
-			try {
-				reasonCategories = reasonRepository
-						.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(categoryCode, langCode);
-			} catch (DataAccessException e) {
-				throw new ReasonsFetchException(
-						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
-						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage());
-			}
-			if (reasonCategories != null && !reasonCategories.isEmpty()) {
-				try {
-					reasonCategoryDtos = ObjectMapperUtil.reasonConverter(reasonCategories);
-				} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-					throw new ReasonsMappingException(
-							PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION.getErrorCode(),
-							PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION
-									.getErrorMessage());
 
-				}
-			} else {
-				throw new ReasonsNotFoundException(
-						PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
-						PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
+		try {
+			reasonCategories = reasonRepository
+					.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(categoryCode, langCode);
+		} catch (DataAccessException e) {
+			throw new ReasonsFetchException(
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
+					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage());
+		}
+		if (reasonCategories != null && !reasonCategories.isEmpty()) {
+			try {
+				reasonCategoryDtos = ObjectMapperUtil.reasonConverter(reasonCategories);
+			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
+				throw new ReasonsMappingException(
+						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION.getErrorCode(),
+						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION.getErrorMessage());
+
 			}
-			reasonResponseDto.setReasonCategories(reasonCategoryDtos);
-		 
+		} else {
+			throw new ReasonsNotFoundException(
+					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
+					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
+		}
+		reasonResponseDto.setReasonCategories(reasonCategoryDtos);
 
 		return reasonResponseDto;
+	}
+
+	@Override
+	public ReasonResponseDto saveOrUpdateReasons(ReasonResponseDto reasonRequestDto) {
+		
+		List<ReasonCategory> reasonCategories=ObjectMapperUtil.reasonConvertDtoToEntity(reasonRequestDto);
+		reasonRepository.saveAll(reasonCategories);
+		return null;
 	}
 
 }

@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.utils;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,9 +16,11 @@ import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
+import io.mosip.kernel.masterdata.dto.ReasonResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
+import io.mosip.kernel.masterdata.entity.ReasonList;
 
 @Component
 public class ObjectMapperUtil {
@@ -58,8 +61,24 @@ public class ObjectMapperUtil {
 		List<ReasonCategoryDto> reasonCategoryDtos = null;
 		reasonCategoryDtos = reasonCategories.stream()
 				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(), reasonCategory.getName(),
+						reasonCategory.getDescription(), reasonCategory.getLanguageCode(), reasonCategory.getIsActive(),
+						reasonCategory.getIsDeleted(), mapAll(reasonCategory.getReasons(), ReasonListDto.class)))
+				.collect(Collectors.toList());
+
+		return reasonCategoryDtos;
+
+	}
+
+	public List<ReasonCategory> reasonConvertDtoToEntity(ReasonResponseDto reasonCategories) {
+		ReasonCategory reasonCategoryEntity = new ReasonCategory();
+		Objects.requireNonNull(reasonCategories, "list cannot be null");
+		List<ReasonCategory> reasonCategoryDtos = null;
+
+		reasonCategoryDtos = reasonCategories.getReasonCategories().stream()
+				.map(reasonCategory -> new ReasonCategory(reasonCategory.getCode(), reasonCategory.getName(),
 						reasonCategory.getDescription(), reasonCategory.getLanguageCode(),
-						mapAll(reasonCategory.getReasons(), ReasonListDto.class)))
+						mapAll(reasonCategory.getReasonList(), ReasonList.class), reasonCategory.getIsActive(),
+						reasonCategory.getIsDeleted(), "system", "system", LocalDateTime.now(), null, null))
 				.collect(Collectors.toList());
 
 		return reasonCategoryDtos;

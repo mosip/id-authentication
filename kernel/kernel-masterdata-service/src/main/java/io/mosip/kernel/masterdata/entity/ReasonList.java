@@ -11,12 +11,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@EqualsAndHashCode(callSuper = false)
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -38,8 +39,8 @@ public class ReasonList extends BaseEntity implements Serializable {
 	private String description;
     
 	@Id
-	@ManyToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name = "rsncat_code")
+	@ManyToOne(optional=true,fetch=FetchType.LAZY)
+    @JoinColumn(name = "rsncat_code",updatable=false,insertable=true,nullable=false)
 	private ReasonCategory reasonCategoryCode;
 
 	@Column(name = "lang_code", nullable = false, length = 3)

@@ -49,7 +49,7 @@ public class PacketRjectionReasonExceptionTest {
 	public void setUp() {
 		ReasonCategory reasonCategory = new ReasonCategory();
 		ReasonList reasonList = new ReasonList();
-		Set<ReasonList> reasonListSet = new HashSet<>();
+		List<ReasonList> reasonListSet = new ArrayList<>();
 		reasonList.setCode("RL1");
 		reasonList.setLangCode("ENG");
 		reasonList.setDescription("reasonList");
