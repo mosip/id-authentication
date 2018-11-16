@@ -3,13 +3,18 @@ package io.mosip.authentication.service.helper;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.validation.Valid;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyExtractors;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
@@ -20,6 +25,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
+import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
 import lombok.NoArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -56,36 +62,37 @@ public class RestHelper {
 
 	/** The mosipLogger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(RestHelper.class);
-	
+
 	/**
 	 * Request to send/receive HTTP requests and return the response synchronously.
 	 *
-	 * @param <T>
-	 *            the generic type
-	 * @param request
-	 *            the request
+	 * @param         <T> the generic type
+	 * @param request the request
 	 * @return the response object or null in case of exception
-	 * @throws RestServiceException
-	 *             the rest service exception
+	 * @throws RestServiceException the rest service exception
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T requestSync(@Valid RestRequestDTO request) throws RestServiceException {
 		Object response;
 		if (request.getTimeout() != null) {
 			try {
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_REQUEST + request);
+				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+						PREFIX_REQUEST + request + "\n" + request.getHeaders().getContentType());
 				response = request(request).timeout(Duration.ofSeconds(request.getTimeout())).block();
-				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC, PREFIX_RESPONSE + response);
+				mosipLogger.info(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
+						PREFIX_RESPONSE + response);
 				return (T) response;
 			} catch (RuntimeException e) {
-				if (e.getCause().getClass().equals(TimeoutException.class)) {
+				if (e.getCause() != null && e.getCause().getClass().equals(TimeoutException.class)) {
 					mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
-							"Throwing RestServiceException - CONNECTION_TIMED_OUT - " + e.getCause());
+							"Throwing RestServiceException - CONNECTION_TIMED_OUT - \n "
+									+ ExceptionUtils.getStackTrace(e));
 					throw new RestServiceException(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT, e);
 				} else {
 					mosipLogger.error(DEFAULT_SESSION_ID, CLASS_REST_HELPER, "requestSync-RuntimeException",
 							"Throwing RestServiceException - UNKNOWN_ERROR - " + e);
-					throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR, e);
+					throw new RestServiceException(IdAuthenticationErrorConstants.UNKNOWN_ERROR,
+							ExceptionUtils.getStackTrace(e));
 				}
 			}
 		} else {
@@ -99,8 +106,7 @@ public class RestHelper {
 	/**
 	 * Request to send/receive HTTP requests and return the response asynchronously.
 	 *
-	 * @param request
-	 *            the request
+	 * @param request the request
 	 * @return the supplier
 	 */
 	public Supplier<Object> requestAsync(@Valid RestRequestDTO request) {
@@ -114,10 +120,10 @@ public class RestHelper {
 	/**
 	 * Method to send/receive HTTP requests and return the response as Mono.
 	 *
-	 * @param request
-	 *            the request
+	 * @param request the request
 	 * @return the mono
 	 */
+	@SuppressWarnings("unchecked")
 	private Mono<?> request(RestRequestDTO request) {
 		WebClient webClient;
 		Mono<?> monoResponse;
@@ -126,7 +132,8 @@ public class RestHelper {
 		RequestBodyUriSpec method;
 
 		if (request.getHeaders() != null) {
-			webClient = WebClient.builder().baseUrl(request.getUri()).defaultHeaders(request.getHeaders()).build();
+			webClient = WebClient.builder().baseUrl(request.getUri())
+					.defaultHeader(HttpHeaders.CONTENT_TYPE, request.getHeaders().getContentType().toString()).build();
 		} else {
 			webClient = WebClient.builder().baseUrl(request.getUri()).build();
 		}
@@ -141,7 +148,14 @@ public class RestHelper {
 		}
 
 		if (request.getRequestBody() != null) {
-			exchange = uri.syncBody(request.getRequestBody()).retrieve();
+			if (request.getHeaders() != null
+					&& request.getHeaders().getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
+				exchange = uri
+						.body(BodyInserters.fromFormData((MultiValueMap<String, String>) request.getRequestBody()))
+						.retrieve();
+			} else {
+				exchange = uri.syncBody(request.getRequestBody()).retrieve();
+			}
 		} else {
 			exchange = uri.retrieve();
 		}
@@ -155,8 +169,7 @@ public class RestHelper {
 	/**
 	 * Handle 4XX/5XX status error.
 	 *
-	 * @param response
-	 *            the response
+	 * @param response the response
 	 * @return the mono<? extends throwable>
 	 */
 	private Mono<Throwable> handleStatusError(ClientResponse response) {

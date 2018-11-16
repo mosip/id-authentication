@@ -37,6 +37,7 @@ import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.exception.IdValidationFailedException;
+import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdInfoService;
@@ -193,9 +194,8 @@ public class AuthFacadeImpl implements AuthFacade {
 			email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo).getValue();
 		}
 
-		String type = SenderType.AUTH.getName();
+		notificationManager.sendNotification(values, email, phoneNumber, SenderType.AUTH);
 
-		notificationManager.sendNotification(notificationType, values, email, phoneNumber, type);
 		return authResponseDTO;
 
 	}

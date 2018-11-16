@@ -1,21 +1,27 @@
 package io.mosip.authentication.service.integration;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.RestServiceException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.util.dto.RestRequestDTO;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.integration.dto.MailRequestDto;
+import io.mosip.authentication.service.integration.dto.MailResponseDto;
 import io.mosip.authentication.service.integration.dto.SmsRequestDto;
 import io.mosip.authentication.service.integration.dto.SmsResponseDto;
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -27,6 +33,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 
 @Component
 public class NotificationManager {
+
+	private static final String EMAIL = "email";
+
+	private static final String SMS = "sms";
+
+	private static final String NOTIFICATION_TYPE = "mosip.notification.type";
 
 	/** ID Template manager */
 	@Autowired
@@ -46,12 +58,6 @@ public class NotificationManager {
 
 	/** Logger to log the actions */
 	private static Logger logger = IdaLogger.getLogger(NotificationManager.class);
-
-	/** Constant to specify sender Auth Type */
-	private static final String SENDER_AUTH = SenderType.AUTH.getName();
-
-	/** Constant to specify sender OTP Type */
-	private static final String SENDER_OTP = SenderType.OTP.getName();
 
 	/** Property Name for Auth SMS Template */
 	private static final String AUTH_SMS_TEMPLATE = "mosip.auth.sms.template";
@@ -81,16 +87,31 @@ public class NotificationManager {
 	 * @param sender           - to specify the sender type
 	 * @throws IdAuthenticationBusinessException
 	 */
-	public void sendNotification(Set<NotificationType> notificationtype, Map<String, Object> values, String emailId,
-			String phoneNumber, String sender) throws IdAuthenticationBusinessException {
+	public void sendNotification(Map<String, Object> values, String emailId, String phoneNumber, SenderType sender)
+			throws IdAuthenticationBusinessException {
 		String contentTemplate = null;
 		String subjectTemplate = null;
+		Set<NotificationType> notificationtype = new HashSet<>();
+		String notificationtypeconfig = environment.getProperty(NOTIFICATION_TYPE);
+
+		if (isNotNullorEmpty(notificationtypeconfig)) {
+			if (notificationtypeconfig.contains(",")) {
+				String value[] = notificationtypeconfig.split(",");
+				for (int i = 0; i < 2; i++) {
+					String nvalue = "";
+					nvalue = value[i];
+					processNotification(emailId, phoneNumber, notificationtype, nvalue);
+				}
+			} else {
+				processNotification(emailId, phoneNumber, notificationtype, notificationtypeconfig);
+			}
+
+		}
 
 		if (notificationtype.contains(NotificationType.SMS)) {
-
-			if (SENDER_AUTH.equals(sender)) {
+			if (SenderType.AUTH == sender) {
 				contentTemplate = environment.getProperty(AUTH_SMS_TEMPLATE);
-			} else if (SENDER_OTP.equals(sender)) {
+			} else if (SenderType.OTP == sender) {
 				contentTemplate = environment.getProperty(OTP_SMS_TEMPLATE);
 			}
 
@@ -100,8 +121,8 @@ public class NotificationManager {
 				smsRequestDto.setMessage(smsTemplate);
 				smsRequestDto.setNumber(phoneNumber);
 				RestRequestDTO restRequestDTO = null;
-				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.NOTIFICATION_SERVICE,
-						smsRequestDto, SmsResponseDto.class);
+				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE,
+						smsRequestDto, String.class);
 				restHelper.requestAsync(restRequestDTO);
 			} catch (IDDataValidationException e) {
 				logger.error("NA", "Inside SMS Notification >>>>>", e.getErrorCode(), e.getErrorText());
@@ -111,10 +132,10 @@ public class NotificationManager {
 		}
 		if (notificationtype.contains(NotificationType.EMAIL)) {
 
-			if (SENDER_AUTH.equals(sender)) {
+			if (SenderType.AUTH == sender) {
 				subjectTemplate = environment.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
 				contentTemplate = environment.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
-			} else if (SENDER_OTP.equals(sender)) {
+			} else if (SenderType.OTP == sender) {
 				subjectTemplate = environment.getProperty(OTP_SUBJECT_TEMPLATE);
 				contentTemplate = environment.getProperty(OTP_CONTENT_TEMPLATE);
 			}
@@ -122,13 +143,13 @@ public class NotificationManager {
 			try {
 				String mailSubject = applyTemplate(values, subjectTemplate);
 				String mailContent = applyTemplate(values, contentTemplate);
-				MailRequestDto mailRequestDto = new MailRequestDto();
-				mailRequestDto.setMailContent(mailContent);
-				mailRequestDto.setMailSubject(mailSubject);
-				mailRequestDto.setMailTo(new String[] { emailId });
 				RestRequestDTO restRequestDTO = null;
-				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.NOTIFICATION_SERVICE,
-						mailRequestDto, null);
+				MultiValueMap<String, String> mailRequestDto = new LinkedMultiValueMap<>();
+				mailRequestDto.add("mailContent", mailContent);
+				mailRequestDto.add("mailSubject", mailSubject);
+				mailRequestDto.add("mailTo", emailId);
+				restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.MAIL_NOTIFICATION_SERVICE,
+						mailRequestDto, String.class);
 				restHelper.requestAsync(restRequestDTO);
 			} catch (IDDataValidationException e) {
 				logger.error("NA", "Inside Mail Notification >>>>>", e.getErrorCode(), e.getErrorText());
@@ -137,6 +158,39 @@ public class NotificationManager {
 
 		}
 
+	}
+
+	/**
+	 * Reads notification type from property and set the notification type
+	 * 
+	 * @param emailId                - email id of Individual
+	 * @param phoneNumber            - Phone Number of Individual
+	 * @param notificationtype       - Notification type
+	 * @param notificationtypeconfig - Notification type from the configuration
+	 */
+
+	private void processNotification(String emailId, String phoneNumber, Set<NotificationType> notificationtype,
+			String notificationtypeconfig) {
+		String type = notificationtypeconfig.toLowerCase();
+		if (type.equals(SMS)) {
+			if (isNotNullorEmpty(phoneNumber)) {
+				notificationtype.add(NotificationType.SMS);
+			} else {
+				if (isNotNullorEmpty(emailId)) {
+					notificationtype.add(NotificationType.EMAIL);
+				}
+			}
+		}
+
+		if (type.equals(EMAIL)) {
+			if (isNotNullorEmpty(emailId)) {
+				notificationtype.add(NotificationType.EMAIL);
+			} else {
+				if (isNotNullorEmpty(phoneNumber)) {
+					notificationtype.add(NotificationType.SMS);
+				}
+			}
+		}
 	}
 
 	/**
@@ -155,6 +209,10 @@ public class NotificationManager {
 		} catch (IOException e) {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.NOTIFICATION_FAILED, e);
 		}
+	}
+
+	private boolean isNotNullorEmpty(String value) {
+		return value != null && !value.isEmpty() && value.trim().length() > 0;
 	}
 
 }

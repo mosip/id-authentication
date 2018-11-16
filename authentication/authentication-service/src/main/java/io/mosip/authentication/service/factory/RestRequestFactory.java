@@ -3,7 +3,6 @@ package io.mosip.authentication.service.factory;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.AbstractEnvironment;
@@ -12,6 +11,7 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
 @Component
 @NoArgsConstructor
 public class RestRequestFactory {
-	
+
 	/** The Constant DEFAULT_SESSION_ID. */
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
@@ -47,19 +47,15 @@ public class RestRequestFactory {
 
 	/** The logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(RestRequestFactory.class);
-	
+
 	/**
 	 * Builds the request.
 	 *
-	 * @param restService
-	 *            the rest service
-	 * @param requestBody
-	 *            the request body
-	 * @param returnType
-	 *            the return type
+	 * @param restService the rest service
+	 * @param requestBody the request body
+	 * @param returnType  the return type
 	 * @return the rest request DTO
-	 * @throws IDDataValidationException
-	 *             the ID data validation exception
+	 * @throws IDDataValidationException the ID data validation exception
 	 */
 	public RestRequestDTO buildRequest(RestServicesConstants restService, Object requestBody, Class<?> returnType)
 			throws IDDataValidationException {
@@ -73,23 +69,31 @@ public class RestRequestFactory {
 		String uri = env.getProperty(serviceName.concat(".rest.uri"));
 		String httpMethod = env.getProperty(serviceName.concat(".rest.httpMethod"));
 		String timeout = env.getProperty(serviceName.concat(".rest.timeout"));
-
+		headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(".rest.headers.mediaType"))));
 		checkUri(request, uri);
 
 		checkHttpMethod(request, httpMethod);
 
 		if (requestBody != null) {
-			request.setRequestBody(requestBody);
+			if (headers != null && !headers.getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
+				request.setRequestBody(requestBody);
+			} else {
+				if (requestBody instanceof MultiValueMap) {
+					request.setRequestBody(requestBody);
+				} else {
+					throw new IDDataValidationException(
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+									"requestBody"));
+				}
+			}
 		}
 
 		checkReturnType(returnType, request);
 
 		constructParams(paramMap, pathVariables, headers, serviceName);
 
-		Consumer<HttpHeaders> consumerHeader = (HttpHeaders header) -> {
-		};
-		consumerHeader.accept(headers);
-		request.setHeaders(consumerHeader);
+		request.setHeaders(headers);
 
 		if (!paramMap.isEmpty()) {
 			request.setParams(paramMap);
@@ -109,10 +113,10 @@ public class RestRequestFactory {
 	/**
 	 * Construct params.
 	 *
-	 * @param paramMap the param map
+	 * @param paramMap      the param map
 	 * @param pathVariables the path variables
-	 * @param headers the headers
-	 * @param serviceName the service name
+	 * @param headers       the headers
+	 * @param serviceName   the service name
 	 */
 	private void constructParams(MultiValueMap<String, String> paramMap, Map<String, String> pathVariables,
 			HttpHeaders headers, String serviceName) {
@@ -128,7 +132,7 @@ public class RestRequestFactory {
 					if (property.startsWith(serviceName.concat(".rest.uri.queryparam."))) {
 						paramMap.put(property.replace(serviceName.concat(".rest.uri.queryparam."), ""),
 								Collections.singletonList(env.getProperty(property)));
-					} 
+					}
 					if (property.startsWith(serviceName.concat(".rest.uri.pathparam."))) {
 						pathVariables.put(property.replace(serviceName.concat(".rest.uri.pathparam."), ""),
 								env.getProperty(property));
@@ -142,14 +146,14 @@ public class RestRequestFactory {
 	 * Check return type.
 	 *
 	 * @param returnType the return type
-	 * @param request the request
+	 * @param request    the request
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
 	private void checkReturnType(Class<?> returnType, RestRequestDTO request) throws IDDataValidationException {
 		if (returnType != null) {
 			request.setResponseType(returnType);
 		} else {
-			
+
 			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
 					"throwing IDDataValidationException - INVALID_RETURN_TYPE" + returnType);
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_RETURN_TYPE);
@@ -159,7 +163,7 @@ public class RestRequestFactory {
 	/**
 	 * Check http method.
 	 *
-	 * @param request the request
+	 * @param request    the request
 	 * @param httpMethod the http method
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
@@ -167,7 +171,7 @@ public class RestRequestFactory {
 		if (checkIfEmptyOrWhiteSpace(httpMethod)) {
 			request.setHttpMethod(HttpMethod.valueOf(httpMethod));
 		} else {
-			
+
 			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "httpMethod",
 					"throwing IDDataValidationException - INVALID_HTTP_METHOD" + httpMethod);
 			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_HTTP_METHOD);
@@ -178,7 +182,7 @@ public class RestRequestFactory {
 	 * Check uri.
 	 *
 	 * @param request the request
-	 * @param uri the uri
+	 * @param uri     the uri
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
 	private void checkUri(RestRequestDTO request, String uri) throws IDDataValidationException {
@@ -194,8 +198,7 @@ public class RestRequestFactory {
 	/**
 	 * Check if empty or white space.
 	 *
-	 * @param string
-	 *            the string
+	 * @param string the string
 	 * @return true, if successful
 	 */
 	private boolean checkIfEmptyOrWhiteSpace(String string) {

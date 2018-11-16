@@ -38,7 +38,7 @@ public class RestRequestDTO {
 	private Class<?> responseType;
 
 	@NotNull
-	private Consumer<HttpHeaders> headers;
+	private HttpHeaders headers;
 
 	@Pattern(regexp = "^[0-9]*$", message="{mosip.rest.request.timeout.message}")
 	private Integer timeout;
