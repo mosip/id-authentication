@@ -69,7 +69,8 @@ public class DeviceSpecificationServiceTest {
 	@Test
 	public void findDeviceSpecificationByLangugeCodeTest() {
 		String languageCode = "ENG";
-		Mockito.when(deviceSpecificationRepository.findByLangCode(languageCode)).thenReturn(deviceSpecifications);
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode))
+				.thenReturn(deviceSpecifications);
 
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
 				.findDeviceSpecificationByLangugeCode(languageCode);
@@ -82,14 +83,16 @@ public class DeviceSpecificationServiceTest {
 	public void noRecordsFoudExceptionTest() {
 		List<DeviceSpecification> empityList = new ArrayList<DeviceSpecification>();
 		String languageCode = "FRN";
-		Mockito.when(deviceSpecificationRepository.findByLangCode(languageCode)).thenReturn(empityList);
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode))
+				.thenReturn(empityList);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void noRecordsFoudExceptionForNullTest() {
 		String languageCode = "FRN";
-		Mockito.when(deviceSpecificationRepository.findByLangCode(languageCode)).thenReturn(null);
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode))
+				.thenReturn(null);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
 
 	}
@@ -97,7 +100,7 @@ public class DeviceSpecificationServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void dataAccessExceptionInGetAllTest() {
 		String languageCode = "eng";
-		Mockito.when(deviceSpecificationRepository.findByLangCode(languageCode))
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode))
 				.thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
 
@@ -107,7 +110,8 @@ public class DeviceSpecificationServiceTest {
 	public void findDeviceSpecificationByLangugeCodeAndDeviceTypeCodeTest() {
 		String languageCode = "ENG";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCode(languageCode, deviceTypeCode))
+		Mockito.when(deviceSpecificationRepository
+				.findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(languageCode, deviceTypeCode))
 				.thenReturn(deviceSpecificationListWithDeviceTypeCode);
 
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -126,7 +130,8 @@ public class DeviceSpecificationServiceTest {
 		List<DeviceSpecification> empityList = new ArrayList<DeviceSpecification>();
 		String languageCode = "FRN";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCode(deviceTypeCode, deviceTypeCode))
+		Mockito.when(deviceSpecificationRepository
+				.findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(deviceTypeCode, deviceTypeCode))
 				.thenReturn(empityList);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 	}
@@ -135,7 +140,8 @@ public class DeviceSpecificationServiceTest {
 	public void noRecordsFoudExceptionnDeviceSpecificationByDevicTypeCodeForNullTest() {
 		String languageCode = "FRN";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCode(deviceTypeCode, deviceTypeCode))
+		Mockito.when(deviceSpecificationRepository
+				.findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(deviceTypeCode, deviceTypeCode))
 				.thenReturn(null);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 
@@ -145,7 +151,8 @@ public class DeviceSpecificationServiceTest {
 	public void dataAccessExceptionnDeviceSpecificationByDevicTypeCodeTest() {
 		String languageCode = "ENG";
 		String deviceTypeCode = "operating_sys";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndDeviceTypeCode(languageCode, deviceTypeCode))
+		Mockito.when(deviceSpecificationRepository
+				.findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(languageCode, deviceTypeCode))
 				.thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 

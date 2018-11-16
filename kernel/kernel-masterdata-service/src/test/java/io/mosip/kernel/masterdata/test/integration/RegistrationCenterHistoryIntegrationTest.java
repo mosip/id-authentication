@@ -57,7 +57,7 @@ public class RegistrationCenterHistoryIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByIdTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse("1", "ENG",
 				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(centers);
 
 		MvcResult result = mockMvc.perform(

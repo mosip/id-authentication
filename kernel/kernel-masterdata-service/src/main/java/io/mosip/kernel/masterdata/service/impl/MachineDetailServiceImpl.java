@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.constant.MachineDetailErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.entity.MachineDetail;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -62,11 +64,13 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 	 * 
 	 */
 	@Override
-	public MachineDetailDto getMachineDetailIdLang(String id, String langCode) {
+	public MachineDetailResponseIdDto getMachineDetailIdLang(String id, String langCode) {
 		MachineDetail machineDetail = null;
 		MachineDetailDto machineDetailDto = null;
+		MachineDetailResponseIdDto machineDetailResponseIdDto = new MachineDetailResponseIdDto();
 		try {
-			machineDetail = machineDetailRepository.findAllByIdAndLangCode(id, langCode);
+			machineDetail = machineDetailRepository.findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(id,
+					langCode);
 		} catch (DataAccessException dataAccessLayerException) {
 			throw new MasterDataServiceException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
@@ -77,7 +81,8 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 			throw new DataNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return machineDetailDto;
+		machineDetailResponseIdDto.setMachineDetail(machineDetailDto);
+		return machineDetailResponseIdDto;
 
 	}
 
@@ -99,23 +104,25 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 	 */
 
 	@Override
-	public List<MachineDetailDto> getMachineDetailAll() {
+	public MachineDetailResponseDto getMachineDetailAll() {
 		List<MachineDetail> machineDetailList = null;
 		List<MachineDetailDto> machineDetailDtoList = null;
+		MachineDetailResponseDto machineDetailResponseDto = new MachineDetailResponseDto();
 		try {
-			machineDetailList = machineDetailRepository.findAll();
+			machineDetailList = machineDetailRepository.findAllByIsActiveTrueAndIsDeletedFalse();
 
 		} catch (DataAccessException dataAccessLayerException) {
 			throw new MasterDataServiceException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (machineDetailList != null) {
+		if (machineDetailList != null && !machineDetailList.isEmpty()) {
 			machineDetailDtoList = objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class);
 		} else {
 			throw new DataNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return machineDetailDtoList;
+		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
+		return machineDetailResponseDto;
 	}
 
 }

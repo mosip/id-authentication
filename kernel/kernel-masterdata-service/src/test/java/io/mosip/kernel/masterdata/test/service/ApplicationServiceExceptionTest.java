@@ -76,45 +76,45 @@ public class ApplicationServiceExceptionTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllApplicationFetchException() {
-		Mockito.when(applicationRepository.findAll(Mockito.eq(Application.class)))
+		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Application.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 		applicationService.getAllApplication();
 	}
 
-
 	@Test(expected = DataNotFoundException.class)
 	public void getAllApplicationNotFoundException() {
 		applicationList = new ArrayList<>();
-		Mockito.when(applicationRepository.findAll(Application.class)).thenReturn(applicationList);
+		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Application.class))
+				.thenReturn(applicationList);
 		applicationService.getAllApplication();
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllApplicationByLanguageCodeFetchException() {
-		Mockito.when(applicationRepository.findAllByLanguageCode(Mockito.anyString()))
+		Mockito.when(applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		applicationService.getAllApplicationByLanguageCode(Mockito.anyString());
 	}
 
-
 	@Test(expected = DataNotFoundException.class)
 	public void getAllApplicationByLanguageCodeNotFoundException() {
-		Mockito.when(applicationRepository.findAllByLanguageCode(Mockito.anyString()))
+		Mockito.when(applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(new ArrayList<Application>());
 		applicationService.getAllApplicationByLanguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getApplicationByCodeAndLangCodeFetchException() {
-		Mockito.when(applicationRepository.findByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(applicationRepository
+				.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}
 
-
 	@Test(expected = DataNotFoundException.class)
 	public void getApplicationByCodeAndLangCodeNotFoundException() {
-		Mockito.when(applicationRepository.findByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(applicationRepository
+				.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}

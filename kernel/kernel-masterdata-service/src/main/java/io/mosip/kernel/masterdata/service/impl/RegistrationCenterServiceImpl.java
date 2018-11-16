@@ -86,7 +86,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		Objects.requireNonNull(year);
 		Objects.requireNonNull(langCode);
 		try {
-			registrationCenter = registrationCenterRepository.findByIdAndLanguageCode(registrationCenterId, langCode);
+			registrationCenter = registrationCenterRepository
+					.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(registrationCenterId, langCode);
 		} catch (DataAccessException dataAccessException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
@@ -157,8 +158,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			String langCode) {
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
-			registrationCentersList = registrationCenterRepository.findByLocationCodeAndLanguageCode(locationCode,
-					langCode);
+			registrationCentersList = registrationCenterRepository
+					.findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(locationCode, langCode);
 
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
@@ -190,7 +191,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<RegistrationCenterDto> registrationCenters = new ArrayList<>();
 		RegistrationCenter registrationCenter = null;
 		try {
-			registrationCenter = registrationCenterRepository.findByIdAndLanguageCode(registrationCenterId, langCode);
+			registrationCenter = registrationCenterRepository
+					.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(registrationCenterId, langCode);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
@@ -218,7 +220,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	public RegistrationCenterResponseDto getAllRegistrationCenters() {
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
-			registrationCentersList = registrationCenterRepository.findAll(RegistrationCenter.class);
+			registrationCentersList = registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),

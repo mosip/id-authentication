@@ -75,7 +75,7 @@ public class BiometricTypeServiceExceptionTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllBiometricTypesFetchException() {
-		Mockito.when(biometricTypeRepository.findAll(Mockito.eq(BiometricType.class)))
+		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(BiometricType.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getAllBiometricTypes();
 	}
@@ -83,35 +83,36 @@ public class BiometricTypeServiceExceptionTest {
 	@Test(expected = DataNotFoundException.class)
 	public void getAllBiometricTypesNotFoundException() {
 		biometricTypeList = new ArrayList<>();
-		Mockito.when(biometricTypeRepository.findAll(BiometricType.class)).thenReturn(biometricTypeList);
+		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(BiometricType.class))
+				.thenReturn(biometricTypeList);
 		biometricTypeService.getAllBiometricTypes();
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllBiometricTypesByLanguageCodeFetchException() {
-		Mockito.when(biometricTypeRepository.findAllByLangCode(Mockito.anyString()))
+		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getAllBiometricTypesByLanguageCodeNotFoundException() {
-		Mockito.when(biometricTypeRepository.findAllByLangCode(Mockito.anyString()))
+		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(new ArrayList<BiometricType>());
 		biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getBiometricTypeByCodeAndLangCodeFetchException() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getBiometricTypeByCodeAndLangCodeNotFoundException() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(null);
+		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(null);
 		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
 }

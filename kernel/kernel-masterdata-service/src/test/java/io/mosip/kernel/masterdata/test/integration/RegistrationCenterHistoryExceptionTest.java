@@ -56,8 +56,8 @@ public class RegistrationCenterHistoryExceptionTest {
 
 	@Test
 	public void getRegistrationCentersHistoryNotFoundExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(null);
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse("1",
+				"ENG", LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(null);
 		mockMvc.perform(
 				get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound()).andReturn();
@@ -65,8 +65,8 @@ public class RegistrationCenterHistoryExceptionTest {
 
 	@Test
 	public void getRegistrationCentersHistoryEmptyExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(centers);
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse("1",
+				"ENG", LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(centers);
 		mockMvc.perform(
 				get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound()).andReturn();
@@ -74,8 +74,8 @@ public class RegistrationCenterHistoryExceptionTest {
 
 	@Test
 	public void getRegistrationCentersHistoryFetchExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenThrow(DataAccessLayerException.class);
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse("1",
+				"ENG", LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenThrow(DataAccessLayerException.class);
 		mockMvc.perform(
 				get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError()).andReturn();

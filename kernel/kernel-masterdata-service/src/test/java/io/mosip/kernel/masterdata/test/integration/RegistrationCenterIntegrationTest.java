@@ -62,7 +62,7 @@ public class RegistrationCenterIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByIdTest() throws Exception {
-		when(repository.findByIdAndLanguageCode("1", "ENG")).thenReturn(center);
+		when(repository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("1", "ENG")).thenReturn(center);
 
 		MvcResult result = mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -93,7 +93,8 @@ public class RegistrationCenterIntegrationTest {
 	@Test
 	public void getLocationSpecificRegistrationCentersTest() throws Exception {
 		centers.add(center);
-		when(repository.findByLocationCodeAndLanguageCode("BLR", "ENG")).thenReturn(centers);
+		when(repository.findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("BLR", "ENG"))
+				.thenReturn(centers);
 		MvcResult result = mockMvc
 				.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -108,7 +109,8 @@ public class RegistrationCenterIntegrationTest {
 	public void getLocationSpecificMultipleRegistrationCentersTest() throws Exception {
 		centers.add(center);
 		centers.add(centerBangaloreCentral);
-		when(repository.findByLocationCodeAndLanguageCode("BLR", "ENG")).thenReturn(centers);
+		when(repository.findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("BLR", "ENG"))
+				.thenReturn(centers);
 		MvcResult result = mockMvc
 				.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -123,7 +125,7 @@ public class RegistrationCenterIntegrationTest {
 	public void getAllRegistrationCenterTest() throws Exception {
 		centers.add(center);
 		centers.add(centerBangaloreCentral);
-		when(repository.findAll(RegistrationCenter.class)).thenReturn(centers);
+		when(repository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class)).thenReturn(centers);
 		MvcResult result = mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();

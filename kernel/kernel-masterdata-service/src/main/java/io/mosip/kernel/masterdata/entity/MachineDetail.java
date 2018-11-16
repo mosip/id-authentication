@@ -54,7 +54,6 @@ public class MachineDetail extends BaseEntity implements Serializable {
 	 */
 	@Column(name = "ip_address", length = 17)
 	private String ipAddress;
-
 	/**
 	 * Field for machine mac address
 	 */
@@ -65,7 +64,7 @@ public class MachineDetail extends BaseEntity implements Serializable {
 	 * Field for machine specific id
 	 */
 	@Column(name = "mspec_id", nullable = false, length = 36)
-	private String mspecId;
+	private String machineSpecId;
 
 	/**
 	 * Field for language code

@@ -55,7 +55,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	@Override
 	public List<DocumentCategoryDto> getAllDocumentCategory() {
 		try {
-			documentCategoryList = documentCategoryRepository.findAll(DocumentCategory.class);
+			documentCategoryList = documentCategoryRepository.findAllByIsActiveTrueAndIsDeletedFalse(DocumentCategory.class);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
@@ -93,7 +93,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	@Override
 	public List<DocumentCategoryDto> getAllDocumentCategoryByLaguageCode(String langCode) {
 		try {
-			documentCategoryList = documentCategoryRepository.findAllByLangCode(langCode);
+			documentCategoryList = documentCategoryRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
@@ -136,7 +136,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		DocumentCategory documentCategory;
 		DocumentCategoryDto documentCategoryDto;
 		try {
-			documentCategory = documentCategoryRepository.findByCodeAndLangCode(code, langCode);
+			documentCategory = documentCategoryRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(code, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),

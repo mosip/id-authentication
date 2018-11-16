@@ -78,41 +78,45 @@ public class DocumentCategoryServiceExceptionTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllDocumentCategorysFetchException() {
-		Mockito.when(documentCategoryRepository.findAll(Mockito.eq(DocumentCategory.class)))
+		Mockito.when(
+				documentCategoryRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(DocumentCategory.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 		documentCategoryService.getAllDocumentCategory();
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getAllDocumentCategoryNotFoundException() {
-		Mockito.when(documentCategoryRepository.findAll()).thenReturn(new ArrayList<DocumentCategory>());
+		Mockito.when(documentCategoryRepository.findAllByIsActiveTrueAndIsDeletedFalse(DocumentCategory.class))
+				.thenReturn(new ArrayList<DocumentCategory>());
 		documentCategoryService.getAllDocumentCategory();
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllDocumentCategoryByLaguageCodeFetchException() {
-		Mockito.when(documentCategoryRepository.findAllByLangCode(Mockito.anyString()))
+		Mockito.when(documentCategoryRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		documentCategoryService.getAllDocumentCategoryByLaguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getAllDocumentCategoryByLaguageCodeNotFound() {
-		Mockito.when(documentCategoryRepository.findAllByLangCode(Mockito.anyString()))
+		Mockito.when(documentCategoryRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(new ArrayList<DocumentCategory>());
 		documentCategoryService.getAllDocumentCategoryByLaguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getDocumentCategoryByCodeAndLangCodeFetchException() {
-		Mockito.when(documentCategoryRepository.findByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(documentCategoryRepository
+				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		documentCategoryService.getDocumentCategoryByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getDocumentCategoryByCodeAndLangCodeNotFoundException() {
-		Mockito.when(documentCategoryRepository.findByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(documentCategoryRepository
+				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
 		documentCategoryService.getDocumentCategoryByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}

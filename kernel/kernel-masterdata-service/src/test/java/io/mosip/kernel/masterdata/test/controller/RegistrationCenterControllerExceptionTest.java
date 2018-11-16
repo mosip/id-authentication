@@ -87,21 +87,4 @@ public class RegistrationCenterControllerExceptionTest {
 
 	}
 
-	// @Test
-	// public void testGetRegistrationCenterHolidaysHolidayRegMappingException()
-	// throws Exception {
-	// Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(),
-	// anyString()))
-	// .thenReturn(registrationCenter);
-	// Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(),
-	// anyString(), anyInt()))
-	// .thenReturn(holidays);
-	// when(mapper.map(Mockito.any(), Mockito.eq(RegistrationCenterDto.class)))
-	// .thenThrow(IllegalArgumentException.class, ConfigurationException.class,
-	// MappingException.class);
-	// mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}",
-	// "ENG",
-	// "REG_CR_001", 2018)).andExpect(status().isNotAcceptable());
-	// }
-
 }

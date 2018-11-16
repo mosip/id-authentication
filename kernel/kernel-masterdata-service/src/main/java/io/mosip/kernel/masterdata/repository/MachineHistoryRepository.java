@@ -32,6 +32,6 @@ public interface MachineHistoryRepository extends BaseRepository<MachineHistory,
 	 *            effective Date and time provided by user in the format "yyyy-mm-ddThh:mm:ss"
 	 * @return List<MachineHistory> fetched from database
 	 */
-	List<MachineHistory> findByIdAndLangCodeAndEffectDtimesLessThanEqual(String id, String langCode,
+	List<MachineHistory> findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(String id, String langCode,
 			LocalDateTime effectDtimes);
 }

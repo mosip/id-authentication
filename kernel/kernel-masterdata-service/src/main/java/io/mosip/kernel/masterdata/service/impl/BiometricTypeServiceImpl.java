@@ -53,7 +53,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	@Override
 	public List<BiometricTypeDto> getAllBiometricTypes() {
 		try {
-			biometricTypesList = biometricTypeRepository.findAll(BiometricType.class);
+			biometricTypesList = biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(BiometricType.class);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage());
@@ -88,7 +88,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 	@Override
 	public List<BiometricTypeDto> getAllBiometricTypesByLanguageCode(String langCode) {
 		try {
-			biometricTypesList = biometricTypeRepository.findAllByLangCode(langCode);
+			biometricTypesList = biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage());
@@ -128,7 +128,8 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		BiometricType biometricType;
 		BiometricTypeDto biometricTypeDto;
 		try {
-			biometricType = biometricTypeRepository.findByCodeAndLangCode(code, langCode);
+			biometricType = biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(code,
+					langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorMessage());

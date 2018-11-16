@@ -42,7 +42,7 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	public List<TemplateDto> getAllTemplate() {
 		try {
-			templateList = templateRepository.findAll(Template.class);
+			templateList = templateRepository.findAllByIsActiveTrueAndIsDeletedFalse(Template.class);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
@@ -65,7 +65,7 @@ public class TemplateServiceImpl implements TemplateService {
 	@Override
 	public List<TemplateDto> getAllTemplateByLanguageCode(String languageCode) {
 		try {
-			templateList = templateRepository.findAllByLanguageCode(languageCode);
+			templateList = templateRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
@@ -91,7 +91,7 @@ public class TemplateServiceImpl implements TemplateService {
 	public List<TemplateDto> getAllTemplateByLanguageCodeAndTemplateTypeCode(String languageCode,
 			String templateTypeCode) {
 		try {
-			templateList = templateRepository.findAllByLanguageCodeAndTemplateTypeCode(languageCode, templateTypeCode);
+			templateList = templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsActiveTrueAndIsDeletedFalse(languageCode, templateTypeCode);
 		} catch (DataAccessException exception) {
 			throw new MasterDataServiceException(TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorCode(),
 					TemplateErrorCode.TEMPLATE_FETCH_EXCEPTION.getErrorMessage());
