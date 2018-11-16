@@ -1,9 +1,13 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -12,13 +16,18 @@ import javax.imageio.ImageIO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
+import io.mosip.registration.entity.GlobalContextParam;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.service.GlobalContextParamService;
 import io.mosip.registration.service.NotificationService;
 import io.mosip.registration.service.PacketHandlerService;
 import io.mosip.registration.service.TemplateService;
@@ -29,6 +38,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.WritableImage;
 import javafx.scene.web.WebEngine;
@@ -44,6 +55,8 @@ import javafx.stage.Stage;
 @Controller
 public class AckReceiptController extends BaseController implements Initializable {
 
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationOfficerPacketController.class);
+
 	@Autowired
 	private PacketHandlerService packetHandlerService;
 	@Autowired
@@ -52,6 +65,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private TemplateService templateService;
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private GlobalContextParamService globalContextParamService;
 
 	private VelocityPDFGenerator velocityGenerator = new VelocityPDFGenerator();
 
@@ -89,26 +104,52 @@ public class AckReceiptController extends BaseController implements Initializabl
 	public void initialize(URL location, ResourceBundle resources) {
 
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-			String notificationTemplate = "";
-			try {
-				notificationTemplate = templateService.getHtmlTemplate("Notification Template");
+			List<GlobalContextParam> globalContextParam = globalContextParamService
+					.findInvalidLoginCount(RegistrationConstants.MODE_OF_COMMUNICATION);
 
-				Writer writeNotificationTemplate = velocityGenerator.generateNotificationTemplate(notificationTemplate,
-						getRegistrationData());
-				String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
-				if (!number.isEmpty() || number == RegistrationConstants.EMPTY) {
-					// notificationService.sendSMS(writeNotificationTemplate.toString(),number);
+			globalContextParam.forEach(param -> {
+				String MODE_OF_COMMUNICATION = param.getVal();
+				if (MODE_OF_COMMUNICATION != null) {
+					ResponseDTO responseDTO = null;
+					String notificationTemplate = "";
+					try {
+						notificationTemplate = templateService
+								.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
+					} catch (RegBaseCheckedException regBaseCheckedException) {
+						LOGGER.error("REGISTRATION - ACK RECEIPT CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
+								regBaseCheckedException.getMessage());
+					}
+					if (!notificationTemplate.isEmpty() && !MODE_OF_COMMUNICATION.equals("None")) {
+						Writer writeNotificationTemplate = velocityGenerator
+								.generateNotificationTemplate(notificationTemplate, getRegistrationData());
+
+						String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
+
+						if (!number.isEmpty() && MODE_OF_COMMUNICATION.contains("SMS")) {
+							responseDTO = notificationService.sendSMS(writeNotificationTemplate.toString(), number);
+							if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
+									&& responseDTO.getErrorResponseDTOs().get(0) != null) {
+								generateAlert(responseDTO);
+							}
+						}
+
+						String emailId = getRegistrationData().getDemographicDTO().getDemoInUserLang().getEmailId();
+
+						if (!emailId.isEmpty() && MODE_OF_COMMUNICATION.contains("EMAIL")) {
+							responseDTO = notificationService.sendEmail(writeNotificationTemplate.toString(), emailId);
+							if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
+									&& responseDTO.getErrorResponseDTOs().get(0) != null) {
+								generateAlert(responseDTO);
+							}
+						}
+					}
 				}
-				String emailId = getRegistrationData().getDemographicDTO().getDemoInUserLang().getEmailId();
-				if (!emailId.isEmpty() || emailId == RegistrationConstants.EMPTY) {
-					// notificationService.sendEmail(writeNotificationTemplate.toString(), emailId);
-				}
-			} catch (RegBaseCheckedException regBaseCheckedException) {
-				// TODO Auto-generated catch block
-			}
+			});
+
 		}
 		engine = webView.getEngine();
 		engine.loadContent(stringWriter.toString());
+
 	}
 
 	@FXML
@@ -135,8 +176,8 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 		generateAlert("Success", AlertType.INFORMATION, "Packet Created Successfully!");
 		// Adding individual address to session context
-		if (response.getSuccessResponseDTO().getCode().equals("Success")) {
-			AddressDTO addressDTO = registrationData.getDemographicDTO().getDemoInLocalLang().getAddressDTO();
+		if (response.getSuccessResponseDTO().getMessage().equals("Success")) {
+			AddressDTO addressDTO = registrationData.getDemographicDTO().getDemoInUserLang().getAddressDTO();
 			Map<String, Object> addr = SessionContext.getInstance().getMapObject();
 			addr.put("PrevAddress", addressDTO);
 			SessionContext.getInstance().setMapObject(addr);
@@ -147,4 +188,13 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 		officerDetailsController.redirectHome(event);
 	}
+
+	private void generateAlert(ResponseDTO responseDTO) {
+		/* Get error response */
+		ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+		/* Generate Alert */
+		generateAlert(RegistrationConstants.MACHINE_MAPPING_CODE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+				errorResponseDTO.getMessage());
+	}
+
 }

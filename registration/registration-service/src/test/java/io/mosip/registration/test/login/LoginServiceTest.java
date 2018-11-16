@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.net.SocketTimeoutException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -19,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AppModule;
@@ -168,7 +171,7 @@ public class LoginServiceTest {
 	}
 
 	@Test
-	public void getOTPSuccessResponseTest() throws ClassNotFoundException, RegBaseCheckedException {
+	public void getOTPSuccessResponseTest() throws ClassNotFoundException, RegBaseCheckedException, HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		otpGeneratorRequestDto.setKey("yash");
 		OtpGeneratorResponseDto otpGeneratorResponseDto = new OtpGeneratorResponseDto();
@@ -181,7 +184,7 @@ public class LoginServiceTest {
 	}
 
 	@Test
-	public void getOTPFailureResponseTest() throws RegBaseCheckedException {
+	public void getOTPFailureResponseTest() throws RegBaseCheckedException, HttpClientErrorException, ResourceAccessException, SocketTimeoutException {
 		OtpGeneratorRequestDto otpGeneratorRequestDto = new OtpGeneratorRequestDto();
 		otpGeneratorRequestDto.setKey("ya");
 		OtpGeneratorResponseDto otpGeneratorResponseDto = null;
@@ -194,7 +197,7 @@ public class LoginServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void validateOTPSuccessTest() throws RegBaseCheckedException {
+	public void validateOTPSuccessTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 		OtpValidatorResponseDto otpGeneratorRequestDto = new OtpValidatorResponseDto();
 		otpGeneratorRequestDto.setOrdMessage("OTP is valid");
 		otpGeneratorRequestDto.setstatus("true");
@@ -205,7 +208,7 @@ public class LoginServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void validateOTPFailureTest() throws RegBaseCheckedException {
+	public void validateOTPFailureTest() throws RegBaseCheckedException, HttpClientErrorException, SocketTimeoutException {
 		OtpValidatorResponseDto otpGeneratorRequestDto = new OtpValidatorResponseDto();
 		otpGeneratorRequestDto.setOrdMessage("OTP is valid");
 		otpGeneratorRequestDto.setstatus("false");

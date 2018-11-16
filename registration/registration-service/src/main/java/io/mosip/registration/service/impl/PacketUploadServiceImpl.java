@@ -4,6 +4,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
 import java.io.File;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -99,6 +100,10 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 					e.getMessage() + "Runtime error while pushing packets to the server");
 			throw new RegBaseUncheckedException(RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorCode(),
 					RegistrationExceptions.REG_PACKET_UPLOAD_ERROR.getErrorMessage());
+		} catch (SocketTimeoutException e) {
+			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+					APPLICATION_ID, e.getMessage() + "Error in sync packets to the server");
+			throw new RegBaseCheckedException((e.getMessage()), e.getLocalizedMessage());
 		}
 		return response;
 

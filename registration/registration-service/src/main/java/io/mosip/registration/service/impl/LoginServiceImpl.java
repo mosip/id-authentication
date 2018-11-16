@@ -3,6 +3,7 @@ package io.mosip.registration.service.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
@@ -211,7 +213,7 @@ public class LoginServiceImpl implements LoginService {
 
                  }
 
-          } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException exception) {
+          } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException | ResourceAccessException exception) {
                  // create Error Response
                  response = getErrorResponse(response, RegistrationConstants.OTP_GENERATION_ERROR_MESSAGE);
                  LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,
@@ -274,7 +276,7 @@ public class LoginServiceImpl implements LoginService {
 
                  }
 
-          } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException exception) {
+          } catch (RegBaseCheckedException | HttpClientErrorException | HttpServerErrorException | SocketTimeoutException | ResourceAccessException exception) {
                  // Create Error response
                  response = getErrorResponse(response, RegistrationConstants.OTP_VALIDATION_ERROR_MESSAGE);
                  LOGGER.debug("REGISTRATION - LOGIN - OTP", APPLICATION_NAME,

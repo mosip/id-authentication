@@ -4,6 +4,7 @@ import static io.mosip.kernel.core.util.JsonUtils.javaObjectToJsonString;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -99,6 +100,10 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 					APPLICATION_ID, e.getMessage() + "Error in sync and push packets to the server");
 			throw new RegBaseUncheckedException(RegistrationExceptions.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
 					RegistrationExceptions.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
+		} catch (SocketTimeoutException e) {
+			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+					APPLICATION_ID, e.getMessage() + "Error in sync packets to the server");
+			throw new RegBaseCheckedException((e.getMessage()), e.getLocalizedMessage());
 		}
 
 		return response;

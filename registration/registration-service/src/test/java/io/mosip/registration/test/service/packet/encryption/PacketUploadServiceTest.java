@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -78,7 +81,7 @@ public class PacketUploadServiceTest {
 	}
 	
 	@Test
-	public void testPushPacket() throws URISyntaxException, RegBaseCheckedException {
+	public void testPushPacket() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		File f=new File("");
 		map.add("file", new FileSystemResource(f));
@@ -105,7 +108,7 @@ public class PacketUploadServiceTest {
 	}
 	
 	@Test(expected=RegBaseCheckedException.class)
-	public void testHttpException() throws URISyntaxException, RegBaseCheckedException {
+	public void testHttpException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		File f=new File("");
 		Object respObj = new Object();
 		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))
@@ -114,7 +117,7 @@ public class PacketUploadServiceTest {
 	}
 	
 	@Test(expected=RegBaseUncheckedException.class)
-	public void testRuntimeException() throws URISyntaxException, RegBaseCheckedException {
+	public void testRuntimeException() throws URISyntaxException, RegBaseCheckedException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		File f=new File("");
 		Object respObj = new Object();
 		Mockito.when(restClientUtil.invoke(Mockito.anyObject()))

@@ -8,6 +8,7 @@ package io.mosip.registration.dto;
 public class SMSDTO {
 private String message;
 private String number;
+private String status;
 
 /**
  * @return the message
@@ -32,6 +33,25 @@ public String getNumber() {
  */
 public void setNumber(String number) {
 	this.number = number;
+}
+/**
+ * @return the status
+ */
+public String getStatus() {
+	return status;
+}
+/**
+ * @param status the status to set
+ */
+public void setStatus(String status) {
+	this.status = status;
+}
+/* (non-Javadoc)
+ * @see java.lang.Object#toString()
+ */
+@Override
+public String toString() {
+	return "SMSDTO [message=" + message + ", number=" + number + ", status=" + status + "]";
 }
 
 }
