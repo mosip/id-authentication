@@ -87,6 +87,7 @@ public class PacketSyncStatusJob extends BaseJob {
 		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
+		System.out.println();
 		System.out.println("Endedm Job Execution");
 
 		return responseDTO;

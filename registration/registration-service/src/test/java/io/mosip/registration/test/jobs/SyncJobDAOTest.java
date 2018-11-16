@@ -47,7 +47,7 @@ public class SyncJobDAOTest {
 		SyncControl syncControl = new SyncControl();
 		syncControl.setId("1");
 		Mockito.when(syncJobRepository.findBySyncJobId("1")).thenReturn(syncControl);
-		assertThat(syncJobDAOImpl.findById("1"), is(syncControl));
+		assertThat(syncJobDAOImpl.findBySyncJobId("1"), is(syncControl));
 	}
 	
 	

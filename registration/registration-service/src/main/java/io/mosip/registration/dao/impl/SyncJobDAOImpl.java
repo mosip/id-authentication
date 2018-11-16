@@ -97,7 +97,7 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 	}
 
 	@Override
-	public SyncControl findById(String syncJobId) {	
+	public SyncControl findBySyncJobId(String syncJobId) {	
 		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
 				"Fetching the sync details from databse started");
 		return syncStatusRepository.findBySyncJobId(syncJobId);		

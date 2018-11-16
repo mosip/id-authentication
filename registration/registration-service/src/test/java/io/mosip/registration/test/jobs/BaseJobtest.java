@@ -17,8 +17,10 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.context.ApplicationContext;
 
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJob;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.impl.PacketSyncStatusJob;
 import io.mosip.registration.manager.BaseTransactionManager;
@@ -98,13 +100,21 @@ public class BaseJobtest {
 	
 
 
-	/*
-	 * @Test public void executeParentTest() throws JobExecutionException {
-	 * 
-	 * 
-	 * baseJob.executeParentJob("1");
-	 * 
-	 * }
-	 */
+	@Test
+	public void executejobTest() {
+		ResponseDTO responseDTO=new ResponseDTO();
+		ErrorResponseDTO  errorResponseDTO=new ErrorResponseDTO();
+		errorResponseDTO.setCode("ERROR");
+		LinkedList<ErrorResponseDTO> errorResponseDTOs=new LinkedList<>();
+		errorResponseDTOs.add(errorResponseDTO);
+		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+		Mockito.when(applicationContext.getBean(BaseTransactionManager.class)).thenReturn(transactionManager);
+		Mockito.when(applicationContext.getBean(RegPacketStatusService.class)).thenReturn(packetStatusService);
+		//Mockito.when(JobConfigurationServiceImpl.SYNC_JOB_MAP.get(Mockito.any())).thenReturn(new SyncJob());
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
+		
+		Mockito.when(packetStatusService.packetSyncStatus()).thenReturn(responseDTO);
+		packetSyncStatusJob.executeJob("User");
+	}
 
 }

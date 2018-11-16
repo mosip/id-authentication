@@ -75,11 +75,31 @@ public interface SyncJobDAO {
 		public void setYetToExportCount(double yetToExportCount) {
 			this.yetToExportCount = yetToExportCount;
 		}
-		
+
 	}
 
+	/**
+	 * Update Sync control transaction
+	 * @param syncControl sync control
+	 * @return sync control
+	 */
 	public SyncControl update(SyncControl syncControl);
+
+	/**
+	 * Save Sync Control Transaction
+	 * 
+	 * @param syncControl
+	 *            sync Control
+	 * @return sync control
+	 */
 	public SyncControl save(SyncControl syncControl);
-	
-	public SyncControl findById(String syncJobId);
+
+	/**
+	 * Get Sync Control data using jobId
+	 * 
+	 * @param syncJobId
+	 *            id
+	 * @return SyncControl data
+	 */
+	public SyncControl findBySyncJobId(String syncJobId);
 }
