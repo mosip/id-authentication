@@ -1,6 +1,9 @@
 package io.mosip.registrationprocessor.mosip_regprocessor_rest_client.audit.builder;
 
 import java.time.LocalDateTime;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
@@ -8,7 +11,9 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.ServerUtil;
-
+import io.mosip.registration.processor.packet.manager.service.impl.FileManagerImpl;
+import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
+// TODO: Auto-generated Javadoc
 /**
  * The Class AuditRequestBuilder.
  * 
@@ -17,7 +22,10 @@ import io.mosip.registration.processor.core.util.ServerUtil;
 @Component
 public class AuditLogRequestBuilder {
 
+	/** The logger. */
+	private final Logger logger = LoggerFactory.getLogger(AuditLogRequestBuilder.class);
 	
+	/** The registration processor rest service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
 	
@@ -29,9 +37,9 @@ public class AuditLogRequestBuilder {
 	 * @param eventName            the event name
 	 * @param eventType            the event type
 	 * @param registrationId the registration id
-	 * 
+	 * @return the audit response dto
 	 */
-	public void createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
+	public AuditResponseDto createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
 			String registrationId) {
 		
 		
@@ -53,8 +61,7 @@ public class AuditLogRequestBuilder {
 		auditRequestDto.setSessionUserId(AuditLogConstant.SYSTEM.toString());
 		auditRequestDto.setSessionUserName(null);
 		
-		
-		registrationProcessorRestService.postApi(ApiName.AUDIT, "", "", auditRequestDto, void.class);
+		return (AuditResponseDto)registrationProcessorRestService.postApi(ApiName.AUDIT, "", "", auditRequestDto, AuditResponseDto.class);
 	}
 
 }

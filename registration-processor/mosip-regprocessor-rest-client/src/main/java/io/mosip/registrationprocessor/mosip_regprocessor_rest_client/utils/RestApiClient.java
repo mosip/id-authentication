@@ -1,7 +1,11 @@
 package io.mosip.registrationprocessor.mosip_regprocessor_rest_client.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
+import io.mosip.registrationprocessor.mosip_regprocessor_rest_client.audit.builder.AuditLogRequestBuilder;
 
 /**
  * The Class RestApiClient.
@@ -10,6 +14,9 @@ import org.springframework.web.client.RestTemplate;
  */
 @Component
 public class RestApiClient{
+	
+	/** The logger. */
+	private final Logger logger = LoggerFactory.getLogger(RestApiClient.class);
 	
 	/** The rest template. */
 	RestTemplate restTemplate = new RestTemplate();

@@ -25,6 +25,11 @@ public enum ApiName {
 	AUDIT,
 	
 	/** The ida. */
-	IDA
-
+	IDA,
+	
+	/** The regstatus. */
+	REGSTATUS,
+	
+	/** The regsync. */
+	REGSYNC
 }
