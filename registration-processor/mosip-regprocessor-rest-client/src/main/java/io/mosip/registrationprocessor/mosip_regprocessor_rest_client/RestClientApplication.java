@@ -10,14 +10,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
 import io.mosip.registration.processor.core.code.ApiName;
-import io.mosip.registration.processor.core.code.RestUriConstant;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncStatusDto;
 import io.mosip.registration.processor.status.dto.SyncTypeDto;
-import io.mosip.registrationprocessor.mosip_regprocessor_rest_client.service.impl.RegistrationProcessorRestClientServiceImpl;
-import io.mosip.registrationprocessor.mosip_regprocessor_rest_client.utils.RestApiClient;
 
 @SpringBootApplication
 @PropertySource({ "classpath:rest-client-application.properties" })
@@ -35,7 +32,7 @@ public class RestClientApplication implements CommandLineRunner {
 		List<RegistrationStatusDto> list = new ArrayList<>();
 		// Generic GET Client
 		
-		List<RegistrationStatusDto> getResult = (List<RegistrationStatusDto>) genericRestClient.getApi(ApiName.AUDIT,new RestUriConstant(getURI), "registrationIds","2018701130000410092018110751", list.getClass());
+		List<RegistrationStatusDto> getResult = (List<RegistrationStatusDto>) genericRestClient.getApi(ApiName.AUDIT, "registrationIds","", list.getClass());
 		System.out.println("Hello  "+getResult);
 
 		final String postURI = "/v0.1/registration-processor/registration-status/sync";
@@ -52,8 +49,12 @@ public class RestClientApplication implements CommandLineRunner {
 		List<SyncRegistrationDto> syncRegistrationDto = new ArrayList<>();
 		syncRegistrationDto.add(dto1);
 		// Generic POST Client
-		List<SyncRegistrationDto> postResult = (List<SyncRegistrationDto>) genericRestClient.postApi(ApiName.AUDIT,new RestUriConstant(postURI),"","", syncRegistrationDto,list.getClass());
+		List<SyncRegistrationDto> postResult = (List<SyncRegistrationDto>) genericRestClient.postApi(ApiName.AUDIT,"","", syncRegistrationDto,list.getClass());
 		System.out.println(postResult);
+		
+		
+		
+		
 	}
 
 }
