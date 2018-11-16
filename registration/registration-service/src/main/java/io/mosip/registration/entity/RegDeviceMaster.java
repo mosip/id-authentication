@@ -42,6 +42,23 @@ public class RegDeviceMaster extends RegistrationCommonFields {
 	@ManyToOne
 	@JoinColumn(name = "dspec_id")
 	private RegDeviceSpec regDeviceSpec;
+	@Column(name = " validity_end_dtimes")
+	private Timestamp validityEndDtimes;
+
+	/**
+	 * @return the validityEndDtimes
+	 */
+	public Timestamp getValidityEndDtimes() {
+		return validityEndDtimes;
+	}
+
+	/**
+	 * @param validityEndDtimes
+	 *            the validityEndDtimes to set
+	 */
+	public void setValidityEndDtimes(Timestamp validityEndDtimes) {
+		this.validityEndDtimes = validityEndDtimes;
+	}
 
 	/**
 	 * @return the regDeviceSpec

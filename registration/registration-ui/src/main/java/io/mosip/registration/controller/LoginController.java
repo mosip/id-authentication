@@ -38,14 +38,17 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
+import io.mosip.registration.dto.DeviceDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
+import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.LoginService;
+import io.mosip.registration.service.MapMachineService;
 import io.mosip.registration.util.biometric.FingerprintProvider;
 import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecker;
 import javafx.application.Platform;
@@ -72,6 +75,8 @@ import javafx.stage.Stage;
  */
 @Controller
 public class LoginController extends BaseController implements Initializable, MFS100Event {
+	@Autowired
+	MapMachineService mapMachineService;
 
 	@FXML
 	private TextField userId;
@@ -155,6 +160,9 @@ public class LoginController extends BaseController implements Initializable, MF
 	 */
 	public String loadInitialScreen(Stage primaryStage) throws RegBaseCheckedException {
 
+		
+		
+		
 		LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Retrieve Login mode");
 

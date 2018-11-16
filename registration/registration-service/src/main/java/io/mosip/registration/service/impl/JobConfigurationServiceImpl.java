@@ -69,7 +69,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.JobConfigurationService#initiateJobs()
 	 */
-	@PostConstruct
+	//@PostConstruct
 	public void initiateJobs() {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");

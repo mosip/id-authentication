@@ -1,5 +1,8 @@
 package io.mosip.registration.repositories;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.entity.RegCenterDevice;
 import io.mosip.registration.entity.RegCenterDeviceId;
@@ -12,5 +15,9 @@ import io.mosip.registration.entity.RegCenterDeviceId;
  *
  */
 public interface RegistrationCenterDeviceRepository extends BaseRepository<RegCenterDevice, RegCenterDeviceId> {
+
+	List<RegCenterDevice> findByRegCenterDeviceIdRegCenterIdAndIsActiveTrueAndRegDeviceMasterValidityEndDtimesGreaterThan(
+			String centerId, Timestamp timestamp);
+
 
 }
