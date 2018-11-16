@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.receiver.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 
 /**
  * The Class PacketNotSyncException.
@@ -24,7 +24,7 @@ public class PacketNotSyncException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public PacketNotSyncException(String message) {
-		super(RPRPlatformErrorCodes.RPR_PKR_PACKET_NOT_SYNC, message);
+		super(PlatformErrorCodes.RPR_PKR_PACKET_NOT_SYNC, message);
 	}
 
 	/**
@@ -34,6 +34,6 @@ public class PacketNotSyncException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public PacketNotSyncException(String message, Throwable cause) {
-		super(RPRPlatformErrorCodes.RPR_PKR_PACKET_NOT_SYNC + EMPTY_SPACE, message, cause);
+		super(PlatformErrorCodes.RPR_PKR_PACKET_NOT_SYNC + EMPTY_SPACE, message, cause);
 	}
 }

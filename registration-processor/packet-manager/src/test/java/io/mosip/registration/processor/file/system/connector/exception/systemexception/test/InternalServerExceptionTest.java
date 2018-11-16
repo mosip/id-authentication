@@ -14,8 +14,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.systemexception.InternalServerException;
@@ -42,7 +42,7 @@ public class InternalServerExceptionTest {
 	@Test
 	public void TestInternalServerException() throws IOException {
 		String fileName = "sample";
-		InternalServerException ex = new InternalServerException(RPRPlatformErrorMessages.SERVER_ERROR.getValue());
+		InternalServerException ex = new InternalServerException(PlatformErrorMessages.SERVER_ERROR.getValue());
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
 		try {
@@ -50,9 +50,9 @@ public class InternalServerExceptionTest {
 			fail();
 		} catch (InternalServerException e) {
 			assertThat("Should throw Server error with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKM_SERVER_ERROR));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorCodes.RPR_PKM_SERVER_ERROR));
 			assertThat("Should throw Server error with correct messages",
-					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.SERVER_ERROR.getValue()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.SERVER_ERROR.getValue()));
 		}
 
 	}

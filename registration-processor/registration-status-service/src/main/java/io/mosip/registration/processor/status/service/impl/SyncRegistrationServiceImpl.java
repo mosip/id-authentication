@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.constants.AuditLogConstant;
-import io.mosip.registration.processor.core.constants.EventId;
-import io.mosip.registration.processor.core.constants.EventName;
-import io.mosip.registration.processor.core.constants.EventType;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.constant.AuditLogConstant;
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncStatusDto;
@@ -103,7 +103,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			isTransactionSuccessful = true;
 			return list;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			String  description = "";

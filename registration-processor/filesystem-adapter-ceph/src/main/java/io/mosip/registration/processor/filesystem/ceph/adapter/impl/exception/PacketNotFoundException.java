@@ -2,7 +2,7 @@ package io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception;
 
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 
 /**
  * PacketNotFoundException occurs when requested packet is not present
@@ -17,10 +17,10 @@ public class PacketNotFoundException extends BaseUncheckedException {
 	}
 
 	public PacketNotFoundException(String message) {
-		super(RPRPlatformErrorCodes.RPR_FAC_PACKET_NOT_AVAILABLE + EMPTY_SPACE, message);
+		super(PlatformErrorCodes.RPR_FAC_PACKET_NOT_AVAILABLE + EMPTY_SPACE, message);
 	}
 
 	public PacketNotFoundException(String message, Throwable cause) {
-		super(RPRPlatformErrorCodes.RPR_FAC_PACKET_NOT_AVAILABLE, message, cause);
+		super(PlatformErrorCodes.RPR_FAC_PACKET_NOT_AVAILABLE, message, cause);
 	}
 }

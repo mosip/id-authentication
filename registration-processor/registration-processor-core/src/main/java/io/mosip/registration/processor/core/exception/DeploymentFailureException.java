@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.core.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 
 /**
  * The Class DeploymentFailureException.
@@ -25,7 +25,7 @@ public class DeploymentFailureException extends BaseUncheckedException {
 	 *            the message
 	 */
 	public DeploymentFailureException(String message) {
-		super(RPRPlatformErrorCodes.RPR_CMB_DEPLOYMENT_FAILURE, message);
+		super(PlatformErrorCodes.RPR_CMB_DEPLOYMENT_FAILURE, message);
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class DeploymentFailureException extends BaseUncheckedException {
 	 *            the cause
 	 */
 	public DeploymentFailureException(String message, Throwable cause) {
-		super(RPRPlatformErrorCodes.RPR_CMB_DEPLOYMENT_FAILURE + EMPTY_SPACE, message, cause);
+		super(PlatformErrorCodes.RPR_CMB_DEPLOYMENT_FAILURE + EMPTY_SPACE, message, cause);
 	}
 
 }

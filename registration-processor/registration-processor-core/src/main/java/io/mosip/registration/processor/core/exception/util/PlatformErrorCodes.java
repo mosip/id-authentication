@@ -5,7 +5,7 @@ package io.mosip.registration.processor.core.exception.util;
  *
  * @author M1047487
  */
-public final class RPRPlatformErrorCodes {
+public final class PlatformErrorCodes {
 
 	/**
 	 * RPR platform error codes.
@@ -139,7 +139,7 @@ public final class RPRPlatformErrorCodes {
 	/**
 	 * Instantiates a new RPR platform error codes.
 	 */
-	private RPRPlatformErrorCodes() {
+	private PlatformErrorCodes() {
 		throw new IllegalStateException("Utility class");
 	}
 

@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.scanner.job.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 /**
  * The Class RetryFolderNotAccessibleException.
  */
@@ -16,7 +16,7 @@ public class RetryFolderNotAccessibleException extends BaseUncheckedException {
 	 * @param errorMessage the error message
 	 */
 	public RetryFolderNotAccessibleException(String errorMessage) {
-		super(RPRPlatformErrorCodes.RPR_PSJ_RETRY_FOLDER_NOT_ACCESSIBLE, errorMessage);
+		super(PlatformErrorCodes.RPR_PSJ_RETRY_FOLDER_NOT_ACCESSIBLE, errorMessage);
 	}
 
 	/**
@@ -26,7 +26,7 @@ public class RetryFolderNotAccessibleException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public RetryFolderNotAccessibleException(String message, Throwable cause) {
-		super(RPRPlatformErrorCodes.RPR_PSJ_RETRY_FOLDER_NOT_ACCESSIBLE+ EMPTY_SPACE, message, cause);
+		super(PlatformErrorCodes.RPR_PSJ_RETRY_FOLDER_NOT_ACCESSIBLE+ EMPTY_SPACE, message, cause);
 	}
 
 }

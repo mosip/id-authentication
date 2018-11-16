@@ -3,7 +3,7 @@ package io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.s
 
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 
 /**
  * TimeoutException occurs when time exceeds specified time limit.
@@ -19,11 +19,11 @@ public class TimeoutException extends BaseUncheckedException {
 	}
 
 	public TimeoutException(String message) {
-		super(RPRPlatformErrorCodes.RPR_FAC_TIMEOUT, message);
+		super(PlatformErrorCodes.RPR_FAC_TIMEOUT, message);
 	}
 	
 	public TimeoutException(String message,Throwable cause) {
-		super(RPRPlatformErrorCodes.RPR_FAC_TIMEOUT + EMPTY_SPACE, message,cause);
+		super(PlatformErrorCodes.RPR_FAC_TIMEOUT + EMPTY_SPACE, message,cause);
 	}
 	
 	

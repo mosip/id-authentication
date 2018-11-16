@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.core.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 
 /**
  * The Class UnsupportedEncodingException.
@@ -25,7 +25,7 @@ public class UnsupportedEncodingException extends BaseUncheckedException {
 	 *            the message
 	 */
 	public UnsupportedEncodingException(String message) {
-		super(RPRPlatformErrorCodes.RPR_CMB_UNSUPPORTED_ENCODING, message);
+		super(PlatformErrorCodes.RPR_CMB_UNSUPPORTED_ENCODING, message);
 	}
 
 	/**
@@ -37,7 +37,7 @@ public class UnsupportedEncodingException extends BaseUncheckedException {
 	 *            the cause
 	 */
 	public UnsupportedEncodingException(String message, Throwable cause) {
-		super(RPRPlatformErrorCodes.RPR_CMB_UNSUPPORTED_ENCODING + EMPTY_SPACE, message, cause);
+		super(PlatformErrorCodes.RPR_CMB_UNSUPPORTED_ENCODING + EMPTY_SPACE, message, cause);
 	}
 
 }

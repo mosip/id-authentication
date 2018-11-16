@@ -4,7 +4,7 @@
 package io.mosip.registration.processor.packet.manager.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 
 /**
  * FilePathNotAccessibleException occurs when file path is not accessible.
@@ -31,7 +31,7 @@ public class FilePathNotAccessibleException extends BaseUncheckedException{
 	 * @param errorMessage the error message
 	 */
 	public FilePathNotAccessibleException(String errorMessage) {
-		super(RPRPlatformErrorCodes.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE, errorMessage);
+		super(PlatformErrorCodes.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE, errorMessage);
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class FilePathNotAccessibleException extends BaseUncheckedException{
 	 * @param cause the cause
 	 */
 	public FilePathNotAccessibleException(String message, Throwable cause) {
-		super(RPRPlatformErrorCodes.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE + EMPTY_SPACE, message, cause);
+		super(PlatformErrorCodes.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE + EMPTY_SPACE, message, cause);
 
 	}
 

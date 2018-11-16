@@ -12,10 +12,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.constants.EventId;
-import io.mosip.registration.processor.core.constants.EventName;
-import io.mosip.registration.processor.core.constants.EventType;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
@@ -84,14 +84,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 		if (!syncRegistrationService.isPresent(registrationId)) {
 			logger.info("Registration Packet is Not yet sync in Sync table");
-			throw new PacketNotSyncException(RPRPlatformErrorMessages.PACKET_NOT_YET_SYNC.getValue());
+			throw new PacketNotSyncException(PlatformErrorMessages.PACKET_NOT_YET_SYNC.getValue());
 		}
 
 		if (file.getSize() > getMaxFileSize()) {
-			throw new FileSizeExceedException(RPRPlatformErrorMessages.PACKET_SIZE_GREATER_THAN_LIMIT.getValue());
+			throw new FileSizeExceedException(PlatformErrorMessages.PACKET_SIZE_GREATER_THAN_LIMIT.getValue());
 		}
 		if (!(file.getOriginalFilename().endsWith(getFileExtension()))) {
-			throw new PacketNotValidException(RPRPlatformErrorMessages.INVALID_PACKET_FORMAT.getValue());
+			throw new PacketNotValidException(PlatformErrorMessages.INVALID_PACKET_FORMAT.getValue());
 		} else if (!(isDuplicatePacket(registrationId))) {
 			try {
 				fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
@@ -127,7 +127,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 						registrationId);
 			}
 		} else {
-			throw new DuplicateUploadRequestException(RPRPlatformErrorMessages.DUPLICATE_PACKET_RECIEVED.getValue());
+			throw new DuplicateUploadRequestException(PlatformErrorMessages.DUPLICATE_PACKET_RECIEVED.getValue());
 		}
 
 		return storageFlag;

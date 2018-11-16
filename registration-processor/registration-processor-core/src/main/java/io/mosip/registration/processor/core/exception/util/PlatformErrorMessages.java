@@ -5,7 +5,7 @@ package io.mosip.registration.processor.core.exception.util;
  *
  * @author M1047487
  */
-public enum RPRPlatformErrorMessages {
+public enum PlatformErrorMessages {
 	
 	/** The packet not yet sync. */
 	PACKET_NOT_YET_SYNC("Registration packet is not in Sync with Sync table"), 
@@ -129,7 +129,7 @@ public enum RPRPlatformErrorMessages {
 	 *
 	 * @param errorMsg the error msg
 	 */
-	private RPRPlatformErrorMessages(String errorMsg) {
+	private PlatformErrorMessages(String errorMsg) {
 		errorMessage = errorMsg;
 	}
 	

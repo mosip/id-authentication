@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 import io.mosip.registration.processor.packet.receiver.dto.ExceptionJSONInfo;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedException;
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MissingServletRequestPartException.class)
 	public ResponseEntity<ExceptionJSONInfo> handlePacketNotAvailableException(
 			final MissingServletRequestPartException e, WebRequest request) {
-		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(RPRPlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE,
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(PlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE,
 				RegistrationStatusCode.PACKET_NOT_PRESENT_IN_REQUEST.toString());
 		log.error(errorDetails.getErrorcode(), e.getCause());
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);

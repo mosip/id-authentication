@@ -18,8 +18,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
@@ -33,7 +33,7 @@ public class PacketNotValidExceptionTest {
 	public void TestPacketNotValidException() {
 
 		PacketNotValidException ex = new PacketNotValidException(
-				RPRPlatformErrorMessages.INVALID_PACKET_FORMAT.getValue());
+				PlatformErrorMessages.INVALID_PACKET_FORMAT.getValue());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -55,9 +55,9 @@ public class PacketNotValidExceptionTest {
 
 		} catch (PacketNotValidException e) {
 			assertThat("Should throw PacketNotValid Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_INVALID_PACKET));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorCodes.RPR_PKR_INVALID_PACKET));
 			assertThat("Should throw PacketNotValid Exception  with correct messages",
-					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.INVALID_PACKET_FORMAT.getValue()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.INVALID_PACKET_FORMAT.getValue()));
 
 		}
 	}

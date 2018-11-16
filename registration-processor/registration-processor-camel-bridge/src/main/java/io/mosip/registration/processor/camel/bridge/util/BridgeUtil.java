@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 import io.mosip.registration.processor.camel.bridge.MosipCamelBridge;
 import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.exception.ConfigurationServerFailureException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
@@ -49,7 +49,7 @@ public class BridgeUtil {
 				configuration.complete(config.result());
 			} else {
 				throw new ConfigurationServerFailureException(
-						RPRPlatformErrorMessages.CONFIGURATION_SERVER_FAILURE_EXCEPTION.getValue());
+						PlatformErrorMessages.CONFIGURATION_SERVER_FAILURE_EXCEPTION.getValue());
 			}
 		});
 
@@ -58,7 +58,7 @@ public class BridgeUtil {
 		} catch (InterruptedException | ExecutionException e) {
 			Thread.currentThread().interrupt();
 			throw new ConfigurationServerFailureException(
-					RPRPlatformErrorMessages.CONFIGURATION_SERVER_FAILURE_EXCEPTION.getValue(), e);
+					PlatformErrorMessages.CONFIGURATION_SERVER_FAILURE_EXCEPTION.getValue(), e);
 		}
 
 	}

@@ -3,7 +3,7 @@ package io.mosip.registration.processor.core.exception;
 import java.net.UnknownHostException;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 
 /**
  * The Class ServerUtilException.
@@ -31,7 +31,7 @@ public class ServerUtilException extends BaseUncheckedException {
 	 *            the e
 	 */
 	public ServerUtilException(UnknownHostException e) {
-		super(RPRPlatformErrorCodes.RPR_CMB_UNKNOWN_EXCEPTION, e.toString());
+		super(PlatformErrorCodes.RPR_CMB_UNKNOWN_EXCEPTION, e.toString());
 	}
 
 }

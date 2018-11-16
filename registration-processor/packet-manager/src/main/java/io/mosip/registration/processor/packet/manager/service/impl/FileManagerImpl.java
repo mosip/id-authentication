@@ -13,7 +13,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
@@ -98,16 +98,16 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				if (fileExistsInSource) {
 					delete(srcFolderLoc, fileName);
 				} else {
-					throw new FileNotFoundInSourceException(RPRPlatformErrorMessages.FILE_NOT_FOUND_IN_SOURCE.getValue());
+					throw new FileNotFoundInSourceException(PlatformErrorMessages.FILE_NOT_FOUND_IN_SOURCE.getValue());
 
 				}
 			} else {
-				throw new FileNotFoundInDestinationException(RPRPlatformErrorMessages.FILE_NOT_FOUND_IN_DESTINATION.getValue());
+				throw new FileNotFoundInDestinationException(PlatformErrorMessages.FILE_NOT_FOUND_IN_DESTINATION.getValue());
 
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-			throw new FilePathNotAccessibleException(RPRPlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
+			throw new FilePathNotAccessibleException(PlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
 
 		}
 
@@ -189,16 +189,16 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				if (fileExistsInSource) {
 					delete(srcFolderLoc, childFolderName + File.separator + fileName);
 				} else {
-					throw new FileNotFoundInSourceException(RPRPlatformErrorMessages.FILE_NOT_FOUND_IN_SOURCE.getValue());
+					throw new FileNotFoundInSourceException(PlatformErrorMessages.FILE_NOT_FOUND_IN_SOURCE.getValue());
 
 				}
 			} else {
-				throw new FileNotFoundInDestinationException(RPRPlatformErrorMessages.FILE_NOT_FOUND_IN_DESTINATION.getValue());
+				throw new FileNotFoundInDestinationException(PlatformErrorMessages.FILE_NOT_FOUND_IN_DESTINATION.getValue());
 
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-			throw new FilePathNotAccessibleException(RPRPlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
+			throw new FilePathNotAccessibleException(PlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
 
 		}
 
@@ -213,7 +213,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		if (isFilePresent) {
 			delete(workingDirectory, fileName);
 		} else {
-			throw new FileNotFoundInSourceException(RPRPlatformErrorMessages.FILE_NOT_FOUND_IN_SOURCE.getValue());
+			throw new FileNotFoundInSourceException(PlatformErrorMessages.FILE_NOT_FOUND_IN_SOURCE.getValue());
 
 		}
 	}

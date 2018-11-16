@@ -36,7 +36,7 @@ import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
@@ -247,7 +247,7 @@ public class PacketDecryptorTaskletTest {
 
 		Mockito.when(adapter.getPacket(any(String.class))).thenReturn(stream);
 
-		PacketDecryptionFailureException exception = new PacketDecryptionFailureException(RPRPlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
+		PacketDecryptionFailureException exception = new PacketDecryptionFailureException(PlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
 				new IOException());
 
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenThrow(exception);
@@ -258,7 +258,7 @@ public class PacketDecryptorTaskletTest {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
 				return ((ILoggingEvent) argument).getFormattedMessage()
-						.contains(RPRPlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue());
+						.contains(PlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue());
 			}
 		}));
 	}

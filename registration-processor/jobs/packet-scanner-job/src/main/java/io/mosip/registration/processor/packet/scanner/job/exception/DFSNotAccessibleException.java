@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.scanner.job.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 /**
  * The Class DFSNotAccessibleException.
  */
@@ -23,7 +23,7 @@ public class DFSNotAccessibleException extends BaseUncheckedException {
 	 * @param errorMessage the error message
 	 */
 	public DFSNotAccessibleException(String errorMessage) {
-		super(RPRPlatformErrorCodes.RPR_PSJ_DFS_NOT_ACCESSIBLE, errorMessage);
+		super(PlatformErrorCodes.RPR_PSJ_DFS_NOT_ACCESSIBLE, errorMessage);
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class DFSNotAccessibleException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public DFSNotAccessibleException(String message, Throwable cause) {
-		super(RPRPlatformErrorCodes.RPR_PSJ_DFS_NOT_ACCESSIBLE, message, cause);
+		super(PlatformErrorCodes.RPR_PSJ_DFS_NOT_ACCESSIBLE, message, cause);
 	}
 
 }

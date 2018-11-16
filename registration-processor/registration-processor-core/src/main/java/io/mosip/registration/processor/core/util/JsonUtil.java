@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * This class provides JSON utilites
@@ -44,7 +44,7 @@ public class JsonUtil {
 		try {
 			return gson.fromJson(jsonObject, clazz);
 		} catch (Exception e) {
-			throw new UnsupportedEncodingException(RPRPlatformErrorMessages.UNSUPPORTED_ENCODING.getValue());
+			throw new UnsupportedEncodingException(PlatformErrorMessages.UNSUPPORTED_ENCODING.getValue());
 		}
 	}
 

@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 import io.mosip.registration.processor.status.dto.TransactionDto;
 import io.mosip.registration.processor.status.service.TransactionService;
 
@@ -37,7 +37,7 @@ public class TransactionTableNotAccessibleExceptionTest {
 
 		} catch (TransactionTableNotAccessibleException e) {
 			assertThat("Should throw TransactionTableNotAccessibleException with correct error codes", e.getErrorCode()
-					.equalsIgnoreCase(RPRPlatformErrorCodes.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE));
+					.equalsIgnoreCase(PlatformErrorCodes.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE));
 			assertThat("Should throw TransactionTableNotAccessibleException  with correct messages",
 					e.getErrorText().equalsIgnoreCase(TRANSACTION_TABLE_NOTACCESSIBLE));
 

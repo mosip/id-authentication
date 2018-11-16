@@ -10,8 +10,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FilePathNotAccessibleException;
@@ -29,16 +29,16 @@ public class FilePathNotAccessibleExceptionTest {
 	@Test
 	public void TestFilePathNotAccessibleException() {
 		String fileName = "sample.zip";
-		FilePathNotAccessibleException ex = new FilePathNotAccessibleException(RPRPlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
+		FilePathNotAccessibleException ex = new FilePathNotAccessibleException(PlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
 		doThrow(ex).when(fileManager).cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileName);
 		try {
 			fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileName);
 			fail();
 		} catch (FilePathNotAccessibleException e) {
 			assertThat("Should throw File PathNot Accessible Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorCodes.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE));
 			assertThat("Should throw File PathNot Accessible Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue()));
 
 		}
 

@@ -17,8 +17,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
@@ -32,7 +32,7 @@ public class UnexceptedExceptionTest {
 	@Test
 	public void TestUnexceptedException() {
 
-		UnexpectedException ex = new UnexpectedException(RPRPlatformErrorMessages.UNEXCEPTED_EXCEPTION.getValue());
+		UnexpectedException ex = new UnexpectedException(PlatformErrorMessages.UNEXCEPTED_EXCEPTION.getValue());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -52,9 +52,9 @@ public class UnexceptedExceptionTest {
 			packetHandlerService.storePacket(file);
 		} catch (UnexpectedException e) {
 			assertThat("Should throw Unexpected Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_UNEXCEPTED_ERROR));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorCodes.RPR_PKR_UNEXCEPTED_ERROR));
 			assertThat("Should throw Unexpected Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.UNEXCEPTED_EXCEPTION.getValue()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.UNEXCEPTED_EXCEPTION.getValue()));
 		}
 	}
 }

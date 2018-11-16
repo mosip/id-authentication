@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.constants.AuditLogConstant;
-import io.mosip.registration.processor.core.constants.EventId;
-import io.mosip.registration.processor.core.constants.EventName;
-import io.mosip.registration.processor.core.constants.EventType;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.constant.AuditLogConstant;
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.BiometericData;
 import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.Document;
@@ -157,7 +157,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			isTransactionSuccessful = true;
 
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
@@ -194,7 +194,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			}
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -228,7 +228,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 			isTransactionSuccessful = true;
 			return applicantInfoDtoList;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(RPRPlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
 		} finally {
 			/*
 			 * String description = isTransactionSuccessful ?

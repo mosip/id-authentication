@@ -18,8 +18,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 
 @RunWith(SpringRunner.class)
@@ -33,7 +33,7 @@ public class PacketNotAvailableExceptionTest {
 	@Test
 	public void TestPacketNotAvailableException() {
 
-		PacketNotAvailableException ex = new PacketNotAvailableException(RPRPlatformErrorMessages.PACKET_NOT_AVAILABLE.getValue());
+		PacketNotAvailableException ex = new PacketNotAvailableException(PlatformErrorMessages.PACKET_NOT_AVAILABLE.getValue());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -53,9 +53,9 @@ public class PacketNotAvailableExceptionTest {
 			fail();
 		} catch (PacketNotAvailableException e) {
 			assertThat("Should throw packet_not_available exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorCodes.RPR_PKR_PACKET_NOT_AVAILABLE));
 			assertThat("Should throw packet_not_available exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.PACKET_NOT_AVAILABLE.getValue()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.PACKET_NOT_AVAILABLE.getValue()));
 
 		}
 	}

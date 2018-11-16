@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.quality.check.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 
 public class TablenotAccessibleException extends BaseUncheckedException {
 
@@ -12,11 +12,11 @@ public class TablenotAccessibleException extends BaseUncheckedException {
 	}
 
 	public TablenotAccessibleException(String errorMessage) {
-		super(RPRPlatformErrorCodes.RPR_QCR_INVALID_REGISTRATION_ID, errorMessage);
+		super(PlatformErrorCodes.RPR_QCR_INVALID_REGISTRATION_ID, errorMessage);
 	}
 
 	public TablenotAccessibleException(String message, Throwable cause) {
-		super(RPRPlatformErrorCodes.RPR_QCR_INVALID_REGISTRATION_ID, message, cause);
+		super(PlatformErrorCodes.RPR_QCR_INVALID_REGISTRATION_ID, message, cause);
 	}
 
 }

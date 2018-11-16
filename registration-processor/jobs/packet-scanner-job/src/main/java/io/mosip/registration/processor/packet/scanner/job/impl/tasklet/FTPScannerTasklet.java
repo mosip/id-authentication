@@ -24,11 +24,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.constants.AuditLogConstant;
-import io.mosip.registration.processor.core.constants.EventId;
-import io.mosip.registration.processor.core.constants.EventName;
-import io.mosip.registration.processor.core.constants.EventType;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.constant.AuditLogConstant;
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
@@ -114,7 +114,7 @@ public class FTPScannerTasklet implements Tasklet {
 				LOGGER.error(LOGDISPLAY, DUPLICATE_UPLOAD, e);
 			} catch (IOException e) {
 				FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
-						RPRPlatformErrorMessages.FTP_FOLDER_NOT_ACCESSIBLE.getValue(), e);
+						PlatformErrorMessages.FTP_FOLDER_NOT_ACCESSIBLE.getValue(), e);
 				LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 						ftpNotAccessibleException);
 			}finally{
@@ -152,7 +152,7 @@ public class FTPScannerTasklet implements Tasklet {
 
 					} catch (IOException e) {
 						FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
-								RPRPlatformErrorMessages.FTP_FOLDER_NOT_ACCESSIBLE.getValue(), e);
+								PlatformErrorMessages.FTP_FOLDER_NOT_ACCESSIBLE.getValue(), e);
 						LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 								ftpNotAccessibleException);
 					}
@@ -161,7 +161,7 @@ public class FTPScannerTasklet implements Tasklet {
 			deletepath.close();
 		} catch (IOException e) {
 			FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
-					RPRPlatformErrorMessages.FTP_FOLDER_NOT_ACCESSIBLE.getValue(), e);
+					PlatformErrorMessages.FTP_FOLDER_NOT_ACCESSIBLE.getValue(), e);
 			LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 					ftpNotAccessibleException);
 		}finally {

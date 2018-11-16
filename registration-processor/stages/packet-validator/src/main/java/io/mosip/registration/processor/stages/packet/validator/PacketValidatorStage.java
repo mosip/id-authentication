@@ -16,10 +16,10 @@ import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.constants.EventId;
-import io.mosip.registration.processor.core.constants.EventName;
-import io.mosip.registration.processor.core.constants.EventType;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.Demographic;
 import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
@@ -159,12 +159,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
 		} catch (IOException e) {
-			log.error(RPRPlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getValue(), e);
+			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getValue(), e);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 
 		} catch (Exception ex) {
-			log.error(RPRPlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getValue(), ex);
+			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getValue(), ex);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {

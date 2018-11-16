@@ -2,7 +2,7 @@ package io.mosip.registration.processor.filesystem.ceph.adapter.impl.exception.s
 
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 
 /**
  * This is unexpected exception.
@@ -17,10 +17,10 @@ public class UnexpectedException extends BaseUncheckedException {
 	}
 
 	public UnexpectedException(String message) {
-		super(RPRPlatformErrorCodes.RPR_FAC_UNEXCEPTED_ERROR, message);
+		super(PlatformErrorCodes.RPR_FAC_UNEXCEPTED_ERROR, message);
 	}
 
 	public UnexpectedException(String message, Throwable cause) {
-		super(RPRPlatformErrorCodes.RPR_FAC_UNEXCEPTED_ERROR + EMPTY_SPACE, message, cause);
+		super(PlatformErrorCodes.RPR_FAC_UNEXCEPTED_ERROR + EMPTY_SPACE, message, cause);
 	}
 }

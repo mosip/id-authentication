@@ -2,7 +2,7 @@ package io.mosip.registration.processor.packet.scanner.job.exception;
 
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 
 /**
  * The Class FTPNotAccessibleException.
@@ -18,7 +18,7 @@ public class FTPNotAccessibleException extends BaseUncheckedException {
 	 * @param errorMessage the error message
 	 */
 	public FTPNotAccessibleException(String errorMessage) {
-		super(RPRPlatformErrorCodes.RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE, errorMessage);
+		super(PlatformErrorCodes.RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE, errorMessage);
 	}
 
 	/**
@@ -28,7 +28,7 @@ public class FTPNotAccessibleException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public FTPNotAccessibleException(String message, Throwable cause) {
-		super(RPRPlatformErrorCodes.RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE+ EMPTY_SPACE, message, cause);
+		super(PlatformErrorCodes.RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE+ EMPTY_SPACE, message, cause);
 	}
 
 

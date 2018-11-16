@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.util.DateUtils;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.constants.EventId;
-import io.mosip.registration.processor.core.constants.EventName;
-import io.mosip.registration.processor.core.constants.EventType;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
@@ -77,12 +77,12 @@ public class PacketArchiver {
 				isTransactionSuccessful=true;
 			} else {
 
-				throw new PacketNotFoundException(RPRPlatformErrorMessages.PACKET_NOT_FOUND_EXCEPTION.getValue());
+				throw new PacketNotFoundException(PlatformErrorMessages.PACKET_NOT_FOUND_EXCEPTION.getValue());
 			}
 
 		} catch (IOException e) {
 			LOGGER.error(LOGDISPLAY,"Packet archive failed", e);
-			throw new UnableToAccessPathException(RPRPlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
+			throw new UnableToAccessPathException(PlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();

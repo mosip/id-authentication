@@ -10,8 +10,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorCodes;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
@@ -30,16 +30,16 @@ public class FileNotFoundInDestinationExceptionTest {
 	public void TestFileNotFoundInDestinationException() {
 		String fileName = "sample.zip";
 
-		FileNotFoundInDestinationException ex = new FileNotFoundInDestinationException(RPRPlatformErrorMessages.FILE_NOT_FOUND_IN_DESTINATION.getValue());
+		FileNotFoundInDestinationException ex = new FileNotFoundInDestinationException(PlatformErrorMessages.FILE_NOT_FOUND_IN_DESTINATION.getValue());
 		doThrow(ex).when(fileManager).cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileName);
 		try {
 			fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileName);
 			fail();
 		} catch (FileNotFoundInDestinationException e) {
 			assertThat("Should throw File Not Found In Destination Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(RPRPlatformErrorCodes.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorCodes.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION));
 			assertThat("Should throw File Not Found In Destination Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(RPRPlatformErrorMessages.FILE_NOT_FOUND_IN_DESTINATION.getValue()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.FILE_NOT_FOUND_IN_DESTINATION.getValue()));
 
 		}
 

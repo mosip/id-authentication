@@ -18,10 +18,10 @@ import io.mosip.kernel.core.security.decryption.MosipDecryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
 import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.constants.EventId;
-import io.mosip.registration.processor.core.constants.EventName;
-import io.mosip.registration.processor.core.constants.EventType;
-import io.mosip.registration.processor.core.exception.util.RPRPlatformErrorMessages;
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
 
 /**
@@ -85,7 +85,7 @@ public class Decryptor {
 			outstream = new ByteArrayInputStream(aesDecryptedData);
 			isTransactionSuccessful=true;
 		} catch (IOException | MosipInvalidDataException | MosipInvalidKeyException e) {
-			throw new PacketDecryptionFailureException(RPRPlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
+			throw new PacketDecryptionFailureException(PlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
 					e);
 		} finally {
 
@@ -115,7 +115,7 @@ public class Decryptor {
 			rprivateKey = IOUtils.toByteArray(fileInputStream);
 			isTransactionSuccessful=true;
 		} catch (IOException e) {
-			throw new PacketDecryptionFailureException(RPRPlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
+			throw new PacketDecryptionFailureException(PlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
 					e);
 		}finally {
 

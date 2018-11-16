@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.registration.processor.core.constants.AuditLogConstant;
+import io.mosip.registration.processor.core.constant.AuditLogConstant;
 import io.mosip.registration.processor.core.util.ServerUtil;
 
 /**
