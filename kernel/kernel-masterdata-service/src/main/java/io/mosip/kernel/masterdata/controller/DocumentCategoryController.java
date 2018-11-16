@@ -17,7 +17,6 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
  *
  */
 @RestController
-@RequestMapping("/documentcategories")
 public class DocumentCategoryController {
 
 	@Autowired
@@ -28,7 +27,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories
 	 */
-	@GetMapping
+	@GetMapping("/documentcategories")
 	public List<DocumentCategoryDto> fetchAllDocumentCategory() {
 		return documentCategoryService.getAllDocumentCategory();
 	}
@@ -38,7 +37,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories of a specific language
 	 */
-	@GetMapping("{languagecode}")
+	@GetMapping("/documentcategories/{languagecode}")
 	public List<DocumentCategoryDto> fetchAllDocumentCategoryUsingLangCode(
 			@PathVariable("languagecode") String langCode) {
 		return documentCategoryService.getAllDocumentCategoryByLaguageCode(langCode);
@@ -49,7 +48,7 @@ public class DocumentCategoryController {
 	 * 
 	 * @return A Document category
 	 */
-	@GetMapping("/{id}/{languagecode}")
+	@GetMapping("/documentcategories/{id}/{languagecode}")
 	public DocumentCategoryDto fetchDocumentCategoryUsingCodeAndLangCode(@PathVariable("id") String code,
 			@PathVariable("languagecode") String langCode) {
 		return documentCategoryService.getDocumentCategoryByCodeAndLangCode(code, langCode);

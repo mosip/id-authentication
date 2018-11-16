@@ -111,5 +111,4 @@ public class RegistrationCenterController {
 	public RegistrationCenterResponseDto getAllRegistrationCentersDetails() {
 		return registrationCenterService.getAllRegistrationCenters();
 	}
-
 }
