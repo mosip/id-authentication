@@ -443,6 +443,8 @@ public class RegistrationConstants {
 
 	// Lock User account
 	public static final String USER_ACCOUNT_LOCK_MESSAGE = "Your account has been temporarily locked as you have made 5 unsuccessful login attempts. Please try logging in after 30 minutes.";
+	public static final int INVALID_LOGIN_COUNT_RESET = 0;
+	public static final int INVALID_LOGIN_COUNT_INCREMENT = 1;
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
