@@ -59,9 +59,9 @@ public class RegistrationCenterControllerTest {
 		registrationCenter.setCreatedBy("John");
 		registrationCenter.setCreatedtimes(specificDate);
 		registrationCenter.setHolidayLocationCode("KAR");
-		//registrationCenter.setLocationCode("KAR_59");
+		registrationCenter.setLocationCode("KAR_59");
 		registrationCenter.setId("REG_CR_001");
-		//registrationCenter.setLanguageCode("ENG");
+		registrationCenter.setLanguageCode("ENG");
 		registrationCenter.setWorkingHours("9");
 		registrationCenter.setLatitude("12.87376");
 		registrationCenter.setLongitude("12.76372");
@@ -102,7 +102,7 @@ public class RegistrationCenterControllerTest {
 		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
 				anyString())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-				"REG_CR_001", 2017)).andExpect(status().isNotAcceptable());
+				"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -112,6 +112,6 @@ public class RegistrationCenterControllerTest {
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-				"REG_CR_001", 2018)).andExpect(status().isNotAcceptable());
+				"REG_CR_001", 2018)).andExpect(status().isInternalServerError());
 	}
 }

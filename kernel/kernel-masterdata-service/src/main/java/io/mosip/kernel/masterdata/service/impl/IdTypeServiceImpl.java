@@ -2,8 +2,6 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +12,8 @@ import io.mosip.kernel.masterdata.constant.IdTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.IdType;
-import io.mosip.kernel.masterdata.exception.IdTypeFetchException;
-import io.mosip.kernel.masterdata.exception.IdTypeMappingException;
-import io.mosip.kernel.masterdata.exception.IdTypeNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.IdTypeRepository;
 import io.mosip.kernel.masterdata.service.IdTypeService;
 
@@ -56,21 +53,15 @@ public class IdTypeServiceImpl implements IdTypeService {
 			idList = idRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
 
 		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new IdTypeFetchException(IdTypeErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorCode(),
 					IdTypeErrorCode.ID_TYPE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (idList.isEmpty()) {
-			throw new IdTypeNotFoundException(IdTypeErrorCode.ID_TYPE_NOT_FOUND.getErrorCode(),
+			throw new DataNotFoundException(IdTypeErrorCode.ID_TYPE_NOT_FOUND.getErrorCode(),
 					IdTypeErrorCode.ID_TYPE_NOT_FOUND.getErrorMessage());
 		}
-		List<IdTypeDto> idDtoList = null;
-		try {
-			idDtoList = modelMapper.map(idList, new TypeToken<List<IdTypeDto>>() {
-			}.getType());
-		} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-			throw new IdTypeMappingException(IdTypeErrorCode.ID_TYPE_MAPPING_EXCEPTION.getErrorCode(),
-					IdTypeErrorCode.ID_TYPE_MAPPING_EXCEPTION.getErrorMessage());
-		}
+		List<IdTypeDto> idDtoList = modelMapper.map(idList, new TypeToken<List<IdTypeDto>>() {
+		}.getType());
 		IdTypeResponseDto idResponseDto = new IdTypeResponseDto();
 		idResponseDto.setIdtypes(idDtoList);
 		return idResponseDto;

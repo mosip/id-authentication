@@ -44,7 +44,7 @@ public class RegistrationCenterIntegrationTest {
 
 	List<RegistrationCenter> centers = new ArrayList<>();
 
-	/*@Before
+	@Before
 	public void setInitials() {
 		center = new RegistrationCenter();
 		center.setId("1");
@@ -58,7 +58,7 @@ public class RegistrationCenterIntegrationTest {
 		centerBangaloreCentral.setName("Bangalore Central");
 		centerBangaloreCentral.setLanguageCode("ENG");
 		centerBangaloreCentral.setLocationCode("BLR");
-	}*/
+	}
 
 	@Test
 	public void getSpecificRegistrationCenterByIdTest() throws Exception {

@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
-import io.mosip.kernel.masterdata.exception.BiometricAttributeNotFoundException;
-import io.mosip.kernel.masterdata.exception.BiometricTypeFetchException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 
 @RunWith(SpringRunner.class)
@@ -72,18 +72,18 @@ public class BiometricAttributeControllerTest {
 	@Test
 	public void testBiometricTypeBiometricAttributeNotFoundException() throws Exception {
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new BiometricAttributeNotFoundException("KER-MAS-00000",
+				.thenThrow(new DataNotFoundException("KER-MAS-00000",
 						"No biometric attributes found for specified biometric code type and language code"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/face"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 
 	@Test
 	public void testBiometricTypeFetchException() throws Exception {
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new BiometricTypeFetchException("KER-DOC-00000", "exception duringfatching data from db"));
+				.thenThrow(new MasterDataServiceException("KER-DOC-00000", "exception duringfatching data from db"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/iric"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 
 }
