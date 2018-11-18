@@ -75,9 +75,7 @@ import javafx.stage.Stage;
  */
 @Controller
 public class LoginController extends BaseController implements Initializable, MFS100Event {
-	@Autowired
-	MapMachineService mapMachineService;
-
+	
 	@FXML
 	private TextField userId;
 
