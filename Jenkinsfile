@@ -12,7 +12,7 @@ node{
 	stage ('SCM') {
 	dir(branch) { checkout([$class: 'GitSCM',
     branches: [[name: branch]],
-    userRemoteConfigs: [[url: 'https://github.com/mosip/mosip', credentialsId: 'c31410c5-ffb5-47de-a5b8-941984cead45']],
+    userRemoteConfigs: [[url: 'https://github.com/mosip/mosip', credentialsId: '4c9741a2-4c15-4aad-a13d-39f4302a0e77']],
     extensions: [
      [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*'],
      [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
