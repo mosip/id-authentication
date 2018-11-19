@@ -32,6 +32,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "applicant_document", schema = "prereg")
+@ToString
 public class DocumentEntity implements Serializable {
 	/**
 	 * 

@@ -27,56 +27,44 @@ import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 public class DocumentExceptionHandler {
 
 	@ExceptionHandler(TablenotAccessibleException.class)
-	public ResponseEntity<ResponseDto> databaseerror(final TablenotAccessibleException e, WebRequest request) {
-		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
+	public ResponseEntity<ExceptionJSONInfo> databaseerror(final TablenotAccessibleException e, WebRequest request) {
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_007.toString(),
 				StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
-		err.add(errorDetails);
-		ResponseDto errorRes = new ResponseDto<>();
-		errorRes.setErr(err);
-		errorRes.setStatus("False");
-		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
-		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(DocumentNotValidException.class)
-	public ResponseEntity<ResponseDto> notValidExceptionhadler(final DocumentNotValidException nv,
+	public ResponseEntity<ExceptionJSONInfo> notValidExceptionhadler(final DocumentNotValidException nv,
 			WebRequest webRequest) {
-		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
+
 		ExceptionJSONInfo jsonInfo = new ExceptionJSONInfo(nv.getErrorCode(), nv.getErrorText());
-		err.add(jsonInfo);
-		ResponseDto errorRes = new ResponseDto<>();
-		errorRes.setErr(err);
-		errorRes.setStatus("False");
-		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
-		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
+
+		return new ResponseEntity<ExceptionJSONInfo>(jsonInfo, HttpStatus.BAD_REQUEST);
 
 	}
 
 	@ExceptionHandler(MultipartException.class)
-	public ResponseEntity<ResponseDto> sizeExceedException(final MultipartException me, WebRequest webRequest) {
-		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
+	public ResponseEntity<ExceptionJSONInfo> sizeExceedException(final MultipartException me, WebRequest webRequest) {
+
 		ExceptionJSONInfo jsonInfo = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_004.toString(),
 				StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
-		err.add(jsonInfo);
-		ResponseDto errorRes = new ResponseDto<>();
-		errorRes.setErr(err);
-		errorRes.setStatus("False");
-		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
-		return new ResponseEntity<>(errorRes, HttpStatus.BAD_REQUEST);
+
+		return new ResponseEntity<ExceptionJSONInfo>(jsonInfo, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(DocumentNotFoundException.class)
 	public ResponseEntity<ResponseDto> documentNotFound(final DocumentNotFoundException e, WebRequest request) {
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_006.toString(),
 				StatusCodes.DOCUMENT_IS_MISSING.toString());
-		ResponseDto errorRes = new ResponseDto();
+		ResponseDto responseDto = new ResponseDto();
+		//
 		List<ExceptionJSONInfo> err = new ArrayList<>();
-		errorRes.setStatus("false");
+		responseDto.setStatus("false");
 		err.add(errorDetails);
-		errorRes.setErr(err);
-		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
-		return new ResponseEntity<>(errorRes, HttpStatus.NOT_FOUND);
+		responseDto.setErr(err);
+		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		System.out.println("responseDto::"+responseDto);
+		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 	}
 
 }
