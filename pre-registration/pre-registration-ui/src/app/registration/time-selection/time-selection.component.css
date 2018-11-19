@@ -87,6 +87,16 @@
       right: 0;
   }
 
+  .mat-fab {
+    height: 35px;
+    width: 35px;
+  }
+
+  .add-icon {
+      top: -11px;
+      position: relative;
+  }
+
   @media(max-width: 500px) {
       .container{
           margin: 0 -20px 0 -20px;
