@@ -34,7 +34,10 @@ node {
   buildInfo = Artifactory.newBuildInfo()
   buildInfo.env.capture = true
  }
- 
+   stage ('Complete Packaging') 
+	{
+        rtMaven.run pom: 'DEV/pom.xml', goals: 'clean package', buildInfo: buildInfo
+    }
 stage ('---------- mvn-clean-install ---------------') {
         rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
 }
