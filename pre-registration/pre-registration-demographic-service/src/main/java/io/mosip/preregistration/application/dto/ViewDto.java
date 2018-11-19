@@ -19,7 +19,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class ViewRegistrationResponseDto {
+public class ViewDto {
 	//private Boolean status;
 	//private List<ExceptionJSONInfo> err= new ArrayList<>();
 	private String preId;

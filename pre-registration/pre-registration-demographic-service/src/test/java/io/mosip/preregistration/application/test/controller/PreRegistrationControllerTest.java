@@ -36,7 +36,7 @@ import io.mosip.preregistration.application.dto.DeleteDto;
 import io.mosip.preregistration.application.dto.ExceptionInfoDto;
 import io.mosip.preregistration.application.dto.ResponseDto;
 import io.mosip.preregistration.application.dto.StatusDto;
-import io.mosip.preregistration.application.dto.ViewRegistrationResponseDto;
+import io.mosip.preregistration.application.dto.ViewDto;
 import io.mosip.preregistration.application.service.PreRegistrationService;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 import net.minidev.json.parser.JSONParser;
@@ -124,21 +124,15 @@ public class PreRegistrationControllerTest {
 	public void getAllApplicationTest() throws Exception {
 
 		String userId = "9988905333";
-		ViewRegistrationResponseDto responseDto = new ViewRegistrationResponseDto();
-		List<ViewRegistrationResponseDto> response = new ArrayList<>();
-		ExceptionInfoDto exceptionInfoDto = new ExceptionInfoDto();
-		List<ExceptionInfoDto> responseList = new ArrayList<>();
-		// responseDto.setGroup_id("1234");
-		responseDto.setFirstname("rupika");
-		// responseDto.setNoOfRecords(1);
-		responseDto.setStatus_code("draft");
-		// responseDto.setUpd_dtimesz("2018-10-08 00:00:00");
-		response.add(responseDto);
-		exceptionInfoDto.setResponse(response);
-		exceptionInfoDto.setStatus(true);
-		responseList.add(exceptionInfoDto);
+		ResponseDto<ViewDto> response = new ResponseDto();
+		List<ViewDto> viewList = new ArrayList<>();
+		ViewDto viewDto = new ViewDto();
+		viewDto.setPreId("1234");
+		viewDto.setStatus_code("Pending_Appointment");
+		viewList.add(viewDto);
+		response.setResponse(viewList);
 
-		Mockito.when(preRegistrationService.getApplicationDetails(Mockito.anyString())).thenReturn(responseList);
+		Mockito.when(preRegistrationService.getApplicationDetails(Mockito.anyString())).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/v0.1/pre-registration/applications/")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8")

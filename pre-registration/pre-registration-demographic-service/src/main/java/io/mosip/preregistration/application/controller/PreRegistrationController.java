@@ -23,6 +23,7 @@ import io.mosip.preregistration.application.dto.DeleteDto;
 import io.mosip.preregistration.application.dto.ExceptionInfoDto;
 import io.mosip.preregistration.application.dto.ResponseDto;
 import io.mosip.preregistration.application.dto.StatusDto;
+import io.mosip.preregistration.application.dto.ViewDto;
 import io.mosip.preregistration.application.service.PreRegistrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -76,11 +77,11 @@ public class PreRegistrationController {
 	@ApiOperation(value = "Fetch all the applications created by user")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch applications ") })
-	public ResponseEntity<List<ExceptionInfoDto>> getAllApplications(
+	public ResponseEntity<ResponseDto<ViewDto>> getAllApplications(
 			@RequestParam(value = "userId", required = true) String userId)
 
 	{
-		List<ExceptionInfoDto> response = preRegistrationService.getApplicationDetails(userId);
+		ResponseDto<ViewDto> response = preRegistrationService.getApplicationDetails(userId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}

@@ -32,7 +32,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 import io.mosip.preregistration.documents.code.StatusCodes;
 import io.mosip.preregistration.documents.controller.DocumentUploader;
 import io.mosip.preregistration.documents.dto.DocumentDto;

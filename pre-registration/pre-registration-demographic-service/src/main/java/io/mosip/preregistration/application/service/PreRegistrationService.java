@@ -40,7 +40,7 @@ import io.mosip.preregistration.application.dto.ExceptionInfoDto;
 import io.mosip.preregistration.application.dto.ExceptionJSONInfo;
 import io.mosip.preregistration.application.dto.ResponseDto;
 import io.mosip.preregistration.application.dto.StatusDto;
-import io.mosip.preregistration.application.dto.ViewRegistrationResponseDto;
+import io.mosip.preregistration.application.dto.ViewDto;
 import io.mosip.preregistration.application.entity.PreRegistrationEntity;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.JsonValidationException;
@@ -211,58 +211,73 @@ public class PreRegistrationService {
 	 * 
 	 */
 
-	public List<ExceptionInfoDto> getApplicationDetails(String userId) throws TablenotAccessibleException {
+	public ResponseDto<ViewDto> getApplicationDetails(String userId) throws TablenotAccessibleException {
 
-		List<ViewRegistrationResponseDto> response = new ArrayList<>();
-		ExceptionInfoDto exceptionInfoDto = new ExceptionInfoDto();
-
-		// int minCreateDateIndex = 0;
-		ViewRegistrationResponseDto responseDto;
-		List<ExceptionJSONInfo> err = new ArrayList<>();
-		List<ExceptionInfoDto> responseList = new ArrayList<>();
+		List<ViewDto> viewList = new ArrayList<>();
+		ResponseDto<ViewDto> response = new ResponseDto<>();
 
 		List<PreRegistrationEntity> userDetails = new ArrayList<>();
 
 		try {
 			userDetails = preRegistrationRepository.findByuserId(userId);
 		} catch (DataAccessLayerException e) {
-			responseDto = new ViewRegistrationResponseDto();
 
-			ExceptionJSONInfo TableNotFoundException = new ExceptionJSONInfo("",
-					PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE);
-			err.add(TableNotFoundException);
-			exceptionInfoDto.setStatus(false);
-			exceptionInfoDto.setErr(err);
-			responseList.add(exceptionInfoDto);
 			throw new TablenotAccessibleException(PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, e);
 
 		}
 		if (userDetails.equals(null) || userDetails.isEmpty()) {
+			List<ExceptionJSONInfo> exceptionJson= new ArrayList<>();
 			ExceptionJSONInfo userIdNotValidException = new ExceptionJSONInfo("", "Please enter valid user Id");
-			err.add(userIdNotValidException);
-			exceptionInfoDto.setStatus(false);
-			exceptionInfoDto.setErr(err);
-			responseList.add(exceptionInfoDto);
-			return responseList;
+		   exceptionJson.add(userIdNotValidException);
+		   response.setErr(exceptionJson);
+		   response.setResTime(new Timestamp(System.currentTimeMillis()));
+		response.setStatus("false");
+		
 		} else {
 
 			for (int i = 0; i < userDetails.size(); i++)
 
 			{
-				responseDto = new ViewRegistrationResponseDto();
-				responseDto.setPreId(userDetails.get(i).getPreRegistrationId());
-				// responseDto.setFirstname(userDetails.get(i).getFirstname());
-				responseDto.setStatus_code(userDetails.get(i).getStatusCode());
-				response.add(responseDto);
+				String applicationJson;
+				try {
+					applicationJson = new String(userDetails.get(0).getApplicantDetailJson(),"UTF-8");
+					System.out.println("Json "+applicationJson);
+					org.json.JSONObject jsonObj;
+					jsonObj = new org.json.JSONObject(applicationJson);
+					org.json.JSONObject reqObj= (org.json.JSONObject) jsonObj.get("request");
+					org.json.JSONObject demoObj= (org.json.JSONObject) reqObj.get("demographicDetails");
+					org.json.JSONObject identityObj= (org.json.JSONObject) demoObj.get("identity");
+					org.json.JSONArray nameArr=identityObj.getJSONArray("FullName");
+					org.json.JSONObject nameObj= (org.json.JSONObject) nameArr.get(0);
+					
+					ViewDto viewDto = new ViewDto();
+					viewDto.setPreId(userDetails.get(i).getPreRegistrationId());
+					viewDto.setFirstname(nameObj.get("value").toString());
+					viewDto.setStatus_code(userDetails.get(i).getStatusCode());
+					viewList.add(viewDto);
+					response.setResponse(viewList);
+					response.setResTime(new Timestamp(System.currentTimeMillis()));
+					response.setStatus("true");
+					
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				 catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			
+				
+				
+				
 
 			}
 
-			exceptionInfoDto.setResponse(response);
-			exceptionInfoDto.setStatus(true);
-			responseList.add(exceptionInfoDto);
+			
 		}
 
-		return responseList;
+		return response;
 
 	}
 
@@ -280,7 +295,7 @@ public class PreRegistrationService {
 		StatusDto statusdto = new StatusDto();
 		ResponseDto<StatusDto> response = new ResponseDto<>();
 
-		List<StatusDto> statusList = new ArrayList<StatusDto>();
+		List<StatusDto> statusList = new ArrayList<>();
 		PreRegistrationEntity details = new PreRegistrationEntity();
 		try {
 			details = preRegistrationRepository.findBypreRegistrationId(preId);

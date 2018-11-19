@@ -48,7 +48,7 @@ import io.mosip.preregistration.application.dto.DeleteDto;
 import io.mosip.preregistration.application.dto.ExceptionInfoDto;
 import io.mosip.preregistration.application.dto.ResponseDto;
 import io.mosip.preregistration.application.dto.StatusDto;
-import io.mosip.preregistration.application.dto.ViewRegistrationResponseDto;
+import io.mosip.preregistration.application.dto.ViewDto;
 import io.mosip.preregistration.application.entity.PreRegistrationEntity;
 import io.mosip.preregistration.application.exception.utils.PreRegistrationErrorMessages;
 import io.mosip.preregistration.application.repository.PreRegistrationRepository;
@@ -91,10 +91,10 @@ public class PreRegistrationServiceTest {
 	// PreRegistrationService();
 
 	List<PreRegistrationEntity> userDetails = new ArrayList<>();
-	List<ViewRegistrationResponseDto> response = new ArrayList<ViewRegistrationResponseDto>();
+	List<ViewDto> response = new ArrayList<ViewDto>();
 	ExceptionInfoDto exceptionInfoDto = new ExceptionInfoDto();
 	List<ExceptionInfoDto> responseList = new ArrayList<>();
-	private ViewRegistrationResponseDto responseDto;
+	private ViewDto responseDto;
 	private PreRegistrationEntity preRegistrationEntity;
 	private JSONObject jsonObject;
 	private JSONObject jsonTestObject;
@@ -105,6 +105,12 @@ public class PreRegistrationServiceTest {
 			throws ParseException, FileNotFoundException, IOException, org.json.simple.parser.ParseException {
 
 		preRegistrationEntity = new PreRegistrationEntity();
+		ClassLoader classLoader = getClass().getClassLoader();
+
+		File file = new File(classLoader.getResource("pre-registration.json").getFile());
+		jsonObject = (JSONObject) parser.parse(new FileReader(file));
+		File fileTest = new File(classLoader.getResource("pre-registration-test.json").getFile());
+		jsonTestObject = (JSONObject) parser.parse(new FileReader(fileTest));
 
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Date date = dateFormat.parse("08/10/2018");
@@ -114,13 +120,14 @@ public class PreRegistrationServiceTest {
 
 		preRegistrationEntity.setStatusCode("Pending_Appointment");
 		preRegistrationEntity.setUpdateDateTime(times);
+		preRegistrationEntity.setApplicantDetailJson(jsonTestObject.toString().getBytes("UTF-8"));
 
 		preRegistrationEntity.setPreRegistrationId("1234");
 		userDetails.add(preRegistrationEntity);
 
 		logger.info("Entity " + preRegistrationEntity);
 
-		responseDto = new ViewRegistrationResponseDto();
+		responseDto = new ViewDto();
 
 		responseDto.setFirstname(null);
 		responseDto.setStatus_code("Pending_Appointment");
@@ -130,13 +137,8 @@ public class PreRegistrationServiceTest {
 		exceptionInfoDto.setStatus(true);
 		responseList.add(exceptionInfoDto);
 
-		JsonValidatorResponseDto dto = new JsonValidatorResponseDto();
-		ClassLoader classLoader = getClass().getClassLoader();
-
-		File file = new File(classLoader.getResource("pre-registration.json").getFile());
-		jsonObject = (JSONObject) parser.parse(new FileReader(file));
-		File fileTest = new File(classLoader.getResource("pre-registration-test.json").getFile());
-		jsonTestObject = (JSONObject) parser.parse(new FileReader(fileTest));
+		
+	
 	}
 
 	@Test
@@ -173,9 +175,17 @@ public class PreRegistrationServiceTest {
 	@Test
 	public void getApplicationDetails() {
 		String userId = "9988905444";
+		ResponseDto<ViewDto> response = new ResponseDto();
+		List<ViewDto> viewList = new ArrayList<>();
+		ViewDto viewDto = new ViewDto();
+		viewDto.setPreId("1234");
+		viewDto.setFirstname("Rupika");
+		viewDto.setStatus_code("Pending_Appointment");
+		viewList.add(viewDto);
+		response.setResponse(viewList);
 		Mockito.when(preRegistrationRepository.findByuserId(ArgumentMatchers.any())).thenReturn(userDetails);
-		List<ExceptionInfoDto> actualRes = preRegistrationService.getApplicationDetails(userId);
-		assertEqualsList(actualRes, responseList);
+		ResponseDto<ViewDto> actualRes = preRegistrationService.getApplicationDetails(userId);
+		assertEqualsList(actualRes.getResponse(), response.getResponse());
 
 	}
 
@@ -216,9 +226,9 @@ public class PreRegistrationServiceTest {
 		preRegistrationService.getApplicationStatus(preId);
 	}
 
-	public void assertEqualsList(List<ExceptionInfoDto> actual, List<ExceptionInfoDto> expected) {
-		for (int i = 0; i < expected.size(); i++) {
-			assertEquals(expected.get(i).toString(), actual.get(i).toString());
+	public void assertEqualsList(List<ViewDto> list, List<ViewDto> list2) {
+		for (int i = 0; i < list2.size(); i++) {
+			assertEquals(list2.get(i).toString(), list.get(i).toString());
 		}
 	}
 
@@ -229,7 +239,7 @@ public class PreRegistrationServiceTest {
 		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String preRegId = "1";
 		preRegistrationEntity.setPreRegistrationId("1");
-		preRegistrationEntity.setStatusCode("Pending_Appointmemt");
+		preRegistrationEntity.setStatusCode("Pending_Appointment");
 
 		ResponseEntity<ResponseDto> res = new ResponseEntity<>(HttpStatus.OK);
 		Mockito.when(preRegistrationRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
