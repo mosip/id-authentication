@@ -23,11 +23,22 @@ public enum IdAuthenticationErrorConstants {
 	// To be discussed with BA
 	INVALID_AUTH_REQUEST_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s hrs/min"),
 	INVALID_UIN("IDA-MLC-002", "Invalid UIN"), UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated"),
-	INVALID_VID("IDA-MLC-004", "Invalid VID"), EXPIRED_VID("IDA-MLC-005", "Expired VID"), // Not referenced
+	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"), // Not
+																											// referenced
 	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 	INVALID_INPUT_PARAMETER("IDA-IDV-002", "Invalid Input Parameter - %s"),
 	MISSING_INPUT_PARAMETER("IDA-IDV-003", "Missing Input Parameter - %s"),
+	INVALID_AGE("IDA-DEA-028", "Please re-enter Age", "A0141"),
+	INVALID_DOB("IDA-DEA-023", "Please re-enter your DOB", "A0137"),
+	INVALID_EMAIL("IDA-DEA-027", "Please re-enter your email", "A0141"),
+	INVALRID_GENDER("IDA-DEA-025", "Please re-enter your Gender", "A0139"),
+	NAME_PRI_MISMATCH("IDA-DEM-001", "Demographic and Identity attribute Name_Prim did not match"),
+	NAME_SEC_MISMATCH("IDA-DEM-002", "Demographic and  Identity attribute Name_Second did not match"),
+	INVALID_TIMESTAMP("IDA-DEM-003",
+			"Invalid format or Authentication request received at MOSIP <x> hrs/min post the initiation of the request"),
+	MISSING_ID("IDA-DEM-004", "Missing Id Attribute"),
+	UNSUPPORTED_LANGCODE("IDA-DEM-005", "Unsupported Language Code <XX>"),
 
 	// eKYC validation messages
 
@@ -38,13 +49,12 @@ public enum IdAuthenticationErrorConstants {
 
 	// Internal Errors
 	ID_MAPPING_FAILED("IDA-IDV-101", "VID is not present or not matched"),
-	INVALID_IDTYPE("IDA-IDV-102", "Invalid Id-Type"), 
-	INVALID_OTP_KEY("IDA-OTA-101", "Key is Null or Invalid"),
+	INVALID_IDTYPE("IDA-IDV-102", "Invalid Id-Type"), INVALID_OTP_KEY("IDA-OTA-101", "Key is Null or Invalid"),
 	KERNEL_OTP_VALIDATION_REQUEST_FAILED("IDA-OTA-102", "Kernel Validate OTP request failed"),
 	KERNEL_OTP_GENERATION_REQUEST_FAILED("IDA-OTA-103", "Kernel Generate OTP request failed"),
 
 	NOTIFICATION_FAILED("IDA-NTS-101", "Notification Failed"),
-	
+
 	MISSING_TEMPLATE_CONFIG("IDA-ITM-102", "Template Configuration missing"),
 	PDF_NOT_GENERATED("IDA-ITM-102", "Unable to Generate PDF"),
 
@@ -62,12 +72,13 @@ public enum IdAuthenticationErrorConstants {
 	// Demo Validation
 	INVALID_FULL_ADDRESS_REQUEST("IDA-DEA-015", "Required Full Address(fad) attribute is missing"),
 	INVALID_ADDRESS_REQUEST("IDA-DEA-014", "Required Address(ad) attribute is missing"),
-	DOB_TYPE_MISMATCH("IDA-DEA-033", "Demographic data – DOB Type (pi) did not match"),
+	DOB_TYPE_MISMATCH("IDA-DEA-033", "Demographic data – DOB Type (pi) did not match", "A0142"),
 	AD_FAD_MUTUALLY_EXCULUSIVE("IDA-AD-RQV-003", "Full Address and Address are mutually exclusive"),
 	INVALID_PERSONAL_INFORMATION("IDA-PRSNL-RQV-001", "Atleat one valid attribute should be present");
 
 	private final String errorCode;
 	private final String errorMessage;
+	private String actionCode;
 
 	/**
 	 * Constructor for {@link IdAuthenticationErrorConstants}
@@ -79,6 +90,12 @@ public enum IdAuthenticationErrorConstants {
 	private IdAuthenticationErrorConstants(String errorCode, String errorMessage) {
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;
+	}
+
+	private IdAuthenticationErrorConstants(String errorCode, String errorMessage, String actionCode) {
+		this.errorCode = errorCode;
+		this.errorMessage = errorMessage;
+		this.actionCode = actionCode;
 	}
 
 	/**
@@ -97,5 +114,9 @@ public enum IdAuthenticationErrorConstants {
 	 */
 	public String getErrorMessage() {
 		return errorMessage;
+	}
+
+	public String getActionCode() {
+		return actionCode;
 	}
 }

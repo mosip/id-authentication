@@ -18,12 +18,17 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.spi.id.service.IdInfoService;
 
+/**
+ * 
+ * @author Dinesh Karuppiah.T
+ */
+
 @PropertySource("classpath:sample-output.properties")
 @Service
 public class IdInfoServiceImpl implements IdInfoService {
 
 	@Value("${sample.demo.entity}")
-	String value;
+	private String value;
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override

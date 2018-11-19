@@ -93,13 +93,13 @@ public class AuthFacadeImpl implements AuthFacade {
 	private KycService kycService;
 
 	@Autowired
-	Environment env;
+	private Environment env;
 
 	@Autowired
-	NotificationManager notificationManager;
+	private NotificationManager notificationManager;
 
 	@Autowired
-	IdInfoService idInfoService;
+	private IdInfoService idInfoService;
 
 	@Autowired
 	DemoAuthService demoAuthService;
