@@ -89,7 +89,6 @@ public class NotificationServiceImpl implements NotificationService {
 			
 			LOGGER.debug(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID,
 					"Exception in sending SMS Notification");
-			exception.printStackTrace();
 			ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
 			errorResponseDTO.setMessage("Unable to send SMS Notification");
 			List<ErrorResponseDTO> errorResponse = new ArrayList<>();
