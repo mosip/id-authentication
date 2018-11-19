@@ -34,7 +34,7 @@ public class CryptographyServiceImpl implements CryptographyService {
 	/**
 	 * 
 	 */
-	@Value("${mosip.kernel.pa cket-key-splitter}")
+	@Value("${mosip.kernel.packet-key-splitter}")
 	private String keySplitter;
 	
 	/**

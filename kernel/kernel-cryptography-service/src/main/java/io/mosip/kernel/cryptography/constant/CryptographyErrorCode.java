@@ -25,7 +25,11 @@ public enum CryptographyErrorCode {
 	/**
 	 * 
 	 */
-	INVALID_DATA_WITHOUT_KEY_BREAKER("KER-CRY-003","data sent to decrypt is without key splitter")
+	INVALID_DATA_WITHOUT_KEY_BREAKER("KER-CRY-003","data sent to decrypt is without key splitter"),
+	/**
+	 * 
+	 */
+	INVALID_REQUEST("KER-CRY-004","Invalid request")
 	;
 
 	/**

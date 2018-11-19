@@ -22,12 +22,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.cryptography.constant.CryptographyErrorCode;
 import io.mosip.kernel.cryptography.dto.CryptographyRequestDto;
 import io.mosip.kernel.cryptography.dto.KeyManagerPublicKeyRequestDto;
 import io.mosip.kernel.cryptography.dto.KeyManagerResponseDto;
-import io.mosip.kernel.cryptography.dto.KeymanagerSymmetricKeyRequestDto;
-import io.mosip.kernel.datamapper.orika.impl.DataMapperImpl;
+import io.mosip.kernel.cryptography.dto.KeyManagerSymmetricKeyRequestDto;
 
 /**
  * @author Urvil Joshi
@@ -71,7 +71,7 @@ public class CryptographyUtil {
 	 * Data Mapper instance.
 	 */
 	@Autowired
-	private DataMapperImpl dataMapperImpl;
+	private DataMapper dataMapper;
 	
 	/**
 	 * 
@@ -94,10 +94,9 @@ public class CryptographyUtil {
 	public PublicKey getPublicKey(
 			CryptographyRequestDto cryptographyRequestDto) {
 		PublicKey key = null;
-		KeyManagerPublicKeyRequestDto keyManagerPublicKeyRequestDto = dataMapperImpl
-				.map(cryptographyRequestDto,KeyManagerPublicKeyRequestDto.class, false, null, null,true);
-
-		KeyManagerResponseDto keyManagerResponseDto = restTemplate.postForObject(getPublicKeyUrl, keyManagerPublicKeyRequestDto,KeyManagerResponseDto.class);
+		KeyManagerPublicKeyRequestDto keyManagerPublicKeyRequestDto = new KeyManagerPublicKeyRequestDto();
+	    dataMapper.map(cryptographyRequestDto,keyManagerPublicKeyRequestDto, new KeyManagerPublicKeyConverter());
+        KeyManagerResponseDto keyManagerResponseDto = restTemplate.postForObject(getPublicKeyUrl, keyManagerPublicKeyRequestDto,KeyManagerResponseDto.class);
 		try {
 			key = KeyFactory.getInstance(asymmetricAlgorithmName).generatePublic(new X509EncodedKeySpec(keyManagerResponseDto.getKey()));
 		} catch (InvalidKeySpecException e) {
@@ -118,8 +117,9 @@ public class CryptographyUtil {
 	 * @return
 	 */
 	public SecretKey getDecryptedSymmetricKey(CryptographyRequestDto cryptographyRequestDto) {
-		KeymanagerSymmetricKeyRequestDto keyManagerPublicKeyRequestDto=dataMapperImpl.map(cryptographyRequestDto, KeymanagerSymmetricKeyRequestDto.class, false, null, null, true);
-		KeyManagerResponseDto keyManagerResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerPublicKeyRequestDto,KeyManagerResponseDto.class);
+		KeyManagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto= new KeyManagerSymmetricKeyRequestDto();
+		dataMapper.map(cryptographyRequestDto, keyManagerSymmetricKeyRequestDto,new KeyManagerSymmetricKeyConverter());
+		KeyManagerResponseDto keyManagerResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerSymmetricKeyRequestDto,KeyManagerResponseDto.class);
 		return new SecretKeySpec(keyManagerResponseDto.getKey(), 0,
 				keyManagerResponseDto.getKey().length, symmetricAlgorithmName);
 	}

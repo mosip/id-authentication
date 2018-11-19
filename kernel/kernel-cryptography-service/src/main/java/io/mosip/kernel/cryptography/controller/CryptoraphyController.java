@@ -17,7 +17,8 @@ import io.mosip.kernel.cryptography.dto.CryptographyRequestDto;
 import io.mosip.kernel.cryptography.dto.CryptographyResponseDto;
 import io.mosip.kernel.cryptography.service.CryptographyService;
 
-/**
+/** Rest Controller for Cryptographic Service
+ * 
  * @author Urvil Joshi
  *
  * @since 1.0.0

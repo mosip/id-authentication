@@ -7,7 +7,6 @@
 package io.mosip.kernel.cryptography.dto;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,7 +28,7 @@ public class KeyManagerPublicKeyRequestDto {
 	/**
 	 * 
 	 */
-	private Optional<String> machineId;
+	private String machineId;
 	/**
 	 * 
 	 */

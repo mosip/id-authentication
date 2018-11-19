@@ -7,7 +7,9 @@
 package io.mosip.kernel.cryptography.dto;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,17 +27,20 @@ public class CryptographyRequestDto {
 /**
  * 
  */
+@NotBlank
 private String appId;
 /**
  * 
  */
-private Optional<String> machineId;
+private String machineId;
 /**
  * 
  */
+@NotNull
 private LocalDateTime timeStamp;
 /**
  * 
  */
+@NotNull
 private byte[] data;
 }
