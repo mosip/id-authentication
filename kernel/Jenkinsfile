@@ -60,6 +60,9 @@ node {
    showChangeLogs();
    for (int j = 0; j < changedModules.size(); j++) {
     for (int i = 0; i < locationOfDockerFiles.size(); i++) {
+     if(locationOfDockerFiles[i].equals("")){
+     break;
+     }
      echo locationOfDockerFiles[i]
      def currentModule = locationOfDockerFiles[i]
      sh "basename `dirname $currentModule` > parentDirectoryName"
