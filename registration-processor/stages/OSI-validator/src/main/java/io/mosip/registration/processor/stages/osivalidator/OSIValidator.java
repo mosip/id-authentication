@@ -54,9 +54,6 @@ public class OSIValidator {
 
 	private String message = null;
 
-	// @Autowired
-	// private RegistrationProcessorRestClientService<Object> restClientService;
-
 	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 	AuthTypeDTO authTypeDTO = new AuthTypeDTO();
 	IdentityDTO identityDTO = new IdentityDTO();
@@ -229,6 +226,7 @@ public class OSIValidator {
 
 	boolean validatePin(String uin, String pin) {
 
+		Boolean isValidPin = false;
 		authTypeDTO.setAddress(false);
 		authTypeDTO.setBio(false);
 		authTypeDTO.setFace(false);
@@ -247,16 +245,18 @@ public class OSIValidator {
 		pinList.add(pinInfo);
 		authRequestDTO.setPinInfo(pinList);
 
-		/*
-		 * AuthResponseDTO authResponseDTO = (AuthResponseDTO)
-		 * restClientService.postApi(ApiName.AUTH, "", "", authRequestDTO,
-		 * AuthResponseDTO.class); System.out.println(authResponseDTO); if
-		 * (authResponseDTO.isStatus()) return true;
-		 */
-		return false;
+		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTH, "", "",
+				authRequestDTO, AuthResponseDTO.class);
+
+		if (authResponseDTO.isStatus())
+			isValidPin = true;
+
+		return isValidPin;
 	}
 
 	boolean validateBiometric(String uin, String biometricType, String identity, byte[] biometricFileHashByte) {
+
+		Boolean isValidBiometric = false;
 
 		authRequestDTO.setIdvId(uin);
 		authTypeDTO.setAddress(false);
@@ -324,9 +324,9 @@ public class OSIValidator {
 		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTH, "", "",
 				authRequestDTO, AuthResponseDTO.class);
 		if (authResponseDTO.isStatus())
-			return true;
+			isValidBiometric = true;
 
-		return false;
+		return isValidBiometric;
 	}
 
 }
