@@ -21,6 +21,8 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.DeviceDTO;
+import io.mosip.registration.dto.ErrorResponseDTO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.service.MapMachineService;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -498,7 +500,14 @@ public class DeviceMappingController extends BaseController implements Initializ
 			devicesAdded.forEach(deviceDTO -> deviceDTO.setMachineId(machineId));
 			
 			// Update Devices Mapping
-			mapMachineService.updateMappedDevice(devicesRemoved, devicesAdded);
+			ResponseDTO responseDTO = mapMachineService.updateMappedDevice(devicesRemoved, devicesAdded);
+			
+			if (responseDTO.getSuccessResponseDTO() != null) {
+				generateAlert(AlertType.INFORMATION, responseDTO.getSuccessResponseDTO().getMessage(), responseDTO.getSuccessResponseDTO().getCode());
+			} else {
+				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+				generateAlert(AlertType.ERROR, errorResponseDTO.getMessage(), errorResponseDTO.getCode());
+			}
 			
 			deviceTypes.getSelectionModel().clearSelection();
 			clearDeviceOnboardSessionContext();
