@@ -2,7 +2,6 @@ package io.mosip.authentication.core.dto.indauth;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -10,11 +9,14 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ActionableAuthError extends AuthError {
 
 	private String actnCode;
+	
+	public ActionableAuthError() {
+		super();
+	}
 
 	/**
 	 * 
