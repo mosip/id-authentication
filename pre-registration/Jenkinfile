@@ -19,10 +19,7 @@ node {
     ],
     extensions: [
 
-     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*'],
-     [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
-     ]]
+     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*']
 
     ],
    ])
