@@ -1,6 +1,8 @@
 package io.mosip.authentication.service.exception;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -218,14 +220,15 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				}
 			} catch (NoSuchMessageException e) {
 				mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.toString(),
-						"\n" + ExceptionUtils.getStackTrace(ex));
+						"\n" + ExceptionUtils.getStackTrace(e));
 				authResp.setErr(Arrays
 						.<AuthError>asList(createAuthError(baseException, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
 								IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage())));
 			}
 		}
 
-		authResp.setResTime(env.getProperty("datetime.pattern"));
+		SimpleDateFormat dateFormat = new SimpleDateFormat(env.getProperty("datetime.pattern"));
+		authResp.setResTime(dateFormat.format(new Date()));
 
 		mosipLogger.error(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), authResp.toString());
 
