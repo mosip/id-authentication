@@ -110,7 +110,7 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedtimes;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "code")
-	private Location location;
+	@OneToOne(mappedBy="code",cascade = CascadeType.ALL)
+	
+	private LocationHierarcyLevel location;
 }
