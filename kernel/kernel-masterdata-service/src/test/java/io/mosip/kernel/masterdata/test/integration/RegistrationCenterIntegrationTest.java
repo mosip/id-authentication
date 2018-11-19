@@ -139,7 +139,7 @@ public class RegistrationCenterIntegrationTest {
 	@Test
 	public void getRegistrationCenterByHierarchylevelAndTextAndLanguageCodeTest() throws Exception {
 		centers.add(center);
-		when(repository.findRegistrationCenter("CITY", "BANGALORE", "ENG")).thenReturn(centers);
+		when(repository.findRegistrationCenterHierarchyLevelName("CITY", "BANGALORE", "ENG")).thenReturn(centers);
 		MvcResult result = mockMvc
 				.perform(get("/registrationcenters/COUNTRY/INDIA/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();

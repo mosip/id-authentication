@@ -249,7 +249,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			String languageCode, String hierarchyLevel, String text) {
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
-			registrationCentersList = registrationCenterRepository.findRegistrationCenter(languageCode, hierarchyLevel,
+			registrationCentersList = registrationCenterRepository.findRegistrationCenterHierarchyLevelName(languageCode, hierarchyLevel,
 					text);
 
 		} catch (DataAccessLayerException dataAccessLayerException) {
