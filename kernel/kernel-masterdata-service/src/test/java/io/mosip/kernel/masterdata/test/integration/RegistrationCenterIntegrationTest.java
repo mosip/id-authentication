@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
@@ -131,6 +132,20 @@ public class RegistrationCenterIntegrationTest {
 		ObjectMapper mapper = new ObjectMapper();
 		RegistrationCenterResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
 				RegistrationCenterResponseDto.class);
+		assertThat(returnResponse.getRegistrationCenters().get(0).getName(), is("bangalore"));
+		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("Bangalore Central"));
+	}
+
+	@Test
+	public void getRegistrationCenterByHierarchylevelAndTextAndLanguageCodeTest() throws Exception {
+		centers.add(center);
+		when(repository.findRegistrationCenter("CITY", "BANGALORE", "ENG")).thenReturn(centers);
+		MvcResult result = mockMvc
+				.perform(get("/registrationcenters/COUNTRY/INDIA/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+		ObjectMapper mapper = new ObjectMapper();
+		RegistrationCenterHierarchyLevelResponseDto returnResponse = mapper.readValue(
+				result.getResponse().getContentAsString(), RegistrationCenterHierarchyLevelResponseDto.class);
 		assertThat(returnResponse.getRegistrationCenters().get(0).getName(), is("bangalore"));
 		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("Bangalore Central"));
 	}

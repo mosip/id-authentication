@@ -33,9 +33,6 @@ public class Location extends BaseEntity implements Serializable {
 	@Id
 	@Column(name = "code")
 	private String code;
-	
-	// @OneToMany(mappedBy="location",cascade=CascadeType.ALL)
-	// private Collection<RegistrationCenter> regCode;
 
 	@Column(name = "name", nullable = false, length = 128)
 	private String name;
@@ -48,12 +45,8 @@ public class Location extends BaseEntity implements Serializable {
 
 	@Column(name = "parent_loc_code", nullable = false, length = 32)
 	private String parentLocCode;
-	
-	
+
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
-	
-	
-	
 
 }
