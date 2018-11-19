@@ -6,8 +6,6 @@ node {
  def projectToBuild = 'authentication'
  def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
- def mvnHome = tool name: 'M2_HOME', type: 'maven'
-
  stage('------- Checkout --------') {
   // Checkout only Kernel Module
   dir(branch) {
