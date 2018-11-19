@@ -23,28 +23,25 @@ import io.kernel.core.idrepo.validator.IdRequestValidator;
 @RestController
 public class IdRepoController {
 
-	@Autowired
-	private IdRepoService idRepoService;
+    @Autowired
+    private IdRepoService idRepoService;
 
-	@Autowired
-	private IdRequestValidator validator;
+    @Autowired
+    private IdRequestValidator validator;
 
-	@PostMapping(path = "/identity", consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public IdResponseDTO addIdentity(@Valid @RequestBody IdRequestDTO request) {
-		return idRepoService.addIdentity(request);
+    @PostMapping(path = "/identity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public IdResponseDTO addIdentity(@Valid @RequestBody IdRequestDTO request) {
+	return idRepoService.addIdentity(request);
 
-	}
+    }
 
-	@GetMapping(path = "/identity/uin/{uin}", consumes = MediaType.ALL_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public IdResponseDTO retrieveEntity(@PathVariable String uin) {
-		return idRepoService.retrieveIdentity(uin);
-	}
+    @GetMapping(path = "/identity/uin/{uin}", consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public IdResponseDTO retrieveEntity(@PathVariable String uin) {
+	return idRepoService.retrieveIdentity(uin);
+    }
 
-	@PatchMapping(path = "/identity/uin/{uin}", consumes = MediaType.ALL_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public IdResponseDTO updateEntity(@Valid @RequestBody IdRequestDTO request) {
-		return idRepoService.updateIdentity(request);
-	}
+    @PatchMapping(path = "/identity/uin/{uin}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public IdResponseDTO updateEntity(@Valid @RequestBody IdRequestDTO request) {
+	return idRepoService.updateIdentity(request);
+    }
 }

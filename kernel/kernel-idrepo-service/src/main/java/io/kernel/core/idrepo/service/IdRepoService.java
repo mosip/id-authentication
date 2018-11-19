@@ -16,9 +16,7 @@ public interface IdRepoService {
 	
 	IdResponseDTO updateIdentity(IdRequestDTO request);
 	
-	String generateUIN();
-	
-	Boolean checkUIN();
+	Boolean checkUIN(String uin);
 	
 	IdResponseDTO constructIdResponse(String id, Uin uin);
 }
