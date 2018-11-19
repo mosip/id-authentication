@@ -36,7 +36,7 @@ node {
  }
    stage ('Complete Packaging') 
 	{
-        rtMaven.run pom: 'DEV/pom.xml', goals: 'clean package', buildInfo: buildInfo
+        rtMaven.run pom: 'DEV/mosip/pom.xml', goals: 'clean package', buildInfo: buildInfo
     }
 stage ('---------- mvn-clean-install ---------------') {
         rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
