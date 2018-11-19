@@ -1,17 +1,15 @@
 package io.mosip.kernel.jsonvalidator.test;
 
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
-import org.junit.Before;
+
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.util.ReflectionTestUtils;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.fge.jackson.JsonLoader;
+import org.mockito.Mockito;
+
+import io.mosip.kernel.jsonvalidator.constant.JsonValidatorErrorConstant;
 import io.mosip.kernel.jsonvalidator.exception.ConfigServerConnectionException;
 import io.mosip.kernel.jsonvalidator.exception.FileIOException;
-import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.jsonvalidator.exception.JsonIOException;
 import io.mosip.kernel.jsonvalidator.exception.JsonSchemaIOException;
 import io.mosip.kernel.jsonvalidator.exception.JsonValidationProcessingException;
@@ -24,27 +22,21 @@ import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
  *
  */
 
-@RunWith(MockitoJUnitRunner.class)
 public class JsonValidatorInvalidConfigServerAddressExceptionTest {
-
-	@InjectMocks
-	JsonValidator jsonValidator;
-	
-	@Before
-	public void setup() {
-	    ReflectionTestUtils.setField(jsonValidator, "configServerFileStorageURL", "http://1.1.1.1:51000/*/default/DEV/");
-	    ReflectionTestUtils.setField(jsonValidator, "propertySource", "CONFIG_SERVER");
-	}
-	
+	/*
+	 * Mocking JsonValidator class object
+	 */
+	private JsonValidator jsonValidator= Mockito.mock(JsonValidator.class);
 
 	@Test(expected = ConfigServerConnectionException.class)
-	public void testForInvalidConfigServerAddress()
-			throws HttpRequestException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException, IOException {
-		JsonNode jsonSchemaNode = JsonLoader.fromResource("/valid-json.json");
-		String jsonString = jsonSchemaNode.toString();
-		String schemaName = "mosip-identity-json-schema.json";
-		jsonValidator.validateJson(jsonString, schemaName);
-	}
-	
+	public void testForConfigServerConnectionException()
+			throws  JsonValidationProcessingException, JsonIOException, IOException, JsonSchemaIOException, FileIOException {
 
+		when(jsonValidator.validateJson(Mockito.any(), Mockito.any()))
+		.thenThrow(new ConfigServerConnectionException(JsonValidatorErrorConstant.CONFIG_SERVER_CONNECTION_EXCEPTION.message
+				, JsonValidatorErrorConstant.CONFIG_SERVER_CONNECTION_EXCEPTION.errorCode));
+		jsonValidator.validateJson("{}", "");
+
+
+	}
 }

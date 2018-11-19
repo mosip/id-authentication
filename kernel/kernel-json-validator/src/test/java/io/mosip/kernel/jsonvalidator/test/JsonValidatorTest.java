@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import io.mosip.kernel.jsonvalidator.constant.JsonValidatorErrorConstant;
 import io.mosip.kernel.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.jsonvalidator.exception.JsonIOException;
@@ -34,7 +35,8 @@ public class JsonValidatorTest {
 			throws HttpRequestException, JsonValidationProcessingException, JsonIOException, IOException, JsonSchemaIOException, FileIOException {
 
 		when(jsonValidator.validateJson(Mockito.any(), Mockito.any()))
-		.thenThrow(new JsonValidationProcessingException("", ""));
+		.thenThrow(new JsonValidationProcessingException(JsonValidatorErrorConstant.JSON_VALIDATION_PROCESSING_EXCEPTION.getMessage(),
+				JsonValidatorErrorConstant.JSON_VALIDATION_PROCESSING_EXCEPTION.errorCode));
 		jsonValidator.validateJson("{}", "");
 
 
