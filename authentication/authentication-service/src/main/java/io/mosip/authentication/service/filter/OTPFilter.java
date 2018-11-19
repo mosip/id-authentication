@@ -10,6 +10,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationAppException;
  * @author Manoj SP
  *
  */
+@Component
 public class OTPFilter extends BaseAuthFilter {
 
 	@Override

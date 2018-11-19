@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +36,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
  * @author Manoj SP
  *
  */
+@Component
 public abstract class BaseAuthFilter implements Filter {
 
 	private static final String BASE_AUTH_FILTER = "BaseAuthFilter";
@@ -142,7 +144,6 @@ public abstract class BaseAuthFilter implements Filter {
 
 	protected Object decode(String stringToDecode) throws IdAuthenticationAppException {
 		try {
-			System.err.println(stringToDecode);
 			if (stringToDecode != null) {
 				return mapper.readValue(Base64.getDecoder().decode(stringToDecode),
 						new TypeReference<Map<String, Object>>() {
