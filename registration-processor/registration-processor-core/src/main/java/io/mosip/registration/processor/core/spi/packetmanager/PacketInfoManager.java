@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
  * @param <D> DemographicInfo
  */
 @Service
-public interface PacketInfoManager<T, D, M, A> {
+public interface PacketInfoManager<T,/** D, M,*/ A> {
 
 
 	/**
@@ -31,7 +31,7 @@ public interface PacketInfoManager<T, D, M, A> {
 	 *
 	 * @param demograficData the demografic data
 	 */
-	public void saveDemographicData(D demograficData,M metaData);
+	//public void saveDemographicData(D demograficData,M metaData);
 	
 	/**
 	 * Gets the packetsfor QC user.

@@ -4,18 +4,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
+import org.bouncycastle.asn1.cms.MetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.mosip.registration.processor.core.packet.dto.Demographic;
-import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
-import io.mosip.registration.processor.core.packet.dto.DocumentDetail;
-import io.mosip.registration.processor.core.packet.dto.ExceptionFingerprint;
-import io.mosip.registration.processor.core.packet.dto.ExceptionIris;
-import io.mosip.registration.processor.core.packet.dto.Fingerprint;
-import io.mosip.registration.processor.core.packet.dto.Iris;
-import io.mosip.registration.processor.core.packet.dto.MetaData;
-import io.mosip.registration.processor.core.packet.dto.OsiData;
+import io.mosip.registration.processor.core.packet.dto.BiometricData;
+import io.mosip.registration.processor.core.packet.dto.BiometricException;
+
+import io.mosip.registration.processor.core.packet.dto.Document;
+
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
+import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicPKEntity;
@@ -42,6 +43,8 @@ public class PacketInfoMapper {
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoMapper.class);
 
+	private static final String REGISTRATION_ID="registrationId";
+	private static final String PRE_REGISTRATION_ID="preRegistrationId";
 	/**
 	 * Instantiates a new packet info mapper.
 	 */
@@ -56,16 +59,24 @@ public class PacketInfoMapper {
 	 * @param metaData the meta data
 	 * @return the applicant document entity
 	 */
-	public static ApplicantDocumentEntity convertAppDocDtoToEntity(DocumentDetail documentDto, MetaData metaData) {
+	public static ApplicantDocumentEntity convertAppDocDtoToEntity(Document documentDto, List<FieldValue> metaData) {
 
+		Optional<FieldValue> regId=metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
+		String registrationId="";
+		if(regId.isPresent())registrationId=regId.get().getValue();
+		
+		Optional<FieldValue> preregId=metaData.stream().filter(m -> m.getLabel().equals(PRE_REGISTRATION_ID)).findFirst();
+		String preregistrationId="";
+		if(preregId.isPresent())preregistrationId=preregId.get().getValue();
+		
 		ApplicantDocumentEntity applicantDocumentEntity = new ApplicantDocumentEntity();
 		ApplicantDocumentPKEntity applicantDocumentPKEntity = new ApplicantDocumentPKEntity();
 		applicantDocumentPKEntity.setDocCatCode(documentDto.getDocumentCategory());
 		applicantDocumentPKEntity.setDocTypCode(documentDto.getDocumentType());
-		applicantDocumentPKEntity.setRegId(metaData.getRegistrationId());
+		applicantDocumentPKEntity.setRegId(registrationId);
 
 		applicantDocumentEntity.setId(applicantDocumentPKEntity);
-		applicantDocumentEntity.setPreRegId(metaData.getPreRegistrationId());
+		applicantDocumentEntity.setPreRegId(preregistrationId);
 		applicantDocumentEntity.setDocOwner(documentDto.getDocumentOwner());
 		applicantDocumentEntity.setDocName(documentDto.getDocumentName());
 		applicantDocumentEntity.setDocOwner(documentDto.getDocumentOwner());
@@ -75,30 +86,7 @@ public class PacketInfoMapper {
 		return applicantDocumentEntity;
 	}
 
-	/**
-	 * Convert iris to iris exc entity.
-	 *
-	 * @param exceptionIris            the exception iris
-	 * @param metaData the meta data
-	 * @return the biometric exception entity
-	 */
-	public static BiometricExceptionEntity convertBiometricExcDtoToEntity(ExceptionIris exceptionIris,
-			MetaData metaData) {
-		BiometricExceptionEntity bioMetricExceptionEntity = new BiometricExceptionEntity();
-		BiometricExceptionPKEntity biometricExceptionPKEntity = new BiometricExceptionPKEntity();
-		biometricExceptionPKEntity.setRegId(metaData.getRegistrationId());
-		biometricExceptionPKEntity.setMissingBio(exceptionIris.getMissingBiometric());
-		biometricExceptionPKEntity.setLangCode("en");
-		bioMetricExceptionEntity.setId(biometricExceptionPKEntity);
-		bioMetricExceptionEntity.setPreregId(metaData.getPreRegistrationId());
-		bioMetricExceptionEntity.setBioTyp(exceptionIris.getBiometricType());
-		bioMetricExceptionEntity.setExcpDescr(exceptionIris.getExceptionDescription());
-		bioMetricExceptionEntity.setExcpTyp(exceptionIris.getExceptionType());
-		bioMetricExceptionEntity.setIsDeleted(false);
-		bioMetricExceptionEntity.setStatusCode("");
-
-		return bioMetricExceptionEntity;
-	}
+	
 
 	/**
 	 * Convert iris to iris entity.
@@ -107,18 +95,25 @@ public class PacketInfoMapper {
 	 * @param metaData the meta data
 	 * @return the applicant iris entity
 	 */
-	public static ApplicantIrisEntity convertIrisDtoToEntity(Iris iris, MetaData metaData) {
-
+	public static ApplicantIrisEntity convertIrisDtoToEntity(BiometricData iris, List<FieldValue>  metaData) {
+		Optional<FieldValue> regId=metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
+		String registrationId="";
+		if(regId.isPresent())registrationId=regId.get().getValue();
+		
+		Optional<FieldValue> preregId=metaData.stream().filter(m -> m.getLabel().equals(PRE_REGISTRATION_ID)).findFirst();
+		String preregistrationId="";
+		if(preregId.isPresent())preregistrationId=preregId.get().getValue();
+		
 		ApplicantIrisEntity applicantIrisEntity = new ApplicantIrisEntity();
 		ApplicantIrisPKEntity applicantIrisPKEntity = new ApplicantIrisPKEntity();
 
-		applicantIrisPKEntity.setRegId(metaData.getRegistrationId());
-		applicantIrisPKEntity.setTyp(iris.getIrisType());
+		applicantIrisPKEntity.setRegId(registrationId);
+		applicantIrisPKEntity.setTyp(iris.getType());
 
 		applicantIrisEntity.setId(applicantIrisPKEntity);
 		applicantIrisEntity.setNoOfRetry(iris.getNumRetry());
-		applicantIrisEntity.setImageName(iris.getIrisImageName());
-		applicantIrisEntity.setPreRegId(metaData.getPreRegistrationId());
+		applicantIrisEntity.setImageName(iris.getImageName());
+		applicantIrisEntity.setPreRegId(preregistrationId);
 		applicantIrisEntity.setQualityScore(BigDecimal.valueOf(iris.getQualityScore()));
 		applicantIrisEntity.setActive(true);
 
@@ -132,19 +127,25 @@ public class PacketInfoMapper {
 	 * @param metaData the meta data
 	 * @return the applicant fingerprint entity
 	 */
-	public static ApplicantFingerprintEntity convertFingerprintDtoToEntity(Fingerprint fingerprint, MetaData metaData) {
-
+	public static ApplicantFingerprintEntity convertFingerprintDtoToEntity(BiometricData fingerprint, List<FieldValue> metaData) {
+		Optional<FieldValue> regId=metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
+		String registrationId="";
+		if(regId.isPresent())registrationId=regId.get().getValue();
+		
+		Optional<FieldValue> preregId=metaData.stream().filter(m -> m.getLabel().equals(PRE_REGISTRATION_ID)).findFirst();
+		String preregistrationId="";
+		if(preregId.isPresent())preregistrationId=preregId.get().getValue();
 		ApplicantFingerprintEntity applicantFingerprintEntity = new ApplicantFingerprintEntity();
 		ApplicantFingerprintPKEntity applicantFingerprintPKEntity = new ApplicantFingerprintPKEntity();
 
-		applicantFingerprintPKEntity.setRegId(metaData.getRegistrationId());
-		applicantFingerprintPKEntity.setTyp(fingerprint.getFingerType());
+		applicantFingerprintPKEntity.setRegId(registrationId);
+		applicantFingerprintPKEntity.setTyp(fingerprint.getType());
 
 		applicantFingerprintEntity.setId(applicantFingerprintPKEntity);
 		applicantFingerprintEntity.setNoOfRetry(fingerprint.getNumRetry());
-		applicantFingerprintEntity.setImageName(fingerprint.getFingerprintImageName());
+		applicantFingerprintEntity.setImageName(fingerprint.getImageName());
 		applicantFingerprintEntity.setNoOfRetry(fingerprint.getNumRetry());
-		applicantFingerprintEntity.setPreRegId(metaData.getPreRegistrationId());
+		applicantFingerprintEntity.setPreRegId(preregistrationId);
 		applicantFingerprintEntity.setQualityScore(BigDecimal.valueOf(fingerprint.getQualityScore()));
 		applicantFingerprintEntity.setActive(true);
 
@@ -160,19 +161,25 @@ public class PacketInfoMapper {
 	 * @return the biometric exception entity
 	 */
 	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(
-			ExceptionFingerprint exceptionFingerprint, MetaData metaData) {
-
+			BiometricException exception, List<FieldValue> metaData) {
+		Optional<FieldValue> regId=metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
+		String registrationId="";
+		if(regId.isPresent())registrationId=regId.get().getValue();
+		
+		Optional<FieldValue> preregId=metaData.stream().filter(m -> m.getLabel().equals(PRE_REGISTRATION_ID)).findFirst();
+		String preregistrationId="";
+		if(preregId.isPresent())preregistrationId=preregId.get().getValue();
 		BiometricExceptionEntity bioMetricExceptionEntity = new BiometricExceptionEntity();
 		BiometricExceptionPKEntity biometricExceptionPKEntity = new BiometricExceptionPKEntity();
-		biometricExceptionPKEntity.setRegId(metaData.getRegistrationId());
-		biometricExceptionPKEntity.setMissingBio(exceptionFingerprint.getMissingBiometric());
+		biometricExceptionPKEntity.setRegId(registrationId);
+		biometricExceptionPKEntity.setMissingBio(exception.getMissingBiometric());
 		biometricExceptionPKEntity.setLangCode("en");
 
 		bioMetricExceptionEntity.setId(biometricExceptionPKEntity);
-		bioMetricExceptionEntity.setPreregId(metaData.getPreRegistrationId());
-		bioMetricExceptionEntity.setBioTyp(exceptionFingerprint.getBiometricType());
-		bioMetricExceptionEntity.setExcpDescr(exceptionFingerprint.getExceptionDescription());
-		bioMetricExceptionEntity.setExcpTyp(exceptionFingerprint.getExceptionType());
+		bioMetricExceptionEntity.setPreregId(preregistrationId);
+		bioMetricExceptionEntity.setBioTyp(exception.getType());
+		bioMetricExceptionEntity.setExcpDescr(exception.getExceptionDescription());
+		bioMetricExceptionEntity.setExcpTyp(exception.getExceptionType());
 		bioMetricExceptionEntity.setIsDeleted(false);
 
 		return bioMetricExceptionEntity;
@@ -182,21 +189,37 @@ public class PacketInfoMapper {
 	 * Convert photo graph data to photo graph entity.
 	 *
 	 * @param photoGraphData            the photo graph data
+	 * @param exceptionPhotographData 
 	 * @param metaData the meta data
 	 * @return the applicant photograph entity
 	 */
-	public static ApplicantPhotographEntity convertPhotoGraphDtoToEntity(Photograph photoGraphData, MetaData metaData) {
-
+	public static ApplicantPhotographEntity convertPhotoGraphDtoToEntity(Photograph photoGraphData, Photograph exceptionPhotographData, List<FieldValue> metaData) {
+		Optional<FieldValue> regId=metaData.stream().filter(m -> m.getLabel().equals(REGISTRATION_ID)).findFirst();
+		String registrationId="";
+		if(regId.isPresent())registrationId=regId.get().getValue();
+		
+		Optional<FieldValue> preregId=metaData.stream().filter(m -> m.getLabel().equals(PRE_REGISTRATION_ID)).findFirst();
+		String preregistrationId="";
+		if(preregId.isPresent())preregistrationId=preregId.get().getValue();
+		
 		ApplicantPhotographEntity applicantPhotographEntity = new ApplicantPhotographEntity();
+		
+		Boolean isHasExceptionPhoto=false;
+		if(!(exceptionPhotographData.getPhotographName().isEmpty())) {
+			isHasExceptionPhoto=true;
+			applicantPhotographEntity.setExcpPhotoName(exceptionPhotographData.getPhotographName());
+		}
+		
+		
 
 		ApplicantPhotographPKEntity applicantPhotographPKEntity = new ApplicantPhotographPKEntity();
-		applicantPhotographPKEntity.setRegId(metaData.getRegistrationId());
+		applicantPhotographPKEntity.setRegId(registrationId);
 
 		applicantPhotographEntity.setId(applicantPhotographPKEntity);
-		applicantPhotographEntity.setPreRegId(metaData.getPreRegistrationId());
-		applicantPhotographEntity.setExcpPhotoName(photoGraphData.getExceptionPhotoName());
+		applicantPhotographEntity.setPreRegId(preregistrationId);
+		
 		applicantPhotographEntity.setImageName(photoGraphData.getPhotographName());
-		applicantPhotographEntity.setHasExcpPhotograph(photoGraphData.isHasExceptionPhoto());
+		applicantPhotographEntity.setHasExcpPhotograph(isHasExceptionPhoto);
 		applicantPhotographEntity.setQualityScore(BigDecimal.valueOf(photoGraphData.getQualityScore()));
 		applicantPhotographEntity.setActive(true);
 
@@ -207,29 +230,62 @@ public class PacketInfoMapper {
 	 * Convert osi data to osi entity.
 	 *
 	 * @param osiData            the osi data
-	 * @param metaData the meta data
+	 * @param introducer the meta data
+	 * @param metaData 
 	 * @return the reg osi entity
 	 */
-	public static RegOsiEntity convertOsiDataToEntity(OsiData osiData, MetaData metaData) {
-
+	public static RegOsiEntity convertOsiDataToEntity(List<FieldValue> osiData, Introducer introducer, List<FieldValue> metaData) {
 		RegOsiEntity regOsiEntity = new RegOsiEntity();
+		
 		RegOsiPkEntity regOsiPkEntity = new RegOsiPkEntity();
-		regOsiPkEntity.setRegId(metaData.getRegistrationId());
+		
+		for(FieldValue field: metaData) {
+			if(field.getLabel().matches(REGISTRATION_ID)) {
+				regOsiPkEntity.setRegId(field.getValue());
+			}
+			else if(field.getLabel().matches(PRE_REGISTRATION_ID)) {
+				regOsiEntity.setPreregId(field.getValue());
+			}
+			else if(field.getLabel().matches("introducerRID")) {
+				regOsiEntity.setIntroducerId(field.getValue());
+			}
+			else if(field.getLabel().matches("introducerUIN")) {
+				regOsiEntity.setIntroducerRegId(field.getValue());
+				regOsiEntity.setIntroducerUin(field.getValue());
+			}
+			else if(field.getLabel().matches("introducerType")) {
+				regOsiEntity.setIntroducerTyp(field.getValue());
+			}
+			
+		}
+		
+		for(FieldValue field: osiData) {
+			if(field.getLabel().matches("officerFingerprintImage")) {
+				regOsiEntity.setOfficerFingerpImageName(field.getValue());
+			}
+			else if(field.getLabel().matches("officerId")) {
+				regOsiEntity.setOfficerId(field.getValue());
+			}
+			else if(field.getLabel().matches("officerIrisImage")) {
+				regOsiEntity.setOfficerIrisImageName(field.getValue());
+			}
+			else if(field.getLabel().matches("supervisorFingerprintImage")) {
+				regOsiEntity.setSupervisorFingerpImageName(field.getValue());
+			}
+			else if(field.getLabel().matches("supervisorIrisImage")) {
+				regOsiEntity.setSupervisorIrisImageName(field.getValue());
+			}
+			else if(field.getLabel().matches("supervisiorId")) {
+				regOsiEntity.setSupervisorId(field.getValue());
+			}
+		}
 
-		regOsiEntity.setIntroducerFingerpImageName(osiData.getIntroducerFingerprintImage());
-		regOsiEntity.setIntroducerId(osiData.getIntroducerRID().toString());
-		regOsiEntity.setIntroducerIrisImageName(osiData.getIntroducerIrisImage());
-		regOsiEntity.setIntroducerRegId(osiData.getIntroducerUIN());
-		regOsiEntity.setIntroducerTyp(osiData.getIntroducerType());
-		regOsiEntity.setIntroducerUin(osiData.getIntroducerUIN());
-		regOsiEntity.setOfficerFingerpImageName(osiData.getOperatorFingerprintImage());
-		regOsiEntity.setOfficerId(osiData.getOperatorId());
-		regOsiEntity.setOfficerIrisImageName(osiData.getOperatorIrisName());
+		regOsiEntity.setIntroducerFingerpImageName(introducer.getIntroducerFingerprint().getImageName());
+		
+		regOsiEntity.setIntroducerIrisImageName(introducer.getIntroducerIris().getImageName());
+		
 		regOsiEntity.setId(regOsiPkEntity);
-		regOsiEntity.setPreregId(metaData.getPreRegistrationId());
-		regOsiEntity.setSupervisorId(osiData.getSupervisorId());
-		regOsiEntity.setSupervisorFingerpImageName(osiData.getSupervisorFingerprintImage());
-		regOsiEntity.setSupervisorIrisImageName(osiData.getSupervisorIrisName());
+		
 		regOsiEntity.setIsActive(true);
 
 		return regOsiEntity;
@@ -241,7 +297,7 @@ public class PacketInfoMapper {
 	 * @param demographicInfo            the demographic info
 	 * @param metaData the meta data
 	 * @return the list
-	 */
+	 *//*
 	public static List<ApplicantDemographicEntity> convertDemographicDtoToEntity(Demographic demographicInfo,
 			MetaData metaData) {
 
@@ -325,20 +381,34 @@ public class PacketInfoMapper {
 
 		return applicantDemographicEntities;
 	}
-
-	public static RegCenterMachineEntity convertRegCenterMachineToEntity(MetaData metaData) {
+*/
+	public static RegCenterMachineEntity convertRegCenterMachineToEntity(List<FieldValue> metaData) {
+		
 		RegCenterMachinePKEntity regCenterMachinePKEntity = new RegCenterMachinePKEntity();
-		regCenterMachinePKEntity.setRegId(metaData.getRegistrationId());
-
 		RegCenterMachineEntity regCenterMachineEntity = new RegCenterMachineEntity();
+		
+		for(FieldValue field: metaData) {
+			if(field.getLabel().matches(REGISTRATION_ID)) {
+				regCenterMachinePKEntity.setRegId(field.getValue());
+			}
+			else if(field.getLabel().matches(PRE_REGISTRATION_ID)) {
+				regCenterMachineEntity.setPreregId(field.getValue());
+			}
+			else if(field.getLabel().matches("geoLocLatitude")) {
+				regCenterMachineEntity.setLatitude(field.getValue());
+			}
+			else if(field.getLabel().matches("geoLoclongitude")) {
+				regCenterMachineEntity.setLongitude(field.getValue());
+				
+			}
+				
+		}
+			
 		regCenterMachineEntity.setCntrId("Center 1");
 		regCenterMachineEntity.setMachineId("Machine 1");
 		regCenterMachineEntity.setId(regCenterMachinePKEntity);
 		regCenterMachineEntity.setIsActive(true);
-		regCenterMachineEntity.setPreregId(metaData.getPreRegistrationId());
-		regCenterMachineEntity.setLatitude(metaData.getGeoLocation().getLatitude().toString());
-		regCenterMachineEntity.setLongitude(metaData.getGeoLocation().getLongitude().toString());
-
+		
 		return regCenterMachineEntity;
 	}
 

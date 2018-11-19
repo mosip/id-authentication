@@ -15,7 +15,8 @@ public class ApplicantInfoDto extends Demographic implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Photograph applicantPhoto;
+	private Photograph applicantPhotograph;
+	private Photograph exceptionPhotograph;
 	
 
 	
