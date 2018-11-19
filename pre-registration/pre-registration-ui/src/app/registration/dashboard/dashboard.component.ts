@@ -44,20 +44,18 @@ export class DashBoardComponent implements OnInit {
   }
 
   initUsers() {
-    this.regService.getUsers().subscribe((applicants: Applicant[]) => {
+    this.regService.getUsers(this.loginId).subscribe((applicants: Applicant[]) => {
       for (const user of applicants) {
-        this.users.push(
-          new Applicant(user['pre-registration-id'], user['fullname'], user['appointment_dtimesz'], user['status_code'])
-        );
-      }
-      this.isFetched = true;
-      console.log(applicants);
-    });
-    this.regService.getUsers().subscribe((applicants: Applicant[]) => {
-      for (const user of applicants) {
-        this.users.push(
-          new Applicant(user['pre-registration-id'], user['fullname'], user['appointment_dtimesz'], user['status_code'])
-        );
+        for (let index = 0; index < user['response'].length; index++) {
+          this.users.push(
+            new Applicant(
+              user['response'][index]['preId'],
+              user['response'][index]['firstname'],
+              user['response'][index]['appointmentDate'],
+              user['response'][index]['status_code']
+            )
+          );
+        }
       }
       this.isFetched = true;
     });

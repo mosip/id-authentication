@@ -32,6 +32,7 @@
                 <span>
                   <mat-form-field style="width:150px;">
                     <mat-select
+                      [ngClass]="{ highlight: !checked }"
                       [(value)]="ageOrDobPref"
                       placeholder="{{demo.dateOfBirth}}/{{demo.age}}"
                       [(value)]="selected"
@@ -46,14 +47,13 @@
                 </span>
 
                 <ng-template #dob>
-                  <input
-                    (dateInput)="addDOB($event)"
-                    [matDatepicker]="picker"
-                    placeholder="{{demo.dateOfBirth}}"
-                    formControlName="dob"
-                    type="hidden"
-                  />
                   <span>
+                    <input
+                      (dateInput)="addDOB($event)"
+                      [matDatepicker]="picker"
+                      placeholder="{{demo.dateOfBirth}}"
+                      type="hidden"
+                    />
                     <div *ngIf="showDate; then: show; else: hidden"></div>
                     <mat-datepicker-toggle style="width: 40px ;float: right;" [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
