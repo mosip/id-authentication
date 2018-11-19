@@ -45,8 +45,6 @@ public class PacketSyncStatusJob extends BaseJob {
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(SyncTransactionManagerImpl.class);
 
-	
-
 	@Override
 	public ResponseDTO executeJob(String triggerPoint) {
 
@@ -56,15 +54,20 @@ public class PacketSyncStatusJob extends BaseJob {
 
 		if (this.applicationContext != null) {
 			/*
-			 * If it was system triggered
-			 * Get the Beans of baseTransactionManager and packetStatusService through
-			 * application context
+			 * If it was system triggered Get the Beans of baseTransactionManager and
+			 * packetStatusService through application context
 			 */
 			this.baseTransactionManager = this.applicationContext.getBean(BaseTransactionManager.class);
 			this.packetStatusService = this.applicationContext.getBean(RegPacketStatusService.class);
 		}
-		ResponseDTO responseDTO = packetStatusService.packetSyncStatus();
-		if (responseDTO.getErrorResponseDTOs() != null) {
+		ResponseDTO responseDTO = new ResponseDTO();
+		try {
+			responseDTO = packetStatusService.packetSyncStatus();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (responseDTO.getErrorResponseDTOs() == null) {
 			try {
 				// Insert Sync Transaction
 				baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILED,
@@ -86,9 +89,6 @@ public class PacketSyncStatusJob extends BaseJob {
 		}
 		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
-
-		System.out.println();
-		System.out.println("Endedm Job Execution");
 
 		return responseDTO;
 	}

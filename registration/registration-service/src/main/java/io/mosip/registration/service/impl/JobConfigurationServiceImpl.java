@@ -62,6 +62,9 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 	
 	
 	private static Map<String, Object> JOBDATASMAP = new HashMap<>();
+	
+	
+	private static LinkedList<SyncJob> jobList=new LinkedList<>();
 
 	private ApplicationContext applicationContext;
 
@@ -69,7 +72,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.JobConfigurationService#initiateJobs()
 	 */
-	//@PostConstruct
+	@PostConstruct
 	public void initiateJobs() {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
@@ -78,12 +81,26 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		jobList.forEach(syncJob -> {
 			SYNC_JOB_MAP.put(syncJob.getId(), syncJob);
 			
+			
 		});
+		
+	/*	jobList.forEach(syncJob -> {
+			if(syncJob.getParentSyncJobId()!=null) {
+				String currentParentJob = syncJob.getParentSyncJobId();
+				while( currentParentJob!=null) {
+					SyncJob parentJob = SYNC_JOB_MAP.get(currentParentJob);
+					jobList.remove(parentJob.getParentSyncJobId());
+					currentParentJob = parentJob.getParentSyncJobId();
+				}
+				
+			}
+		});*/
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was completed");
 
 	}
+	
 
 	
 	/* (non-Javadoc)
@@ -100,32 +117,34 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		SYNC_JOB_MAP.forEach((jobId, syncJob) -> {
 			try {
 
-				JobDetailFactoryBean jobDetailBean = new JobDetailFactoryBean();
-				CronTriggerFactoryBean cronTriggerBean = new CronTriggerFactoryBean();
+				if(syncJob.getParentSyncJobId()==null) {
+					JobDetailFactoryBean jobDetailBean = new JobDetailFactoryBean();
+					CronTriggerFactoryBean cronTriggerBean = new CronTriggerFactoryBean();
 
-				BaseJob baseJob = null;
+					BaseJob baseJob = null;
 
-				// Get Job instance through application context
-				baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
+					// Get Job instance through application context
+					baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
 
-				jobDetailBean.setJobClass(baseJob.jobClass());
-				jobDetailBean.setName(syncJob.getId());
-				
-				JOBDATASMAP.put("applicationContext", applicationContext);
+					jobDetailBean.setJobClass(baseJob.jobClass());
+					jobDetailBean.setName(syncJob.getId());
+					
+					JOBDATASMAP.put("applicationContext", applicationContext);
 
-				// putting application context in job data map
+					// putting application context in job data map
 
-				jobDetailBean.setJobDataAsMap(JOBDATASMAP);
-				jobDetailBean.afterPropertiesSet();
+					jobDetailBean.setJobDataAsMap(JOBDATASMAP);
+					jobDetailBean.afterPropertiesSet();
 
-				cronTriggerBean.setJobDetail(jobDetailBean.getObject());
-				cronTriggerBean.setCronExpression(syncJob.getSyncFrequency());
-				cronTriggerBean.setName(syncJob.getId());
-				cronTriggerBean.afterPropertiesSet();
-				
-				schedulerFactoryBean.getScheduler().scheduleJob(jobDetailBean.getObject(), cronTriggerBean.getObject());
-				setSuccessResponseDTO(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE);
+					cronTriggerBean.setJobDetail(jobDetailBean.getObject());
+					cronTriggerBean.setCronExpression(syncJob.getSyncFrequency());
+					cronTriggerBean.setName(syncJob.getId());
+					cronTriggerBean.afterPropertiesSet();
+					
+					schedulerFactoryBean.getScheduler().scheduleJob(jobDetailBean.getObject(), cronTriggerBean.getObject());
+					setSuccessResponseDTO(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE);
 
+				}
 			} catch (SchedulerException | ParseException | NoSuchBeanDefinitionException exception) {
 				setErrorResponseDTO(responseDTO, exception);
 			}

@@ -1,10 +1,17 @@
 package io.mosip.registration.jobs;
 
+import java.text.ParseException;
+
 import org.quartz.JobExecutionContext;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
+import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
@@ -66,17 +73,18 @@ public abstract class BaseJob extends QuartzJobBean {
 
 			baseTransactionManager = this.applicationContext.getBean(BaseTransactionManager.class);
 
-			this.executeParentJob(baseTransactionManager.getJob(context).getId());
+			SyncJob syncJob=baseTransactionManager.getJob(context);
+			this.executeChildJob(syncJob.getId());
 
 		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					noSuchBeanDefinitionException.getMessage());
 		} catch (NullPointerException nullPointerException) {
 			nullPointerException.printStackTrace();
-			
+
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
 					nullPointerException.getMessage());
-			
+
 		}
 
 		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -99,7 +107,7 @@ public abstract class BaseJob extends QuartzJobBean {
 	 * @param currentJobID
 	 *            current job executing
 	 */
-	public void executeParentJob(String currentJobID) {
+	public void executeChildJob(String currentJobID) {
 		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execution started");
 
@@ -107,15 +115,33 @@ public abstract class BaseJob extends QuartzJobBean {
 
 			// Get Current SyncJob
 			SyncJob syncJob = JobConfigurationServiceImpl.SYNC_JOB_MAP.get(currentJobID);
-			if (syncJob.getParentSyncJobId() != null) {
-				executeParentJob(syncJob.getParentSyncJobId());
-			}
+			
+			/*if (syncJob.getParentSyncJobId() != null) {
+				executeParentJob(syncJob.getParentSyncJobId(), context);
+			}*/
 
-			try {
-				//Get job from application context, which has to be executed
-				BaseJob baseJob = (BaseJob) this.applicationContext.getBean(syncJob.getApiName());
-				baseJob.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-
+			try{
+				//Parent  SyncJob
+				BaseJob parentBaseJob = (BaseJob) this.applicationContext.getBean(syncJob.getApiName());
+				
+				//Response of parentBaseJob
+				ResponseDTO responseDTO=parentBaseJob.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
+				
+				//if parent job successfully executed, execute its next child job
+				if(responseDTO.getErrorResponseDTOs()==null && responseDTO.getSuccessResponseDTO()!=null) {
+					
+					//Check for current job's child
+					JobConfigurationServiceImpl.SYNC_JOB_MAP.forEach((jobId, childJob) ->
+					{
+						if(childJob.getParentSyncJobId()!=null && childJob.getParentSyncJobId().equals(syncJob.getId())) {
+							
+							//Execute its next child Job
+							executeChildJob(childJob.getId());
+						}
+					});
+				}
+				
+			
 			} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
 				throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 						noSuchBeanDefinitionException.getMessage());

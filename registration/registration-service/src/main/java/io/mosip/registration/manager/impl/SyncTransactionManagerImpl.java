@@ -185,6 +185,7 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 		boolean isNotCreated = syncControl == null;
 		if (syncControl == null) {
 			syncControl = new SyncControl();
+			syncControl.setId(Integer.toString(random.nextInt(10000)));
 			syncControl.setSyncJobId(syncTransaction.getSyncJobId());
 			syncControl.setIsActive(true);
 			syncControl.setMachineId(RegistrationSystemPropertiesChecker.getMachineId());
