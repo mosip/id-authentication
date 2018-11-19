@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.exception;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +55,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private MessageSource messageSource;
-
+	
+	@Autowired
+	private Environment env;
+	
 	/** The Constant PREFIX_HANDLING_EXCEPTION. */
 	private static final String PREFIX_HANDLING_EXCEPTION = "Handling exception :";
 
@@ -222,7 +225,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 			}
 		}
 
-		authResp.setResTime(Instant.now().toString());
+		authResp.setResTime(env.getProperty("datetime.pattern"));
 
 		mosipLogger.error(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), authResp.toString());
 

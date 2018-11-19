@@ -144,14 +144,24 @@ public class AuthFacadeImpl implements AuthFacade {
 		logger.info(DEFAULT_SESSION_ID, "IDA", AUTH_FACADE,
 				"authenticateApplicant status : " + authResponseDTO.getStatus());
 
+		//FIXME fix the mimetype issue
+		// sendAuthNotification(authRequestDTO, emailproperty, smsproperty, ismaskRequired, refId, authResponseDTO);
+
+		return authResponseDTO;
+
+	}
+
+	private void sendAuthNotification(AuthRequestDTO authRequestDTO, String emailproperty, String smsproperty,
+			String ismaskRequired, String refId, AuthResponseDTO authResponseDTO)
+			throws IdAuthenticationDaoException, IdAuthenticationBusinessException {
 		NotificationType emailNotification = NotificationType.valueOf(emailproperty);
 		NotificationType smsNotification = NotificationType.valueOf(smsproperty);
 		Set<NotificationType> notificationType = new HashSet<>();
 		notificationType.add(emailNotification);
 		notificationType.add(smsNotification);
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(refId);
-		Map<String, Object> values = new HashMap();
-		values.put("NAME", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
+		Map<String, Object> values = new HashMap<>();
+		values.put("name", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
 		String dateTime = authResponseDTO.getResTime();
 		DateFormat formatter = new SimpleDateFormat(env.getProperty("datetime.pattern"));
 		Date date1;
@@ -168,23 +178,23 @@ public class AuthFacadeImpl implements AuthFacade {
 			logger.error(DEFAULT_SESSION_ID, "IDA", AUTH_FACADE, e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, e);
 		}
-		values.put("DATE", changedDate);
-		values.put("TIME", changedTime);
+		values.put("data", changedDate);
+		values.put("time", changedTime);
 		Optional<UinEntity> uinEntity = idAuthServiceImpl.getUIN(refId);
-		values.put("UIN", Optional.ofNullable(uinEntity.get().getId()));
-		values.put("AUTHTYPE",
+		values.put("uin", Optional.ofNullable(uinEntity.get().getId()));
+		values.put("authType",
 				Stream.of(AuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
 						.map(AuthType::getType).collect(Collectors.joining(",")));
 		if (authResponseDTO.getStatus().equals("y")) {
-			values.put("STATUS", "Success");
+			values.put("status", "Success");
 		} else {
-			values.put("STATUS", "Failed");
+			values.put("status", "Failed");
 		}
 
 		String phoneNumber = null;
 		String email = null;
 
-		if (ismaskRequired.equals("true")) {
+		if (ismaskRequired.equals(Boolean.TRUE.toString())) {
 			phoneNumber = MaskUtil.generateMaskValue(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo).getValue(),
 					Integer.parseInt(env.getProperty("uin.masking.charcount")));
 			email = MaskUtil.generateMaskValue(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo).getValue(),
@@ -195,9 +205,6 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 
 		notificationManager.sendNotification(values, email, phoneNumber, SenderType.AUTH);
-
-		return authResponseDTO;
-
 	}
 
 	/**
@@ -277,7 +284,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Override
 	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO) {
 
-		String s = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+		String s = LocalDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")));
 		AuthResponseDTO authResponseTspDto = new AuthResponseDTO();
 		authResponseTspDto.setStatus("y");
 		authResponseTspDto.setErr(Collections.emptyList());

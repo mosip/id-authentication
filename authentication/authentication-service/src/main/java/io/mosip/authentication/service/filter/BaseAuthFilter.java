@@ -38,6 +38,11 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @Component
 public abstract class BaseAuthFilter implements Filter {
+	
+	
+	//FIXME get the date time pattern from configuration
+	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
 
 	private static final String BASE_AUTH_FILTER = "BaseAuthFilter";
 
@@ -167,7 +172,7 @@ public abstract class BaseAuthFilter implements Filter {
 	 */
 	private void logResponseTime(String responseTime) {
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Response sent at : " + responseTime);
-		DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_DATE_TIME;
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 		TemporalAccessor accessor = timeFormatter.parse(responseTime);
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 				"Time difference between request and response in millis: "
