@@ -28,12 +28,12 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <TextField fx:id="searchField" layoutX="10.0" layoutY="57.0" prefHeight="39.0" prefWidth="306.0" promptText="Search">
+      <TextField fx:id="searchField" layoutX="10.0" layoutY="57.0" prefHeight="39.0" prefWidth="306.0">
          <styleClass>
             <String fx:value="inputFields" />
             <String fx:value="inputFieldBottomBorder" />
          </styleClass></TextField>
-      <ComboBox fx:id="deviceTypes" layoutX="363.0" layoutY="57.0" prefHeight="39.0" prefWidth="251.0" promptText="Device Type">
+      <ComboBox fx:id="deviceTypes" layoutX="363.0" layoutY="57.0" prefHeight="39.0" prefWidth="251.0">
          <styleClass>
             <String fx:value="inputFields" />
             <String fx:value="inputFieldBottomBorder" />
@@ -72,5 +72,7 @@
             <Image url="@../images/unmap-device.png" />
          </image>
       </ImageView>
+      <Label layoutX="11.0" layoutY="40.0" text="Search" />
+      <Label layoutX="363.0" layoutY="40.0" text="Device Type" />
    </children>
 </AnchorPane>

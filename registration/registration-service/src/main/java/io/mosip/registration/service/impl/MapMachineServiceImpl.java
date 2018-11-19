@@ -320,6 +320,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 					.getRegDeviceType().getRegDeviceTypeId().getCode());
 			mappedDeviceDto.setRegCenterId(regCenterMachineDevice.getRegCentreMachineDeviceId().getRegCentreId());
 			mappedDeviceDto.setDeviceId(regCenterMachineDevice.getRegCentreMachineDeviceId().getDeviceId());
+			mappedDeviceDto.setMachineId(regCenterMachineDevice.getRegCentreMachineDeviceId().getMachineId());
 
 			mappedDeviceDtoList.add(mappedDeviceDto);
 		}
