@@ -32,5 +32,6 @@ public class ResponseDto<T> implements Serializable {
 	private Timestamp resTime;
 	
 	private List<T> response;
+	
 
 }

@@ -75,7 +75,7 @@ public class PreRegistrationControllerTest {
         saveList.add(createDto);
         response.setResponse(saveList);
 
-        Mockito.when(preRegistrationService.addRegistration(Mockito.any(),Mockito.anyString())).thenReturn(response);
+        Mockito.when(preRegistrationService.addRegistration(Mockito.any())).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE).param("pre-id", "")
@@ -90,7 +90,7 @@ public class PreRegistrationControllerTest {
         ObjectMapper mapperObj = new ObjectMapper();
        
 		
-		Mockito.doThrow(new TablenotAccessibleException("ex")).when(preRegistrationService).addRegistration(Mockito.any(),Mockito.anyString());
+		Mockito.doThrow(new TablenotAccessibleException("ex")).when(preRegistrationService).addRegistration(Mockito.any());
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE).param("pre-id", "")
@@ -108,7 +108,7 @@ public class PreRegistrationControllerTest {
 		createDto.setPrId("22893647484937");
         saveList.add(createDto);
         response.setResponse(saveList);
-        Mockito.when(preRegistrationService.addRegistration(Mockito.any(),Mockito.anyString())).thenReturn(response);
+        Mockito.when(preRegistrationService.addRegistration(Mockito.any())).thenReturn(response);
 
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/v0.1/pre-registration/applications")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).characterEncoding("UTF-8").accept(MediaType.APPLICATION_JSON_VALUE).param("pre-id", "22893647484937")

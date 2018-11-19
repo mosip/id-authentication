@@ -57,11 +57,11 @@ public class PreRegistrationController {
 	@ApiOperation(value = "Create form data")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Entity successfully Created"),
 			@ApiResponse(code = 400, message = "Unable to create the Pre-Registration Entity") })
-	public ResponseEntity<ResponseDto<CreateDto>> register(@RequestBody(required = true) JSONObject json,
-			@RequestParam(value = "pre-id", required = false) String prid) {
+	public ResponseEntity<ResponseDto<CreateDto>> register(@RequestBody(required = true) String jsonObject
+			) {
 		ResponseDto<CreateDto> response = new ResponseDto<CreateDto>();
 
-		response = preRegistrationService.addRegistration(json, prid);
+		response = preRegistrationService.addRegistration(jsonObject);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

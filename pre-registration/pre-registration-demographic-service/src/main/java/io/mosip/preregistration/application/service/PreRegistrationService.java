@@ -1,6 +1,6 @@
 package io.mosip.preregistration.application.service;
 
-import java.sql.SQLException;
+import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -44,13 +46,10 @@ import io.mosip.preregistration.application.entity.PreRegistrationEntity;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.JsonValidationException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
-import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.utils.PreRegistrationErrorMessages;
-
 import io.mosip.preregistration.application.repository.PreRegistrationRepository;
 import io.mosip.preregistration.core.exceptions.DatabaseOperationException;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
-
 
 /**
  * Registration service interface
@@ -78,24 +77,22 @@ public class PreRegistrationService {
 	 */
 	@Autowired
 	private PreRegistrationRepository preRegistrationRepository;
-	
+
 	@Autowired
 	private JsonValidator jsonValidator;
 
-	
 	@Value("${resource.url}")
-	 String resourceUrl;
-	
-	
+	String resourceUrl;
+
 	private RestTemplate restTemplate;
 
-//	@Autowired
-//	public void restTemplateBeanBuilder(RestTemplateBuilder restTemplateBuilder) {
-//		this.restTemplate = restTemplateBuilder.build();
-//	}
+	// @Autowired
+	// public void restTemplateBeanBuilder(RestTemplateBuilder restTemplateBuilder)
+	// {
+	// this.restTemplate = restTemplateBuilder.build();
+	// }
 	@Autowired
 	RestTemplateBuilder restTemplateBuilder;
-	
 
 	/*
 	 * (non-Javadoc)
@@ -104,68 +101,112 @@ public class PreRegistrationService {
 	 * io.mosip.registration.service.RegistrationService#addRegistration(java.lang.
 	 * Object, java.lang.String)
 	 */
-	
-	public ResponseDto addRegistration(JSONObject applicantDetailJson, String preid)  {
+
+	public ResponseDto addRegistration(String jsonObject) {
+
+
 		JsonValidatorResponseDto dto = new JsonValidatorResponseDto();
+
 		ResponseDto<CreateDto> response = new ResponseDto();
+
 		List<CreateDto> saveList = new ArrayList<CreateDto>();
 		CreateDto createDto = new CreateDto();
-		String prid = preid;
+		String prid = null;
 		PreRegistrationEntity entity = new PreRegistrationEntity();
-//		entity.setApplicantType("Adult");
-//		entity.setGenderCode("Male");
-		entity.setLangCode("12L");
-//		entity.setLocationCode("9374y");
-		entity.setStatusCode("SAVE");
-		entity.setGroupId("1234567765444");
-		entity.setCr_appuser_id("Rajath");
-		entity.setCreatedBy("Rajath");
-		entity.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
-		
-		String json = applicantDetailJson.toString();
-	
-			try {
-				dto = jsonValidator.validateJson(applicantDetailJson.toJSONString(), "mosip-prereg-identity-json-schema.json");
-				if (prid == null) {
-					prid = pridGenerator.generateId();
-					entity.setApplicantDetailJson(json.getBytes());
-					entity.setPreRegistrationId(prid);
-					preRegistrationDao.save(entity);
-					createDto.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
-					createDto.setCreatedBy("Rajath");
-				} else {
-					entity.setApplicantDetailJson(json.getBytes());
-					entity.setPreRegistrationId(prid);
-					preRegistrationDao.save(entity);
-					createDto.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
-					createDto.setUpdatedBy("Rajath");
-				}
-			} catch (HttpRequestException e) {
-				// Log here
-				throw new JsonValidationException("HttpRequest exception", e.getCause());
-			} catch (JsonValidationProcessingException e) {
-				// Log here
-				throw new JsonValidationException("JsonValidationProcessing exception", e.getCause());
-			} catch (JsonIOException e) {
-				// Log here
-				throw new JsonValidationException("JsonIO exception", e.getCause());
-			} catch (JsonSchemaIOException e) {
-				// Log here
-				throw new JsonValidationException("JsonSchemaIO exception", e.getCause());
-			} catch (FileIOException e) {
-				// Log here
-				throw new JsonValidationException("FileIO exception", e.getCause());
-			}catch (DataAccessLayerException e) {
-                //log here
-				throw new TablenotAccessibleException(PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, e);
 
-				}
+		try {
+			JSONParser parser= new JSONParser();
+			
+			JSONObject applicantDetailJson;
+			
+			applicantDetailJson = (JSONObject) parser.parse(jsonObject);
+			 
+
+			JSONObject object = (JSONObject) applicantDetailJson.get("request");
+			
+			JSONObject obj = (JSONObject) object.get("demographicDetails");
+			
+			
+			
+			 dto = jsonValidator.validateJson(obj.toString(),
+					 "mosip-prereg-identity-json-schema.json");
+
+			prid = (String) object.get("preRegistrationId");
+			String json = applicantDetailJson.toString();
+			entity.setLangCode((String) (object.get("langCode")));
+			entity.setGroupId("1234567890");
+			entity.setCr_appuser_id((String) (applicantDetailJson.get("id")));
+			entity.setCreatedBy((String) (object.get("createdBy")));
+
+			System.out.println(prid+"-------------xxxxxxxx");
+			if (prid == null || prid.equals("")) {
+				prid = pridGenerator.generateId();
+
+				entity.setStatusCode((String) (object.get("statusCode")));
+				entity.setCreatedBy((String) (object.get("createdBy")));
+				entity.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
+				entity.setApplicantDetailJson(json.getBytes("UTF-8"));
+				entity.setPreRegistrationId(prid);
+				preRegistrationDao.save(entity);
+				createDto.setCreateDateTime(new Timestamp(System.currentTimeMillis()));
+
+				createDto.setCreatedBy((String) (object.get("createdBy")));
+			} else {
+				PreRegistrationEntity createTime = preRegistrationRepository.findById(PreRegistrationEntity.class,
+						prid);
+				Timestamp crTime= createTime.getCreateDateTime();
+				
+				preRegistrationRepository.deleteByPreRegistrationId(prid);
+				entity.setStatusCode((String) (object.get("statusCode")));
+				entity.setUpdatedBy((String) (object.get("updatedBy")));
+				entity.setCreateDateTime(crTime);
+				entity.setDeletedDateTime(new Timestamp(System.currentTimeMillis()));
+				entity.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
+				entity.setApplicantDetailJson(json.getBytes("UTF-8"));
+				entity.setPreRegistrationId(prid);
+				
+				preRegistrationDao.save(entity);
+				
+				createDto.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
+				createDto.setUpdatedBy((String) (object.get("updatedBy")));
+
+			}
+		}
+		catch (HttpRequestException e) {
+			// Log here
+			throw new JsonValidationException("HttpRequest exception", e.getCause());
+		} catch (DataAccessLayerException e) {
+			// log here
+			throw new TablenotAccessibleException(PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, e.getCause());
+		}
+
+		catch (JsonValidationProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonSchemaIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileIOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		createDto.setPrId(prid);
+		createDto.setJson(jsonObject);
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus("true");
 		saveList.add(createDto);
 		response.setResponse(saveList);
+		
 		return response;
 
 	}
@@ -179,7 +220,7 @@ public class PreRegistrationService {
 	 * @return List of groupIds
 	 * 
 	 */
-	
+
 	public List<ExceptionInfoDto> getApplicationDetails(String userId) throws TablenotAccessibleException {
 
 		List<ViewRegistrationResponseDto> response = new ArrayList<>();
@@ -220,7 +261,7 @@ public class PreRegistrationService {
 			{
 				responseDto = new ViewRegistrationResponseDto();
 				responseDto.setPreId(userDetails.get(i).getPreRegistrationId());
-//				responseDto.setFirstname(userDetails.get(i).getFirstname());
+				// responseDto.setFirstname(userDetails.get(i).getFirstname());
 				responseDto.setStatus_code(userDetails.get(i).getStatusCode());
 				response.add(responseDto);
 
@@ -243,7 +284,7 @@ public class PreRegistrationService {
 	 * 
 	 * 
 	 */
-	
+
 	public Map<String, String> getApplicationStatus(String groupId) throws TablenotAccessibleException {
 
 		List<PreRegistrationEntity> details = new ArrayList<>();
@@ -269,12 +310,11 @@ public class PreRegistrationService {
 	 * 
 	 * 
 	 */
-	
+
 	public ResponseDto deleteIndividual(String preregId) {
 		restTemplate = restTemplateBuilder.build();
-		System.out.println("URL "+resourceUrl);
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(resourceUrl)
-				.queryParam("preId", preregId);
+		System.out.println("URL " + resourceUrl);
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(resourceUrl).queryParam("preId", preregId);
 
 		Map<String, StatusCodes> responseMap = new HashMap<>();
 		HttpHeaders headers = new HttpHeaders();
@@ -284,42 +324,41 @@ public class PreRegistrationService {
 		ResponseDto<DeleteDto> response = new ResponseDto();
 		List<DeleteDto> saveList = new ArrayList<DeleteDto>();
 		DeleteDto deleteDto = new DeleteDto();
-		System.out.println("builder "+builder.build().encode().toUriString());
-		String uriBuilder=builder.build().encode().toUriString();
+		System.out.println("builder " + builder.build().encode().toUriString());
+		String uriBuilder = builder.build().encode().toUriString();
 
 		try {
 			PreRegistrationEntity applicant = preRegistrationRepository.findBypreRegistrationId(preregId);
-//			if(applicant==null) {
-//				throw new RecordNotFoundException(StatusCodes.RECORD_NOT_FOUND_EXCEPTION.toString());
-//			}else {
-				if (applicant.getStatusCode().equalsIgnoreCase(StateManagment.Pending_Appointmemt.name())
-						|| applicant.getStatusCode().equalsIgnoreCase(StateManagment.Booked.name())) {
-					System.out.println("rtservice"+restTemplate);
-				
-					ResponseEntity<ResponseDto> responseEntity = restTemplate.exchange(uriBuilder,
-							HttpMethod.DELETE, entity, ResponseDto.class);
-					System.out.println("responseEntity"+responseEntity);
-					  if (responseEntity.getStatusCode() == HttpStatus.OK) 
-					  {
-						  responseMap.put("ok", StatusCodes.DOCUMENT_DELETE_SUCCESSFUL);
-						  preRegistrationRepository.deleteByPreRegistrationId(preregId);
-						  }else {
-								throw new DocumentFailedToDeleteException(
-										StatusCodes.DOCUMENT_FAILED_TO_DELETE.toString());
-					 
-						  }
-					  deleteDto.setPrId(applicant.getPreRegistrationId());
-					  deleteDto.setDeletedDateTime(new Timestamp(System.currentTimeMillis()));
-					
-					saveList.add(deleteDto);
-					
+			// if(applicant==null) {
+			// throw new
+			// RecordNotFoundException(StatusCodes.RECORD_NOT_FOUND_EXCEPTION.toString());
+			// }else {
+			if (applicant.getStatusCode().equalsIgnoreCase(StateManagment.Pending_Appointmemt.name())
+					|| applicant.getStatusCode().equalsIgnoreCase(StateManagment.Booked.name())) {
+				System.out.println("rtservice" + restTemplate);
+
+				ResponseEntity<ResponseDto> responseEntity = restTemplate.exchange(uriBuilder, HttpMethod.DELETE,
+						entity, ResponseDto.class);
+				System.out.println("responseEntity" + responseEntity);
+				if (responseEntity.getStatusCode() == HttpStatus.OK) {
+					responseMap.put("ok", StatusCodes.DOCUMENT_DELETE_SUCCESSFUL);
+					preRegistrationRepository.deleteByPreRegistrationId(preregId);
 				} else {
-					throw new OperationNotAllowedException(
-							PreRegistrationErrorMessages.DELETE_OPERATION_NOT_ALLOWED_FOR_OTHERTHEN_DRAFT);
+					throw new DocumentFailedToDeleteException(StatusCodes.DOCUMENT_FAILED_TO_DELETE.toString());
+
 				}
-			
-			//}
-			
+				deleteDto.setPrId(applicant.getPreRegistrationId());
+				deleteDto.setDeletedDateTime(new Timestamp(System.currentTimeMillis()));
+
+				saveList.add(deleteDto);
+
+			} else {
+				throw new OperationNotAllowedException(
+						PreRegistrationErrorMessages.DELETE_OPERATION_NOT_ALLOWED_FOR_OTHERTHEN_DRAFT);
+			}
+
+			// }
+
 			// }
 		} catch (DataAccessLayerException e) {
 			throw new DatabaseOperationException("Failed to delete the appliation", e);
@@ -327,8 +366,7 @@ public class PreRegistrationService {
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus("true");
 		response.setResponse(saveList);
-		
-	
+
 		return response;
 	}
 }
