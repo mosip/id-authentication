@@ -50,7 +50,7 @@
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${swagger.version}</version>
 		</dependency>
-		
+
 		
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>

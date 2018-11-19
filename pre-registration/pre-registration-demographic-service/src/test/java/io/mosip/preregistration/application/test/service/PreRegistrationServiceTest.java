@@ -1,49 +1,68 @@
 package io.mosip.preregistration.application.test.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doNothing;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import io.mosip.kernel.core.spi.idgenerator.PridGenerator;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
-import io.mosip.preregistration.application.dao.RegistrationDao;
-import io.mosip.preregistration.application.dto.AddressDto;
-import io.mosip.preregistration.application.dto.ContactDto;
-import io.mosip.preregistration.application.dto.NameDto;
-import io.mosip.preregistration.application.dto.RegistrationDto;
+import io.mosip.kernel.jsonvalidator.dto.JsonValidatorResponseDto;
+import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
+import io.mosip.preregistration.application.dao.PreRegistrationDao;
+import io.mosip.preregistration.application.dto.CreateDto;
+import io.mosip.preregistration.application.dto.DeleteDto;
+import io.mosip.preregistration.application.dto.ExceptionInfoDto;
 import io.mosip.preregistration.application.dto.ResponseDto;
 import io.mosip.preregistration.application.dto.ViewRegistrationResponseDto;
-import io.mosip.preregistration.application.entity.RegistrationEntity;
-import io.mosip.preregistration.application.exception.OperationNotAllowedException;
-import io.mosip.preregistration.application.exception.utils.RegistrationErrorMessages;
-import io.mosip.preregistration.application.repository.DocumentRepository;
-import io.mosip.preregistration.application.repository.RegistrationRepository;
-import io.mosip.preregistration.application.service.RegistrationService;
-import io.mosip.preregistration.application.service.impl.RegistrationServiceImpl;
+import io.mosip.preregistration.application.entity.PreRegistrationEntity;
+import io.mosip.preregistration.application.errorcodes.ErrorCodes;
+import io.mosip.preregistration.application.exception.utils.PreRegistrationErrorMessages;
+import io.mosip.preregistration.application.repository.PreRegistrationRepository;
+import io.mosip.preregistration.application.service.PreRegistrationService;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+
 
 /**
  * Test class to test the ViewRegistrationService
@@ -53,129 +72,116 @@ import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-//@SpringBootConfiguration
+// @SpringBootConfiguration
 public class PreRegistrationServiceTest {
 
-	@Mock
-	private RegistrationRepository registrationRepository;
 
-	@Mock
-	private DocumentRepository documentRepository;
+	@MockBean
+	private PreRegistrationRepository preRegistrationRepository;
+
+	@MockBean
+	private PreRegistrationDao preRegistrationDao;
+
+	
+	@MockBean
+	RestTemplateBuilder restTemplateBuilder;
+
+	@MockBean
+	private PridGenerator<String> pridGenerator;
 	
 	@Mock
-	private RegistrationDao registrationDao;
+	private JsonValidator jsonValidator;
+	
+	JSONParser parser = new JSONParser();
 
-	@Mock
-	private PridGenerator<String> pridGenerator;
+	@Autowired
+	private PreRegistrationService preRegistrationService;
+	
+//	@InjectMocks
+//	private PreRegistrationService preRegistrationService = new PreRegistrationService();
 
-	private RegistrationDto regDto = new RegistrationDto();
-	private NameDto nameDto = new NameDto();
-	private ContactDto contactDto = new ContactDto();
-	private AddressDto addrDto = new AddressDto();
-
-	@InjectMocks
-	private RegistrationService<String, RegistrationDto> registrationService = new RegistrationServiceImpl();
-
-	List<RegistrationEntity> userDetails = new ArrayList<RegistrationEntity>();
+	List<PreRegistrationEntity> userDetails = new ArrayList<>();
 	List<ViewRegistrationResponseDto> response = new ArrayList<ViewRegistrationResponseDto>();
+	ExceptionInfoDto exceptionInfoDto = new ExceptionInfoDto();
+	List<ExceptionInfoDto> responseList = new ArrayList<>();
 	private ViewRegistrationResponseDto responseDto;
-	private RegistrationEntity registrationEntity;
+	private PreRegistrationEntity preRegistrationEntity;
+	private JSONObject jsonObject = null;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Before
-	public void setup() throws ParseException {
-		nameDto.setFirstname("Rajath");
-		nameDto.setFullname("Rajath Kumar");
+	public void setup()
+			throws ParseException, FileNotFoundException, IOException, org.json.simple.parser.ParseException {
 
-		contactDto.setEmail("rajath.kr1249@gmail.com");
-		contactDto.setMobile("9480548558");
+		preRegistrationEntity = new PreRegistrationEntity();
 
-		addrDto.setAddrLine1("global");
-		addrDto.setAddrLine2("Village");
-		addrDto.setLocationCode("1234");
-
-		regDto.setAddress(addrDto);
-		regDto.setContact(contactDto);
-		regDto.setName(nameDto);
-
-		regDto.setAge(30);
-		regDto.setIsPrimary(false);
-		regDto.setGroupId("");
-		regDto.setPreRegistrationId("");
-
-		registrationEntity = new RegistrationEntity();
-
-		registrationEntity.setIsPrimary(false);
-		registrationEntity.setAddrLine1("aboahr");
-
-		registrationEntity.setAge(20);
-		registrationEntity.setApplicantType("adult");
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Date date = dateFormat.parse("08/10/2018");
 		long time = date.getTime();
 		Timestamp times = new Timestamp(time);
-		registrationEntity.setCreateDateTime(times);
+		preRegistrationEntity.setCreateDateTime(times);
 
-		registrationEntity.setFirstname("rupika");
 
-		registrationEntity.setGenderCode("f");
 
-		registrationEntity.setGroupId("1232");
-		registrationEntity.setStatusCode("Draft");
-		registrationEntity.setUpdateDateTime(times);
-		registrationEntity.setUserId("9988905444");
-		userDetails.add(registrationEntity);
+		preRegistrationEntity.setStatusCode("Pending_Appointment");
+		preRegistrationEntity.setUpdateDateTime(times);
 
-		logger.info("Entity "+registrationEntity);
-		
+
+		preRegistrationEntity.setPreRegistrationId("1234");
+		userDetails.add(preRegistrationEntity);
+
+		logger.info("Entity " + preRegistrationEntity);
+
 		responseDto = new ViewRegistrationResponseDto();
 
-		responseDto.setFirstname("rupika");
-		responseDto.setGroup_id("1232");
-		responseDto.setStatus_code("Draft");
-		responseDto.setNoOfRecords(1);
-		responseDto.setUpd_dtimesz(times.toString());
+		responseDto.setFirstname(null);
+		responseDto.setStatus_code("Pending_Appointment");
+		responseDto.setPreId("1234");
 		response.add(responseDto);
+		exceptionInfoDto.setResponse(response);
+		exceptionInfoDto.setStatus(true);
+		responseList.add(exceptionInfoDto);
+
+		 JsonValidatorResponseDto dto= new JsonValidatorResponseDto();
+		 ClassLoader classLoader = getClass().getClassLoader();
+
+
+		File file = new File(classLoader.getResource("pre-registration.json").getFile());
+		jsonObject = (JSONObject) parser.parse(new FileReader(file));
 	}
 
 	@Test
 	public void successSaveImplTest() throws Exception {
 		logger.info("----------successful save of application in impl-------");
 		Mockito.when(pridGenerator.generateId()).thenReturn("67547447647457");
-		ResponseDto res = registrationService.addRegistration(regDto,"125467364864");
-		assertEquals(res.getPrId(), "67547447647457");
+		Mockito.when(jsonValidator.validateJson(jsonObject.toJSONString(),"mosip-prereg-identity-json-schema.json")).thenReturn(null);
+		ResponseDto<CreateDto> res = preRegistrationService.addRegistration(jsonObject,null);
+		assertEquals(res.getResponse().get(0).getPrId(), "67547447647457");
 	}
-	
+
 	@Test
 	public void successUpdateTest() throws Exception {
 		logger.info("----------successful save of application in impl-------");
-		regDto.setPreRegistrationId("67547447647457");
-		regDto.setNationalid("Indian");
-		ResponseDto res = registrationService.addRegistration(regDto,"125467364864");
-		assertEquals(res.getPrId(), "67547447647457");
+		Mockito.when(jsonValidator.validateJson(jsonObject.toJSONString(),"mosip-prereg-identity-json-schema.json")).thenReturn(null);
+		ResponseDto<CreateDto> res = preRegistrationService.addRegistration(jsonObject,"67547447647457");
+		assertEquals(res.getResponse().get(0).getPrId(), "67547447647457");
 	}
-	
+
 	@Test(expected = TablenotAccessibleException.class)
 	public void saveFailureCheck() throws Exception {
-		DataAccessLayerException exception = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE,RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
-
-		Mockito.when(registrationDao.save(Mockito.any())).thenThrow(exception);
-		registrationService.addRegistration(regDto,"125467364864");
+		DataAccessLayerException exception = new DataAccessLayerException("PRG_PAM‌_007",
+				PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
+		Mockito.when(jsonValidator.validateJson(jsonObject.toJSONString(),"mosip-prereg-identity-json-schema.json")).thenReturn(null);
+		Mockito.when(preRegistrationDao.save(Mockito.any())).thenThrow(exception);
+		preRegistrationService.addRegistration(jsonObject, "125467364864");
 	}
 
 	@Test
 	public void getApplicationDetails() {
 		String userId = "9988905444";
-
-		List<String> groupIds = new ArrayList<String>();
-		groupIds.add("1232");
-		Mockito.when(registrationRepository.noOfGroupIds(ArgumentMatchers.any())).thenReturn(groupIds);
-		Mockito.when(registrationRepository.findBygroupId(ArgumentMatchers.any())).thenReturn(userDetails);
-
-		List<ViewRegistrationResponseDto> actualRes = registrationService.getApplicationDetails(userId);
-
-		assertEqualsList(actualRes, response);
-		// assertThat(actualRes,is(response));
+		Mockito.when(preRegistrationRepository.findByuserId(ArgumentMatchers.any())).thenReturn(userDetails);
+		List<ExceptionInfoDto> actualRes = preRegistrationService.getApplicationDetails(userId);
+		assertEqualsList(actualRes, responseList);
 
 	}
 
@@ -183,10 +189,10 @@ public class PreRegistrationServiceTest {
 	public void getApplicationStatus() {
 		String groupId = "1232";
 
-		Mockito.when(registrationRepository.findBygroupId(ArgumentMatchers.any())).thenReturn(userDetails);
-		Map<String, String> response = userDetails.stream()
-				.collect(Collectors.toMap(RegistrationEntity::getPreRegistrationId, RegistrationEntity::getStatusCode));
-		Map<String, String> actualRes = registrationService.getApplicationStatus(groupId);
+		Mockito.when(preRegistrationRepository.findBygroupId(ArgumentMatchers.any())).thenReturn(userDetails);
+		Map<String, String> response = userDetails.stream().collect(
+				Collectors.toMap(PreRegistrationEntity::getPreRegistrationId, PreRegistrationEntity::getStatusCode));
+		Map<String, String> actualRes = preRegistrationService.getApplicationStatus(groupId);
 		assertEquals(response, actualRes);
 
 	}
@@ -194,161 +200,112 @@ public class PreRegistrationServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getApplicationDetailsTransactionFailureCheck() throws Exception {
 		String userId = "9988905444";
-		DataAccessLayerException exception = 
-				new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE,RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
+		DataAccessLayerException exception = new DataAccessLayerException("PRG_PAM‌_007",
+				PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
 
-		Mockito.when(registrationRepository.noOfGroupIds(ArgumentMatchers.any())).thenThrow(exception);
-		registrationService.getApplicationDetails(userId);
+		Mockito.when(preRegistrationRepository.findByuserId(ArgumentMatchers.any())).thenThrow(exception);
+		preRegistrationService.getApplicationDetails(userId);
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void getApplicationStatusTransactionFailureCheck() throws Exception {
 		String groupId = "1234";
 		TablenotAccessibleException exception = new TablenotAccessibleException(
-				RegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE);
-		Mockito.when(registrationRepository.findBygroupId(ArgumentMatchers.any())).thenThrow(exception);
-		registrationService.getApplicationStatus(groupId);
+				PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE);
+		Mockito.when(preRegistrationRepository.findBygroupId(ArgumentMatchers.any())).thenThrow(exception);
+		preRegistrationService.getApplicationStatus(groupId);
 	}
 
-	public void assertEqualsList(List<ViewRegistrationResponseDto> actual, List<ViewRegistrationResponseDto> expected) {
+	public void assertEqualsList(List<ExceptionInfoDto> actual, List<ExceptionInfoDto> expected) {
 		for (int i = 0; i < expected.size(); i++) {
 			assertEquals(expected.get(i).toString(), actual.get(i).toString());
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
-	public void deleteIndividualTest() {
+	public void deleteIndividualSuccessTest() {
+		RestTemplate restTemplate=Mockito.mock(RestTemplate.class);
+	 Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		String preRegId = "1";
+        preRegistrationEntity.setPreRegistrationId("1");
+		preRegistrationEntity.setStatusCode("Pending_Appointmemt");
 
-		String groupId = "33";
-		List<String> preregIds = Arrays.asList("1");
+		ResponseEntity<ResponseDto> res = new ResponseEntity<>(HttpStatus.OK);
+		Mockito.when(preRegistrationRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
 
-		RegistrationEntity applicant_Demographic = new RegistrationEntity();
-		applicant_Demographic.setGroupId("33");
-		applicant_Demographic.setPreRegistrationId("1");
-		applicant_Demographic.setIsPrimary(false);
-		applicant_Demographic.setStatusCode("Draft");
+		String resourceUrl = "http://localhost:9093//v0.1/pre-registration/registration/deleteAllByPreRegId";
+		// UriComponentsBuilder builder =
+		// UriComponentsBuilder.fromHttpUrl(resourceUrl).queryParam("preId", preRegId);
+		// String uriBuilder = builder.build().encode().toUriString();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		HttpEntity<String> entity = new HttpEntity<String>(headers);
+		//
+		// ResponseEntity<String> responseEntity = restTemplate.exchange(uriBuilder,
+		// HttpMethod.DELETE, entity,
+		// String.class);
 
-		Mockito.when(registrationRepository.findByGroupIdAndPreRegistrationId(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(applicant_Demographic);
+		System.out.println("rt"+restTemplate);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(),Mockito.eq(HttpMethod.DELETE),
+				Mockito.any(), Mockito.eq(ResponseDto.class)))
+				.thenReturn(res);
 
-		doNothing().when(registrationRepository).deleteByGroupIdAndPreRegistrationId(applicant_Demographic.getGroupId(),
-				applicant_Demographic.getPreRegistrationId());
-		registrationService.deleteIndividual(groupId, preregIds);
+		Mockito.doNothing().when(preRegistrationRepository)
+				.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId());
 
-	}
-
-	@Test(expected = OperationNotAllowedException.class)
-	public void deleteDraftTest() {
-
-		String groupId = "33";
-		List<String> preregIds = Arrays.asList("1");
-		RegistrationEntity applicant_Demographic = new RegistrationEntity();
-		applicant_Demographic.setGroupId("33");
-		applicant_Demographic.setPreRegistrationId("1");
-		applicant_Demographic.setIsPrimary(true);
-		applicant_Demographic.setStatusCode("update");
-
-		Mockito.when(registrationRepository.findByGroupIdAndPreRegistrationId(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(applicant_Demographic);
-		doNothing().when(documentRepository).deleteAllByPreregId(applicant_Demographic.getPreRegistrationId());
-		doNothing().when(registrationRepository).deleteByGroupIdAndPreRegistrationId(applicant_Demographic.getGroupId(),
-				applicant_Demographic.getPreRegistrationId());
-		registrationService.deleteIndividual(groupId, preregIds);
+		System.out.println(preRegId);
+		ResponseDto actualres = preRegistrationService.deleteIndividual(preRegId);
+		System.out.println("Out put " + actualres);
+		// assertEquals(expectedres.getStatus(), actualres.getStatus());
 
 	}
 
-	@Test(expected = OperationNotAllowedException.class)
-	public void deletePrimaryMemberTest() {
+	/*
+	 * @Test(expected = OperationNotAllowedException.class) public void
+	 * deleteDraftTest() {
+	 * 
+	 * String groupId = "33"; List<String> preregIds = Arrays.asList("1");
+	 * RegistrationEntity applicant_Demographic = new RegistrationEntity();
+	 * applicant_Demographic.setGroupId("33");
+	 * applicant_Demographic.setPreRegistrationId("1");
+	 * applicant_Demographic.setIsPrimary(true);
+	 * applicant_Demographic.setStatusCode("update");
+	 * 
+	 * Mockito.when(registrationRepository.findByGroupIdAndPreRegistrationId(
+	 * ArgumentMatchers.any(),
+	 * ArgumentMatchers.any())).thenReturn(applicant_Demographic);
+	 * doNothing().when(documentRepository).deleteAllByPreregId(
+	 * applicant_Demographic.getPreRegistrationId());
+	 * doNothing().when(registrationRepository).deleteByGroupIdAndPreRegistrationId(
+	 * applicant_Demographic.getGroupId(),
+	 * applicant_Demographic.getPreRegistrationId());
+	 * registrationService.deleteIndividual(groupId, preregIds);
+	 * 
+	 * }
+	 */
 
-		String groupId = "33";
-		List<String> preregIds = Arrays.asList("1");
-		RegistrationEntity applicant_Demographic = new RegistrationEntity();
-		applicant_Demographic.setGroupId("33");
-		applicant_Demographic.setPreRegistrationId("1");
-		applicant_Demographic.setIsPrimary(true);
-		applicant_Demographic.setStatusCode("Draft");
-
-		Mockito.when(registrationRepository.findByGroupIdAndPreRegistrationId(ArgumentMatchers.any(),
-				ArgumentMatchers.any())).thenReturn(applicant_Demographic);
-
-		doNothing().when(registrationRepository).deleteByGroupIdAndPreRegistrationId(applicant_Demographic.getGroupId(),
-				applicant_Demographic.getPreRegistrationId());
-		registrationService.deleteIndividual(groupId, preregIds);
-
-	}
-
-	@Test
-	public void deleteGroupWithoutPrimaryTest() {
-		String groupId = "33";
-
-		RegistrationEntity applicant_Demographic1 = new RegistrationEntity();
-		applicant_Demographic1.setGroupId("33");
-		applicant_Demographic1.setPreRegistrationId("1");
-		applicant_Demographic1.setIsPrimary(true);
-		applicant_Demographic1.setStatusCode("Draft");
-
-		RegistrationEntity applicant_Demographic2 = new RegistrationEntity();
-		applicant_Demographic2.setGroupId("33");
-		applicant_Demographic2.setPreRegistrationId("2");
-		applicant_Demographic2.setIsPrimary(false);
-		applicant_Demographic2.setStatusCode("Draft");
-
-		RegistrationEntity applicant_Demographic3 = new RegistrationEntity();
-		applicant_Demographic3.setGroupId("33");
-		applicant_Demographic3.setPreRegistrationId("3");
-		applicant_Demographic3.setIsPrimary(false);
-		applicant_Demographic3.setStatusCode("Draft");
-
-		List<RegistrationEntity> lists = new ArrayList<RegistrationEntity>();
-
-		lists.add(applicant_Demographic1);
-		lists.add(applicant_Demographic2);
-		lists.add(applicant_Demographic3);
-
-		List<RegistrationEntity> list = new ArrayList<RegistrationEntity>();
-		list.add(applicant_Demographic1);
-
-		Mockito.when(registrationRepository.findByGroupIdAndIsPrimary(groupId, true)).thenReturn(list);
-
-		doNothing().when(registrationRepository).deleteAllBygroupId(groupId);
-		registrationService.deleteGroup(groupId);
-	}
-	
-	@Test
-	public void deleteGroupTest() {
-		String groupId = "33";
-
-		RegistrationEntity applicant_Demographic1 = new RegistrationEntity();
-		applicant_Demographic1.setGroupId("33");
-		applicant_Demographic1.setPreRegistrationId("1");
-		applicant_Demographic1.setIsPrimary(false);
-		applicant_Demographic1.setStatusCode("Draft");
-
-		RegistrationEntity applicant_Demographic2 = new RegistrationEntity();
-		applicant_Demographic2.setGroupId("33");
-		applicant_Demographic2.setPreRegistrationId("2");
-		applicant_Demographic2.setIsPrimary(false);
-		applicant_Demographic2.setStatusCode("Draft");
-
-		RegistrationEntity applicant_Demographic3 = new RegistrationEntity();
-		applicant_Demographic3.setGroupId("33");
-		applicant_Demographic3.setPreRegistrationId("3");
-		applicant_Demographic3.setIsPrimary(false);
-		applicant_Demographic3.setStatusCode("Draft");
-
-		List<RegistrationEntity> lists = new ArrayList<RegistrationEntity>();
-
-		lists.add(applicant_Demographic1);
-		lists.add(applicant_Demographic2);
-		lists.add(applicant_Demographic3);
-
-		List<RegistrationEntity> list = new ArrayList<RegistrationEntity>();
-		list.add(applicant_Demographic1);
-		
-		Mockito.when(registrationRepository.findBygroupId(groupId)).thenReturn(list);
-		doNothing().when(documentRepository).deleteAllByPreregId(Mockito.anyString());
-		List<ResponseDto> res =registrationService.deleteGroup(groupId);
-		assertEquals(res.get(0).getPrId(), "1");
-	}
+	/*
+	 * @Test(expected = OperationNotAllowedException.class) public void
+	 * deletePrimaryMemberTest() {
+	 * 
+	 * String groupId = "33"; List<String> preregIds = Arrays.asList("1");
+	 * RegistrationEntity applicant_Demographic = new RegistrationEntity();
+	 * applicant_Demographic.setGroupId("33");
+	 * applicant_Demographic.setPreRegistrationId("1");
+	 * applicant_Demographic.setIsPrimary(true);
+	 * applicant_Demographic.setStatusCode("Draft");
+	 * 
+	 * Mockito.when(registrationRepository.findByGroupIdAndPreRegistrationId(
+	 * ArgumentMatchers.any(),
+	 * ArgumentMatchers.any())).thenReturn(applicant_Demographic);
+	 * 
+	 * doNothing().when(registrationRepository).deleteByGroupIdAndPreRegistrationId(
+	 * applicant_Demographic.getGroupId(),
+	 * applicant_Demographic.getPreRegistrationId());
+	 * registrationService.deleteIndividual(groupId, preregIds);
+	 * 
+	 * }
+	 */
 
 }

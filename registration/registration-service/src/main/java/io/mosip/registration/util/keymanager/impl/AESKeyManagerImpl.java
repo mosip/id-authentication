@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
@@ -40,9 +40,9 @@ public class AESKeyManagerImpl implements AESKeyManager {
 	@Autowired
 	private Environment environment;
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(AESKeyManagerImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(AESKeyManagerImpl.class);
 
 	/*
 	 * (non-Javadoc)

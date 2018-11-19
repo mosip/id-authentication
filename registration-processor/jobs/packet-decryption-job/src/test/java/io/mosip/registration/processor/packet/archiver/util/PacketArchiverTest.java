@@ -75,7 +75,7 @@ public class PacketArchiverTest {
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
+		Mockito.when(auditHandler.addAudit(ArgumentMatchers.any())).thenReturn(true);
 
 		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();

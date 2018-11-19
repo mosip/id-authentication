@@ -58,7 +58,7 @@ public class QualityCheckManagerImplTest {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		 
 		 
-		
+
 		qcUserDtos = new ArrayList<>();
 		entity = new QcuserRegistrationIdEntity();
 		pkEntity = new QcuserRegistrationIdPKEntity();
@@ -68,29 +68,29 @@ public class QualityCheckManagerImplTest {
 		qCUserDto1.setRegId("2018782130000116102018124324");
 		qCUserDto1.setDecisionStatus(DecisionStatus.ACCEPTED);
 
-		
-		
+
+
 
 	}
 	@Test
 	public void assignQCUserTest() {
-		
+
 		QCUserDto qcUserDto=qualityCheckManager.assignQCUser("2018782130000116102018124324");
 		assertEquals(DecisionStatus.PENDING, qcUserDto.getDecisionStatus());
 	}
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void assignQCUserFailureTest() {
+
 		
 		
-		
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 		Mockito.when(applicantInfoDao.save(ArgumentMatchers.any(QcuserRegistrationIdEntity.class)))
 				.thenThrow(exp);
 		qualityCheckManager.assignQCUser("2018782130000116102018124324");
 	}
-	
+
 	@Test
 	public void updateQCUserStatusTest() {
 
@@ -142,7 +142,7 @@ public class QualityCheckManagerImplTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void updateQCUserStatusDataAccessLayerExceptionTest() {
 		qcUserDtos.add(qCUserDto1);
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 		Mockito.when(applicantInfoDao.findById(ArgumentMatchers.anyString(), ArgumentMatchers.anyString()))
 				.thenThrow(exp);

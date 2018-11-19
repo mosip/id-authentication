@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.processor.quality.check.entity.BaseQcuserEntity;
 
 @Repository
@@ -17,5 +17,5 @@ public interface QcuserRegRepositary<T extends BaseQcuserEntity<?>, E> extends B
 	
 	@Query("SELECT qcUser.id FROM UserDetailEntity qcUser WHERE qcUser.isActive=TRUE")
 	public List<E> findAllUserIds();
-	
+
 }

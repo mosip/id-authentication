@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.LocationDAO;
 import io.mosip.registration.entity.Location;
@@ -26,8 +26,8 @@ public class LocationDAOImpl implements LocationDAO {
 	/** instance of {@link LocationRepository} */
 	@Autowired
 	private LocationRepository locationRepository;
-	/** instance of {@link MosipLogger} */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(LocationDAOImpl.class);
+	/** instance of {@link Logger} */
+	private static final Logger LOGGER = AppConfig.getLogger(LocationDAOImpl.class);
 
 	/**
 	 * (non-javadoc)

@@ -125,7 +125,7 @@ public class PacketReceiverServiceTest {
 
 		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
 		Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
-		Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
+		Mockito.doReturn(true).when(auditHandler).addAudit(ArgumentMatchers.any());
 		
 		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();

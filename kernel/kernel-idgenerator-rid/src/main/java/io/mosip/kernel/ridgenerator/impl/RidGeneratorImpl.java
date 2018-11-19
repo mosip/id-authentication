@@ -6,14 +6,15 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.idgenerator.RidGenerator;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorExceptionConstant;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorPropertyConstant;
 import io.mosip.kernel.ridgenerator.entity.Rid;
-import io.mosip.kernel.ridgenerator.exception.MosipEmptyInputException;
-import io.mosip.kernel.ridgenerator.exception.MosipInputLengthException;
-import io.mosip.kernel.ridgenerator.exception.MosipNullValueException;
+import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
+
+import io.mosip.kernel.ridgenerator.exception.EmptyInputException;
+import io.mosip.kernel.ridgenerator.exception.InputLengthException;
+import io.mosip.kernel.ridgenerator.exception.NullValueException;
 import io.mosip.kernel.ridgenerator.repository.RidRepository;
 
 /**
@@ -28,7 +29,7 @@ import io.mosip.kernel.ridgenerator.repository.RidRepository;
 public class RidGeneratorImpl implements RidGenerator<String> {
 
 	@Autowired
-	RidRepository repository;
+	RidRepository ridRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -65,12 +66,12 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 
 		if (centreId == null || dongleId == null) {
 
-			throw new MosipNullValueException(RidGeneratorExceptionConstant.MOSIP_NULL_VALUE_ERROR_CODE.getErrorCode(),
+			throw new NullValueException(RidGeneratorExceptionConstant.MOSIP_NULL_VALUE_ERROR_CODE.getErrorCode(),
 					RidGeneratorExceptionConstant.MOSIP_NULL_VALUE_ERROR_CODE.getErrorMessage());
 		}
 		if (centreId.isEmpty() || dongleId.isEmpty()) {
 
-			throw new MosipEmptyInputException(
+			throw new EmptyInputException(
 					RidGeneratorExceptionConstant.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorCode(),
 					RidGeneratorExceptionConstant.MOSIP_EMPTY_INPUT_ERROR_CODE.getErrorMessage());
 		}
@@ -78,7 +79,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 				|| dongleId.length() < Integer
 						.parseInt(RidGeneratorPropertyConstant.DONGLEID_MIN_LENGTH.getProperty())) {
 
-			throw new MosipInputLengthException(
+			throw new InputLengthException(
 					RidGeneratorExceptionConstant.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorCode(),
 					RidGeneratorExceptionConstant.MOSIP_INPUT_LENGTH_ERROR_CODE.getErrorMessage());
 		}
@@ -94,7 +95,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 
 		final int initialValue = Integer.parseInt(RidGeneratorPropertyConstant.SEQUENCE_START_VALUE.getProperty());
 
-		Rid entity = repository.findById(Rid.class, dongleId);
+		Rid entity = ridRepository.findById(Rid.class, dongleId);
 
 		if (entity == null || entity.getSequenceId() == Integer
 				.parseInt(RidGeneratorPropertyConstant.SEQUENCE_END_VALUE.getProperty())) {
@@ -108,7 +109,7 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 			entity.setSequenceId(entity.getSequenceId() + 1);
 
 		}
-		repository.save(entity);
+		ridRepository.save(entity);
 		return String.format("%05d", entity.getSequenceId());
 	}
 

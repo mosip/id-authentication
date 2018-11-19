@@ -28,7 +28,7 @@ public class RoleListEntity extends BaseQcuserEntity<RoleListPKEntity> implement
 	@Column(name = "del_dtimes")
 	@CreationTimestamp
 	private LocalDateTime delDtimesz;
-	
+
 	@Column(name = "descr")
 	private String descr;
 

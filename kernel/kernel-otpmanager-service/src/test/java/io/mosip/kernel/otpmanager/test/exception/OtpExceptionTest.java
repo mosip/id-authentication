@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.otpmanager.test.exception;
 
 import static org.hamcrest.CoreMatchers.is;

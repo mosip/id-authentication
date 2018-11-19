@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import io.mosip.kernel.auditmanager.entity.Audit;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dao.AuditDAO;
@@ -31,7 +31,7 @@ public class AuditDAOImpl implements AuditDAO {
 	private RegAuditRepository regAuditRepository;
 
 	/** Object for Logger. */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(AuditDAOImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(AuditDAOImpl.class);
 
 	/*
 	 * (non-Javadoc)

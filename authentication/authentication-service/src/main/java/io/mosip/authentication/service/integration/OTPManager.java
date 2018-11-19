@@ -21,7 +21,7 @@ import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.integration.dto.OTPValidateResponseDTO;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorRequestDto;
 import io.mosip.authentication.service.integration.dto.OtpGeneratorResponseDto;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * OTPManager handling with OTP-Generation and OTP-Validation.
@@ -37,7 +37,7 @@ public class OTPManager {
 	@Autowired
 	private RestRequestFactory restRequestFactory;
 
-	private static MosipLogger logger = IdaLogger.getLogger(OTPManager.class);
+	private static Logger logger = IdaLogger.getLogger(OTPManager.class);
 
 	private OTPValidateResponseDTO otpvalidateresponsedto;
 

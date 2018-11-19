@@ -30,7 +30,7 @@ public class QualityCheckerController {
 	@Autowired
 	private QualityCheckManager<String, QCUserDto> qualityCheckManger;
 
-	
+
 	@PostMapping(path = "/decisionStatus", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the QCUser entity", response = QualityCheckerStatusCode.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "QC User Entity decision status successfully updated") })

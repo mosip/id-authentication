@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,11 +35,11 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	@Autowired
 	private ApplicantInfoDao applicantInfoDao;
 
-	
-	
+
+
 	@Autowired
 	ClientAuditRequestBuilder clientAuditRequestBuilder;
-	
+
 	/** The event id. */
 	private String eventId = "";
 
@@ -54,7 +55,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
 		List<String> qcUsersList = Arrays.asList("qc001","qc002","qc003");
 		//qcUsersClient.getAllQcuserIds();
-		
+
 		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
 		QCUserDto qcUserDto = new QCUserDto();
 		qcUserDto.setQcUserId(qcUserId);
@@ -64,7 +65,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 		return qcUserDto;
 	}
 
-	
+
 	@Override
 	public List<QCUserDto> updateQCUserStatus(List<QCUserDto> qcUserDtos) {
 		boolean isTransactionSuccessful = false;

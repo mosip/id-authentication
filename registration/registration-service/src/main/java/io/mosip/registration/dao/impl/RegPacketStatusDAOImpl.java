@@ -9,7 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -34,7 +34,7 @@ public class RegPacketStatusDAOImpl implements RegPacketStatusDAO {
 	/**
 	 * Object for Logger
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RegPacketStatusDAOImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RegPacketStatusDAOImpl.class);
 	
 	@Override
 	public List<String> getPacketIdsByStatusUploaded() {

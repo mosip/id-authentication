@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
- * Base class for {@link Audit} with {@link #uuid} and {@link #timestamp}
+ * Base class for {@link Audit} with {@link #uuid} and {@link #createdAt}
  * 
  * @author Dharmesh Khandelwal
  * @since 1.0.0

@@ -3,6 +3,8 @@ package io.mosip.registration.processor.packet.storage.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -67,7 +69,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	public static final String TABLE_NOT_ACCESIBLE = "Table Not Accessible";
 
 	public static final String FILE_SEPARATOR ="";
-	
+
 	public static final String LOG_FORMATTER = "{} - {}";
 
 	public static final String DEMOGRAPHIC_APPLICANT = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR
@@ -222,9 +224,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	 */
 	@Override
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcUserId) {
-		
+
 		boolean isTransactionSuccessful = false;
-		
+
 		List<ApplicantInfoDto> applicantInfoDtoList = null;
 		try {
 			applicantInfoDtoList = packetInfoDao.getPacketsforQCUser(qcUserId);

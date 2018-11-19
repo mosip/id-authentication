@@ -1,9 +1,10 @@
 package io.mosip.preregistration.application.controller;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,12 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.preregistration.application.dto.ApplicationDto;
-import io.mosip.preregistration.application.dto.RegistrationDto;
+import io.mosip.preregistration.application.dto.CreateDto;
+import io.mosip.preregistration.application.dto.DeleteDto;
+import io.mosip.preregistration.application.dto.ExceptionInfoDto;
 import io.mosip.preregistration.application.dto.ResponseDto;
-import io.mosip.preregistration.application.dto.ViewRegistrationResponseDto;
-import io.mosip.preregistration.application.service.RegistrationService;
-import io.mosip.preregistration.core.generator.MosipGroupIdGenerator;
+import io.mosip.preregistration.application.service.PreRegistrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiResponses;
  *
  */
 @RestController
-@RequestMapping("/v0.1/pre-registration/registration/")
+@RequestMapping("/v0.1/pre-registration/")
 @Api(tags = "Pre-Registration")
 @CrossOrigin("*")
 public class PreRegistrationController {
@@ -43,12 +43,7 @@ public class PreRegistrationController {
 	 * Field for {@link #ViewRegistrationService}
 	 */
 	@Autowired
-	private RegistrationService<String, RegistrationDto> registrationService;
-
-	@Autowired
-	private MosipGroupIdGenerator<String> groupIdGenerator;
-
-	private String groupId;
+	private PreRegistrationService preRegistrationService;
 
 
 	/**
@@ -59,26 +54,15 @@ public class PreRegistrationController {
 	 */
 
 	@PostMapping(path = "/applications", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "Save form data")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Registration Entity successfully saved"),
-			@ApiResponse(code = 400, message = "Unable to save the Registration Entity") })
-	public ResponseEntity<List<ResponseDto>> register(@RequestBody(required = true) ApplicationDto applications) {
-		List<ResponseDto> response = new ArrayList<>();
-	    boolean isNewApplication = true;
-		int noOfApplications = applications.getApplications().size();
-		for (int i = 0; i < noOfApplications; i++) {
-			if (!applications.getApplications().get(i).getGroupId().isEmpty()) {
-				groupId = applications.getApplications().get(i).getGroupId();
-				isNewApplication = false;
-				break;
-			}
-		}
-		if (isNewApplication) {
-			groupId = groupIdGenerator.generateGroupId();
-		}
-		for (RegistrationDto registartion : applications.getApplications()) {
-			response.add(registrationService.addRegistration(registartion, groupId));
-		}
+	@ApiOperation(value = "Create form data")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Pre-Registration Entity successfully Created"),
+			@ApiResponse(code = 400, message = "Unable to create the Pre-Registration Entity") })
+	public ResponseEntity<ResponseDto<CreateDto>> register(@RequestBody(required = true) JSONObject json,
+			@RequestParam(value = "pre-id", required = false) String prid) {
+		ResponseDto<CreateDto> response = new ResponseDto<CreateDto>();
+
+		response = preRegistrationService.addRegistration(json, prid);
+
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
@@ -91,11 +75,11 @@ public class PreRegistrationController {
 	@ApiOperation(value = "Fetch all the applications created by user")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "All applications fetched successfully"),
 			@ApiResponse(code = 400, message = "Unable to fetch applications ") })
-	public ResponseEntity<List<ViewRegistrationResponseDto>> getAllApplications(
+	public ResponseEntity<List<ExceptionInfoDto>> getAllApplications(
 			@RequestParam(value = "userId", required = true) String userId)
 
 	{
-		List<ViewRegistrationResponseDto> response = registrationService.getApplicationDetails(userId);
+		List<ExceptionInfoDto> response = preRegistrationService.getApplicationDetails(userId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
@@ -113,7 +97,7 @@ public class PreRegistrationController {
 			@RequestParam(value = "groupId", required = true) String groupId)
 
 	{
-		Map<String, String> response = registrationService.getApplicationStatus(groupId);
+		Map<String, String> response = preRegistrationService.getApplicationStatus(groupId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
@@ -124,30 +108,16 @@ public class PreRegistrationController {
 	 * 
 	 */
 
+	@SuppressWarnings("rawtypes")
 	@DeleteMapping(path = "/applications", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Discard individual")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of individual is successfully"),
 			@ApiResponse(code = 400, message = "Unable to delete individual") })
-	public ResponseEntity<List<ResponseDto>> discardIndividual(@RequestParam(value = "groupId") String groupId,
-			@RequestParam(value = "preregIds") List<String> preregIds) {
+	public ResponseEntity<ResponseDto<DeleteDto>> discardIndividual(@RequestParam(value = "preId") String preId) {
 
-		List<ResponseDto> response = registrationService.deleteIndividual(groupId, preregIds);
+		ResponseDto<DeleteDto> response = preRegistrationService.deleteIndividual(preId);
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 
 	}
-
-	/**
-	 * Delete api to delete the Group applicants and documents associated with it
-	 * 
-	 */
-
-//	@DeleteMapping(path = "/discardGroup", produces = MediaType.APPLICATION_JSON_VALUE)
-//	@ApiOperation(value = "delete the Group applicants")
-//	@ApiResponses(value = { @ApiResponse(code = 200, message = "Deletion of group is successfully"),
-//			@ApiResponse(code = 400, message = "Unable to delete group") })
-//	public ResponseEntity<List<ResponseDto>> discardGroup(@RequestParam(value = "groupId") String groupId) {
-//		List<ResponseDto> response = registrationService.deleteGroup(groupId);
-//		return ResponseEntity.status(HttpStatus.OK).body(response);
-//	}
 
 }

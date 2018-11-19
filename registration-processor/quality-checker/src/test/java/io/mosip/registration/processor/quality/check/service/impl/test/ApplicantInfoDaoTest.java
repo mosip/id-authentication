@@ -74,7 +74,7 @@ public class ApplicantInfoDaoTest {
 		qcuserRegistrationIdEntity2.setIsDeleted(false);
 		qcuserRegistrationIdEntity2.setUpdDtimesz(LocalDateTime.now());
 		
-		
+
 		
 		Mockito.when(qcuserRegRepositary.save(ArgumentMatchers.any(QcuserRegistrationIdEntity.class)))
 				.thenReturn(qcuserRegistrationIdEntity1);
@@ -87,7 +87,7 @@ public class ApplicantInfoDaoTest {
 		
 	}
 	
-	
+
 	@Test
 	public void save() {
 		QcuserRegistrationIdEntity rEntity = applicantInfoDao.save(qcuserRegistrationIdEntity1);

@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
@@ -30,9 +30,9 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
 public class AESSeedGeneratorImpl implements AESSeedGenerator {
 
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(AESSeedGeneratorImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(AESSeedGeneratorImpl.class);
 
 	/**
 	 * (non-Javadoc)

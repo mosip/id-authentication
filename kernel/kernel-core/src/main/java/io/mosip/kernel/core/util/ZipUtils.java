@@ -2,26 +2,25 @@ package io.mosip.kernel.core.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+
 import java.io.FileOutputStream;
-import java.io.IOException;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import io.mosip.kernel.core.exception.DataFormatException;
+import io.mosip.kernel.core.exception.FileNotFoundException;
+import io.mosip.kernel.core.exception.IOException;
+import io.mosip.kernel.core.exception.NullPointerException;
 import io.mosip.kernel.core.util.constant.ZipUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipDataFormatException;
-import io.mosip.kernel.core.util.exception.MosipFileNotFoundException;
-import io.mosip.kernel.core.util.exception.MosipIOException;
-import io.mosip.kernel.core.util.exception.MosipNullPointerException;
 
 /**
  * Utilities for Zip and UnZip operations.
@@ -52,11 +51,11 @@ public class ZipUtils {
 	 *            pass Byte Array want to zip it
 	 * @param return
 	 *            returned zipped Byte Array
-	 * @throws MosipIOException
+	 * @throws IOException
 	 *             when file unable to read
 	 * 
 	 */
-	public static byte[] zipByteArray(byte[] input)throws MosipIOException{
+	public static byte[] zipByteArray(byte[] input)throws IOException{
 	    byte[] byReturn = null;
 	    Deflater oDeflate = new Deflater(Deflater.DEFLATED, false);
 	    oDeflate.setInput(input);
@@ -75,8 +74,8 @@ public class ZipUtils {
 	      }
 	      oDeflate.end();
 	      byReturn = oZipStream.toByteArray();
-	    }catch (IOException e) {
-			throw new MosipIOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+	    }catch (java.io.IOException e) {
+			throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 		}
 	   
@@ -90,14 +89,14 @@ public class ZipUtils {
 	 *            pass zipped Byte Array want to unzip it
 	 * @param return
 	 *            returned unzipped Byte Array
-	 * @throws MosipIOException
+	 * @throws IOException
 	 *             when file unable to read
 	 * @throws DataFormatException
 	 *             Attempting to unzip file that is not zipped
 	 */
 	
 	 public static byte[] unzipByteArray(byte[] input)
-	           throws MosipIOException, IOException  {
+	           throws IOException, java.io.IOException  {
 	    byte[] byReturn = null;
 
 	    Inflater oInflate = new Inflater(false);
@@ -116,11 +115,11 @@ public class ZipUtils {
 	      }
 	      byReturn = oZipStream.toByteArray();
 	    }
-	    catch (DataFormatException e){
-	    	throw new MosipDataFormatException(ZipUtilConstants.DATA_FORMATE_ERROR_CODE.getErrorCode(),
+	    catch (java.util.zip.DataFormatException e){
+	    	throw new DataFormatException(ZipUtilConstants.DATA_FORMATE_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.DATA_FORMATE_ERROR_CODE.getMessage(), e.getCause());
-	    }catch (IOException e) {
-			throw new MosipIOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+	    }catch (java.io.IOException e) {
+			throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 		}
 	    
@@ -137,14 +136,14 @@ public class ZipUtils {
 	 * @param outputFile
 	 *            pass Zip file address as string example: String outputZipFile
 	 *            = "D:\\Testfiles\\compressed.zip";
-	 * @throws MosipFileNotFoundException
+	 * @throws FileNotFoundException
 	 *             when file is not found
-	 * @throws MosipIOException
+	 * @throws IOException
 	 *             when file unable to read
 	 * 
 	 */
 	
-	public static boolean zipFile(String inputFile, String outputFile) throws MosipIOException {
+	public static boolean zipFile(String inputFile, String outputFile) throws IOException {
 
 		try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(outputFile));
 				FileInputStream fis = new FileInputStream(new File(inputFile))) {
@@ -153,11 +152,11 @@ public class ZipUtils {
 			zipOut.putNextEntry(zipEntry);
 			readFile(zipOut, fis);
 
-		} catch (FileNotFoundException e) {
-			throw new MosipFileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
+		} catch (java.io.FileNotFoundException e) {
+			throw new FileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getMessage(), e.getCause());
-		} catch (IOException e) {
-			throw new MosipIOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+		} catch (java.io.IOException e) {
+			throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 		}
 
@@ -171,10 +170,10 @@ public class ZipUtils {
 	 *            ZipOutStream object of inputFile
 	 * @param fis
 	 *            FileInputStream object of inputFile
-	 * @throws IOException
+	 * @throws java.io.IOException
 	 *             when file unable to read
 	 */
-	private static void readFile(ZipOutputStream zipOut, FileInputStream fis) throws IOException {
+	private static void readFile(ZipOutputStream zipOut, FileInputStream fis) throws java.io.IOException {
 		final byte[] bytes = new byte[1024];
 		int length;
 		while ((length = fis.read(bytes)) >= 0) {
@@ -192,13 +191,13 @@ public class ZipUtils {
 	 * @param outputFile
 	 *            pass Zip file address as string example: String
 	 *            outputMulFile="D:\\Testfiles\\compressedMult.zip";
-	 * @throws MosipFileNotFoundException
+	 * @throws FileNotFoundException
 	 *             when file is not found
-	 * @throws MosipIOException
+	 * @throws IOException
 	 *             when file unable to read
 	 */
 
-	public static boolean zipMultipleFile(String[] inputMultFile, String outputFile) throws MosipIOException {
+	public static boolean zipMultipleFile(String[] inputMultFile, String outputFile) throws IOException {
 
 		List<String> srcFiles = new ArrayList<>(Arrays.asList(inputMultFile));
 		for (String srcFile : srcFiles) {
@@ -210,11 +209,11 @@ public class ZipUtils {
 				ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
 				zipOut.putNextEntry(zipEntry);
 				readFile(zipOut, fis);
-			} catch (FileNotFoundException e) {
-				throw new MosipFileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
+			} catch (java.io.FileNotFoundException e) {
+				throw new FileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
 						ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getMessage(), e.getCause());
-			} catch (IOException e) {
-				throw new MosipIOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+			} catch (java.io.IOException e) {
+				throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
 						ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 			}
 		}
@@ -230,23 +229,23 @@ public class ZipUtils {
 	 * @param destDirectory
 	 *            pass Zip file address as string example: String outputDir
 	 *            ="D:\\Testfiles\\compressedDir.zip";
-	 * @throws MosipFileNotFoundException
+	 * @throws FileNotFoundException
 	 *             when file is not found
-	 * @throws MosipIOException
+	 * @throws IOException
 	 *             when file unable to read
 	 */
-	public static boolean zipDirectory(String inputDir, String destDirectory) throws MosipIOException {
+	public static boolean zipDirectory(String inputDir, String destDirectory) throws IOException {
 
 		try (ZipOutputStream zipOut = new ZipOutputStream(new FileOutputStream(destDirectory))) {
 
 			File fileToZip = new File(inputDir);
 			zipFileInDir(fileToZip, fileToZip.getName(), zipOut);
 
-		} catch (FileNotFoundException e) {
-			throw new MosipFileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
+		} catch (java.io.FileNotFoundException e) {
+			throw new FileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getMessage(), e.getCause());
-		} catch (IOException e) {
-			throw new MosipIOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+		} catch (java.io.IOException e) {
+			throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 		}
 		return true;
@@ -260,14 +259,14 @@ public class ZipUtils {
 	 *            files from given Directory
 	 * @param fileName
 	 *            file names from given Directory
-	 * @throws MosipFileNotFoundException
+	 * @throws FileNotFoundException
 	 *             when file is not found
-	 * @throws MosipIOException
+	 * @throws IOException
 	 *             when file unable to read
 	 */
 
 	private static boolean zipFileInDir(File fileToZip, String fileName, ZipOutputStream zipOut)
-			throws MosipIOException {
+			throws IOException {
 
 		if (fileToZip.isHidden()) {
 			return false;
@@ -283,11 +282,11 @@ public class ZipUtils {
 			ZipEntry zipEntry = new ZipEntry(fileName);
 			zipOut.putNextEntry(zipEntry);
 			readFile(zipOut, fis);
-		} catch (FileNotFoundException e) {
-			throw new MosipFileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
+		} catch (java.io.FileNotFoundException e) {
+			throw new FileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getMessage(), e.getCause());
-		} catch (IOException e) {
-			throw new MosipIOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+		} catch (java.io.IOException e) {
+			throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 		}
 		return true;
@@ -305,14 +304,14 @@ public class ZipUtils {
 	 *            pass UpZipfile address as string example : String inputDir =
 	 *            "D:\\Testfiles\\unzip";
 	 * 
-	 * @throws MosipFileNotFoundException
+	 * @throws FileNotFoundException
 	 *             when file is not found
 	 * 
-	 * @throws MosipIOException
+	 * @throws IOException
 	 *             when file unable to read
 	 */
 
-	public static boolean unZipFile(String inputZipFile, String outputUnZip) throws MosipIOException {
+	public static boolean unZipFile(String inputZipFile, String outputUnZip) throws IOException {
 
 		try (ZipInputStream zis = new ZipInputStream(new FileInputStream(inputZipFile))) {
 			ZipEntry zipEntry = zis.getNextEntry();
@@ -323,14 +322,14 @@ public class ZipUtils {
 				createOutputFile(zis, newFile);
 				zipEntry = zis.getNextEntry();
 			}
-		} catch (FileNotFoundException e) {
-			throw new MosipFileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
+		} catch (java.io.FileNotFoundException e) {
+			throw new FileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getMessage(), e.getCause());
-		} catch (NullPointerException e) {
-			throw new MosipNullPointerException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.NullPointerException e) {
+			throw new NullPointerException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.NULL_POINTER_ERROR_CODE.getMessage(), e.getCause());
-		} catch (IOException e) {
-			throw new MosipIOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+		} catch (java.io.IOException e) {
+			throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 		}
 		return true;
@@ -343,13 +342,13 @@ public class ZipUtils {
 	 *            next Entry inside the zip folder
 	 * @param newFile
 	 *            output unZip file
-	 * @throws MosipFileNotFoundException
+	 * @throws FileNotFoundException
 	 *             when file is not found
-	 * @throws MosipIOException
+	 * @throws IOException
 	 *             when file unable to read
 	 */
 	private static void createOutputFile(ZipInputStream zipInStream, File newFile)
-			throws IOException, MosipFileNotFoundException {
+			throws java.io.IOException, FileNotFoundException {
 
 		byte[] buffer = new byte[1024];
 		try (FileOutputStream fos = new FileOutputStream(newFile)) {
@@ -357,8 +356,8 @@ public class ZipUtils {
 			while ((len = zipInStream.read(buffer)) > 0) {
 				fos.write(buffer, 0, len);
 			}
-		} catch (FileNotFoundException e) {
-			throw new MosipFileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
+		} catch (java.io.FileNotFoundException e) {
+			throw new FileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getMessage(), e.getCause());
 		}
 	}
@@ -373,13 +372,13 @@ public class ZipUtils {
 	 * @param destDirectory
 	 *            output unziped Directory example : outputUnZipDir =
 	 *            "D:\\Testfiles\\unZipDir";
-	 * @throws MosipFileNotFoundException
+	 * @throws FileNotFoundException
 	 *             when file is not found
-	 * @throws MosipIOException
+	 * @throws IOException
 	 *             when file unable to read
 	 */
 
-	public static boolean unZipDirectory(String zipFilePath, String destDirectory) throws MosipIOException {
+	public static boolean unZipDirectory(String zipFilePath, String destDirectory) throws IOException {
 		File destDir = new File(destDirectory);
 		if (!destDir.exists()) {
 			destDir.mkdir();
@@ -400,11 +399,11 @@ public class ZipUtils {
 				zipIn.closeEntry();
 				entry = zipIn.getNextEntry();
 			}
-		} catch (FileNotFoundException e) {
-			throw new MosipFileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
+		} catch (java.io.FileNotFoundException e) {
+			throw new FileNotFoundException(ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.FILE_NOT_FOUND_ERROR_CODE.getMessage(), e.getCause());
-		} catch (IOException e) {
-			throw new MosipIOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
+		} catch (java.io.IOException e) {
+			throw new IOException(ZipUtilConstants.IO_ERROR_CODE.getErrorCode(),
 					ZipUtilConstants.IO_ERROR_CODE.getMessage(), e.getCause());
 		}
 
@@ -418,10 +417,10 @@ public class ZipUtils {
 	 *            Inner entries
 	 * @param filePath
 	 *            output Directory
-	 * @throws MosipIOException
+	 * @throws IOException
 	 *             when file unable to read
 	 */
-	private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
+	private static void extractFile(ZipInputStream zipIn, String filePath) throws java.io.IOException {
 		try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath))) {
 			byte[] bytesIn = new byte[10000];
 			int read = 0;

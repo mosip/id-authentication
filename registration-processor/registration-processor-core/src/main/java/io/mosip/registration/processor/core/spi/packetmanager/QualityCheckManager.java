@@ -32,7 +32,7 @@ public interface QualityCheckManager<U,Q>{
 	 */
 	public List<Q> updateQCUserStatus(List<Q> qcUserDtos);
 
-	
+
 	
 
 }

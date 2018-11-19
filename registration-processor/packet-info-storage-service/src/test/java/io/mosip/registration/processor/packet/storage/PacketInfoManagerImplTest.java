@@ -67,15 +67,15 @@ import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoMan
 
 @RunWith(MockitoJUnitRunner.class)
 public class PacketInfoManagerImplTest {
-	@InjectMocks   
+	@InjectMocks
 	PacketInfoManager<PacketInfo, Demographic, MetaData,ApplicantInfoDto> packetInfoManagerImpl = new PacketInfoManagerImpl();
 
 	@Mock
 	ClientAuditRequestBuilder clientAuditRequestBuilder;
-	
+
 	@Mock
 	AuditmanagerClient auditmanagerClient;
-	
+
 	@Mock
 	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
 
@@ -100,7 +100,7 @@ public class PacketInfoManagerImplTest {
 	@Mock
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
 
-	
+
 	@Mock
 	private BasePacketRepository<RegCenterMachineEntity, String> regCenterMachineRepository;
 	private BiometericData biometricData;
@@ -135,9 +135,9 @@ public class PacketInfoManagerImplTest {
 
 	@Mock
 	private PacketInfoDao packetInfoDao;
-	
+
 	private List<ApplicantInfoDto>  listDto= new ArrayList<ApplicantInfoDto>();
-	
+
 	QcuserRegistrationIdEntity qcuserRegistrationIdEntity1;
 	QcuserRegistrationIdEntity qcuserRegistrationIdEntity2;
 	@Before
@@ -326,12 +326,12 @@ public class PacketInfoManagerImplTest {
 		demoInLocalLang.setMobile("9876543210");
 		demographicInfo.setDemoInUserLang(demoInUserLang);
 
-				
+
 		qcuserRegistrationIdEntity1=new QcuserRegistrationIdEntity();
 		QcuserRegistrationIdPKEntity pkid1=new QcuserRegistrationIdPKEntity();
 		pkid1.setUsrId("qc001");
 		pkid1.setRegId("2018782130000116102018124324");
-		qcuserRegistrationIdEntity1.setCrBy("MOSIP_SYSTEM"); 
+		qcuserRegistrationIdEntity1.setCrBy("MOSIP_SYSTEM");
 		qcuserRegistrationIdEntity1.setIsActive(true);
 		qcuserRegistrationIdEntity1.setId(pkid1);
 		qcuserRegistrationIdEntity1.setStatus_code("ACCEPTED");
@@ -339,12 +339,12 @@ public class PacketInfoManagerImplTest {
 		qcuserRegistrationIdEntity1.setCrDtimesz(LocalDateTime.now());
 		qcuserRegistrationIdEntity1.setIsDeleted(false);
 		qcuserRegistrationIdEntity1.setUpdDtimesz(LocalDateTime.now());
-		
+
 		qcuserRegistrationIdEntity2=new QcuserRegistrationIdEntity();
 		QcuserRegistrationIdPKEntity pkid2=new QcuserRegistrationIdPKEntity();
 		pkid2.setUsrId("qc001");
 		pkid2.setRegId("2018782130000116102018124325");
-		qcuserRegistrationIdEntity2.setCrBy("MOSIP_SYSTEM"); 
+		qcuserRegistrationIdEntity2.setCrBy("MOSIP_SYSTEM");
 		qcuserRegistrationIdEntity2.setIsActive(true);
 		qcuserRegistrationIdEntity2.setId(pkid2);
 		qcuserRegistrationIdEntity2.setStatus_code("ACCEPTED");
@@ -352,8 +352,8 @@ public class PacketInfoManagerImplTest {
 		qcuserRegistrationIdEntity2.setCrDtimesz(LocalDateTime.now());
 		qcuserRegistrationIdEntity2.setIsDeleted(false);
 		qcuserRegistrationIdEntity2.setUpdDtimesz(LocalDateTime.now());
-		
-		
+
+
 	}
 
 	@Test
@@ -388,7 +388,7 @@ public class PacketInfoManagerImplTest {
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void testDemographicFailureCase() {
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 		Mockito.when(applicantDemographicRepository.save(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.saveDemographicData(demographicInfo, metaData);
@@ -404,24 +404,24 @@ public class PacketInfoManagerImplTest {
 		list.add(dto);
 		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenReturn(list);
 		assertEquals("male",packetInfoManagerImpl.getPacketsforQCUser("qc001").get(0).getDemoInLocalLang().getGender());
-		
+
 	}
 
-	
+
 	@Test(expected = TablenotAccessibleException.class)
 	public void getPacketsforQCUserDemographicFailureCase() {
-		
+
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
-		
-		
+
+
 		ApplicantDemographicEntity[] applicantDemographicEntity=new ApplicantDemographicEntity[2];
 		ApplicantDemographicPKEntity pk1= new ApplicantDemographicPKEntity();
 		pk1.setLangCode("en");
-		
-		
+
+
 		pk1.setRegId("2018782130000116102018124325");
-		
+
 		applicantDemographicEntity[0] = new ApplicantDemographicEntity();
 		applicantDemographicEntity[0].setId(pk1);
 		applicantDemographicEntity[0].setApplicantType("qc_user");
@@ -443,13 +443,13 @@ public class PacketInfoManagerImplTest {
 		applicantDemographicEntity[1].setLocationCode("dhe");
 		applicantDemographicEntity[1].setPreRegId("1001");
 	    List<Object[]> applicantInfo = new ArrayList<>();
-	    
+
 		applicantInfo.add(applicantDemographicEntity);
-		
+
 		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.getPacketsforQCUser("qcuser1");
 	}
-	
+
 	@Test
 	public void getPacketsforQCUserPhotographic() {
 
@@ -461,13 +461,13 @@ public class PacketInfoManagerImplTest {
 		list.add(dto);
 		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenReturn(list);
 		assertEquals(true,packetInfoManagerImpl.getPacketsforQCUser("qc001").get(0).getApplicantPhoto().isHasExceptionPhoto());
-		
-		
+
+
 	}
-	
+
 	@Test(expected = TablenotAccessibleException.class)
 	public void getPacketsforQCUserPhotographicfailureCase() {
-		
+
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		ApplicantPhotographEntity[] applicantPhotographEntity=new ApplicantPhotographEntity[1];
@@ -479,7 +479,7 @@ public class PacketInfoManagerImplTest {
 		applicantPhotographEntity[0].setQualityScore(new BigDecimal(123456123456.78));
 		List<Object[]> applicantInfo2 = new ArrayList<>();
 		applicantInfo2.add(applicantPhotographEntity);
-		
+
 		Mockito.when(packetInfoDao.getPacketsforQCUser(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.getPacketsforQCUser("qcuser1");
 	}

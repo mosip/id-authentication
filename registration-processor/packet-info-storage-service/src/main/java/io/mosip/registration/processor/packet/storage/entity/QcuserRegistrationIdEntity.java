@@ -40,11 +40,11 @@ public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrat
 	private Boolean isDeleted;
 
 	private String status_code;
-	
+
 	private String status_comment;
-	
+
 	private String lang_code;
-	
+
 	@Column(name="upd_by")
 	private String updBy;
 
@@ -112,7 +112,7 @@ public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrat
 		this.status_comment = status_comment;
 	}
 
-	
+
 	public String getLang_code() {
 		return lang_code;
 	}

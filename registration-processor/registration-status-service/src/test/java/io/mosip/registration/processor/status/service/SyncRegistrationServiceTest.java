@@ -47,7 +47,7 @@ public class SyncRegistrationServiceTest {
 	@Mock
 	private SyncRegistrationDao syncRegistrationDao;
 
-	
+
 
 	/** The sync registration service. */
 	@InjectMocks
@@ -149,7 +149,7 @@ public class SyncRegistrationServiceTest {
 	 */
 	@Test(expected = TablenotAccessibleException.class)
 	public void getSyncRegistrationStatusFailureTest() throws TablenotAccessibleException {
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 		Mockito.when(syncRegistrationDao.save(ArgumentMatchers.any())).thenThrow(exp);
 		syncRegistrationService.sync(entities);

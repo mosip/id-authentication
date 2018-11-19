@@ -7,10 +7,10 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.core.spi.datavalidator.email.EmailValidator;
+import io.mosip.kernel.core.datavalidator.exception.InvalideEmailException;
+import io.mosip.kernel.core.datavalidator.spi.EmailValidator;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.datavalidator.email.constant.EmailConstant;
-import io.mosip.kernel.datavalidator.email.exception.InvalideEmailException;
 
 /**
  * This class for validate the given Email ID in the String format
@@ -79,7 +79,7 @@ public class EmailValidatorImpl implements EmailValidator<String> {
 	private String emailRegex;
 
 	@PostConstruct
-	public void preparEmailRegEx() {
+	private void emailValidatorImplPostConstruct() {
 
 		emailRegex = "^[a-zA-Z0-9][a-zA-Z0-9" + unserNameSpecialChar + "]+(?:\\.[a-zA-Z0-9" + unserNameSpecialChar
 				+ "]+)*@(?:[a-zA-Z" + domainSpecialChar + "]+\\.)+[a-zA-Z]{" + domainExtMinLength + ","

@@ -61,7 +61,7 @@ public class VirusScannerTaskletTest {
 	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	@Mock
-	private VirusScannerService<Boolean, String> virusScanner;
+	private VirusScanner<Boolean, String> virusScannerImpl;
 
 	@MockBean
 	StepContribution stepContribution;
@@ -103,7 +103,7 @@ public class VirusScannerTaskletTest {
 	@Test
 	public void testSuccessfulVirusScanSendToDfs() throws Exception {
 
-		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.FALSE);
+		Mockito.when(virusScannerImpl.scanFile(anyString())).thenReturn(Boolean.FALSE);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 
 		RepeatStatus output = virusScannerTasklet.execute(stepContribution, chunkContext);
@@ -114,7 +114,7 @@ public class VirusScannerTaskletTest {
 	@Test
 	public void testVirusScanFailureMoveToRetry() throws Exception {
 
-		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
+		Mockito.when(virusScannerImpl.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(any());
 
 		RepeatStatus output = virusScannerTasklet.execute(stepContribution, chunkContext);
@@ -154,7 +154,7 @@ public class VirusScannerTaskletTest {
 		final Appender mockAppender = mock(Appender.class);
 		root.addAppender(mockAppender);
 
-		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.TRUE);
+		Mockito.when(virusScannerImpl.scanFile(anyString())).thenReturn(Boolean.TRUE);
 		Mockito.doThrow(DFSNotAccessibleException.class).when(filesystemCephAdapterImpl).storePacket(anyString(),
 				any(File.class));
 
@@ -179,7 +179,7 @@ public class VirusScannerTaskletTest {
 		final Appender mockAppender = mock(Appender.class);
 		root.addAppender(mockAppender);
 
-		Mockito.when(virusScanner.scanFile(anyString())).thenReturn(Boolean.FALSE);
+		Mockito.when(virusScannerImpl.scanFile(anyString())).thenReturn(Boolean.FALSE);
 		Mockito.doThrow(RetryFolderNotAccessibleException.class).when(fileManager).copy(anyString(), any(), any());
 
 		virusScannerTasklet.execute(stepContribution, chunkContext);

@@ -54,7 +54,7 @@ public class RegistrationStatusServiceTest {
 	@Mock
 	private RegistrationStatusDao registrationStatusDao;
 
-	
+
 
 	@Mock
 	private ClientAuditRequestBuilder coreAuditRequestBuilder = new ClientAuditRequestBuilder();
@@ -109,7 +109,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getRegistrationStatusFailureTest() throws TablenotAccessibleException {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 		Mockito.when(registrationStatusDao.findById(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.getRegistrationStatus("1001");
@@ -125,7 +125,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void findbyfilesByThresholdFailureTest() {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 		Mockito.when(registrationStatusDao.findbyfilesByThreshold("PACKET_UPLOADED_TO_LANDING_ZONE", 48))
 				.thenThrow(exp);
@@ -143,7 +143,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void addRegistrationFailureTest() {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 		Mockito.when(registrationStatusDao.save(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.addRegistrationStatus(registrationStatusDto);
@@ -160,7 +160,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void updateRegistrationStatusFailureTest() {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 
 		Mockito.when(registrationStatusDao.save(ArgumentMatchers.any())).thenThrow(exp);
@@ -178,7 +178,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getByStatusFailureTest() {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 		Mockito.when(registrationStatusDao.getEnrolmentStatusByStatusCode(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.getByStatus("PACKET_UPLOADED_TO_LANDING_ZONE");
@@ -194,7 +194,7 @@ public class RegistrationStatusServiceTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getByIdsFailureTest() {
 		DataAccessLayerException exp = new DataAccessLayerException(
-				HibernateErrorCode.ERR_DATABASE, "errorMessage",
+				HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 		Mockito.when(registrationStatusDao.getByIds(ArgumentMatchers.any())).thenThrow(exp);
 		registrationStatusService.getByIds("1001,1000");

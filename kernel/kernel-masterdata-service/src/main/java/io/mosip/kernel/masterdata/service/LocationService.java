@@ -1,0 +1,27 @@
+package io.mosip.kernel.masterdata.service;
+
+
+import io.mosip.kernel.masterdata.dto.LocationResponseDto;
+
+/**
+ * Interface class from which various implementation can be performed
+ * @author Srinivasan
+ *
+ */
+public interface LocationService {
+
+	/**
+	 * this method will fetch LocationHierarchyDetails
+	 * 
+	 * @param locationHierarchyDTO
+	 * @return
+	 */
+	public LocationResponseDto getLocationDetails();
+	
+	/**
+	 * 
+	 * @param locationHierarchyDto
+	 * @return
+	 */
+	public LocationResponseDto getLocationHierarchyByLangCode(String locCode,String langCode);
+}

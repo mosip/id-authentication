@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepContribution;
@@ -59,7 +58,7 @@ public class VirusScannerTasklet implements Tasklet {
 
 	/** The virus scanner service. */
 	@Autowired
-	VirusScannerService<Boolean, String> virusScannerService;
+	VirusScanner<Boolean, String> virusScannerImpl;
 
 	/** The file manager. */
 	@Autowired
@@ -145,7 +144,7 @@ public class VirusScannerTasklet implements Tasklet {
 			boolean isClean = false;
 
 			try {
-				isClean = virusScannerService.scanFile(filepath);
+				isClean = virusScannerImpl.scanFile(filepath);
 				if (isClean) {
 					sendToDFS(file, entry);
 				} else {

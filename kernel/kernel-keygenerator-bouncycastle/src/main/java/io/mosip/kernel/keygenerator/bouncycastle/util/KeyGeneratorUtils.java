@@ -1,17 +1,16 @@
 package io.mosip.kernel.keygenerator.bouncycastle.util;
 
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.Security;
 
-import javax.crypto.KeyGenerator;
+
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 import io.mosip.kernel.keygenerator.bouncycastle.config.KeyGeneratorConfig;
 import io.mosip.kernel.keygenerator.bouncycastle.constant.KeyGeneratorExceptionConstant;
-import io.mosip.kernel.keygenerator.bouncycastle.exception.MosipNoSuchAlgorithmException;
 
 /**
  * This is a utils class for keygenerator
@@ -44,13 +43,15 @@ public class KeyGeneratorUtils {
 	 *            algorithm and size configuration {@link KeyGeneratorConfig}
 	 * @return configured {@link KeyGenerator} instance
 	 */
-	public static KeyGenerator getKeyGenerator(KeyGeneratorConfig config) {
+	public static javax.crypto.KeyGenerator getKeyGenerator(KeyGeneratorConfig config) {
 
-		KeyGenerator generator = null;
+		javax.crypto.KeyGenerator generator = null;
 		try {
-			generator = KeyGenerator.getInstance(config.getAlgorithmName(), provider);
-		} catch (NoSuchAlgorithmException e) {
-			throw new MosipNoSuchAlgorithmException(KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION);
+			generator = javax.crypto.KeyGenerator.getInstance(config.getAlgorithmName(), provider);
+		} catch (java.security.NoSuchAlgorithmException e) {
+			throw new NoSuchAlgorithmException(
+					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
 		}
 		SecureRandom random = new SecureRandom();
 		generator.init(Integer.parseInt(config.getSize()), random);
@@ -69,8 +70,10 @@ public class KeyGeneratorUtils {
 		KeyPairGenerator generator = null;
 		try {
 			generator = KeyPairGenerator.getInstance(config.getAlgorithmName(), provider);
-		} catch (NoSuchAlgorithmException e) {
-			throw new MosipNoSuchAlgorithmException(KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION);
+		} catch (java.security.NoSuchAlgorithmException e) {
+			throw new NoSuchAlgorithmException(
+					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorCode(),
+					KeyGeneratorExceptionConstant.MOSIP_NO_SUCH_ALGORITHM_EXCEPTION.getErrorMessage());
 		}
 		SecureRandom random = new SecureRandom();
 		generator.initialize(Integer.parseInt(config.getSize()), random);

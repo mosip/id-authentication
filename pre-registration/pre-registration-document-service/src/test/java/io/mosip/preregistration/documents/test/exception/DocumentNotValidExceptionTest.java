@@ -37,13 +37,20 @@ public class DocumentNotValidExceptionTest {
 
 		DocumentNotValidException documentNotValidException = new DocumentNotValidException(DOCUMENT_INVALID_FORMAT);
 
-		DocumentDto documentDto = new DocumentDto("89076543215678", "address", "POA", "PDF", "SAVE", "ENG", "KISHAN", "KISHAN");
-
+		DocumentDto documentDto = new DocumentDto("48690172097498",
+				"address",
+				"POA",
+				"PDF",
+				"Draft",
+				"ENG",
+				"Jagadishwari",
+				"Jagadishwari");
+		
 		ClassLoader classLoader = getClass().getClassLoader();
 
-		File file = new File(classLoader.getResource("sampleZip.zip").getFile());
+		File file = new File(classLoader.getResource("Doc.pdf").getFile());
 
-		this.multiPartFile = new MockMultipartFile("file", "sampleZip.zip", "mixed/multipart",
+		this.multiPartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart",
 				new FileInputStream(file));
 
 		Mockito.when(documentUploadService.uploadDoucment(multiPartFile, documentDto))

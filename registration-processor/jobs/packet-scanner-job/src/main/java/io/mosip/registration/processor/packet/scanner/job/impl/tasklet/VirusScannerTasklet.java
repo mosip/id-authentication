@@ -59,7 +59,7 @@ public class VirusScannerTasklet implements Tasklet {
 
 	/** The virus scanner service. */
 	@Autowired
-	VirusScannerService<Boolean, String> virusScannerService;
+	VirusScanner<Boolean, String> virusScannerImpl;
 
 	/** The file manager. */
 	@Autowired
@@ -140,7 +140,7 @@ public class VirusScannerTasklet implements Tasklet {
 			boolean isClean = false;
 
 			try {
-				isClean = virusScannerService.scanFile(filepath);
+				isClean = virusScannerImpl.scanFile(filepath);
 				if (isClean) {
 					sendToDFS(file, entry);
 				} else {
