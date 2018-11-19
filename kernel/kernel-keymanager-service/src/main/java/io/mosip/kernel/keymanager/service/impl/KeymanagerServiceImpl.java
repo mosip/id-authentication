@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.keymanager.spi.KeymanagerInterface;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
+import io.mosip.kernel.keymanager.dto.KeyResponseDto;
 import io.mosip.kernel.keymanager.entity.AliasMap;
 import io.mosip.kernel.keymanager.repository.KeymanagerRepository;
 import io.mosip.kernel.keymanager.service.KeymanagerService;
@@ -57,24 +58,18 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * String, java.time.LocalDateTime, java.util.Optional)
 	 */
 	@Override
-	public byte[] getPublicKey(String applicationId, LocalDateTime timeStamp, Optional<String> machineId) {
+	public KeyResponseDto getPublicKey(String applicationId, LocalDateTime timeStamp, Optional<String> machineId) {
 
-		List<String> allAlias = keymanagerInterface.getAllAlias();
-		System.out.println("********");
-		allAlias.forEach(alias -> {
-			Key key = keymanagerInterface.getKey(alias);
-			System.out.println(alias + "," + key);
-		});
-		System.out.println("********");
-
-		PublicKey publicKey = null;
+		KeyResponseDto keyResponseDto = new KeyResponseDto();
 		String currentAlias = null;
 		List<AliasMap> aliasMaps = keymanagerRepository.findByApplicationId(applicationId);
 
 		if (aliasMaps.isEmpty()) {
+
 			currentAlias = UUID.randomUUID().toString();
 			createNewKeyPair(applicationId, currentAlias);
 		} else {
+
 			aliasMaps.sort((aliasMap1, aliasMap2) -> aliasMap2.getTimeStamp().compareTo(aliasMap1.getTimeStamp()));
 			currentAlias = aliasMaps.get(0).getAlias();
 			X509Certificate certificate = (X509Certificate) keymanagerInterface.getCertificate(currentAlias);
@@ -85,8 +80,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				createNewKeyPair(applicationId, currentAlias);
 			}
 		}
-		publicKey = keymanagerInterface.getPublicKey(currentAlias);
-		return publicKey.getEncoded();
+		PublicKey publicKey = keymanagerInterface.getPublicKey(currentAlias);
+		keyResponseDto.setKey(publicKey.getEncoded());
+		return keyResponseDto;
 	}
 
 	/**
@@ -111,11 +107,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 * .lang.String, java.time.LocalDateTime, java.util.Optional, byte[])
 	 */
 	@Override
-	public byte[] decryptSymmetricKey(String appId, LocalDateTime timeStamp, Optional<String> machineId,
+	public KeyResponseDto decryptSymmetricKey(String appId, LocalDateTime timeStamp, Optional<String> machineId,
 			byte[] encryptedSymmetricKey) {
 
-		byte[] decryptSymmetricKey = "urvil".getBytes();
-
-		return decryptSymmetricKey;
+		return null;
 	}
 }

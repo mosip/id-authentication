@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.keymanager.dto.KeyResponseDto;
 import io.mosip.kernel.keymanager.service.KeymanagerService;
 
 /**
@@ -31,7 +32,7 @@ public class KeymanagerController {
 	KeymanagerService keymanagerService;
 
 	@GetMapping(value = "/publickey/{appId}")
-	public ResponseEntity<byte[]> getPublicKey(@PathVariable("appId") String appId,
+	public ResponseEntity<KeyResponseDto> getPublicKey(@PathVariable("appId") String appId,
 			@RequestParam("timeStamp") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime timeStamp,
 			@RequestParam("machineId") Optional<String> machineId) {
 
@@ -39,7 +40,7 @@ public class KeymanagerController {
 	}
 
 	@PostMapping(value = "/symmetricKey/{appId}")
-	public ResponseEntity<byte[]> decryptSymmetricKey(@PathVariable("appId") String appId,
+	public ResponseEntity<KeyResponseDto> decryptSymmetricKey(@PathVariable("appId") String appId,
 			@RequestParam("timeStamp") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime timeStamp,
 			@RequestParam("machineId") Optional<String> machineId, @RequestBody byte[] encryptedSymmetricKey) {
 
