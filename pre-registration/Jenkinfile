@@ -60,6 +60,9 @@ stage('-----------Docker image push and cleanup-----------') {
 			echo locationOfDockerFiles.size()+""
 			echo "&&&&&&&&&&&&&&&&&&&&&"+locationOfDockerFiles[0]+"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
 			for (int i=0; i < locationOfDockerFiles.size(); i++) {
+			if(locationOfDockerFiles[i].equals("")){
+			break;
+			}
 			echo locationOfDockerFiles[i]
 			def currentModule = locationOfDockerFiles[i]
 			sh "basename `dirname $currentModule` > parentDirectoryName"
