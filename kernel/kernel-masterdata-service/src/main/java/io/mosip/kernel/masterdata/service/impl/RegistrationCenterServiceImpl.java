@@ -220,7 +220,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	public RegistrationCenterResponseDto getAllRegistrationCenters() {
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
-			registrationCentersList = registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class);
+			registrationCentersList = registrationCenterRepository
+					.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
