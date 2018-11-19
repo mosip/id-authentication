@@ -53,35 +53,57 @@ public class OSIValidatorStageTest {
 
 	private Identity identity;
 
+	byte[] data = "1234567890".getBytes();
+
 	@Before
 	public void setUp() throws Exception {
 		identity = new Identity();
 
 		List<FieldValue> fieldValueosi = new ArrayList<FieldValue>();
 
-		FieldValue biometric = new FieldValue();
-		biometric.setLabel(PacketFiles.OFFICERID.name());
-		biometric.setValue("1234");
-		biometric.setLabel(PacketFiles.OFFICERFINGERPRINTIMAGE.name());
-		biometric.setValue("fingerprint");
-		biometric.setLabel(PacketFiles.OFFICERIRISIMAGE.name());
-		biometric.setValue("iris");
-		biometric.setLabel(PacketFiles.OFFICERAUTHENTICATIONIMAGE.name());
-		biometric.setValue("auth");
-		biometric.setLabel(PacketFiles.OFFICERPIN.name());
-		biometric.setValue("1234");
+		FieldValue biometric1 = new FieldValue();
+		FieldValue biometric2 = new FieldValue();
+		FieldValue biometric3 = new FieldValue();
+		FieldValue biometric4 = new FieldValue();
+		FieldValue biometric5 = new FieldValue();
+		biometric1.setLabel(PacketFiles.OFFICERID.name());
+		biometric1.setValue("1234");
+		biometric2.setLabel(PacketFiles.OFFICERFINGERPRINTIMAGE.name());
+		biometric2.setValue("fingerprint");
+		biometric3.setLabel(PacketFiles.OFFICERIRISIMAGE.name());
+		biometric3.setValue("iris");
+		biometric4.setLabel(PacketFiles.OFFICERAUTHENTICATIONIMAGE.name());
+		biometric4.setValue("auth");
+		biometric5.setLabel(PacketFiles.OFFICERPIN.name());
+		biometric5.setValue("1234");
 
-		fieldValueosi.add(biometric);
+		fieldValueosi.add(biometric1);
+		identity.setOsiData(fieldValueosi);
+
+		fieldValueosi.add(biometric2);
+		identity.setOsiData(fieldValueosi);
+
+		fieldValueosi.add(biometric3);
+		identity.setOsiData(fieldValueosi);
+
+		fieldValueosi.add(biometric4);
+		identity.setOsiData(fieldValueosi);
+
+		fieldValueosi.add(biometric5);
 		identity.setOsiData(fieldValueosi);
 
 		List<FieldValue> fieldValuemeta = new ArrayList<FieldValue>();
-		FieldValue metadatavalue = new FieldValue();
-		metadatavalue.setLabel(PacketFiles.OFFICERFINGERPRINTTYPE.name());
-		metadatavalue.setValue("lefttumb");
-		metadatavalue.setLabel(PacketFiles.OFFICERIRISTYPE.name());
-		metadatavalue.setValue("lefteye");
+		FieldValue metadatavalue1 = new FieldValue();
+		FieldValue metadatavalue2 = new FieldValue();
+		metadatavalue1.setLabel(PacketFiles.OFFICERFINGERPRINTTYPE.name());
+		metadatavalue1.setValue("lefttumb");
+		metadatavalue2.setLabel(PacketFiles.OFFICERIRISTYPE.name());
+		metadatavalue2.setValue("lefteye");
 
-		fieldValuemeta.add(metadatavalue);
+		fieldValuemeta.add(metadatavalue1);
+		identity.setMetaData(fieldValuemeta);
+
+		fieldValuemeta.add(metadatavalue2);
 		identity.setMetaData(fieldValuemeta);
 
 	}
@@ -96,8 +118,8 @@ public class OSIValidatorStageTest {
 		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
 		Mockito.when(adapter.checkFileExistence(anyString(), anyString())).thenReturn(true);
 
-		// Mockito.when(osiValidatorStage.osiValidator.validateBiometric(any(), any(),
-		// any(), any())).thenReturn(true);
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
 
 		MessageDTO dto = new MessageDTO();
 		dto.setRid("2018701130000410092018110735");
