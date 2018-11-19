@@ -95,9 +95,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		AliasMap aliasMap = new AliasMap();
 		aliasMap.setAlias(alias);
 		aliasMap.setApplicationId(applicationId);
-
 		aliasMap.setMachineId(machineId);
-
 		aliasMap.setTimeStamp(LocalDateTime.now());
 		keymanagerRepository.create(aliasMap);
 	}
