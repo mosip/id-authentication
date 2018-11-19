@@ -95,20 +95,11 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			/** Obtain RegistrationStatusDto from service delegate util */
 			registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil.get(SERVICE_NAME,
 					requestParamMap);
-		} catch (RegBaseCheckedException regBaseCheckedException) {
+		} catch (RegBaseCheckedException | IllegalArgumentException | HttpClientErrorException | SocketTimeoutException exception) {
 			/** Create Error response */
 			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
 			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
 					"Error Response Created");
-		} catch (HttpClientErrorException httpClientErrorException) {
-			/** Create Error response */
-			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-					"Error Response Created");
-		}catch (SocketTimeoutException e) {
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-					"Error Response Created");
-			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
 		}
 
 		if (!registrations.isEmpty()) {
