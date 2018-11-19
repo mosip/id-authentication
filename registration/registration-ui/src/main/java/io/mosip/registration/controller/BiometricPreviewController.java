@@ -2,11 +2,7 @@ package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,7 +27,7 @@ import javafx.scene.image.ImageView;
  */
 @Controller
 public class BiometricPreviewController extends BaseController {
-	
+
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
 
@@ -81,17 +77,24 @@ public class BiometricPreviewController extends BaseController {
 
 		RegistrationDTO registrationDTOContent = RegistrationController.registrationDTOContent;
 		registrationDTOContent.getBiometricDTO();
-		byte[] photoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
-		if(photoInBytes!=null) {
-			ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(photoInBytes);
-			individualPhoto.setImage(new Image(byteArrayInputStream));
+		if (null != registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()) {
+
+			if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto() != null) {
+				byte[] photoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
+				if (photoInBytes != null) {
+					ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(photoInBytes);
+					individualPhoto.setImage(new Image(byteArrayInputStream));
+				}
+			}
+			if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto() != null) {
+				byte[] exceptionPhotoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
+						.getExceptionPhoto();
+				if (exceptionPhotoInBytes != null) {
+					ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
+					exceptionPhoto.setImage(new Image(inputStream));
+				}
+			}
 		}
-		
-		byte[] exceptionPhotoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto();
-		if(exceptionPhotoInBytes!=null) {
-			ByteArrayInputStream inputStream=new ByteArrayInputStream(exceptionPhotoInBytes);
-			exceptionPhoto.setImage(new Image(inputStream));
-		}		
 	}
 
 	/**
@@ -106,7 +109,8 @@ public class BiometricPreviewController extends BaseController {
 	 * screen
 	 */
 	public void handleNextBtnAction() {
-		registrationOfficerPacketController.showReciept(RegistrationController.registrationDTOContent, capturePhotoUsingDevice);
+		registrationOfficerPacketController.showReciept(RegistrationController.registrationDTOContent,
+				capturePhotoUsingDevice);
 	}
 
 	/**

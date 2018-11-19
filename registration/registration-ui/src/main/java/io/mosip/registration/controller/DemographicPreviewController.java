@@ -77,6 +77,7 @@ public class DemographicPreviewController extends BaseController {
 		try {
 			if (isInPane1) {
 				demoGraphicVbox.getChildren().clear();
+				RegistrationController.getDemoGraphicPane2Content().setVisible(true);
 				demoGraphicVbox.getChildren().add(RegistrationController.getDemoGraphicPane2Content());
 				isInPane1 = false;
 			} else {
