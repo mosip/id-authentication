@@ -59,6 +59,7 @@ stage('-----------Docker image push and cleanup-----------') {
 			sh "rm -f directoryDockerFiles"
 			for (int i=0; i < locationOfDockerFiles.size(); i++) {
 			if(locationOfDockerFiles[i].equals("")){
+			echo "No Dockerfile found"
 			break;
 			}
 			echo locationOfDockerFiles[i]
