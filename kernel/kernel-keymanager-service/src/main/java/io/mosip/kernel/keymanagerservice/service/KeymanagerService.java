@@ -1,7 +1,6 @@
 package io.mosip.kernel.keymanagerservice.service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import io.mosip.kernel.keymanagerservice.dto.KeyResponseDto;
 
