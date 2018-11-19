@@ -34,3 +34,5 @@ alter table reg.device_master add constraint fk_devicem_dspec foreign key (dspec
 alter table reg.device_spec add constraint fk_dspec_dtyp foreign key (dtyp_code, lang_code) references reg.device_type(code, lang_code) on delete no action on update no action ;
 alter table reg.machine_master add constraint fk_machm_mspec foreign key (mspec_id) references reg.machine_spec(id) on delete no action on update no action ;
 alter table reg.machine_spec add constraint fk_mspec_mtyp foreign key (mtyp_code, lang_code) references reg.machine_type(code, lang_code) on delete no action on update no action ;
+
+alter table reg.user_biometric add constraint fk_usrbio_usrdtl foreign key (reg_usr_id) references reg.user_detail(id) on delete no action on update no action ;

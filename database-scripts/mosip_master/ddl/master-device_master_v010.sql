@@ -18,6 +18,8 @@ create table master.device_master (
 	mac_address character varying (64) not null,
 	serial_num 	character varying (64) not null,
 	ip_address 	character varying (17) , 
+	
+	validity_end_dtimes timestamp,
 
 	dspec_id    character varying(36) not null ,   -- master.device_spec.id ,  spec mapped to device_type
 		

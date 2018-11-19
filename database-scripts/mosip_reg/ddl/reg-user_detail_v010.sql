@@ -27,6 +27,9 @@ create table reg.user_detail (
 		
 	last_login_dtimes timestamp,
 	last_login_method character varying (36),			-- master.login_method.code
+	
+	unsuccessful_login_count smallint,
+	userlock_till_dtimes timestamp,
 
 	is_active 	boolean not null,
 	cr_by 		character varying (32) not null,

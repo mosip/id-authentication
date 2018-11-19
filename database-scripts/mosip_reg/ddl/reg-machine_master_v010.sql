@@ -19,6 +19,8 @@ create table reg.machine_master (
 	mac_address character varying (64) not null,
 	serial_num 	character varying (64) not null,
 	ip_address 	character varying (17) ,           -- ip address, usually dynamic, so optional.
+	
+	validity_end_dtimes timestamp, 
 
 	mspec_id    character varying(36) not null ,	-- master.machine_spec.id ,  spec mapped to machine_type
 	

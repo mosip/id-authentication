@@ -15,7 +15,7 @@ create schema if not exists regprc
 		reg_id 			character varying(28) not null,		-- regprc.registration.id
 		prereg_id  		character varying(64) ,		-- only populate, no fk. 
 			
-		demog_detail   json ,
+		demog_detail   bytea ,
 		
 		status_code 	character varying(36) not null ,	-- master.status_list.code
 		lang_code  		character varying(3) not null ,		-- master.language.code

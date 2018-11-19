@@ -15,7 +15,7 @@ create schema if not exists prereg
 		prereg_id  	character varying(36) not null ,
 		group_id  	character varying(36) ,
 		
-		demog_detail   json ,
+		demog_detail   bytea ,
 
 		status_code 	character varying(36) not null ,	-- master.status_list.code
 		lang_code  		character varying(3) not null ,		-- master.language.code
