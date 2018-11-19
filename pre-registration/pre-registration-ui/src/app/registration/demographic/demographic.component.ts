@@ -1,6 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  FormBuilder,
+  AbstractControl,
+  ValidatorFn,
+  ValidationErrors
+} from '@angular/forms';
 import { MatButtonToggleChange, MatDatepickerInputEvent } from '@angular/material';
 
 import { RegistrationService } from '../registration.service';
@@ -9,6 +17,7 @@ import { IdentityModel } from './identity.model';
 import { AttributeModel } from './attribute.model';
 import { RequestModel } from './request.model';
 import { DemoIdentityModel } from './Demo.Identity.model';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-demographic',
@@ -34,6 +43,7 @@ export class DemographicComponent implements OnInit {
     'CNE/PIN Number',
     'Age'
   );
+  formBuilder: FormBuilder;
   ageOrDobPref = '';
   showCalender: boolean;
   dateSelected: Date;
@@ -42,7 +52,8 @@ export class DemographicComponent implements OnInit {
   userForm: FormGroup;
   numbers: number[];
   isDisabled = [];
-  checked: boolean;
+  checked = true;
+
   editMode = false;
 
   isPrimary = 'false';
@@ -83,9 +94,9 @@ export class DemographicComponent implements OnInit {
     }
     this.userForm = new FormGroup({
       isPrimary: new FormControl(this.isPrimary),
-      fullName: new FormControl(this.fullName, Validators.required),
+      fullName: new FormControl(this.fullName),
       gender: new FormControl(this.gender),
-      addressLine1: new FormControl(this.addressLine1, Validators.required),
+      addressLine1: new FormControl(this.addressLine1),
       addressLine2: new FormControl(this.addressLine2),
       addressLine3: new FormControl(this.addressLine3),
       region: new FormControl(this.region),
@@ -93,12 +104,13 @@ export class DemographicComponent implements OnInit {
       city: new FormControl(this.city),
       localAdministrativeAuthority: new FormControl(this.localAdministrativeAuthority),
       email: new FormControl(this.email),
-      age: new FormControl('', Validators.required),
-      dob: new FormControl('', Validators.required),
-      postalCode: new FormControl(this.postalCode, Validators.required),
+      age: new FormControl(''),
+      dob: new FormControl(''),
+      postalCode: new FormControl(this.postalCode),
       mobilePhone: new FormControl(''),
       pin: new FormControl('')
     });
+    this.userForm.setValidators([this.oneOfControlRequired(this.userForm.get('dob'), this.userForm.get('age'))]);
   }
 
   setStep(index: number) {
@@ -115,6 +127,15 @@ export class DemographicComponent implements OnInit {
   }
 
   onSubmit() {
+    // for (let ctrl of this.formTest.nativeElement) {
+    //   console.log(ctrl.value + '  ' + ctrl.placeholder);
+    // }
+    console.log(this.userForm.hasError('oneOfRequired'));
+    if (this.userForm.hasError('oneOfRequired')) {
+      this.checked = false;
+    } else {
+      this.checked = true;
+    }
     if (this.editMode) {
       // this.regService.updateUser(this.id, this.userForm.value);
     } else {
@@ -146,13 +167,13 @@ export class DemographicComponent implements OnInit {
     );
 
     const req = new RequestModel(
-      '74297024836182',
+      '',
       'shashank',
       '',
-      'updatedBy',
       '',
-      'status201',
-      'lang-201',
+      '',
+      'Pending_Appointment',
+      'en',
       new DemoIdentityModel(identity)
     );
 
@@ -174,22 +195,32 @@ export class DemographicComponent implements OnInit {
 
   addDOB(event: MatDatepickerInputEvent<Date>) {
     this.dateSelected = event.value;
+    const pipe = new DatePipe('en-US');
+    const myFormattedDate = pipe.transform(this.dateSelected, 'dd/MM/yyyy');
+
+    this.userForm.controls.dob.patchValue(myFormattedDate);
     this.showDate = true;
   }
 
   onDOBChange(value) {
-    console.log(value);
     if (value === 'age') {
       this.showCalender = false;
-      // this.userForm.controls.dob.reset();
-      // this.userForm.controls.dob.patchValue('');
-      this.userForm.controls.dob.clearValidators();
+      this.userForm.controls.dob.patchValue('');
     }
     if (value === 'dob') {
       this.showCalender = true;
-      // this.userForm.controls.age.reset();
-      // this.userForm.controls.age.patchValue('');
-      this.userForm.controls.age.clearValidators();
+      this.userForm.controls.age.patchValue('');
     }
+  }
+
+  oneOfControlRequired(...controls: AbstractControl[]): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      for (const aControl of controls) {
+        if (!Validators.required(aControl)) {
+          return null;
+        }
+      }
+      return { oneOfRequired: true };
+    };
   }
 }
