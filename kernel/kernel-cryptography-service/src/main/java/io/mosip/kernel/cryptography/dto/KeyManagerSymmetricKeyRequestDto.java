@@ -36,5 +36,5 @@ private LocalDateTime timeStamp;
 /**
  * 
  */
-private byte[] data;
+private byte[] encryptedSymmetricKey;
 }

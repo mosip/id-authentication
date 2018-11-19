@@ -25,7 +25,7 @@ public class KeymanagerController {
 	@Autowired
 	KeymanagerService keymanagerService;
 
-	@PostMapping(value = "/publickey/{appId}")
+	@PostMapping(value = "/publickey")
 	public ResponseEntity<KeyResponseDto> getPublicKey(@RequestBody PublicKeyRequestDto publicKeyRequestDto) {
 
 		return new ResponseEntity<>(keymanagerService.getPublicKey(publicKeyRequestDto.getApplicationId(),

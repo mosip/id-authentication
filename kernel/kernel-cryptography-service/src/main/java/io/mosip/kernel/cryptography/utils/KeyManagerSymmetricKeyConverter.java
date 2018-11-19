@@ -20,7 +20,7 @@ public class KeyManagerSymmetricKeyConverter implements DataConverter<Cryptograp
 		destination.setApplicationId(source.getApplicationId());
 		destination.setMachineId(source.getMachineId());
 		destination.setTimeStamp(source.getTimeStamp());
-		destination.setData(source.getData());
+		destination.setEncryptedSymmetricKey(source.getData());
 	}
 
 	
