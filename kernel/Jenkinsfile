@@ -79,10 +79,12 @@ node {
 
      if (changedModules[j].contains(parentDirectoryPathForamtted)) {
       echo parentDirectoryPathForamtted + " will be built"
+      docker.withRegistry(registryUrl) {
       def buildName = "$parentDirectoryName:$BUILD_NUMBER"
       newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
       newApp.push()
       newApp.push 'latest'
+      }
       sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
       sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
       sh "docker rmi $registryName/$parentDirectoryName"
