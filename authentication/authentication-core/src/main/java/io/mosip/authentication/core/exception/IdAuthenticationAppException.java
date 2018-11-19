@@ -10,7 +10,7 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
  *
  * @author Manoj SP
  */
-public class IdAuthenticationAppException extends BaseCheckedException {
+public class IdAuthenticationAppException extends IdAuthenticationBaseException {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -7770924160513076138L;
@@ -53,7 +53,7 @@ public class IdAuthenticationAppException extends BaseCheckedException {
 	 * @see BaseUncheckedException#BaseUncheckedException(String, String)
 	 */
 	public IdAuthenticationAppException(IdAuthenticationErrorConstants exceptionConstant) {
-		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage());
+		super(exceptionConstant);
 	}
 
 	/**
@@ -64,7 +64,8 @@ public class IdAuthenticationAppException extends BaseCheckedException {
 	 * @see BaseUncheckedException#BaseUncheckedException(String, String, Throwable)
 	 */
 	public IdAuthenticationAppException(IdAuthenticationErrorConstants exceptionConstant, Throwable rootCause) {
-		this(exceptionConstant.getErrorCode(), exceptionConstant.getErrorMessage(), rootCause);
+		super(exceptionConstant, rootCause);
 	}
+
 
 }

@@ -27,12 +27,14 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.ActionableAuthError;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.BaseAuthResponseDTO;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.exception.ExceptionUtils;
@@ -76,10 +78,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Handle all exceptions.
 	 *
-	 * @param ex
-	 *            the ex
-	 * @param request
-	 *            the request
+	 * @param ex      the ex
+	 * @param request the request
 	 * @return the response entity
 	 */
 	@ExceptionHandler(Exception.class)
@@ -104,16 +104,11 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Method to handle all exception and return as customized response object.
 	 * 
-	 * @param ex
-	 *            Exception
-	 * @param errorMessage
-	 *            List of error messages
-	 * @param headers
-	 *            Http headers
-	 * @param status
-	 *            Http status
-	 * @param request
-	 *            Web request
+	 * @param ex           Exception
+	 * @param errorMessage List of error messages
+	 * @param headers      Http headers
+	 * @param status       Http status
+	 * @param request      Web request
 	 * @return Customized response object
 	 * 
 	 * @see org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler#handleExceptionInternal(java.lang.Exception,
@@ -156,10 +151,8 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Method to handle {@link IdUsageException} and customize the response.
 	 *
-	 * @param ex
-	 *            Exception
-	 * @param request
-	 *            Web request
+	 * @param ex      Exception
+	 * @param request Web request
 	 * @return ResponseEntity containing error response object and http status.
 	 */
 	@ExceptionHandler(IdAuthenticationAppException.class)
@@ -184,12 +177,9 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	/**
 	 * Constructs exception response body for all exceptions.
 	 *
-	 * @param ex
-	 *            the exception occurred
-	 * @param errorCode
-	 *            the error code
-	 * @param errorMessages
-	 *            error message object.
+	 * @param ex            the exception occurred
+	 * @param errorCode     the error code
+	 * @param errorMessages error message object.
 	 * @return Object .
 	 */
 	private Object buildExceptionResponse(Exception ex) {
@@ -198,22 +188,21 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
 
 		BaseAuthResponseDTO authResp = new BaseAuthResponseDTO();
-		
 
 		authResp.setStatus("false");
 
-		if (ex instanceof BaseCheckedException) {
+		if (ex instanceof IdAuthenticationBaseException) {
+			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
 			Locale locale = LocaleContextHolder.getLocale();
 			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
 
 			try {
 				if (ex instanceof IDDataValidationException) {
-					List<Object[]> args = ((IDDataValidationException) ex).getArgs();
+					IDDataValidationException validationException = (IDDataValidationException) ex;
+					List<Object[]> args = validationException.getArgs();
 
-					List<AuthError> errors = IntStream.range(0, errorCodes.size())
-							.mapToObj(i -> new AuthError(errorCodes.get(i),
-									messageSource.getMessage(errorCodes.get(i), args.get(i), locale)))
-							.distinct().collect(Collectors.toList());
+					List<AuthError> errors = IntStream.range(0, errorCodes.size()).mapToObj(i -> createAuthError(validationException, errorCodes.get(i),
+							messageSource.getMessage(errorCodes.get(i), args.get(i), locale))).distinct().collect(Collectors.toList());
 
 					authResp.setErr(errors);
 				} else {
@@ -228,7 +217,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 				mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.toString(),
 						"\n" + ExceptionUtils.getStackTrace(ex));
 				authResp.setErr(Arrays
-						.<AuthError>asList(new AuthError(IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
+						.<AuthError>asList(createAuthError(baseException, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
 								IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage())));
 			}
 		}
@@ -239,4 +228,17 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return authResp;
 	}
+
+	private AuthError createAuthError(IdAuthenticationBaseException authException, String errorCode, String errorMessage) {
+		String actionCode = authException.getActionCode();
+		AuthError err;
+		if(actionCode == null) {
+			err = new AuthError(errorCode, errorMessage);
+		} else {
+			err = new ActionableAuthError(errorCode, errorMessage, actionCode);
+		}
+		
+		return err;
+	}	
+	
 }
