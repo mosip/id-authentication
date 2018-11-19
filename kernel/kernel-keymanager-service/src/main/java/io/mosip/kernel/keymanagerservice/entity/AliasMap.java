@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.keymanager.entity;
+package io.mosip.kernel.keymanagerservice.entity;
 
 import java.time.LocalDateTime;
 

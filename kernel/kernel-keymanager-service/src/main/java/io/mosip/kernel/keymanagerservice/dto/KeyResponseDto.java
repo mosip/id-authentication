@@ -1,7 +1,7 @@
 /**
  * 
  */
-package io.mosip.kernel.keymanager.dto;
+package io.mosip.kernel.keymanagerservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,9 +1,9 @@
-package io.mosip.kernel.keymanager.service;
+package io.mosip.kernel.keymanagerservice.service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import io.mosip.kernel.keymanager.dto.KeyResponseDto;
+import io.mosip.kernel.keymanagerservice.dto.KeyResponseDto;
 
 /**
  * This interface provides the methods which can be used for Key management
