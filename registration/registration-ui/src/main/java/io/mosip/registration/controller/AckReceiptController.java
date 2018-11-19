@@ -106,50 +106,44 @@ public class AckReceiptController extends BaseController implements Initializabl
 		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 			List<GlobalContextParam> globalContextParam = globalContextParamService
 					.findInvalidLoginCount(RegistrationConstants.MODE_OF_COMMUNICATION);
-
-			globalContextParam.forEach(param -> {
-				String MODE_OF_COMMUNICATION = param.getVal();
-				if (MODE_OF_COMMUNICATION != null) {
-					ResponseDTO responseDTO = null;
-					String notificationTemplate = "";
-					try {
-						notificationTemplate = templateService
-								.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
-					} catch (RegBaseCheckedException regBaseCheckedException) {
-						LOGGER.error("REGISTRATION - ACK RECEIPT CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
-								regBaseCheckedException.getMessage());
-					}
-					if (!notificationTemplate.isEmpty() && !MODE_OF_COMMUNICATION.equals("None")) {
-						Writer writeNotificationTemplate = velocityGenerator
-								.generateNotificationTemplate(notificationTemplate, getRegistrationData());
-
-						String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
-
-						if (!number.isEmpty() && MODE_OF_COMMUNICATION.contains("SMS")) {
-							responseDTO = notificationService.sendSMS(writeNotificationTemplate.toString(), number);
-							if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
-									&& responseDTO.getErrorResponseDTOs().get(0) != null) {
-								generateAlert(responseDTO);
-							}
+			if (!globalContextParam.isEmpty() && globalContextParam.get(0).getVal() !=null && !globalContextParam.get(0).getVal().equals("NONE")) {
+				ResponseDTO responseDTO = null;
+				String notificationTemplate = "";
+				try {
+					notificationTemplate = templateService.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
+				} catch (RegBaseCheckedException regBaseCheckedException) {
+					LOGGER.error("REGISTRATION - ACK RECEIPT CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
+							regBaseCheckedException.getMessage());
+				}
+				if (!notificationTemplate.isEmpty()) {
+					Writer writeNotificationTemplate = velocityGenerator
+							.generateNotificationTemplate(notificationTemplate, getRegistrationData());
+					
+					String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
+					String rid = getRegistrationData() == null ? "RID" : getRegistrationData().getRegistrationId();
+					if (!number.isEmpty() && globalContextParam.get(0).getVal().contains("SMS")) {
+						responseDTO = notificationService.sendSMS(writeNotificationTemplate.toString(), number,rid);
+						if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
+								&& responseDTO.getErrorResponseDTOs().get(0) != null) {
+							generateAlert(responseDTO);
 						}
+					}
 
-						String emailId = getRegistrationData().getDemographicDTO().getDemoInUserLang().getEmailId();
+					String emailId = getRegistrationData().getDemographicDTO().getDemoInUserLang().getEmailId();
 
-						if (!emailId.isEmpty() && MODE_OF_COMMUNICATION.contains("EMAIL")) {
-							responseDTO = notificationService.sendEmail(writeNotificationTemplate.toString(), emailId);
-							if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
-									&& responseDTO.getErrorResponseDTOs().get(0) != null) {
-								generateAlert(responseDTO);
-							}
+					if (!emailId.isEmpty() && globalContextParam.get(0).getVal().contains("EMAIL")) { 
+						responseDTO = notificationService.sendEmail(writeNotificationTemplate.toString(), emailId,rid);
+						if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
+								&& responseDTO.getErrorResponseDTOs().get(0) != null) {
+							generateAlert(responseDTO);
 						}
 					}
 				}
-			});
+			}
 
 		}
 		engine = webView.getEngine();
 		engine.loadContent(stringWriter.toString());
-
 	}
 
 	@FXML

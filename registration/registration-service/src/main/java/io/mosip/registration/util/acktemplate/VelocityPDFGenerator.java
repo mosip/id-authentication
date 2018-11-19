@@ -72,10 +72,14 @@ public class VelocityPDFGenerator {
 				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine1());
 		velocityContext.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
 				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine2());
+		velocityContext.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3,
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine3());
 		velocityContext.put(RegistrationConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getCity());
 		velocityContext.put(RegistrationConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getProvince());
 		velocityContext.put(RegistrationConstants.TEMPLATE_COUNTRY,
 				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getRegion());
+		velocityContext.put(RegistrationConstants.TEMPLATE_POSTAL_CODE,
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getPostalCode());
 		velocityContext.put(RegistrationConstants.TEMPLATE_MOBILE, registration.getDemographicDTO().getDemoInUserLang().getMobile());
 		String email = registration.getDemographicDTO().getDemoInUserLang().getEmailId();
 		if (email == null || email == RegistrationConstants.EMPTY) {
@@ -92,15 +96,24 @@ public class VelocityPDFGenerator {
 		}
 
 		String documentsList = documentNames.stream().map(Object::toString).collect(Collectors.joining(", "));
-		velocityContext.put("Documents", documentsList);
+		velocityContext.put(RegistrationConstants.TEMPLATE_DOCUMENTS, documentsList);
 		velocityContext.put(RegistrationConstants.TEMPLATE_OPERATOR_NAME, registration.getOsiDataDTO().getOperatorID());
 
-		byte[] imageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
+		byte[] applicantImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
+		String applicantImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(applicantImageBytes, false));
+		velocityContext.put(RegistrationConstants.TEMPLATE_IMAGE_SOURCE, RegistrationConstants.TEMPLATE_IMAGE_ENCODING + applicantImageEncodedBytes);
 
-		String encodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(imageBytes, false));
-
-		velocityContext.put(RegistrationConstants.TEMPLATE_IMAGE_SOURCE, RegistrationConstants.TEMPLATE_IMAGE_ENCODING + encodedBytes);
-
+		if(registration.getDemographicDTO().getApplicantDocumentDTO().isHasExceptionPhoto()) {
+			velocityContext.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION_IMAGE, null);
+			velocityContext.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION_IMAGE, RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
+			byte[] exceptionImageBytes = registration.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto();
+			String exceptionImageEncodedBytes = StringUtils.newStringUtf8(Base64.encodeBase64(exceptionImageBytes, false));
+			velocityContext.put(RegistrationConstants.TEMPLATE_EXCEPTION_IMAGE_SOURCE, RegistrationConstants.TEMPLATE_IMAGE_ENCODING + exceptionImageEncodedBytes);
+		}
+		else {
+			velocityContext.put(RegistrationConstants.TEMPLATE_WITHOUT_EXCEPTION_IMAGE, null);
+			velocityContext.put(RegistrationConstants.TEMPLATE_WITH_EXCEPTION_IMAGE, RegistrationConstants.TEMPLATE_STYLE_PROPERTY);
+		}
 		/* get the quality ranking for fingerprints of the applicant
 		HashMap<String, Integer> fingersQuality = getFingerPrintQualityRanking(registration);
 		int count=1;
@@ -139,7 +152,7 @@ public class VelocityPDFGenerator {
 				fingersAndIrises[0] + " fingers and " + fingersAndIrises[1] + " Iris(es)");
 
 		Writer writer = new StringWriter();
-		Velocity.evaluate(velocityContext, writer, "Acknowledgement Template", templateReader);
+		Velocity.evaluate(velocityContext, writer, RegistrationConstants.TEMPLATE_LOGTAG, templateReader);
 		return writer;
 	}
 	

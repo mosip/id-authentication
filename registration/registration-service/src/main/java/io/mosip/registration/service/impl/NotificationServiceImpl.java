@@ -20,7 +20,12 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+
 import static io.mosip.registration.constants.RegistrationConstants.NOTIFICATION_SERVICE;
+import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
+
 import io.mosip.registration.dto.EmailDTO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -57,28 +62,29 @@ public class NotificationServiceImpl implements NotificationService {
 	private ServiceDelegateUtil serviceDelegateUtil;
 
 	
+	
 	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.NotificationService#sendSMS(java.lang.String, java.lang.String)
+	 * @see io.mosip.registration.service.NotificationService#sendSMS(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public ResponseDTO sendSMS(String message, String number) {
+	public ResponseDTO sendSMS(String message, String number,String regId) {
 
 		LOGGER.debug(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID, "sendSMS Method called");
 		
-		ResponseDTO responseDTO=new ResponseDTO();
-		
+		ResponseDTO responseDTO=new ResponseDTO();		
 		SMSDTO smsdto = new SMSDTO();
 		smsdto.setMessage(message);
 		smsdto.setNumber(number);
 
 		try {
-
 			SMSDTO response = (SMSDTO) serviceDelegateUtil.post(SMS_SERVICE, smsdto);
 
 			if (response.getStatus() != null && response.getStatus().equals("success")) {
 
 				LOGGER.debug(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID,
-						"SMS Request Submitted");
+						"SMS Request Submitted");				
+				auditFactory.audit(AuditEvent.NOTIFICATION_SMS, AppModule.NOTIFICATION_SMS,
+						"SMS request submitted successfully", REGISTRATION_ID, regId);
 				
 				SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
 				successResponseDTO.setMessage("Success");
@@ -89,6 +95,8 @@ public class NotificationServiceImpl implements NotificationService {
 			
 			LOGGER.debug(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID,
 					"Exception in sending SMS Notification");
+			auditFactory.audit(AuditEvent.NOTIFICATION_SMS, AppModule.NOTIFICATION_SMS,
+					"Exception in sending SMS Notification", REGISTRATION_ID, regId);
 			ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
 			errorResponseDTO.setMessage("Unable to send SMS Notification");
 			List<ErrorResponseDTO> errorResponse = new ArrayList<>();
@@ -98,19 +106,19 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 		return responseDTO;
 	}
-
 	
 	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.NotificationService#sendEmail(java.lang.String, java.lang.String)
+	 * @see io.mosip.registration.service.NotificationService#sendEmail(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public ResponseDTO sendEmail(String message, String emailId) {
+	public ResponseDTO sendEmail(String message, String emailId,String regId) {
 
 		LOGGER.debug(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID,
 				"sendEmail Method called");
+		auditFactory.audit(AuditEvent.NOTIFICATION_EMAIL, AppModule.NOTIFICATION_EMAIL,
+				"SMS request submitted successfully", REGISTRATION_ID, "regid");
 		
-		ResponseDTO responseDTO = new ResponseDTO();
-		
+		ResponseDTO responseDTO = new ResponseDTO();		
 		LinkedMultiValueMap<String, Object> emailDetails = new LinkedMultiValueMap<>();
 		emailDetails.add("mailTo", emailId);
 		emailDetails.add("mailSubject", EMAIL_SUBJECT);
@@ -123,6 +131,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 				LOGGER.debug(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID,
 						response.getStatus());
+				auditFactory.audit(AuditEvent.NOTIFICATION_EMAIL, AppModule.NOTIFICATION_EMAIL,
+						"Email Request submitted successfully", REGISTRATION_ID, regId);
 				
 				SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
 				successResponseDTO.setMessage("Success");
@@ -135,6 +145,8 @@ public class NotificationServiceImpl implements NotificationService {
 
 			LOGGER.debug(NOTIFICATION_SERVICE, APPLICATION_NAME, APPLICATION_ID,
 					"Exception in sending Email Notification");		
+			auditFactory.audit(AuditEvent.NOTIFICATION_EMAIL, AppModule.NOTIFICATION_EMAIL,
+					"Email Request submitted successfully", REGISTRATION_ID, regId);
 			
 			ErrorResponseDTO errorResponseDTO=new ErrorResponseDTO();
 			errorResponseDTO.setMessage("Unable to send Email Notification");

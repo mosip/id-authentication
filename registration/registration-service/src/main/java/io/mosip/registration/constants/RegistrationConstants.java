@@ -134,13 +134,31 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_EMAIL = "Email";
 	public static final String TEMPLATE_DOCUMENTS = "Documents";
 	public static final String TEMPLATE_OPERATOR_NAME = "OperatorName";
-	public static final String TEMPLATE_IMAGE_SOURCE = "imagesource";
 	public static final String TEMPLATE_IMAGE_ENCODING = "data:image/jpg;base64,";
 	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "BiometricsCaptured";
 	public static final String TEMPLATE_HANDS_IMAGE_PATH = "src/main/resources/images/hands.jpg";
 	public static final String TEMPLATE_RESIDENT_NAME = "ResidentName";
 	public static final String TEMPLATE_POSTAL_CODE = "PostalCode";
+	public static final String TEMPLATE_ADDRESS_LINE3 = "AddressLine3";
+	public static final String TEMPLATE_IMAGE_SOURCE = "ApplicantImageSource";
+	public static final String TEMPLATE_EXCEPTION_IMAGE_SOURCE = "ExceptionImageSource";
+	public static final String TEMPLATE_WITHOUT_EXCEPTION_IMAGE = "WithoutExceptionImage";
+	public static final String TEMPLATE_WITH_EXCEPTION_IMAGE = "WithExceptionImage";
+	public static final String TEMPLATE_STYLE_PROPERTY = "style='visibility:hidden;'";
+	public static final String TEMPLATE_LOGTAG = "Acknowledgement Template";
+	
+	//Web Camera Constants
+	public static final String WEB_CAMERA_PAGE = "/fxml/WebCamera.fxml";
+	public static final String WEB_CAMERA_PAGE_TITLE = "Applicant Biometrics";
+	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
+	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph";
+	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph";	
+	public static final String WEBCAM_ALERT_TITLE = "Webcam Alert";
+	public static final String WEBCAM_ALERT_HEADER = "Camera Not Found";
+	public static final String WEBCAM_ALERT_CONTEXT = "Camera not found. Please connect an on-boarded camera and retry.";
+
+	
 
 	// Exception Code for Components
 	public static final String PACKET_CREATION_EXP_CODE = "PCC-";

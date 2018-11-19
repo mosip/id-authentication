@@ -3,7 +3,6 @@ package io.mosip.registration.util.dataprovider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,12 +49,16 @@ public class DataProvider {
 		}
 	}
 
-	public static RegistrationDTO getPacketDTO(RegistrationDTO registrationDTO) throws RegBaseCheckedException {
+	public static RegistrationDTO getPacketDTO(RegistrationDTO registrationDTO, String capturePhotoUsingDevice) throws RegBaseCheckedException {
 		registrationDTO.setAuditDTOs(DataProvider.getAuditDTOs());
 		registrationDTO.setRegistrationMetaDataDTO(DataProvider.getRegistrationMetaDataDTO());
 		registrationDTO.setRegistrationId(RIDGenerator.nextRID());
 
-		registrationDTO.setDemographicDTO(DataProvider.getDemographicDTO(registrationDTO.getDemographicDTO()));
+		if(capturePhotoUsingDevice.equals("N")) {
+			registrationDTO.setDemographicDTO(DataProvider.getDemographicDTO(registrationDTO.getDemographicDTO()));
+		} else if(capturePhotoUsingDevice.equals("Y")){
+			registrationDTO.getDemographicDTO().getApplicantDocumentDTO().setDocumentDetailsDTO(DataProvider.getDocumentDetailsDTO());
+		}		
 		registrationDTO.setBiometricDTO(DataProvider.getBiometricDTO());
 		return registrationDTO;
 
@@ -170,9 +173,7 @@ public class DataProvider {
 		applicantDocumentDTO.setDocumentDetailsDTO(DataProvider.getDocumentDetailsDTO());
 		applicantDocumentDTO.setPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
 		applicantDocumentDTO.setPhotographName("ApplicantPhoto");
-		applicantDocumentDTO.setHasExceptionPhoto(true);
-		applicantDocumentDTO.setExceptionPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
-		applicantDocumentDTO.setExceptionPhotoName("ExceptionPhoto");
+		applicantDocumentDTO.setHasExceptionPhoto(false);
 		applicantDocumentDTO.setQualityScore(89.0);
 		applicantDocumentDTO.setNumRetry(1);
 		applicantDocumentDTO.setAcknowledgeReceipt(DataProvider.getImageBytes("/acknowledgementReceipt.jpg"));
