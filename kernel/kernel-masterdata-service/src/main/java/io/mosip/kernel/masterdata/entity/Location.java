@@ -31,7 +31,7 @@ public class Location extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = -5585825705521742941L;
 
 	@Id
-	@Column(name = "code", nullable = false, length = 36)
+	@Column(name = "code")
 	private String code;
 
 	@Column(name = "name", nullable = false, length = 128)
@@ -48,6 +48,5 @@ public class Location extends BaseEntity implements Serializable {
 
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String languageCode;
-
 
 }

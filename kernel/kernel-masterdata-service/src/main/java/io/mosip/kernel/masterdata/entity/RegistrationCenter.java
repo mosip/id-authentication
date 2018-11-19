@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -106,4 +109,8 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedtimes;
+	
+	@OneToOne(mappedBy="code",cascade = CascadeType.ALL)
+	
+	private LocationHierarcyLevel location;
 }

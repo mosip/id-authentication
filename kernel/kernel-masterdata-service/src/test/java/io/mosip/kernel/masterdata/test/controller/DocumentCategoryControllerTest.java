@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.test.controller;
+/*package io.mosip.kernel.masterdata.test.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,12 +19,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 
-/**
+*//**
  * 
  * @author Neha
  * @since 1.0.0
  *
- */
+ *//*
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
@@ -112,3 +112,4 @@ public class DocumentCategoryControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 }
+*/
