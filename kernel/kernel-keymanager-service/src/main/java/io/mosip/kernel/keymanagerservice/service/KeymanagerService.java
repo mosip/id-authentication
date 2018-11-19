@@ -21,14 +21,14 @@ public interface KeymanagerService {
 	 * @param encryptedSymmetricKey
 	 * @return
 	 */
-	public KeyResponseDto decryptSymmetricKey(String appId, LocalDateTime timeStamp, Optional<String> machineId,
+	public KeyResponseDto decryptSymmetricKey(String applicationId, LocalDateTime timeStamp, Optional<String> machineId,
 			byte[] encryptedSymmetricKey);
 
 	/**
 	 * @param appId
 	 * @param timeStamp
-	 * @param machineId
+	 * @param string
 	 * @return
 	 */
-	public KeyResponseDto getPublicKey(String appId, LocalDateTime timeStamp, Optional<String> machineId);
+	public KeyResponseDto getPublicKey(String applicationId, LocalDateTime timeStamp, String machineId);
 }
