@@ -51,7 +51,10 @@ public enum AuditEvent {
 	// Device Onboarding
 	GET_ONBOARDING_DEVICES_TYPES("DVC_TYP", "Get Devices Types", "Get the types of devices for device onboarding"),
 	GET_ONBOARDING_DEVICES("GET_DVC", "Get Devices", "Get the available and mapped devices for the requested device type"),
-	UPDATE_DEVICES_ONBOARDING("UPD_DVC", "Update Devices", "Devices onboarding updated for the registration client");
+	UPDATE_DEVICES_ONBOARDING("UPD_DVC", "Update Devices", "Devices onboarding updated for the registration client"),
+	// Notification Service
+	NOTIFICATION_SMS("NOT_SMS", "SMS Notification", "SMS request status"),
+	NOTIFICATION_EMAIL("NOT_EMAIL", "EMAIL Notification", "Email request status");
 	
 	/**
 	 * The constructor

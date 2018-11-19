@@ -35,7 +35,10 @@ public enum AppModule {
 	PACKET_UPLOAD("REG-CTR-19", "Packet upload"),
 	
 	//Packet Sync
-	PACKET_SYNC("REG-CTR-20", "Sync Packets");
+	PACKET_SYNC("REG-CTR-20", "Sync Packets"),
+	//Notification Service
+	NOTIFICATION_SMS("REG-NOT-21", "SMS Notification"),
+	NOTIFICATION_EMAIL("REG-NOT-22", "Email Notification");
 
 	/**
 	 * The constructor
