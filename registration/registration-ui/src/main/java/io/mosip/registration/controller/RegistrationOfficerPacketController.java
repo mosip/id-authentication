@@ -111,10 +111,10 @@ public class RegistrationOfficerPacketController extends BaseController {
 		}
 	}
 
-	public void showReciept(RegistrationDTO registrationDTO) {
+	public void showReciept(RegistrationDTO registrationDTO, String capturePhotoUsingDevice) {
 
 		try {
-			registrationDTO = DataProvider.getPacketDTO(registrationDTO);
+			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
 			ackReceiptController.setRegistrationData(registrationDTO);
 
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);
