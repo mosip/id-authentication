@@ -41,6 +41,7 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
 import io.mosip.kernel.jsonvalidator.dto.JsonValidatorResponseDto;
+import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
 import io.mosip.preregistration.application.dao.PreRegistrationDao;
 import io.mosip.preregistration.application.dto.CreateDto;
@@ -48,11 +49,11 @@ import io.mosip.preregistration.application.dto.ExceptionInfoDto;
 import io.mosip.preregistration.application.dto.ResponseDto;
 import io.mosip.preregistration.application.dto.ViewRegistrationResponseDto;
 import io.mosip.preregistration.application.entity.PreRegistrationEntity;
+import io.mosip.preregistration.application.exception.JsonValidationException;
 import io.mosip.preregistration.application.exception.utils.PreRegistrationErrorMessages;
 import io.mosip.preregistration.application.repository.PreRegistrationRepository;
 import io.mosip.preregistration.application.service.PreRegistrationService;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
-
 
 /**
  * Test class to test the ViewRegistrationService
@@ -65,30 +66,29 @@ import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 // @SpringBootConfiguration
 public class PreRegistrationServiceTest {
 
-
 	@MockBean
 	private PreRegistrationRepository preRegistrationRepository;
 
 	@MockBean
 	private PreRegistrationDao preRegistrationDao;
 
-	
 	@MockBean
 	RestTemplateBuilder restTemplateBuilder;
 
 	@MockBean
 	private PridGenerator<String> pridGenerator;
-	
+
 	@MockBean
 	private JsonValidator jsonValidator;
-	
+
 	JSONParser parser = new JSONParser();
 
 	@Autowired
 	private PreRegistrationService preRegistrationService;
-	
-//	@InjectMocks
-//	private PreRegistrationService preRegistrationService = new PreRegistrationService();
+
+	// @InjectMocks
+	// private PreRegistrationService preRegistrationService = new
+	// PreRegistrationService();
 
 	List<PreRegistrationEntity> userDetails = new ArrayList<>();
 	List<ViewRegistrationResponseDto> response = new ArrayList<ViewRegistrationResponseDto>();
@@ -112,11 +112,8 @@ public class PreRegistrationServiceTest {
 		Timestamp times = new Timestamp(time);
 		preRegistrationEntity.setCreateDateTime(times);
 
-
-
 		preRegistrationEntity.setStatusCode("Pending_Appointment");
 		preRegistrationEntity.setUpdateDateTime(times);
-
 
 		preRegistrationEntity.setPreRegistrationId("1234");
 		userDetails.add(preRegistrationEntity);
@@ -133,21 +130,21 @@ public class PreRegistrationServiceTest {
 		exceptionInfoDto.setStatus(true);
 		responseList.add(exceptionInfoDto);
 
-		 JsonValidatorResponseDto dto= new JsonValidatorResponseDto();
-		 ClassLoader classLoader = getClass().getClassLoader();
-
+		JsonValidatorResponseDto dto = new JsonValidatorResponseDto();
+		ClassLoader classLoader = getClass().getClassLoader();
 
 		File file = new File(classLoader.getResource("pre-registration.json").getFile());
-		jsonObject =   (JSONObject) parser.parse(new FileReader(file));
+		jsonObject = (JSONObject) parser.parse(new FileReader(file));
 		File fileTest = new File(classLoader.getResource("pre-registration-test.json").getFile());
-		jsonTestObject =   (JSONObject) parser.parse(new FileReader(fileTest));
+		jsonTestObject = (JSONObject) parser.parse(new FileReader(fileTest));
 	}
 
 	@Test
 	public void successSaveImplTest() throws Exception {
 		logger.info("----------successful save of application in impl-------");
 		Mockito.when(pridGenerator.generateId()).thenReturn("67547447647457");
-		Mockito.when(jsonValidator.validateJson(jsonObject.toString(),"mosip-prereg-identity-json-schema.json")).thenReturn(null);
+		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
+				.thenReturn(null);
 		ResponseDto<CreateDto> res = preRegistrationService.addRegistration(jsonObject.toString());
 		assertEquals(res.getResponse().get(0).getPrId(), "67547447647457");
 	}
@@ -155,9 +152,10 @@ public class PreRegistrationServiceTest {
 	@Test
 	public void successUpdateTest() throws Exception {
 		logger.info("----------successful save of application in impl-------");
-		Mockito.when(jsonValidator.validateJson(jsonObject.toString(),"mosip-prereg-identity-json-schema.json")).thenReturn(null);
+		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
+				.thenReturn(null);
 		ResponseDto<CreateDto> res = preRegistrationService.addRegistration(jsonObject.toString());
-		
+
 		equals(res.getResponse().get(0).getPrId());
 	}
 
@@ -165,9 +163,10 @@ public class PreRegistrationServiceTest {
 	public void saveFailureCheck() throws Exception {
 		DataAccessLayerException exception = new DataAccessLayerException("PRG_PAM‌_007",
 				PreRegistrationErrorMessages.REGISTRATION_TABLE_NOTACCESSIBLE, null);
-		Mockito.when(jsonValidator.validateJson(jsonObject.toString(),"mosip-prereg-identity-json-schema.json")).thenReturn(null);
+		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
+				.thenReturn(null);
 		Mockito.when(preRegistrationDao.save(Mockito.any())).thenThrow(exception);
-	
+
 		preRegistrationService.addRegistration(jsonObject.toString());
 	}
 
@@ -220,10 +219,10 @@ public class PreRegistrationServiceTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void deleteIndividualSuccessTest() {
-		RestTemplate restTemplate=Mockito.mock(RestTemplate.class);
-	 Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
+		RestTemplate restTemplate = Mockito.mock(RestTemplate.class);
+		Mockito.when(restTemplateBuilder.build()).thenReturn(restTemplate);
 		String preRegId = "1";
-        preRegistrationEntity.setPreRegistrationId("1");
+		preRegistrationEntity.setPreRegistrationId("1");
 		preRegistrationEntity.setStatusCode("Pending_Appointmemt");
 
 		ResponseEntity<ResponseDto> res = new ResponseEntity<>(HttpStatus.OK);
@@ -241,10 +240,9 @@ public class PreRegistrationServiceTest {
 		// HttpMethod.DELETE, entity,
 		// String.class);
 
-		System.out.println("rt"+restTemplate);
-		Mockito.when(restTemplate.exchange(Mockito.anyString(),Mockito.eq(HttpMethod.DELETE),
-				Mockito.any(), Mockito.eq(ResponseDto.class)))
-				.thenReturn(res);
+		System.out.println("rt" + restTemplate);
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.eq(HttpMethod.DELETE), Mockito.any(),
+				Mockito.eq(ResponseDto.class))).thenReturn(res);
 
 		Mockito.doNothing().when(preRegistrationRepository)
 				.deleteByPreRegistrationId(preRegistrationEntity.getPreRegistrationId());
@@ -302,13 +300,23 @@ public class PreRegistrationServiceTest {
 	 * 
 	 * }
 	 */
-	
+
 	@Test
-public void updateByPreIdTest() {
-	Mockito.when(preRegistrationRepository.findById(PreRegistrationEntity.class,
-						"1234")).thenReturn(preRegistrationEntity);
+	public void updateByPreIdTest() {
+		Mockito.when(preRegistrationRepository.findById(PreRegistrationEntity.class, "1234"))
+				.thenReturn(preRegistrationEntity);
 		preRegistrationService.addRegistration(jsonTestObject.toString());
-	
-	
-}
+
+	}
+
+	@Test(expected = JsonValidationException.class)
+	public void updateFailureCheck() throws Exception {
+		HttpRequestException exception = new HttpRequestException(
+				PreRegistrationErrorMessages.JSON_VALIDATION_FAIL, null);
+		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
+				.thenReturn(null);
+		Mockito.when(preRegistrationDao.save(Mockito.any())).thenThrow(exception);
+
+		preRegistrationService.addRegistration(jsonObject.toString());
+	}
 }

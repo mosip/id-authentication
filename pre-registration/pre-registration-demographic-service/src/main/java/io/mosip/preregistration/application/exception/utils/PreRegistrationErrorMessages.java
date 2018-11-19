@@ -27,4 +27,7 @@ public final class PreRegistrationErrorMessages {
 			+ "DELETE_OPERATION_NOT_ALLOWED_FOR_OTHERTHEN_DRAFT";
 
 	public static final String RECORD_NOT_FOUND = PRG_PAM_MODULE + "RECORD_NOT_FOUND";
+	
+
+	public static final String JSON_VALIDATION_FAIL = PRG_PAM_MODULE + "JSON_VALIDATION_FAIL";
 }
