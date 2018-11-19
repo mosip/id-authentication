@@ -8,7 +8,7 @@ import { IdentityModel } from './demographic/identity.model';
 })
 export class RegistrationService {
   constructor(private httpClient: HttpClient) {}
-
+  sendFileURL = 'http://preregistration.southindia.cloudapp.azure.com/dev-document/v0.1/pre-registration/registration/documents';
   BASE_URL = 'http://preregistration.southindia.cloudapp.azure.com/dev-demographic/v0.1/pre-registration/applications';
   // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // obj = {
@@ -239,5 +239,10 @@ export class RegistrationService {
       reportProgress: true
     });
     return this.httpClient.request(req);
+  }
+
+  sendFile(formdata: FormData) {
+    return this.httpClient.post(this.sendFileURL, formdata);
+    // console.log('servvice called', formdata);
   }
 }
