@@ -20,7 +20,7 @@
          			 </image>
                   </ImageView>
                   <Text id="homeReg" layoutX="60.0" layoutY="22.0" strokeType="OUTSIDE" strokeWidth="10.0" text="/ Registration" />
-                  <ImageView fitHeight="50.0" fitWidth="500.0" layoutX="280.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="headerImage" fitHeight="50.0" fitWidth="500.0" layoutX="280.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
                   	<image>
             			<Image url="@../images/Pre-Registration.PNG" />
          			 </image>
@@ -150,7 +150,23 @@
                      <content>
                         <AnchorPane id="demographicPane" prefHeight="85.0" prefWidth="417.0" visible="false">
                            <children>
-                              <Label layoutX="27.0" layoutY="14.0" text="Biometric Fields...." />
+                              <Button fx:id="biometricsNext" disable="true" layoutX="761.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
+                              <Label fx:id="biometrics" layoutX="27.0" layoutY="14.0" text="Biometric Fields...." />
+                              <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0" visible="false">
+                                 <children>
+                                    <ImageView fx:id="applicantImage" fitHeight="225.0" fitWidth="265.0" layoutX="92.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/ApplicantPhoto.PNG" />
+                                       </image></ImageView>
+                                    <ImageView fx:id="exceptionImage" fitHeight="225.0" fitWidth="265.0" layoutX="457.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/ExceptionPhoto.PNG" />
+                                       </image></ImageView>
+                                    <Button fx:id="captureImage" layoutX="92.0" layoutY="427.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" text="Capture" />
+                                    <Button fx:id="captureExceptionImage" disable="true" layoutX="457.0" layoutY="427.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" text="Capture" />
+                                    <Button fx:id="saveBiometricDetails" disable="true" layoutX="695.0" layoutY="546.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
+                                 </children>
+                              </AnchorPane>
                            </children>
                         </AnchorPane>
                      </content>

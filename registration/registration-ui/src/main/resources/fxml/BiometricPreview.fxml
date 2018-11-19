@@ -113,7 +113,7 @@
                                     <Label layoutX="14.0" layoutY="177.0" text="Individual Photo" />
                                     <ImageView fx:id="individualPhoto" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/accountIcon.png" />
+                                          <Image url="@../images/ApplicantPhoto.PNG" />
                                        </image>
                                     </ImageView>
                                  </children>
@@ -123,7 +123,7 @@
                                     <Label layoutX="14.0" layoutY="177.0" text="Exception Photo" />
                                     <ImageView fx:id="exceptionPhoto" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/hands.jpg" />
+                                          <Image url="@../images/ExceptionPhoto.PNG" />
                                        </image>
                                     </ImageView>
                                  </children>
@@ -134,8 +134,8 @@
                   </TitledPane>
                </content>
             </TitledPane>
-            <Button fx:id="nextBtn" layoutX="789.0" layoutY="806.0" mnemonicParsing="false" text="Next" onAction="#handleNextBtnAction"/>
-            <Button fx:id="editBtn" layoutX="660.0" layoutY="806.0" mnemonicParsing="false" text="Edit" onAction="#handleEdit"/>
+            <Button fx:id="nextBtn" layoutX="789.0" layoutY="806.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="Next" />
+            <Button fx:id="editBtn" layoutX="660.0" layoutY="806.0" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />
              </children>
     </AnchorPane>
   </content>

@@ -3,6 +3,9 @@ package io.mosip.registration.controller;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION;
 
+import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -12,6 +15,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -23,6 +29,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.OSIDataDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
+import io.mosip.registration.dto.demographic.ApplicantDocumentDTO;
 import io.mosip.registration.dto.demographic.DemographicDTO;
 import io.mosip.registration.dto.demographic.DemographicInfoDTO;
 import io.mosip.registration.dto.demographic.LocationDTO;
@@ -32,6 +39,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -41,8 +49,11 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 /**
@@ -175,6 +186,9 @@ public class RegistrationController extends BaseController {
 	private Label poi_label;
 
 	@FXML
+	private ImageView headerImage;
+	
+	@FXML
 	private ComboBox<String> porDocuments;
 
 	@FXML
@@ -215,6 +229,28 @@ public class RegistrationController extends BaseController {
 	VirtualKeyboard keyboard = new VirtualKeyboard();
 
 	Node keyboardNode = keyboard.view();
+	
+	@Value("${capture_photo_using_device}")
+	public String capturePhotoUsingDevice;
+
+	@FXML
+	protected Button biometricsNext;	
+	@FXML
+	private Label biometrics;	
+	@FXML
+	private AnchorPane biometricsPane;	
+	@FXML
+	protected ImageView applicantImage;
+	@FXML
+	protected ImageView exceptionImage;
+	@FXML
+	protected Button captureImage;	
+	@FXML
+	protected Button captureExceptionImage;	
+	@FXML
+	protected Button saveBiometricDetails;	
+	protected BufferedImage applicantBufferedImage;
+	protected BufferedImage exceptionBufferedImage;
 
 	@FXML
 	private void initialize() {
@@ -427,9 +463,8 @@ public class RegistrationController extends BaseController {
 			registrationDTO.setDemographicDTO(demographicDTO);
 
 			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-					"Saved the fields to DTO");
+					"Saved the demographic fields to DTO");
 
-			try {
 				demoGraphicPane1Content = demoGraphicPane1;
 				demoGraphicPane2Content = demoGraphicPane2;
 				registrationDTOContent = registrationDTO;
@@ -439,14 +474,83 @@ public class RegistrationController extends BaseController {
 				}
 				nextBtn.setVisible(false);
 				pane2NextBtn.setVisible(false);
-				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
-			} catch (IOException ioException) {
-				LOGGER.error("REGISTRATION - UI- Demographic Preview ", APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, ioException.getMessage());
-			}
+				biometricTitlePane.setExpanded(true);
+				/*Image header = new Image("src/main/resources/images/ApplicantBiometrics.PNG");
+				headerImage.setImage(header);*/
+				if(capturePhotoUsingDevice.equals("Y")) {
+					biometrics.setVisible(false);
+					biometricsNext.setVisible(false);
+					biometricsPane.setVisible(true);
+				} else {
+					biometricsNext.setDisable(false);
+				}
 
 		}
 
+	}
+	
+	public void openCamForApplicantPhoto() {
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
+		try {
+			Stage primaryStage = new Stage();
+			Parent webCamRoot = BaseController.load(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
+			primaryStage.setTitle(RegistrationConstants.WEB_CAMERA_PAGE_TITLE);
+			Scene scene = new Scene(webCamRoot);
+			primaryStage.setScene(scene);
+			primaryStage.show();			
+		} catch (IOException ioException) {
+			LOGGER.error("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					ioException.getMessage());
+		}
+	}
+	
+	public void openCamForExceptionPhoto() {
+		openCamForApplicantPhoto();
+	}
+	
+	public void saveBiometricDetails() {
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
+		if(capturePhotoUsingDevice.equals("Y")) {
+			try {
+				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
+				byte[] photoInBytes = byteArrayOutputStream.toByteArray();
+				ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+				applicantDocumentDTO.setPhoto(photoInBytes);
+				applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
+				byteArrayOutputStream.close();
+				if(exceptionBufferedImage!=null) {
+					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();				
+					ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, outputStream);
+					byte[] exceptionPhotoInBytes = outputStream.toByteArray();
+					applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
+					applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
+					applicantDocumentDTO.setHasExceptionPhoto(true);
+					outputStream.close();
+				}
+				else {
+					applicantDocumentDTO.setHasExceptionPhoto(false);
+				}
+				registrationDTOContent.getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
+				LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, "showing demographic preview");		
+				
+				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
+			} catch (IOException ioException) {
+				LOGGER.error("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						ioException.getMessage());
+			}			
+		} else {
+			try {
+				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
+			} catch (IOException ioException) {
+				LOGGER.error("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+						ioException.getMessage());
+			}
+		}
+		
 	}
 
 	public static void loadScreen(String screen) throws IOException {

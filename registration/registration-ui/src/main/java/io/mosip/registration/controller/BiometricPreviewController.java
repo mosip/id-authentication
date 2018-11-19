@@ -2,7 +2,14 @@ package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -12,6 +19,7 @@ import io.mosip.registration.dto.RegistrationDTO;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
@@ -23,6 +31,9 @@ import javafx.scene.image.ImageView;
  */
 @Controller
 public class BiometricPreviewController extends BaseController {
+	
+	@Value("${capture_photo_using_device}")
+	public String capturePhotoUsingDevice;
 
 	@FXML
 	private Button nextBtn;
@@ -70,7 +81,17 @@ public class BiometricPreviewController extends BaseController {
 
 		RegistrationDTO registrationDTOContent = RegistrationController.registrationDTOContent;
 		registrationDTOContent.getBiometricDTO();
-
+		byte[] photoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
+		if(photoInBytes!=null) {
+			ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(photoInBytes);
+			individualPhoto.setImage(new Image(byteArrayInputStream));
+		}
+		
+		byte[] exceptionPhotoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto();
+		if(exceptionPhotoInBytes!=null) {
+			ByteArrayInputStream inputStream=new ByteArrayInputStream(exceptionPhotoInBytes);
+			exceptionPhoto.setImage(new Image(inputStream));
+		}		
 	}
 
 	/**
@@ -85,7 +106,7 @@ public class BiometricPreviewController extends BaseController {
 	 * screen
 	 */
 	public void handleNextBtnAction() {
-		registrationOfficerPacketController.showReciept(RegistrationController.registrationDTOContent);
+		registrationOfficerPacketController.showReciept(RegistrationController.registrationDTOContent, capturePhotoUsingDevice);
 	}
 
 	/**
