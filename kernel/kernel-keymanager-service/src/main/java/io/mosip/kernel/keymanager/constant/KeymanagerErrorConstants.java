@@ -8,7 +8,7 @@ package io.mosip.kernel.keymanager.constant;
  *
  */
 public enum KeymanagerErrorConstants {
-	INVALID_INPUT("KER-KMS-001","Error");
+	VALIDITY_CHECK_FAIL("KER-KMS-001","Certificate is not valid");
 	/**
 	 * The error code.
 	 */

@@ -118,7 +118,8 @@ public class SofthsmKeymanagerImpl implements KeymanagerInterface {
 	 */
 	public void addProvider(Provider provider) {
 		if (-1 == Security.addProvider(provider)) {
-			throw new NoSuchSecurityProviderException(SofthsmKeymanagerErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorCode(),
+			throw new NoSuchSecurityProviderException(
+					SofthsmKeymanagerErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorCode(),
 					SofthsmKeymanagerErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorMessage());
 		}
 	}
@@ -226,7 +227,7 @@ public class SofthsmKeymanagerImpl implements KeymanagerInterface {
 				privateKeyEntry = (PrivateKeyEntry) keyStore.getEntry(alias, password);
 			} else {
 				throw new NoSuchSecurityProviderException(SofthsmKeymanagerErrorCode.NO_SUCH_ALIAS.getErrorCode(),
-						SofthsmKeymanagerErrorCode.NO_SUCH_ALIAS.getErrorMessage());
+						SofthsmKeymanagerErrorCode.NO_SUCH_ALIAS.getErrorMessage() + alias);
 			}
 		} catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
 			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),
@@ -285,11 +286,11 @@ public class SofthsmKeymanagerImpl implements KeymanagerInterface {
 	 * security.KeyPair, java.lang.String)
 	 */
 	@Override
-	public void storeAsymmetricKey(KeyPair keyPair, String alias, int validDays) {
+	public void storeAsymmetricKey(KeyPair keyPair, String alias, int validityInMinutes) {
 
 		X509Certificate[] chain = new X509Certificate[1];
 		chain[0] = CertificateUtility.generateX509Certificate(keyPair, commonName, organizationalUnit, organization,
-				country, validDays);
+				country, validityInMinutes);
 		PrivateKeyEntry privateKeyEntry = new PrivateKeyEntry(keyPair.getPrivate(), chain);
 		ProtectionParameter password = new PasswordProtection(keystorePass.toCharArray());
 
@@ -319,7 +320,7 @@ public class SofthsmKeymanagerImpl implements KeymanagerInterface {
 				secretKey = retrivedSecret.getSecretKey();
 			} else {
 				throw new NoSuchSecurityProviderException(SofthsmKeymanagerErrorCode.NO_SUCH_ALIAS.getErrorCode(),
-						SofthsmKeymanagerErrorCode.NO_SUCH_ALIAS.getErrorMessage());
+						SofthsmKeymanagerErrorCode.NO_SUCH_ALIAS.getErrorMessage() + alias);
 			}
 		} catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableEntryException e) {
 			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.KEYSTORE_PROCESSING_ERROR.getErrorCode(),

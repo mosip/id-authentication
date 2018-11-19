@@ -8,13 +8,13 @@ package io.mosip.kernel.keymanager.softhsm.constant;
  *
  */
 public enum SofthsmKeymanagerErrorCode {
-	NO_SUCH_SECURITY_PROVIDER("KER-KMS-001", "No such security provider"),
+	NO_SUCH_SECURITY_PROVIDER("KER-KMA-001", "No such security provider"),
 
-	KEYSTORE_PROCESSING_ERROR("KER-KMS-002", "Error occured in processing Keystore: "),
+	KEYSTORE_PROCESSING_ERROR("KER-KMA-002", "Error occured in processing Keystore: "),
 
-	NO_SUCH_ALIAS("KER-KMS-003", "No such alias"),
+	NO_SUCH_ALIAS("KER-KMA-003", "No such alias"),
 
-	CERTIFICATE_PROCESSING_ERROR("KER-KMS-004", "Error occured while processing exception: ");
+	CERTIFICATE_PROCESSING_ERROR("KER-KMA-004", "Error occured while processing exception: ");
 
 	/**
 	 * The error code

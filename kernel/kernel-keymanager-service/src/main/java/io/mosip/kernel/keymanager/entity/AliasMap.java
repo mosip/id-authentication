@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
  *
  */
 @Entity
-@Table(name = "alias-map", schema = "keymanager")
+@Table(name = "alias_map", schema = "keymanager")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -46,8 +46,8 @@ public class CertificateUtility {
 	 * 
 	 * @param keyPair
 	 *            the keypair
-	 * @param validDays
-	 *            no of days
+	 * @param validityInMinutes
+	 *            validity In Minutes
 	 * @param country
 	 *            country
 	 * @param organization
@@ -59,14 +59,14 @@ public class CertificateUtility {
 	 * @return the certificate
 	 */
 	public static X509CertImpl generateX509Certificate(KeyPair keyPair, String commonName, String organizationalUnit,
-			String organization, String country, int validDays) {
+			String organization, String country, int validityInMinutes) {
 
 		X509CertImpl cert = null;
 		try {
 			X500Name distinguishedName = new X500Name(commonName, organizationalUnit, organization, country);
 			PrivateKey privkey = keyPair.getPrivate();
 			X509CertInfo info = new X509CertInfo();
-			CertificateValidity interval = setCertificateValidity(validDays);
+			CertificateValidity interval = setCertificateValidity(validityInMinutes);
 			BigInteger sn = new BigInteger(64, new SecureRandom());
 			info.set(X509CertInfo.VALIDITY, interval);
 			info.set(X509CertInfo.SERIAL_NUMBER, new CertificateSerialNumber(sn));
@@ -82,7 +82,8 @@ public class CertificateUtility {
 					algo);
 			cert = signCertificate(privkey, info);
 		} catch (IOException | CertificateException e) {
-			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+			throw new KeystoreProcessingException(
+					SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
 					SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return cert;
@@ -104,7 +105,8 @@ public class CertificateUtility {
 			cert.sign(privkey, SofthsmKeymanagerConstant.SIGNATURE_ALGORITHM);
 		} catch (InvalidKeyException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
 				| SignatureException e) {
-			throw new KeystoreProcessingException(SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
+			throw new KeystoreProcessingException(
+					SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorCode(),
 					SofthsmKeymanagerErrorCode.CERTIFICATE_PROCESSING_ERROR.getErrorMessage() + e.getMessage());
 		}
 		return cert;
@@ -113,13 +115,13 @@ public class CertificateUtility {
 	/**
 	 * Set certificate validity for specific duration
 	 * 
-	 * @param validDays
-	 *            number of days
+	 * @param validityInMinutes
+	 *            validity in minutes
 	 * @return certificate validity
 	 */
-	private static CertificateValidity setCertificateValidity(int validDays) {
+	private static CertificateValidity setCertificateValidity(int validityInMinutes) {
 		LocalDateTime since = LocalDateTime.now();
-		LocalDateTime until = since.plusDays(validDays);
+		LocalDateTime until = since.plusMinutes(validityInMinutes);
 		return new CertificateValidity(Timestamp.valueOf(since), Timestamp.valueOf(until));
 	}
 }
