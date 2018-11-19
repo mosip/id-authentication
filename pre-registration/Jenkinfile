@@ -58,7 +58,7 @@ stage('-----------Docker image push and cleanup-----------') {
 			locationOfDockerFiles = readFile( "directoryDockerFiles" ).split( "\\r?\\n" );
 			sh "rm -f directoryDockerFiles"
 			echo locationOfDockerFiles.size()+""
-			echo locationOfDockerFiles
+			echo "&&&&&&&&&&&&&&&&&&&&&"+locationOfDockerFiles[0]+"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
 			for (int i=0; i < locationOfDockerFiles.size(); i++) {
 			echo locationOfDockerFiles[i]
 			def currentModule = locationOfDockerFiles[i]
