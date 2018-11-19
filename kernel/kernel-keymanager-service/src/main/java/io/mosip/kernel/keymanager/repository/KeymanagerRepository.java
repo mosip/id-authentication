@@ -20,5 +20,4 @@ public interface KeymanagerRepository extends BaseRepository<AliasMap, String> {
 
 	List<AliasMap> findByApplicationId(String applicationId);
 
-	List<AliasMap> findByApplicationIdAndMachineId(String applicationId);
 }

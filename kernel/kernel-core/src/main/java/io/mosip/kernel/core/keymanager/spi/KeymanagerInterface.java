@@ -101,10 +101,10 @@ public interface KeymanagerInterface {
 	 *            the keypair
 	 * @param alias
 	 *            the alias
-	 * @param validDays
-	 *            validity days
+	 * @param validityInMinutes
+	 *            validity In Minutes
 	 */
-	void storeAsymmetricKey(KeyPair keyPair, String alias, int validDays);
+	void storeAsymmetricKey(KeyPair keyPair, String alias, int validityInMinutes);
 
 	/**
 	 * Delete key form keystore
