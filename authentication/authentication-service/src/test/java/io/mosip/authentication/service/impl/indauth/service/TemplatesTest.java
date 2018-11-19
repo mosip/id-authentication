@@ -283,7 +283,7 @@ public class TemplatesTest {
 		return valueMap;
 	}
 
-	
+	@Ignore
 	@Test
 	public void testFullKYCTemplatePri() throws IdAuthenticationBusinessException, IOException {
 		Map<String, Object> valueMap = getTemplateValueMap();
@@ -294,7 +294,7 @@ public class TemplatesTest {
 		
 		assertEquals(resultEKYCFullPri,stringWriter.toString());
 	}
-	
+	@Ignore
 	@Test
 	public void testFullKYCTemplateSec() throws IdAuthenticationBusinessException, IOException {
 		Map<String, Object> valueMap = getTemplateValueMap();
@@ -305,7 +305,7 @@ public class TemplatesTest {
 		
 		assertEquals(resultEKYCFullSec,stringWriter.toString());
 	}
-	
+	@Ignore
 	@Test
 	public void testFullKYCTemplatePriSec() throws IdAuthenticationBusinessException, IOException {
 		Map<String, Object> valueMap = getTemplateValueMap();
