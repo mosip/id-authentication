@@ -219,7 +219,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 					authResp.setErr(errors);
 				}
 			} catch (NoSuchMessageException e) {
-				mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.toString(),
+				mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, e.toString(),
 						"\n" + ExceptionUtils.getStackTrace(e));
 				authResp.setErr(Arrays
 						.<AuthError>asList(createAuthError(baseException, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),

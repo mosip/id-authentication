@@ -44,7 +44,7 @@ public enum IdAuthenticationErrorConstants {
 
 	INVALID_EKYC_CONCENT("IDA-DEA-030", "Invalid resident eKYC consent"),
 	INVALID_EKYC_AUTHTYPE("IDA-DEA-035",
-			"Invalid resident auth type (“kycAuthType ” does not match with data in PID block)"),
+			"Invalid resident auth type (\"kycAuthType \" does not match with data in PID block)"),
 	UNAUTHORISED_KUA("IDA-DEA-032", "Unauthorised KUA"),
 
 	// Internal Errors
