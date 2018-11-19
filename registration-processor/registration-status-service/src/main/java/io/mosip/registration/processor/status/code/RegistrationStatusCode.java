@@ -2,7 +2,6 @@ package io.mosip.registration.processor.status.code;
 
 /**
  * Valid Status codes for Registration status table.
- * 
  * @author Girish Yarru
  *
  */
