@@ -29,13 +29,15 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.preregistration.documents.code.StatusCodes;
+import io.mosip.preregistration.documents.dto.DocResponseDto;
 import io.mosip.preregistration.documents.dto.DocumentDto;
+import io.mosip.preregistration.documents.dto.DocumentGetAllDto;
 import io.mosip.preregistration.documents.dto.ExceptionJSONInfo;
 import io.mosip.preregistration.documents.dto.ResponseDto;
 import io.mosip.preregistration.documents.entity.DocumentEntity;
+import io.mosip.preregistration.documents.errorcodes.ErrorCodes;
 import io.mosip.preregistration.documents.exception.DocumentNotFoundException;
 import io.mosip.preregistration.documents.exception.DocumentNotValidException;
-import io.mosip.preregistration.documents.exception.DocumentSizeExceedException;
 import io.mosip.preregistration.documents.repository.DocumentRepository;
 import io.mosip.preregistration.documents.service.DocumentUploadService;
 
@@ -86,9 +88,9 @@ public class DocumentUploadServiceTest {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	private MockMultipartFile mockMultipartFile;
 	private MockMultipartFile mockMultipartFileDummy;
-	DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Draft", "ENG", "Jagadishwari",
+	DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Pending_Appointment",new Timestamp(System.currentTimeMillis()),
 			"Jagadishwari");
-	DocumentDto dummyDto = new DocumentDto("48690172097499", "address", "POI", "PDF", "Draft", "ENG", "Jagadishwari",
+	DocumentDto dummyDto = new DocumentDto("48690172097499", "address", "POI", "PDF", "Pending_Appointment", new Timestamp(System.currentTimeMillis()),
 			"Jagadishwari");
 	private DocumentEntity entity;
 	private DocumentEntity dummyEntity;
@@ -96,10 +98,11 @@ public class DocumentUploadServiceTest {
 	String preId;
 	private Map<String, String> map = new HashMap<String, String>();
 	boolean flag;
-	ResponseDto responsedelete = new ResponseDto<>();
-	ResponseDto<DocumentEntity> responseGetAllPreid = new ResponseDto<>();
-	ResponseDto responseUpload = new ResponseDto<>();
-	ResponseDto responseCopy = new ResponseDto<>();
+	ResponseDto<DocResponseDto> responsedelete = new ResponseDto<DocResponseDto>();
+	DocResponseDto docResp= new DocResponseDto();
+	ResponseDto<DocumentGetAllDto> responseGetAllPreid = new ResponseDto<DocumentGetAllDto>();
+	ResponseDto<DocResponseDto> responseUpload = new ResponseDto<DocResponseDto>();
+	ResponseDto<DocResponseDto> responseCopy = new ResponseDto<DocResponseDto>();
 
 	@Before
 	public void setUp() throws URISyntaxException, FileNotFoundException, IOException {
@@ -119,16 +122,16 @@ public class DocumentUploadServiceTest {
 
 		mockMultipartFile = new MockMultipartFile("file", "Doc.pdf", "mixed/multipart", new FileInputStream(file));
 		
-		entity = new DocumentEntity(1, "48690172097498", "Doc.pdf", "address", "POA", "PDF", bFile, "Draft", "ENG",
+		entity = new DocumentEntity(1, "48690172097498", "Doc.pdf", "address", "POA", "PDF", bFile, "Pending_Appointment", "ENG",
 				"Jagadishwari", new Timestamp(System.currentTimeMillis()), "Jagadishwari",
 				new Timestamp(System.currentTimeMillis()));
 
-		dummyEntity = new DocumentEntity(1, "48690172097499", "sampleZip", "address", "POA", "PDF", bFile, "Draft",
+		dummyEntity = new DocumentEntity(1, "48690172097499", "sampleZip", "address", "POA", "PDF", bFile, "Pending_Appointment",
 				"ENG", "Jagadishwari", new Timestamp(System.currentTimeMillis()), "Jagadishwari",
 				new Timestamp(System.currentTimeMillis()));
 
 		map.put("DocumentId", "1");
-		map.put("Status", "Draft");
+		map.put("Status", "Pending_Appointment");
 		documentId = map.get("DocumentId");
 		flag = true;
 
@@ -139,116 +142,90 @@ public class DocumentUploadServiceTest {
 		List<ExceptionJSONInfo> err = new ArrayList<>();
 		String status;
 
-		List deleteresponseList = new ArrayList<>();
-		deleteresponseList.add(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL);
-		responsedelete.setResponse(deleteresponseList);
-
-		List responseUploadList = new ArrayList<>();
-		responseUploadList.add(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL);
-		responseUpload.setResponse(responseUploadList);
-
-		List responseCopyList = new ArrayList<>();
-		responseCopyList.add(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL);
-		responseCopy.setResponse(responseCopyList);
-
-		List responseGetList = new ArrayList<>();
-		responseGetList.add(entity);
-		responseGetAllPreid.setResponse(responseGetList);
-
 	}
 
 	@Test
 	public void uploadDocument() {
+		List<DocResponseDto> responseUploadList = new ArrayList<>();
+		docResp.setResMsg(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+		responseUploadList.add(docResp);
+		responseUpload.setResponse(responseUploadList);
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
-		ResponseDto responseDto = documentUploadService.uploadDoucment(mockMultipartFile, documentDto);
-		assertEquals(responseDto.getResponse().get(0).toString().trim(),
-				responseUpload.getResponse().get(0).toString().trim());
+	    ResponseDto<DocResponseDto> responseDto = documentUploadService.uploadDoucment(mockMultipartFile, documentDto);
+		logger.info("Response "+responseDto);
+	    assertEquals(responseDto.getResponse().get(0).getResMsg(),
+				responseUpload.getResponse().get(0).getResMsg());
 	}
 
 	@Test
 	public void deleteDocument() {
+		List<DocResponseDto> deleteresponseList = new ArrayList<>();
+		docResp.setResMsg(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL.toString());
+		deleteresponseList.add(docResp);
+		responsedelete.setResponse(deleteresponseList);
 		Mockito.when(documentRepository.findBydocumentId(Integer.parseInt(documentId))).thenReturn(entity);
 		Mockito.when(documentRepository.deleteAllBydocumentId(Integer.parseInt(documentId))).thenReturn((long) 1);
-		ResponseDto responseDto = documentUploadService.deleteDocument(documentId);
-		assertEquals(responseDto.getResponse().get(0), responsedelete.getResponse().get(0));
+		ResponseDto<DocResponseDto> responseDto = documentUploadService.deleteDocument(documentId);
+		assertEquals(responseDto.getResponse().get(0).getResMsg(), responsedelete.getResponse().get(0).getResMsg());
 	}
 
 	@Test
 	public void deleteAllByPreId() {
+		List<DocResponseDto> deleteresponseList = new ArrayList<>();
+		docResp.setResMsg(StatusCodes.DOCUMENT_DELETE_SUCCESSFUL.toString());
+		deleteresponseList.add(docResp);
+		responsedelete.setResponse(deleteresponseList);
 		Mockito.when(documentRepository.findBypreregId(preId)).thenReturn(docEntity);
 		Mockito.when(documentRepository.deleteAllBypreregId(preId)).thenReturn(docEntity);
-		ResponseDto responseDto = documentUploadService.deleteAllByPreId(preId);
-		assertEquals(responseDto.getResponse().get(0), responsedelete.getResponse().get(0));
+		ResponseDto<DocResponseDto> responseDto = documentUploadService.deleteAllByPreId(preId);
+		assertEquals(responseDto.getResponse().get(0).getResMsg(), responsedelete.getResponse().get(0).getResMsg());
 	}
 
-	/*
-	 * @Test public void documentCopy() { DocumentEntity documentEntity = entity;
-	 * List<DocumentEntity> list = new ArrayList<DocumentEntity>();
-	 * list.add(entity); List<String> list2 = new ArrayList<String>();
-	 * list2.add("98745632155997");
-	 * Mockito.when(documentRepository.save(entity)).thenReturn(documentEntity);
-	 * Mockito.when(registrationRepositary.findBygroupIds(ArgumentMatchers.any())).
-	 * thenReturn(list2);
-	 * Mockito.when(documentRepository.findBypreregId(ArgumentMatchers.any())).
-	 * thenReturn(list); Map<String, String> success =
-	 * documentUploaderServiceImpl.uploadDoucment(mockMultipartFile, documentDto);
-	 * 
-	 * assertEquals(map, success);
-	 * 
-	 * }
-	 */
 
-	// @Test
-	// public void documentCopy() {
-	//
-	// Mockito.when(documentRepository.save(entity)).thenReturn(entity);
-	//// Mockito.when(documentRepository.findBygroupIds(ArgumentMatchers.any())).thenReturn(list2);
-	//// Mockito.when(documentRepository.findBypreregId(ArgumentMatchers.any())).thenReturn(list);
-	// Map<String, String> success =
-	// documentUploaderServiceImpl.copyDoucment(cat_type, source, destination)
-	//
-	// assertEquals(map, success);
-	//
-	// }
 
 	@Test
 	public void documentCopy() {
+		List<DocResponseDto> docCopyList = new ArrayList<>();
+		docResp.setResMsg(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+		docCopyList.add(docResp);
+		responseCopy.setResponse(docCopyList);
 		Mockito.when(documentRepository.findSingleDocument("48690172097498", "POA")).thenReturn(entity);
 		Mockito.when(documentRepository.save(Mockito.any())).thenReturn(entity);
-		ResponseDto responseDto = documentUploadService.copyDoucment("POA", "48690172097498", "48690172097499");
-		assertEquals(responseDto.getResponse().get(0).toString().trim(),
-				responseCopy.getResponse().get(0).toString().trim());
+		ResponseDto<DocResponseDto> responseDto = documentUploadService.copyDoucment("POA", "48690172097498", "48690172097499");
+		assertEquals(responseDto.getResponse().get(0).getResMsg(),
+				responseCopy.getResponse().get(0).getResMsg());
 
 	}
 
-	// @Test(expected = DocumentNotFoundException.class)
-	// public void failureDocumentCopy() {
-	//
-	// DocumentNotFoundException exception = new DocumentNotFoundException();
-	//
-	// Mockito.when(documentRepository.findSingleDocument("1234567891234",
-	// "POA")).thenThrow(exception);
-	//
-	// Mockito.when(documentRepository.save(Mockito.any())).thenThrow(exception);
-	//
-	// documentUploadService.copyDoucment("POA", "1234567891234", "98076543218976");
-	//
-	// }
 
 	@Test
 	public void getAllDocumentForPreIdTest() {
+		List<DocumentGetAllDto> docCopyList = new ArrayList<>();
+        DocumentGetAllDto getAllDto= new DocumentGetAllDto();
+        getAllDto.setPrereg_id("48690172097498");
+        docCopyList.add(getAllDto);
+		responseGetAllPreid.setResponse(docCopyList);
+		logger.info("Doc Dto "+getAllDto);
 		Mockito.when(documentRepository.findBypreregId(preId)).thenReturn(docEntity);
-		ResponseDto<DocumentEntity> responseDto = documentUploadService.getAllDocumentForPreId(preId);
-		assertEquals(responseDto.getResponse().get(0).getPreregId(),
-				responseGetAllPreid.getResponse().get(0).getPreregId());
+		ResponseDto<DocumentGetAllDto> responseDto = documentUploadService.getAllDocumentForPreId(preId);
+		assertEquals(responseDto.getResponse().get(0).getPrereg_id(),
+				responseGetAllPreid.getResponse().get(0).getPrereg_id());
 	}
 
 	@Test(expected = DocumentNotFoundException.class)
 	public void failureGetAllDocumentForPreIdTest() {
+		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_007.toString(),
+				StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
+		err.add(errorDetails);
+		ResponseDto errorRes = new ResponseDto<>();
+		errorRes.setErr(err);
+		errorRes.setStatus("False");
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		DocumentNotFoundException exception = new DocumentNotFoundException();
-		Mockito.when(documentRepository.findBypreregId(" ")).thenThrow(exception);
-		documentUploadService.getAllDocumentForPreId(" ");
-
+		Mockito.when(documentRepository.findBypreregId("1234577746395")).thenReturn(null);
+		ResponseDto responseDto =documentUploadService.getAllDocumentForPreId("1234577746395");
+		System.out.println(responseDto.getStatus());
 	}
 
 	@Test(expected = DocumentNotFoundException.class)

@@ -44,14 +44,14 @@ public class PreRegistrationEntity implements Serializable {
 	@Column(name = "prereg_id", nullable = false)
 	@Id
 	private String preRegistrationId;
-//	private String userId;
+
 
 	/** The group id. */
 	@Column(name = "group_id", nullable = false)
 	private String groupId;
 	
 	/** The JSON */
-//	@Type( type = "jsonb-node" )
+
 	@Column(name = "demog_detail")
 	private byte[] applicantDetailJson;
 	

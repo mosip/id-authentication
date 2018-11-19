@@ -23,7 +23,7 @@ import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
  *
  */
 @RestControllerAdvice
-public class RegistrationExceptionHandler {
+public class PreRegistrationExceptionHandler {
 
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<ResponseDto> databaseerror(final TablenotAccessibleException e, WebRequest request) {
@@ -42,7 +42,20 @@ public class RegistrationExceptionHandler {
 	public ResponseEntity<ResponseDto> jsonValidationException(final JsonValidationException e, WebRequest request) {
 		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_010.toString(),
-				StatusCodes.JSON_VALIDATION_FAIL.toString());
+				e.getMessage());
+		err.add(errorDetails);
+		ResponseDto errorRes = new ResponseDto<>();
+		errorRes.setErr(err);
+		errorRes.setStatus("False");
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+	
+	@ExceptionHandler(RecordNotFoundException.class)
+	public ResponseEntity<ResponseDto> recException(final RecordNotFoundException e, WebRequest request) {
+		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(e.getErrorCode(),
+				e.getMessage());
 		err.add(errorDetails);
 		ResponseDto errorRes = new ResponseDto<>();
 		errorRes.setErr(err);

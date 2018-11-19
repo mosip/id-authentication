@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Timestamp;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,8 +43,7 @@ public class DocumentNotValidExceptionTest {
 				"POA",
 				"PDF",
 				"Draft",
-				"ENG",
-				"Jagadishwari",
+				new Timestamp(System.currentTimeMillis()),
 				"Jagadishwari");
 		
 		ClassLoader classLoader = getClass().getClassLoader();

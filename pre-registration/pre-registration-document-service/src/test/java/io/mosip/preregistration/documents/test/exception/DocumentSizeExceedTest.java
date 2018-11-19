@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,8 +51,8 @@ public class DocumentSizeExceedTest {
 //				new FileInputStream(file));
 		
 		
-		DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Draft", "ENG",
-				"Jagadishwari", "Jagadishwari");
+		DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Draft", new Timestamp(System.currentTimeMillis()),
+				 "Jagadishwari");
 		ClassLoader classLoader = getClass().getClassLoader();
 
 		URI uri = new URI(classLoader.getResource("Doc.pdf").getFile().trim().replaceAll("\\u0020", "%20"));
