@@ -11,7 +11,7 @@
                              "addressLine3": "addressLine3",
                              "addressLine4": "region",
                              "addressLine5": "province",
-                             "addressLine6": "city"
+                             "addressLine6": "city",
 							 "pincode":"CNEOrPINNumber"
               }
 }
