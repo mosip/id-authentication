@@ -8,7 +8,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.keymanagerservice.dto.KeyResponseDto;
+import io.mosip.kernel.keymanagerservice.dto.PublicKeyRequestDto;
 import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 
 /**
@@ -31,12 +31,11 @@ public class KeymanagerController {
 	@Autowired
 	KeymanagerService keymanagerService;
 
-	@GetMapping(value = "/publickey/{appId}")
-	public ResponseEntity<KeyResponseDto> getPublicKey(@PathVariable("appId") String appId,
-			@RequestParam("timeStamp") @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime timeStamp,
-			@RequestParam("machineId") Optional<String> machineId) {
+	@PostMapping(value = "/publickey/{appId}")
+	public ResponseEntity<KeyResponseDto> getPublicKey(@RequestBody PublicKeyRequestDto publicKeyRequestDto) {
 
-		return new ResponseEntity<>(keymanagerService.getPublicKey(appId, timeStamp, machineId), HttpStatus.CREATED);
+		return new ResponseEntity<>(keymanagerService.getPublicKey(publicKeyRequestDto.getApplicationId(),
+				publicKeyRequestDto.getTimeStamp(), publicKeyRequestDto.getMachineId()), HttpStatus.CREATED);
 	}
 
 	@PostMapping(value = "/symmetricKey/{appId}")
