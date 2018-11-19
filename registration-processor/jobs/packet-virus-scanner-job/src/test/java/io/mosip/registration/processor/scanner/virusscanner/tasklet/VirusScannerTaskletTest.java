@@ -6,13 +6,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
 import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,15 +26,12 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
-
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.scanner.virusscanner.exception.DFSNotAccessibleException;
 import io.mosip.registration.processor.scanner.virusscanner.exception.RetryFolderNotAccessibleException;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -73,7 +68,7 @@ public class VirusScannerTaskletTest {
 	private ChunkContext chunkContext;
 
 	@Mock
-	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 
 	@Before
 	public void setup() throws Exception {
@@ -91,7 +86,7 @@ public class VirusScannerTaskletTest {
 				.thenReturn(sample);
 		Mockito.when(env.getProperty(DirectoryPathDto.VIRUS_SCAN.toString())).thenReturn("/resources/Disk/sde");
 
-		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
 		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
@@ -99,7 +94,7 @@ public class VirusScannerTaskletTest {
 		f.set(coreAuditRequestBuilder, auditRequestBuilder);
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
-		f1.set(auditRequestBuilder, auditRequest1);
+		f1.set(auditRequestBuilder, auditRequest1);*/
 
 	}
 

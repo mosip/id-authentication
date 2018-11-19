@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -25,6 +22,7 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.scanner.virusscanner.exception.VirusScanFailedException;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -87,7 +85,7 @@ public class VirusScannerTasklet implements Tasklet {
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/** The event id. */
 	private String eventId = "";
@@ -132,7 +130,7 @@ public class VirusScannerTasklet implements Tasklet {
 			description = isTransactionSuccessful ? "Packet uploaded to virus scanner successfully"
 					: "Packet uploading to virus scanner failed";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
 
@@ -193,7 +191,7 @@ public class VirusScannerTasklet implements Tasklet {
 			description = isTransactionSuccessful
 					? "File is infected. It has been sent to VIRUS_SCAN_RETRY folder successfully"
 					: "File is infected, sending to VIRUS_SCAN_RETRY folder failed";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
 
@@ -241,7 +239,7 @@ public class VirusScannerTasklet implements Tasklet {
 			description = isTransactionSuccessful ? "Packet successfully saved to packet store"
 					: "Failed to save packet in packet store";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
 

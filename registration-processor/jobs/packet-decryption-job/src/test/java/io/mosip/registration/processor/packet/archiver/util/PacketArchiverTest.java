@@ -13,17 +13,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
 import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
 /**
  * The Class PacketArchiverTest.
@@ -41,14 +37,6 @@ public class PacketArchiverTest {
 	@Mock
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
-	/** The audit request builder. */
-	@Mock
-	private AuditRequestBuilder auditRequestBuilder;
-
-	/** The audit handler. */
-	@Mock
-	private AuditHandler<AuditRequestDto> auditHandler;
-
 	/** The packet archiver. */
 	@InjectMocks
 	private PacketArchiver packetArchiver;
@@ -60,7 +48,7 @@ public class PacketArchiverTest {
 	private String registrationId = "1001";
 
 	@Mock
-	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 
 	/**
 	 * Setup.
@@ -77,7 +65,8 @@ public class PacketArchiverTest {
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
+		
+		/*Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
 
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
@@ -92,7 +81,7 @@ public class PacketArchiverTest {
 
 		Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
 		f2.setAccessible(true);
-		f2.set(coreAuditRequestBuilder, auditHandler);
+		f2.set(coreAuditRequestBuilder, auditHandler);*/
 	}
 
 	/**

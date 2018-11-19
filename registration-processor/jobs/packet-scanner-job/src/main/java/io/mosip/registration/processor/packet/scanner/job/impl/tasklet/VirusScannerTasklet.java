@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -25,6 +24,7 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.scanner.job.exception.VirusScanFailedException;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -86,7 +86,7 @@ public class VirusScannerTasklet implements Tasklet {
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/** The event id. */
 	private String eventId = "";
@@ -127,7 +127,7 @@ public class VirusScannerTasklet implements Tasklet {
             eventName=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString() : EventName.EXCEPTION.toString();
             eventType=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
             description = isTransactionSuccessful ? "Packet uploaded to virus scanner successfully"	: "Packet uploading to virus scanner failed";
-            coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.MULTIPLE_ID.toString());
+            auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.MULTIPLE_ID.toString());
         }
 
         for (InternalRegistrationStatusDto entry : registrationStatusDtoList) {
@@ -183,7 +183,7 @@ public class VirusScannerTasklet implements Tasklet {
 			eventName=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventName.DELETE.toString(): EventName.EXCEPTION.toString();
 			eventType=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventType.BUSINESS.toString(): EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "File is infected. It has been sent to VIRUS_SCAN_RETRY folder successfully" : "File is infected, sending to VIRUS_SCAN_RETRY folder failed";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
 
@@ -228,7 +228,7 @@ public class VirusScannerTasklet implements Tasklet {
 			eventType=	eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString(): EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "Packet successfully saved to packet store" : "Failed to save packet in packet store";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
 

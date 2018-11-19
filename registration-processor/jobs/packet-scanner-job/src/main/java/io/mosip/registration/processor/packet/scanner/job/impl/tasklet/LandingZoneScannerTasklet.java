@@ -12,7 +12,6 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -20,6 +19,7 @@ import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -52,9 +52,9 @@ public class LandingZoneScannerTasklet implements Tasklet {
 	protected RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 
-	/** The core audit request builder. */
+	/** The audit log request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/** The event id. */
 	private String eventId = "";
@@ -141,7 +141,7 @@ public class LandingZoneScannerTasklet implements Tasklet {
 			}
 
 			String description = isTransactionSuccessful ? "File moved from landing zone to virusscan zone successfully" : "File moveing from landing zone to virusscan zone failed";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.NO_ID.toString());
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.NO_ID.toString());
 		}
 		return RepeatStatus.FINISHED;
 	}

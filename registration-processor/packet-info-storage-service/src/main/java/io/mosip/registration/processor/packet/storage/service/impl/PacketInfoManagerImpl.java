@@ -14,7 +14,6 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -44,6 +43,7 @@ import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import lombok.Cleanup;
 
 /**
@@ -116,7 +116,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	AuditLogRequestBuilder auditLogRequestBuilder;
 
 	@Autowired
 	private PacketInfoDao packetInfoDao;
@@ -169,7 +169,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			description = isTransactionSuccessful ? "Packet meta data saved successfully"
 					: "Packet meta data unsuccessful";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
 
@@ -216,7 +216,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			description = isTransactionSuccessful ? "Demographic data saved successfully"
 					: "Demographic data Failed to save";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
 		}

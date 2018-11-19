@@ -5,14 +5,8 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,19 +24,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.scanner.job.impl.tasklet.FTPScannerTasklet;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
 @RunWith(SpringRunner.class)
 @PrepareForTest({ FTPScannerTasklet.class })
@@ -68,7 +59,7 @@ public class FTPScannerTaskletTest {
 	private String directoryPath;
 	
 	@Mock
-	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 
 	@Before
 	public void setup() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -76,7 +67,7 @@ public class FTPScannerTaskletTest {
 		File file = new File(classLoader.getResource("FTP").getFile());
 		this.directoryPath = file.getAbsolutePath();
 		
-		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
 		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
@@ -84,7 +75,7 @@ public class FTPScannerTaskletTest {
 		f.set(coreAuditRequestBuilder, auditRequestBuilder);
 		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
 		f1.setAccessible(true);
-		f1.set(auditRequestBuilder, auditRequest1);
+		f1.set(auditRequestBuilder, auditRequest1);*/
 	}
 
 	@Test

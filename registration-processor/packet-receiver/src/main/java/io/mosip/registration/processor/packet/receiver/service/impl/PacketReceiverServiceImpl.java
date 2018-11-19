@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -23,6 +22,7 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -66,7 +66,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/*
 	 * (non-Javadoc)
@@ -123,7 +123,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				String description = isTransactionSuccessful ? "Packet registration status updated successfully"
 						: "Packet registration status updation unsuccessful";
 
-				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+				auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 						registrationId);
 			}
 		} else {

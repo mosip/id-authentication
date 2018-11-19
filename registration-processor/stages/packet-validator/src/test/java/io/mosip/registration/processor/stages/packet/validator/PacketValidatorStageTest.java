@@ -22,18 +22,14 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
@@ -60,12 +56,9 @@ public class PacketValidatorStageTest {
 	private PacketValidatorStage packetValidatorStage;
 
 	@Mock
-	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 
-	/** The audit handler. */
-	@Mock
-	private AuditHandler<AuditRequestDto> auditHandler;
-
+	
 	private Identity identity;
 
 	// private Demographic demographicinfo;
@@ -98,7 +91,7 @@ public class PacketValidatorStageTest {
 		fieldValueArrayList.add(applicantDemographic);
 		identity.setHashSequence(fieldValueArrayList);
 
-		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
 		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
@@ -111,7 +104,7 @@ public class PacketValidatorStageTest {
 
 		Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
 		f2.setAccessible(true);
-		f2.set(coreAuditRequestBuilder, auditHandler);
+		f2.set(coreAuditRequestBuilder, auditHandler);*/
 	}
 
 	@Test

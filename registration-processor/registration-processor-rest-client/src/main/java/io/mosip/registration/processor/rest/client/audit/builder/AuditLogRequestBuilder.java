@@ -4,12 +4,12 @@ import java.time.LocalDateTime;import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.ServerUtil;
-import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
+import io.mosip.registration.processor.rest.client.audit.dto.AuditRequestDto;
+import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 
 /**
  * The Class AuditRequestBuilder.
@@ -25,7 +25,7 @@ public class AuditLogRequestBuilder {
 	/** The registration processor rest service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
-
+	
 	/**
 	 * Creates the audit request builder.
 	 *
