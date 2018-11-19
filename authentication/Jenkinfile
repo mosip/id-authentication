@@ -7,7 +7,7 @@ node {
  def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  stage('------- Checkout --------') {
-  // Checkout only Kernel Module
+  // Checkout only Authentication Module
   dir(branch) {
    checkout([$class: 'GitSCM',
     branches: [
@@ -56,6 +56,9 @@ stage('-----------Docker image push and cleanup-----------') {
 			locationOfDockerFiles = readFile( "directoryDockerFiles" ).split( "\\r?\\n" );
 			sh "rm -f directoryDockerFiles"
 			for (int i=0; i < locationOfDockerFiles.size(); i++) {
+			if(locationOfDockerFiles[i].equals("")){
+			break;
+			}
 			echo locationOfDockerFiles[i]
 			def currentModule = locationOfDockerFiles[i]
 			sh "basename `dirname $currentModule` > parentDirectoryName"
