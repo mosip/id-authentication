@@ -40,6 +40,7 @@ public class RegistrationConstants {
 	public static final String HASHING_JSON_NAME = "hash";
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
+	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
 
 	// RSA
 	public static final String RSA_ALG = "RSA";
@@ -451,8 +452,6 @@ public class RegistrationConstants {
 	public static final String PACKET_UPLOAD_REF_ID = "packetUpload";
 
 	// Device On-boarding
-	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint", "Iris", "Camera", "GPS",
-			"Printer", "Scanner", "Barcode");
 	public static final String DEVICE_MANUFACTURER_NAME = "manufacturerName";
 	public static final String DEVICE_MODEL_NAME = "modelName";
 	public static final String DEVICE_SERIAL_NO = "serialNo";

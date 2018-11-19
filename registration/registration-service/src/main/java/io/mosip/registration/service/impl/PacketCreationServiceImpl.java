@@ -23,14 +23,12 @@ import io.mosip.registration.dto.json.demo.Demographic;
 import io.mosip.registration.dto.json.metadata.Audit;
 import io.mosip.registration.dto.json.metadata.BiometricSequence;
 import io.mosip.registration.dto.json.metadata.DemographicSequence;
-import io.mosip.registration.dto.json.metadata.FieldValue;
 import io.mosip.registration.dto.json.metadata.FieldValueArray;
 import io.mosip.registration.dto.json.metadata.HashSequence;
 import io.mosip.registration.dto.json.metadata.PacketMetaInfo;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PacketCreationService;
-import io.mosip.registration.util.checksum.CheckSumUtil;
 import io.mosip.registration.util.hmac.HMACGeneration;
 import io.mosip.registration.service.ZipCreationService;
 
@@ -110,17 +108,6 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 			// Add HashSequence
 			packetInfo.getIdentity().setHashSequence(buildHashSequence(hashSequence));
 			
-			// Add Checksum to PacketMetaInfo JSON
-			List<FieldValue> checkSums = new LinkedList<>();
-			Map<String, String> checkSumMap = CheckSumUtil.getCheckSumMap();
-			for (String key: checkSumMap.keySet()) {
-				FieldValue fieldValue = new FieldValue();
-				fieldValue.setLabel(key);
-				fieldValue.setValue(checkSumMap.get(key));
-				checkSums.add(fieldValue);
-			}
-			packetInfo.getIdentity().setCheckSum(checkSums);
-			
 			jsonsMap.put(RegistrationConstants.PACKET_META_JSON_NAME, javaObjectToJsonString(packetInfo).getBytes());
 
 			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID,
@@ -173,7 +160,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 		// Add Sequence of Applicant Demographic
 		fieldValueArray = new FieldValueArray();
 		fieldValueArray.setLabel("applicantDemographicSequence");
-		fieldValueArray.setValue(hashSequence.getBiometricSequence().getIntroducer());
+		fieldValueArray.setValue(hashSequence.getDemographicSequence().getApplicant());
 		hashSequenceList.add(fieldValueArray);
 		
 		return hashSequenceList;
