@@ -8,7 +8,7 @@ node {
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
 
  stage('------- Checkout --------') {
-  // Checkout only Kernel Module
+  // Checkout only pre-registration Module
   dir(branch) {
    checkout([$class: 'GitSCM',
     branches: [
