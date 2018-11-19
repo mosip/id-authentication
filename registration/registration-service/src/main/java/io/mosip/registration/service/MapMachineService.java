@@ -49,7 +49,7 @@ public interface MapMachineService {
 	 */
 	Map<String,List<DeviceDTO>> getDeviceMappingList(String centerId,String machineId);
 	
-	void updateMappedDevice(List<DeviceDTO > deletedList,List<DeviceDTO> addedList);
+	ResponseDTO updateMappedDevice(List<DeviceDTO > deletedList,List<DeviceDTO> addedList);
 
 
 

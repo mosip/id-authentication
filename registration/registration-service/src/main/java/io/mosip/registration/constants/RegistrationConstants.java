@@ -166,6 +166,12 @@ public class RegistrationConstants {
 	public static final String MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE = "User Data Fetched Successfully";
 	public static final String MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS = "No Records Found";
 	public static final String MACHINE_MAPPING_LOGGER_TITLE = "REGISTRATION - USER CLIENT MACHINE MAPPING";
+	public static final String DEVICE_MAPPING_LOGGER_TITLE="REGISTRATION - CENTER MACHINE DEVICE MAPPING";
+	//CENTER MACHINE DEVICE MAPPING
+	public static final String DEVICE_MAPPING_CODE="CENTER DEVICE_MAPPING ALERT";
+	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE="Device mapped successfully";
+	public static final String DEVICE_MAPPING_ERROR_MESSAGE = "Unable to map the device";
+	
 	// BLOCKLISTED USER
 	public static final String BLACKLISTED = "BLOCKED";
 
