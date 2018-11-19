@@ -20,6 +20,7 @@ import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRe
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
+import io.mosip.registration.processor.quality.check.client.QCUsersClient;
 import io.mosip.registration.processor.quality.check.code.QualityCheckerStatusCode;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
 import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
@@ -35,8 +36,9 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	@Autowired
 	private ApplicantInfoDao applicantInfoDao;
 
-
-
+	@Autowired
+	QCUsersClient qcUsersClient;
+	
 	@Autowired
 	ClientAuditRequestBuilder clientAuditRequestBuilder;
 
@@ -55,7 +57,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
 		List<String> qcUsersList = Arrays.asList("qc001","qc002","qc003");
 		//qcUsersClient.getAllQcuserIds();
-
+		
 		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
 		QCUserDto qcUserDto = new QCUserDto();
 		qcUserDto.setQcUserId(qcUserId);
