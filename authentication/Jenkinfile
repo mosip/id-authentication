@@ -6,6 +6,7 @@ node {
  def projectToBuild = 'authentication'
  def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
+ def mvnHome = tool name: 'M2_HOME', type: 'maven'
 
  stage('------- Checkout --------') {
   // Checkout only Kernel Module
@@ -28,7 +29,9 @@ node {
    ])
   }
  }
-
+  stage('MVN Package'){    
+    sh "${mvnHome}/bin/mvn clean package"
+  }
  stage('--------- Artifactory configuration ----------------') {
   rtMaven.tool = 'M2_HOME' // Tool name from Jenkins configuration
   rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
