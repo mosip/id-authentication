@@ -8,7 +8,7 @@ import { IdentityModel } from './demographic/identity.model';
 })
 export class RegistrationService {
   constructor(private httpClient: HttpClient) {}
-
+  sendFileURL = 'http://preregistration.southindia.cloudapp.azure.com/dev-document/v0.1/pre-registration/registration/documents';
   BASE_URL = 'http://preregistration.southindia.cloudapp.azure.com/dev-demographic/v0.1/pre-registration/applications';
   // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
@@ -36,5 +36,10 @@ export class RegistrationService {
     // });
     // return this.httpClient.request(req);
     return this.httpClient.post('http://A2ML21989:9092/v0.1/pre-registration/applications', obj);
+  }
+
+  sendFile(formdata: FormData) {
+    return this.httpClient.post(this.sendFileURL, formdata);
+    // console.log('servvice called', formdata);
   }
 }
