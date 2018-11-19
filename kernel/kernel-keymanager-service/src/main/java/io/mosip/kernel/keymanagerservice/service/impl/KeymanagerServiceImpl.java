@@ -9,6 +9,7 @@ import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
@@ -72,7 +73,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		String alias;
 		List<AliasMap> aliasMaps;
 		aliasMaps = keymanagerRepository.findByApplicationIdAndMachineId(applicationId, machineId);
-
+		aliasMaps.forEach(System.out::println);
 		if (aliasMaps.isEmpty()) {
 			alias = UUID.randomUUID().toString();
 			createNewKeyPair(applicationId, machineId, alias);
@@ -88,6 +89,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				createNewKeyPair(applicationId, machineId, alias);
 			}
 		}
+		System.out.println(alias);
 		PublicKey publicKey = keymanagerInterface.getPublicKey(alias);
 		keyResponseDto.setKey(publicKey.getEncoded());
 		return keyResponseDto;
@@ -107,12 +109,13 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		String alias;
 		List<AliasMap> aliasMaps;
 		KeyResponseDto keyResponseDto = new KeyResponseDto();
-		aliasMaps = keymanagerRepository.findByApplicationIdAndMachineIdAndTimeStampLessThanEqual(applicationId,
-				machineId, timeStamp);
-		aliasMaps.sort((aliasMap1, aliasMap2) -> aliasMap2.getTimeStamp().compareTo(aliasMap1.getTimeStamp()));
-		aliasMaps.forEach(action -> System.out.println(action));
+		aliasMaps = keymanagerRepository.findByApplicationIdAndMachineId(applicationId, machineId).stream()
+				.filter(aliasMap -> aliasMap.getTimeStamp().compareTo(timeStamp) < 0)
+				.sorted((aliasMap1, aliasMap2) -> aliasMap2.getTimeStamp().compareTo(aliasMap1.getTimeStamp()))
+				.collect(Collectors.toList());
 		alias = aliasMaps.get(0).getAlias();
 		PrivateKey privateKey = keymanagerInterface.getPrivateKey(alias);
+		System.out.println(alias);
 		byte[] decryptedSymmetricKey = decryptor.asymmetricPrivateDecrypt(privateKey, encryptedSymmetricKey);
 		keyResponseDto.setKey(decryptedSymmetricKey);
 		return keyResponseDto;
