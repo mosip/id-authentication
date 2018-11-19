@@ -71,12 +71,14 @@ public abstract class BaseAuthFilter implements Filter {
 		try {
 			ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
 
+			Map<String, Object> decodedRequest = decodedRequest(getRequestBody(requestWrapper.getInputStream()));
+			
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER, "Input Request: \n"
-					+ objectWriter.writeValueAsString(decodedRequest(getRequestBody(requestWrapper.getInputStream()))));
+					+ objectWriter.writeValueAsString(decodedRequest));
 			requestWrapper.resetInputStream();
 
 			requestWrapper.replaceData(objectWriter
-					.writeValueAsString(decodedRequest(getRequestBody(requestWrapper.getInputStream()))).getBytes());
+					.writeValueAsString(decodedRequest).getBytes());
 			requestWrapper.resetInputStream();
 
 			CharResponseWrapper responseWrapper = new CharResponseWrapper((HttpServletResponse) response);
