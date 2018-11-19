@@ -284,7 +284,6 @@ public class RegistrationPendingActionController extends BaseController implemen
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			pendingActionTable.setItems(oList);
 		} else {
-			approveRegistrationRootSubPane.disableProperty().set(true);
 			pendingActionTable.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 			pendingActionTable.getItems().remove(pendingActionTable.getSelectionModel().getSelectedItem());
 			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.PLACEHOLDER_LABEL);
