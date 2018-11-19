@@ -151,7 +151,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		notificationType.add(smsNotification);
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(refId);
 		Map<String, Object> values = new HashMap();
-		values.put("NAME", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
+		values.put("name", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
 		String dateTime = authResponseDTO.getResTime();
 		DateFormat formatter = new SimpleDateFormat(env.getProperty("datetime.pattern"));
 		Date date1;
@@ -168,17 +168,17 @@ public class AuthFacadeImpl implements AuthFacade {
 			logger.error(DEFAULT_SESSION_ID, "IDA", AUTH_FACADE, e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, e);
 		}
-		values.put("DATE", changedDate);
-		values.put("TIME", changedTime);
+		values.put("date", changedDate);
+		values.put("time", changedTime);
 		Optional<UinEntity> uinEntity = idAuthServiceImpl.getUIN(refId);
-		values.put("UIN", Optional.ofNullable(uinEntity.get().getId()));
-		values.put("AUTHTYPE",
+		values.put("uin", Optional.ofNullable(uinEntity.get().getId()));
+		values.put("authType",
 				Stream.of(AuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
 						.map(AuthType::getType).collect(Collectors.joining(",")));
 		if (authResponseDTO.getStatus().equals("y")) {
-			values.put("STATUS", "Success");
+			values.put("status", "Success");
 		} else {
-			values.put("STATUS", "Failed");
+			values.put("status", "Failed");
 		}
 
 		String phoneNumber = null;
