@@ -27,8 +27,8 @@ public class CryptographyRequestDto {
 /**
  * 
  */
-@NotBlank
-private String appId;
+//@NotBlank
+private String applicationId;
 /**
  * 
  */

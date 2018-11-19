@@ -24,7 +24,7 @@ public class KeyManagerSymmetricKeyRequestDto {
 /**
  * 
  */
-private String appId;
+private String applicationId;
 /**
  * 
  */

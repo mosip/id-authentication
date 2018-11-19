@@ -17,8 +17,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class KernelCryptographyApplication {
 
-	/**
-	 * @param args
+	/** Main method for this application 
+	 * @param args 
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(KernelCryptographyApplication.class, args);

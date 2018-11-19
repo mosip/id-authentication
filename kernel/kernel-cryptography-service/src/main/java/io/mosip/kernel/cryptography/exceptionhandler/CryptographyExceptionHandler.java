@@ -6,6 +6,7 @@
  */
 package io.mosip.kernel.cryptography.exceptionhandler;
 
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,11 +19,16 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
+import io.mosip.kernel.core.util.JsonUtils;
+import io.mosip.kernel.core.util.exception.JsonMappingException;
+import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.cryptography.constant.CryptographyErrorCode;
 
 /**
@@ -81,11 +87,33 @@ public class CryptographyExceptionHandler {
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> invalidDataException(final InvalidDataException e) {
 		ErrorBean error = new ErrorBean(e.getErrorCode(), e.getErrorText());
 		Map<String, ArrayList<ErrorBean>> map = setError(error);
+		return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(ConnectException.class)
+	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> connectException(final ConnectException e) {
+		ErrorBean error = new ErrorBean(CryptographyErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorCode(), CryptographyErrorCode.CANNOT_CONNECT_TO_SOFTHSM_SERVICE.getErrorMessage());
+		Map<String, ArrayList<ErrorBean>> map = setError(error);
 		return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-
-
-	@ExceptionHandler(MethodArgumentNotValidException.class)
+	
+/*	@ExceptionHandler(HttpClientErrorException.class)
+	public ResponseEntity<Map<String,Object>> httpClientErrorException(final HttpClientErrorException e) {
+		try {
+			return new ResponseEntity<>(JsonUtils.jsonStringToJavaMap(e.getResponseBodyAsString()), HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (JsonParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (JsonMappingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}*/
+	
+    @ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> methodArgumentNotValidException(
 			final MethodArgumentNotValidException e) {
 		ArrayList<ErrorBean> errorList = new ArrayList<>();

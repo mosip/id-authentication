@@ -29,7 +29,11 @@ public enum CryptographyErrorCode {
 	/**
 	 * 
 	 */
-	INVALID_REQUEST("KER-CRY-004","Invalid request")
+	INVALID_REQUEST("KER-CRY-004","Invalid request"),
+	/**
+	 * 
+	 */
+	CANNOT_CONNECT_TO_SOFTHSM_SERVICE("KER-CRY-005","cannot connect to softhsm service")
 	;
 
 	/**

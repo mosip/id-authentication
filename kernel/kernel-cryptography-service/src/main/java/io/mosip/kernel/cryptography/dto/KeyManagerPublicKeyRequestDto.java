@@ -24,7 +24,7 @@ public class KeyManagerPublicKeyRequestDto {
 	/**
 	 * 
 	 */
-	private String appId;
+	private String applicationId;
 	/**
 	 * 
 	 */
