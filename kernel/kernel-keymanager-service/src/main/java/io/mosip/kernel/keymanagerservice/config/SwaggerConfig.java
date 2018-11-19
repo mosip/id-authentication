@@ -1,4 +1,4 @@
-package io.mosip.kernel.keymanager.config;
+package io.mosip.kernel.keymanagerservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

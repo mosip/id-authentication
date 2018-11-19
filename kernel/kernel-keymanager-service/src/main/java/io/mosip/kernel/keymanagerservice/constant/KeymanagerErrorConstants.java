@@ -1,4 +1,4 @@
-package io.mosip.kernel.keymanager.constant;
+package io.mosip.kernel.keymanagerservice.constant;
 
 /**
  * This ENUM provides all the constant identified for Keymanager Service errors.

@@ -1,4 +1,4 @@
-package io.mosip.kernel.keymanager.controller;
+package io.mosip.kernel.keymanagerservice.controller;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.keymanager.dto.KeyResponseDto;
-import io.mosip.kernel.keymanager.service.KeymanagerService;
+import io.mosip.kernel.keymanagerservice.dto.KeyResponseDto;
+import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 
 /**
  * This class provides controller methods for Key manager.

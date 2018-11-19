@@ -1,6 +1,5 @@
-package io.mosip.kernel.keymanager.service.impl;
+package io.mosip.kernel.keymanagerservice.service.impl;
 
-import java.security.Key;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.security.cert.CertificateExpiredException;
@@ -16,10 +15,10 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.keymanager.spi.KeymanagerInterface;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
-import io.mosip.kernel.keymanager.dto.KeyResponseDto;
-import io.mosip.kernel.keymanager.entity.AliasMap;
-import io.mosip.kernel.keymanager.repository.KeymanagerRepository;
-import io.mosip.kernel.keymanager.service.KeymanagerService;
+import io.mosip.kernel.keymanagerservice.dto.KeyResponseDto;
+import io.mosip.kernel.keymanagerservice.entity.AliasMap;
+import io.mosip.kernel.keymanagerservice.repository.KeymanagerRepository;
+import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 
 /**
  * This class provides the implementation for the methods of KeymanagerService
@@ -61,13 +60,18 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	public KeyResponseDto getPublicKey(String applicationId, LocalDateTime timeStamp, Optional<String> machineId) {
 
 		KeyResponseDto keyResponseDto = new KeyResponseDto();
-		String currentAlias = null;
-		List<AliasMap> aliasMaps = keymanagerRepository.findByApplicationId(applicationId);
+		String currentAlias;
+		List<AliasMap> aliasMaps;
+		if (machineId.isPresent()) {
+			aliasMaps = keymanagerRepository.findByApplicationIdAndMachineId(applicationId, machineId.get());
+		} else {
+			aliasMaps = keymanagerRepository.findByApplicationId(applicationId);
+		}
 
 		if (aliasMaps.isEmpty()) {
 
 			currentAlias = UUID.randomUUID().toString();
-			createNewKeyPair(applicationId, currentAlias);
+			createNewKeyPair(applicationId, machineId, currentAlias);
 		} else {
 
 			aliasMaps.sort((aliasMap1, aliasMap2) -> aliasMap2.getTimeStamp().compareTo(aliasMap1.getTimeStamp()));
@@ -77,7 +81,7 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 				certificate.checkValidity();
 			} catch (CertificateExpiredException | CertificateNotYetValidException e) {
 				currentAlias = UUID.randomUUID().toString();
-				createNewKeyPair(applicationId, currentAlias);
+				createNewKeyPair(applicationId, machineId, currentAlias);
 			}
 		}
 		PublicKey publicKey = keymanagerInterface.getPublicKey(currentAlias);
@@ -87,14 +91,18 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 
 	/**
 	 * @param applicationId
+	 * @param machineId
 	 * @param alias
 	 */
-	private void createNewKeyPair(String applicationId, String alias) {
+	private void createNewKeyPair(String applicationId, Optional<String> machineId, String alias) {
 		KeyPair keyPair = keyGenerator.getAsymmetricKey();
 		keymanagerInterface.storeAsymmetricKey(keyPair, alias, 1);
 		AliasMap aliasMap = new AliasMap();
 		aliasMap.setAlias(alias);
 		aliasMap.setApplicationId(applicationId);
+		if (machineId.isPresent()) {
+			aliasMap.setMachineId(machineId.get());
+		}
 		aliasMap.setTimeStamp(LocalDateTime.now());
 		keymanagerRepository.create(aliasMap);
 	}
