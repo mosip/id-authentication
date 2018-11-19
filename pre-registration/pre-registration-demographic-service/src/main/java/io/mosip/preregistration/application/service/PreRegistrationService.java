@@ -46,6 +46,7 @@ import io.mosip.preregistration.application.entity.PreRegistrationEntity;
 import io.mosip.preregistration.application.exception.DocumentFailedToDeleteException;
 import io.mosip.preregistration.application.exception.JsonValidationException;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
+import io.mosip.preregistration.application.exception.RecordNotFoundException;
 import io.mosip.preregistration.application.exception.utils.PreRegistrationErrorMessages;
 import io.mosip.preregistration.application.repository.PreRegistrationRepository;
 import io.mosip.preregistration.core.exceptions.DatabaseOperationException;
@@ -55,6 +56,7 @@ import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
  * Registration service interface
  * 
  * @author M1037717
+ * @author Sanober Noor
  *
  */
 @Service
@@ -128,6 +130,7 @@ public class PreRegistrationService {
 			
 			
 			
+			
 			 dto = jsonValidator.validateJson(obj.toString(),
 					 "mosip-prereg-identity-json-schema.json");
 
@@ -138,7 +141,6 @@ public class PreRegistrationService {
 			entity.setCr_appuser_id((String) (applicantDetailJson.get("id")));
 			entity.setCreatedBy((String) (object.get("createdBy")));
 
-			System.out.println(prid+"-------------xxxxxxxx");
 			if (prid == null || prid.equals("")) {
 				prid = pridGenerator.generateId();
 
@@ -152,10 +154,12 @@ public class PreRegistrationService {
 
 				createDto.setCreatedBy((String) (object.get("createdBy")));
 			} else {
-				PreRegistrationEntity createTime = preRegistrationRepository.findById(PreRegistrationEntity.class,
+				PreRegistrationEntity entityDetail = preRegistrationRepository.findById(PreRegistrationEntity.class,
 						prid);
-				Timestamp crTime= createTime.getCreateDateTime();
-				
+				Timestamp crTime=null;
+				if(entityDetail!=null)
+					crTime= entityDetail.getCreateDateTime();
+				else throw new RecordNotFoundException(PreRegistrationErrorMessages.RECORD_NOT_FOUND);
 				preRegistrationRepository.deleteByPreRegistrationId(prid);
 				entity.setStatusCode((String) (object.get("statusCode")));
 				entity.setUpdatedBy((String) (object.get("updatedBy")));
@@ -181,23 +185,26 @@ public class PreRegistrationService {
 		}
 
 		catch (JsonValidationProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			throw new JsonValidationException("Json validation processing exception",e.getCause());
 		} catch (JsonIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			throw new JsonValidationException("Json IO exception",e.getCause());
 		} catch (JsonSchemaIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			throw new JsonValidationException("Json schema IO exception",e.getCause());
+			
 		} catch (FileIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			throw new JsonValidationException("File IO exception",e.getCause());
+			
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			throw new JsonValidationException("Unsupported encoding exception",e.getCause());
+			
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			throw new JsonValidationException("Parse exception",e.getCause());
 		}
 
 		createDto.setPrId(prid);
