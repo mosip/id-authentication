@@ -25,12 +25,15 @@
                         (click)="cardSelected(i)">
                 <p>Available: 0{{i}}</p>
                 <p>Selected: 00</p>
-                <ul class="list" *ngIf="i === 0">
-                  <li>name_1<i class="material-icons close-button-sizing">close</i></li>
-                  <li>name_2<i class="material-icons close-button-sizing">close</i></li>
-                  <li>name_3<i class="material-icons close-button-sizing">close</i></li>
-                  <li>more...</li>
-                </ul>
+                <div class="list-container">
+                  <ul class="list" *ngIf="i === 0">
+                    <li *ngFor="let name of names | slice:0:limit; let i = index;">name_{{name}}<i (click)="itemDelete(i)" class="material-icons close-button-sizing">close</i></li>
+                    <li *ngIf="limit <= numbers.length" (click)="changeLimit()">more...</li>
+                  </ul>
+                </div>
+                <div class="add-button-container" *ngIf="showAddButton">
+                  <button mat-fab color="primary"><i class="material-icons">add</i></button>
+                </div>
               </mat-card>
       </div>
     </div>

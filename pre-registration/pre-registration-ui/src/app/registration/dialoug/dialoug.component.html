@@ -15,8 +15,8 @@
     <h1 mat-dialog-title>Discard</h1>
     <div mat-dialog-content class="body-height">
         <mat-radio-group [(ngModel)]="selectedOption">
-            <mat-radio-button value="1">Discard entire application.</mat-radio-button>
-            <mat-radio-button value="2">Cancel appointement and save the details</mat-radio-button>
+            <mat-radio-button [disabled]="input.disabled.radioButton1" value="1">Discard entire application.</mat-radio-button>
+            <mat-radio-button [disabled]="input.disabled.radioButton2" value="2">Cancel appointement and save the details</mat-radio-button>
         </mat-radio-group>
     </div>
     <div mat-dialog-actions>
@@ -38,8 +38,8 @@
         <p>{{input.message}}</p>
     </div>
     <div mat-dialog-actions>
-      <span><button mat-button [mat-dialog-close]="confirm" cdkFocusInitial>Confirm</button></span>
-      <span><button mat-button (click)="onNoClick()" cdkFocusInitial>Cancel</button></span>
+      <span><button mat-button [mat-dialog-close]="confirm" cdkFocusInitial>{{input.yesButtonText}}</button></span>
+      <span><button mat-button (click)="onNoClick()" cdkFocusInitial>{{input.noButtonText}}</button></span>
     </div>
 </div>
 

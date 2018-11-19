@@ -102,16 +102,22 @@ export class DashBoardComponent implements OnInit {
 
   onDelete(element) {
     const data = {
-      case: 'DISCARD'
+      case: 'DISCARD',
+      disabled: {
+        radioButton1: false,
+        radioButton2: true
+      }
     };
     let dialogRef = this.openDialog(data, `350px`);
     dialogRef.afterClosed().subscribe(selectedOption => {
-      if (selectedOption !== null) {
+      if (selectedOption) {
         console.log(selectedOption, element);
         const body = {
           case: 'CONFIRMATION',
           title: 'Confirm',
-          message: 'The selected application will be deleted. Please confirm.'
+          message: 'The selected application will be deleted. Please confirm.',
+          yesButtonText: 'Confirm',
+          noButtonText: 'Cancel'
         };
         dialogRef = this.openDialog(body, '250px');
         dialogRef.afterClosed().subscribe(confirm => {
