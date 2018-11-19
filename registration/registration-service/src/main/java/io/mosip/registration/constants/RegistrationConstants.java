@@ -418,6 +418,7 @@ public class RegistrationConstants {
 	public static final String DEVICE_ONBOARD_DEVICE_FILTERING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-008";
 	public static final String DEVICE_ONBOARD_DEVICE_POPULATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-009";
 	public static final String DEVICE_ONBOARD_DEVICE_FETCHING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-010";
+	public static final String DEVICE_ONBOARD_CLEAR_CONTEXT_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-011";
 
 	public static final String BIOMETRIC_IMAGE = "Image";
 	public static final String BIOMETRIC_TYPE = "Type";
@@ -447,6 +448,7 @@ public class RegistrationConstants {
 	public static final String ONBOARD_DEVICES_REMOVED = "devicedRemoved";
 	public static final String ONBOARD_AVAILABLE_DEVICES_GROUP = "availableDeviceGroupMap";
 	public static final String ONBOARD_MAPPED_DEVICES_GROUP = "mappedDeviceGroupMap";
+	public static final String MACHINE_ID = "machineId";
 
 	// Template Name
 	public static final String ACKNOWLEDGEMENT_TEMPLATE = "Ack Template";
