@@ -1,8 +1,6 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.OffsetDateTime;
-import java.util.Date;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -13,6 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -22,12 +21,13 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  *
  */
+@EqualsAndHashCode(callSuper = false)
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "gender", schema = "master")
-public class GenderType implements Serializable {
+public class GenderType extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1323022736883315822L;
 
 	@EmbeddedId
@@ -39,26 +39,5 @@ public class GenderType implements Serializable {
 
 	@Column(name = "lang_code", unique = true, nullable = false, length = 3)
 	private String languageCode;
-
-	@Column(name = "is_active")
-	private boolean isActive;
-
-	@Column(name = "cr_by", unique = true, nullable = false, length = 24)
-	private String createdBy;
-
-	@Column(name = "cr_dtimes", nullable = false)
-	private Date createdtime;
-
-	@Column(name = "upd_by", unique = true, nullable = false, length = 24)
-	private String updatedBy;
-
-	@Column(name = "upd_dtimes")
-	private OffsetDateTime updatedtime;
-
-	@Column(name = "is_deleted")
-	private boolean isDeleted;
-
-	@Column(name = "del_dtimes")
-	private OffsetDateTime deletedtime;
 
 }

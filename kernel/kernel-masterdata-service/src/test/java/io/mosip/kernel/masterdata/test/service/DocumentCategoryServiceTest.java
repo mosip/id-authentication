@@ -48,7 +48,7 @@ public class DocumentCategoryServiceTest {
 		documentCategory1.setCode("101");
 		documentCategory1.setName("POI");
 		documentCategory1.setLangCode("ENG");
-		documentCategory1.setActive(true);
+		documentCategory1.setIsActive(true);
 		documentCategory1.setIsDeleted(false);
 		documentCategory1.setDescription(null);
 		documentCategory1.setCreatedBy("Neha");
@@ -58,7 +58,7 @@ public class DocumentCategoryServiceTest {
 		documentCategory2.setCode("102");
 		documentCategory2.setName("POR");
 		documentCategory2.setLangCode("ENG");
-		documentCategory2.setActive(true);
+		documentCategory2.setIsActive(true);
 		documentCategory2.setIsDeleted(false);
 		documentCategory2.setDescription(null);
 		documentCategory2.setCreatedBy("Neha");
@@ -71,7 +71,7 @@ public class DocumentCategoryServiceTest {
 	@Test
 	public void getAllDocumentCategorySuccess() {
 
-		Mockito.when(repository.findAll(DocumentCategory.class)).thenReturn(documentCategoryList);
+		Mockito.when(repository.findAllByIsActiveTrueAndIsDeletedFalse(DocumentCategory.class)).thenReturn(documentCategoryList);
 		List<DocumentCategoryDto> DocumentCategoryDtoList = service.getAllDocumentCategory();
 		assertEquals(documentCategoryList.get(0).getCode(), DocumentCategoryDtoList.get(0).getCode());
 		assertEquals(documentCategoryList.get(0).getName(), DocumentCategoryDtoList.get(0).getName());
@@ -79,7 +79,7 @@ public class DocumentCategoryServiceTest {
 
 	@Test
 	public void getAllDocumentCategoryByLaguageCodeSuccess() {
-		Mockito.when(repository.findAllByLangCode(Mockito.anyString())).thenReturn(documentCategoryList);
+		Mockito.when(repository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(documentCategoryList);
 		List<DocumentCategoryDto> DocumentCategoryDtoList = service.getAllDocumentCategoryByLaguageCode("ENG");
 		assertEquals(documentCategoryList.get(0).getCode(), DocumentCategoryDtoList.get(0).getCode());
 		assertEquals(documentCategoryList.get(0).getName(), DocumentCategoryDtoList.get(0).getName());
@@ -87,7 +87,7 @@ public class DocumentCategoryServiceTest {
 
 	@Test
 	public void getDocumentCategoryByCodeAndLangCodeSuccess() {
-		Mockito.when(repository.findByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(repository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(documentCategory1);
 		DocumentCategoryDto actual = service.getDocumentCategoryByCodeAndLangCode("101", "ENG");
 		assertEquals(documentCategory1.getCode(), actual.getCode());

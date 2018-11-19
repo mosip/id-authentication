@@ -17,13 +17,20 @@ import io.mosip.kernel.masterdata.entity.Application;
 public interface ApplicationRepository extends BaseRepository<Application, String> {
 
 	/**
+	 * Get all Application types
+	 * 
+	 * @return {@link List<Application>}
+	 */
+	public List<Application> findAllByIsActiveTrueAndIsDeletedFalse(Class<Application> entityClass);
+	
+	/**
 	 * Get all Application types of a specific language
 	 * using language code
 	 * 
 	 * @param langCode
 	 * @return {@link List<Application>}
 	 */
-	public List<Application> findAllByLanguageCode(String languageCode);
+	public List<Application> findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String languageCode);
 	
 	/**
 	 * Get Application type by specific id and language code
@@ -32,6 +39,6 @@ public interface ApplicationRepository extends BaseRepository<Application, Strin
 	 * @param langCode
 	 * @return {@linkplain Application}
 	 */
-	public Application findByCodeAndLanguageCode(String code, String languageCode);
+	public Application findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String code, String languageCode);
 	
 }

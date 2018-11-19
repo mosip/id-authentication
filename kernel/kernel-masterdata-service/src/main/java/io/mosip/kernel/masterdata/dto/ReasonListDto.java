@@ -24,7 +24,7 @@ public class ReasonListDto {
 	private String langCode;
 	
 	
-	private boolean isActive;
+	private Boolean isActive;
 	
 	
 	private boolean isDeleted;

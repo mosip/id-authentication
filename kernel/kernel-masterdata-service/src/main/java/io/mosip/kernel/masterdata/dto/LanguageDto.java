@@ -31,9 +31,4 @@ public class LanguageDto {
 	 */
 	private String nativeName;
 
-	/**
-	 * Field for is active
-	 */
-	private boolean isActive;
-
 }

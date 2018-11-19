@@ -1,7 +1,9 @@
 package io.mosip.kernel.core.test.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -14,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import io.mosip.kernel.core.exception.IllegalArgumentException;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -27,6 +30,10 @@ public final class DateUtilTest {
 	private static Calendar TEST_CALANDER;
 
 	private static String TEST_CALANDER_STRING;
+
+	private static Date currDate;
+
+	private static Calendar calendar;
 
 	@BeforeClass
 	public static void setup() {
@@ -44,6 +51,8 @@ public final class DateUtilTest {
 		builder.append(cal.get(Calendar.DAY_OF_MONTH));
 		builder.append(cal.get(Calendar.HOUR_OF_DAY));
 		TEST_CALANDER_STRING = builder.toString();
+		currDate = new Date();
+
 	}
 
 	@Test
@@ -155,5 +164,111 @@ public final class DateUtilTest {
 		assertEquals(sec, cal.get(Calendar.SECOND));
 		assertEquals(mil, cal.get(Calendar.MILLISECOND));
 	}
+
+	// --------------------------------- Test for after---------------
+	private void loadDate() {
+		calendar = Calendar.getInstance();
+		calendar.setTime(currDate);
+	}
+
+	@Test
+	public void testDateAfter() {
+
+		loadDate();
+		calendar.add(Calendar.DATE, 1);
+
+		Date nextDate = calendar.getTime();
+
+		assertTrue(DateUtils.after(nextDate, currDate));
+
+		assertFalse(DateUtils.after(currDate, nextDate));
+
+		assertFalse(DateUtils.after(currDate, currDate));
+	}
+
+	// --------------------------------- Test for before-------------------
+	@Test
+	public void testDateBefore() {
+
+		loadDate();
+		calendar.add(Calendar.DATE, -1);
+		Date previousDay = calendar.getTime();
+
+		assertTrue(DateUtils.before(previousDay, currDate));
+
+		assertFalse(DateUtils.before(currDate, previousDay));
+
+		assertFalse(DateUtils.before(currDate, currDate));
+	}
+
+	// --------------------------------- Test for equal----------------------
+	@Test
+	public void testIsSameDayWithNextDate() {
+		loadDate();
+		calendar.add(Calendar.DATE, 1);
+		Date nextDate = calendar.getTime();
+
+		assertTrue(DateUtils.isSameDay(currDate, currDate));
+
+		assertFalse(DateUtils.isSameDay(currDate, nextDate));
+
+		assertFalse(DateUtils.isSameDay(nextDate, currDate));
+	}
+
+	@Test
+	public void testIsSameDayWithDifferentTime() {
+		loadDate();
+		calendar.add(Calendar.HOUR, 1);
+		calendar.add(Calendar.MINUTE, 1);
+		calendar.add(Calendar.SECOND, 1);
+		calendar.add(Calendar.MILLISECOND, 1);
+		Date nextDate = calendar.getTime();
+
+		assertTrue(DateUtils.isSameDay(currDate, currDate));
+
+		assertTrue(DateUtils.isSameDay(currDate, nextDate));
+
+		assertTrue(DateUtils.isSameDay(nextDate, currDate));
+	}
+
+	@Test
+	public void testIsSameInstantWithDifferentTime() {
+		loadDate();
+		calendar.add(Calendar.HOUR, 1);
+		calendar.add(Calendar.MINUTE, 1);
+		calendar.add(Calendar.SECOND, 1);
+		calendar.add(Calendar.MILLISECOND, 1);
+		Date nextDate = calendar.getTime();
+
+		assertTrue(DateUtils.isSameInstant(currDate, currDate));
+
+		assertFalse(DateUtils.isSameInstant(currDate, nextDate));
+
+		assertFalse(DateUtils.isSameInstant(nextDate, currDate));
+	}
+
+	// --------------------------------- Test for exception----------------------
+	@Test(expected = IllegalArgumentException.class)
+	public void testDateAfterExceptionBothDateNull() {
+		DateUtils.after(null, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDateBeforeExceptionBothDateNull() {
+		DateUtils.before(null, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDateEqualExceptionBothDateNull() {
+		DateUtils.isSameDay(null, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testIsSameInstantExceptionBothDateNull() {
+		DateUtils.isSameInstant(null, null);
+	}
+
+	// -----------------------------Parsing date test----------------------------
+
 
 }
