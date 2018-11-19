@@ -10,7 +10,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.auditmanager.code.AuditLogConstant;
 import io.mosip.registration.processor.auditmanager.code.EventId;
 import io.mosip.registration.processor.auditmanager.code.EventName;

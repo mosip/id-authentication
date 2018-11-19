@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -17,15 +16,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.auditmanager.client.AuditmanagerClient;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.packet.dto.AddressDTO;
@@ -411,7 +407,7 @@ public class PacketInfoManagerImplTest {
 	@Test(expected = TablenotAccessibleException.class)
 	public void getPacketsforQCUserDemographicFailureCase() {
 
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.toString(), "errorMessage",
 				new Exception());
 
 
@@ -467,9 +463,7 @@ public class PacketInfoManagerImplTest {
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void getPacketsforQCUserPhotographicfailureCase() {
-
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
-				new Exception());
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.toString(), "errorMessage", null);
 		ApplicantPhotographEntity[] applicantPhotographEntity=new ApplicantPhotographEntity[1];
 		applicantPhotographEntity[0]=new ApplicantPhotographEntity();
 		applicantPhotographEntity[0].setImageName("new_image");;

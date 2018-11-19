@@ -16,17 +16,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import io.mosip.kernel.virusscanner.clamav.service.VirusScannerService;
+import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.registration.processor.auditmanager.code.AuditLogConstant;
 import io.mosip.registration.processor.auditmanager.code.EventId;
 import io.mosip.registration.processor.auditmanager.code.EventName;
 import io.mosip.registration.processor.auditmanager.code.EventType;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
-import io.mosip.registration.processor.packet.scanner.job.exception.VirusScanFailedException;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -146,7 +144,7 @@ public class VirusScannerTasklet implements Tasklet {
 				} else {
 					sendToRetry(entry);
 				}
-			} catch (VirusScanFailedException e) {
+			} catch (Exception e) {
 				LOGGER.error(LOGDISPLAY, VIRUS_SCAN_FAILED, e);
 			}
 

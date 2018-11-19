@@ -4,11 +4,6 @@ import io.mosip.kernel.core.exception.BaseUncheckedException;
 import io.mosip.registration.processor.quality.check.exception.utils.IISPlatformErrorCodes;
 
 public class InvalidQcUserIdException extends BaseUncheckedException {
-
-	/**
-	 * 
-	 */
-
 	/**
 	 * 
 	 */

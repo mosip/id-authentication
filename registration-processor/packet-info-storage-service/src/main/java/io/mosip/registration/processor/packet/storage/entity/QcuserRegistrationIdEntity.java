@@ -9,6 +9,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
 
 
 /**
