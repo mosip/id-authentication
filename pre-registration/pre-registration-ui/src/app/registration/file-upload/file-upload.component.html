@@ -1,3 +1,70 @@
-<p>
-  file-upload works!
-</p>
+<mat-accordion class="example-headers-align" *ngFor="let applicant of applicants">
+  <mat-expansion-panel [expanded]="step === applicant.seq" (opened)="setStep(applicant.seq)">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Document upload
+      </mat-panel-title>
+      <mat-panel-description>
+        {{applicant.name}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <mat-grid-list cols="3" rowHeight="4em">
+      <mat-grid-tile [colspan]="1" [rowspan]="4">
+        <div class="draggableDiv" ondrop="handleFileInput($event.target.files)"></div>
+        <!--<input type="file" id="file" (change)="handleFileInput($event.target.files)" style="display: none;">
+        <input class="browseInput" type="button" value="Browse..." onclick="document.getElementById('file').click();" />-->
+
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="2" [rowspan]="1" *ngFor="let docs of documents">
+        <!--<div class="draggableDiv" ondrop="handleFileInput($event.target.files)"></div>-->
+        <mat-form-field>
+          <mat-select id="{{docs}}" placeholder="{{docs}}" (selectionChange)="selectChange($event)">
+            <mat-option *ngFor="let option of POADocuments" value="{{option.value}}">
+              {{option.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <input type="file" id="{{docs}}fileUpload" (change)="handleFileInput($event.target.files)">
+
+        <!--<br>
+          <mat-form-field>
+            <mat-select placeholder="POI">
+              <mat-option *ngFor="let option of POADocuments" value="option.value">
+                {{option.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <mat-select placeholder="PODOB">
+              <mat-option *ngFor="let option of POADocuments" value="option.value">
+                {{option.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <mat-select placeholder="POR">
+              <mat-option *ngFor="let option of POADocuments" value="option.value">
+                {{option.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        -->
+      </mat-grid-tile>
+
+      <!--<mat-grid-tile [colspan]="1" [rowspan]="0.5">
+        <div class="browseDiv">
+          <input type="file" id="file" (change)="handleFileInput($event.target.files)" style="display: none;">
+          <input class="browseInput" type="button" value="Browse..." onclick="document.getElementById('file').click();" />
+        </div>
+      </mat-grid-tile>-->
+    </mat-grid-list>
+
+    <mat-action-row>
+      <button *ngIf="applicant.seq !== 1 " mat-button color="warn" (click)="prevStep()">Previous</button>
+      <button mat-button color="primary" (click)="nextStep()">Next</button>
+    </mat-action-row>
+  </mat-expansion-panel>
+</mat-accordion>

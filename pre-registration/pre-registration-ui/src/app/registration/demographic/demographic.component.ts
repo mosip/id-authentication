@@ -1,9 +1,14 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router, Params } from '@angular/router';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
-import { Time } from '@angular/common';
-import { MatSlideToggleChange, MatButtonToggleChange, MatDatepickerInputEvent } from '@angular/material';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatButtonToggleChange, MatDatepickerInputEvent } from '@angular/material';
+
 import { RegistrationService } from '../registration.service';
+import { DemoLabels } from './demographic.labels';
+import { IdentityModel } from './identity.model';
+import { AttributeModel } from './attribute.model';
+import { RequestModel } from './request.model';
+import { DemoIdentityModel } from './Demo.Identity.model';
 
 @Component({
   selector: 'app-demographic',
@@ -11,22 +16,36 @@ import { RegistrationService } from '../registration.service';
   styleUrls: ['./demographic.component.css']
 })
 export class DemographicComponent implements OnInit {
-
   step = 0;
-  @ViewChild('picker') date;
-  showAge = false;
-  showDOB = false;
-  dateSelected: Date
+  demo = new DemoLabels(
+    'Full Name',
+    'Date Of Birth',
+    'gender',
+    'Address Line 1',
+    'Address Line 2',
+    'Address Line 3',
+    'Region',
+    'Province',
+    'City',
+    'Postal Code',
+    'Local Administrative Authority',
+    'Email Id',
+    'Mobile Number',
+    'CNE/PIN Number',
+    'Age'
+  );
+  ageOrDobPref = '';
+  showCalender: boolean;
+  dateSelected: Date;
   showDate = false;
   numberOfApplicants: number;
   userForm: FormGroup;
   numbers: number[];
   isDisabled = [];
-  checked : boolean;
+  checked: boolean;
   editMode = false;
 
-
-  isPrimary = false;
+  isPrimary = 'false';
   fullName = '';
   gender = '';
   addressLine1 = '';
@@ -37,52 +56,49 @@ export class DemographicComponent implements OnInit {
   city = '';
   localAdministrativeAuthority = '';
   email = '';
-  dob: Date;
-  age: number;
-  postalCode: number;
-  mobilePhone: number;
-  pin: number;
+  dob: ' ';
+  age: ' ';
+  postalCode: '';
+  mobilePhone: '';
+  pin: ' ';
 
-  constructor(private route: ActivatedRoute,
-    private regService: RegistrationService) { }
+  constructor(private route: ActivatedRoute, private regService: RegistrationService) {}
 
   ngOnInit() {
-    this.route.params
-      .subscribe(
-        (params: Params) => {
-          this.numberOfApplicants = +params['id'];
-          this.numbers = Array(this.numberOfApplicants).fill(0).map((x, i) => i); // [0,1,2,3,4]
-          this.initForm();
-        }
-      );
+    this.route.params.subscribe((params: Params) => {
+      this.numberOfApplicants = +params['id'];
+      this.numbers = Array(this.numberOfApplicants)
+        .fill(0)
+        .map((x, i) => i);
+      this.initForm();
+    });
     this.isDisabled[0] = true;
   }
 
   initForm() {
     if (this.step === 0) {
-      this.isPrimary = true;
-    }
-    else {
-      this.isPrimary = false;
+      this.isPrimary = 'true';
+    } else {
+      this.isPrimary = 'false';
     }
     this.userForm = new FormGroup({
-      'isPrimary': new FormControl(this.isPrimary),
-      'fullName': new FormControl(this.fullName, Validators.required),
-      'gender': new FormControl(this.gender, Validators.required),
-      'addressLine1': new FormControl(this.addressLine1, Validators.required),
-      'addressLine2': new FormControl(this.addressLine2),
-      'addressLine3': new FormControl(this.addressLine3),
-      'region': new FormControl(this.region, Validators.required),
-      'province': new FormControl(this.province, Validators.required),
-      'city': new FormControl(this.city, Validators.required),
-      'localAdministrativeAuthority': new FormControl(this.localAdministrativeAuthority, Validators.required),
-      'email': new FormControl(this.email),
-      'age': new FormControl(this.age),
-      // 'dob': new FormControl(this.dob),
-      'postalCode': new FormControl(this.postalCode, Validators.required),
-      'mobilePhone': new FormControl(this.mobilePhone),
-      'pin': new FormControl(this.pin)
-    })
+      isPrimary: new FormControl(this.isPrimary),
+      fullName: new FormControl(this.fullName, Validators.required),
+      gender: new FormControl(this.gender),
+      addressLine1: new FormControl(this.addressLine1, Validators.required),
+      addressLine2: new FormControl(this.addressLine2),
+      addressLine3: new FormControl(this.addressLine3),
+      region: new FormControl(this.region),
+      province: new FormControl(this.province),
+      city: new FormControl(this.city),
+      localAdministrativeAuthority: new FormControl(this.localAdministrativeAuthority),
+      email: new FormControl(this.email),
+      age: new FormControl('', Validators.required),
+      dob: new FormControl('', Validators.required),
+      postalCode: new FormControl(this.postalCode, Validators.required),
+      mobilePhone: new FormControl(''),
+      pin: new FormControl('')
+    });
   }
 
   setStep(index: number) {
@@ -91,9 +107,6 @@ export class DemographicComponent implements OnInit {
 
   nextStep() {
     this.onSubmit();
-    this.isDisabled[this.step] = true;
-    this.step++;
-    this.initForm();
   }
 
   prevStep() {
@@ -103,47 +116,80 @@ export class DemographicComponent implements OnInit {
 
   onSubmit() {
     if (this.editMode) {
-      // this.regService.updateRecipe(this.id, this.userForm.value);
+      // this.regService.updateUser(this.id, this.userForm.value);
     } else {
-      // this.regService.addRecipe(this.userForm.value);
+      // this.regService.addUser(this.userForm.value);
     }
-    console.log(this.userForm.controls);
 
-    console.log("save Form");
+    const identity = new IdentityModel(
+      [new AttributeModel('en', this.demo.fullName, this.userForm.controls.fullName.value)],
+      [new AttributeModel('en', this.demo.dateOfBirth, this.userForm.controls.dob.value)],
+      [new AttributeModel('en', this.demo.gender, this.userForm.controls.gender.value)],
+      [new AttributeModel('en', this.demo.addressLine1, this.userForm.controls.addressLine1.value)],
+      [new AttributeModel('en', this.demo.addressLine2, this.userForm.controls.addressLine2.value)],
+      [new AttributeModel('en', this.demo.addressLine3, this.userForm.controls.addressLine3.value)],
+      [new AttributeModel('en', this.demo.region, this.userForm.controls.region.value)],
+      [new AttributeModel('en', this.demo.province, this.userForm.controls.province.value)],
+      [new AttributeModel('en', this.demo.city, this.userForm.controls.city.value)],
+      [new AttributeModel('en', this.demo.postalCode, this.userForm.controls.postalCode.value)],
+      [
+        new AttributeModel(
+          'en',
+          this.demo.localAdministrativeAuthority,
+          this.userForm.controls.localAdministrativeAuthority.value
+        )
+      ],
+      [new AttributeModel('en', this.demo.emailId, this.userForm.controls.email.value)],
+      [new AttributeModel('en', this.demo.mobileNumber, this.userForm.controls.mobilePhone.value)],
+      [new AttributeModel('en', this.demo.CNEOrPINNumber, this.userForm.controls.pin.value)],
+      [new AttributeModel('en', this.demo.age, this.userForm.controls.age.value)]
+    );
+
+    const req = new RequestModel(
+      '74297024836182',
+      'shashank',
+      '',
+      'updatedBy',
+      '',
+      'status201',
+      'lang-201',
+      new DemoIdentityModel(identity)
+    );
+
+    this.regService.addUser(req).subscribe(
+      response => {
+        console.log(response);
+      },
+      error => console.log(error),
+      () => {
+        this.isDisabled[this.step] = true;
+        this.step++;
+      }
+    );
   }
 
   onGenderChange(gender: MatButtonToggleChange) {
-    console.log(gender);
     this.userForm.controls.gender.patchValue(gender.value);
   }
 
   addDOB(event: MatDatepickerInputEvent<Date>) {
-    console.log("date add " + event);
-    this.showDate = true;
     this.dateSelected = event.value;
-    this.userForm.addControl("dob", new FormControl(this.dateSelected));
+    this.showDate = true;
   }
 
-  onDOBChange(value: MatSlideToggleChange) {
+  onDOBChange(value) {
     console.log(value);
-
-    if (value.checked === true) {
-      // this.checked = true;
-      this.showAge = true;
-      this.showDOB = false;
-    } else {
-      this.showAge = false;
-      this.showDOB = true;
-      console.log(Date.now())
-      // var timeDiff = Math.abs(Date.now() - this.birthdate);
-      //Used Math.floor instead of Math.ceil
-      //so 26 years and 140 days would be considered as 26, not 27.
-      // this.age = Math.floor((timeDiff / (1000 * 3600 * 24))/365);
-      // this.checked = false;
-
+    if (value === 'age') {
+      this.showCalender = false;
+      // this.userForm.controls.dob.reset();
+      // this.userForm.controls.dob.patchValue('');
+      this.userForm.controls.dob.clearValidators();
     }
-    // this.userForm.controls.dob.patchValue("female");
-    // this.userForm.controls.age.patchValue("male");
-
+    if (value === 'dob') {
+      this.showCalender = true;
+      // this.userForm.controls.age.reset();
+      // this.userForm.controls.age.patchValue('');
+      this.userForm.controls.age.clearValidators();
+    }
   }
 }

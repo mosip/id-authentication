@@ -8,20 +8,8 @@ import { ContactComponent } from './contact/contact.component';
 import { AppRoutingModule } from '../app-routing.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    AppRoutingModule
-  ],
-  declarations: [
-    HeaderComponent,
-    FooterComponent,
-    AboutUsComponent,
-    FaqComponent,
-    ContactComponent,
-  ],
-  exports:[
-    HeaderComponent,
-    FooterComponent
-  ]
+  imports: [CommonModule, AppRoutingModule],
+  declarations: [HeaderComponent, FooterComponent, AboutUsComponent, FaqComponent, ContactComponent],
+  exports: [HeaderComponent, FooterComponent]
 })
-export class CoreModule { }
+export class CoreModule {}
