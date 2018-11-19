@@ -36,7 +36,7 @@ node {
  }
 
 stage ('---------- mvn-clean-install ---------------') {
-        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install -U', buildInfo: buildInfo
+        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
 }
 
 stage('---------- SonarQube Analysis --------------') {
