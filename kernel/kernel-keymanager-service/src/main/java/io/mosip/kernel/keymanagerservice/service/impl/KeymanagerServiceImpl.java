@@ -62,14 +62,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		KeyResponseDto keyResponseDto = new KeyResponseDto();
 		String alias;
 		List<AliasMap> aliasMaps;
-		if (machineId != null && !machineId.isEmpty()) {
-			aliasMaps = keymanagerRepository.findByApplicationIdAndMachineId(applicationId, machineId);
-		} else {
-			aliasMaps = keymanagerRepository.findByApplicationId(applicationId);
-		}
+		aliasMaps = keymanagerRepository.findByApplicationIdAndMachineId(applicationId, machineId);
 
 		if (aliasMaps.isEmpty()) {
-
 			alias = UUID.randomUUID().toString();
 			createNewKeyPair(applicationId, machineId, alias);
 		} else {
@@ -100,9 +95,9 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 		AliasMap aliasMap = new AliasMap();
 		aliasMap.setAlias(alias);
 		aliasMap.setApplicationId(applicationId);
-		if (machineId != null && !machineId.isEmpty()) {
-			aliasMap.setMachineId(machineId);
-		}
+
+		aliasMap.setMachineId(machineId);
+
 		aliasMap.setTimeStamp(LocalDateTime.now());
 		keymanagerRepository.create(aliasMap);
 	}
