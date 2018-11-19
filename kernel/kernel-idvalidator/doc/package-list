@@ -1,8 +1,0 @@
-io.mosip.kernel.idvalidator
-io.mosip.kernel.idvalidator.exception
-io.mosip.kernel.idvalidator.prid.constants
-io.mosip.kernel.idvalidator.prid.impl
-io.mosip.kernel.idvalidator.uin.constants
-io.mosip.kernel.idvalidator.uin.impl
-io.mosip.kernel.idvalidator.vid.constants
-io.mosip.kernel.idvalidator.vid.impl

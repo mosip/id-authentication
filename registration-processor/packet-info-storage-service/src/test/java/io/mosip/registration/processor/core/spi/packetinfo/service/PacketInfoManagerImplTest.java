@@ -21,9 +21,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.packet.dto.AddressDTO;
 import io.mosip.registration.processor.core.packet.dto.BiometericData;
 import io.mosip.registration.processor.core.packet.dto.Demographic;
@@ -41,8 +42,9 @@ import io.mosip.registration.processor.core.packet.dto.MetaData;
 import io.mosip.registration.processor.core.packet.dto.OsiData;
 import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
-import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
+import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentPKEntity;
@@ -59,8 +61,10 @@ import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoMan
 @RunWith(MockitoJUnitRunner.class)
 public class PacketInfoManagerImplTest {
 	@InjectMocks
-	PacketInfoManager<PacketInfo, Demographic, MetaData> packetInfoManagerImpl = new PacketInfoManagerImpl();
+	PacketInfoManager<PacketInfo, Demographic, MetaData,ApplicantInfoDto> packetInfoManagerImpl = new PacketInfoManagerImpl();
 
+	@Mock
+	CoreAuditRequestBuilder coreAuditRequestBuilder=new CoreAuditRequestBuilder();
 	@Mock
 	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
 
@@ -110,6 +114,9 @@ public class PacketInfoManagerImplTest {
 	private Demographic demographicInfo;
 	private DemographicInfo demoInLocalLang;
 	private DemographicInfo demoInUserLang;
+
+	@Mock
+	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
 
 	@Before
 	public void setup()
@@ -301,18 +308,20 @@ public class PacketInfoManagerImplTest {
 		AuditHandler<AuditRequestDto> auditHandler = new AuditHandler<AuditRequestDto>() {
 
 			@Override
-			public boolean writeAudit(AuditRequestDto arg0) {
+			public boolean addAudit(AuditRequestDto arg0) {
 
 				return true;
 			}
-		};
-		Field f1 = packetInfoManagerImpl.getClass().getDeclaredField("auditRequestBuilder");
-		f1.setAccessible(true);
-		f1.set(packetInfoManagerImpl, auditRequestBuilder1);
 
-		Field f2 = packetInfoManagerImpl.getClass().getDeclaredField("auditHandler");
+		};
+		Field f1 = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+		f1.setAccessible(true);
+		f1.set(coreAuditRequestBuilder, auditRequestBuilder1);
+
+		Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
 		f2.setAccessible(true);
-		f2.set(packetInfoManagerImpl, auditHandler);
+		f2.set(coreAuditRequestBuilder, auditHandler);
+
 
 	}
 
@@ -327,15 +336,15 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(packetInfo.getPhotograph()).thenReturn(photograph);
 		Mockito.when(packetInfo.getMetaData()).thenReturn(metaData);
 
-		FileSystemAdapter<InputStream, Boolean> fileSystemAdapter = Mockito.mock(FileSystemAdapter.class);
-		Field f = packetInfoManagerImpl.getClass().getDeclaredField("fileSystemAdapter");
+		Field f = packetInfoManagerImpl.getClass().getDeclaredField("filesystemCephAdapterImpl");
 		f.setAccessible(true);
-		f.set(packetInfoManagerImpl, fileSystemAdapter);
+		f.set(packetInfoManagerImpl, filesystemCephAdapterImpl);
 
 		String inputString = "test";
 		InputStream inputStream = new ByteArrayInputStream(inputString.getBytes(StandardCharsets.UTF_8));
 
-		Mockito.when(fileSystemAdapter.getFile(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(inputStream);
+		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
+				.thenReturn(inputStream);
 
 		packetInfoManagerImpl.savePacketData(packetInfo);
 
@@ -348,7 +357,7 @@ public class PacketInfoManagerImplTest {
 
 	@Test(expected = TablenotAccessibleException.class)
 	public void testDemographicFailureCase() {
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(), "errorMessage",
 				new Exception());
 		Mockito.when(applicantDemographicRepository.save(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.saveDemographicData(demographicInfo, metaData);

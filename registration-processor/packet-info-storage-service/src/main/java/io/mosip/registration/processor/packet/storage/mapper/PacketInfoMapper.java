@@ -1,11 +1,9 @@
 package io.mosip.registration.processor.packet.storage.mapper;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,10 +34,17 @@ import io.mosip.registration.processor.packet.storage.entity.RegCenterMachinePKE
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiPkEntity;
 
+/**
+ * The Class PacketInfoMapper.
+ */
 public class PacketInfoMapper {
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(PacketInfoMapper.class);
 
+	/**
+	 * Instantiates a new packet info mapper.
+	 */
 	private PacketInfoMapper() {
 		super();
 	}
@@ -47,11 +52,9 @@ public class PacketInfoMapper {
 	/**
 	 * Convert app doc dto to app doc entity.
 	 *
-	 * @param documentDto
-	 *            the document dto
+	 * @param documentDto            the document dto
+	 * @param metaData the meta data
 	 * @return the applicant document entity
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
 	 */
 	public static ApplicantDocumentEntity convertAppDocDtoToEntity(DocumentDetail documentDto, MetaData metaData) {
 
@@ -75,8 +78,8 @@ public class PacketInfoMapper {
 	/**
 	 * Convert iris to iris exc entity.
 	 *
-	 * @param exceptionIris
-	 *            the exception iris
+	 * @param exceptionIris            the exception iris
+	 * @param metaData the meta data
 	 * @return the biometric exception entity
 	 */
 	public static BiometricExceptionEntity convertBiometricExcDtoToEntity(ExceptionIris exceptionIris,
@@ -100,8 +103,8 @@ public class PacketInfoMapper {
 	/**
 	 * Convert iris to iris entity.
 	 *
-	 * @param iris
-	 *            the iris
+	 * @param iris            the iris
+	 * @param metaData the meta data
 	 * @return the applicant iris entity
 	 */
 	public static ApplicantIrisEntity convertIrisDtoToEntity(Iris iris, MetaData metaData) {
@@ -125,8 +128,8 @@ public class PacketInfoMapper {
 	/**
 	 * Convert fingerprint to fingerprint entity.
 	 *
-	 * @param fingerprint
-	 *            the fingerprint
+	 * @param fingerprint            the fingerprint
+	 * @param metaData the meta data
 	 * @return the applicant fingerprint entity
 	 */
 	public static ApplicantFingerprintEntity convertFingerprintDtoToEntity(Fingerprint fingerprint, MetaData metaData) {
@@ -152,8 +155,8 @@ public class PacketInfoMapper {
 	/**
 	 * Convert biometric exc to biometric exc entity.
 	 *
-	 * @param exceptionFingerprint
-	 *            the exception fingerprint
+	 * @param exceptionFingerprint            the exception fingerprint
+	 * @param metaData the meta data
 	 * @return the biometric exception entity
 	 */
 	public static BiometricExceptionEntity convertBiometricExceptioDtoToEntity(
@@ -178,8 +181,8 @@ public class PacketInfoMapper {
 	/**
 	 * Convert photo graph data to photo graph entity.
 	 *
-	 * @param photoGraphData
-	 *            the photo graph data
+	 * @param photoGraphData            the photo graph data
+	 * @param metaData the meta data
 	 * @return the applicant photograph entity
 	 */
 	public static ApplicantPhotographEntity convertPhotoGraphDtoToEntity(Photograph photoGraphData, MetaData metaData) {
@@ -203,8 +206,8 @@ public class PacketInfoMapper {
 	/**
 	 * Convert osi data to osi entity.
 	 *
-	 * @param osiData
-	 *            the osi data
+	 * @param osiData            the osi data
+	 * @param metaData the meta data
 	 * @return the reg osi entity
 	 */
 	public static RegOsiEntity convertOsiDataToEntity(OsiData osiData, MetaData metaData) {
@@ -235,8 +238,8 @@ public class PacketInfoMapper {
 	/**
 	 * Convert demographic info to app demographic info entity.
 	 *
-	 * @param demographicInfo
-	 *            the demographic info
+	 * @param demographicInfo            the demographic info
+	 * @param metaData the meta data
 	 * @return the list
 	 */
 	public static List<ApplicantDemographicEntity> convertDemographicDtoToEntity(Demographic demographicInfo,

@@ -15,7 +15,7 @@ import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.encryption.MosipEncryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.AppModule;
@@ -61,9 +61,9 @@ public class AESEncryptionServiceImpl implements AESEncryptionService {
 	@Autowired
 	private RSAEncryptionService rsaEncryptionService;
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(AESEncryptionServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(AESEncryptionServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}

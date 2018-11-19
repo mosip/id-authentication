@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.core.otpmanager.spi.OtpValidator;
 import io.mosip.kernel.otpmanager.dto.OtpValidatorResponseDto;
-import io.mosip.kernel.otpmanager.service.OtpValidatorService;
 
 /**
  * This class provides controller methods for OTP validation.
@@ -22,7 +22,7 @@ public class OtpValidatorController {
 	 * The reference that autowires the OtpValidatorService class.
 	 */
 	@Autowired
-	OtpValidatorService otpValidatorService;
+	OtpValidator<ResponseEntity<OtpValidatorResponseDto>> otpValidatorService;
 
 	/**
 	 * This method validates the OTP against a key.

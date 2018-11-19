@@ -1,8 +1,0 @@
-io.mosip.kernel.vidgenerator
-io.mosip.kernel.vidgenerator.cache
-io.mosip.kernel.vidgenerator.cache.impl
-io.mosip.kernel.vidgenerator.constant
-io.mosip.kernel.vidgenerator.entity
-io.mosip.kernel.vidgenerator.exception
-io.mosip.kernel.vidgenerator.generator
-io.mosip.kernel.vidgenerator.repository

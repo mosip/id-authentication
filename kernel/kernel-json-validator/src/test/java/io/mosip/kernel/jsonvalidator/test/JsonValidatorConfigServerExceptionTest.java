@@ -1,9 +1,8 @@
 package io.mosip.kernel.jsonvalidator.test;
 
 import static org.junit.Assert.assertEquals;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +10,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.fge.jackson.JsonLoader;
+
 import io.mosip.kernel.jsonvalidator.dto.JsonValidatorResponseDto;
 import io.mosip.kernel.jsonvalidator.exception.FileIOException;
 import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;

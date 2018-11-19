@@ -3,7 +3,7 @@ package io.mosip.registration.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,9 +50,9 @@ public class PacketHandlerServiceImpl implements PacketHandlerService {
 	@Autowired
 	private PacketEncryptionService packetEncryptionService;
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(PacketHandlerServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(PacketHandlerServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}

@@ -3,7 +3,7 @@ package io.mosip.kernel.datamapper.orika.test.model;
 import java.time.LocalDate;
 import java.time.Period;
 
-import io.mosip.kernel.core.spi.datamapper.converter.DataConverter;
+import io.mosip.kernel.core.datamapper.spi.DataConverter;
 
 public class PersonConverter implements DataConverter<Person, Personne> {
 	

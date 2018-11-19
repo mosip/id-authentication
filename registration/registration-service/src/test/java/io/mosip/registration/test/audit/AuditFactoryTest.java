@@ -13,7 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
@@ -41,7 +41,7 @@ public class AuditFactoryTest {
 		sessionContext.getUserContext().setUserId("userId");
 		sessionContext.getUserContext().setName("operator");
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", sessionContext);
-		when(auditHandler.writeAudit(Mockito.any(AuditRequestDto.class))).thenReturn(true);
+		when(auditHandler.addAudit(Mockito.any(AuditRequestDto.class))).thenReturn(true);
 		auditFactory.audit(AuditEvent.PACKET_APPROVED, AppModule.PACKET_CREATOR, "description", "id", "ref");
 	}
 

@@ -7,7 +7,7 @@ import io.mosip.kernel.core.security.constants.MosipSecurityMethod;
 import io.mosip.kernel.core.security.encryption.MosipEncryptor;
 import io.mosip.kernel.core.security.exception.MosipInvalidDataException;
 import io.mosip.kernel.core.security.exception.MosipInvalidKeyException;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseCheckedException;
@@ -35,7 +35,7 @@ public class RSAEncryptionServiceImpl implements RSAEncryptionService {
 	@Autowired
 	public RSAKeyGenerator rsaKeyGenerator;
 
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RSAEncryptionServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RSAEncryptionServiceImpl.class);
 
 	/* (non-Javadoc)
 	 * @see io.mosip.registration.service.packet.encryption.rsa.RSAEncryptionService#encrypt(byte[])

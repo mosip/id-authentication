@@ -21,7 +21,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -36,7 +36,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class AuthController {
 
 	/** The mosipLogger. */
-	private MosipLogger mosipLogger = IdaLogger.getLogger(AuthController.class);
+	private Logger mosipLogger = IdaLogger.getLogger(AuthController.class);
 
 	/** The auth request validator. */
 	@Autowired

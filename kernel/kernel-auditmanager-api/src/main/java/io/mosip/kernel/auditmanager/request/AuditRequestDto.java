@@ -10,8 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Audit Request class with {@link #actor}, {@link #action},
- * {@link #origin}, {@link #device}, {@link #description} fields to be captured
+ * The Audit Request class with required fields to be captured
  * and recorded
  * 
  * @author Dharmesh Khandelwal

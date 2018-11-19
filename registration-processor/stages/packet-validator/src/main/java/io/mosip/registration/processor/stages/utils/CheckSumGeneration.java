@@ -1,6 +1,5 @@
 package io.mosip.registration.processor.stages.utils;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -17,22 +16,38 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
 /**
- * @author M1048358 Alok Ranjan
+ * The Class CheckSumGeneration.
  *
+ * @author M1048358 Alok Ranjan
  */
 
 public class CheckSumGeneration {
 
+	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
 
+	/** The Constant LOGGER. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(CheckSumGeneration.class);
 
+	/** The adapter. */
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	/**
+	 * Instantiates a new check sum generation.
+	 *
+	 * @param adapter the adapter
+	 */
 	public CheckSumGeneration(FileSystemAdapter<InputStream, Boolean> adapter) {
 		this.adapter = adapter;
 	}
 
+	/**
+	 * Generate packet info hash.
+	 *
+	 * @param sequence the sequence
+	 * @param registrationId the registration id
+	 * @return the byte[]
+	 */
 	public byte[] generatePacketInfoHash(HashSequence sequence, String registrationId) {
 
 		// Sequence
@@ -50,6 +65,12 @@ public class CheckSumGeneration {
 
 	}
 
+	/**
+	 * Generate biometrics hash.
+	 *
+	 * @param biometricSequence the biometric sequence
+	 * @param registrationId the registration id
+	 */
 	private void generateBiometricsHash(BiometricSequence biometricSequence, String registrationId) {
 		// hash for applicant
 		if (biometricSequence.getApplicant() != null) {
@@ -64,6 +85,13 @@ public class CheckSumGeneration {
 
 	}
 
+	/**
+	 * Generate biometric infos hash.
+	 *
+	 * @param hashOrder the hash order
+	 * @param registrationId the registration id
+	 * @param personType the person type
+	 */
 	private void generateBiometricInfosHash(List<String> hashOrder, String registrationId, String personType) {
 		hashOrder.forEach(file -> {
 			byte[] filebyte = null;
@@ -79,6 +107,12 @@ public class CheckSumGeneration {
 		});
 	}
 
+	/**
+	 * Generate demographic hash.
+	 *
+	 * @param demographicSequence the demographic sequence
+	 * @param registrationId the registration id
+	 */
 	private void generateDemographicHash(DemographicSequence demographicSequence, String registrationId) {
 		List<String> hashOrder = demographicSequence.getApplicant();
 
@@ -102,6 +136,11 @@ public class CheckSumGeneration {
 		});
 	}
 
+	/**
+	 * Generate hash.
+	 *
+	 * @param byteArray the byte array
+	 */
 	private static void generateHash(final byte[] byteArray) {
 		// Hash updation
 		if (byteArray != null) {

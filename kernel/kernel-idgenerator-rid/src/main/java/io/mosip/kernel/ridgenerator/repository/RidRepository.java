@@ -2,7 +2,7 @@ package io.mosip.kernel.ridgenerator.repository;
 
 import org.springframework.stereotype.Repository;
 
-import io.mosip.kernel.core.spi.dataaccess.repository.BaseRepository;
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.ridgenerator.entity.Rid;
 
 /**

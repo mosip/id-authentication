@@ -38,7 +38,7 @@ import io.mosip.authentication.service.impl.indauth.service.demo.GenderType;
 import io.mosip.authentication.service.impl.indauth.service.demo.IdMapping;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchType;
 import io.mosip.authentication.service.validator.IdAuthValidator;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * 
@@ -90,7 +90,7 @@ public class AuthRequestValidator extends IdAuthValidator {
 	private static final String INVALID_AUTH_REQUEST = "INVALID_AUTH_REQUEST-No auth type found";
 
 	/** The mosip logger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(AuthRequestValidator.class);
 
 	/** The env. */
 	@Autowired
@@ -334,7 +334,7 @@ public class AuthRequestValidator extends IdAuthValidator {
 		boolean anyOtherLang = langCount.keySet().stream()
 				.anyMatch(lang -> lang != null && !lang.equals(priLangCode) && !lang.equals(secLangCode));
 
-		if (primaryLangCount > 1 || anyOtherLang) {
+		if (primaryLangCount == null || primaryLangCount > 1 || anyOtherLang) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER, "Invalid or Multiple Primary language code");
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), new Object[] {"PrimaryLanguageCode"}, 
 					IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());

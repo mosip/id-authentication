@@ -15,7 +15,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.service.helper.DateHelper;
 import io.mosip.authentication.service.validator.IdAuthValidator;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * {@code OTPRequestValidator} do constraint validate of {@link OtpRequestDTO}
@@ -37,7 +37,7 @@ public class OTPRequestValidator extends IdAuthValidator {
 	private static final String REQ_TIME = "reqTime";
 
 	/** The mosip logger. */
-	private static MosipLogger mosipLogger = IdaLogger.getLogger(OTPRequestValidator.class);
+	private static Logger mosipLogger = IdaLogger.getLogger(OTPRequestValidator.class);
 
 	/** The env. */
 	@Autowired

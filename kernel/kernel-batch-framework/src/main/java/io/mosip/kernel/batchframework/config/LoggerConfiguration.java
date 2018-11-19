@@ -1,13 +1,12 @@
 package io.mosip.kernel.batchframework.config;
 
 import io.mosip.kernel.batchframework.constant.BatchPropertyConstant;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
-import io.mosip.kernel.logger.logback.appender.MosipConsoleAppender;
-import io.mosip.kernel.logger.logback.factory.MosipLogfactory;
-
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.logger.logback.appender.ConsoleAppender;
+import io.mosip.kernel.logger.logback.factory.Logfactory;
 
 /**
- * Logger configuration for using {@link MosipLogger} and logging(in console)
+ * Logger configuration for using {@link Logger} and logging(in console)
  * exceptions which are not handled through controller advice.
  * 
  * @author Ritesh Sinha
@@ -28,9 +27,9 @@ public class LoggerConfiguration {
 	 *            the class.
 	 * @return the appender.
 	 */
-	public static MosipLogger logConfig(Class<?> clazz) {
-		MosipConsoleAppender appender = new MosipConsoleAppender();
+	public static Logger logConfig(Class<?> clazz) {
+		ConsoleAppender appender = new ConsoleAppender();
 		appender.setTarget(BatchPropertyConstant.LOGGER_TARGET.getProperty());
-		return MosipLogfactory.getMosipDefaultConsoleLogger(appender, clazz);
+		return Logfactory.getDefaultConsoleLogger(appender, clazz);
 	}
 }

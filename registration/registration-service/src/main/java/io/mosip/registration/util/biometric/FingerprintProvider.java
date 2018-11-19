@@ -9,7 +9,7 @@ import com.machinezoo.sourceafis.FingerprintTemplate;
 
 import MFS100.FingerData;
 import MFS100.MFS100Event;
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 
 /**
@@ -25,9 +25,9 @@ import io.mosip.registration.config.AppConfig;
 public class FingerprintProvider implements MFS100Event {
 
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private static final MosipLogger LOGGER = AppConfig.getLogger(FingerprintProvider.class);
+	private static final Logger LOGGER = AppConfig.getLogger(FingerprintProvider.class);
 
 	/*
 	 * (non-Javadoc)

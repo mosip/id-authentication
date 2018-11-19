@@ -19,12 +19,9 @@ package io.mosip.kernel.core.util;
 
 import java.math.BigInteger;
 import java.util.List;
+
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
-import org.apache.commons.math3.exception.NotANumberException;
-import org.apache.commons.math3.exception.NotFiniteNumberException;
-import org.apache.commons.math3.exception.NotPositiveException;
-import org.apache.commons.math3.exception.NumberIsTooLargeException;
 import org.apache.commons.math3.primes.Primes;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.stat.StatUtils;
@@ -34,14 +31,14 @@ import org.apache.commons.math3.util.FastMath;
 import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.math3.util.Precision;
 
+import io.mosip.kernel.core.exception.ArithmeticException;
+import io.mosip.kernel.core.exception.IllegalArgumentException;
+import io.mosip.kernel.core.exception.NullPointerException;
 import io.mosip.kernel.core.util.constant.MathUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipArithmeticException;
-import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.core.util.exception.MosipNotANumberException;
-import io.mosip.kernel.core.util.exception.MosipNotFiniteNumberException;
-import io.mosip.kernel.core.util.exception.MosipNotPositiveException;
-import io.mosip.kernel.core.util.exception.MosipNullPointerException;
-import io.mosip.kernel.core.util.exception.MosipNumberIsTooLargeException;
+import io.mosip.kernel.core.util.exception.NotANumberException;
+import io.mosip.kernel.core.util.exception.NotFiniteNumberException;
+import io.mosip.kernel.core.util.exception.NotPositiveException;
+import io.mosip.kernel.core.util.exception.NumberIsTooLargeException;
 
 /**
  * Utilities for Mathematical operations.
@@ -66,23 +63,23 @@ public final class MathUtils {
 	 * @param exp
 	 *            exponent (must be positive or zero)
 	 * @return num^exp
-	 * @throws MosipNotPositiveException
+	 * @throws NotPositiveException
 	 *             if exp is less than 0.
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             if the result would overflow.
 	 */
 	public static int getPow(final int num, int exp) {
 		try {
 			return ArithmeticUtils.pow(num, exp);
 
-		} catch (NotPositiveException e) {
+		} catch (org.apache.commons.math3.exception.NotPositiveException e) {
 
-			throw new MosipNotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
+			throw new NotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getEexceptionMessage(), e.getCause());
 
 		} catch (MathArithmeticException e) {
 
-			throw new MosipArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
+			throw new ArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ARITHMETIC_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -110,19 +107,19 @@ public final class MathUtils {
 	 * @param exp
 	 *            Exponent (must be positive or zero).
 	 * @return num^exp
-	 * @throws MosipNotPositiveException
+	 * @throws NotPositiveException
 	 *             if exp is less than 0.
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             if the result would overflow.
 	 */
 	public static long getPow(long num, int exp) {
 		try {
 			return ArithmeticUtils.pow(num, exp);
-		} catch (NotPositiveException e) {
-			throw new MosipNotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
+		} catch (org.apache.commons.math3.exception.NotPositiveException e) {
+			throw new NotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		} catch (MathArithmeticException e) {
-			throw new MosipArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
+			throw new ArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ARITHMETIC_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -133,17 +130,17 @@ public final class MathUtils {
 	 * @param exp
 	 *            Exponent (must be positive or zero).
 	 * @return num^exp
-	 * @throws MosipNotPositiveException
+	 * @throws NotPositiveException
 	 *             if exp is less than 0.
 	 */
 	public static BigInteger getPow(BigInteger num, int exp) {
 		try {
 			return ArithmeticUtils.pow(num, exp);
-		} catch (NotPositiveException e) {
-			throw new MosipNotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
+		} catch (org.apache.commons.math3.exception.NotPositiveException e) {
+			throw new NotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		} catch (NullPointerException e) {
-			throw new MosipNullPointerException(MathUtilConstants.NULL_POINTER_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.NullPointerException e) {
+			throw new NullPointerException(MathUtilConstants.NULL_POINTER_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NULL_POINTER_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 
@@ -157,17 +154,17 @@ public final class MathUtils {
 	 * @param exp
 	 *            Exponent (must be positive or zero).
 	 * @return num^exp
-	 * @throws MosipNotPositiveException
+	 * @throws NotPositiveException
 	 *             if exp is less than 0.
 	 */
 	public static BigInteger getPow(BigInteger num, BigInteger exp) {
 		try {
 			return ArithmeticUtils.pow(num, exp);
-		} catch (NotPositiveException e) {
-			throw new MosipNotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
+		} catch (org.apache.commons.math3.exception.NotPositiveException e) {
+			throw new NotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		} catch (NullPointerException e) {
-			throw new MosipNullPointerException(MathUtilConstants.NULL_POINTER_ERROR_CODE.getErrorCode(),
+		} catch (java.lang.NullPointerException e) {
+			throw new NullPointerException(MathUtilConstants.NULL_POINTER_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NULL_POINTER_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -180,14 +177,14 @@ public final class MathUtils {
 	 * @param upperlimit
 	 *            maximum value
 	 * @return random number between lowerlimit and upperlimit.
-	 * @throws MosipNumberIsTooLargeException
+	 * @throws NumberIsTooLargeException
 	 *             -if lower is greater than or equal to upper
 	 */
 	public static int getRandom(final int lowerlimit, final int upperlimit) {
 		try {
 			return new RandomDataGenerator().nextInt(lowerlimit, upperlimit);
-		} catch (NumberIsTooLargeException e) {
-			throw new MosipNumberIsTooLargeException(MathUtilConstants.NUMBER_IS_TOO_LARGE_ERROR_CODE.getErrorCode(),
+		} catch (org.apache.commons.math3.exception.NumberIsTooLargeException e) {
+			throw new NumberIsTooLargeException(MathUtilConstants.NUMBER_IS_TOO_LARGE_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NUMBER_IS_TOO_LARGE_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 
@@ -201,14 +198,14 @@ public final class MathUtils {
 	 * @param upperlimit
 	 *            maximum value
 	 * @return random number between lowerlimit and upperlimit.
-	 * @throws MosipNumberIsTooLargeException
+	 * @throws NumberIsTooLargeException
 	 *             -if lower is greater than or equal to upper
 	 */
 	public static long getRandom(final long lowerlimit, final long upperlimit) {
 		try {
 			return new RandomDataGenerator().nextLong(lowerlimit, upperlimit);
-		} catch (NumberIsTooLargeException e) {
-			throw new MosipNumberIsTooLargeException(MathUtilConstants.NUMBER_IS_TOO_LARGE_ERROR_CODE.getErrorCode(),
+		} catch (org.apache.commons.math3.exception.NumberIsTooLargeException e) {
+			throw new NumberIsTooLargeException(MathUtilConstants.NUMBER_IS_TOO_LARGE_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NUMBER_IS_TOO_LARGE_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -221,24 +218,24 @@ public final class MathUtils {
 	 * @param upperlimit
 	 *            maximum value
 	 * @return random number between lowerlimit and upperlimit
-	 * @throws MosipNumberIsTooLargeException
+	 * @throws NumberIsTooLargeException
 	 *             -if lower is greater than or equal to upper
-	 * @throws MosipNotFiniteNumberException
+	 * @throws NotFiniteNumberException
 	 *             if one of the bounds is infinite
-	 * @throws MosipNotANumberException
+	 * @throws NotANumberException
 	 *             if one of the bounds is NaN
 	 */
 	public static double getRandom(final double lowerlimit, final double upperlimit) {
 		try {
 			return new RandomDataGenerator().nextUniform(lowerlimit, upperlimit);
-		} catch (NumberIsTooLargeException e) {
-			throw new MosipNumberIsTooLargeException(MathUtilConstants.NUMBER_IS_TOO_LARGE_ERROR_CODE.getErrorCode(),
+		} catch (org.apache.commons.math3.exception.NumberIsTooLargeException e) {
+			throw new NumberIsTooLargeException(MathUtilConstants.NUMBER_IS_TOO_LARGE_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NUMBER_IS_TOO_LARGE_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		} catch (NotFiniteNumberException e) {
-			throw new MosipNotFiniteNumberException(MathUtilConstants.NOT_FINITE_NUMBER_ERROR_CODE.getErrorCode(),
+		} catch (org.apache.commons.math3.exception.NotFiniteNumberException e) {
+			throw new NotFiniteNumberException(MathUtilConstants.NOT_FINITE_NUMBER_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NOT_FINITE_NUMBER_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		} catch (NotANumberException e) {
-			throw new MosipNotANumberException(MathUtilConstants.NOT_A_NUMBER_ERROR_CODE.getErrorCode(),
+		} catch (org.apache.commons.math3.exception.NotANumberException e) {
+			throw new NotANumberException(MathUtilConstants.NOT_A_NUMBER_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NOT_A_NUMBER_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -384,20 +381,20 @@ public final class MathUtils {
 	 * @param number
 	 *            argument
 	 * @return n!
-	 * @throws MosipNotPositiveException
+	 * @throws NotPositiveException
 	 *             -If number is not positive
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             -If number is greator than 20 and result is too large to fit in
 	 *             long type.
 	 */
 	public static final long getFactorial(final int number) {
 		try {
 			return CombinatoricsUtils.factorial(number);
-		} catch (NotPositiveException e) {
-			throw new MosipNotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
+		} catch (org.apache.commons.math3.exception.NotPositiveException e) {
+			throw new NotPositiveException(MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.NOTPOSITIVE_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		} catch (MathArithmeticException e) {
-			throw new MosipArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
+			throw new ArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ARITHMETIC_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -411,7 +408,7 @@ public final class MathUtils {
 	 * @param secondnumber
 	 *            Number.
 	 * @return the greatest common divisor (never negative).
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             if the result cannot be represented as a non-negative integer
 	 *             value.
 	 */
@@ -419,7 +416,7 @@ public final class MathUtils {
 		try {
 			return ArithmeticUtils.gcd(firstnumber, secondnumber);
 		} catch (MathArithmeticException e) {
-			throw new MosipArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
+			throw new ArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ARITHMETIC_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -433,7 +430,7 @@ public final class MathUtils {
 	 * @param secondnumber
 	 *            Number.
 	 * @return the greatest common divisor, never negative.
-	 * @throws MosipArithmeticException
+	 * @throws ArithmeticException
 	 *             if the result cannot be represented as a non-negative long type
 	 *             value.
 	 */
@@ -441,7 +438,7 @@ public final class MathUtils {
 		try {
 			return ArithmeticUtils.gcd(firstnumber, secondnumber);
 		} catch (MathArithmeticException e) {
-			throw new MosipArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
+			throw new ArithmeticException(MathUtilConstants.ARITHMETIC_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ARITHMETIC_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -525,14 +522,14 @@ public final class MathUtils {
 	 * @param arr
 	 *            the input array
 	 * @return the maximum of the values or Double.NaN if the array is empty
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the array is null
 	 */
 	public static double getArrayMaxValue(double[] arr) {
 		try {
 			return StatUtils.max(arr);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -548,14 +545,14 @@ public final class MathUtils {
 	 * @param length
 	 *            the number of elements to include
 	 * @return the maximum of the values or Double.NaN if length = 0
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the array is null or the array index parameters are not valid
 	 */
 	public static double getArrayMaxValue(double[] arr, int startindex, int length) {
 		try {
 			return StatUtils.max(arr, startindex, length);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -567,14 +564,14 @@ public final class MathUtils {
 	 * @param arr
 	 *            the input array
 	 * @return the minimum of the values or Double.NaN if the array is empty
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the array is null
 	 */
 	public static double getArrayMinValue(double[] arr) {
 		try {
 			return StatUtils.min(arr);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -590,14 +587,14 @@ public final class MathUtils {
 	 * @param length
 	 *            the number of elements to include
 	 * @return the minimum of the values or Double.NaN if length = 0
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the array is null or the array index parameters are not valid
 	 */
 	public static double getArrayMinValue(double[] arr, int startindex, int length) {
 		try {
 			return StatUtils.min(arr, startindex, length);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 
@@ -611,14 +608,14 @@ public final class MathUtils {
 	 *            array of values to sum
 	 * @return the sum of the values or <code>Double.NaN</code> if the array is
 	 *         empty
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the array is null
 	 */
 	public static double getArrayValuesSum(double[] arr) {
 		try {
 			return StatUtils.sum(arr);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 
@@ -635,14 +632,14 @@ public final class MathUtils {
 	 * @param length
 	 *            the number of elements to include
 	 * @return the sum of the values or Double.NaN if length = 0
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the array is null or the array index parameters are not valid
 	 */
 	public static double getArrayValuesSum(double[] arr, int startindex, int length) {
 		try {
 			return StatUtils.sum(arr, startindex, length);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 
@@ -655,14 +652,14 @@ public final class MathUtils {
 	 * @param arr
 	 *            the input array
 	 * @return the product of the values or Double.NaN if the array is empty
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the array is null
 	 */
 	public static double getArrayValuesProduct(double[] arr) {
 		try {
 			return StatUtils.product(arr);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -678,14 +675,14 @@ public final class MathUtils {
 	 * @param length
 	 *            the number of elements to include
 	 * @return the product of the values or Double.NaN if length = 0
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the array is null or the array index parameters are not valid
 	 */
 	public static double getArrayValuesProduct(double[] arr, int startindex, int length) {
 		try {
 			return StatUtils.product(arr, startindex, length);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -697,14 +694,14 @@ public final class MathUtils {
 	 * @param arr
 	 *            the input array
 	 * @return the mean of the values or Double.NaN if the array is empty
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the array is null
 	 */
 	public static double getArrayValuesMean(double[] arr) {
 		try {
 			return StatUtils.mean(arr);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -717,14 +714,14 @@ public final class MathUtils {
 	 * @param length
 	 *            the number of elements to include
 	 * @return the mean of the values or Double.NaN if length = 0
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if the array is null or the array index parameters are not valid
 	 */
 	public static double getArrayValuesMean(double[] arr, int startindex, int length) {
 		try {
 			return StatUtils.mean(arr, startindex, length);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -746,14 +743,14 @@ public final class MathUtils {
 	 * @param num
 	 *            a positive number.
 	 * @return the smallest prime greater than or equal to n.
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if num is less than 0.
 	 */
 	public static int nextPrimeNumber(int num) {
 		try {
 			return Primes.nextPrime(num);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
@@ -764,14 +761,14 @@ public final class MathUtils {
 	 * @param num
 	 *            number to factorize: must be &ge; 2
 	 * @return list of prime factors of num
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             if num is less than 2.
 	 */
 	public static List<Integer> getPrimeFactors(int num) {
 		try {
 			return Primes.primeFactors(num);
 		} catch (MathIllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+			throw new IllegalArgumentException(MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 					MathUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}

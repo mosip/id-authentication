@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -61,9 +61,9 @@ public class RegistrationApprovalController extends BaseController implements In
 	@Value("${Items_per_page}")
 	private int itemsPerPage;
 	/**
-	 * Instance of {@link MosipLogger}
+	 * Instance of {@link Logger}
 	 */
-	private MosipLogger LOGGER = AppConfig.getLogger(RegistrationApprovalController.class);
+	private Logger LOGGER = AppConfig.getLogger(RegistrationApprovalController.class);
 
 	/**
 	 * object for Registration approval service class

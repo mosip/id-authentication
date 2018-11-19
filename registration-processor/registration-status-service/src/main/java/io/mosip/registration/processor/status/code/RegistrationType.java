@@ -5,9 +5,12 @@ package io.mosip.registration.processor.status.code;
  */
 public enum RegistrationType {
 
+	/** The new. */
 	NEW,
 
+	/** The update. */
 	UPDATE,
 
+	/** The correction. */
 	CORRECTION
 }

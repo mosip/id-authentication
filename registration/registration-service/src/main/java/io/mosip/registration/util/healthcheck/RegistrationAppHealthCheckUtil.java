@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
-import io.mosip.kernel.core.spi.logger.MosipLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import oshi.SystemInfo;
 import oshi.software.os.FileSystem;
@@ -27,7 +27,7 @@ import oshi.software.os.OperatingSystem;
  */
 public class RegistrationAppHealthCheckUtil {
 
-	private static final MosipLogger LOGGER = AppConfig.getLogger(RegistrationAppHealthCheckUtil.class);
+	private static final Logger LOGGER = AppConfig.getLogger(RegistrationAppHealthCheckUtil.class);
 
 	private static SystemInfo systemInfo;
 	private static OperatingSystem operatingSystem;

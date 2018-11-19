@@ -16,6 +16,7 @@ public class RegistrationHealthCheckerTest {
 	@Mock
 	private RegistrationAppHealthCheckUtil registrationAppHealthCheckUtil;
 
+	@Ignore
 	@Test
 	public void diskSpaceAvailableTest() {
 		boolean actualStatus = RegistrationAppHealthCheckUtil.isDiskSpaceAvailable();

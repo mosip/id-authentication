@@ -17,12 +17,11 @@
 package io.mosip.kernel.core.util;
 
 import java.util.Locale;
-import java.util.regex.PatternSyntaxException;
 
+import io.mosip.kernel.core.exception.ArrayIndexOutOfBoundsException;
+import io.mosip.kernel.core.exception.IllegalArgumentException;
+import io.mosip.kernel.core.exception.PatternSyntaxException;
 import io.mosip.kernel.core.util.constant.StringUtilConstants;
-import io.mosip.kernel.core.util.exception.MosipArrayIndexOutOfBoundsException;
-import io.mosip.kernel.core.util.exception.MosipIllegalArgumentException;
-import io.mosip.kernel.core.util.exception.MosipPatternSyntaxException;
 
 /**
  * This class contains methods used for operations on String type data
@@ -704,14 +703,14 @@ public final class StringUtils {
 	 *            the index to stop joining from (exclusive). It is an error to pass
 	 *            in an end index past the end of the array
 	 * @return the joined String, null if null array input
-	 * @throws MosipArrayIndexOutOfBoundsException
+	 * @throws ArrayIndexOutOfBoundsException
 	 *             - if startIndex and endIndex are not valid positions
 	 */
 	public static String join(Object[] array, char separator, int startIndex, int endIndex) {
 		try {
 			return org.apache.commons.lang3.StringUtils.join(array, separator, startIndex, endIndex);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipArrayIndexOutOfBoundsException(
+		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException(
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
@@ -732,14 +731,14 @@ public final class StringUtils {
 	 *            the index to stop joining from (exclusive). It is an error to pass
 	 *            in an end index past the end of the array
 	 * @return the joined String, null if null array input
-	 * @throws MosipArrayIndexOutOfBoundsException
+	 * @throws ArrayIndexOutOfBoundsException
 	 *             - if startIndex and endIndex are not valid positions
 	 */
 	public static String join(long[] array, char separator, int startIndex, int endIndex) {
 		try {
 			return org.apache.commons.lang3.StringUtils.join(array, separator, startIndex, endIndex);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipArrayIndexOutOfBoundsException(
+		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException(
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
@@ -760,14 +759,14 @@ public final class StringUtils {
 	 *            the index to stop joining from (exclusive). It is an error to pass
 	 *            in an end index past the end of the array
 	 * @return the joined String, null if null array input
-	 * @throws MosipArrayIndexOutOfBoundsException
+	 * @throws ArrayIndexOutOfBoundsException
 	 *             - if startIndex and endIndex are not valid positions
 	 */
 	public static String join(int[] array, char separator, int startIndex, int endIndex) {
 		try {
 			return org.apache.commons.lang3.StringUtils.join(array, separator, startIndex, endIndex);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipArrayIndexOutOfBoundsException(
+		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException(
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
@@ -788,14 +787,14 @@ public final class StringUtils {
 	 *            the index to stop joining from (exclusive). It is an error to pass
 	 *            in an end index past the end of the array
 	 * @return the joined String, null if null array input
-	 * @throws MosipArrayIndexOutOfBoundsException
+	 * @throws ArrayIndexOutOfBoundsException
 	 *             - if startIndex and endIndex are not valid positions
 	 */
 	public static String join(byte[] array, char separator, int startIndex, int endIndex) {
 		try {
 			return org.apache.commons.lang3.StringUtils.join(array, separator, startIndex, endIndex);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipArrayIndexOutOfBoundsException(
+		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException(
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
@@ -816,14 +815,14 @@ public final class StringUtils {
 	 *            the index to stop joining from (exclusive). It is an error to pass
 	 *            in an end index past the end of the array
 	 * @return the joined String, null if null array input
-	 * @throws MosipArrayIndexOutOfBoundsException
+	 * @throws ArrayIndexOutOfBoundsException
 	 *             - if startIndex and endIndex are not valid positions
 	 */
 	public static String join(short[] array, char separator, int startIndex, int endIndex) {
 		try {
 			return org.apache.commons.lang3.StringUtils.join(array, separator, startIndex, endIndex);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipArrayIndexOutOfBoundsException(
+		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException(
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
@@ -844,14 +843,14 @@ public final class StringUtils {
 	 *            the index to stop joining from (exclusive). It is an error to pass
 	 *            in an end index past the end of the array
 	 * @return the joined String, null if null array input
-	 * @throws MosipArrayIndexOutOfBoundsException
+	 * @throws ArrayIndexOutOfBoundsException
 	 *             - if startIndex and endIndex are not valid positions
 	 */
 	public static String join(char[] array, char separator, int startIndex, int endIndex) {
 		try {
 			return org.apache.commons.lang3.StringUtils.join(array, separator, startIndex, endIndex);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipArrayIndexOutOfBoundsException(
+		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException(
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
@@ -872,14 +871,14 @@ public final class StringUtils {
 	 *            the index to stop joining from (exclusive). It is an error to pass
 	 *            in an end index past the end of the array
 	 * @return the joined String, null if null array input
-	 * @throws MosipArrayIndexOutOfBoundsException
+	 * @throws ArrayIndexOutOfBoundsException
 	 *             - if startIndex and endIndex are not valid positions
 	 */
 	public static String join(double[] array, char separator, int startIndex, int endIndex) {
 		try {
 			return org.apache.commons.lang3.StringUtils.join(array, separator, startIndex, endIndex);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipArrayIndexOutOfBoundsException(
+		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException(
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
@@ -900,14 +899,14 @@ public final class StringUtils {
 	 *            the index to stop joining from (exclusive). It is an error to pass
 	 *            in an end index past the end of the array
 	 * @return the joined String, null if null array input
-	 * @throws MosipArrayIndexOutOfBoundsException
+	 * @throws ArrayIndexOutOfBoundsException
 	 *             - if startIndex and endIndex are not valid positions
 	 */
 	public static String join(float[] array, char separator, int startIndex, int endIndex) {
 		try {
 			return org.apache.commons.lang3.StringUtils.join(array, separator, startIndex, endIndex);
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MosipArrayIndexOutOfBoundsException(
+		} catch (java.lang.ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException(
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ARRAY_INDEX_OUT_OF_BOUNDS_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
@@ -977,14 +976,14 @@ public final class StringUtils {
 	 * @param regex
 	 *            the regular expression to which this string is to be matched
 	 * @return the text with any removes processed, null if null String input
-	 * @throws MosipPatternSyntaxException
+	 * @throws PatternSyntaxException
 	 *             - if the regular expression's syntax is invalid
 	 */
 	public static String removeAll(String text, String regex) {
 		try {
 			return org.apache.commons.lang3.StringUtils.removeAll(text, regex);
-		} catch (PatternSyntaxException e) {
-			throw new MosipPatternSyntaxException(StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorCode(),
+		} catch (java.util.regex.PatternSyntaxException e) {
+			throw new PatternSyntaxException(StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
 	}
@@ -1031,14 +1030,14 @@ public final class StringUtils {
 	 * @param replacement
 	 *            the string to be substituted for each match
 	 * @return The resulting replaced String
-	 * @throws MosipPatternSyntaxException
+	 * @throws PatternSyntaxException
 	 *             - if the regular expression's syntax is invalid
 	 */
 	public static String replacePattern(String source, String regex, String replacement) {
 		try {
 			return org.apache.commons.lang3.StringUtils.replacePattern(source, regex, replacement);
-		} catch (PatternSyntaxException e) {
-			throw new MosipPatternSyntaxException(StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorCode(),
+		} catch (java.util.regex.PatternSyntaxException e) {
+			throw new PatternSyntaxException(StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
 	}
@@ -1052,14 +1051,14 @@ public final class StringUtils {
 	 * @param regex
 	 *            the regular expression to which this string is to be matched
 	 * @return The resulting String
-	 * @throws MosipPatternSyntaxException
+	 * @throws PatternSyntaxException
 	 *             - if the regular expression's syntax is invalid
 	 */
 	public static String removePattern(String source, String regex) {
 		try {
 			return org.apache.commons.lang3.StringUtils.removePattern(source, regex);
-		} catch (PatternSyntaxException e) {
-			throw new MosipPatternSyntaxException(StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorCode(),
+		} catch (java.util.regex.PatternSyntaxException e) {
+			throw new PatternSyntaxException(StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
 	}
@@ -1075,14 +1074,14 @@ public final class StringUtils {
 	 * @param replacement
 	 *            the string to be substituted for each match
 	 * @return the text with any replacements processed, null if null String input
-	 * @throws MosipPatternSyntaxException
+	 * @throws PatternSyntaxException
 	 *             if the regular expression's syntax is invalid
 	 */
 	public static String replaceAll(String text, String regex, String replacement) {
 		try {
 			return org.apache.commons.lang3.StringUtils.replaceAll(text, regex, replacement);
-		} catch (PatternSyntaxException e) {
-			throw new MosipPatternSyntaxException(StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorCode(),
+		} catch (java.util.regex.PatternSyntaxException e) {
+			throw new PatternSyntaxException(StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_PATTERN_SYNTAX_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
 	}
@@ -1553,14 +1552,14 @@ public final class StringUtils {
 	 * @param maxWidth
 	 *            maximum length of result String, must be at least 4
 	 * @return abbreviated String, null if null String input
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             - if the width is too small
 	 */
 	public static String abbreviate(String sourceString, int maxWidth) {
 		try {
 			return org.apache.commons.lang3.StringUtils.abbreviate(sourceString, maxWidth);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(
 					StringUtilConstants.MOSIP_ILLEGAL_ARGUMENT_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ILLEGAL_ARGUMENT_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
@@ -1576,14 +1575,14 @@ public final class StringUtils {
 	 * @param maxWidth
 	 *            maximum length of result String, must be at least 4
 	 * @return abbreviated String, null if null String input
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             - if the width is too small
 	 */
 	public static String abbreviate(String sourceString, int offset, int maxWidth) {
 		try {
 			return org.apache.commons.lang3.StringUtils.abbreviate(sourceString, offset, maxWidth);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(
 					StringUtilConstants.MOSIP_ILLEGAL_ARGUMENT_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ILLEGAL_ARGUMENT_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
@@ -1600,14 +1599,14 @@ public final class StringUtils {
 	 *            maximum length of result String, must be at least
 	 *            abbrevMarker.length + 1
 	 * @return abbreviated String, null if null String input
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             - if the width is too small
 	 */
 	public static String abbreviate(String sourceString, String abbrevMarker, int maxWidth) {
 		try {
 			return org.apache.commons.lang3.StringUtils.abbreviate(sourceString, abbrevMarker, maxWidth);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(
 					StringUtilConstants.MOSIP_ILLEGAL_ARGUMENT_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ILLEGAL_ARGUMENT_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
@@ -1625,14 +1624,14 @@ public final class StringUtils {
 	 * @param maxWidth
 	 *            maximum length of result String, must be at least 4
 	 * @return abbreviated String, null if null String input
-	 * @throws MosipIllegalArgumentException
+	 * @throws IllegalArgumentException
 	 *             - if the width is too small
 	 */
 	public static String abbreviate(String sourceString, String abbrevMarker, int offset, int maxWidth) {
 		try {
 			return org.apache.commons.lang3.StringUtils.abbreviate(sourceString, abbrevMarker, offset, maxWidth);
-		} catch (IllegalArgumentException e) {
-			throw new MosipIllegalArgumentException(
+		} catch (java.lang.IllegalArgumentException e) {
+			throw new IllegalArgumentException(
 					StringUtilConstants.MOSIP_ILLEGAL_ARGUMENT_ERROR_CODE.getErrorCode(),
 					StringUtilConstants.MOSIP_ILLEGAL_ARGUMENT_ERROR_CODE.getErrorMessage(), e.getCause());
 		}
