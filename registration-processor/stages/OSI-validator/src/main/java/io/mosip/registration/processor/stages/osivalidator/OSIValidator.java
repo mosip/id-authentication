@@ -8,61 +8,61 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.google.gson.Gson;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
+import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
+import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
-import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
-@Service
 public class OSIValidator {
 
-	@Autowired
-	FilesystemCephAdapterImpl adapter;
+	// @Autowired
+	// FilesystemCephAdapterImpl adapter;
+
+	/** The adapter. */
+	private FileSystemAdapter<InputStream, Boolean> adapter;
+
+	private RegistrationProcessorRestClientService<Object> restClientService;
+
+	/**
+	 * Instantiates a new files validation.
+	 *
+	 * @param adapter
+	 *            the adapter
+	 */
+	public OSIValidator(FileSystemAdapter<InputStream, Boolean> adapter,
+			RegistrationProcessorRestClientService<Object> restClientService) {
+
+		this.adapter = adapter;
+		this.restClientService = restClientService;
+	}
 
 	InternalRegistrationStatusDto registrationStatusDto;
 
 	private String message = null;
 
-	@Autowired
-	private RegistrationProcessorRestClientService<Object> restClientService;
+	// @Autowired
+	// private RegistrationProcessorRestClientService<Object> restClientService;
 
-	@Autowired
-	AuthRequestDTO authRequestDTO;
-
-	@Autowired
-	AuthTypeDTO authTypeDTO;
-
-	@Autowired
-	IdentityDTO identityDTO;
-
-	@Autowired
-	IdentityInfoDTO identityInfoDTO;
-
-	@Autowired
-	RequestDTO request;
-	@Autowired
-	AuthResponseDTO jSONObject;
-
-	@Autowired
-	Biometric biometric;
+	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+	AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+	IdentityDTO identityDTO = new IdentityDTO();
+	IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+	RequestDTO request = new RequestDTO();
+	PinInfo pinInfo = new PinInfo();
 
 	public boolean isValidOSI(String registrationId) throws IOException {
 
@@ -75,14 +75,14 @@ public class OSIValidator {
 			osiDataMap.put(fieldValue.getLabel().toUpperCase(), fieldValue.getValue());
 		}
 
-		List<FieldValue> metaData = identity.getOsiData();
+		List<FieldValue> metaData = identity.getMetaData();
 		Map<String, String> metaDataMap = new HashMap<>();
 		for (FieldValue fieldValue : metaData) {
 			metaDataMap.put(fieldValue.getLabel().toUpperCase(), fieldValue.getValue());
 		}
 
 		if ((isValidOperator(osiDataMap, metaDataMap)) && (isValidSupervisor(osiDataMap, metaDataMap))
-				&& (isValidIntroducer(metaDataMap, biometric)))
+				&& (isValidIntroducer(metaDataMap, identity.getBiometric())))
 			isValidOsi = true;
 
 		return isValidOsi;
@@ -104,9 +104,13 @@ public class OSIValidator {
 			String face = osiDataMap.get(PacketFiles.OFFICERAUTHENTICATIONIMAGE.name());
 			String pin = osiDataMap.get(PacketFiles.OFFICERPIN.name());
 
-			if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType))
-					&& (validateIris(uin, iris, irisType)) && (validateFace(uin, face)) && (validatePin(uin, pin)))
+			if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
+				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
+				return false;
+			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType))
+					&& (validateIris(uin, iris, irisType)) && (validateFace(uin, face)) && (validatePin(uin, pin))) {
 				return true;
+			}
 
 		}
 
@@ -127,9 +131,13 @@ public class OSIValidator {
 			String irisType = metaDataMap.get(PacketFiles.SUPERVISIORIRISTYPE.name());
 			String face = osiDataMap.get(PacketFiles.SUPERVISIORAUTHENTICATIONIMAGE.name());
 			String pin = osiDataMap.get(PacketFiles.SUPERVISIORPIN.name());
-			if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType))
-					&& (validateIris(uin, iris, irisType)) && (validateFace(uin, face)) && (validatePin(uin, pin)))
+			if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
+				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
+				return false;
+			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType))
+					&& (validateIris(uin, iris, irisType)) && (validateFace(uin, face)) && (validatePin(uin, pin))) {
 				return true;
+			}
 
 		}
 
@@ -148,9 +156,14 @@ public class OSIValidator {
 			String face = biometric.getIntroducer().getIntroducerImage().toString();
 
 			// todo add finger print type and iris type
-			if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, null))
-					&& (validateIris(uin, iris, null) && (validateFace(uin, face))))
+
+			if ((fingerPrint == null) && (iris == null) && (face == null)) {
+				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
+				return false;
+			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, null))
+					&& (validateIris(uin, iris, null) && (validateFace(uin, face)))) {
 				return true;
+			}
 
 		}
 
@@ -161,8 +174,7 @@ public class OSIValidator {
 	private boolean validateFingerprint(String uin, String fingerprint, String type) throws IOException {
 		if (fingerprint == null)
 			return true;
-		// String uin, String biometricType, String identity, byte[]
-		// biometricFileHashByte
+
 		else {
 			if (adapter.checkFileExistence(uin, fingerprint)) {
 				InputStream fingerPrintFileName = adapter.getFile(uin, fingerprint);
@@ -209,29 +221,13 @@ public class OSIValidator {
 
 	}
 
-	private boolean validatePin(String uin, String pin) {
-		final String getURI = "/identity/auth/internal";
-		JSONObject jSONObject = null;
-		/*
-		 * jSONObject = (JSONObject) restClientService.getApi(ApiName.AUTHINTERNAL,
-		 * "authRequestDTO", "authRequestDTO", JSONObject.class);
-		 */
-		boolean status = false;
-		try {
-			status = jSONObject.getBoolean("status");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return status;
-	}
-
 	private boolean validateUIN(String input) {
 		// todo To call IAM rest API for UNI validation
 		return true;
 
 	}
 
-	private boolean validateBiometric(String uin, String biometricType, String identity, byte[] biometricFileHashByte) {
+	boolean validatePin(String uin, String pin) {
 
 		authTypeDTO.setAddress(false);
 		authTypeDTO.setBio(false);
@@ -241,23 +237,46 @@ public class OSIValidator {
 		authTypeDTO.setIris(false);
 		authTypeDTO.setOtp(false);
 		authTypeDTO.setPersonalIdentity(false);
+		authTypeDTO.setPin(true);
+
+		authRequestDTO.setIdvId(uin);
+
+		pinInfo.setValue(pin);
+
+		List<PinInfo> pinList = new ArrayList<PinInfo>();
+		pinList.add(pinInfo);
+		authRequestDTO.setPinInfo(pinList);
+
+		/*
+		 * AuthResponseDTO authResponseDTO = (AuthResponseDTO)
+		 * restClientService.postApi(ApiName.AUTH, "", "", authRequestDTO,
+		 * AuthResponseDTO.class); System.out.println(authResponseDTO); if
+		 * (authResponseDTO.isStatus()) return true;
+		 */
+		return false;
+	}
+
+	boolean validateBiometric(String uin, String biometricType, String identity, byte[] biometricFileHashByte) {
+
+		authRequestDTO.setIdvId(uin);
+		authTypeDTO.setAddress(false);
+		authTypeDTO.setBio(false);
+		authTypeDTO.setFace(false);
+		authTypeDTO.setFingerprint(false);
+		authTypeDTO.setFullAddress(false);
+		authTypeDTO.setIris(false);
+		authTypeDTO.setOtp(false);
+		authTypeDTO.setPersonalIdentity(false);
 		authTypeDTO.setPin(false);
-
 		authRequestDTO.setAuthType(authTypeDTO);
-
 		identityInfoDTO.setValue(new String(biometricFileHashByte));
-
 		List<IdentityInfoDTO> biometricData = new ArrayList<>();
 		biometricData.add(identityInfoDTO);
-
 		if (biometricType.equals(PacketFiles.FACE.name())) {
 			authTypeDTO.setFace(true);
-
 			identityDTO.setFace(biometricData);
-
 		} else if (biometricType.equalsIgnoreCase(PacketFiles.IRIS.name())) {
 			authTypeDTO.setIris(true);
-
 			if (PacketFiles.LEFTEYE.name().equalsIgnoreCase(identity)) {
 				identityDTO.setLeftEye(biometricData);
 				;
@@ -265,76 +284,49 @@ public class OSIValidator {
 			if (PacketFiles.RIGHTEYE.name().equalsIgnoreCase(identity)) {
 				identityDTO.setRightEye(biometricData);
 			}
-
 		} else if (biometricType.equalsIgnoreCase(PacketFiles.FINGER.name())) {
-
 			authTypeDTO.setFingerprint(true);
-
 			if (PacketFiles.LEFTTHUMB.name().equalsIgnoreCase(identity)) {
 
 				identityDTO.setLeftThumb(biometricData);
 			}
 			if (PacketFiles.LEFTINDEX.name().equalsIgnoreCase(identity)) {
-
 				identityDTO.setLeftIndex(biometricData);
 			}
 			if (PacketFiles.LEFTMIDDLE.name().equalsIgnoreCase(identity)) {
-
 				identityDTO.setLeftThumb(biometricData);
 			}
 			if (PacketFiles.LEFTLITTLE.name().equalsIgnoreCase(identity)) {
-
 				identityDTO.setLeftLittle(biometricData);
 			}
 			if (PacketFiles.LEFTRING.name().equalsIgnoreCase(identity)) {
-
 				identityDTO.setLeftRing(biometricData);
 			}
 			if (PacketFiles.RIGHTTHUMB.name().equalsIgnoreCase(identity)) {
-
 				identityDTO.setRightThumb(biometricData);
 			}
 			if (PacketFiles.RIGHTINDEX.name().equalsIgnoreCase(identity)) {
-
 				identityDTO.setRightIndex(biometricData);
 			}
 			if (PacketFiles.RIGHTMIDDLE.name().equalsIgnoreCase(identity)) {
-
 				identityDTO.setRightThumb(biometricData);
 			}
 			if (PacketFiles.RIGHTLITTLE.name().equalsIgnoreCase(identity)) {
-
 				identityDTO.setRightLittle(biometricData);
 			}
 			if (PacketFiles.RIGHTRING.name().equalsIgnoreCase(identity)) {
-
 				identityDTO.setRightRing(biometricData);
 			}
 		}
-
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
 
-		// List<AuthResponseDTO> list = new ArrayList<>();
-		Gson gson = new Gson();
-		// AuthResponseDTO jSONObject = gson.toJson(authRequestDTO);
+		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTH, "", "",
+				authRequestDTO, AuthResponseDTO.class);
+		if (authResponseDTO.isStatus())
+			return true;
 
-		// jSONObject = (String)
-		// restClientService.getApi(ApiName.AUTHINTERNAL,"authRequestDTO",
-		// authRequestDTO.toString(),JSONObject.class);
-
-		/*
-		 * jSONObject = (AuthResponseDTO)
-		 * restClientService.postApi(ApiName.AUTHINTERNAL, "", "", authRequestDTO,
-		 * AuthResponseDTO.class);
-		 */
-		boolean status = false;
-		try {
-			status = jSONObject.isStatus();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return status;
-
+		return false;
 	}
+
 }
