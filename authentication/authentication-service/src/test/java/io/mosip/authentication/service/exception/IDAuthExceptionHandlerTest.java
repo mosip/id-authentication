@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -39,6 +40,9 @@ import io.mosip.authentication.core.util.DataValidationUtil;
  * @author Manoj SP
  *
  */
+
+
+
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
@@ -56,6 +60,7 @@ public class IDAuthExceptionHandlerTest {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
 		source.setBasename("errormessages");
 		ReflectionTestUtils.setField(handler, "messageSource", source);
+		ReflectionTestUtils.setField(handler, "env", environment);
 	}
 
 	@Test
