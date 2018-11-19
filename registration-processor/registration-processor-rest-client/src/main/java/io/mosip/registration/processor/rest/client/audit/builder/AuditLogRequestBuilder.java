@@ -1,8 +1,6 @@
-package io.mosip.registrationprocessor.mosip_regprocessor_rest_client.audit.builder;
+package io.mosip.registration.processor.rest.client.audit.builder;
 
-import java.time.LocalDateTime;
-
-import org.slf4j.Logger;
+import java.time.LocalDateTime;import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,9 +9,8 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.ServerUtil;
-import io.mosip.registration.processor.packet.manager.service.impl.FileManagerImpl;
 import io.mosip.kernel.auditmanager.dto.AuditResponseDto;
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class AuditRequestBuilder.
  * 
@@ -24,11 +21,11 @@ public class AuditLogRequestBuilder {
 
 	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(AuditLogRequestBuilder.class);
-	
+
 	/** The registration processor rest service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
-	
+
 	/**
 	 * Creates the audit request builder.
 	 *
@@ -41,8 +38,8 @@ public class AuditLogRequestBuilder {
 	 */
 	public AuditResponseDto createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
 			String registrationId) {
-		
-		
+
+
 		AuditRequestDto auditRequestDto= new AuditRequestDto();
 		auditRequestDto.setDescription(description);
 		auditRequestDto.setActionTimeStamp(LocalDateTime.now());
@@ -60,7 +57,7 @@ public class AuditLogRequestBuilder {
 		auditRequestDto.setModuleName(null);
 		auditRequestDto.setSessionUserId(AuditLogConstant.SYSTEM.toString());
 		auditRequestDto.setSessionUserName(null);
-		
+
 		return (AuditResponseDto)registrationProcessorRestService.postApi(ApiName.AUDIT, "", "", auditRequestDto, AuditResponseDto.class);
 	}
 

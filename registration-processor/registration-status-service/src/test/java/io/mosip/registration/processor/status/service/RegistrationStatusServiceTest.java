@@ -1,7 +1,6 @@
 package io.mosip.registration.processor.status.service;
 
 import static org.junit.Assert.assertEquals;
-
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,16 +17,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.ContextConfiguration;
-
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -66,13 +58,7 @@ public class RegistrationStatusServiceTest {
 	private RegistrationStatusDao registrationStatusDao;
 
 	@Mock
-	private AuditRequestBuilder auditRequestBuilder;
-
-	@Mock
-	private AuditHandler<AuditRequestDto> auditHandler;
-
-	@Mock
-	private CoreAuditRequestBuilder coreAuditRequestBuilder = new CoreAuditRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 
 	@Before
 	public void setup()
@@ -101,15 +87,15 @@ public class RegistrationStatusServiceTest {
 				.thenReturn(transactionEntity);
 
 		//Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
-		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		AuditRequestDto auditRequest1 = new AuditRequestDto();
+		//AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		//AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-		f.setAccessible(true);
-		f.set(coreAuditRequestBuilder, auditRequestBuilder);
-		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-		f1.setAccessible(true);
-		f1.set(auditRequestBuilder, auditRequest1);
+	//	Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+	//	f.setAccessible(true);
+	//	f.set(auditLogRequestBuilder, auditRequestBuilder);
+	//	Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+	//	f1.setAccessible(true);
+	//	f1.set(auditRequestBuilder, auditRequest1);
 
 	}
 

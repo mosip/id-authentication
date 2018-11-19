@@ -12,7 +12,6 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -30,7 +29,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
-
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 /**
  * Tasklet class for Packet decryption job.
  *
@@ -73,10 +72,10 @@ public class PacketDecryptorTasklet implements Tasklet {
 	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Registration Status table "
 			+ "is not accessible";
 
-	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	
 	/** The is transaction successful. */
 	private boolean isTransactionSuccessful = false;
 
@@ -128,7 +127,7 @@ public class PacketDecryptorTasklet implements Tasklet {
 			eventName=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventName.GET.toString() : EventName.EXCEPTION.toString();
 			eventType=	eventId.equalsIgnoreCase(EventId.RPR_401.toString()) ? EventType.BUSINESS.toString() : EventType.SYSTEM.toString();
 			description = isTransactionSuccessful ? "Packet uploaded to file system" : "Packet uploading to file system is unsuccessful";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.MULTIPLE_ID.toString());
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.MULTIPLE_ID.toString());
 		}
 		return RepeatStatus.FINISHED;
 	}

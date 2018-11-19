@@ -7,16 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -69,7 +64,8 @@ public class RegistrationStatusServiceImpl
 
 	/** The core audit request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
+
 
 	/*
 	 * (non-Javadoc)
@@ -98,7 +94,7 @@ public class RegistrationStatusServiceImpl
 					? "Get registration status by registration id is successful"
 					: "Get registration status by registration id is unsuccessful";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
 		}
 	}
@@ -131,7 +127,7 @@ public class RegistrationStatusServiceImpl
 					? "Find files by threshold time and statuscode is successful"
 					: "Find files by threshold time and statuscode is unsuccessful";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
 		}
@@ -172,7 +168,7 @@ public class RegistrationStatusServiceImpl
 					? "Registration status added successfully"
 					: "Failure in adding registration status to registration table";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
 		}
 	}
@@ -216,7 +212,7 @@ public class RegistrationStatusServiceImpl
 					? "Updated registration status successfully"
 					: "Updated registration status unsuccessfully";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
 
 		}
@@ -249,7 +245,7 @@ public class RegistrationStatusServiceImpl
 			description = isTransactionSuccessful
 					? "Get list of registration status by status successfully"
 					: "Get list of registration status by status unsuccessfully";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
 	}
@@ -284,7 +280,7 @@ public class RegistrationStatusServiceImpl
 			description = isTransactionSuccessful
 					? "Get list of registration status by registration id successfully"
 					: "Get list of registration status by registration id unsuccessfully";
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
 	}

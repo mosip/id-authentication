@@ -1,4 +1,4 @@
-package io.mosip.registrationprocessor.mosip_regprocessor_rest_client.service.impl;
+package io.mosip.registration.processor.rest.client.service.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registrationprocessor.mosip_regprocessor_rest_client.utils.RestApiClient;
+import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
 /**
  * The Class RegistrationProcessorRestClientServiceImpl.

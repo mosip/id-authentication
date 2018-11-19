@@ -22,7 +22,6 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
@@ -33,7 +32,7 @@ import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDe
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
 import io.mosip.registration.processor.packet.scanner.job.exception.FTPNotAccessibleException;
-
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
 /**
  * The Class FTPScannerTasklet.
@@ -62,10 +61,11 @@ public class FTPScannerTasklet implements Tasklet {
 	/** The Constant DUPLICATE_UPLOAD. */
 	private static final String DUPLICATE_UPLOAD = "Duplicate file uploading to landing zone";
 
-	/** The core audit request builder. */
+	/** The audit log request builder. */
 	@Autowired
-	CoreAuditRequestBuilder coreAuditRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
+	
 	/** The event id. */
 	private String eventId = "";
 
@@ -125,7 +125,7 @@ public class FTPScannerTasklet implements Tasklet {
 				eventType=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventType.BUSINESS.toString(): EventType.SYSTEM.toString();
 				String description = isTransactionSuccessful ? "File moved from FTP zone to landing zone successfully" : "File moving from FTP zone to landing zone  Failed";
 
-				coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.NO_ID.toString());
+				auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.NO_ID.toString());
 			}
 		});
 
@@ -171,7 +171,7 @@ public class FTPScannerTasklet implements Tasklet {
 			eventType=	eventId.equalsIgnoreCase(EventId.RPR_403.toString()) ? EventType.BUSINESS.toString(): EventType.SYSTEM.toString();
 			String description = isTransactionSuccessful ? "Deleted empty folder from FTP zone successfully after all the files are copied" : "Deleting empty folder from FTP zone Failed";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 		}
 

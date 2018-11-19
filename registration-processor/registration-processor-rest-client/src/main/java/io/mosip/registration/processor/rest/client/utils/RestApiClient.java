@@ -1,11 +1,11 @@
-package io.mosip.registrationprocessor.mosip_regprocessor_rest_client.utils;
+package io.mosip.registration.processor.rest.client.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import io.mosip.registrationprocessor.mosip_regprocessor_rest_client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
 /**
  * The Class RestApiClient.
