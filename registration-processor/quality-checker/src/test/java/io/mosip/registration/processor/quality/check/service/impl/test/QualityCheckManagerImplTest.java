@@ -2,7 +2,6 @@ package io.mosip.registration.processor.quality.check.service.impl.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +15,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
@@ -49,8 +45,6 @@ public class QualityCheckManagerImplTest {
 	@Mock
 	QCUsersClient qcUsersClient;
 
-	@Mock
-	private AuditHandler<AuditRequestDto> auditHandler;
 	private List<QCUserDto> qcUserDtos;
 	private QcuserRegistrationIdEntity entity;
 	QcuserRegistrationIdPKEntity pkEntity;
@@ -87,7 +81,7 @@ public class QualityCheckManagerImplTest {
 		
 		
 		
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.toString(), "errorMessage",
 				new Exception());
 		Mockito.when(applicantInfoDao.save(ArgumentMatchers.any(QcuserRegistrationIdEntity.class)))
 				.thenThrow(exp);
