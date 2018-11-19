@@ -8,11 +8,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.*?>
 
-<ScrollPane fx:id="newRegistrationRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1221.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.DemographicPreviewController">
+<ScrollPane fx:id="newRegistrationRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="950.0" prefWidth="934.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.DemographicPreviewController">
   <content>
-    <AnchorPane id="anchor-pane-registration" fx:id="anchor_pane_registration" minHeight="0.0" minWidth="0.0" prefHeight="1190.0" prefWidth="917.0">
+    <AnchorPane id="anchor-pane-registration" fx:id="anchor_pane_registration" minHeight="0.0" minWidth="0.0" prefHeight="950.0" prefWidth="917.0">
          <children>
-            <AnchorPane layoutX="60.0" layoutY="14.0" prefHeight="803.0" prefWidth="848.0">
+            <AnchorPane layoutX="43.0" layoutY="14.0" prefHeight="803.0" prefWidth="848.0">
                <children>
                    <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="35.00" layoutY="5.0" onMouseClicked="#goToHomePage" pickOnBounds="true" preserveRatio="true">
                   	 <image>
@@ -27,34 +27,17 @@
                   </ImageView>
                </children>
             </AnchorPane>
-            <AnchorPane id="DemographicPane" fx:id="demoGraphicPane2" prefHeight="400.0" prefWidth="806.0" visible="false">
-           	<children>
-           	 <AnchorPane fx:id="childSpecificFields" layoutX="14.0" layoutY="293.0" prefHeight="85.0" prefWidth="417.0" visible="false">
-                   <children>
-                      <Label layoutX="27.0" layoutY="14.0" text="Parent/Guardian Name" />
-                      <TextField fx:id="parentName" layoutX="27.0" layoutY="43.0" prefHeight="30.0" prefWidth="150.0" />
-                      <Label layoutX="266.0" layoutY="14.0" text="UIN ID" />
-                      <TextField fx:id="uinId" layoutX="209.0" layoutY="43.0" prefHeight="30.0" prefWidth="155.0" />
-                   </children>
-             </AnchorPane>
-                  <!-- <Button layoutX="273.0" layoutY="400.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" /> -->
-           	</children>
-            </AnchorPane>
-            <TitledPane alignment="CENTER" collapsible="false" contentDisplay="CENTER" layoutX="80.0" layoutY="120.0" text="PREVIEW">
+            <TitledPane alignment="CENTER" collapsible="false" contentDisplay="CENTER" layoutX="49.0" layoutY="120.0" text="PREVIEW">
                <content>
                   <TitledPane fx:id="demographicPreview" collapsible="false" layoutX="80.0" layoutY="120.0" text="Demographic Details                                                                              Demographic Details">
                      <content>
-                        <VBox>
-                           <children>
-                              <VBox fx:id="demoGraphicVbox" />
-                           </children>
-                        </VBox>
+                        <VBox fx:id="demoGraphicVbox" />
                      </content>
                   </TitledPane>
                </content>
             </TitledPane>
-            <Button fx:id="nextBtn" layoutX="817.0" layoutY="1143.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="Next" />
-            <Button fx:id="editBtn" layoutX="699.0" layoutY="1143.0" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />
+            <Button fx:id="nextBtn" layoutX="763.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleNextBtnAction" text="Next" />
+            <Button fx:id="editBtn" layoutX="645.0" layoutY="854.0" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />
              </children>
     </AnchorPane>
   </content>

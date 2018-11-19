@@ -51,7 +51,7 @@ public class DemographicPreviewController extends BaseController {
 	private void initialize() {
 		LOGGER.debug("REGISTRATION_PREVIEW_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Entering the REGISTRATION_PREVIEW_CONTROLLER");
-
+		isInPane1 = true;
 		demographicPreview.setDisable(true);
 		demoGraphicVbox.getChildren().add(RegistrationController.getDemoGraphicContent());
 
