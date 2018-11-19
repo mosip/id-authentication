@@ -21,7 +21,7 @@ public interface KeymanagerService {
 	 * @param encryptedSymmetricKey
 	 * @return
 	 */
-	public KeyResponseDto decryptSymmetricKey(String applicationId, LocalDateTime timeStamp, Optional<String> machineId,
+	public KeyResponseDto decryptSymmetricKey(String applicationId, LocalDateTime timeStamp, String machineId,
 			byte[] encryptedSymmetricKey);
 
 	/**
