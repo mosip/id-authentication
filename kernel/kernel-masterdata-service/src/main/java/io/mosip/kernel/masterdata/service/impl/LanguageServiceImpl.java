@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -13,8 +12,11 @@ import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
+import io.mosip.kernel.masterdata.utils.CheckUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 
 /**
@@ -36,6 +38,12 @@ public class LanguageServiceImpl implements LanguageService {
 	 */
 	@Autowired
 	private ObjectMapperUtil mapperUtil;
+
+	/**
+	 * Helper class to map dto to entity.
+	 */
+	@Autowired
+	private MetaDataUtils metaDataUtils;
 
 	/**
 	 * This method fetch all Languages present in database.
@@ -73,15 +81,26 @@ public class LanguageServiceImpl implements LanguageService {
 
 	@Override
 	public LanguageRequestResponseDto saveAllLanguages(LanguageRequestResponseDto dto) {
-		
-		
+		if (CheckUtils.isNullEmpty(dto) && CheckUtils.isNullEmpty(dto.getLanguages())) {
+			throw new RequestException(LanguageErrorCode.LANGUAGE_REQUEST_PARAM_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.LANGUAGE_REQUEST_PARAM_EXCEPTION.getErrorMessage());
+		}
+
 		LanguageRequestResponseDto languageRequestResponseDto = new LanguageRequestResponseDto();
-		List<LanguageDto> list = dto.getLanguages();
-		
+		List<LanguageDto> languageDtos = dto.getLanguages();
 		try {
+			List<Language> languages = metaDataUtils.setCreateMetaData(languageDtos, Language.class);
+			List<Language> createdLanguages = languageRepository.saveAll(languages);
+			if (CheckUtils.isNullEmpty(createdLanguages)) {
+				throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
+						LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage());
+			}
+			List<LanguageDto> createdLanguageDtos = mapperUtil.mapAll(createdLanguages, LanguageDto.class);
+			languageRequestResponseDto.setLanguages(createdLanguageDtos);
 
 		} catch (Exception e) {
-			// TODO: handle exception
+			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage());
 		}
 		return languageRequestResponseDto;
 	}
