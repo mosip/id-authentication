@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,333" last-zoom="1"
+<dbmodel pgmodeler-ver="0.9.2-alpha" last-position="0,543" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <role name="sysadmin"
       superuser="true"
@@ -139,7 +139,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="prereg"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[applicant_demographic table stores applicant demographic details]]></comment>
-	<position x="50.1162" y="194"/>
+	<position x="50.1162" y="195"/>
 	<column name="prereg_id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -185,7 +185,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="prereg"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[applicant_document table stores applicant demographic document proof submitted details]]></comment>
-	<position x="397.132" y="194"/>
+	<position x="397.132" y="195"/>
 	<column name="id" not-null="true">
 		<type name="character varying" length="36"/>
 	</column>
@@ -248,7 +248,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="prereg"/>
 	<role name="sysadmin"/>
 	<comment><![CDATA[user_login table stores registered individual email and/or mobile number]]></comment>
-	<position x="778.749" y="194"/>
+	<position x="778.749" y="195"/>
 	<column name="login_id" not-null="true">
 		<type name="character varying" length="64"/>
 		<comment><![CDATA[Value of the login_id is either mobile or email.  User have the option to select the login id preference or update email or mobile, in this case login_id also need to be updated]]></comment>
@@ -296,7 +296,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="prereg"/>
 	<role name="appadmin"/>
 	<comment><![CDATA[Transaction type table to store various transactions that are processd within pre-registration module/application.]]></comment>
-	<position x="779.116" y="500"/>
+	<position x="779.116" y="501"/>
 	<column name="code" alias="cd" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Code of the transaction types available in pre-registration module/application]]></comment>
@@ -331,7 +331,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp" length="0"/>
 	</column>
 	<constraint name="ttype_pk" type="pk-constr" table="prereg.transaction_type">
-		<columns names="code" ref-type="src-columns"/>
+		<columns names="code,lang_code" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -339,10 +339,14 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="prereg"/>
 	<role name="appadmin"/>
 	<comment><![CDATA[Transaction table to store various transactions that are processd within pre-registration module/application.]]></comment>
-	<position x="769.116" y="826"/>
+	<position x="784.116" y="753"/>
 	<column name="id" alias="id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Transaction id of the transactions that were recorded in pre-registration module/application]]></comment>
+	</column>
+	<column name="trn_type_code" not-null="true">
+		<type name="character varying" length="36"/>
+		<comment><![CDATA[Transaction type code of the transaction being processed.]]></comment>
 	</column>
 	<column name="parent_prereg_trn_id">
 		<type name="character varying" length="36"/>
@@ -355,8 +359,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="character varying" length="1024"/>
 		<comment><![CDATA[Comments provided by the actor during the transaction processing.]]></comment>
 	</column>
-	<column name="lang_code" not-null="true">
+	<column name="lang_code" alias="lang_code" not-null="true">
 		<type name="character varying" length="3"/>
+		<comment><![CDATA[Language code in which status and other items are stored]]></comment>
 	</column>
 	<column name="cr_by" not-null="true">
 		<type name="character varying" length="32"/>
@@ -376,33 +381,16 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="del_dtimes">
 		<type name="timestamp" length="0"/>
 	</column>
-	<constraint name="prereg_trn_pk" type="pk-constr" table="prereg.pre_registration_transaction">
+	<constraint name="preg_trn_pk" type="pk-constr" table="prereg.pre_registration_transaction">
 		<columns names="id" ref-type="src-columns"/>
 	</constraint>
-
-	<customidxs object-type="column">
-		<object name="trn_type_code" index="1"/>
-	</customidxs>
-
-	<customidxs object-type="constraint">
-		<object name="tran_ttype_code_fk" index="0"/>
-	</customidxs>
 </table>
 
-<relationship name="transaction_type_has_many_pre_registration_transaction" type="rel1n" alias="tran_ttype_code_fk"
-	 src-col-pattern="trn_type_code"
-	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
-	 src-fk-pattern="tran_ttype_code_fk"
-	 custom-color="#83af1f"
-	 src-table="prereg.transaction_type"
-	 dst-table="prereg.pre_registration_transaction"
-	 src-required="false" dst-required="false"/>
-
-<table name="processed_pre_registration_list" alias="pprlst">
+<table name="processed_prereg_list" alias="pprlst">
 	<schema name="prereg"/>
 	<role name="appadmin"/>
 	<comment><![CDATA[Table to store all the pre-registration list received from registration processor within pre-registration module]]></comment>
-	<position x="261.116" y="821"/>
+	<position x="267.116" y="748"/>
 	<column name="prereg_id" alias="prereg_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Pre-registration id that was consumed by registration processor to generate UIN]]></comment>
@@ -440,7 +428,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="del_dtimes">
 		<type name="timestamp" length="0"/>
 	</column>
-	<constraint name="pprlst_pk" type="pk-constr" table="prereg.processed_pre_registration_list">
+	<constraint name="pprlst_pk" type="pk-constr" table="prereg.processed_prereg_list">
 		<columns names="prereg_id" ref-type="src-columns"/>
 	</constraint>
 
@@ -449,24 +437,24 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</customidxs>
 
 	<customidxs object-type="constraint">
-		<object name="pprlst_prereg_trn_id_fk" index="1"/>
+		<object name="pprlst_pregtrn_fk" index="1"/>
 	</customidxs>
 </table>
 
 <relationship name="pre_registration_transaction_has_many_processed_pre_registratio" type="rel1n" alias="pprlst_prereg_trn_id_fk"
 	 src-col-pattern="prereg_trn_id"
 	 pk-pattern="{dt}_pk" uq-pattern="{dt}_uq"
-	 src-fk-pattern="pprlst_prereg_trn_id_fk"
+	 src-fk-pattern="pprlst_pregtrn_fk"
 	 custom-color="#83af1f"
 	 src-table="prereg.pre_registration_transaction"
-	 dst-table="prereg.processed_pre_registration_list"
+	 dst-table="prereg.processed_prereg_list"
 	 src-required="false" dst-required="false"/>
 
-<table name="i_processed_pre_registration_list" alias="ipprlst">
+<table name="i_processed_prereg_list" alias="ipprlst">
 	<schema name="prereg"/>
 	<role name="appadmin"/>
 	<comment><![CDATA[Table to store all the pre-registration list received from registration processor within pre-registration module]]></comment>
-	<position x="268.116" y="510"/>
+	<position x="268.116" y="511"/>
 	<column name="prereg_id" alias="prereg_id" not-null="true">
 		<type name="character varying" length="36"/>
 		<comment><![CDATA[Pre-registration id that was consumed by registration processor to generate UIN]]></comment>
@@ -496,8 +484,8 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="del_dtimes">
 		<type name="timestamp" length="0"/>
 	</column>
-	<constraint name="ipprlst_pk" type="pk-constr" table="prereg.i_processed_pre_registration_list">
-		<columns names="prereg_id" ref-type="src-columns"/>
+	<constraint name="ipprlst_pk" type="pk-constr" table="prereg.i_processed_prereg_list">
+		<columns names="prereg_id,received_dtimes" ref-type="src-columns"/>
 	</constraint>
 </table>
 
