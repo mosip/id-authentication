@@ -1,3 +1,4 @@
+node{
 def branch = 'DEV'
 def projectToBuild = 'pre-registration/pre-registration-ui'  
 def nodeHome = tool name: 'NODE_HOME', type: 'node'  
