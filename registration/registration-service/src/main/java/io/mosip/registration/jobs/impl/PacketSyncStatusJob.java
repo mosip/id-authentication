@@ -60,14 +60,10 @@ public class PacketSyncStatusJob extends BaseJob {
 			this.baseTransactionManager = this.applicationContext.getBean(BaseTransactionManager.class);
 			this.packetStatusService = this.applicationContext.getBean(RegPacketStatusService.class);
 		}
-		ResponseDTO responseDTO = new ResponseDTO();
-		try {
-			responseDTO = packetStatusService.packetSyncStatus();
+		
+		ResponseDTO responseDTO = packetStatusService.packetSyncStatus();
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (responseDTO.getErrorResponseDTOs() == null) {
+		if (responseDTO != null && responseDTO.getErrorResponseDTOs() == null) {
 			try {
 				// Insert Sync Transaction
 				baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILED,

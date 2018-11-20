@@ -23,7 +23,7 @@ import org.quartz.SchedulerException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
-import io.mosip.registration.dao.JobConfigDAO;
+import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.entity.SyncJob;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.impl.PacketSyncStatusJob;
@@ -32,7 +32,7 @@ import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
 public class JobConfigurationServiceTest {
 
 	@Mock
-	private JobConfigDAO jobConfigDAO;
+	private SyncJobConfigDAO jobConfigDAO;
 
 	@Mock
 	private ApplicationContext applicationContext;
