@@ -38,6 +38,7 @@ import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
  * @author Urvil Joshi
  * @author Ritesh Sinha
  * @author Sagar Mahapatra
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -244,6 +245,13 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterService#
+	 * findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(java.lang.
+	 * String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public RegistrationCenterHierarchyLevelResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(
 			String languageCode, String hierarchyLevel, String text) {

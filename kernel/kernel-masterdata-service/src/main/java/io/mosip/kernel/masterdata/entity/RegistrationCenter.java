@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Dharmesh Khandelwal
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -108,8 +109,7 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedtimes;
-	
-	@OneToOne(mappedBy="code",cascade = CascadeType.ALL)
-	
+
+	@OneToOne(mappedBy = "code", cascade = CascadeType.ALL)
 	private LocationHierarcyLevel location;
 }
