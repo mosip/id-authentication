@@ -129,7 +129,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
 				registrationStatusDto
-						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_SUCCESSFULL.toString());
+						.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
 				packetInfoManager.savePacketData(packetInfo);
 				InputStream demographicInfoStream = adapter.getFile(registrationId,
 						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
@@ -146,7 +146,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				}
 
 				registrationStatusDto
-						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_FAILED.toString());
+						.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
 
 			}
 			if (!isFilesValidated) {

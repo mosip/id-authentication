@@ -94,7 +94,7 @@ public class QualityCheckManagerImplTest {
 		pkEntity.setUsrId("123");
 		entity.setId(pkEntity);
 		entity.setCrBy("SYSTEM");
-		entity.setCrDtimesz(LocalDateTime.now());
+		entity.setCrDtimes(LocalDateTime.now());
 		entity.setIsActive(true);
 		entity.setIsDeleted(false);
 		entity.setStatus_code(DecisionStatus.ACCEPTED.name());

@@ -95,7 +95,7 @@ public class PacketInfoMapper {
 		bioMetricExceptionEntity.setExcpDescr(exceptionIris.getExceptionDescription());
 		bioMetricExceptionEntity.setExcpTyp(exceptionIris.getExceptionType());
 		bioMetricExceptionEntity.setIsDeleted(false);
-		bioMetricExceptionEntity.setStatusCode("");
+		bioMetricExceptionEntity.setStatusCode("test");
 
 		return bioMetricExceptionEntity;
 	}
@@ -174,6 +174,7 @@ public class PacketInfoMapper {
 		bioMetricExceptionEntity.setExcpDescr(exceptionFingerprint.getExceptionDescription());
 		bioMetricExceptionEntity.setExcpTyp(exceptionFingerprint.getExceptionType());
 		bioMetricExceptionEntity.setIsDeleted(false);
+		bioMetricExceptionEntity.setStatusCode("test");
 
 		return bioMetricExceptionEntity;
 	}

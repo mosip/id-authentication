@@ -68,7 +68,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 
 	public static final String TABLE_NOT_ACCESIBLE = "Table Not Accessible";
 
-	public static final String FILE_SEPARATOR ="";
+	public static final String FILE_SEPARATOR ="\\";
 
 	public static final String LOG_FORMATTER = "{} - {}";
 
@@ -402,6 +402,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<PacketInfo, Demo
 	 */
 	private byte[] getDocumentAsByteArray(String registrationId, String documentName) {
 		try {
+			System.out.println("Packet-Name : "+registrationId+" FilePath "+documentName );
 			@Cleanup
 			InputStream in = filesystemCephAdapterImpl.getFile(registrationId, documentName);
 			byte[] buffer = new byte[1024];

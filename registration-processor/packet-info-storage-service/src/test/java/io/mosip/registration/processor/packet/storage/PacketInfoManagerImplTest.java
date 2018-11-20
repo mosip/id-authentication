@@ -280,7 +280,7 @@ public class PacketInfoManagerImplTest {
 		String byteArray = "Binary Data";
 		applicantDocumentEntity.setActive(true);
 		applicantDocumentEntity.setCrBy("Mosip_System");
-		applicantDocumentEntity.setCrDtimesz(LocalDateTime.now());
+		applicantDocumentEntity.setCrDtimes(LocalDateTime.now());
 		applicantDocumentEntity.setUpdBy("MOSIP_SYSTEM");
 
 		applicantDocumentEntity.setDocStore(byteArray.getBytes());
@@ -332,9 +332,9 @@ public class PacketInfoManagerImplTest {
 		qcuserRegistrationIdEntity1.setId(pkid1);
 		qcuserRegistrationIdEntity1.setStatus_code("ACCEPTED");
 		qcuserRegistrationIdEntity1.setUpdBy("MOSIP_SYSTEM");
-		qcuserRegistrationIdEntity1.setCrDtimesz(LocalDateTime.now());
+		qcuserRegistrationIdEntity1.setCrDtimes(LocalDateTime.now());
 		qcuserRegistrationIdEntity1.setIsDeleted(false);
-		qcuserRegistrationIdEntity1.setUpdDtimesz(LocalDateTime.now());
+		qcuserRegistrationIdEntity1.setUpdDtimes(LocalDateTime.now());
 
 		qcuserRegistrationIdEntity2=new QcuserRegistrationIdEntity();
 		QcuserRegistrationIdPKEntity pkid2=new QcuserRegistrationIdPKEntity();
@@ -345,9 +345,9 @@ public class PacketInfoManagerImplTest {
 		qcuserRegistrationIdEntity2.setId(pkid2);
 		qcuserRegistrationIdEntity2.setStatus_code("ACCEPTED");
 		qcuserRegistrationIdEntity2.setUpdBy("MOSIP_SYSTEM");
-		qcuserRegistrationIdEntity2.setCrDtimesz(LocalDateTime.now());
+		qcuserRegistrationIdEntity2.setCrDtimes(LocalDateTime.now());
 		qcuserRegistrationIdEntity2.setIsDeleted(false);
-		qcuserRegistrationIdEntity2.setUpdDtimesz(LocalDateTime.now());
+		qcuserRegistrationIdEntity2.setUpdDtimes(LocalDateTime.now());
 
 
 	}

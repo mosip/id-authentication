@@ -65,20 +65,20 @@ public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrat
 		this.crBy = crBy;
 	}
 
-	public LocalDateTime getCrDtimesz() {
+	public LocalDateTime getCrDtimes() {
 		return this.crDtimes;
 	}
 
-	public void setCrDtimesz(LocalDateTime crDtimesz) {
-		this.crDtimes = crDtimesz;
+	public void setCrDtimes(LocalDateTime crDtimes) {
+		this.crDtimes = crDtimes;
 	}
 
-	public LocalDateTime getDelDtimesz() {
+	public LocalDateTime getDelDtimes() {
 		return this.delDtimes;
 	}
 
-	public void setDelDtimesz(LocalDateTime delDtimesz) {
-		this.delDtimes = delDtimesz;
+	public void setDelDtimes(LocalDateTime delDtimes) {
+		this.delDtimes = delDtimes;
 	}
 
 	public Boolean getIsActive() {
@@ -130,12 +130,12 @@ public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrat
 		this.updBy = updBy;
 	}
 
-	public LocalDateTime getUpdDtimesz() {
+	public LocalDateTime getUpdDtimes() {
 		return this.updDtimes;
 	}
 
-	public void setUpdDtimesz(LocalDateTime updDtimesz) {
-		this.updDtimes = updDtimesz;
+	public void setUpdDtimes(LocalDateTime updDtimes) {
+		this.updDtimes = updDtimes;
 	}
 
 }

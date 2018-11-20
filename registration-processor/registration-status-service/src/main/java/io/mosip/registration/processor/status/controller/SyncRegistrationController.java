@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.status.controller;
+/*package io.mosip.registration.processor.status.controller;
 
 import java.util.List;
 
@@ -19,11 +19,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-/**
+*//**
  * The Class SyncRegistrationController.
  *
  * @author M1047487
- */
+ *//*
 @RestController
 @RequestMapping("/v0.1/registration-processor/registration-status")
 @Api(tags = "Sync Registration")
@@ -32,20 +32,20 @@ public class SyncRegistrationController {
 	@Autowired
 	SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
 
-	/**
+	*//**
 	 * Instantiates a new sync registration controller.
-	 */
+	 *//*
 	public SyncRegistrationController() {
 		super();
 	}
 
-	/**
+	*//**
 	 * Sync registration controller.
 	 *
 	 * @param syncRegistrationDto
 	 *            the sync registration dto
 	 * @return the response entity
-	 */
+	 *//*
 	@PostMapping(path = "/sync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Get the synchronizing registration entity", response = RegistrationStatusCode.class)
 	@ApiResponses(value = {
@@ -57,3 +57,4 @@ public class SyncRegistrationController {
 	}
 
 }
+*/
