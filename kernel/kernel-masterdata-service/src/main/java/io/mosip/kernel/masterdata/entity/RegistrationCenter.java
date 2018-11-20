@@ -8,7 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.OneToOne;
@@ -21,6 +20,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Dharmesh Khandelwal
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -109,8 +109,7 @@ public class RegistrationCenter extends BaseEntity implements Serializable {
 
 	@Column(name = "del_dtimes")
 	private LocalDateTime deletedtimes;
-	
-	@OneToOne(mappedBy="code",cascade = CascadeType.ALL)
-	
+
+	@OneToOne(mappedBy = "code", cascade = CascadeType.ALL)
 	private LocationHierarcyLevel location;
 }

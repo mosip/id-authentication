@@ -19,6 +19,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterService;
  * @author Urvil Joshi
  * @author Ritesh Sinha
  * @author Sagar Mahapatra
+ * @author Sidhant Agarwal
  * @since 1.0.0
  *
  */
@@ -112,6 +113,19 @@ public class RegistrationCenterController {
 	public RegistrationCenterResponseDto getAllRegistrationCentersDetails() {
 		return registrationCenterService.getAllRegistrationCenters();
 	}
+
+	/**
+	 * Function to fetch list of registration centers based on hierarchy level,text
+	 * and language code
+	 * 
+	 * @param languageCode
+	 *            input from user
+	 * @param hierarchyLevel
+	 *            input from user
+	 * @param text
+	 *            input from user
+	 * @return {@link RegistrationCenterHierarchyLevelResponseDto}
+	 */
 	@GetMapping("/registrationcenters/{lang_code}/{hierarchy_level_name}/{name}")
 	public RegistrationCenterHierarchyLevelResponseDto getRegistrationCenterByHierarchyLevelAndTextAndLanguageCode(
 			@PathVariable("lang_code") String languageCode, @PathVariable("hierarchy_level_name") String hierarchyLevel,

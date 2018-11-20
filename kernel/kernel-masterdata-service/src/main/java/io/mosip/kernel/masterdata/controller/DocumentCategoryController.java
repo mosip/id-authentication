@@ -14,6 +14,7 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 
 /**
  * @author Neha
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
