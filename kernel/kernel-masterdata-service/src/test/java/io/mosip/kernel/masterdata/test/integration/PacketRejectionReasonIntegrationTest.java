@@ -66,7 +66,7 @@ public class PacketRejectionReasonIntegrationTest {
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(ArgumentMatchers.any(),
+		Mockito.when(reasonRepository.findReasonCategoryByReasonListIdCodeAndReasonListIdLangCodeAndIsActiveTrueAndIsDeletedFalse(ArgumentMatchers.any(),
 				ArgumentMatchers.any())).thenReturn(reasoncategories);
 		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG")).andExpect(status().isOk());
 	}

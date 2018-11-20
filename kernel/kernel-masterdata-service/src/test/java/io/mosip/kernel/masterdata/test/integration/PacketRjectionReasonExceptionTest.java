@@ -72,7 +72,7 @@ public class PacketRjectionReasonExceptionTest {
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeFetchExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(
+		Mockito.when(reasonRepository.findReasonCategoryByReasonListIdCodeAndReasonListIdLangCodeAndIsActiveTrueAndIsDeletedFalse(
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isInternalServerError());
@@ -86,7 +86,7 @@ public class PacketRjectionReasonExceptionTest {
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsNotFoundExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(
+		Mockito.when(reasonRepository.findReasonCategoryByReasonListIdCodeAndReasonListIdLangCodeAndIsActiveTrueAndIsDeletedFalse(
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(null);
 		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isNotFound());
@@ -94,7 +94,7 @@ public class PacketRjectionReasonExceptionTest {
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsEmptyExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(
+		Mockito.when(reasonRepository.findReasonCategoryByReasonListIdCodeAndReasonListIdLangCodeAndIsActiveTrueAndIsDeletedFalse(
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isNotFound());

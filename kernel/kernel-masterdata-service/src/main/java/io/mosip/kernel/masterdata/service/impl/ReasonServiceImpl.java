@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.constant.PacketRejectionReasonErrorCode;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
+import io.mosip.kernel.masterdata.dto.ReasonRequestDto;
 import io.mosip.kernel.masterdata.dto.ReasonResponseDto;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -42,7 +43,14 @@ public class ReasonServiceImpl implements ReasonService {
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (reasonCategories != null && !reasonCategories.isEmpty()) {
-			reasonCategoryDtos = ObjectMapperUtil.reasonConverter(reasonCategories);
+			try {
+				reasonCategoryDtos = ObjectMapperUtil.reasonConverter(reasonCategories);
+			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
+				throw new DataNotFoundException(
+						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION.getErrorCode(),
+						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION.getErrorMessage());
+
+			}
 
 		} else {
 			throw new DataNotFoundException(
@@ -63,7 +71,8 @@ public class ReasonServiceImpl implements ReasonService {
 
 		try {
 			reasonCategories = reasonRepository
-					.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(categoryCode, langCode);
+					.findReasonCategoryByReasonCategoryIdCodeAndReasonCategoryIdLangCodeAndIsActiveTrueAndIsDeletedFalse(
+							categoryCode, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_FETCH_EXCEPTION.getErrorCode(),
@@ -79,8 +88,7 @@ public class ReasonServiceImpl implements ReasonService {
 
 			}
 		} else {
-			throw new RequestException(
-					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
+			throw new RequestException(PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
 					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
 		}
 		reasonResponseDto.setReasonCategories(reasonCategoryDtos);
@@ -89,11 +97,22 @@ public class ReasonServiceImpl implements ReasonService {
 	}
 
 	@Override
-	public ReasonResponseDto saveOrUpdateReasons(ReasonResponseDto reasonRequestDto) {
+	public ReasonResponseDto saveReasonCategories(ReasonRequestDto reasonRequestDto) {
+		/*if(reasonRequestDto!=null) {
+			reasonRequestDto.
+		}*/
+		return null;
+
 		
-		List<ReasonCategory> reasonCategories=ObjectMapperUtil.reasonConvertDtoToEntity(reasonRequestDto);
-		reasonRepository.saveAll(reasonCategories);
+		
+	}
+
+	@Override
+	public ReasonResponseDto saveReasonList(ReasonRequestDto reasonRequestDto) {
+		
 		return null;
 	}
+	
+	
 
 }

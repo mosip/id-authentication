@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.ReasonRequestDto;
 import io.mosip.kernel.masterdata.dto.ReasonResponseDto;
 
 /**
@@ -8,7 +9,8 @@ import io.mosip.kernel.masterdata.dto.ReasonResponseDto;
  *
  */
 public interface ReasonService {
-    public ReasonResponseDto saveOrUpdateReasons(ReasonResponseDto reasonRequestDto);
+    public ReasonResponseDto saveReasonCategories(ReasonRequestDto reasonRequestDto);
+    public ReasonResponseDto saveReasonList(ReasonRequestDto reasonRequestDto);
 	public ReasonResponseDto getAllReasons();
 	public ReasonResponseDto getReasonsBasedOnLangCodeAndCategoryCode(String categoryCode,String langCode);
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.ReasonRequestDto;
 import io.mosip.kernel.masterdata.dto.ReasonResponseDto;
 import io.mosip.kernel.masterdata.service.ReasonService;
 
@@ -20,10 +21,10 @@ public class PacketRejectionReasonController {
 	@Autowired
 	ReasonService reasonService;
 	
-	@PostMapping
-	public ReasonResponseDto saveOrUpdateAllReasons(@RequestBody ReasonResponseDto requestDto) {
-
-		return reasonService.saveOrUpdateReasons(requestDto);
+	@PostMapping("/reasonCategory")
+	public ReasonResponseDto saveReasonCategories(@RequestBody ReasonRequestDto requestDto) {
+                
+		return reasonService.saveReasonCategories(requestDto);
 	}
 
 	/**
