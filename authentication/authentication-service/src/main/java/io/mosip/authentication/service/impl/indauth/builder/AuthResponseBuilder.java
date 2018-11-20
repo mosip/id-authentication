@@ -1,8 +1,9 @@
 package io.mosip.authentication.service.impl.indauth.builder;
 
-import java.time.Instant;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +22,9 @@ import io.mosip.authentication.core.dto.indauth.MatchInfo;
  * @authour Loganathan Sekar
  */
 public class AuthResponseBuilder {
+
+	//FIXME get the date time pattern from configuration
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
 	/** The built. */
 	private boolean built;
@@ -101,7 +105,6 @@ public class AuthResponseBuilder {
 	 */
 	public AuthResponseBuilder setIdType(String idType) {
 		responseDTO.getInfo().setIdType(idType);
-		;
 		return this;
 	}
 
@@ -135,11 +138,13 @@ public class AuthResponseBuilder {
 	public AuthResponseDTO build() {
 		assertNotBuilt();
 		boolean status = !authStatusInfos.isEmpty() && authStatusInfos.stream().allMatch(AuthStatusInfo::isStatus);
-		if(status)
-		responseDTO.setStatus("y");
-		else responseDTO.setStatus("n");
+		if(status) {
+			responseDTO.setStatus("Y");
+		} else {
+			responseDTO.setStatus("N");
+		}
 
-		responseDTO.setResTime(Instant.now().toString());
+		responseDTO.setResTime(DATE_FORMAT.format(new Date()));
 
 		AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);

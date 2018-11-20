@@ -29,22 +29,22 @@ public enum IdAuthenticationErrorConstants {
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 	INVALID_INPUT_PARAMETER("IDA-IDV-002", "Invalid Input Parameter - %s"),
 	MISSING_INPUT_PARAMETER("IDA-IDV-003", "Missing Input Parameter - %s"),
-	INVALID_AGE("IDA-DEA-028", "Please re-enter Age", "A0141"),
-	INVALID_DOB("IDA-DEA-023", "Please re-enter your DOB", "A0137"),
-	INVALID_EMAIL("IDA-DEA-027", "Please re-enter your email", "A0141"),
-	INVALRID_GENDER("IDA-DEA-025", "Please re-enter your Gender", "A0139"),
-	NAME_PRI_MISMATCH("IDA-DEM-001", "Demographic and Identity attribute Name_Prim did not match"),
-	NAME_SEC_MISMATCH("IDA-DEM-002", "Demographic and  Identity attribute Name_Second did not match"),
-	INVALID_TIMESTAMP("IDA-DEM-003",
-			"Invalid format or Authentication request received at MOSIP <x> hrs/min post the initiation of the request"),
-	MISSING_ID("IDA-DEM-004", "Missing Id Attribute"),
-	UNSUPPORTED_LANGCODE("IDA-DEM-005", "Unsupported Language Code <XX>"),
+//	INVALID_AGE("IDA-DEA-028", "Please re-enter Age", "A0141"),
+//	INVALID_DOB("IDA-DEA-023", "Please re-enter your DOB", "A0137"),
+//	INVALID_EMAIL("IDA-DEA-027", "Please re-enter your email", "A0141"),
+//	INVALRID_GENDER("IDA-DEA-025", "Please re-enter your Gender", "A0139"),
+//	NAME_PRI_MISMATCH("IDA-DEM-001", "Demographic and Identity attribute Name_Prim did not match"),
+//	NAME_SEC_MISMATCH("IDA-DEM-002", "Demographic and  Identity attribute Name_Second did not match"),
+//	INVALID_TIMESTAMP("IDA-DEM-003",
+//			"Invalid format or Authentication request received at MOSIP <x> hrs/min post the initiation of the request"),
+//	MISSING_ID("IDA-DEM-004", "Missing Id Attribute"),
+//	UNSUPPORTED_LANGCODE("IDA-DEM-005", "Unsupported Language Code <XX>"),
 
 	// eKYC validation messages
 
 	INVALID_EKYC_CONCENT("IDA-DEA-030", "Invalid resident eKYC consent"),
 	INVALID_EKYC_AUTHTYPE("IDA-DEA-035",
-			"Invalid resident auth type (“kycAuthType ” does not match with data in PID block)"),
+			"Invalid resident auth type (\"kycAuthType \" does not match with data in PID block)"),
 	UNAUTHORISED_KUA("IDA-DEA-032", "Unauthorised KUA"),
 
 	// Internal Errors

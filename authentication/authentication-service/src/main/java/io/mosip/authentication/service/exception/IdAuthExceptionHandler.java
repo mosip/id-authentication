@@ -1,7 +1,8 @@
 package io.mosip.authentication.service.exception;
 
-import java.time.Instant;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +57,10 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private MessageSource messageSource;
-
+	
+	@Autowired
+	private Environment env;
+	
 	/** The Constant PREFIX_HANDLING_EXCEPTION. */
 	private static final String PREFIX_HANDLING_EXCEPTION = "Handling exception :";
 
@@ -214,15 +219,16 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 					authResp.setErr(errors);
 				}
 			} catch (NoSuchMessageException e) {
-				mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, ex.toString(),
-						"\n" + ExceptionUtils.getStackTrace(ex));
+				mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, e.toString(),
+						"\n" + ExceptionUtils.getStackTrace(e));
 				authResp.setErr(Arrays
 						.<AuthError>asList(createAuthError(baseException, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
 								IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage())));
 			}
 		}
 
-		authResp.setResTime(Instant.now().toString());
+		SimpleDateFormat dateFormat = new SimpleDateFormat(env.getProperty("datetime.pattern"));
+		authResp.setResTime(dateFormat.format(new Date()));
 
 		mosipLogger.error(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), authResp.toString());
 

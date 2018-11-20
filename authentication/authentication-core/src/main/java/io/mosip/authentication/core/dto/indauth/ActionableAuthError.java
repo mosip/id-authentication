@@ -12,17 +12,18 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class ActionableAuthError extends AuthError {
 
+	/** variable holds Action code */
 	private String actnCode;
-	
+
 	public ActionableAuthError() {
 		super();
 	}
 
 	/**
 	 * 
-	 * @param errorCode
-	 * @param errorMessage
-	 * @param actnCode
+	 * @param errorCode    - error code
+	 * @param errorMessage - error message
+	 * @param actnCode     - action code
 	 */
 	public ActionableAuthError(String errorCode, String errorMessage, String actnCode) {
 		super(errorCode, errorMessage);

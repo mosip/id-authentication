@@ -26,12 +26,16 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder
 @Component
 public class IdTemplateManager {
 
+	/** PDF Generator */
 	private PDFGenerator pdfGenerator;
 
+	/** Class path */
 	private static final String CLASSPATH = "classpath";
 
+	/** UTF type */
 	private static final String ENCODE_TYPE = "UTF-8";
 
+	/** Template path */
 	private static final String TEMPLATES = "templates/";
 
 	private static Logger logger = IdaLogger.getLogger(IdTemplateManager.class);
@@ -39,6 +43,15 @@ public class IdTemplateManager {
 	private TemplateManager templateManager = new TemplateConfigureBuilder().encodingType(ENCODE_TYPE)
 			.enableCache(false).resourceLoader(CLASSPATH).build();
 
+	/**
+	 * To apply Template for PDF Generation
+	 * 
+	 * @param templateName - template name for pdf format
+	 * @param values       - list of contents
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 * @throws IOException
+	 */
 	public String applyTemplate(String templateName, Map<String, Object> values)
 			throws IdAuthenticationBusinessException, IOException {
 
@@ -58,6 +71,14 @@ public class IdTemplateManager {
 		}
 	}
 
+	/**
+	 * Generate PDF for e-KYC
+	 * 
+	 * @param templateName
+	 * @param values
+	 * @return
+	 * @throws IdAuthenticationBusinessException
+	 */
 	public OutputStream generatePDF(String templateName, Map<String, Object> values)
 			throws IdAuthenticationBusinessException {
 		try {

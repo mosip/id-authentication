@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,7 @@ public class KycServiceImpl implements KycService{
 				maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
 			}
 			Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
-			String ePrintInfo = generatePrintableKyc(eKycType,pdfDetails);
+			String ePrintInfo = generatePrintableKyc(eKycType,pdfDetails,isSecLangInfoRequired);
 			kycInfo.setEPrint(ePrintInfo);			
 		}
 		return kycInfo;
@@ -148,17 +149,34 @@ public class KycServiceImpl implements KycService{
 		pdfDetails.put("name_label_sec", messageSource.getMessage("name_label_sec", null, new Locale(secondaryLanguage)));
 		pdfDetails.put("name_pri", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, filteredIdentityInfo).getValue());
 		pdfDetails.put("name_sec", demoHelper.getEntityInfo(DemoMatchType.NAME_SEC, filteredIdentityInfo).getValue());
+		Optional<String> faceValue = getFaceDetails(filteredIdentityInfo);
+		if(faceValue.isPresent()) {
+			pdfDetails.put("face_value", faceValue.get());
+			pdfDetails.put("face_label_value", messageSource.getMessage("face_value", null, LocaleContextHolder.getLocale()));
+		}
 		return pdfDetails;
 	}
 
-	private String generatePrintableKyc(KycType eKycType, Map<String, Object> identity) throws IdAuthenticationBusinessException {
+	private Optional<String> getFaceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {
+		String primaryLanguage = env.getProperty("mosip.primary.lang-code");
+		return filteredIdentityInfo.entrySet().stream().filter(e -> e.getKey().equals("face"))
+		.flatMap(val -> val.getValue().stream()
+				.filter(v -> v.getLanguage().equalsIgnoreCase(primaryLanguage)))
+		.findAny()
+		.map(IdentityInfoDTO::getValue);
+	}
+
+	private String generatePrintableKyc(KycType eKycType, Map<String, Object> identity, boolean isSecLangInfoRequired) throws IdAuthenticationBusinessException {
 		String pdfDetails = null;
 		try {
-			if(eKycType == KycType.LIMITED) {
-				pdfDetails =  idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc"), identity);
-
+			if(eKycType == KycType.LIMITED && isSecLangInfoRequired) {
+				pdfDetails =  idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.full"), identity);
+			}else if(eKycType == KycType.LIMITED && !isSecLangInfoRequired) {
+				pdfDetails = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.pri"), identity);
+			}else if(eKycType == KycType.FULL && isSecLangInfoRequired) {
+				pdfDetails = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.full"), identity);
 			}else {
-				pdfDetails = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc"), identity);
+				pdfDetails = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.pri"), identity);
 			}
 		} catch (IOException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());

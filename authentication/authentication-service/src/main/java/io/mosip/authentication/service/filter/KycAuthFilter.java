@@ -23,8 +23,9 @@ public class KycAuthFilter extends BaseAuthFilter {
 	@Override
 	protected Map<String, Object> decodedRequest(Map<String, Object> requestBody) throws IdAuthenticationAppException {
 		try {
-			requestBody.replace(AUTH_REQUEST, decode((String) requestBody.get(AUTH_REQUEST)));
-			requestBody.replace(REQUEST, decode((String) requestBody.get(REQUEST)));
+			Map<String, Object> authRequest = (Map<String, Object>) decode((String) requestBody.get(AUTH_REQUEST));
+			authRequest.replace(REQUEST, decode((String) authRequest.get(REQUEST)));
+			requestBody.replace(AUTH_REQUEST, authRequest);
 			return requestBody;
 		} catch (ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
@@ -33,11 +34,24 @@ public class KycAuthFilter extends BaseAuthFilter {
 	}
 
 	@Override
-	protected Map<String, Object> encodedResponse(Map<String, Object> responseBody)	throws IdAuthenticationAppException {
+	protected Map<String, Object> encodedResponse(Map<String, Object> responseBody)
+			throws IdAuthenticationAppException {
 		try {
-			responseBody.replace(KYC, encode(((Map<String, Object>) responseBody.get(RESPONSE)).get(KYC).toString()));
-			responseBody.replace(AUTH, encode(((Map<String, Object>) responseBody.get(RESPONSE)).get(AUTH).toString()));
-			responseBody.replace(RESPONSE, encode(responseBody.get(RESPONSE).toString()));
+			Map<String, Object> response = (Map<String, Object>) responseBody.get(RESPONSE);
+			if (response != null) {
+				Object kyc = response.get(KYC);
+				
+				if (kyc != null) {
+					response.replace(KYC, encode(kyc.toString()));
+				}
+				
+				Object auth = response.get(AUTH);
+				if (auth != null) {
+					response.replace(AUTH, encode(auth.toString()));
+				}
+				
+				responseBody.replace(RESPONSE, encode(responseBody.get(RESPONSE).toString()));
+			}
 			return responseBody;
 		} catch (ClassCastException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
@@ -47,7 +61,8 @@ public class KycAuthFilter extends BaseAuthFilter {
 
 	@Override
 	protected Map<String, Object> setTxnId(Map<String, Object> requestBody, Map<String, Object> responseBody) {
-		responseBody.replace("txnID", requestBody.get("txnID"));
+		Map<String, Object> authReq = (Map<String, Object>) requestBody.get("authRequest");
+		responseBody.replace("txnID", authReq.get("txnID"));
 		return responseBody;
 	}
 
