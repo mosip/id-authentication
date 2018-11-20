@@ -20,7 +20,7 @@ export class RegistrationService {
   // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
   getUsers(value) {
-    value = '8680958867';
+    value = 'User1';
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
       observe: 'body',
       responseType: 'json',
@@ -42,7 +42,7 @@ export class RegistrationService {
     //   reportProgress: true // A2ML21989
     // }); // A2ML27085
     // return this.httpClient.request(req);
-    return this.httpClient.post('http://A2ML27085:9092/v0.1/pre-registration/applications', obj);
+    return this.httpClient.post(this.BASE_URL, obj);
   }
 
   sendFile(formdata: FormData) {
