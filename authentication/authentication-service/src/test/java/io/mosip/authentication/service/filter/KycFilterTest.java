@@ -26,6 +26,9 @@ import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
@@ -124,10 +127,20 @@ public class KycFilterTest{
 		Method txvIdMethod = KycAuthFilter.class.getDeclaredMethod("setTxnId",
 				Map.class, Map.class);
 		txvIdMethod.setAccessible(true);
-		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter,createEncodedRequest(),
+		Map<String, Object> requestBody = createEncodedRequest();
+		Map<String, Object> authRequest = (Map<String, Object>) decode((String) createEncodedRequest().get("authRequest"));
+		requestBody.replace("authRequest", authRequest);
+		Map<String, Object> decodeValue = (Map<String, Object>) txvIdMethod.invoke(kycAuthFilter,requestBody,
 				createResponse());
 		assertNotNull(decodeValue);
 
+	}
+
+	private Map<String, Object> decode(String stringToDecode) throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper2 = new ObjectMapper();
+		return mapper2.readValue(Base64.getDecoder().decode(stringToDecode),
+				new TypeReference<Map<String, Object>>() {
+				});
 	}
 
 	public Map<String, Object> createEncodedRequest() throws IOException {
@@ -174,9 +187,10 @@ public class KycFilterTest{
 		Map<String, Object> map =(Map<String, Object>) mapper.readValue(kycReq.getBytes(), Map.class);
 
 		String authRequest =mapper.writeValueAsString(authRequestDTO);
-		map.put("authRequest", Base64.getEncoder().encodeToString(authRequest.getBytes()));
-
-
+		String request =mapper.writeValueAsString(reqDTO);
+		Map<String, Object> authRequestMap = (Map<String, Object>) map.get("authRequest");
+		authRequestMap.put("request", Base64.getEncoder().encodeToString(request.getBytes()));
+		map.put("authRequest", Base64.getEncoder().encodeToString(mapper.writeValueAsBytes(authRequestMap)));
 		return map;
 	}
 
