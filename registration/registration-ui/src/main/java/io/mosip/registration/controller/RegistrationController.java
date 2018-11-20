@@ -12,7 +12,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
-import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
@@ -1118,11 +1118,11 @@ public class RegistrationController extends BaseController {
 	 * 
 	 */
 	private void loadLocalLanguageFields() throws IOException {
-		Properties properties = ApplicationContext.getInstance().getLocalLanguageProperty();
-		fullName_lc_label.setText(properties.getProperty("full_name"));
-		addressLine1_lc_label.setText(properties.getProperty("address_line1"));
-		addressLine2_lc_label.setText(properties.getProperty("address_line2"));
-		addressLine3_lc_label.setText(properties.getProperty("address_line3"));
+		ResourceBundle properties = ApplicationContext.getInstance().getLocalLanguageProperty();
+		fullName_lc_label.setText(properties.getString("full_name"));
+		addressLine1_lc_label.setText(properties.getString("address_line1"));
+		addressLine2_lc_label.setText(properties.getString("address_line2"));
+		addressLine3_lc_label.setText(properties.getString("address_line3"));
 		String userlangTitle = demoGraphicTitlePane.getText();
 		demoGraphicTitlePane.expandedProperty().addListener(new ChangeListener<Boolean>() {
 
@@ -1136,7 +1136,7 @@ public class RegistrationController extends BaseController {
 				if (newValue) {
 					demoGraphicTitlePane.setText("    " + userlangTitle
 							+ "                                                              " + ApplicationContext
-									.getInstance().getLocalLanguageProperty().getProperty("titleDemographicPane"));
+									.getInstance().getLocalLanguageProperty().getString("titleDemographicPane"));
 
 				}
 			}
@@ -1247,9 +1247,9 @@ public class RegistrationController extends BaseController {
 		region.setText("Taramani");
 		city.setText("Chennai");
 		province.setText("Tamilnadu");
-		postalCode.setText("60011");
+		postalCode.setText("600111");
 		localAdminAuthority.setText("MindTree");
-		mobileNo.setText("8667693837");
+		mobileNo.setText("866769383");
 		emailId.setText("taleev.aalam@mindtree.com");
 		cni_or_pin_number.setText("012345678901234567890123456789");
 		parentName.setText("Mokhtar");
