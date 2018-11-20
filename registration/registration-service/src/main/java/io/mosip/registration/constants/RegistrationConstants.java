@@ -475,6 +475,8 @@ public class RegistrationConstants {
 	public static final String ONBOARD_AVAILABLE_DEVICES_GROUP = "availableDeviceGroupMap";
 	public static final String ONBOARD_MAPPED_DEVICES_GROUP = "mappedDeviceGroupMap";
 	public static final String MACHINE_ID = "machineId";
+	public static final String ONBOARD_DEVICES_MAP_UPDATED = "updatedDevicesMap";
+	public static final String DEVICE_TYPES_ALL_OPTION = "All";
 
 	// Template Name
 	public static final String ACKNOWLEDGEMENT_TEMPLATE = "Ack Template";
