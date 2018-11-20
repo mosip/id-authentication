@@ -1,13 +1,7 @@
-node{
+node {
+
 def branch = 'DEV'
 def projectToBuild = 'pre-registration/pre-registration-ui'  
-def nodeHome = tool name: 'NODE_HOME', type: 'node'  
-	env.PATH = "${nodeHome}/bin:${env.PATH}"
-
-    stage('check tools') {
-        sh "node -v"
-        sh "npm -v"
-    }
 
  stage('------- Checkout --------') {
   dir(branch) {
@@ -30,15 +24,4 @@ def nodeHome = tool name: 'NODE_HOME', type: 'node'
   }
  }
 
-    stage('npm install') {
-        sh "npm install"
     }
-
-    stage('unit tests') {
-        sh "ng test"
-    }
-
-    stage('protractor tests') {
-        sh "ng e2e"
-    }
-}
