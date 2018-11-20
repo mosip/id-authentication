@@ -19,7 +19,12 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.test.context.ContextConfiguration;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import org.springframework.test.context.TestPropertySource;
+
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.dao.RegistrationStatusDao;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -85,7 +90,10 @@ public class RegistrationStatusServiceTest {
 		transactionEntity.setId("1001");
 		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
 				.thenReturn(transactionEntity);
-
+		AuditResponseDto auditResponseDto=new AuditResponseDto();
+		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
+		
+		
 		//Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
 		//AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		//AuditRequestDto auditRequest1 = new AuditRequestDto();

@@ -34,6 +34,9 @@ import org.springframework.web.multipart.MultipartFile;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
@@ -116,10 +119,12 @@ public class PacketReceiverServiceTest {
 
 		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
 		AuditResponseDto auditResponseDto=new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("", "", "", "", "");
+		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
 		
 		
-		}/*Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
+		}
+		
+		/*Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
 		Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
 		
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
