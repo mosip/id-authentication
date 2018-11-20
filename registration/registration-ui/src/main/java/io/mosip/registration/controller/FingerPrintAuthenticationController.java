@@ -1,9 +1,10 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import com.machinezoo.sourceafis.FingerprintTemplate;
 import MFS100.FingerData;
 import MFS100.MFS100;
 import MFS100.MFS100Event;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.service.LoginService;
@@ -54,6 +57,8 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 
 	@FXML
 	private ComboBox<String> deviceCmbBox;
+	@FXML
+	private ImageView fingerScannedImage;
 
 	@Autowired
 	LoginService loginService;
@@ -62,6 +67,12 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	private long fingerPrintScore;
 
 	private FingerprintProvider fingerprintProvider = new FingerprintProvider();
+	
+
+	/**
+	 * Instance of {@link MosipLogger}
+	 */
+	private Logger LOGGER = AppConfig.getLogger(FingerPrintAuthenticationController.class);
 
 	/**
 	 * Stage
@@ -80,10 +91,6 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 
 	@Autowired
 	BaseController baseController;
-
-	public FingerPrintAuthenticationController() {
-		System.out.println("Inside FingerPrintAuthenticationController constructor.......");
-	}
 
 	public void init(BaseController parentControllerObj) throws IOException {
 		baseController = parentControllerObj;
@@ -116,7 +123,8 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 					try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						LOGGER.error("FINGERPRINT_AUTHENTICATION_CONTROLLER - ERROR_SCANNING_FINGER",
+								APPLICATION_NAME, APPLICATION_ID, e.getMessage());
 					}
 				}
 				count++;
@@ -179,7 +187,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 
 	@Override
 	public void OnPreview(FingerData fingerData) {
-		fingerData.FingerImage();
+		
 	}
 
 	@Override
@@ -188,19 +196,5 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 		deviceCmbBox.setItems(FXCollections.observableArrayList(RegistrationConstants.ONBOARD_DEVICE_TYPES));
 
 	}
-
-	public void initData(Stage stage, List<Map<String, String>> approvalmapList) {
-		/*
-		 * authmapList = approvalmapList; primarystage = stage;
-		 */}
-
-	public void authenticate(ActionEvent event) {
-		/*
-		 * for (Map<String, String> map : authmapList) {
-		 * registrationApprovalService.updateRegistration(map.get("registrationID"),
-		 * map.get("statusComment"), map.get("statusCode")); }
-		 * generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION,
-		 * "Submitted Successfully"); authmapList.clear(); primarystage.close();
-		 */}
 
 }

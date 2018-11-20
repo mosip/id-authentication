@@ -31,7 +31,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -50,7 +49,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private Logger LOGGER = AppConfig.getLogger(RegistrationApprovalController.class);
+	private Logger LOGGER = AppConfig.getLogger(ReRegistrationController.class);
 
 	/**
 	 * object for Registration approval service class
@@ -210,7 +209,8 @@ public class ReRegistrationController extends BaseController implements Initiali
 			fpcontroller.init(this);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER_FAILED",
+					APPLICATION_NAME, APPLICATION_ID, e.getMessage());
 		}
 	}
 
@@ -246,6 +246,8 @@ public class ReRegistrationController extends BaseController implements Initiali
 		if (!listData.isEmpty()) {
 			ObservableList<PacketStatusDTO> oListStavaka = FXCollections.observableArrayList(listData);
 			table.setItems(oListStavaka);
+		} else {
+				table.getItems().remove(table.getSelectionModel().getSelectedItem());
 		}
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been ended");
