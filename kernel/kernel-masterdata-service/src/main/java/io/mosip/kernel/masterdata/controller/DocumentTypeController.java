@@ -5,19 +5,25 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
+import io.mosip.kernel.masterdata.dto.DocumentTypeRequestDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.swagger.annotations.ApiOperation;
 
 /**
- * document type controller with api to get list of valid document types
- * best on document category code type and language code
+ * Document type controller with api to get list of valid document types based
+ * on document category code type and language code and with api to create
+ * document types.
  * 
  * 
  * @author Uday Kumar
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
@@ -35,5 +41,11 @@ public class DocumentTypeController {
 				langCode);
 		return new ValidDocumentTypeResponseDto(validDocumentTypes);
 
+	}
+
+	@PostMapping("/documenttypes")
+	public PostResponseDto addDocumentTypeList(@RequestBody DocumentTypeRequestDto types) {
+		System.out.println(types.getRequest().getDocumentTypes().get(0));
+		return documentTypeService.addDocumentTypes(types);
 	}
 }
