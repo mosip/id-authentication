@@ -33,7 +33,17 @@ public interface MachineDetailRepository extends BaseRepository<MachineDetail, S
 	 * @return MachineDetail fetched from database
 	 */
 	MachineDetail findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(String id, String langCode);
+	
+	/**
+	 * This method trigger query to fetch the Machine detail for the given language code.
+	 * 
+	 * @param Id
+	 *            Machine Id provided by user
+	 *            
+	 * @return MachineDetail fetched from database
+	 */
+	
+	List<MachineDetail> findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(String langCode);
 
 }
-// >>>>>>> branch 'DEV_SPRINT5_MASTERDATA_SERVICE_2' of
-// https://github.com/mosip/mosip.git
+

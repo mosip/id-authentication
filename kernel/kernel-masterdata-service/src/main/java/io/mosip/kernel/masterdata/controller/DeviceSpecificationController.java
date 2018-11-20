@@ -5,11 +5,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.DeviceCreateSpecificationResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationResponseDto;
+import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.swagger.annotations.ApiOperation;
 
@@ -47,4 +51,11 @@ public class DeviceSpecificationController {
 				.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 		return new DeviceSpecificationResponseDto(deviceSpecificationDtos);
 	}
+	
+	@PostMapping(value = "/add-devicespecification")
+	public DeviceCreateSpecificationResponseDto addDeviceType(@RequestBody List<DeviceSpecification> deviceSpecifications)
+	{
+		return deviceSpecificationService.addDeviceSpecification(deviceSpecifications);
+	}
+
 }
