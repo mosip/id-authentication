@@ -40,7 +40,7 @@ public class VirusScannerSchedulerTest {
 
 	@InjectMocks
 	private VirusScannerJobScheduler virusScannerJobScheduler;
-	@SpyBean
+	@SpyBean	
 	private VirusScannerJobScheduler virusScannerJobSchedulerJob;
 
 	@Mock

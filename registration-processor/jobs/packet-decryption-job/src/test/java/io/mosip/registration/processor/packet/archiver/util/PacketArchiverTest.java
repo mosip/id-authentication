@@ -14,8 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
@@ -38,14 +36,6 @@ public class PacketArchiverTest {
 	/** The filemanager. */
 	@Mock
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
-
-	/** The audit request builder. */
-	@Mock
-	private AuditRequestBuilder auditRequestBuilder;
-
-	/** The audit handler. */
-	@Mock
-	private AuditHandler<AuditRequestDto> auditHandler;
 
 	/** The packet archiver. */
 	@InjectMocks
@@ -75,7 +65,7 @@ public class PacketArchiverTest {
 	@Before
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		Mockito.when(auditHandler.addAudit(ArgumentMatchers.any())).thenReturn(true);
+		//Mockito.when(auditHandler.addAudit(ArgumentMatchers.any())).thenReturn(true);
 
 		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
 		AuditRequestDto auditRequest1 = new AuditRequestDto();

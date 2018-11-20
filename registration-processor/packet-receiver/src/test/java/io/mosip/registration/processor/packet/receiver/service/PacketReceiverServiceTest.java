@@ -33,9 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
-import io.mosip.kernel.auditmanager.request.AuditRequestDto;
-import io.mosip.kernel.core.auditmanager.spi.AuditHandler;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -63,15 +60,6 @@ public class PacketReceiverServiceTest {
 
 	@Mock
 	private InternalRegistrationStatusDto mockDto;
-
-    @Mock
-    private AuditRequestBuilder auditRequestBuilder;
-
-    @Mock
-    AuditRequestDto auditRequestDto;
-
-    @Mock
-    private AuditHandler<AuditRequestDto> auditHandler;
 
 	@Mock
     private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
@@ -123,18 +111,6 @@ public class PacketReceiverServiceTest {
 		}
 
 		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
-		Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
-		Mockito.doReturn(true).when(auditHandler).addAudit(ArgumentMatchers.any());
-		
-		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		AuditRequestDto auditRequest1 = new AuditRequestDto();
-
-		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-		f.setAccessible(true);
-		f.set(clientAuditRequestBuilder, auditRequestBuilder);
-		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-		f1.setAccessible(true);
-		f1.set(auditRequestBuilder, auditRequest1);*/
 	}
 
 	@Test
