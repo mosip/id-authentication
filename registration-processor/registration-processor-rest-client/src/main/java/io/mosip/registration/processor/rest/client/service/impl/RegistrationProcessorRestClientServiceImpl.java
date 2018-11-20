@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
@@ -19,7 +21,7 @@ import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 public class RegistrationProcessorRestClientServiceImpl implements RegistrationProcessorRestClientService<Object> {
 
 	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(RegistrationProcessorRestClientServiceImpl.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(RegistrationProcessorRestClientServiceImpl.class);
 
 	/** The rest api client. */
 	@Autowired
@@ -40,12 +42,10 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	 */
 	@Override
 	public Object getApi(ApiName apiName, String queryParamName, String queryParamValue,
-			Class<?> responseType) {
-
+			Class<?> responseType)throws ApisResourceAccessException {
+		Object obj =null;
 		String apiHostIpPort = env.getProperty(apiName.name());
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(apiHostIpPort );
-		System.out.println("apiHostIpPort   "+apiHostIpPort);
-		
 		if (!((queryParamName == null) || (("").equals(queryParamName)))) {
 
 			String[] queryParamNameArr = queryParamName.split(",");
@@ -55,8 +55,17 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			}
 
 		}
-		System.out.println("URI CREATED BY BUILDER :  " + builder.toUriString());
-		return restApiClient.getApi(builder.toUriString(), responseType);
+		
+		try{
+			obj=restApiClient.getApi(builder.toUriString(), responseType);
+
+		}catch(ResourceAccessException e) {
+
+			throw new ApisResourceAccessException(e.getMessage());
+
+		}
+
+		return obj;
 	}
 
 	/*
@@ -70,10 +79,11 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 	 */
 	@Override
 	public Object postApi(ApiName apiName, String queryParamName, String queryParamValue,
-			Object requestedData, Class<?> responseType) {
+			Object requestedData, Class<?> responseType)throws ApisResourceAccessException {
 
+		Object obj =null;
 		String apiHostIpPort = env.getProperty(apiName.name());
-		System.out.println("apiHostIpPort   "+apiHostIpPort);
+		
 		UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(apiHostIpPort);
 
 		if (!((queryParamName == null) || (("").equals(queryParamName)))) {
@@ -85,8 +95,16 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 			}
 		}
 
-		System.out.println("URI CREATED BY BUILDER :  " + builder.toUriString());
-		return restApiClient.postApi(builder.toUriString(), requestedData, responseType);
+		try{
+			obj=restApiClient.postApi(builder.toUriString(), requestedData, responseType);
+
+		}catch(ResourceAccessException e) {
+
+			throw new ApisResourceAccessException(e.getMessage());
+
+		}
+
+		return obj;
 	}
 
 }

@@ -42,6 +42,7 @@ import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncEx
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -71,7 +72,7 @@ public class PacketReceiverServiceTest {
 	public ExpectedException exceptionRule = ExpectedException.none();
 
 	@Mock
-	private AuditLogRequestBuilder coreAuditRequestBuilder = new AuditLogRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 	
 	@InjectMocks
 	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl() {
@@ -111,12 +112,14 @@ public class PacketReceiverServiceTest {
 			logger.error(e.getMessage());
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-		}
+		}finally {
 
 		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
+		AuditResponseDto auditResponseDto=new AuditResponseDto();
+		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("", "", "", "", "");
 		
 		
-		/*Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
+		}/*Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
 		Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
 		
 		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();

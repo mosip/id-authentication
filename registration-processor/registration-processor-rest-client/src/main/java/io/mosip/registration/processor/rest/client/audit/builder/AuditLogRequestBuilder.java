@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.ServerUtil;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditRequestDto;
 import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
+
 
 /**
  * The Class AuditRequestBuilder.
@@ -20,12 +22,12 @@ import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 public class AuditLogRequestBuilder {
 
 	/** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(AuditLogRequestBuilder.class);
+	private final Logger LOGGER = LoggerFactory.getLogger(AuditLogRequestBuilder.class);
 
 	/** The registration processor rest service. */
 	@Autowired
 	private RegistrationProcessorRestClientService<Object> registrationProcessorRestService;
-	
+
 	/**
 	 * Creates the audit request builder.
 	 *
@@ -39,26 +41,37 @@ public class AuditLogRequestBuilder {
 	public AuditResponseDto createAuditRequestBuilder(String description, String eventId, String eventName, String eventType,
 			String registrationId) {
 
+		AuditRequestDto auditRequestDto=null;
+		AuditResponseDto auditResponseDto=null;
 
-		AuditRequestDto auditRequestDto= new AuditRequestDto();
-		auditRequestDto.setDescription(description);
-		auditRequestDto.setActionTimeStamp(LocalDateTime.now());
-		auditRequestDto.setApplicationId(AuditLogConstant.MOSIP_4.toString());
-		auditRequestDto.setApplicationName(AuditLogConstant.REGISTRATION_PROCESSOR.toString());
-		auditRequestDto.setCreatedBy(AuditLogConstant.SYSTEM.toString());
-		auditRequestDto.setEventId(eventId);
-		auditRequestDto.setEventName(eventName);
-		auditRequestDto.setEventType(eventType);
-		auditRequestDto.setHostIp(ServerUtil.getServerUtilInstance().getServerIp());
-		auditRequestDto.setHostName(ServerUtil.getServerUtilInstance().getServerName());
-		auditRequestDto.setId(registrationId);
-		auditRequestDto.setIdType(AuditLogConstant.REGISTRATION_ID.toString());
-		auditRequestDto.setModuleId(null);
-		auditRequestDto.setModuleName(null);
-		auditRequestDto.setSessionUserId(AuditLogConstant.SYSTEM.toString());
-		auditRequestDto.setSessionUserName(null);
+		try {
+			
+			auditRequestDto= new AuditRequestDto();
+			auditRequestDto.setDescription(description);
+			auditRequestDto.setActionTimeStamp(LocalDateTime.now());
+			auditRequestDto.setApplicationId(AuditLogConstant.MOSIP_4.toString());
+			auditRequestDto.setApplicationName(AuditLogConstant.REGISTRATION_PROCESSOR.toString());
+			auditRequestDto.setCreatedBy(AuditLogConstant.SYSTEM.toString());
+			auditRequestDto.setEventId(eventId);
+			auditRequestDto.setEventName(eventName);
+			auditRequestDto.setEventType(eventType);
+			auditRequestDto.setHostIp(ServerUtil.getServerUtilInstance().getServerIp());
+			auditRequestDto.setHostName(ServerUtil.getServerUtilInstance().getServerName());
+			auditRequestDto.setId(registrationId);
+			auditRequestDto.setIdType(AuditLogConstant.REGISTRATION_ID.toString());
+			auditRequestDto.setModuleId(null);
+			auditRequestDto.setModuleName(null);
+			auditRequestDto.setSessionUserId(AuditLogConstant.SYSTEM.toString());
+			auditRequestDto.setSessionUserName(null);
+			auditResponseDto=(AuditResponseDto)registrationProcessorRestService.postApi(ApiName.AUDIT, "", "", auditRequestDto, AuditResponseDto.class);
 
-		return (AuditResponseDto)registrationProcessorRestService.postApi(ApiName.AUDIT, "", "", auditRequestDto, AuditResponseDto.class);
+		} catch (ApisResourceAccessException arae) {
+
+			LOGGER.error(arae.getMessage());
+			
+		}
+
+		return auditResponseDto;
 	}
 
 }
