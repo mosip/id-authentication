@@ -24,6 +24,7 @@ import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * @author Neha
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
