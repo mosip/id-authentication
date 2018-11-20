@@ -5,6 +5,6 @@ VOLUME /tmp
 
 ADD target/pre-registration-auth-service-1.0.0-SNAPSHOT.jar /PreRegistrationAuthService.jar
 
-EXPOSE 9091
+EXPOSE 9090
 
 ENTRYPOINT ["java","-jar","/PreRegistrationAuthService.jar"]
