@@ -24,7 +24,6 @@ def projectToBuild = 'pre-registration/pre-registration-ui'
   }
  }
     stage('npm install') {
-        sh "npm install -g @angular/cli@6"
         sh "npm install"
     }
         stage('build') {
