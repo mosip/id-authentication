@@ -9,10 +9,12 @@ import { AuthService } from './auth/auth.service';
 import { RegistrationModule } from './registration/registration.module';
 import { CoreModule } from './core/core.module';
 import { AuthModule } from './auth/auth.module';
+import { DraggableDirective } from './registration/file-upload/draggable.directive';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DraggableDirective
   ],
   imports: [
     BrowserModule,
