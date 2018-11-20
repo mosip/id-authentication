@@ -33,7 +33,7 @@ public class ReasonList extends BaseEntity implements Serializable {
 
 	@Id
 	@Column(name = "rsncat_code", nullable = false, length = 36)
-	private String rsncatCode;
+	private String rsnCatCode;
     @Id
 	@Column(name = "code", nullable = false, length = 36)
 	private String code;
@@ -58,7 +58,7 @@ public class ReasonList extends BaseEntity implements Serializable {
 		
 		setCode(code);
 		setLangCode(langCode);
-		setRsncatCode(rsnCatCode);
+		setRsnCatCode(rsnCatCode);
 		this.name=name;
 		this.description=description;
 		setIsActive(true);

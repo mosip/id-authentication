@@ -26,6 +26,12 @@ public class PacketRejectionReasonController {
                 
 		return reasonService.saveReasonCategories(requestDto);
 	}
+	
+	@PostMapping("/reasonList")
+	public ReasonResponseDto saveReasonLists(@RequestBody ReasonRequestDto requestDto) {
+                
+		return reasonService.saveReasonList(requestDto);
+	}
 
 	/**
 	 * Get all reasoncategory list for the packet rejection reason

@@ -26,7 +26,7 @@ public interface ReasonRepository extends BaseRepository<ReasonCategory, String>
 	 * @param languageCode
 	 * @return
 	 */
-	List<ReasonCategory> findReasonCategoryByReasonCategoryIdCodeAndReasonCategoryIdLangCodeAndIsActiveTrueAndIsDeletedFalse(String code, String languageCode);
+	List<ReasonCategory> findReasonCategoryByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(String code, String languageCode);
 
 	
 }

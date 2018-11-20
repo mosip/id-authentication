@@ -15,7 +15,7 @@ public class ReasonListDto {
 
 	private String description;
 
-	private String rsncatCode;
+	private String rsnCatCode;
 
 	private String langCode;
 

@@ -21,7 +21,7 @@ public class ReasonListId implements Serializable {
 	private static final long serialVersionUID = -5622889820282234362L;
 
 	@Column(name = "rsncat_code", nullable = false, length = 36)
-	private String rsncatCode;
+	private String rsnCatCode;
 
 	@Column(name = "code", nullable = false, length = 36)
 	private String code;

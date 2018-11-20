@@ -61,9 +61,9 @@ public class ObjectMapperUtil {
 		Objects.requireNonNull(reasonCategories, "list cannot be null");
 		List<ReasonCategoryDto> reasonCategoryDtos = null;
 		reasonCategoryDtos = reasonCategories.stream()
-				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getReasonCategoryId().getCode(),
+				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(),
 						reasonCategory.getName(), reasonCategory.getDescription(),
-						reasonCategory.getReasonCategoryId().getLangCode(), reasonCategory.getIsActive(),
+						reasonCategory.getLangCode(), reasonCategory.getIsActive(),
 						reasonCategory.getIsDeleted(), mapAll(reasonCategory.getReasonList(), ReasonListDto.class)))
 				.collect(Collectors.toList());
 
@@ -90,7 +90,7 @@ public class ObjectMapperUtil {
 	public List<ReasonList> reasonListDtoToEntity(List<ReasonListDto> reasonListDto){
 		Objects.requireNonNull(reasonListDto, "list cannot be null");
 	    List<ReasonList> reasonLists=null;
-	    reasonLists=reasonListDto.stream().map(reasonDto -> new ReasonList(reasonDto.getCode(),reasonDto.getRsncatCode(),reasonDto.getLangCode(),reasonDto.getName(),reasonDto.getDescription(),true, false, "system", "system",
+	    reasonLists=reasonListDto.stream().map(reasonDto -> new ReasonList(reasonDto.getCode(),reasonDto.getRsnCatCode(),reasonDto.getLangCode(),reasonDto.getName(),reasonDto.getDescription(),true, false, "system", "system",
 						LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now())).collect(Collectors.toList());
 		return reasonLists;
 		

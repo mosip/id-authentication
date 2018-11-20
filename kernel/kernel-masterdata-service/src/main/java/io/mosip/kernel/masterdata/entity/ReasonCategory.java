@@ -7,8 +7,9 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "reason_category", schema = "master")
-
+@IdClass(ReasonCategoryId.class)
 public class ReasonCategory extends BaseEntity implements Serializable {
 
 	/**
@@ -31,8 +32,15 @@ public class ReasonCategory extends BaseEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1440279821197074364L;
 
-	@EmbeddedId
-	private ReasonCategoryId reasonCategoryId;
+	
+	@Id
+	@Column(name = "code", nullable = false)
+	private String code;
+	
+	
+	@Id
+	@Column(name = "lang_code", nullable = false, length = 3)
+	private String langCode;
 
 	@Column(name = "name")
 	private String name;
@@ -51,12 +59,12 @@ public class ReasonCategory extends BaseEntity implements Serializable {
 	public ReasonCategory(String code, String name, String description, String langCode, List<ReasonList> reasons,
 			Boolean isActive, Boolean isDeleted, String createdBy, String updatedBy, LocalDateTime createdTime,
 			LocalDateTime updatedTime, LocalDateTime deletedTime) {
-		reasonCategoryId = new ReasonCategoryId();
+		
 
 		this.name = name;
 		this.description = description;
-		reasonCategoryId.setCode(code);
-		reasonCategoryId.setLangCode(langCode);
+	    setCode(code);
+		setLangCode(langCode);
 		this.reasonList.addAll(reasons);
 		setIsActive(isActive);
 		setIsDeleted(isDeleted);
