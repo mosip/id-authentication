@@ -2,7 +2,9 @@ package io.mosip.authentication.service.impl.otpgen.service;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,11 +27,16 @@ import org.springframework.web.context.WebApplicationContext;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.IdInfoService;
 import io.mosip.authentication.service.config.IDAMappingConfig;
+import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
 import io.mosip.authentication.service.impl.id.service.impl.IdInfoServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.KycServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.integration.IdTemplateManager;
+import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
+import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
 
 /**
  * Test class for KycServiceImpl.
@@ -55,13 +62,16 @@ public class KycServiceImplTest {
 	@Autowired
 	private IDAMappingConfig idMappingConfig;
 	
-	IdInfoServiceImpl idInfoServiceImpl = new IdInfoServiceImpl();
+	IdInfoService idInfoService = new IdInfoServiceImpl();
 	
 	@InjectMocks
 	private KycServiceImpl kycServiceImpl;
 	
-	@Mock
-	IdTemplateManager idTemplateManager;
+	IdAuthService idAuthService = new IdAuthServiceImpl();
+	
+	IdTemplateManager idTemplateManager = new IdTemplateManager();
+	
+	PDFGenerator pdfGenerator = new PDFGeneratorImpl();
 	
 	@Value("${sample.demo.entity}")
 	String value;
@@ -72,34 +82,33 @@ public class KycServiceImplTest {
 		source.setBasename("eKycPDFTemplate");
 		ReflectionTestUtils.setField(kycServiceImpl, "messageSource", source);
 		ReflectionTestUtils.setField(kycServiceImpl, "env", env);
-		ReflectionTestUtils.setField(kycServiceImpl, "idInfoServiceImpl", idInfoServiceImpl);
-		ReflectionTestUtils.setField(idInfoServiceImpl, "value", value);
+		ReflectionTestUtils.setField(kycServiceImpl, "idInfoService", idInfoService);
+		ReflectionTestUtils.setField(kycServiceImpl, "idAuthService", idAuthService);
+		ReflectionTestUtils.setField(idInfoService, "value", value);
 		ReflectionTestUtils.setField(kycServiceImpl, "idTemplateManager", idTemplateManager);
+		ReflectionTestUtils.setField(kycServiceImpl, "pdfGenerator", pdfGenerator);
 		ReflectionTestUtils.setField(kycServiceImpl, "demoHelper", demoHelper);
 		ReflectionTestUtils.setField(demoHelper, "environment", environment);
 		ReflectionTestUtils.setField(demoHelper, "idMappingConfig", idMappingConfig);
 		
 	}
 	
-	@Test
+	/*@Test
 	public void validUIN() {
 		try {
-			Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.anyMap())).thenReturn("pdf generated");
 			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false);
 			assertNotNull(k);
-		} catch (IdAuthenticationBusinessException | IOException e) {
+		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	@Test
 	public void validUIN2() {
-		try {
-			Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.anyMap())).thenReturn("pdf generated");
+		try {			
 			KycInfo k = kycServiceImpl.retrieveKycInfo("1223232345665", KycType.FULL, true, true);
 			assertNotNull(k);
-		} catch (IdAuthenticationBusinessException | IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
 		}
 	}
