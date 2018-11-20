@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -17,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.core.exception.IllegalArgumentException;
+import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.util.DateUtils;
 
 /**
@@ -218,9 +221,6 @@ public final class DateUtilTest {
 	@Test
 	public void testIsSameDayWithDifferentTime() {
 		loadDate();
-		calendar.add(Calendar.HOUR, 1);
-		calendar.add(Calendar.MINUTE, 1);
-		calendar.add(Calendar.SECOND, 1);
 		calendar.add(Calendar.MILLISECOND, 1);
 		Date nextDate = calendar.getTime();
 
@@ -234,8 +234,6 @@ public final class DateUtilTest {
 	@Test
 	public void testIsSameInstantWithDifferentTime() {
 		loadDate();
-		calendar.add(Calendar.HOUR, 1);
-		calendar.add(Calendar.MINUTE, 1);
 		calendar.add(Calendar.SECOND, 1);
 		calendar.add(Calendar.MILLISECOND, 1);
 		Date nextDate = calendar.getTime();
@@ -271,10 +269,37 @@ public final class DateUtilTest {
 	// -----------------------------Parsing date test----------------------------
 
 	@Test
-	public void testDateParsing() {
-		Date d = DateUtils.parseDateDefaultISO8061("2018-09-04T11:46:12.640+0700");
+	public void testGetUTCCurrentDateTime() {
+		LocalDateTime expectedDate = LocalDateTime.now();
+		expectedDate.atOffset(ZoneOffset.UTC);
+		LocalDateTime actualDate = DateUtils.getUTCCurrentDateTime();
+		assertFalse(expectedDate.compareTo(actualDate) == 0);
+	}
 
-		System.out.println(d);
+	@Test
+	public void testParseUTCToDefaultLocalDateTime() {
+		LocalDateTime actualDate = DateUtils
+				.parseUTCToDefaultLocalDateTime(DateUtils.getUTCCurrentDateTimeString("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+		LocalDateTime expectedDate = LocalDateTime.now();
+		assertTrue(expectedDate.withNano(0).compareTo(actualDate.withNano(0)) == 0);
+	}
+
+	@Test(expected = ParseException.class)
+	public void testParseUTCToDefaultLocalDateTimeException() {
+		DateUtils.parseUTCToDefaultLocalDateTime("22-01-2108");
+	}
+
+	@Test
+	public void parseUTCToLocalDateTime() {
+		LocalDateTime expectedDate = LocalDateTime.now();
+		LocalDateTime actualDate = DateUtils.parseUTCToLocalDateTime(DateUtils.getUTCDefaultCurrentDateTimeString(),
+				"yyyy-MM-dd'T'HH:mm:ss.SSS");
+		assertTrue(expectedDate.withNano(0).compareTo(actualDate.withNano(0)) == 0);
+	}
+
+	@Test(expected = ParseException.class)
+	public void testParseUTCToLocalDateTimeException() {
+		DateUtils.parseUTCToLocalDateTime("22-01-2108", "yyyy-MM-dd'T'HH:mm:ss.SSS");
 	}
 
 }
