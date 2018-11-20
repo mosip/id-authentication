@@ -77,7 +77,7 @@ public class OTPAuthServiceTest {
 	public void Test_InvalidTxnId() throws IdAuthenticationBusinessException {
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		autntxnList.add(null);
-		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(repository.findAllByRequestTrnIdAndRefId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(autntxnList);
 		assertFalse(authserviceimpl.validateTxnId("", ""));
 	}
@@ -91,11 +91,11 @@ public class OTPAuthServiceTest {
 	@Test
 	public void Test_validTxnId() throws IdAuthenticationBusinessException {
 		AutnTxn autntxn = new AutnTxn();
-		autntxn.setRequestTxnId("TXN001");
+		autntxn.setRequestTrnId("TXN001");
 
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
 		autntxnList.add(autntxn);
-		Mockito.when(repository.findAllByRequestTxnIdAndUin(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(repository.findAllByRequestTrnIdAndRefId(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(autntxnList);
 		assertTrue(authserviceimpl.validateTxnId("232323", "234234"));
 	}

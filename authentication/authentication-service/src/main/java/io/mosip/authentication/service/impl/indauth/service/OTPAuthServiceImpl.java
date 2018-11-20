@@ -141,7 +141,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	public boolean validateTxnId(String txnId, String uIN) throws IdAuthenticationBusinessException {
 		boolean isValidTxn = false;
-		List<AutnTxn> authtxns = autntxnrepository.findAllByRequestTxnIdAndUin(txnId, uIN);
+		List<AutnTxn> authtxns = autntxnrepository.findAllByRequestTrnIdAndRefId(txnId, uIN);
 		if (authtxns != null && authtxns.size() > 0 && authtxns.get(0) != null) {
 			isValidTxn = true;
 		} else {

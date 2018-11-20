@@ -119,7 +119,7 @@ public class OTPFacadeImpl implements OTPFacade {
 
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		if (otp == null || otp.trim().isEmpty()) {
-			mosipLogger.error("SessionId", "NA", "NA", "generated OTP is: " + otp);
+			mosipLogger.error("SessionId", "NA", "NA", "OTP Generation failed");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		} else {
 			mosipLogger.info("NA", "NA", "NA", "generated OTP is: " + otp);
@@ -226,7 +226,9 @@ public class OTPFacadeImpl implements OTPFacade {
 		String txnID = otpRequestDto.getTxnID();
 
 		AutnTxn autnTxn = new AutnTxn();
-		autnTxn.setUin(uniqueID);
+		autnTxn.setRefId(uniqueID);
+		autnTxn.setRefIdType(otpRequestDto.getIdvIdType());
+		
 		autnTxn.setId(String.valueOf(new Date().getTime())); // FIXME
 
 		// TODO check
@@ -236,10 +238,11 @@ public class OTPFacadeImpl implements OTPFacade {
 		autnTxn.setRequestDTtimes(dateHelper.convertStringToDate(otpRequestDto.getReqTime()));
 		autnTxn.setResponseDTimes(new Date()); // TODO check this
 		autnTxn.setAuthTypeCode(RequestType.OTP_REQUEST.getRequestType());
-		autnTxn.setRequestTxnId(txnID);
-		autnTxn.setIsActive("y");
-		autnTxn.setStatusCode("OTP_GENERATED"); // FIXME
+		autnTxn.setRequestTrnId(txnID);
+		autnTxn.setStatusCode("Y"); // FIXME
 		autnTxn.setStatusComment("OTP_GENERATED"); // FIXME
+		//FIXME
+		autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
 
 		autntxnrepository.saveAndFlush(autnTxn);
 	}
