@@ -9,7 +9,6 @@ import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTH
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
