@@ -130,6 +130,7 @@ public class RegistrationDAOImpl implements RegistrationDAO {
 			List<RegistrationTransaction> registrationTransaction = registration.getRegistrationTransaction();
 			
 			RegistrationTransaction registrationTxn = new RegistrationTransaction();
+			registrationTxn.setRegId(registrationID);
 			registrationTxn.setTrnTypeCode(RegistrationTransactionType.UPDATED.getCode());
 			registrationTxn.setLangCode("ENG");
 			registrationTxn.setStatusCode(clientStatusCode);

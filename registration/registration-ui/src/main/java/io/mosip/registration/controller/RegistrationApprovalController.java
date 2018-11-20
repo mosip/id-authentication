@@ -382,12 +382,13 @@ public class RegistrationApprovalController extends BaseController implements In
 		return primarystage;
 	}
 
-	public void getRegistrationStatus() {
+	public void getFingerPrintStatus() {
 		  for (Map<String, String> map : approvalmapList) {
 			  registrationApprovalService.updateRegistration(map.get("registrationID"),
 			  map.get("statusComment"), map.get("statusCode")); }
-		  populateTable();
+		  reloadTableView();
 	}
+	
 	public void setInvisible() {
 		if (approvalmapList == null) {
 			submitBtn.setVisible(false);

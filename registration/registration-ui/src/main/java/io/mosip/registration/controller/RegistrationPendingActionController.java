@@ -276,11 +276,11 @@ public class RegistrationPendingActionController extends BaseController implemen
 
 	}
 
-	public void getRegistrationStatus() {
+	public void getFingerPrintStatus() {
 		  for (Map<String, String> map : approvalmapList) {
 			  registrationApprovalService.updateRegistration(map.get("registrationID"),
 			  map.get("statusComment"), map.get("statusCode")); }
-		  populateTable();
+		  reloadTableView();
 	}
 
 	public void pendingActionSubmit() throws RegBaseCheckedException {
