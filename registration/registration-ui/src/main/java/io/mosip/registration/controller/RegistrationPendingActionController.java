@@ -6,7 +6,6 @@ import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -27,44 +26,30 @@ import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.RegistrationApprovalService;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
-import javafx.util.Duration;
 
 @Controller
-public class RegistrationPendingActionController extends BaseController implements Initializable{
+public class RegistrationPendingActionController extends BaseController implements Initializable {
 
 	/**
 	 * Instance of {@link Logger}
@@ -76,6 +61,9 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 */
 	@Autowired
 	private RegistrationApprovalService registrationApprovalService;
+	
+	@Autowired
+	private ViewAckController viewAckController;
 
 	/**
 	 * Table to display the created packets
@@ -96,12 +84,12 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * Button for approval
 	 */
 	@FXML
-	private Button approvalBtn;
+	private ToggleButton approvalBtn;
 	/**
 	 * Button for rejection
 	 */
 	@FXML
-	private Button rejectionBtn;
+	private ToggleButton rejectionBtn;
 	/**
 	 * Button for on hold
 	 */
@@ -113,15 +101,13 @@ public class RegistrationPendingActionController extends BaseController implemen
 
 	/** The approve registration root sub pane. */
 	@FXML
-	private AnchorPane approveRegistrationRootSubPane;
+	private AnchorPane pendingActionRegistrationRootSubPane;
 
 	/** The image anchor pane. */
 	@FXML
 	private AnchorPane pendingActionImageAnchorPane;
 
 	private List<Map<String, String>> approvalmapList = null;
-
-	private Timeline timeline;
 
 	/*
 	 * (non-Javadoc)
@@ -153,7 +139,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 				viewAck();
 			}
 		});
-		
+
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been completed");
 	}
@@ -165,17 +151,30 @@ public class RegistrationPendingActionController extends BaseController implemen
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form started");
 		if (pendingActionTable.getSelectionModel().getSelectedItem() != null) {
-			if (!approvalmapList.isEmpty() ) {
+			if (!approvalmapList.isEmpty()) {
 				submitBtn.setVisible(true);
 			}
+			
 			pendingActionImageAnchorPane.setVisible(true);
 			approvalBtn.setVisible(true);
 			rejectionBtn.setVisible(true);
-			
-			
+
+			for (Map<String, String> map : approvalmapList) {
+
+				if (map.get("registrationID") == pendingActionTable.getSelectionModel().getSelectedItem().getId()) {
+					if (map.get("statusCode") == RegistrationClientStatusCode.APPROVED.getCode()) {
+						approvalBtn.setSelected(true);
+						rejectionBtn.setSelected(false);
+					} else if (map.get("statusCode") == RegistrationClientStatusCode.REJECTED.getCode()) {
+						approvalBtn.setSelected(false);
+						rejectionBtn.setSelected(true);
+					}
+				}
+			}
+
 			try (FileInputStream file = new FileInputStream(
 					new File(pendingActionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()))) {
-				
+
 				pendingActionImageView.setImage(new Image(file));
 			} catch (IOException ioException) {
 				LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
@@ -193,62 +192,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	public void openAckForm() {
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Opening the Acknowledgement Form");
-
-		try {
-
-			int startTime = 5;
-			IntegerProperty timeSeconds = new SimpleIntegerProperty(startTime);
-
-			Stage primaryStage = new Stage();
-			autoCloseStage(primaryStage);
-			Group root = new Group();
-			Scene scene = new Scene(root, 800, 600);
-			FileInputStream file = new FileInputStream(
-					new File(pendingActionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath()));
-			primaryStage.setTitle(RegistrationConstants.ACKNOWLEDGEMENT_FORM_TITLE);
-			ImageView newimageView = new ImageView(new Image(file));
-			HBox hbox = new HBox(newimageView);
-			Label timerLabel = new Label();
-			timerLabel.textProperty().bind(timeSeconds.asString());
-			timerLabel.setTextFill(Color.RED);
-			timerLabel.setStyle("-fx-font-size: 2em;");
-
-			VBox vb = new VBox(20);
-			vb.setAlignment(Pos.TOP_RIGHT);
-			vb.setPrefWidth(scene.getWidth());
-			vb.getChildren().addAll(timerLabel);
-
-			root.getChildren().add(hbox);
-			root.getChildren().add(vb);
-
-			primaryStage.setOnShowing((WindowEvent event) -> {
-
-				if (timeline != null) {
-					timeline.stop();
-				}
-				timeSeconds.set(startTime);
-				timeline = new Timeline();
-				timeline.getKeyFrames()
-						.add(new KeyFrame(Duration.seconds(startTime + 1), new KeyValue(timeSeconds, 0)));
-				timeline.playFromStart();
-			});
-
-			primaryStage.setScene(scene);
-			scene.setOnKeyPressed((KeyEvent event) -> {
-				if (event.getCode() == KeyCode.ESCAPE) {
-					primaryStage.close();
-				}
-			});
-			primaryStage.initModality(Modality.WINDOW_MODAL);
-			primaryStage.initOwner(stage);
-			primaryStage.resizableProperty().set(false);
-			primaryStage.show();
-
-		} catch (FileNotFoundException fileNotFoundException) {
-			LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
-					APPLICATION_NAME, APPLICATION_ID, fileNotFoundException.getMessage());
-		}
-
+		viewAckController.viewAck(pendingActionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(), stage);
 	}
 
 	/**
@@ -256,19 +200,25 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * 
 	 * @param event
 	 */
-	public void pendingActionApprovePacket(ActionEvent event) {
+	public void pendingActionApprovePacket() {
 		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Packet updation has been started");
 		RegistrationApprovalDTO regData = pendingActionTable.getSelectionModel().getSelectedItem();
+		for (Map<String, String> registrationMap : approvalmapList) {
+			if (registrationMap.containsValue(pendingActionTable.getSelectionModel().getSelectedItem().getId())) {
+				approvalmapList.remove(registrationMap);
+			}
+		}
 		Map<String, String> map = new HashMap<>();
 		map.put("registrationID", regData.getId());
 		map.put("statusCode", RegistrationClientStatusCode.APPROVED.getCode());
 		map.put("statusComment", "");
 		approvalmapList.add(map);
-		
-		pendingActionTable.getItems().remove(pendingActionTable.getSelectionModel().getSelectedItem());
-		setInvisible();
-		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.APPROVED_STATUS_MESSAGE);
+
+		approvalBtn.setSelected(true);
+		rejectionBtn.setSelected(false);
+		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION,
+				RegistrationConstants.APPROVED_STATUS_MESSAGE);
 		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_", APPLICATION_NAME, APPLICATION_ID,
 				"Packet updation has been ended");
 	}
@@ -280,16 +230,16 @@ public class RegistrationPendingActionController extends BaseController implemen
 	public void populateTable() {
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
 				"table population has been started");
-		 List<RegistrationApprovalDTO> listData = registrationApprovalService.getEnrollmentByStatus(RegistrationClientStatusCode.ON_HOLD.getCode());
+		List<RegistrationApprovalDTO> listData = registrationApprovalService
+				.getEnrollmentByStatus(RegistrationClientStatusCode.ON_HOLD.getCode());
 		setInvisible();
 		if (!listData.isEmpty()) {
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			pendingActionTable.setItems(oList);
 		} else {
-			pendingActionTable.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
+			pendingActionRegistrationRootSubPane.disableProperty().set(true);
 			pendingActionTable.getItems().remove(pendingActionTable.getSelectionModel().getSelectedItem());
-			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.PLACEHOLDER_LABEL);
-
+			pendingActionTable.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 		}
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
 				"table population has been ended");
@@ -301,7 +251,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * @param event
 	 * @throws RegBaseCheckedException
 	 */
-	public void pendingActionRejectPacket(ActionEvent event) throws RegBaseCheckedException {
+	public void pendingActionRejectPacket() throws RegBaseCheckedException {
 		try {
 			LOGGER.debug("REGISTRATION - REJECTION_PACKET - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 					"Rejection of packet has been started");
@@ -311,9 +261,13 @@ public class RegistrationPendingActionController extends BaseController implemen
 			RejectionController rejectionController = (RejectionController) RegistrationAppInitialization
 					.getApplicationContext().getBean(RegistrationConstants.REJECTION_BEAN_NAME);
 
-			rejectionController.initData(pendingActionTable.getSelectionModel().getSelectedItem(), primarystage, approvalmapList);
-			LoadStage(primarystage, RegistrationConstants.REJECTION_PAGE, pendingActionTable.getSelectionModel().getSelectedItem());
+			rejectionController.initData(pendingActionTable.getSelectionModel().getSelectedItem(), primarystage,
+					approvalmapList);
+			loadStage(primarystage, RegistrationConstants.REJECTION_PAGE,
+					pendingActionTable.getSelectionModel().getSelectedItem());
 
+			approvalBtn.setSelected(false);
+			rejectionBtn.setSelected(true);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
 		}
@@ -321,13 +275,14 @@ public class RegistrationPendingActionController extends BaseController implemen
 				"Rejection of packet has been ended");
 
 	}
+
 	public void getRegistrationStatus() {
 		  for (Map<String, String> map : approvalmapList) {
 			  registrationApprovalService.updateRegistration(map.get("registrationID"),
 			  map.get("statusComment"), map.get("statusCode")); }
 	}
 
-	public void pendingActionSubmit(ActionEvent event) throws RegBaseCheckedException {
+	public void pendingActionSubmit() throws RegBaseCheckedException {
 
 		Parent ackRoot;
 	try {
@@ -347,10 +302,10 @@ public class RegistrationPendingActionController extends BaseController implemen
 	}
 	}
 	
-	
-	
-	private Stage LoadStage(Stage primarystage,String fxmlPath,RegistrationApprovalDTO registrationApprovalDTO) throws RegBaseCheckedException {
-		
+
+	private Stage loadStage(Stage primarystage, String fxmlPath, RegistrationApprovalDTO registrationApprovalDTO)
+			throws RegBaseCheckedException {
+
 		try {
 			AnchorPane authRoot = BaseController.load(getClass().getResource(fxmlPath));
 			Scene scene = new Scene(authRoot);
@@ -370,7 +325,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 		}
 		return primarystage;
 	}
-	
+
 	private void setInvisible() {
 		if (approvalmapList == null) {
 			submitBtn.setVisible(false);
