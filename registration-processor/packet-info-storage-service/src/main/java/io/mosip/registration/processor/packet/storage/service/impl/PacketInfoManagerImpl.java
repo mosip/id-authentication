@@ -3,14 +3,23 @@ package io.mosip.registration.processor.packet.storage.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.io.IOUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
@@ -26,22 +35,35 @@ import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.identify.RegistrationProcessorIdentity;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
+import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantFingerprintEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantIrisEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionEntity;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
+import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
+import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.MappingJsonException;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
+import io.mosip.registration.processor.packet.storage.exception.RPR_PLATFORM_ERROR_MESSAGES;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
+import io.mosip.registration.processor.packet.storage.exception.UnableToInsertData;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
+import io.mosip.registration.processor.packet.storage.utils.Utilities;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import lombok.Cleanup;
 
@@ -95,7 +117,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	/** The applicant demographic repository. */
 	@Autowired
-	private BasePacketRepository<ApplicantDemographicEntity, String> applicantDemographicRepository;
+	private BasePacketRepository<ApplicantDemographicInfoJsonEntity, String> demographicJsonRepository;
+	
+	@Autowired
+	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
+
 
 	/** The reg center machine repository. */
 	@Autowired
@@ -122,9 +148,22 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Autowired
 	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
+	
+	@Autowired
+	private Utilities utility;
+	
+	@Autowired
+	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
 	/** The meta data. */
 	private List<FieldValue> metaData;
+	private String regId;
+	private String preRegId;	
+	
+	private JSONObject demographicIdentity = null;
+	private static final String LANGUAGE = "language";
+	private static final String LABEL = "label";
+	private static final String VALUE = "value";
 
 	/*
 	 * (non-Javadoc)
@@ -191,7 +230,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * io.mosip.registration.processor.core.spi.packetinfo.service.PacketInfoManager
 	 * #saveDemographicData(java.lang.Object)
 	 */
-	@Override
+/*	@Override
 	public void saveDemographicData(Demographic demographicInfo, List<FieldValue> metaData) {
 
 		boolean isTransactionSuccessful = false;
@@ -221,7 +260,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		}
 
 	}
-
+*/
 	/*
 	 * (non-Javadoc)
 	 *
@@ -411,4 +450,178 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		}
 
 	}
+	@SuppressWarnings("unchecked")
+	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
+		String language;
+		String label;
+		String value;
+		T[] javaObject = (T[]) Array.newInstance(genericType, demographicJsonNode.size());
+		try {
+			for (int i = 0; i < demographicJsonNode.size(); i++) {
+
+				T jsonNodeElement = (T) genericType.newInstance();
+
+				JSONObject objects = (JSONObject) demographicJsonNode.get(i);
+				language = (String) objects.get(LANGUAGE);
+				label = (String) objects.get(LABEL);
+				value = (String) objects.get(VALUE);
+
+				Field labelField = jsonNodeElement.getClass().getDeclaredField(LABEL);
+				labelField.setAccessible(true);
+				labelField.set(jsonNodeElement, label);
+
+				Field languageField = jsonNodeElement.getClass().getDeclaredField(LANGUAGE);
+				languageField.setAccessible(true);
+				languageField.set(jsonNodeElement, language);
+
+				Field valueField = jsonNodeElement.getClass().getDeclaredField(VALUE);
+				valueField.setAccessible(true);
+				valueField.set(jsonNodeElement, value);
+
+				javaObject[i] = jsonNodeElement;
+			}
+		} catch (InstantiationException | IllegalAccessException e) {
+			LOGGER.error("Error while Creating Instance of generic type", e);
+			throw new MappingJsonException(RPR_PLATFORM_ERROR_MESSAGES.INSTANTIATION_EXCEPTION.getValue(), e);
+
+		} catch (NoSuchFieldException | SecurityException e) {
+			LOGGER.error("no such field exception", e);
+			throw new MappingJsonException(RPR_PLATFORM_ERROR_MESSAGES.NO_SUCH_FIELD_EXCEPTION.getValue(), e);
+
+		}
+
+		return javaObject;
+
+	}
+	private JsonValue[] getJsonValues(Object identityKey) {
+		JSONArray demographicJsonNode = null;
+		if (demographicIdentity != null)
+			demographicJsonNode = (JSONArray) demographicIdentity.get(identityKey);
+		return (demographicJsonNode != null)
+				? (JsonValue[]) mapJsonNodeToJavaObject(JsonValue.class, demographicJsonNode)
+				: null;
+
+	}
+	private IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString) {
+		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
+		try {
+			// Get Identity Json from config server and map keys to Java Object
+			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),utility.getGetRegProcessorIdentityJson());
+			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
+			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
+					RegistrationProcessorIdentity.class);
+			JSONParser parser = new JSONParser();
+			JSONObject demographicJson = (JSONObject) parser.parse(demographicJsonString);
+			demographicIdentity = (JSONObject) demographicJson.get(utility.getGetRegProcessorDemographicIdentity());
+			if (demographicIdentity == null)
+				throw new IdentityNotFoundException(RPR_PLATFORM_ERROR_MESSAGES.IDENTITY_NOT_FOUND.getValue());
+
+			demographicData.setFirstName(getJsonValues(regProcessorIdentityJson.getIdentity().getFirstName()));
+			demographicData.setMiddleName(getJsonValues(regProcessorIdentityJson.getIdentity().getMiddleName()));
+			demographicData.setLastName(getJsonValues(regProcessorIdentityJson.getIdentity().getLastName()));
+			demographicData.setFullName(getJsonValues(regProcessorIdentityJson.getIdentity().getFullName()));
+			demographicData.setDateOfBirth(getJsonValues(regProcessorIdentityJson.getIdentity().getDob()));
+			demographicData.setGender(getJsonValues(regProcessorIdentityJson.getIdentity().getGender()));
+			demographicData.setAddressLine1(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine1()));
+			demographicData.setAddressLine2(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine2()));
+			demographicData.setAddressLine3(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine3()));
+			demographicData.setAddressLine4(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine4()));
+			demographicData.setAddressLine5(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine5()));
+			demographicData.setAddressLine6(getJsonValues(regProcessorIdentityJson.getIdentity().getAddressLine6()));
+			demographicData.setZipcode(getJsonValues(regProcessorIdentityJson.getIdentity().getPincode()));
+		} catch (IOException e) {
+			LOGGER.error("Error while mapping Identity Json  ", e);
+			throw new MappingJsonException(RPR_PLATFORM_ERROR_MESSAGES.IDENTITY_JSON_MAPPING_EXCEPTION.getValue(), e);
+
+		} catch (ParseException e) {
+			LOGGER.error("Error while parsing Json file", e);
+			throw new ParsingException(RPR_PLATFORM_ERROR_MESSAGES.JSON_PARSING_EXCEPTION.getValue(), e);
+		}
+		return demographicData;
+
+	}
+
+	private void getRegistrationId(List<FieldValue> metaData) {
+		for(int i =0;i<metaData.size();i++) {
+			if("registrationId".equals(metaData.get(i).getLabel())) {
+				regId=metaData.get(i).getValue();
+			
+			}
+			if("preRegistrationId".equals(metaData.get(i).getLabel())) {
+				preRegId=metaData.get(i).getValue();
+			
+			}
+		}
+
+		
+	}
+	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes) {
+
+		String getJsonStringFromBytes = new String(demographicJsonBytes);
+		IndividualDemographicDedupe demographicData = getIdentityKeysAndFetchValuesFromJSON(getJsonStringFromBytes);
+		boolean isTransactionSuccessful = false;
+		try {
+
+			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
+					.converDemographicDedupeDtoToEntity(demographicData,regId,preRegId);
+			for (IndividualDemographicDedupeEntity applicantDemographicEntity : applicantDemographicEntities) {
+				demographicDedupeRepository.save(applicantDemographicEntity);
+				LOGGER.info(applicantDemographicEntity.getId().getRefId() + " --> DemographicDedupeData SAVED");
+			}
+			isTransactionSuccessful = true;
+		} catch (DataAccessLayerException e) {
+			throw new UnableToInsertData(
+					RPR_PLATFORM_ERROR_MESSAGES.UNABLE_TO_INSERT_DATA.getValue() + regId, e);
+		} finally {/*
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "Demographic Dedupe data saved successfully"
+					: "Demographic Dedupe data Failed to save";
+
+			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
+
+		*/}
+
+	}
+	
+	@Override
+	public void saveDemographicInfoJson(InputStream demographicJsonStream, List<FieldValue> metaData) {
+		DemographicInfoJson demoJson = new DemographicInfoJson();
+		getRegistrationId(metaData);
+		boolean isTransactionSuccessful = false;
+		if (demographicJsonStream == null)
+			throw new FileNotFoundInPacketStore(RPR_PLATFORM_ERROR_MESSAGES.FILE_NOT_FOUND_IN_DFS.getValue());
+		
+		try {
+			byte[] bytes = IOUtils.toByteArray(demographicJsonStream);
+			demoJson.setDemographicDetails(bytes);
+			demoJson.setLangCode("eng");
+			demoJson.setPreRegId(preRegId);
+			demoJson.setRegId(regId);
+			demoJson.setStatusCode("DemographicJson saved");
+			ApplicantDemographicInfoJsonEntity entity = PacketInfoMapper.convertDemographicInfoJsonToEntity(demoJson);
+			demographicJsonRepository.save(entity);
+
+			saveIndividualDemographicDedupe(bytes);
+
+			isTransactionSuccessful = true;
+		} catch (IOException e) {
+			LOGGER.error("Unable to convert InputStream to bytes", e);
+			throw new ParsingException(RPR_PLATFORM_ERROR_MESSAGES.UNABLE_TO_CONVERT_STREAM_TO_BYTES.getValue(), e);
+		} catch (DataAccessLayerException e) {
+			throw new UnableToInsertData(
+					RPR_PLATFORM_ERROR_MESSAGES.UNABLE_TO_INSERT_DATA.getValue() + regId, e);
+		} finally {
+			
+			//Do some thing
+		}
+
+	}
+	
+	
 }

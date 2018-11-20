@@ -3,6 +3,10 @@
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +22,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
@@ -45,6 +52,7 @@ import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionE
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
+import io.mosip.registration.processor.packet.storage.exception.UnableToInsertData;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoManagerImpl;
 
@@ -351,6 +359,74 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(applicantDemographicRepository.save(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.saveDemographicData(demographicInfo, metaData);
 
+	}
+	
+	@Test
+	public void saveDemographicInfoJsonTest()
+			throws JsonParseException, JsonMappingException, IOException, FileNotFoundException {
+		PacketInfo packetInfo;
+		packetInfo = (PacketInfo) JsonUtils.jsonFileToJavaObject(PacketInfo.class,
+				"..\\packet-info-storage-service\\src\\main\\resources\\PacketMetaInfo.json");
+
+		File jsonFile = new File("..\\packet-info-storage-service\\src\\main\\resources\\DemographicInfo.json");
+		InputStream inputStream = new FileInputStream(jsonFile);
+
+		Mockito.when(utility.getConfigServerFileStorageURL())
+				.thenReturn("http://104.211.212.28:51000/registration-processor/default/DEV/");
+		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
+		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
+		packetInfoManagerImpl.saveDemographicInfoJson(inputStream, packetInfo);
+
+		assertEquals("Saving DemographicInfo. verifing utitlity config url", utility.getConfigServerFileStorageURL(),
+				"http://104.211.212.28:51000/registration-processor/default/DEV/");
+
+	}
+
+	@Test(expected = UnableToInsertData.class)
+	public void saveDemographicInfoJsonUnableToInsertDataTest()
+			throws JsonParseException, JsonMappingException, IOException, FileNotFoundException {
+		PacketInfo packetInfo;
+		packetInfo = (PacketInfo) JsonUtils.jsonFileToJavaObject(PacketInfo.class,
+				"..\\packet-info-storage-service\\src\\main\\resources\\PacketMetaInfo.json");
+
+		File jsonFile = new File("..\\packet-info-storage-service\\src\\main\\resources\\DemographicInfo.json");
+		InputStream inputStream = new FileInputStream(jsonFile);
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+				"errorMessage", new Exception());
+		Mockito.when(demographicJsonRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		packetInfoManagerImpl.saveDemographicInfoJson(inputStream, packetInfo);
+	}
+
+	@Test(expected = FileNotFoundInPacketStore.class)
+	public void fileNotFoundInPacketStoreTest() throws JsonParseException, JsonMappingException, IOException {
+		PacketInfo packetInfo;
+		packetInfo = (PacketInfo) JsonUtils.jsonFileToJavaObject(PacketInfo.class,
+				"..\\packet-info-storage-service\\src\\main\\resources\\PacketMetaInfo.json");
+		packetInfoManagerImpl.saveDemographicInfoJson(null, packetInfo);
+
+	}
+
+	@Test(expected = UnableToInsertData.class)
+	public void demographiDedupeUnableToInsertDataTest()
+			throws JsonParseException, JsonMappingException, IOException, FileNotFoundException {
+		
+		List<FieldValue> metaData = new ArrayList<>();
+		
+		FieldValue fieldValue1 = new FieldValue();
+		fieldValue1.setLabel("registrationId");
+		fieldValue1.setValue("2018782130000113112018183925");
+		
+		FieldValue fieldValue2 = new FieldValue();
+		fieldValue2.setLabel("preRegistrationId");
+		fieldValue2.setValue("PEN1345T");
+		
+
+		File jsonFile = new File("..\\packet-info-storage-service\\src\\main\\resources\\DemographicInfo.json");
+		InputStream inputStream = new FileInputStream(jsonFile);
+		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
+				"errorMessage", new Exception());
+		Mockito.when(demographicDedupeRepository.save(ArgumentMatchers.any())).thenThrow(exp);
+		packetInfoManagerImpl.saveDemographicInfoJson(inputStream, packetInfo);
 	}
 
 }

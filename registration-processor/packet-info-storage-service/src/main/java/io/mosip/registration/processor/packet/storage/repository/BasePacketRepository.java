@@ -20,7 +20,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT qcUser FROM QcuserRegistrationIdEntity qcUser WHERE qcUser.id.usrId=:qcuserId")
 	public List<E> findByUserId(@Param("qcuserId") String qcuserId);
 
-	@Query("SELECT ape,ade FROM ApplicantPhotographEntity ape, ApplicantDemographicEntity ade"
-            + " WHERE ade.id.regId=:regId")
+	@Query("SELECT ape,ide FROM ApplicantPhotographEntity ape, IndividualDemographicDedupeEntity ide"
+            + " WHERE ide.id.regId=:regId")
     public List<Object[]> getApplicantInfo(@Param("regId") String regId);
 }

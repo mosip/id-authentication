@@ -1,6 +1,10 @@
 package io.mosip.registration.processor.packet.storage.mapper;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +17,11 @@ import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
+import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
+import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonEntity;
+import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantFingerprintEntity;
@@ -23,10 +32,14 @@ import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotograph
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionPKEntity;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachinePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiPkEntity;
+import io.mosip.registration.processor.packet.storage.exception.ParsingException;
+import io.mosip.registration.processor.packet.storage.exception.RPR_PLATFORM_ERROR_MESSAGES;
 
 /**
  * The Class PacketInfoMapper.
@@ -38,6 +51,7 @@ public class PacketInfoMapper {
 
 	private static final String REGISTRATION_ID = "registrationId";
 	private static final String PRE_REGISTRATION_ID = "preRegistrationId";
+	private static StringBuilder languages = new StringBuilder();
 
 	/**
 	 * Instantiates a new packet info mapper.
@@ -429,6 +443,105 @@ public class PacketInfoMapper {
 		regCenterMachineEntity.setIsActive(true);
 
 		return regCenterMachineEntity;
+	}
+	
+	private static String getJsonValues(JsonValue[] jsonNode, String language) {
+		String value = null;
+		if (jsonNode != null) {
+			for (int i = 0; i < jsonNode.length; i++) {
+				if (jsonNode[i].getLanguage().equals(language)) {
+					value = jsonNode[i].getValue();
+				}
+			}
+		}
+
+		return value;
+	}
+	
+	private static String[] getLanguages(JsonValue[] jsonNode) {
+		if (jsonNode != null) {
+			for (int i = 0; i < jsonNode.length; i++) {
+				if (!(languages.toString().contains(jsonNode[i].getLanguage())))
+					languages = languages.append(jsonNode[i].getLanguage()).append(",");
+
+			}
+		}
+
+		return languages.toString().split(",");
+	}
+	public static List<IndividualDemographicDedupeEntity> converDemographicDedupeDtoToEntity(
+			IndividualDemographicDedupe demoDto,String regId,String preRegId) {
+		IndividualDemographicDedupeEntity entity;
+		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
+		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
+		getLanguages(demoDto.getFirstName());
+		getLanguages(demoDto.getMiddleName());
+		getLanguages(demoDto.getLastName());
+		getLanguages(demoDto.getFullName());
+		getLanguages(demoDto.getFirstName());
+		getLanguages(demoDto.getDateOfBirth());
+		getLanguages(demoDto.getGender());
+		getLanguages(demoDto.getAddressLine1());
+		getLanguages(demoDto.getAddressLine2());
+		getLanguages(demoDto.getAddressLine3());
+		getLanguages(demoDto.getAddressLine4());
+		getLanguages(demoDto.getAddressLine5());
+		String[] languageArray = getLanguages(demoDto.getAddressLine6());
+		for (int i = 0; i < languageArray.length; i++) {
+			entity = new IndividualDemographicDedupeEntity();
+			applicantDemographicPKEntity = new IndividualDemographicDedupePKEntity();
+
+			applicantDemographicPKEntity.setRefId(regId);
+			applicantDemographicPKEntity.setRefIdType(preRegId);
+			applicantDemographicPKEntity.setLangCode(languageArray[i]);
+
+			entity.setId(applicantDemographicPKEntity);
+			entity.setIsActive(true);
+			entity.setIsDeleted(false);
+
+			entity.setFirstName(getJsonValues(demoDto.getFirstName(), languageArray[i]));
+			entity.setMiddleName(getJsonValues(demoDto.getMiddleName(), languageArray[i]));
+			entity.setLastName(getJsonValues(demoDto.getLastName(), languageArray[i]));
+			entity.setFullName(getJsonValues(demoDto.getFullName(), languageArray[i]));
+			String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
+			if(dob!=null) {
+			try {
+				Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dob);
+				entity.setDob(date);
+			} catch (ParseException e) {
+				LOGGER.error("ErrorWhile Parsing Date");
+				throw new ParsingException(RPR_PLATFORM_ERROR_MESSAGES.PARSING_DATE_EXCEPTION.getValue(), e);
+			}
+			}
+			entity.setGenderCode(getJsonValues(demoDto.getGender(), languageArray[i]));
+			entity.setAddrLine1(getJsonValues(demoDto.getAddressLine1(), languageArray[i]));
+			entity.setAddrLine2(getJsonValues(demoDto.getAddressLine2(), languageArray[i]));
+			entity.setAddrLine3(getJsonValues(demoDto.getAddressLine3(), languageArray[i]));
+			entity.setAddrLine4(getJsonValues(demoDto.getAddressLine4(), languageArray[i]));
+			entity.setAddrLine5(getJsonValues(demoDto.getAddressLine5(), languageArray[i]));
+			entity.setAddrLine6(getJsonValues(demoDto.getAddressLine6(), languageArray[i]));
+			entity.setZipCode(getJsonValues(demoDto.getZipcode(), languageArray[i]));
+			demogrphicDedupeEntities.add(entity);
+
+		}
+
+		return demogrphicDedupeEntities;
+	}
+
+	
+	public static ApplicantDemographicInfoJsonEntity convertDemographicInfoJsonToEntity(DemographicInfoJson infoJson) {
+		ApplicantDemographicInfoJsonEntity applicantDemographicDataEntity = new ApplicantDemographicInfoJsonEntity();
+		ApplicantDemographicInfoJsonPKEntity applicantDemographicDataPKEntity = new ApplicantDemographicInfoJsonPKEntity();
+		applicantDemographicDataPKEntity.setRegId(infoJson.getRegId());
+
+		applicantDemographicDataEntity.setId(applicantDemographicDataPKEntity);
+		applicantDemographicDataEntity.setDemographicDetails(infoJson.getDemographicDetails());
+		applicantDemographicDataEntity.setIsActive(true);
+		applicantDemographicDataEntity.setIsDeleted(false);
+		applicantDemographicDataEntity.setPreRegId(infoJson.getPreRegId());
+		applicantDemographicDataEntity.setStatusCode(infoJson.getStatusCode());
+		applicantDemographicDataEntity.setLangCode(infoJson.getLangCode());
+		return applicantDemographicDataEntity;
 	}
 
 }
