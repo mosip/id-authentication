@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.datamapper.exception.DataMapperException;
@@ -22,6 +24,8 @@ public class MetaDataUtils {
 
 	public <D extends BaseEntity, T> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends BaseEntity> entityClass) {
+		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
+		String contextUser = authN.getName();
 		List<D> entities = new ArrayList<>();
 
 		dtoList.forEach(dto -> {
@@ -38,9 +42,9 @@ public class MetaDataUtils {
 			LocalDateTime utime = LocalDateTime.parse("2011-02-01T00:00:00");
 			entity.setIsActive(true);
 			entity.setDeletedtimes(null);
-			entity.setUpdatedBy("mosip-user");
+			entity.setUpdatedBy(contextUser);
 			entity.setUpdatedtimes(utime);
-			entity.setCreatedBy("mosip-user");
+			entity.setCreatedBy(contextUser);
 			entity.setCreatedtimes(time);
 			entity.setIsDeleted(false);
 			entities.add(entity);
