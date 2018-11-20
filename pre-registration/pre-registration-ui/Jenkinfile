@@ -26,8 +26,7 @@ def projectToBuild = 'pre-registration/pre-registration-ui'
 
     stage('npm install')
     dir(branch){
-        sh "pwd"
-        sh "npm install"
+        sh "'$branch/$projectToBuild/' npm install"
     }
 
     stage('build') dir(branch)
