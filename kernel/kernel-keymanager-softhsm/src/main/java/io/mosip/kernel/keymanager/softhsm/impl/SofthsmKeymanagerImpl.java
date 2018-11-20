@@ -12,6 +12,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.Provider;
+import java.security.ProviderException;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.UnrecoverableEntryException;
@@ -96,11 +97,30 @@ public class SofthsmKeymanagerImpl implements KeymanagerInterface {
 			@Value("${mosip.kernel.keymanager.softhsm.keystore-type}") String keystoreType,
 			@Value("${mosip.kernel.keymanager.softhsm.keystore-pass}") String keystorePass) {
 
-		Provider provider = new SunPKCS11(configPath);
+		Provider provider = setupProvider(configPath);
 		addProvider(provider);
 		this.keyStore = getKeystoreInstance(keystoreType, provider);
 		this.keystorePass = keystorePass;
 		loadKeystore();
+	}
+
+	/**
+	 * Setup a new SunPKCS11 provider
+	 * 
+	 * @param configPath
+	 *            The path of config file
+	 * @return Provider
+	 */
+	private Provider setupProvider(String configPath) {
+		Provider provider = null;
+		try {
+			provider = new SunPKCS11(configPath);
+		} catch (ProviderException providerException) {
+			throw new NoSuchSecurityProviderException(
+					SofthsmKeymanagerErrorCode.INVALID_CONFIG_FILE.getErrorCode(),
+					SofthsmKeymanagerErrorCode.INVALID_CONFIG_FILE.getErrorMessage());
+		}
+		return provider;
 	}
 
 	/**
@@ -116,7 +136,7 @@ public class SofthsmKeymanagerImpl implements KeymanagerInterface {
 	 * @param provider
 	 *            the provider to be added
 	 */
-	public void addProvider(Provider provider) {
+	private void addProvider(Provider provider) {
 		if (-1 == Security.addProvider(provider)) {
 			throw new NoSuchSecurityProviderException(
 					SofthsmKeymanagerErrorCode.NO_SUCH_SECURITY_PROVIDER.getErrorCode(),
@@ -137,7 +157,7 @@ public class SofthsmKeymanagerImpl implements KeymanagerInterface {
 	 *            provider
 	 * @return a keystore object of the specified type.
 	 */
-	public KeyStore getKeystoreInstance(String keystoreType, Provider provider) {
+	private KeyStore getKeystoreInstance(String keystoreType, Provider provider) {
 		KeyStore mosipKeyStore = null;
 		try {
 			mosipKeyStore = KeyStore.getInstance(keystoreType, provider);
@@ -165,7 +185,7 @@ public class SofthsmKeymanagerImpl implements KeymanagerInterface {
 	 * loaded again from the given input stream.
 	 * 
 	 */
-	public void loadKeystore() {
+	private void loadKeystore() {
 
 		try {
 			keyStore.load(null, keystorePass.toCharArray());
