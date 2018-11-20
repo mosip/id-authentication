@@ -1,17 +1,14 @@
-/*package io.mosip.registration.processor.core.spi.packetinfo.service;
+package io.mosip.registration.processor.core.spi.packetinfo.service;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -23,21 +20,20 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
 import io.mosip.kernel.auditmanager.builder.AuditRequestBuilder;
 import io.mosip.kernel.auditmanager.request.AuditRequestDto;
 import io.mosip.kernel.core.spi.auditmanager.AuditHandler;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
 import io.mosip.kernel.dataaccess.hibernate.exception.DataAccessLayerException;
-import io.mosip.registration.processor.core.builder.CoreAuditRequestBuilder;
-import io.mosip.registration.processor.core.packet.dto.BiometricData;
+import io.mosip.registration.processor.core.packet.dto.Applicant;
+import io.mosip.registration.processor.core.packet.dto.Biometric;
+import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
 import io.mosip.registration.processor.core.packet.dto.BiometricException;
 import io.mosip.registration.processor.core.packet.dto.Document;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
+import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-
+import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
@@ -52,9 +48,9 @@ import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionE
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
-import io.mosip.registration.processor.packet.storage.exception.UnableToInsertData;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 import io.mosip.registration.processor.packet.storage.service.impl.PacketInfoManagerImpl;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PacketInfoManagerImplTest {
@@ -62,7 +58,7 @@ public class PacketInfoManagerImplTest {
 	PacketInfoManager<Identity,ApplicantInfoDto> packetInfoManagerImpl = new PacketInfoManagerImpl();
 
 	@Mock
-	CoreAuditRequestBuilder coreAuditRequestBuilder=new CoreAuditRequestBuilder();
+	AuditLogRequestBuilder auditLogRequestBuilder;
 	@Mock
 	private BasePacketRepository<ApplicantDocumentEntity, String> applicantDocumentRepository;
 
@@ -101,152 +97,315 @@ public class PacketInfoManagerImplTest {
 	public void setup()
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		identity=new Identity();
-		identity.getApplicantPhotograph().setLabel("label");
-		identity.getApplicantPhotograph().setLanguage("eng");
-		identity.getApplicantPhotograph().setNumRetry(4);
-		identity.getApplicantPhotograph().setPhotographName("applicantPhoto");
-		identity.getApplicantPhotograph().setQualityScore(80.0);
+		Photograph applicantPhotograph=new Photograph();
 		
-		identity.getExceptionPhotograph().setLabel("label");
-		identity.getExceptionPhotograph().setLanguage("eng");
-		identity.getExceptionPhotograph().setNumRetry(4);
-		identity.getExceptionPhotograph().setPhotographName("excep");
-		identity.getExceptionPhotograph().setQualityScore(80.0);
+		applicantPhotograph.setLabel("label");
+		applicantPhotograph.setLanguage("eng");
+		applicantPhotograph.setNumRetry(4);
+		applicantPhotograph.setPhotographName("applicantPhoto");
+		applicantPhotograph.setQualityScore(80.0);
+		identity.setApplicantPhotograph(applicantPhotograph);
 		
-		identity.getBiometric().getApplicant().getLeftEye().setForceCaptured(false);
-		identity.getBiometric().getApplicant().getLeftEye().setImageName("leftEye");
-		identity.getBiometric().getApplicant().getLeftEye().setLabel("label");
-		identity.getBiometric().getApplicant().getLeftEye().setLanguage("eng");
-		identity.getBiometric().getApplicant().getLeftEye().setNumRetry(2);
-		identity.getBiometric().getApplicant().getLeftEye().setQualityScore(80.0);
-		biometricData = new BiometricData();
-		fingerprintList = new ArrayList<>();
-		fingerprint = new BiometricData();
-		fingerprint.setImageName("leftPalm");
-		fingerprint.setQualityScore(80.0);
-		fingerprint.setNumRetry(4);
-		fingerprint.setForceCaptured(false);
-		fingerprint.setNumRetry(4);
-		fingerprint.setType("leftThumb");
-
-		fingerprint1 = new BiometricData();
-		fingerprint1.setImageName("rightPalm");
-		fingerprint1.setQualityScore(80.0);
-		fingerprint1.setNumRetry(4);
-		fingerprint1.setForceCaptured(false);
-		fingerprint1.setNumRetry(4);
-		fingerprint1.setType("rightThumb");
-
-		fingerprintList.add(fingerprint);
-		fingerprintList.add(fingerprint1);
-
-		exceptionFingerprintList = new ArrayList<>();
-		exceptionFingerprint = new BiometricException();
-		exceptionFingerprint.setType("fingerprint/iris");
-		exceptionFingerprint.setExceptionDescription("Lost in accident");
-		exceptionFingerprint.setExceptionType("Permanent");
-		// exceptionFingerprint.setMissingFinger("rightPalm");
-		exceptionFingerprintList.add(exceptionFingerprint);
-
-		exceptionFingerprint1 = new BiometricException();
-		exceptionFingerprint1.setType("fingerprint/iris");
-		exceptionFingerprint1.setExceptionDescription("Lost");
-		exceptionFingerprint1.setExceptionType("Permanent");
-		// exceptionFingerprint1.setMissingFinger("LeftPalm");
-		exceptionFingerprintList.add(exceptionFingerprint1);
-
-		fingerprintData = new BiometricData();
-		fingerprintData.setFingerprints(fingerprintList);
-		fingerprintData.setExceptionFingerprints(exceptionFingerprintList);
-
-		biometricData.setFingerprintData(fingerprintData);
-
-		irisData = new IrisData();
-		irisList = new ArrayList<>();
-		Iris iris = new Iris();
-		iris.setForceCaptured(false);
-		iris.setIrisImageName("iris1");
-		iris.setIrisType("LeftEye");
-		iris.setNumRetry(4);
-		iris.setQualityScore(85.5);
-
-		iris1 = new Iris();
-		iris1.setForceCaptured(false);
-		iris1.setIrisImageName("iris2");
-		iris1.setIrisType("rightEye");
-		iris1.setNumRetry(null);
-		iris1.setQualityScore(85.0);
-		irisList.add(iris);
-		irisList.add(iris1);
-
-		irisData.setIris(irisList);
-		exceptionIrisList = new ArrayList<>();
-		exceptionIris = new ExceptionIris();
-		exceptionIris.setBiometricType("fingerprint/iris");
-		exceptionIris.setExceptionDescription("by birth");
-		exceptionIris.setExceptionType("permanent");
-
-		exceptionIris1 = new ExceptionIris();
-		exceptionIris1.setBiometricType("fingerprint/iris");
-		exceptionIris1.setExceptionDescription("Lost in Accident");
-		exceptionIris1.setExceptionType("temporary");
-		// exceptionIris1.setMissingIris("leftEye");
-		exceptionIrisList.add(exceptionIris1);
-		exceptionIrisList.add(exceptionIris);
-
-		irisData.setExceptionIris(exceptionIrisList);
-		irisData.setIris(irisList);
-		irisData.setNumRetry(2);
-
-		biometricData.setIrisData(irisData);
-
-		document = new Document();
-		documentDetailList = new ArrayList<>();
-		documentDetail = new DocumentDetail();
-		documentDetail.setDocumentCategory("poA");
-		documentDetail.setDocumentOwner("self");
-		documentDetail.setDocumentName("ResidenceCopy");
-		documentDetail.setDocumentType("Passport");
-		documentDetailList.add(documentDetail);
-		document.setDocumentDetails(documentDetailList);
-		document.setRegistrationAckCopy("acknowledgementReceipt");
-
-		osiData = new OsiData();
-		osiData.setOperatorId("123245");
-		osiData.setOperatorFingerprintImage("leftThumb");
-		osiData.setOperatorIrisName("leftEye");
-		osiData.setSupervisorId("123456789");
-		osiData.setSupervisorName("supervisor");
-
-		osiData.setSupervisorFingerprintImage("leftThumb");
-
-		osiData.setSupervisorIrisName("leftEye");
-		osiData.setIntroducerUIN("HOF003");
-		osiData.setIntroducerName("introducerTestName");
-
-		osiData.setIntroducerUINHash("HOF003");
-		osiData.setIntroducerRID("IRID");
-
-		osiData.setIntroducerRIDHash("Introducer RIDHash");
-		osiData.setIntroducerFingerprintImage("leftThumb");
-		osiData.setIntroducerIrisImage("osiData");
-		photograph = new Photograph();
-		photograph.setPhotographName("applicantPhoto");
-		photograph.setHasExceptionPhoto(true);
-		photograph.setExceptionPhotoName("excep");
-		photograph.setQualityScore(80.0);
-		photograph.setNumRetry(0);
-		metaData = new MetaData();
-		geoLocation = new GeoLocation();
-		geoLocation.setLatitude(13.0049);
-		geoLocation.setLongitude(80.24492);
-		metaData.setGeoLocation(geoLocation);
-
-		metaData.setApplicationType("New Registration");
-		metaData.setRegistrationCategory("Document/Introducer");
-		metaData.setPreRegistrationId("PEN1345T");
-		metaData.setRegistrationId("2018782130000224092018121229");
-		metaData.setRegistrationIdHash("GHTYU76233887087JLDFDFELFLADGSDD");
+		Photograph exceptionPhotograph=new Photograph();
+		exceptionPhotograph.setLabel("label");
+		exceptionPhotograph.setLanguage("eng");
+		exceptionPhotograph.setNumRetry(4);
+		exceptionPhotograph.setPhotographName("excep");
+		exceptionPhotograph.setQualityScore(80.0);
+		identity.setExceptionPhotograph(exceptionPhotograph);
+		
+		BiometricDetails lefteye=new BiometricDetails();
+		lefteye.setForceCaptured(false);
+		lefteye.setImageName("Iris1");
+		lefteye.setLabel("label");
+		lefteye.setLanguage("eng");
+		lefteye.setNumRetry(2);
+		lefteye.setQualityScore(80.0);
+		lefteye.setType("LeftEye");
+		
+		BiometricDetails rightEye=new BiometricDetails();
+		rightEye.setForceCaptured(false);
+		rightEye.setImageName("Iris2");
+		rightEye.setLabel("label");
+		rightEye.setLanguage("eng");
+		rightEye.setNumRetry(2);
+		rightEye.setQualityScore(80.0);
+		rightEye.setType("RightEye");
+		
+		BiometricDetails leftPalm=new BiometricDetails();
+		leftPalm.setForceCaptured(false);
+		leftPalm.setImageName("LeftPalm");
+		leftPalm.setLabel("label");
+		leftPalm.setLanguage("eng");
+		leftPalm.setNumRetry(2);
+		leftPalm.setQualityScore(80.0);
+		leftPalm.setType("fingerprint");
+		
+		BiometricDetails rightPalm=new BiometricDetails();
+		rightPalm.setForceCaptured(false);
+		rightPalm.setImageName("RightPalm");
+		rightPalm.setLabel("label");
+		rightPalm.setLanguage("eng");
+		rightPalm.setNumRetry(2);
+		rightPalm.setQualityScore(80.0);
+		rightPalm.setType("fingerprint");
+		
+		BiometricDetails bothThumbs=new BiometricDetails();
+		bothThumbs.setForceCaptured(false);
+		bothThumbs.setImageName("BothThumbs");
+		bothThumbs.setLabel("label");
+		bothThumbs.setLanguage("eng");
+		bothThumbs.setNumRetry(2);
+		bothThumbs.setQualityScore(80.0);
+		bothThumbs.setType("fingerprint");
+		
+		BiometricDetails rightThumb=new BiometricDetails();
+		rightThumb.setForceCaptured(false);
+		rightThumb.setImageName("RightThumb");
+		rightThumb.setLabel("label");
+		rightThumb.setLanguage("eng");
+		rightThumb.setNumRetry(2);
+		rightThumb.setQualityScore(80.0);
+		rightThumb.setType("fingerprint");
+		
+		BiometricDetails face=new BiometricDetails();
+		face.setForceCaptured(false);
+		face.setImageName("face");
+		face.setLabel("label");
+		face.setLanguage("eng");
+		face.setNumRetry(2);
+		face.setQualityScore(80.0);
+		face.setType("face");
+		
+		BiometricDetails introducerIris=new BiometricDetails();
+		introducerIris.setForceCaptured(false);
+		introducerIris.setImageName("RightEye");
+		introducerIris.setLabel("label");
+		introducerIris.setLanguage("eng");
+		introducerIris.setNumRetry(2);
+		introducerIris.setQualityScore(80.0);
+		introducerIris.setType("iris");
+		
+		Applicant applicant = new Applicant();
+		applicant.setLeftEye(lefteye);
+		applicant.setLeftSlap(leftPalm);
+		applicant.setRightEye(rightEye);
+		applicant.setRightSlap(rightPalm);
+		applicant.setThumbs(bothThumbs);
+		Introducer introducer=new Introducer();
+		introducer.setIntroducerFingerprint(rightThumb);
+		introducer.setIntroducerImage(face);
+		introducer.setIntroducerIris(introducerIris);
+		Biometric biometric= new Biometric();
+		biometric.setApplicant(applicant);
+		biometric.setIntroducer(introducer);
+		identity.setBiometric(biometric);
+		
+		FieldValue registrationService=new FieldValue();
+		registrationService.setLabel("registration-service.jar");
+		registrationService.setValue("65gfhab67586cjhsabcjk78");
+		
+		FieldValue registrationUi=new FieldValue();
+		registrationUi.setLabel("registration-ui.jar");
+		registrationUi.setValue("uygdfajkdjkHHD56TJHASDJKA");
+		List<FieldValue> checksum=new ArrayList<FieldValue>();
+		checksum.add(registrationService);
+		checksum.add(registrationUi);
+		identity.setCheckSum(checksum);
+		
+		
+		Document document=new Document();
+		List<Document> documents= new ArrayList<Document>();
+		document.setDocumentCategory("poA");
+		document.setDocumentOwner("self");
+		document.setDocumentName("ResidenceCopy");
+		document.setDocumentType("Passport");
+		documents.add(document);
+		identity.setDocuments(documents);
+		
+		BiometricException thumb=new BiometricException();
+		thumb.setExceptionDescription("Lost in accident");
+		thumb.setExceptionType("Permanent");
+		thumb.setLanguage("eng");
+		thumb.setMissingBiometric("LeftThumb");
+		thumb.setType("fingerprint");
+		
+		BiometricException leftForefinger=new BiometricException();
+		leftForefinger.setExceptionDescription("Lost in accident");
+		leftForefinger.setExceptionType("Permanent");
+		leftForefinger.setLanguage("eng");
+		leftForefinger.setMissingBiometric("LeftForefinger");
+		leftForefinger.setType("fingerprint");
+		
+		BiometricException rightEyeexp=new BiometricException();
+		rightEyeexp.setExceptionDescription("By birth");
+		rightEyeexp.setExceptionType("Permanent");
+		rightEyeexp.setLanguage("eng");
+		rightEyeexp.setMissingBiometric("LeftThumb");
+		rightEyeexp.setType("iris");
+		
+		List<BiometricException> excptionBiometrics=new ArrayList<>();
+		excptionBiometrics.add(rightEyeexp);
+		excptionBiometrics.add(leftForefinger);
+		excptionBiometrics.add(thumb);
+		identity.setExceptionBiometrics(excptionBiometrics);
+		FieldValueArray applicantBiometricSequence= new FieldValueArray();
+		applicantBiometricSequence.setLabel("applicantBiometricSequence");
+		applicantBiometricSequence.setValue(Arrays.asList("BothThumbs","LeftPalm","RightPalm","LeftEye"));
+		
+		FieldValueArray introducerBiometricSequence= new FieldValueArray();
+		introducerBiometricSequence.setLabel("introducerBiometricSequence");
+		introducerBiometricSequence.setValue(Arrays.asList("introducerLeftThumb"));
+		
+		FieldValueArray applicantDemographicSequence= new FieldValueArray();
+		applicantDemographicSequence.setLabel("applicantDemographicSequence");
+		applicantDemographicSequence.setValue(Arrays.asList("DemographicInfo","ProofOfIdentity","ProofOfAddress",
+				"ApplicantPhoto","ExceptionPhoto","RegistrationAcknowledgement"));
+		
+		List<FieldValueArray> hashSequence= new ArrayList<>();
+		
+		hashSequence.add(applicantDemographicSequence);
+		hashSequence.add(applicantBiometricSequence);
+		hashSequence.add(introducerBiometricSequence);
+		
+		identity.setHashSequence(hashSequence);
+		
+		FieldValue geoLocLatitude= new FieldValue();
+		geoLocLatitude.setLabel("geoLocLatitude");
+		geoLocLatitude.setValue("13.0049");
+		
+		FieldValue geoLoclongitude= new FieldValue();
+		geoLoclongitude.setLabel("geoLoclongitude");
+		geoLoclongitude.setValue("80.24492");
+		
+		FieldValue registrationType= new FieldValue();
+		registrationType.setLabel("registrationType");
+		registrationType.setValue("Child");
+		
+		FieldValue applicantType= new FieldValue();
+		applicantType.setLabel("applicantType");
+		applicantType.setValue("New");
+		
+		FieldValue preRegistrationId= new FieldValue();
+		preRegistrationId.setLabel("preRegistrationId");
+		preRegistrationId.setValue("PEN1345T");
+		
+		FieldValue registrationId= new FieldValue();
+		registrationId.setLabel("registrationId");
+		registrationId.setValue("2018782130000113112018183925");
+		FieldValue registrationIdHash= new FieldValue();
+		registrationIdHash.setLabel("registrationIdHash");
+		registrationIdHash.setValue("271D3A33DE70801BE09CF84573CB0CEDF019568C08AB18EAAF912D456FEB185F");
+		
+		FieldValue machineId= new FieldValue();
+		machineId.setLabel("machineId");
+		machineId.setValue("yyeqy26356");
+		
+		FieldValue centerId= new FieldValue();
+		centerId.setLabel("centerId");
+		centerId.setValue("12245");
+		
+		FieldValue uin= new FieldValue();
+		uin.setLabel("uin");
+		uin.setValue(null);
+		
+		FieldValue previousRID= new FieldValue();
+		previousRID.setLabel("previousRID");
+		previousRID.setValue(null);
+		
+		FieldValue introducerType= new FieldValue();
+		introducerType.setLabel("introducerType");
+		introducerType.setValue(null);
+		
+		FieldValue introducerRID= new FieldValue();
+		introducerRID.setLabel("introducerRID");
+		introducerRID.setValue("2018234500321157812");
+		
+		FieldValue introducerRIDHash= new FieldValue();
+		introducerRIDHash.setLabel("introducerRIDHash");
+		introducerRIDHash.setValue("271D3A33DE70801BE09CF84573CB0CEDF019568C08AB18EAAF912D456JAN123");
+		
+		FieldValue introducerUIN= new FieldValue();
+		introducerUIN.setLabel("introducerUIN");
+		introducerUIN.setValue(null);
+		
+		FieldValue introducerUINHash= new FieldValue();
+		introducerUINHash.setLabel("introducerUINHash");
+		introducerUINHash.setValue("271D3A33DE70801BE09CF84573CB0CEDF019568C08AB18EAAF912D7767HGGY7");
+		
+		FieldValue officerFingerprintType= new FieldValue();
+		officerFingerprintType.setLabel("officerFingerprintType");
+		officerFingerprintType.setValue("LeftThumb");
+		
+		FieldValue officerIrisType= new FieldValue();
+		officerIrisType.setLabel("officerIrisType");
+		officerIrisType.setValue(null);
+		
+		FieldValue supervisorFingerprintType= new FieldValue();
+		supervisorFingerprintType.setLabel("supervisorFingerprintType");
+		supervisorFingerprintType.setValue("LeftThumb");
+		
+		FieldValue supervisorIrisType= new FieldValue();
+		supervisorIrisType.setLabel("supervisorIrisType");
+		supervisorIrisType.setValue(null);
+		
+		identity.setMetaData(Arrays.asList(geoLocLatitude,geoLoclongitude,registrationType,applicantType,preRegistrationId,
+				registrationId,registrationIdHash,machineId,centerId,uin,previousRID,introducerType,introducerRID,
+				introducerRIDHash,introducerUIN,introducerUINHash,officerFingerprintType,officerIrisType,
+				supervisorFingerprintType,supervisorIrisType));
+		
+		FieldValue officerId= new FieldValue();
+		officerId.setLabel("officerId");
+		officerId.setValue("op0r0s12");
+		
+		FieldValue officerFingerprintImage= new FieldValue();
+		officerFingerprintImage.setLabel("officerFingerprintImage");
+		officerFingerprintImage.setValue("registrationOfficerLeftThumb");
+		
+		FieldValue officerIrisImage= new FieldValue();
+		officerIrisImage.setLabel("officerIrisImage");
+		officerIrisImage.setValue(null);
+		
+		FieldValue supervisiorId= new FieldValue();
+		supervisiorId.setLabel("supervisiorId");
+		supervisiorId.setValue("s9ju2jhu");
+		
+		FieldValue supervisorFingerprintImage= new FieldValue();
+		supervisorFingerprintImage.setLabel("supervisorFingerprintImage");
+		supervisorFingerprintImage.setValue("supervisorLeftThumb");
+		
+		FieldValue supervisorPassword= new FieldValue();
+		supervisorPassword.setLabel("supervisorPassword");
+		supervisorPassword.setValue(null);
+		
+		FieldValue supervisorIrisImage= new FieldValue();
+		supervisorIrisImage.setLabel("supervisorIrisImage");
+		supervisorIrisImage.setValue(null);
+		
+		FieldValue officerPassword= new FieldValue();
+		officerPassword.setLabel("officerPassword");
+		officerPassword.setValue(null);
+		
+		FieldValue supervisiorPIN= new FieldValue();
+		supervisiorPIN.setLabel("supervisiorPIN");
+		supervisiorPIN.setValue(null);
+		
+		FieldValue officerPIN= new FieldValue();
+		officerPIN.setLabel("officerPIN");
+		officerPIN.setValue(null);
+		
+		FieldValue officerAuthenticationImage= new FieldValue();
+		officerAuthenticationImage.setLabel("officerAuthenticationImage");
+		officerAuthenticationImage.setValue(null);
+		
+		FieldValue supervisorAuthenticationImage= new FieldValue();
+		supervisorAuthenticationImage.setLabel("supervisorAuthenticationImage");
+		supervisorAuthenticationImage.setValue(null);
+		
+		identity.setOsiData(Arrays.asList(officerId,officerFingerprintImage,officerIrisImage,supervisiorId,supervisorFingerprintImage,
+				supervisorIrisImage,supervisorPassword,officerPassword,supervisiorPIN,officerPIN,
+				officerAuthenticationImage,supervisorAuthenticationImage));
+		
 		applicantDocumentEntity = new ApplicantDocumentEntity();
 		applicantDocumentPKEntity = new ApplicantDocumentPKEntity();
 		applicantDocumentPKEntity.setRegId("2018782130000224092018121229");
@@ -265,59 +424,7 @@ public class PacketInfoManagerImplTest {
 
 		applicantDocumentEntity.setDocStore(byteArray.getBytes());
 
-		demographicInfo = new Demographic();
-		demoInLocalLang = new DemographicInfo();
-		AddressDTO addressDTO = new AddressDTO();
-		addressDTO.setLine1("line1");
-		addressDTO.setLine2("line2");
-		addressDTO.setLine3("line3");
-		demoInLocalLang.setAddressDTO(addressDTO);
-		demoInLocalLang.setChild(false);
-		demoInLocalLang.setEmailId("testMosip@mosip.com");
-
-		demoInLocalLang.setFirstName("FirstNameTest");
-		demoInLocalLang.setLastName("Lastnametest");
-		demoInLocalLang.setDateOfBirth("1539674005050");
-
-		demoInLocalLang.setFullName("FullNametest");
-		demoInLocalLang.setGender("Male");
-
-		demoInLocalLang.setLanguageCode("eng");
-		demoInLocalLang.setMobile("9876543210");
-
-		demographicInfo.setDemoInLocalLang(demoInLocalLang);
-		demoInUserLang = new DemographicInfo();
-		demoInUserLang.setAddressDTO(addressDTO);
-		demoInUserLang.setChild(false);
-		demoInUserLang.setEmailId("testMosip@mosip.com");
-		demoInUserLang.setFirstName("FirstNameTest");
-		demoInUserLang.setLastName("LastNameTest");
-		demoInUserLang.setDateOfBirth("1539674005050");
-		demoInUserLang.setLanguageCode("eng");
-
-		demoInLocalLang.setFullName("FullNameTest");
-		demoInLocalLang.setGender("Male");
-
-		demoInLocalLang.setMiddleName("middleNameTest");
-		demoInLocalLang.setMobile("9876543210");
-		demographicInfo.setDemoInUserLang(demoInUserLang);
-
-		AuditRequestBuilder auditRequestBuilder1 = new AuditRequestBuilder();
-		AuditHandler<AuditRequestDto> auditHandler = new AuditHandler<AuditRequestDto>() {
-
-			@Override
-			public boolean writeAudit(AuditRequestDto arg0) {
-
-				return true;
-			}
-		};
-		Field f1 = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-		f1.setAccessible(true);
-		f1.set(coreAuditRequestBuilder, auditRequestBuilder1);
-
-		Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
-		f2.setAccessible(true);
-		f2.set(coreAuditRequestBuilder, auditHandler);
+		
 
 
 	}
@@ -325,13 +432,6 @@ public class PacketInfoManagerImplTest {
 	@Test
 	public void savePacketTest() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
 			IllegalAccessException, NoSuchMethodException {
-
-		PacketInfo packetInfo = Mockito.mock(PacketInfo.class);
-		Mockito.when(packetInfo.getBiometericData()).thenReturn(biometricData);
-		Mockito.when(packetInfo.getDocument()).thenReturn(document);
-		Mockito.when(packetInfo.getOsiData()).thenReturn(osiData);
-		Mockito.when(packetInfo.getPhotograph()).thenReturn(photograph);
-		Mockito.when(packetInfo.getMetaData()).thenReturn(metaData);
 
 		Field f = packetInfoManagerImpl.getClass().getDeclaredField("filesystemCephAdapterImpl");
 		f.setAccessible(true);
@@ -343,91 +443,21 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(filesystemCephAdapterImpl.getFile(ArgumentMatchers.any(), ArgumentMatchers.any()))
 				.thenReturn(inputStream);
 
-		packetInfoManagerImpl.savePacketData(packetInfo);
+		packetInfoManagerImpl.savePacketData(identity);
 
-		packetInfoManagerImpl.saveDemographicData(demographicInfo, metaData);
+		//packetInfoManagerImpl.saveDemographicData(demographicInfo, metaData);
 
-		assertEquals("Verifing if Registration Id is present in DB. Expected value is true",
-				metaData.getRegistrationId(), packetInfo.getMetaData().getRegistrationId());
+		//assertEquals(metaData.getRegistrationId(), identity.getMetaData().getRegistrationId());
 
 	}
 
-	@Test(expected = TablenotAccessibleException.class)
+	/*@Test(expected = TablenotAccessibleException.class)
 	public void testDemographicFailureCase() {
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE, "errorMessage",
 				new Exception());
 		Mockito.when(applicantDemographicRepository.save(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.saveDemographicData(demographicInfo, metaData);
 
-	}
-	
-	@Test
-	public void saveDemographicInfoJsonTest()
-			throws JsonParseException, JsonMappingException, IOException, FileNotFoundException {
-		PacketInfo packetInfo;
-		packetInfo = (PacketInfo) JsonUtils.jsonFileToJavaObject(PacketInfo.class,
-				"..\\packet-info-storage-service\\src\\main\\resources\\PacketMetaInfo.json");
-
-		File jsonFile = new File("..\\packet-info-storage-service\\src\\main\\resources\\DemographicInfo.json");
-		InputStream inputStream = new FileInputStream(jsonFile);
-
-		Mockito.when(utility.getConfigServerFileStorageURL())
-				.thenReturn("http://104.211.212.28:51000/registration-processor/default/DEV/");
-		Mockito.when(utility.getGetRegProcessorDemographicIdentity()).thenReturn("identity");
-		Mockito.when(utility.getGetRegProcessorIdentityJson()).thenReturn("RegistrationProcessorIdentity.json");
-		packetInfoManagerImpl.saveDemographicInfoJson(inputStream, packetInfo);
-
-		assertEquals("Saving DemographicInfo. verifing utitlity config url", utility.getConfigServerFileStorageURL(),
-				"http://104.211.212.28:51000/registration-processor/default/DEV/");
-
-	}
-
-	@Test(expected = UnableToInsertData.class)
-	public void saveDemographicInfoJsonUnableToInsertDataTest()
-			throws JsonParseException, JsonMappingException, IOException, FileNotFoundException {
-		PacketInfo packetInfo;
-		packetInfo = (PacketInfo) JsonUtils.jsonFileToJavaObject(PacketInfo.class,
-				"..\\packet-info-storage-service\\src\\main\\resources\\PacketMetaInfo.json");
-
-		File jsonFile = new File("..\\packet-info-storage-service\\src\\main\\resources\\DemographicInfo.json");
-		InputStream inputStream = new FileInputStream(jsonFile);
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
-				"errorMessage", new Exception());
-		Mockito.when(demographicJsonRepository.save(ArgumentMatchers.any())).thenThrow(exp);
-		packetInfoManagerImpl.saveDemographicInfoJson(inputStream, packetInfo);
-	}
-
-	@Test(expected = FileNotFoundInPacketStore.class)
-	public void fileNotFoundInPacketStoreTest() throws JsonParseException, JsonMappingException, IOException {
-		PacketInfo packetInfo;
-		packetInfo = (PacketInfo) JsonUtils.jsonFileToJavaObject(PacketInfo.class,
-				"..\\packet-info-storage-service\\src\\main\\resources\\PacketMetaInfo.json");
-		packetInfoManagerImpl.saveDemographicInfoJson(null, packetInfo);
-
-	}
-
-	@Test(expected = UnableToInsertData.class)
-	public void demographiDedupeUnableToInsertDataTest()
-			throws JsonParseException, JsonMappingException, IOException, FileNotFoundException {
-		
-		List<FieldValue> metaData = new ArrayList<>();
-		
-		FieldValue fieldValue1 = new FieldValue();
-		fieldValue1.setLabel("registrationId");
-		fieldValue1.setValue("2018782130000113112018183925");
-		
-		FieldValue fieldValue2 = new FieldValue();
-		fieldValue2.setLabel("preRegistrationId");
-		fieldValue2.setValue("PEN1345T");
-		
-
-		File jsonFile = new File("..\\packet-info-storage-service\\src\\main\\resources\\DemographicInfo.json");
-		InputStream inputStream = new FileInputStream(jsonFile);
-		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.getErrorCode(),
-				"errorMessage", new Exception());
-		Mockito.when(demographicDedupeRepository.save(ArgumentMatchers.any())).thenThrow(exp);
-		packetInfoManagerImpl.saveDemographicInfoJson(inputStream, packetInfo);
-	}
+	}*/
 
 }
-*/
