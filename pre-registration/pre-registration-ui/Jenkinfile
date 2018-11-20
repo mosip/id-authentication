@@ -26,7 +26,7 @@ def projectToBuild = 'pre-registration/pre-registration-ui'
 
     stage('npm install') {
         sh "pwd"
-        sh "cd /var/lib/jenkins/workspace/test-pipe/DEV/pre-registration/pre-registration-ui"
+        sh "cd DEV/pre-registration/pre-registration-ui"
         sh "npm install"
     }
 
