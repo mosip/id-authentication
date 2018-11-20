@@ -225,7 +225,11 @@ public class RegistrationConstants {
 	public static final String OPT_TO_REG_GEO_FLAG_SINGLETIME = "Y";
 	public static final String OPT_TO_REG_GEO_FLAG_MULTIPLETIME = "N";
 	public static final String OPT_TO_REG_ICS‌_005 = "REG-ICS‌-005";
+	public static final String OPT_TO_REG_ICS‌_006 = "REG-ICS‌-006";
+	public static final String OPT_TO_REG_ICS‌_007 = "REG-ICS‌-007";
 	public static final String OPT_TO_REG_ICS‌_005_MSG = "Unable to validate machine location. Please insert the GPS device and try again";
+	public static final String OPT_TO_REG_ICS‌_006_MSG = "Unable to validate machine location due to weak GPS signal. Please try again.";
+	public static final String OPT_TO_REG_ICS‌_007_MSG = "Unable to validate machine location due to GPS port mismatch. Please insert into specific port and try again.";
 	public static final String OPT_TO_REG_SUCCESS = "success";
 	public static final String OPT_TO_REG_LAST_CAPTURED_TIME = "lastCapturedTime";
 	public static final String OPT_TO_REG_ERROR_MESSAGE = "errorMessage";
@@ -525,6 +529,8 @@ public class RegistrationConstants {
 	public static final String GPS_CAPTURE_FAILURE = "gpsCaptureFailure";
 	public static final String GPS_CAPTURE_FAILURE_MSG = "GPS signal is weak please capture again";
 	public static final String GPS_CAPTURE_SUCCESS_MSG = "GPS signal Captured Sucessfullty";
+	public static final String GPS_CAPTURE_PORT_FAILURE_MSG = "Please insert the GPS device in the Specified Port";
+	public static final String GPS_DEVICE_CONNECTION_FAILURE = "Please connect the GPS Device";
 	public static final String GPS_DEVICE_CONNECTION_FAILURE_ERRO_MSG = "GPS device not found. Please connect an on-boarded GPS device.";
 	public static final String GPS_REG_LGE‌_002 = "REG-LGE‌-002";
 	public static final String GPS_SERIAL_PORT = "COM4";
@@ -532,6 +538,7 @@ public class RegistrationConstants {
 	public static final String GPS_DEVICE_MODEL = "BU343";
 	public static final String GPS_ERROR_CODE = "errorCode";
 	public static final String GPS_CAPTURING_EXCEPTION = "GPS_EXCEPTION";
+	public static final String GPS_SIGNAL = "$GP";
 
 	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint", "Iris", "Camera", "GPS",
 			"Printer", "Scanner", "Barcode"); 

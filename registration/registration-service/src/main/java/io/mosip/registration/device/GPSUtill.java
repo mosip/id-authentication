@@ -22,6 +22,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 public class GPSUtill {
 
 	/** Object for Logger. */
+	
 
 	private static final Logger LOGGER = AppConfig.getLogger(GPSUtill.class);
 
@@ -32,20 +33,20 @@ public class GPSUtill {
 	 * @param direction       the direction
 	 * @return the float
 	 */
-	private static float latitude2Decimal(String lat, String direction) {
+	private static double latitude2Decimal(String lat, String direction) {
 
 		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "Latitude conversion begins");
 
-		float latitudeDegrees = 0.0f;
+		double latitudeDegrees = 0.0;
 
 		if (lat.indexOf('.') != -1) {
 
 			int minutesPosition = lat.indexOf('.') - 2;
-			float minutes = Float.parseFloat(lat.substring(minutesPosition));
-			float decimalDegrees = Float.parseFloat(lat.substring(minutesPosition)) / 60.0f;
+			double minutes = Double.parseDouble(lat.substring(minutesPosition));
+			double decimalDegrees = Double.parseDouble(lat.substring(minutesPosition)) / 60.0f;
 
-			float degree = Float.parseFloat(lat) - minutes;
-			float wholeDegrees = (int) degree / 100;
+			double degree = Double.parseDouble(lat) - minutes;
+			double wholeDegrees = 100.0 * degree / 100;
 
 			latitudeDegrees = wholeDegrees + decimalDegrees;
 
@@ -65,20 +66,20 @@ public class GPSUtill {
 	 * @param direction        the direction
 	 * @return the float
 	 */
-	private static float longitude2Decimal(String lon, String direction) {
+	private static double longitude2Decimal(String lon, String direction) {
 
 		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "Longitude conversion begins");
 
-		float longitudeDegrees = 0.0f;
+		double longitudeDegrees = 0.0;
 
 		if (lon.indexOf('.') != -1) {
 
 			int minutesPosition = lon.indexOf('.') - 2;
-			float minutes = Float.parseFloat(lon.substring(minutesPosition));
-			float decimalDegrees = Float.parseFloat(lon.substring(minutesPosition)) / 60.0f;
+			double minutes = Double.parseDouble(lon.substring(minutesPosition));
+			double decimalDegrees = Double.parseDouble(lon.substring(minutesPosition)) / 60.0f;
 
-			float degree = Float.parseFloat(lon) - minutes;
-			float wholeDegrees = (int) degree / 100;
+			double degree = Double.parseDouble(lon) - minutes;
+			double wholeDegrees = 100.0 * degree / 100;
 
 			longitudeDegrees = wholeDegrees + decimalDegrees;
 
@@ -159,10 +160,10 @@ public class GPSUtill {
 	public class GPSPosition {
 
 		/** The latitudeFromGps. */
-		private float latitudeFromGps = 0.0f;
+		private double latitudeFromGps = 0.0;
 
 		/** The longitudeFromGps. */
-		private float longitudeFromGps = 0.0f;
+		private double longitudeFromGps = 0.0;
 
 		/** The response. */
 		private String response = "";
@@ -170,28 +171,28 @@ public class GPSUtill {
 		/**
 		 * @return the latitudeFromGps
 		 */
-		public float getLat() {
+		public double getLat() {
 			return latitudeFromGps;
 		}
 
 		/**
 		 * @param latitudeFromGps the latitudeFromGps to set
 		 */
-		public void setLat(float lat) {
+		public void setLat(double lat) {
 			this.latitudeFromGps = lat;
 		}
 
 		/**
 		 * @return the longitudeFromGps
 		 */
-		public float getLon() {
+		public double getLon() {
 			return longitudeFromGps;
 		}
 
 		/**
 		 * @param longitudeFromGps the longitudeFromGps to set
 		 */
-		public void setLon(float lon) {
+		public void setLon(double lon) {
 			this.longitudeFromGps = lon;
 		}
 

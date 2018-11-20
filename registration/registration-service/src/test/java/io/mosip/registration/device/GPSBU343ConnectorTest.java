@@ -1,15 +1,14 @@
 package io.mosip.registration.device;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.Enumeration;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -20,13 +19,15 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 
-@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ CommPortIdentifier.class })
 public class GPSBU343ConnectorTest {
@@ -38,13 +39,10 @@ public class GPSBU343ConnectorTest {
 	private CommPortIdentifier commPortIdentifier;
 
 	@Mock
-	private Enumeration<CommPortIdentifier> enumCommPortIdentifier;
+	private Enumeration<CommPortIdentifier> portListEnumeration;
 
 	@Mock
-	private SerialPort serialPort;
-
-	@Mock
-	private InputStream inputStream;
+	private SerialPort serialPortId;
 
 	@Mock
 	private StringBuilder deviceData;
@@ -56,20 +54,19 @@ public class GPSBU343ConnectorTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+
 		ReflectionTestUtils.setField(SessionContext.class, "sessionContext", null);
 
 	}
 
 	/**
 	 * Initialize.
-	 *
-	 * @throws IOException         Signals that an I/O exception has occurred.
-	 * @throws URISyntaxException  the URI syntax exception
-	 * @throws PortInUseException  the port in use exception
-	 * @throws NoSuchPortException the no such port exception
+	 * 
+	 * @throws Exception
 	 */
 	@Before
-	public void initialize() throws IOException, URISyntaxException, PortInUseException, NoSuchPortException {
+	public void initialize() throws Exception {
+
 		mockSerialPort();
 		mockPortName("COM4");
 	}
@@ -78,45 +75,271 @@ public class GPSBU343ConnectorTest {
 	 * Test method for
 	 * {@link io.mosip.registration.device.GPSIntegrationImpl#getLatLongDtls(double, double)}.
 	 * 
-	 * @throws PortInUseException
-	 * @throws NoSuchPortException
-	 * @throws IOException
+	 * @throws Exception
 	 */
 	@Test
-	public void testGPSBU343ConnectorWithGpsDevice() throws PortInUseException, NoSuchPortException, IOException {
+	public void testGPSBU343ConnectorWithGpsDevice() throws Exception {
 
 		String serialPortConnected = "COM4";
+		String value = "$GPG,A,,,,,0,00,,,M,0.0,M,,0000*48$GPGSA,A,1,,,,,,,,,,,,,,,*1";
+
+		ReflectionTestUtils.setField(gpsU343Connector, "inputStream", new ByteArrayInputStream(value.getBytes()));
 
 		int portThreadTime = 1000;
-		StringBuilder builder = new StringBuilder();
 
-		String value = "$GPG,A,,,,,0,00,,,M,0.0,M,,0000*48$GPGSA,A,1,,,,,,,,,,,,,,,*1E\r\n"
-				+ "$GPGSV,3,1,12,01,00,000,,02,00,000,,03400,000,,0,00,000,*7C\r\n"
-				+ "$GPGSV,3,2,12,05,00,000,,06,00,000,,07,00,000,,08,00,000,*77$GPGSV,3,3,12,09,00,000,,10,00,000,,11,00,002,,1,00,000,*71$GPRMC,,V,,,,,,,,,,N*53$GPVTT,,,,M,,N,,K,N*C";
+		Mockito.when(portListEnumeration.hasMoreElements()).thenReturn(true);
+		Mockito.when(portListEnumeration.nextElement()).thenReturn(commPortIdentifier);
+		Mockito.when(commPortIdentifier.getPortType()).thenReturn(CommPortIdentifier.PORT_SERIAL);
 
-		builder.append(value);
+		CommPort commPort = Mockito.mock(CommPort.class);
+		Mockito.when(commPort.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
 		ReflectionTestUtils.setField(gpsU343Connector, "serialPortId", null);
+		Mockito.when(commPortIdentifier.open(Mockito.anyString(), Mockito.anyInt())).thenReturn(serialPortId);
 
-		String gpsVale = gpsU343Connector.getGPSData(serialPortConnected, portThreadTime);
+		Mockito.when(serialPortId.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		SerialPortEvent event = mock(SerialPortEvent.class);
+		Mockito.when(event.getEventType()).thenReturn(1);
 
-		assertTrue(gpsVale.equals("gpsCaptureFailure"));
+		gpsU343Connector.serialEvent(event);
+
+		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+
+		assertTrue(gpsVale.contains("$GP"));
 
 	}
 
 	/**
-	 * Mock serial port.
+	 * Test GPSBU 343 connector port N ull case.
 	 *
-	 * @throws NoSuchPortException the no such port exception
-	 * @throws PortInUseException  the port in use exception
-	 * @throws IOException         Signals that an I/O exception has occurred.
+	 * @throws Exception the exception
 	 */
+	@Test
+	public void testGPSBU343ConnectorPortNUllCase() throws Exception {
+
+		String serialPortConnected = null;
+		String value = "$GPG,A,,,,,0,00,,,M,0.0,M,,0000*48$GPGSA,A,1,,,,,,,,,,,,,,,*1";
+
+		ReflectionTestUtils.setField(gpsU343Connector, "inputStream", new ByteArrayInputStream(value.getBytes()));
+
+		int portThreadTime = 1000;
+
+		Mockito.when(portListEnumeration.hasMoreElements()).thenReturn(true);
+		Mockito.when(portListEnumeration.nextElement()).thenReturn(commPortIdentifier);
+		Mockito.when(commPortIdentifier.getPortType()).thenReturn(CommPortIdentifier.PORT_SERIAL);
+
+		CommPort commPort = Mockito.mock(CommPort.class);
+		Mockito.when(commPort.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		ReflectionTestUtils.setField(gpsU343Connector, "serialPortId", null);
+		Mockito.when(commPortIdentifier.open(Mockito.anyString(), Mockito.anyInt())).thenReturn(serialPortId);
+
+		Mockito.when(serialPortId.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		SerialPortEvent event = mock(SerialPortEvent.class);
+		Mockito.when(event.getEventType()).thenReturn(1);
+
+		gpsU343Connector.serialEvent(event);
+
+		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+
+		assertTrue(gpsVale.contains("$GP"));
+
+	}
+
+	/**
+	 * Test GPSBU 343 connector port failure case 1.
+	 *
+	 * @throws Exception the exception
+	 */
+	@Test
+	public void testGPSBU343ConnectorPortFailureCase1() throws Exception {
+
+		String serialPortConnected = null;
+		String value = RegistrationConstants.GPS_CAPTURE_FAILURE_MSG;
+
+		ReflectionTestUtils.setField(gpsU343Connector, "inputStream", new ByteArrayInputStream(value.getBytes()));
+
+		int portThreadTime = 1000;
+
+		Mockito.when(portListEnumeration.hasMoreElements()).thenReturn(false);
+		Mockito.when(portListEnumeration.nextElement()).thenReturn(commPortIdentifier);
+		Mockito.when(commPortIdentifier.getPortType()).thenReturn(CommPortIdentifier.PORT_SERIAL);
+
+		CommPort commPort = Mockito.mock(CommPort.class);
+		Mockito.when(commPort.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		ReflectionTestUtils.setField(gpsU343Connector, "serialPortId", null);
+		Mockito.when(commPortIdentifier.open(Mockito.anyString(), Mockito.anyInt())).thenReturn(serialPortId);
+
+		Mockito.when(serialPortId.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		SerialPortEvent event = mock(SerialPortEvent.class);
+		Mockito.when(event.getEventType()).thenReturn(1);
+
+		gpsU343Connector.serialEvent(event);
+
+		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+
+		assertTrue(gpsVale.equals(RegistrationConstants.GPS_CAPTURE_FAILURE_MSG));
+
+	}
+
+	@Test
+	public void testGPSBU343ConnectorPortFailureCase2() throws Exception {
+
+		String serialPortConnected = null;
+		String value = RegistrationConstants.GPS_CAPTURE_FAILURE;
+
+		ReflectionTestUtils.setField(gpsU343Connector, "inputStream", new ByteArrayInputStream(value.getBytes()));
+
+		int portThreadTime = 1000;
+
+		Mockito.when(portListEnumeration.hasMoreElements()).thenReturn(false);
+		Mockito.when(portListEnumeration.nextElement()).thenReturn(commPortIdentifier);
+		Mockito.when(commPortIdentifier.getPortType()).thenReturn(CommPortIdentifier.PORT_SERIAL);
+
+		CommPort commPort = Mockito.mock(CommPort.class);
+		Mockito.when(commPort.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		ReflectionTestUtils.setField(gpsU343Connector, "serialPortId", null);
+		Mockito.when(commPortIdentifier.open(Mockito.anyString(), Mockito.anyInt())).thenReturn(serialPortId);
+
+		Mockito.when(serialPortId.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		SerialPortEvent event = mock(SerialPortEvent.class);
+		Mockito.when(event.getEventType()).thenReturn(1);
+
+		gpsU343Connector.serialEvent(event);
+
+		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+
+		assertTrue(gpsVale.equals(RegistrationConstants.GPS_CAPTURE_FAILURE));
+
+	}
+
+	@Test
+	public void testGPSBU343ConnectorPortFailureCase3() throws Exception {
+
+		String serialPortConnected = null;
+		String value = RegistrationConstants.GPS_CAPTURE_PORT_FAILURE_MSG;
+
+		ReflectionTestUtils.setField(gpsU343Connector, "inputStream", new ByteArrayInputStream(value.getBytes()));
+
+		int portThreadTime = 1000;
+
+		Mockito.when(portListEnumeration.hasMoreElements()).thenReturn(false);
+		Mockito.when(portListEnumeration.nextElement()).thenReturn(commPortIdentifier);
+		Mockito.when(commPortIdentifier.getPortType()).thenReturn(CommPortIdentifier.PORT_SERIAL);
+
+		CommPort commPort = Mockito.mock(CommPort.class);
+		Mockito.when(commPort.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		ReflectionTestUtils.setField(gpsU343Connector, "serialPortId", null);
+		Mockito.when(commPortIdentifier.open(Mockito.anyString(), Mockito.anyInt())).thenReturn(serialPortId);
+
+		Mockito.when(serialPortId.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		SerialPortEvent event = mock(SerialPortEvent.class);
+		Mockito.when(event.getEventType()).thenReturn(1);
+
+		gpsU343Connector.serialEvent(event);
+
+		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+
+		assertTrue(gpsVale.equals(RegistrationConstants.GPS_CAPTURE_PORT_FAILURE_MSG));
+
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	public void testGPSBU343ConnectorPortFailureCase4() throws Exception {
+
+		String serialPortConnected = null;
+		String value = RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE;
+
+		ReflectionTestUtils.setField(gpsU343Connector, "inputStream", new ByteArrayInputStream(value.getBytes()));
+
+		int portThreadTime = 1000;
+
+		Mockito.when(portListEnumeration.hasMoreElements()).thenReturn(false);
+		Mockito.when(portListEnumeration.nextElement()).thenReturn(commPortIdentifier);
+		Mockito.when(commPortIdentifier.getPortType()).thenReturn(CommPortIdentifier.PORT_SERIAL);
+
+		CommPort commPort = Mockito.mock(CommPort.class);
+		Mockito.when(commPort.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		ReflectionTestUtils.setField(gpsU343Connector, "serialPortId", null);
+		Mockito.when(commPortIdentifier.open(Mockito.anyString(), Mockito.anyInt())).thenReturn(serialPortId);
+
+		Mockito.when(serialPortId.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		SerialPortEvent event = mock(SerialPortEvent.class);
+		Mockito.when(event.getEventType()).thenReturn(1);
+
+		gpsU343Connector.serialEvent(event);
+
+		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+
+		assertTrue(gpsVale.equals(RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE));
+
+	}
+
+	@Test
+	public void testGPSBU343ConnectorPortFailureCase5() throws Exception {
+
+		String serialPortConnected = null;
+
+		int portThreadTime = 1000;
+
+		Mockito.when(portListEnumeration.hasMoreElements()).thenReturn(false);
+		ReflectionTestUtils.setField(gpsU343Connector, "portEnumList", null);
+
+		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+
+		assertTrue(gpsVale.equals(RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE));
+
+	}
+	
+	/**
+	 * Test GPSBU 343 connector port failure case 6.
+	 *
+	 * @throws Exception the exception
+	 */
+	@Test
+	public void testGPSBU343ConnectorPortFailureCase6() throws Exception {
+
+		String serialPortConnected = null;
+		String value = "";
+
+		ReflectionTestUtils.setField(gpsU343Connector, "inputStream", new ByteArrayInputStream(value.getBytes()));
+
+		int portThreadTime = 1000;
+
+		Mockito.when(portListEnumeration.hasMoreElements()).thenReturn(false);
+		Mockito.when(portListEnumeration.nextElement()).thenReturn(commPortIdentifier);
+		Mockito.when(commPortIdentifier.getPortType()).thenReturn(CommPortIdentifier.PORT_SERIAL);
+
+		CommPort commPort = Mockito.mock(CommPort.class);
+		Mockito.when(commPort.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		ReflectionTestUtils.setField(gpsU343Connector, "serialPortId", null);
+		Mockito.when(commPortIdentifier.open(Mockito.anyString(), Mockito.anyInt())).thenReturn(serialPortId);
+
+		Mockito.when(serialPortId.getInputStream()).thenReturn(new ByteArrayInputStream(value.getBytes()));
+		SerialPortEvent event = mock(SerialPortEvent.class);
+		Mockito.when(event.getEventType()).thenReturn(1);
+
+		gpsU343Connector.serialEvent(event);
+
+		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+
+		assertTrue(gpsVale.equals(RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE));
+
+	}
+
 	private void mockSerialPort() throws NoSuchPortException, PortInUseException, IOException {
+
 		PowerMockito.mockStatic(CommPortIdentifier.class);
+		CommPortIdentifier commPortIdentifier = Mockito.mock(CommPortIdentifier.class);
+		Mockito.when(portListEnumeration.hasMoreElements()).thenReturn(true);
+		Mockito.when(portListEnumeration.nextElement()).thenReturn(commPortIdentifier);
+		Mockito.when(CommPortIdentifier.getPortIdentifiers()).thenReturn(portListEnumeration);
+
 		Mockito.when(commPortIdentifier.getPortType()).thenReturn(CommPortIdentifier.PORT_SERIAL);
 		Mockito.when(commPortIdentifier.isCurrentlyOwned()).thenReturn(false);
-		Mockito.when(commPortIdentifier.open(Mockito.anyString(), Mockito.anyInt())).thenReturn(serialPort);
-		Mockito.when(CommPortIdentifier.getPortIdentifier(Mockito.anyString())).thenReturn(commPortIdentifier);
-		Mockito.when(serialPort.getInputStream()).thenReturn(inputStream);
+		Mockito.when(commPortIdentifier.open(Mockito.anyString(), Mockito.anyInt())).thenReturn(serialPortId);
+
 	}
 
 	/**
