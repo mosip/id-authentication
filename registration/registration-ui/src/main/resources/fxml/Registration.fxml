@@ -49,6 +49,7 @@
                       </children>
                    </AnchorPane>
                    <Button fx:id="pane2NextBtn" layoutX="652.0" layoutY="369.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
+                 	<Button fx:id="pane2PrevBtn" layoutX="50.0" layoutY="369.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" text="Prev" />
                  	</children>
                   </AnchorPane>
                </children>

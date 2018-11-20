@@ -1265,5 +1265,13 @@ public class RegistrationController extends BaseController {
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
 	}
+	
+	public void gotoFirstDemographicPane() {
+		demoGraphicTitlePane.setContent(null);
+		demoGraphicTitlePane.setExpanded(false);
+		demoGraphicTitlePane.setContent(demoGraphicPane1);
+		demoGraphicTitlePane.setExpanded(true);
+		anchor_pane_registration.setMaxHeight(900);
+	}
 
 }
