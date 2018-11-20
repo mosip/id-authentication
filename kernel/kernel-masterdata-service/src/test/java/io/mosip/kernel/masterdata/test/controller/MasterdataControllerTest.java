@@ -123,7 +123,7 @@ public class MasterdataControllerTest {
 	private List<DocumentCategoryDto> documentCategoryDtoList = new ArrayList<>();
 
 	@MockBean
-	private DocumentCategoryService service;
+	private DocumentCategoryService documentCategoryService;
 
 	@MockBean
 	private DocumentTypeService documentTypeService;
@@ -449,37 +449,39 @@ public class MasterdataControllerTest {
 
 	// -------------------------------DocumentCategoryControllerTest--------------------------
 
-	@Test
-	public void fetchAllDocumentCategoryTest() throws Exception {
-
-		Mockito.when(service.getAllDocumentCategory()).thenReturn(documentCategoryDtoList);
-
-		mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories"))
-				.andExpect(MockMvcResultMatchers.content().json(DOCUMENT_CATEGORY_EXPECTED_LIST))
-				.andExpect(MockMvcResultMatchers.status().isOk());
-	}
-
-	@Test
-	public void fetchAllDocumentCategoryUsingLangCodeTest() throws Exception {
-
-		Mockito.when(service.getAllDocumentCategoryByLaguageCode(Mockito.anyString()))
-				.thenReturn(documentCategoryDtoList);
-
-		mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/ENG"))
-				.andExpect(MockMvcResultMatchers.content().json(DOCUMENT_CATEGORY_EXPECTED_LIST))
-				.andExpect(MockMvcResultMatchers.status().isOk());
-	}
-
-	@Test
-	public void fetchDocumentCategoryUsingCodeAndLangCodeTest() throws Exception {
-
-		Mockito.when(service.getDocumentCategoryByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(documentCategoryDto1);
-
-		mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/101/ENG"))
-				.andExpect(MockMvcResultMatchers.content().json(DOCUMENT_CATEGORY_EXPECTED_OBJECT))
-				.andExpect(MockMvcResultMatchers.status().isOk());
-	}
+	// @Test
+	// public void fetchAllDocumentCategoryTest() throws Exception {
+	//
+	// Mockito.when(documentCategoryService.getAllDocumentCategory()).thenReturn(documentCategoryDtoList);
+	//
+	// mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories"))
+	// .andExpect(MockMvcResultMatchers.content().json(DOCUMENT_CATEGORY_EXPECTED_LIST))
+	// .andExpect(MockMvcResultMatchers.status().isOk());
+	// }
+	//
+	// @Test
+	// public void fetchAllDocumentCategoryUsingLangCodeTest() throws Exception {
+	//
+	// Mockito.when(documentCategoryService.getAllDocumentCategoryByLaguageCode(Mockito.anyString()))
+	// .thenReturn(documentCategoryDtoList);
+	//
+	// mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/ENG"))
+	// .andExpect(MockMvcResultMatchers.content().json(DOCUMENT_CATEGORY_EXPECTED_LIST))
+	// .andExpect(MockMvcResultMatchers.status().isOk());
+	// }
+	//
+	// @Test
+	// public void fetchDocumentCategoryUsingCodeAndLangCodeTest() throws Exception
+	// {
+	//
+	// Mockito.when(documentCategoryService.getDocumentCategoryByCodeAndLangCode(Mockito.anyString(),
+	// Mockito.anyString()))
+	// .thenReturn(documentCategoryDto1);
+	//
+	// mockMvc.perform(MockMvcRequestBuilders.get("/documentcategories/101/ENG"))
+	// .andExpect(MockMvcResultMatchers.content().json(DOCUMENT_CATEGORY_EXPECTED_OBJECT))
+	// .andExpect(MockMvcResultMatchers.status().isOk());
+	// }
 
 	// -------------------------------DocumentTypeControllerTest--------------------------
 	@Test

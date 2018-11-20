@@ -200,9 +200,8 @@ public class MasterDataServiceTest {
 		// TO-DO machine history service not implemented
 
 		templateServiceSetup();
-		
+
 		documentTypeSetup();
-		
 
 	}
 
@@ -829,35 +828,42 @@ public class MasterDataServiceTest {
 		documentCategoryService.getDocumentCategoryByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
 
-	@Test
-	public void getAllDocumentCategorySuccess() {
-
-		Mockito.when(documentCategoryRepository.findAllByIsActiveTrueAndIsDeletedFalse(DocumentCategory.class))
-				.thenReturn(documentCategoryList);
-		List<DocumentCategoryDto> DocumentCategoryDtoList = documentCategoryService.getAllDocumentCategory();
-		assertEquals(documentCategoryList.get(0).getCode(), DocumentCategoryDtoList.get(0).getCode());
-		assertEquals(documentCategoryList.get(0).getName(), DocumentCategoryDtoList.get(0).getName());
-	}
-
-	@Test
-	public void getAllDocumentCategoryByLaguageCodeSuccess() {
-		Mockito.when(documentCategoryRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
-				.thenReturn(documentCategoryList);
-		List<DocumentCategoryDto> DocumentCategoryDtoList = documentCategoryService
-				.getAllDocumentCategoryByLaguageCode("ENG");
-		assertEquals(documentCategoryList.get(0).getCode(), DocumentCategoryDtoList.get(0).getCode());
-		assertEquals(documentCategoryList.get(0).getName(), DocumentCategoryDtoList.get(0).getName());
-	}
-
-	@Test
-	public void getDocumentCategoryByCodeAndLangCodeSuccess() {
-		Mockito.when(documentCategoryRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(documentCategory1);
-		DocumentCategoryDto actual = documentCategoryService.getDocumentCategoryByCodeAndLangCode("101", "ENG");
-		assertEquals(documentCategory1.getCode(), actual.getCode());
-		assertEquals(documentCategory1.getName(), actual.getName());
-	}
+	// @Test
+	// public void getAllDocumentCategorySuccess() {
+	//
+	// Mockito.when(documentCategoryRepository.findAllByIsActiveTrueAndIsDeletedFalse(DocumentCategory.class))
+	// .thenReturn(documentCategoryList);
+	// List<DocumentCategoryDto> DocumentCategoryDtoList =
+	// documentCategoryService.getAllDocumentCategory();
+	// assertEquals(documentCategoryList.get(0).getCode(),
+	// DocumentCategoryDtoList.get(0).getCode());
+	// assertEquals(documentCategoryList.get(0).getName(),
+	// DocumentCategoryDtoList.get(0).getName());
+	// }
+	//
+	// @Test
+	// public void getAllDocumentCategoryByLaguageCodeSuccess() {
+	// Mockito.when(documentCategoryRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+	// .thenReturn(documentCategoryList);
+	// List<DocumentCategoryDto> DocumentCategoryDtoList = documentCategoryService
+	// .getAllDocumentCategoryByLaguageCode("ENG");
+	// assertEquals(documentCategoryList.get(0).getCode(),
+	// DocumentCategoryDtoList.get(0).getCode());
+	// assertEquals(documentCategoryList.get(0).getName(),
+	// DocumentCategoryDtoList.get(0).getName());
+	// }
+	//
+	// @Test
+	// public void getDocumentCategoryByCodeAndLangCodeSuccess() {
+	// Mockito.when(documentCategoryRepository
+	// .findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+	// Mockito.anyString()))
+	// .thenReturn(documentCategory1);
+	// DocumentCategoryDto actual =
+	// documentCategoryService.getDocumentCategoryByCodeAndLangCode("101", "ENG");
+	// assertEquals(documentCategory1.getCode(), actual.getCode());
+	// assertEquals(documentCategory1.getName(), actual.getName());
+	// }
 
 	// ------------------ LanguageServiceTest -----------------
 

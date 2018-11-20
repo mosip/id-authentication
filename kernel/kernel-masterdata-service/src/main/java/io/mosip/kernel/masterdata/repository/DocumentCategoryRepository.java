@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
+import io.mosip.kernel.masterdata.entity.CodeLangCodeId;
 
 /**
  * @author Neha
@@ -13,7 +14,7 @@ import io.mosip.kernel.masterdata.entity.DocumentCategory;
  *
  */
 @Repository
-public interface DocumentCategoryRepository extends BaseRepository<DocumentCategory, String> {
+public interface DocumentCategoryRepository extends BaseRepository<DocumentCategory, CodeLangCodeId> {
 
 	/**
 	 * Get all DocumentCategory types
@@ -21,7 +22,7 @@ public interface DocumentCategoryRepository extends BaseRepository<DocumentCateg
 	 * @return {@link List<DocumentCategory>}
 	 */
 	public List<DocumentCategory> findAllByIsActiveTrueAndIsDeletedFalse(Class<DocumentCategory> entityClass);
-	
+
 	/**
 	 * Get all Document category of a specific language using language code
 	 * 
