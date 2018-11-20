@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.packet.archiver.util.exception;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * The Class UnableToAccessPathException.
@@ -26,8 +27,8 @@ public class UnableToAccessPathException extends BaseCheckedException {
 	 * @param message
 	 *            the message
 	 */
-	public UnableToAccessPathException(String code, String message) {
-		super(code, message);
+	public UnableToAccessPathException(String message) {
+		super(PlatformErrorMessages.RPR_PDJ_PACKET_DECRYPTION_FAILURE.getCode(), message);
 
 	}
 
@@ -41,8 +42,8 @@ public class UnableToAccessPathException extends BaseCheckedException {
 	 * @param cause
 	 *            the cause
 	 */
-	public UnableToAccessPathException(String code, String message, Throwable cause) {
-		super(code, message, cause);
+	public UnableToAccessPathException(String message, Throwable cause) {
+		super(PlatformErrorMessages.RPR_PDJ_PACKET_DECRYPTION_FAILURE.getCode(), message, cause);
 
 	}
 }

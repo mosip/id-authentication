@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 
-import io.mosip.registration.processor.core.exception.errorcodes.AbstractVerticleErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * This class provides JSON utilites
@@ -44,7 +44,7 @@ public class JsonUtil {
 		try {
 			return gson.fromJson(jsonObject, clazz);
 		} catch (Exception e) {
-			throw new UnsupportedEncodingException(AbstractVerticleErrorCodes.IIS_EPU_ATU_UNSUPPORTED_ENCODING);
+			throw new UnsupportedEncodingException(PlatformErrorMessages.RPR_CMB_UNSUPPORTED_ENCODING.getMessage());
 		}
 	}
 

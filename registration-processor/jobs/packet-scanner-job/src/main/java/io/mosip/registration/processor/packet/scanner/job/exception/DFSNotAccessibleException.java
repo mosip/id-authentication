@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.scanner.job.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.scanner.job.exception.utils.PacketScannerErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 /**
  * The Class DFSNotAccessibleException.
  */
@@ -23,7 +23,7 @@ public class DFSNotAccessibleException extends BaseUncheckedException {
 	 * @param errorMessage the error message
 	 */
 	public DFSNotAccessibleException(String errorMessage) {
-		super(PacketScannerErrorCodes.IIS_EPP_EPV_DFS_NOT_ACCESSIBLE, errorMessage);
+		super(PlatformErrorMessages.RPR_PSJ_DFS_NOT_ACCESSIBLE.getCode(), errorMessage);
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class DFSNotAccessibleException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public DFSNotAccessibleException(String message, Throwable cause) {
-		super(PacketScannerErrorCodes.IIS_EPP_EPV_DFS_NOT_ACCESSIBLE, message, cause);
+		super(PlatformErrorMessages.RPR_PSJ_DFS_NOT_ACCESSIBLE.getCode(), message, cause);
 	}
 
 }

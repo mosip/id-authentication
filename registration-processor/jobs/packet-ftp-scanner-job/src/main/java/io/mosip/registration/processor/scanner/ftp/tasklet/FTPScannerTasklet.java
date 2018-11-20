@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
@@ -82,8 +84,8 @@ public class FTPScannerTasklet implements Tasklet {
 						filepathName.getFileName().toString().split("\\.")[0], childFolder);
 				LOGGER.error(LOGDISPLAY, DUPLICATE_UPLOAD, e);
 			} catch (IOException e) {
-				FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(FTP_NOT_ACCESSIBLE,
-						e);
+				FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
+						PlatformErrorMessages.RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE.getMessage(), e);
 				LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 						ftpNotAccessibleException);
 			}
@@ -109,7 +111,7 @@ public class FTPScannerTasklet implements Tasklet {
 						Files.delete(file.toPath());
 					} catch (IOException e) {
 						FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
-								FTP_NOT_ACCESSIBLE, e);
+								PlatformErrorMessages.RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE.getMessage(), e);
 						LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 								ftpNotAccessibleException);
 					}
@@ -117,7 +119,8 @@ public class FTPScannerTasklet implements Tasklet {
 			});
 			deletepath.close();
 		} catch (IOException e) {
-			FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(FTP_NOT_ACCESSIBLE, e);
+			FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
+					PlatformErrorMessages.RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE.getMessage(), e);
 			LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 					ftpNotAccessibleException);
 		}

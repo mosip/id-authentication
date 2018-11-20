@@ -39,7 +39,6 @@ import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotF
 import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAccessPathException;
 import io.mosip.registration.processor.packet.decryptor.job.Decryptor;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
-import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
 import io.mosip.registration.processor.packet.decryptor.job.messagesender.DecryptionMessageSender;
 import io.mosip.registration.processor.packet.decryptor.job.tasklet.PacketDecryptorTasklet;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
@@ -120,15 +119,7 @@ public class PacketDecryptorTaskletTest {
 		dto.setStatusCode("PACKET_UPLOADED_TO_FILESYSTEM");
 		dto.setRetryCount(0);
 		list = new ArrayList<InternalRegistrationStatusDto>();
-		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		AuditRequestDto auditRequest1 = new AuditRequestDto();
 
-		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-		f.setAccessible(true);
-		f.set(clientAuditRequestBuilder, auditRequestBuilder);
-		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-		f1.setAccessible(true);
-		f1.set(auditRequestBuilder, auditRequest1);*/
 	}
 
 	/**
@@ -148,7 +139,7 @@ public class PacketDecryptorTaskletTest {
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 
-		UnableToAccessPathException exception = new UnableToAccessPathException("", "Unable to access path Exception");
+		UnableToAccessPathException exception = new UnableToAccessPathException("Unable to access path Exception");
 		Mockito.doThrow(exception).when(packetArchiver).archivePacket(ArgumentMatchers.any());
 
 		Mockito.when(
@@ -193,7 +184,7 @@ public class PacketDecryptorTaskletTest {
 		when(mockAppender.getName()).thenReturn("MOCK");
 		root.addAppender(mockAppender);
 
-		PacketNotFoundException exception = new PacketNotFoundException("", "Packet not found Exception");
+		PacketNotFoundException exception = new PacketNotFoundException("Packet not found Exception");
 		Mockito.doThrow(exception).when(packetArchiver).archivePacket(ArgumentMatchers.any());
 
 		Mockito.when(
@@ -244,9 +235,7 @@ public class PacketDecryptorTaskletTest {
 
 		Mockito.when(adapter.getPacket(any(String.class))).thenReturn(stream);
 
-		PacketDecryptionFailureException exception = new PacketDecryptionFailureException(
-				PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorCode(),
-				PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE.getErrorMessage(),
+		PacketDecryptionFailureException exception = new PacketDecryptionFailureException(PlatformErrorMessages.RPR_PDJ_PACKET_DECRYPTION_FAILURE.getMessage(),
 				new IOException());
 
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenThrow(exception);
@@ -257,8 +246,7 @@ public class PacketDecryptorTaskletTest {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
 				return ((ILoggingEvent) argument).getFormattedMessage()
-						.contains(PacketDecryptionFailureExceptionConstant.MOSIP_PACKET_DECRYPTION_FAILURE_ERROR_CODE
-								.getErrorMessage());
+						.contains(PlatformErrorMessages.RPR_PDJ_PACKET_DECRYPTION_FAILURE.getMessage());
 			}
 		}));
 	}

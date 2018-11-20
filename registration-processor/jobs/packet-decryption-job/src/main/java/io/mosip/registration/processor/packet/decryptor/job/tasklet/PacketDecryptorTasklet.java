@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
-import io.mosip.registration.processor.auditmanager.code.AuditLogConstant;
-import io.mosip.registration.processor.auditmanager.code.EventId;
-import io.mosip.registration.processor.auditmanager.code.EventName;
-import io.mosip.registration.processor.auditmanager.code.EventType;
+import io.mosip.registration.processor.core.constant.AuditLogConstant;
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
 import io.mosip.registration.processor.packet.archiver.util.exception.PacketNotFoundException;
@@ -26,7 +26,6 @@ import io.mosip.registration.processor.packet.archiver.util.exception.UnableToAc
 import io.mosip.registration.processor.packet.decryptor.job.Decryptor;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.decryptor.job.messagesender.DecryptionMessageSender;
-import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;

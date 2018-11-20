@@ -1,8 +1,7 @@
 package io.mosip.registration.processor.packet.receiver.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.packet.receiver.exception.utils.IISPlatformErrorCodes;
-
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 /**
  * DuplicateUploadRequestException occurs When a packet is already present in
  * landing zone and again client tries to upload same packet.
@@ -25,7 +24,7 @@ public class DuplicateUploadRequestException extends BaseUncheckedException {
 	 * @param msg the msg
 	 */
 	public DuplicateUploadRequestException(String msg) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_DUPLICATE_UPLOAD, msg);
+		super(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getCode(), msg);
 	}
 
 	/**
@@ -35,6 +34,6 @@ public class DuplicateUploadRequestException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public DuplicateUploadRequestException(String msg, Throwable cause) {
-		super(IISPlatformErrorCodes.IIS_EPU_ATU_DUPLICATE_UPLOAD + EMPTY_SPACE, msg, cause);
+		super(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getCode() + EMPTY_SPACE, msg, cause);
 	}
 }

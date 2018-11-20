@@ -11,10 +11,10 @@ import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import io.mosip.registration.processor.auditmanager.code.AuditLogConstant;
-import io.mosip.registration.processor.auditmanager.code.EventId;
-import io.mosip.registration.processor.auditmanager.code.EventName;
-import io.mosip.registration.processor.auditmanager.code.EventType;
+import io.mosip.registration.processor.core.constant.AuditLogConstant
+import io.mosip.registration.processor.core.constant.EventId;
+import io.mosip.registration.processor.core.constant.EventName;
+import io.mosip.registration.processor.core.constant.EventType;
 import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
@@ -37,7 +37,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 
 	@Autowired
 	QCUsersClient qcUsersClient;
-	
+
 	@Autowired
 	ClientAuditRequestBuilder clientAuditRequestBuilder;
 
@@ -56,7 +56,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
 		List<String> qcUsersList = Arrays.asList("qc001","qc002","qc003");
 		//qcUsersClient.getAllQcuserIds();
-		
+
 		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
 		QCUserDto qcUserDto = new QCUserDto();
 		qcUserDto.setQcUserId(qcUserId);
@@ -84,7 +84,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 			return resultDtos;
 
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Table Not Accessible", e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 			description = isTransactionSuccessful ? "description--QC User status update successful"
 					: "description--QC User status update failed";
@@ -106,17 +106,15 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 		qcUserDtos.forEach(dto -> {
 
 			if (dto.getQcUserId() == null || dto.getQcUserId().trim().isEmpty()) {
-				throw new InvalidQcUserIdException(
-						QualityCheckerStatusCode.INVALID_QC_USER_ID.name() + ": QC USER ID IS NULL");
+				throw new InvalidQcUserIdException(PlatformErrorMessages.RPR_QCR_INVALID_QC_USER_ID.getMessage());
 			}
 			if (dto.getRegId() == null || dto.getRegId().trim().isEmpty()) {
-				throw new InvalidRegistrationIdException(
-						QualityCheckerStatusCode.INVALID_REGISTRATION_ID.name() + ": REGISTRATION ID IS NULL");
+				throw new InvalidRegistrationIdException(PlatformErrorMessages.RPR_QCR_INVALID_REGISTRATION_ID.getMessage());
 			}
 
 			QcuserRegistrationIdEntity entity = applicantInfoDao.findById(dto.getQcUserId(), dto.getRegId());
 			if (entity == null) {
-				throw new ResultNotFoundException(QualityCheckerStatusCode.DATA_NOT_FOUND.name() + " FOR RID: "
+				throw new ResultNotFoundException(PlatformErrorMessages.RPR_QCR_RESULT_NOT_FOUND.getMessage() + " FOR RID: "
 						+ dto.getRegId() + " AND  FOR QC USER ID: " + dto.getQcUserId());
 			}
 			map.put(entity, dto);
@@ -134,7 +132,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 
 			return convertEntityToDto(qcUserEntity);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("qcuser_registration_id Table Not Accessible", e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_QCR_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 			description = isTransactionSuccessful ? "description--Demographic-data saved Success"
 					: "description--Demographic Failed to save";

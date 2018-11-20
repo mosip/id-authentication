@@ -1,6 +1,7 @@
 package io.mosip.registration.processor.packet.decryptor.job.exception;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * PacketDecryptionFailureException class
@@ -22,8 +23,8 @@ public class PacketDecryptionFailureException extends BaseCheckedException{
 	 * @param cause
 	 * 			  Throwable cause for the specific exception
 	 */
-	public PacketDecryptionFailureException(String code, String  message, Throwable cause) {
-		super(code, message, cause);
+	public PacketDecryptionFailureException(String  message, Throwable cause) {
+		super(PlatformErrorMessages.RPR_PDJ_PACKET_DECRYPTION_FAILURE.getCode(), message, cause);
 
 	}
 

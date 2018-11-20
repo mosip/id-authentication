@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.scanner.virusscanner.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.scanner.virusscanner.exception.utils.VirusScannerErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 
 public class DFSNotAccessibleException extends BaseUncheckedException {
@@ -13,11 +13,11 @@ public class DFSNotAccessibleException extends BaseUncheckedException {
 	}
 
 	public DFSNotAccessibleException(String errorMessage) {
-		super(VirusScannerErrorCodes.IIS_EPP_EPV_DFS_NOT_ACCESSIBLE, errorMessage);
+		super(PlatformErrorMessages.RPR_PSJ_DFS_NOT_ACCESSIBLE.getCode(), errorMessage);
 	}
 
 	public DFSNotAccessibleException(String message, Throwable cause) {
-		super(VirusScannerErrorCodes.IIS_EPP_EPV_DFS_NOT_ACCESSIBLE, message, cause);
+		super(PlatformErrorMessages.RPR_PSJ_DFS_NOT_ACCESSIBLE.getCode(), message, cause);
 	}
 
 }
