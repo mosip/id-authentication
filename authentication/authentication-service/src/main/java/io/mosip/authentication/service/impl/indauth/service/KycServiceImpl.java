@@ -1,8 +1,12 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
@@ -11,6 +15,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -136,7 +142,7 @@ public class KycServiceImpl implements KycService{
 	}
 	
 
-	private Map<String, Object> generatePDFDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Object maskedUin) {
+	private Map<String, Object> generatePDFDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Object maskedUin) throws IdAuthenticationBusinessException {
 		String primaryLanguage = env.getProperty("mosip.primary.lang-code");
 		String secondaryLanguage = env.getProperty("mosip.secondary.lang-code");
 		Map<String, Object> pdfDetails = new HashMap<>();
@@ -162,12 +168,28 @@ public class KycServiceImpl implements KycService{
 		pdfDetails.put("name_label_sec", messageSource.getMessage("name_label_sec", null, new Locale(secondaryLanguage)));
 		pdfDetails.put("name_pri", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, filteredIdentityInfo).getValue());
 		pdfDetails.put("name_sec", demoHelper.getEntityInfo(DemoMatchType.NAME_SEC, filteredIdentityInfo).getValue());
+		faceDetails(filteredIdentityInfo, maskedUin, pdfDetails);
+		return pdfDetails;
+	}
+
+	private void faceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Object maskedUin,
+			Map<String, Object> pdfDetails) throws IdAuthenticationBusinessException {
 		Optional<String> faceValue = getFaceDetails(filteredIdentityInfo);
 		if(faceValue.isPresent()) {
-			pdfDetails.put("face_value", faceValue.get());
-			pdfDetails.put("face_label_value", messageSource.getMessage("face_value", null, LocaleContextHolder.getLocale()));
+			byte[] bytearray = Base64.getDecoder().decode(faceValue.get());
+			Path path = null;
+			BufferedImage imag;
+			try {
+				imag = ImageIO.read(new ByteArrayInputStream(bytearray));
+				File facePath = File.createTempFile(String.valueOf(maskedUin), ".jpg");
+				ImageIO.write(imag, "jpg", facePath);
+				path = facePath.toPath();
+			} catch (IOException e) {
+				mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+			}
+			pdfDetails.put("photoUrl", path);
 		}
-		return pdfDetails;
 	}
 
 	private Optional<String> getFaceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {
@@ -194,12 +216,24 @@ public class KycServiceImpl implements KycService{
 			}
 			
 			ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(template);
+			deleteFileOnExit(identity);
 			pdfDetails = Base64.getEncoder().encodeToString(bos.toByteArray());
+			System.out.println(pdfDetails);
 		} catch (IOException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
 		}
 		return pdfDetails;
+	}
+	
+	private void deleteFileOnExit(Map<String, Object> identity) {
+		Path path = (Path) identity.get("photoUrl");
+		if(path!=null) {
+			File file = path.toFile();
+			if(file.exists()) {
+				file.deleteOnExit();			
+			}			
+		}		
 	}
 
 
