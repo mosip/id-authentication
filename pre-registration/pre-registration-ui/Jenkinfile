@@ -1,7 +1,7 @@
 node {
 
 def branch = 'DEV'
-def projectToBuild = 'pre-registration/pre-registration-ui'  
+def projectToBuild = 'pre-registration/pre-registration-ui/'  
 
  stage('------- Checkout --------') {
   dir(branch) {
