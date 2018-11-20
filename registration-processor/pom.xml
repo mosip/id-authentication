@@ -76,7 +76,7 @@
 		<powermock.module.junit4.version>1.7.4</powermock.module.junit4.version>
 		<powermock.api.mockito.version>1.7.4</powermock.api.mockito.version>
 		<awaitility.version>3.1.0</awaitility.version>
-		
+		<jsonsimple.version>1.1.1</jsonsimple.version>
 		<!-- DFS adapter -->
 		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
