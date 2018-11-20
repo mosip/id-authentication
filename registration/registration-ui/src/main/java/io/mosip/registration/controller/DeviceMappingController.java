@@ -503,10 +503,10 @@ public class DeviceMappingController extends BaseController implements Initializ
 			ResponseDTO responseDTO = mapMachineService.updateMappedDevice(devicesRemoved, devicesAdded);
 			
 			if (responseDTO.getSuccessResponseDTO() != null) {
-				generateAlert(AlertType.INFORMATION, responseDTO.getSuccessResponseDTO().getMessage(), responseDTO.getSuccessResponseDTO().getCode());
+				generateAlert(AlertType.INFORMATION, responseDTO.getSuccessResponseDTO().getCode(), responseDTO.getSuccessResponseDTO().getMessage());
 			} else {
 				ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-				generateAlert(AlertType.ERROR, errorResponseDTO.getMessage(), errorResponseDTO.getCode());
+				generateAlert(AlertType.ERROR, errorResponseDTO.getCode(), errorResponseDTO.getMessage());
 			}
 			
 			deviceTypes.getSelectionModel().clearSelection();
