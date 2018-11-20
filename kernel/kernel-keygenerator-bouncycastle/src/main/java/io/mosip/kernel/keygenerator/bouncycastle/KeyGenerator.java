@@ -23,25 +23,25 @@ public class KeyGenerator {
 	/**
 	 * Symmetric key algorithm Name
 	 */
-	@Value("${mosip.kernel.keygenerator.bouncycastle.symmetric-algorithm-name}")
+	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-name}")
 	private String symmetricKeyAlgorithm;
 
 	/**
 	 * Symmetric key length
 	 */
-	@Value("${mosip.kernel.keygenerator.bouncycastle.symmetric-algorithm-length}")
+	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-length}")
 	private int symmetricKeyLength;
 
 	/**
 	 * Asymmetric key algorithm Name
 	 */
-	@Value("${mosip.kernel.keygenerator.bouncycastle.asymmetric-algorithm-name}")
+	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
 	private String asymmetricKeyAlgorithm;
 
 	/**
 	 * Asymmetric key length
 	 */
-	@Value("${mosip.kernel.keygenerator.bouncycastle.asymmetric-algorithm-length}")
+	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-length}")
 	private int asymmetricKeyLength;
 
 	/**

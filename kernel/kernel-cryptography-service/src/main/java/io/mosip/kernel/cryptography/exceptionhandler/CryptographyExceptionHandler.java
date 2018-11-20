@@ -19,16 +19,11 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
 
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
-import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
-import io.mosip.kernel.core.util.JsonUtils;
-import io.mosip.kernel.core.util.exception.JsonMappingException;
-import io.mosip.kernel.core.util.exception.JsonParseException;
 import io.mosip.kernel.cryptography.constant.CryptographyErrorCode;
 
 /**
@@ -97,21 +92,7 @@ public class CryptographyExceptionHandler {
 		return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-/*	@ExceptionHandler(HttpClientErrorException.class)
-	public ResponseEntity<Map<String,Object>> httpClientErrorException(final HttpClientErrorException e) {
-		try {
-			return new ResponseEntity<>(JsonUtils.jsonStringToJavaMap(e.getResponseBodyAsString()), HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (JsonParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (JsonMappingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	}*/
+
 	
     @ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Map<String, ArrayList<ErrorBean>>> methodArgumentNotValidException(
