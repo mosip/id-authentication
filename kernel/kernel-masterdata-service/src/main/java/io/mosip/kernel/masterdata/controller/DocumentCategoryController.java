@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
@@ -15,6 +14,7 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 
 /**
  * @author Neha
+ * @author Ritesh Sinha
  * @since 1.0.0
  *
  */
