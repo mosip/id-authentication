@@ -40,7 +40,8 @@ public enum AuditEvent {
 	PACKET_RETRIVE("PKT_RETRIVE", "Retiving created packets", "Packets which are in created state for approval are retrived"),
 	PACKET_UPDATE("PKT_UPDATE", "Updating created packets status", "Packets which are in created state are updated"),
 	SYNC_GEO_VALIDATE("SYNC_INFO", "Geo Information validation", "Validating the geo information ended successfully"),
-	
+	DEVICE_MAPPING_SUCCESS("CMD_MAP","Success","device mapped successfully"),
+	DEVICE_UN_MAPPING("CMD_UMAP","Success","device is unmapped "),
 	
 	//Sync Packets
 	SYNC_SERVER("SYNC_INFO", "User", "Synchronize the packet status to the server"),

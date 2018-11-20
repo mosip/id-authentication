@@ -38,8 +38,9 @@ public enum AppModule {
 	PACKET_SYNC("REG-CTR-20", "Sync Packets"),
 	//Notification Service
 	NOTIFICATION_SMS("REG-NOT-21", "SMS Notification"),
-	NOTIFICATION_EMAIL("REG-NOT-22", "Email Notification");
-
+	NOTIFICATION_EMAIL("REG-NOT-22", "Email Notification"),
+	DEVICE_MAPPING("REG-DVM-21","device mapping"),
+	DEVICE_UN_MAPPING("REG-DVUM","device un mapping");
 	/**
 	 * The constructor
 	 */

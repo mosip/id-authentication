@@ -187,8 +187,9 @@ public class RegistrationConstants {
 	public static final String MACHINE_MAPPING_LOGGER_TITLE = "REGISTRATION - USER CLIENT MACHINE MAPPING";
 	public static final String DEVICE_MAPPING_LOGGER_TITLE="REGISTRATION - CENTER MACHINE DEVICE MAPPING";
 	//CENTER MACHINE DEVICE MAPPING
-	public static final String DEVICE_MAPPING_CODE="REG-DVO‌-001";
+	public static final String DEVICE_MAPPING_SUCCESS_CODE="REG-DVO‌-001";
 	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE="On-boarding successful";
+	public static final String DEVICE_MAPPING_ERROR_CODE="REG-DVO‌-002";
 	public static final String DEVICE_MAPPING_ERROR_MESSAGE = "Unable to map the device";
 	
 	// BLOCKLISTED USER
