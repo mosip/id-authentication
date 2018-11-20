@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContext;
 
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.dto.SuccessResponseDTO;
 import io.mosip.registration.entity.SyncJob;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
@@ -108,6 +109,21 @@ public class BaseJobtest {
 		LinkedList<ErrorResponseDTO> errorResponseDTOs=new LinkedList<>();
 		errorResponseDTOs.add(errorResponseDTO);
 		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+		Mockito.when(applicationContext.getBean(BaseTransactionManager.class)).thenReturn(transactionManager);
+		Mockito.when(applicationContext.getBean(RegPacketStatusService.class)).thenReturn(packetStatusService);
+		//Mockito.when(JobConfigurationServiceImpl.SYNC_JOB_MAP.get(Mockito.any())).thenReturn(new SyncJob());
+		Mockito.when(transactionManager.createSyncTransaction(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenThrow(RegBaseUncheckedException.class);
+		
+		Mockito.when(packetStatusService.packetSyncStatus()).thenReturn(responseDTO);
+		packetSyncStatusJob.executeJob("User");
+	}
+	
+	
+	@Test
+	public void executejobExceptionTest() {
+		ResponseDTO responseDTO=new ResponseDTO();
+		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		responseDTO.setSuccessResponseDTO(successResponseDTO);
 		Mockito.when(applicationContext.getBean(BaseTransactionManager.class)).thenReturn(transactionManager);
 		Mockito.when(applicationContext.getBean(RegPacketStatusService.class)).thenReturn(packetStatusService);
 		//Mockito.when(JobConfigurationServiceImpl.SYNC_JOB_MAP.get(Mockito.any())).thenReturn(new SyncJob());

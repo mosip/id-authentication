@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 
@@ -61,8 +60,6 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 
 	private static Map<String, Object> JOBDATASMAP = new HashMap<>();
 
-	private ApplicationContext applicationContext;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -74,11 +71,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
 		List<SyncJob> jobList = jobConfigDAO.getActiveJobs();
-		jobList.forEach(syncJob -> {
-			SYNC_JOB_MAP.put(syncJob.getId(), syncJob);
-
-		});
-
+		jobList.forEach(syncJob -> SYNC_JOB_MAP.put(syncJob.getId(), syncJob));
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was completed");
 
@@ -96,7 +89,6 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 				RegistrationConstants.APPLICATION_ID, "start jobs invocation started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		this.applicationContext = applicationContext;
 
 		SYNC_JOB_MAP.forEach((jobId, syncJob) -> {
 			try {
@@ -218,7 +210,6 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 			// Get Job using application context and api name
 			BaseJob job = (BaseJob) applicationContext.getBean(apiName);
 
-			
 			// Job Invocation
 			responseDTO = job.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
