@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {MatTableDataSource} from '@angular/material';
+import {MatTableDataSource, MatDialog} from '@angular/material';
 import {SelectionModel} from '@angular/cdk/collections';
+import { DialougComponent } from '../dialoug/dialoug.component';
 
 export interface RegistrationCentre {
   name: string;
@@ -45,7 +46,7 @@ export class CenterSelectionComponent implements OnInit {
   step = 0;
   showDescription = false;
 
-  constructor() { }
+  constructor(private dialog: MatDialog) { }
 
   ngOnInit() {
   }
@@ -92,6 +93,18 @@ export class CenterSelectionComponent implements OnInit {
     } else {
       alert('Location not suppored in this browser');
     }
+  }
+
+  makeBooking(): void {
+    const data = {
+      case: 'MESSAGE',
+      title: 'Success',
+      message: 'Action was completed successfully'
+    };
+   const dialogRef = this.dialog.open(DialougComponent, {
+      width: '250px',
+      data: data
+    });
   }
 
 }

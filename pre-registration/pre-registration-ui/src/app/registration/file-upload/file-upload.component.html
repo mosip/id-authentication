@@ -10,56 +10,38 @@
     </mat-expansion-panel-header>
 
     <mat-grid-list cols="3" rowHeight="4em">
-      <mat-grid-tile [colspan]="1" [rowspan]="4">
-        <div class="draggableDiv" ondrop="handleFileInput($event.target.files)"></div>
+      <mat-grid-tile [colspan]="1" [rowspan]="3">
+        <div class="draggableDiv" appDraggable (filesChangeEmiter)="onFilesChange($event)">
+          Drag files here
+        </div>
         <!--<input type="file" id="file" (change)="handleFileInput($event.target.files)" style="display: none;">
         <input class="browseInput" type="button" value="Browse..." onclick="document.getElementById('file').click();" />-->
-
       </mat-grid-tile>
-      <mat-grid-tile [colspan]="2" [rowspan]="1" *ngFor="let docs of documents">
+      <mat-grid-tile [colspan]="1" [rowspan]="4">
         <!--<div class="draggableDiv" ondrop="handleFileInput($event.target.files)"></div>-->
-        <mat-form-field>
-          <mat-select id="{{docs}}" placeholder="{{docs}}" (selectionChange)="selectChange($event)">
-            <mat-option *ngFor="let option of POADocuments" value="{{option.value}}">
-              {{option.name}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <input type="file" id="{{docs}}fileUpload" (change)="handleFileInput($event.target.files)">
-
-        <!--<br>
-          <mat-form-field>
-            <mat-select placeholder="POI">
-              <mat-option *ngFor="let option of POADocuments" value="option.value">
+        <div class="docsContainer">
+          <mat-form-field *ngFor="let docs of documents; let i = index">
+            <mat-select id="{{docs}}" placeholder="{{docs}}" (selectionChange)="selectChange($event, i)">
+              <mat-option *ngFor="let option of POADocuments" value="{{option.value}}">
                 {{option.name}}
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <br>
-          <mat-form-field>
-            <mat-select placeholder="PODOB">
-              <mat-option *ngFor="let option of POADocuments" value="option.value">
-                {{option.name}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <br>
-          <mat-form-field>
-            <mat-select placeholder="POR">
-              <mat-option *ngFor="let option of POADocuments" value="option.value">
-                {{option.name}}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        -->
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="1" [rowspan]="4">
+        <div class="docsContainer">
+          <p class="fileName" id="{{docs}}" *ngFor="let docs of documents; let i1 = index">
+            {{fileName[i1]}}
+          </p>
+        </div>
+      </mat-grid-tile>
+      <mat-grid-tile [colspan]="1" [rowspan]="1">
+        <input type="file" id="file" (change)="handleFileInput($event.target.files)" style="display: none;">
+        <input class="browseInput" value="{{browseDisabled? 'Select Document Type':'Browse'}}" type="button" onclick="document.getElementById('file').click();"
+          [disabled]="browseDisabled" />
       </mat-grid-tile>
 
-      <!--<mat-grid-tile [colspan]="1" [rowspan]="0.5">
-        <div class="browseDiv">
-          <input type="file" id="file" (change)="handleFileInput($event.target.files)" style="display: none;">
-          <input class="browseInput" type="button" value="Browse..." onclick="document.getElementById('file').click();" />
-        </div>
-      </mat-grid-tile>-->
     </mat-grid-list>
 
     <mat-action-row>

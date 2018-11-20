@@ -81,6 +81,22 @@
       cursor: pointer;
   }
 
+  .add-button-container{
+      position: absolute;
+      top: 0;
+      right: 0;
+  }
+
+  .mat-fab {
+    height: 35px;
+    width: 35px;
+  }
+
+  .add-icon {
+      top: -11px;
+      position: relative;
+  }
+
   @media(max-width: 500px) {
       .container{
           margin: 0 -20px 0 -20px;
@@ -88,20 +104,31 @@
       .middle{
           margin: 0;
           width: 100%;
+          overflow: scroll;
       }
+      div::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* make scrollbar transparent */
+    }
       .sizing{
           margin: 0 5px 0 5px;
       }
       .container-card {
-        margin: 0;
+        margin-top: 30px;
     }
       .middle-card {
         margin: 0;
+        overflow: scroll;
     }
   }
 
   .list {
       list-style-type: none;
+  }
+
+  .list-container {
+    overflow-y: auto;
+    max-height: 100px;
   }
 
   .close-button-sizing {

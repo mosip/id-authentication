@@ -26,13 +26,20 @@
     cursor: pointer;
 }
 
-.mat-table {
-    overflow-x: auto;
-}
-
 @media(max-width: 500px) {
     .expansionPanelPlacer{
         padding: 0;
         margin: 5px;
     }
+}
+
+@media(max-width: 765px) {
+    
+    .mat-table {
+        overflow: auto;
+      }
+      
+    .mat-header-row, .mat-row {
+        min-width: 1000px;
+      }
 }

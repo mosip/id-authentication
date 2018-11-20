@@ -12,11 +12,16 @@ export class TimeSelectionComponent implements OnInit {
   numbers: number[];
   selectedCard = 0;
   selectedTile = null;
+  limit = 3;
+  showAddButton = false;
+  names: number[];
+  deletedNames = [];
 
   constructor() { }
 
   ngOnInit() {
     this.numbers = Array(10).fill(0).map((x, i) => i); // [0,1,2,3,4]
+    this.names = this.numbers;
   }
 
   public scrollRight(): void {
@@ -28,11 +33,11 @@ export class TimeSelectionComponent implements OnInit {
   }
 
   public scrollRightCard(): void {
-    this.cardsContent.nativeElement.scrollTo({ left: (this.cardsContent.nativeElement.scrollLeft + 230), behavior: 'smooth' });
+    this.cardsContent.nativeElement.scrollTo({ left: (this.cardsContent.nativeElement.scrollLeft + 200), behavior: 'smooth' });
   }
 
   public scrollLeftCard(): void {
-    this.cardsContent.nativeElement.scrollTo({ left: (this.cardsContent.nativeElement.scrollLeft - 230), behavior: 'smooth' });
+    this.cardsContent.nativeElement.scrollTo({ left: (this.cardsContent.nativeElement.scrollLeft - 200), behavior: 'smooth' });
   }
 
   dateSelected(index: number) {
@@ -41,8 +46,19 @@ export class TimeSelectionComponent implements OnInit {
     }
   }
 
-  cardSelected(index: number) {
+  cardSelected(index: number): void {
     this.selectedCard = index;
+  }
+
+  changeLimit(): void {
+    this.limit += 2;
+  }
+
+  itemDelete(index: number): void {
+    this.deletedNames.push(this.names[index]);
+    this.names.splice(index, 1);
+    console.log(index, 'item to be deleted from card', this.deletedNames);
+    this.showAddButton = true;
   }
 
 }
