@@ -21,8 +21,8 @@ import io.mosip.kernel.core.keymanager.spi.KeymanagerInterface;
 @SpringBootApplication
 public class KeymanagerBootApplication {
 
-	@Autowired
-	KeymanagerInterface keymanagerInterface;
+//	@Autowired
+//	KeymanagerInterface keymanagerInterface;
 
 	/**
 	 * Main method to run spring boot application
@@ -34,14 +34,14 @@ public class KeymanagerBootApplication {
 		SpringApplication.run(KeymanagerBootApplication.class, args);
 	}
 
-	@PostConstruct
-	public void init() {
-		List<String> allAlias = keymanagerInterface.getAllAlias();
-
-		allAlias.forEach(alias -> {
-			Key key = keymanagerInterface.getKey(alias);
-			System.out.println(alias + "," + key);
-			// keymanagerInterface.deleteKey(alias);
-		});
-	}
+//	@PostConstruct
+//	public void init() {
+//		List<String> allAlias = keymanagerInterface.getAllAlias();
+//
+//		allAlias.forEach(alias -> {
+//			Key key = keymanagerInterface.getKey(alias);
+//			System.out.println(alias + "," + key);
+//			// keymanagerInterface.deleteKey(alias);
+//		});
+//	}
 }
