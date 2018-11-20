@@ -23,6 +23,9 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
+ * This class have methods to fetch list of valid document types and to create
+ * document types based on list provided.
+ * 
  * @author Neha
  * @author Ritesh Sinha
  * @since 1.0.0
@@ -196,6 +199,13 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		return documentCategoryResponseDto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
+	 * addDocumentCategoriesData(io.mosip.kernel.masterdata.dto.
+	 * DocumentCategoryRequestDto)
+	 */
 	@Override
 	public PostResponseDto addDocumentCategoriesData(DocumentCategoryRequestDto category) {
 
