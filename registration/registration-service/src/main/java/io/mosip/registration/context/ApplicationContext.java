@@ -1,13 +1,9 @@
 package io.mosip.registration.context;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
-
-import org.springframework.util.ResourceUtils;
 
 import io.mosip.registration.config.AppConfig;
 
@@ -30,9 +26,16 @@ public class ApplicationContext{
 		return localLanguageProperty;
 	}
 
-	public void setLocalLanguageProperty() throws IOException {
+	public void setLocalLanguageProperty() {
+		
+		ResourceBundle localLanguage = ResourceBundle.getBundle("labels", new Locale(AppConfig.getApplicationProperty("local_language")));
 		localLanguageProperty = new Properties();
-		localLanguageProperty.load(new FileInputStream(ResourceUtils.getFile("classpath:labels_"+AppConfig.getApplicationProperty("local_language")+".properties")));
+
+	    Enumeration<String> keys = localLanguage.getKeys();
+	    while (keys.hasMoreElements()) {
+	    	String key = keys.nextElement();
+	    	localLanguageProperty.put(key, localLanguage.getString(key));
+	    }
 	}
 
 	private ApplicationContext() {
