@@ -24,18 +24,15 @@ def projectToBuild = 'pre-registration/pre-registration-ui'
   }
  }
 
-    stage('npm install') {
-        sh "pwd"
-        sh "cd DEV/pre-registration/pre-registration-ui"
+    stage('npm install')
+    dir(branch){
         sh "pwd"
         sh "npm install"
     }
 
-    stage('unit tests') {
-        sh "ng test"
+    stage('build') dir(branch)
+    {
+        sh "ng build"
     }
 
-    stage('protractor tests') {
-        sh "ng e2e"
-    }
 }
