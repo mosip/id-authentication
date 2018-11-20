@@ -36,12 +36,6 @@ import io.mosip.kernel.keymanagerservice.service.KeymanagerService;
 public class KeymanagerServiceImpl implements KeymanagerService {
 
 	/**
-	 * Keystore to handles and store cryptographic keys.
-	 */
-	@Autowired
-	KeymanagerInterface keymanagerInterface;
-
-	/**
 	 * KeyGenerator instance to generate asymmetric key pairs
 	 */
 	@Autowired
@@ -52,6 +46,12 @@ public class KeymanagerServiceImpl implements KeymanagerService {
 	 */
 	@Autowired
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+
+	/**
+	 * Keystore to handles and store cryptographic keys.
+	 */
+	@Autowired
+	KeymanagerInterface keymanagerInterface;
 
 	/**
 	 * KeyGenerator instance to generate asymmetric key pairs
