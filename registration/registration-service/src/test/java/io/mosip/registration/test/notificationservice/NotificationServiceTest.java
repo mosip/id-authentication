@@ -21,9 +21,8 @@ import org.springframework.web.client.ResourceAccessException;
 import io.mosip.registration.audit.AuditFactoryImpl;
 import io.mosip.registration.constants.AppModule;
 import io.mosip.registration.constants.AuditEvent;
-import io.mosip.registration.dto.EmailDTO;
+import io.mosip.registration.dto.NotificationDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.dto.SMSDTO;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.service.impl.NotificationServiceImpl;
 import io.mosip.registration.util.restclient.ServiceDelegateUtil;
@@ -49,7 +48,7 @@ public class NotificationServiceTest {
 	public void sendEmailTest()
 			throws HttpClientErrorException, RegBaseCheckedException, ResourceAccessException, SocketTimeoutException {
 
-		EmailDTO emailDTO = new EmailDTO();
+		NotificationDTO emailDTO = new NotificationDTO();
 		emailDTO.setStatus("Email Request submitted");
 
 		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.anyObject())).thenReturn(emailDTO);
@@ -61,7 +60,7 @@ public class NotificationServiceTest {
 	@Test
 	public void sendSMSTest()
 			throws HttpClientErrorException, RegBaseCheckedException, ResourceAccessException, SocketTimeoutException {
-		SMSDTO smsdto = new SMSDTO();
+		NotificationDTO smsdto = new NotificationDTO();
 		smsdto.setMessage("Test");
 		smsdto.setNumber("9994019598");
 		smsdto.setStatus("success");
@@ -82,10 +81,10 @@ public class NotificationServiceTest {
 
 	@Test
 	public void sendEmailFailuretest() throws ResourceAccessException, SocketTimeoutException, RegBaseCheckedException {
-		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(SMSDTO.class)))
+		Mockito.when(serviceDelegateUtil.post(Mockito.anyString(), Mockito.any(NotificationDTO.class)))
 				.thenThrow(HttpClientErrorException.class);
 		ResponseDTO responseDTO = notificationServiceImpl.sendEmail("Hi", null, "regid");
-		Assert.assertEquals("Unable to send Email Notification",
+		Assert.assertEquals("Unable to send EMAIL Notification",
 				responseDTO.getErrorResponseDTOs().get(0).getMessage());
 	}
 }

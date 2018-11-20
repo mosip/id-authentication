@@ -46,10 +46,10 @@ public class ServiceDelegateUtil {
 	Environment environment;
 	
 	@Value("${HTTP_API_READ_TIMEOUT}")
-	int ReadTimeout;
+	int readTimeout;
 	
 	@Value("${HTTP_API_WRITE_TIMEOUT}")
-	int ConnectTimeout;
+	int connectTimeout;
 
 	private static final Logger LOGGER = AppConfig.getLogger(ServiceDelegateUtil.class);
 
@@ -325,8 +325,8 @@ public class ServiceDelegateUtil {
 	private void  setTimeout(RequestHTTPDTO requestHTTPDTO) {
 		// Timeout in milli second
 		SimpleClientHttpRequestFactory requestFactory=new SimpleClientHttpRequestFactory(); 
-		requestFactory.setReadTimeout(ReadTimeout);
-		requestFactory.setConnectTimeout(ConnectTimeout);
+		requestFactory.setReadTimeout(readTimeout);
+		requestFactory.setConnectTimeout(connectTimeout);
 		requestHTTPDTO.setSimpleClientHttpRequestFactory(requestFactory);
 	}
 
