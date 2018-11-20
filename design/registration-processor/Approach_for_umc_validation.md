@@ -25,8 +25,7 @@ The key non-functional requirements are
 **Solution**
 
 The key solution considerations are -
-- Create vertical "user-machine-center-validator" to validate user, machine and center details.
-- In camel bridge after successful packet structure validation the request will be routed to user-machine-center-validator by default. Create router and request processor to map the request to umc_bus address.
+- Use existing vertical "OSI-validator" to validate user, machine and center details.
 - Add new methods in PacketInfoManager to fetch the user, machine and center details from table.
 - Registration processor would check if user/center/machine was valid during creation of the packet. On successful validation, registration-processor will further validate if the user was assigned to the same machine of same center during packet creation time. For this kernel will lookup in user-machine-center lookup table and return information. 
 - Create rest client using RestTemplate to call [Master-data-APIs](https://github.com/mosip/mosip/wiki/2.4-Master-data-APIs#234-document-formats-master-api). 
