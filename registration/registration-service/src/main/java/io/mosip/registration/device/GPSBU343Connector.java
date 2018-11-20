@@ -67,6 +67,7 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 		try {
 
 			@SuppressWarnings("unchecked")
+			
 			Enumeration<CommPortIdentifier> portListEnumeration = CommPortIdentifier.getPortIdentifiers();
 
 			while (portListEnumeration.hasMoreElements()) {
