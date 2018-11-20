@@ -51,6 +51,9 @@ public class BiometricPreviewController extends BaseController {
 	private ImageView rightEye;
 
 	@FXML
+	private ImageView thumb;
+	
+	@FXML
 	private ImageView individualPhoto;
 
 	@FXML
