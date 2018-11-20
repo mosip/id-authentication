@@ -6,6 +6,8 @@
  */
 package io.mosip.kernel.cryptography.service.impl;
 
+import static java.util.Arrays.copyOfRange;
+
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
@@ -34,7 +36,7 @@ public class CryptographyServiceImpl implements CryptographyService {
 	/**
 	 * KeySplitter for splitting key and data
 	 */
-	@Value("${mosip.kernel.packet-key-splitter}")
+	@Value("${mosip.kernel.data-key-splitter}")
 	private String keySplitter;
 	
 	/**
@@ -70,9 +72,9 @@ public class CryptographyServiceImpl implements CryptographyService {
 	public CryptographyResponseDto encrypt(
 			CryptographyRequestDto cryptographyRequestDto) {
 		SecretKey secretKey=keyGenerator.getSymmetricKey();
-		byte[] encryptedData=encryptor.symmetricEncrypt(secretKey, cryptographyRequestDto.getData());
+		final byte[] encryptedData=encryptor.symmetricEncrypt(secretKey, cryptographyRequestDto.getData());
 		PublicKey publicKey=cryptographyUtil.getPublicKey(cryptographyRequestDto);
-		byte[] encryptedSymmetricKey=encryptor.asymmetricPublicEncrypt(publicKey, secretKey.getEncoded());
+		final byte[] encryptedSymmetricKey=encryptor.asymmetricPublicEncrypt(publicKey, secretKey.getEncoded());
 		CryptographyResponseDto cryptographyResponseDto= new CryptographyResponseDto();
 		cryptographyResponseDto.setData(cryptographyUtil.combineByteArray(encryptedData, encryptedSymmetricKey));
 		return cryptographyResponseDto;
@@ -84,11 +86,26 @@ public class CryptographyServiceImpl implements CryptographyService {
 	@Override
 	public CryptographyResponseDto decrypt(
 			CryptographyRequestDto cryptographyRequestDto) {
-		String[] splitedData=new String(cryptographyRequestDto.getData()).split(keySplitter);
-		cryptographyRequestDto.setData(splitedData[0].getBytes());
+		int keyDemiliterIndex = 0;
+		final int cipherKeyandDataLength = cryptographyRequestDto.getData().length;
+		final int keySplitterLength = keySplitter.length();
+		final byte keySplitterFirstByte = keySplitter.getBytes()[0];
+
+		keyDemiliterIndex = cryptographyUtil.getSplitterIndex(cryptographyRequestDto, keyDemiliterIndex,
+				keySplitterLength, keySplitterFirstByte);
+
+		byte[] encryptedKey = copyOfRange(cryptographyRequestDto.getData(), 0, keyDemiliterIndex);
+		byte[] encryptedData = copyOfRange(cryptographyRequestDto.getData(), keyDemiliterIndex + keySplitterLength,
+				cipherKeyandDataLength);
+		
+		cryptographyRequestDto.setData(encryptedKey);
 		SecretKey decryptedSymmetricKey=cryptographyUtil.getDecryptedSymmetricKey(cryptographyRequestDto);
 		CryptographyResponseDto cryptographyResponseDto= new CryptographyResponseDto();
-		cryptographyResponseDto.setData(decryptor.symmetricDecrypt(decryptedSymmetricKey, splitedData[1].getBytes()));
+		cryptographyResponseDto.setData(decryptor.symmetricDecrypt(decryptedSymmetricKey, encryptedData));
 		return cryptographyResponseDto;
 	}
+
+	
+	
+	
 }

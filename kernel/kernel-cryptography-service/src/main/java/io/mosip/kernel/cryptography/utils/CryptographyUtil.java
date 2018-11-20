@@ -6,6 +6,8 @@
  */
 package io.mosip.kernel.cryptography.utils;
 
+import static java.util.Arrays.copyOfRange;
+
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
@@ -40,31 +42,31 @@ public class CryptographyUtil {
 	/**
 	 * 
 	 */
-	@Value("${mosip.kernel.keygenerator.bouncycastle.asymmetric-algorithm-name}")
+	@Value("${mosip.kernel.keygenerator.asymmetric-algorithm-name}")
 	private String asymmetricAlgorithmName;
 
 	/**
 	 * 
 	 */
-	@Value("${mosip.kernel.keygenerator.bouncycastle.symmetric-algorithm-name}")
+	@Value("${mosip.kernel.keygenerator.symmetric-algorithm-name}")
 	private String symmetricAlgorithmName;
 
 	/**
 	 * 
 	 */
-	@Value("${mosip.kernel.keymanager-service-getPublickey-url}")
+	@Value("${mosip.kernel.keymanager-service-publickey-url}")
 	private String getPublicKeyUrl;
 
 	/**
 	 * 
 	 */
-	@Value("${mosip.kernel.keymanager-service-decryptSymmetricKey-url}")
+	@Value("${mosip.kernel.keymanager-service-decrypt-url}")
 	private String decryptSymmetricKeyUrl;
 	
 	/**
 	 * 
 	 */
-	@Value("${mosip.kernel.packet-key-splitter}")
+	@Value("${mosip.kernel.data-key-splitter}")
 	private String keySplitter;
 
 	/**
@@ -117,6 +119,7 @@ public class CryptographyUtil {
 	 * @return
 	 */
 	public SecretKey getDecryptedSymmetricKey(CryptographyRequestDto cryptographyRequestDto) {
+		
 		KeyManagerSymmetricKeyRequestDto keyManagerSymmetricKeyRequestDto= new KeyManagerSymmetricKeyRequestDto();
 		dataMapper.map(cryptographyRequestDto, keyManagerSymmetricKeyRequestDto,new KeyManagerSymmetricKeyConverter());
 		KeyManagerResponseDto keyManagerResponseDto = restTemplate.postForObject(decryptSymmetricKeyUrl,keyManagerSymmetricKeyRequestDto,KeyManagerResponseDto.class);
@@ -136,6 +139,29 @@ public class CryptographyUtil {
 		System.arraycopy(keySplitterBytes, 0, combinedArray, key.length,keySplitterBytes.length);
 		System.arraycopy(data, 0, combinedArray,key.length + keySplitterBytes.length, data.length);
 		return combinedArray;
+	}
+	
+	/**
+	 * @param cryptographyRequestDto
+	 * @param keyDemiliterIndex
+	 * @param cipherKeyandDataLength
+	 * @param keySplitterLength
+	 * @param keySplitterFirstByte
+	 * @return
+	 */
+	public int getSplitterIndex(CryptographyRequestDto cryptographyRequestDto, int keyDemiliterIndex,
+			 final int keySplitterLength, final byte keySplitterFirstByte) {
+		
+		for (byte data:cryptographyRequestDto.getData()) {
+			if (data == keySplitterFirstByte) {
+				final String keySplit = new String(copyOfRange(cryptographyRequestDto.getData(), keyDemiliterIndex, keyDemiliterIndex + keySplitterLength));
+				if (keySplitter.equals(keySplit)) {
+					break;
+				}
+			}
+			keyDemiliterIndex++;
+		}
+		return keyDemiliterIndex;
 	}
 
 }
