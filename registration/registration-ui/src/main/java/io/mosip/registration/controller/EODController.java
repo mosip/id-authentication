@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -25,6 +26,8 @@ import javafx.scene.layout.AnchorPane;
 @Controller
 public class EODController extends BaseController implements Initializable {
 
+	@Autowired
+	private RegistrationPendingActionController pendingActionController;
 	/** The approval accordian. */
 	@FXML
 	private Accordion approvalAccordian;
@@ -75,6 +78,10 @@ public class EODController extends BaseController implements Initializable {
 			LOGGER.error("REGISTRATION - EOD - CONTROLLER", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
 
+	}
+	
+	public void loadPendingActionController() {
+		pendingActionController.reloadTableView();
 	}
 
 }

@@ -125,13 +125,12 @@ public class RegistrationApprovalController extends BaseController implements In
 
 	@FXML
 	private ComboBox<String> deviceCmbBox;
-	
+
 	@Autowired
 	private RegistrationApprovalService registrationApprovalService;
 
 	@Value("${FINGER_PRINT_SCORE}")
 	private long fingerPrintScore;
-
 
 	/*
 	 * (non-Javadoc)
@@ -342,23 +341,27 @@ public class RegistrationApprovalController extends BaseController implements In
 				"OnHold of packet has been ended");
 	}
 
-	public void submit() {
+	public void submit() throws RegBaseCheckedException {
 		Parent ackRoot;
-	try {
-		Stage primaryStage=new Stage();
-		FXMLLoader fxmlLoader = BaseController
-				.loadChild(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
-		ackRoot = fxmlLoader.load();
-		primaryStage.setResizable(false);
-		Scene scene = new Scene(ackRoot);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-		FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
-		fpcontroller.init(this);
+		try {
+			Stage primaryStage = new Stage();
+			FXMLLoader fxmlLoader = BaseController
+					.loadChild(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
+			ackRoot = fxmlLoader.load();
+			primaryStage.setResizable(false);
+			Scene scene = new Scene(ackRoot);
+			primaryStage.setScene(scene);
+			primaryStage.show();
+			FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
+			fpcontroller.init(this);
 
-	} catch (IOException e) {
-		e.printStackTrace();
-	}}
+		} catch (IOException ioException) {
+			throw new RegBaseCheckedException(RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
+					RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
+		}
+	}
 
 	private Stage loadStage(Stage primarystage, String fxmlPath) throws RegBaseCheckedException {
 
@@ -383,12 +386,13 @@ public class RegistrationApprovalController extends BaseController implements In
 	}
 
 	public void getFingerPrintStatus() {
-		  for (Map<String, String> map : approvalmapList) {
-			  registrationApprovalService.updateRegistration(map.get("registrationID"),
-			  map.get("statusComment"), map.get("statusCode")); }
-		  reloadTableView();
+		for (Map<String, String> map : approvalmapList) {
+			registrationApprovalService.updateRegistration(map.get("registrationID"), map.get("statusComment"),
+					map.get("statusCode"));
+		}
+		reloadTableView();
 	}
-	
+
 	public void setInvisible() {
 		if (approvalmapList == null) {
 			submitBtn.setVisible(false);

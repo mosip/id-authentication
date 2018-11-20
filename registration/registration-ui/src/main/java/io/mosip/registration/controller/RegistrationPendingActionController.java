@@ -61,7 +61,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 */
 	@Autowired
 	private RegistrationApprovalService registrationApprovalService;
-	
+
 	@Autowired
 	private ViewAckController viewAckController;
 
@@ -154,7 +154,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			if (!approvalmapList.isEmpty()) {
 				submitBtn.setVisible(true);
 			}
-			
+
 			pendingActionImageAnchorPane.setVisible(true);
 			approvalBtn.setVisible(true);
 			rejectionBtn.setVisible(true);
@@ -192,7 +192,8 @@ public class RegistrationPendingActionController extends BaseController implemen
 	public void openAckForm() {
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Opening the Acknowledgement Form");
-		viewAckController.viewAck(pendingActionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(), stage);
+		viewAckController.viewAck(pendingActionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
+				stage);
 	}
 
 	/**
@@ -277,32 +278,35 @@ public class RegistrationPendingActionController extends BaseController implemen
 	}
 
 	public void getFingerPrintStatus() {
-		  for (Map<String, String> map : approvalmapList) {
-			  registrationApprovalService.updateRegistration(map.get("registrationID"),
-			  map.get("statusComment"), map.get("statusCode")); }
-		  reloadTableView();
+		for (Map<String, String> map : approvalmapList) {
+			registrationApprovalService.updateRegistration(map.get("registrationID"), map.get("statusComment"),
+					map.get("statusCode"));
+		}
+		reloadTableView();
 	}
 
 	public void pendingActionSubmit() throws RegBaseCheckedException {
 
 		Parent ackRoot;
-	try {
-		Stage primaryStage=new Stage();
-		FXMLLoader fxmlLoader = BaseController
-				.loadChild(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
-		ackRoot = fxmlLoader.load();
-		primaryStage.setResizable(false);
-		Scene scene = new Scene(ackRoot);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-		FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
-		fpcontroller.init(this);
+		try {
+			Stage primaryStage = new Stage();
+			FXMLLoader fxmlLoader = BaseController
+					.loadChild(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
+			ackRoot = fxmlLoader.load();
+			primaryStage.setResizable(false);
+			Scene scene = new Scene(ackRoot);
+			primaryStage.setScene(scene);
+			primaryStage.show();
+			FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
+			fpcontroller.init(this);
 
-	} catch (IOException e) {
-		e.printStackTrace();
+		} catch (IOException ioException) {
+			throw new RegBaseCheckedException(RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
+					RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
+		}
 	}
-	}
-	
 
 	private Stage loadStage(Stage primarystage, String fxmlPath, RegistrationApprovalDTO registrationApprovalDTO)
 			throws RegBaseCheckedException {
@@ -334,6 +338,5 @@ public class RegistrationPendingActionController extends BaseController implemen
 		approvalBtn.setVisible(false);
 		rejectionBtn.setVisible(false);
 		pendingActionImageAnchorPane.setVisible(false);
-		pendingActionImageView.imageProperty().set(null);
 	}
 }
