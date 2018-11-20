@@ -16,15 +16,19 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationExceptions;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.PacketStatusDTO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
 import io.mosip.registration.entity.Registration;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.PacketUploadService;
 import io.mosip.registration.service.PacketSynchService;
+import io.mosip.registration.service.PacketUploadService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -59,7 +63,7 @@ public class PacketUploadController extends BaseController {
 	@Autowired
 	private PacketSynchService packetSynchService;
 
-	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadController.class); 
+	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadController.class);
 
 	/**
 	 * This method is used to Sync as well as upload the packets.
@@ -71,35 +75,50 @@ public class PacketUploadController extends BaseController {
 		table.getItems().clear();
 		table.refresh();
 		service.reset();
-		packetSync();
-		progressIndicator.progressProperty().bind(service.progressProperty());
-		service.start();
-		service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent t) {
-				String status = service.getValue();
-				if (!status.equals(RegistrationConstants.EMPTY)) {
-					String[] displayStatus = status.split("-");
-					if (RegistrationConstants.PACKET_SYNC_ERROR.equals(displayStatus[0])) {
-						generateAlert(displayStatus[0], AlertType.ERROR, displayStatus[1]);
-					} else {
-						generateAlert(displayStatus[0], AlertType.INFORMATION, displayStatus[1]);
-					}
+		try {
+			String packetSyncStatus = packetSync();
+			progressIndicator.progressProperty().bind(service.progressProperty());
+			service.start();
+			service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+				@Override
+				public void handle(WorkerStateEvent t) {
+					String status = service.getValue();
+					if (!status.equals(RegistrationConstants.EMPTY)) {
+						String[] displayStatus = status.split("-");
+						if (RegistrationConstants.PACKET_SYNC_ERROR.equals(displayStatus[0])) {
+							if (!RegistrationConstants.EMPTY.equals(packetSyncStatus)) {
+								generateAlert(displayStatus[0], AlertType.ERROR,
+										displayStatus[1] + " " + packetSyncStatus);
+							} else {
+								generateAlert(displayStatus[0], AlertType.ERROR, displayStatus[1]);
+							}
+						} else {
+							generateAlert(displayStatus[0], AlertType.INFORMATION, displayStatus[1]);
+						}
 
+					}
 				}
-			}
-		});
+			});
+		} catch (RegBaseCheckedException checkedException) {
+			generateAlert(RegistrationConstants.PACKET_SYNC_ERROR, AlertType.ERROR, checkedException.getErrorText());
+		}
 
 	}
 
 	/**
 	 * This method is used to synch the local packets with the server
 	 * 
+	 * @throws RegBaseCheckedException
+	 * 
 	 */
-	private void packetSync() {
+	private String packetSync() throws RegBaseCheckedException {
 		LOGGER.debug("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Sync the packets to the server");
+		String syncErrorStatus = "";
 		try {
+			auditFactory.audit(AuditEvent.SYNC_SERVER, AppModule.PACKET_SYNC, "Sync the packets status to the server",
+					SessionContext.getInstance().getUserContext().getUserId(),
+					RegistrationConstants.PACKET_SYNC_REF_ID);
 			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
 			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 			if (!packetsToBeSynched.isEmpty()) {
@@ -118,12 +137,18 @@ public class PacketUploadController extends BaseController {
 			if (response != null) {
 				packetSynchService.updateSyncStatus(packetsToBeSynched);
 			}
-		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException
-				| URISyntaxException e) {
+		} catch (RegBaseUncheckedException | RegBaseCheckedException | JsonProcessingException | URISyntaxException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, "Error while Synching packets to the server");
-			generateAlert("Error", AlertType.ERROR, e.getMessage());
+			if (e instanceof RegBaseUncheckedException) {
+
+				throw new RegBaseCheckedException(RegistrationExceptions.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
+						RegistrationExceptions.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
+			} else {
+				syncErrorStatus = e.getMessage();
+			}
 		}
+		return syncErrorStatus;
 	}
 
 	/**
@@ -196,6 +221,9 @@ public class PacketUploadController extends BaseController {
 					List<Registration> packetUploadList = new ArrayList<>();
 					String status = "";
 					if (!synchedPackets.isEmpty()) {
+						auditFactory.audit(AuditEvent.PACKET_UPLOAD, AppModule.PACKET_UPLOAD, "Upload packets to the server",
+								SessionContext.getInstance().getUserContext().getUserId(),
+								RegistrationConstants.PACKET_UPLOAD_REF_ID);
 						progressIndicator.setVisible(true);
 						for (int i = 0; i < synchedPackets.size(); i++) {
 							Registration synchedPacket = synchedPackets.get(i);

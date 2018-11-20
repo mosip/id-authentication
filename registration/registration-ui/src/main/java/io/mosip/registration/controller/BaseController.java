@@ -1,5 +1,6 @@
 package io.mosip.registration.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -8,6 +9,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -37,6 +39,8 @@ import javafx.util.Duration;
  * @since 1.0.0
  *
  */
+
+@Component
 public class BaseController {
 
 	@Autowired
@@ -74,7 +78,7 @@ public class BaseController {
 		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
 		return loader.load();
 	}
-	
+
 	/**
 	 * Loading FXML files along with beans
 	 * 
@@ -90,14 +94,10 @@ public class BaseController {
 	 * 
 	 * /* Alert creation with specified title, header, and context
 	 * 
-	 * @param title
-	 *            alert title
-	 * @param alertType
-	 *            type of alert
-	 * @param header
-	 *            alert header
-	 * @param context
-	 *            alert context
+	 * @param title     alert title
+	 * @param alertType type of alert
+	 * @param header    alert header
+	 * @param context   alert context
 	 */
 	protected void generateAlert(String title, AlertType alertType, String header, String context) {
 		Alert alert = new Alert(alertType);
@@ -110,12 +110,9 @@ public class BaseController {
 	/**
 	 * Alert creation with specified title and context
 	 * 
-	 * @param title
-	 *            alert title
-	 * @param alertType
-	 *            type of alert
-	 * @param context
-	 *            alert context
+	 * @param title     alert title
+	 * @param alertType type of alert
+	 * @param context   alert context
 	 */
 	protected void generateAlert(String title, AlertType alertType, String context) {
 		Alert alert = new Alert(alertType);
@@ -129,12 +126,9 @@ public class BaseController {
 	/**
 	 * Alert creation with specified title and context
 	 * 
-	 * @param alertType
-	 *            type of alert
-	 * @param title
-	 *            alert title
-	 * @param header
-	 *            alert header
+	 * @param alertType type of alert
+	 * @param title     alert title
+	 * @param header    alert header
 	 */
 	protected void generateAlert(AlertType alertType, String title, String header) {
 		Alert alert = new Alert(alertType);
@@ -153,8 +147,7 @@ public class BaseController {
 	/**
 	 * Validating Id for Screen Authorization
 	 * 
-	 * @param screenId
-	 *            the screenId
+	 * @param screenId the screenId
 	 * @return boolean
 	 */
 	protected boolean validateScreenAuthorization(String screenId) {
@@ -166,10 +159,8 @@ public class BaseController {
 	/**
 	 * Regex validation with specified field and pattern
 	 * 
-	 * @param field
-	 *            concerned field
-	 * @param regexPattern
-	 *            pattern need to checked
+	 * @param field        concerned field
+	 * @param regexPattern pattern need to checked
 	 */
 	protected boolean validateRegex(Control field, String regexPattern) {
 		if (field instanceof TextField) {
@@ -183,16 +174,17 @@ public class BaseController {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * {@code autoCloseStage} is to close the stage automatically 
-	 * by itself for a configured amount of time
+	 * {@code autoCloseStage} is to close the stage automatically by itself for a
+	 * configured amount of time
+	 * 
 	 * @param stage
 	 */
 	protected void autoCloseStage(Stage stage) {
-			PauseTransition delay = new PauseTransition(Duration.seconds(5));
-			delay.setOnFinished( event -> stage.close() );
-			delay.play();
+		PauseTransition delay = new PauseTransition(Duration.seconds(5));
+		delay.setOnFinished(event -> stage.close());
+		delay.play();
 	}
 
 	/**
@@ -213,6 +205,7 @@ public class BaseController {
 		});
 		return globalParamMap;
 	}
+
 	/**
 	 * 
 	 * Opens the home page screen
@@ -224,4 +217,35 @@ public class BaseController {
 		} catch (IOException ioException) {
 		}
 	}
+
+	public static FXMLLoader loadChild(URL url) throws IOException {
+		FXMLLoader loader = new FXMLLoader(url);
+		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
+		return loader;
+	}
+
+	public void getFingerPrintStatus() {
+
+	}
+	
+	/**
+	 * This method is for saving the Applicant Image and Exception Image which are captured using webcam
+	 * @param capturedImage
+	 * 				BufferedImage that is captured using webcam
+	 * @param imageType
+	 * 				Type of image that is to be saved
+	 */
+	protected void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
+		//will be implemented in the derived class.
+	}
+	
+	/**
+	 * This method used to clear the images that are captured using webcam
+	 * @param imageType
+	 * 			Type of image that is to be cleared
+	 */
+	protected void clearPhoto(String imageType) {
+		//will be implemented in the derived class.
+	}
+
 }

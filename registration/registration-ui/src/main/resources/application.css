@@ -12,18 +12,21 @@
  	-fx-padding: 10;
 	-fx-border-color: black;
     -fx-background-color : white;
-    -fx-border-width: 0 1 1 1;
+    -fx-border-width: 0 0 0 0;
+	-fx-font-size : 12px;   
     
 }
 
 #virtualKeyboard {
 	-fx-background-color: white;
+	-fx-border-width:1 1 1 1;
+	-fx-border-color: black;
+	-fx-background-radius: 6,5;
 }
 
 #registrationAccordian.accordion .title > .arrow-button .arrow{
     -fx-translate-x: 750;
 	-fx-shape: "M 10,150 L 70,10 L 130,150 z";    
-    
 }
 
 #registrationAccordian.accordion > .titled-pane {
@@ -32,7 +35,9 @@
 
 #registrationAccordian.accordion > .titled-pane > .title{
     -fx-background-color : white;
-    -fx-border-color: black;
+    -fx-font-size:15px;
+    -fx-font-weight:bold;
+    -fx-border-color: #D3D3D3;
     -fx-border-width : 1 1 0 1;
 }
 
@@ -43,6 +48,22 @@
     -fx-border-color: black;
     
 
+}
+
+#doc_label{
+	-fx-font-size:10px;
+}
+
+#toggleLabel1{
+	-fx-background-color: grey;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: black;
+}
+
+#toggleLabel2{
+	-fx-background-color: white;
+	-fx-border-width: 1 1 1 1;
+	-fx-border-color: black;
 }
 
 #anchor-pane-registration .text-field {		
@@ -184,7 +205,7 @@
 	-fx-border-color: black;
 	-fx-font-size: 14px;
 }
-#submit, #rejectionSubmit, #approvalBtn ,#rejectionBtn ,#onHoldBtn,#submitBtn{
+#submit, #rejectionSubmit,#submitBtn{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;
@@ -245,4 +266,23 @@
     -fx-background-insets: 0;
     -fx-padding: 0;
 } 
-
+.toggle-button{
+	-fx-background-color:#ffffff;
+	-fx-background-radius: 6,5;
+    -fx-background-insets: 0,1; 
+    -fx-text-fill: black;
+    -fx-font-size: 10px;   
+     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+.toggle-button:selected{
+    -fx-background-color: #a9a9a9;
+     -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+#applicantImageHBox, #exceptionImageHBox {
+	-fx-border-color: black;
+	-fx-border-width: 2;
+}

@@ -40,6 +40,7 @@ public class RegistrationConstants {
 	public static final String HASHING_JSON_NAME = "hash";
 	public static final String AUDIT_JSON_FILE = "audit";
 	public static final String JSON_FILE_EXTENSION = ".json";
+	public static final String ACK_RECEIPT = "RegistrationAcknowledgement";
 
 	// RSA
 	public static final String RSA_ALG = "RSA";
@@ -134,13 +135,35 @@ public class RegistrationConstants {
 	public static final String TEMPLATE_EMAIL = "Email";
 	public static final String TEMPLATE_DOCUMENTS = "Documents";
 	public static final String TEMPLATE_OPERATOR_NAME = "OperatorName";
-	public static final String TEMPLATE_IMAGE_SOURCE = "imagesource";
 	public static final String TEMPLATE_IMAGE_ENCODING = "data:image/jpg;base64,";
 	public static final String TEMPLATE_MISSING_FINGER = "&#10008;";
 	public static final String TEMPLATE_BIOMETRICS_CAPTURED = "BiometricsCaptured";
 	public static final String TEMPLATE_HANDS_IMAGE_PATH = "src/main/resources/images/hands.jpg";
 	public static final String TEMPLATE_RESIDENT_NAME = "ResidentName";
 	public static final String TEMPLATE_POSTAL_CODE = "PostalCode";
+	public static final String TEMPLATE_ADDRESS_LINE3 = "AddressLine3";
+	public static final String TEMPLATE_IMAGE_SOURCE = "ApplicantImageSource";
+	public static final String TEMPLATE_EXCEPTION_IMAGE_SOURCE = "ExceptionImageSource";
+	public static final String TEMPLATE_WITHOUT_EXCEPTION_IMAGE = "WithoutExceptionImage";
+	public static final String TEMPLATE_WITH_EXCEPTION_IMAGE = "WithExceptionImage";
+	public static final String TEMPLATE_STYLE_PROPERTY = "style='visibility:hidden;'";
+	public static final String TEMPLATE_LOGTAG = "Acknowledgement Template";
+	
+	//Web Camera Constants
+	public static final String WEB_CAMERA_PAGE = "/fxml/WebCamera.fxml";
+	public static final String WEB_CAMERA_PAGE_TITLE = "Applicant Biometrics";
+	public static final String WEB_CAMERA_IMAGE_TYPE = "jpg";
+	public static final String APPLICANT_PHOTOGRAPH_NAME = "Applicant Photograph";
+	public static final String EXCEPTION_PHOTOGRAPH_NAME = "Exception Photograph";	
+	public static final String WEBCAM_ALERT_TITLE = "Webcam Alert";
+	public static final String WEBCAM_ALERT_HEADER = "Camera Not Found";
+	public static final String WEBCAM_ALERT_CONTEXT = "Camera not found. Please connect an on-boarded camera and retry.";
+	public static final String APPLICANT_IMAGE = "Applicant Image";
+	public static final String EXCEPTION_IMAGE = "Exception Image";	
+	public static final String APPLICANT_BIOMETRICS_ERROR = "Error in Applicant Biometrics";
+	public static final String APPLICANT_IMAGE_ERROR = "Applicant Biometrics are required.";
+	public static final String DEMOGRAPHIC_DETAILS_ERROR = "Error in Demographic Details";
+	public static final String DEMOGRAPHIC_DETAILS_ERROR_CONTEXT = "Demographic details are required.";
 
 	// Exception Code for Components
 	public static final String PACKET_CREATION_EXP_CODE = "PCC-";
@@ -166,6 +189,13 @@ public class RegistrationConstants {
 	public static final String MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE = "User Data Fetched Successfully";
 	public static final String MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS = "No Records Found";
 	public static final String MACHINE_MAPPING_LOGGER_TITLE = "REGISTRATION - USER CLIENT MACHINE MAPPING";
+	public static final String DEVICE_MAPPING_LOGGER_TITLE="REGISTRATION - CENTER MACHINE DEVICE MAPPING";
+	//CENTER MACHINE DEVICE MAPPING
+	public static final String DEVICE_MAPPING_SUCCESS_CODE="REG-DVO‌-001";
+	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE="On-boarding successful";
+	public static final String DEVICE_MAPPING_ERROR_CODE="REG-DVO‌-002";
+	public static final String DEVICE_MAPPING_ERROR_MESSAGE = "Unable to map the device";
+	
 	// BLOCKLISTED USER
 	public static final String BLACKLISTED = "BLOCKED";
 
@@ -283,7 +313,9 @@ public class RegistrationConstants {
 	public static final String REJECTION_PAGE = "/fxml/RejectionComment.fxml";
 	public static final String DEVICE_ONBOARDING_PAGE = "/fxml/DeviceMachineMapping.fxml";
 	public static final String USER_AUTHENTICATION = "/fxml/Authentication.fxml";
-
+	public static final String DEMOGRAPHIC_PREVIEW = "/fxml/DemographicPreview.fxml";
+	public static final String BIOMETRIC_PREVIEW = "/fxml/BiometricPreview.fxml";
+	
 	// CSS file
 	public static final String CSS_FILE_PATH = "application.css";
 	// Login
@@ -347,14 +379,20 @@ public class RegistrationConstants {
 	public static final String REGION_EMPTY = "Please Provide Region";
 	public static final String POSTAL_CODE_EMPTY = "Please Provide Postal Code";
 	public static final String MOBILE_NUMBER_EMPTY = "Please Provide Mobile Number";
-	public static final String MOBILE_NUMBER_EXAMPLE = "Example : 99-9854-2496";
+	public static final String MOBILE_NUMBER_EXAMPLE = "Please provide 10 digit mobile no, Example : 9908542409";
 	public static final String EMAIL_ID_EMPTY = "Please Provide Email Id";
-	public static final String EMAIL_ID_EXAMPLE = "Example : jack.daniel@gmail.com";
+	public static final String EMAIL_ID_EXAMPLE = "Example : xyz@xyz.com";
 	public static final String PARENT_NAME_EMPTY = "Please Provide Parent Name";
 	public static final String UIN_ID_EMPTY = "Please Provide Uin Id Of The Parent";
-	public static final String ADDRESS_LINE_WARNING = "Address should be between 6 and 20 characters";
+	public static final String ADDRESS_LINE_WARNING = "Address should be between 6 and 50 characters";
 	public static final String LOCAL_ADMIN_AUTHORITY_EMPTY = "Please Provide Local Admin Authority";
 	public static final String CNIE_OR_PIN_NUMBER_EMPTY = "Please Provide CNIE OR PIN NUMBER";
+	public static final String POA_DOCUMENT_EMPTY = "Please Provide POA Document";
+	public static final String POI_DOCUMENT_EMPTY = "Please Provide POI Document";
+	public static final String POR_DOCUMENT_EMPTY = "Please Provide POR Document";
+	public static final String ONLY_ALPHABETS="Only alphabets are allowed";
+	public static final String TEN_LETTER_INPUT_LIMT="Please provide in the range of 6 to 10 letters";
+	public static final String FIVE_DIGIT_INPUT_LIMT="Please provide 5 digit detail";
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";
@@ -380,44 +418,6 @@ public class RegistrationConstants {
 	public static final String ONHOLD_BEAN_NAME = "onHoldController";
 	public static final String ERROR = "ERROR";
 
-	public static List getCountries() {
-
-		String countries[] = new String[] { "Morocco", "Zimbabwe", "Zambia", "Yemen", "Vietnam", "Venezuela",
-				"Vatican City (Holy See)", "Vanuatu", "Uzbekistan", "Uruguay" };
-
-		return Arrays.asList(countries);
-	}
-
-	public static List getStates() {
-
-		String states[] = new String[] { "Tanger-Tetouan-Al Hoceima", "Oriental", "Fès-Meknès", "Rabat-Salé-Kénitra",
-				"Béni Mellal-Khénifra" };
-
-		return Arrays.asList(states);
-	}
-
-	public static List getDistricts() {
-
-		String districts[] = new String[] { "Casablanca-Settat", "Marrakesh-Safi", "Drâa-Tafilalet", "Souss-Massa",
-				"Guelmim-Oued" };
-
-		return Arrays.asList(districts);
-	}
-
-	public static List getRegions() {
-
-		String regions[] = new String[] { "Tangier", "Oujda", "Fès", "Rabat", "Béni Mellal" };
-
-		return Arrays.asList(regions);
-	}
-
-	public static List getPins() {
-
-		String pins[] = new String[] { "80851", "80852", "80853", "80854", "80855" };
-
-		return Arrays.asList(pins);
-	}
-
 	// Upload Packet
 
 	public static List getStatus() {
@@ -434,12 +434,19 @@ public class RegistrationConstants {
 	public static final String REG_UI_SHEDULER_RUNTIME_EXCEPTION = REG_UI_CODE + "SHE-004";
 	public static final String REG_UI_BASE_CNTRLR_IO_EXCEPTION = REG_UI_CODE + "BAS-005";
 	public static final String REG_UI_VIEW_ACK_FORM_IO_EXCEPTION = REG_UI_CODE + "VAF-006";
+	// Exceptions for Device Onboarding
+	public static final String DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "ROD-001";
 	public static final String DEVICE_ONBOARD_INITIALIZATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-001";
 	public static final String DEVICE_ONBOARD_LOADING_DEVICES_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-002";
 	public static final String DEVICE_ONBOARD_MAPPING_DEVICES_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-003";
 	public static final String DEVICE_ONBOARD_UNMAPPING_DEVICES_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-004";
 	public static final String DEVICE_ONBOARD_HOME_NAVIGATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-005";
-	public static final String DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "ROD-001";
+	public static final String DEVICE_ONBOARD_DEVICE_GROUPING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-006";
+	public static final String DEVICE_ONBOARD_DEVICE_GROUP_UPDATE_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-007";
+	public static final String DEVICE_ONBOARD_DEVICE_FILTERING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-008";
+	public static final String DEVICE_ONBOARD_DEVICE_POPULATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-009";
+	public static final String DEVICE_ONBOARD_DEVICE_FETCHING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-010";
+	public static final String DEVICE_ONBOARD_CLEAR_CONTEXT_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-011";
 
 	public static final String BIOMETRIC_IMAGE = "Image";
 	public static final String BIOMETRIC_TYPE = "Type";
@@ -450,10 +457,10 @@ public class RegistrationConstants {
 	public static final String ACKNOWLEDGEMENT_FILE = "_Ack";
 	public static final String PACKET_SYNC_ERROR = "Error";
 	public static final String RE_REGISTRATION_STATUS = "reregister";
+	public static final String PACKET_SYNC_REF_ID = "packetsync";
+	public static final String PACKET_UPLOAD_REF_ID = "packetUpload";
 
 	// Device On-boarding
-	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint", "Iris", "Camera", "GPS",
-			"Printer", "Scanner", "Barcode");
 	public static final String DEVICE_MANUFACTURER_NAME = "manufacturerName";
 	public static final String DEVICE_MODEL_NAME = "modelName";
 	public static final String DEVICE_SERIAL_NO = "serialNo";
@@ -463,6 +470,11 @@ public class RegistrationConstants {
 	public static final String DEVICE_ONBOARD_ERROR_MSG = "Internal error in Device Onboarding.";
 	public static final String ONBOARD_DEVICES_MAP = "onBoardDevicesMap";
 	public static final String ONBOARD_DEVICES_REF_ID_TYPE = "UserID";
+	public static final String ONBOARD_DEVICES_ADDED = "devicedAdded";
+	public static final String ONBOARD_DEVICES_REMOVED = "devicedRemoved";
+	public static final String ONBOARD_AVAILABLE_DEVICES_GROUP = "availableDeviceGroupMap";
+	public static final String ONBOARD_MAPPED_DEVICES_GROUP = "mappedDeviceGroupMap";
+	public static final String MACHINE_ID = "machineId";
 
 	// Template Name
 	public static final String ACKNOWLEDGEMENT_TEMPLATE = "Ack Template";
@@ -472,6 +484,8 @@ public class RegistrationConstants {
 	public static final String EMAIL_SUBJECT = "MOSIP REGISTRATION NOTIFICATION";
 	public static final String EMAIL_SERVICE = "email";
 	public static final String SMS_SERVICE = "sms";
+	public static final String NOTIFICATION_SERVICE="REGISTRATION - NOTIFICATION SERVICE ";
+	public static final List<String> MODE_OF_COMMUNICATION=Arrays.asList("MODE_OF_COMMUNICATION");
 
 	// Global configuration parameters
 	public static final List<String> INVALID_LOGIN_PARAMS = Arrays.asList("INVALID_LOGIN_COUNT", "INVALID_LOGIN_TIME");
@@ -480,12 +494,16 @@ public class RegistrationConstants {
 
 	// Lock User account
 	public static final String USER_ACCOUNT_LOCK_MESSAGE = "Your account has been temporarily locked as you have made 5 unsuccessful login attempts. Please try logging in after 30 minutes.";
+	public static final int INVALID_LOGIN_COUNT_RESET = 0;
+	public static final int INVALID_LOGIN_COUNT_INCREMENT = 1;
 
 	// Spring Batch-Jobs
 	public static final String JOB_TRIGGER_STARTED = "Trigger started";
 	public static final String JOB_TRIGGER_COMPLETED = "Trigger completed";
 	public static final String JOB_EXECUTION_STARTED = "Execution started";
 	public static final String JOB_EXECUTION_COMPLETED = "Execution completed";
+	public static final String JOB_EXECUTION_SUCCESS = "Executed with success";
+	public static final String JOB_EXECUTION_FAILURE = "Executed with failure";
 	public static final String JOB_TRIGGER_FAILED = "Trigger failed";
 	public static final String JOB_EXECUTION_FAILED = "Execution failed";
 	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";
@@ -521,5 +539,20 @@ public class RegistrationConstants {
 	public static final String GPS_ERROR_CODE = "errorCode";
 	public static final String GPS_CAPTURING_EXCEPTION = "GPS_EXCEPTION";
 	public static final String GPS_SIGNAL = "$GP";
+
+	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint", "Iris", "Camera", "GPS",
+			"Printer", "Scanner", "Barcode"); 
+	
+	public static List getPoaDocumentList() {
+		return Arrays.asList(new String[] { "Document1", "Document2", "Document3", "Document4" });
+	}
+
+	public static List getPoiDocumentList() {
+		return Arrays.asList(new String[] { "Document1", "Document2", "Document3", "Document4" });
+	}
+
+	public static List getPorDocumentList() {
+		return Arrays.asList(new String[] { "Document1", "Document2", "Document3", "Document4" });
+	}
 
 }

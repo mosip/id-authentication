@@ -1,6 +1,5 @@
 package io.mosip.registration.dao;
 
-import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncTransaction;
 
 /**
@@ -11,7 +10,7 @@ import io.mosip.registration.entity.SyncTransaction;
  * @since1.0.0
  *
  */
-public interface JobTransactionDAO {
+public interface SyncJobTransactionDAO {
 	/**
 	 * To save {@link SyncTransaction}
 	 * 
@@ -19,14 +18,6 @@ public interface JobTransactionDAO {
 	 *            Details
 	 * @return
 	 */
-	String saveSyncTransaction(SyncTransaction syncTransaction);
+	SyncTransaction save(SyncTransaction syncTransaction);
 
-	/**
-	 * To upadte {@link SyncControl}
-	 * 
-	 * @param syncControl
-	 *            Details
-	 * @return
-	 */
-	String upadteSyncControl(SyncControl syncControl);
 }

@@ -49,6 +49,7 @@ public class RegistrationUserDetailDAOImpl implements RegistrationUserDetailDAO 
 
 		List<RegistrationUserDetail> registrationUserDetail = registrationUserDetailRepository
 				.findByIdAndIsActiveTrue(userId);
+		
 		LOGGER.debug("REGISTRATION - USER_DETAIL - REGISTRATION_USER_DETAIL_DAO_IMPL",
 				APPLICATION_NAME, APPLICATION_ID,
 				"User details fetched successfully");
@@ -69,5 +70,9 @@ public class RegistrationUserDetailDAOImpl implements RegistrationUserDetailDAO 
 				APPLICATION_NAME, APPLICATION_ID, "Updating Login params");
 
 		registrationUserDetailRepository.save(registrationUserDetail);
+		
+		LOGGER.debug("REGISTRATION - UPDATE_LOGIN_PARAMS - REGISTRATION_USER_DETAIL_DAO_IMPL",
+				APPLICATION_NAME, APPLICATION_ID, "Updated Login params successfully");
+
 	}
 }

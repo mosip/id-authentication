@@ -3,6 +3,7 @@ package io.mosip.registration.service.impl;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -94,12 +95,7 @@ public class RegPacketStatusServiceImpl extends BaseService implements RegPacket
 			/** Obtain RegistrationStatusDto from service delegate util */
 			registrations = (List<LinkedHashMap<String, String>>) serviceDelegateUtil.get(SERVICE_NAME,
 					requestParamMap);
-		} catch (RegBaseCheckedException regBaseCheckedException) {
-			/** Create Error response */
-			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
-			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,
-					"Error Response Created");
-		} catch (HttpClientErrorException httpClientErrorException) {
+		} catch (RegBaseCheckedException | IllegalArgumentException | HttpClientErrorException | SocketTimeoutException exception) {
 			/** Create Error response */
 			getErrorResponse(response, RegistrationConstants.PACKET_STATUS_SYNC_ERROR_RESPONSE);
 			LOGGER.debug("REGISTRATION - PACKET - STATUS - SYNC", APPLICATION_NAME, APPLICATION_ID,

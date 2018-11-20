@@ -7,6 +7,8 @@ import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MA
 import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_CENTER_USER_MACHINE_CODE;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +20,21 @@ import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.MachineMappingDAO;
 import io.mosip.registration.entity.CenterMachine;
+import io.mosip.registration.entity.DeviceType;
 import io.mosip.registration.entity.MachineMaster;
+import io.mosip.registration.entity.RegCenterDevice;
+import io.mosip.registration.entity.RegCentreMachineDevice;
+import io.mosip.registration.entity.RegCentreMachineDeviceId;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.CenterMachineRepository;
+import io.mosip.registration.repositories.DeviceTypeRepository;
 import io.mosip.registration.repositories.MachineMasterRepository;
+import io.mosip.registration.repositories.RegistrationCenterDeviceRepository;
+import io.mosip.registration.repositories.RegistrationCenterMachineDeviceRepository;
 import io.mosip.registration.repositories.RegistrationUserDetailRepository;
 import io.mosip.registration.repositories.UserMachineMappingRepository;
 
@@ -43,6 +52,19 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 	 * logger for logging
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(MachineMappingDAOImpl.class);
+	@Autowired
+	private DeviceTypeRepository deviceTypeRepository;
+	/**
+	 * registrationCenterDeviceRepository instance creation using autowired
+	 * annotation
+	 */
+	@Autowired
+	private RegistrationCenterDeviceRepository registrationCenterDeviceRepository;
+	/**
+	 * 
+	 */
+	@Autowired
+	private RegistrationCenterMachineDeviceRepository registrationCenterMachineDeviceRepository;
 
 	/**
 	 * centerMachineRepository instance creation using autowired annotation
@@ -222,5 +244,53 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 
 		return machineMapping;
 	}
+	/**
+	 * (non-javadoc) get all active devices
+	 * 
+	 * @see io.mosip.registration.dao.MachineMappingDAO#getAllDeviceTypes()
+	 */
+	@Override
+	public List<DeviceType> getAllDeviceTypes() {
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				" getAllDeviceTypes() method is started");
+
+		return deviceTypeRepository.findByIsActiveTrue();
+	}
+
+	/**
+	 * (non-javadoc) get all active devices
+	 * 
+	 * @see io.mosip.registration.dao.MachineMappingDAO#getAllDeviceBasedOnCenterId()
+	 */
+
+	@Override
+	public List<RegCenterDevice> getAllDeviceBasedOnCenterId(String centerId) {
+
+		LOGGER.debug(MACHINE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+				"  getAllDeviceBasedOnCenterId method is started");
+
+		return registrationCenterDeviceRepository
+				.findByRegCenterDeviceIdRegCenterIdAndIsActiveTrueAndRegDeviceMasterValidityEndDtimesGreaterThan(
+						centerId, new Timestamp(new Date().getTime()));
+
+	}
+
+	@Override
+	public List<RegCentreMachineDevice> getAllMappedDevices(String centerId, String machineId) {
+		return registrationCenterMachineDeviceRepository.findByRegCentreMachineDeviceIdRegCentreIdAndRegCentreMachineDeviceIdMachineId(centerId, machineId);
+	}
+
+	@Override
+	public void deleteUnMappedDevice(RegCentreMachineDeviceId regCentreMachineDeviceId) {
+		registrationCenterMachineDeviceRepository.deleteById(regCentreMachineDeviceId);
+		
+	}
+
+	@Override
+	public void addedMappedDevice(RegCentreMachineDevice regCentreMachineDevice) {
+		 registrationCenterMachineDeviceRepository.save(regCentreMachineDevice);
+	}
+
+
 
 }

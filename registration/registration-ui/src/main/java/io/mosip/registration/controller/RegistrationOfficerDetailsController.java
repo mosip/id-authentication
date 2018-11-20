@@ -1,6 +1,5 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.LoggerConstants.DEVICE_ONBOARD_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOARD_ERROR_MSG;
@@ -8,7 +7,6 @@ import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOA
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTHORIZATION_EXCEPTION;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_HOMEPAGE_IO_EXCEPTION;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_LOGOUT_IO_EXCEPTION;
-import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION;
 
 import java.io.IOException;
 
@@ -16,6 +14,7 @@ import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.scheduler.SchedulerUtil;
@@ -185,7 +184,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 	 *            is an action event
 	 */
 	public void onBoardDevice(ActionEvent actionEvent) {
-		LOGGER.debug(DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION, APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
 				"Navigating to Device Onboarding Page");
 
 		try {
@@ -205,13 +204,13 @@ public class RegistrationOfficerDetailsController extends BaseController {
 				pane.getChildren().add(onBoardRoot);
 			}
 		} catch (IOException ioException) {
-			LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					RegistrationConstants.DEVICE_ONBOARD_LOADING_DEVICES_EXCEPTION
+			LOGGER.error(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
+					RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION
 							+ "-> Exception while navigating to Device Onboarding page:" + ioException.getMessage());
 
 			generateAlert(DEVICE_ONBOARD_EXCEPTION_ALERT, AlertType.ERROR, DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+			LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
 					"Navigation to Device Onboarding page completed");
 		}
 	}

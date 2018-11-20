@@ -23,7 +23,7 @@ import javafx.stage.Stage;
  * @since 1.0.0
  *
  */
-@Component
+@Component 
 public class RegistrationAppInitialization extends Application {
 
 	/**

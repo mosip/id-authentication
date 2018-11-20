@@ -7,18 +7,18 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
-import io.mosip.registration.dao.JobConfigDAO;
+import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.entity.SyncJob;
 import io.mosip.registration.repositories.JobConfigRepository;
 
 /**
- * implementation class of {@link JobConfigDAO}
+ * implementation class of {@link SyncJobConfigDAO}
  * 
  * @author Dinesh Ashokan
  *
  */
 @Repository
-public class JobConfigDAOImpl implements JobConfigDAO {
+public class JobConfigDAOImpl implements SyncJobConfigDAO {
 
 	@Autowired
 	private JobConfigRepository jobConfigRepository;

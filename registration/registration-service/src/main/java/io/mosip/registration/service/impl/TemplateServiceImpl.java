@@ -24,7 +24,17 @@ public class TemplateServiceImpl implements TemplateService {
 	@Autowired
 	private TemplateDao templateDao;
 
-	@Override
+	/**
+	 * This method takes the list of templates, template file formats and template
+	 * types from database and chooses the required template for creation of
+	 * acknowledgement
+	 * 
+	 * * @param templateName 
+	 *            to define the template name
+	 * 
+	 * @return single template
+	 */
+
 	public Template getTemplate(String templateName) {
 		Template ackTemplate = new Template();
 

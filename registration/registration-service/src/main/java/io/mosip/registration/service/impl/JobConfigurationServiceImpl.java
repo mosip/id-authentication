@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.annotation.PostConstruct;
 
@@ -22,7 +21,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.dao.JobConfigDAO;
+import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -40,7 +39,7 @@ import io.mosip.registration.service.JobConfigurationService;
 public class JobConfigurationServiceImpl implements JobConfigurationService {
 
 	@Autowired
-	JobConfigDAO jobConfigDAO;
+	SyncJobConfigDAO jobConfigDAO;
 
 	/**
 	 * Sheduler factory bean which will take Job and Trigger details and run jobs
@@ -55,18 +54,15 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 	private static final Logger LOGGER = AppConfig.getLogger(JobConfigurationServiceImpl.class);
 
 	/**
-	 * sync job map with key as jobID and value as SyncJob
-	 * (Entity)
+	 * sync job map with key as jobID and value as SyncJob (Entity)
 	 */
 	public static Map<String, SyncJob> SYNC_JOB_MAP = new HashMap<>();
-	
-	
+
 	private static Map<String, Object> JOBDATASMAP = new HashMap<>();
 
-	private ApplicationContext applicationContext;
-
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.registration.service.JobConfigurationService#initiateJobs()
 	 */
 	@PostConstruct
@@ -75,19 +71,17 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
 		List<SyncJob> jobList = jobConfigDAO.getActiveJobs();
-		jobList.forEach(syncJob -> {
-			SYNC_JOB_MAP.put(syncJob.getId(), syncJob);
-			
-		});
-
+		jobList.forEach(syncJob -> SYNC_JOB_MAP.put(syncJob.getId(), syncJob));
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was completed");
 
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.JobConfigurationService#startJobs(org.springframework.context.ApplicationContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.JobConfigurationService#startJobs(org.
+	 * springframework.context.ApplicationContext)
 	 */
 	@SuppressWarnings("unchecked")
 	public ResponseDTO startJobs(ApplicationContext applicationContext) {
@@ -95,37 +89,39 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 				RegistrationConstants.APPLICATION_ID, "start jobs invocation started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		this.applicationContext = applicationContext;
 
 		SYNC_JOB_MAP.forEach((jobId, syncJob) -> {
 			try {
 
-				JobDetailFactoryBean jobDetailBean = new JobDetailFactoryBean();
-				CronTriggerFactoryBean cronTriggerBean = new CronTriggerFactoryBean();
+				if (syncJob.getParentSyncJobId() == null) {
+					JobDetailFactoryBean jobDetailBean = new JobDetailFactoryBean();
+					CronTriggerFactoryBean cronTriggerBean = new CronTriggerFactoryBean();
 
-				BaseJob baseJob = null;
+					BaseJob baseJob = null;
 
-				// Get Job instance through application context
-				baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
+					// Get Job instance through application context
+					baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
 
-				jobDetailBean.setJobClass(baseJob.jobClass());
-				jobDetailBean.setName(syncJob.getId());
-				
-				JOBDATASMAP.put("applicationContext", applicationContext);
+					jobDetailBean.setJobClass(baseJob.jobClass());
+					jobDetailBean.setName(syncJob.getId());
 
-				// putting application context in job data map
+					JOBDATASMAP.put("applicationContext", applicationContext);
 
-				jobDetailBean.setJobDataAsMap(JOBDATASMAP);
-				jobDetailBean.afterPropertiesSet();
+					// putting application context in job data map
 
-				cronTriggerBean.setJobDetail(jobDetailBean.getObject());
-				cronTriggerBean.setCronExpression(syncJob.getSyncFrequency());
-				cronTriggerBean.setName(syncJob.getId());
-				cronTriggerBean.afterPropertiesSet();
-				
-				schedulerFactoryBean.getScheduler().scheduleJob(jobDetailBean.getObject(), cronTriggerBean.getObject());
-				setSuccessResponseDTO(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE);
+					jobDetailBean.setJobDataAsMap(JOBDATASMAP);
+					jobDetailBean.afterPropertiesSet();
 
+					cronTriggerBean.setJobDetail(jobDetailBean.getObject());
+					cronTriggerBean.setCronExpression(syncJob.getSyncFrequency());
+					cronTriggerBean.setName(syncJob.getId());
+					cronTriggerBean.afterPropertiesSet();
+
+					schedulerFactoryBean.getScheduler().scheduleJob(jobDetailBean.getObject(),
+							cronTriggerBean.getObject());
+					setSuccessResponseDTO(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE);
+
+				}
 			} catch (SchedulerException | ParseException | NoSuchBeanDefinitionException exception) {
 				setErrorResponseDTO(responseDTO, exception);
 			}
@@ -137,8 +133,9 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 
 	}
 
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see io.mosip.registration.service.JobConfigurationService#stopJobs()
 	 */
 	public ResponseDTO stopJobs() {
@@ -159,33 +156,35 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		return responseDTO;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.JobConfigurationService#getCurrentRunningJobDetails()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.registration.service.JobConfigurationService#
+	 * getCurrentRunningJobDetails()
 	 */
 	public ResponseDTO getCurrentRunningJobDetails() {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "get current running job details started");
 
-		ResponseDTO responseDTO=new ResponseDTO();
+		ResponseDTO responseDTO = new ResponseDTO();
 		try {
 
 			// Get currently executing jobs from scheduler factory
 			List<JobExecutionContext> executingJobList = schedulerFactoryBean.getScheduler()
 					.getCurrentlyExecutingJobs();
-			SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
-			Map<String,Object> jobNames = new HashMap<>();
+			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
+			Map<String, Object> jobNames = new HashMap<>();
 			for (JobExecutionContext jobExecutionContext : executingJobList) {
-				
-				//@see Need to be prepared as per businness requirement
-				jobNames.put("jobName",jobExecutionContext.getJobDetail());
+
+				// @see Need to be prepared as per businness requirement
+				jobNames.put("jobName", jobExecutionContext.getJobDetail());
 			}
 			successResponseDTO.setOtherAttributes(jobNames);
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
-			
+
 		} catch (SchedulerException schedulerException) {
 			setErrorResponseDTO(responseDTO, schedulerException);
-			
+
 		}
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -194,11 +193,15 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		return responseDTO;
 	}
 
-	/* (non-Javadoc)
-	 * @see io.mosip.registration.service.JobConfigurationService#executeJob(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.registration.service.JobConfigurationService#executeJob(java.lang.
+	 * String)
 	 */
 	@Override
-	public ResponseDTO executeJob(String apiName) {
+	public ResponseDTO executeJob(ApplicationContext applicationContext, String apiName) {
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job started");
@@ -222,8 +225,8 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
 
 		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-		errorResponseDTO.setCode(RegistrationConstants.BATCH_JOB_CODE);
-		errorResponseDTO.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponseDTO.setCode(RegistrationConstants.ALERT_ERROR);
+		errorResponseDTO.setInfoType(RegistrationConstants.BATCH_JOB_CODE);
 		errorResponseDTO.setMessage(exception.getMessage());
 		errorResponseDTOs.add(errorResponseDTO);
 		responseDTO.setErrorResponseDTOs(errorResponseDTOs);

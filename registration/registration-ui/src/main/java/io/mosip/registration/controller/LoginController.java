@@ -9,11 +9,13 @@ import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_LOGI
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +36,7 @@ import io.mosip.kernel.core.util.HMACUtils;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.LoginUserDTO;
@@ -69,7 +72,7 @@ import javafx.stage.Stage;
  */
 @Controller
 public class LoginController extends BaseController implements Initializable, MFS100Event {
-
+	
 	@FXML
 	private TextField userId;
 
@@ -151,12 +154,13 @@ public class LoginController extends BaseController implements Initializable, MF
 	 * @throws RegBaseCheckedException
 	 */
 	public String loadInitialScreen(Stage primaryStage) throws RegBaseCheckedException {
-
+		
 		LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Retrieve Login mode");
 
 		BaseController.stage = primaryStage;
 		String loginMode = null;
+
 
 		try {
 			Map<String, Object> userLoginMode = loginService.getModesOfLogin();
@@ -168,6 +172,10 @@ public class LoginController extends BaseController implements Initializable, MF
 			// To maintain the login mode sequence
 			SessionContext.getInstance().setMapObject(userLoginMode);
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.LOGIN_INITIAL_SCREEN, loginMode);
+			
+			//Load the property files for application and local language
+			ApplicationContext.getInstance().setApplicationLanguageBundle();
+		    ApplicationContext.getInstance().setLocalLanguageProperty();
 
 			LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 					"Retrieved corresponding Login mode");
@@ -189,11 +197,17 @@ public class LoginController extends BaseController implements Initializable, MF
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-		} catch (IOException | RuntimeException exception) {
+		} catch (IOException ioException) {
 			
 			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
 			
+			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+					REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+		}catch (RuntimeException runtimeException) {
+			
+			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, runtimeException.getMessage());
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
 		}
@@ -244,48 +258,54 @@ public class LoginController extends BaseController implements Initializable, MF
 			boolean serverStatus = getConnectionCheck(userDTO);
 			boolean offlineStatus = false;
 			RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
+			
+			if(userDetail == null) {
+				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+						RegistrationConstants.LOGIN_FAILURE, RegistrationConstants.USER_NOT_ONBOARDED);
+			} else {
+				if (!serverStatus) {
+					LOGGER.debug("REGISTRATION - USER_PASSWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+							"Retrieving User Password from database");
 
-			if (!serverStatus) {
-				LOGGER.debug("REGISTRATION - USER_PASSWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-						"Retrieving User Password from database");
+					LOGGER.debug("REGISTRATION - VALID_LOGIN_COUNT - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+							"Validating number of login attempts");
 
-				LOGGER.debug("REGISTRATION - VALID_LOGIN_COUNT - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-						"Validating number of login attempts");
-
-				if (!userDetail.getRegistrationUserPassword().getPwd().equals(hashPassword)) { 
-					offlineStatus = validateInvalidLogin(userDetail, userId.getText(), RegistrationConstants.INCORRECT_PWORD);
-				} else {
-					offlineStatus = validateInvalidLogin(userDetail, userId.getText(), "");
+					if (!userDetail.getRegistrationUserPassword().getPwd().equals(hashPassword)) { 
+						offlineStatus = validateInvalidLogin(userDetail, RegistrationConstants.INCORRECT_PWORD);
+					} else {
+						offlineStatus = validateInvalidLogin(userDetail, "");
+					}
 				}
-			}
-			if (serverStatus || offlineStatus) {
-				if (validateUserStatus(userId.getText())) {
-
-					LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-							"Validating user status");
-
-					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.BLOCKED_USER_ERROR);
-				} else {
-					try {
+				if (serverStatus || offlineStatus) {
+					if (validateUserStatus(userId.getText())) {
 
 						LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-								"Loading next login screen");
+								"Validating user status");
 
-						SessionContext sessionContext = SessionContext.getInstance();
-						loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
-						loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
-
-					} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
-						
-						LOGGER.error("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME,
-								APPLICATION_ID, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
-						
-						generateAlert(RegistrationConstants.ALERT_ERROR,
+						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
 								AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-								RegistrationConstants.LOGIN_FAILURE,
-								REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+								RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.BLOCKED_USER_ERROR);
+					} else {
+						try {
+
+							LOGGER.debug("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+									"Loading next login screen");
+
+							SessionContext sessionContext = SessionContext.getInstance();
+							loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
+							loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_PWORD);
+
+						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
+							
+							LOGGER.error("REGISTRATION - LOGIN_PWORD - LOGIN_CONTROLLER", APPLICATION_NAME,
+									APPLICATION_ID, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+							
+							generateAlert(RegistrationConstants.ALERT_ERROR,
+									AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+									RegistrationConstants.LOGIN_FAILURE,
+									REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+						}
 					}
 				}
 			}
@@ -346,42 +366,52 @@ public class LoginController extends BaseController implements Initializable, MF
 
 			ResponseDTO responseDTO = null;
 
-			responseDTO = loginService.validateOTP(userId.getText(), password.getText());
+			RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
+			
+			if(userDetail == null) {
+				
+				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+						AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+						RegistrationConstants.LOGIN_FAILURE, RegistrationConstants.USER_NOT_ONBOARDED);
+				
+			} else {
+				responseDTO = loginService.validateOTP(userId.getText(), password.getText());
 
-			if (responseDTO != null) {
-				RegistrationUserDetail userDetail = loginService.getUserDetail(userId.getText());
-				boolean otpLoginStatus = false;
-				if (responseDTO.getSuccessResponseDTO() != null) {
-					otpLoginStatus = validateInvalidLogin(userDetail, userId.getText(), "");
-				} else {
-					ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
-					otpLoginStatus = validateInvalidLogin(userDetail, userId.getText(), errorResponseDTO.getMessage());
-				}
-				if (otpLoginStatus) {
-					// // Validating User status
-					if (validateUserStatus(userId.getText())) {
-						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-								AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-								RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.BLOCKED_USER_ERROR);
+				if (responseDTO != null) {
+					
+					boolean otpLoginStatus = false;
+					if (responseDTO.getSuccessResponseDTO() != null) {
+						otpLoginStatus = validateInvalidLogin(userDetail, "");
 					} else {
-						try {
-							SessionContext sessionContext = SessionContext.getInstance();
-							loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_OTP);
-							loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_OTP);
-						} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
-							
-							LOGGER.error("REGISTRATION - LOGIN_OTP - LOGIN_CONTROLLER", APPLICATION_NAME,
-									APPLICATION_ID, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
-							
-							generateAlert(RegistrationConstants.ALERT_ERROR,
+						ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+						otpLoginStatus = validateInvalidLogin(userDetail, errorResponseDTO.getMessage());
+					}
+					if (otpLoginStatus) {
+						// // Validating User status
+						if (validateUserStatus(userId.getText())) {
+							generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
 									AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-									RegistrationConstants.LOGIN_FAILURE,
-									RegistrationExceptions.REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+									RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.BLOCKED_USER_ERROR);
+						} else {
+							try {
+								SessionContext sessionContext = SessionContext.getInstance();
+								loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_OTP);
+								loadNextScreen(userDetail, sessionContext, RegistrationConstants.LOGIN_METHOD_OTP);
+							} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
+								
+								LOGGER.error("REGISTRATION - LOGIN_OTP - LOGIN_CONTROLLER", APPLICATION_NAME,
+										APPLICATION_ID, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+								
+								generateAlert(RegistrationConstants.ALERT_ERROR,
+										AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+										RegistrationConstants.LOGIN_FAILURE,
+										RegistrationExceptions.REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+							}
+
 						}
 
-					}
-
-				} 
+					} 
+				}
 			}
 
 		} else if (userId.getText().length() == 3) {
@@ -579,41 +609,47 @@ public class LoginController extends BaseController implements Initializable, MF
 			@Override
 			public void run() {
 				RegistrationUserDetail detail = loginService.getUserDetail(userId.getText());
-				if (fingerData != null) {
-					FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().convert(fingerData.ISOTemplate());
-					String minutia = fingerprintTemplate.serialize();
-					
-					LOGGER.debug("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
-							APPLICATION_ID, "Validating Fingerprint with minutia");
-					boolean bioLoginStatus = false;
-					if (validateBiometric(minutia, detail)) {
-						bioLoginStatus = validateInvalidLogin(detail, userId.getText(), "");
-					} else {
-						bioLoginStatus = validateInvalidLogin(detail, userId.getText(), RegistrationConstants.FINGER_PRINT_MATCH);
-					}
-					if(bioLoginStatus) {
-						if (detail.getStatusCode() != null
-								&& detail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-							generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-									AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-									RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.BLOCKED_USER_ERROR);
+				if(detail == null) {
+					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+							RegistrationConstants.LOGIN_FAILURE, RegistrationConstants.USER_NOT_ONBOARDED);
+				} else {
+					if (fingerData != null) {
+						FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().convert(fingerData.ISOTemplate());
+						String minutia = fingerprintTemplate.serialize();
+						
+						LOGGER.debug("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
+								APPLICATION_ID, "Validating Fingerprint with minutia");
+						boolean bioLoginStatus = false;
+						if (validateBiometric(minutia, detail)) {
+							bioLoginStatus = validateInvalidLogin(detail, "");
 						} else {
-							try {
-								SessionContext sessionContext = SessionContext.getInstance();
-								loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_BIO);
-								loadNextScreen(detail, sessionContext, RegistrationConstants.LOGIN_METHOD_BIO);
-							} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
-								
-								LOGGER.error("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
-										APPLICATION_ID, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
-								
-								generateAlert(RegistrationConstants.ALERT_ERROR,
-										AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-										RegistrationConstants.LOGIN_FAILURE,
-										REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
-							}
+							bioLoginStatus = validateInvalidLogin(detail, RegistrationConstants.FINGER_PRINT_MATCH);
 						}
-					} 
+						if(bioLoginStatus) {
+							if (detail.getStatusCode() != null
+									&& detail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
+								generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
+										AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+										RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.BLOCKED_USER_ERROR);
+							} else {
+								try {
+									SessionContext sessionContext = SessionContext.getInstance();
+									loadLoginAfterLogout(sessionContext, RegistrationConstants.LOGIN_METHOD_BIO);
+									loadNextScreen(detail, sessionContext, RegistrationConstants.LOGIN_METHOD_BIO);
+								} catch (IOException | RuntimeException | RegBaseCheckedException exception) {
+									
+									LOGGER.error("REGISTRATION - LOGIN_BIO - LOGIN_CONTROLLER", APPLICATION_NAME,
+											APPLICATION_ID, REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+									
+									generateAlert(RegistrationConstants.ALERT_ERROR,
+											AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+											RegistrationConstants.LOGIN_FAILURE,
+											REG_UI_LOGIN_SCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+								}
+							}
+						} 
+					}
 				}
 			}
 		});
@@ -774,6 +810,7 @@ public class LoginController extends BaseController implements Initializable, MF
 
 		int counter = (int) sessionContext.getMapObject().get(RegistrationConstants.LOGIN_SEQUENCE);
 		counter++;
+		
 		if (sessionContext.getMapObject().containsKey(String.valueOf(counter))) {
 
 			LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
@@ -781,6 +818,7 @@ public class LoginController extends BaseController implements Initializable, MF
 
 			String mode = sessionContext.getMapObject().get(String.valueOf(counter)).toString();
 			sessionContext.getMapObject().remove(String.valueOf(counter));
+			
 			loadLoginScreen(mode);
 		} else {
 			if (setInitialLoginInfo(userId.getText())) {
@@ -789,8 +827,14 @@ public class LoginController extends BaseController implements Initializable, MF
 						"Loading Home screen");
 
 				schedulerUtil.startSchedulerUtil();
+				
 				BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
-				loginService.updateSuccessLoginParams(userDetail, userId.getText(), loginMode);
+				
+				userDetail.setLastLoginMethod(loginMode);
+				userDetail.setLastLoginDtimes(Timestamp.valueOf(LocalDateTime.now()));
+				userDetail.setUnsuccessfulLoginCount(RegistrationConstants.INVALID_LOGIN_COUNT_RESET);
+				
+				loginService.updateLoginParams(userDetail);
 			}
 		}
 	}
@@ -822,80 +866,109 @@ public class LoginController extends BaseController implements Initializable, MF
 	 *            entered userId
 	 * @return boolean
 	 */
-	private boolean validateInvalidLogin(RegistrationUserDetail registrationUserDetail, String userId,
-			String errorMessage) {
-		if (registrationUserDetail != null) {
-
+	private boolean validateInvalidLogin(RegistrationUserDetail registrationUserDetail, String errorMessage) {
+		
 			LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
 					"Fetching invalid login params");
 
 			int loginCount = registrationUserDetail.getUnsuccessfulLoginCount() != null
 					? registrationUserDetail.getUnsuccessfulLoginCount().intValue()
 					: 0;
+
 			Timestamp loginTime = registrationUserDetail.getUserlockTillDtimes();
+
 			Map<String, Object> globalParamsMap = globalParams();
 
 			int invalidLoginCount = Integer
-					.parseInt(String.valueOf(globalParamsMap.get(RegistrationConstants.INVALID_LOGIN_COUNT)));
+					.parseInt(globalParamsMap.get(RegistrationConstants.INVALID_LOGIN_COUNT).toString());
+			
 			int invalidLoginTime = Integer
-					.parseInt(String.valueOf(globalParamsMap.get(RegistrationConstants.INVALID_LOGIN_TIME)));
+					.parseInt(globalParamsMap.get(RegistrationConstants.INVALID_LOGIN_TIME).toString());
 
 			LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
 					"validating invalid login params");
 
-			if (loginCount >= invalidLoginCount
-					&& compareTwoTimeStamps(loginTime, new Timestamp(new Date().getTime())) > invalidLoginTime) {
-				loginCount = 0;
-				loginService.updateInvalidLoginParams(registrationUserDetail, userId, 0, null);
+			if (validateLoginTime(loginCount, invalidLoginCount, loginTime, invalidLoginTime)) {
+				
+				loginCount = RegistrationConstants.INVALID_LOGIN_COUNT_RESET;
+				registrationUserDetail.setUnsuccessfulLoginCount(RegistrationConstants.INVALID_LOGIN_COUNT_RESET);
+				
+				loginService.updateLoginParams(registrationUserDetail);
+
 			}
 
-			LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
-					"updating invalid login params to lock user account");
-
 			if (loginCount > invalidLoginCount) {
-				if (compareTwoTimeStamps(loginTime, new Timestamp(new Date().getTime())) > invalidLoginTime) {
-					loginService.updateInvalidLoginParams(registrationUserDetail, userId, 1, null);
+				
+				LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
+						"validating login count and time ");
+
+				if (TimeUnit.MILLISECONDS
+						.toMinutes(loginTime.getTime() - System.currentTimeMillis()) > invalidLoginTime) {
+					
+					registrationUserDetail.setUnsuccessfulLoginCount(RegistrationConstants.INVALID_LOGIN_COUNT_INCREMENT);
+					
+					loginService.updateLoginParams(registrationUserDetail);
+
 				} else {
 					generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
 							AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 							RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE);
+
 				}
 				return false;
+
 			} else {
-				if(!errorMessage.isEmpty()) {
-					loginService.updateInvalidLoginParams(registrationUserDetail, userId, loginCount + 1,
-							(new Timestamp(new Date().getTime())));
+				if (!errorMessage.isEmpty()) {					
+
+					LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
+							"updating login count and time for invalid login attempts");
+					
+					registrationUserDetail.setUserlockTillDtimes(Timestamp.valueOf(LocalDateTime.now()));
+					registrationUserDetail.setUnsuccessfulLoginCount(loginCount + RegistrationConstants.INVALID_LOGIN_COUNT_INCREMENT);
+					
+					loginService.updateLoginParams(registrationUserDetail);
+
 					if (loginCount == invalidLoginCount) {
+
 						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
 								AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-								RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE);
+								RegistrationConstants.LOGIN_INFO_MESSAGE,
+								RegistrationConstants.USER_ACCOUNT_LOCK_MESSAGE);
+
 					} else {
+
 						generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
 								AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 								RegistrationConstants.LOGIN_INFO_MESSAGE, errorMessage);
+
 					}
 					return false;
-				} 
+				}
+				return true;
 			}
-		}
-		return true;
 	}
 
 	/**
-	 * Comapring timestamps in case of invalid number of login attempts
+	 * Validating login time and count
 	 * 
-	 * @param currentTime
-	 *            current timestamp
-	 * @param storedTime
-	 *            stored timestamp
-	 * @return long
+	 * @param loginCount
+	 *            number of invalid attempts
+	 * @param invalidLoginCount
+	 *            count from global param
+	 * @param loginTime
+	 * 			login time from table
+	 * @param invalidLoginTime
+	 * 			login time from global param
+	 * @return boolean
 	 */
-	private long compareTwoTimeStamps(Timestamp currentTime, Timestamp storedTime) {
+	private boolean validateLoginTime(int loginCount, int invalidLoginCount, Timestamp loginTime,
+			int invalidLoginTime) {
 
 		LOGGER.debug("REGISTRATION - LOGIN - COMAPRE_TIME_STAMPS", APPLICATION_NAME, APPLICATION_ID,
 				"Comparing timestamps in case of invalid login attempts");
 
-		return (storedTime.getTime() - currentTime.getTime()) / (60 * 1000);
+		return (loginCount >= invalidLoginCount && TimeUnit.MILLISECONDS
+				.toMinutes(System.currentTimeMillis() - loginTime.getTime()) > invalidLoginTime);
 	}
 
 }

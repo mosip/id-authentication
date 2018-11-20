@@ -3,6 +3,7 @@ package io.mosip.registration.test.dao.impl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,6 +20,8 @@ import org.mockito.junit.MockitoRule;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.dao.RegistrationDAO;
@@ -63,7 +66,7 @@ public class PacketSynchServiceImplTest {
 
 	@Test
 	public void testSyncPacketsToServer()
-			throws RegBaseCheckedException, JsonProcessingException, URISyntaxException {
+			throws RegBaseCheckedException, JsonProcessingException, URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
 		Object respObj = new Object();
@@ -81,7 +84,7 @@ public class PacketSynchServiceImplTest {
 	}
 
 	@Test(expected = RegBaseCheckedException.class)
-	public void testHttpException() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException {
+	public void testHttpException() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
 		Object respObj = new Object();
@@ -91,7 +94,7 @@ public class PacketSynchServiceImplTest {
 	}
 	
 	@Test(expected = RegBaseUncheckedException.class)
-	public void testUnCheckedException() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException {
+	public void testUnCheckedException() throws RegBaseCheckedException, JsonProcessingException, URISyntaxException, HttpClientErrorException, HttpServerErrorException, ResourceAccessException, SocketTimeoutException {
 		List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
 		syncDtoList.add(new SyncRegistrationDTO());
 		Object respObj = new Object();

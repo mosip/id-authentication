@@ -17,7 +17,7 @@
                   <AnchorPane fx:id="pendingApprovalAnchorPane" prefHeight="200.0" prefWidth="200.0" />
                </content>
             </TitledPane>
-          <TitledPane fx:id="pendingActionTitledPane" animated="false" prefWidth="850.0" text="Pending Action">
+          <TitledPane fx:id="pendingActionTitledPane" animated="false" onMouseClicked="#loadPendingActionController" prefWidth="850.0" text="Pending Action">
                <content>
                   <AnchorPane fx:id="pendingActionAnchorPane" prefHeight="200.0" prefWidth="200.0" />
                </content></TitledPane>

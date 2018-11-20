@@ -162,9 +162,9 @@ public class ZipCreationServiceImpl implements ZipCreationService {
 		List<IrisDetailsDTO> irisDetailsDTOs = supervisorBio.getIrisDetailsDTO();
 
 		if (checkNotNull(fingerprintDetailsDTOs) && !fingerprintDetailsDTOs.isEmpty()) {
-			writeFileToZip(fileName, fingerprintDetailsDTOs.get(0).getFingerPrint(), zipOutputStream);
+			writeFileToZip(fingerprintDetailsDTOs.get(0).getFingerprintImageName(), fingerprintDetailsDTOs.get(0).getFingerPrint(), zipOutputStream);
 		} else if (checkNotNull(irisDetailsDTOs) && !irisDetailsDTOs.isEmpty()) {
-			writeFileToZip(fileName, irisDetailsDTOs.get(0).getIris(), zipOutputStream);
+			writeFileToZip(irisDetailsDTOs.get(0).getIrisImageName(), irisDetailsDTOs.get(0).getIris(), zipOutputStream);
 		}
 	}
 

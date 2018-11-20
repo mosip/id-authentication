@@ -142,7 +142,11 @@ public class HMACGeneration {
 		if (byteArray != null) {
 			HMACUtils.update(byteArray);
 			if (hashOrder != null) {
-				hashOrder.add(filename);
+				if (filename.contains(".")) {
+					hashOrder.add(filename.substring(0, filename.lastIndexOf('.')));
+				} else {
+					hashOrder.add(filename);
+				}
 			}
 		}
 

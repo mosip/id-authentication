@@ -83,17 +83,23 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 	}
 	
 	@Override
-	public void update(SyncControl syncControl) {
-		syncStatusRepository.update(syncControl);
+	public SyncControl update(SyncControl syncControl) {
+		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+				"updating sync details from databse started");
+		return syncStatusRepository.update(syncControl);
 	}
 
 	@Override
-	public void save(SyncControl syncControl) {
-		syncStatusRepository.save(syncControl);
+	public SyncControl save(SyncControl syncControl) {
+		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+				"saving sync details to databse started");
+		return syncStatusRepository.save(syncControl);
 	}
 
 	@Override
-	public SyncControl findById(String syncJobId) {		
+	public SyncControl findBySyncJobId(String syncJobId) {	
+		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+				"Fetching the sync details from databse started");
 		return syncStatusRepository.findBySyncJobId(syncJobId);		
 	}
 

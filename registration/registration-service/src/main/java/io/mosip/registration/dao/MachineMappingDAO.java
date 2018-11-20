@@ -2,6 +2,10 @@ package io.mosip.registration.dao;
 
 import java.util.List;
 
+import io.mosip.registration.entity.DeviceType;
+import io.mosip.registration.entity.RegCenterDevice;
+import io.mosip.registration.entity.RegCentreMachineDevice;
+import io.mosip.registration.entity.RegCentreMachineDeviceId;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.entity.UserMachineMapping;
 import io.mosip.registration.entity.UserMachineMappingID;
@@ -63,5 +67,37 @@ public interface MachineMappingDAO {
 	 * @return user
 	 */
 	UserMachineMapping findByID(UserMachineMappingID userID);
+	/**
+	 * get all active devicetypes
+	 * 
+	 * @return list of DeviceType
+	 */
+	List<DeviceType> getAllDeviceTypes();
+
+	/**
+	 * get All the devices for that center
+	 * 
+	 * @param centerId
+	 * @param deviceType
+	 * @return list of {@link RegCenterDevice}
+	 */
+	List<RegCenterDevice> getAllDeviceBasedOnCenterId(String centerId);
+
+	/**
+	 * get all mapped devices
+	 * 
+	 * @param centerId
+	 * @param machineId
+	 * @param deviceType
+	 * @return list of {@link RegCentreMachineDevice}
+	 */
+
+	List<RegCentreMachineDevice> getAllMappedDevices(String centerId, String machineId);
+	
+	void deleteUnMappedDevice(RegCentreMachineDeviceId regCentreMachineDeviceId);
+	
+	void addedMappedDevice(RegCentreMachineDevice regCentreMachineDevice);
+
+
 
 }

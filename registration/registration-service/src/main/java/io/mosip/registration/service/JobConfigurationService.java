@@ -29,14 +29,15 @@ public interface JobConfigurationService {
 	 * 
 	 * @param applicationContext
 	 *            to get the beans
-	 * @return  responseDTO for start jobs
-	 * @throws RegBaseCheckedException 
+	 * @return responseDTO for start jobs
+	 * @throws RegBaseCheckedException
 	 */
 	ResponseDTO startJobs(ApplicationContext applicationContext);
-	
+
 	/**
 	 * Stop the jobs manually
-	 * @return  responseDTO for stop jobs
+	 * 
+	 * @return responseDTO for stop jobs
 	 */
 	ResponseDTO stopJobs();
 
@@ -50,10 +51,13 @@ public interface JobConfigurationService {
 	/**
 	 * execute the specified job
 	 * 
+	 * @param applicationContext
+	 *            is a spring framework's application context used here to give
+	 *            beans
 	 * @param apiName
 	 *            the job class bean name
-	 * @return  responseDTO for execute job
+	 * @return responseDTO for execute job
 	 */
-	ResponseDTO executeJob(String apiName);
+	ResponseDTO executeJob(ApplicationContext applicationContext, String apiName);
 
 }

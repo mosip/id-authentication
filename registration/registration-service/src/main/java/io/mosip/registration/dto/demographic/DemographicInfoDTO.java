@@ -18,8 +18,7 @@ public class DemographicInfoDTO extends BaseDTO {
 	protected AddressDTO addressDTO;
 	protected String emailId;
 	protected String mobileNumber;
-	protected String landLine;
-	protected String languageCode;
+		protected String languageCode;
 	protected boolean isChild;
 	protected String age;
 	protected String localAdministrativeAuthority;
@@ -115,21 +114,6 @@ public class DemographicInfoDTO extends BaseDTO {
 	 */
 	public void setMobile(String mobile) {
 		this.mobileNumber = mobile;
-	}
-
-	/**
-	 * @return the landLine
-	 */
-	public String getLandLine() {
-		return landLine;
-	}
-
-	/**
-	 * @param landLine
-	 *            the landLine to set
-	 */
-	public void setLandLine(String landLine) {
-		this.landLine = landLine;
 	}
 
 	/**

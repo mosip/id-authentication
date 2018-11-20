@@ -21,20 +21,17 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.PacketStatusDTO;
-import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.impl.LoginServiceImpl;
 import io.mosip.registration.service.impl.ReRegistrationService;
-import io.mosip.registration.util.biometric.FingerprintProvider;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
@@ -52,16 +49,13 @@ public class ReRegistrationController extends BaseController implements Initiali
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
-	private Logger LOGGER = AppConfig.getLogger(RegistrationApprovalController.class);
+	private Logger LOGGER = AppConfig.getLogger(ReRegistrationController.class);
 
 	/**
 	 * object for Registration approval service class
 	 */
 	@Autowired
 	private ReRegistrationService reRegistrationServiceImpl;
-
-	@Autowired
-	private FingerPrintAuthenticationController authenticationController;
 
 	@Autowired
 	LoginService loginService;
@@ -101,17 +95,12 @@ public class ReRegistrationController extends BaseController implements Initiali
 	private AnchorPane imageAnchorPane;
 
 	@FXML
-	private ComboBox<String> deviceCmbBox;
-
-	@FXML
 	private LoginServiceImpl loginServiceImpl;
 
 	@Value("${FINGER_PRINT_SCORE}")
 	private long fingerPrintScore;
 
 	Map<String, String> contactStatusMap = new HashMap<>();
-
-	private FingerprintProvider fingerprintProvider = new FingerprintProvider();
 
 	/*
 	 * (non-Javadoc)
@@ -156,7 +145,17 @@ public class ReRegistrationController extends BaseController implements Initiali
 			informedBtn.setVisible(true);
 			notInformedBtn.setVisible(true);
 			imageAnchorPane.setVisible(true);
-			submitBtn.setVisible(true);
+			informedBtn.setSelected(false);
+			notInformedBtn.setSelected(false);
+			for(Map.Entry<String , String> statusMap : contactStatusMap.entrySet()) {
+				if(statusMap.getKey().equals(table.getSelectionModel().getSelectedItem().getFileName())) {
+					if(statusMap.getValue().equals("informed")) {
+						informedBtn.setSelected(true);
+					} else if(statusMap.getValue().equals("notinformed")) {
+						notInformedBtn.setSelected(true);
+					}
+				}
+			}
 			FileInputStream file;
 			try {
 				file = new FileInputStream(new File(table.getSelectionModel().getSelectedItem().getSourcePath()));
@@ -173,6 +172,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * This method will call on click of Informed Button
 	 */
 	public void informedToUser() {
+		submitBtn.setVisible(true);
 		contactStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "informed");
 		informedBtn.setSelected(true);
 		notInformedBtn.setSelected(false);
@@ -182,6 +182,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * This method will call on click of Not Informed Button
 	 */
 	public void notInformedToUser() {
+		submitBtn.setVisible(true);
 		contactStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "notinformed");
 		informedBtn.setSelected(false);
 		notInformedBtn.setSelected(true);
@@ -205,66 +206,43 @@ public class ReRegistrationController extends BaseController implements Initiali
 	private void authenticateUser() {
 		LOGGER.debug("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the table after the authentication finished successfully");
-		Stage primaryStage = new Stage();
+
 		Parent ackRoot;
 		try {
-			ackRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
-			deviceCmbBox.getItems().clear();
-			deviceCmbBox.setItems(FXCollections.observableArrayList(RegistrationConstants.ONBOARD_DEVICE_TYPES));
+			Stage primaryStage=new Stage();
+			FXMLLoader fxmlLoader = BaseController
+					.loadChild(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
+			ackRoot = fxmlLoader.load();
 			primaryStage.setResizable(false);
 			Scene scene = new Scene(ackRoot);
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
+			fpcontroller.init(this);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER_FAILED",
+					APPLICATION_NAME, APPLICATION_ID, e.getMessage());
 		}
 	}
 
 	/**
 	 * TO the scan the finger and validate with database
-	 */
-	public void scanFinger() {
-		LOGGER.debug("RE_REGISTRATION_CONTROLLER - SCAN_FINGER", APPLICATION_NAME, APPLICATION_ID,
-				"Scanning the finger for biometric authentication");
-		String minutia = authenticationController.scanFingerPrint();
-		RegistrationUserDetail detail = loginService.getUserDetail("mosip");
-		validateFingerPrint(minutia, detail);
-	}
-
-	/**
-	 * Validate the Scanned Finger print
 	 * 
-	 * @param minutia
-	 * @param detail
+	 * @throws IOException
 	 */
-	public void validateFingerPrint(String minutia, RegistrationUserDetail detail) {
-		LOGGER.debug("RE_REGISTRATION_CONTROLLER - VALIDATE_FINGER_PRINT", APPLICATION_NAME, APPLICATION_ID,
-				"Validating the scanned finger print");
-		if (validateBiometric(minutia, detail)) {
-			if (detail.getStatusCode() != null
-					&& detail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-						AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.LOGIN_INFO_MESSAGE,
-						RegistrationConstants.BLOCKED_USER_ERROR);
-			}
-		} else {
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.FINGER_PRINT_MATCH);
-		}
-	}
-
-	/**
-	 * Compare the scanned finger print with the database
-	 * 
-	 * @param minutia
-	 * @param registrationUserDetail
-	 * @return
+	/*
+	 * public void scanFinger() throws IOException {
+	 * LOGGER.debug("RE_REGISTRATION_CONTROLLER - SCAN_FINGER", APPLICATION_NAME,
+	 * APPLICATION_ID, "Scanning the finger for biometric authentication");
+	 * authenticationController.init(new ReRegistrationController()); }
 	 */
-	private boolean validateBiometric(String minutia, RegistrationUserDetail registrationUserDetail) {
 
-		return registrationUserDetail.getUserBiometric().stream()
-				.anyMatch(bio -> fingerprintProvider.scoreCalculator(minutia, bio.getBioMinutia()) > fingerPrintScore);
+	@Override
+	public void getFingerPrintStatus() {
+		
+			reRegistrationServiceImpl.updateReRegistrationStatus(contactStatusMap);
+			reloadTableView();
 	}
 
 	/**
@@ -280,6 +258,8 @@ public class ReRegistrationController extends BaseController implements Initiali
 		if (!listData.isEmpty()) {
 			ObservableList<PacketStatusDTO> oListStavaka = FXCollections.observableArrayList(listData);
 			table.setItems(oListStavaka);
+		} else {
+				table.getItems().remove(table.getSelectionModel().getSelectedItem());
 		}
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been ended");

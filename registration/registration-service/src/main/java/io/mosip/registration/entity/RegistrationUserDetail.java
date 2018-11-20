@@ -26,28 +26,40 @@ public class RegistrationUserDetail extends RegistrationCommonFields implements 
 	@Id
 	@Column(name = "id")
 	private String id;
+	
 	@Column(name = "uin_ref_id")
 	private String uinRefId;
+	
 	@Column(name = "name")
 	private String name;
+	
 	@Column(name = "email")
 	private String email;
+	
 	@Column(name = "mobile")
 	private String mobile;
+	
 	@Column(name = "status_code")
 	private String statusCode;
+	
 	@Column(name = "lang_code")
 	private String langCode;
+	
 	@Column(name = "last_login_dtimes")
 	private Timestamp lastLoginDtimes;
+	
 	@Column(name = "last_login_method")
 	private String lastLoginMethod;
+	
 	@Column(name = "unsuccessful_login_count")
 	private Integer unsuccessfulLoginCount;
+	
 	@Column(name = "userlock_till_dtimes")
 	private Timestamp userlockTillDtimes;
+	
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
+	
 	@Column(name = "del_dtimes")
 	private Timestamp delDtimes;
 

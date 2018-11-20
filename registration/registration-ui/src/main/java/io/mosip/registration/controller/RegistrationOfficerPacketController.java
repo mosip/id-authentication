@@ -9,7 +9,6 @@ import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTH
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
@@ -71,9 +71,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 	public void createPacket(ActionEvent event) {
 
 		try {
-			ResourceBundle bundle = ResourceBundle.getBundle("resourceBundle/labels");
-			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE), bundle);
-			
+			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE), ApplicationContext.getInstance().getApplicationLanguageBundle());
 			LOGGER.debug("REGISTRATION - CREATE_PACKET - REGISTRATION_OFFICER_PACKET_CONTROLLER",
 					APPLICATION_NAME, APPLICATION_ID,
 					"Validating Create Packet screen for specific role");
@@ -112,10 +110,10 @@ public class RegistrationOfficerPacketController extends BaseController {
 		}
 	}
 
-	public void showReciept(RegistrationDTO registrationDTO) {
+	public void showReciept(RegistrationDTO registrationDTO, String capturePhotoUsingDevice) {
 
 		try {
-			registrationDTO = DataProvider.getPacketDTO(registrationDTO);
+			registrationDTO = DataProvider.getPacketDTO(registrationDTO, capturePhotoUsingDevice);
 			ackReceiptController.setRegistrationData(registrationDTO);
 
 			String ackTemplateText = templateService.getHtmlTemplate(ACKNOWLEDGEMENT_TEMPLATE);

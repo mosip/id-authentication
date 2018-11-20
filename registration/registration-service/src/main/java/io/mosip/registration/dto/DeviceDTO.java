@@ -132,9 +132,7 @@ public class DeviceDTO {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((manufacturerName == null) ? 0 : manufacturerName.hashCode());
-		result = prime * result + ((modelName == null) ? 0 : modelName.hashCode());
-		result = prime * result + ((serialNo == null) ? 0 : serialNo.hashCode());
+		result = prime * result + ((deviceId == null) ? 0 : deviceId.hashCode());
 		return result;
 	}
 
@@ -148,40 +146,20 @@ public class DeviceDTO {
 		if (this == obj) {
 			return true;
 		}
-
 		if (obj == null) {
 			return false;
 		}
-
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-
 		DeviceDTO other = (DeviceDTO) obj;
-		if (manufacturerName == null) {
-			if (other.manufacturerName != null) {
+		if (deviceId == null) {
+			if (other.deviceId != null) {
 				return false;
 			}
-		} else if (!manufacturerName.equals(other.manufacturerName)) {
+		} else if (!deviceId.equals(other.deviceId)) {
 			return false;
 		}
-
-		if (modelName == null) {
-			if (other.modelName != null) {
-				return false;
-			}
-		} else if (!modelName.equals(other.modelName)) {
-			return false;
-		}
-
-		if (serialNo == null) {
-			if (other.serialNo != null) {
-				return false;
-			}
-		} else if (!serialNo.equals(other.serialNo)) {
-			return false;
-		}
-
 		return true;
 	}
 
