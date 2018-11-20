@@ -100,7 +100,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
 		String otpKey = null;
 		String otp = null;
-		String phoneNumber = null;
+		String mobileNumber = null;
 		String email = null;
 		String comment = null;
 		String status = null;
@@ -137,18 +137,23 @@ public class OTPFacadeImpl implements OTPFacade {
 			status = "Y";
 			comment = "OTP_GENERATED";
 
-			phoneNumber = getMobileNumber(refId);
+			mobileNumber = getMobileNumber(refId);
 			email = getEmail(refId);
 
 			String responseTime = formatDate(new Date(), env.getProperty("datetime.pattern"));
 			otpResponseDTO.setResTime(responseTime);
-			otpResponseDTO.setMaskedEmail(
-					MaskUtil.generateMaskValue(email, Integer.parseInt(env.getProperty("uin.masking.charcount"))));
-			otpResponseDTO.setMaskedMobile(MaskUtil.generateMaskValue(phoneNumber,
-					Integer.parseInt(env.getProperty("uin.masking.charcount"))));
+			/*
+			 * otpResponseDTO.setMaskedEmail( MaskUtil.generateMaskValue(email,
+			 * Integer.parseInt(env.getProperty("uin.masking.charcount"))));
+			 * otpResponseDTO.setMaskedMobile(MaskUtil.generateMaskValue(phoneNumber,
+			 * Integer.parseInt(env.getProperty("uin.masking.charcount"))));
+			 */
+			
+			otpResponseDTO.setMaskedEmail(email);
+			otpResponseDTO.setMaskedMobile(mobileNumber);
 			// -- send otp notification --
 			String otpGenerationTime = formatDate(otpGenerateTime, env.getProperty("datetime.pattern"));
-			sendOtpNotification(otpRequestDto, otp, refId, otpGenerationTime, email, phoneNumber);
+			sendOtpNotification(otpRequestDto, otp, refId, otpGenerationTime, email, mobileNumber);
 
 			saveAutnTxn(otpRequestDto, status, comment, refId);
 

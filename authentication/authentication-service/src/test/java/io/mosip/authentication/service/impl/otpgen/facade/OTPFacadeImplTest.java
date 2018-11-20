@@ -222,8 +222,10 @@ public class OTPFacadeImplTest {
 	@Test
 	public void testSaveAutnTxn() {
 		String refId = "8765";
+		String status = "Y";
+		String comment = "OTP_GENERATED";
 		ReflectionTestUtils.invokeMethod(autntxnrepository, "saveAndFlush", autnTxn);
-		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "saveAutnTxn", otpRequestDto,refId);
+		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "saveAutnTxn", otpRequestDto,status, comment, refId);
 	}
 
 	@Test
