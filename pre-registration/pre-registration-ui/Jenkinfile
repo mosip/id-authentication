@@ -1,0 +1,44 @@
+node{
+def branch = 'DEV'
+def projectToBuild = 'pre-registration/pre-registration-ui'  
+def nodeHome = tool name: 'NODE_HOME', type: 'node'  
+	env.PATH = "${nodeHome}/bin:${env.PATH}"
+
+    stage('check tools') {
+        sh "node -v"
+        sh "npm -v"
+    }
+
+ stage('------- Checkout --------') {
+  dir(branch) {
+   checkout([$class: 'GitSCM',
+    branches: [
+     [name: branch]
+    ],
+    userRemoteConfigs: [
+     [url: 'https://github.com/mosip/mosip', credentialsId: '4c9741a2-4c15-4aad-a13d-3a1206u05321']
+    ],
+    extensions: [
+
+     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*'],
+     [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
+      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
+     ]]
+
+    ],
+   ])
+  }
+ }
+
+    stage('npm install') {
+        sh "npm install"
+    }
+
+    stage('unit tests') {
+        sh "ng test"
+    }
+
+    stage('protractor tests') {
+        sh "ng e2e"
+    }
+}
