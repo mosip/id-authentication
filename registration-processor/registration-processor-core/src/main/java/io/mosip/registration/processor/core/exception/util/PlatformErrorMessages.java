@@ -34,11 +34,11 @@ public enum PlatformErrorMessages {
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001","The Registration Table is not accessible"),
 	
 	//File adaptor ceph Exception error code and message
-	RPR_FAC_CONNECTION_NOT_AVAILABLE(PlatformErrorConstants.RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE + "001" ,"Connection to packet store not available"),
+	RPR_FAC_CONNECTION_NOT_AVAILABLE(PlatformErrorConstants.RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE + "001" ,"The connection Parameters to create a Packet Store connection are not Found"),
 	
-	RPR_FAC_INVALID_CONNECTION_PARAMETERS(PlatformErrorConstants.RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE + "002", "Invalid connection parameter"),
+	RPR_FAC_INVALID_CONNECTION_PARAMETERS(PlatformErrorConstants.RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE + "002", "Invalid connection parameter to create a Packet Store connection"),
 	
-	RPR_FAC_PACKET_NOT_AVAILABLE(PlatformErrorConstants.RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE + "003", "Packet not available"),
+	RPR_FAC_PACKET_NOT_AVAILABLE(PlatformErrorConstants.RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE + "003", "Cannot find the Registration Packet"),
 	
 	RPR_FAC_TIMEOUT(PlatformErrorConstants.RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE + "004","Timeout Error"),
 	
@@ -87,22 +87,22 @@ public enum PlatformErrorMessages {
 	//Packet scanner job Exception error code and message	
 	RPR_PSJ_CORE_KERNEL_NOT_RESPONDING(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "001","The Kernel Configuration Manager is not responding"),
 	
-	RPR_PSJ_DFS_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "002","Packet store is not accessible"),
+	RPR_PSJ_DFS_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "002","The Packet store set by the System is not accessible"),
 	
-	RPR_PSJ_RETRY_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "003","Retry folder is not accessible"),
+	RPR_PSJ_RETRY_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "003","The Retry folder set by the System is not accessible"),
 	
-	RPR_PSJ_VIRUS_SCAN_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "004","Virus scanner folder is not accessible"),
+	RPR_PSJ_VIRUS_SCAN_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "004","The Virus scanner set by the System is not accessible"),
 	
-	RPR_PSJ_SPACE_UNAVAILABLE_FOR_RETRY_FOLDER(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "005","Space unavailable for retry folder"),
+	RPR_PSJ_SPACE_UNAVAILABLE_FOR_RETRY_FOLDER(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "005","There is no space available in retry folder to upload the packet"),
 	
 	RPR_PSJ_VIRUS_SCAN_FAILED(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "006","Virus scan is failed"),
 	
-	RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "007","FTP folder is not accessible"),
+	RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_SCANNER_JOB_MODULE + "007","The FTP folder set by the System is not accessible"),
 	
 	//packet decryption job Exception error code and message	
 	RPR_PDJ_PACKET_NOT_AVAILABLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "001", "Packet not available"),
 	
-	RPR_PDJ_FILE_PATH_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "002", "File path is no accessible"),
+	RPR_PDJ_FILE_PATH_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "002", "The File path set by the System is not accessible"),
 	
 	RPR_PDJ_PACKET_DECRYPTION_FAILURE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "003","The Decryption for the Packet has failed");
 	
