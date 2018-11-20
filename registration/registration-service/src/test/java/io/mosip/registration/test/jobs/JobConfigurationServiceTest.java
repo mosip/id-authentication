@@ -20,10 +20,12 @@ import org.mockito.junit.MockitoRule;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import io.mosip.registration.dao.SyncJobConfigDAO;
+import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.SyncJob;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.impl.PacketSyncStatusJob;
@@ -39,6 +41,9 @@ public class JobConfigurationServiceTest {
 
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
+	
+	@Mock
+	PacketSyncStatusJob packetSyncJob;
 
 	@InjectMocks
 	private JobConfigurationServiceImpl jobConfigurationService;
@@ -143,5 +148,17 @@ public class JobConfigurationServiceTest {
 	public void getCurrentRunningJobDetailsExceptionTest() throws SchedulerException {
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenThrow(SchedulerException.class);
 		jobConfigurationService.getCurrentRunningJobDetails();
+	}
+	
+	@Test
+	public void executeJobJobTest() throws SchedulerException {
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(packetSyncJob);
+		Mockito.when(packetSyncJob.executeJob(Mockito.anyString())).thenReturn(new ResponseDTO());
+		jobConfigurationService.executeJob(applicationContext, "packetSyncStatusJob");
+	}
+	@Test
+	public void executeJobExceptionJobTest() throws SchedulerException {
+		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenThrow(NoSuchBeanDefinitionException.class);
+		jobConfigurationService.executeJob(applicationContext, "packetSyncStatusJob");
 	}
 }
