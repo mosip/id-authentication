@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -47,13 +48,13 @@ public class LanguageServiceImpl implements LanguageService {
 	 *             when error occurs while mapping.
 	 */
 	@Override
-	public LanguageResponseDto getAllLaguages() {
-		LanguageResponseDto languageResponseDto = new LanguageResponseDto();
+	public LanguageRequestResponseDto getAllLaguages() {
+		LanguageRequestResponseDto languageRequestResponseDto = new LanguageRequestResponseDto();
 		List<LanguageDto> languageDtos = null;
 		List<Language> languages = null;
 
 		try {
-			languages = languageRepository.findAll(Language.class);
+			languages = languageRepository.findAllByIsActiveTrueAndIsDeletedFalse();
 		} catch (DataAccessException dataAccessException) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage());
@@ -66,8 +67,23 @@ public class LanguageServiceImpl implements LanguageService {
 					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
 		}
 
-		languageResponseDto.setLanguages(languageDtos);
-		return languageResponseDto;
+		languageRequestResponseDto.setLanguages(languageDtos);
+		return languageRequestResponseDto;
+	}
+
+	@Override
+	public LanguageRequestResponseDto saveAllLanguages(LanguageRequestResponseDto dto) {
+		
+		
+		LanguageRequestResponseDto languageRequestResponseDto = new LanguageRequestResponseDto();
+		List<LanguageDto> list = dto.getLanguages();
+		
+		try {
+
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return languageRequestResponseDto;
 	}
 
 }
