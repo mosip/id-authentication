@@ -1,5 +1,7 @@
 package io.mosip.authentication.core.spi.id.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -29,4 +31,6 @@ public interface IdAuthService {
 	 * @throws IdValidationFailedException
 	 */
 	String validateVID(String vid)  throws IdAuthenticationBusinessException;
+	
+	public Optional<String> getUIN(String uinRefId) throws IdAuthenticationBusinessException;
 }

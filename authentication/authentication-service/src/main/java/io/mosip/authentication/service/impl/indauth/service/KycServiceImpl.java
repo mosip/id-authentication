@@ -1,7 +1,10 @@
 package io.mosip.authentication.service.impl.indauth.service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -22,13 +25,15 @@ import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.core.spi.id.service.IdAuthService;
+import io.mosip.authentication.core.spi.id.service.IdInfoService;
 import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.core.util.MaskUtil;
-import io.mosip.authentication.service.impl.id.service.impl.IdInfoServiceImpl;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.IdTemplateManager;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 
 /**
  * The implementation of Kyc Authentication service.
@@ -50,13 +55,20 @@ public class KycServiceImpl implements KycService{
 	private MessageSource messageSource;
 	
 	@Autowired
-	private IdInfoServiceImpl idInfoServiceImpl;
+	private IdInfoService idInfoService;
+	
+
+	@Autowired
+	private IdAuthService idAuthService;
 	
 	@Autowired
 	private IdTemplateManager idTemplateManager;
 	
 	@Autowired
 	private DemoHelper demoHelper;
+	
+	@Autowired
+	private PDFGenerator pdfGenerator;
 	
 	/** The mosip logger. */
 	private static Logger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);
@@ -65,12 +77,13 @@ public class KycServiceImpl implements KycService{
 	private static final String DEFAULT_SESSION_ID = "sessionId";
 
 	@Override
-	public KycInfo retrieveKycInfo(String uin, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired) throws IdAuthenticationBusinessException {
+	public KycInfo retrieveKycInfo(String refId, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired) throws IdAuthenticationBusinessException {
 		KycInfo kycInfo = new KycInfo();
-		Map<String, List<IdentityInfoDTO>> identityInfo = retrieveIdentityFromIdRepo(uin);
+		Map<String, List<IdentityInfoDTO>> identityInfo = retrieveIdentityFromIdRepo(refId);
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo, isSecLangInfoRequired);
 		kycInfo.setIdentity(filteredIdentityInfo);
 		if(ePrintReq) {
+			String uin = idAuthService.getUIN(refId).get();
 			Object maskedUin = uin;			
 			if(env.getProperty("uin.masking.required", Boolean.class)) {
 				maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
@@ -82,10 +95,10 @@ public class KycServiceImpl implements KycService{
 		return kycInfo;
 	}
 
-	private Map<String, List<IdentityInfoDTO>> retrieveIdentityFromIdRepo(String uin) throws IdAuthenticationBusinessException{
+	private Map<String, List<IdentityInfoDTO>> retrieveIdentityFromIdRepo(String refId) throws IdAuthenticationBusinessException{
 		Map<String, List<IdentityInfoDTO>> identity = null;
 		try {
-			identity = idInfoServiceImpl.getIdInfo(uin);
+			identity = idInfoService.getIdInfo(refId);
 		} catch (IdAuthenticationDaoException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
@@ -169,15 +182,19 @@ public class KycServiceImpl implements KycService{
 	private String generatePrintableKyc(KycType eKycType, Map<String, Object> identity, boolean isSecLangInfoRequired) throws IdAuthenticationBusinessException {
 		String pdfDetails = null;
 		try {
+			String template = null;
 			if(eKycType == KycType.LIMITED && isSecLangInfoRequired) {
-				pdfDetails =  idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.full"), identity);
+				template =  idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.full"), identity);
 			}else if(eKycType == KycType.LIMITED && !isSecLangInfoRequired) {
-				pdfDetails = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.pri"), identity);
+				template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.pri"), identity);
 			}else if(eKycType == KycType.FULL && isSecLangInfoRequired) {
-				pdfDetails = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.full"), identity);
+				template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.full"), identity);
 			}else {
-				pdfDetails = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.pri"), identity);
+				template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.pri"), identity);
 			}
+			
+			ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(template);
+			pdfDetails = Base64.getEncoder().encodeToString(bos.toByteArray());
 		} catch (IOException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
