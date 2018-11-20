@@ -83,7 +83,8 @@
 		
 		<!-- Vert.x -->
 		<vertx.version>3.5.3</vertx.version>
-		
+		<!-- json-simple -->
+		<jsonsimple.version>1.1.1</jsonsimple.version>		
 		<!-- local -->
 		<registration.status.version>1.0.0-SNAPSHOT</registration.status.version>
 		<registration.processor.core.version>1.0.0-SNAPSHOT</registration.processor.core.version>

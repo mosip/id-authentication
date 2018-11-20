@@ -1,9 +1,12 @@
 package io.mosip.registration.processor.core.spi.packetmanager;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.apache.ignite.internal.util.typedef.internal.A;
 import org.springframework.stereotype.Service;
+
+import io.mosip.registration.processor.core.packet.dto.FieldValue;
 
 
 /**
@@ -31,7 +34,7 @@ public interface PacketInfoManager<T,/** D, M,*/ A> {
 	 *
 	 * @param demograficData the demografic data
 	 */
-	//public void saveDemographicData(D demograficData,M metaData);
+	public void saveDemographicInfoJson(InputStream demographicJsonStream,List<FieldValue> metaData);
 	
 	/**
 	 * Gets the packetsfor QC user.
