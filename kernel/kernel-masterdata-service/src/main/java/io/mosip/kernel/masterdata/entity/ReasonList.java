@@ -36,9 +36,10 @@ public class ReasonList extends BaseEntity implements Serializable {
 
 	@Column(name = "descr", length = 256)
 	private String description;
-
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "rsncat_code")
+    
+	@Id
+	@ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "rsncat_code")
 	private ReasonCategory reasonCategoryCode;
 
 	@Column(name = "lang_code", nullable = false, length = 3)

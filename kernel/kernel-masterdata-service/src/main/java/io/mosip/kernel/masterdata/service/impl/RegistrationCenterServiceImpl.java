@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +20,8 @@ import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
-import io.mosip.kernel.masterdata.exception.HolidayFetchException;
-import io.mosip.kernel.masterdata.exception.RegistrationCenterFetchException;
-import io.mosip.kernel.masterdata.exception.RegistrationCenterMappingException;
-import io.mosip.kernel.masterdata.exception.RegistrationCenterNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
@@ -93,27 +89,20 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			registrationCenter = registrationCenterRepository
 					.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(registrationCenterId, langCode);
 		} catch (DataAccessException dataAccessException) {
-			throw new RegistrationCenterFetchException(
+			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (registrationCenter == null) {
-			throw new RegistrationCenterNotFoundException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
-			try {
-				registrationCenterDto = modelMapper.map(registrationCenter, RegistrationCenterDto.class);
-			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new RegistrationCenterMappingException(
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorCode(),
-						RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorMessage());
-			}
+			registrationCenterDto = modelMapper.map(registrationCenter, RegistrationCenterDto.class);
 			try {
 				holidayLocationCode = registrationCenterDto.getHolidayLocationCode();
 				holidays = holidayRepository.findAllByLocationCodeYearAndLangCode(holidayLocationCode, langCode, year);
 			} catch (DataAccessException dataAccessException) {
-				throw new HolidayFetchException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
+				throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 
 			}
@@ -140,24 +129,17 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			centers = registrationCenterRepository.findRegistrationCentersByLat(latitude, longitude,
 					proximityDistance * MasterDataConstant.METERTOMILECONVERSION, langCode);
 		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new RegistrationCenterFetchException(
+			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (centers.isEmpty()) {
-			throw new RegistrationCenterNotFoundException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		List<RegistrationCenterDto> registrationCenters = null;
-		try {
-			registrationCenters = modelMapper.map(centers, new TypeToken<List<RegistrationCenterDto>>() {
-			}.getType());
-		} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-			throw new RegistrationCenterMappingException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorMessage());
-		}
+		registrationCenters = modelMapper.map(centers, new TypeToken<List<RegistrationCenterDto>>() {
+		}.getType());
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
 		return registrationCenterResponseDto;
@@ -180,25 +162,18 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					.findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(locationCode, langCode);
 
 		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new RegistrationCenterFetchException(
+			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (registrationCentersList.isEmpty()) {
-			throw new RegistrationCenterNotFoundException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		List<RegistrationCenterDto> registrationCentersDtoList = null;
-		try {
-			registrationCentersDtoList = modelMapper.map(registrationCentersList,
-					new TypeToken<List<RegistrationCenterDto>>() {
-					}.getType());
-		} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-			throw new RegistrationCenterMappingException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorMessage());
-		}
+		registrationCentersDtoList = modelMapper.map(registrationCentersList,
+				new TypeToken<List<RegistrationCenterDto>>() {
+				}.getType());
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
 		return registrationCenterResponseDto;
@@ -219,23 +194,16 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			registrationCenter = registrationCenterRepository
 					.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(registrationCenterId, langCode);
 		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new RegistrationCenterFetchException(
+			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (registrationCenter == null) {
-			throw new RegistrationCenterNotFoundException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		RegistrationCenterDto registrationCenterDto = null;
-		try {
-			registrationCenterDto = modelMapper.map(registrationCenter, RegistrationCenterDto.class);
-		} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-			throw new RegistrationCenterMappingException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorMessage());
-		}
+		registrationCenterDto = modelMapper.map(registrationCenter, RegistrationCenterDto.class);
 		registrationCenters.add(registrationCenterDto);
 		RegistrationCenterResponseDto response = new RegistrationCenterResponseDto();
 		response.setRegistrationCenters(registrationCenters);
@@ -254,27 +222,19 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		try {
 			registrationCentersList = registrationCenterRepository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class);
 		} catch (DataAccessLayerException dataAccessLayerException) {
-			throw new RegistrationCenterFetchException(
+			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorMessage());
 		}
 
 		if (registrationCentersList.isEmpty()) {
-			throw new RegistrationCenterNotFoundException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
+			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 
 		List<RegistrationCenterDto> registrationCenters = null;
-		try {
-			registrationCenters = modelMapper.map(registrationCentersList,
-					new TypeToken<List<RegistrationCenterDto>>() {
-					}.getType());
-		} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-			throw new RegistrationCenterMappingException(
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorCode(),
-					RegistrationCenterErrorCode.REGISTRATION_CENTER_MAPPING_EXCEPTION.getErrorMessage());
-		}
+		registrationCenters = modelMapper.map(registrationCentersList, new TypeToken<List<RegistrationCenterDto>>() {
+		}.getType());
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
 		return registrationCenterResponseDto;

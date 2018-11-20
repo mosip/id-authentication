@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
@@ -22,18 +23,6 @@ public interface MachineDetailRepository extends BaseRepository<MachineDetail, S
 	List<MachineDetail> findAllByIsActiveTrueAndIsDeletedFalse();
 
 	/**
-	 * This method trigger query to fetch the all Machine details for the given
-	 * language code
-	 * 
-	 * @param langCode
-	 *            languageCode provided by user
-	 * 
-	 * @return MachineDetail fetched from database
-	 */
-
-	List<MachineDetail> findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(String langCode);
-
-	/**
 	 * This method trigger query to fetch the Machine detail for the given machine
 	 * id and language code.
 	 * 
@@ -46,3 +35,5 @@ public interface MachineDetailRepository extends BaseRepository<MachineDetail, S
 	MachineDetail findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(String id, String langCode);
 
 }
+// >>>>>>> branch 'DEV_SPRINT5_MASTERDATA_SERVICE_2' of
+// https://github.com/mosip/mosip.git

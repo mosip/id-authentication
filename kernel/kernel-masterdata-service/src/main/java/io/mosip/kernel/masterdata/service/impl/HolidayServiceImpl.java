@@ -11,8 +11,9 @@ import io.mosip.kernel.masterdata.constant.HolidayErrorCode;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.HolidayResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
-import io.mosip.kernel.masterdata.exception.HolidayFetchException;
-import io.mosip.kernel.masterdata.exception.NoHolidayDataFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.service.HolidayService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -32,12 +33,15 @@ public class HolidayServiceImpl implements HolidayService {
 		try {
 			holidays = holidayRepository.findAll(Holiday.class);
 		} catch (DataAccessException dataAccessException) {
-			throw new HolidayFetchException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 		}
 
 		if (holidays != null && !holidays.isEmpty()) {
 			holidayDto = mapperUtil.mapHolidays(holidays);
+		} else {
+			throw new DataNotFoundException(HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorCode(),
+					HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorMessage());
 		}
 
 		holidayResponseDto = new HolidayResponseDto();
@@ -54,12 +58,15 @@ public class HolidayServiceImpl implements HolidayService {
 		try {
 			holidays = holidayRepository.findAllByHolidayIdId(id);
 		} catch (DataAccessException dataAccessException) {
-			throw new HolidayFetchException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 		}
 
 		if (holidays != null && !holidays.isEmpty()) {
 			holidayDto = mapperUtil.mapHolidays(holidays);
+		} else {
+			throw new DataNotFoundException(HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorCode(),
+					HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorMessage());
 		}
 
 		holidayResponseDto = new HolidayResponseDto();
@@ -75,15 +82,14 @@ public class HolidayServiceImpl implements HolidayService {
 		try {
 			holidays = holidayRepository.findHolidayByHolidayIdIdAndHolidayIdLangCode(id, langCode);
 		} catch (DataAccessException dataAccessException) {
-			throw new HolidayFetchException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 		}
 
 		if (holidays != null && !holidays.isEmpty()) {
 			holidayList = mapperUtil.mapHolidays(holidays);
 		} else {
-			throw new NoHolidayDataFoundException(
-					HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.ID_OR_LANGCODE_HOLIDAY_NOTFOUND_EXCEPTION.getErrorMessage());
 		}
 		holidayResponseDto = new HolidayResponseDto();

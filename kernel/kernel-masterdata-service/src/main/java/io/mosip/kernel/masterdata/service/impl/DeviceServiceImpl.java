@@ -1,11 +1,8 @@
 
 package io.mosip.kernel.masterdata.service.impl;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -16,10 +13,8 @@ import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceResponseDto;
 import io.mosip.kernel.masterdata.entity.Device;
-import io.mosip.kernel.masterdata.entity.DeviceType;
-import io.mosip.kernel.masterdata.exception.DeviceFetchException;
-import io.mosip.kernel.masterdata.exception.DeviceMappingException;
-import io.mosip.kernel.masterdata.exception.DeviceNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.service.DeviceService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -54,14 +49,14 @@ public class DeviceServiceImpl implements DeviceService {
 	 * @param langCode
 	 *            pass language as string
 	 * 
-	 * @throws DeviceFetchException
+	 * @throws MasterDataServiceException
 	 *             While Fetching Device Detail If fails to fetch required Device
 	 *             Detail
 	 * 
 	 * @throws DeviceMappingException
 	 *             If not able to map Device detail entity with Device Detail Dto
 	 * 
-	 * @throws DeviceNotFoundException
+	 * @throws DataNotFoundException
 	 *             If given required Device ID and language not found
 	 * 
 	 */
@@ -74,18 +69,13 @@ public class DeviceServiceImpl implements DeviceService {
 		try {
 			deviceList = deviceRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(langCode);
 		} catch (DataAccessException dataAccessLayerException) {
-			throw new DeviceFetchException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (deviceList != null && !deviceList.isEmpty()) {
-			try {
-				deviceDtoList = objectMapperUtil.mapAll(deviceList, DeviceDto.class);
-			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new DeviceMappingException(DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorCode(),
-						DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorMessage());
-			}
+			deviceDtoList = objectMapperUtil.mapAll(deviceList, DeviceDto.class);
 		} else {
-			throw new DeviceNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		deviceResponseDto.setDevices(deviceDtoList);
@@ -104,12 +94,12 @@ public class DeviceServiceImpl implements DeviceService {
 	 * @param dtypeCode
 	 *            pass Device type as String
 	 * 
-	 * @throws DeviceFetchException
+	 * @throws MasterDataServiceException
 	 *             While Fetching Device Detail If fails to fetch required Device
 	 *             Detail
 	 * @throws DeviceMappingException
 	 *             If not able to map Device detail entity with Device Detail Dto
-	 * @throws DeviceNotFoundException
+	 * @throws DataNotFoundException
 	 *             If given required Device ID and language not found
 	 * 
 	 */
@@ -123,42 +113,17 @@ public class DeviceServiceImpl implements DeviceService {
 		try {
 			objectList = deviceRepository.findByLangCodeAndDtypeCode(langCode, dtypeCode);
 		} catch (DataAccessException dataAccessLayerException) {
-			throw new DeviceFetchException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (objectList != null && !objectList.isEmpty()) {
-			try {
-				deviceLangCodeDtypeDtoList = objectMapperUtil.mapDeviceDto(objectList);
-			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new DeviceMappingException(DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorCode(),
-						DeviceErrorCode.DEVICE_MAPPING_EXCEPTION.getErrorMessage());
-			}
+			deviceLangCodeDtypeDtoList = objectMapperUtil.mapDeviceDto(objectList);
 		} else {
-			throw new DeviceNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorCode(),
 					DeviceErrorCode.DEVICE_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 		deviceLangCodeResponseDto.setDevices(deviceLangCodeDtypeDtoList);
 		return deviceLangCodeResponseDto;
 	}
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

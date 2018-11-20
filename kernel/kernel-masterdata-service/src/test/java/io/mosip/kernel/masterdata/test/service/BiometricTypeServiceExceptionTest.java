@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.modelmapper.ConfigurationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,13 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.jayway.jsonpath.spi.mapper.MappingException;
-
-import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.entity.BiometricType;
-import io.mosip.kernel.masterdata.exception.BiometricTypeFetchException;
-import io.mosip.kernel.masterdata.exception.BiometricTypeMappingException;
-import io.mosip.kernel.masterdata.exception.BiometricTypeNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -78,73 +73,46 @@ public class BiometricTypeServiceExceptionTest {
 		biometricTypeList.add(biometricType2);
 	}
 
-	@Test(expected = BiometricTypeFetchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void getAllBiometricTypesFetchException() {
 		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(BiometricType.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getAllBiometricTypes();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test(expected = BiometricTypeMappingException.class)
-	public void getAllBiometricTypesMappingException() {
-		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(BiometricType.class)).thenReturn(biometricTypeList);
-		Mockito.when(objectMapperUtil.mapAll(biometricTypeList, BiometricTypeDto.class))
-				.thenThrow(IllegalArgumentException.class, ConfigurationException.class, MappingException.class);
-		biometricTypeService.getAllBiometricTypes();
-	}
-
-	@Test(expected = BiometricTypeNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getAllBiometricTypesNotFoundException() {
 		biometricTypeList = new ArrayList<>();
-		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(BiometricType.class)).thenReturn(biometricTypeList);
+		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(BiometricType.class))
+				.thenReturn(biometricTypeList);
 		biometricTypeService.getAllBiometricTypes();
 	}
 
-	@Test(expected = BiometricTypeFetchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void getAllBiometricTypesByLanguageCodeFetchException() {
 		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString());
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test(expected = BiometricTypeMappingException.class)
-	public void getAllBiometricTypesByLanguageCodeMappingException() {
-		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(biometricTypeList);
-		Mockito.when(objectMapperUtil.mapAll(biometricTypeList, BiometricTypeDto.class))
-				.thenThrow(IllegalArgumentException.class, ConfigurationException.class, MappingException.class);
-		biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString());
-	}
-
-	@Test(expected = BiometricTypeNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getAllBiometricTypesByLanguageCodeNotFoundException() {
 		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(new ArrayList<BiometricType>());
 		biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString());
 	}
 
-	@Test(expected = BiometricTypeFetchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void getBiometricTypeByCodeAndLangCodeFetchException() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test(expected = BiometricTypeMappingException.class)
-	public void getBiometricTypeByCodeAndLangCodeMappingException() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(biometricType1);
-		Mockito.when(modelMapper.map(biometricType1, BiometricTypeDto.class)).thenThrow(IllegalArgumentException.class,
-				ConfigurationException.class, MappingException.class);
-		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
-	}
-
-	@Test(expected = BiometricTypeNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getBiometricTypeByCodeAndLangCodeNotFoundException() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(null);
+		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(null);
 		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
 }

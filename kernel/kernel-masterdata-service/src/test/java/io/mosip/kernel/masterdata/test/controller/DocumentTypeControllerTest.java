@@ -18,7 +18,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
-import io.mosip.kernel.masterdata.exception.DocumentCategoryNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 
 @RunWith(SpringRunner.class)
@@ -73,17 +74,17 @@ public class DocumentTypeControllerTest {
 	@Test
 	public void testDocumentCategoryNotFoundException() throws Exception {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new DocumentCategoryNotFoundException("KER-DOC-10001",
+				.thenThrow(new DataNotFoundException("KER-DOC-10001",
 						"No documents found for specified document category code and language code"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poc/eng"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 
 	@Test
 	public void testDocumentCategoryFetchException() throws Exception {
-		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString())).thenThrow(
-				new DocumentCategoryNotFoundException("KER-DOC-10000", "exception during fatching data from db"));
+		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(new MasterDataServiceException("KER-DOC-10000", "exception during fatching data from db"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poc/eng"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 }
