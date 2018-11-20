@@ -162,6 +162,8 @@ public class RegistrationConstants {
 	public static final String EXCEPTION_IMAGE = "Exception Image";	
 	public static final String APPLICANT_BIOMETRICS_ERROR = "Error in Applicant Biometrics";
 	public static final String APPLICANT_IMAGE_ERROR = "Applicant Biometrics are required.";
+	public static final String DEMOGRAPHIC_DETAILS_ERROR = "Error in Demographic Details";
+	public static final String DEMOGRAPHIC_DETAILS_ERROR_CONTEXT = "Demographic details are required.";
 
 	// Exception Code for Components
 	public static final String PACKET_CREATION_EXP_CODE = "PCC-";

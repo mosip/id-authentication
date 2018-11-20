@@ -152,7 +152,7 @@
                            <children>
                               <Button fx:id="biometricsNext" disable="true" layoutX="761.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
                               <Label fx:id="biometrics" layoutX="27.0" layoutY="14.0" text="Biometric Fields...." />
-                              <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0" visible="false">
+                              <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0">
                                  <children>
                                     <Button fx:id="captureImage" layoutX="93.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" text="Capture" />
                                     <Button fx:id="captureExceptionImage" layoutX="457.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" text="Capture" />

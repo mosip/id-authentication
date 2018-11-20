@@ -257,6 +257,18 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private void initialize() {
+
+		if (capturePhotoUsingDevice.equals("Y")) {
+			biometrics.setVisible(false);
+			biometricsNext.setVisible(false);
+			biometricsPane.setVisible(true);
+		} else if (capturePhotoUsingDevice.equals("N")) {
+			biometrics.setVisible(true);
+			biometricsNext.setVisible(true);
+			biometricsPane.setVisible(false);
+			biometricsNext.setDisable(false);
+		}
+
 		try {
 			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					"Entering the LOGIN_CONTROLLER");
@@ -335,7 +347,6 @@ public class RegistrationController extends BaseController {
 				isEditPage = false;
 				ageFieldValidations();
 				ageValidationInDatePicker();
-
 			}
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME,
@@ -495,16 +506,9 @@ public class RegistrationController extends BaseController {
 				ageDatePickerContent = new DatePicker();
 				ageDatePickerContent.setValue(ageDatePicker.getValue());
 			}
-			nextBtn.setVisible(false);
+
 			biometricTitlePane.setExpanded(true);
-			if (capturePhotoUsingDevice.equals("Y")) {
-				biometrics.setVisible(false);
-				biometricsNext.setVisible(false);
-				biometricsPane.setVisible(true);
-			} else if (capturePhotoUsingDevice.equals("N")) {
-				biometrics.setVisible(true);
-				biometricsNext.setVisible(true);
-				biometricsPane.setVisible(false);
+			if (capturePhotoUsingDevice.equals("N")) {
 				biometricsNext.setDisable(false);
 			}
 		}
@@ -647,7 +651,12 @@ public class RegistrationController extends BaseController {
 
 		boolean imageCaptured = false;
 		if (applicantImageCaptured) {
-			imageCaptured = true;
+			if (registrationDTOContent != null && registrationDTOContent.getDemographicDTO() != null) {
+				imageCaptured = true;
+			} else {
+				generateAlert(RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR, AlertType.ERROR,
+						RegistrationConstants.DEMOGRAPHIC_DETAILS_ERROR_CONTEXT);
+			}
 		} else {
 			generateAlert(RegistrationConstants.APPLICANT_BIOMETRICS_ERROR, AlertType.ERROR,
 					RegistrationConstants.APPLICANT_IMAGE_ERROR);
