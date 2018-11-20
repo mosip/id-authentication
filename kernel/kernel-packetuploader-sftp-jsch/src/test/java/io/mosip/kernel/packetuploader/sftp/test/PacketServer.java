@@ -26,31 +26,31 @@ import org.apache.sshd.server.scp.ScpCommandFactory;
 import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory;
 import org.springframework.core.io.ClassPathResource;
 
+
 /**
  * @author Urvil Joshi
  * @since 1.0.0
  */
-
-public class PacketServer {
+public class PacketServer{
 
 	/**
 	 * 
 	 */
 	private SshServer server;
-
-	private final String host = "127.0.0.1";
-
-	private final int port = 10022;
-
-	private final String publicKey = "/id_rsa.pub";
+    
+	private String host="127.0.0.1";
+    
+	private int port=10022; 
+    
+	private String publicKey="/id_rsa.pub";
+    
+	private String username="testUser";
+	
+	private String password="testpassword";
+	
+	private boolean running;
 
 	private String keyPairGenerator;
-
-	private final String username = "testUser";
-
-	private final String password = "testpassword";
-	private volatile boolean running;
-
 	/**
 	 * @throws IOException
 	 * @throws InvalidKeySpecException

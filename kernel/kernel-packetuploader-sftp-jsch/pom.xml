@@ -18,6 +18,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch</artifactId>
 			<version>${jsch.version}</version>
@@ -35,14 +40,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-		<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<excludes>
-					<exclude>bootstrap.properties</exclude>
-				</excludes>
-			</resource>
-		</resources>
-	</build>
 </project>

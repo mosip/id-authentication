@@ -5,8 +5,11 @@ import static org.junit.Assert.assertThat;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.Before;
@@ -14,20 +17,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.crypto.exception.InvalidDataException;
 import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
 import io.mosip.kernel.core.crypto.exception.NullDataException;
-import io.mosip.kernel.crypto.jce.impl.EncryptorImpl;
+import io.mosip.kernel.core.crypto.spi.Encryptor;
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@TestPropertySource("classpath:/application.properties")
 public class EncryptorTest {
 
 	@Autowired
-	private EncryptorImpl encryptorImpl;
+	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptorImpl;
 
 	private KeyPair rsaPair;
 

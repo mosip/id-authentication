@@ -1,4 +1,6 @@
-package io.mosip.kernel.packetuploader.sftp;
+package io.mosip.kernel.packetuploader.sftp.impl;
+
+import org.springframework.stereotype.Component;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -10,6 +12,7 @@ import com.jcraft.jsch.SftpException;
 import io.mosip.kernel.core.packetuploader.exception.ConnectionException;
 import io.mosip.kernel.core.packetuploader.exception.NoSessionException;
 import io.mosip.kernel.core.packetuploader.exception.SFTPException;
+import io.mosip.kernel.core.packetuploader.spi.PacketUploader;
 import io.mosip.kernel.packetuploader.sftp.model.SFTPChannel;
 import io.mosip.kernel.packetuploader.sftp.model.SFTPServer;
 import io.mosip.kernel.packetuploader.sftp.constant.PacketUploaderConstant;
@@ -22,28 +25,15 @@ import io.mosip.kernel.packetuploader.sftp.util.PacketUploaderUtils;
  * @author Urvil Joshi
  * @since 1.0.0
  */
-public class PacketUploader {
+@Component
+public class PacketUploaderImpl implements PacketUploader<SFTPServer, SFTPChannel> {
 
-	/**
-	 * Constructor for this class
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.packetuploader.sftp.PacketUploadera#createSFTPChannel(io.mosip.kernel.packetuploader.sftp.model.SFTPServer)
 	 */
-	private PacketUploader() {
-	}
-
-	/**
-	 * This creates and connects SFTP channel based on configutaions
-	 * 
-	 * @param sftpServer
-	 *            {@link SFTPServer} provided by user
-	 * @return configured {@link SFTPChannel} instance
-	 * @throws ConnectionException
-	 *             to be thrown when there is a exception during connection with
-	 *             server
-	 */
-	public static SFTPChannel createSFTPChannel(SFTPServer sftpServer) throws ConnectionException {
+	public SFTPChannel createSFTPChannel(SFTPServer sftpServer)  {
 		PacketUploaderUtils.checkConfiguration(sftpServer);
-
-		JSch jsch = new JSch();
+        JSch jsch = new JSch();
 		if (sftpServer.getPrivateKeyFileName() != null) {
 			PacketUploaderUtils.addIdentity(jsch, sftpServer);
 		}
@@ -61,16 +51,10 @@ public class PacketUploader {
 		return sftpChannel;
 	}
 
-	/**
-	 * Uploades file to server <i>(this method will not create destination folder it
-	 * should be already present)</i>
-	 * 
-	 * @param sftpChannel
-	 *            configured {@link SFTPChannel} instance
-	 * @param source
-	 *            path of packet to be uploaded
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.packetuploader.sftp.PacketUploadera#upload(io.mosip.kernel.packetuploader.sftp.model.SFTPChannel, java.lang.String)
 	 */
-	public static void upload(SFTPChannel sftpChannel, String source) {
+	public void upload(SFTPChannel sftpChannel, String source) {
 		ChannelSftp channelSftp = sftpChannel.getChannelSftp();
 		PacketUploaderUtils.check(source);
 		String target = sftpChannel.getSftpServer().getSftpRemoteDirectory();
@@ -82,13 +66,10 @@ public class PacketUploader {
 		}
 	}
 
-	/**
-	 * This releases the obtained Connection to server
-	 * 
-	 * @param sftpChannel
-	 *            configured {@link SFTPChannel} instance
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.packetuploader.sftp.PacketUploadera#releaseConnection(io.mosip.kernel.packetuploader.sftp.model.SFTPChannel)
 	 */
-	public static void releaseConnection(SFTPChannel sftpChannel) {
+	public void releaseConnection(SFTPChannel sftpChannel) {
 		ChannelSftp channelSftp = sftpChannel.getChannelSftp();
 		Session session = null;
 		try {
