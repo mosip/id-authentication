@@ -22,6 +22,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 public class GPSUtill {
 
 	/** Object for Logger. */
+	
 
 	private static final Logger LOGGER = AppConfig.getLogger(GPSUtill.class);
 

@@ -108,6 +108,11 @@ public class GPSBU343ConnectorTest {
 
 	}
 
+	/**
+	 * Test GPSBU 343 connector port N ull case.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void testGPSBU343ConnectorPortNUllCase() throws Exception {
 
@@ -139,6 +144,11 @@ public class GPSBU343ConnectorTest {
 
 	}
 
+	/**
+	 * Test GPSBU 343 connector port failure case 1.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void testGPSBU343ConnectorPortFailureCase1() throws Exception {
 
@@ -232,6 +242,9 @@ public class GPSBU343ConnectorTest {
 
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testGPSBU343ConnectorPortFailureCase4() throws Exception {
 
@@ -279,6 +292,11 @@ public class GPSBU343ConnectorTest {
 
 	}
 	
+	/**
+	 * Test GPSBU 343 connector port failure case 6.
+	 *
+	 * @throws Exception the exception
+	 */
 	@Test
 	public void testGPSBU343ConnectorPortFailureCase6() throws Exception {
 

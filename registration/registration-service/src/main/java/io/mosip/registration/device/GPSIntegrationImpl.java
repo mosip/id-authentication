@@ -143,6 +143,7 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 		}
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 				"GPS map details" + gpsResponseMap);
+		
 		// TODO: Hard codded because if gps device and signa is not connected and weak
 		// it wont allow for new registarion
 		/*
