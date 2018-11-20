@@ -20,15 +20,16 @@ import io.mosip.authentication.core.dto.otpgen.OtpRequestDTO;
 import io.mosip.authentication.core.dto.otpgen.OtpResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
 import io.mosip.authentication.core.spi.id.service.IdInfoService;
 import io.mosip.authentication.core.spi.otpgen.facade.OTPFacade;
 import io.mosip.authentication.core.spi.otpgen.service.OTPService;
+import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.authentication.core.util.OTPUtil;
 import io.mosip.authentication.service.entity.AutnTxn;
 import io.mosip.authentication.service.helper.DateHelper;
-import io.mosip.authentication.service.impl.indauth.service.demo.DemoEntity;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoHelper;
 import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
@@ -87,7 +88,8 @@ public class OTPFacadeImpl implements OTPFacade {
 	private static Logger mosipLogger = IdaLogger.getLogger(OTPFacadeImpl.class);
 
 	/**
-	 * Obtained OTP.
+	 * Generate OTP, store the OTP request details for success/failure. And send OTP
+	 * notification by sms(on mobile)/mail(on email-id).
 	 *
 	 * @param otpRequestDto the otp request dto
 	 * @return otpResponseDTO
@@ -98,6 +100,10 @@ public class OTPFacadeImpl implements OTPFacade {
 	public OtpResponseDTO generateOtp(OtpRequestDTO otpRequestDto) throws IdAuthenticationBusinessException {
 		String otpKey = null;
 		String otp = null;
+		String phoneNumber = null;
+		String email = null;
+		String comment = null;
+		String status = null;
 
 		String refId = getRefId(otpRequestDto);
 		String productid = env.getProperty("application.id");
@@ -119,31 +125,36 @@ public class OTPFacadeImpl implements OTPFacade {
 
 		OtpResponseDTO otpResponseDTO = new OtpResponseDTO();
 		if (otp == null || otp.trim().isEmpty()) {
+			status = "N";
+			comment = "OTP_GENERATION_FAILED";
+			saveAutnTxn(otpRequestDto, status, comment, refId);
 			mosipLogger.error("SessionId", "NA", "NA", "OTP Generation failed");
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		} else {
 			mosipLogger.info("NA", "NA", "NA", "generated OTP is: " + otp);
-//			Optional<DemoEntity> demoEntity = demoRepository.findById(refId);
 			otpResponseDTO.setStatus("Y");
 			otpResponseDTO.setTxnId(txnID);
-			
-			String dateString = formatDate(new Date(), env.getProperty("datetime.pattern"));
-			otpResponseDTO.setResTime(dateString);
+			status = "Y";
+			comment = "OTP_GENERATED";
 
-//			if (demoEntity.isPresent()) {
-//				otpResponseDTO.setMaskedEmail(maskEmail(demoEntity.get().getEmail()));
-//				otpResponseDTO.setMaskedMobile(maskMobile(demoEntity.get().getMobile()));
-//
-//				// send otp notification
-//				String otpGenerationTime = formatDate(otpGenerateTime, env.getProperty("datetime.pattern"));
-//				sendOtpNotification(otpRequestDto, otp, refId, otpGenerationTime, demoEntity.get().getEmail(),
-//						demoEntity.get().getMobile());
-//
-//			}
-			saveAutnTxn(otpRequestDto, refId);
+			phoneNumber = getMobileNumber(refId);
+			email = getEmail(refId);
+
+			String responseTime = formatDate(new Date(), env.getProperty("datetime.pattern"));
+			otpResponseDTO.setResTime(responseTime);
+			otpResponseDTO.setMaskedEmail(
+					MaskUtil.generateMaskValue(email, Integer.parseInt(env.getProperty("uin.masking.charcount"))));
+			otpResponseDTO.setMaskedMobile(MaskUtil.generateMaskValue(phoneNumber,
+					Integer.parseInt(env.getProperty("uin.masking.charcount"))));
+			// -- send otp notification --
+			String otpGenerationTime = formatDate(otpGenerateTime, env.getProperty("datetime.pattern"));
+			sendOtpNotification(otpRequestDto, otp, refId, otpGenerationTime, email, phoneNumber);
+
+			saveAutnTxn(otpRequestDto, status, comment, refId);
 
 		}
 		return otpResponseDTO;
+
 	}
 
 	/**
@@ -221,16 +232,17 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * Save the input Request to trigger OTP.
 	 *
 	 * @param otpRequestDto the otp request dto
-	 * @param refId 
+	 * @param refId
 	 * @throws IDDataValidationException
 	 */
-	private void saveAutnTxn(OtpRequestDTO otpRequestDto, String refId) throws IDDataValidationException {
+	private void saveAutnTxn(OtpRequestDTO otpRequestDto, String status, String comment, String refId)
+			throws IDDataValidationException {
 		String txnID = otpRequestDto.getTxnID();
 
 		AutnTxn autnTxn = new AutnTxn();
 		autnTxn.setRefId(refId);
 		autnTxn.setRefIdType(otpRequestDto.getIdvIdType());
-		
+
 		autnTxn.setId(String.valueOf(new Date().getTime())); // FIXME
 
 		// TODO check
@@ -241,9 +253,9 @@ public class OTPFacadeImpl implements OTPFacade {
 		autnTxn.setResponseDTimes(new Date()); // TODO check this
 		autnTxn.setAuthTypeCode(RequestType.OTP_REQUEST.getRequestType());
 		autnTxn.setRequestTrnId(txnID);
-		autnTxn.setStatusCode("Y"); // FIXME
-		autnTxn.setStatusComment("OTP_GENERATED"); // FIXME
-		//FIXME
+		autnTxn.setStatusCode(status);
+		autnTxn.setStatusComment(comment);
+		// FIXME
 		autnTxn.setLangCode(env.getProperty("mosip.primary.lang-code"));
 
 		autntxnrepository.saveAndFlush(autnTxn);
@@ -286,7 +298,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	private void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String refId, String otpGenerationTime,
 			String email, String mobileNumber) {
 
-		Map<String, Object> values = new HashMap();
+		Map<String, Object> values = new HashMap<String, Object>();
 		try {
 			values.put("uin", otpRequestDto.getIdvId());
 			values.put("otp", otp);
@@ -299,5 +311,29 @@ public class OTPFacadeImpl implements OTPFacade {
 		} catch (BaseCheckedException e) {
 			mosipLogger.error(SESSION_ID, "send OTP notification to : ", email, "and " + mobileNumber);
 		}
+	}
+
+	private String getEmail(String refId) {
+		Map<String, List<IdentityInfoDTO>> idInfo = null;
+		String email = null;
+		try {
+			idInfo = idInfoService.getIdInfo(refId);
+			email = demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo).getValue();
+		} catch (IdAuthenticationDaoException e) {
+			mosipLogger.error(SESSION_ID, " email id : ", email, "and ");
+		}
+		return email;
+	}
+
+	private String getMobileNumber(String refId) {
+		Map<String, List<IdentityInfoDTO>> idInfo = null;
+		String mobileNumber = null;
+		try {
+			idInfo = idInfoService.getIdInfo(refId);
+			mobileNumber = demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo).getValue();
+		} catch (IdAuthenticationDaoException e) {
+			mosipLogger.error(SESSION_ID, " mobile number id : ", mobileNumber, "and ");
+		}
+		return mobileNumber;
 	}
 }
