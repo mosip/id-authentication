@@ -115,8 +115,7 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 
 		SyncTransaction syncTransaction = new SyncTransaction();
 
-		SyncControl syncControl = syncJobDAO.findBySyncJobId(syncJob.getId());
-
+	
 		try {
 
 			// TODO to be auto generated and has to be remove from here
@@ -180,11 +179,10 @@ public class SyncTransactionManagerImpl implements BaseTransactionManager {
 	
 
 	@Override
-	public SyncControl createSyncControlTransaction(SyncTransaction syncTransaction) {
+	public SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) throws NullPointerException{
 
 		SyncControl syncControl = syncJobDAO.findBySyncJobId(syncTransaction.getSyncJobId());
 
-		//
 		boolean isNotCreated = syncControl == null;
 		if (syncControl == null) {
 			syncControl = new SyncControl();
