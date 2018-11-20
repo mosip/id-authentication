@@ -29,9 +29,9 @@
                  	<children>
                  	 <AnchorPane fx:id="childSpecificFields" layoutX="22.0" layoutY="14.0" prefHeight="122.0" prefWidth="362.0" visible="false">
                          <children>
-                            <Label layoutX="25.0" layoutY="8.0" text="Parent/Guardian Name" />
+                            <Label layoutX="25.0" layoutY="8.0" text="%parent_or_guardian_name" />
                             <TextField fx:id="parentName" layoutX="25.0" layoutY="20.0" prefHeight="30.0" prefWidth="320.0" />
-                            <Label layoutX="25.0" layoutY="60.0" text="UIN ID" />
+                            <Label layoutX="25.0" layoutY="60.0" text="%rid_or_uin_id" />
                             <TextField fx:id="uinId" layoutX="25.0" layoutY="75.0" prefHeight="30.0" prefWidth="320.0" />
                          </children>
                    </AnchorPane>

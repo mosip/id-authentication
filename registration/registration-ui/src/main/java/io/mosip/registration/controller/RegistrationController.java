@@ -992,73 +992,63 @@ public class RegistrationController extends BaseController {
 								RegistrationConstants.ADDRESS_LINE_1_EMPTY, RegistrationConstants.ADDRESS_LINE_WARNING);
 						addressLine1.requestFocus();
 					} else {
-						if (validateRegex(addressLine2, "^.{6,50}$")) {
+						if (validateRegex(region, "^.{6,50}$")) {
 							generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-									RegistrationConstants.ADDRESS_LINE_2_EMPTY,
-									RegistrationConstants.ADDRESS_LINE_WARNING);
-							addressLine2.requestFocus();
+									RegistrationConstants.REGION_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
+											+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+							region.requestFocus();
 						} else {
-							if (validateRegex(region, "^.{6,50}$")) {
+							if (validateRegex(city, "^.{6,10}$")) {
 								generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-										RegistrationConstants.REGION_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
+										RegistrationConstants.CITY_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
 												+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
-								region.requestFocus();
+								city.requestFocus();
 							} else {
-								if (validateRegex(city, "^.{6,10}$")) {
+								if (validateRegex(province, "^.{6,10}$")) {
 									generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-											RegistrationConstants.CITY_EMPTY, RegistrationConstants.ONLY_ALPHABETS + " "
-													+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
-									city.requestFocus();
+											RegistrationConstants.PROVINCE_EMPTY, RegistrationConstants.ONLY_ALPHABETS
+													+ " " + RegistrationConstants.TEN_LETTER_INPUT_LIMT);
+									province.requestFocus();
 								} else {
-									if (validateRegex(province, "^.{6,10}$")) {
+									if (validateRegex(postalCode, "\\d{6}")) {
 										generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-												RegistrationConstants.PROVINCE_EMPTY,
-												RegistrationConstants.ONLY_ALPHABETS + " "
-														+ RegistrationConstants.TEN_LETTER_INPUT_LIMT);
-										province.requestFocus();
+												RegistrationConstants.POSTAL_CODE_EMPTY,
+												RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
+										postalCode.requestFocus();
 									} else {
-										if (validateRegex(postalCode, "\\d{5}")) {
+										if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
 											generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-													RegistrationConstants.POSTAL_CODE_EMPTY,
-													RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
-											postalCode.requestFocus();
+													RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,
+													RegistrationConstants.ONLY_ALPHABETS);
+											localAdminAuthority.requestFocus();
 										} else {
-											if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
+											if (validateRegex(mobileNo, "\\d{9}")) {
 												generateAlert("Error",
 														AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-														RegistrationConstants.LOCAL_ADMIN_AUTHORITY_EMPTY,
-														RegistrationConstants.ONLY_ALPHABETS);
-												localAdminAuthority.requestFocus();
+														RegistrationConstants.MOBILE_NUMBER_EMPTY,
+														RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
+												mobileNo.requestFocus();
 											} else {
-												if (validateRegex(mobileNo, "\\d{10}")) {
+												if (validateRegex(emailId,
+														"^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$")) {
 													generateAlert("Error",
 															AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-															RegistrationConstants.MOBILE_NUMBER_EMPTY,
-															RegistrationConstants.MOBILE_NUMBER_EXAMPLE);
-													mobileNo.requestFocus();
+															RegistrationConstants.EMAIL_ID_EMPTY,
+															RegistrationConstants.EMAIL_ID_EXAMPLE);
+													emailId.requestFocus();
 												} else {
-													if (validateRegex(emailId,
-															"^([\\w\\-\\.]+)@((\\[([0-9]{1,3}\\.){3}[0-9]{1,3}\\])|(([\\w\\-]+\\.)+)([a-zA-Z]{2,4}))$")) {
+													if (validateRegex(cni_or_pin_number, "\\d{30}")) {
 														generateAlert("Error",
 																AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-																RegistrationConstants.EMAIL_ID_EMPTY,
-																RegistrationConstants.EMAIL_ID_EXAMPLE);
-														emailId.requestFocus();
+																RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,
+																RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
+														cni_or_pin_number.requestFocus();
 													} else {
-														if (validateRegex(cni_or_pin_number, "\\d{5}")) {
-															generateAlert("Error",
-																	AlertType
-																			.valueOf(RegistrationConstants.ALERT_ERROR),
-																	RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,
-																	RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
-															cni_or_pin_number.requestFocus();
-														} else {
-															gotoNext = true;
-														}
-
+														gotoNext = true;
 													}
 
 												}
+
 											}
 										}
 									}
@@ -1261,11 +1251,11 @@ public class RegistrationController extends BaseController {
 		localAdminAuthority.setText("MindTree");
 		mobileNo.setText("8667693837");
 		emailId.setText("taleev.aalam@mindtree.com");
-		cni_or_pin_number.setText("12345");
+		cni_or_pin_number.setText("012345678901234567890123456789");
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
 	}
-	
+
 	public void gotoFirstDemographicPane() {
 		demoGraphicTitlePane.setContent(null);
 		demoGraphicTitlePane.setExpanded(false);
