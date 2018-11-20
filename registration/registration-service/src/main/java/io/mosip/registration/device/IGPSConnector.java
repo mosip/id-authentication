@@ -23,7 +23,6 @@ public interface IGPSConnector {
 	 * @return
 	 * @throws RegBaseCheckedException
 	 */
-	
 	String getComportGPSData(String comPortNo, int portReadWaitTime) throws RegBaseCheckedException;
 
 	/**
