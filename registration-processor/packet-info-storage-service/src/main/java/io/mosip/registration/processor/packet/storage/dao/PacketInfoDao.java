@@ -12,6 +12,7 @@ import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
 import io.mosip.registration.processor.core.packet.dto.LocationDTO;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
+import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
@@ -47,7 +48,8 @@ public class PacketInfoDao {
 									convertEntityToDemographicDto((ApplicantDemographicEntity) object)
 											.getDemoInUserLang());
 					} else if (object instanceof ApplicantPhotographEntity) {
-						applicantInfoDto.setApplicantPhoto(convertEntityToPhotographDto((ApplicantPhotographEntity) object));
+						applicantInfoDto.setApplicantPhotograph(convertEntityToPhotographDto((ApplicantPhotographEntity) object));
+						
 					}
 				}
 				applicantInfoDtoList.add(applicantInfoDto);
@@ -58,14 +60,24 @@ public class PacketInfoDao {
 		return applicantInfoDtoList;
 	}
 
-	private Photograph convertEntityToPhotographDto(ApplicantPhotographEntity object) {
-		Photograph photographDto = new Photograph();
+	
 
-		photographDto.setExceptionPhotoName(object.getExcpPhotoName());
-		photographDto.setHasExceptionPhoto(object.getHasExcpPhotograph());
-		photographDto.setNumRetry(object.getNoOfRetry());
-		photographDto.setPhotographName(object.getImageName());
-		photographDto.setQualityScore(Double.valueOf(object.getQualityScore().toString()));
+	private PhotographDto convertEntityToPhotographDto(ApplicantPhotographEntity object) {
+		PhotographDto photographDto = new PhotographDto();
+
+		photographDto.setActive(object.isActive());
+		photographDto.setCrBy(object.getCrBy());
+		photographDto.setExcpPhotoName(object.getExcpPhotoName());
+		photographDto.setExcpPhotoStore(object.getExcpPhotoStore());
+		photographDto.setHasExcpPhotograph(object.getHasExcpPhotograph());
+		photographDto.setImageName(object.getImageName());
+		photographDto.setImageStore(object.getImageStore());
+		photographDto.setNoOfRetry(object.getNoOfRetry());
+		photographDto.setPreRegId(object.getPreRegId());
+		photographDto.setQualityScore(object.getQualityScore());
+		photographDto.setRegId(object.getId().getRegId());
+		
+		
 
 		return photographDto;
 	}
