@@ -386,6 +386,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		  for (Map<String, String> map : approvalmapList) {
 			  registrationApprovalService.updateRegistration(map.get("registrationID"),
 			  map.get("statusComment"), map.get("statusCode")); }
+		  populateTable();
 	}
 	public void setInvisible() {
 		if (approvalmapList == null) {

@@ -280,6 +280,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 		  for (Map<String, String> map : approvalmapList) {
 			  registrationApprovalService.updateRegistration(map.get("registrationID"),
 			  map.get("statusComment"), map.get("statusCode")); }
+		  populateTable();
 	}
 
 	public void pendingActionSubmit() throws RegBaseCheckedException {
