@@ -1,11 +1,15 @@
-node {
+node{
 def branch = 'DEV'
-def projectToBuild = 'pre-registration/pre-registration-ui'
-def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
-def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
+def projectToBuild = 'pre-registration/pre-registration-ui'  
+def nodeHome = tool name: 'node-11.0.0', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'  
+	env.PATH = "${nodeHome}/bin:${env.PATH}"
 
-stage('------- Checkout --------') {
-  // Checkout only pre-registration Module
+    stage('check tools') {
+        sh "node -v"
+        sh "npm -v"
+    }
+
+ stage('------- Checkout --------') {
   dir(branch) {
    checkout([$class: 'GitSCM',
     branches: [
@@ -24,9 +28,17 @@ stage('------- Checkout --------') {
     ],
    ])
   }
+ }
+
+    stage('npm install') {
+        sh "npm install"
+    }
+
+    stage('unit tests') {
+        sh "ng test"
+    }
+
+    stage('protractor tests') {
+        sh "ng e2e"
+    }
 }
-
-
-stage ('---------- NPMinstall ---------------') {
-        sh 'npm install'
-}}
