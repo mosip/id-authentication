@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="left-button">
+      <a (click)="scrollLeft()"><i class="material-icons">arrow_back</i></a>
+  </div>
+  <div #widgetsContent class="middle">
+    <mat-card *ngFor="let number of numbers; let i = index" 
+              [ngClass]="number % 3 === 0 ? 'sizing disabled' : selectedTile === i ? 'sizing selected': 'sizing'"
+              (click)="dateSelected(i)">
+      <p>26th Oct</p>
+      <p>{{number}} spots</p>
+    </mat-card>
+  </div>
+  <div class="right-button">
+      <a (click)="scrollRight()"><i class="material-icons">arrow_forward</i></a>
+  </div>
+</div>
+  <div *ngIf="selectedTile !== null" class="container-card">
+    <div class="left-button-card">
+        <a (click)="scrollLeftCard()"><i class="material-icons">arrow_back</i></a>
+    </div>
+    <div #cardsContent class="middle-card">
+      <div *ngFor="let number of numbers; let i = index;">
+              <p>9 am</p>
+              <mat-card [ngClass]="selectedCard === i ? 'sizing-card selected' : 'sizing-card'"
+                        (click)="cardSelected(i)">
+                <p>Available: 0{{i}}</p>
+                <p>Selected: 00</p>
+                <div class="list-container">
+                  <ul class="list" *ngIf="i === 0">
+                    <li *ngFor="let name of names | slice:0:limit; let i = index;">name_{{name}}<i (click)="itemDelete(i)" class="material-icons close-button-sizing">close</i></li>
+                    <li *ngIf="limit <= numbers.length" (click)="changeLimit()">more...</li>
+                  </ul>
+                </div>
+                <div class="add-button-container" *ngIf="showAddButton">
+                  <button mat-fab color="primary"><i class="material-icons add-icon">add</i></button>
+                </div>
+              </mat-card>
+      </div>
+    </div>
+    <div class="right-button-card">
+        <a (click)="scrollRightCard()"><i class="material-icons">arrow_forward</i></a>
+    </div>
+    </div>
