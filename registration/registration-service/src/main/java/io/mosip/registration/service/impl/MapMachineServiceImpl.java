@@ -1,6 +1,8 @@
 package io.mosip.registration.service.impl;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
+
+import static io.mosip.registration.constants.RegistrationConstants.REGISTRATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_ERROR_NO_RECORDS;
 import static io.mosip.registration.constants.RegistrationConstants.MACHINE_MAPPING_ENTITY_SUCCESS_MESSAGE;
@@ -18,7 +20,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
+import io.mosip.registration.audit.AuditFactory;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
@@ -50,6 +54,11 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
  */
 @Service
 public class MapMachineServiceImpl implements MapMachineService {
+	/**
+	 * instance of {@code instance of AuditFactory}
+	 */
+	@Autowired
+	AuditFactory auditFactory;
 
 	/**
 	 * LOGGER for logging
@@ -293,7 +302,10 @@ public class MapMachineServiceImpl implements MapMachineService {
 	/**
 	 * it feteches the mappeddevices
 	 * 
-	 * @param centerID,machineId
+	 * @param centerID
+	 *            primary key of Regcenter table
+	 * @param machineId
+	 *            primary key of machinemaster table
 	 * @return list of {@link DeviceDTO}
 	 * 
 	 */
@@ -301,30 +313,32 @@ public class MapMachineServiceImpl implements MapMachineService {
 	public Map<String, List<DeviceDTO>> getDeviceMappingList(String centerId, String machineId) {
 		LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getDeviceMappingList(String,String) method is strarted");
-		List<DeviceDTO> availableDeviceDtoList = null;
-		List<DeviceDTO> mappedDeviceDtoList = null;
-		List<RegCentreMachineDevice> mappedList = null;
-		List<RegCenterDevice> availableDevicesList = null;
 		Map<String, List<DeviceDTO>> map = null;
 		map = new HashMap<>();
-		availableDeviceDtoList = new ArrayList<>();
-		mappedDeviceDtoList = new ArrayList<>();
-		mappedList = machineMappingDAO.getAllMappedDevices(centerId, machineId);
+		try {
+			List<DeviceDTO> availableDeviceDtoList = null;
+			List<DeviceDTO> mappedDeviceDtoList = null;
+			List<RegCentreMachineDevice> mappedList = null;
+			List<RegCenterDevice> availableDevicesList = null;
 
-		for (RegCentreMachineDevice regCenterMachineDevice : mappedList) {
-			DeviceDTO mappedDeviceDto = new DeviceDTO();
-			mappedDeviceDto.setSerialNo(regCenterMachineDevice.getRegDeviceMaster().getSerialNumber());
-			mappedDeviceDto
-					.setManufacturerName(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec().getBrand());
-			mappedDeviceDto.setModelName(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec().getModel());
-			mappedDeviceDto.setDeviceType(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec()
-					.getRegDeviceType().getRegDeviceTypeId().getCode());
-			mappedDeviceDto.setRegCenterId(regCenterMachineDevice.getRegCentreMachineDeviceId().getRegCentreId());
-			mappedDeviceDto.setDeviceId(regCenterMachineDevice.getRegCentreMachineDeviceId().getDeviceId());
-			mappedDeviceDto.setMachineId(regCenterMachineDevice.getRegCentreMachineDeviceId().getMachineId());
+			availableDeviceDtoList = new ArrayList<>();
+			mappedDeviceDtoList = new ArrayList<>();
+			mappedList = machineMappingDAO.getAllMappedDevices(centerId, machineId);
 
-			mappedDeviceDtoList.add(mappedDeviceDto);
-		}
+			for (RegCentreMachineDevice regCenterMachineDevice : mappedList) {
+				DeviceDTO mappedDeviceDto = new DeviceDTO();
+				mappedDeviceDto.setSerialNo(regCenterMachineDevice.getRegDeviceMaster().getSerialNumber());
+				mappedDeviceDto
+						.setManufacturerName(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec().getBrand());
+				mappedDeviceDto.setModelName(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec().getModel());
+				mappedDeviceDto.setDeviceType(regCenterMachineDevice.getRegDeviceMaster().getRegDeviceSpec()
+						.getRegDeviceType().getRegDeviceTypeId().getCode());
+				mappedDeviceDto.setRegCenterId(regCenterMachineDevice.getRegCentreMachineDeviceId().getRegCentreId());
+				mappedDeviceDto.setDeviceId(regCenterMachineDevice.getRegCentreMachineDeviceId().getDeviceId());
+				mappedDeviceDto.setMachineId(regCenterMachineDevice.getRegCentreMachineDeviceId().getMachineId());
+
+				mappedDeviceDtoList.add(mappedDeviceDto);
+			}
 
 		availableDevicesList = machineMappingDAO.getAllDeviceBasedOnCenterId(centerId);
 		for (RegCenterDevice regCenterDevice : availableDevicesList) {
@@ -348,6 +362,11 @@ public class MapMachineServiceImpl implements MapMachineService {
 
 		LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 				"getDeviceMappingList(String,String) method is ended");
+		
+		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+			LOGGER.error(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					regBaseUncheckedException.getMessage());
+		}
 
 		return map;
 
@@ -356,7 +375,12 @@ public class MapMachineServiceImpl implements MapMachineService {
 	/**
 	 * it delets the un-mapped devices and saves the newly mapped devices
 	 * 
-	 * @param deletedList,addedLIst
+	 * 
+	 * @param deletedList
+	 *            for un mapping the devices
+	 * 
+	 * @param addedLIst
+	 *            for saving the mapped devices
 	 * 
 	 * 
 	 */
@@ -386,8 +410,10 @@ public class MapMachineServiceImpl implements MapMachineService {
 				machineMappingDAO.addedMappedDevice(regCentreMachineDevice);
 			}
 
+			auditFactory.audit(AuditEvent.DEVICE_MAPPING_SUCCESS, AppModule.DEVICE_MAPPING,
+					"Device mapped successfully", REGISTRATION_ID, "refIdType");
 			SuccessResponseDTO successResponseDTO = new SuccessResponseDTO();
-			successResponseDTO.setCode(RegistrationConstants.DEVICE_MAPPING_CODE);
+			successResponseDTO.setCode(RegistrationConstants.DEVICE_MAPPING_SUCCESS_CODE);
 			successResponseDTO.setInfoType(RegistrationConstants.ALERT_INFORMATION);
 			successResponseDTO.setMessage(RegistrationConstants.DEVICE_MAPPING_SUCCESS_MESSAGE);
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
@@ -408,7 +434,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 
 		/* Error response */
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
-		errorResponse.setCode(RegistrationConstants.DEVICE_MAPPING_CODE);
+		errorResponse.setCode(RegistrationConstants.DEVICE_MAPPING_ERROR_CODE);
 		errorResponse.setInfoType(RegistrationConstants.ALERT_ERROR);
 		errorResponse.setMessage(message);
 

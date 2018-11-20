@@ -4,6 +4,7 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;
 
+import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJob;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
@@ -66,8 +67,15 @@ public interface BaseTransactionManager {
 	 * 
 	 * @param syncJob
 	 *            information
-	 * @return 
+	 * @return last inserted sync transaction
 	 */
-	public SyncTransaction createSyncTransaction(String status, String statusComment, String triggerPoint, SyncJob syncJob)
-			throws RegBaseUncheckedException;
+	public SyncTransaction createSyncTransaction(String status, String statusComment, String triggerPoint,
+			SyncJob syncJob) throws RegBaseUncheckedException;
+
+	/**
+	 * @param syncTransaction
+	 *            last transaction
+	 * @return updated sync control for respective sync job transaction
+	 */
+	public SyncControl createSyncControlTransaction(SyncTransaction syncTransaction);
 }

@@ -10,7 +10,7 @@ import io.mosip.registration.entity.SyncJob;
  * @author Dinesh Ashokan
  *
  */
-public interface JobConfigDAO {
+public interface SyncJobConfigDAO {
 
 	/**
 	 * To get the List of {@link SyncJob}

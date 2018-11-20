@@ -60,20 +60,25 @@ public class PacketSyncStatusJob extends BaseJob {
 			this.baseTransactionManager = this.applicationContext.getBean(BaseTransactionManager.class);
 			this.packetStatusService = this.applicationContext.getBean(RegPacketStatusService.class);
 		}
-		ResponseDTO responseDTO = new ResponseDTO();
-		try {
-			responseDTO = packetStatusService.packetSyncStatus();
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (responseDTO.getErrorResponseDTOs() == null) {
+		ResponseDTO responseDTO = packetStatusService.packetSyncStatus();
+
+		if (responseDTO != null) {
 			try {
-				// Insert Sync Transaction
-				baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILED,
-						RegistrationConstants.JOB_EXECUTION_FAILED, triggerPoint,
-						JobConfigurationServiceImpl.SYNC_JOB_MAP.get("1"));
+				if (responseDTO.getSuccessResponseDTO() != null) {
 
+					// Insert Sync Transaction of executed with Success
+					baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_SUCCESS,
+							RegistrationConstants.JOB_EXECUTION_SUCCESS, triggerPoint,
+							JobConfigurationServiceImpl.SYNC_JOB_MAP.get("1"));
+				} else if (responseDTO.getErrorResponseDTOs() == null) {
+
+					// Insert Sync Transaction of executed with failure
+					baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILURE,
+							RegistrationConstants.JOB_EXECUTION_FAILURE, triggerPoint,
+							JobConfigurationServiceImpl.SYNC_JOB_MAP.get("1"));
+
+				}
 			} catch (RegBaseUncheckedException regBaseUncheckedException) {
 				LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
 
@@ -86,7 +91,9 @@ public class PacketSyncStatusJob extends BaseJob {
 
 				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 			}
+
 		}
+
 		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 

@@ -21,14 +21,13 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.PacketStatusDTO;
-import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.service.impl.LoginServiceImpl;
 import io.mosip.registration.service.impl.ReRegistrationService;
-import io.mosip.registration.util.biometric.FingerprintProvider;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -58,9 +57,6 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 */
 	@Autowired
 	private ReRegistrationService reRegistrationServiceImpl;
-
-	@Autowired
-	private FingerPrintAuthenticationController authenticationController;
 
 	@Autowired
 	LoginService loginService;
@@ -98,7 +94,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	/** The image anchor pane. */
 	@FXML
 	private AnchorPane imageAnchorPane;
-	
+
 	@FXML
 	private LoginServiceImpl loginServiceImpl;
 
@@ -106,8 +102,6 @@ public class ReRegistrationController extends BaseController implements Initiali
 	private long fingerPrintScore;
 
 	Map<String, String> contactStatusMap = new HashMap<>();
-
-	private FingerprintProvider fingerprintProvider = new FingerprintProvider();
 
 	/*
 	 * (non-Javadoc)
@@ -201,14 +195,19 @@ public class ReRegistrationController extends BaseController implements Initiali
 	private void authenticateUser() {
 		LOGGER.debug("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the table after the authentication finished successfully");
-		Stage primaryStage = new Stage();
+
 		Parent ackRoot;
 		try {
-			ackRoot = BaseController.load(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
+			Stage primaryStage=new Stage();
+			FXMLLoader fxmlLoader = BaseController
+					.loadChild(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
+			ackRoot = fxmlLoader.load();
 			primaryStage.setResizable(false);
 			Scene scene = new Scene(ackRoot);
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
+			fpcontroller.init(this);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -217,48 +216,21 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 	/**
 	 * TO the scan the finger and validate with database
-	 */
-	public void scanFinger() {
-		LOGGER.debug("RE_REGISTRATION_CONTROLLER - SCAN_FINGER", APPLICATION_NAME, APPLICATION_ID,
-				"Scanning the finger for biometric authentication");
-		String minutia = authenticationController.scanFingerPrint();
-		RegistrationUserDetail detail = loginService.getUserDetail("mosip");
-		validateFingerPrint(minutia, detail);
-	}
-
-	/**
-	 * Validate the Scanned Finger print
 	 * 
-	 * @param minutia
-	 * @param detail
+	 * @throws IOException
 	 */
-	public void validateFingerPrint(String minutia, RegistrationUserDetail detail) {
-		LOGGER.debug("RE_REGISTRATION_CONTROLLER - VALIDATE_FINGER_PRINT", APPLICATION_NAME, APPLICATION_ID,
-				"Validating the scanned finger print");
-		if (validateBiometric(minutia, detail)) {
-			if (detail.getStatusCode() != null
-					&& detail.getStatusCode().equalsIgnoreCase(RegistrationConstants.BLOCKED)) {
-				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-						AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.LOGIN_INFO_MESSAGE,
-						RegistrationConstants.BLOCKED_USER_ERROR);
-			}
-		} else {
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.LOGIN_INFO_MESSAGE, RegistrationConstants.FINGER_PRINT_MATCH);
-		}
-	}
-
-	/**
-	 * Compare the scanned finger print with the database
-	 * 
-	 * @param minutia
-	 * @param registrationUserDetail
-	 * @return
+	/*
+	 * public void scanFinger() throws IOException {
+	 * LOGGER.debug("RE_REGISTRATION_CONTROLLER - SCAN_FINGER", APPLICATION_NAME,
+	 * APPLICATION_ID, "Scanning the finger for biometric authentication");
+	 * authenticationController.init(new ReRegistrationController()); }
 	 */
-	private boolean validateBiometric(String minutia, RegistrationUserDetail registrationUserDetail) {
 
-		return registrationUserDetail.getUserBiometric().stream()
-				.anyMatch(bio -> fingerprintProvider.scoreCalculator(minutia, bio.getBioMinutia()) > fingerPrintScore);
+	@Override
+	public void getFingerPrintStatus() {
+		
+			reRegistrationServiceImpl.updateReRegistrationStatus(contactStatusMap);
+			reloadTableView();
 	}
 
 	/**

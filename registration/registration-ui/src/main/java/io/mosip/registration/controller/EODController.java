@@ -28,47 +28,51 @@ public class EODController extends BaseController implements Initializable {
 	/** The approval accordian. */
 	@FXML
 	private Accordion approvalAccordian;
-	
+
 	/** The pending approval anchor pane. */
 	@FXML
 	private AnchorPane pendingApprovalAnchorPane;
-	
+
 	/** The pending action anchor pane. */
 	@FXML
 	private AnchorPane pendingActionAnchorPane;
-	
+
 	/** The re Register anchor pane. */
 	@FXML
 	private AnchorPane reRegisterAnchorPane;
-	
+
 	/** The Constant LOGGER. */
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationOfficerPacketController.class);
 
-	/* (non-Javadoc)
-	 * @see javafx.fxml.Initializable#initialize(java.net.URL, java.util.ResourceBundle)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javafx.fxml.Initializable#initialize(java.net.URL,
+	 * java.util.ResourceBundle)
 	 */
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		try {
+			
 			Parent pendingActionRoot = BaseController
 					.load(getClass().getResource("/fxml/RegistrationPendingAction.fxml"));
+
 			Parent pendingApprovalRoot = BaseController
 					.load(getClass().getResource("/fxml/RegistrationPendingApproval.fxml"));
-			Parent reRegisterRoot = BaseController
-					.load(getClass().getResource("/fxml/ReRegistration.fxml"));
+
+			Parent reRegisterRoot = BaseController.load(getClass().getResource("/fxml/ReRegistration.fxml"));
 
 			ObservableList<Node> approvalNodes = pendingApprovalAnchorPane.getChildren();
 			approvalNodes.add(pendingApprovalRoot);
 
 			ObservableList<Node> actionNodes = pendingActionAnchorPane.getChildren();
 			actionNodes.add(pendingActionRoot);
-			
+
 			ObservableList<Node> reregisterNodes = reRegisterAnchorPane.getChildren();
 			reregisterNodes.add(reRegisterRoot);
 
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION - EOD - CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-					ioException.getMessage());	
+			LOGGER.error("REGISTRATION - EOD - CONTROLLER", APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 		}
 
 	}

@@ -57,7 +57,6 @@ public class JobProcessListener extends JobListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be executed started");
 
-		System.out.println("JOB STARTED");
 		/*
 		 * ----------------JOB STARTED---------------
 		 */
@@ -76,6 +75,8 @@ public class JobProcessListener extends JobListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be executed ended");
 
+		System.out.println("JOB STARTED");
+		
 	}
 
 	/*
@@ -87,8 +88,7 @@ public class JobProcessListener extends JobListenerSupport {
 	@Override
 	public void jobExecutionVetoed(JobExecutionContext context) {
 
-		System.out.println("JOB REJECTED -1");
-
+		
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be rejected started");
 
@@ -109,7 +109,7 @@ public class JobProcessListener extends JobListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be rejected ended");
 
-		System.out.println("JOB REJECTED -2");
+		System.out.println("JOB REJECTED");
 
 	}
 
@@ -124,8 +124,7 @@ public class JobProcessListener extends JobListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job was executed started");
 
-		System.out.println("JOB Executed -1");
-
+	
 		try {
 			// Insert SYNC Transaction
 			baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_COMPLETED,
@@ -143,7 +142,7 @@ public class JobProcessListener extends JobListenerSupport {
 		/*
 		 * -------------------JOB EXECUTED--------------
 		 */
-		System.out.println("JOB REJECTED -2");
+		System.out.println("JOB REJECTED");
 
 	}
 
