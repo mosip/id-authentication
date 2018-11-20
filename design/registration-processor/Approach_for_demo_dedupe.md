@@ -42,7 +42,7 @@ The key solution considerations are -
 	3. Calculate average score. (local language score + user language score) / 2
 	4. If only one language is present then consider that as final score.
 	5. check if it exceeds the threashold defined. By default the threashold is 80% which is configurable. If the average score exceeds threashold then its a potential duplicate.
-	For example - resident p has a potential duplicate as p'. Demo dedupe in local language is 80% and in user language is 70%. Average = (80 + 90) / 2 = 85% < threashold 80%. Potential duplicate.
+	For example - resident p has a potential duplicate as p'. Demo dedupe in local language is 80% and in user language is 70%. Average = (80 + 90) / 2 = 85% > threashold 80%. Hence potential duplicate.
 There is an weight associated with every field. Read the weight from config server -
 ```
 registration.processor.demo.dedupe.name.weight=50
@@ -56,9 +56,6 @@ registration.processor.demo.dedupe.pincode.weight=10
 registration.processor.demo.dedupe.overall.weight=90
 ```
 Find attached sample code to perform levenshtein distance algorithm. 
-- The above step will provide the final list of potential duplicates. Call [Auth-rest-service](https://github.com/mosip/mosip/blob/DEV/design/authentication/Auth_Request_REST_service.md) to authenticate the resident biometrics. It accepts the refid(UIN reference id) and the biometrics and validates if the record is present in Auth DB. 
-- Check if the following information is present inside packet. If available then verify information against user type. A country may choose not to send certain information(ex - fingerprint/iris etc). Hence if one type of information is not present inside packet then move to next check.
+- The above step will provide the final list of potential duplicates. Call [Auth-rest-service](https://github.com/mosip/mosip/blob/DEV/design/authentication/Auth_Request_REST_service.md) to authenticate the resident biometrics against the list of potential duplicates. The service accepts the refid(UIN reference id) and the biometrics and validates if the record is present in Auth DB. For example - resident p has a potential duplicate as p' and p''. Select the refId of p' and the biometrics of p. If the service returns status as true(means person is present) that means p and p' is same person.  No need to check p'' as already match found with p'. Fail the demo dedupe and Reject the packet with proper reason.
+- If auth-service doesnot identify the resident then go for manual adjudication.
 
-```
-```
-```
