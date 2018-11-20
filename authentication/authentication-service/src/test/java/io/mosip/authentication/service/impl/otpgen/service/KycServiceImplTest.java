@@ -93,7 +93,7 @@ public class KycServiceImplTest {
 		
 	}
 	
-	/*@Test
+	@Test
 	public void validUIN() {
 		try {
 			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, false);
@@ -101,7 +101,7 @@ public class KycServiceImplTest {
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 	
 	@Test
 	public void validUIN2() {

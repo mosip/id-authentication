@@ -88,9 +88,9 @@ public class KycServiceImpl implements KycService{
 		Map<String, List<IdentityInfoDTO>> identityInfo = retrieveIdentityFromIdRepo(refId);
 		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo, isSecLangInfoRequired);
 		kycInfo.setIdentity(filteredIdentityInfo);
-		if(ePrintReq) {
-			String uin = idAuthService.getUIN(refId).get();
-			Object maskedUin = uin;			
+		String uin = idAuthService.getUIN(refId).get();			
+		Object maskedUin = uin;
+		if(ePrintReq) {		
 			if(env.getProperty("uin.masking.required", Boolean.class)) {
 				maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
 			}
@@ -98,6 +98,7 @@ public class KycServiceImpl implements KycService{
 			String ePrintInfo = generatePrintableKyc(eKycType,pdfDetails,isSecLangInfoRequired);
 			kycInfo.setEPrint(ePrintInfo);			
 		}
+		kycInfo.setIdvId(maskedUin.toString());
 		return kycInfo;
 	}
 
@@ -218,7 +219,6 @@ public class KycServiceImpl implements KycService{
 			ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(template);
 			deleteFileOnExit(identity);
 			pdfDetails = Base64.getEncoder().encodeToString(bos.toByteArray());
-			System.out.println(pdfDetails);
 		} catch (IOException e) {
 			mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
