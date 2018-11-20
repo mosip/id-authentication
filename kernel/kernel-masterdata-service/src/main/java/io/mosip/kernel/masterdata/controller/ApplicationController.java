@@ -1,14 +1,16 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.ApplicationDto;
+import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
+import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 
 /**
@@ -30,7 +32,7 @@ public class ApplicationController {
 	 * @return All Application details
 	 */
 	@GetMapping
-	public List<ApplicationDto> fetchAllApplication() {
+	public ApplicationResponseDto fetchAllApplication() {
 		return applicationService.getAllApplication();
 	}
 	
@@ -40,7 +42,7 @@ public class ApplicationController {
 	 * @return All Application details of specific language
 	 */
 	@GetMapping("/{languagecode}")
-	public List<ApplicationDto> fetchAllApplicationByLanguageCode(@PathVariable("languagecode") String languageCode) {
+	public ApplicationResponseDto fetchAllApplicationByLanguageCode(@PathVariable("languagecode") String languageCode) {
 		return applicationService.getAllApplicationByLanguageCode(languageCode);
 	}
 	
@@ -50,7 +52,18 @@ public class ApplicationController {
 	 * @return An Application
 	 */
 	@GetMapping("/{id}/{languagecode}")
-	public ApplicationDto fetchAllApplicationByCodeAndLanguageCode(@PathVariable("id") String code, @PathVariable("languagecode") String languageCode) {
+	public ApplicationResponseDto fetchAllApplicationByCodeAndLanguageCode(@PathVariable("id") String code, @PathVariable("languagecode") String languageCode) {
 		return applicationService.getApplicationByCodeAndLanguageCode(code, languageCode);
+	}
+	
+	/**
+	 * API to add application details
+	 * 
+	 * @return PostResponseDto
+	 */
+	@PostMapping
+	public PostResponseDto addDocumentCategories(@RequestBody ApplicationRequestDto application) {
+		return applicationService.addApplicationData(application);
+		
 	}
 }

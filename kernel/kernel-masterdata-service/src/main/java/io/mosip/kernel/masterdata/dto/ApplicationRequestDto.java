@@ -7,14 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApplicationDto {
+public class ApplicationRequestDto {
 
-	private String code;
-	
-	private String name;
-	
-	private String description;
-	
-	private String langCode;
-	
+	private String id;
+	private String ver;
+	private String timestamp;
+	private ApplicationListDto request;
+
 }

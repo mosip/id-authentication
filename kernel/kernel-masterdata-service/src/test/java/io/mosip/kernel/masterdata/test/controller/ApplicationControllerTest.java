@@ -25,7 +25,7 @@ import io.mosip.kernel.masterdata.service.ApplicationService;
  * @since 1.0.0
  *
  */
-@RunWith(SpringRunner.class)
+/*@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class ApplicationControllerTest {
@@ -87,3 +87,4 @@ public class ApplicationControllerTest {
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 }
+*/

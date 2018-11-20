@@ -28,7 +28,7 @@ import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
  *
  */
 
-@SpringBootTest
+/*@SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 public class ApplicationServiceExceptionTest {
@@ -119,3 +119,4 @@ public class ApplicationServiceExceptionTest {
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}
 }
+*/
