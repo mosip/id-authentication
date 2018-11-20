@@ -15,80 +15,143 @@ public class Identity {
 	private List<BiometricException> exceptionBiometrics;
 	private Photograph applicantPhotograph;
 	private Photograph exceptionPhotograph;
-	private Document document;
+	private List<Document> documents;
 	private List<FieldValue> metaData;
 	private List<FieldValue> osiData;
 	private List<FieldValueArray> hashSequence;
 	private List<FieldValue> checkSum;
 
+	/**
+	 * @return the biometric
+	 */
 	public Biometric getBiometric() {
 		return biometric;
 	}
 
+	/**
+	 * @param biometric
+	 *            the biometric to set
+	 */
 	public void setBiometric(Biometric biometric) {
 		this.biometric = biometric;
 	}
 
+	/**
+	 * @return the exceptionBiometrics
+	 */
 	public List<BiometricException> getExceptionBiometrics() {
 		return exceptionBiometrics;
 	}
 
+	/**
+	 * @param exceptionBiometrics
+	 *            the exceptionBiometrics to set
+	 */
 	public void setExceptionBiometrics(List<BiometricException> exceptionBiometrics) {
 		this.exceptionBiometrics = exceptionBiometrics;
 	}
 
+	/**
+	 * @return the applicantPhotograph
+	 */
 	public Photograph getApplicantPhotograph() {
 		return applicantPhotograph;
 	}
 
+	/**
+	 * @param applicantPhotograph
+	 *            the applicantPhotograph to set
+	 */
 	public void setApplicantPhotograph(Photograph applicantPhotograph) {
 		this.applicantPhotograph = applicantPhotograph;
 	}
 
+	/**
+	 * @return the exceptionPhotograph
+	 */
 	public Photograph getExceptionPhotograph() {
 		return exceptionPhotograph;
 	}
 
+	/**
+	 * @param exceptionPhotograph
+	 *            the exceptionPhotograph to set
+	 */
 	public void setExceptionPhotograph(Photograph exceptionPhotograph) {
 		this.exceptionPhotograph = exceptionPhotograph;
 	}
 
-	public Document getDocument() {
-		return document;
+	/**
+	 * @return the documents
+	 */
+	public List<Document> getDocuments() {
+		return documents;
 	}
 
-	public void setDocument(Document document) {
-		this.document = document;
+	/**
+	 * @param documents
+	 *            the documents to set
+	 */
+	public void setDocuments(List<Document> documents) {
+		this.documents = documents;
 	}
 
+	/**
+	 * @return the metaData
+	 */
 	public List<FieldValue> getMetaData() {
 		return metaData;
 	}
 
+	/**
+	 * @param metaData
+	 *            the metaData to set
+	 */
 	public void setMetaData(List<FieldValue> metaData) {
 		this.metaData = metaData;
 	}
 
+	/**
+	 * @return the osiData
+	 */
 	public List<FieldValue> getOsiData() {
 		return osiData;
 	}
 
+	/**
+	 * @param osiData
+	 *            the osiData to set
+	 */
 	public void setOsiData(List<FieldValue> osiData) {
 		this.osiData = osiData;
 	}
 
+	/**
+	 * @return the hashSequence
+	 */
 	public List<FieldValueArray> getHashSequence() {
 		return hashSequence;
 	}
 
+	/**
+	 * @param hashSequence
+	 *            the hashSequence to set
+	 */
 	public void setHashSequence(List<FieldValueArray> hashSequence) {
 		this.hashSequence = hashSequence;
 	}
 
+	/**
+	 * @return the checkSum
+	 */
 	public List<FieldValue> getCheckSum() {
 		return checkSum;
 	}
 
+	/**
+	 * @param checkSum
+	 *            the checkSum to set
+	 */
 	public void setCheckSum(List<FieldValue> checkSum) {
 		this.checkSum = checkSum;
 	}

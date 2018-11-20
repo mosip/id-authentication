@@ -20,6 +20,7 @@ import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.core.util.JsonUtil;
@@ -65,7 +66,10 @@ public class OSIValidator {
 
 		boolean isValidOsi = false;
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
-		Identity identity = (Identity) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream, Identity.class);
+
+		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
+				PacketMetaInfo.class);
+		Identity identity = packetMetaInfo.getIdentity();
 		List<FieldValue> osiData = identity.getOsiData();
 		Map<String, String> osiDataMap = new HashMap<>();
 		for (FieldValue fieldValue : osiData) {

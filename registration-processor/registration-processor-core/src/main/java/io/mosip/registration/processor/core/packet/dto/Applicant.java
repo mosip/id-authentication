@@ -1,58 +1,92 @@
-/**
- * 
- */
 package io.mosip.registration.processor.core.packet.dto;
 
 /**
- * @author M1022006
- *
+ * This class contains the attributes to be displayed for Applicant object in
+ * PacketMetaInfo JSON
+ * 
+ * @author Balaji Sridharan
+ * @since 1.0.0
  */
 public class Applicant {
 
-	private BiometricData leftEye;
-	private BiometricData rightEye;
-	private BiometricData leftSlap;
-	private BiometricData rightSlap;
-	private BiometricData thumbs;
+	private BiometricDetails leftEye;
+	private BiometricDetails rightEye;
+	private BiometricDetails leftSlap;
+	private BiometricDetails rightSlap;
+	private BiometricDetails thumbs;
 
-	public BiometricData getLeftEye() {
+	/**
+	 * @return the leftEye
+	 */
+	public BiometricDetails getLeftEye() {
 		return leftEye;
 	}
 
-	public void setLeftEye(BiometricData leftEye) {
+	/**
+	 * @param leftEye
+	 *            the leftEye to set
+	 */
+	public void setLeftEye(BiometricDetails leftEye) {
 		this.leftEye = leftEye;
 	}
 
-	public BiometricData getRightEye() {
+	/**
+	 * @return the rightEye
+	 */
+	public BiometricDetails getRightEye() {
 		return rightEye;
 	}
 
-	public void setRightEye(BiometricData rightEye) {
+	/**
+	 * @param rightEye
+	 *            the rightEye to set
+	 */
+	public void setRightEye(BiometricDetails rightEye) {
 		this.rightEye = rightEye;
 	}
 
-	public BiometricData getLeftSlap() {
+	/**
+	 * @return the leftSlap
+	 */
+	public BiometricDetails getLeftSlap() {
 		return leftSlap;
 	}
 
-	public void setLeftSlap(BiometricData leftSlap) {
+	/**
+	 * @param leftSlap
+	 *            the leftSlap to set
+	 */
+	public void setLeftSlap(BiometricDetails leftSlap) {
 		this.leftSlap = leftSlap;
 	}
 
-	public BiometricData getRightSlap() {
+	/**
+	 * @return the rightSlap
+	 */
+	public BiometricDetails getRightSlap() {
 		return rightSlap;
 	}
 
-	public void setRightSlap(BiometricData rightSlap) {
+	/**
+	 * @param rightSlap
+	 *            the rightSlap to set
+	 */
+	public void setRightSlap(BiometricDetails rightSlap) {
 		this.rightSlap = rightSlap;
 	}
 
-	public BiometricData getThumbs() {
+	/**
+	 * @return the thumbs
+	 */
+	public BiometricDetails getThumbs() {
 		return thumbs;
 	}
 
-	public void setThumbs(BiometricData thumbs) {
+	/**
+	 * @param thumbs
+	 *            the thumbs to set
+	 */
+	public void setThumbs(BiometricDetails thumbs) {
 		this.thumbs = thumbs;
 	}
-
 }
