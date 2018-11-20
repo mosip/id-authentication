@@ -3,9 +3,13 @@ package io.mosip.registration.controller;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +36,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -147,6 +153,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	
 	private void fingerPrintCheck(FingerData fingerDataContent,String errorMessage) {
 		if (fingerDataContent != null) {
+			OnPreview(fingerDataContent);
 			FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().convert(fingerDataContent.ISOTemplate());
 			minutia = fingerprintTemplate.serialize();
 			validateFingerPrint(minutia);
@@ -187,7 +194,26 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 
 	@Override
 	public void OnPreview(FingerData fingerData) {
-		
+		if (null != fingerData.FingerImage()) {
+			BufferedImage l_objBufferImg = null;
+			try {
+				l_objBufferImg = ImageIO.read(new ByteArrayInputStream(fingerData.FingerImage()));
+			} catch (IOException ex) {
+				System.out.println("Image failed to load.");
+			}
+
+			WritableImage l_objWritableImg = null;
+			if (l_objBufferImg != null) {
+				l_objWritableImg = new WritableImage(l_objBufferImg.getWidth(), l_objBufferImg.getHeight());
+				PixelWriter pw = l_objWritableImg.getPixelWriter();
+				for (int x = 0; x < l_objBufferImg.getWidth(); x++) {
+					for (int y = 0; y < l_objBufferImg.getHeight(); y++) {
+						pw.setArgb(x, y, l_objBufferImg.getRGB(x, y));
+					}
+				}
+			}
+			this.fingerScannedImage.setImage(l_objWritableImg);
+		}
 	}
 
 	@Override
