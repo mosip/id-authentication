@@ -97,7 +97,7 @@ public class DataProvider {
 			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "RightPalm", 95.0, false,
 					"RightPalm", 2));
 		} else {
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "LeftThumb", 0, false,
+			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, personType+"LeftThumb", 0, false,
 					"LeftThumb", 0));
 		}
 

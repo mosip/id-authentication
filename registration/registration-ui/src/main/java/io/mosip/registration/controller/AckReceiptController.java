@@ -170,7 +170,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 		generateAlert("Success", AlertType.INFORMATION, "Packet Created Successfully!");
 		// Adding individual address to session context
-		if (response.getSuccessResponseDTO().getMessage().equals("Success")) {
+		if (response.getSuccessResponseDTO() != null && response.getSuccessResponseDTO().getMessage().equals("Success")) {
 			AddressDTO addressDTO = registrationData.getDemographicDTO().getDemoInUserLang().getAddressDTO();
 			Map<String, Object> addr = SessionContext.getInstance().getMapObject();
 			addr.put("PrevAddress", addressDTO);
