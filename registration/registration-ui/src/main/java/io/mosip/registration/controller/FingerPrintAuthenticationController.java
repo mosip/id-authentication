@@ -156,10 +156,10 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 		RegistrationUserDetail detail = loginService.getUserDetail("mosip");
 
 		if (validateBiometric(minutia, detail)) {
-			generateAlert("Info", AlertType.INFORMATION, RegistrationConstants.FINGER_PRINT_MATCH);
+			generateAlert("Info", AlertType.INFORMATION, "Records approved Successfully.");
 			baseController.getFingerPrintStatus();
 		} else {
-			generateAlert("Info", AlertType.INFORMATION, RegistrationConstants.FINGER_PRINT_MATCH);
+			generateAlert("Info", AlertType.INFORMATION, "Records approved Successfully.");
 			baseController.getFingerPrintStatus();
 		}
 	}
