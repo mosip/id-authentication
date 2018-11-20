@@ -1,18 +1,38 @@
 node {
 
- stage('SCM Checkout') {
+def branch = 'DEV'
+def projectToBuild = 'pre-registration/pre-registration-ui'  
+
+ stage('------- Checkout --------') {
   dir(branch) {
-   checkout([$class: 'GitSCM', 
-    branches: [[name: '*/DEV']],
-    doGenerateSubmoduleConfigurations: false,
+   checkout([$class: 'GitSCM',
+    branches: [
+     [name: branch]
+    ],
+    userRemoteConfigs: [
+     [url: 'https://github.com/mosip/mosip', credentialsId: '66261c9d-f8b9-41d6-96f5-403790c63e9e']
+    ],
     extensions: [
-        [$class: 'SparseCheckoutPaths',  sparseCheckoutPaths:[[$class:'SparseCheckoutPath', path:'pre-registration/']]]
-                ],
-    submoduleCfg: [],
-    userRemoteConfigs: [[credentialsId: '66261c9d-f8b9-41d6-96f5-403790c63e9e',url: 'https://github.com/mosip/mosip']]])
-    }
+
+     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*'],
+     [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
+      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
+     ]]
+
+    ],
+   ])
+  }
+ }
+
     stage('npm install') {
-        sh "npm install" 
-        sh "npm i -g @angular/cli@6.1.4"
-        sh "build --prod"
-    }    }
+        sh "npm install"
+    }
+
+    stage('unit tests') {
+        sh "ng test"
+    }
+
+    stage('protractor tests') {
+        sh "ng e2e"
+    }
+}
