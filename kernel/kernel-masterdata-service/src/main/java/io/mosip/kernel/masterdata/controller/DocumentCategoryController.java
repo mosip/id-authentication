@@ -1,14 +1,16 @@
 package io.mosip.kernel.masterdata.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryRequestDto;
+import io.mosip.kernel.masterdata.dto.DocumentCategoryResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 
 /**
@@ -17,7 +19,6 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
  *
  */
 @RestController
-@RequestMapping("/documentcategories")
 public class DocumentCategoryController {
 
 	@Autowired
@@ -28,8 +29,8 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories
 	 */
-	@GetMapping
-	public List<DocumentCategoryDto> fetchAllDocumentCategory() {
+	@GetMapping("/documentcategories")
+	public DocumentCategoryResponseDto fetchAllDocumentCategory() {
 		return documentCategoryService.getAllDocumentCategory();
 	}
 
@@ -38,8 +39,8 @@ public class DocumentCategoryController {
 	 * 
 	 * @return All Document categories of a specific language
 	 */
-	@GetMapping("{languagecode}")
-	public List<DocumentCategoryDto> fetchAllDocumentCategoryUsingLangCode(
+	@GetMapping("/documentcategories/{languagecode}")
+	public DocumentCategoryResponseDto fetchAllDocumentCategoryUsingLangCode(
 			@PathVariable("languagecode") String langCode) {
 		return documentCategoryService.getAllDocumentCategoryByLaguageCode(langCode);
 	}
@@ -49,9 +50,15 @@ public class DocumentCategoryController {
 	 * 
 	 * @return A Document category
 	 */
-	@GetMapping("/{id}/{languagecode}")
-	public DocumentCategoryDto fetchDocumentCategoryUsingCodeAndLangCode(@PathVariable("id") String code,
+	@GetMapping("/documentcategories/{id}/{languagecode}")
+	public DocumentCategoryResponseDto fetchDocumentCategoryUsingCodeAndLangCode(@PathVariable("id") String code,
 			@PathVariable("languagecode") String langCode) {
 		return documentCategoryService.getDocumentCategoryByCodeAndLangCode(code, langCode);
+	}
+
+	@PostMapping("/documentcategories")
+	public PostResponseDto addDocumentCategories(@RequestBody DocumentCategoryRequestDto category) {
+		return documentCategoryService.addDocumentCategoriesData(category);
+		
 	}
 }

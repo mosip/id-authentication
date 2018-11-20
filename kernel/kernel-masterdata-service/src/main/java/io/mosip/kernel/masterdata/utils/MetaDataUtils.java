@@ -1,0 +1,66 @@
+package io.mosip.kernel.masterdata.utils;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import io.mosip.kernel.core.datamapper.exception.DataMapperException;
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
+import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
+import io.mosip.kernel.masterdata.entity.BaseEntity;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+
+@Component
+public class MetaDataUtils {
+
+	@Autowired
+	private DataMapper dataMapper;
+
+	public <D extends BaseEntity, T> List<D> setCreateMetaData(final Collection<T> dtoList,
+			Class<? extends BaseEntity> entityClass) {
+		List<D> entities = new ArrayList<>();
+
+		dtoList.forEach(dto -> {
+
+			D entity;
+			try {
+				entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
+			} catch(DataMapperException e) {
+				throw new MasterDataServiceException(
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(),
+						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorMessage());
+			}
+			LocalDateTime time = LocalDateTime.parse("2011-01-01T00:00:00");
+			LocalDateTime utime = LocalDateTime.parse("2011-02-01T00:00:00");
+			entity.setIsActive(true);
+			entity.setDeletedtimes(null);
+			entity.setUpdatedBy("mosip-user");
+			entity.setUpdatedtimes(utime);
+			entity.setCreatedBy("mosip-user");
+			entity.setCreatedtimes(time);
+			entity.setIsDeleted(false);
+			entities.add(entity);
+
+		});
+		// ForEach DTO to Entity
+		// Set createdBy
+		// SEt createdAt
+		return entities;
+
+	}
+
+	/*
+	 * public <T> List<T> setUpdateMetaData(final Collection<T> entityList) { //
+	 * ForEach DTO to Entity // Set updateBY // SEt UpdatedAt }
+	 * 
+	 * public <T> List<T> setDeleteMetaData(final Collection<T> entityList) { //
+	 * ForEach DTO to Entity // Set isDelted // Set delttedAt // SEt UpdatedBy }
+	 * 
+	 * public <T> List<T> setActiveMetaData(final Collection<T> entityList) { //
+	 * ForEach DTO to Entity // Set isActive // Set updateBY // SEt UpdatedAt }
+	 */
+}
