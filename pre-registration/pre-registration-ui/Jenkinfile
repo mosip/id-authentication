@@ -23,5 +23,11 @@ def projectToBuild = 'pre-registration/pre-registration-ui'
    ])
   }
  }
-
+    stage('npm install') {
+        sh "sudo npm install -g @angular/cli@latest"
+        sh "npm install"
+    }
+        stage('build') {
+        sh "ng build"
+    }
     }
