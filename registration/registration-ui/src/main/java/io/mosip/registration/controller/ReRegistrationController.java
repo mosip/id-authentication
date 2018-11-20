@@ -145,7 +145,17 @@ public class ReRegistrationController extends BaseController implements Initiali
 			informedBtn.setVisible(true);
 			notInformedBtn.setVisible(true);
 			imageAnchorPane.setVisible(true);
-			submitBtn.setVisible(true);
+			informedBtn.setSelected(false);
+			notInformedBtn.setSelected(false);
+			for(Map.Entry<String , String> statusMap : contactStatusMap.entrySet()) {
+				if(statusMap.getKey().equals(table.getSelectionModel().getSelectedItem().getFileName())) {
+					if(statusMap.getValue().equals("informed")) {
+						informedBtn.setSelected(true);
+					} else if(statusMap.getValue().equals("notinformed")) {
+						notInformedBtn.setSelected(true);
+					}
+				}
+			}
 			FileInputStream file;
 			try {
 				file = new FileInputStream(new File(table.getSelectionModel().getSelectedItem().getSourcePath()));
@@ -162,6 +172,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * This method will call on click of Informed Button
 	 */
 	public void informedToUser() {
+		submitBtn.setVisible(true);
 		contactStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "informed");
 		informedBtn.setSelected(true);
 		notInformedBtn.setSelected(false);
@@ -171,6 +182,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * This method will call on click of Not Informed Button
 	 */
 	public void notInformedToUser() {
+		submitBtn.setVisible(true);
 		contactStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "notinformed");
 		informedBtn.setSelected(false);
 		notInformedBtn.setSelected(true);
