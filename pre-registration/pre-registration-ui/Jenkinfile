@@ -6,7 +6,7 @@ node {
     branches: [[name: '*/DEV']],
     doGenerateSubmoduleConfigurations: false,
     extensions: [
-        [$class: 'SparseCheckoutPaths',  sparseCheckoutPaths:[[$class:'SparseCheckoutPath', path:'pre-registration/pre-registration-ui/']]]
+        [$class: 'SparseCheckoutPaths',  sparseCheckoutPaths:[[$class:'SparseCheckoutPath', path:'pre-registration/']]]
                 ],
     submoduleCfg: [],
     userRemoteConfigs: [[credentialsId: '66261c9d-f8b9-41d6-96f5-403790c63e9e',url: 'https://github.com/mosip/mosip']]])
