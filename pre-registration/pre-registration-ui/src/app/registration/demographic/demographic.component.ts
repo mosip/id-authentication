@@ -7,16 +7,18 @@ import {
   FormBuilder,
   AbstractControl,
   ValidatorFn,
-  ValidationErrors
+  ValidationErrors,
+  FormGroupDirective,
+  NgForm
 } from '@angular/forms';
-import { MatButtonToggleChange, MatDatepickerInputEvent } from '@angular/material';
+import { MatButtonToggleChange, MatDatepickerInputEvent, ErrorStateMatcher } from '@angular/material';
 
 import { RegistrationService } from '../registration.service';
 import { DemoLabels } from './demographic.labels';
 import { IdentityModel } from './identity.model';
 import { AttributeModel } from './attribute.model';
 import { RequestModel } from './request.model';
-import { DemoIdentityModel } from './Demo.Identity.model';
+import { DemoIdentityModel } from './demo.identity.model';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -132,6 +134,7 @@ export class DemographicComponent implements OnInit {
     // }
     console.log(this.userForm.hasError('oneOfRequired'));
     if (this.userForm.hasError('oneOfRequired')) {
+      // this.userForm.controls.
       this.checked = false;
     } else {
       this.checked = true;
@@ -189,6 +192,7 @@ export class DemographicComponent implements OnInit {
       () => {
         this.isDisabled[this.step] = true;
         this.step++;
+        this.checked = true;
         if (this.step === this.numberOfApplicants) {
           this.router.navigate(['../../file-upload'], { relativeTo: this.route });
         }
@@ -229,5 +233,12 @@ export class DemographicComponent implements OnInit {
       }
       return { oneOfRequired: true };
     };
+  }
+
+  test(selected) {
+    if (selected === undefined) {
+      this.checked = false;
+    }
+    console.log('inside test', selected);
   }
 }
