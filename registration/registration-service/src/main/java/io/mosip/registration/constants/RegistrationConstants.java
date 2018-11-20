@@ -158,8 +158,10 @@ public class RegistrationConstants {
 	public static final String WEBCAM_ALERT_TITLE = "Webcam Alert";
 	public static final String WEBCAM_ALERT_HEADER = "Camera Not Found";
 	public static final String WEBCAM_ALERT_CONTEXT = "Camera not found. Please connect an on-boarded camera and retry.";
-
-	
+	public static final String APPLICANT_IMAGE = "Applicant Image";
+	public static final String EXCEPTION_IMAGE = "Exception Image";	
+	public static final String APPLICANT_BIOMETRICS_ERROR = "Error in Applicant Biometrics";
+	public static final String APPLICANT_IMAGE_ERROR = "Applicant Biometrics are required.";
 
 	// Exception Code for Components
 	public static final String PACKET_CREATION_EXP_CODE = "PCC-";

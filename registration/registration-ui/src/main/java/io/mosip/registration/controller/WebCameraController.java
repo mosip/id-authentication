@@ -19,7 +19,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.service.PhotoCaptureService;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,7 +26,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -51,22 +49,20 @@ public class WebCameraController extends BaseController implements Initializable
 	private SwingNode webcamera;
 
 	@FXML
-	private Button save;
-
+	private Button clear;
+	
 	@FXML
-	private Button cancel;
+	private Button close;
 
-	@Autowired
-	private RegistrationController registrationController;
+	private BaseController parentController = new BaseController();
 
 	@Autowired
 	private PhotoCaptureService photoCaptureService;
 
-	private BufferedImage bufferedImage = null;
-
-	private Image capture;
+	private BufferedImage capturedImage = null;
 
 	private Webcam webcam;
+	private String imageType;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -91,56 +87,43 @@ public class WebCameraController extends BaseController implements Initializable
 		}
 	}
 
-	@FXML
-	public void saveImage(ActionEvent event) {
+	public void init(BaseController parentController, String imageType) {
 		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"saving the image taken from webcam");
-		if (registrationController.captureExceptionImage.isDisabled()) {
-			registrationController.applicantImage.setImage(capture);
-			registrationController.applicantBufferedImage=bufferedImage;
-			registrationController.captureImage.setDisable(true);
-			registrationController.captureExceptionImage.setDisable(false);
-		} else {
-			registrationController.exceptionImage.setImage(capture);
-			registrationController.exceptionBufferedImage=bufferedImage;
-			registrationController.captureImage.setDisable(false);
-			registrationController.exceptionImage.setDisable(true);
-		}
-		registrationController.saveBiometricDetails.setDisable(false);
-		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"closing the webcam");
-		photoCaptureService.close(webcam);
-		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
-		stage.close();
+				"Initializing the controller to be used and imagetype to be captured");
+		
+		this.parentController = parentController;
+		this.imageType = imageType;
 	}
 
 	@FXML
 	public void captureImage(ActionEvent event) {
 		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"capturing the image from webcam");
-		if (bufferedImage != null) {
-			bufferedImage.flush();
+		if (capturedImage != null) {
+			capturedImage.flush();
 		}			
-		bufferedImage = photoCaptureService.captureImage(webcam);
-
-		capture = SwingFXUtils.toFXImage(bufferedImage, null);
-		if (registrationController.captureExceptionImage.isDisabled()) {
-			registrationController.applicantImage.setImage(capture);
-		} else {
-			registrationController.exceptionImage.setImage(capture);
-		}
-		save.setDisable(false);
-		cancel.setDisable(false);
+		capturedImage = photoCaptureService.captureImage(webcam);		
+		parentController.saveApplicantPhoto(capturedImage, imageType);
+		
+		clear.setDisable(false);
 	}
 
 	@FXML
-	public void cancelImage(ActionEvent event) {		
-		if (registrationController.captureExceptionImage.isDisabled()) {
-			registrationController.applicantImage.setImage(null);
-		} else {
-			registrationController.exceptionImage.setImage(null);
-		}
-		save.setDisable(true);
-		cancel.setDisable(true);
+	public void clearImage(ActionEvent event) {	
+		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"clearing the image from webcam");
+		
+		parentController.clearPhoto(imageType);
+		clear.setDisable(true);		
+	}
+	
+	@FXML
+	public void closeWindow(ActionEvent event) {
+		LOGGER.debug("REGISTRATION - UI - WEB_CAMERA_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+				"closing the webcam window");
+		
+		photoCaptureService.close(webcam);
+		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
+		stage.close();
 	}
 }

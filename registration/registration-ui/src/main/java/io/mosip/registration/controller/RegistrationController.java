@@ -4,6 +4,7 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -35,7 +36,9 @@ import io.mosip.registration.dto.demographic.LocationDTO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -48,6 +51,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -185,7 +189,7 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private ImageView headerImage;
-	
+
 	@FXML
 	private ComboBox<String> porDocuments;
 
@@ -227,28 +231,29 @@ public class RegistrationController extends BaseController {
 	VirtualKeyboard keyboard = new VirtualKeyboard();
 
 	Node keyboardNode = keyboard.view();
-	
+
 	@Value("${capture_photo_using_device}")
 	public String capturePhotoUsingDevice;
 
 	@FXML
-	protected Button biometricsNext;	
+	protected Button biometricsNext;
 	@FXML
-	private Label biometrics;	
+	private Label biometrics;
 	@FXML
-	private AnchorPane biometricsPane;	
+	private AnchorPane biometricsPane;
 	@FXML
 	protected ImageView applicantImage;
 	@FXML
 	protected ImageView exceptionImage;
 	@FXML
-	protected Button captureImage;	
+	protected Button captureImage;
 	@FXML
-	protected Button captureExceptionImage;	
+	protected Button captureExceptionImage;
 	@FXML
-	protected Button saveBiometricDetails;	
+	protected Button saveBiometricDetails;
 	protected BufferedImage applicantBufferedImage;
 	protected BufferedImage exceptionBufferedImage;
+	private boolean applicantImageCaptured = false;
 
 	@FXML
 	private void initialize() {
@@ -307,6 +312,26 @@ public class RegistrationController extends BaseController {
 				parentName.setText(demographicInfoDTO.getParentOrGuardianName());
 				preRegistrationId.setText(registrationDTOContent.getPreRegistrationId());
 
+				// for applicant biometrics
+				if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO() != null) {
+					if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto() != null) {
+						byte[] photoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
+								.getPhoto();
+						if (photoInBytes != null) {
+							ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(photoInBytes);
+							applicantImage.setImage(new Image(byteArrayInputStream));
+						}
+					}
+					if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
+							.getExceptionPhoto() != null) {
+						byte[] exceptionPhotoInBytes = registrationDTOContent.getDemographicDTO()
+								.getApplicantDocumentDTO().getExceptionPhoto();
+						if (exceptionPhotoInBytes != null) {
+							ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
+							exceptionImage.setImage(new Image(inputStream));
+						}
+					}
+				}
 				isEditPage = false;
 				ageFieldValidations();
 				ageValidationInDatePicker();
@@ -463,83 +488,148 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					"Saved the demographic fields to DTO");
 
-				demoGraphicPane1Content = demoGraphicPane1;
-				demoGraphicPane2Content = demoGraphicPane2;
-				registrationDTOContent = registrationDTO;
-				if (ageDatePicker.getValue() != null) {
-					ageDatePickerContent = new DatePicker();
-					ageDatePickerContent.setValue(ageDatePicker.getValue());
-				}
-				nextBtn.setVisible(false);
-				pane2NextBtn.setVisible(false);
-				biometricTitlePane.setExpanded(true);
-				/*Image header = new Image("src/main/resources/images/ApplicantBiometrics.PNG");
-				headerImage.setImage(header);*/
-				if(capturePhotoUsingDevice.equals("Y")) {
-					biometrics.setVisible(false);
-					biometricsNext.setVisible(false);
-					biometricsPane.setVisible(true);
-				} else {
-					biometricsNext.setDisable(false);
-				}
-
+			demoGraphicPane1Content = demoGraphicPane1;
+			demoGraphicPane2Content = demoGraphicPane2;
+			registrationDTOContent = registrationDTO;
+			if (ageDatePicker.getValue() != null) {
+				ageDatePickerContent = new DatePicker();
+				ageDatePickerContent.setValue(ageDatePicker.getValue());
+			}
+			nextBtn.setVisible(false);
+			biometricTitlePane.setExpanded(true);
+			if (capturePhotoUsingDevice.equals("Y")) {
+				biometrics.setVisible(false);
+				biometricsNext.setVisible(false);
+				biometricsPane.setVisible(true);
+			} else if (capturePhotoUsingDevice.equals("N")) {
+				biometrics.setVisible(true);
+				biometricsNext.setVisible(true);
+				biometricsPane.setVisible(false);
+				biometricsNext.setDisable(false);
+			}
 		}
-
 	}
-	
+
+	public void goToPreviousPane() {
+		demoGraphicTitlePane.setExpanded(true);
+	}
+
+	/**
+	 * 
+	 * To open camera to capture Applicant Image
+	 * 
+	 */
 	public void openCamForApplicantPhoto() {
+		openWebCamWindow(RegistrationConstants.APPLICANT_IMAGE);
+	}
+
+	/**
+	 * 
+	 * To open camera to capture Exception Image
+	 * 
+	 */
+	public void openCamForExceptionPhoto() {
+		openWebCamWindow(RegistrationConstants.EXCEPTION_IMAGE);
+	}
+
+	/**
+	 * 
+	 * To open camera for the type of image that is to be captured
+	 * 
+	 * @param imageType
+	 *            type of image that is to be captured
+	 */
+	private void openWebCamWindow(String imageType) {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
 		try {
 			Stage primaryStage = new Stage();
-			Parent webCamRoot = BaseController.load(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
+			FXMLLoader loader = BaseController.loadChild(getClass().getResource(RegistrationConstants.WEB_CAMERA_PAGE));
+			Parent webCamRoot = loader.load();
+
+			WebCameraController cameraController = loader.getController();
+			cameraController.init(this, imageType);
+
 			primaryStage.setTitle(RegistrationConstants.WEB_CAMERA_PAGE_TITLE);
 			Scene scene = new Scene(webCamRoot);
 			primaryStage.setScene(scene);
-			primaryStage.show();			
+			primaryStage.show();
 		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					ioException.getMessage());
 		}
 	}
-	
-	public void openCamForExceptionPhoto() {
-		openCamForApplicantPhoto();
+
+	@Override
+	public void saveApplicantPhoto(BufferedImage capturedImage, String photoType) {
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "Opening WebCamera to capture photograph");
+
+		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE)) {
+			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
+			applicantImage.setImage(capture);
+			applicantBufferedImage = capturedImage;
+			applicantImageCaptured = true;
+		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE)) {
+			Image capture = SwingFXUtils.toFXImage(capturedImage, null);
+			exceptionImage.setImage(capture);
+			exceptionBufferedImage = capturedImage;
+		}
 	}
-	
+
+	@Override
+	public void clearPhoto(String photoType) {
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "clearing the image that is captured");
+
+		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE) && applicantBufferedImage != null) {
+			applicantImage.setImage(null);
+			applicantBufferedImage = null;
+			applicantImageCaptured = false;
+		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE) && exceptionBufferedImage != null) {
+			exceptionImage.setImage(null);
+			exceptionBufferedImage = null;
+		}
+	}
+
 	public void saveBiometricDetails() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "saving the details of applicant biometrics");
-		if(capturePhotoUsingDevice.equals("Y")) {
-			try {
-				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, byteArrayOutputStream);
-				byte[] photoInBytes = byteArrayOutputStream.toByteArray();
-				ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
-				applicantDocumentDTO.setPhoto(photoInBytes);
-				applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
-				byteArrayOutputStream.close();
-				if(exceptionBufferedImage!=null) {
-					ByteArrayOutputStream outputStream = new ByteArrayOutputStream();				
-					ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE, outputStream);
-					byte[] exceptionPhotoInBytes = outputStream.toByteArray();
-					applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
-					applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
-					applicantDocumentDTO.setHasExceptionPhoto(true);
-					outputStream.close();
+
+		if (capturePhotoUsingDevice.equals("Y")) {
+			if (validateApplicantImage()) {
+				try {
+					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+					ImageIO.write(applicantBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+							byteArrayOutputStream);
+					byte[] photoInBytes = byteArrayOutputStream.toByteArray();
+					ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
+					applicantDocumentDTO.setPhoto(photoInBytes);
+					applicantDocumentDTO.setPhotographName(RegistrationConstants.APPLICANT_PHOTOGRAPH_NAME);
+					byteArrayOutputStream.close();
+					if (exceptionBufferedImage != null) {
+						ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+						ImageIO.write(exceptionBufferedImage, RegistrationConstants.WEB_CAMERA_IMAGE_TYPE,
+								outputStream);
+						byte[] exceptionPhotoInBytes = outputStream.toByteArray();
+						applicantDocumentDTO.setExceptionPhoto(exceptionPhotoInBytes);
+						applicantDocumentDTO.setExceptionPhotoName(RegistrationConstants.EXCEPTION_PHOTOGRAPH_NAME);
+						applicantDocumentDTO.setHasExceptionPhoto(true);
+						outputStream.close();
+					} else {
+						applicantDocumentDTO.setHasExceptionPhoto(false);
+					}
+					registrationDTOContent.getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
+					LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
+
+					loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
+				} catch (IOException ioException) {
+					LOGGER.error("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+							ioException.getMessage());
 				}
-				else {
-					applicantDocumentDTO.setHasExceptionPhoto(false);
-				}
-				registrationDTOContent.getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
-				LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, "showing demographic preview");		
-				
-				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
-			} catch (IOException ioException) {
-				LOGGER.error("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
-						ioException.getMessage());
-			}			
+			}
+
 		} else {
 			try {
 				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
@@ -548,7 +638,21 @@ public class RegistrationController extends BaseController {
 						ioException.getMessage());
 			}
 		}
-		
+
+	}
+
+	private boolean validateApplicantImage() {
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "validating applicant biometrics");
+
+		boolean imageCaptured = false;
+		if (applicantImageCaptured) {
+			imageCaptured = true;
+		} else {
+			generateAlert(RegistrationConstants.APPLICANT_BIOMETRICS_ERROR, AlertType.ERROR,
+					RegistrationConstants.APPLICANT_IMAGE_ERROR);
+		}
+		return imageCaptured;
 	}
 
 	public static void loadScreen(String screen) throws IOException {
@@ -556,7 +660,8 @@ public class RegistrationController extends BaseController {
 				ApplicationContext.getInstance().getApplicationLanguageBundle());
 		LoginController.getScene().setRoot(createRoot);
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		LoginController.getScene().getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
+		LoginController.getScene().getStylesheets()
+				.add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 	}
 
 	/**
@@ -565,6 +670,7 @@ public class RegistrationController extends BaseController {
 	public void ageValidationInDatePicker() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Validating the age given by DatePiker");
+
 		if (ageDatePicker.getValue() != null) {
 			LocalDate selectedDate = ageDatePicker.getValue();
 			Date date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -1057,7 +1163,7 @@ public class RegistrationController extends BaseController {
 						RegistrationConstants.AGE_EMPTY);
 				ageField.requestFocus();
 			} else {
-				if(Integer.parseInt(ageField.getText())<5) {
+				if (Integer.parseInt(ageField.getText()) < 5) {
 					childSpecificFields.setVisible(true);
 				}
 				gotoNext = true;
@@ -1128,13 +1234,13 @@ public class RegistrationController extends BaseController {
 
 	public void clickMe() {
 		fullName.setText("Taleev Aalam");
-		int age=3;
-		if(age<5) {
+		int age = 3;
+		if (age < 5) {
 			childSpecificFields.setVisible(true);
-			isChild=true;
+			isChild = true;
 		}
-		ageField.setText(""+age);
-		toggleAgeOrDobField=true;
+		ageField.setText("" + age);
+		toggleAgeOrDobField = true;
 		gender.setValue("MALE");
 		addressLine1.setText("Mind Tree Ltd");
 		addressLine2.setText("RamanuJan It park");
@@ -1150,5 +1256,5 @@ public class RegistrationController extends BaseController {
 		parentName.setText("Mokhtar");
 		uinId.setText("93939939");
 	}
-	
+
 }
