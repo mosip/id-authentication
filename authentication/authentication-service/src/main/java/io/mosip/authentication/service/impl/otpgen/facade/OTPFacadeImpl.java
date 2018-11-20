@@ -123,22 +123,24 @@ public class OTPFacadeImpl implements OTPFacade {
 			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
 		} else {
 			mosipLogger.info("NA", "NA", "NA", "generated OTP is: " + otp);
-			Optional<DemoEntity> demoEntity = demoRepository.findById(refId);
+//			Optional<DemoEntity> demoEntity = demoRepository.findById(refId);
 			otpResponseDTO.setStatus("Y");
 			otpResponseDTO.setTxnId(txnID);
-			if (demoEntity.isPresent()) {
-				String dateString = formatDate(new Date(), env.getProperty("datetime.pattern"));
-				otpResponseDTO.setResTime(dateString);
-				otpResponseDTO.setMaskedEmail(maskEmail(demoEntity.get().getEmail()));
-				otpResponseDTO.setMaskedMobile(maskMobile(demoEntity.get().getMobile()));
+			
+			String dateString = formatDate(new Date(), env.getProperty("datetime.pattern"));
+			otpResponseDTO.setResTime(dateString);
 
-				// send otp notification
-				String otpGenerationTime = formatDate(otpGenerateTime, env.getProperty("datetime.pattern"));
-				sendOtpNotification(otpRequestDto, otp, refId, otpGenerationTime, demoEntity.get().getEmail(),
-						demoEntity.get().getMobile());
-
-			}
-			saveAutnTxn(otpRequestDto);
+//			if (demoEntity.isPresent()) {
+//				otpResponseDTO.setMaskedEmail(maskEmail(demoEntity.get().getEmail()));
+//				otpResponseDTO.setMaskedMobile(maskMobile(demoEntity.get().getMobile()));
+//
+//				// send otp notification
+//				String otpGenerationTime = formatDate(otpGenerateTime, env.getProperty("datetime.pattern"));
+//				sendOtpNotification(otpRequestDto, otp, refId, otpGenerationTime, demoEntity.get().getEmail(),
+//						demoEntity.get().getMobile());
+//
+//			}
+			saveAutnTxn(otpRequestDto, refId);
 
 		}
 		return otpResponseDTO;
@@ -219,14 +221,14 @@ public class OTPFacadeImpl implements OTPFacade {
 	 * Save the input Request to trigger OTP.
 	 *
 	 * @param otpRequestDto the otp request dto
+	 * @param refId 
 	 * @throws IDDataValidationException
 	 */
-	private void saveAutnTxn(OtpRequestDTO otpRequestDto) throws IDDataValidationException {
-		String uniqueID = otpRequestDto.getIdvId();
+	private void saveAutnTxn(OtpRequestDTO otpRequestDto, String refId) throws IDDataValidationException {
 		String txnID = otpRequestDto.getTxnID();
 
 		AutnTxn autnTxn = new AutnTxn();
-		autnTxn.setRefId(uniqueID);
+		autnTxn.setRefId(refId);
 		autnTxn.setRefIdType(otpRequestDto.getIdvIdType());
 		
 		autnTxn.setId(String.valueOf(new Date().getTime())); // FIXME
