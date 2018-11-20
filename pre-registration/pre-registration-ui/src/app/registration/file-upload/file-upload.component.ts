@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { RegistrationService } from '../registration.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-file-upload',
@@ -64,7 +65,7 @@ export class FileUploadComponent implements OnInit {
 
   step = 1;
 
-  constructor(private registration: RegistrationService) {}
+  constructor(private registration: RegistrationService, private router: Router, private route: ActivatedRoute) {}
 
   setStep(index: number) {
     this.step = index;
@@ -72,6 +73,9 @@ export class FileUploadComponent implements OnInit {
 
   nextStep() {
     this.step++;
+    if (this.step === 5) {
+      this.router.navigate(['../pick-center'], { relativeTo: this.route });
+    }
   }
 
   prevStep() {

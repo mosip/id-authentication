@@ -1,14 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Applicant } from './dashboard/dashboard.modal';
-import { IdentityModel } from './demographic/identity.model';
+import { UserModel } from './demographic/user.model';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegistrationService {
+  private users: UserModel[] = [];
+  usersChanged = new Subject<UserModel[]>();
+
   constructor(private httpClient: HttpClient) {}
-  sendFileURL = 'http://preregistration.southindia.cloudapp.azure.com/dev-document/v0.1/pre-registration/registration/documents';
+  sendFileURL =
+    'http://preregistration.southindia.cloudapp.azure.com/dev-document/v0.1/pre-registration/registration/documents';
   BASE_URL = 'http://preregistration.southindia.cloudapp.azure.com/dev-demographic/v0.1/pre-registration/applications';
   // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
@@ -32,14 +37,42 @@ export class RegistrationService {
     };
 
     // const req = new HttpRequest('POST', 'http://A2ML27085:9092/v0.1/pre-registration/applications', obj, {
-    //   reportProgress: true
-    // });
+    //   reportProgress: true // A2ML21989
+    // }); // A2ML27085
     // return this.httpClient.request(req);
-    return this.httpClient.post('http://A2ML21989:9092/v0.1/pre-registration/applications', obj);
+    return this.httpClient.post('http://A2ML27085:9092/v0.1/pre-registration/applications', obj);
   }
 
   sendFile(formdata: FormData) {
     return this.httpClient.post(this.sendFileURL, formdata);
     // console.log('servvice called', formdata);
+  }
+
+  setUser(user: UserModel) {
+    this.users.push(user);
+    this.usersChanged.next(this.users.slice());
+  }
+
+  setUsers(users: UserModel[]) {
+    this.users = users;
+    this.usersChanged.next(this.users.slice());
+  }
+
+  updateUser(index: number, newUser: UserModel) {
+    this.users[index] = newUser;
+    this.usersChanged.next(this.users.slice());
+  }
+
+  deleteUser(index: number) {
+    this.users.splice(index, 1);
+    this.usersChanged.next(this.users.slice());
+  }
+
+  getUsersUI() {
+    return this.users.slice();
+  }
+
+  getUsersByIndex(index: number) {
+    return this.users[index];
   }
 }

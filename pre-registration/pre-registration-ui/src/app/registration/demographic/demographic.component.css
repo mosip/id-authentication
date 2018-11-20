@@ -9,13 +9,16 @@
 }
 
 .user-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.user-container > * {
+  /* display: flex;
+  flex-direction: column; */
+  min-width: 150px;
+  max-width: 500px;
   width: 100%;
 }
+/* 
+.user-container > * {
+  width: 100%;
+} */
 
 .wrapper {
   width: 100%;
@@ -25,7 +28,7 @@
 }
 
 .mat-form-field {
-  width: 300px;
+  width: 80%;
 }
 
 .highlight {
