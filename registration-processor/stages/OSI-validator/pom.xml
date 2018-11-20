@@ -82,9 +82,9 @@
 	</dependency> 
 	<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>mosip-regprocessor-rest-client</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency> 
+			<artifactId>registration-processor-rest-client</artifactId>
+			<version>${registration.processor.rest.client}</version>
+		</dependency>
 	<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
