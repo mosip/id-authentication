@@ -33,6 +33,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycAuthResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycInfo;
+import io.mosip.authentication.core.dto.indauth.KycResponseDTO;
 import io.mosip.authentication.core.dto.indauth.KycType;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -103,9 +104,6 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	@Autowired
 	DemoAuthService demoAuthService;
-
-	@Autowired
-	IdAuthServiceImpl idAuthServiceImpl;
 
 	/**
 	 * Process the authorisation type and authorisation response is returned.
@@ -180,8 +178,8 @@ public class AuthFacadeImpl implements AuthFacade {
 		}
 		values.put("data", changedDate);
 		values.put("time", changedTime);
-		Optional<UinEntity> uinEntity = idAuthServiceImpl.getUIN(refId);
-		values.put("uin", Optional.ofNullable(uinEntity.get().getId()));
+		Optional<String> uinOpt = idAuthService.getUIN(refId);
+		values.put("uin", Optional.ofNullable(uinOpt.get()));
 		values.put("authType",
 				Stream.of(AuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
 						.map(AuthType::getType).collect(Collectors.joining(",")));
@@ -273,7 +271,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		auditData();
 		return refId;
 	}
-
+	
 	/**
 	 * Audit data.
 	 */
@@ -284,24 +282,30 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Override
 	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO) {
 
-		String s = LocalDateTime.now().format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern")));
+		String resTime = new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date());
 		AuthResponseDTO authResponseTspDto = new AuthResponseDTO();
 		authResponseTspDto.setStatus("y");
 		authResponseTspDto.setErr(Collections.emptyList());
-		authResponseTspDto.setResTime(s);
+		authResponseTspDto.setResTime(resTime);
 		authResponseTspDto.setTxnID(authRequestDTO.getTxnID());
 		return authResponseTspDto;
 	}
 
 	@Override
-	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO)
+	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO)
 			throws IdAuthenticationBusinessException {
 		String refId = processIdType(kycAuthRequestDTO.getAuthRequest());
 		KycInfo info = kycService.retrieveKycInfo(refId, KycType.getEkycAuthType(env.getProperty("ekyc.type")),
 				kycAuthRequestDTO.isEPrintReq(), kycAuthRequestDTO.isSecLangReq());
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
+		KycResponseDTO response = new KycResponseDTO();
+		response.setAuth(authResponseDTO);
+		kycAuthResponseDTO.setResponse(response);
 		kycAuthResponseDTO.getResponse().setKyc(info);
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
+		kycAuthResponseDTO.setStatus(authResponseDTO.getStatus());
+		String resTime = new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date());
+		kycAuthResponseDTO.setResTime(resTime);
 		return kycAuthResponseDTO;
 	}
 

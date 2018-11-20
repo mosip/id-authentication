@@ -31,6 +31,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class OTPManager {
 
+	private static final String STATUS_SUCCESS = "success";
+
 	@Autowired
 	private RestHelper restHelper;
 
@@ -90,7 +92,7 @@ public class OTPManager {
 			restreqdto.setParams(params);
 			otpvalidateresponsedto = restHelper.requestSync(restreqdto);
 			isValidOtp = Optional.ofNullable(otpvalidateresponsedto).map(OTPValidateResponseDTO::getStatus)
-					.filter(status -> status.equalsIgnoreCase("true")).isPresent();
+					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
 		} catch (RestServiceException | IDDataValidationException e) {
 			logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(

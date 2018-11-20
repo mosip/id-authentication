@@ -13,7 +13,7 @@ public class MaskUtil {
 	
 	public static String generateMaskValue(String maskValue, int maskNo) {
 		char[] maskedDetail = maskValue.toCharArray();
-		for(int i=0; i<maskNo; i++) {
+		for(int i=0; i<maskNo && i < maskedDetail.length; i++) {
 			maskedDetail[i] = 'X';
 		}
 		return String.valueOf(maskedDetail);
