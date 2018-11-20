@@ -240,8 +240,18 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 				SessionContext.getInstance().getMapObject().put(RegistrationConstants.OPT_TO_REG_LAST_CAPTURED_TIME,
 						Instant.now());
 			}
-		} else {
+		} else if (RegistrationConstants.GPS_CAPTURE_FAILURE_MSG
+				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
+			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_006, RegistrationConstants.OPT_TO_REG_ICS‌_006_MSG,
+					RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+		} else if (RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE_ERRO_MSG
+				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))
+				|| RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE
+						.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {
 			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_005, RegistrationConstants.OPT_TO_REG_ICS‌_005_MSG,
+					RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
+		} else {
+			getErrorResponse(RegistrationConstants.OPT_TO_REG_ICS‌_007, RegistrationConstants.OPT_TO_REG_ICS‌_007_MSG,
 					RegistrationConstants.OPT_TO_REG_INFOTYPE, errorResponseDTOList);
 		}
 
