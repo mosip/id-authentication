@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.archiver.util.exception;
 
 import io.mosip.kernel.core.exception.BaseCheckedException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * The Class PacketNotFoundException.
@@ -30,7 +30,7 @@ public class PacketNotFoundException extends BaseCheckedException {
 	 *            the message
 	 */
 	public PacketNotFoundException(String message) {
-		super(PlatformErrorCodes.RPR_PDJ_PACKET_NOT_FOUND, message);
+		super(PlatformErrorMessages.RPR_PDJ_PACKET_NOT_AVAILABLE.getCode(), message);
 
 	}
 
@@ -45,7 +45,7 @@ public class PacketNotFoundException extends BaseCheckedException {
 	 *            the cause
 	 */
 	public PacketNotFoundException(String message, Throwable cause) {
-		super(PlatformErrorCodes.RPR_PDJ_PACKET_NOT_FOUND, message, cause);
+		super(PlatformErrorMessages.RPR_PDJ_PACKET_NOT_AVAILABLE.getCode(), message, cause);
 
 	}
 }

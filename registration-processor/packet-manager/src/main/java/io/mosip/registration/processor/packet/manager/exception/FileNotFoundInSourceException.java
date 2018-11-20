@@ -4,7 +4,7 @@
 package io.mosip.registration.processor.packet.manager.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 
 /**
@@ -33,7 +33,7 @@ public class FileNotFoundInSourceException extends BaseUncheckedException{
 	 * @param errorMessage the error message
 	 */
 	public FileNotFoundInSourceException(String errorMessage) {
-		super(PlatformErrorCodes.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE, errorMessage);
+		super(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE.getCode(), errorMessage);
 	}
 
 	/**
@@ -43,7 +43,7 @@ public class FileNotFoundInSourceException extends BaseUncheckedException{
 	 * @param cause the cause
 	 */
 	public FileNotFoundInSourceException(String message, Throwable cause) {
-		super(PlatformErrorCodes.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_SOURCE.getCode() + EMPTY_SPACE, message, cause);
 
 	}
 

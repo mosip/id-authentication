@@ -159,12 +159,12 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(registrationStatusDto);
 			isTransactionSuccessful = true;
 		} catch (IOException e) {
-			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getValue(), e);
+			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), e);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 
 		} catch (Exception ex) {
-			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getValue(), ex);
+			log.error(PlatformErrorMessages.STRUCTURAL_VALIDATION_FAILED.getMessage(), ex);
 			object.setInternalError(Boolean.TRUE);
 			description = "Internal error occured while processing registration  id : " + registrationId;
 		} finally {

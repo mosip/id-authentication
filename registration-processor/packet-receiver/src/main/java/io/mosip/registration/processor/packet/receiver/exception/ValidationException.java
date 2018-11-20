@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.receiver.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * ValidationException occurs when internal validation fails.
@@ -25,7 +25,7 @@ public class ValidationException extends BaseUncheckedException{
 	 * @param message the message
 	 */
 	public ValidationException(String message) {
-		super(PlatformErrorCodes.RPR_PKR_VALIDATION_ERROR, message);
+		super(PlatformErrorMessages.RPR_PKR_VALIDATION_EXCEPTION.getCode(), message);
 	}
 
 	/**
@@ -35,6 +35,6 @@ public class ValidationException extends BaseUncheckedException{
 	 * @param cause the cause
 	 */
 	public ValidationException(String message, Throwable cause) {
-		super(PlatformErrorCodes.RPR_PKR_VALIDATION_ERROR + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_PKR_VALIDATION_EXCEPTION.getCode() + EMPTY_SPACE, message, cause);
 	}
 }

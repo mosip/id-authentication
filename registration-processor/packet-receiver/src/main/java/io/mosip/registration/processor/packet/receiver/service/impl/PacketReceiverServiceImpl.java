@@ -84,14 +84,14 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 		if (!syncRegistrationService.isPresent(registrationId)) {
 			logger.info("Registration Packet is Not yet sync in Sync table");
-			throw new PacketNotSyncException(PlatformErrorMessages.PACKET_NOT_YET_SYNC.getValue());
+			throw new PacketNotSyncException(PlatformErrorMessages.RPR_PKR_PACKET_NOT_YET_SYNC.getMessage());
 		}
 
 		if (file.getSize() > getMaxFileSize()) {
-			throw new FileSizeExceedException(PlatformErrorMessages.PACKET_SIZE_GREATER_THAN_LIMIT.getValue());
+			throw new FileSizeExceedException(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getMessage());
 		}
 		if (!(file.getOriginalFilename().endsWith(getFileExtension()))) {
-			throw new PacketNotValidException(PlatformErrorMessages.INVALID_PACKET_FORMAT.getValue());
+			throw new PacketNotValidException(PlatformErrorMessages.RPR_PKR_INVALID_PACKET_FORMAT.getMessage());
 		} else if (!(isDuplicatePacket(registrationId))) {
 			try {
 				fileManager.put(registrationId, file.getInputStream(), DirectoryPathDto.LANDING_ZONE);
@@ -127,7 +127,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 						registrationId);
 			}
 		} else {
-			throw new DuplicateUploadRequestException(PlatformErrorMessages.DUPLICATE_PACKET_RECIEVED.getValue());
+			throw new DuplicateUploadRequestException(PlatformErrorMessages.RPR_PKR_DUPLICATE_PACKET_RECIEVED.getMessage());
 		}
 
 		return storageFlag;

@@ -44,7 +44,7 @@ public class JsonUtil {
 		try {
 			return gson.fromJson(jsonObject, clazz);
 		} catch (Exception e) {
-			throw new UnsupportedEncodingException(PlatformErrorMessages.UNSUPPORTED_ENCODING.getValue());
+			throw new UnsupportedEncodingException(PlatformErrorMessages.RPR_CMB_UNSUPPORTED_ENCODING.getMessage());
 		}
 	}
 

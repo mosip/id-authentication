@@ -85,7 +85,7 @@ public class Decryptor {
 			outstream = new ByteArrayInputStream(aesDecryptedData);
 			isTransactionSuccessful=true;
 		} catch (IOException | MosipInvalidDataException | MosipInvalidKeyException e) {
-			throw new PacketDecryptionFailureException(PlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
+			throw new PacketDecryptionFailureException(PlatformErrorMessages.RPR_PDJ_PACKET_DECRYPTION_FAILURE.getMessage(),
 					e);
 		} finally {
 
@@ -115,7 +115,7 @@ public class Decryptor {
 			rprivateKey = IOUtils.toByteArray(fileInputStream);
 			isTransactionSuccessful=true;
 		} catch (IOException e) {
-			throw new PacketDecryptionFailureException(PlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
+			throw new PacketDecryptionFailureException(PlatformErrorMessages.RPR_PDJ_PACKET_DECRYPTION_FAILURE.getMessage(),
 					e);
 		}finally {
 

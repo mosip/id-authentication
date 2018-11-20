@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -34,7 +33,7 @@ public class CoreKernelNotRespondingExceptionTest {
 		String fileName = "sample.zip";
 
 		CoreKernelNotRespondingException ex = new CoreKernelNotRespondingException(
-				PlatformErrorMessages.CORE_KERNEL_NOT_RESPONDING.getValue());
+				PlatformErrorMessages.RPR_PKM_CORE_KERNEL_NOT_RESPONDING.getMessage());
 		doThrow(ex).when(fileManager).cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileName);
 		
 		try {
@@ -42,9 +41,9 @@ public class CoreKernelNotRespondingExceptionTest {
 			fail();
 		} catch (CoreKernelNotRespondingException e) {
 			assertThat("Should throw Core Kernel Not Responding Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorCodes.RPR_PKM_CORE_KERNEL_NOT_RESPONDING));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_CORE_KERNEL_NOT_RESPONDING.getCode()));
 			assertThat("Should throw Core Kernel Not Responding Exceptionwith correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.CORE_KERNEL_NOT_RESPONDING.getValue()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_CORE_KERNEL_NOT_RESPONDING.getMessage()));
 
 		}
 

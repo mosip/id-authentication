@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.manager.exception.systemexception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * TimeoutException occurs when time exceeds specified time limit.
@@ -26,7 +26,7 @@ public class TimeoutException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public TimeoutException(String message) {
-		super(PlatformErrorCodes.RPR_PKM_TIMEOUT, message);
+		super(PlatformErrorMessages.RPR_PKM_TIMEOUT_EXCEPTION.getCode(), message);
 	}
 
 	/**
@@ -36,7 +36,7 @@ public class TimeoutException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public TimeoutException(String message,Throwable cause) {
-		super(PlatformErrorCodes.RPR_PKM_TIMEOUT + EMPTY_SPACE, message,cause);
+		super(PlatformErrorMessages.RPR_PKM_TIMEOUT_EXCEPTION.getCode() + EMPTY_SPACE, message,cause);
 	}
 
 

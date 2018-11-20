@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.receiver.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * FileSizeExceedException occurs when uploaded file size is more than specified
@@ -26,7 +26,7 @@ public class FileSizeExceedException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public FileSizeExceedException(String message) {
-		super(PlatformErrorCodes.RPR_PKR_FILE_SIZE_EXCEEDED, message);
+		super(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getCode(), message);
 	}
 
 	/**
@@ -36,6 +36,6 @@ public class FileSizeExceedException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public FileSizeExceedException(String message, Throwable cause) {
-		super(PlatformErrorCodes.RPR_PKR_FILE_SIZE_EXCEEDED + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_PKR_PACKET_SIZE_GREATER_THAN_LIMIT.getCode() + EMPTY_SPACE, message, cause);
 	}
 }

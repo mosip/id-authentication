@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -34,7 +33,7 @@ public class TimeoutExceptionTest {
 	@Test
 	public void TestTimeoutException() throws IOException {
 		String fileName = "sample";
-		TimeoutException ex = new TimeoutException(PlatformErrorMessages.TIMEOUT_EXCEPTION.getValue());
+		TimeoutException ex = new TimeoutException(PlatformErrorMessages.RPR_PKM_TIMEOUT_EXCEPTION.getMessage());
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
 		try {
@@ -42,9 +41,9 @@ public class TimeoutExceptionTest {
 			fail();
 		} catch (TimeoutException e) {
 			assertThat("Should throw  Timeout Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorCodes.RPR_PKM_TIMEOUT));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_TIMEOUT_EXCEPTION.getCode()));
 			assertThat("Should throw   Timeout Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.TIMEOUT_EXCEPTION.getValue()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_TIMEOUT_EXCEPTION.getMessage()));
 		}
 
 	}

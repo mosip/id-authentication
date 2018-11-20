@@ -82,7 +82,7 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return entity != null ? convertEntityToDto(entity) : null;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -115,7 +115,7 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return convertEntityListToDtoList(entities);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -156,7 +156,7 @@ public class RegistrationStatusServiceImpl
 			transactionDto.setReferenceIdType("Added registration record");
 			transcationStatusService.addRegistrationTransaction(transactionDto);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -200,7 +200,7 @@ public class RegistrationStatusServiceImpl
 				transcationStatusService.addRegistrationTransaction(transactionDto);
 			}
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -234,7 +234,7 @@ public class RegistrationStatusServiceImpl
 			isTransactionSuccessful = true;
 			return convertEntityListToDtoList(registrationStatusEntityList);
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();
@@ -269,7 +269,7 @@ public class RegistrationStatusServiceImpl
 			return convertEntityListToDtoListAndGetExternalStatus(registrationStatusEntityList);
 
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_401.toString() : EventId.RPR_405.toString();

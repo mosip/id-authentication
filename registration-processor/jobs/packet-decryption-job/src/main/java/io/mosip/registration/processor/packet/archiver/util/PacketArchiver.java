@@ -77,12 +77,12 @@ public class PacketArchiver {
 				isTransactionSuccessful=true;
 			} else {
 
-				throw new PacketNotFoundException(PlatformErrorMessages.PACKET_NOT_FOUND_EXCEPTION.getValue());
+				throw new PacketNotFoundException(PlatformErrorMessages.RPR_PDJ_PACKET_NOT_AVAILABLE.getMessage());
 			}
 
 		} catch (IOException e) {
 			LOGGER.error(LOGDISPLAY,"Packet archive failed", e);
-			throw new UnableToAccessPathException(PlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
+			throw new UnableToAccessPathException(PlatformErrorMessages.RPR_PDJ_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();

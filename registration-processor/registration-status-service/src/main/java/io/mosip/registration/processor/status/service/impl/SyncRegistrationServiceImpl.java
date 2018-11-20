@@ -103,7 +103,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 			isTransactionSuccessful = true;
 			return list;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.REGISTRATION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_RGS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			String  description = "";
@@ -116,7 +116,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				eventId = EventId.RPR_405.toString();
 				eventName = EventName.EXCEPTION.toString();
 				eventType = EventType.SYSTEM.toString();
-				description = "Registartion Id's syn is unsuccessful";
+				description = "Registartion Id's sync is unsuccessful";
 			}
 			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());

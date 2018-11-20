@@ -68,7 +68,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 				eventBus.complete(result.result());
 				logger.debug(verticleName + " deployed successfully");
 			} else {
-				throw new DeploymentFailureException(PlatformErrorMessages.DEPLOYMENT_FAILURE.getValue());
+				throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_DEPLOYMENT_FAILURE.getMessage());
 			}
 		});
 
@@ -76,7 +76,7 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 			mosipEventBus = new MosipEventBus(eventBus.get());
 		} catch (InterruptedException | ExecutionException e) {
 			Thread.currentThread().interrupt();
-			throw new DeploymentFailureException(PlatformErrorMessages.DEPLOYMENT_FAILURE.getValue(), e);
+			throw new DeploymentFailureException(PlatformErrorMessages.RPR_CMB_DEPLOYMENT_FAILURE.getMessage(), e);
 
 		}
 		return mosipEventBus;

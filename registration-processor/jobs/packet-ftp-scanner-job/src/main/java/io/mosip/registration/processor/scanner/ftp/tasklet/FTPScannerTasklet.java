@@ -85,7 +85,7 @@ public class FTPScannerTasklet implements Tasklet {
 				LOGGER.error(LOGDISPLAY, DUPLICATE_UPLOAD, e);
 			} catch (IOException e) {
 				FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
-						PlatformErrorMessages.FTP_FOLDER_NOT_ACCESSIBLE.getValue(), e);
+						PlatformErrorMessages.RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE.getMessage(), e);
 				LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 						ftpNotAccessibleException);
 			}
@@ -111,7 +111,7 @@ public class FTPScannerTasklet implements Tasklet {
 						Files.delete(file.toPath());
 					} catch (IOException e) {
 						FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
-								PlatformErrorMessages.FTP_FOLDER_NOT_ACCESSIBLE.getValue(), e);
+								PlatformErrorMessages.RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE.getMessage(), e);
 						LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 								ftpNotAccessibleException);
 					}
@@ -120,7 +120,7 @@ public class FTPScannerTasklet implements Tasklet {
 			deletepath.close();
 		} catch (IOException e) {
 			FTPNotAccessibleException ftpNotAccessibleException = new FTPNotAccessibleException(
-					PlatformErrorMessages.FTP_FOLDER_NOT_ACCESSIBLE.getValue(), e);
+					PlatformErrorMessages.RPR_PSJ_FTP_FOLDER_NOT_ACCESSIBLE.getMessage(), e);
 			LOGGER.error(ftpNotAccessibleException.getErrorCode(), ftpNotAccessibleException.getErrorText(),
 					ftpNotAccessibleException);
 		}

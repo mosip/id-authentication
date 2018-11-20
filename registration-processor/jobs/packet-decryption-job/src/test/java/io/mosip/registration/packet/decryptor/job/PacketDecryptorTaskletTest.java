@@ -247,7 +247,7 @@ public class PacketDecryptorTaskletTest {
 
 		Mockito.when(adapter.getPacket(any(String.class))).thenReturn(stream);
 
-		PacketDecryptionFailureException exception = new PacketDecryptionFailureException(PlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue(),
+		PacketDecryptionFailureException exception = new PacketDecryptionFailureException(PlatformErrorMessages.RPR_PDJ_PACKET_DECRYPTION_FAILURE.getMessage(),
 				new IOException());
 
 		Mockito.when(decryptor.decrypt(any(InputStream.class), any(String.class))).thenThrow(exception);
@@ -258,7 +258,7 @@ public class PacketDecryptorTaskletTest {
 			@Override
 			public boolean matches(final ILoggingEvent argument) {
 				return ((ILoggingEvent) argument).getFormattedMessage()
-						.contains(PlatformErrorMessages.PACKET_DECRYPTION_FAILURE.getValue());
+						.contains(PlatformErrorMessages.RPR_PDJ_PACKET_DECRYPTION_FAILURE.getMessage());
 			}
 		}));
 	}

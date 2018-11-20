@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -34,7 +33,7 @@ public class UnexceptedExceptionTest {
 	@Test
 	public void TestUnexceptedException() throws IOException {
 		String fileName = "sample";
-		UnexpectedException ex = new UnexpectedException(PlatformErrorMessages.UNEXCEPTED_EXCEPTION.getValue());
+		UnexpectedException ex = new UnexpectedException(PlatformErrorMessages.RPR_PKM_UNEXCEPTED_EXCEPTION.getMessage());
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
 		try {
@@ -42,9 +41,9 @@ public class UnexceptedExceptionTest {
 			fail();
 		} catch (UnexpectedException e) {
 			assertThat("Should throw  Unexpected Exception  with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorCodes.RPR_PKM_UNEXCEPTED_ERROR));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_UNEXCEPTED_EXCEPTION.getCode()));
 			assertThat("Should throw  Unexpected Exception  with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.UNEXCEPTED_EXCEPTION.getValue()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_UNEXCEPTED_EXCEPTION.getMessage()));
 		}
 
 	}

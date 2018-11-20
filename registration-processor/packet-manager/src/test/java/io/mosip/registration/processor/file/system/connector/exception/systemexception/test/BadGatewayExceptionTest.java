@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
@@ -43,7 +42,7 @@ public class BadGatewayExceptionTest {
 	@Test
 	public void TestBadGatewayException() throws FileNotFoundException, IOException {
 		String fileName = "sample";
-		BadGatewayException ex = new BadGatewayException(PlatformErrorMessages.BAD_GATEWAY.getValue());
+		BadGatewayException ex = new BadGatewayException(PlatformErrorMessages.RPR_PKM_BAD_GATEWAY.getMessage());
 
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
@@ -52,9 +51,9 @@ public class BadGatewayExceptionTest {
 			fail();
 		} catch (BadGatewayException e) {
 			assertThat("Should throw Bad Gateway exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorCodes.RPR_PKM_BAD_GATEWAY));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_BAD_GATEWAY.getCode()));
 			assertThat("Should throw  Bad Gateway exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.BAD_GATEWAY.getValue()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_BAD_GATEWAY.getMessage()));
 		}
 
 	}

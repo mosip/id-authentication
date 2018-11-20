@@ -98,16 +98,16 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				if (fileExistsInSource) {
 					delete(srcFolderLoc, fileName);
 				} else {
-					throw new FileNotFoundInSourceException(PlatformErrorMessages.FILE_NOT_FOUND_IN_SOURCE.getValue());
+					throw new FileNotFoundInSourceException(PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 				}
 			} else {
-				throw new FileNotFoundInDestinationException(PlatformErrorMessages.FILE_NOT_FOUND_IN_DESTINATION.getValue());
+				throw new FileNotFoundInDestinationException(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage());
 
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-			throw new FilePathNotAccessibleException(PlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
+			throw new FilePathNotAccessibleException(PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 		}
 
@@ -189,16 +189,16 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 				if (fileExistsInSource) {
 					delete(srcFolderLoc, childFolderName + File.separator + fileName);
 				} else {
-					throw new FileNotFoundInSourceException(PlatformErrorMessages.FILE_NOT_FOUND_IN_SOURCE.getValue());
+					throw new FileNotFoundInSourceException(PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 				}
 			} else {
-				throw new FileNotFoundInDestinationException(PlatformErrorMessages.FILE_NOT_FOUND_IN_DESTINATION.getValue());
+				throw new FileNotFoundInDestinationException(PlatformErrorMessages.RPR_PKM_FILE_NOT_FOUND_IN_DESTINATION.getMessage());
 
 			}
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-			throw new FilePathNotAccessibleException(PlatformErrorMessages.FILE_PATH_NOT_ACCESSIBLE.getValue());
+			throw new FilePathNotAccessibleException(PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 		}
 
@@ -213,7 +213,7 @@ public class FileManagerImpl implements FileManager<DirectoryPathDto, InputStrea
 		if (isFilePresent) {
 			delete(workingDirectory, fileName);
 		} else {
-			throw new FileNotFoundInSourceException(PlatformErrorMessages.FILE_NOT_FOUND_IN_SOURCE.getValue());
+			throw new FileNotFoundInSourceException(PlatformErrorMessages.RPR_PKM_FILE_PATH_NOT_ACCESSIBLE.getMessage());
 
 		}
 	}

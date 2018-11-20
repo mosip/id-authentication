@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.manager.exception.systemexception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorCodes;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 /**
  * This is unexpected exception.
@@ -25,7 +25,7 @@ public class UnexpectedException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public UnexpectedException(String message) {
-		super(PlatformErrorCodes.RPR_PKM_UNEXCEPTED_ERROR, message);
+		super(PlatformErrorMessages.RPR_PKM_UNEXCEPTED_EXCEPTION.getCode(), message);
 	}
 
 	/**
@@ -35,6 +35,6 @@ public class UnexpectedException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public UnexpectedException(String message, Throwable cause) {
-		super(PlatformErrorCodes.RPR_PKM_UNEXCEPTED_ERROR + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_PKM_UNEXCEPTED_EXCEPTION.getCode() + EMPTY_SPACE, message, cause);
 	}
 }

@@ -49,7 +49,7 @@ public class BridgeUtil {
 				configuration.complete(config.result());
 			} else {
 				throw new ConfigurationServerFailureException(
-						PlatformErrorMessages.CONFIGURATION_SERVER_FAILURE_EXCEPTION.getValue());
+						PlatformErrorMessages.RPR_CMB_CONFIGURATION_SERVER_FAILURE_EXCEPTION.getMessage());
 			}
 		});
 
@@ -58,7 +58,7 @@ public class BridgeUtil {
 		} catch (InterruptedException | ExecutionException e) {
 			Thread.currentThread().interrupt();
 			throw new ConfigurationServerFailureException(
-					PlatformErrorMessages.CONFIGURATION_SERVER_FAILURE_EXCEPTION.getValue(), e);
+					PlatformErrorMessages.RPR_CMB_CONFIGURATION_SERVER_FAILURE_EXCEPTION.getMessage(), e);
 		}
 
 	}

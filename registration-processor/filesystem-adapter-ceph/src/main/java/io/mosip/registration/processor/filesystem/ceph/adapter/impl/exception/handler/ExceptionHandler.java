@@ -22,14 +22,14 @@ public class ExceptionHandler {
 	
 	public static void exceptionHandler(AmazonS3Exception e) {
 		if(e.getStatusCode() == 403) {
-			throw new InvalidConnectionParameters(PlatformErrorMessages.INVALID_CONNECTION_PARAMETERS.getValue());
+			throw new InvalidConnectionParameters(PlatformErrorMessages.RPR_FAC_INVALID_CONNECTION_PARAMETERS.getMessage());
 		}
 		else if(e.getStatusCode() == 404) {
-			throw new PacketNotFoundException(PlatformErrorMessages.INVALID_PACKET_FILE_NAME.getValue());
+			throw new PacketNotFoundException(PlatformErrorMessages.RPR_FAC_PACKET_NOT_AVAILABLE.getMessage());
 		}
 	}
 	public static void exceptionHandler(SdkClientException e) {
-		throw new ConnectionUnavailableException(PlatformErrorMessages.INVALID_CONNECTION_PATH.getValue());
+		throw new ConnectionUnavailableException(PlatformErrorMessages.RPR_FAC_CONNECTION_NOT_AVAILABLE.getMessage());
 	}
 
 }

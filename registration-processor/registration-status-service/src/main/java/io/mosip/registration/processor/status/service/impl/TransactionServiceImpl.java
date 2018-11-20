@@ -30,7 +30,7 @@ public class TransactionServiceImpl implements TransactionService<TransactionDto
 			TransactionEntity entity = convertDtoToEntity(transactionStatusDto);
 			return transactionRepositary.save(entity);
 		} catch (DataAccessLayerException e) {
-			throw new TransactionTableNotAccessibleException(PlatformErrorMessages.TRANSACTION_TABLE_NOT_ACCESSIBLE.getValue(), e);
+			throw new TransactionTableNotAccessibleException(PlatformErrorMessages.RPR_RGS_TRANSACTION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		}
 
 	}
