@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -154,9 +155,6 @@ public class LoginController extends BaseController implements Initializable, MF
 	 * @throws RegBaseCheckedException
 	 */
 	public String loadInitialScreen(Stage primaryStage) throws RegBaseCheckedException {
-
-		
-		
 		
 		LOGGER.debug("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Retrieve Login mode");
@@ -200,11 +198,17 @@ public class LoginController extends BaseController implements Initializable, MF
 			primaryStage.setScene(scene);
 			primaryStage.show();
 
-		} catch (IOException | RuntimeException exception) {
+		} catch (IOException ioException) {
 			
 			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
 			
+			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+					REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
+		}catch (RuntimeException runtimeException) {
+			
+			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, runtimeException.getMessage());
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
 		}
