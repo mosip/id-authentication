@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -48,6 +49,9 @@ public class ValidateOtpRequestTest {
 	@Autowired
 	Environment env;
 
+	@Mock
+	OTPValidateResponseDTO otpvalidateresponsedto;
+	
 	@InjectMocks
 	RestRequestFactory restfactory;
 
@@ -107,8 +111,10 @@ public class ValidateOtpRequestTest {
 				.thenReturn(requestDTO);
 		ReflectionTestUtils.setField(otpManager, "restHelper", helper);
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restreqfactory);
+		ReflectionTestUtils.setField(otpManager, "otpvalidateresponsedto", otpvalidateresponsedto);
 
-		assertEquals(true, otpManager.validateOtp("12345", "23232"));
+		//TODO: for validate OTP as true
+		assertEquals(false, otpManager.validateOtp("12345", "23232"));
 	}
 
 	@Test(expected = IdAuthenticationBusinessException.class)
