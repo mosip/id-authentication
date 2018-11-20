@@ -27,6 +27,7 @@ def projectToBuild = 'pre-registration/pre-registration-ui'
     stage('npm install') {
         sh "pwd"
         sh "cd DEV/pre-registration/pre-registration-ui"
+        sh "pwd"
         sh "npm install"
     }
 
