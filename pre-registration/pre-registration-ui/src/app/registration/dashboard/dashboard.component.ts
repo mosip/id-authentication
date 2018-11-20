@@ -117,7 +117,7 @@ export class DashBoardComponent implements OnInit {
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             console.log(confirm);
-            // Api will be called here, status will be checked and then message displayed
+        //    this.regService.deleteRegistration()
             const message = {
               case: 'MESSAGE',
               title: 'Success',

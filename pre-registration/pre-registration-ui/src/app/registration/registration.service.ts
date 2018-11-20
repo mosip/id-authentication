@@ -42,4 +42,12 @@ export class RegistrationService {
     return this.httpClient.post(this.sendFileURL, formdata);
     // console.log('servvice called', formdata);
   }
+
+  deleteRegistration(preId: string) {
+    return this.httpClient.delete('http://A2ML21989:9092/v0.1/pre-registration/applications', {
+      observe: 'body',
+      responseType: 'json',
+      params: new HttpParams().append('preId', preId)
+    });
+  }
 }
