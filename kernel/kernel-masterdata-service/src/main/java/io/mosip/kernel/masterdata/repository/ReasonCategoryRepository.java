@@ -12,7 +12,7 @@ import io.mosip.kernel.masterdata.entity.ReasonCategory;
  *
  */
 @Repository
-public interface ReasonRepository extends BaseRepository<ReasonCategory, String> {
+public interface ReasonCategoryRepository extends BaseRepository<ReasonCategory, String> {
 
 	
 	/**

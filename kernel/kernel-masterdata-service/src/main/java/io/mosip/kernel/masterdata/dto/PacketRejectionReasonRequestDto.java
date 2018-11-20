@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReasonRequestDto implements Serializable {
+public class PacketRejectionReasonRequestDto implements Serializable {
 
 	/**
 	 * 

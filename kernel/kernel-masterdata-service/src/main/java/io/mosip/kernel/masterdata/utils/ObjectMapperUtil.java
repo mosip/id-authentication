@@ -17,7 +17,7 @@ import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
-import io.mosip.kernel.masterdata.dto.ReasonResponseDto;
+import io.mosip.kernel.masterdata.dto.PacketRejectionReasonResponseDto;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
@@ -60,7 +60,7 @@ public class ObjectMapperUtil {
 	public List<ReasonCategoryDto> reasonConverter(List<ReasonCategory> reasonCategories) {
 		Objects.requireNonNull(reasonCategories, "list cannot be null");
 		List<ReasonCategoryDto> reasonCategoryDtos = null;
-		reasonCategoryDtos = reasonCategories.stream()
+		reasonCategoryDtos = reasonCategories.parallelStream()
 				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(),
 						reasonCategory.getName(), reasonCategory.getDescription(),
 						reasonCategory.getLangCode(), reasonCategory.getIsActive(),
@@ -71,7 +71,7 @@ public class ObjectMapperUtil {
 
 	}
 
-	public List<ReasonCategory> reasonConvertDtoToEntity(ReasonResponseDto reasonCategories) {
+	public List<ReasonCategory> reasonConvertDtoToEntity(PacketRejectionReasonResponseDto reasonCategories) {
 
 		Objects.requireNonNull(reasonCategories, "list cannot be null");
 		List<ReasonCategory> reasonCategoryDtos = null;

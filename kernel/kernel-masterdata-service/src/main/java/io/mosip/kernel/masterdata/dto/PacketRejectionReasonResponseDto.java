@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReasonResponseDto {
+public class PacketRejectionReasonResponseDto {
 	@JsonInclude(Include.NON_NULL)
 	private List<ReasonCategoryDto> reasonCategories;
 	

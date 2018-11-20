@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.PacketRejectionReasonErrorCode;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
-import io.mosip.kernel.masterdata.dto.ReasonRequestDto;
-import io.mosip.kernel.masterdata.dto.ReasonResponseDto;
+import io.mosip.kernel.masterdata.dto.PacketRejectionReasonRequestDto;
+import io.mosip.kernel.masterdata.dto.PacketRejectionReasonResponseDto;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.ReasonCategoryId;
 import io.mosip.kernel.masterdata.entity.ReasonList;
@@ -22,22 +22,22 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.ReasonListRepository;
-import io.mosip.kernel.masterdata.repository.ReasonRepository;
-import io.mosip.kernel.masterdata.service.ReasonService;
+import io.mosip.kernel.masterdata.repository.ReasonCategoryRepository;
+import io.mosip.kernel.masterdata.service.PacketRejectionReasonService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 
 @Service
-public class ReasonServiceImpl implements ReasonService {
+public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonService {
 
 	@Autowired
-	ReasonRepository reasonRepository;
+	ReasonCategoryRepository reasonRepository;
 	
 	@Autowired
 	ReasonListRepository reasonListRepository;
 
 	@Autowired
-	ObjectMapperUtil ObjectMapperUtil;
+	ObjectMapperUtil objectMapperUtil;
 
 	@Autowired
 	MetaDataUtils metaDataUtils;
@@ -46,10 +46,10 @@ public class ReasonServiceImpl implements ReasonService {
 	DataMapper dataMapper;
 
 	@Override
-	public ReasonResponseDto getAllReasons() {
+	public PacketRejectionReasonResponseDto getAllReasons() {
 		List<ReasonCategory> reasonCategories = null;
 		List<ReasonCategoryDto> reasonCategoryDtos = null;
-		ReasonResponseDto reasonResponseDto = new ReasonResponseDto();
+		PacketRejectionReasonResponseDto reasonResponseDto = new PacketRejectionReasonResponseDto();
 
 		try {
 			reasonCategories = reasonRepository.findReasonCategoryByIsActiveTrueAndIsDeletedFalse();
@@ -60,7 +60,7 @@ public class ReasonServiceImpl implements ReasonService {
 		}
 		if (reasonCategories != null && !reasonCategories.isEmpty()) {
 			try {
-				reasonCategoryDtos = ObjectMapperUtil.reasonConverter(reasonCategories);
+				reasonCategoryDtos = objectMapperUtil.reasonConverter(reasonCategories);
 			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
 				throw new DataNotFoundException(
 						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION.getErrorCode(),
@@ -79,11 +79,11 @@ public class ReasonServiceImpl implements ReasonService {
 	}
 
 	@Override
-	public ReasonResponseDto getReasonsBasedOnLangCodeAndCategoryCode(String categoryCode, String langCode) {
+	public PacketRejectionReasonResponseDto getReasonsBasedOnLangCodeAndCategoryCode(String categoryCode, String langCode) {
 
 		List<ReasonCategory> reasonCategories = null;
 		List<ReasonCategoryDto> reasonCategoryDtos = null;
-		ReasonResponseDto reasonResponseDto = new ReasonResponseDto();
+		PacketRejectionReasonResponseDto reasonResponseDto = new PacketRejectionReasonResponseDto();
 
 		try {
 			reasonCategories = reasonRepository
@@ -95,7 +95,7 @@ public class ReasonServiceImpl implements ReasonService {
 		}
 		if (reasonCategories != null && !reasonCategories.isEmpty()) {
 			try {
-				reasonCategoryDtos = ObjectMapperUtil.reasonConverter(reasonCategories);
+				reasonCategoryDtos = objectMapperUtil.reasonConverter(reasonCategories);
 			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
 				throw new DataNotFoundException(
 						PacketRejectionReasonErrorCode.PACKET_REJECTION_REASONS_MAPPING_EXCEPTION.getErrorCode(),
@@ -112,11 +112,11 @@ public class ReasonServiceImpl implements ReasonService {
 	}
 
 	@Override
-	public ReasonResponseDto saveReasonCategories(ReasonRequestDto reasonRequestDto) {
+	public PacketRejectionReasonResponseDto saveReasonCategories(PacketRejectionReasonRequestDto reasonRequestDto) {
 		List<ReasonCategory> reasonCategories = metaDataUtils.setCreateMetaData(reasonRequestDto.getReasonCategories(),
 				ReasonCategory.class);
 		List<ReasonCategoryId> reasonCategoryIds = new ArrayList<>();
-		ReasonResponseDto reasonResponseDto = new ReasonResponseDto();
+		PacketRejectionReasonResponseDto reasonResponseDto = new PacketRejectionReasonResponseDto();
 		ReasonCategoryId reasonCategoryId = new ReasonCategoryId();
 		List<ReasonCategory> resultantReasonCategory = null;
 		try {
@@ -149,11 +149,11 @@ public class ReasonServiceImpl implements ReasonService {
 	}
 
 	@Override
-	public ReasonResponseDto saveReasonList(ReasonRequestDto reasonRequestDto) {
+	public PacketRejectionReasonResponseDto saveReasonList(PacketRejectionReasonRequestDto reasonRequestDto) {
 		List<ReasonList> reasonList = metaDataUtils.setCreateMetaData(reasonRequestDto.getReasonList(),
 				ReasonList.class);
 		List<ReasonListId> reasonListIds = new ArrayList<>();
-		ReasonResponseDto reasonResponseDto = new ReasonResponseDto();
+		PacketRejectionReasonResponseDto reasonResponseDto = new PacketRejectionReasonResponseDto();
 		ReasonListId reasonListId = new ReasonListId();
 		List<ReasonList> resultantReasonList = null;
 		try {
