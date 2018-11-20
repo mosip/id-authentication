@@ -1,28 +1,16 @@
 node {
 
-def branch = 'DEV'
-def projectToBuild = 'pre-registration/pre-registration-ui'  
-
- stage('------- Checkout --------') {
+ stage('SCM Checkout') {
   dir(branch) {
-   checkout([$class: 'GitSCM',
-    branches: [
-     [name: branch]
-    ],
-    userRemoteConfigs: [
-     [url: 'https://github.com/mosip/mosip', credentialsId: '66261c9d-f8b9-41d6-96f5-403790c63e9e']
-    ],
+   checkout([$class: 'GitSCM', 
+    branches: [[name: '*/DEV']],
+    doGenerateSubmoduleConfigurations: false,
     extensions: [
-
-     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*'],
-     [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
-     ]]
-
-    ],
-   ])
-  }
- }
+        [$class: 'SparseCheckoutPaths',  sparseCheckoutPaths:[[$class:'SparseCheckoutPath', path:'pre-registration/pre-registration-ui/']]]
+                ],
+    submoduleCfg: [],
+    userRemoteConfigs: [[credentialsId: '66261c9d-f8b9-41d6-96f5-403790c63e9e',url: 'https://github.com/mosip/mosip']]])
+    }
     stage('npm install') {
         sh "npm install" 
         sh "npm i -g @angular/cli@6.1.4"
