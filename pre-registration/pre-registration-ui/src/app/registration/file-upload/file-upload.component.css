@@ -5,6 +5,8 @@
   position: absolute;
   left: 1.3vw;
   bottom: 0;
+  display: flex;
+  flex-direction: column;
 }
 .browseDiv {
   position: absolute;
@@ -14,7 +16,7 @@
   height: 50%;
 }
 .browseInput {
-  width: 100%;
+  width: 90%;
   height: 100%;
 }
 .documentWrapper {
@@ -23,13 +25,20 @@
   left: 1em;
 }
 
-.documentWrapper > mat-form-field {
-  width: 50%;
-}
-
-.documentWrapper > mat-form-field {
-  width: 50%;
-}
 mat-select:focus {
   font-weight: 800;
+}
+.docsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  /*margin-right: 70%;*/
+}
+.docsContainer > * {
+  width: 100%;
+}
+
+p.fileName {
+  padding: 1em 10px 10px 10px;
 }

@@ -8,6 +8,26 @@ import { RegistrationService } from '../registration.service';
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent implements OnInit {
+  fileName = ['', '', '', ''];
+  documentIndex;
+  LOD = [
+    {
+      document_name: 'POA',
+      valid_docs: ['passport', 'Electricity Bill']
+    },
+    {
+      document_name: 'POI',
+      valid_docs: ['passport', 'Bank Pass Book']
+    },
+    {
+      document_name: 'POB',
+      valid_docs: ['passport', 'Bank Pass Book']
+    },
+    {
+      document_name: 'POR',
+      valid_docs: ['passport', 'Bank Pass Book']
+    }
+  ];
   documentString = {
     prereg_id: '59276903416082',
     doc_cat_code: 'POA',
@@ -18,12 +38,15 @@ export class FileUploadComponent implements OnInit {
     upd_by: '9217148168',
     cr_by: 'Rajath'
   };
-  POAFU = false;
-  POIFU = false;
-  POBFU = false;
-  PORFU = false;
 
-  disabled = true;
+  POAFileName = '';
+  POIFileName = '';
+  POBFileName = '';
+  PORFileName = '';
+
+  browseDisabled = true;
+
+  // disabled = true;
   POADocuments = [
     {
       name: 'Passport',
@@ -39,7 +62,7 @@ export class FileUploadComponent implements OnInit {
     }
   ];
 
-  documents = ['POA', 'POI', 'POB', 'POR'];
+  documents = ['Document type POA', 'Document type POI', 'Document type POB', 'Document type POR'];
 
   fileToUpload: File = null;
   DataSent = false;
@@ -81,28 +104,23 @@ export class FileUploadComponent implements OnInit {
   ngOnInit() {}
 
   handleFileInput(files: FileList) {
+    console.log('files', files, ' number:', this.documentIndex, 'name: ', files.item(0).name);
     const formData = new FormData();
     formData.append('documentString', JSON.stringify(this.documentString));
     formData.append('file', files.item(0));
-    this.registration.sendFile(formData).subscribe(response => {
-      console.log(response);
-    });
+    // this.registration.sendFile(formData).subscribe(response => {
+    //   console.log(response);
+    // });
+    this.browseDisabled = true;
+    this.fileName[this.documentIndex] = files.item(0).name;
   }
 
-  selectChange(event) {
-    console.log(event.source._id);
-    const id = event.source._id;
-    if (id === 'POA') {
-      this.POAFU = true;
-    }
-    if (id === 'POI') {
-      this.POIFU = true;
-    }
-    if (id === 'POB') {
-      this.POBFU = true;
-    }
-    if (id === 'POR') {
-      this.PORFU = true;
-    }
+  selectChange(event, index: number) {
+    this.browseDisabled = false;
+    this.documentIndex = index;
+  }
+
+  onFilesChange(fileList: FileList) {
+    console.log(fileList);
   }
 }
