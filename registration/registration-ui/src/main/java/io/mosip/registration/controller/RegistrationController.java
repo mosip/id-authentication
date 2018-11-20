@@ -868,9 +868,7 @@ public class RegistrationController extends BaseController {
 					RegistrationConstants.FULL_NAME_EMPTY, "Numbers are not allowed");
 			fullName.requestFocus();
 		} else {
-			if (!validateAgeorDob()) {
-
-			} else {
+			if (validateAgeorDob()) {
 				if (gender.getValue() == null) {
 					generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 							RegistrationConstants.GENDER_EMPTY);
@@ -1058,7 +1056,7 @@ public class RegistrationController extends BaseController {
 		if (toggleAgeOrDobField) {
 			if (validateRegex(ageField, "\\d{1,2}")) {
 				generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-						RegistrationConstants.AGE_EMPTY, RegistrationConstants.AGE_WARNING);
+						RegistrationConstants.AGE_EMPTY);
 				ageField.requestFocus();
 			} else {
 				if(Integer.parseInt(ageField.getText())<5) {
