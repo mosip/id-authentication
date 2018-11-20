@@ -8,7 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
-import io.mosip.kernel.masterdata.dto.DeviceCreateSpecificationResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationCreateResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -29,7 +29,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<DeviceSpecification> deviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
-			deviceSpecificationList = deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
+			deviceSpecificationList = deviceSpecificationRepository
+					.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
@@ -51,8 +52,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 		List<DeviceSpecification> deviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = null;
 		try {
-			deviceSpecificationList = deviceSpecificationRepository.findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(languageCode,
-					deviceTypeCode);
+			deviceSpecificationList = deviceSpecificationRepository
+					.findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(languageCode, deviceTypeCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_DATA_FETCH_EXCEPTION.getErrorCode(),
@@ -67,28 +68,54 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
 	}
-	
+
 	@Override
-	public DeviceCreateSpecificationResponseDto addDeviceSpecification (List<DeviceSpecification> deviceSpecificationList){
-		DeviceCreateSpecificationResponseDto deviceCreateSpecificationResponseDto = new DeviceCreateSpecificationResponseDto();
-		List<DeviceSpecification> renDeviceSpecificationList = new ArrayList<>();
-		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();
-		
+	public DeviceSpecificationCreateResponseDto addDeviceSpecification(
+			List<DeviceSpecification> deviceSpecificationList) {
+		DeviceSpecificationCreateResponseDto respDto = new DeviceSpecificationCreateResponseDto();
+		List<DeviceSpecification> renDeviceSpecificationList = null;
+		List<DeviceSpecificationDto> deviceSpecificationDtos = new ArrayList<>();
+
 		try {
-		renDeviceSpecificationList = deviceSpecificationRepository.saveAll(deviceSpecificationList);
-		}catch (Exception e) {
-			System.out.println("======ex=="+e);
+			renDeviceSpecificationList = deviceSpecificationRepository.saveAll(deviceSpecificationList);
+			
+			/*DeviceSpecification entity = new DeviceSpecification();
+			entity.setId("DS-01");
+			entity.setName("TVS");
+			entity.setModel("TVS");
+			entity.setDeviceTypeCode("Phone");
+			entity.setMinDriverversion("TVS");
+			entity.setLangCode("ENG");
+			entity.setBrand("laptop");
+			entity.setIsActive(true);
+			entity.setCreatedBy("admin");
+			entity.setCreatedtimes(LocalDateTime.now());*/
+
+//			DeviceType devType = new DeviceType();
+//			devType.setDeviceTypeId(new DeviceTypePk("BLR", "hin"));
+//			devType.setName("banti");
+//			devType.setIsActive(true);
+//			devType.setCreatedBy("admin");
+//			devType.setCreatedtimes(LocalDateTime.now());
+
+//			entity.setDeviceType(devType);
+
+			//DeviceSpecification re = deviceSpecificationRepository.create(entity);
+		
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		if (renDeviceSpecificationList != null && !renDeviceSpecificationList.isEmpty()) {
-			//deviceSpecificationDtoList = objMapper.mapDeviceSpecification(renDeviceSpecificationList);
-			
-		} else {
-			throw new DataNotFoundException(
-					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
-					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
-		}
-		deviceCreateSpecificationResponseDto.setSuccessfully_created_device_specification(deviceSpecificationDtoList);
-		return deviceCreateSpecificationResponseDto;
+			deviceSpecificationDtos = objMapper.mapDeviceSpecification(renDeviceSpecificationList);
+		
+		 } else {
+		 throw new DataNotFoundException(
+	 DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+		 DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
+		 }
+		respDto.setSuccessfully_created_device_specification(deviceSpecificationDtos);
+		return respDto;
 	}
 
 }

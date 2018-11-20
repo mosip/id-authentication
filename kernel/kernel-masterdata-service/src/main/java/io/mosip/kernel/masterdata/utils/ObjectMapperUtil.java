@@ -97,16 +97,16 @@ public class ObjectMapperUtil {
 
 			deviceTypeDto.setName(deviceType.getName());
 			deviceTypeDto.setDescription(deviceType.getDescription());
-			/*deviceTypeDto.setCode(deviceType.getDeviceTypeId().getCode());
-			deviceTypeDto.setLangCode(deviceType.getDeviceTypeId().getLangCode());	*/
-			deviceTypeDto.setCode(deviceType.getCode());
-			deviceTypeDto.setLangCode(deviceType.getLangCode());
+			deviceTypeDto.setCode(deviceType.getDeviceTypeId().getCode());
+			deviceTypeDto.setLangCode(deviceType.getDeviceTypeId().getLangCode());	
+			/*deviceTypeDto.setCode(deviceType.getCode());
+			deviceTypeDto.setLangCode(deviceType.getLangCode());*/
 		}
 		deviceTypeDtoList.add(deviceTypeDto);
 		return deviceTypeDtoList;
 	}
 	
-	/*public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification>  deviceSpecificationList){
+	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification>  deviceSpecificationList){
 		 List<DeviceSpecificationDto>  deviceSpecificationDtoList = new  ArrayList<>();
 		 DeviceSpecificationDto deviceSpecificationDto= new DeviceSpecificationDto();
 		
@@ -124,5 +124,5 @@ public class ObjectMapperUtil {
 			}
 		 deviceSpecificationDtoList.add(deviceSpecificationDto);
 		return deviceSpecificationDtoList;
-	}*/
+	}
 }

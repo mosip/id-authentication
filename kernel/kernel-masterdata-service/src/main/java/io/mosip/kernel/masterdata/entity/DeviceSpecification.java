@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,8 +52,9 @@ public class DeviceSpecification extends BaseEntity implements Serializable {
 	private String langCode;
 
 	@ManyToOne
-	@JoinColumns({ @JoinColumn(name = "dtyp_code", referencedColumnName = "code"),
-			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code") })
+	@JoinColumns({
+			@JoinColumn(name = "dtyp_code", referencedColumnName = "code", insertable = false, updatable = false),
+			@JoinColumn(name = "lang_code", referencedColumnName = "lang_code", insertable = false, updatable = false) })
 	private DeviceType deviceType;
 
 }

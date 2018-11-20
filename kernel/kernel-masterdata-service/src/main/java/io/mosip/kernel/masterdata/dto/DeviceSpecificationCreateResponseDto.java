@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeviceCreateSpecificationResponseDto {
+public class DeviceSpecificationCreateResponseDto {
 	private List<DeviceSpecificationDto> successfully_created_device_specification;
 }
 
