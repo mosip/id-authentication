@@ -493,6 +493,8 @@ public class RegistrationConstants {
 	public static final String JOB_TRIGGER_COMPLETED = "Trigger completed";
 	public static final String JOB_EXECUTION_STARTED = "Execution started";
 	public static final String JOB_EXECUTION_COMPLETED = "Execution completed";
+	public static final String JOB_EXECUTION_SUCCESS = "Executed with success";
+	public static final String JOB_EXECUTION_FAILURE = "Executed with failure";
 	public static final String JOB_TRIGGER_FAILED = "Trigger failed";
 	public static final String JOB_EXECUTION_FAILED = "Execution failed";
 	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";

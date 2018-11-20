@@ -209,7 +209,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 	 * String)
 	 */
 	@Override
-	public ResponseDTO executeJob(String apiName) {
+	public ResponseDTO executeJob(ApplicationContext applicationContext, String apiName) {
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job started");
@@ -234,8 +234,8 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
 
 		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-		errorResponseDTO.setCode(RegistrationConstants.BATCH_JOB_CODE);
-		errorResponseDTO.setInfoType(RegistrationConstants.ALERT_ERROR);
+		errorResponseDTO.setCode(RegistrationConstants.ALERT_ERROR);
+		errorResponseDTO.setInfoType(RegistrationConstants.BATCH_JOB_CODE);
 		errorResponseDTO.setMessage(exception.getMessage());
 		errorResponseDTOs.add(errorResponseDTO);
 		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
