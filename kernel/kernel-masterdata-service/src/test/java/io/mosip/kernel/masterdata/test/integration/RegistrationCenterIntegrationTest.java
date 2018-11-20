@@ -139,14 +139,17 @@ public class RegistrationCenterIntegrationTest {
 	@Test
 	public void getRegistrationCenterByHierarchylevelAndTextAndLanguageCodeTest() throws Exception {
 		centers.add(center);
-		when(repository.findRegistrationCenterHierarchyLevelName("CITY", "BANGALORE", "ENG")).thenReturn(centers);
+		centers.add(centerBangaloreCentral);
+		when(repository.findRegistrationCenterHierarchyLevelName("ENG", "CITY", "BANGALORE")).thenReturn(centers);
 		MvcResult result = mockMvc
-				.perform(get("/registrationcenters/COUNTRY/INDIA/ENG").contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/registrationcenters/ENG/CITY/BANGALORE").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		RegistrationCenterHierarchyLevelResponseDto returnResponse = mapper.readValue(
 				result.getResponse().getContentAsString(), RegistrationCenterHierarchyLevelResponseDto.class);
 		assertThat(returnResponse.getRegistrationCenters().get(0).getName(), is("bangalore"));
 		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("Bangalore Central"));
+
 	}
+
 }

@@ -168,4 +168,27 @@ public class RegistrationCenterIntegrationExceptionTest {
 		mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError());
 	}
+
+	@Test
+	public void getSpecificRegistrationCenterHierarchyLevelFetchExceptionTest() throws Exception {
+
+		when(repository.findRegistrationCenterHierarchyLevelName("ENG", "CITY", "BANGALORE"))
+				.thenThrow(DataAccessLayerException.class);
+
+		mockMvc.perform(get("/registrationcenters/ENG/CITY/BANGALORE").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void getRegistrationCenterHierarchyLevelNotFoundExceptionTest() throws Exception {
+
+		List<RegistrationCenter> emptyList = new ArrayList<>();
+		when(repository.findRegistrationCenterHierarchyLevelName("ENG", "CITY", "BANGALORE")).thenReturn(emptyList);
+
+		mockMvc.perform(get("/registrationcenters/ENG/CITY/BANGALORE").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
+	}
+
 }
