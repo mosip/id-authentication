@@ -83,7 +83,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 		String TSPCode = authreqdto.getMuaCode();
 		Optional<String> otp = getOtpValue(authreqdto);
 		if (otp.isPresent()) {
-			boolean isValidRequest = validateTxnId(txnId, UIN);
+			boolean isValidRequest = validateTxnId(txnId, refId);
 			if (isValidRequest) {
 				mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
 				String OtpKey = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, TSPCode);
@@ -141,7 +141,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	public boolean validateTxnId(String txnId, String uIN) throws IdAuthenticationBusinessException {
 		boolean isValidTxn = false;
-		List<AutnTxn> authtxns = autntxnrepository.findAllByRequestTxnIdAndUin(txnId, uIN);
+		List<AutnTxn> authtxns = autntxnrepository.findAllByRequestTrnIdAndRefId(txnId, uIN);
 		if (authtxns != null && authtxns.size() > 0 && authtxns.get(0) != null) {
 			isValidTxn = true;
 		} else {

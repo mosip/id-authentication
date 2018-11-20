@@ -181,15 +181,16 @@ public class IdAuthServiceImpl implements IdAuthService {
 		}
 	}
 	
-		public Optional<UinEntity> getUIN(String uinRefId) {
+		public Optional<String> getUIN(String uinRefId) {
 			//FIXME Use IdRepo service
 				//return uinRepository.findByUinRefId(uinRefId);
-			UinEntity uinEntity = new UinEntity();
-			uinEntity.setId("mosip.id.read");
-			uinEntity.setActive(true);
-			uinEntity.setUinRefId("426789089018");
-			return Optional.of(uinEntity);
-			} 
+//			UinEntity uinEntity = new UinEntity();
+//			uinEntity.setId("mosip.id.read");
+//			uinEntity.setActive(true);
+//			uinEntity.setUinRefId("426789089018");
+//			return Optional.of(uinEntity);
+			return Optional.of("426789089018");
+		} 
 
 
 }

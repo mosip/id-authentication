@@ -4,6 +4,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 
@@ -42,21 +44,25 @@ public class KycAuthFilter extends BaseAuthFilter {
 				Object kyc = response.get(KYC);
 				
 				if (kyc != null) {
-					response.replace(KYC, encode(kyc.toString()));
+					response.replace(KYC, encode(toJsonString(kyc)));
 				}
 				
 				Object auth = response.get(AUTH);
 				if (auth != null) {
-					response.replace(AUTH, encode(auth.toString()));
+					response.replace(AUTH, encode(toJsonString(auth)));
 				}
 				
-				responseBody.replace(RESPONSE, encode(responseBody.get(RESPONSE).toString()));
+				responseBody.replace(RESPONSE, encode(toJsonString(responseBody.get(RESPONSE))));
 			}
 			return responseBody;
-		} catch (ClassCastException e) {
+		} catch (ClassCastException | JsonProcessingException e) {
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
 		}
+	}
+
+	private String toJsonString(Object map) throws JsonProcessingException {
+		return mapper.writerFor(Map.class).writeValueAsString(map);
 	}
 
 	@Override

@@ -29,6 +29,6 @@ public interface AuthFacade {
 	
 	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO);
 	
-	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO) throws IdAuthenticationBusinessException;
+	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO) throws IdAuthenticationBusinessException;
 
 }

@@ -42,6 +42,8 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class AuthController {
 
+	private static final String SUCCESS_STATUS = "Y";
+
 	private static final String SESSION_ID = "sessionId";
 
 	/** The mosipLogger. */
@@ -142,8 +144,9 @@ public class AuthController {
 
 			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest());
 			if (authResponseDTO != null) {
-				kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO);
-				kycAuthResponseDTO.getResponse().setAuth(authResponseDTO);
+				if(authResponseDTO.getStatus().equals(SUCCESS_STATUS)) {
+					kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO);
+				}
 			}
 		} catch (IDDataValidationException e) {
 			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
