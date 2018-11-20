@@ -316,7 +316,7 @@ public class AuthFacadeImplTest {
 		kycAuthResponseDTO.setTtl("2");
 		kycAuthResponseDTO.getResponse().setKyc(info);
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
-		authFacadeImpl.processKycAuth(kycAuthRequestDTO);
+		//authFacadeImpl.processKycAuth(kycAuthRequestDTO, authResponseDTO);
 	}
 
 }

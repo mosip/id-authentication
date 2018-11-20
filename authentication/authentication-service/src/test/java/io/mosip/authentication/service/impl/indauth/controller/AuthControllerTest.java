@@ -228,7 +228,7 @@ public class AuthControllerTest {
 		response.setKyc(null);
 		kycAuthResponseDTO.setResponse(response);;
 		kycAuthResponseDTO.setTtl("2");
-		Mockito.when( authFacade.processKycAuth(kycAuthRequestDTO)).thenReturn(kycAuthResponseDTO);
+		Mockito.when( authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO)).thenReturn(kycAuthResponseDTO);
 		//kycAuthResponseDTO.getResponse().setAuth(authResponseDTO); 
 		//kycAuthResponseDTO.getResponse().setAuth(authResponseDTO); 
 		authController.processKyc(kycAuthRequestDTO, error);
@@ -258,7 +258,7 @@ public class AuthControllerTest {
 		response.setKyc(null);
 		kycAuthResponseDTO.setResponse(response);;
 		kycAuthResponseDTO.setTtl("2");
-		Mockito.when(authFacade.processKycAuth(kycAuthRequestDTO)).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
+		Mockito.when(authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO)).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
 		authController.processKyc(kycAuthRequestDTO, error);
 		assertTrue(error.hasErrors()); 
 	}
