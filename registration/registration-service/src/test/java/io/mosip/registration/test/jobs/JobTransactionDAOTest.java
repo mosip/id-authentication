@@ -31,7 +31,7 @@ public class JobTransactionDAOTest {
 	public void saveTest()  {
 		SyncTransaction syncTransaction=new SyncTransaction();
 		Mockito.when(syncTranscRepository.save(Mockito.any())).thenReturn(new SyncTransaction());
-		jobTransactionDAOImpl.saveSyncTransaction(syncTransaction);
+		jobTransactionDAOImpl.save(syncTransaction);
 	}
 
 	

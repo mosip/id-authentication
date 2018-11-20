@@ -187,8 +187,9 @@ public class RegistrationConstants {
 	public static final String MACHINE_MAPPING_LOGGER_TITLE = "REGISTRATION - USER CLIENT MACHINE MAPPING";
 	public static final String DEVICE_MAPPING_LOGGER_TITLE="REGISTRATION - CENTER MACHINE DEVICE MAPPING";
 	//CENTER MACHINE DEVICE MAPPING
-	public static final String DEVICE_MAPPING_CODE="CENTER DEVICE_MAPPING ALERT";
-	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE="Device mapped successfully";
+	public static final String DEVICE_MAPPING_SUCCESS_CODE="REG-DVO‌-001";
+	public static final String DEVICE_MAPPING_SUCCESS_MESSAGE="On-boarding successful";
+	public static final String DEVICE_MAPPING_ERROR_CODE="REG-DVO‌-002";
 	public static final String DEVICE_MAPPING_ERROR_MESSAGE = "Unable to map the device";
 	
 	// BLOCKLISTED USER
@@ -493,6 +494,8 @@ public class RegistrationConstants {
 	public static final String JOB_TRIGGER_COMPLETED = "Trigger completed";
 	public static final String JOB_EXECUTION_STARTED = "Execution started";
 	public static final String JOB_EXECUTION_COMPLETED = "Execution completed";
+	public static final String JOB_EXECUTION_SUCCESS = "Executed with success";
+	public static final String JOB_EXECUTION_FAILURE = "Executed with failure";
 	public static final String JOB_TRIGGER_FAILED = "Trigger failed";
 	public static final String JOB_EXECUTION_FAILED = "Execution failed";
 	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";

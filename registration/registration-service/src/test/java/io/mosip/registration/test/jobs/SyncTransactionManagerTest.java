@@ -22,7 +22,7 @@ import org.quartz.Trigger;
 import org.springframework.context.ApplicationContext;
 
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.registration.dao.JobTransactionDAO;
+import io.mosip.registration.dao.SyncJobTransactionDAO;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.entity.SyncControl;
 import io.mosip.registration.entity.SyncJob;
@@ -67,7 +67,7 @@ public class SyncTransactionManagerTest {
 	HashMap<String, SyncJob> jobMap = new HashMap<>();
 
 	@Mock
-	JobTransactionDAO jobTransactionDAO;
+	SyncJobTransactionDAO jobTransactionDAO;
 
 	@Mock
 	SyncJobDAO syncJobDAO;
@@ -151,7 +151,7 @@ public class SyncTransactionManagerTest {
 		SyncTransaction syncTransaction=new SyncTransaction();
 		SyncControl syncControl=new SyncControl();
 		Mockito.when(syncJobDAO.findBySyncJobId(Mockito.anyString())).thenReturn(syncControl);
-		Mockito.when(jobTransactionDAO.saveSyncTransaction(syncTransaction)).thenReturn(syncTransaction);
+		Mockito.when(jobTransactionDAO.save(syncTransaction)).thenReturn(syncTransaction);
 		syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", syncJob);
 	}
 	@Test
@@ -159,7 +159,7 @@ public class SyncTransactionManagerTest {
 		SyncTransaction syncTransaction=new SyncTransaction();
 		SyncControl syncControl=null;
 		Mockito.when(syncJobDAO.findBySyncJobId(Mockito.anyString())).thenReturn(syncControl);
-		Mockito.when(jobTransactionDAO.saveSyncTransaction(syncTransaction)).thenReturn(syncTransaction);
+		Mockito.when(jobTransactionDAO.save(syncTransaction)).thenReturn(syncTransaction);
 		syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", syncJob);
 	}
 
