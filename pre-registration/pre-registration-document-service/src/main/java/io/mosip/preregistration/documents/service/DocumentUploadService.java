@@ -411,4 +411,72 @@ public class DocumentUploadService {
 		return this.fileExtension;
 	}
 
+	
+public ResponseDto<DocumentEntity> updateDoucment(MultipartFile file, DocumentDto documentDto, String doctId) {
+		
+		Integer documnetId = Integer.parseInt(doctId.toString().trim());
+		ResponseDto<DocumentEntity> responseDto = new ResponseDto();
+		List uploadList = new ArrayList();
+		List<ExceptionJSONInfo> err = new ArrayList<>();
+		ExceptionJSONInfo DocumentErr = null;
+		String status = "true";
+
+		if (file.getSize() > getMaxFileSize()) {
+
+			status = "false";
+			DocumentErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_007.toString(),
+					StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
+
+			throw new DocumentSizeExceedException(StatusCodes.DOCUMENT_EXCEEDING_PERMITTED_SIZE.toString());
+
+		} else if (!file.getOriginalFilename().toUpperCase().endsWith(getFileExtension())) {
+
+			status = "false";
+			DocumentErr = new ExceptionJSONInfo(ErrorCodes.PRG_PAM‌_004.toString(),
+					StatusCodes.DOCUMENT_INVALID_FORMAT.toString());
+
+			throw new DocumentNotValidException(StatusCodes.DOCUMENT_INVALID_FORMAT.toString());
+
+		} else {
+
+			status = "true";
+			DocumentErr = new ExceptionJSONInfo("", "");
+			uploadList.add(StatusCodes.DOCUMENT_UPLOAD_SUCCESSFUL.toString());
+			responseDto.setResponse(uploadList);
+
+		}
+
+		DocumentEntity documentEntity = new DocumentEntity();
+
+		documentEntity.setPreregId(documentDto.getPrereg_id());
+		documentEntity.setDoc_name(file.getOriginalFilename());
+		documentEntity.setDoc_cat_code(documentDto.getDoc_cat_code());
+		documentEntity.setDoc_typ_code(documentDto.getDoc_typ_code());
+		documentEntity.setDoc_file_format(documentDto.getDoc_file_format());
+		try {
+			documentEntity.setDoc_store(file.getBytes());
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+		
+		documentEntity.setStatus_code(documentDto.getStatus_code());
+		documentEntity.setLang_code(documentDto.getLang_code());
+		
+//		documentEntity.setCr_by(documentDto.getCr_by());
+//		documentEntity.setCr_dtimesz(new Timestamp(System.currentTimeMillis()));
+		
+		documentEntity.setUpd_by(documentDto.getUpd_by());
+		documentEntity.setUpd_dtimesz(new Timestamp(System.currentTimeMillis()));
+		
+		documentRepository.deleteAllBydocumentId(documnetId);
+
+		DocumentEntity returnentity = documentRepository.save(documentEntity);
+
+		responseDto.setStatus(status);
+		err.add(DocumentErr);
+		responseDto.setErr(err);
+		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		return responseDto;
+		
+	}
 }

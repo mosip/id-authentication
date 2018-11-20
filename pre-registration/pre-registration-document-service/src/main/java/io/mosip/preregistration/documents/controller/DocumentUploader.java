@@ -121,4 +121,22 @@ public class DocumentUploader {
 		ResponseDto responseDto = documentUploadService.deleteAllByPreId(preId);
 		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 	}
+	
+	@PostMapping(path = "/update_documents", consumes = { "multipart/form-data" })
+	@ResponseBody
+	public ResponseEntity<ResponseDto<DocumentEntity>> fileUpdate(
+			@RequestPart(value = "documentString", required = true) String documentString,
+			@RequestPart(value = "file", required = true) MultipartFile file,@RequestParam String documentId)
+					throws JsonParseException, JsonMappingException, IOException {
+
+		ResponseDto<DocumentEntity> responseDto = new ResponseDto<DocumentEntity>();
+
+		System.out.println("documentString::" + documentString);
+		DocumentDto documentDto = (DocumentDto) JsonUtils.jsonStringToJavaObject(DocumentDto.class, documentString);
+
+		responseDto = documentUploadService.updateDoucment(file, documentDto,documentId);
+
+		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+
+	}
 }
