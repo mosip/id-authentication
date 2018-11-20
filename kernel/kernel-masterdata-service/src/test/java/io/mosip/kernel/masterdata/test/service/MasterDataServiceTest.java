@@ -29,6 +29,7 @@ import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
+import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
@@ -39,6 +40,7 @@ import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
+import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Template;
@@ -51,6 +53,7 @@ import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
+import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
@@ -60,6 +63,7 @@ import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
+import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.TemplateService;
@@ -164,6 +168,13 @@ public class MasterDataServiceTest {
 
 	private List<TemplateDto> templateDtoList;
 
+	@MockBean
+	DocumentTypeRepository documentTypeRepository;
+	@Autowired
+	DocumentTypeService documentTypeService;
+
+	List<DocumentType> documents = null;
+
 	@Before
 	public void setUp() {
 		appSetup();
@@ -189,7 +200,26 @@ public class MasterDataServiceTest {
 		// TO-DO machine history service not implemented
 
 		templateServiceSetup();
+		
+		documentTypeSetup();
+		
 
+	}
+
+	private void documentTypeSetup() {
+		documents = new ArrayList<DocumentType>();
+		DocumentType documentType = new DocumentType();
+		documentType.setCode("addhar");
+		documentType.setName("addhar_card");
+		documentType.setDescription("adhar_card_desc");
+		documentType.setIsActive(true);
+		documents.add(documentType);
+		DocumentType documentType1 = new DocumentType();
+		documentType1.setCode("residensial");
+		documentType1.setName("residensial_proof");
+		documentType1.setDescription("residensial_proof_desc");
+		documentType1.setIsActive(true);
+		documents.add(documentType1);
 	}
 
 	private void templateServiceSetup() {
@@ -973,6 +1003,53 @@ public class MasterDataServiceTest {
 
 		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
 		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
+	}
+
+	// ----------------------------------DocumentTypeServiceTest-------------------------
+
+	@Test
+	public void getAllValidDocumentTypeTest() {
+		String documentCategoryCode = "iric";
+		String langCode = "eng";
+
+		Mockito.when(documentTypeRepository.findByCodeAndLangCode(documentCategoryCode, langCode))
+				.thenReturn(documents);
+
+		List<DocumentTypeDto> documentTypes = documentTypeService.getAllValidDocumentType(documentCategoryCode,
+				langCode);
+		Assert.assertEquals(documentTypes.get(0).getCode(), documents.get(0).getCode());
+		Assert.assertEquals(documentTypes.get(0).getName(), documents.get(0).getName());
+
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void documentTypeNoRecordsFoudExceptionTest() {
+		String documentCategoryCode = "poc";
+		String langCode = "eng";
+		List<DocumentType> entitydocuments = new ArrayList<DocumentType>();
+		Mockito.when(documentTypeRepository.findByCodeAndLangCode(documentCategoryCode, langCode))
+				.thenReturn(entitydocuments);
+		documentTypeService.getAllValidDocumentType(documentCategoryCode, langCode);
+
+	}
+
+	@Test(expected = DataNotFoundException.class)
+	public void documentTypeNoRecordsFoudExceptionForNullTest() {
+		String documentCategoryCode = "poc";
+		String langCode = "eng";
+		Mockito.when(documentTypeRepository.findByCodeAndLangCode(documentCategoryCode, langCode)).thenReturn(null);
+		documentTypeService.getAllValidDocumentType(documentCategoryCode, langCode);
+
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void documentTypeDataAccessExceptionInGetAllTest() {
+		String documentCategoryCode = "poc";
+		String langCode = "eng";
+		Mockito.when(documentTypeRepository.findByCodeAndLangCode(documentCategoryCode, langCode))
+				.thenThrow(DataAccessResourceFailureException.class);
+		documentTypeService.getAllValidDocumentType(documentCategoryCode, langCode);
+
 	}
 
 }
