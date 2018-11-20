@@ -205,7 +205,7 @@
 	-fx-border-color: black;
 	-fx-font-size: 14px;
 }
-#submit, #rejectionSubmit, #approvalBtn ,#rejectionBtn ,#onHoldBtn,#submitBtn{
+#submit, #rejectionSubmit,#submitBtn{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;
@@ -266,4 +266,20 @@
     -fx-background-insets: 0;
     -fx-padding: 0;
 } 
+.toggle-button{
+	-fx-background-color:#ffffff;
+	-fx-background-radius: 6,5;
+    -fx-background-insets: 0,1; 
+    -fx-text-fill: black;
+    -fx-font-size: 10px;   
+     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+.toggle-button:selected{
+    -fx-background-color: #a9a9a9;
+     -fx-background-radius: 6,5;
+    -fx-background-insets: 0,1;
+    -fx-text-fill: black;
+    -fx-font-size: 10px;
+     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
 

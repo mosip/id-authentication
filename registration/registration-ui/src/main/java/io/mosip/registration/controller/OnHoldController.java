@@ -20,14 +20,12 @@ import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.GlobalContextParam;
 import io.mosip.registration.service.GlobalContextParamService;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
 /**
@@ -49,12 +47,6 @@ public class OnHoldController extends BaseController implements Initializable{
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(OnHoldController.class);
 
-	/**
-	 * Object for RegistrationApprovalController
-	 */
-	@Autowired
-	private RegistrationApprovalController registrationApprovalController;
-
 	@Autowired
 	private GlobalContextParamService globalContextParamService;
 
@@ -72,17 +64,11 @@ public class OnHoldController extends BaseController implements Initializable{
 	@FXML
 	private Hyperlink exit;
 
-	private TableView<RegistrationApprovalDTO> onHoldTable;
 
 	private List<Map<String, String>> onHoldMapList;
 
 	private RegistrationApprovalDTO onHoldRegData;
 
-	/*
-	 * ObservableList<String>
-	 * onHoldCommentslist=FXCollections.observableArrayList("Gender/Photo mismatch",
-	 * "Partial Biometric", "Partial Iries", "Photo not clear", "Id not clear");
-	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -107,12 +93,10 @@ public class OnHoldController extends BaseController implements Initializable{
 	 * @param id
 	 * @param stage
 	 */
-	public void initData(RegistrationApprovalDTO regData, Stage stage, List<Map<String, String>> mapList,
-			TableView<RegistrationApprovalDTO> table) {
+	public void initData(RegistrationApprovalDTO regData, Stage stage, List<Map<String, String>> mapList) {
 		onHoldRegData = regData;
 		primarystage = stage;
 		onHoldMapList = mapList;
-		onHoldTable = table;
 	}
 
 	/**
@@ -121,9 +105,16 @@ public class OnHoldController extends BaseController implements Initializable{
 	 * 
 	 * @param event
 	 */
-	public void updatePacketStatus(ActionEvent event) {
+	public void updatePacketStatus() {
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Packet updation as on hold has been started");
+		
+		for (Map<String, String> registrationMap : onHoldMapList) {
+			if (registrationMap.containsValue(onHoldRegData.getId())) {
+				onHoldMapList.remove(registrationMap);
+			}
+		}
+		
 		Map<String, String> map = new HashMap<>();
 		map.put("registrationID", onHoldRegData.getId());
 		map.put("statusCode", RegistrationClientStatusCode.ON_HOLD.getCode());
@@ -133,8 +124,6 @@ public class OnHoldController extends BaseController implements Initializable{
 		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.ONHOLD_STATUS_MESSAGE);
 		submit.disableProperty().set(true);
 		primarystage.close();
-		onHoldTable.getItems().remove(onHoldRegData);
-		registrationApprovalController.setInvisible();
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
 				APPLICATION_ID, "Packet updation as on hold has been ended");
 	}
@@ -145,7 +134,7 @@ public class OnHoldController extends BaseController implements Initializable{
 	 * 
 	 * @param event
 	 */
-	public void exitWindow(ActionEvent event) {
+	public void exitWindow() {
 		primarystage.close();
 
 	}
@@ -155,7 +144,7 @@ public class OnHoldController extends BaseController implements Initializable{
 	 * 
 	 * @param event
 	 */
-	public void onHoldComboboxAction(ActionEvent event) {
+	public void onHoldComboboxAction() {
 		submit.disableProperty().set(false);
 	}
 }

@@ -36,9 +36,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -309,7 +311,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			RejectionController rejectionController = (RejectionController) RegistrationAppInitialization
 					.getApplicationContext().getBean(RegistrationConstants.REJECTION_BEAN_NAME);
 
-			rejectionController.initData(pendingActionTable.getSelectionModel().getSelectedItem(), primarystage, approvalmapList, pendingActionTable);
+			rejectionController.initData(pendingActionTable.getSelectionModel().getSelectedItem(), primarystage, approvalmapList);
 			LoadStage(primarystage, RegistrationConstants.REJECTION_PAGE, pendingActionTable.getSelectionModel().getSelectedItem());
 
 		} catch (RuntimeException runtimeException) {
@@ -319,32 +321,33 @@ public class RegistrationPendingActionController extends BaseController implemen
 				"Rejection of packet has been ended");
 
 	}
+	public void getRegistrationStatus() {
+		  for (Map<String, String> map : approvalmapList) {
+			  registrationApprovalService.updateRegistration(map.get("registrationID"),
+			  map.get("statusComment"), map.get("statusCode")); }
+	}
 
 	public void pendingActionSubmit(ActionEvent event) throws RegBaseCheckedException {
 
-		try {
+		Parent ackRoot;
+	try {
+		Stage primaryStage=new Stage();
+		FXMLLoader fxmlLoader = BaseController
+				.loadChild(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
+		ackRoot = fxmlLoader.load();
+		primaryStage.setResizable(false);
+		Scene scene = new Scene(ackRoot);
+		primaryStage.setScene(scene);
+		primaryStage.show();
+		FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
+		fpcontroller.init(this);
 
-			Stage primarystage = new Stage();
-			AnchorPane authRoot = BaseController.load(getClass().getResource("/fxml/Authentication.fxml"));
-			FingerPrintAuthenticationController fingerPrintAuthenticationController = (FingerPrintAuthenticationController) RegistrationAppInitialization
-					.getApplicationContext().getBean("authenticationController");
-			fingerPrintAuthenticationController.initData(primarystage, approvalmapList);
-			Scene scene = new Scene(authRoot);
-			ClassLoader loader = Thread.currentThread().getContextClassLoader();
-			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
-			primarystage.setScene(scene);
-			primarystage.initModality(Modality.WINDOW_MODAL);
-			primarystage.initOwner(stage);
-			primarystage.show();
-			primarystage.resizableProperty().set(false);
-
-		} catch (IOException ioException) {
-			throw new RegBaseCheckedException(RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
-					RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
-		} catch (RuntimeException runtimeException) {
-			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
-		}
+	} catch (IOException e) {
+		e.printStackTrace();
 	}
+	}
+	
+	
 	
 	private Stage LoadStage(Stage primarystage,String fxmlPath,RegistrationApprovalDTO registrationApprovalDTO) throws RegBaseCheckedException {
 		

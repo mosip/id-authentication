@@ -28,21 +28,21 @@
                   <Font size="10.0" />
                </font>
             </Button>
-            <Button fx:id="approvalBtn" layoutX="644.0" layoutY="14.0" mnemonicParsing="false" onAction="#approvePacket" prefHeight="20.0" prefWidth="80.0" text="Approve">
+            <ToggleButton fx:id="approvalBtn" layoutX="644.0" layoutY="16.0" mnemonicParsing="false" onAction="#approvePacket" prefHeight="20.0" prefWidth="80.0" text="Approve">
                <font>
                   <Font size="10.0" />
                </font>
-            </Button>
-            <Button fx:id="rejectionBtn" layoutX="732.0" layoutY="14.0" mnemonicParsing="false" onAction="#rejectPacket" prefHeight="20.0" prefWidth="80.0" text="Reject">
+            </ToggleButton>
+            <ToggleButton fx:id="rejectionBtn" layoutX="732.0" layoutY="16.0" mnemonicParsing="false" onAction="#rejectPacket" prefHeight="20.0" prefWidth="80.0" text="Reject">
                <font>
                   <Font size="10.0" />
                </font>
-            </Button>
-            <Button fx:id="onHoldBtn" layoutX="819.0" layoutY="14.0" mnemonicParsing="false" onAction="#onHoldPacket" prefHeight="20.0" prefWidth="80.0" text="On Hold">
+            </ToggleButton>
+            <ToggleButton fx:id="onHoldBtn" layoutX="819.0" layoutY="14.0" mnemonicParsing="false" onAction="#onHoldPacket" prefHeight="20.0" prefWidth="80.0" text="On Hold">
                <font>
                   <Font size="10.0" />
                </font>
-            </Button>
+            </ToggleButton>
          </children>
       </AnchorPane>
    </children>
