@@ -18,8 +18,8 @@ import { DemoLabels } from './demographic.labels';
 import { IdentityModel } from './identity.model';
 import { AttributeModel } from './attribute.model';
 import { RequestModel } from './request.model';
-import { DemoIdentityModel } from './demo.identity.model';
 import { DatePipe } from '@angular/common';
+import { DemoIdentityModel } from './Demo.Identity.model';
 
 @Component({
   selector: 'app-demographic',

@@ -20,7 +20,7 @@ export class RegistrationService {
   // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
   getUsers(value) {
-    value = '8680958867';
+    value = 'User1';
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
       observe: 'body',
       responseType: 'json',
