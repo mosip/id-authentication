@@ -180,7 +180,9 @@
 
           <mat-action-row>
             <button *ngIf="step !== 0" mat-button color="warn" (click)="prevStep()">Previous</button>
-            <button type="button" mat-button color="primary" (click)="nextStep()">Next</button>
+            <button type="button" mat-button color="primary" [disabled]="!userForm.valid" (click)="nextStep()">
+              Next
+            </button>
           </mat-action-row>
         </mat-expansion-panel>
       </div>

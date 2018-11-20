@@ -46,18 +46,15 @@ export class DashBoardComponent implements OnInit {
   initUsers() {
     this.regService.getUsers(this.loginId).subscribe((applicants: Applicant[]) => {
       console.log(applicants);
-
-      for (const user of applicants) {
-        for (let index = 0; index < user['response'].length; index++) {
-          this.users.push(
-            new Applicant(
-              user['response'][index]['preId'],
-              user['response'][index]['firstname'],
-              user['response'][index]['appointmentDate'],
-              user['response'][index]['status_code']
-            )
-          );
-        }
+      for (let index = 0; index < applicants['response'].length; index++) {
+        this.users.push(
+          new Applicant(
+            applicants['response'][index]['preId'],
+            applicants['response'][index]['firstname'],
+            applicants['response'][index]['appointmentDate'],
+            applicants['response'][index]['status_code']
+          )
+        );
       }
       this.isFetched = true;
     });

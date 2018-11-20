@@ -12,13 +12,14 @@ export class RegistrationService {
   usersChanged = new Subject<UserModel[]>();
 
   constructor(private httpClient: HttpClient) {}
-  sendFileURL =
+
+  SEND_FILE_URL =
     'http://preregistration.southindia.cloudapp.azure.com/dev-document/v0.1/pre-registration/registration/documents';
   BASE_URL = 'http://preregistration.southindia.cloudapp.azure.com/dev-demographic/v0.1/pre-registration/applications';
   // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
   getUsers(value) {
-    value = 'mosip.pre-registration.demographic.create';
+    value = 'shashank';
     return this.httpClient.get<Applicant[]>('http://A2ML27085:9092/v0.1/pre-registration/applications', {
       observe: 'body',
       responseType: 'json',
@@ -44,7 +45,7 @@ export class RegistrationService {
   }
 
   sendFile(formdata: FormData) {
-    return this.httpClient.post(this.sendFileURL, formdata);
+    return this.httpClient.post(this.SEND_FILE_URL, formdata);
     // console.log('servvice called', formdata);
   }
 
