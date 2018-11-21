@@ -49,9 +49,11 @@ import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 @Service
 public class KycServiceImpl implements KycService{
 	
-	private static final String LABEL_SEC = "_label_sec";
+	private static final String LABEL = "_label";
 
-	private static final String LABEL_PRI = "_label_pri";
+	private static final String LABEL_SEC = LABEL + "_sec";
+
+	private static final String LABEL_PRI = LABEL + "_pri";
 
 	@Autowired
 	Environment env;
@@ -153,19 +155,19 @@ public class KycServiceImpl implements KycService{
 			    	if(v.getLanguage().equalsIgnoreCase(primaryLanguage)) {
 			    		pdfDetails.put(e.getKey().concat("_pri"), v.getValue());
 			    		pdfDetails.put(e.getKey().concat(LABEL_PRI), 
-			    				messageSource.getMessage(e.getKey().concat(LABEL_PRI), null, LocaleContextHolder.getLocale()));
+			    				messageSource.getMessage(e.getKey().concat(LABEL), null, LocaleContextHolder.getLocale()));
 			    	}else if(v.getLanguage().equalsIgnoreCase(secondaryLanguage)) {
 			    		pdfDetails.put(e.getKey().concat("_sec"), v.getValue());
 			    		pdfDetails.put(e.getKey().concat(LABEL_SEC), 
-			    				messageSource.getMessage(e.getKey().concat(LABEL_SEC), null, new Locale(secondaryLanguage)));
+			    				messageSource.getMessage(e.getKey().concat(LABEL), null, new Locale(secondaryLanguage)));
 			    	}
 			    }));
 		pdfDetails.put("uin_pri", maskedUin);
-		pdfDetails.put("uin_label_pri", messageSource.getMessage("uin_label_pri", null, LocaleContextHolder.getLocale()));
+		pdfDetails.put("uin_label_pri", messageSource.getMessage("uin_label", null, LocaleContextHolder.getLocale()));
 		pdfDetails.put("uin_sec", maskedUin);
-		pdfDetails.put("uin_label_sec", messageSource.getMessage("uin_label_sec", null, new Locale(secondaryLanguage)));
-		pdfDetails.put("name_label_pri", messageSource.getMessage("name_label_pri", null, LocaleContextHolder.getLocale()));
-		pdfDetails.put("name_label_sec", messageSource.getMessage("name_label_sec", null, new Locale(secondaryLanguage)));
+		pdfDetails.put("uin_label_sec", messageSource.getMessage("uin_label", null, new Locale(secondaryLanguage)));
+		pdfDetails.put("name_label_pri", messageSource.getMessage("name_label", null, LocaleContextHolder.getLocale()));
+		pdfDetails.put("name_label_sec", messageSource.getMessage("name_label", null, new Locale(secondaryLanguage)));
 		pdfDetails.put("name_pri", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, filteredIdentityInfo).getValue());
 		pdfDetails.put("name_sec", demoHelper.getEntityInfo(DemoMatchType.NAME_SEC, filteredIdentityInfo).getValue());
 		faceDetails(filteredIdentityInfo, maskedUin, pdfDetails);

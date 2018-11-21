@@ -156,8 +156,10 @@ public class OTPFacadeImpl implements OTPFacade {
 			 * Integer.parseInt(env.getProperty("uin.masking.charcount"))));
 			 */
 			
-			otpResponseDTO.setMaskedEmail(email);
-			otpResponseDTO.setMaskedMobile(mobileNumber);
+			otpResponseDTO.setMaskedEmail(MaskUtil.generateMaskValue(email ,
+					Integer.parseInt(env.getProperty("uin.masking.charcount"))));
+			otpResponseDTO.setMaskedMobile(MaskUtil.generateMaskValue(mobileNumber ,
+					Integer.parseInt(env.getProperty("uin.masking.charcount"))));
 			// -- send otp notification --
 			String otpGenerationTime = formatDate(otpGenerateTime, env.getProperty("datetime.pattern"));
 			sendOtpNotification(otpRequestDto, otp, refId, otpGenerationTime, email, mobileNumber);
