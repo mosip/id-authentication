@@ -11,7 +11,7 @@ This folder has KEYGENERATOR-BOUNCYCASTLE module which can be used to generate [
 
 
 ### Usage Sample
-  Usage Encryption:
+  Usage Symmetric Key Generation:
  
  ```
 @Autowired
@@ -21,7 +21,7 @@ This folder has KEYGENERATOR-BOUNCYCASTLE module which can be used to generate [
 		
  ```
 
- Usage Decryption:
+ Usage Asymmetric Key Generation:
  
  ```
 @Autowired
