@@ -101,6 +101,7 @@ public class PacketUploaderTest {
 		List<Path> paths = Files.list(sftpFolder).collect(Collectors.toList());
 		assertEquals(1, paths.size());
 		assertEquals(tempFile.getFileName(), paths.get(0).getFileName());
+		packetUploader.releaseConnection(channel);
 	}
 
 	@Test
