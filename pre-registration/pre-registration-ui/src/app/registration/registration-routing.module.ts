@@ -9,7 +9,7 @@ import { ParentComponent } from './parent/parent.component';
 
 const registrationRoutes: Routes = [
   {
-    path: 'registration/:id',
+    path: 'pre-registration/:id',
     component: ParentComponent,
     children: [
       { path: '', component: DashBoardComponent },
