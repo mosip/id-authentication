@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeviceSpecPostResponseDto {
-	private List<DeviceTypeCodeAndLanguageCode> successfully_created;
+	private List<DeviceTypeCodeAndLanguageCode> results;
 
 }

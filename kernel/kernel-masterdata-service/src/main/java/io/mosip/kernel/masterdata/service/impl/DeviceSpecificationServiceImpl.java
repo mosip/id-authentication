@@ -116,7 +116,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 			}
 			deviceTypeCodeLangCodes.add(deviceTypeCodeAndLanguageCode);
 		});
-		respDto.setSuccessfully_created(deviceTypeCodeLangCodes);
+		respDto.setResults(deviceTypeCodeLangCodes);
 		return respDto;	
 	}
 

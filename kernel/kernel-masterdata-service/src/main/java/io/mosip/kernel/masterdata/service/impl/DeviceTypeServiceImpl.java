@@ -63,7 +63,7 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 			}
 			codeLangCodeIds.add(codeLangCodeId);
 		});
-		postResponseDto.setSuccessfully_created(codeLangCodeIds);
+		postResponseDto.setResults(codeLangCodeIds);
 		return postResponseDto;
 	}
 
