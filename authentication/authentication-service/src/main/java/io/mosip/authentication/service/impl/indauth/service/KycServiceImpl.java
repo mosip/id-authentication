@@ -136,7 +136,9 @@ public class KycServiceImpl implements KycService{
             .collect(Collectors.toMap(Map.Entry::getKey,
               entry -> entry.getValue()
                            .stream()
-                           .filter(info -> info.getLanguage() != null && info.getLanguage().equalsIgnoreCase(primaryLanguage))
+                           .filter((IdentityInfoDTO info) -> {
+							return info.getLanguage() == null ||  info.getLanguage().equalsIgnoreCase("null") || info.getLanguage().equalsIgnoreCase(primaryLanguage);
+						})
                            .collect(Collectors.toList()))
              );
 		}
