@@ -417,15 +417,6 @@ public class RegistrationConstants {
 	public static final String REJECTION_BEAN_NAME = "rejectionController";
 	public static final String ONHOLD_BEAN_NAME = "onHoldController";
 	public static final String ERROR = "ERROR";
-	public static final String REGISTRATIONID = "registrationID";
-	public static final String STATUSCODE = "statusCode";
-	public static final String STATUSCOMMENT = "statusComment";
-	public static final String PENDING_ACTION_PAGE = "/fxml/RegistrationPendingAction.fxml";
-	public static final String PENDING_APPROVAL_PAGE = "/fxml/RegistrationPendingApproval.fxml";
-	public static final String REREGISTRATION_PAGE = "/fxml/ReRegistration.fxml";
-	public static final String ONHOLD_COMMENTS = "ONHOLD_COMMENTS";
-	public static final String REJECTION_COMMENTS = "REJECT_COMMENTS";
-	
 
 	// Upload Packet
 
@@ -451,14 +442,11 @@ public class RegistrationConstants {
 	public static final String DEVICE_ONBOARD_UNMAPPING_DEVICES_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-004";
 	public static final String DEVICE_ONBOARD_HOME_NAVIGATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-005";
 	public static final String DEVICE_ONBOARD_DEVICE_GROUPING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-006";
-	public static final String DEVICE_ONBOARD_DEVICE_UPDATING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-007";
+	public static final String DEVICE_ONBOARD_DEVICE_GROUP_UPDATE_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-007";
 	public static final String DEVICE_ONBOARD_DEVICE_FILTERING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-008";
 	public static final String DEVICE_ONBOARD_DEVICE_POPULATION_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-009";
 	public static final String DEVICE_ONBOARD_DEVICE_FETCHING_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-010";
 	public static final String DEVICE_ONBOARD_CLEAR_CONTEXT_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-011";
-	public static final String DEVICE_ONBOARD_FILTER_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-012";
-	public static final String DEVICE_ONBOARD_FILTER_LIST_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-013";
-	public static final String DEVICE_ONBOARD_SEARCH_DEVICE_EXCEPTION = DEVICE_ONBOARD_EXP_CODE + "DOC-014";
 
 	public static final String BIOMETRIC_IMAGE = "Image";
 	public static final String BIOMETRIC_TYPE = "Type";
@@ -478,14 +466,15 @@ public class RegistrationConstants {
 	public static final String DEVICE_SERIAL_NO = "serialNo";
 	public static final String ONBOARD_AVAILABLE_DEVICES = "availableDevices";
 	public static final String ONBOARD_MAPPED_DEVICES = "mappedDevices";
-	public static final String DEVICE_ONBOARD_EXCEPTION_ALERT = "Device Onboarding";
+	public static final String DEVICE_ONBOARD_EXCEPTION_ALERT = "Device Onboarding Error";
 	public static final String DEVICE_ONBOARD_ERROR_MSG = "Internal error in Device Onboarding.";
 	public static final String ONBOARD_DEVICES_MAP = "onBoardDevicesMap";
 	public static final String ONBOARD_DEVICES_REF_ID_TYPE = "UserID";
+	public static final String ONBOARD_DEVICES_ADDED = "devicedAdded";
+	public static final String ONBOARD_DEVICES_REMOVED = "devicedRemoved";
+	public static final String ONBOARD_AVAILABLE_DEVICES_GROUP = "availableDeviceGroupMap";
+	public static final String ONBOARD_MAPPED_DEVICES_GROUP = "mappedDeviceGroupMap";
 	public static final String MACHINE_ID = "machineId";
-	public static final String ONBOARD_DEVICES_MAP_UPDATED = "updatedDevicesMap";
-	public static final String DEVICE_TYPES_ALL_OPTION = "All";
-	public static final String DEVICE_TYPE = "deviceType";
 
 	// Template Name
 	public static final String ACKNOWLEDGEMENT_TEMPLATE = "Ack Template";
@@ -497,6 +486,7 @@ public class RegistrationConstants {
 	public static final String SMS_SERVICE = "sms";
 	public static final String NOTIFICATION_SERVICE="REGISTRATION - NOTIFICATION SERVICE ";
 	public static final List<String> MODE_OF_COMMUNICATION=Arrays.asList("MODE_OF_COMMUNICATION");
+	public static final String NOTIFICATION_CODE = "NOTIFICATION ALERT";
 
 	// Global configuration parameters
 	public static final List<String> INVALID_LOGIN_PARAMS = Arrays.asList("INVALID_LOGIN_COUNT", "INVALID_LOGIN_TIME");
@@ -551,7 +541,8 @@ public class RegistrationConstants {
 	public static final String GPS_CAPTURING_EXCEPTION = "GPS_EXCEPTION";
 	public static final String GPS_SIGNAL = "$GP";
 
-	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint"); 
+	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint", "Iris", "Camera", "GPS",
+			"Printer", "Scanner", "Barcode"); 
 	
 	public static List getPoaDocumentList() {
 		return Arrays.asList(new String[] { "Document1", "Document2", "Document3", "Document4" });
