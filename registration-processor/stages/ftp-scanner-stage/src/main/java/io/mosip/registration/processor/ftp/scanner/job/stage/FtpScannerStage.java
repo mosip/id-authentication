@@ -44,7 +44,7 @@ public class FtpScannerStage extends MosipVerticleManager {
 	private String localhost;
 	
 //	@Value("${landingzone.scanner.stage.time.interval}")
-	private int secs = 60;
+	private int secs = 30;
 
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
@@ -66,6 +66,7 @@ public class FtpScannerStage extends MosipVerticleManager {
 		});
 	}
 
+	@Override
 	public MessageDTO process(MessageDTO object) {
 		String filepath = this.filemanager.getCurrentDirectory();
 		try {

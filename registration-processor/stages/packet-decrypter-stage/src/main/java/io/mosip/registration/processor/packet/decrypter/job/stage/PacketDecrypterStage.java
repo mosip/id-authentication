@@ -38,8 +38,10 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 	private String clusterAddress;
 
 	//	@Value("${landingzone.scanner.stage.time.interval}")
-	private int secs = 60;
-
+	private int secs = 30;
+	
+	MosipEventBus mosipEventBus= null;
+	
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
 	
@@ -60,17 +62,16 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 	private static final String REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE = "The Registration Status table "
 			+ "is not accessible";
 
+	@Override
 	public MessageDTO process(MessageDTO object) {
 		List<InternalRegistrationStatusDto> dtolist = null;
 
 		try {
 			dtolist = registrationStatusService
 					.getByStatus(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
-			System.out.println("list of packet: "+ dtolist.size());
 			if (!(dtolist.isEmpty())) {
 				dtolist.forEach(dto -> {
 					try {
-						System.out.println("decrypting packet one by one");
 						decryptpacket(dto);
 
 					} catch (TablenotAccessibleException e) {
@@ -114,7 +115,6 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 	 */
 	private void decryptpacket(InternalRegistrationStatusDto dto) throws IOException, PacketDecryptionFailureException {
 		try {
-			System.out.println("inside decrypt packet");
 			packetArchiver.archivePacket(dto.getRegistrationId());
 		} catch (UnableToAccessPathException e) {
 			LOGGER.error(LOGDISPLAY, e.getErrorCode(), e.getMessage(), e.getCause());
@@ -144,7 +144,11 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 
 			LOGGER.info(LOGDISPLAY, dto.getRegistrationId(),
 					" Packet decrypted and extracted encrypted files stored in DFS.");
-
+			
+			MessageDTO message = new MessageDTO();
+			message.setRid(dto.getRegistrationId());
+			
+			sendMessage(mosipEventBus, message);
 		} else {
 			encryptedPacket.close();
 
@@ -159,10 +163,14 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 	}
 
 	public void deployVerticle() {
-		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
+		mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		mosipEventBus.getEventbus().setPeriodic(secs  * 1000, msg -> {
-			this.send(mosipEventBus, MessageBusAddress.BATCH_BUS, new MessageDTO());
+			sendMessage(mosipEventBus, new MessageDTO());
 		});
+	}
+	
+	private void sendMessage(MosipEventBus mosipEventBus, MessageDTO message) {
+		this.send(mosipEventBus, MessageBusAddress.BATCH_BUS, message);
 	}
 
 }
