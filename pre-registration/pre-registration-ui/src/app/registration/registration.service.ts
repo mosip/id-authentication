@@ -16,12 +16,12 @@ export class RegistrationService {
   SEND_FILE_URL =
     'http://preregistration-intgra.southindia.cloudapp.azure.com/int-demographic/v0.1/pre-registration/registration/documents';
  // BASE_URL = 'http://A2ML29862:9092/v0.1/pre-registration/applications';
-  BASE_URL =
-    'http://preregistration-intgra.southindia.cloudapp.azure.com/int-demographic/v0.1/pre-registration/applications';
-  // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
+   BASE_URL =
+     'http://preregistration-intgra.southindia.cloudapp.azure.com/int-demographic/v0.1/pre-registration/applications';
+  // // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
   getUsers(value) {
-    value = 'mosip.pre-registration.demographic.create';
+  //  value = 'mosip.pre-registration.demographic.create';
     return this.httpClient.get<Applicant[]>(this.BASE_URL, {
       observe: 'body',
       responseType: 'json',
