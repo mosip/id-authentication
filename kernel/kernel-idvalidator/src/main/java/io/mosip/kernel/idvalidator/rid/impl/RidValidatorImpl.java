@@ -43,16 +43,14 @@ public class RidValidatorImpl implements RidValidator<String> {
 	public boolean validateId(String id, String centerId, String dongleId) {
 
 		String pattern = RidPropertyConstant.TIME_STAMP_REGEX.getProperty();
-
 		int endIndex = centerIdLength + dongleIdLength;
+		int timeStampStartIndex = endIndex + 5;
 
-		int timeStampEndIndex = 2 * timeStampLength;
-
+		int timeStampEndIndex = timeStampStartIndex + timeStampLength;
 		if (!id.substring(0, centerIdLength).equals(centerId)) {
 			throw new InvalidIDException(RidExceptionProperty.INVALID_CENTER_ID.getErrorCode(),
 					RidExceptionProperty.INVALID_CENTER_ID.getErrorMessage());
 		}
-
 		if (!id.substring(centerIdLength, endIndex).equals(dongleId)) {
 			throw new InvalidIDException(RidExceptionProperty.INVALID_DONGLE_ID.getErrorCode(),
 					RidExceptionProperty.INVALID_DONGLE_ID.getErrorMessage());
@@ -67,8 +65,7 @@ public class RidValidatorImpl implements RidValidator<String> {
 			throw new InvalidIDException(RidExceptionProperty.INVALID_RID.getErrorCode(),
 					RidExceptionProperty.INVALID_RID.getErrorMessage());
 		}
-
-		if (!Pattern.matches(pattern, id.subSequence(timeStampLength, timeStampEndIndex))) {
+		if (!Pattern.matches(pattern, id.subSequence(timeStampStartIndex, timeStampEndIndex))) {
 			throw new InvalidIDException(RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorCode(),
 					RidExceptionProperty.INVALID_RID_TIMESTAMP.getErrorMessage());
 		}
