@@ -3,23 +3,25 @@ package io.mosip.kernel.masterdata.service;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 
 /**
- * This interface provides methods to do CRUD operations on Language details.
+ * This interface provides methods to do CRUD operations on Language.
  * 
  * @author Bal Vikash Sharma
- * @Version 1.0.0
+ * @since 1.0.0
  */
 public interface LanguageService {
 
 	/**
-	 * This method fetch all Languages present in database.
+	 * This method provides all the languages having <b>isActive</b> is <b>true</b>
+	 * and <b>isDeleted</b> is <b>false</b> present in MOSIP system.
 	 * 
 	 * @return LanguageRequestResponseDto
 	 */
 	LanguageRequestResponseDto getAllLaguages();
 
 	/**
-	 * This method create all Languages present in dto.
+	 * This method create all Languages present in <code>dto</code>.
 	 * 
+	 * @see LanguageRequestResponseDto
 	 * @param dto
 	 * @return LanguageRequestResponseDto
 	 */
