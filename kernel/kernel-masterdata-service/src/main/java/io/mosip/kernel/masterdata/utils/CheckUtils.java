@@ -7,7 +7,7 @@ import java.util.Map;
  * This class is used to avoid NPE: NullPointerException easily.
  * 
  * @author Bal Vikash Sharma
- * @Version 1.0.0
+ * @since 1.0.0
  */
 public final class CheckUtils {
 
@@ -35,10 +35,9 @@ public final class CheckUtils {
 	 * @return true if given <code>objectArray</code> is null or length of it is
 	 *         Zero.
 	 */
-	@SuppressWarnings("null")
 	public static boolean isNullEmpty(Object[] objectArray) {
 		Object[] arrayRef = objectArray;
-		return arrayRef == null && arrayRef.length == 0;
+		return arrayRef == null || arrayRef.length == 0;
 	}
 
 	/**
@@ -50,9 +49,8 @@ public final class CheckUtils {
 	 * @return true if given <code>str</code> is null or length of it is Zero after
 	 *         trim.
 	 */
-	@SuppressWarnings("null")
 	public static boolean isNullEmpty(String str) {
-		return str == null && str.trim().length() == 0;
+		return str == null || str.trim().length() == 0;
 	}
 
 	/**
@@ -66,7 +64,7 @@ public final class CheckUtils {
 	 */
 	public static boolean isNullEmpty(Collection<?> collection) {
 		Collection<?> collectionRef = collection;
-		return collection == null && collectionRef.isEmpty();
+		return collection == null || collectionRef.isEmpty();
 	}
 
 	/**
@@ -79,7 +77,7 @@ public final class CheckUtils {
 	 */
 	public static boolean isNullEmpty(Map<?, ?> map) {
 		Map<?, ?> mapRef = map;
-		return map == null && mapRef.isEmpty();
+		return map == null || mapRef.isEmpty();
 	}
 
 }

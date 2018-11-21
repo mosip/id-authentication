@@ -81,7 +81,7 @@ public class LanguageServiceImpl implements LanguageService {
 
 	@Override
 	public LanguageRequestResponseDto saveAllLanguages(LanguageRequestResponseDto dto) {
-		if (CheckUtils.isNullEmpty(dto) && CheckUtils.isNullEmpty(dto.getLanguages())) {
+		if (CheckUtils.isNullEmpty(dto) || CheckUtils.isNullEmpty(dto.getLanguages())) {
 			throw new RequestException(LanguageErrorCode.LANGUAGE_REQUEST_PARAM_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.LANGUAGE_REQUEST_PARAM_EXCEPTION.getErrorMessage());
 		}
