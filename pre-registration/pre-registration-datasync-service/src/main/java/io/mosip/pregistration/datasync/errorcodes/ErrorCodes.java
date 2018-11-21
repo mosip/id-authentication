@@ -14,7 +14,8 @@ public enum ErrorCodes {
 	PRG_DATA_SYNC_004, //Records Not Found For Requested PreRegId
 	PRG_DATA_SYNC_005, //Failed to create a zip file
 //	PRG_DATA_SYNC_006; //Document Not Found
-	PRG_REVESE_DATA_SYNC_001; //Failed to store Pre-Reg Ids
+	PRG_REVESE_DATA_SYNC_001, //Failed to store Pre-Reg Ids
+	PRG_PAM_APP_002,   //Registration table not accessible
 	
 	
 }

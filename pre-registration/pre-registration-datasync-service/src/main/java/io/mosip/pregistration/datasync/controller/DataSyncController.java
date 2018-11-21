@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.core.exception.IOException;
-import io.mosip.kernel.core.util.JsonUtils;
 import io.mosip.kernel.core.util.exception.JsonMappingException;
 import io.mosip.kernel.core.util.exception.JsonParseException;
+import io.mosip.pregistration.datasync.dto.DataSyncDTO;
 import io.mosip.pregistration.datasync.dto.ResponseDTO;
+import io.mosip.pregistration.datasync.dto.ResponseDataSyncDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncDTO;
 import io.mosip.pregistration.datasync.service.DataSyncService;
 import io.swagger.annotations.Api;
@@ -69,6 +69,16 @@ public class DataSyncController {
 		ResponseDTO<ReverseDataSyncDTO> responseDto = dataSyncService.storeConsumedPreRegistrations(consumedData);
 		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 
+	}
+	
+	@PostMapping(path = "/datasync", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "All PreRegistrationIds fetched successfully"),
+			@ApiResponse(code = 400, message = "Unable to fetch PreRegistrationIds ") })
+	@ApiOperation(value = "Fetch all PreRegistrationIds")
+	public ResponseEntity<ResponseDTO<ResponseDataSyncDTO>> retrieveAllPreRegids(@RequestBody(required = true) DataSyncDTO dataSyncDto) {
+		
+		ResponseDTO<ResponseDataSyncDTO> responseDto = dataSyncService.retrieveAllPreRegid(dataSyncDto.getDataSyncRequestDto());
+		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 	}
 
 }

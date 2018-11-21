@@ -14,6 +14,7 @@ import io.mosip.pregistration.datasync.code.StatusCodes;
 import io.mosip.pregistration.datasync.dto.ExceptionJSONInfo;
 import io.mosip.pregistration.datasync.dto.ResponseDTO;
 import io.mosip.pregistration.datasync.errorcodes.ErrorCodes;
+import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 
 /**
  * Exception Handler
@@ -76,6 +77,33 @@ public class DataSyncExceptionHandler {
 		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@ExceptionHandler(RecordNotFoundForDateRange.class)
+	public ResponseEntity<ResponseDTO> databaseerror(final RecordNotFoundForDateRange e, WebRequest request) {
+		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_DATA_SYNC_001.toString(),
+				StatusCodes.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
+		err.add(errorDetails);
+		ResponseDTO errorRes = new ResponseDTO();
+		errorRes.setErr(err);
+		errorRes.setStatus("false");
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(TablenotAccessibleException.class)
+	public ResponseEntity<ResponseDTO> databaseerror(final TablenotAccessibleException e, WebRequest request) {
+		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_PAM_APP_002.toString(),
+				StatusCodes.REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
+		err.add(errorDetails);
+		ResponseDTO errorRes = new ResponseDTO();
+		errorRes.setErr(err);
+		errorRes.setStatus("false");
+		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 }

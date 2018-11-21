@@ -14,18 +14,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.pregistration.datasync.code.StatusCodes;
+import io.mosip.pregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.pregistration.datasync.dto.ExceptionJSONInfo;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncRequestDTO;
 import io.mosip.pregistration.datasync.dto.ResponseDTO;
+import io.mosip.pregistration.datasync.dto.ResponseDataSyncDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncDTO;
 import io.mosip.pregistration.datasync.entity.DocumentEntity;
 import io.mosip.pregistration.datasync.entity.PreRegistrationEntity;
 import io.mosip.pregistration.datasync.entity.PreRegistrationProcessedEntity;
 import io.mosip.pregistration.datasync.entity.ReverseDataSyncEntity;
 import io.mosip.pregistration.datasync.exception.DataSyncRecordNotFoundException;
+import io.mosip.pregistration.datasync.exception.RecordNotFoundForDateRange;
 import io.mosip.pregistration.datasync.exception.ReverseDataSyncRecordNotFoundException;
+import io.mosip.pregistration.datasync.repository.DataSyncRepo;
 import io.mosip.pregistration.datasync.repository.DataSyncRepository;
+import io.mosip.pregistration.datasync.repository.ReverseDataSyncRepo;
+import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
+
 
 /**
  * 
@@ -40,7 +48,13 @@ public class DataSyncService {
 	@Autowired
 	@Qualifier("dataSyncRepository")
 	private DataSyncRepository dataSyncRepository;
+	
+	@Autowired
+	private DataSyncRepo dataSyncRepo;
 
+	@Autowired
+	private ReverseDataSyncRepo reversedataSyncRepo;
+	
 	List<ExceptionJSONInfo> errlist = new ArrayList<>();
 	ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo("", "");
 	String status = "true";
@@ -124,6 +138,7 @@ public class DataSyncService {
 			demo.createNewFile();
 		}
 		if (demo.exists()) {
+			@SuppressWarnings("resource")
 			FileWriter fileWriter = new FileWriter(demo);
 			fileWriter.write(responseJson.toJSONString());
 			fileWriter.flush();
@@ -160,7 +175,7 @@ public class DataSyncService {
 
 		if (savedList != null && !savedList.equals(null) && savedList.size() > 0) {
 
-			dataSyncRepository.saveAll(processedEntityList);
+			reversedataSyncRepo.saveAll(processedEntityList);
 
 			status = "true";
 			exceptionJSONInfo = new ExceptionJSONInfo("", "");
@@ -180,6 +195,44 @@ public class DataSyncService {
 
 		return responseDto;
 
+	}
+	
+	public ResponseDTO<ResponseDataSyncDTO> retrieveAllPreRegid(DataSyncRequestDTO dataSyncRequestDTO) {
+	
+		Timestamp fromDate = dataSyncRequestDTO.getFromDate();
+		Timestamp toDate = dataSyncRequestDTO.getToDate();
+
+		ResponseDataSyncDTO responseDataSyncDTO = new ResponseDataSyncDTO();
+		ResponseDTO<ResponseDataSyncDTO> responseDto = new ResponseDTO();
+		List<PreRegistrationEntity> preRegIdEntitylist;
+		List<ExceptionJSONInfo> err = new ArrayList<>();
+		List<ResponseDataSyncDTO> responseDataSyncList=new ArrayList<>();
+		
+		try {
+			preRegIdEntitylist = dataSyncRepo.findBycreateDateTimeBetween(fromDate, toDate);
+			if (preRegIdEntitylist == null || preRegIdEntitylist.size() == 0) {
+				throw new RecordNotFoundForDateRange(StatusCodes.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
+			} else {
+
+				List<String> preregIds = new ArrayList<>();
+				for (PreRegistrationEntity preRegistrationEntity : preRegIdEntitylist) {
+					preregIds.add(preRegistrationEntity.getPreRegistrationId());
+				}
+				responseDataSyncDTO.setPreRegistrationIds(preregIds);
+				responseDataSyncDTO.setTransactionId("337324416082");
+				responseDataSyncList.add(responseDataSyncDTO);
+				responseDto.setStatus("True");
+				responseDto.setErr(err);
+				responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+				responseDto.setResponse(responseDataSyncList);
+			}
+		} catch (DataAccessLayerException e) {
+
+			throw new TablenotAccessibleException(StatusCodes.REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
+
+		}
+
+		return responseDto;
 	}
 
 }
