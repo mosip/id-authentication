@@ -155,8 +155,8 @@
                               <Label fx:id="biometrics" layoutX="27.0" layoutY="14.0" text="Biometric Fields...." />
                               <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0">
                                  <children>
-                                    <Button fx:id="captureImage" layoutX="93.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" text="Capture" />
-                                    <Button fx:id="captureExceptionImage" layoutX="457.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" text="Capture" />
+                                    <Button fx:id="captureImage" layoutX="104.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" text="Capture" />
+                                    <Button fx:id="captureExceptionImage" layoutX="471.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" text="Capture" />
                                     <Label layoutX="172.0" layoutY="328.0" text="Applicant Image" />
                                     <Label layoutX="537.0" layoutY="328.0" text="Exception Image" />
                                     <Label layoutX="115.0" layoutY="390.0" text="Threshold Percentage :">
@@ -202,7 +202,7 @@
                                        <children>
                                           <ImageView fx:id="exceptionImage" fitHeight="210.0" fitWidth="265.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
-                                                <Image url="@../images/ExceptionPhoto.PNG" />
+                                                <Image url="@../images/ApplicantPhoto.PNG" />
                                              </image>
                                           </ImageView>
                                        </children>
