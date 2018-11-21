@@ -75,6 +75,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 		this.consume(mosipEventBus, MessageBusAddress.LANDING_ZONE_BUS_OUT);
 	}
 
+	@Override
 	public MessageDTO process(MessageDTO object) {
 		List<InternalRegistrationStatusDto> registrationStatusDtoList = null;
 		try {
