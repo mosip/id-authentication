@@ -12,65 +12,70 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane fx:id="onBoardRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="487.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.DeviceMappingController">
-   <children>
-      <ImageView fitHeight="15.0" fitWidth="15.0" layoutX="11.0" layoutY="5.0" onMouseClicked="#goToHome" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/Home.png" />
-         </image>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor>
-      </ImageView>
-      <Label layoutX="32.0" layoutY="5.0" text="/" />
-      <Label layoutX="42.0" layoutY="5.0" text="Device Onboarding" />
-      <Label layoutX="393.0" layoutY="20.0" text="Device Onboarding" textAlignment="CENTER">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Label>
-      <TextField fx:id="searchField" layoutX="10.0" layoutY="57.0" prefHeight="39.0" prefWidth="306.0" promptText="Search">
-         <styleClass>
-            <String fx:value="inputFields" />
-            <String fx:value="inputFieldBottomBorder" />
-         </styleClass></TextField>
-      <ComboBox fx:id="deviceTypes" layoutX="363.0" layoutY="57.0" onAction="#loadDevices" prefHeight="39.0" prefWidth="251.0" promptText="Device Type">
-         <styleClass>
-            <String fx:value="inputFields" />
-            <String fx:value="inputFieldBottomBorder" />
-         </styleClass></ComboBox>
-      <TableView fx:id="availableDevices" layoutX="10.0" layoutY="134.0" prefHeight="288.0" prefWidth="420.0">
-        <columns>
-          <TableColumn fx:id="availableDeviceName" prefWidth="170.0" text="Manufacturer Name" />
-          <TableColumn fx:id="availableDeviceModel" minWidth="0.0" prefWidth="120.0" text="Model Name" />
-            <TableColumn fx:id="availableDeviceSerial" prefWidth="110.0" resizable="false" text="Serial No." />
-        </columns>
-      </TableView>
-      <TableView fx:id="mappedDevices" layoutX="520.0" layoutY="134.0" prefHeight="288.0" prefWidth="420.0">
-        <columns>
-          <TableColumn fx:id="mappedDeviceName" prefWidth="170.0" text="Manufacturer Name" />
-          <TableColumn fx:id="mappedDeviceModel" prefWidth="120.0" text="Model Name" />
-            <TableColumn fx:id="mappedDeviceSerial" prefWidth="110.0" resizable="false" text="Serial No." />
-        </columns>
-      </TableView>
-      <Label layoutX="10.0" layoutY="107.0" text="Available Devices" />
-      <Label layoutX="531.0" layoutY="107.0" text="Mapped Devices" />
-      <Button fx:id="submitOnboardDevices" layoutX="885.0" layoutY="434.0" mnemonicParsing="false" onAction="#submit" text="Submit" textAlignment="CENTER">
-         <styleClass>
-            <String fx:value="inputFields" />
-            <String fx:value="inputFieldNoBorder" />
-         </styleClass>
-         <cursor>
-            <Cursor fx:constant="HAND" />
-         </cursor></Button>
-      <ImageView fx:id="mapDevice" fitHeight="25.0" fitWidth="25.0" layoutX="463.0" layoutY="169.0" onMouseClicked="#mapAvailableDevices" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/map-device.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="unmapDevice" fitHeight="25.0" fitWidth="25.0" layoutX="463.0" layoutY="376.0" onMouseClicked="#unmapMappedDevices" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../images/unmap-device.png" />
-         </image>
-      </ImageView>
-   </children>
+	<children>
+		<ImageView fitHeight="15.0" fitWidth="15.0" layoutX="11.0" layoutY="5.0" onMouseClicked="#goToHome" pickOnBounds="true" preserveRatio="true">
+			<image>
+				<Image url="@../images/Home.png" />
+			</image>
+			<cursor>
+				<Cursor fx:constant="HAND" />
+			</cursor>
+		</ImageView>
+		<Label layoutX="32.0" layoutY="5.0" text="/" />
+		<Label layoutX="42.0" layoutY="5.0" text="Device Onboarding" />
+		<Label layoutX="393.0" layoutY="20.0" text="Device Onboarding" textAlignment="CENTER">
+			<font>
+				<Font name="System Bold" size="14.0" />
+			</font>
+		</Label>
+		<TextField fx:id="searchField" layoutX="10.0" layoutY="57.0" prefHeight="39.0" prefWidth="306.0" promptText="Search">
+			<styleClass>
+				<String fx:value="inputFields" />
+				<String fx:value="inputFieldBottomBorder" />
+			</styleClass>
+		</TextField>
+		<ComboBox fx:id="deviceTypes" layoutX="363.0" layoutY="57.0" onAction="#loadDevices" prefHeight="39.0" prefWidth="251.0" promptText="Device Type">
+			<styleClass>
+				<String fx:value="inputFields" />
+				<String fx:value="inputFieldBottomBorder" />
+			</styleClass>
+		</ComboBox>
+		<TableView fx:id="availableDevices" layoutX="10.0" layoutY="134.0" prefHeight="288.0" prefWidth="420.0">
+			<columns>
+				<TableColumn fx:id="availableDeviceName" minWidth="146.0" prefWidth="146.0" text="Manufacturer Name" />
+				<TableColumn fx:id="availableDeviceModel" minWidth="90.0" prefWidth="90.0" text="Model Name" />
+				<TableColumn fx:id="availableDeviceSerial" minWidth="80.0" prefWidth="80.0" text="Serial No." />
+				<TableColumn fx:id="availableDeviceType" minWidth="80.0" prefWidth="80.0" text="Type" />
+			</columns>
+		</TableView>
+		<TableView fx:id="mappedDevices" layoutX="520.0" layoutY="134.0" prefHeight="288.0" prefWidth="420.0">
+			<columns>
+				<TableColumn fx:id="mappedDeviceName" minWidth="146.0" prefWidth="146.0" text="Manufacturer Name" />
+				<TableColumn fx:id="mappedDeviceModel" minWidth="90.0" prefWidth="90.0" text="Model Name" />
+				<TableColumn fx:id="mappedDeviceSerial" minWidth="80.0" prefWidth="80.0" text="Serial No." />
+				<TableColumn fx:id="mappedDeviceType" minWidth="80.0" prefWidth="80.0" text="Type" />
+			</columns>
+		</TableView>
+		<Label layoutX="10.0" layoutY="107.0" text="Available Devices" />
+		<Label layoutX="531.0" layoutY="107.0" text="Mapped Devices" />
+		<Button fx:id="submitOnboardDevices" layoutX="885.0" layoutY="434.0" mnemonicParsing="false" onAction="#submit" text="Submit" textAlignment="CENTER">
+			<styleClass>
+				<String fx:value="inputFields" />
+				<String fx:value="inputFieldNoBorder" />
+			</styleClass>
+			<cursor>
+				<Cursor fx:constant="HAND" />
+			</cursor>
+		</Button>
+		<ImageView fx:id="mapDevice" fitHeight="25.0" fitWidth="25.0" layoutX="463.0" layoutY="169.0" onMouseClicked="#mapAvailableDevices" pickOnBounds="true" preserveRatio="true">
+			<image>
+				<Image url="@../images/map-device.png" />
+			</image>
+		</ImageView>
+		<ImageView fx:id="unmapDevice" fitHeight="25.0" fitWidth="25.0" layoutX="463.0" layoutY="376.0" onMouseClicked="#unmapMappedDevices" pickOnBounds="true" preserveRatio="true">
+			<image>
+				<Image url="@../images/unmap-device.png" />
+			</image>
+		</ImageView>
+	</children>
 </AnchorPane>
