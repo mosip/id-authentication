@@ -47,7 +47,7 @@ public class KeyGenerator {
 	/**
 	 * This method generates symmetric key
 	 * 
-	 * @return generated symmetric key
+	 * @return generated {@link SecretKey}
 	 */
 	public SecretKey getSymmetricKey() {
 		javax.crypto.KeyGenerator generator = KeyGeneratorUtils
@@ -58,7 +58,7 @@ public class KeyGenerator {
 	/**
 	 * This method generated Asymmetric key pairs
 	 * 
-	 * @return {@link AsymmetricKeyPair} which contain public nad private key
+	 * @return {@link KeyPair} which contain public nad private key
 	 */
 	public KeyPair getAsymmetricKey() {
 		KeyPairGenerator generator = KeyGeneratorUtils.getKeyPairGenerator(
