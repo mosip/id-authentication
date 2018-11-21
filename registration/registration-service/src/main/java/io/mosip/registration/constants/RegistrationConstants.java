@@ -496,8 +496,8 @@ public class RegistrationConstants {
 	public static final String JOB_EXECUTION_COMPLETED = "Execution completed";
 	public static final String JOB_EXECUTION_SUCCESS = "Executed with success";
 	public static final String JOB_EXECUTION_FAILURE = "Executed with failure";
-	public static final String JOB_TRIGGER_FAILED = "Trigger failed";
-	public static final String JOB_EXECUTION_FAILED = "Execution failed";
+	public static final String JOB_TRIGGER_MIS_FIRED = "Trigger Mis-Fired";
+	public static final String JOB_EXECUTION_REJECTED = "Execution Rejected";
 	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";
 	public static final String JOB_TRIGGER_POINT_USER = "User";
 	public static final String BATCH_JOB_CODE = "Sync Job Alert";
