@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -22,7 +21,6 @@ import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRe
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
-import io.mosip.registration.processor.quality.check.client.QCUsersClient;
 import io.mosip.registration.processor.quality.check.dao.ApplicantInfoDao;
 import io.mosip.registration.processor.quality.check.dto.DecisionStatus;
 import io.mosip.registration.processor.quality.check.dto.QCUserDto;
@@ -43,20 +41,19 @@ public class QualityCheckManagerImplTest {
 	@Mock
 	private ClientAuditRequestBuilder auditRequestBuilder;
 
-	@Mock
-	QCUsersClient qcUsersClient;
 
-	List<String> qcUsersList ;
+	
 	private List<QCUserDto> qcUserDtos;
 	private QcuserRegistrationIdEntity entity;
 	QcuserRegistrationIdPKEntity pkEntity;
 	QCUserDto qCUserDto1;
-	
+	List<String> qcuserlist;
 	@Before
 	public void setup()
-			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException { 
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		 
-		qcUsersList = Arrays.asList("qc001","qc002","qc003");
+		 
+
 		qcUserDtos = new ArrayList<>();
 		entity = new QcuserRegistrationIdEntity();
 		pkEntity = new QcuserRegistrationIdPKEntity();
@@ -66,7 +63,7 @@ public class QualityCheckManagerImplTest {
 		qCUserDto1.setRegId("2018782130000116102018124324");
 		qCUserDto1.setDecisionStatus(DecisionStatus.ACCEPTED);
 
-		Mockito.when(qcUsersClient.getAllQcuserIds()).thenReturn(qcUsersList);
+
 
 
 	}

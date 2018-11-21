@@ -109,7 +109,6 @@
 		<module>registration-status-service</module>
 		<module>filesystem-adapter-ceph</module>
 		<module>packet-manager</module>
-		<module>jobs</module>
 		<module>registration-processor-camel-bridge</module>
     	<module>stages</module>
     	<module>packet-info-storage-service</module>

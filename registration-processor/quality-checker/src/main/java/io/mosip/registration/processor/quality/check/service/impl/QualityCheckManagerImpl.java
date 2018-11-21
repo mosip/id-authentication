@@ -54,8 +54,8 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 
 	@Override
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
-		List<String> qcUsersList = qcUsersClient.getAllQcuserIds();
-		
+		List<String> qcUsersList = Arrays.asList("qc001","qc002","qc003");
+		//qcUsersClient.getAllQcuserIds();
 
 		String qcUserId = qcUsersList.get(new Random().nextInt(qcUsersList.size()));
 		QCUserDto qcUserDto = new QCUserDto();
