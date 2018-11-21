@@ -51,11 +51,11 @@ public class PacketRejectionReasonController {
 		return reasonService.getReasonsBasedOnLangCodeAndCategoryCode(reasonCategoryCode,languageCode );
 
 	}
-	@GetMapping(value = "/{languageCode}")
+	/*@GetMapping(value = "/{languageCode}")
 	public PacketRejectionReasonResponseDto getReasonsBasedOnLanguageCode(@PathVariable String reasonCategoryCode,
 			@PathVariable String languageCode) {
 		
 		return reasonService.getReasonsBasedOnLangCodeAndCategoryCode(reasonCategoryCode,languageCode );
 
-	}
+	}*/
 }
