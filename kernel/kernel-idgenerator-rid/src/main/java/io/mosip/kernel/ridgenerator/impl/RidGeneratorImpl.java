@@ -7,12 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
 import io.mosip.kernel.core.util.StringUtils;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorExceptionConstant;
 import io.mosip.kernel.ridgenerator.constant.RidGeneratorPropertyConstant;
 import io.mosip.kernel.ridgenerator.entity.Rid;
-import io.mosip.kernel.core.idgenerator.spi.RidGenerator;
-
 import io.mosip.kernel.ridgenerator.exception.EmptyInputException;
 import io.mosip.kernel.ridgenerator.exception.InputLengthException;
 import io.mosip.kernel.ridgenerator.exception.NullValueException;
@@ -29,14 +28,14 @@ import io.mosip.kernel.ridgenerator.repository.RidRepository;
 @Component
 public class RidGeneratorImpl implements RidGenerator<String> {
 
-	@Autowired
-	RidRepository ridRepository;
-
 	@Value("${mosip.kernel.rid.centerid.length}")
 	private int centerIdLength;
 
 	@Value("${mosip.kernel.rid.dongleid.length}")
 	private int dongleIdLength;
+
+	@Autowired
+	RidRepository ridRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -47,7 +46,6 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 	 */
 	@Override
 	public String generateId(String centreId, String dongleId) {
-
 		validateInput(centreId, dongleId);
 
 		centreId = StringUtils.removeLeftChar(centreId, centerIdLength);

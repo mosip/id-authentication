@@ -12,9 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +25,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -35,7 +32,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.config.Config;
 import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
@@ -57,7 +53,7 @@ import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.IdTypeRepository;
-import io.mosip.kernel.masterdata.repository.ReasonRepository;
+import io.mosip.kernel.masterdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
@@ -100,7 +96,7 @@ public class MasterdataIntegrationTest {
 	IdType idType;
 
 	@MockBean
-	ReasonRepository reasonRepository;
+	ReasonCategoryRepository reasonRepository;
 
 	private List<ReasonCategory> reasoncategories;
 
@@ -224,16 +220,16 @@ public class MasterdataIntegrationTest {
 	private void packetRejectionSetup() {
 		ReasonCategory reasonCategory = new ReasonCategory();
 		ReasonList reasonList = new ReasonList();
-		Set<ReasonList> reasonListSet = new HashSet<>();
+		List<ReasonList> reasonListSet = new ArrayList<>();
 		reasonList.setCode("RL1");
 		reasonList.setLangCode("ENG");
 		reasonList.setDescription("reasonList");
 		reasonListSet.add(reasonList);
-		reasonCategory.setReasons(reasonListSet);
+		reasonCategory.setReasonList(reasonListSet);
 		reasonCategory.setCode("RC1");
 		reasonCategory.setName("reasonCategory");
 		reasonCategory.setDescription("reason_category");
-		reasonCategory.setLanguageCode("ENG");
+		reasonCategory.setLangCode("ENG");
 		reasonCategory.setIsActive(true);
 		reasonCategory.setIsDeleted(false);
 		reasoncategories = new ArrayList<>();
@@ -485,7 +481,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(reasoncategories);
 		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG")).andExpect(status().isOk());
 	}
@@ -499,7 +495,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeFetchExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isInternalServerError());
@@ -513,7 +509,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsNotFoundExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(null);
 		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isNotFound());
@@ -521,7 +517,7 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsEmptyExceptionTest() throws Exception {
-		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(
+		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isNotFound());

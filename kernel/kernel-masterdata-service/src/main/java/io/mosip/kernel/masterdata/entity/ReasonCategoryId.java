@@ -13,20 +13,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class ReasonListId implements Serializable {
+public class ReasonCategoryId implements Serializable {
 
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5622889820282234362L;
+	private static final long serialVersionUID = -3035455749747854356L;
 
-	@Column(name = "rsncat_code", nullable = false, length = 36)
-	private String rsnCatCode;
 
-	@Column(name = "code", nullable = false, length = 36)
+
+	@Column(name = "code", nullable = false)
 	private String code;
-
+	
+	
+	
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-
+	
+	
 }
