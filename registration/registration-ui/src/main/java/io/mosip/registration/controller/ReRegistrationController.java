@@ -41,7 +41,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 @Controller
 public class ReRegistrationController extends BaseController implements Initializable {
@@ -210,12 +212,17 @@ public class ReRegistrationController extends BaseController implements Initiali
 		Parent ackRoot;
 		try {
 			Stage primaryStage=new Stage();
+			primaryStage.initStyle(StageStyle.UNDECORATED);
 			FXMLLoader fxmlLoader = BaseController
 					.loadChild(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
 			ackRoot = fxmlLoader.load();
 			primaryStage.setResizable(false);
 			Scene scene = new Scene(ackRoot);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primaryStage.setScene(scene);
+			primaryStage.initModality(Modality.WINDOW_MODAL);
+			primaryStage.initOwner(stage);
 			primaryStage.show();
 			FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
 			fpcontroller.init(this);

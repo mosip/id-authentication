@@ -15,14 +15,12 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
-import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.GlobalContextParam;
 import io.mosip.registration.service.GlobalContextParamService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
@@ -121,7 +119,6 @@ public class OnHoldController extends BaseController implements Initializable{
 		map.put("statusComment", onHoldComboBox.getSelectionModel().getSelectedItem());
 		onHoldMapList.add(map);
 
-		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.ONHOLD_STATUS_MESSAGE);
 		submit.disableProperty().set(true);
 		primarystage.close();
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,

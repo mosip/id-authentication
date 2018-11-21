@@ -56,7 +56,7 @@ public class EODController extends BaseController implements Initializable {
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		try {
-			
+
 			Parent pendingActionRoot = BaseController
 					.load(getClass().getResource("/fxml/RegistrationPendingAction.fxml"));
 
@@ -79,7 +79,7 @@ public class EODController extends BaseController implements Initializable {
 		}
 
 	}
-	
+
 	public void loadPendingActionController() {
 		pendingActionController.reloadTableView();
 	}

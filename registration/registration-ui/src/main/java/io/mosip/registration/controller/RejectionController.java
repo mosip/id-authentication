@@ -15,14 +15,12 @@ import org.springframework.stereotype.Controller;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
-import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
 import io.mosip.registration.entity.GlobalContextParam;
 import io.mosip.registration.service.GlobalContextParamService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
@@ -126,8 +124,6 @@ public class RejectionController extends BaseController implements Initializable
 		map.put("statusComment", rejectionComboBox.getSelectionModel().getSelectedItem());
 		rejectionmapList.add(map);
 
-		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION,
-				RegistrationConstants.REJECTED_STATUS_MESSAGE);
 		rejectionSubmit.disableProperty().set(true);
 		rejPrimarystage.close();
 		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER", APPLICATION_NAME,

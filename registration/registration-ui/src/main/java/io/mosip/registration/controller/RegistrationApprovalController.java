@@ -34,7 +34,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -149,9 +148,14 @@ public class RegistrationApprovalController extends BaseController implements In
 	public void reloadTableView() {
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
+
 		approvalmapList = new ArrayList<>(5);
 		submitBtn.setVisible(false);
-		setInvisible();
+		approvalBtn.setVisible(false);
+		rejectionBtn.setVisible(false);
+		onHoldBtn.setVisible(false);
+		imageAnchorPane.setVisible(false);
+
 		id.setCellValueFactory(new PropertyValueFactory<RegistrationApprovalDTO, String>("id"));
 		acknowledgementFormPath.setCellValueFactory(
 				new PropertyValueFactory<RegistrationApprovalDTO, String>("acknowledgementFormPath"));
@@ -174,17 +178,19 @@ public class RegistrationApprovalController extends BaseController implements In
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form started");
 		if (table.getSelectionModel().getSelectedItem() != null) {
+
 			if (!approvalmapList.isEmpty()) {
 				submitBtn.setVisible(true);
 			}
+
 			approvalBtn.setSelected(false);
 			rejectionBtn.setSelected(false);
 			onHoldBtn.setSelected(false);
 
-			imageAnchorPane.setVisible(true);
 			approvalBtn.setVisible(true);
 			rejectionBtn.setVisible(true);
 			onHoldBtn.setVisible(true);
+			imageAnchorPane.setVisible(true);
 
 			for (Map<String, String> map : approvalmapList) {
 
@@ -238,7 +244,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		List<RegistrationApprovalDTO> listData = null;
 
 		listData = registration.getEnrollmentByStatus(RegistrationClientStatusCode.CREATED.getCode());
-		setInvisible();
+
 		if (!listData.isEmpty()) {
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			table.setItems(oList);
@@ -246,8 +252,6 @@ public class RegistrationApprovalController extends BaseController implements In
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 			table.getItems().remove(table.getSelectionModel().getSelectedItem());
-			generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.PLACEHOLDER_LABEL);
-
 		}
 
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
@@ -277,9 +281,8 @@ public class RegistrationApprovalController extends BaseController implements In
 		approvalBtn.setSelected(true);
 		rejectionBtn.setSelected(false);
 		onHoldBtn.setSelected(false);
+		submitBtn.setVisible(true);
 
-		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION,
-				RegistrationConstants.APPROVED_STATUS_MESSAGE);
 		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_", APPLICATION_NAME, APPLICATION_ID,
 				"Packet updation has been ended");
 	}
@@ -305,6 +308,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			approvalBtn.setSelected(false);
 			rejectionBtn.setSelected(true);
 			onHoldBtn.setSelected(false);
+			submitBtn.setVisible(true);
 
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
@@ -334,6 +338,7 @@ public class RegistrationApprovalController extends BaseController implements In
 			approvalBtn.setSelected(false);
 			rejectionBtn.setSelected(false);
 			onHoldBtn.setSelected(true);
+			submitBtn.setVisible(true);
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
 		}
@@ -345,12 +350,17 @@ public class RegistrationApprovalController extends BaseController implements In
 		Parent ackRoot;
 		try {
 			Stage primaryStage = new Stage();
+			primaryStage.initStyle(StageStyle.UNDECORATED);
 			FXMLLoader fxmlLoader = BaseController
 					.loadChild(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
 			ackRoot = fxmlLoader.load();
 			primaryStage.setResizable(false);
 			Scene scene = new Scene(ackRoot);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primaryStage.setScene(scene);
+			primaryStage.initModality(Modality.WINDOW_MODAL);
+			primaryStage.initOwner(stage);
 			primaryStage.show();
 			FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
 			fpcontroller.init(this);
@@ -385,22 +395,12 @@ public class RegistrationApprovalController extends BaseController implements In
 		return primarystage;
 	}
 
+	@Override
 	public void getFingerPrintStatus() {
 		for (Map<String, String> map : approvalmapList) {
 			registrationApprovalService.updateRegistration(map.get("registrationID"), map.get("statusComment"),
 					map.get("statusCode"));
 		}
 		reloadTableView();
-	}
-
-	public void setInvisible() {
-		if (approvalmapList == null) {
-			submitBtn.setVisible(false);
-		}
-		approvalBtn.setVisible(false);
-		rejectionBtn.setVisible(false);
-		onHoldBtn.setVisible(false);
-		imageAnchorPane.setVisible(false);
-		imageView.imageProperty().set(null);
 	}
 }

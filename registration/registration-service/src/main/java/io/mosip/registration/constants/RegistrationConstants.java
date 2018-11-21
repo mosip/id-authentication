@@ -542,8 +542,7 @@ public class RegistrationConstants {
 	public static final String GPS_CAPTURING_EXCEPTION = "GPS_EXCEPTION";
 	public static final String GPS_SIGNAL = "$GP";
 
-	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint", "Iris", "Camera", "GPS",
-			"Printer", "Scanner", "Barcode"); 
+	public static final List<String> ONBOARD_DEVICE_TYPES = Arrays.asList("Fingerprint"); 
 	
 	public static List getPoaDocumentList() {
 		return Arrays.asList(new String[] { "Document1", "Document2", "Document3", "Document4" });

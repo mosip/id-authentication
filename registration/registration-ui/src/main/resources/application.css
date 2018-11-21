@@ -179,12 +179,12 @@
 .inputFieldBottomBorder {
   	-fx-border-width: 0 0 1 0;
 }
-#imageAnchorPane,#pendingActionImageAnchorPane,#leftPalmAnchorPane,#rightPalmAnchorPane{
+#imageAnchorPane,#pendingActionImageAnchorPane,#fingerPrintAnchorPane{
 	-fx-background-color:#ffffff;
 	 -fx-border-width: 1.0;
 	-fx-border-color: black;
 }
-#onHoldPane, #rejectionPane,#authenticateRootPane{
+#onHoldPane, #rejectionPane,#authenticationRoot{
 	-fx-border-width: 1 1 1 1;
 	-fx-border-color: black;
 }
@@ -205,7 +205,7 @@
 	-fx-border-color: black;
 	-fx-font-size: 14px;
 }
-#submit, #rejectionSubmit,#submitBtn{
+#submit, #rejectionSubmit,#submitBtn,#scanBtn{
 	-fx-background-color:#ffffff; 
     -fx-background-radius: 6,5;
     -fx-background-insets: 0,1;
@@ -213,7 +213,7 @@
     -fx-font-size: 10px;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 }
-#exitButton, #rejectionExit, #authExit{
+#exitButton, #rejectionExit, #authExit,#authenticationExit{
 	 -fx-border-color: transparent;
      -fx-padding: 4 0 4 0;
      -fx-text-fill: black;
