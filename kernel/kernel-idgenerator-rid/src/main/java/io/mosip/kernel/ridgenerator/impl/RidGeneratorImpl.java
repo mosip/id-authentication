@@ -3,8 +3,6 @@ package io.mosip.kernel.ridgenerator.impl;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
