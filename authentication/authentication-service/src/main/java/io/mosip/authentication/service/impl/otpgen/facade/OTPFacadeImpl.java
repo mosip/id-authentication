@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.impl.otpgen.facade;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,6 +53,11 @@ public class OTPFacadeImpl implements OTPFacade {
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SessionID";
+	
+
+	private static final String TIME = "time";
+
+	private static final String DATE = "date";
 
 	/** The otp service. */
 	@Autowired
@@ -305,10 +312,33 @@ public class OTPFacadeImpl implements OTPFacade {
 
 		Map<String, Object> values = new HashMap<String, Object>();
 		try {
-			values.put("uin", otpRequestDto.getIdvId());
+			Optional<String> uinOpt = idAuthService.getUIN(refId);
+			String uin=uinOpt.get();
+			values.put("uin", MaskUtil.generateMaskValue(uin ,
+					Integer.parseInt(env.getProperty("uin.masking.charcount"))));
 			values.put("otp", otp);
 			values.put("validTime", env.getProperty("otp.expiring.time"));
-			values.put("datetimestamp", otpGenerationTime);
+			
+			DateFormat formatter = new SimpleDateFormat(env.getProperty("datetime.pattern"));
+			
+			Date date1; 
+			String changedTime = "";
+			String changedDate = "";
+			
+			try {
+				date1 = formatter.parse(otpGenerationTime);
+				SimpleDateFormat time = new SimpleDateFormat(env.getProperty("notification.time.format"));
+				SimpleDateFormat date = new SimpleDateFormat(env.getProperty("notification.date.format"));
+				changedTime = time.format(date1);
+				changedDate = date.format(date1);
+			} catch (ParseException e) {
+				mosipLogger.error(SESSION_ID, "IDA", "error in parsing date", e.getMessage());
+				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, e);
+			}
+
+			values.put(DATE, changedDate);
+			values.put(TIME, changedTime);
+			
 			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(refId);
 			values.put("name", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
 

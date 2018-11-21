@@ -191,7 +191,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 				Stream.of(AuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
 						.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(",")));
-		if (authResponseDTO.getStatus().equals(STATUS_SUCCESS)) {
+		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
 			values.put(STATUS, "Success");
 		} else {
 			values.put(STATUS, "Failed");

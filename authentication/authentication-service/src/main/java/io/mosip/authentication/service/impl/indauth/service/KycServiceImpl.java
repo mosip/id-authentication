@@ -5,7 +5,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Base64;
@@ -194,10 +193,10 @@ public class KycServiceImpl implements KycService{
 	}
 
 	private Optional<String> getFaceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {
-		String primaryLanguage = env.getProperty("mosip.primary.lang-code");
-		return filteredIdentityInfo.entrySet().stream().filter(e -> e.getKey().equals("face"))
-		.flatMap(val -> val.getValue().stream()
-				.filter(v -> v.getLanguage().equalsIgnoreCase(primaryLanguage)))
+		return filteredIdentityInfo.entrySet()
+				.stream()
+				.filter(e -> e.getKey().equals("face"))
+		.flatMap(val -> val.getValue().stream())
 		.findAny()
 		.map(IdentityInfoDTO::getValue);
 	}
