@@ -29,6 +29,12 @@ The key solution considerations are -
 		1) local language record.
 		2) user language record.
 	2. Step 1 will return applicant demographic information. Now get all potential matches by applicant 'gender' and 'dob' when the DOB is verified. NOTE : there will be a flag in demo dedupe table which will indicate if the dob is verified or not.
+```
+	if (applicant dob is verified) {
+	// find all matcing records with Gender and  DOB
+	getPotentialDuplicates(Gender, DOB);
+	}
+```
 	3. There can be scenarios where applicant doesnot have date of birth proof. In that case system will backtrack date based on age. For example - in 2018 if applicant with age 18 doesnot have date of birth proof then system will assign dob as 01/01/2000. In these scenarios there will be a flag "dob verified" with true/false values in applicant demographic table. Get all the **unverified** dob records with 'applicant dob year + 1' and 'applicant dob year - 1' to perform demo dedupe. For example -
 ```
 	if ((applicant dob is not verified) && applicant dob is 01/01/2000) {
@@ -57,5 +63,9 @@ registration.processor.demo.dedupe.overall.weight=90
 ```
 Find attached sample code to perform levenshtein distance algorithm. 
 - The above step will provide the final list of potential duplicates. Call [Auth-rest-service](https://github.com/mosip/mosip/blob/DEV/design/authentication/Auth_Request_REST_service.md) to authenticate the applicant biometrics against the list of potential duplicates. The service accepts the refid(UIN reference id) and the biometrics and validates if the record is present in Auth DB. For example - applicant p has a potential duplicate as p' and p''. Select the refId of p' and the biometrics of p. If the service returns status as true(means person is present) that means p and p' is same person.  No need to check p'' as already match found with p'. Fail the demo dedupe and Reject the packet with proper reason.
-- If auth-service doesnot identify the applicant then go for manual adjudication. 
+- After auth-service validation -
+	1. If applicant is identified then reject the packet and update correct status in registration status DB. 
+	2. If the person is not identified then save the Applicant record and list of potential duplicates to manual adjudication table. Next step is to perform manual adjudication on record.
+
+
 
