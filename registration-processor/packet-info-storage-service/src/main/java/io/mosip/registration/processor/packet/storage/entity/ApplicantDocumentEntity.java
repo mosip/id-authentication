@@ -60,12 +60,12 @@ public class ApplicantDocumentEntity extends BasePacketEntity<ApplicantDocumentP
 	@UpdateTimestamp
 	private LocalDateTime updDtimes;
 
-	
+
 	/** The del dtimes. */
 	@Column(name = "del_dtimes")
 	@UpdateTimestamp
 	private LocalDateTime delDtimes;
-	
+
 	/** The is active. */
 	@Column(name = "is_active", nullable = false)
 	private Boolean isActive;

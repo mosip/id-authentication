@@ -9,9 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.mosip.kernel.core.util.HMACUtils;
-import io.mosip.registration.processor.core.packet.dto.BiometricSequence;
-import io.mosip.registration.processor.core.packet.dto.DemographicSequence;
-import io.mosip.registration.processor.core.packet.dto.HashSequence;
+import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
@@ -35,7 +33,8 @@ public class CheckSumGeneration {
 	/**
 	 * Instantiates a new check sum generation.
 	 *
-	 * @param adapter the adapter
+	 * @param adapter
+	 *            the adapter
 	 */
 	public CheckSumGeneration(FileSystemAdapter<InputStream, Boolean> adapter) {
 		this.adapter = adapter;
@@ -44,21 +43,29 @@ public class CheckSumGeneration {
 	/**
 	 * Generate packet info hash.
 	 *
-	 * @param sequence the sequence
-	 * @param registrationId the registration id
+	 * @param sequence
+	 *            the sequence
+	 * @param registrationId
+	 *            the registration id
 	 * @return the byte[]
 	 */
-	public byte[] generatePacketInfoHash(HashSequence sequence, String registrationId) {
+	public byte[] generateIdentityHash(List<FieldValueArray> hashSequence, String registrationId) {
 
-		// Sequence
-		BiometricSequence biometricSequence = sequence.getBiometricSequence();
-		DemographicSequence demographicSequence = sequence.getDemographicSequence();
+		for (FieldValueArray fieldValueArray : hashSequence) {
 
-		// generates biometric hash for applicant and introducer
-		generateBiometricsHash(biometricSequence, registrationId);
+			if (PacketFiles.APPLICANTBIOMETRICSEQUENCE.name().equalsIgnoreCase(fieldValueArray.getLabel())) {
 
-		// generates demographic hash
-		generateDemographicHash(demographicSequence, registrationId);
+				generateBiometricInfosHash(fieldValueArray.getValue(), registrationId, PacketFiles.APPLICANT.name());
+
+			} else if (PacketFiles.INTRODUCERBIOMETRICSEQUENCE.name().equalsIgnoreCase(fieldValueArray.getLabel())) {
+
+				generateBiometricInfosHash(fieldValueArray.getValue(), registrationId, PacketFiles.INTRODUCER.name());
+
+			} else if (PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name().equalsIgnoreCase(fieldValueArray.getLabel())) {
+
+				generateDemographicHash(fieldValueArray, registrationId);
+			}
+		}
 
 		// generated hash
 		return HMACUtils.digestAsPlainText(HMACUtils.updatedHash()).getBytes();
@@ -66,38 +73,21 @@ public class CheckSumGeneration {
 	}
 
 	/**
-	 * Generate biometrics hash.
-	 *
-	 * @param biometricSequence the biometric sequence
-	 * @param registrationId the registration id
-	 */
-	private void generateBiometricsHash(BiometricSequence biometricSequence, String registrationId) {
-		// hash for applicant
-		if (biometricSequence.getApplicant() != null) {
-			generateBiometricInfosHash(biometricSequence.getApplicant(), registrationId, PacketFiles.APPLICANT.name());
-		}
-
-		// hash for introducer
-		if (biometricSequence.getIntroducer() != null) {
-			generateBiometricInfosHash(biometricSequence.getIntroducer(), registrationId,
-					PacketFiles.INTRODUCER.name());
-		}
-
-	}
-
-	/**
 	 * Generate biometric infos hash.
 	 *
-	 * @param hashOrder the hash order
-	 * @param registrationId the registration id
-	 * @param personType the person type
+	 * @param hashOrder
+	 *            the hash order
+	 * @param registrationId
+	 *            the registration id
+	 * @param personType
+	 *            the person type
 	 */
 	private void generateBiometricInfosHash(List<String> hashOrder, String registrationId, String personType) {
 		hashOrder.forEach(file -> {
 			byte[] filebyte = null;
 			try {
-				InputStream fileStream = adapter.getFile(registrationId,
-						PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR + personType + FILE_SEPARATOR + file.toUpperCase());
+				InputStream fileStream = adapter.getFile(registrationId, PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
+						+ personType + FILE_SEPARATOR + file.toUpperCase());
 				filebyte = IOUtils.toByteArray(fileStream);
 			} catch (IOException e) {
 				LOGGER.error(StatusMessage.INPUTSTREAM_NOT_READABLE, e);
@@ -110,11 +100,13 @@ public class CheckSumGeneration {
 	/**
 	 * Generate demographic hash.
 	 *
-	 * @param demographicSequence the demographic sequence
-	 * @param registrationId the registration id
+	 * @param demographicSequence
+	 *            the demographic sequence
+	 * @param registrationId
+	 *            the registration id
 	 */
-	private void generateDemographicHash(DemographicSequence demographicSequence, String registrationId) {
-		List<String> hashOrder = demographicSequence.getApplicant();
+	private void generateDemographicHash(FieldValueArray fieldValueArray, String registrationId) {
+		List<String> hashOrder = fieldValueArray.getValue();
 
 		hashOrder.forEach(document -> {
 			InputStream fileStream = null;
@@ -139,7 +131,8 @@ public class CheckSumGeneration {
 	/**
 	 * Generate hash.
 	 *
-	 * @param byteArray the byte array
+	 * @param byteArray
+	 *            the byte array
 	 */
 	private static void generateHash(final byte[] byteArray) {
 		// Hash updation

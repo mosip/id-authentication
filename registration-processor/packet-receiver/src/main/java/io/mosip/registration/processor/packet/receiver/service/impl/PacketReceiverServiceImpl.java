@@ -3,6 +3,7 @@ package io.mosip.registration.processor.packet.receiver.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
-import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.constant.EventId;
-import io.mosip.registration.processor.core.constant.EventName;
-import io.mosip.registration.processor.core.constant.EventType;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
@@ -23,6 +21,7 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.PacketReceiverService;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationType;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
@@ -66,7 +65,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 
 	/** The core audit request builder. */
 	@Autowired
-	ClientAuditRequestBuilder clientAuditRequestBuilder;
+	AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/*
 	 * (non-Javadoc)
@@ -123,7 +122,7 @@ public class PacketReceiverServiceImpl implements PacketReceiverService<Multipar
 				String description = isTransactionSuccessful ? "Packet registration status updated successfully"
 						: "Packet registration status updation unsuccessful";
 
-				clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+				auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 						registrationId);
 			}
 		} else {

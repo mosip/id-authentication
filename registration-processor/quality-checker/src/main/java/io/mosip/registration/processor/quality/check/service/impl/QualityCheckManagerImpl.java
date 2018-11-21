@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,6 @@ import io.mosip.registration.processor.core.constant.EventId;
 import io.mosip.registration.processor.core.constant.EventName;
 import io.mosip.registration.processor.core.constant.EventType;
 import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
-import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
@@ -39,7 +39,7 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	QCUsersClient qcUsersClient;
 
 	@Autowired
-	ClientAuditRequestBuilder clientAuditRequestBuilder;
+	private AuditLogRequestBuilder clientAuditRequestBuilder;
 
 	/** The event id. */
 	private String eventId = "";

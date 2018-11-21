@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +18,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
@@ -39,7 +39,7 @@ public class QualityCheckManagerImplTest {
 	private ApplicantInfoDao applicantInfoDao;
 
 	@Mock
-	private ClientAuditRequestBuilder auditRequestBuilder;
+	private AuditLogRequestBuilder auditRequestBuilder;
 
 
 	

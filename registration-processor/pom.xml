@@ -76,19 +76,21 @@
 		<powermock.module.junit4.version>1.7.4</powermock.module.junit4.version>
 		<powermock.api.mockito.version>1.7.4</powermock.api.mockito.version>
 		<awaitility.version>3.1.0</awaitility.version>
-		
+		<jsonsimple.version>1.1.1</jsonsimple.version>
 		<!-- DFS adapter -->
 		<aws.javasdk.version>1.11.368</aws.javasdk.version>
 		<s3mock.version>0.2.4</s3mock.version>
 		
 		<!-- Vert.x -->
 		<vertx.version>3.5.3</vertx.version>
-		
+		<!-- json-simple -->
+		<jsonsimple.version>1.1.1</jsonsimple.version>
 		<!-- local -->
 		<registration.status.version>1.0.0-SNAPSHOT</registration.status.version>
 		<registration.processor.core.version>1.0.0-SNAPSHOT</registration.processor.core.version>
 		<filesystem.adapter.version>1.0.0-SNAPSHOT</filesystem.adapter.version>
 		<packet.manager.version>1.0.0-SNAPSHOT</packet.manager.version>
+		<registration.processor.rest.client>1.0.0-SNAPSHOT</registration.processor.rest.client>
 	</properties>
 
 	<dependencyManagement>
@@ -108,13 +110,12 @@
 		<module>packet-receiver</module>
 		<module>registration-status-service</module>
 		<module>filesystem-adapter-ceph</module>
+		<module>registration-processor-rest-client</module>
 		<module>packet-manager</module>
 		<module>registration-processor-camel-bridge</module>
     	<module>stages</module>
     	<module>packet-info-storage-service</module>
     	<module>quality-checker</module>
-		<module>registration-processor-auditmanager-client</module>
-		<module>qc-users-manger</module>
   </modules>
 
 	<profiles>

@@ -7,16 +7,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.constant.AuditLogConstant;
-import io.mosip.registration.processor.core.constant.EventId;
-import io.mosip.registration.processor.core.constant.EventName;
-import io.mosip.registration.processor.core.constant.EventType;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.core.code.AuditLogConstant;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.status.dao.SyncRegistrationDao;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
 import io.mosip.registration.processor.status.dto.SyncStatusDto;
@@ -57,7 +56,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 
 	/** The core audit request builder. */
 	@Autowired
-	ClientAuditRequestBuilder clientAuditRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	/**
 	 * Instantiates a new sync registration service impl.
@@ -118,8 +117,7 @@ public class SyncRegistrationServiceImpl implements SyncRegistrationService<Sync
 				eventType = EventType.SYSTEM.toString();
 				description = "Registartion Id's sync is unsuccessful";
 			}
-			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.MULTIPLE_ID.toString());
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,AuditLogConstant.MULTIPLE_ID.toString());
 
 		}
 

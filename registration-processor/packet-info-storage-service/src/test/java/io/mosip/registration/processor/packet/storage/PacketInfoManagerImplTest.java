@@ -1,3 +1,4 @@
+/*
 package io.mosip.registration.processor.packet.storage;
 
 import static org.junit.Assert.assertEquals;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bouncycastle.asn1.cms.MetaData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,30 +24,11 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.registration.processor.auditmanager.client.AuditmanagerClient;
-import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.packet.dto.AddressDTO;
-import io.mosip.registration.processor.core.packet.dto.BiometericData;
-import io.mosip.registration.processor.core.packet.dto.Demographic;
-import io.mosip.registration.processor.core.packet.dto.DemographicInfo;
-import io.mosip.registration.processor.core.packet.dto.Document;
-import io.mosip.registration.processor.core.packet.dto.DocumentDetail;
-import io.mosip.registration.processor.core.packet.dto.ExceptionFingerprint;
-import io.mosip.registration.processor.core.packet.dto.ExceptionIris;
-import io.mosip.registration.processor.core.packet.dto.Fingerprint;
-import io.mosip.registration.processor.core.packet.dto.FingerprintData;
-import io.mosip.registration.processor.core.packet.dto.GeoLocation;
-import io.mosip.registration.processor.core.packet.dto.Iris;
-import io.mosip.registration.processor.core.packet.dto.IrisData;
-import io.mosip.registration.processor.core.packet.dto.MetaData;
-import io.mosip.registration.processor.core.packet.dto.OsiData;
-import io.mosip.registration.processor.core.packet.dto.PacketInfo;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentPKEntity;
@@ -479,3 +462,4 @@ public class PacketInfoManagerImplTest {
 	}
 
 }
+*/

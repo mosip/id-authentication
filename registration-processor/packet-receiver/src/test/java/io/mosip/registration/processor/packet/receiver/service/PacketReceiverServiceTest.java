@@ -33,7 +33,9 @@ import org.springframework.web.multipart.MultipartFile;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
-import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.receiver.exception.DuplicateUploadRequestException;
@@ -41,6 +43,8 @@ import io.mosip.registration.processor.packet.receiver.exception.FileSizeExceedE
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotSyncException;
 import io.mosip.registration.processor.packet.receiver.exception.PacketNotValidException;
 import io.mosip.registration.processor.packet.receiver.service.impl.PacketReceiverServiceImpl;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.rest.client.audit.dto.AuditResponseDto;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.SyncRegistrationDto;
@@ -61,6 +65,8 @@ public class PacketReceiverServiceTest {
 	@Mock
 	private InternalRegistrationStatusDto mockDto;
 
+
+
 	@Mock
     private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
 
@@ -68,7 +74,7 @@ public class PacketReceiverServiceTest {
 	public ExpectedException exceptionRule = ExpectedException.none();
 
 	@Mock
-	private ClientAuditRequestBuilder clientAuditRequestBuilder = new ClientAuditRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
 	
 	@InjectMocks
 	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl() {
@@ -108,9 +114,27 @@ public class PacketReceiverServiceTest {
 			logger.error(e.getMessage());
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-		}
+		}finally {
 
 		when(syncRegistrationService.isPresent(anyString())).thenReturn(true);
+		AuditResponseDto auditResponseDto=new AuditResponseDto();
+		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
+
+
+		}
+
+		/*Mockito.doReturn(auditRequestDto).when(auditRequestBuilder).build();
+		Mockito.doReturn(true).when(auditHandler).writeAudit(ArgumentMatchers.any());
+
+		AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
+		AuditRequestDto auditRequest1 = new AuditRequestDto();
+
+		Field f = CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
+		f.setAccessible(true);
+		f.set(coreAuditRequestBuilder, auditRequestBuilder);
+		Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
+		f1.setAccessible(true);
+		f1.set(auditRequestBuilder, auditRequest1);*/
 	}
 
 	@Test

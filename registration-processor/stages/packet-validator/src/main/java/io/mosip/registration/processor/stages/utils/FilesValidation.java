@@ -3,10 +3,8 @@ package io.mosip.registration.processor.stages.utils;
 import java.io.InputStream;
 import java.util.List;
 
-import io.mosip.registration.processor.core.packet.dto.BiometricSequence;
-import io.mosip.registration.processor.core.packet.dto.DemographicSequence;
-import io.mosip.registration.processor.core.packet.dto.HashSequence;
-import io.mosip.registration.processor.core.packet.dto.PacketInfo;
+import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 
@@ -36,7 +34,8 @@ public class FilesValidation {
 	/**
 	 * Instantiates a new files validation.
 	 *
-	 * @param adapter the adapter
+	 * @param adapter
+	 *            the adapter
 	 */
 	public FilesValidation(FileSystemAdapter<InputStream, Boolean> adapter) {
 
@@ -46,14 +45,16 @@ public class FilesValidation {
 	/**
 	 * Files validation.
 	 *
-	 * @param registrationId the registration id
-	 * @param packetInfo the packet info
+	 * @param registrationId
+	 *            the registration id
+	 * @param packetInfo
+	 *            the packet info
 	 * @return true, if successful
 	 */
-	public boolean filesValidation(String registrationId, PacketInfo packetInfo) {
+	public boolean filesValidation(String registrationId, Identity identity) {
 		boolean filesValidated = false;
 
-		HashSequence hashSequence = packetInfo.getHashSequence();
+		List<FieldValueArray> hashSequence = identity.getHashSequence();
 		filesValidated = validateHashSequence(registrationId, hashSequence);
 
 		return filesValidated;
@@ -63,16 +64,23 @@ public class FilesValidation {
 	/**
 	 * Validate hash sequence.
 	 *
-	 * @param registrationId the registration id
-	 * @param hashSequence the hash sequence
+	 * @param registrationId
+	 *            the registration id
+	 * @param hashSequence
+	 *            the hash sequence
 	 * @return true, if successful
 	 */
-	private boolean validateHashSequence(String registrationId, HashSequence hashSequence) {
+	private boolean validateHashSequence(String registrationId, List<FieldValueArray> hashSequence) {
 		boolean isHashSequenceValidated = false;
 
-		if (validateBiometricSequence(registrationId, hashSequence.getBiometricSequence())
-				&& validateDemographicSequence(registrationId, hashSequence.getDemographicSequence())) {
-			isHashSequenceValidated = true;
+		for (FieldValueArray fieldValueArray : hashSequence) {
+			if (PacketFiles.APPLICANTBIOMETRICSEQUENCE.name().equalsIgnoreCase(fieldValueArray.getLabel())) {
+				isHashSequenceValidated = validateBiometricApplicant(registrationId, fieldValueArray.getValue());
+			} else if (PacketFiles.INTRODUCERBIOMETRICSEQUENCE.name().equalsIgnoreCase(fieldValueArray.getLabel())) {
+				isHashSequenceValidated = validateBiometricIntroducer(registrationId, fieldValueArray.getValue());
+			} else if (PacketFiles.APPLICANTDEMOGRAPHICSEQUENCE.name().equalsIgnoreCase(fieldValueArray.getLabel())) {
+				isHashSequenceValidated = validateDemographicSequence(registrationId, fieldValueArray.getValue());
+			}
 		}
 
 		return isHashSequenceValidated;
@@ -81,26 +89,21 @@ public class FilesValidation {
 	/**
 	 * Validate demographic sequence.
 	 *
-	 * @param registrationId the registration id
-	 * @param demographicSequence the demographic sequence
+	 * @param registrationId
+	 *            the registration id
+	 * @param demographicSequence
+	 *            the demographic sequence
 	 * @return true, if successful
 	 */
-	private boolean validateDemographicSequence(String registrationId, DemographicSequence demographicSequence) {
+	private boolean validateDemographicSequence(String registrationId, List<String> values) {
 		boolean isDemographicSequenceValidated = false;
-		for (String applicantFile : demographicSequence.getApplicant()) {
+		for (String applicantFile : values) {
 			String fileName = "";
-			if (PacketFiles.APPLICANTPHOTO.name().equalsIgnoreCase(applicantFile)) {
-				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.APPLICANTPHOTO.name();
-			} else if (PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name().equalsIgnoreCase(applicantFile)) {
-				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name();
-			} else if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(applicantFile)) {
+
+			if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(applicantFile)) {
 				fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name();
-			} else if (PacketFiles.PROOFOFADDRESS.name().equalsIgnoreCase(applicantFile)) {
-				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.PROOFOFADDRESS.name();
-			} else if (PacketFiles.EXCEPTIONPHOTO.name().equalsIgnoreCase(applicantFile)) {
-				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.EXCEPTIONPHOTO.name();
-			} else if (PacketFiles.PROOFOFIDENTITY.name().equalsIgnoreCase(applicantFile)) {
-				fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.PROOFOFIDENTITY.name();
+			} else {
+				fileName = DEMOGRAPHIC_APPLICANT + applicantFile.toUpperCase();
 			}
 
 			isDemographicSequenceValidated = adapter.checkFileExistence(registrationId, fileName);
@@ -114,29 +117,12 @@ public class FilesValidation {
 	}
 
 	/**
-	 * Validate biometric sequence.
-	 *
-	 * @param registrationId the registration id
-	 * @param biometricSequence the biometric sequence
-	 * @return true, if successful
-	 */
-	private boolean validateBiometricSequence(String registrationId, BiometricSequence biometricSequence) {
-
-		boolean isBiometricSequenceValidated = false;
-
-		if (validateBiometricApplicant(registrationId, biometricSequence.getApplicant())
-				&& validateBiometricIntroducer(registrationId, biometricSequence.getIntroducer())) {
-			isBiometricSequenceValidated = true;
-		}
-
-		return isBiometricSequenceValidated;
-	}
-
-	/**
 	 * Validate biometric introducer.
 	 *
-	 * @param registrationId the registration id
-	 * @param introducer the introducer
+	 * @param registrationId
+	 *            the registration id
+	 * @param introducer
+	 *            the introducer
 	 * @return true, if successful
 	 */
 	private boolean validateBiometricIntroducer(String registrationId, List<String> introducer) {
@@ -144,15 +130,9 @@ public class FilesValidation {
 
 		for (String applicantFile : introducer) {
 			String fileName = "";
-			if (PacketFiles.LEFTEYE.name().equalsIgnoreCase(applicantFile)) {
-				fileName = BIOMETRIC_INTRODUCER + PacketFiles.LEFTEYE.name();
-			} else if (PacketFiles.RIGHTEYE.name().equalsIgnoreCase(applicantFile)) {
-				fileName = BIOMETRIC_INTRODUCER + PacketFiles.RIGHTEYE.name();
-			} else if (PacketFiles.LEFTTHUMB.name().equalsIgnoreCase(applicantFile)) {
-				fileName = BIOMETRIC_INTRODUCER + PacketFiles.LEFTTHUMB.name();
-			} else if (PacketFiles.RIGHTTHUMB.name().equalsIgnoreCase(applicantFile)) {
-				fileName = BIOMETRIC_INTRODUCER + PacketFiles.RIGHTTHUMB.name();
-			}
+
+			fileName = BIOMETRIC_INTRODUCER + applicantFile.toUpperCase();
+
 			isIntroducerValidated = adapter.checkFileExistence(registrationId, fileName);
 
 			if (!isIntroducerValidated) {
@@ -165,8 +145,10 @@ public class FilesValidation {
 	/**
 	 * Validate biometric applicant.
 	 *
-	 * @param registrationId the registration id
-	 * @param applicant the applicant
+	 * @param registrationId
+	 *            the registration id
+	 * @param applicant
+	 *            the applicant
 	 * @return true, if successful
 	 */
 	private boolean validateBiometricApplicant(String registrationId, List<String> applicant) {
@@ -174,17 +156,9 @@ public class FilesValidation {
 
 		for (String applicantFile : applicant) {
 			String fileName = "";
-			if (PacketFiles.LEFTEYE.name().equalsIgnoreCase(applicantFile)) {
-				fileName = BIOMETRIC_APPLICANT + PacketFiles.LEFTEYE.name();
-			} else if (PacketFiles.RIGHTEYE.name().equalsIgnoreCase(applicantFile)) {
-				fileName = BIOMETRIC_APPLICANT + PacketFiles.RIGHTEYE.name();
-			} else if (PacketFiles.LEFTPALM.name().equalsIgnoreCase(applicantFile)) {
-				fileName = BIOMETRIC_APPLICANT + PacketFiles.LEFTPALM.name();
-			} else if (PacketFiles.RIGHTPALM.name().equalsIgnoreCase(applicantFile)) {
-				fileName = BIOMETRIC_APPLICANT + PacketFiles.RIGHTPALM.name();
-			} else if (PacketFiles.BOTHTHUMBS.name().equalsIgnoreCase(applicantFile)) {
-				fileName = BIOMETRIC_APPLICANT + PacketFiles.BOTHTHUMBS.name();
-			}
+
+			fileName = BIOMETRIC_APPLICANT + applicantFile.toUpperCase();
+
 			isApplicantValidated = adapter.checkFileExistence(registrationId, fileName);
 
 			if (!isApplicantValidated) {

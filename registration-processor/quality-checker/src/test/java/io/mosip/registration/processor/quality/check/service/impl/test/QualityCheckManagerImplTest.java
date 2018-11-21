@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +18,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.dataaccess.hibernate.constant.HibernateErrorCode;
-import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
 import io.mosip.registration.processor.core.spi.packetmanager.QualityCheckManager;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
@@ -40,7 +40,7 @@ public class QualityCheckManagerImplTest {
 	private ApplicantInfoDao applicantInfoDao;
 
 	@Mock
-	private ClientAuditRequestBuilder auditRequestBuilder;
+	private AuditLogRequestBuilder auditRequestBuilder;
 
 	@Mock
 	QCUsersClient qcUsersClient;
@@ -55,7 +55,7 @@ public class QualityCheckManagerImplTest {
 			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		 
 		 
-		
+
 		qcUserDtos = new ArrayList<>();
 		entity = new QcuserRegistrationIdEntity();
 		pkEntity = new QcuserRegistrationIdPKEntity();
@@ -65,13 +65,13 @@ public class QualityCheckManagerImplTest {
 		qCUserDto1.setRegId("2018782130000116102018124324");
 		qCUserDto1.setDecisionStatus(DecisionStatus.ACCEPTED);
 
-		
-		
+
+
 
 	}
 	@Test
 	public void assignQCUserTest() {
-		
+
 		QCUserDto qcUserDto=qualityCheckManager.assignQCUser("2018782130000116102018124324");
 		assertEquals(DecisionStatus.PENDING, qcUserDto.getDecisionStatus());
 	}
@@ -80,14 +80,14 @@ public class QualityCheckManagerImplTest {
 	public void assignQCUserFailureTest() {
 		
 		
-		
+
 		DataAccessLayerException exp = new DataAccessLayerException(HibernateErrorCode.ERR_DATABASE.toString(), "errorMessage",
 				new Exception());
 		Mockito.when(applicantInfoDao.save(ArgumentMatchers.any(QcuserRegistrationIdEntity.class)))
 				.thenThrow(exp);
 		qualityCheckManager.assignQCUser("2018782130000116102018124324");
 	}
-	
+
 	@Test
 	public void updateQCUserStatusTest() {
 

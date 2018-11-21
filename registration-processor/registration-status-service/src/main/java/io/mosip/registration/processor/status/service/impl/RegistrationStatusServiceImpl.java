@@ -6,17 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.registration.processor.auditmanager.requestbuilder.ClientAuditRequestBuilder;
-import io.mosip.registration.processor.core.constant.AuditLogConstant;
-import io.mosip.registration.processor.core.constant.EventId;
-import io.mosip.registration.processor.core.constant.EventName;
-import io.mosip.registration.processor.core.constant.EventType;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
+import io.mosip.registration.processor.core.code.AuditLogConstant;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.status.code.RegistrationExternalStatusCode;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.code.TransactionTypeCode;
@@ -65,7 +64,8 @@ public class RegistrationStatusServiceImpl
 
 	/** The core audit request builder. */
 	@Autowired
-	ClientAuditRequestBuilder clientAuditRequestBuilder;
+	private AuditLogRequestBuilder auditLogRequestBuilder;
+
 
 	/*
 	 * (non-Javadoc)
@@ -94,7 +94,7 @@ public class RegistrationStatusServiceImpl
 					? "Get registration status by registration id is successful"
 					: "Get registration status by registration id is unsuccessful";
 
-			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationId);
 		}
 	}
@@ -127,7 +127,7 @@ public class RegistrationStatusServiceImpl
 					? "Find files by threshold time and statuscode is successful"
 					: "Find files by threshold time and statuscode is unsuccessful";
 
-			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
 		}
@@ -168,7 +168,7 @@ public class RegistrationStatusServiceImpl
 					? "Registration status added successfully"
 					: "Failure in adding registration status to registration table";
 
-			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
 		}
 	}
@@ -212,7 +212,7 @@ public class RegistrationStatusServiceImpl
 					? "Updated registration status successfully"
 					: "Updated registration status unsuccessfully";
 
-			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					registrationStatusDto.getRegistrationId());
 
 		}
@@ -245,7 +245,7 @@ public class RegistrationStatusServiceImpl
 			description = isTransactionSuccessful
 					? "Get list of registration status by status successfully"
 					: "Get list of registration status by status unsuccessfully";
-			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
 	}
@@ -280,7 +280,7 @@ public class RegistrationStatusServiceImpl
 			description = isTransactionSuccessful
 					? "Get list of registration status by registration id successfully"
 					: "Get list of registration status by registration id unsuccessfully";
-			clientAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.MULTIPLE_ID.toString());
 		}
 	}

@@ -11,7 +11,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
 
-
 /**
  * The persistent class for the qcuser_registration_id database table.
  * 
@@ -20,7 +19,6 @@ import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
 @Table(name="qcuser_registration", schema = "regprc")
 public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrationIdPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
-
 
 	@Column(name = "cr_by", nullable = false)
 	private String crBy = "MOSIP_SYSTEM";
@@ -34,10 +32,10 @@ public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrat
 	@UpdateTimestamp
 	private LocalDateTime delDtimes;
 
-	@Column(name="is_active")
+	@Column(name = "is_active")
 	private Boolean isActive;
 
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
 	private String status_code;
@@ -46,7 +44,7 @@ public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrat
 
 	private String lang_code;
 
-	@Column(name="upd_by")
+	@Column(name = "upd_by")
 	private String updBy;
 
 	@Column(name = "upd_dtimes")

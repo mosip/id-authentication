@@ -2,9 +2,11 @@ package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -82,7 +84,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the prereg id.
 	 *
-	 * @param preregId the new prereg id
+	 * @param preregId
+	 *            the new prereg id
 	 */
 	public void setPreregId(String preregId) {
 		this.preregId = preregId;
@@ -100,7 +103,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the machine id.
 	 *
-	 * @param machineId the new machine id
+	 * @param machineId
+	 *            the new machine id
 	 */
 	public void setMachineId(String machineId) {
 		this.machineId = machineId;
@@ -118,7 +122,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the cntr id.
 	 *
-	 * @param cntrId the new cntr id
+	 * @param cntrId
+	 *            the new cntr id
 	 */
 	public void setCntrId(String cntrId) {
 		this.regcntr_id = cntrId;
@@ -136,7 +141,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the latitude.
 	 *
-	 * @param latitude the new latitude
+	 * @param latitude
+	 *            the new latitude
 	 */
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
@@ -154,7 +160,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the longitude.
 	 *
-	 * @param longitude the new longitude
+	 * @param longitude
+	 *            the new longitude
 	 */
 	public void setLongitude(String longitude) {
 		this.longitude = longitude;
@@ -172,7 +179,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the checks if is active.
 	 *
-	 * @param isActive the new checks if is active
+	 * @param isActive
+	 *            the new checks if is active
 	 */
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
@@ -190,7 +198,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the cr by.
 	 *
-	 * @param crBy the new cr by
+	 * @param crBy
+	 *            the new cr by
 	 */
 	public void setCrBy(String crBy) {
 		this.crBy = crBy;
@@ -226,7 +235,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the upd by.
 	 *
-	 * @param updBy the new upd by
+	 * @param updBy
+	 *            the new upd by
 	 */
 	public void setUpdBy(String updBy) {
 		this.updBy = updBy;
@@ -280,7 +290,8 @@ public class RegCenterMachineEntity extends BasePacketEntity<RegCenterMachinePKE
 	/**
 	 * Sets the checks if is deleted.
 	 *
-	 * @param isDeleted the new checks if is deleted
+	 * @param isDeleted
+	 *            the new checks if is deleted
 	 */
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
