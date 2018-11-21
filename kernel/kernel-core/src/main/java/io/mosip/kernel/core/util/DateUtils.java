@@ -401,23 +401,6 @@ public final class DateUtils {
 	}
 	// ---------------------------------------------------------------------------------------------------------------------------
 
-	public static LocalDateTime getUTCCurrentDateTime() {
-		return ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime();
-	}
-
-	public static LocalDateTime parseUTCToDefaultLocalDateTime(String utcDateTime) {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		try {
-			return simpleDateFormat.parse(utcDateTime).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-		} catch (ParseException e) {
-			throw new io.mosip.kernel.core.exception.ParseException(
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e);
-		}
-
-	}
-
 	public static LocalDateTime parseUTCToLocalDateTime(String utcDateTime, String pattern) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -431,12 +414,73 @@ public final class DateUtils {
 
 	}
 
-	public static String getUTCDefaultCurrentDateTimeString() {
-		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+	public static LocalDateTime parseUTCToLocalDateTime(Date date) {
+		return date.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
+	}
+
+	public static Date parseUTCToDate(String utcDateTime, String pattern) throws ParseException {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		try {
+			return simpleDateFormat.parse(utcDateTime);
+		} catch (ParseException e) {
+			throw new io.mosip.kernel.core.exception.ParseException(
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e);
+		}
+	}
+
+	public static Date parseToDate(String dateTime, String pattern, TimeZone timeZone) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		simpleDateFormat.setTimeZone(timeZone);
+		try {
+			return simpleDateFormat.parse(dateTime);
+		} catch (ParseException e) {
+			throw new io.mosip.kernel.core.exception.ParseException(
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e);
+		}
 	}
 
 	public static String getUTCCurrentDateTimeString(String pattern) {
 		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern(pattern));
+	}
+
+	public static LocalDateTime getUTCCurrentDateTime() {
+		return ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime();
+	}
+
+	// Default utcDateTime pattern - "yyyy-MM-dd'T'HH:mm:ss.SSS"
+	public static String getDefaultUTCCurrentDateTimeString() {
+		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS"));
+	}
+
+	// Default utcDateTime pattern - "yyyy-MM-dd'T'HH:mm:ss.SSS"
+	public static LocalDateTime parseDefaultUTCToLocalDateTime(String utcDateTime) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		try {
+			return simpleDateFormat.parse(utcDateTime).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		} catch (ParseException e) {
+			throw new io.mosip.kernel.core.exception.ParseException(
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e);
+		}
+
+	}
+
+	// Default utcDateTime pattern - "yyyy-MM-dd'T'HH:mm:ss.SSS"
+	public static Date parseDefaultUTCToDate(String utcDateTime) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		try {
+			return simpleDateFormat.parse(utcDateTime);
+		} catch (ParseException e) {
+			throw new io.mosip.kernel.core.exception.ParseException(
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
+					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e);
+		}
+
 	}
 
 }
