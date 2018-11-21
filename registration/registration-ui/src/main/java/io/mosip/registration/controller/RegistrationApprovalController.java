@@ -251,7 +251,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
-			table.getItems().remove(table.getSelectionModel().getSelectedItem());
+			table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
 		}
 
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,

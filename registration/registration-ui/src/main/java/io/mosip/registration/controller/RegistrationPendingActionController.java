@@ -161,9 +161,9 @@ public class RegistrationPendingActionController extends BaseController implemen
 			approvalBtn.setSelected(false);
 			rejectionBtn.setSelected(false);
 
-			approvalBtn.setVisible(false);
-			rejectionBtn.setVisible(false);
-			pendingActionImageAnchorPane.setVisible(false);
+			approvalBtn.setVisible(true);
+			rejectionBtn.setVisible(true);
+			pendingActionImageAnchorPane.setVisible(true);
 
 			for (Map<String, String> map : approvalmapList) {
 
@@ -218,11 +218,12 @@ public class RegistrationPendingActionController extends BaseController implemen
 		pendingActionImageAnchorPane.setVisible(false);
 
 		if (!listData.isEmpty()) {
+			pendingActionRegistrationRootSubPane.disableProperty().set(false);
 			ObservableList<RegistrationApprovalDTO> oList = FXCollections.observableArrayList(listData);
 			pendingActionTable.setItems(oList);
 		} else {
 			pendingActionRegistrationRootSubPane.disableProperty().set(true);
-			pendingActionTable.getItems().remove(pendingActionTable.getSelectionModel().getSelectedItem());
+			pendingActionTable.getItems().removeAll(pendingActionTable.getSelectionModel().getSelectedItems());
 			pendingActionTable.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 		}
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
@@ -275,8 +276,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 
 			rejectionController.initData(pendingActionTable.getSelectionModel().getSelectedItem(), primarystage,
 					approvalmapList);
-			loadStage(primarystage, RegistrationConstants.REJECTION_PAGE,
-					pendingActionTable.getSelectionModel().getSelectedItem());
+			loadStage(primarystage, RegistrationConstants.REJECTION_PAGE);
 
 			approvalBtn.setSelected(false);
 			rejectionBtn.setSelected(true);
@@ -327,7 +327,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 		}
 	}
 
-	private Stage loadStage(Stage primarystage, String fxmlPath, RegistrationApprovalDTO registrationApprovalDTO)
+	private Stage loadStage(Stage primarystage, String fxmlPath)
 			throws RegBaseCheckedException {
 
 		try {
