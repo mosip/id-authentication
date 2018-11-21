@@ -28,7 +28,6 @@ import io.kernel.core.idrepo.constant.IdRepoErrorConstants;
 import io.kernel.core.idrepo.dto.ErrorDTO;
 import io.kernel.core.idrepo.dto.IdResponseDTO;
 import io.mosip.kernel.core.exception.BaseCheckedException;
-import io.mosip.kernel.core.exception.ExceptionUtils;
 
 @RestControllerAdvice
 public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
@@ -51,14 +50,14 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
 	IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNKNOWN_ERROR);
-	System.err.println(ExceptionUtils.getStackTrace(ex));
+//	System.err.println(ExceptionUtils.getStackTrace(ex));
 	return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 	    HttpHeaders headers, HttpStatus status, WebRequest request) {
-	System.err.println(ExceptionUtils.getStackTrace(ex));
+//	System.err.println(ExceptionUtils.getStackTrace(ex));
 	if (ex instanceof ServletException || ex instanceof BeansException) {
 	    ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
 		    IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
@@ -76,7 +75,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IdRepoAppException.class)
     protected ResponseEntity<Object> handleIdAppException(IdRepoAppException ex, WebRequest request) {
-	System.err.println(ExceptionUtils.getStackTrace(ex));
+//	System.err.println(ExceptionUtils.getStackTrace(ex));
 
 	return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -126,11 +125,9 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	response.setTimestamp(mapper.convertValue(new Date(), String.class));
-//	mapper.setFilterProvider(new SimpleFilterProvider().addFilter("idResponseFilter",
-//		SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
-//	
-//	mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
-//		SimpleBeanPropertyFilter.serializeAll()));
+	mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
+		SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
+	
 	return response;
     }
 }
