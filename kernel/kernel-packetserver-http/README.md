@@ -1,30 +1,40 @@
-## kernel-packetserver-http
+## PACKETSERVER-HTTP module for kernel
+This folder has PACKETSERVER-HTTP module which can be used to upload packet.
 
  
- 1- [Background & Design](../../design/kernel/kernel-packetserver-http.md)
+####[Background & Design](../../design/kernel/kernel-packetserver-http.md)
  
 
- 2- [API Documentation <TBA>](TBA)
- 
- ```
- mvn javadoc:javadoc
+### Api Documentation
+[API Documentation <TBA>](TBA)
 
- ```
- 
- 3- Usage Sample
- 
- Usage1:
- 
- ```
-<TBA>
- 
- ```
+```
+mvn javadoc:javadoc
+```
+### Properties to be added in parent Spring Application environment 
+[kernel-packetserver-http-dev.properties](../../config/kernel-packetserver-http-dev.properties)
 
- Usage2:
+##### If there is any error which occurs while upload, it will be thrown as Exception. 
+
+
+
+### Usage Sample
+  Request Body:
+
+(curl sample)
+
+```
+-H "Content-Type: multipart/form-data" 
+-F "packet=@id_proof.pdf;type=application/pdf"
+```
+ 
+  Response body:
  
  ```
-<TBA>
- 
+{
+  "fileName": "id_proof.pdf",
+  "fileSizeInBytes": 71976
+}
  ```
 
 
