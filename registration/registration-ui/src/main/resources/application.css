@@ -222,7 +222,7 @@
 	-fx-text-fill: black;
     -fx-font-size: 14px;
 }
-#approvalAccordian .title > .arrow-button .arrow{
+#approvalAccordion .title > .arrow-button .arrow{
     -fx-translate-x: 870;
 }
 .titled-pane > .title 

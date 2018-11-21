@@ -417,6 +417,15 @@ public class RegistrationConstants {
 	public static final String REJECTION_BEAN_NAME = "rejectionController";
 	public static final String ONHOLD_BEAN_NAME = "onHoldController";
 	public static final String ERROR = "ERROR";
+	public static final String REGISTRATIONID = "registrationID";
+	public static final String STATUSCODE = "statusCode";
+	public static final String STATUSCOMMENT = "statusComment";
+	public static final String PENDING_ACTION_PAGE = "/fxml/RegistrationPendingAction.fxml";
+	public static final String PENDING_APPROVAL_PAGE = "/fxml/RegistrationPendingApproval.fxml";
+	public static final String REREGISTRATION_PAGE = "/fxml/ReRegistration.fxml";
+	public static final String ONHOLD_COMMENTS = "ONHOLD_COMMENTS";
+	public static final String REJECTION_COMMENTS = "REJECT_COMMENTS";
+	
 
 	// Upload Packet
 

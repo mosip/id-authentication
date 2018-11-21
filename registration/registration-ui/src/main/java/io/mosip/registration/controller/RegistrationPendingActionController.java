@@ -3,6 +3,7 @@ package io.mosip.registration.controller;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_PENDING_ACTION;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -106,6 +107,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	@FXML
 	private AnchorPane pendingActionImageAnchorPane;
 
+	/** The approvalmap list. */
 	private List<Map<String, String>> approvalmapList = null;
 
 	/*
@@ -123,8 +125,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * Method to reload table
 	 */
 	public void reloadTableView() {
-		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Page loading has been started");
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		approvalmapList = new ArrayList<>(5);
 
 		submitBtn.setVisible(false);
@@ -143,15 +144,14 @@ public class RegistrationPendingActionController extends BaseController implemen
 			}
 		});
 
-		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Page loading has been completed");
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "Page loading has been completed");
 	}
 
 	/**
 	 * Viewing RegistrationAcknowledgement on selecting the Registration record
 	 */
 	private void viewAck() {
-		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form started");
 		if (pendingActionTable.getSelectionModel().getSelectedItem() != null) {
 			if (!approvalmapList.isEmpty()) {
@@ -167,10 +167,12 @@ public class RegistrationPendingActionController extends BaseController implemen
 
 			for (Map<String, String> map : approvalmapList) {
 
-				if (map.get("registrationID") == pendingActionTable.getSelectionModel().getSelectedItem().getId()) {
-					if (map.get("statusCode") == RegistrationClientStatusCode.APPROVED.getCode()) {
+				if (map.get(RegistrationConstants.REGISTRATIONID) == pendingActionTable.getSelectionModel()
+						.getSelectedItem().getId()) {
+					if (map.get(RegistrationConstants.STATUSCODE) == RegistrationClientStatusCode.APPROVED.getCode()) {
 						approvalBtn.setSelected(true);
-					} else if (map.get("statusCode") == RegistrationClientStatusCode.REJECTED.getCode()) {
+					} else if (map.get(RegistrationConstants.STATUSCODE) == RegistrationClientStatusCode.REJECTED
+							.getCode()) {
 						rejectionBtn.setSelected(true);
 					}
 				}
@@ -181,12 +183,11 @@ public class RegistrationPendingActionController extends BaseController implemen
 
 				pendingActionImageView.setImage(new Image(file));
 			} catch (IOException ioException) {
-				LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
-						APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+				LOGGER.error(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
 			}
 
 		}
-		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form completed");
 	}
 
@@ -194,8 +195,8 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * Opening registration acknowledgement form on clicking on image.
 	 */
 	public void openAckForm() {
-		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Opening the Acknowledgement Form");
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+				"Opening the Acknowledgement Form started");
 		viewAckController.viewAck(pendingActionTable.getSelectionModel().getSelectedItem().getAcknowledgementFormPath(),
 				stage);
 	}
@@ -205,8 +206,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * 
 	 */
 	public void populateTable() {
-		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
-				"table population has been started");
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "table population has been started");
 		List<RegistrationApprovalDTO> listData = registrationApprovalService
 				.getEnrollmentByStatus(RegistrationClientStatusCode.ON_HOLD.getCode());
 
@@ -221,11 +221,10 @@ public class RegistrationPendingActionController extends BaseController implemen
 			pendingActionTable.setItems(oList);
 		} else {
 			pendingActionRegistrationRootSubPane.disableProperty().set(true);
-			pendingActionTable.getItems().removeAll();
+			pendingActionTable.getItems().clear();
 			pendingActionTable.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 		}
-		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
-				"table population has been ended");
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "table population has been ended");
 	}
 
 	/**
@@ -234,8 +233,8 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 * @param event
 	 */
 	public void pendingActionApprovePacket() {
-		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
-				"Packet updation has been started");
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+				"Registration Approval has been started");
 
 		for (Map<String, String> registrationMap : approvalmapList) {
 			if (registrationMap.containsValue(pendingActionTable.getSelectionModel().getSelectedItem().getId())) {
@@ -243,17 +242,16 @@ public class RegistrationPendingActionController extends BaseController implemen
 			}
 		}
 		Map<String, String> map = new HashMap<>();
-		map.put("registrationID", pendingActionTable.getSelectionModel().getSelectedItem().getId());
-		map.put("statusCode", RegistrationClientStatusCode.APPROVED.getCode());
-		map.put("statusComment", "");
+		map.put(RegistrationConstants.REGISTRATIONID, pendingActionTable.getSelectionModel().getSelectedItem().getId());
+		map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.APPROVED.getCode());
+		map.put(RegistrationConstants.STATUSCOMMENT, "");
 		approvalmapList.add(map);
 
 		approvalBtn.setSelected(true);
 		rejectionBtn.setSelected(false);
 		submitBtn.setVisible(true);
 
-		LOGGER.debug("REGISTRATION - APPROVE_PACKET - REGISTRATION_", APPLICATION_NAME, APPLICATION_ID,
-				"Packet updation has been ended");
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID, "Registration Approval has been ended");
 	}
 
 	/**
@@ -264,8 +262,8 @@ public class RegistrationPendingActionController extends BaseController implemen
 	 */
 	public void pendingActionRejectPacket() throws RegBaseCheckedException {
 		try {
-			LOGGER.debug("REGISTRATION - REJECTION_PACKET - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
-					"Rejection of packet has been started");
+			LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+					"Rejection of registration has been started");
 
 			Stage primarystage = new Stage();
 			primarystage.initStyle(StageStyle.UNDECORATED);
@@ -283,22 +281,28 @@ public class RegistrationPendingActionController extends BaseController implemen
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
 		}
-		LOGGER.debug("REGISTRATION - REJECTION_PACKET - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
-				"Rejection of packet has been ended");
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+				"Rejection of registration has been ended");
 
 	}
 
 	@Override
 	public void getFingerPrintStatus() {
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+				"Updation of registration according to status has been started");
+
 		for (Map<String, String> map : approvalmapList) {
-			registrationApprovalService.updateRegistration(map.get("registrationID"), map.get("statusComment"),
-					map.get("statusCode"));
+			registrationApprovalService.updateRegistration(map.get(RegistrationConstants.REGISTRATIONID),
+					map.get(RegistrationConstants.STATUSCOMMENT), map.get(RegistrationConstants.STATUSCODE));
 		}
 		reloadTableView();
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+				"Updation of registration according to status has been ended");
 	}
 
 	public void pendingActionSubmit() throws RegBaseCheckedException {
-
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+				"Supervisor Authentication has been started");
 		Parent ackRoot;
 		try {
 			Stage primaryStage = new Stage();
@@ -323,10 +327,11 @@ public class RegistrationPendingActionController extends BaseController implemen
 		} catch (RuntimeException runtimeException) {
 			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
 		}
+		LOGGER.debug(LOG_REG_PENDING_ACTION, APPLICATION_NAME, APPLICATION_ID,
+				"Supervisor Authentication has been ended");
 	}
 
-	private Stage loadStage(Stage primarystage, String fxmlPath)
-			throws RegBaseCheckedException {
+	private Stage loadStage(Stage primarystage, String fxmlPath) throws RegBaseCheckedException {
 
 		try {
 			AnchorPane authRoot = BaseController.load(getClass().getResource(fxmlPath));

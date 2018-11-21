@@ -265,7 +265,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 			table.setItems(oListStavaka);
 		} else {
 			reRegistrationRootPane.disableProperty().set(true);
-			table.getItems().removeAll();
+			table.getItems().clear();
 		}
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been ended");
