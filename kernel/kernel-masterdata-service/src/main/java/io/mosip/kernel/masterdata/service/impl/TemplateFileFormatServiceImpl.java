@@ -30,11 +30,11 @@ public class TemplateFileFormatServiceImpl implements TemplateFileFormatService 
 
 	@Autowired
 	private DataMapper dataMapper;
-	
+
 	@Override
 	public PostResponseDto addTemplateFileFormat(TemplateFileFormatRequestDto templateFileFormatRequestDto) {
-		List<TemplateFileFormat> entities = metaUtils.setCreateMetaData(templateFileFormatRequestDto.getRequest().getTemplateFileFormatDtos(),
-				TemplateFileFormat.class);
+		List<TemplateFileFormat> entities = metaUtils.setCreateMetaData(
+				templateFileFormatRequestDto.getRequest().getTemplateFileFormatDtos(), TemplateFileFormat.class);
 		List<TemplateFileFormat> templateFileFormats;
 		try {
 			templateFileFormats = templateFileFormatRepository.saveAll(entities);

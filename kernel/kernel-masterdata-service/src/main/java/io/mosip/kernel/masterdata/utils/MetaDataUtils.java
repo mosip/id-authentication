@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.utils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +23,7 @@ public class MetaDataUtils {
 	@Autowired
 	private DataMapper dataMapper;
 
-	public <T,D extends BaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
+	public <T, D extends BaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends BaseEntity> entityClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
 		String contextUser = authN.getName();
@@ -33,13 +34,13 @@ public class MetaDataUtils {
 			D entity;
 			try {
 				entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
-			} catch(DataMapperException e) {
+			} catch (DataMapperException e) {
 				throw new MasterDataServiceException(
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(),
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorMessage());
 			}
-			LocalDateTime time = LocalDateTime.now();
-			LocalDateTime utime = LocalDateTime.now();
+			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC") );
+			LocalDateTime utime = LocalDateTime.now(ZoneId.of("UTC") );
 			entity.setIsActive(true);
 			entity.setDeletedtimes(null);
 			entity.setUpdatedBy(contextUser);
