@@ -90,7 +90,8 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		Optional<String> matchingStrategyOpt = authType.getMatchingStrategy(authRequestDTO, demoHelper::getLanguageCode);
 		if (matchingStrategyOpt.isPresent()) {
 			matchingStrategy = matchingStrategyOpt.get();
-			if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())) {
+			if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType()) 
+					|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
 				Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO,
 						demoHelper::getLanguageCode);
 				int defaultMatchValue = Integer.parseInt(environment.getProperty(DEMO_DEFAULT_MATCH_VALUE));

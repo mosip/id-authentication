@@ -28,12 +28,12 @@ public enum DemoMatchType implements MatchType {
 	// @formatter:off
 
 	/** Primary Name Match Type */
-	NAME_PRI(IdMapping.NAME, setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
+	NAME_PRI(IdMapping.NAME, setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL, NameMatchingStrategy.PHONETICS), IdentityDTO::getName,
 			LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_PI_NAME_PRI, AuthUsageDataBit.MATCHED_PI_NAME_PRI,
 			Function.identity()),
 
 	/** Secondary Name Match Type */
-	NAME_SEC(IdMapping.NAME, setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL), IdentityDTO::getName,
+	NAME_SEC(IdMapping.NAME, setOf(NameMatchingStrategy.EXACT, NameMatchingStrategy.PARTIAL, NameMatchingStrategy.PHONETICS), IdentityDTO::getName,
 			LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_PI_NAME_SEC, AuthUsageDataBit.MATCHED_PI_NAME_SEC,
 			Function.identity()),
 
@@ -133,11 +133,11 @@ public enum DemoMatchType implements MatchType {
 			AuthUsageDataBit.MATCHED_AD_ADDR_PINCODE_SEC, Function.identity()),
 
 	/** Primary Address MatchType */
-	ADDR_PRI(IdMapping.FULLADDRESS, setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
+	ADDR_PRI(IdMapping.FULLADDRESS, setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL, FullAddressMatchingStrategy.PHONETICS),
 			IdentityDTO::getFullAddress, LanguageType.PRIMARY_LANG, AuthUsageDataBit.USED_FAD_ADDR_PRI,
 			AuthUsageDataBit.MATCHED_FAD_ADDR_PRI, Function.identity()),
 	/** Secondary Address MatchType */
-	ADDR_SEC(IdMapping.FULLADDRESS, setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL),
+	ADDR_SEC(IdMapping.FULLADDRESS, setOf(FullAddressMatchingStrategy.EXACT, FullAddressMatchingStrategy.PARTIAL, FullAddressMatchingStrategy.PHONETICS),
 			IdentityDTO::getFullAddress, LanguageType.SECONDARY_LANG, AuthUsageDataBit.USED_FAD_ADDR_SEC,
 			AuthUsageDataBit.MATCHED_FAD_ADDR_SEC, Function.identity()),
 
