@@ -53,7 +53,6 @@ public class OTPFacadeImpl implements OTPFacade {
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SessionID";
-	
 
 	private static final String TIME = "time";
 
@@ -149,15 +148,9 @@ public class OTPFacadeImpl implements OTPFacade {
 
 			String responseTime = formatDate(new Date(), env.getProperty("datetime.pattern"));
 			otpResponseDTO.setResTime(responseTime);
-			/*
-			 * otpResponseDTO.setMaskedEmail( MaskUtil.generateMaskValue(email,
-			 * Integer.parseInt(env.getProperty("uin.masking.charcount"))));
-			 * otpResponseDTO.setMaskedMobile(MaskUtil.generateMaskValue(phoneNumber,
-			 * Integer.parseInt(env.getProperty("uin.masking.charcount"))));
-			 */
-			
-			otpResponseDTO.setMaskedEmail(maskEmail(email));
-			otpResponseDTO.setMaskedMobile(maskMobile(mobileNumber));
+
+			otpResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
+			otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
 			// -- send otp notification --
 			String otpGenerationTime = formatDate(otpGenerateTime, env.getProperty("datetime.pattern"));
 			sendOtpNotification(otpRequestDto, otp, refId, otpGenerationTime, email, mobileNumber);
@@ -167,31 +160,6 @@ public class OTPFacadeImpl implements OTPFacade {
 		}
 		return otpResponseDTO;
 
-	}
-
-	/**
-	 * Mask email.
-	 *
-	 * @param email the email
-	 * @return the string
-	 */
-	private String maskEmail(String email) {
-		StringBuilder maskedEmail = new StringBuilder(email);
-		IntStream.range(1, StringUtils.split(email, '@')[0].length() + 1).filter(i -> i % 3 != 0)
-				.forEach(i -> maskedEmail.setCharAt(i - 1, 'X'));
-		return maskedEmail.toString();
-	}
-
-	/**
-	 * Mask mobile number.
-	 *
-	 * @param email the email
-	 * @return the string
-	 */
-	private String maskMobile(String mobileNumber) {
-		StringBuilder maskedMobile = new StringBuilder(mobileNumber);
-		IntStream.range(0, (maskedMobile.length() / 2) + 1).forEach(i -> maskedMobile.setCharAt(i, 'X'));
-		return maskedMobile.toString();
 	}
 
 	/**
@@ -313,18 +281,18 @@ public class OTPFacadeImpl implements OTPFacade {
 		Map<String, Object> values = new HashMap<String, Object>();
 		try {
 			Optional<String> uinOpt = idAuthService.getUIN(refId);
-			String uin=uinOpt.get();
-			values.put("uin", MaskUtil.generateMaskValue(uin ,
-					Integer.parseInt(env.getProperty("uin.masking.charcount"))));
+			String uin = uinOpt.get();
+			values.put("uin",
+					MaskUtil.generateMaskValue(uin, Integer.parseInt(env.getProperty("uin.masking.charcount"))));
 			values.put("otp", otp);
 			values.put("validTime", env.getProperty("otp.expiring.time"));
-			
+
 			DateFormat formatter = new SimpleDateFormat(env.getProperty("datetime.pattern"));
-			
-			Date date1; 
+
+			Date date1;
 			String changedTime = "";
 			String changedDate = "";
-			
+
 			try {
 				date1 = formatter.parse(otpGenerationTime);
 				SimpleDateFormat time = new SimpleDateFormat(env.getProperty("notification.time.format"));
@@ -338,7 +306,7 @@ public class OTPFacadeImpl implements OTPFacade {
 
 			values.put(DATE, changedDate);
 			values.put(TIME, changedTime);
-			
+
 			Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(refId);
 			values.put("name", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
 
