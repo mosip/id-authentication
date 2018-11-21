@@ -41,9 +41,9 @@ public class ApplicationController {
 	 * 
 	 * @return All Application details of specific language
 	 */
-	@GetMapping("/{languagecode}")
-	public ApplicationResponseDto fetchAllApplicationByLanguageCode(@PathVariable("languagecode") String languageCode) {
-		return applicationService.getAllApplicationByLanguageCode(languageCode);
+	@GetMapping("/{langCode}")
+	public ApplicationResponseDto fetchAllApplicationByLanguageCode(@PathVariable("langCode") String langCode) {
+		return applicationService.getAllApplicationByLanguageCode(langCode);
 	}
 	
 	/**
@@ -51,9 +51,9 @@ public class ApplicationController {
 	 * 
 	 * @return An Application
 	 */
-	@GetMapping("/{id}/{languagecode}")
-	public ApplicationResponseDto fetchAllApplicationByCodeAndLanguageCode(@PathVariable("id") String code, @PathVariable("languagecode") String languageCode) {
-		return applicationService.getApplicationByCodeAndLanguageCode(code, languageCode);
+	@GetMapping("/{code}/{langCode}")
+	public ApplicationResponseDto fetchAllApplicationByCodeAndLanguageCode(@PathVariable("code") String code, @PathVariable("langCode") String langCode) {
+		return applicationService.getApplicationByCodeAndLanguageCode(code, langCode);
 	}
 	
 	/**

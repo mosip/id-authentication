@@ -412,6 +412,100 @@ public final class DateUtils {
 					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
 		}
 	}
+
+	// ---------------------------------------------------------------------------------------------
+	/**
+	 * Tests if this java.time.LocalDateTime is after the specified
+	 * java.time.LocalDateTime.
+	 * 
+	 * @param d1
+	 *            a java.time.LocalDateTime
+	 * @param d2
+	 *            a java.time.LocalDateTime
+	 * @return <code>true</code> if and only if the instant represented by d1
+	 *         <tt>LocalDateTime</tt> object is strictly later than the instant
+	 *         represented by <tt>d2</tt>; <code>false</code> otherwise.
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
+	 *             if the <code>d1</code> , <code>d2</code> is null
+	 */
+	public static boolean after(LocalDateTime d1, LocalDateTime d2) {
+		try {
+			return d1.isAfter(d2);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
+		}
+	}
+
+	/**
+	 * Tests if this LocalDateTime is before the specified LocalDateTime.
+	 * 
+	 * @param d1
+	 *            a java.time.LocalDateTime
+	 * @param d2
+	 *            a java.time.LocalDateTime
+	 * @return <code>true</code> if and only if the instant of time represented by
+	 *         d1 <tt>LocalDateTime</tt> object is strictly earlier than the instant
+	 *         represented by <tt>d2</tt>; <code>false</code> otherwise.
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
+	 *             if the <code>d1</code> , <code>d2</code> is null
+	 * 
+	 */
+	public static boolean before(LocalDateTime d1, LocalDateTime d2) {
+		try {
+			return d1.isBefore(d2);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
+		}
+	}
+
+	/**
+	 * Checks if two java.time.LocalDateTime objects are on the same day ignoring
+	 * time. <br>
+	 * 28 Mar 2002 13:45 and 28 Mar 2002 06:01 would return true.<br>
+	 * 28 Mar 2002 13:45 and 12 Mar 2002 13:45 would return false.
+	 * 
+	 * @param d1
+	 *            a java.time.LocalDateTime
+	 * @param d2
+	 *            a java.time.LocalDateTime
+	 * @return <code>true</code> if they represent the same day
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
+	 *             if the <code>d1</code> , <code>d2</code> is null
+	 * 
+	 */
+	public static boolean isSameDay(LocalDateTime d1, LocalDateTime d2) {
+		try {
+			return d1.toLocalDate().isEqual(d2.toLocalDate());
+		} catch (Exception e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
+		}
+	}
+
+	/**
+	 * Checks if two java.time.LocalDateTime objects represent the same instant in
+	 * time. <br>
+	 * This method compares the long millisecond time of the two objects.
+	 * 
+	 * @param d1
+	 *            a java.time.LocalDateTime
+	 * @param d2
+	 *            a java.time.LocalDateTime
+	 * @return <code>true</code> if they represent the same millisecond instant
+	 * 
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
+	 *             if the <code>d1</code> , <code>d2</code> is null
+	 */
+	public static boolean isSameInstant(LocalDateTime d1, LocalDateTime d2) {
+		try {
+			return d1.isEqual(d2);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
+		}
+	}
 	// ---------------------------------------------------------------------------------------------------------------------------
 
 	/**

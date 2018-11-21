@@ -44,9 +44,9 @@ public class RegistrationCenterController {
 	 *            searched.
 	 * @return {@link RegistrationCenterResponseDto}.
 	 */
-	@GetMapping("/getlocspecificregistrationcenters/{languagecode}/{locationcode}")
+	@GetMapping("/getlocspecificregistrationcenters/{langCode}/{locationcode}")
 	public RegistrationCenterResponseDto getRegistrationCenterDetailsByLocationCode(
-			@PathVariable("languagecode") String langCode, @PathVariable("locationcode") String locationCode) {
+			@PathVariable("langCode") String langCode, @PathVariable("locationcode") String locationCode) {
 		return registrationCenterService.getRegistrationCentersByLocationCodeAndLanguageCode(locationCode, langCode);
 	}
 
@@ -55,15 +55,15 @@ public class RegistrationCenterController {
 	 * center id , year and language code.
 	 * 
 	 * @param langCode
-	 *            languageCode of required center.
+	 *            langCode of required center.
 	 * @param registrationCenterId
 	 *            centerId of required center
 	 * @param year
 	 *            the year provided by user.
 	 * @return {@link RegistrationCenterHolidayDto}
 	 */
-	@GetMapping("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}")
-	public RegistrationCenterHolidayDto getRegistrationCenterHolidays(@PathVariable("languagecode") String langCode,
+	@GetMapping("/getregistrationcenterholidays/{langCode}/{registrationcenterid}/{year}")
+	public RegistrationCenterHolidayDto getRegistrationCenterHolidays(@PathVariable("langCode") String langCode,
 			@PathVariable("registrationcenterid") String registrationCenterId, @PathVariable("year") int year) {
 		return registrationCenterService.getRegistrationCenterHolidays(registrationCenterId, year, langCode);
 	}
@@ -72,7 +72,7 @@ public class RegistrationCenterController {
 	 * Function to fetch nearby registration centers using coordinates
 	 * 
 	 * @param langCode
-	 *            languageCode of required centers.
+	 *            langCode of required centers.
 	 * @param longitude
 	 *            the longitude provided by user.
 	 * @param latitude
@@ -81,9 +81,9 @@ public class RegistrationCenterController {
 	 *            the proximity distance provided by user.
 	 * @return {@link RegistrationCenterResponseDto}
 	 */
-	@GetMapping("/getcoordinatespecificregistrationcenters/{languagecode}/{longitude}/{latitude}/{proximitydistance}")
+	@GetMapping("/getcoordinatespecificregistrationcenters/{langCode}/{longitude}/{latitude}/{proximitydistance}")
 	public RegistrationCenterResponseDto getCoordinateSpecificRegistrationCenters(
-			@PathVariable("languagecode") String langCode, @PathVariable("longitude") double longitude,
+			@PathVariable("langCode") String langCode, @PathVariable("longitude") double longitude,
 			@PathVariable("latitude") double latitude, @PathVariable("proximitydistance") int proximityDistance) {
 		return registrationCenterService.getRegistrationCentersByCoordinates(longitude, latitude, proximityDistance,
 				langCode);
@@ -95,12 +95,12 @@ public class RegistrationCenterController {
 	 * @param registrationCenterId
 	 *            centerId of required center.
 	 * @param langCode
-	 *            languageCode of required center.
+	 *            langCode of required center.
 	 * @return {@link RegistrationCenterResponseDto}
 	 */
-	@GetMapping("/registrationcenters/{id}/{languagecode}")
+	@GetMapping("/registrationcenters/{id}/{langCode}")
 	public RegistrationCenterResponseDto getSpecificRegistrationCenterById(
-			@PathVariable("id") String registrationCenterId, @PathVariable("languagecode") String langCode) {
+			@PathVariable("id") String registrationCenterId, @PathVariable("langCode") String langCode) {
 		return registrationCenterService.getRegistrationCentersByIDAndLangCode(registrationCenterId, langCode);
 	}
 
@@ -118,7 +118,7 @@ public class RegistrationCenterController {
 	 * Function to fetch list of registration centers based on hierarchy level,text
 	 * and language code
 	 * 
-	 * @param languageCode
+	 * @param langCode
 	 *            input from user
 	 * @param hierarchyLevel
 	 *            input from user
@@ -127,10 +127,10 @@ public class RegistrationCenterController {
 	 * @return {@link RegistrationCenterHierarchyLevelResponseDto}
 	 */
 	@GetMapping("/registrationcenters/{lang_code}/{hierarchy_level_name}/{name}")
-	public RegistrationCenterHierarchyLevelResponseDto getRegistrationCenterByHierarchyLevelAndTextAndLanguageCode(
-			@PathVariable("lang_code") String languageCode, @PathVariable("hierarchy_level_name") String hierarchyLevel,
+	public RegistrationCenterHierarchyLevelResponseDto getRegistrationCenterByHierarchyLevelAndTextAndlangCode(
+			@PathVariable("lang_code") String langCode, @PathVariable("hierarchy_level_name") String hierarchyLevel,
 			@PathVariable("name") String text) {
-		return registrationCenterService.findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(languageCode,
+		return registrationCenterService.findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(langCode,
 				hierarchyLevel, text);
 
 	}
