@@ -40,8 +40,8 @@ public class BiometricTypeController {
 	 * 
 	 * @return All Biometric types of specific language
 	 */
-	@GetMapping("/{languagecode}")
-	public List<BiometricTypeDto> fetchAllBiometricTypeUsingLangCode(@PathVariable("languagecode") String langCode) {
+	@GetMapping("/{langCode}")
+	public List<BiometricTypeDto> fetchAllBiometricTypeUsingLangCode(@PathVariable("langCode") String langCode) {
 		return biometricTypeService.getAllBiometricTypesByLanguageCode(langCode);
 	}
 
@@ -50,9 +50,9 @@ public class BiometricTypeController {
 	 * 
 	 * @return A Biometric type
 	 */
-	@GetMapping("/{id}/{languagecode}")
-	public BiometricTypeDto fetchBiometricTypeUsingCodeAndLangCode(@PathVariable("id") String code,
-			@PathVariable("languagecode") String langCode) {
+	@GetMapping("/{code}/{langCode}")
+	public BiometricTypeDto fetchBiometricTypeUsingCodeAndLangCode(@PathVariable("code") String code,
+			@PathVariable("langCode") String langCode) {
 		return biometricTypeService.getBiometricTypeByCodeAndLangCode(code, langCode);
 	}
 }

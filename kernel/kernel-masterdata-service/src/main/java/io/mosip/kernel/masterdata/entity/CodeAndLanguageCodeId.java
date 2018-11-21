@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CodeLangCodeId implements Serializable {
+public class CodeAndLanguageCodeId implements Serializable {
 	/**
 	 * 
 	 */
