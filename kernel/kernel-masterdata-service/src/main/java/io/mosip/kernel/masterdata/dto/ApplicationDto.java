@@ -15,6 +15,6 @@ public class ApplicationDto {
 	
 	private String description;
 	
-	private String languageCode;
+	private String langCode;
 	
 }

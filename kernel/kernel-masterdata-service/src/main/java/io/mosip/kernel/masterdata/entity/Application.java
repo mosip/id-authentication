@@ -41,6 +41,6 @@ public class Application extends BaseEntity implements Serializable {
 	private String description;
 
 	@Column(name = "lang_code")
-	private String languageCode;
+	private String langCode;
 
 }

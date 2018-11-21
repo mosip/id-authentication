@@ -14,10 +14,12 @@ import io.mosip.kernel.masterdata.entity.Location;
  */
 @Repository
 public interface LocationRepository extends BaseRepository<Location, String> {
-
-	List<Location> findLocationHierarchyByCodeAndLanguageCode(String locCode,String languagecode);
 	
-	List<Location> findLocationHierarchyByParentLocCodeAndLanguageCode(String parentLocCode,
+	List<Location> findLocationHierarchyByIsActiveTrueAndIsDeletedFalse();
+
+	List<Location> findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String locCode,String languagecode);
+	
+	List<Location> findLocationHierarchyByParentLocCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String parentLocCode,
 			String languageCode);
 
 }

@@ -1,45 +1,32 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Embeddable
 public class ReasonListId implements Serializable {
 
-	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3035455749747854356L;
+	private static final long serialVersionUID = -5622889820282234362L;
 
+	@Column(name = "rsncat_code", nullable = false, length = 36)
+	private String rsnCatCode;
 
-
-	@Column(name = "code", nullable = false)
+	@Column(name = "code", nullable = false, length = 36)
 	private String code;
-	
-	
-	
+
 	@Column(name = "lang_code", nullable = false, length = 3)
 	private String langCode;
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "rsncat_code")
-	private ReasonCategory reasonCategoryCode;
+
 }

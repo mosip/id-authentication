@@ -35,20 +35,20 @@ public class DeviceSpecificationController {
 
 	@ApiOperation(value = "Fetch all the device specification avialbale for specific langCode")
 
-	@GetMapping("/{languagecode}")
+	@GetMapping("/{langCode}")
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCode(
-			@PathVariable("languagecode") String languageCode) {
+			@PathVariable("langCode") String langCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
-				.findDeviceSpecificationByLangugeCode(languageCode);
+				.findDeviceSpecificationByLangugeCode(langCode);
 		return new DeviceSpecificationResponseDto(deviceSpecificationDtos);
 	}
 
 	@ApiOperation(value = "Fetch all the device specification avialbale for specific langCode and DeviceTypeCode")
-	@GetMapping("/{languagecode}/{devicetypecode}")
+	@GetMapping("/{langCode}/{devicetypecode}")
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCodeAndDeviceTypeCode(
-			@PathVariable("languagecode") String languageCode, @PathVariable("devicetypecode") String deviceTypeCode) {
+			@PathVariable("langCode") String langCode, @PathVariable("devicetypecode") String deviceTypeCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
-				.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
+				.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(langCode, deviceTypeCode);
 		return new DeviceSpecificationResponseDto(deviceSpecificationDtos);
 	}
 	

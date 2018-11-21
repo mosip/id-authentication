@@ -32,13 +32,13 @@ public class GenderTypeController {
 	/**
 	 * Get API to fetch all gender types for a particular language code
 	 * 
-	 * @param languageCode
+	 * @param langCode
 	 *            the laguage code whose gender is to be returned
 	 * @return list of all gender types for the given language code
 	 */
-	@GetMapping(value = "/gendertype/{languageCode}")
-	public GenderTypeResponseDto getGenderByLanguageCode(@PathVariable String languageCode) {
-		return genderTypeService.getGenderTypeByLanguageCode(languageCode);
+	@GetMapping(value = "/gendertype/{langCode}")
+	public GenderTypeResponseDto getGenderBylangCode(@PathVariable String langCode) {
+		return genderTypeService.getGenderTypeByLanguageCode(langCode);
 	}
 
 }

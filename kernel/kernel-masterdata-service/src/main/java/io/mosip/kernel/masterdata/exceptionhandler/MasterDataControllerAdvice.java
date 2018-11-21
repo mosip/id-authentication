@@ -56,14 +56,4 @@ public class MasterDataControllerAdvice {
 		return errorResponse;
 	}
 
-	// @ExceptionHandler(NumberFormatException.class)
-	// public ResponseEntity<Map<String, ArrayList<Error>>>
-	// numberFormatException(final NumberFormatException e) {
-	// Error error = new
-	// Error(RegistrationCenterErrorCode.NUMBER_FORMAT_EXCEPTION.getErrorCode(),
-	// e.getMessage());
-	// Map<String, ArrayList<Error>> map = setError(error);
-	// return new ResponseEntity<>(map, HttpStatus.NOT_ACCEPTABLE);
-	// }
-
 }

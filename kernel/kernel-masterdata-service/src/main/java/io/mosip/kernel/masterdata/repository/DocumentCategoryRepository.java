@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
-import io.mosip.kernel.masterdata.entity.CodeLangCodeId;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 
 /**
  * @author Neha
@@ -14,7 +14,7 @@ import io.mosip.kernel.masterdata.entity.CodeLangCodeId;
  *
  */
 @Repository
-public interface DocumentCategoryRepository extends BaseRepository<DocumentCategory, CodeLangCodeId> {
+public interface DocumentCategoryRepository extends BaseRepository<DocumentCategory, CodeAndLanguageCodeId> {
 
 	/**
 	 * Get all DocumentCategory types

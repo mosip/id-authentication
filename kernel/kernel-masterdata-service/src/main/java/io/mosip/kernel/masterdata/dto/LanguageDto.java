@@ -1,5 +1,8 @@
 package io.mosip.kernel.masterdata.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 
 /**
@@ -14,6 +17,8 @@ public class LanguageDto {
 	/**
 	 * Field for language code
 	 */
+	@NotNull
+	@NotEmpty
 	private String languageCode;
 
 	/**
@@ -30,5 +35,10 @@ public class LanguageDto {
 	 * Field for language native name
 	 */
 	private String nativeName;
+
+	/**
+	 * Field for the status of data.
+	 */
+	private Boolean isActive;
 
 }

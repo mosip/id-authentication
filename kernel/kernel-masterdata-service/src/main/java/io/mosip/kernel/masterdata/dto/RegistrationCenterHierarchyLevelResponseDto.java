@@ -6,6 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Sidhant Agarwal
+ * @since 1.0.0
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

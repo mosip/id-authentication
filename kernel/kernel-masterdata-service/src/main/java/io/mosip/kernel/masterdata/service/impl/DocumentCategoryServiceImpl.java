@@ -14,7 +14,7 @@ import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
-import io.mosip.kernel.masterdata.entity.CodeLangCodeId;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -23,6 +23,9 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
+ * This class have methods to fetch list of valid document types and to create
+ * document types based on list provided.
+ * 
  * @author Neha
  * @author Ritesh Sinha
  * @since 1.0.0
@@ -35,7 +38,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	private MetaDataUtils metaUtils;
 
 	@Autowired
-	DataMapper dataMapper;
+	private DataMapper dataMapper;
 
 	@Autowired
 	private DocumentCategoryRepository documentCategoryRepository;
@@ -196,6 +199,13 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		return documentCategoryResponseDto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.DocumentCategoryService#
+	 * addDocumentCategoriesData(io.mosip.kernel.masterdata.dto.
+	 * DocumentCategoryRequestDto)
+	 */
 	@Override
 	public PostResponseDto addDocumentCategoriesData(DocumentCategoryRequestDto category) {
 
@@ -208,9 +218,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getMessage());
 		}
-		List<CodeLangCodeId> codeLangCodeIds = new ArrayList<>();
+		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		documentCategories.forEach(documentCategory -> {
-			CodeLangCodeId codeLangCodeId = new CodeLangCodeId();
+			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
 			try {
 				dataMapper.map(documentCategory, codeLangCodeId, true, null, null, true);
 			} catch (DataMapperException e) {
