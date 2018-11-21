@@ -58,6 +58,13 @@ public class RegistrationAppInitialization extends Application {
 
 	}
 
+	
+	@Override
+	public void stop() throws Exception {
+		super.stop();
+		RegistrationOfficerDetailsController.stopTimer();
+	}
+
 	public static ApplicationContext getApplicationContext() {
 		return applicationContext;
 	}

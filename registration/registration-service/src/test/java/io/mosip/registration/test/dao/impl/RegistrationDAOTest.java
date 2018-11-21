@@ -97,10 +97,12 @@ public class RegistrationDAOTest {
 	}
 	
 	@Test
-	@Ignore
 	public void updateRegStatusTest() {
 		Registration updatedPacket=new Registration();
 		updatedPacket.setClientStatusCode("P");
+		List<RegistrationTransaction> registrationTransactions=new ArrayList<>();
+		registrationTransactions.add(new RegistrationTransaction());
+		updatedPacket.setRegistrationTransaction(registrationTransactions);
 		Mockito.when(registrationRepository.getOne(Mockito.anyString())).thenReturn(updatedPacket);
 		Mockito.when(registrationRepository.update(updatedPacket)).thenReturn(updatedPacket);
 		assertEquals(updatedPacket, registrationDAOImpl.updateRegStatus(updatedPacket));

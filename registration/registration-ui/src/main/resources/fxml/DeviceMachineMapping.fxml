@@ -25,7 +25,7 @@
 		<Label layoutX="42.0" layoutY="5.0" text="Device Onboarding" />
 		<Label layoutX="393.0" layoutY="20.0" text="Device Onboarding" textAlignment="CENTER">
 			<font>
-				<Font name="System Bold" size="14.0" />
+				<Font size="23.0" />
 			</font>
 		</Label>
 		<TextField fx:id="searchField" layoutX="10.0" layoutY="57.0" prefHeight="39.0" prefWidth="306.0" promptText="Search">
