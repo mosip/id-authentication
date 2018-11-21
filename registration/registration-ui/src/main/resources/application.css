@@ -282,4 +282,7 @@
     -fx-font-size: 10px;
      -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
 }
-
+#applicantImageHBox, #exceptionImageHBox {
+	-fx-border-color: black;
+	-fx-border-width: 2;
+}

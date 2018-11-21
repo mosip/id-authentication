@@ -1,5 +1,6 @@
 package io.mosip.registration.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -225,6 +226,26 @@ public class BaseController {
 
 	public void getFingerPrintStatus() {
 
+	}
+	
+	/**
+	 * This method is for saving the Applicant Image and Exception Image which are captured using webcam
+	 * @param capturedImage
+	 * 				BufferedImage that is captured using webcam
+	 * @param imageType
+	 * 				Type of image that is to be saved
+	 */
+	protected void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
+		//will be implemented in the derived class.
+	}
+	
+	/**
+	 * This method used to clear the images that are captured using webcam
+	 * @param imageType
+	 * 			Type of image that is to be cleared
+	 */
+	protected void clearPhoto(String imageType) {
+		//will be implemented in the derived class.
 	}
 
 }

@@ -1,6 +1,7 @@
 package io.mosip.registration.device;
 
 import io.mosip.registration.device.GPSUtill.GPSPosition;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * Interface class for connceting gps and for getting latitude , longitude and
@@ -20,8 +21,9 @@ public interface IGPSConnector {
 	 * @param comPortNo
 	 * @param portReadWaitTime
 	 * @return
+	 * @throws RegBaseCheckedException
 	 */
-	public String getGPSData(String comPortNo, int portReadWaitTime);
+	String getComportGPSData(String comPortNo, int portReadWaitTime) throws RegBaseCheckedException;
 
 	/**
 	 * This method parse GPS data and get latitude and logitude from gps information
@@ -30,6 +32,6 @@ public interface IGPSConnector {
 	 * @param portReadWaitTime
 	 * @return
 	 */
-	public boolean parse(String[] tokens, GPSPosition position);
+	boolean parse(String[] tokens, GPSPosition position);
 
 }

@@ -7,10 +7,10 @@ import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
@@ -20,6 +20,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.device.GPSUtill.GPSPosition;
+import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
@@ -41,7 +42,7 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 	private InputStream inputStream;
 
 	/** Object for deviceData. */
-	private StringBuilder deviceData;
+	private StringBuilder deviceData = new StringBuilder();
 
 	/** Object for Logger. */
 
@@ -53,67 +54,20 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 	 * @param portNo           the port no
 	 * @param portReadWaitTime the port read wait time
 	 * @return String GPRS details
+	 * @throws RegBaseCheckedException
 	 */
 	@Override
-	public String getGPSData(String portNo, int portReadWaitTime) {
+	public String getComportGPSData(String portNo, int portReadWaitTime) throws RegBaseCheckedException {
+
+		String gpsResponse = null;
 
 		LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID,
 				"Entering to featch GPS inforamtion" + "Port Name" + portNo + "wait time" + portReadWaitTime);
-
-		if (null == portNo || "".equals(portNo) || portNo.isEmpty()) {
-			getGPSData(portReadWaitTime);
-			return deviceData.toString();
-		}
-
-		deviceData = new StringBuilder();
-
-		try {
-
-			portEnumList = CommPortIdentifier.getPortIdentifier(portNo);
-
-			if (null != portEnumList) {
-				if (portEnumList.getPortType() == CommPortIdentifier.PORT_SERIAL
-						&& portEnumList.getName().equals(portNo)) {
-
-					readDataFromComPort();
-					Thread.sleep(portReadWaitTime);
-				}
-			}
-
-		} catch (IOException | InterruptedException | PortInUseException | TooManyListenersException
-				| UnsupportedCommOperationException | NoSuchPortException exception) {
-			throw new RegBaseUncheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
-		}
-
-		String gpsResponse = deviceData.toString();
-
-		if (gpsResponse.isEmpty()) {
-
-			gpsResponse = RegistrationConstants.GPS_CAPTURE_FAILURE;
-		}
-		return gpsResponse;
-
-	}
-
-	/**
-	 * {@code getGPSData} is a overloaded method to get GPS data to get latitude and
-	 * longitude when port is not provided.
-	 *
-	 * @param portReadWaitTime the port read wait time
-	 * @return String GPRS details
-	 */
-	public String getGPSData(int portReadWaitTime) {
-
-		LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID,
-				"Entering to featch GPS inforamtion" + "wait time" + portReadWaitTime);
-
-		deviceData = new StringBuilder();
-
 		try {
 
 			@SuppressWarnings("unchecked")
+			
 			Enumeration<CommPortIdentifier> portListEnumeration = CommPortIdentifier.getPortIdentifiers();
 
 			while (portListEnumeration.hasMoreElements()) {
@@ -122,32 +76,63 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 
 				if (portEnumList.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 
-					readDataFromComPort();
-					Thread.sleep(portReadWaitTime);
+					if (StringUtils.isNotEmpty(portNo)) {
 
-					if (deviceData.toString().contains("$GP")) {
+						if (portEnumList.getName().equals(portNo)) {
+
+							readDataFromComPort();
+							Thread.sleep(portReadWaitTime);
+
+						} else {
+							deviceData.append(RegistrationConstants.GPS_CAPTURE_PORT_FAILURE_MSG);
+						}
+
+					} else {
+
+						readDataFromComPort();
+						Thread.sleep(portReadWaitTime);
+
+					}
+
+					if (deviceData.toString().contains(RegistrationConstants.GPS_SIGNAL)) {
 						break;
 
 					}
+
 				}
 
 			}
+
 			if (portEnumList == null) {
-				deviceData.append("Please connect the GPS Device");
+				deviceData.append(RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE);
 			}
+
+			gpsResponse = deviceData.toString();
+
+			if (StringUtils.isEmpty(gpsResponse)) {
+
+				gpsResponse = RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE;
+			}
+
+			if (!gpsResponse.equals(RegistrationConstants.GPS_CAPTURE_FAILURE)
+					&& !gpsResponse.equals(RegistrationConstants.GPS_CAPTURE_FAILURE_MSG)
+					&& !gpsResponse.equals(RegistrationConstants.GPS_CAPTURE_PORT_FAILURE_MSG)
+					&& !gpsResponse.equals(RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE)) {
+
+				inputStream.close();
+				serialPortId.removeEventListener();
+				serialPortId.close();
+			}
+
+			deviceData = new StringBuilder();
+
 		} catch (IOException | PortInUseException | TooManyListenersException | UnsupportedCommOperationException
 				| InterruptedException exception) {
-
+			Thread.currentThread().interrupt();
 			throw new RegBaseUncheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
 
 		}
 
-		String gpsResponse = deviceData.toString();
-
-		if (gpsResponse.isEmpty()) {
-
-			gpsResponse = RegistrationConstants.GPS_CAPTURE_FAILURE;
-		}
 		return gpsResponse;
 	}
 
@@ -167,18 +152,18 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 		LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Reading date from GPS devie");
 
-		if (null == serialPortId) {
-
-			serialPortId = (SerialPort) portEnumList.open("", 0);
-			inputStream = serialPortId.getInputStream();
-
-			serialPortId.addEventListener(this);
-			serialPortId.notifyOnDataAvailable(true);
-			serialPortId.setSerialPortParams(4800, SerialPort.DATABITS_8, SerialPort.STOPBITS_1,
-					SerialPort.PARITY_NONE);
-		} else {
-			inputStream = serialPortId.getInputStream();
+		if (serialPortId != null) {
+			serialPortId.removeEventListener();
+			serialPortId.close();
 		}
+
+		serialPortId = (SerialPort) portEnumList.open("", 0);
+
+		serialPortId.addEventListener(this);
+		serialPortId.notifyOnDataAvailable(true);
+		serialPortId.setSerialPortParams(4800, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+
+		inputStream = serialPortId.getInputStream();
 
 		LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Ends Reading date from GPS devie");
@@ -211,9 +196,8 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 
 			String line = "";
 
-			try {
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));) {
 
-				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 				// read data
 				while (inputStream.available() > 0) {
 

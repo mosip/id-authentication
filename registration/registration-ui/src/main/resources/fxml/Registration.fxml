@@ -29,9 +29,9 @@
                  	<children>
                  	 <AnchorPane fx:id="childSpecificFields" layoutX="22.0" layoutY="14.0" prefHeight="122.0" prefWidth="362.0" visible="false">
                          <children>
-                            <Label layoutX="25.0" layoutY="8.0" text="Parent/Guardian Name" />
+                            <Label layoutX="25.0" layoutY="8.0" text="%parent_or_guardian_name" />
                             <TextField fx:id="parentName" layoutX="25.0" layoutY="20.0" prefHeight="30.0" prefWidth="320.0" />
-                            <Label layoutX="25.0" layoutY="60.0" text="UIN ID" />
+                            <Label layoutX="25.0" layoutY="60.0" text="%rid_or_uin_id" />
                             <TextField fx:id="uinId" layoutX="25.0" layoutY="75.0" prefHeight="30.0" prefWidth="320.0" />
                          </children>
                    </AnchorPane>
@@ -49,6 +49,7 @@
                       </children>
                    </AnchorPane>
                    <Button fx:id="pane2NextBtn" layoutX="652.0" layoutY="369.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
+                 	<Button fx:id="pane2PrevBtn" layoutX="50.0" layoutY="369.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" text="Prev" />
                  	</children>
                   </AnchorPane>
                </children>
@@ -152,21 +153,66 @@
                            <children>
                               <Button fx:id="biometricsNext" disable="true" layoutX="761.0" layoutY="22.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
                               <Label fx:id="biometrics" layoutX="27.0" layoutY="14.0" text="Biometric Fields...." />
-                              <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0" visible="false">
+                              <AnchorPane fx:id="biometricsPane" layoutX="11.0" prefHeight="616.0" prefWidth="790.0">
                                  <children>
-                                    <ImageView fx:id="applicantImage" fitHeight="225.0" fitWidth="265.0" layoutX="92.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/ApplicantPhoto.PNG" />
-                                       </image></ImageView>
-                                    <ImageView fx:id="exceptionImage" fitHeight="225.0" fitWidth="265.0" layoutX="457.0" layoutY="112.0" pickOnBounds="true" preserveRatio="true">
-                                       <image>
-                                          <Image url="@../images/ExceptionPhoto.PNG" />
-                                       </image></ImageView>
-                                    <Button fx:id="captureImage" layoutX="92.0" layoutY="427.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" text="Capture" />
-                                    <Button fx:id="captureExceptionImage" disable="true" layoutX="457.0" layoutY="427.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" text="Capture" />
-                                    <Button fx:id="saveBiometricDetails" disable="true" layoutX="695.0" layoutY="546.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
+                                    <Button fx:id="captureImage" layoutX="93.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForApplicantPhoto" text="Capture" />
+                                    <Button fx:id="captureExceptionImage" layoutX="457.0" layoutY="440.0" mnemonicParsing="false" onAction="#openCamForExceptionPhoto" text="Capture" />
+                                    <Label layoutX="172.0" layoutY="328.0" text="Applicant Image" />
+                                    <Label layoutX="537.0" layoutY="328.0" text="Exception Image" />
+                                    <Label layoutX="115.0" layoutY="390.0" text="Threshold Percentage :">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="488.0" layoutY="390.0" text="Threshold Percentage :">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="115.0" layoutY="363.0" text="Quality Percentage     :">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="488.0" layoutY="363.0" text="Quality Percentage     :">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="284.0" layoutY="390.0" text="85%">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Label layoutX="656.0" layoutY="390.0" text="85%">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <HBox fx:id="applicantImageHBox" layoutX="104.0" layoutY="105.0" prefHeight="183.0" prefWidth="265.0">
+                                       <children>
+                                          <ImageView fx:id="applicantImage" fitHeight="210.0" fitWidth="265.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/ApplicantPhoto.PNG" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </HBox>
+                                    <HBox fx:id="exceptionImageHBox" layoutX="471.0" layoutY="106.0" prefHeight="182.0" prefWidth="265.0">
+                                       <children>
+                                          <ImageView fx:id="exceptionImage" fitHeight="210.0" fitWidth="265.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../images/ExceptionPhoto.PNG" />
+                                             </image>
+                                          </ImageView>
+                                       </children>
+                                    </HBox>
+                                    <Label layoutX="104.0" layoutY="54.0" text="Image" />
+                                    <Button layoutX="616.0" layoutY="486.0" mnemonicParsing="false" onAction="#goToPreviousPane" text="Previous" />
+                                    <Button fx:id="saveBiometricDetails" layoutX="712.0" layoutY="486.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
                                  </children>
                               </AnchorPane>
+                              <Line endX="840.0" startX="10.0" />
                            </children>
                         </AnchorPane>
                      </content>
