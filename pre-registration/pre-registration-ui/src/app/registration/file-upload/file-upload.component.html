@@ -1,4 +1,4 @@
-<mat-accordion class="example-headers-align" *ngFor="let applicant of applicants">
+<mat-accordion class="example-headers-align" *ngFor="let applicant of applicants;let applicantIndex = index">
   <mat-expansion-panel [expanded]="step === applicant.seq" (opened)="setStep(applicant.seq)">
     <mat-expansion-panel-header>
       <mat-panel-title>
@@ -14,15 +14,16 @@
         <div class="draggableDiv" appDraggable (filesChangeEmiter)="onFilesChange($event)">
           Drag files here
         </div>
-        <!--<input type="file" id="file" (change)="handleFileInput($event.target.files)" style="display: none;">
-        <input class="browseInput" type="button" value="Browse..." onclick="document.getElementById('file').click();" />-->
       </mat-grid-tile>
       <mat-grid-tile [colspan]="1" [rowspan]="4">
-        <!--<div class="draggableDiv" ondrop="handleFileInput($event.target.files)"></div>-->
         <div class="docsContainer">
-          <mat-form-field *ngFor="let docs of documents; let i = index">
-            <mat-select id="{{docs}}" placeholder="{{docs}}" (selectionChange)="selectChange($event, i)">
-              <mat-option *ngFor="let option of POADocuments" value="{{option.value}}">
+          <mat-form-field *ngFor="let docs of LOD; let i = index">
+            <mat-select id="{{docs.document_name}}" placeholder="{{docs.document_name}}" (selectionChange)="selectChange($event, i)"
+              (openedChange)="openedChange($event,i)">
+              <mat-option *ngIf="applicantIndex > 0 && docs.document_name == 'POA'" value="Same as Primary">
+                Same as Primary
+              </mat-option>
+              <mat-option *ngFor="let option of docs.valid_docs" value="{{option.value}}">
                 {{option.name}}
               </mat-option>
             </mat-select>
@@ -41,9 +42,7 @@
         <input class="browseInput" value="{{browseDisabled? 'Select Document Type':'Browse'}}" type="button" onclick="document.getElementById('file').click();"
           [disabled]="browseDisabled" />
       </mat-grid-tile>
-
     </mat-grid-list>
-
     <mat-action-row>
       <button *ngIf="applicant.seq !== 1 " mat-button color="warn" (click)="prevStep()">Previous</button>
       <button mat-button color="primary" (click)="nextStep()">Next</button>
