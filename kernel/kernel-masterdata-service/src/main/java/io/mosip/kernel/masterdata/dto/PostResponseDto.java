@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostResponseDto {
-	private List<CodeAndLanguageCodeId> successfully_created;
+	private List<CodeAndLanguageCodeId> results;
 }
