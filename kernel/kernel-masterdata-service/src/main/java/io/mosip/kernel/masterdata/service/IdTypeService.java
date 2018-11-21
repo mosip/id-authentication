@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.IdTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
 
 /**
  * Interface that provides the method for fetching id types based on language
@@ -19,4 +21,6 @@ public interface IdTypeService {
 	 * @return the response dto.
 	 */
 	IdTypeResponseDto getIdTypeByLanguageCode(String languageCode);
+
+	PostResponseDto addIdType(IdTypeRequestDto idTypeRequestDto);
 }

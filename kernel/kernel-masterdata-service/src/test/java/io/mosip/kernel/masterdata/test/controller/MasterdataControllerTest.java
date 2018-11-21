@@ -166,7 +166,7 @@ public class MasterdataControllerTest {
 	private List<Holiday> holidays;
 
 	private ApplicationResponseDto applicationResponseDto = new ApplicationResponseDto();
-	
+
 	@MockBean
 	private TemplateService templateService;
 
@@ -280,8 +280,8 @@ public class MasterdataControllerTest {
 
 	private void idTypeSetup() {
 		idType = new IdType();
-		idType.setActive(true);
-		idType.setCrBy("testCreation");
+		idType.setIsActive(true);
+		idType.setCreatedBy("testCreation");
 		idType.setLangCode("ENG");
 		idType.setCode("POA");
 		idType.setDescr("Proof Of Address");

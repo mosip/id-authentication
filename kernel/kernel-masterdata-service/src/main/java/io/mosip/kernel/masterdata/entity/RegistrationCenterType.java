@@ -15,24 +15,19 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/**
- * Entity class for IdType.
- * 
- * @author Sagar Mahapatra
- * @since 1.0.0
- *
- */
 @Data
 @Entity
-@Table(name = "id_type", schema = "master")
+@Table(name = "reg_center_type", schema = "master")
 @IdClass(CodeAndLanguageCodeId.class)
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class IdType extends BaseEntity implements Serializable {
+public class RegistrationCenterType extends BaseEntity implements Serializable {
 
-	private static final long serialVersionUID = -97767928612692201L;
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7869240207930949234L;
 	@Id
 	@AttributeOverrides({ @AttributeOverride(name = "code", column = @Column(name = "code", length = 36)),
 			@AttributeOverride(name = "langCode", column = @Column(name = "lang_code", nullable = false, length = 3)) })
@@ -43,4 +38,5 @@ public class IdType extends BaseEntity implements Serializable {
 
 	@Column(name = "descr", length = 128)
 	private String descr;
+
 }
