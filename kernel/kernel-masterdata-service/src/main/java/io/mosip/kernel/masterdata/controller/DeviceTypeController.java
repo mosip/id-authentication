@@ -7,23 +7,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceTypeService;
 
 @RestController
 @RequestMapping("/devicetypes")
 public class DeviceTypeController {
-	
+
 	/**
 	 * Reference to MachineDetailService.
 	 */
 	@Autowired
 	private DeviceTypeService deviceTypeService;
-	
+
 	@PostMapping(value = "/")
-	public DeviceTypeResponseDto addDeviceType(@RequestBody DeviceTypeRequestDto deviceTypes)
-	{
-		return deviceTypeService.addDeviceType(deviceTypes);
+	public PostResponseDto addDeviceTypes(@RequestBody DeviceTypeRequestDto deviceTypes) {
+		return deviceTypeService.addDeviceTypes(deviceTypes);
 	}
 
 }

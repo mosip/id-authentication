@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Class for Device Type DTO 
+ * Class for Device Type DTO
  * 
  * @author Megha Tanga
  * @since 1.0.0
@@ -16,8 +16,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeviceTypeDto {
+
 	private String code;
+
 	private String langCode;
+
 	private String name;
+
 	private String description;
 }

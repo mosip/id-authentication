@@ -2,7 +2,6 @@
 
 package io.mosip.kernel.masterdata.dto;
 
-import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +16,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeviceSpecificationRequestDto {
-	private List<DeviceSpecificationDto> deviceSpecificationDtos;
+	private String id;
+	private String ver;
+	private String timestamp;
+	private DeviceSpecificationListDto request;
+	
 }
 

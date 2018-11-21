@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.service;
 
-
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceResponseDto;
 
@@ -23,6 +22,5 @@ public interface DeviceService {
 	public DeviceResponseDto getDeviceLangCode(String langCode);
 
 	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(String langCode, String devideTypeCode);
-	
-	
+
 }
