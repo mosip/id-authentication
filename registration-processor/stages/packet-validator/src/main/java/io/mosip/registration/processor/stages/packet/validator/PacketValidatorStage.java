@@ -114,9 +114,9 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			if (isFilesValidated) {
 
 				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter);
-				// isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
-				// packetMetaInfo.getIdentity());
-				isCheckSumValidated = true;
+				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
+						packetMetaInfo.getIdentity());
+				// isCheckSumValidated = true;
 				if (!isCheckSumValidated) {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);
 				}
