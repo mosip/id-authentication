@@ -32,10 +32,9 @@ public class RegistrationStatusMapUtil {
 		statusMap.put(RegistrationStatusCode.PACKET_DECRYPTION_SUCCESSFUL, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_DECRYPTION_FAILED, RegistrationExternalStatusCode.RESEND);
 
-		statusMap.put(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_SUCCESSFULL,
+		statusMap.put(RegistrationStatusCode.STRUCTURAL_VALIDATION_SUCCESSFULL,
 				RegistrationExternalStatusCode.PROCESSING);
-		statusMap.put(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_FAILED,
-				RegistrationExternalStatusCode.RESEND);
+		statusMap.put(RegistrationStatusCode.STRUCTURAL_VALIDATION_FAILED, RegistrationExternalStatusCode.RESEND);
 
 		statusMap.put(RegistrationStatusCode.PACKET_DATA_STORE_SUCCESSFUL, RegistrationExternalStatusCode.PROCESSING);
 		statusMap.put(RegistrationStatusCode.PACKET_DATA_STORE_FAILED, RegistrationExternalStatusCode.RESEND);

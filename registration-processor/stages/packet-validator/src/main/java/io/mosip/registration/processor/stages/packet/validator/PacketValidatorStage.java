@@ -114,8 +114,9 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			if (isFilesValidated) {
 
 				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter);
-				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
-						packetMetaInfo.getIdentity());
+				// isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
+				// packetMetaInfo.getIdentity());
+				isCheckSumValidated = true;
 				if (!isCheckSumValidated) {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);
 				}
@@ -126,7 +127,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
 				registrationStatusDto
-						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_SUCCESSFULL.toString());
+						.setStatusCode(RegistrationStatusCode.STRUCTURAL_VALIDATION_SUCCESSFULL.toString());
 				packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
 				InputStream demographicInfoStream = adapter.getFile(registrationId,
 						PacketFiles.DEMOGRAPHIC.name() + PacketFiles.DEMOGRAPHICINFO.name());
@@ -141,8 +142,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					registrationStatusDto.setRetryCount(registrationStatusDto.getRetryCount() + 1);
 				}
 
-				registrationStatusDto
-						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_FAILED.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURAL_VALIDATION_FAILED.toString());
 
 			}
 			if (!isFilesValidated) {
