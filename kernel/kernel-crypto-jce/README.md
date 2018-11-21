@@ -1,8 +1,14 @@
 ## CRYPTO-JCE module for kernel
 This folder has CRYPTO-JCE module which can be used to encrypt and decrypt data.
 
+####[Background & Design](../../design/kernel/kernel-crypto.md)
+
 ### Api Documentation
 [API Documentation <TBA>](TBA)
+
+```
+mvn javadoc:javadoc
+```
 
 ### Properties to be added in parent Spring Application environment 
 [kernel-crypto-jce-dev.properties](../../config/kernel-crypto-jce-dev.properties)

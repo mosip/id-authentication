@@ -1,8 +1,14 @@
 ## PACKETUPLOADER-SFTP-JSCH module for kernel
 This folder has PACKETUPLOADER-SFTP-JSCH module which can be used to upload a packet using SFTP protocol.
 
+####[Background & Design](../../design/kernel/kernel-packetuploader.md)
+
 ### Api Documentation
 [API Documentation <TBA>](TBA)
+
+```
+mvn javadoc:javadoc
+```
 
 
 ### The Flow to be followed is:

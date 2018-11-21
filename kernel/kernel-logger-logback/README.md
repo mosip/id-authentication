@@ -1,8 +1,14 @@
 ## LOGGER-LOGBACK module for kernel
 This folder has LOGGER-LOGBACK module which can be used for logging functionalities.
 
+####[Background & Design](../../design/kernel/kernel-logger.md)
+
 ### Api Documentation
 [API Documentation <TBA>](TBA)
+
+```
+mvn javadoc:javadoc
+```
 
 ### The flow to be followed is:
   Flow 1:
