@@ -1,13 +1,17 @@
 ## CRYPTO-JCE module for kernel
 This folder has CRYPTO-JCE module which can be used to encrypt and decrypt data.
+
 ### Api Documentation
 [API Documentation <TBA>](TBA)
+
+### Properties to be added in parent Spring Application environment 
+[kernel-crypto-jce-dev.properties](../../config/kernel-crypto-jce-dev.properties)
+
 ### The inputs which have to be provided are:
 1. Key for encryption or decryption can be [SecretKey](https://docs.oracle.com/javase/8/docs/api/javax/crypto/SecretKey.html) or [PrivateKey](https://docs.oracle.com/javase/8/docs/api/java/security/PrivateKey.html) or [PublicKey](https://docs.oracle.com/javase/8/docs/api/java/security/PublicKey.html). 
 2. Data for encryption in *Byte Array* format.
 
-### Properties to be added in parent Spring Application environment 
-[kernel-crypto-jce-dev.properties](../../config/kernel-crypto-jce-dev.properties)
+
 ##### The response will be *byte array* of either encrypted data or decrypted data 
 
 ##### If there is any error which occurs while encryption and decryption, it will be thrown as Exception. 
