@@ -12,7 +12,7 @@ This folder has PACKETUPLOADER-SFTP-JSCHE module which can be used to upload a p
 4. Close the connection.
 
 
-##### If there is any error which occurs while upload, it will be thrown as Exception. 
+###### If there is any error which occurs while channel creation,upload and realease connection, it will be thrown as Exception. 
 
 ### Exceptions to be handled while using this functionality:
 1.  ConnectionException
