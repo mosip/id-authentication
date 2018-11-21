@@ -3,8 +3,9 @@ package io.mosip.kernel.masterdata.exception;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * Customized exception for template not found
+ * Customized exception class for invalid request provided by the user.
  * 
+ * @see io.mosip.kernel.core.exception.BaseUncheckedException
  * @author Bal Vikash Sharma
  * @since 1.0.0
  *

@@ -3,10 +3,11 @@ package io.mosip.kernel.masterdata.exception;
 import io.mosip.kernel.core.exception.BaseUncheckedException;
 
 /**
- * Custom Exception Class in case of error while exception in services
+ * Custom Exception Class in case of error occurred in services.
  * 
+ * @see io.mosip.kernel.core.exception.BaseUncheckedException
  * @author Bal Vikash Sharma
- * @version 1.0.0
+ * @since 1.0.0
  */
 public class MasterDataServiceException extends BaseUncheckedException {
 

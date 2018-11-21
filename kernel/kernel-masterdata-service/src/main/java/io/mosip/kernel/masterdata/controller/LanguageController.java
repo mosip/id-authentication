@@ -1,6 +1,8 @@
 package io.mosip.kernel.masterdata.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,13 +40,14 @@ public class LanguageController {
 	}
 
 	/**
-	 * This method provides list of all languages present in MOSIP system.
+	 * This method creates list of all languages provided by <code>dto</code>.
 	 * 
-	 * @return LanguageRequestResponseDto
+	 * @see LanguageRequestResponseDto
+	 * @return ResponseEntity
 	 */
 	@PostMapping
-	public LanguageRequestResponseDto saveAllLaguages(@RequestBody LanguageRequestResponseDto dto) {
-		return languageService.saveAllLanguages(dto);
+	public ResponseEntity<?> saveAllLaguages(@RequestBody LanguageRequestResponseDto dto) {
+		return new ResponseEntity<>(languageService.saveAllLanguages(dto), HttpStatus.CREATED);
 	}
 
 }
