@@ -13,7 +13,7 @@ import io.mosip.registration.processor.qc.users.entity.BaseQcuserEntity;
 public interface QcuserRegRepositary<T extends BaseQcuserEntity<?>, E> extends BaseRepository<T, E> {
 
 	
-	@Query("SELECT qcUser.id FROM UserDetailEntity qcUser WHERE qcUser.isActive=TRUE")
+	@Query("SELECT qcUser.id FROM UserDetailEntity qcUser WHERE qcUser.isActive=TRUE AND qcUser.isDeleted=FALSE")
 	public List<E> findAllUserIds();
 		
 }

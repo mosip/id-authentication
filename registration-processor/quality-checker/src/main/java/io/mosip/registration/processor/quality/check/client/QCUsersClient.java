@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 public class QCUsersClient {
 	
 	private  String qcusersManagerClient=
-			"http://localhost:9093/v0.1/registration-processor/qc-users//qcUsersList";
+			"http://localhost:9093/v0.1/registration-processor/qc-users/qcUsersList";
 	
 	public List<String> getAllQcuserIds() {
 	
