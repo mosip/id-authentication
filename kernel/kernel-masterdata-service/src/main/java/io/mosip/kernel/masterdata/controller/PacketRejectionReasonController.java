@@ -44,18 +44,11 @@ public class PacketRejectionReasonController {
 		return reasonService.getAllReasons();
 	}
 
-	@GetMapping(value = "/{reasonCategoryCode}/{languageCode}")
-	public PacketRejectionReasonResponseDto getReasonsBasedOnReasonCatgCodeAndLanguageCode(@PathVariable String reasonCategoryCode,
-			@PathVariable String languageCode) {
+	@GetMapping(value = "/{reasonCategoryCode}/{langCode}")
+	public PacketRejectionReasonResponseDto getReasonsBasedOnReasonCatgCodeAndlangCode(@PathVariable String reasonCategoryCode,
+			@PathVariable String langCode) {
 		
-		return reasonService.getReasonsBasedOnLangCodeAndCategoryCode(reasonCategoryCode,languageCode );
+		return reasonService.getReasonsBasedOnLangCodeAndCategoryCode(reasonCategoryCode,langCode );
 
 	}
-	/*@GetMapping(value = "/{languageCode}")
-	public PacketRejectionReasonResponseDto getReasonsBasedOnLanguageCode(@PathVariable String reasonCategoryCode,
-			@PathVariable String languageCode) {
-		
-		return reasonService.getReasonsBasedOnLangCodeAndCategoryCode(reasonCategoryCode,languageCode );
-
-	}*/
 }
