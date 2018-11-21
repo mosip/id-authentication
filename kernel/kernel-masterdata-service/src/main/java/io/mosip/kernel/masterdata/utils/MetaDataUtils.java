@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.utils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,8 +39,8 @@ public class MetaDataUtils {
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(),
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorMessage());
 			}
-			LocalDateTime time = LocalDateTime.now();
-			LocalDateTime utime = LocalDateTime.now();
+			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC") );
+			LocalDateTime utime = LocalDateTime.now(ZoneId.of("UTC") );
 			entity.setIsActive(true);
 			entity.setDeletedtimes(null);
 			entity.setUpdatedBy(contextUser);
