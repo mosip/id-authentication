@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
@@ -37,7 +36,7 @@ public class PacketInfoDao {
 
 			applicantInfo.forEach(objects -> {
 				for (Object object : objects) {
-					if (object instanceof ApplicantDemographicEntity) {
+					if (object instanceof IndividualDemographicDedupeEntity) {
 						demoDedupeList.add(convertEntityToDemographicDto((IndividualDemographicDedupeEntity) object));
 						applicantInfoDto.setDemoDedupeList(demoDedupeList);
 					} else if (object instanceof ApplicantPhotographEntity) {
@@ -72,20 +71,6 @@ public class PacketInfoDao {
 		return photographDto;
 	}
 
-	/*
-	 * private BiometericData
-	 * convertEntityTotBiometericDto(ApplicantFingerprintEntity object) {
-	 * BiometericData bioData = new BiometericData(); FingerprintData
-	 * fingerprintData = new FingerprintData();
-	 * fingerprintData.setExceptionFingerprints(null);
-	 * fingerprintData.setFingerprints(null);
-	 * 
-	 * bioData.setFingerprintData(fingerprintData);
-	 * 
-	 * IrisData irisData = new IrisData(); irisData.setExceptionIris(null);
-	 * irisData.setIris(null); irisData.setNumRetry(0);
-	 * bioData.setIrisData(irisData); return bioData; }
-	 */
 
 	private DemographicDedupeDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
 		DemographicDedupeDto demo = new DemographicDedupeDto();

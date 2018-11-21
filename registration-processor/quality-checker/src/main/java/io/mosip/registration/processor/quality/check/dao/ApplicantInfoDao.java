@@ -12,13 +12,11 @@ import org.springframework.util.CollectionUtils;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
-import io.mosip.registration.processor.quality.check.repository.QcuserRegRepositary;
 
 @Component
 public class ApplicantInfoDao {
@@ -70,7 +68,7 @@ public class ApplicantInfoDao {
 
 			applicantInfo.forEach(objects -> {
 				for (Object object : objects) {
-					if (object instanceof ApplicantDemographicEntity) {
+					if (object instanceof IndividualDemographicDedupeEntity) {
 						demoDedupeList.add(convertEntityToDemographicDto((IndividualDemographicDedupeEntity) object));
 						applicantInfoDto.setDemoDedupeList(demoDedupeList);
 						

@@ -8,13 +8,14 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+// TODO: Auto-generated Javadoc
 /**
  * The persistent class for the biometric_exceptions database table.
  * 
  * @author Horteppa M1048399
  */
 @Entity
-@Table(name = "biometric_exceptions", schema = "regprc")
+@Table(name = "biometric_exception", schema = "regprc")
 public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptionPKEntity> implements Serializable {
 
 	/** The Constant serialVersionUID. */
@@ -44,15 +45,15 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	@Column(name = "cr_by", nullable = false)
 	private String crBy = "MOSIP_SYSTEM";
 
-	/** The cr dtimesz. */
-	@Column(name = "cr_dtimesz", nullable = false, updatable = false)
+	/** The cr dtimes. */
+	@Column(name = "cr_dtimes", nullable = false, updatable = false)
 	@CreationTimestamp
-	private LocalDateTime crDtimesz;
+	private LocalDateTime crDtimes;
 
-	/** The del dtimesz. */
-	@Column(name = "del_dtimesz")
+	/** The del dtimes. */
+	@Column(name = "del_dtimes")
 	@UpdateTimestamp
-	private LocalDateTime delDtimesz;
+	private LocalDateTime delDtimes;
 
 	/** The is deleted. */
 	@Column(name = "is_deleted")
@@ -62,10 +63,10 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	@Column(name = "upd_by")
 	private String updBy = "MOSIP_SYSTEM";
 
-	/** The upd dtimesz. */
-	@Column(name = "upd_dtimesz")
+	/** The upd dtimes. */
+	@Column(name = "upd_dtimes")
 	@UpdateTimestamp
-	private LocalDateTime updDtimesz;
+	private LocalDateTime updDtimes;
 
 	/**
 	 * Instantiates a new biometric exception entity.
@@ -183,39 +184,39 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	}
 
 	/**
-	 * Gets the cr dtimesz.
+	 * Gets the cr dtimes.
 	 *
-	 * @return the cr dtimesz
+	 * @return the cr dtimes
 	 */
-	public LocalDateTime getCrDtimesz() {
-		return crDtimesz;
+	public LocalDateTime getCrDtimes() {
+		return crDtimes;
 	}
 
 	/**
-	 * Sets the cr dtimesz.
+	 * Sets the cr dtimes.
 	 *
-	 * @param crDtimesz the new cr dtimesz
+	 * @param crDtimes the new cr dtimes
 	 */
-	public void setCrDtimesz(LocalDateTime crDtimesz) {
-		this.crDtimesz = crDtimesz;
+	public void setCrDtimes(LocalDateTime crDtimes) {
+		this.crDtimes = crDtimes;
 	}
 
 	/**
-	 * Gets the del dtimesz.
+	 * Gets the del dtimes.
 	 *
-	 * @return the del dtimesz
+	 * @return the del dtimes
 	 */
-	public LocalDateTime getDelDtimesz() {
-		return delDtimesz;
+	public LocalDateTime getDelDtimes() {
+		return delDtimes;
 	}
 
 	/**
-	 * Sets the del dtimesz.
+	 * Sets the del dtimes.
 	 *
-	 * @param delDtimesz the new del dtimesz
+	 * @param delDtimes the new del dtimes
 	 */
-	public void setDelDtimesz(LocalDateTime delDtimesz) {
-		this.delDtimesz = delDtimesz;
+	public void setDelDtimes(LocalDateTime delDtimes) {
+		this.delDtimes = delDtimes;
 	}
 
 	/**
@@ -255,21 +256,21 @@ public class BiometricExceptionEntity extends BasePacketEntity<BiometricExceptio
 	}
 
 	/**
-	 * Gets the upd dtimesz.
+	 * Gets the upd dtimes.
 	 *
-	 * @return the upd dtimesz
+	 * @return the upd dtimes
 	 */
-	public LocalDateTime getUpdDtimesz() {
-		return updDtimesz;
+	public LocalDateTime getUpdDtimes() {
+		return updDtimes;
 	}
 
 	/**
-	 * Sets the upd dtimesz.
+	 * Sets the upd dtimes.
 	 *
-	 * @param updDtimesz the new upd dtimesz
+	 * @param updDtimes the new upd dtimes
 	 */
-	public void setUpdDtimesz(LocalDateTime updDtimesz) {
-		this.updDtimesz = updDtimesz;
+	public void setUpdDtimes(LocalDateTime updDtimes) {
+		this.updDtimes = updDtimes;
 	}
 
 }

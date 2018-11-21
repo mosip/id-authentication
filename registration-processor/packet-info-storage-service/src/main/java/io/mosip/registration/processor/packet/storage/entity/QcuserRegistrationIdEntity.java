@@ -10,43 +10,40 @@ import javax.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-
 /**
  * The persistent class for the qcuser_registration_id database table.
  * 
  */
 @Entity
-@Table(name="qcuser_registration_id", schema = "regprc")
+@Table(name = "qcuser_registration", schema = "regprc")
 public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrationIdPKEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
-
 
 	@Column(name = "cr_by", nullable = false)
 	private String crBy = "MOSIP_SYSTEM";
 
-	@Column(name = "cr_dtimesz", nullable = false, updatable = false)
+	@Column(name = "cr_dtimes", nullable = false, updatable = false)
 	@CreationTimestamp
-	private LocalDateTime crDtimesz;
+	private LocalDateTime crDtimes;
 
-
-	@Column(name = "del_dtimesz")
+	@Column(name = "del_dtimes")
 	@UpdateTimestamp
-	private LocalDateTime delDtimesz;
+	private LocalDateTime delDtimes;
 
-	@Column(name="is_active")
+	@Column(name = "is_active")
 	private Boolean isActive;
 
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
-	private String status;
+	private String status_code;
 
-	@Column(name="upd_by")
+	@Column(name = "upd_by")
 	private String updBy;
 
-	@Column(name = "upd_dtimesz")
+	@Column(name = "upd_dtimes")
 	@UpdateTimestamp
-	private LocalDateTime updDtimesz;
+	private LocalDateTime updDtimes;
 
 	public QcuserRegistrationIdEntity() {
 		super();
@@ -61,19 +58,19 @@ public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrat
 	}
 
 	public LocalDateTime getCrDtimesz() {
-		return this.crDtimesz;
+		return this.crDtimes;
 	}
 
 	public void setCrDtimesz(LocalDateTime crDtimesz) {
-		this.crDtimesz = crDtimesz;
+		this.crDtimes = crDtimesz;
 	}
 
 	public LocalDateTime getDelDtimesz() {
-		return this.delDtimesz;
+		return this.delDtimes;
 	}
 
 	public void setDelDtimesz(LocalDateTime delDtimesz) {
-		this.delDtimesz = delDtimesz;
+		this.delDtimes = delDtimesz;
 	}
 
 	public Boolean getIsActive() {
@@ -93,11 +90,11 @@ public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrat
 	}
 
 	public String getStatus() {
-		return this.status;
+		return this.status_code;
 	}
 
 	public void setStatus(String status) {
-		this.status = status;
+		this.status_code = status;
 	}
 
 	public String getUpdBy() {
@@ -109,11 +106,11 @@ public class QcuserRegistrationIdEntity extends BasePacketEntity<QcuserRegistrat
 	}
 
 	public LocalDateTime getUpdDtimesz() {
-		return this.updDtimesz;
+		return this.updDtimes;
 	}
 
 	public void setUpdDtimesz(LocalDateTime updDtimesz) {
-		this.updDtimesz = updDtimesz;
+		this.updDtimes = updDtimesz;
 	}
 
 }

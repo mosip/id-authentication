@@ -208,7 +208,7 @@ public class PacketInfoMapper {
 		bioMetricExceptionEntity.setExcpDescr(exception.getExceptionDescription());
 		bioMetricExceptionEntity.setExcpTyp(exception.getExceptionType());
 		bioMetricExceptionEntity.setIsDeleted(false);
-
+		bioMetricExceptionEntity.setStatusCode("BiometricException Saved");
 		return bioMetricExceptionEntity;
 	}
 
@@ -300,14 +300,14 @@ public class PacketInfoMapper {
 				regOsiEntity.setSupervisorFingerpImageName(field.getValue());
 			} else if (field.getLabel().matches("supervisorIrisImage")) {
 				regOsiEntity.setSupervisorIrisImageName(field.getValue());
-			} else if (field.getLabel().matches("supervisiorId")) {
+			} else if (field.getLabel().matches("supervisorId")) {
 				regOsiEntity.setSupervisorId(field.getValue());
 			}
 		}
-
-		regOsiEntity.setIntroducerFingerpImageName(introducer.getIntroducerFingerprint().getImageName());
-
-		regOsiEntity.setIntroducerIrisImageName(introducer.getIntroducerIris().getImageName());
+		if (introducer.getIntroducerFingerprint() != null)
+			regOsiEntity.setIntroducerFingerpImageName(introducer.getIntroducerFingerprint().getImageName());
+		if (introducer.getIntroducerIris() != null)
+			regOsiEntity.setIntroducerIrisImageName(introducer.getIntroducerIris().getImageName());
 
 		regOsiEntity.setId(regOsiPkEntity);
 
@@ -316,108 +316,6 @@ public class PacketInfoMapper {
 		return regOsiEntity;
 	}
 
-	/**
-	 * Convert demographic info to app demographic info entity.
-	 *
-	 * @param demographicInfo
-	 *            the demographic info
-	 * @param metaData
-	 *            the meta data
-	 * @return the list
-	 *//*
-		 * public static List<ApplicantDemographicEntity>
-		 * convertDemographicDtoToEntity(Demographic demographicInfo, MetaData metaData)
-		 * {
-		 * 
-		 * DemographicInfo demoInLocalLang = demographicInfo.getDemoInLocalLang();
-		 * DemographicInfo demoInUserLang = demographicInfo.getDemoInUserLang();
-		 * List<ApplicantDemographicEntity> applicantDemographicEntities = new
-		 * ArrayList<>();
-		 * 
-		 * ApplicantDemographicEntity applicantDemographicEntity = new
-		 * ApplicantDemographicEntity();
-		 * 
-		 * // adding Local Language Demographic data ApplicantDemographicPKEntity
-		 * applicantDemographicPKEntity = new ApplicantDemographicPKEntity();
-		 * applicantDemographicPKEntity.setLangCode(demoInLocalLang.getLanguageCode());
-		 * applicantDemographicPKEntity.setRegId(metaData.getRegistrationId());
-		 * 
-		 * applicantDemographicEntity.setId(applicantDemographicPKEntity);
-		 * applicantDemographicEntity.setPreRegId(metaData.getPreRegistrationId());
-		 * applicantDemographicEntity.setAddrLine1(demoInLocalLang.getAddressDTO().
-		 * getLine1());
-		 * applicantDemographicEntity.setAddrLine2(demoInLocalLang.getAddressDTO().
-		 * getLine2());
-		 * applicantDemographicEntity.setAddrLine3(demoInLocalLang.getAddressDTO().
-		 * getLine3()); int age = demoInLocalLang.getAge() != null ?
-		 * Integer.parseInt(demoInLocalLang.getAge()) : 0;
-		 * applicantDemographicEntity.setAge(age);
-		 * applicantDemographicEntity.setApplicantType(metaData.getApplicationType());
-		 * Long dobTime = demoInLocalLang.getDateOfBirth() != null ?
-		 * Long.parseLong(demoInLocalLang.getDateOfBirth()) : null;
-		 * applicantDemographicEntity.setDob(dobTime != null ? new Date(dobTime) :
-		 * null); applicantDemographicEntity.setEmail(demoInLocalLang.getEmailId());
-		 * 
-		 * applicantDemographicEntity.setFirstName(demoInLocalLang.getFirstName());
-		 * 
-		 * applicantDemographicEntity.setFullName(demoInLocalLang.getFullName());
-		 * applicantDemographicEntity.setGenderCode(demoInLocalLang.getGender());
-		 * 
-		 * applicantDemographicEntity.setLastName(demoInLocalLang.getLastName());
-		 * applicantDemographicEntity.setMiddleName(demoInLocalLang.getMiddleName());
-		 * applicantDemographicEntity.setMobile(demoInLocalLang.getMobile());
-		 * 
-		 * applicantDemographicEntity.setIsActive(true);
-		 * 
-		 * applicantDemographicEntity.setLocationCode("Location Code");
-		 * applicantDemographicEntity.setNationalId("National Id");
-		 * applicantDemographicEntity.setParentFullName("Parent Full Name");
-		 * applicantDemographicEntity.setParentRefId("ParentRefId");
-		 * applicantDemographicEntity.setParentRefIdType("ParentRefIdType");
-		 * 
-		 * applicantDemographicEntities.add(applicantDemographicEntity);
-		 * 
-		 * // adding User Language Demographic data
-		 * 
-		 * applicantDemographicEntity = new ApplicantDemographicEntity();
-		 * 
-		 * ApplicantDemographicPKEntity applicantDemographicPKEntity1 = new
-		 * ApplicantDemographicPKEntity();
-		 * applicantDemographicPKEntity1.setLangCode(demoInUserLang.getLanguageCode());
-		 * applicantDemographicPKEntity1.setRegId(metaData.getRegistrationId());
-		 * 
-		 * applicantDemographicEntity.setId(applicantDemographicPKEntity1);
-		 * applicantDemographicEntity.setPreRegId(metaData.getPreRegistrationId());
-		 * applicantDemographicEntity.setAddrLine1(demoInUserLang.getAddressDTO().
-		 * getLine1());
-		 * applicantDemographicEntity.setAddrLine2(demoInUserLang.getAddressDTO().
-		 * getLine2());
-		 * applicantDemographicEntity.setAddrLine3(demoInUserLang.getAddressDTO().
-		 * getLine3()); int userAge = demoInUserLang.getAge() != null ?
-		 * Integer.parseInt(demoInUserLang.getAge()) : 0;
-		 * applicantDemographicEntity.setAge(userAge);
-		 * applicantDemographicEntity.setApplicantType(metaData.getApplicationType());
-		 * Long dobUserTime = demoInLocalLang.getDateOfBirth() != null ?
-		 * Long.parseLong(demoInUserLang.getDateOfBirth()) : null;
-		 * applicantDemographicEntity.setDob(dobTime != null ? new Date(dobUserTime) :
-		 * null); applicantDemographicEntity.setEmail(demoInUserLang.getEmailId());
-		 * applicantDemographicEntity.setFirstName(demoInUserLang.getFirstName());
-		 * applicantDemographicEntity.setFullName(demoInUserLang.getFullName());
-		 * applicantDemographicEntity.setGenderCode(demoInUserLang.getGender());
-		 * applicantDemographicEntity.setLastName(demoInUserLang.getLastName());
-		 * applicantDemographicEntity.setIsActive(true);
-		 * applicantDemographicEntity.setMiddleName(demoInUserLang.getMiddleName());
-		 * applicantDemographicEntity.setMobile(demoInUserLang.getMobile());
-		 * applicantDemographicEntity.setLocationCode("Location Code");
-		 * applicantDemographicEntity.setNationalId("National Id");
-		 * applicantDemographicEntity.setParentFullName("Parent Full Name");
-		 * applicantDemographicEntity.setParentRefId("ParentRefId");
-		 * applicantDemographicEntity.setParentRefIdType("ParentRefIdType");
-		 * 
-		 * applicantDemographicEntities.add(applicantDemographicEntity);
-		 * 
-		 * return applicantDemographicEntities; }
-		 */
 	public static RegCenterMachineEntity convertRegCenterMachineToEntity(List<FieldValue> metaData) {
 
 		RegCenterMachinePKEntity regCenterMachinePKEntity = new RegCenterMachinePKEntity();
@@ -444,7 +342,7 @@ public class PacketInfoMapper {
 
 		return regCenterMachineEntity;
 	}
-	
+
 	private static String getJsonValues(JsonValue[] jsonNode, String language) {
 		String value = null;
 		if (jsonNode != null) {
@@ -457,7 +355,7 @@ public class PacketInfoMapper {
 
 		return value;
 	}
-	
+
 	private static String[] getLanguages(JsonValue[] jsonNode) {
 		if (jsonNode != null) {
 			for (int i = 0; i < jsonNode.length; i++) {
@@ -469,8 +367,9 @@ public class PacketInfoMapper {
 
 		return languages.toString().split(",");
 	}
+
 	public static List<IndividualDemographicDedupeEntity> converDemographicDedupeDtoToEntity(
-			IndividualDemographicDedupe demoDto,String regId,String preRegId) {
+			IndividualDemographicDedupe demoDto, String regId, String preRegId) {
 		IndividualDemographicDedupeEntity entity;
 		IndividualDemographicDedupePKEntity applicantDemographicPKEntity;
 		List<IndividualDemographicDedupeEntity> demogrphicDedupeEntities = new ArrayList<>();
@@ -504,14 +403,14 @@ public class PacketInfoMapper {
 			entity.setLastName(getJsonValues(demoDto.getLastName(), languageArray[i]));
 			entity.setFullName(getJsonValues(demoDto.getFullName(), languageArray[i]));
 			String dob = getJsonValues(demoDto.getDateOfBirth(), languageArray[i]);
-			if(dob!=null) {
-			try {
-				Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dob);
-				entity.setDob(date);
-			} catch (ParseException e) {
-				LOGGER.error("ErrorWhile Parsing Date");
-				throw new ParsingException(RPR_PLATFORM_ERROR_MESSAGES.PARSING_DATE_EXCEPTION.getValue(), e);
-			}
+			if (dob != null) {
+				try {
+					Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dob);
+					entity.setDob(date);
+				} catch (ParseException e) {
+					LOGGER.error("ErrorWhile Parsing Date");
+					throw new ParsingException(RPR_PLATFORM_ERROR_MESSAGES.PARSING_DATE_EXCEPTION.getValue(), e);
+				}
 			}
 			entity.setGenderCode(getJsonValues(demoDto.getGender(), languageArray[i]));
 			entity.setAddrLine1(getJsonValues(demoDto.getAddressLine1(), languageArray[i]));
@@ -528,7 +427,6 @@ public class PacketInfoMapper {
 		return demogrphicDedupeEntities;
 	}
 
-	
 	public static ApplicantDemographicInfoJsonEntity convertDemographicInfoJsonToEntity(DemographicInfoJson infoJson) {
 		ApplicantDemographicInfoJsonEntity applicantDemographicDataEntity = new ApplicantDemographicInfoJsonEntity();
 		ApplicantDemographicInfoJsonPKEntity applicantDemographicDataPKEntity = new ApplicantDemographicInfoJsonPKEntity();

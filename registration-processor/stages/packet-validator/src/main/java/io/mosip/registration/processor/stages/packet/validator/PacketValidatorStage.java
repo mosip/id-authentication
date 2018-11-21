@@ -18,10 +18,13 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.exception.utils.ExceptionMessages;
 import io.mosip.registration.processor.stages.utils.CheckSumValidation;
@@ -61,9 +64,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
 	/** The packet info manager. */
-	// @Autowired
-	// private PacketInfoManager<PacketInfo, Demographic, MetaData,ApplicantInfoDto>
-	// packetInfoManager;
+	@Autowired
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	@Value("${registration.processor.vertx.cluster.address}")
 	private String clusterAddress;
@@ -125,15 +127,11 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
 				registrationStatusDto
 						.setStatusCode(RegistrationStatusCode.PACKET_STRUCTURAL_VALIDATION_SUCCESSFULL.toString());
-				// packetInfoManager.savePacketData(packetInfo);
-				// InputStream demographicInfoStream = adapter.getFile(registrationId,
-				// PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR +
-				// PacketFiles.DEMOGRAPHICINFO.name());
-				// Demographic demographicData = (Demographic)
-				// JsonUtil.inputStreamtoJavaObject(demographicInfoStream,
-				// Demographic.class);
-				// packetInfoManager.saveDemographicData(demographicData,
-				// packetInfo.getMetaData());
+				packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
+				InputStream demographicInfoStream = adapter.getFile(registrationId,
+						PacketFiles.DEMOGRAPHIC.name() + PacketFiles.DEMOGRAPHICINFO.name());
+				packetInfoManager.saveDemographicInfoJson(demographicInfoStream,
+						packetMetaInfo.getIdentity().getMetaData());
 
 			} else {
 				object.setIsValid(Boolean.FALSE);

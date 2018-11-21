@@ -44,7 +44,6 @@ import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCe
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.packet.storage.dao.PacketInfoDao;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicInfoJsonEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantFingerprintEntity;
@@ -118,10 +117,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	/** The applicant demographic repository. */
 	@Autowired
 	private BasePacketRepository<ApplicantDemographicInfoJsonEntity, String> demographicJsonRepository;
-	
+
 	@Autowired
 	private BasePacketRepository<IndividualDemographicDedupeEntity, String> demographicDedupeRepository;
-
 
 	/** The reg center machine repository. */
 	@Autowired
@@ -148,18 +146,18 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Autowired
 	FilesystemCephAdapterImpl filesystemCephAdapterImpl;
-	
+
 	@Autowired
 	private Utilities utility;
-	
+
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
 
 	/** The meta data. */
 	private List<FieldValue> metaData;
 	private String regId;
-	private String preRegId;	
-	
+	private String preRegId;
+
 	private JSONObject demographicIdentity = null;
 	private static final String LANGUAGE = "language";
 	private static final String LABEL = "label";
@@ -223,51 +221,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * io.mosip.registration.processor.core.spi.packetinfo.service.PacketInfoManager
-	 * #saveDemographicData(java.lang.Object)
-	 */
-/*	@Override
-	public void saveDemographicData(Demographic demographicInfo, List<FieldValue> metaData) {
-
-		boolean isTransactionSuccessful = false;
-		try {
-			List<ApplicantDemographicEntity> applicantDemographicEntities = PacketInfoMapper
-					.convertDemographicDtoToEntity(demographicInfo, metaData);
-			for (ApplicantDemographicEntity applicantDemographicEntity : applicantDemographicEntities) {
-				applicantDemographicRepository.save(applicantDemographicEntity);
-				LOGGER.info(LOG_FORMATTER, applicantDemographicEntity.getId().getRegId(), " Demographic  DATA SAVED");
-			}
-			isTransactionSuccessful = true;
-		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException("Table Not Accessible", e);
-		} finally {
-
-			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
-			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
-					: EventName.EXCEPTION.toString();
-			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
-					: EventType.SYSTEM.toString();
-			description = isTransactionSuccessful ? "Demographic data saved successfully"
-					: "Demographic data Failed to save";
-
-			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
-					AuditLogConstant.NO_ID.toString());
-
-		}
-
-	}
-*/
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager#
-	 * getPacketsforQCUser(java.lang.String)
-	 */
 	@Override
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcUserId) {
 		boolean isTransactionSuccessful = false;
@@ -279,16 +232,17 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		} catch (DataAccessLayerException e) {
 			throw new TablenotAccessibleException("Table Not Accessible", e);
 		} finally {
-			/*
-			 * String description = isTransactionSuccessful ?
-			 * "description--QcUser packet Info fetched Success" :
-			 * "description--QcUser packet Info fetched Failed";
-			 * createAuditRequestBuilder(AuditLogTempConstant.APPLICATION_ID.toString(),
-			 * AuditLogTempConstant.APPLICATION_NAME.toString(), description,
-			 * AuditLogTempConstant.EVENT_ID.toString(),
-			 * AuditLogTempConstant.EVENT_TYPE.toString(),
-			 * AuditLogTempConstant.EVENT_TYPE.toString());
-			 */
+
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "QcUser packet Info fetch Success"
+					: "QcUser packet Info fetch Unsuccessful";
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
 		}
 	}
 
@@ -314,11 +268,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 *            the iris data
 	 */
 	private void saveIris(BiometricDetails irisData) {
+		if (irisData != null) {
+			ApplicantIrisEntity applicantIrisEntity = PacketInfoMapper.convertIrisDtoToEntity(irisData, metaData);
+			applicantIrisRepository.save(applicantIrisEntity);
+			LOGGER.info(LOG_FORMATTER, applicantIrisEntity.getId().getRegId(), " Applicant Iris DATA SAVED");
 
-		ApplicantIrisEntity applicantIrisEntity = PacketInfoMapper.convertIrisDtoToEntity(irisData, metaData);
-		applicantIrisRepository.save(applicantIrisEntity);
-		LOGGER.info(LOG_FORMATTER, applicantIrisEntity.getId().getRegId(), " Applicant Iris DATA SAVED");
-
+		}
 	}
 
 	/**
@@ -328,12 +283,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 *            the fingerprint data
 	 */
 	private void saveFingerPrint(BiometricDetails fingerprintData) {
+		if (fingerprintData != null) {
+			ApplicantFingerprintEntity fingerprintEntity = PacketInfoMapper
+					.convertFingerprintDtoToEntity(fingerprintData, metaData);
+			applicantFingerprintRepository.save(fingerprintEntity);
+			LOGGER.info(LOG_FORMATTER, fingerprintEntity.getId().getRegId(), " Fingerprint DATA SAVED");
 
-		ApplicantFingerprintEntity fingerprintEntity = PacketInfoMapper.convertFingerprintDtoToEntity(fingerprintData,
-				metaData);
-		applicantFingerprintRepository.save(fingerprintEntity);
-		LOGGER.info(LOG_FORMATTER, fingerprintEntity.getId().getRegId(), " Fingerprint DATA SAVED");
-
+		}
 	}
 
 	/**
@@ -359,8 +315,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	public void saveDocument(Document documentDetail) {
 		ApplicantDocumentEntity applicantDocumentEntity = PacketInfoMapper.convertAppDocDtoToEntity(documentDetail,
 				metaData);
-		
-		
+
 		String fileName = "";
 		if (PacketFiles.APPLICANTPHOTO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
 			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.APPLICANTPHOTO.name();
@@ -375,10 +330,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		} else if (PacketFiles.PROOFOFIDENTITY.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
 			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.PROOFOFIDENTITY.name();
 		}
-		Optional<FieldValue> regId = metaData.stream().filter(m -> m.getLabel().equals("registrationId")).findFirst();
+		Optional<FieldValue> filterRegId = metaData.stream().filter(m -> "registrationId".equals(m.getLabel()))
+				.findFirst();
+
 		String registrationId = "";
-		if (regId.isPresent())
-			registrationId = regId.get().getValue();
+		if (filterRegId.isPresent())
+			registrationId = filterRegId.get().getValue();
 		applicantDocumentEntity.setDocStore(getDocumentAsByteArray(registrationId, fileName));
 		applicantDocumentRepository.save(applicantDocumentEntity);
 		LOGGER.info(LOG_FORMATTER, applicantDocumentEntity.getId().getRegId(), "  Document Demographic DATA SAVED");
@@ -392,9 +349,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 * @param introducer
 	 */
 	private void saveOsiData(List<FieldValue> osiData, Introducer introducer) {
-		RegOsiEntity regOsiEntity = PacketInfoMapper.convertOsiDataToEntity(osiData, introducer, metaData);
-		regOsiRepository.save(regOsiEntity);
-		LOGGER.info(LOG_FORMATTER, regOsiEntity.getId(), "  Applicant OSI DATA SAVED");
+		if (osiData != null) {
+			RegOsiEntity regOsiEntity = PacketInfoMapper.convertOsiDataToEntity(osiData, introducer, metaData);
+			regOsiRepository.save(regOsiEntity);
+			LOGGER.info(LOG_FORMATTER, regOsiEntity.getId(), "  Applicant OSI DATA SAVED");
+		}
 	}
 
 	/**
@@ -451,6 +410,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		}
 
 	}
+
 	@SuppressWarnings("unchecked")
 	private <T> T[] mapJsonNodeToJavaObject(Class<? extends Object> genericType, JSONArray demographicJsonNode) {
 		String language;
@@ -494,6 +454,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		return javaObject;
 
 	}
+
 	private JsonValue[] getJsonValues(Object identityKey) {
 		JSONArray demographicJsonNode = null;
 		if (demographicIdentity != null)
@@ -503,11 +464,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				: null;
 
 	}
+
 	private IndividualDemographicDedupe getIdentityKeysAndFetchValuesFromJSON(String demographicJsonString) {
 		IndividualDemographicDedupe demographicData = new IndividualDemographicDedupe();
 		try {
 			// Get Identity Json from config server and map keys to Java Object
-			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),utility.getGetRegProcessorIdentityJson());
+			String getIdentityJsonString = Utilities.getJson(utility.getConfigServerFileStorageURL(),
+					utility.getGetRegProcessorIdentityJson());
 			ObjectMapper mapIdentityJsonStringToObject = new ObjectMapper();
 			regProcessorIdentityJson = mapIdentityJsonStringToObject.readValue(getIdentityJsonString,
 					RegistrationProcessorIdentity.class);
@@ -543,19 +506,19 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	}
 
 	private void getRegistrationId(List<FieldValue> metaData) {
-		for(int i =0;i<metaData.size();i++) {
-			if("registrationId".equals(metaData.get(i).getLabel())) {
-				regId=metaData.get(i).getValue();
-			
+		for (int i = 0; i < metaData.size(); i++) {
+			if ("registrationId".equals(metaData.get(i).getLabel())) {
+				regId = metaData.get(i).getValue();
+
 			}
-			if("preRegistrationId".equals(metaData.get(i).getLabel())) {
-				preRegId=metaData.get(i).getValue();
-			
+			if ("preRegistrationId".equals(metaData.get(i).getLabel())) {
+				preRegId = metaData.get(i).getValue();
+
 			}
 		}
 
-		
 	}
+
 	private void saveIndividualDemographicDedupe(byte[] demographicJsonBytes) {
 
 		String getJsonStringFromBytes = new String(demographicJsonBytes);
@@ -564,16 +527,15 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		try {
 
 			List<IndividualDemographicDedupeEntity> applicantDemographicEntities = PacketInfoMapper
-					.converDemographicDedupeDtoToEntity(demographicData,regId,preRegId);
+					.converDemographicDedupeDtoToEntity(demographicData, regId, preRegId);
 			for (IndividualDemographicDedupeEntity applicantDemographicEntity : applicantDemographicEntities) {
 				demographicDedupeRepository.save(applicantDemographicEntity);
 				LOGGER.info(applicantDemographicEntity.getId().getRefId() + " --> DemographicDedupeData SAVED");
 			}
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
-			throw new UnableToInsertData(
-					RPR_PLATFORM_ERROR_MESSAGES.UNABLE_TO_INSERT_DATA.getValue() + regId, e);
-		} finally {/*
+			throw new UnableToInsertData(RPR_PLATFORM_ERROR_MESSAGES.UNABLE_TO_INSERT_DATA.getValue() + regId, e);
+		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
@@ -583,13 +545,13 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			description = isTransactionSuccessful ? "Demographic Dedupe data saved successfully"
 					: "Demographic Dedupe data Failed to save";
 
-			coreAuditRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
 					AuditLogConstant.NO_ID.toString());
 
-		*/}
+		}
 
 	}
-	
+
 	@Override
 	public void saveDemographicInfoJson(InputStream demographicJsonStream, List<FieldValue> metaData) {
 		DemographicInfoJson demoJson = new DemographicInfoJson();
@@ -597,7 +559,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		boolean isTransactionSuccessful = false;
 		if (demographicJsonStream == null)
 			throw new FileNotFoundInPacketStore(RPR_PLATFORM_ERROR_MESSAGES.FILE_NOT_FOUND_IN_DFS.getValue());
-		
+
 		try {
 			byte[] bytes = IOUtils.toByteArray(demographicJsonStream);
 			demoJson.setDemographicDetails(bytes);
@@ -615,14 +577,22 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			LOGGER.error("Unable to convert InputStream to bytes", e);
 			throw new ParsingException(RPR_PLATFORM_ERROR_MESSAGES.UNABLE_TO_CONVERT_STREAM_TO_BYTES.getValue(), e);
 		} catch (DataAccessLayerException e) {
-			throw new UnableToInsertData(
-					RPR_PLATFORM_ERROR_MESSAGES.UNABLE_TO_INSERT_DATA.getValue() + regId, e);
+			throw new UnableToInsertData(RPR_PLATFORM_ERROR_MESSAGES.UNABLE_TO_INSERT_DATA.getValue() + regId, e);
 		} finally {
-			
-			//Do some thing
+
+			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventName.ADD.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_407.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+			description = isTransactionSuccessful ? "Demographic Dedupe data saved successfully"
+					: "Demographic Dedupe data Failed to save";
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					AuditLogConstant.NO_ID.toString());
+
 		}
 
 	}
-	
-	
+
 }

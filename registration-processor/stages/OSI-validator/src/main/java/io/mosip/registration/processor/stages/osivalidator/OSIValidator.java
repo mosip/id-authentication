@@ -17,6 +17,7 @@ import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.registration.processor.core.code.ApiName;
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
@@ -37,7 +38,20 @@ public class OSIValidator {
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
 	private RegistrationProcessorRestClientService<Object> restClientService;
+	private String message = null;
 
+
+
+	InternalRegistrationStatusDto registrationStatusDto;
+
+
+	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
+	AuthTypeDTO authTypeDTO = new AuthTypeDTO();
+	IdentityDTO identityDTO = new IdentityDTO();
+	IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
+	RequestDTO request = new RequestDTO();
+	PinInfo pinInfo = new PinInfo();
+	
 	/**
 	 * Instantiates a new files validation.
 	 *
@@ -51,18 +65,7 @@ public class OSIValidator {
 		this.restClientService = restClientService;
 	}
 
-	InternalRegistrationStatusDto registrationStatusDto;
-
-	private String message = null;
-
-	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
-	AuthTypeDTO authTypeDTO = new AuthTypeDTO();
-	IdentityDTO identityDTO = new IdentityDTO();
-	IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
-	RequestDTO request = new RequestDTO();
-	PinInfo pinInfo = new PinInfo();
-
-	public boolean isValidOSI(String registrationId) throws IOException {
+	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
 
 		boolean isValidOsi = false;
 		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
@@ -92,7 +95,7 @@ public class OSIValidator {
 	}
 
 	private boolean isValidOperator(Map<String, String> osiDataMap, Map<String, String> metaDataMap,
-			String registrationId) throws IOException {
+			String registrationId) throws IOException, ApisResourceAccessException {
 
 		String uin = osiDataMap.get(PacketFiles.OFFICERID.name());
 		if (uin == null)
@@ -122,7 +125,7 @@ public class OSIValidator {
 	}
 
 	private boolean isValidSupervisor(Map<String, String> osiDataMap, Map<String, String> metaDataMap,
-			String registrationId) throws IOException {
+			String registrationId) throws IOException, ApisResourceAccessException {
 		String uin = osiDataMap.get(PacketFiles.SUPERVISORID.name());
 		if (uin == null)
 			return true;
@@ -150,7 +153,7 @@ public class OSIValidator {
 	}
 
 	private boolean isValidIntroducer(Map<String, String> metaData, Biometric biometric, String registrationId)
-			throws IOException {
+			throws IOException, ApisResourceAccessException {
 		String uin = metaData.get(PacketFiles.INTRODUCERUIN.toString());
 		if (uin == null)
 			return true;
@@ -180,7 +183,7 @@ public class OSIValidator {
 	}
 
 	private boolean validateFingerprint(String uin, String fingerprint, String type, String registrationId)
-			throws IOException {
+			throws IOException, ApisResourceAccessException {
 		if (fingerprint == null)
 			return true;
 
@@ -197,7 +200,7 @@ public class OSIValidator {
 
 	}
 
-	private boolean validateIris(String uin, String iris, String type, String registrationId) throws IOException {
+	private boolean validateIris(String uin, String iris, String type, String registrationId) throws IOException, ApisResourceAccessException {
 		if (iris == null)
 			return true;
 		else {
@@ -213,7 +216,7 @@ public class OSIValidator {
 
 	}
 
-	private boolean validateFace(String uin, String face, String registrationId) throws IOException {
+	private boolean validateFace(String uin, String face, String registrationId) throws IOException, ApisResourceAccessException {
 		if (face == null)
 			return true;
 
@@ -236,7 +239,7 @@ public class OSIValidator {
 
 	}
 
-	boolean validatePin(String uin, String pin) {
+	boolean validatePin(String uin, String pin) throws ApisResourceAccessException {
 		if (pin == null)
 			return true;
 
@@ -268,7 +271,7 @@ public class OSIValidator {
 		return isValidPin;
 	}
 
-	boolean validateBiometric(String uin, String biometricType, String identity, byte[] biometricFileHashByte) {
+	boolean validateBiometric(String uin, String biometricType, String identity, byte[] biometricFileHashByte) throws ApisResourceAccessException {
 
 		Boolean isValidBiometric = false;
 

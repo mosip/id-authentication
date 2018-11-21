@@ -31,13 +31,13 @@ import io.mosip.registration.processor.core.packet.dto.Photograph;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
-import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDocumentPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantFingerprintEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantIrisEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionEntity;
+import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
@@ -70,7 +70,7 @@ public class PacketInfoManagerImplTest {
 	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
 
 	@Mock
-	private BasePacketRepository<ApplicantDemographicEntity, String> applicantDemographicRepository;
+	private BasePacketRepository<IndividualDemographicDedupeEntity, String> applicantDemographicRepository;
 
 	@Mock
 	private BasePacketRepository<RegCenterMachineEntity, String> regCenterMachineRepository;
@@ -411,7 +411,7 @@ public class PacketInfoManagerImplTest {
 		String byteArray = "Binary Data";
 		applicantDocumentEntity.setActive(true);
 		applicantDocumentEntity.setCrBy("Mosip_System");
-		applicantDocumentEntity.setCrDtimesz(LocalDateTime.now());
+		applicantDocumentEntity.setCrDtimes(LocalDateTime.now());
 		applicantDocumentEntity.setUpdBy("MOSIP_SYSTEM");
 
 		applicantDocumentEntity.setDocStore(byteArray.getBytes());

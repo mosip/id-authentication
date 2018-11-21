@@ -81,27 +81,27 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	private String crBy = "MOSIP_SYSTEM";
 
 	/** The cr dtimesz. */
-	@Column(name = "cr_dtimesz", nullable = false, updatable = false)
+	@Column(name = "cr_dtimes", nullable = false, updatable = false)
 	@CreationTimestamp
-	private LocalDateTime crDtimesz;
+	private LocalDateTime crDtimes;
 
 	/** The upd by. */
 	@Column(name = "upd_by")
 	private String updBy = "MOSIP_SYSTEM";
 
 	/** The upd dtimesz. */
-	@Column(name = "upd_dtimesz")
+	@Column(name = "upd_dtimes")
 	@UpdateTimestamp
-	private LocalDateTime updDtimesz;
+	private LocalDateTime updDtimes;
 
 	/** The is deleted. */
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
 	/** The del dtimesz. */
-	@Column(name = "del_dtimesz")
+	@Column(name = "del_dtimes")
 	@UpdateTimestamp
-	private LocalDateTime delDtimesz;
+	private LocalDateTime delDtimes;
 
 	/**
 	 * Instantiates a new reg osi entity.
@@ -386,7 +386,7 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	 * @return the cr dtimesz
 	 */
 	public LocalDateTime getCrDtimesz() {
-		return crDtimesz;
+		return crDtimes;
 	}
 
 	/**
@@ -395,7 +395,7 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	 * @param crDtimesz the new cr dtimesz
 	 */
 	public void setCrDtimesz(LocalDateTime crDtimesz) {
-		this.crDtimesz = crDtimesz;
+		this.crDtimes = crDtimesz;
 	}
 
 	/**
@@ -422,7 +422,7 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	 * @return the upd dtimesz
 	 */
 	public LocalDateTime getUpdDtimesz() {
-		return updDtimesz;
+		return updDtimes;
 	}
 
 	/**
@@ -431,7 +431,7 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	 * @param updDtimesz the new upd dtimesz
 	 */
 	public void setUpdDtimesz(LocalDateTime updDtimesz) {
-		this.updDtimesz = updDtimesz;
+		this.updDtimes = updDtimesz;
 	}
 
 	/**
@@ -458,7 +458,7 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	 * @return the del dtimesz
 	 */
 	public LocalDateTime getDelDtimesz() {
-		return delDtimesz;
+		return delDtimes;
 	}
 
 	/**
@@ -467,7 +467,7 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	 * @param delDtimesz the new del dtimesz
 	 */
 	public void setDelDtimesz(LocalDateTime delDtimesz) {
-		this.delDtimesz = delDtimesz;
+		this.delDtimes = delDtimesz;
 	}
 
 }
