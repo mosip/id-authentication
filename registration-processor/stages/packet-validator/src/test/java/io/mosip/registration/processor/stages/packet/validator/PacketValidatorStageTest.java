@@ -102,20 +102,6 @@ public class PacketValidatorStageTest {
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
 				EventType.BUSINESS.toString(), "1234testcase");
 
-		/*
-		 * AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();
-		 * AuditRequestDto auditRequest1 = new AuditRequestDto();
-		 * 
-		 * Field f =
-		 * CoreAuditRequestBuilder.class.getDeclaredField("auditRequestBuilder");
-		 * f.setAccessible(true); f.set(coreAuditRequestBuilder, auditRequestBuilder);
-		 * 
-		 * Field f1 = AuditRequestBuilder.class.getDeclaredField("auditRequest");
-		 * f1.setAccessible(true); f1.set(auditRequestBuilder, auditRequest1);
-		 * 
-		 * Field f2 = CoreAuditRequestBuilder.class.getDeclaredField("auditHandler");
-		 * f2.setAccessible(true); f2.set(coreAuditRequestBuilder, auditHandler);
-		 */
 	}
 
 	@Test
@@ -147,9 +133,6 @@ public class PacketValidatorStageTest {
 		Mockito.doNothing().when(packetInfoManager).saveDemographicInfoJson(inputStream,
 				packetMetaInfo.getIdentity().getMetaData());
 
-		// Mockito.doNothing().when(packetinfomanager).saveDemographicData(demographicinfo,
-		// packetInfo.getMetaData());
-
 		MessageDTO messageDto = packetValidatorStage.process(dto);
 		assertTrue(messageDto.getIsValid());
 
@@ -179,13 +162,6 @@ public class PacketValidatorStageTest {
 		PowerMockito.mockStatic(HMACUtils.class);
 		PowerMockito.doNothing().when(HMACUtils.class, "update", data);
 		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
-
-		// Mockito.doNothing().when(packetinfomanager).savePacketData(packetInfo);
-		// PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream,
-		// Demographic.class)
-		// .thenReturn(demographicinfo);
-		// Mockito.doNothing().when(packetinfomanager).saveDemographicData(demographicinfo,
-		// packetInfo.getMetaData());
 
 		MessageDTO messageDto = packetValidatorStage.process(dto);
 		assertFalse(messageDto.getIsValid());
