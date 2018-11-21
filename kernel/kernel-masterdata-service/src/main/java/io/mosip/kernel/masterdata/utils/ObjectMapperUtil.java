@@ -68,9 +68,8 @@ public class ObjectMapperUtil {
 		Objects.requireNonNull(reasonCategories, "list cannot be null");
 		List<ReasonCategoryDto> reasonCategoryDtos = null;
 		reasonCategoryDtos = reasonCategories.parallelStream()
-				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(),
-						reasonCategory.getName(), reasonCategory.getDescription(),
-						reasonCategory.getLangCode(), reasonCategory.getIsActive(),
+				.map(reasonCategory -> new ReasonCategoryDto(reasonCategory.getCode(), reasonCategory.getName(),
+						reasonCategory.getDescription(), reasonCategory.getLangCode(), reasonCategory.getIsActive(),
 						reasonCategory.getIsDeleted(), mapAll(reasonCategory.getReasonList(), ReasonListDto.class)))
 				.collect(Collectors.toList());
 
@@ -93,14 +92,17 @@ public class ObjectMapperUtil {
 		return reasonCategoryDtos;
 
 	}
-	
-	public List<ReasonList> reasonListDtoToEntity(List<ReasonListDto> reasonListDto){
+
+	public List<ReasonList> reasonListDtoToEntity(List<ReasonListDto> reasonListDto) {
 		Objects.requireNonNull(reasonListDto, "list cannot be null");
-	    List<ReasonList> reasonLists=null;
-	    reasonLists=reasonListDto.stream().map(reasonDto -> new ReasonList(reasonDto.getCode(),reasonDto.getRsnCatCode(),reasonDto.getLangCode(),reasonDto.getName(),reasonDto.getDescription(),true, false, "system", "system",
-						LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now())).collect(Collectors.toList());
+		List<ReasonList> reasonLists = null;
+		reasonLists = reasonListDto.stream()
+				.map(reasonDto -> new ReasonList(reasonDto.getCode(), reasonDto.getRsnCatCode(),
+						reasonDto.getLangCode(), reasonDto.getName(), reasonDto.getDescription(), true, false, "system",
+						"system", LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now()))
+				.collect(Collectors.toList());
 		return reasonLists;
-		
+
 	}
 
 	public List<DeviceLangCodeDtypeDto> mapDeviceDto(List<Object[]> objects) {
@@ -121,7 +123,7 @@ public class ObjectMapperUtil {
 		});
 		return deviceLangCodeDtypeDtoList;
 	}
-	
+
 	public List<DeviceTypeDto> mapDeviceTypeDto(List<DeviceType> deviceTypes) {
 		List<DeviceTypeDto> deviceTypeDtoList = new ArrayList<>();
 		DeviceTypeDto deviceTypeDto = new DeviceTypeDto();
@@ -129,10 +131,10 @@ public class ObjectMapperUtil {
 		for (DeviceType deviceType : deviceTypes) {
 
 			deviceTypeDto.setName(deviceType.getName());
-			deviceTypeDto.setDescription(deviceType.getDescription());			
-			 deviceTypeDto.setCode(deviceType.getCode());
-			 deviceTypeDto.setLangCode(deviceType.getLangCode());
-			 
+			deviceTypeDto.setDescription(deviceType.getDescription());
+			deviceTypeDto.setCode(deviceType.getCode());
+			deviceTypeDto.setLangCode(deviceType.getLangCode());
+
 		}
 		deviceTypeDtoList.add(deviceTypeDto);
 		return deviceTypeDtoList;
@@ -140,8 +142,7 @@ public class ObjectMapperUtil {
 
 	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {
 		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();
-		
-		
+
 		for (DeviceSpecification deviceSpecification : deviceSpecificationList) {
 			DeviceSpecificationDto deviceSpecificationDto = new DeviceSpecificationDto();
 
@@ -156,12 +157,10 @@ public class ObjectMapperUtil {
 			deviceSpecificationDto.setIsActive(deviceSpecification.getIsActive());
 			deviceSpecificationDtoList.add(deviceSpecificationDto);
 		}
-		
+
 		return deviceSpecificationDtoList;
 	}
 
-	
-	
 	/**
 	 * 
 	 * @param dto
@@ -231,22 +230,22 @@ public class ObjectMapperUtil {
 					break;
 				case "updatedBy":
 					if (!setMetadataByUser(dto, destination, field)) {
-//						field.set(destination, "bantiz");
+						// field.set(destination, "bantiz");
 					}
 					break;
 				case "updatedtimes":
 					if (!setMetadataByUser(dto, destination, field)) {
-//						field.set(destination, LocalDateTime.now());
+						// field.set(destination, LocalDateTime.now());
 					}
 					break;
 				case "isDeleted":
 					if (!setMetadataByUser(dto, destination, field)) {
-//						field.set(destination, Boolean.FALSE);
+						// field.set(destination, Boolean.FALSE);
 					}
 					break;
 				case "deletedtimes":
 					if (!setMetadataByUser(dto, destination, field)) {
-//						field.set(destination, LocalDateTime.now());
+						// field.set(destination, LocalDateTime.now());
 					}
 					break;
 
@@ -280,7 +279,4 @@ public class ObjectMapperUtil {
 		return false;
 	}
 
-
-
 }
->>>>>>> branch 'DEV_SPRINT5_MASTERDATA_SERVICE_2' of https://github.com/mosip/mosip.git

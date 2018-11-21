@@ -8,14 +8,19 @@ package io.mosip.kernel.masterdata.dto;
  * @since 1.0.0
  *
  */
-import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class DeviceTypeRequestDto {
+
 	private String id;
 	private String ver;
 	private String timestamp;
-	private List<DeviceTypeDto> deviceTypeDtoRequest;
+	private DeviceTypeListDto request;
+
 }

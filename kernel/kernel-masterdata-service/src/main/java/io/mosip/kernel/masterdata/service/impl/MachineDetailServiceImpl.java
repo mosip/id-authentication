@@ -76,12 +76,12 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 					MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (machineDetail != null) {
-				machineDetailDto = objectMapperUtil.map(machineDetail, MachineDetailDto.class);
+			machineDetailDto = objectMapperUtil.map(machineDetail, MachineDetailDto.class);
 		} else {
-			
+
 			throw new DataNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
-					
+
 		}
 		machineDetailResponseIdDto.setMachineDetail(machineDetailDto);
 		return machineDetailResponseIdDto;
@@ -118,7 +118,7 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 					MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (machineDetailList != null && !machineDetailList.isEmpty()) {
-				machineDetailDtoList = objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class);
+			machineDetailDtoList = objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class);
 
 		} else {
 			throw new DataNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -161,7 +161,7 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 					MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (machineDetailList != null && !machineDetailList.isEmpty()) {
-				machineDetailDtoList = objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class);
+			machineDetailDtoList = objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class);
 		} else {
 			throw new DataNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
