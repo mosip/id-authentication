@@ -11,7 +11,7 @@
    <children>
       <AnchorPane fx:id="rejectionLabelPane" prefHeight="47.0" prefWidth="404.0">
          <children>
-            <Hyperlink fx:id="rejectionExit" layoutX="361.0" layoutY="10.0" onAction="#rejectionWindowExit" text="Close">
+            <Hyperlink fx:id="rejectionExit" layoutX="381.0" layoutY="10.0" onAction="#rejectionWindowExit" text="X">
                <font>
                   <Font size="14.0" />
                </font>

@@ -9,7 +9,6 @@ import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTH
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +30,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 /**
  * Class for Registration Packet operations
@@ -69,7 +66,7 @@ public class RegistrationOfficerPacketController extends BaseController {
 	 * acknowledgement form
 	 */
 
-	public void createPacket(ActionEvent event) {
+	public void createPacket() {
 
 		try {
 			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.CREATE_PACKET_PAGE), ApplicationContext.getInstance().getApplicationLanguageBundle());
@@ -121,17 +118,15 @@ public class RegistrationOfficerPacketController extends BaseController {
 			Writer writer = velocityGenerator.generateTemplate(ackTemplateText, registrationDTO);
 			ackReceiptController.setStringWriter(writer);
 
-			Stage primaryStage = new Stage();
-			Parent ackRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
-			primaryStage.setResizable(false);
-			primaryStage.setTitle(RegistrationConstants.ACKNOWLEDGEMENT_FORM_TITLE);
-			Scene scene = new Scene(ackRoot);
-			primaryStage.setScene(scene);
-			primaryStage.show();
+			
+			Parent createRoot = BaseController.load(getClass().getResource(RegistrationConstants.ACK_RECEIPT_PATH));
+			LoginController.getScene().setRoot(createRoot);
 		} catch (RegBaseCheckedException regBaseCheckedException) {
+			regBaseCheckedException.printStackTrace();
 			LOGGER.error("REGISTRATION - OFFICER_PACKET_MANAGER - CREATE PACKET", APPLICATION_NAME,
 					APPLICATION_ID, regBaseCheckedException.getMessage());
 		} catch (IOException ioException) {
+			ioException.printStackTrace();
 			LOGGER.error("REGISTRATION - UI- Officer Packet Create ", APPLICATION_NAME, APPLICATION_ID,
 					ioException.getMessage());
 		}

@@ -21,12 +21,12 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.SessionContext;
-import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
 import io.mosip.registration.entity.GlobalContextParam;
 import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.GlobalContextParamService;
 import io.mosip.registration.service.NotificationService;
 import io.mosip.registration.service.PacketHandlerService;
@@ -37,14 +37,10 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.WritableImage;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 
 /**
  * Class for showing the Acknowledgement Receipt
@@ -58,9 +54,9 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationOfficerPacketController.class);
 
 	@Autowired
-	private PacketHandlerService packetHandlerService;
+	private RegistrationOfficerPacketController packetController;
 	@Autowired
-	private RegistrationController registrationController;
+	private PacketHandlerService packetHandlerService;
 	@Autowired
 	private TemplateService templateService;
 	@Autowired
@@ -103,44 +99,68 @@ public class AckReceiptController extends BaseController implements Initializabl
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 
-		if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
-			List<GlobalContextParam> globalContextParam = globalContextParamService
-					.findInvalidLoginCount(RegistrationConstants.MODE_OF_COMMUNICATION);
-			if (!globalContextParam.isEmpty() && globalContextParam.get(0).getVal() !=null && !globalContextParam.get(0).getVal().equals("NONE")) {
-				ResponseDTO responseDTO = null;
-				String notificationTemplate = "";
-				try {
-					notificationTemplate = templateService.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
-				} catch (RegBaseCheckedException regBaseCheckedException) {
-					LOGGER.error("REGISTRATION - ACK RECEIPT CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
-							regBaseCheckedException.getMessage());
-				}
-				if (!notificationTemplate.isEmpty()) {
-					Writer writeNotificationTemplate = velocityGenerator
-							.generateNotificationTemplate(notificationTemplate, getRegistrationData());
-					
-					String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
-					String rid = getRegistrationData() == null ? "RID" : getRegistrationData().getRegistrationId();
-					if (!number.isEmpty() && globalContextParam.get(0).getVal().contains("SMS")) {
-						responseDTO = notificationService.sendSMS(writeNotificationTemplate.toString(), number,rid);
-						if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
-								&& responseDTO.getErrorResponseDTOs().get(0) != null) {
-							generateAlert(responseDTO);
+		try {
+			// network availability check
+			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
+				// get the mode of communication
+				List<GlobalContextParam> globalContextParam = globalContextParamService
+						.findInvalidLoginCount(RegistrationConstants.MODE_OF_COMMUNICATION);
+				if (!globalContextParam.isEmpty() && globalContextParam.get(0).getVal() != null
+						&& !globalContextParam.get(0).getVal().equals("NONE")) {
+					ResponseDTO responseDTO = null;
+
+					// get the data for notification template
+					String notificationTemplate = templateService
+							.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
+					String alert = "";
+					if (!notificationTemplate.isEmpty()) {
+						// generate the notification template
+						Writer writeNotificationTemplate = velocityGenerator
+								.generateNotificationTemplate(notificationTemplate, getRegistrationData());
+
+						String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
+						String rid = getRegistrationData() == null ? "RID" : getRegistrationData().getRegistrationId();
+
+						if (!number.isEmpty() && globalContextParam.get(0).getVal().contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
+							// send sms
+							responseDTO = notificationService.sendSMS(writeNotificationTemplate.toString(), number,
+									rid);
+							if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
+									&& responseDTO.getErrorResponseDTOs().get(0) != null) {
+								alert = RegistrationConstants.SMS_SERVICE.toUpperCase();
+							}
 						}
-					}
 
-					String emailId = getRegistrationData().getDemographicDTO().getDemoInUserLang().getEmailId();
+						String emailId = getRegistrationData().getDemographicDTO().getDemoInUserLang().getEmailId();
 
-					if (!emailId.isEmpty() && globalContextParam.get(0).getVal().contains("EMAIL")) { 
-						responseDTO = notificationService.sendEmail(writeNotificationTemplate.toString(), emailId,rid);
-						if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
-								&& responseDTO.getErrorResponseDTOs().get(0) != null) {
-							generateAlert(responseDTO);
+						if (!emailId.isEmpty() && globalContextParam.get(0).getVal().contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
+							// send email
+							responseDTO = notificationService.sendEmail(writeNotificationTemplate.toString(), emailId,
+									rid);
+							if (responseDTO != null && responseDTO.getErrorResponseDTOs() != null
+									&& responseDTO.getErrorResponseDTOs().get(0) != null) {
+								alert = alert + RegistrationConstants.EMAIL_SERVICE.toUpperCase();
+							}
+						}
+						// generate alert
+						if (alert != "") {
+							String data = "Unable to send notification";
+							if (alert.equals("SMS")) {
+								data = "Unable to send SMS notification";
+							}else if(alert.equals("EMAIL")) {
+								data = "Unable to send Email notification";
+							}
+							generateAlert(data);
 						}
 					}
 				}
 			}
-
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			LOGGER.error("REGISTRATION - ACK RECEIPT CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
+					regBaseCheckedException.getMessage());
+		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+			LOGGER.error("REGISTRATION - ACK RECEIPT CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
+					regBaseUncheckedException.getMessage());
 		}
 		engine = webView.getEngine();
 		engine.loadContent(stringWriter.toString());
@@ -177,18 +197,18 @@ public class AckReceiptController extends BaseController implements Initializabl
 			SessionContext.getInstance().setMapObject(addr);
 		}
 
-		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
-		stage.close();
-
-		registrationController.goToHomePage();
+		goToHomePage();
 	}
 
-	private void generateAlert(ResponseDTO responseDTO) {
-		/* Get error response */
-		ErrorResponseDTO errorResponseDTO = responseDTO.getErrorResponseDTOs().get(0);
+	private void generateAlert(String alertMessage) {
 		/* Generate Alert */
-		generateAlert(RegistrationConstants.MACHINE_MAPPING_CODE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-				errorResponseDTO.getMessage());
+		generateAlert(RegistrationConstants.NOTIFICATION_CODE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+				alertMessage);
+	}
+	
+	@FXML
+	public void goToNewRegistrationPage() {
+		packetController.createPacket();
 	}
 
 }

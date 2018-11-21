@@ -2,6 +2,7 @@ package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_ONHOLD_CONTROLLER;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -22,31 +23,31 @@ import io.mosip.registration.service.GlobalContextParamService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.stage.Stage;
 
 /**
- *{@code OnHoldController} is controller class for onHoldComment fxml page 
- *which consists the methods for updating the status to onhold
+ * {@code OnHoldController} is controller class for onHoldComment fxml page
+ * which consists the methods for updating the status to onhold
  *
  * @author Mahesh Kumar
  */
 @Controller
-public class OnHoldController extends BaseController implements Initializable{
+public class OnHoldController extends BaseController implements Initializable {
 
 	/**
 	 * Stage
 	 */
 	private Stage primarystage;
-			
+
 	/**
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(OnHoldController.class);
 
+	/** The global context param service. */
 	@Autowired
 	private GlobalContextParamService globalContextParamService;
 
@@ -61,12 +62,14 @@ public class OnHoldController extends BaseController implements Initializable{
 	@FXML
 	private Button submit;
 
+	/** Hyperlink for exit. */
 	@FXML
 	private Hyperlink exit;
 
-
+	/** The on hold map list. */
 	private List<Map<String, String>> onHoldMapList;
 
+	/** The on hold reg data. */
 	private RegistrationApprovalDTO onHoldRegData;
 
 	/*
@@ -77,14 +80,13 @@ public class OnHoldController extends BaseController implements Initializable{
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
-				"Page loading has been started");
+		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		GlobalContextParam globalContextParam = globalContextParamService
-				.findRejectionOnholdComments("ONHOLD_COMMENTS");
+				.findRejectionOnholdComments(RegistrationConstants.ONHOLD_COMMENTS);
 		submit.disableProperty().set(true);
 		onHoldComboBox.getItems().clear();
 		onHoldComboBox.setItems(FXCollections.observableArrayList(globalContextParam.getVal().split(",")));
-
+		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 
 	/**
@@ -100,37 +102,35 @@ public class OnHoldController extends BaseController implements Initializable{
 	}
 
 	/**
-	 * {@code updatePacketStatus} is event class for updating packet status to
+	 * {@code updatePacketStatus} is for updating packet status to
 	 * onhold
 	 * 
 	 * @param event
 	 */
 	public void updatePacketStatus() {
-		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Packet updation as on hold has been started");
-		
+		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME,
+				APPLICATION_ID, "Packet updation to on hold has been started");
+
 		for (Map<String, String> registrationMap : onHoldMapList) {
 			if (registrationMap.containsValue(onHoldRegData.getId())) {
 				onHoldMapList.remove(registrationMap);
 			}
 		}
-		
+
 		Map<String, String> map = new HashMap<>();
-		map.put("registrationID", onHoldRegData.getId());
-		map.put("statusCode", RegistrationClientStatusCode.ON_HOLD.getCode());
-		map.put("statusComment", onHoldComboBox.getSelectionModel().getSelectedItem());
+		map.put(RegistrationConstants.REGISTRATIONID, onHoldRegData.getId());
+		map.put(RegistrationConstants.STATUSCODE, RegistrationClientStatusCode.ON_HOLD.getCode());
+		map.put(RegistrationConstants.STATUSCOMMENT, onHoldComboBox.getSelectionModel().getSelectedItem());
 		onHoldMapList.add(map);
 
-		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION, RegistrationConstants.ONHOLD_STATUS_MESSAGE);
 		submit.disableProperty().set(true);
 		primarystage.close();
-		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_ONHOLD_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Packet updation as on hold has been ended");
+		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME,
+				APPLICATION_ID, "Packet updation to on hold has been ended");
 	}
 
 	/**
-	 * {@code rejectionWindowExit} is event class to exit from reason for rejection
-	 * pop up window.
+	 * {@code rejectionWindowExit} is to exit from reason for rejection pop up window.
 	 * 
 	 * @param event
 	 */

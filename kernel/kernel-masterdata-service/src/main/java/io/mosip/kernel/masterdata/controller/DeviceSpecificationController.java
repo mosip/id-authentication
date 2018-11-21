@@ -23,18 +23,18 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @RestController
-@RequestMapping("/devicespecification")
+@RequestMapping("/devicespecifications")
 public class DeviceSpecificationController {
 
 	@Autowired
-	DeviceSpecificationService dviceSpecificationService;
+	DeviceSpecificationService deviceSpecificationService;
 
 	@ApiOperation(value = "Fetch all the device specification avialbale for specific langCode")
 
 	@GetMapping("/{languagecode}")
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCode(
 			@PathVariable("languagecode") String languageCode) {
-		List<DeviceSpecificationDto> deviceSpecificationDtos = dviceSpecificationService
+		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
 				.findDeviceSpecificationByLangugeCode(languageCode);
 		return new DeviceSpecificationResponseDto(deviceSpecificationDtos);
 	}
@@ -43,7 +43,7 @@ public class DeviceSpecificationController {
 	@GetMapping("/{languagecode}/{devicetypecode}")
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCodeAndDeviceTypeCode(
 			@PathVariable("languagecode") String languageCode, @PathVariable("devicetypecode") String deviceTypeCode) {
-		List<DeviceSpecificationDto> deviceSpecificationDtos = dviceSpecificationService
+		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
 				.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 		return new DeviceSpecificationResponseDto(deviceSpecificationDtos);
 	}

@@ -1,6 +1,7 @@
 package io.mosip.preregistration.documents.dto;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -41,13 +42,13 @@ public class DocumentDto implements Serializable {
 	@JsonProperty("status_code")
 	private String status_code;
 
-	@JsonProperty("lang_code")
-	private String lang_code;
+//	@JsonProperty("lang_code")
+//	private String lang_code;
 
-	@JsonProperty("cr_by")
-	private String cr_by;
+	@JsonProperty("upload_DateTime")
+	private Timestamp upload_DateTime;
 
-	@JsonProperty("upd_by")
+	@JsonProperty("upload_by")
 	private String upd_by;
 
 }

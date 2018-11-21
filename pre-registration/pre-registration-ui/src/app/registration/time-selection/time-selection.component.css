@@ -1,0 +1,157 @@
+.sizing {
+    border: 1px solid #000;
+    border-radius: 10px;
+    display: inline-block;
+    margin: 0 15px 0 15px;
+    text-align: center;
+    cursor: pointer;
+    padding: 2px 20px 2px 20px;
+  }
+
+  .middle {
+    float: left;
+    overflow: hidden;
+    width: 75%;
+    /*will change this to hidden later to deny scolling to user*/
+    white-space: nowrap;
+    margin: 0 15px 0 0;
+  }
+
+  .container {
+    display: flex;
+    text-align: center;
+  }
+  
+  .left-button{
+      margin-top: 15px;
+      float: left;
+      cursor: pointer;
+  }
+
+  .right-button {
+      margin-top: 15px;
+      float: right;
+      cursor: pointer;
+  }
+
+  .disabled {
+      color: #aaa;
+      border: 1px solid #aaa;
+      cursor: initial;
+  }
+
+  .selected {
+      background-color: #8080ff;
+      color: white;
+      opacity: 0.8;
+  }
+
+  .sizing-card {
+    width: 200px;
+    height: 200px;
+    border: 1px solid #000;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .middle-card {
+    float: left;
+    width: 90%;
+    overflow: hidden;
+    /*will change this to hidden later to deny scolling to user*/
+    white-space: nowrap;
+    margin: 0 30px 0 30px;
+    display: flex;
+  }
+
+  .container-card {
+    margin: 50px 0 0 0;
+    display: flex;
+  }
+  
+  .left-button-card {
+      margin-top: 120px;
+      float: left;
+      cursor: pointer;
+  }
+
+  .right-button-card {
+      margin-top: 120px;
+      float: right;
+      cursor: pointer;
+  }
+
+  .add-button-container{
+      position: absolute;
+      top: 0;
+      right: 0;
+  }
+
+  .mat-fab {
+    height: 35px;
+    width: 35px;
+  }
+
+  .add-icon {
+      top: -11px;
+      position: relative;
+  }
+
+  @media(max-width: 500px) {
+      .container{
+          margin: 0 -20px 0 -20px;
+      }
+      .middle{
+          margin: 0;
+          width: 100%;
+          overflow: scroll;
+      }
+      div::-webkit-scrollbar {
+        width: 0px;
+        background: transparent; /* make scrollbar transparent */
+    }
+      .sizing{
+          margin: 0 5px 0 5px;
+      }
+      .container-card {
+        margin-top: 30px;
+    }
+      .middle-card {
+        margin: 0;
+        overflow: scroll;
+    }
+  }
+
+  .list {
+      list-style-type: none;
+  }
+
+  .list-container {
+    overflow-y: auto;
+    max-height: 100px;
+  }
+
+  .close-button-sizing {
+      color: red;
+      margin-left: 4px;
+      font-size: 12px;
+  }
+
+  @media screen and (min-width: 767px) and (max-width: 991px) {
+    .container{
+        margin: 0 0 0 15px;
+    }
+    .sizing{
+        margin: 0 10px 0 10px;
+    }
+    .middle{
+        margin: 0;
+        width: 60%;
+    }
+  }
+
+  @media(min-width: 1040px){
+      .container{
+        margin: 0 0 0 25px;
+      }
+  }

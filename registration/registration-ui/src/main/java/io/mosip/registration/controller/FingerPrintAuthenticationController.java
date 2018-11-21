@@ -73,7 +73,6 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	private long fingerPrintScore;
 
 	private FingerprintProvider fingerprintProvider = new FingerprintProvider();
-	
 
 	/**
 	 * Instance of {@link MosipLogger}
@@ -111,8 +110,8 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					RegistrationConstants.DEVICE_INFO_MESSAGE, RegistrationConstants.DEVICE_FP_NOT_FOUND);
 		} else {
-			fingerDataContent=null;
-			errorMessage="";
+			fingerDataContent = null;
+			errorMessage = "";
 			int scanoutput = fpDevice.StartCapture(qualityScore, captureTimeOut, false);
 			int count = 0;
 
@@ -121,7 +120,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 						AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.DEVICE_INFO_MESSAGE,
 						fpDevice.GetLastError());
 			}
-			
+
 			while (count < 10) {
 				if (fingerDataContent != null || errorMessage != "") {
 					break;
@@ -129,14 +128,14 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 					try {
 						Thread.sleep(2000);
 					} catch (InterruptedException e) {
-						LOGGER.error("FINGERPRINT_AUTHENTICATION_CONTROLLER - ERROR_SCANNING_FINGER",
-								APPLICATION_NAME, APPLICATION_ID, e.getMessage());
+						LOGGER.error("FINGERPRINT_AUTHENTICATION_CONTROLLER - ERROR_SCANNING_FINGER", APPLICATION_NAME,
+								APPLICATION_ID, e.getMessage());
 					}
 				}
 				count++;
 			}
-			fingerPrintCheck(fingerDataContent,errorMessage);
-			
+			fingerPrintCheck(fingerDataContent, errorMessage);
+
 		}
 	}
 
@@ -150,11 +149,12 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 
 		}
 	}
-	
-	private void fingerPrintCheck(FingerData fingerDataContent,String errorMessage) {
+
+	private void fingerPrintCheck(FingerData fingerDataContent, String errorMessage) {
 		if (fingerDataContent != null) {
 			OnPreview(fingerDataContent);
-			FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().convert(fingerDataContent.ISOTemplate());
+			FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
+					.convert(fingerDataContent.ISOTemplate());
 			minutia = fingerprintTemplate.serialize();
 			validateFingerPrint(minutia);
 			primarystage.close();
@@ -220,6 +220,17 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	public void initialize(URL arg0, ResourceBundle arg1) {
 		deviceCmbBox.getItems().clear();
 		deviceCmbBox.setItems(FXCollections.observableArrayList(RegistrationConstants.ONBOARD_DEVICE_TYPES));
+		deviceCmbBox.getSelectionModel().selectFirst();
+	}
+
+	/**
+	 * event class to exit from authentication window. pop up window.
+	 * 
+	 * @param event
+	 */
+	public void exitWindow(ActionEvent event) {
+		primarystage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
+		primarystage.close();
 
 	}
 

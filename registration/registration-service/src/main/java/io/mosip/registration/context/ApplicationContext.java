@@ -12,7 +12,7 @@ public class ApplicationContext{
 	private static ApplicationContext applicationContext;
 
 	private ResourceBundle applicationLanguageBundle;
-	private Properties localLanguageProperty;
+	private ResourceBundle localLanguageBundle;
 
 	public ResourceBundle getApplicationLanguageBundle() {
 		return applicationLanguageBundle;
@@ -22,20 +22,12 @@ public class ApplicationContext{
 		applicationLanguageBundle = ResourceBundle.getBundle("labels",new Locale(AppConfig.getApplicationProperty("application_language")));
 	}
 
-	public Properties getLocalLanguageProperty() {
-		return localLanguageProperty;
+	public ResourceBundle getLocalLanguageProperty() {
+		return localLanguageBundle;
 	}
 
 	public void setLocalLanguageProperty() {
-		
-		ResourceBundle localLanguage = ResourceBundle.getBundle("labels", new Locale(AppConfig.getApplicationProperty("local_language")));
-		localLanguageProperty = new Properties();
-
-	    Enumeration<String> keys = localLanguage.getKeys();
-	    while (keys.hasMoreElements()) {
-	    	String key = keys.nextElement();
-	    	localLanguageProperty.put(key, localLanguage.getString(key));
-	    }
+		localLanguageBundle = ResourceBundle.getBundle("labels", new Locale(AppConfig.getApplicationProperty("local_language")));
 	}
 
 	private ApplicationContext() {

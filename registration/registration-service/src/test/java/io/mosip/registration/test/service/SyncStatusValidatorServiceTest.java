@@ -217,8 +217,8 @@ public class SyncStatusValidatorServiceTest {
 		assertEquals(
 				"Maximum limit for registration packets on client reached. Please export or upload packets to server before proceeding with this registration",
 				errorResponseDTOs.get(2).getMessage());
-		assertEquals("REG-ICS‌-005", errorResponseDTOs.get(3).getCode());
-		assertEquals("Unable to validate machine location. Please insert the GPS device and try again",
+		assertEquals("REG-ICS‌-006", errorResponseDTOs.get(3).getCode());
+		assertEquals("Unable to validate machine location due to weak GPS signal. Please try again.",
 				errorResponseDTOs.get(3).getMessage());
 
 	}

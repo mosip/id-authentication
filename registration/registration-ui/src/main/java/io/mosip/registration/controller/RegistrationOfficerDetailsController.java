@@ -1,6 +1,5 @@
 package io.mosip.registration.controller;
 
-import static io.mosip.registration.constants.LoggerConstants.DEVICE_ONBOARD_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOARD_ERROR_MSG;
@@ -8,7 +7,6 @@ import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOA
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_AUTHORIZATION_EXCEPTION;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_HOMEPAGE_IO_EXCEPTION;
 import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_LOGOUT_IO_EXCEPTION;
-import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION;
 
 import java.io.IOException;
 import java.util.Timer;

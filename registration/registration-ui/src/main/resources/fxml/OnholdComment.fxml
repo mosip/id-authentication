@@ -18,7 +18,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <Hyperlink fx:id="exitButton" layoutX="359.0" layoutY="11.0" onAction="#exitWindow" text="Close">
+            <Hyperlink fx:id="exitButton" layoutX="377.0" layoutY="12.0" onAction="#exitWindow" text="X">
                <font>
                   <Font size="14.0" />
                </font>

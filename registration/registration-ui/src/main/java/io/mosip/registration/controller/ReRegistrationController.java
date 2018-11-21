@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
@@ -41,7 +40,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 @Controller
 public class ReRegistrationController extends BaseController implements Initializable {
@@ -97,10 +98,10 @@ public class ReRegistrationController extends BaseController implements Initiali
 	@FXML
 	private LoginServiceImpl loginServiceImpl;
 
-	@Value("${FINGER_PRINT_SCORE}")
-	private long fingerPrintScore;
+	@FXML
+	private AnchorPane reRegistrationRootPane;
 
-	Map<String, String> contactStatusMap = new HashMap<>();
+	private Map<String, String> contactStatusMap = new HashMap<>();
 
 	/*
 	 * (non-Javadoc)
@@ -113,7 +114,6 @@ public class ReRegistrationController extends BaseController implements Initiali
 		LOGGER.debug("REGISTRATION - PAGE_LOADING - RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Page loading has been started");
 		reloadTableView();
-		// writeToByte();
 	}
 
 	/**
@@ -147,11 +147,11 @@ public class ReRegistrationController extends BaseController implements Initiali
 			imageAnchorPane.setVisible(true);
 			informedBtn.setSelected(false);
 			notInformedBtn.setSelected(false);
-			for(Map.Entry<String , String> statusMap : contactStatusMap.entrySet()) {
-				if(statusMap.getKey().equals(table.getSelectionModel().getSelectedItem().getFileName())) {
-					if(statusMap.getValue().equals("informed")) {
+			for (Map.Entry<String, String> statusMap : contactStatusMap.entrySet()) {
+				if (statusMap.getKey().equals(table.getSelectionModel().getSelectedItem().getFileName())) {
+					if (statusMap.getValue().equals("informed")) {
 						informedBtn.setSelected(true);
-					} else if(statusMap.getValue().equals("notinformed")) {
+					} else if (statusMap.getValue().equals("notinformed")) {
 						notInformedBtn.setSelected(true);
 					}
 				}
@@ -209,20 +209,25 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 		Parent ackRoot;
 		try {
-			Stage primaryStage=new Stage();
+			Stage primaryStage = new Stage();
+			primaryStage.initStyle(StageStyle.UNDECORATED);
 			FXMLLoader fxmlLoader = BaseController
 					.loadChild(getClass().getResource(RegistrationConstants.USER_AUTHENTICATION));
 			ackRoot = fxmlLoader.load();
 			primaryStage.setResizable(false);
 			Scene scene = new Scene(ackRoot);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
 			primaryStage.setScene(scene);
+			primaryStage.initModality(Modality.WINDOW_MODAL);
+			primaryStage.initOwner(stage);
 			primaryStage.show();
 			FingerPrintAuthenticationController fpcontroller = fxmlLoader.getController();
 			fpcontroller.init(this);
 
 		} catch (IOException e) {
-			LOGGER.error("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER_FAILED",
-					APPLICATION_NAME, APPLICATION_ID, e.getMessage());
+			LOGGER.error("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER_FAILED", APPLICATION_NAME, APPLICATION_ID,
+					e.getMessage());
 		}
 	}
 
@@ -240,9 +245,9 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 	@Override
 	public void getFingerPrintStatus() {
-		
-			reRegistrationServiceImpl.updateReRegistrationStatus(contactStatusMap);
-			reloadTableView();
+
+		reRegistrationServiceImpl.updateReRegistrationStatus(contactStatusMap);
+		reloadTableView();
 	}
 
 	/**
@@ -259,7 +264,8 @@ public class ReRegistrationController extends BaseController implements Initiali
 			ObservableList<PacketStatusDTO> oListStavaka = FXCollections.observableArrayList(listData);
 			table.setItems(oListStavaka);
 		} else {
-				table.getItems().remove(table.getSelectionModel().getSelectedItem());
+			reRegistrationRootPane.disableProperty().set(true);
+			table.getItems().clear();
 		}
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been ended");

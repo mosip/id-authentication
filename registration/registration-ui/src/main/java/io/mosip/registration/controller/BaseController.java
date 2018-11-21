@@ -1,5 +1,8 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN_LOADER_EXCEPTION;
+
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -12,9 +15,12 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.entity.GlobalContextParam;
+import io.mosip.registration.exception.RegBaseCheckedException;
+import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
 import io.mosip.registration.service.GlobalContextParamService;
 import io.mosip.registration.service.SyncStatusValidatorService;
@@ -208,12 +214,17 @@ public class BaseController {
 	/**
 	 * 
 	 * Opens the home page screen
+	 * @throws RegBaseCheckedException 
 	 * 
 	 */
-	public void goToHomePage() {
+	public void goToHomePage() throws RegBaseCheckedException {
 		try {
 			BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 		} catch (IOException ioException) {
+			throw new RegBaseCheckedException(RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorCode(),
+					RegistrationExceptions.REG_UI_LOGIN_IO_EXCEPTION.getErrorMessage(), ioException);
+		} catch (RuntimeException runtimeException) {
+			throw new RegBaseUncheckedException(REG_UI_LOGIN_LOADER_EXCEPTION, runtimeException.getMessage());
 		}
 	}
 
@@ -225,6 +236,26 @@ public class BaseController {
 
 	public void getFingerPrintStatus() {
 
+	}
+
+	/**
+	 * This method is for saving the Applicant Image and Exception Image which are
+	 * captured using webcam
+	 * 
+	 * @param capturedImage BufferedImage that is captured using webcam
+	 * @param imageType     Type of image that is to be saved
+	 */
+	protected void saveApplicantPhoto(BufferedImage capturedImage, String imageType) {
+		// will be implemented in the derived class.
+	}
+
+	/**
+	 * This method used to clear the images that are captured using webcam
+	 * 
+	 * @param imageType Type of image that is to be cleared
+	 */
+	protected void clearPhoto(String imageType) {
+		// will be implemented in the derived class.
 	}
 
 }

@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -22,8 +21,8 @@ import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.device.GPSUtill.GPSPosition;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
-@Ignore
 public class GPSIntegrationImplTest {
 
 	@Rule
@@ -60,9 +59,10 @@ public class GPSIntegrationImplTest {
 	/**
 	 * Test method for
 	 * {@link io.mosip.registration.device.GPSIntegrationImpl#getLatLongDtls(double, double)}.
+	 * @throws RegBaseCheckedException 
 	 */
 	@Test
-	public void testGetLatLongDtlsFailureCase() {
+	public void testGetLatLongDtlsFailureCase() throws RegBaseCheckedException {
 
 		Map<String, Object> map = new HashMap<>();
 
@@ -81,34 +81,35 @@ public class GPSIntegrationImplTest {
 				+ "$GPGSV,3,2,12,05,00,000,,06,00,000,,07,00,000,,08,00,000,*77$GPGSV,3,3,12,09,00,000,,10,00,000,,11,00,000,,12,00,000,*7,\r\n"
 				+ "$GPRMC,V,,,,,,,,,,N*53\r\n" + "$GPVTG,,TM,,,N,,K,N*2C";
 
-		Mockito.when(gpsConnection.getGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
+		Mockito.when(gpsConnection.getComportGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
 
-		Mockito.when(gpsPosition.getLat()).thenReturn(0.0f);
+		Mockito.when(gpsPosition.getLat()).thenReturn(0.0);
 
-		Mockito.when(gpsPosition.getLon()).thenReturn(0.0f);
+		Mockito.when(gpsPosition.getLon()).thenReturn(0.0);
 
-		Mockito.when(gpsPosition.getResponse()).thenReturn(RegistrationConstants.GPS_CAPTURE_FAILURE);
+		Mockito.when(gpsPosition.getResponse()).thenReturn("failure");
 
-		ReflectionTestUtils.setField(gpsPosition, "latitudeFromGps", 0.0f);
-		ReflectionTestUtils.setField(gpsPosition, "longitudeFromGps", 0.0f);
+		ReflectionTestUtils.setField(gpsPosition, "latitudeFromGps", 0.0);
+		ReflectionTestUtils.setField(gpsPosition, "longitudeFromGps", 0.0);
 		ReflectionTestUtils.setField(gpsPosition, "response", "failure");
 
 		Mockito.when(gpsUtill.parse(Mockito.anyString())).thenReturn(gpsPosition);
 
 		map = gpsIntegrationImpl.getLatLongDtls(centerLat, centerLngt);
 
-		/*
-		 * assertTrue( map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG).equals(
-		 * RegistrationConstants.GPS_CAPTURE_FAILURE_MSG));
-		 */
+		
+		  /*assertTrue( map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG).equals(
+		  RegistrationConstants.GPS_CAPTURE_FAILURE_MSG));*/
+		 
 	}
 
 	/**
 	 * Test method for
 	 * {@link io.mosip.registration.device.GPSIntegrationImpl#getLatLongDtls(double, double)}.
+	 * @throws RegBaseCheckedException 
 	 */
 	@Test
-	public void testGetLatLongDtlsFailureCaseNoDeviceConnected() {
+	public void testGetLatLongDtlsFailureCaseNoDeviceConnected() throws RegBaseCheckedException {
 
 		Map<String, Object> map = new HashMap<>();
 
@@ -124,22 +125,23 @@ public class GPSIntegrationImplTest {
 
 		String mockgps = RegistrationConstants.GPS_CAPTURE_FAILURE;
 
-		Mockito.when(gpsConnection.getGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
+		Mockito.when(gpsConnection.getComportGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
 
 		map = gpsIntegrationImpl.getLatLongDtls(centerLat, centerLngt);
 
-		/*
-		 * assertTrue(map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG)
-		 * .equals(RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE_ERRO_MSG));
-		 */
+		
+		  /*assertTrue(map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG)
+		  .equals(RegistrationConstants.GPS_CAPTURE_FAILURE));*/
+		 
 	}
 
 	/**
 	 * Test method for
 	 * {@link io.mosip.registration.device.GPSIntegrationImpl#getLatLongDtls(double, double)}.
+	 * @throws RegBaseCheckedException 
 	 */
 	@Test
-	public void testGetLatLongDtlsSuccessCase() {
+	public void testGetLatLongDtlsSuccessCase() throws RegBaseCheckedException {
 
 		Map<String, Object> map = new HashMap<>();
 
@@ -158,11 +160,11 @@ public class GPSIntegrationImplTest {
 				+ "$GPGSV,3,2,12,05,00,000,,06,00,000,,07,00,000,,08,00,000,*77$GPGSV,3,3,12,09,00,000,,10,00,000,,11,00,000,,12,00,000,*7,\r\n"
 				+ "$GPRMC,V,,,,,,,,,,N*53\r\n" + "$GPVTG,,TM,,,N,,K,N*2C";
 
-		Mockito.when(gpsConnection.getGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
+		Mockito.when(gpsConnection.getComportGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
 
-		Mockito.when(gpsPosition.getLat()).thenReturn(12.9913f);
+		Mockito.when(gpsPosition.getLat()).thenReturn(12.9913);
 
-		Mockito.when(gpsPosition.getLon()).thenReturn(80.2457f);
+		Mockito.when(gpsPosition.getLon()).thenReturn(80.2457);
 
 		Mockito.when(gpsPosition.getResponse()).thenReturn("success");
 
@@ -174,10 +176,10 @@ public class GPSIntegrationImplTest {
 
 		map = gpsIntegrationImpl.getLatLongDtls(centerLat, centerLngt);
 
-		/*
-		 * assertTrue( map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG).equals(
-		 * RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG));
-		 */
+		
+		  assertTrue( map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG).equals(
+		  RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG));
+		 
 	}
 
 }

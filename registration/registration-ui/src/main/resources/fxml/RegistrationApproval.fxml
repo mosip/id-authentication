@@ -10,14 +10,14 @@
 
 <AnchorPane fx:id="approveRegistrationRoot" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.mosip.registration.controller.EODController">
 	<children>
-      <Accordion fx:id="approvalAccordian" layoutX="18.0" layoutY="54.0" prefHeight="435.0" prefWidth="920.0">
+      <Accordion fx:id="approvalAccordion" layoutX="18.0" layoutY="54.0" prefHeight="435.0" prefWidth="920.0">
         <panes>
           <TitledPane fx:id="pendingApprovalTitledPane" animated="false" prefWidth="850.0" text="Pending Approval">
                <content>
                   <AnchorPane fx:id="pendingApprovalAnchorPane" prefHeight="200.0" prefWidth="200.0" />
                </content>
             </TitledPane>
-          <TitledPane fx:id="pendingActionTitledPane" animated="false" prefWidth="850.0" text="Pending Action">
+          <TitledPane fx:id="pendingActionTitledPane" animated="false" onMouseClicked="#loadPendingActionController" prefWidth="850.0" text="Pending Action">
                <content>
                   <AnchorPane fx:id="pendingActionAnchorPane" prefHeight="200.0" prefWidth="200.0" />
                </content></TitledPane>

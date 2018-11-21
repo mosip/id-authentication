@@ -29,15 +29,19 @@ The key non-functional requirements are
 
 **Solution**
 
-**Reterive all pre-registration Ids :**
+**Store all pre-registration Ids :**
 
 -   Create a REST API as '/reverseDataSync' POST method accept the JSON object  from the registration-processor.
 
 - The Registration Processor will provide the List of Pre-Registration IDs received by it(from Registration Client). 
 
-- The System will generate a Transaction ID and store all the Pre-Registration ids in table.
+- The System will generate a Transaction ID and store all the Pre-Registration ids in "prereg-i_processed_prereg_list" table and update in "prereg-processed_prereg_list" table.
 
--  Pre-Registration will receive the List of Pre-Registration Ids and will send an Acknowledgement of the Receipt ("need to be check BA(Vyas)")
+- The "prereg-i_processed_prereg_list" table is not permanent, for maintanance purpose database team can truncate this table.
+
+- A batch job need to be running to update the application.demoraphic table with "Processed" status.
+
+-  Once Pre-Registration successfully processed. System will send an Acknowledgement of the Receipt ("need to be check BA(Vyas)")
 
 -   Audit the exception/start/exit of the each stages of the reverse data sync mechanism using AuditManager component.
 

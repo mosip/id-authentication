@@ -2,9 +2,6 @@ package io.mosip.kernel.jsonvalidator.validator;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
@@ -12,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jackson.JsonLoader;
@@ -20,9 +16,9 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
-
 import io.mosip.kernel.jsonvalidator.constant.JsonValidatorErrorConstant;
 import io.mosip.kernel.jsonvalidator.constant.JsonValidatorPropertySourceConstant;
+import io.mosip.kernel.jsonvalidator.constant.JsonValidatorReportConstant;
 import io.mosip.kernel.jsonvalidator.dto.JsonValidatorResponseDto;
 import io.mosip.kernel.jsonvalidator.exception.ConfigServerConnectionException;
 import io.mosip.kernel.jsonvalidator.exception.FileIOException;
@@ -44,7 +40,6 @@ import io.mosip.kernel.jsonvalidator.exception.UnidentifiedJsonException;
  */
 @Component
 public class JsonValidator {
-
 	/**
 	 * Validates a JSON object passed as string with the schema provided
 	 * 
@@ -65,31 +60,29 @@ public class JsonValidator {
 	 * @throws ConfigServerConnectionException
 	 */
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(JsonValidator.class);
-
 	/*
 	 * Address of Spring cloud config server for getting the schema file
 	 */
-	@Value("${config.server.file.storage.uri}")
-	private  String configServerFileStorageURL;
+	@Value("${mosip.kernel.jsonvalidator.file-storage-uri}")
+	private String configServerFileStorageURL;
 
-    /*
-     * Property source from which schema file has to be taken, can be either CONFIG_SERVER
-     * or LOCAL
-     */
-	@Value("${property.source}")
-	private  String propertySource;
+	/*
+	 * Property source from which schema file has to be taken, can be either
+	 * CONFIG_SERVER or LOCAL
+	 */
+	@Value("${mosip.kernel.jsonvalidator.property-source}")
+	private String propertySource;
 
 	public JsonValidatorResponseDto validateJson(String jsonString, String schemaName)
-			throws HttpRequestException, JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
+			throws JsonValidationProcessingException, JsonIOException, JsonSchemaIOException, FileIOException {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jsonObjectNode = null;
 		JsonNode jsonSchemaNode = null;
 		ProcessingReport report = null;
-		ArrayList<String> reportWarnings = new ArrayList<String>();
+		ArrayList<String> reportWarnings = new ArrayList<>();
 		try {
 			/**
-			 * creating a JsonSchema node from json string provided.
+			 * creating a JsonObject node from json string provided.
 			 */
 			jsonObjectNode = mapper.readTree(jsonString);
 		} catch (IOException e) {
@@ -97,67 +90,16 @@ public class JsonValidator {
 					JsonValidatorErrorConstant.JSON_IO_EXCEPTION.getMessage(), e.getCause());
 		}
 		if (jsonObjectNode == null) {
-			throw new NullJsonNodeException(
-					JsonValidatorErrorConstant.NULL_JSON_NODE_EXCEPTION.getErrorCode(),
+			throw new NullJsonNodeException(JsonValidatorErrorConstant.NULL_JSON_NODE_EXCEPTION.getErrorCode(),
 					JsonValidatorErrorConstant.NULL_JSON_NODE_EXCEPTION.getMessage());
 		}
-		LOGGER.debug(jsonObjectNode.toString());
 		/**
-		 * If the property source selected is configuration server.
-		 * In this scenario schema is coming from Config Server, whose location has to be mentioned in the bootstrap.properties by
-		 * the application using this JSON validator API.
+		 * getting a JsonSchema node from json schema Name provided.
 		 */
-		if(JsonValidatorPropertySourceConstant.CONFIG_SERVER.getPropertySource().equals(propertySource))
-		{
-			RestTemplate restTemplate = new RestTemplate();
+		jsonSchemaNode = getJsonSchemaNode(schemaName);
 
-			/**
-			 *  setting an error handler and overriding handleError method of DefaultResponseErrorHandler,
-			 *  such that if there is any error (status code other than 200) while requesting the schema
-			 *  from config server it will throw HttpRequestException.
-			 * 
-			 */
-			restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
-
-				@Override
-				protected void handleError(ClientHttpResponse response,
-						HttpStatus statusCode)
-				{
-					throw new HttpRequestException(JsonValidatorErrorConstant.HTTP_REQUEST_EXCEPTION.getErrorCode(),
-							JsonValidatorErrorConstant.HTTP_REQUEST_EXCEPTION.getMessage());
-				}
-			});
-			try {
-				String jsonSchemaAsString = restTemplate.getForObject(this.configServerFileStorageURL+schemaName,String.class);
-				/**
-				 * creating a JsonSchema node against which the JSON object will be validated.
-				 */
-				jsonSchemaNode= mapper.readTree(jsonSchemaAsString);
-			}
-			catch (ResourceAccessException e) {
-				throw new ConfigServerConnectionException(JsonValidatorErrorConstant.CONFIG_SERVER_CONNECTION_EXCEPTION
-						.getErrorCode(), JsonValidatorErrorConstant.CONFIG_SERVER_CONNECTION_EXCEPTION.getMessage());
-			} catch (IOException e) {
-				throw new JsonSchemaIOException(JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getErrorCode(),
-						JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getMessage(), e.getCause());
-			}
-		}
-		/**
-		 * If the property source selected is local.
-		 * In this scenario schema is coming from local resource location.
-		 */
-		else if(JsonValidatorPropertySourceConstant.LOCAL.getPropertySource().equals(propertySource)) {
-			try {
-				jsonSchemaNode = JsonLoader.fromResource("/" + schemaName);
-			} catch (IOException e) {
-				throw new FileIOException(JsonValidatorErrorConstant.FILE_IO_EXCEPTION.getErrorCode(),
-						JsonValidatorErrorConstant.FILE_IO_EXCEPTION.getMessage(), e.getCause());
-
-			}
-		}
-		if(jsonSchemaNode==null) {
-			throw new NullJsonSchemaException(
-					JsonValidatorErrorConstant.NULL_JSON_SCHEMA_EXCEPTION.getErrorCode(),
+		if (jsonSchemaNode == null) {
+			throw new NullJsonSchemaException(JsonValidatorErrorConstant.NULL_JSON_SCHEMA_EXCEPTION.getErrorCode(),
 					JsonValidatorErrorConstant.NULL_JSON_SCHEMA_EXCEPTION.getMessage());
 		}
 		final JsonSchemaFactory factory = JsonSchemaFactory.byDefault();
@@ -187,20 +129,25 @@ public class JsonValidator {
 			/**
 			 * messageLevel variable to store level of message (eg: warning or error)
 			 */
-			String messageLevel = processingMessageAsJson.get("level").asText();
+			String messageLevel = processingMessageAsJson.get(JsonValidatorReportConstant.LEVEL.getProperty()).asText();
 			/**
 			 * messageBody variable storing actual message.
 			 */
-			String messageBody = processingMessageAsJson.get("message").asText();
-			if (messageLevel.equals("warning")) {
+			String messageBody = processingMessageAsJson.get(JsonValidatorReportConstant.MESSAGE.getProperty())
+					.asText();
+			if (messageLevel.equals(JsonValidatorReportConstant.WARNING.getProperty())) {
 				reportWarnings.add(messageBody);
-			} else if (messageLevel.equals("error")) {
+			} else if (messageLevel.equals(JsonValidatorReportConstant.ERROR.getProperty())) {
 
 				/**
 				 * getting the location of error in JSON string.
 				 */
-				if (processingMessageAsJson.has("instance") && processingMessageAsJson.get("instance").has("pointer")) {
-					messageBody = messageBody + " at " + processingMessageAsJson.get("instance").get("pointer");
+				if (processingMessageAsJson.has(JsonValidatorReportConstant.INSTANCE.getProperty())
+						&& processingMessageAsJson.get(JsonValidatorReportConstant.INSTANCE.getProperty())
+								.has(JsonValidatorReportConstant.POINTER.getProperty())) {
+					messageBody = messageBody + JsonValidatorReportConstant.AT.getProperty()
+							+ processingMessageAsJson.get(JsonValidatorReportConstant.INSTANCE.getProperty())
+									.get(JsonValidatorReportConstant.POINTER.getProperty());
 				}
 				throw new UnidentifiedJsonException(
 						JsonValidatorErrorConstant.UNIDENTIFIED_JSON_EXCEPTION.getErrorCode(), messageBody);
@@ -211,5 +158,65 @@ public class JsonValidator {
 		validationResponse.setValid(report.isSuccess());
 		validationResponse.setWarnings(reportWarnings);
 		return validationResponse;
+	}
+
+	private JsonNode getJsonSchemaNode(String schemaName) throws JsonSchemaIOException, FileIOException {
+
+		JsonNode jsonSchemaNode = null;
+		ObjectMapper mapper = new ObjectMapper();
+
+		/**
+		 * If the property source selected is CONFIG_SERVER. In this scenario schema is
+		 * coming from Config Server, whose location has to be mentioned in the
+		 * bootstrap.properties by the application using this JSON validator API.
+		 */
+		if (JsonValidatorPropertySourceConstant.CONFIG_SERVER.getPropertySource().equals(propertySource)) {
+			RestTemplate restTemplate = new RestTemplate();
+
+			/**
+			 * setting an error handler and overriding handleError method of
+			 * DefaultResponseErrorHandler, such that if there is any error (status code
+			 * other than 200) while requesting the schema from config server it will throw
+			 * HttpRequestException.
+			 * 
+			 */
+			restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
+
+				@Override
+				protected void handleError(ClientHttpResponse response, HttpStatus statusCode) {
+					throw new HttpRequestException(JsonValidatorErrorConstant.HTTP_REQUEST_EXCEPTION.getErrorCode(),
+							JsonValidatorErrorConstant.HTTP_REQUEST_EXCEPTION.getMessage());
+				}
+			});
+			try {
+				String jsonSchemaAsString = restTemplate.getForObject(this.configServerFileStorageURL + schemaName,
+						String.class);
+				/**
+				 * creating a JsonSchema node against which the JSON object will be validated.
+				 */
+				jsonSchemaNode = mapper.readTree(jsonSchemaAsString);
+			} catch (ResourceAccessException e) {
+				throw new ConfigServerConnectionException(
+						JsonValidatorErrorConstant.CONFIG_SERVER_CONNECTION_EXCEPTION.getErrorCode(),
+						JsonValidatorErrorConstant.CONFIG_SERVER_CONNECTION_EXCEPTION.getMessage());
+			} catch (IOException e) {
+				throw new JsonSchemaIOException(JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getErrorCode(),
+						JsonValidatorErrorConstant.JSON_SCHEMA_IO_EXCEPTION.getMessage(), e.getCause());
+			}
+		}
+		/**
+		 * If the property source selected is local. In this scenario schema is coming
+		 * from local resource location.
+		 */
+		else if (JsonValidatorPropertySourceConstant.LOCAL.getPropertySource().equals(propertySource)) {
+			try {
+				jsonSchemaNode = JsonLoader
+						.fromResource(JsonValidatorReportConstant.PATH_SEPERATOR.getProperty() + schemaName);
+			} catch (IOException e) {
+				throw new FileIOException(JsonValidatorErrorConstant.FILE_IO_EXCEPTION.getErrorCode(),
+						JsonValidatorErrorConstant.FILE_IO_EXCEPTION.getMessage(), e.getCause());
+			}
+		}
+		return jsonSchemaNode;
 	}
 }

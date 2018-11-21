@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.masterdata.controller.MachineHistoryController;
 import io.mosip.kernel.masterdata.dto.MachineHistoryDto;
+import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
 import io.mosip.kernel.masterdata.repository.MachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.MachineHistoryService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -61,17 +62,19 @@ public class MachineHistoryControllerTest {
 		machineHistoryDto.setSerialNum("1234567890");
 		machineHistoryDto.setMacAddress("100.100.100.80");
 		machineHistoryDto.setLangCode("ENG");
-		machineHistoryDto.setActive(true);
+		machineHistoryDto.setIsActive(true);
 		machineHistoryDtoList.add(machineHistoryDto);
 
+		MachineHistoryResponseDto machineHistoryResponseDto = new MachineHistoryResponseDto();
+		machineHistoryResponseDto.setMachineHistoryDetails(machineHistoryDtoList);
 		Mockito.when(
 				macService.getMachineHistroyIdLangEffDTime(Mockito.anyString(), Mockito.anyString(), Mockito.any()))
-				.thenReturn(machineHistoryDtoList);
-		List<MachineHistoryDto> actual = machineHistoryController.getMachineHistoryIdLangEff(Mockito.anyString(),
+				.thenReturn(machineHistoryResponseDto);
+		MachineHistoryResponseDto actual = machineHistoryController.getMachineHistoryIdLangEff(Mockito.anyString(),
 				Mockito.anyString(), Mockito.any());
 
 		Assert.assertNotNull(actual);
-		Assert.assertTrue(actual.size() > 0);
+		Assert.assertTrue(actual.getMachineHistoryDetails().size() > 0);
 
 	}
 	
