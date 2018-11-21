@@ -51,7 +51,7 @@ export class RegistrationService {
   }
 
   deleteRegistration(preId: string) {
-    return this.httpClient.delete('http://A2ML27085:9092/v0.1/pre-registration/applications', {
+    return this.httpClient.delete(this.BASE_URL, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append('preId', preId)
