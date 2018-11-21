@@ -45,7 +45,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (!(applicationList.isEmpty())) {
+		if (applicationList != null && !applicationList.isEmpty()) {
 			applicationDtoList = objectMapperUtil.mapAll(applicationList, ApplicationDto.class);
 		} else {
 			throw new DataNotFoundException(ApplicationErrorCode.APPLICATION_NOT_FOUND_EXCEPTION.getErrorCode(),

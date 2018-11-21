@@ -43,6 +43,7 @@ import io.mosip.kernel.core.util.constant.DateUtilConstants;
  */
 public final class DateUtils {
 
+	private static final String DEFAULT_ISO8061_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 	private static final Map<String, String> AVAILABLE_DATE_FORMATS = new HashMap<String, String>() {
 		/**
 		 * 
@@ -449,7 +450,34 @@ public final class DateUtils {
 		try {
 			return org.apache.commons.lang3.time.DateUtils.parseDate(str, parsePatterns);
 		} catch (IllegalArgumentException | ParseException e) {
-			e.printStackTrace();
+			if (e instanceof IllegalArgumentException) {
+				throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+						DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
+			} else {
+				throw new io.mosip.kernel.core.exception.ParseException(
+						DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
+						DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e.getCause());
+			}
+		}
+	}
+
+	/**
+	 * Parses a string representing a date by trying a variety of different parsers.
+	 *
+	 * @param str
+	 *            the date to parse, not null
+	 * @param parsePatterns
+	 *            the date format patterns to use, see SimpleDateFormat, not null
+	 * @return the parsed date
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
+	 *             if the date string or pattern array is null
+	 * @throws io.mosip.kernel.core.exception.ParseException
+	 *             if none of the date patterns were suitable (or there were none)
+	 */
+	public static Date parseDateDefaultISO8061(final String str) {
+		try {
+			return org.apache.commons.lang3.time.DateUtils.parseDate(str, DEFAULT_ISO8061_DATE_FORMAT);
+		} catch (IllegalArgumentException | ParseException e) {
 			if (e instanceof IllegalArgumentException) {
 				throw new IllegalArgumentException(DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
 						DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(), e.getCause());
@@ -574,99 +602,143 @@ public final class DateUtils {
 			}
 		}
 	}
+	//
+	// /**
+	// * Parse the given date string to date object and return a date instance based
+	// * on the given date string. This makes use of the
+	// * {@link DateUtils#determineDateFormat(String)} to determine the
+	// * SimpleDateFormat pattern to be used for parsing.
+	// *
+	// * @param dateString
+	// * The date string to be parsed to date object.
+	// * @return The parsed date object.
+	// * @throws io.mosip.kernel.core.exception.ParseException
+	// * If the date format pattern of the given date string is unknown,
+	// * or if the given date string or its actual date is invalid based
+	// * on the date format pattern.
+	// * @throws io.mosip.kernel.core.exception.NullPointerException
+	// * If <code>dateString</code> is null.
+	// */
+	// public static Date parse(String dateString) throws ParseException {
+	// if (Objects.isNull(dateString)) {
+	// throw new io.mosip.kernel.core.exception.NullPointerException(
+	// DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+	// DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(),
+	// new NullPointerException("dateString is null"));
+	// }
+	// try {
+	// String dateFormat = determineDateFormat(dateString);
+	// if (dateFormat == null) {
+	// throw new io.mosip.kernel.core.exception.ParseException(
+	// DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
+	// DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(),
+	// new ParseException("Unknown date format.", 0));
+	// }
+	// return parse(dateString, dateFormat);
+	// } catch (Exception e) {
+	// throw new io.mosip.kernel.core.exception.ParseException(
+	// DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
+	// DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(),
+	// e.getCause());
+	// }
+	// }
 
-	/**
-	 * Parse the given date string to date object and return a date instance based
-	 * on the given date string. This makes use of the
-	 * {@link DateUtils#determineDateFormat(String)} to determine the
-	 * SimpleDateFormat pattern to be used for parsing.
-	 * 
-	 * @param dateString
-	 *            The date string to be parsed to date object.
-	 * @return The parsed date object.
-	 * @throws io.mosip.kernel.core.exception.ParseException
-	 *             If the date format pattern of the given date string is unknown,
-	 *             or if the given date string or its actual date is invalid based
-	 *             on the date format pattern.
-	 * @throws io.mosip.kernel.core.exception.NullPointerException
-	 *             If <code>dateString</code> is null.
-	 */
-	public static Date parse(String dateString) throws ParseException {
-		if (Objects.isNull(dateString)) {
-			throw new io.mosip.kernel.core.exception.NullPointerException(
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(),
-					new NullPointerException("dateString is null"));
-		}
-		try {
-			String dateFormat = determineDateFormat(dateString);
-			if (dateFormat == null) {
-				throw new io.mosip.kernel.core.exception.ParseException(
-						DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
-						DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(),
-						new ParseException("Unknown date format.", 0));
-			}
-			return parse(dateString, dateFormat);
-		} catch (Exception e) {
-			throw new io.mosip.kernel.core.exception.ParseException(
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		}
-	}
+	// /**
+	// * Validate the actual date of the given date string based on the given date
+	// * format pattern and return a date instance based on the given date string.
+	// *
+	// * @param dateString
+	// * The date string.
+	// * @param dateFormat
+	// * The date format pattern which should respect the SimpleDateFormat
+	// * rules.
+	// * @return The parsed date object.
+	// * @throws io.mosip.kernel.core.exception.ParseException
+	// * If the given date string or its actual date is invalid based on
+	// * the given date format pattern.
+	// * @throws io.mosip.kernel.core.exception.NullPointerException
+	// * If <code>dateString</code> or <code>dateFormat</code> is null.
+	// * @see SimpleDateFormat
+	// */
+	// public static Date parse(String dateString, String dateFormat) throws
+	// ParseException {
+	// if (Objects.isNull(dateString) || Objects.isNull(dateFormat)) {
+	// throw new io.mosip.kernel.core.exception.NullPointerException(
+	// DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+	// DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(),
+	// new NullPointerException("dateString or dateFormat is null"));
+	// }
+	// try {
+	//
+	// SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+	// simpleDateFormat.setLenient(false); // Don't automatically convert invalid
+	// date.
+	// return simpleDateFormat.parse(dateString);
+	//
+	// } catch (Exception e) {
+	// throw new io.mosip.kernel.core.exception.ParseException(
+	// DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
+	// DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(),
+	// e.getCause());
+	// }
+	// }
 
-	/**
-	 * Validate the actual date of the given date string based on the given date
-	 * format pattern and return a date instance based on the given date string.
-	 * 
-	 * @param dateString
-	 *            The date string.
-	 * @param dateFormat
-	 *            The date format pattern which should respect the SimpleDateFormat
-	 *            rules.
-	 * @return The parsed date object.
-	 * @throws io.mosip.kernel.core.exception.ParseException
-	 *             If the given date string or its actual date is invalid based on
-	 *             the given date format pattern.
-	 * @throws io.mosip.kernel.core.exception.NullPointerException
-	 *             If <code>dateString</code> or <code>dateFormat</code> is null.
-	 * @see SimpleDateFormat
-	 */
-	public static Date parse(String dateString, String dateFormat) throws ParseException {
-		if (Objects.isNull(dateString) || Objects.isNull(dateFormat)) {
-			throw new io.mosip.kernel.core.exception.NullPointerException(
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(),
-					new NullPointerException("dateString or dateFormat is null"));
-		}
-		try {
+	// /**
+	// * Validate the actual date of the given date string based on the given date
+	// * format pattern and return a date instance based on the given date string.
+	// *
+	// * @param dateString
+	// * The date string.
+	// * @param dateFormat
+	// * The date format pattern which should respect the SimpleDateFormat
+	// * rules.
+	// * @return The parsed date object.
+	// * @throws io.mosip.kernel.core.exception.ParseException
+	// * If the given date string or its actual date is invalid based on
+	// * the given date format pattern.
+	// * @throws io.mosip.kernel.core.exception.NullPointerException
+	// * If <code>dateString</code> or <code>dateFormat</code> is null.
+	// * @see SimpleDateFormat
+	// */
+	// public static Date parse(String dateString) throws ParseException {
+	// if (Objects.isNull(dateString)) {
+	// throw new io.mosip.kernel.core.exception.NullPointerException(
+	// DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getErrorCode(),
+	// DateUtilConstants.ILLEGALARGUMENT_ERROR_CODE.getEexceptionMessage(),
+	// new NullPointerException("dateString or dateFormat is null"));
+	// }
+	// try {
+	//
+	// SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
+	// simpleDateFormat.setLenient(false); // Don't automatically convert invalid
+	// date.
+	// return simpleDateFormat.parse(dateString);
+	//
+	// } catch (Exception e) {
+	// throw new io.mosip.kernel.core.exception.ParseException(
+	// DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
+	// DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(),
+	// e.getCause());
+	// }
+	// }
 
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-			simpleDateFormat.setLenient(false); // Don't automatically convert invalid date.
-			return simpleDateFormat.parse(dateString);
-
-		} catch (Exception e) {
-			throw new io.mosip.kernel.core.exception.ParseException(
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getErrorCode(),
-					DateUtilConstants.PARSE_EXCEPTION_ERROR_CODE.getEexceptionMessage(), e.getCause());
-		}
-	}
-
-	/**
-	 * Determine SimpleDateFormat pattern matching with the given date string.
-	 * Returns null if format is unknown.
-	 * 
-	 * @param dateString
-	 *            The date string to determine the SimpleDateFormat pattern for.
-	 * @return The matching SimpleDateFormat pattern, or null if format is unknown.
-	 * @see SimpleDateFormat
-	 */
-	public static String determineDateFormat(String dateString) {
-		for (String regexp : AVAILABLE_DATE_FORMATS.keySet()) {
-			if (dateString.toLowerCase().matches(regexp)) {
-				return AVAILABLE_DATE_FORMATS.get(regexp);
-			}
-		}
-		return null; // Unknown format.
-	}
+	// /**
+	// * Determine SimpleDateFormat pattern matching with the given date string.
+	// * Returns null if format is unknown.
+	// *
+	// * @param dateString
+	// * The date string to determine the SimpleDateFormat pattern for.
+	// * @return The matching SimpleDateFormat pattern, or null if format is
+	// unknown.
+	// * @see SimpleDateFormat
+	// */
+	// public static String determineDateFormat(String dateString) {
+	// for (String regexp : AVAILABLE_DATE_FORMATS.keySet()) {
+	// if (dateString.toLowerCase().matches(regexp)) {
+	// return AVAILABLE_DATE_FORMATS.get(regexp);
+	// }
+	// }
+	// return null; // Unknown format.
+	// }
 
 }

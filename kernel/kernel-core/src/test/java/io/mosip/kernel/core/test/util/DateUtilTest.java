@@ -270,5 +270,11 @@ public final class DateUtilTest {
 
 	// -----------------------------Parsing date test----------------------------
 
+	@Test
+	public void testDateParsing() {
+		Date d = DateUtils.parseDateDefaultISO8061("2018-09-04T11:46:12.640+0700");
+
+		System.out.println(d);
+	}
 
 }
