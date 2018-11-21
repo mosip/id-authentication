@@ -44,20 +44,30 @@ export class DashBoardComponent implements OnInit {
   }
 
   initUsers() {
-    this.regService.getUsers(this.loginId).subscribe((applicants: Applicant[]) => {
-      console.log(applicants);
-      for (let index = 0; index < applicants['response'].length; index++) {
-        this.users.push(
-          new Applicant(
-            applicants['response'][index]['preId'],
-            applicants['response'][index]['firstname'],
-            applicants['response'][index]['appointmentDate'],
-            applicants['response'][index]['status_code']
-          )
-        );
+    this.regService.getUsers(this.loginId).subscribe(
+      (applicants: Applicant[]) => {
+        console.log(applicants);
+        if (applicants['response'] !== null) {
+          for (let index = 0; index < applicants['response'].length; index++) {
+            this.users.push(
+              new Applicant(
+                applicants['response'][index]['preId'],
+                applicants['response'][index]['firstname'],
+                applicants['response'][index]['appointmentDate'],
+                applicants['response'][index]['status_code']
+              )
+            );
+          }
+        }
+        this.isFetched = true;
+      },
+      error => {
+        this.isFetched = true;
+      },
+      () => {
+        this.isFetched = true;
       }
-      this.isFetched = true;
-    });
+    );
   }
 
   /** Whether the number of selected elements matches the total number of rows. */

@@ -14,13 +14,14 @@ export class RegistrationService {
   constructor(private httpClient: HttpClient) {}
 
   SEND_FILE_URL =
-    'http://preregistration.southindia.cloudapp.azure.com/dev-document/v0.1/pre-registration/registration/documents';
-  BASE_URL = 'http://preregistration.southindia.cloudapp.azure.com/dev-demographic/v0.1/pre-registration/applications';
+    'http://preregistration-intgra.southindia.cloudapp.azure.com/int-demographic/v0.1/pre-registration/registration/documents';
+  BASE_URL =
+    'http://preregistration-intgra.southindia.cloudapp.azure.com/int-demographic/v0.1/pre-registration/applications';
   // obj: JSON;  yyyy-MM-ddTHH:mm:ss.SSS+000
   // https://pre-reg-df354.firebaseio.com/applications.json
   getUsers(value) {
-    value = 'shashank';
-    return this.httpClient.get<Applicant[]>('http://A2ML27085:9092/v0.1/pre-registration/applications', {
+    value = 'User1';
+    return this.httpClient.get<Applicant[]>(this.BASE_URL, {
       observe: 'body',
       responseType: 'json',
       params: new HttpParams().append('userId', value)
@@ -41,7 +42,7 @@ export class RegistrationService {
     //   reportProgress: true // A2ML21989
     // }); // A2ML27085
     // return this.httpClient.request(req);
-    return this.httpClient.post('http://A2ML27085:9092/v0.1/pre-registration/applications', obj);
+    return this.httpClient.post(this.BASE_URL, obj);
   }
 
   sendFile(formdata: FormData) {
