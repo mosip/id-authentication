@@ -18,6 +18,8 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 @Repository
 public interface RegistrationCenterRepository extends BaseRepository<RegistrationCenter, String> {
 
+	List<RegistrationCenter> findAllByIsActiveTrueAndIsDeletedFalse(Class<RegistrationCenter> entityClass);
+
 	/**
 	 * This method trigger query to fetch registration centers based on
 	 * latitude,longitude,proximity distance and language code
@@ -47,7 +49,7 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            the languageCode
 	 * @return the RegistrationCenter
 	 */
-	RegistrationCenter findByIdAndLanguageCode(String id, String languageCode);
+	RegistrationCenter findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String id, String languageCode);
 
 	String findRegistrationCenterHolidayLocationCodeByIdAndLanguageCode(String id, String languageCode);
 
@@ -61,5 +63,9 @@ public interface RegistrationCenterRepository extends BaseRepository<Registratio
 	 *            languageCode provided by user
 	 * @return List<RegistrationCenter> fetched from database
 	 */
-	List<RegistrationCenter> findByLocationCodeAndLanguageCode(String locationCode, String languageCode);
+	List<RegistrationCenter> findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String locationCode,
+			String languageCode);
+
+	@Query(value = "SELECT r.id, r.name, r.cntrtyp_code, r.addr_line1, r.addr_line2, r.addr_line3,r.number_of_kiosks,r.per_kiosk_process_time,r.process_end_time,r.process_start_time,r.latitude, r.longitude, r.location_code,r.holiday_loc_code,r.contact_phone, r.working_hours, r.lang_code,r.is_active, r.cr_by,r.cr_dtimes, r.upd_by,r.upd_dtimes, r.is_deleted, r.del_dtimes FROM master.registration_center r JOIN master.location loc ON r.location_code = loc.code WHERE loc.lang_code = ?1 AND loc.hierarchy_level_name = ?2 AND loc.name = ?3", nativeQuery = true)
+	List<RegistrationCenter> findRegistrationCenterHierarchyLevelName(String languageCode, String hierarchyLevel, String text);
 }

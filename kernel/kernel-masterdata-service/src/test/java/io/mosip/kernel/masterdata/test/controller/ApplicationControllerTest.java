@@ -54,6 +54,7 @@ public class ApplicationControllerTest {
 		applicationDto.setName("pre-registeration");
 		applicationDto.setDescription("Pre-registration Application Form");
 		applicationDto.setLanguageCode("ENG");
+		
 
 		applicationDtoList.add(applicationDto);
 	}

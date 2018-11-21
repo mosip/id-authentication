@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
-import io.mosip.kernel.masterdata.exception.BiometricAttributeNotFoundException;
-import io.mosip.kernel.masterdata.exception.BiometricTypeFetchException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 
 @RunWith(SpringRunner.class)
@@ -33,7 +33,7 @@ public class BiometricAttributeControllerTest {
 	@MockBean
 	private BiometricAttributeService biometricAttributeService;
 
-	private final String expected = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"active\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"active\": true } ] }";
+	private final String expected = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"isActive\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"isActive\": true } ] }";
 
 	BiometricTypeResponseDto biometricTypeResponseDto = null;
 	List<BiometricAttributeDto> biometricattributes = null;
@@ -46,13 +46,13 @@ public class BiometricAttributeControllerTest {
 		biometricAttribute.setCode("iric_black");
 		biometricAttribute.setName("black");
 		biometricAttribute.setDescription(null);
-		biometricAttribute.setActive(true);
+		biometricAttribute.setIsActive(true);
 		biometricattributes.add(biometricAttribute);
 		BiometricAttributeDto biometricAttribute1 = new BiometricAttributeDto();
 		biometricAttribute1.setCode("iric_brown");
 		biometricAttribute1.setName("brown");
 		biometricAttribute.setDescription(null);
-		biometricAttribute1.setActive(true);
+		biometricAttribute1.setIsActive(true);
 		biometricattributes.add(biometricAttribute1);
 		biometricTypeResponseDto = new BiometricTypeResponseDto(biometricattributes);
 
@@ -72,18 +72,18 @@ public class BiometricAttributeControllerTest {
 	@Test
 	public void testBiometricTypeBiometricAttributeNotFoundException() throws Exception {
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new BiometricAttributeNotFoundException("KER-MAS-00000",
+				.thenThrow(new DataNotFoundException("KER-MAS-00000",
 						"No biometric attributes found for specified biometric code type and language code"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/face"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 
 	@Test
 	public void testBiometricTypeFetchException() throws Exception {
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new BiometricTypeFetchException("KER-DOC-00000", "exception duringfatching data from db"));
+				.thenThrow(new MasterDataServiceException("KER-DOC-00000", "exception duringfatching data from db"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/iric"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 
 }

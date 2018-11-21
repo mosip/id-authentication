@@ -17,8 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
-import io.mosip.kernel.masterdata.exception.BiometricAttributeNotFoundException;
-import io.mosip.kernel.masterdata.exception.BiometricTypeFetchException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 
@@ -41,12 +41,12 @@ public class BiometricAttributeServiceTest {
 		BiometricAttribute biometricAttribute = new BiometricAttribute();
 		biometricAttribute.setCode("iric_black");
 		biometricAttribute.setName("black");
-		biometricAttribute.setActive(true);
+		biometricAttribute.setIsActive(true);
 		biometricattributes.add(biometricAttribute);
 		BiometricAttribute biometricAttribute1 = new BiometricAttribute();
 		biometricAttribute1.setCode("iric_brown");
 		biometricAttribute1.setName("brown");
-		biometricAttribute1.setActive(true);
+		biometricAttribute1.setIsActive(true);
 		biometricattributes.add(biometricAttribute1);
 
 	}
@@ -65,7 +65,7 @@ public class BiometricAttributeServiceTest {
 
 	}
 
-	@Test(expected = BiometricAttributeNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void noRecordsFoudExceptionTest() {
 		List<BiometricAttribute> empityList = new ArrayList<BiometricAttribute>();
 		String biometricTypeCode = "face";
@@ -76,7 +76,7 @@ public class BiometricAttributeServiceTest {
 
 	}
 
-	@Test(expected = BiometricAttributeNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void noRecordsFoudExceptionForNullTest() {
 		String biometricTypeCode = "face";
 		String langCode = "eng";
@@ -86,7 +86,7 @@ public class BiometricAttributeServiceTest {
 
 	}
 
-	@Test(expected = BiometricTypeFetchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void dataAccessExceptionInGetAllTest() {
 		String biometricTypeCode = "face";
 		String langCode = "eng";

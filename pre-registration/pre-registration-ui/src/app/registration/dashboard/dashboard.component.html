@@ -1,0 +1,87 @@
+<div class="spinner" *ngIf="!isFetched"><mat-spinner></mat-spinner></div>
+
+<div *ngIf="!isNewApplication && isFetched">
+  <!-- <div *ngIf="!isNewApplication"> -->
+  <div class="modifydata">
+    <mat-icon class="icon" style="cursor: pointer;" (click)="onHome()">home</mat-icon>
+    <button class="addButtonPlacer" mat-raised-button (click)="onNewApplication()"><mat-icon>add_circle_outline</mat-icon>Application</button>
+    <span style="width: 100px; margin-left: 72px;"></span>
+    <button class="modify" mat-raised-button (click)="onModifyData()">Modify Data</button>
+    <button class="modify" mat-raised-button (click)="onModifyAppointment()">Modify Appointment</button>
+  </div>
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef [ngClass]="{ highlight: true }">
+        <mat-checkbox
+          (change)="$event ? masterToggle() : null"
+          [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()"
+        >
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox
+          (click)="$event.stopPropagation()"
+          (change)="$event ? selection.toggle(row) : null"
+          [checked]="selection.isSelected(row)"
+        >
+        </mat-checkbox>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="appId">
+      <th mat-header-cell *matHeaderCellDef [ngClass]="{ highlight: true }">ApplicationID</th>
+      <td mat-cell *matCellDef="let element1">{{ element1.applicationID }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef [ngClass]="{ highlight: true }">Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dateTime">
+      <th mat-header-cell *matHeaderCellDef [ngClass]="{ highlight: true }">Appointment Date-Time</th>
+      <td mat-cell *matCellDef="let element">{{ element.appointmentDateTime }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef [ngClass]="{ highlight: true }">Status</th>
+      <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="operation">
+      <th mat-header-cell *matHeaderCellDef [ngClass]="{ highlight: true }"></th>
+      <td mat-cell *matCellDef="let element">
+        <mat-icon style="cursor: pointer;" (click)="onDelete(element)">delete</mat-icon>
+      </td>
+    </ng-container>
+  </table>
+</div>
+
+<!-- CARD VIEW -->
+
+<div *ngIf="!isNewApplication && isFetched">
+  <div *ngFor="let user of users">
+    <ul>
+      <li>
+        <div class="card-wrapper">
+          <div class="row1">
+            <input type="checkbox" /> <span class="field2">ApplicationID : {{ user.applicationID }}</span>
+          </div>
+          <div class="row2">
+            <span class="field2">Name : {{ user.name }}</span> <span class="field3">Status : {{ user.status }}</span>
+          </div>
+          <div class="row3">
+            <span class="field4">AppointmentDateTime : {{ user.appointmentDateTime }}</span>
+          </div>
+          <span class="edit"> <mat-icon (click)="onDelete(user)">delete</mat-icon> </span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -63,8 +63,10 @@
 		<module>pre-registration-document-service</module>
 		<module>pre-registration-demographic-service</module>
         <module>pre-registration-auth-service</module>
+        
  		<!-- <module>pre-registration-booking</module>
-		<module>pre-registration-datasync</module> -->
+ 		<module>pre-registration-datasync-service</module>
+		 -->
 		
 	</modules>
 

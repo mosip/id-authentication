@@ -11,9 +11,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +21,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.dto.RegistrationCenterDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 
@@ -54,43 +51,34 @@ public class RegistrationCenterHistoryExceptionTest {
 		center.setLongitude("77.5028792");
 		center.setLanguageCode("ENG");
 		center.setLocationCode("BLR");
-		
+
 	}
 
 	@Test
 	public void getRegistrationCentersHistoryNotFoundExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(null);
-		mockMvc.perform(get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse("1",
+				"ENG", LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(null);
+		mockMvc.perform(
+				get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound()).andReturn();
 	}
-	
+
 	@Test
 	public void getRegistrationCentersHistoryEmptyExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(centers);
-		mockMvc.perform(get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse("1",
+				"ENG", LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(centers);
+		mockMvc.perform(
+				get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound()).andReturn();
 	}
 
 	@Test
 	public void getRegistrationCentersHistoryFetchExceptionTest() throws Exception {
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenThrow(DataAccessLayerException.class);
-		mockMvc.perform(get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
-	}
-
-	@Test
-	public void getRegistrationCentersHistoryExceptionTest() throws Exception {
-		centers.add(center);
-		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqual("1", "ENG",
-				LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenReturn(centers);
-		when(modelMapper.map(Mockito.any(),
-				Mockito.eq(new TypeToken<List<RegistrationCenterDto>>() {
-				}.getType()))).thenThrow(IllegalArgumentException.class);
-		mockMvc.perform(get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45")
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotAcceptable()).andReturn();
+		when(repository.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse("1",
+				"ENG", LocalDateTime.parse("2018-10-30T19:20:30.45"))).thenThrow(DataAccessLayerException.class);
+		mockMvc.perform(
+				get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError()).andReturn();
 	}
 
 }

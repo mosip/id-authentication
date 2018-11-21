@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.test.integration;
 
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -12,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.kernel.masterdata.dto.GenderTypeDto;
 import io.mosip.kernel.masterdata.entity.GenderType;
 import io.mosip.kernel.masterdata.entity.GenderTypeId;
 import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
@@ -63,27 +60,16 @@ public class GenderTypeIntegrationExceptionTest {
 		genderId = new GenderTypeId();
 		genderId.setGenderCode("123");
 		genderId.setGenderName("Raj");
-		genderType.setActive(true);
+		genderType.setIsActive(true);
 		genderType.setCreatedBy("John");
-		genderType.setCreatedtime(null);
-		genderType.setDeleted(true);
-		genderType.setDeletedtime(null);
+		genderType.setCreatedtimes(null);
+		genderType.setIsDeleted(true);
+		genderType.setDeletedtimes(null);
 		genderType.setId(genderId);
 		genderType.setLanguageCode("ENG");
 		genderType.setUpdatedBy("Dom");
-		genderType.setUpdatedtime(null);
+		genderType.setUpdatedtimes(null);
 		genderTypes.add(genderType);
-
-	}
-
-	@Test
-	public void testGetGenderByLanguageCodeMappingException() throws Exception {
-
-		Mockito.when(genderTypeRepository.findGenderByLanguageCode("ENG")).thenReturn(genderTypes);
-		when(modelMapper.map(Mockito.any(), Mockito.eq(new TypeToken<List<GenderTypeDto>>() {
-		}.getType()))).thenThrow(IllegalArgumentException.class);
-		mockMvc.perform(get("/gendertype/ENG").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
 
 	}
 
@@ -93,7 +79,7 @@ public class GenderTypeIntegrationExceptionTest {
 		Mockito.when(genderTypeRepository.findGenderByLanguageCode("ENG")).thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/gendertype/ENG").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
+				.andExpect(status().isInternalServerError());
 
 	}
 
@@ -108,23 +94,12 @@ public class GenderTypeIntegrationExceptionTest {
 	}
 
 	@Test
-	public void testGetAllGenderMappingException() throws Exception {
-
-		Mockito.when(genderTypeRepository.findAll(GenderType.class)).thenReturn(genderTypes);
-		when(modelMapper.map(Mockito.any(), Mockito.eq(new TypeToken<List<GenderTypeDto>>() {
-		}.getType()))).thenThrow(IllegalArgumentException.class);
-		mockMvc.perform(get("/gendertype").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
-
-	}
-
-	@Test
 	public void testGetAllGenderFetchException() throws Exception {
 
 		Mockito.when(genderTypeRepository.findAll(GenderType.class)).thenThrow(DataAccessLayerException.class);
 
 		mockMvc.perform(get("/gendertype").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotAcceptable());
+				.andExpect(status().isInternalServerError());
 
 	}
 

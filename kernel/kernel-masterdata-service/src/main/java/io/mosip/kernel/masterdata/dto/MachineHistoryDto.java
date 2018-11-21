@@ -51,7 +51,7 @@ public class MachineHistoryDto {
 	/**
 	 * Field for is active
 	 */
-	private boolean isActive;
+	private Boolean isActive;
 
 	/**
 	 * Field to hold creator name

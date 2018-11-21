@@ -1,0 +1,192 @@
+<div class="wrapper">
+  <div>
+    <mat-accordion class="expansion">
+      <div *ngFor="let applicant of numbers; let i = index">
+        <mat-expansion-panel
+          [disabled]="!isDisabled[i]"
+          [expanded]="step === applicant"
+          (opened)="setStep(applicant)"
+          hideToggle
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Demographic Details {{ applicant + 1 }}
+              <img
+                *ngIf="applicant === 0"
+                src="../../../assets/primary.png"
+                alt="Smiley face"
+                style="margin: 2px 0 0 10px ;"
+                height="20"
+                width="60"
+              />
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <form [formGroup]="userForm">
+            <div class="user-container">
+              <div>
+                <mat-form-field>
+                  <input matInput #fullName maxlength="50" placeholder="{{demo.fullName}}" formControlName="fullName" />
+                  <mat-hint align="end">{{ fullName.value.length }} / 50</mat-hint>
+                </mat-form-field>
+
+                <span>
+                  <mat-form-field style="width:150px;">
+                    <mat-select
+                      [ngClass]="{ highlight: !checked }"
+                      [(value)]="ageOrDobPref"
+                      placeholder="{{demo.dateOfBirth}}/{{demo.age}}"
+                      [(value)]="selected"
+                      (selectionChange)="onDOBChange($event.value)"
+                    >
+                      <mat-option value="age">Age</mat-option>
+                      <mat-option value="dob">DOB</mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <div *ngIf="showCalender; then: dob; else: age"></div>
+                </span>
+
+                <ng-template #dob>
+                  <span>
+                    <input
+                      (dateInput)="addDOB($event)"
+                      [matDatepicker]="picker"
+                      placeholder="{{demo.dateOfBirth}}"
+                      type="hidden"
+                    />
+                    <div *ngIf="showDate; then: show; else: hidden"></div>
+                    <mat-datepicker-toggle style="width: 40px ;float: right;" [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </span>
+                </ng-template>
+
+                <ng-template #age>
+                  <span *ngIf="ageOrDobPref !== ''">
+                    <mat-form-field style="width:3em; margin-left: 15%;">
+                      <input matInput placeholder="{{demo.age}}" formControlName="age" />
+                    </mat-form-field>
+                  </span>
+                </ng-template>
+
+                <ng-template #hidden>
+                  <div style="width : 100px">{{ demo.dateOfBirth }}</div>
+                </ng-template>
+                <ng-template #show> {{ dateSelected | date: 'dd/MM/yyyy' }} </ng-template>
+
+                <div style="text-align: left; width:100%">
+                  <mat-button-toggle-group
+                    formControlName="gender"
+                    (change)="onGenderChange($event)"
+                    appearance="legacy"
+                    name="fontStyle"
+                    aria-label="Font Style"
+                  >
+                    <mat-button-toggle value="male">Male</mat-button-toggle>
+                    <mat-button-toggle value="female">Female</mat-button-toggle>
+                  </mat-button-toggle-group>
+                </div>
+
+                <mat-form-field>
+                  <input
+                    matInput
+                    #addressLine1
+                    maxlength="50"
+                    placeholder="{{demo.addressLine1}}"
+                    formControlName="addressLine1"
+                  />
+                  <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
+                </mat-form-field>
+                <mat-form-field>
+                  <input
+                    matInput
+                    #addressLine2
+                    maxlength="50"
+                    placeholder="{{demo.addressLine2}}"
+                    formControlName="addressLine2"
+                  />
+                  <mat-hint align="end">{{ addressLine2.value.length }} / 50</mat-hint>
+                </mat-form-field>
+                <mat-form-field>
+                  <input
+                    matInput
+                    #addressLine3
+                    maxlength="50"
+                    placeholder="{{demo.addressLine3}}"
+                    formControlName="addressLine3"
+                  />
+                  <mat-hint align="end">{{ addressLine3.value.length }} / 50</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-select placeholder="{{demo.region}}" formControlName="region">
+                    <mat-option value="option">Option</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-select placeholder="{{demo.province}}" formControlName="province">
+                    <mat-option value="option">Option</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-select placeholder="{{demo.city}}" formControlName="city">
+                    <mat-option value="option">Option</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-select
+                    placeholder="{{demo.localAdministrativeAuthority}}"
+                    formControlName="localAdministrativeAuthority"
+                  >
+                    <mat-option value="option">Option</mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <input
+                    matInput
+                    #postalCode
+                    maxlength="5"
+                    placeholder="{{demo.postalCode}}"
+                    formControlName="postalCode"
+                  />
+                  <mat-hint align="end">{{ postalCode.value.length }} / 5</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <input
+                    matInput
+                    #mobilePhone
+                    maxlength="9"
+                    placeholder="{{demo.mobileNumber}}"
+                    formControlName="mobilePhone"
+                  />
+                  <mat-hint align="end">{{ mobilePhone.value.length }} / 9</mat-hint>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <input matInput placeholder="{{demo.emailId}}" formControlName="email" />
+                </mat-form-field>
+
+                <mat-form-field>
+                  <input matInput placeholder="{{demo.CNEOrPINNumber}}" formControlName="pin" />
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+
+          <mat-action-row>
+            <button *ngIf="step !== 0" mat-button color="warn" (click)="prevStep()">Previous</button>
+            <button type="button" mat-button color="primary" [disabled]="!userForm.valid" (click)="nextStep()">
+              Next
+            </button>
+          </mat-action-row>
+        </mat-expansion-panel>
+      </div>
+    </mat-accordion>
+  </div>
+  <div>Transliterated placeholder</div>
+</div>

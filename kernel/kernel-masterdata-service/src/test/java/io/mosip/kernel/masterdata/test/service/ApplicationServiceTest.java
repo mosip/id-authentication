@@ -47,7 +47,7 @@ public class ApplicationServiceTest {
 		application1.setName("pre-registeration");
 		application1.setDescription("Pre-registration Application Form");
 		application1.setLanguageCode("ENG");
-		application1.setActive(true);
+		application1.setIsActive(true);
 		application1.setCreatedBy("Neha");
 		application1.setUpdatedBy(null);
 		application1.setIsDeleted(false);
@@ -56,7 +56,7 @@ public class ApplicationServiceTest {
 		application2.setName("registeration");
 		application2.setDescription("Registeration Application Form");
 		application2.setLanguageCode("ENG");
-		application2.setActive(true);
+		application2.setIsActive(true);
 		application2.setCreatedBy("Neha");
 		application2.setUpdatedBy(null);
 		application2.setIsDeleted(false);
@@ -67,7 +67,7 @@ public class ApplicationServiceTest {
 
 	@Test
 	public void getAllBiometricTypesSuccess() {
-		Mockito.when(applicationRepository.findAll(Mockito.eq(Application.class))).thenReturn(applicationList);
+		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Application.class))).thenReturn(applicationList);
 		List<ApplicationDto> applicationDtoList = applicationService.getAllApplication();
 		assertEquals(applicationList.get(0).getCode(), applicationDtoList.get(0).getCode());
 		assertEquals(applicationList.get(0).getName(), applicationDtoList.get(0).getName());
@@ -75,7 +75,7 @@ public class ApplicationServiceTest {
 
 	@Test
 	public void getAllBiometricTypesByLanguageCodeSuccess() {
-		Mockito.when(applicationRepository.findAllByLanguageCode(Mockito.anyString())).thenReturn(applicationList);
+		Mockito.when(applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(applicationList);
 		List<ApplicationDto> applicationDtoList = applicationService
 				.getAllApplicationByLanguageCode(Mockito.anyString());
 		assertEquals(applicationList.get(0).getCode(), applicationDtoList.get(0).getCode());
@@ -84,7 +84,7 @@ public class ApplicationServiceTest {
 
 	@Test
 	public void getBiometricTypeByCodeAndLangCodeSuccess() {
-		Mockito.when(applicationRepository.findByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(applicationRepository.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(application1);
 		ApplicationDto actual = applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(),
 				Mockito.anyString());
