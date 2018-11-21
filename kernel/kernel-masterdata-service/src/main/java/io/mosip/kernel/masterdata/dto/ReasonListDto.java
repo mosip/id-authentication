@@ -8,26 +8,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReasonListDto {
-	
+
 	private String code;
-	
-	
+
 	private String name;
-	
-	
+
 	private String description;
-	
-	
-	private String reasonCategoryCode;
-	
-	
+
+	private String rsnCatCode;
+
 	private String langCode;
-	
-	
+
 	private Boolean isActive;
-	
-	
+
 	private boolean isDeleted;
-	
-	
+
 }

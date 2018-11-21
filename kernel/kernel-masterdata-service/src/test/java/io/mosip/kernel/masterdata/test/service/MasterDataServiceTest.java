@@ -898,7 +898,7 @@ public class MasterDataServiceTest {
 
 	@Test()
 	public void getLocationHierachyBasedOnLangAndLoc() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCode("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(locationHierarchies);
 
 		LocationResponseDto locationHierarchyResponseDto = locationHierarchyService
@@ -909,7 +909,7 @@ public class MasterDataServiceTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void getLocationHierarchyExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCode("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(null);
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 
@@ -917,7 +917,7 @@ public class MasterDataServiceTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void getLocationHierarchyExceptionTestWithEmptyList() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCode("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(new ArrayList<Location>());
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 
@@ -925,7 +925,7 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void locationHierarchyDataAccessExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCode("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenThrow(DataRetrievalFailureException.class);
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 	}

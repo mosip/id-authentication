@@ -54,7 +54,7 @@ public class LocationServiceImpl implements LocationService {
 		List<Location> locations = null;
 		try {
 
-			locations = locationRepository.findAll();
+			locations = locationRepository.findLocationHierarchyByIsActiveTrueAndIsDeletedFalse();
 
 		}catch (DataAccessException e) {
 			throw new MasterDataServiceException(LocationErrorCode.DATABASE_EXCEPTION.getErrorCode(),
@@ -130,7 +130,7 @@ public class LocationServiceImpl implements LocationService {
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationHierarchyList(String locCode, String langCode) {
-		return locationRepository.findLocationHierarchyByCodeAndLanguageCode(locCode, langCode);
+		return locationRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(locCode, langCode);
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class LocationServiceImpl implements LocationService {
 	 * @return List<LocationHierarchy>
 	 */
 	private List<Location> getLocationChildHierarchyList(String locCode, String langCode) {
-		return locationRepository.findLocationHierarchyByParentLocCodeAndLanguageCode(locCode, langCode);
+		return locationRepository.findLocationHierarchyByParentLocCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(locCode, langCode);
 	}
 
 	/**
