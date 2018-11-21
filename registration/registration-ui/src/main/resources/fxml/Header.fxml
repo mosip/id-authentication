@@ -72,6 +72,11 @@
 						</Menu>
 					</menus>
 				</MenuBar>
+            <ImageView fx:id="availableIcon" fitHeight="15.0" fitWidth="15.0" layoutX="338.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true" visible="false">
+               <image>
+                  <Image url="@../images/Available_Icon.png" />
+               </image>
+            </ImageView>
 
 
 			</children>

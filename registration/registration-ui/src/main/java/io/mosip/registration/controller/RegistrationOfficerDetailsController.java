@@ -11,6 +11,8 @@ import static io.mosip.registration.constants.RegistrationExceptions.REG_UI_LOGO
 import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOARD_PAGE_NAVIGATION_EXCEPTION;
 
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.springframework.stereotype.Controller;
 
@@ -20,6 +22,7 @@ import io.mosip.registration.constants.LoggerConstants;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.scheduler.SchedulerUtil;
+import io.mosip.registration.util.healthcheck.RegistrationAppHealthCheckUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.NodeOrientation;
@@ -27,6 +30,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
@@ -60,14 +64,18 @@ public class RegistrationOfficerDetailsController extends BaseController {
 	@FXML
 	private MenuBar menu;
 
+	@FXML
+	private ImageView availableIcon;
+
+	private static Timer timer;
+
 	/**
 	 * Mapping Registration Officer details
 	 */
 	public void initialize() {
 
-		LOGGER.debug("REGISTRATION - OFFICER_DETAILS - REGISTRATION_OFFICER_DETAILS_CONTROLLER",
-				APPLICATION_NAME, APPLICATION_ID,
-				"Displaying Registration Officer details");
+		LOGGER.debug("REGISTRATION - OFFICER_DETAILS - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+				APPLICATION_ID, "Displaying Registration Officer details");
 
 		SessionContext sessionContext = SessionContext.getInstance();
 		registrationOfficerName.setText(sessionContext.getUserContext().getName());
@@ -77,6 +85,16 @@ public class RegistrationOfficerDetailsController extends BaseController {
 				.setText(sessionContext.getUserContext().getRegistrationCenterDetailDTO().getRegistrationCenterName());
 		menu.setBackground(Background.EMPTY);
 		menu.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+		if (timer == null) {
+			onlineAvailabilityCheck();
+
+		}
+		/*
+		 * availableIcon.setVisible(true);
+		 * 
+		 * RegistrationAppHealthCheckUtil registrationAppHealthCheckUtil=new
+		 * RegistrationAppHealthCheckUtil();
+		 */
 	}
 
 	/**
@@ -87,18 +105,19 @@ public class RegistrationOfficerDetailsController extends BaseController {
 			String initialMode = SessionContext.getInstance().getMapObject()
 					.get(RegistrationConstants.LOGIN_INITIAL_SCREEN).toString();
 
-			LOGGER.debug("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER",
-					APPLICATION_NAME, APPLICATION_ID, "Clearing Session context");
+			LOGGER.debug("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, "Clearing Session context");
 
 			SessionContext.destroySession();
 			SchedulerUtil.stopScheduler();
 
 			BorderPane loginpage = BaseController.load(getClass().getResource(RegistrationConstants.INITIAL_PAGE));
-			LoginController loginController = RegistrationAppInitialization.getApplicationContext().getBean(LoginController.class);
+			LoginController loginController = RegistrationAppInitialization.getApplicationContext()
+					.getBean(LoginController.class);
 			loginController.loadLoginScreen(initialMode);
 			LoginController.getScene().setRoot(loginpage);
-			
-		} catch (IOException ioException) {			
+
+		} catch (IOException ioException) {
 			LOGGER.error("REGISTRATION - LOGOUT - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, REG_UI_LOGOUT_IO_EXCEPTION.getErrorMessage());
 		}
@@ -110,17 +129,17 @@ public class RegistrationOfficerDetailsController extends BaseController {
 	public void redirectHome(ActionEvent event) {
 		try {
 
-			LOGGER.debug("REGISTRATION - REDIRECT_HOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER",
-					APPLICATION_NAME, APPLICATION_ID, "Redirecting to Home page");
+			LOGGER.debug("REGISTRATION - REDIRECT_HOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, "Redirecting to Home page");
 
 			VBox homePage = BaseController.load(getClass().getResource(RegistrationConstants.HOME_PAGE));
 			LoginController.getScene().setRoot(homePage);
 
 		} catch (IOException | RuntimeException exception) {
-			
+
 			LOGGER.error("REGISTRATION - REDIRECTHOME - REGISTRATION_OFFICER_DETAILS_CONTROLLER", APPLICATION_NAME,
 					APPLICATION_ID, REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());
-			
+
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_HOMEPAGE_IO_EXCEPTION.getErrorMessage());
 		}
@@ -140,8 +159,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 		if (!validateScreenAuthorization(onBoardRoot.getId())) {
 			generateAlert(RegistrationConstants.AUTHORIZATION_ALERT_TITLE,
 					AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.AUTHORIZATION_INFO_MESSAGE,
-					REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
+					RegistrationConstants.AUTHORIZATION_INFO_MESSAGE, REG_UI_AUTHORIZATION_EXCEPTION.getErrorMessage());
 		} else {
 			VBox pane = (VBox) menu.getParent().getParent().getParent();
 			Object parent = pane.getChildren().get(0);
@@ -178,7 +196,7 @@ public class RegistrationOfficerDetailsController extends BaseController {
 					ioException.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Redirects to Device On-Boarding UI Page.
 	 * 
@@ -215,6 +233,29 @@ public class RegistrationOfficerDetailsController extends BaseController {
 			LOGGER.debug(LoggerConstants.DEVICE_ONBOARD_PAGE_NAVIGATION, APPLICATION_NAME, APPLICATION_ID,
 					"Navigation to Device Onboarding page completed");
 		}
+	}
+
+	private void onlineAvailabilityCheck() {
+		timer = new Timer();
+		timer.schedule(new TimerTask() {
+
+			@Override
+			public void run() {
+				availableIcon.setVisible(RegistrationAppHealthCheckUtil.isNetworkAvailable());
+			}
+		}, 0, 5000);
+	}
+
+	public static void stopTimer() {
+		if (timer != null) {
+			timer.cancel();
+			timer.purge();
+			timer = null;
+		}
+	}
+
+	public static Timer getTimer() {
+		return timer;
 	}
 
 }
