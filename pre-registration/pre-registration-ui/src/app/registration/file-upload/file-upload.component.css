@@ -41,4 +41,5 @@ mat-select:focus {
 
 p.fileName {
   padding: 1em 10px 10px 10px;
+  height: 100%;
 }
