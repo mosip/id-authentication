@@ -1,7 +1,5 @@
 package io.kernel.core.idrepo.dto;
 
-import org.json.JSONObject;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,5 +9,5 @@ public class IdRequestDTO extends BaseIdRequestResponseDTO {
 	private String uin;
 	private String status;
 	private String registrationId;
-	private JSONObject request;
+	private Object request;
 }

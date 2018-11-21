@@ -1,8 +1,7 @@
 package io.kernel.core.idrepo.dao;
 
-import org.json.JSONObject;
-
 import io.kernel.core.idrepo.entity.Uin;
+import io.kernel.core.idrepo.exception.IdRepoAppException;
 
 /**
  * @author Manoj SP
@@ -10,11 +9,11 @@ import io.kernel.core.idrepo.entity.Uin;
  */
 public interface IdRepoDao {
 
-	 Uin addIdentity(String uin, String uinRefId, JSONObject identityInfo);
+	 Uin addIdentity(String uin, String uinRefId, byte[] identityInfo) throws IdRepoAppException;
 	
-	 Uin retrieveIdentity(String uin);
+	 Uin retrieveIdentity(String uin) throws IdRepoAppException;
 	
-	 Uin updateIdenityInfo(String uin, JSONObject identityInfo);
+	 Uin updateIdenityInfo(String uin, byte[] identityInfo) throws IdRepoAppException;
 	
-	 Uin updateUinStatus(String uin, String statusCode);
+	 Uin updateUinStatus(String uin, String statusCode) throws IdRepoAppException;
 }

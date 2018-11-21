@@ -1,7 +1,5 @@
 package io.kernel.core.idrepo.dto;
 
-import org.json.JSONObject;
-
 import com.fasterxml.jackson.annotation.JsonFilter;
 
 import lombok.Data;
@@ -10,5 +8,5 @@ import lombok.Data;
 @JsonFilter("responseFilter")
 public class ResponseDTO {
 	private String entity;
-	private JSONObject identity;
+	private Object identity;
 }

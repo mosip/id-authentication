@@ -3,7 +3,6 @@ package io.kernel.core.idrepo.config;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -33,6 +32,10 @@ public class IdRepoConfig {
     private Environment env;
 
     private Map<String, Map<String, String>> db;
+    
+    private Map<String, String> status;
+    
+    private Map<String, String> id;
 
     public Map<String, Map<String, String>> getDb() {
 	return db;
@@ -42,10 +45,35 @@ public class IdRepoConfig {
 	this.db = db;
     }
     
+    public Map<String, String> getStatus() {
+        return status;
+    }
+
+    public void setStatus(Map<String, String> status) {
+        this.status = status;
+    }
+
+    public Map<String, String> getId() {
+        return id;
+    }
+
+    public void setId(Map<String, String> id) {
+        this.id = id;
+    }
+
     @PostConstruct
     public void setup() {
 	mapper.setDateFormat(new SimpleDateFormat(env.getProperty("datetime.pattern")));
-	mapper.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
+    
+    @Bean
+    public Map<String, String> id() {
+	return Collections.unmodifiableMap(id);
+    }
+    
+    @Bean 
+    public Map<String, String> status() {
+	return Collections.unmodifiableMap(status);
     }
 
     @Bean
