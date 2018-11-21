@@ -75,11 +75,15 @@ public class DeviceMappingController extends BaseController implements Initializ
 	@FXML
 	private TableColumn<DeviceDTO, String> availableDeviceSerial;
 	@FXML
+	private TableColumn<DeviceDTO, String> availableDeviceType;
+	@FXML
 	private TableColumn<DeviceDTO, String> mappedDeviceName;
 	@FXML
 	private TableColumn<DeviceDTO, String> mappedDeviceModel;
 	@FXML
 	private TableColumn<DeviceDTO, String> mappedDeviceSerial;
+	@FXML
+	private TableColumn<DeviceDTO, String> mappedDeviceType;
 	@FXML
 	private TableView<DeviceDTO> mappedDevices;
 	@FXML
@@ -128,10 +132,12 @@ public class DeviceMappingController extends BaseController implements Initializ
 					.setCellValueFactory(new PropertyValueFactory<>(RegistrationConstants.DEVICE_MODEL_NAME));
 			availableDeviceSerial
 					.setCellValueFactory(new PropertyValueFactory<>(RegistrationConstants.DEVICE_SERIAL_NO));
+			availableDeviceType.setCellValueFactory(new PropertyValueFactory<>(RegistrationConstants.DEVICE_TYPE));
 			mappedDeviceName
 					.setCellValueFactory(new PropertyValueFactory<>(RegistrationConstants.DEVICE_MANUFACTURER_NAME));
 			mappedDeviceModel.setCellValueFactory(new PropertyValueFactory<>(RegistrationConstants.DEVICE_MODEL_NAME));
 			mappedDeviceSerial.setCellValueFactory(new PropertyValueFactory<>(RegistrationConstants.DEVICE_SERIAL_NO));
+			mappedDeviceType.setCellValueFactory(new PropertyValueFactory<>(RegistrationConstants.DEVICE_TYPE));
 
 			// Set selection Mode to multiple for Available Devices and Mapped Devices
 			// Tables
@@ -526,7 +532,8 @@ public class DeviceMappingController extends BaseController implements Initializ
 				filteredDevices = devices.parallelStream()
 						.filter(deviceDTO -> (StringUtils.containsIgnoreCase(deviceDTO.getManufacturerName(),
 								searchTerm) || StringUtils.containsIgnoreCase(deviceDTO.getModelName(), searchTerm)
-								|| StringUtils.containsIgnoreCase(deviceDTO.getSerialNo(), searchTerm)))
+								|| StringUtils.containsIgnoreCase(deviceDTO.getSerialNo(), searchTerm)
+								|| StringUtils.containsIgnoreCase(deviceDTO.getDeviceType(), searchTerm)))
 						.collect(Collectors.toList());
 			}
 
