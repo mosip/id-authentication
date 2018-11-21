@@ -1,5 +1,5 @@
 ## PACKETUPLOADER-SFTP-JSCH module for kernel
-This folder has PACKETUPLOADER-SFTP-JSCHE module which can be used to upload a packet using SFTP protocol.
+This folder has PACKETUPLOADER-SFTP-JSCH module which can be used to upload a packet using SFTP protocol.
 
 ### Api Documentation
 [API Documentation <TBA>](TBA)
@@ -9,10 +9,10 @@ This folder has PACKETUPLOADER-SFTP-JSCHE module which can be used to upload a p
 1. Create an object of SftpServer configurations.
 2. Pass this object to create SFTP channel.
 3. Use this channel to upload file.
-4. Close the connection.
+4. Release the connection.
 
 
-###### If there is any error which occurs while channel creation,upload and realease connection, it will be thrown as Exception. 
+###### If there is any error which occurs while channel creation,upload and release connection, it will be thrown as Exception. 
 
 ### Exceptions to be handled while using this functionality:
 1.  ConnectionException
