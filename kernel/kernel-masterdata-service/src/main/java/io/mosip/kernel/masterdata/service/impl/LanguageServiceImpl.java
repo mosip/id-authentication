@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
+import io.mosip.kernel.masterdata.utils.CheckUtils;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 
 /**
@@ -37,6 +40,12 @@ public class LanguageServiceImpl implements LanguageService {
 	private ObjectMapperUtil mapperUtil;
 
 	/**
+	 * Helper class to map dto to entity.
+	 */
+	@Autowired
+	private MetaDataUtils metaDataUtils;
+
+	/**
 	 * This method fetch all Languages present in database.
 	 * 
 	 * @throws LanguageFetchException
@@ -47,13 +56,13 @@ public class LanguageServiceImpl implements LanguageService {
 	 *             when error occurs while mapping.
 	 */
 	@Override
-	public LanguageResponseDto getAllLaguages() {
-		LanguageResponseDto languageResponseDto = new LanguageResponseDto();
+	public LanguageRequestResponseDto getAllLaguages() {
+		LanguageRequestResponseDto languageRequestResponseDto = new LanguageRequestResponseDto();
 		List<LanguageDto> languageDtos = null;
 		List<Language> languages = null;
 
 		try {
-			languages = languageRepository.findAll(Language.class);
+			languages = languageRepository.findAllByIsActiveTrueAndIsDeletedFalse();
 		} catch (DataAccessException dataAccessException) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage());
@@ -66,8 +75,34 @@ public class LanguageServiceImpl implements LanguageService {
 					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
 		}
 
-		languageResponseDto.setLanguages(languageDtos);
-		return languageResponseDto;
+		languageRequestResponseDto.setLanguages(languageDtos);
+		return languageRequestResponseDto;
+	}
+
+	@Override
+	public LanguageRequestResponseDto saveAllLanguages(LanguageRequestResponseDto dto) {
+		if (CheckUtils.isNullEmpty(dto) && CheckUtils.isNullEmpty(dto.getLanguages())) {
+			throw new RequestException(LanguageErrorCode.LANGUAGE_REQUEST_PARAM_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.LANGUAGE_REQUEST_PARAM_EXCEPTION.getErrorMessage());
+		}
+
+		LanguageRequestResponseDto languageRequestResponseDto = new LanguageRequestResponseDto();
+		List<LanguageDto> languageDtos = dto.getLanguages();
+		try {
+			List<Language> languages = metaDataUtils.setCreateMetaData(languageDtos, Language.class);
+			List<Language> createdLanguages = languageRepository.saveAll(languages);
+			if (CheckUtils.isNullEmpty(createdLanguages)) {
+				throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
+						LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage());
+			}
+			List<LanguageDto> createdLanguageDtos = mapperUtil.mapAll(createdLanguages, LanguageDto.class);
+			languageRequestResponseDto.setLanguages(createdLanguageDtos);
+
+		} catch (Exception e) {
+			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
+					LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage());
+		}
+		return languageRequestResponseDto;
 	}
 
 }

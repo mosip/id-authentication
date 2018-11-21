@@ -31,7 +31,7 @@ import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
-import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
+import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.entity.Application;
@@ -143,7 +143,7 @@ public class MasterDataServiceTest {
 	private LanguageRepository languageRepository;
 
 	private List<Language> languages;
-	private LanguageResponseDto resp;
+	private LanguageRequestResponseDto resp;
 	private List<LanguageDto> languageDtos;
 	private Language hin;
 	private Language eng;
@@ -301,7 +301,7 @@ public class MasterDataServiceTest {
 		languageDtos.add(hinDto);
 		languageDtos.add(engDto);
 
-		resp = new LanguageResponseDto();
+		resp = new LanguageRequestResponseDto();
 		resp.setLanguages(languageDtos);
 	}
 
@@ -869,27 +869,27 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void testSucessGetAllLaguages() {
-		Mockito.when(languageRepository.findAll(Language.class)).thenReturn(languages);
-		LanguageResponseDto dto = languageService.getAllLaguages();
+		Mockito.when(languageRepository.findAllByIsActiveTrueAndIsDeletedFalse()).thenReturn(languages);
+		LanguageRequestResponseDto dto = languageService.getAllLaguages();
 		assertNotNull(dto);
 		assertEquals(2, dto.getLanguages().size());
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void testLanguageNotFoundException() {
-		Mockito.when(languageRepository.findAll(Language.class)).thenReturn(null);
+		Mockito.when(languageRepository.findAllByIsActiveTrueAndIsDeletedFalse()).thenReturn(null);
 		languageService.getAllLaguages();
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void testLanguageNotFoundExceptionWhenNoLanguagePresent() {
-		Mockito.when(languageRepository.findAll(Language.class)).thenReturn(new ArrayList<Language>());
+		Mockito.when(languageRepository.findAllByIsActiveTrueAndIsDeletedFalse()).thenReturn(new ArrayList<Language>());
 		languageService.getAllLaguages();
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void testLanguageFetchException() {
-		Mockito.when(languageRepository.findAll(Language.class))
+		Mockito.when(languageRepository.findAllByIsActiveTrueAndIsDeletedFalse())
 				.thenThrow(HibernateObjectRetrievalFailureException.class);
 		languageService.getAllLaguages();
 	}
