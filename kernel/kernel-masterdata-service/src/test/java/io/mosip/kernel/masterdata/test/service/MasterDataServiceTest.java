@@ -24,11 +24,11 @@ import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureExcepti
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
+import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
@@ -415,7 +415,7 @@ public class MasterDataServiceTest {
 		application1.setCode("101");
 		application1.setName("pre-registeration");
 		application1.setDescription("Pre-registration Application Form");
-		application1.setLanguageCode("ENG");
+		application1.setLangCode("ENG");
 		application1.setIsActive(true);
 		application1.setCreatedBy("Neha");
 		application1.setUpdatedBy(null);
@@ -424,7 +424,7 @@ public class MasterDataServiceTest {
 		application2.setCode("102");
 		application2.setName("registeration");
 		application2.setDescription("Registeration Application Form");
-		application2.setLanguageCode("ENG");
+		application2.setLangCode("ENG");
 		application2.setIsActive(true);
 		application2.setCreatedBy("Neha");
 		application2.setUpdatedBy(null);
@@ -437,33 +437,36 @@ public class MasterDataServiceTest {
 
 	// ----------------------- ApplicationServiceTest ----------------
 	@Test
-	public void getAllBiometricTypesSuccess() {
+	public void getAllApplicationSuccess() {
 		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Application.class)))
 				.thenReturn(applicationList);
-		List<ApplicationDto> applicationDtoList = applicationService.getAllApplication();
-		assertEquals(applicationList.get(0).getCode(), applicationDtoList.get(0).getCode());
-		assertEquals(applicationList.get(0).getName(), applicationDtoList.get(0).getName());
+		ApplicationResponseDto applicationResponseDto = applicationService.getAllApplication();
+		List<ApplicationDto> applicationDtos = applicationResponseDto.getApplicationtypes();
+		assertEquals(applicationList.get(0).getCode(), applicationDtos.get(0).getCode());
+		assertEquals(applicationList.get(0).getName(), applicationDtos.get(0).getName());
 	}
 
 	@Test
-	public void getAllBiometricTypesByLanguageCodeSuccess() {
-		Mockito.when(applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+	public void getAllApplicationByLanguageCodeSuccess() {
+		Mockito.when(applicationRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(applicationList);
-		List<ApplicationDto> applicationDtoList = applicationService
+		ApplicationResponseDto applicationResponseDto = applicationService
 				.getAllApplicationByLanguageCode(Mockito.anyString());
+		List<ApplicationDto> applicationDtoList = applicationResponseDto.getApplicationtypes();
 		assertEquals(applicationList.get(0).getCode(), applicationDtoList.get(0).getCode());
 		assertEquals(applicationList.get(0).getName(), applicationDtoList.get(0).getName());
 	}
 
 	@Test
-	public void getBiometricTypeByCodeAndLangCodeSuccess() {
+	public void getApplicationByCodeAndLangCodeSuccess() {
 		Mockito.when(applicationRepository
-				.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
+				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(application1);
-		ApplicationDto actual = applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(),
+		ApplicationResponseDto applicationResponseDto = applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(),
 				Mockito.anyString());
-		assertEquals(application1.getCode(), actual.getCode());
-		assertEquals(application1.getName(), actual.getName());
+		List<ApplicationDto> actual = applicationResponseDto.getApplicationtypes();
+		assertEquals(application1.getCode(), actual.get(0).getCode());
+		assertEquals(application1.getName(), actual.get(0).getName());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
@@ -483,14 +486,14 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllApplicationByLanguageCodeFetchException() {
-		Mockito.when(applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(applicationRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		applicationService.getAllApplicationByLanguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getAllApplicationByLanguageCodeNotFoundException() {
-		Mockito.when(applicationRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(applicationRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(new ArrayList<Application>());
 		applicationService.getAllApplicationByLanguageCode(Mockito.anyString());
 	}
@@ -498,7 +501,7 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void getApplicationByCodeAndLangCodeFetchException() {
 		Mockito.when(applicationRepository
-				.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
+				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}
@@ -506,7 +509,7 @@ public class MasterDataServiceTest {
 	@Test(expected = DataNotFoundException.class)
 	public void getApplicationByCodeAndLangCodeNotFoundException() {
 		Mockito.when(applicationRepository
-				.findByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
+				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}

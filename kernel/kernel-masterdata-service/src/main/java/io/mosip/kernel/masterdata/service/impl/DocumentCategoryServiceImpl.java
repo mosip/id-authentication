@@ -14,7 +14,7 @@ import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
-import io.mosip.kernel.masterdata.entity.CodeLangCodeId;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -38,7 +38,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 	private MetaDataUtils metaUtils;
 
 	@Autowired
-	DataMapper dataMapper;
+	private DataMapper dataMapper;
 
 	@Autowired
 	private DocumentCategoryRepository documentCategoryRepository;
@@ -218,9 +218,9 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getMessage());
 		}
-		List<CodeLangCodeId> codeLangCodeIds = new ArrayList<>();
+		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		documentCategories.forEach(documentCategory -> {
-			CodeLangCodeId codeLangCodeId = new CodeLangCodeId();
+			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
 			try {
 				dataMapper.map(documentCategory, codeLangCodeId, true, null, null, true);
 			} catch (DataMapperException e) {

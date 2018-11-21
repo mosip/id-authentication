@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@IdClass(CodeLangCodeId.class)
+@IdClass(CodeAndLanguageCodeId.class)
 public class DocumentCategory extends BaseEntity implements Serializable {
 
 	/**

@@ -26,8 +26,8 @@ public class BlacklistedWordsController {
 	 * @param langCode
 	 * @return {@link BlacklistedWordsResponseDto}
 	 */
-	@GetMapping("/blacklistedwords/{langcode}")
-	public BlacklistedWordsResponseDto getAllBlackListedWordByLangCode(@PathVariable("langcode") String langCode) {
+	@GetMapping("/blacklistedwords/{langCode}")
+	public BlacklistedWordsResponseDto getAllBlackListedWordByLangCode(@PathVariable("langCode") String langCode) {
 		return blacklistedWordsService.getAllBlacklistedWordsBylangCode(langCode);
 	}
 }
