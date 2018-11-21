@@ -2,9 +2,9 @@ package io.mosip.kernel.masterdata.service;
 
 import java.util.List;
 
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
 
 /**
  * This interface has abstract methods to fetch and save Device Specification
@@ -49,6 +49,6 @@ public interface DeviceSpecificationService {
 	 * 
 	 * @return {@link DeviceSpecificationDto}
 	 */
-	public DeviceSpecificationResponseDto addDeviceSpecifications(DeviceSpecificationRequestDto deviceSpecification);
+	public DeviceSpecPostResponseDto addDeviceSpecifications(DeviceSpecificationRequestDto deviceSpecification);
 
 }

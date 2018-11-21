@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.swagger.annotations.ApiOperation;
@@ -80,7 +81,7 @@ public class DeviceSpecificationController {
 	 * @return {@link DeviceSpecificationRequestDto}
 	 */
 	@PostMapping(value = "/")
-	public DeviceSpecificationResponseDto addDeviceType(
+	public DeviceSpecPostResponseDto addDeviceType(
 			@RequestBody DeviceSpecificationRequestDto deviceSpecifications) {
 		return deviceSpecificationService.addDeviceSpecifications(deviceSpecifications);
 	}

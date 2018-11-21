@@ -1,15 +1,21 @@
 package io.mosip.kernel.masterdata.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.datamapper.exception.DataMapperException;
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DeviceSpecificationErrorCode;
+import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
+import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCode;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -35,6 +41,9 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 
 	@Autowired
 	private MetaDataUtils metaUtils;
+	
+	@Autowired
+	private DataMapper dataMapper;
 
 	@Override
 	public List<DeviceSpecificationDto> findDeviceSpecificationByLangugeCode(String languageCode) {
@@ -82,8 +91,8 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	}
 
 	@Override
-	public DeviceSpecificationResponseDto addDeviceSpecifications(DeviceSpecificationRequestDto deviceSpecifications) {
-		DeviceSpecificationResponseDto respDto = new DeviceSpecificationResponseDto();
+	public DeviceSpecPostResponseDto addDeviceSpecifications(DeviceSpecificationRequestDto deviceSpecifications) {
+		DeviceSpecPostResponseDto respDto = new DeviceSpecPostResponseDto();
 		List<DeviceSpecification> renDeviceSpecificationList = null;
 		List<DeviceSpecificationDto> deviceSpecificationDtos = null;
 
@@ -96,16 +105,19 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorCode(),
 					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_INSERT_EXCEPTION.getErrorMessage());
 		}
-		if (!renDeviceSpecificationList.isEmpty()) {
-			deviceSpecificationDtos = objMapper.mapDeviceSpecification(renDeviceSpecificationList);
-
-		} else {
-			throw new DataNotFoundException(
-					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorCode(),
-					DeviceSpecificationErrorCode.DEVICE_SPECIFICATION_NOT_FOUND_EXCEPTION.getErrorMessage());
-		}
-		respDto.setDevicespecifications(deviceSpecificationDtos);
-		return respDto;
+		List<DeviceTypeCodeAndLanguageCode> deviceTypeCodeLangCodes = new ArrayList<>();
+		renDeviceSpecificationList.forEach(renDeviceSpecification -> {
+			DeviceTypeCodeAndLanguageCode deviceTypeCodeAndLanguageCode = new DeviceTypeCodeAndLanguageCode();
+			try {
+				dataMapper.map(renDeviceSpecification, deviceTypeCodeAndLanguageCode, true, null, null, true);
+			} catch (DataMapperException e) {
+				throw new MasterDataServiceException(
+						DeviceTypeErrorCode.DEVICE_TYPE_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
+			}
+			deviceTypeCodeLangCodes.add(deviceTypeCodeAndLanguageCode);
+		});
+		respDto.setSuccessfully_created(deviceTypeCodeLangCodes);
+		return respDto;	
 	}
 
 }
