@@ -11,34 +11,28 @@ package io.mosip.authentication.core.constant;
  */
 public enum IdAuthenticationErrorConstants {
 	PHONE_EMAIL_NOT_REGISTERED("IDA-OTA-001",
-			"Phone no and e-mail not registered. Individual has to register and try again"),
-	INVALID_OTP_REQUEST_TIMESTAMP("IDA-OTA-002", "Request received at MOSIP is %s min post the initiation at TSP"),
+			"Phone no and e-mail not registered. Individual has to register and try again","A0105"),
+	INVALID_OTP_REQUEST_TIMESTAMP("IDA-OTA-002", "Request received at MOSIP is %s min post the initiation at TSP","A0106"),
 	OTP_REQUEST_FLOODED("IDA-OTA-003", "Innumerous OTP requests received"),
-	OTP_GENERATION_FAILED("IDA-OTA-004", "Could not generate/send OTP"), EXPIRED_OTP("IDA-OTA-005", "OTP has expired"),
-	INVALID_OTP("IDA-OTA-006", "OTP is invalid"),
-	INVALID_TXN_ID("IDA-OTA-007", "Input txnID does not match txnID of OTP Request"),
-	OTP_NOT_PRESENT("IDA-OTA-009", "Missing OTP value"),
+	OTP_GENERATION_FAILED("IDA-OTA-004", "Could not generate/send OTP"),
+	EXPIRED_OTP("IDA-OTA-005", "OTP has expired","A0107"),
+	INVALID_OTP("IDA-OTA-006", "OTP is invalid","A0108"),
+	INVALID_TXN_ID("IDA-OTA-007", "Input txnID does not match txnID of OTP Request","A0109"),
+	OTP_NOT_PRESENT("IDA-OTA-008", "Missing OTP value","A0110"),
 	REQUEST_PROCESSING_ERROR("IDA-OTA-010", "Request could not be processed. Please try again"),
 
 	// To be discussed with BA
 	INVALID_AUTH_REQUEST_TIMESTAMP("IDA-MLC-001", "Request to be received at MOSIP within %s hrs/min"),
-	INVALID_UIN("IDA-MLC-002", "Invalid UIN"), UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated"),
-	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"), // Not
+	INVALID_UIN("IDA-MLC-002", "Invalid UIN","A0101"),
+	UIN_DEACTIVATED("IDA-MLC-003", "UIN has been deactivated","A0102"),
+	INVALID_VID("IDA-MLC-004", "Invalid VID", "A0103"), 
+	EXPIRED_VID("IDA-MLC-005", "Expired VID", "A0104"), // Not
 																											// referenced
 	INACTIVE_VID("IDA-IDV-005", "Inactive VID"), AUTHENTICATION_FAILED("IDA-AUT-501", "Authentication failed"),
 	DATA_VALIDATION_FAILED("IDA-IDV-001", "Input Data Validation Failed"),
 	INVALID_INPUT_PARAMETER("IDA-IDV-002", "Invalid Input Parameter - %s"),
 	MISSING_INPUT_PARAMETER("IDA-IDV-003", "Missing Input Parameter - %s"),
-//	INVALID_AGE("IDA-DEA-028", "Please re-enter Age", "A0141"),
-//	INVALID_DOB("IDA-DEA-023", "Please re-enter your DOB", "A0137"),
-//	INVALID_EMAIL("IDA-DEA-027", "Please re-enter your email", "A0141"),
-//	INVALRID_GENDER("IDA-DEA-025", "Please re-enter your Gender", "A0139"),
-//	NAME_PRI_MISMATCH("IDA-DEM-001", "Demographic and Identity attribute Name_Prim did not match"),
-//	NAME_SEC_MISMATCH("IDA-DEM-002", "Demographic and  Identity attribute Name_Second did not match"),
-//	INVALID_TIMESTAMP("IDA-DEM-003",
-//			"Invalid format or Authentication request received at MOSIP <x> hrs/min post the initiation of the request"),
-//	MISSING_ID("IDA-DEM-004", "Missing Id Attribute"),
-//	UNSUPPORTED_LANGCODE("IDA-DEM-005", "Unsupported Language Code <XX>"),
+
 
 	// eKYC validation messages
 
@@ -49,7 +43,8 @@ public enum IdAuthenticationErrorConstants {
 
 	// Internal Errors
 	ID_MAPPING_FAILED("IDA-IDV-101", "VID is not present or not matched"),
-	INVALID_IDTYPE("IDA-IDV-102", "Invalid Id-Type"), INVALID_OTP_KEY("IDA-OTA-101", "Key is Null or Invalid"),
+	INVALID_IDTYPE("IDA-IDV-102", "Invalid Id-Type"),
+	INVALID_OTP_KEY("IDA-OTA-101", "Key is Null or Invalid"),
 	KERNEL_OTP_VALIDATION_REQUEST_FAILED("IDA-OTA-102", "Kernel Validate OTP request failed"),
 	KERNEL_OTP_GENERATION_REQUEST_FAILED("IDA-OTA-103", "Kernel Generate OTP request failed"),
 
@@ -63,11 +58,13 @@ public enum IdAuthenticationErrorConstants {
 	INVALID_HTTP_METHOD("IDA-RST-002", "httpMethod is empty or invalid"),
 	INVALID_RETURN_TYPE("IDA-RST-003", "returnType is empty"),
 	INVALID_REST_SERVICE("IDA-RST-004", "Rest service name is empty or invalid"),
-	INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"), CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occured"),
+	INVALID_TIMEOUT("IDA-RST-005", "Timeout is invalid"), 
+	CLIENT_ERROR("IDA-RST-006", "4XX - Client Error occured"),
 	SERVER_ERROR("IDA-RST-007", "5XX - Server Error occured"),
 	CONNECTION_TIMED_OUT("IDA-RST-008", "Connection timed out"),
 
-	INVALID_AUTH_REQUEST("IDA-RQV-101", "Invalid Auth Request"), UNKNOWN_ERROR("IDA-MLC-101", "Unknown error occured"),
+	INVALID_AUTH_REQUEST("IDA-RQV-101", "Invalid Auth Request"), 
+	UNKNOWN_ERROR("IDA-MLC-101", "Unknown error occured"),
 
 	// Demo Validation
 	INVALID_FULL_ADDRESS_REQUEST("IDA-DEA-015", "Required Full Address(fad) attribute is missing"),

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -93,6 +94,7 @@ public class KycServiceImplTest {
 		
 	}
 	
+	@Ignore
 	@Test
 	public void validUIN() {
 		try {
@@ -103,6 +105,7 @@ public class KycServiceImplTest {
 		}
 	}
 	
+	@Ignore
 	@Test
 	public void validUIN2() {
 		try {			

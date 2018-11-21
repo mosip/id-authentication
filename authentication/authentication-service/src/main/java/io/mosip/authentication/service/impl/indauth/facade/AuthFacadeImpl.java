@@ -191,7 +191,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 				Stream.of(AuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
 						.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(",")));
-		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
+		if (authResponseDTO.getStatus().equals(STATUS_SUCCESS)) {
 			values.put(STATUS, "Success");
 		} else {
 			values.put(STATUS, "Failed");
@@ -257,7 +257,7 @@ public class AuthFacadeImpl implements AuthFacade {
 			try {
 				refId = idAuthService.validateUIN(authRequestDTO.getIdvId());
 			} catch (IdValidationFailedException e) {
-				logger.error(null, null, null, e.getErrorText());
+				logger.error(null, null, e.getErrorCode(), e.getErrorText());
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
 			}
 		} else {

@@ -9,6 +9,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -380,6 +381,7 @@ public class RestHelperTest {
 	 * @throws InterruptedException
 	 *             the interrupted exception
 	 */
+	@Ignore
 	@Test(expected = RestServiceException.class)
 	public void ztestRequestSyncFor4xx() throws IDDataValidationException, RestServiceException, InterruptedException {
 		server.shutdown();
@@ -412,6 +414,7 @@ public class RestHelperTest {
 	 * @throws RestServiceException
 	 *             the rest service exception
 	 */
+	@Ignore
 	@Test(expected = RestServiceException.class)
 	public void ztestRequestSyncFor5xx() throws IDDataValidationException, RestServiceException {
 		server.shutdown();

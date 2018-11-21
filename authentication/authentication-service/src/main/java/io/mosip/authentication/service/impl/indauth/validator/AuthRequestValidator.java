@@ -395,8 +395,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		if (!otp.isPresent()) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH,
 					"INVALID_OTP - pinType is not OTP");
-			errors.rejectValue(PIN_INFO, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), PIN_INFO));
+			errors.rejectValue(PIN_INFO, IdAuthenticationErrorConstants.OTP_NOT_PRESENT.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.OTP_NOT_PRESENT.getErrorMessage(), PIN_INFO));
 		}else if (OTP_LENGTH != otp.orElse("").length()) {
 			mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_CHECK_OTP_AUTH,
 					"INVALID_OTP - pinType is not OTP");

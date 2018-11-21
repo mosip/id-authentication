@@ -1,5 +1,8 @@
 package io.mosip.authentication.service.integration;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.constant.RestServicesConstants;
@@ -31,7 +36,13 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @Component
 public class OTPManager {
 
+	private static final String VALIDATION_UNSUCCESSFUL = "VALIDATION_UNSUCCESSFUL";
+
+	private static final String OTP_EXPIRED = "OTP_EXPIRED";
+
 	private static final String STATUS_SUCCESS = "success";
+
+	private static final String STATUS_FAILURE = "failure";
 
 	@Autowired
 	private RestHelper restHelper;
@@ -61,12 +72,13 @@ public class OTPManager {
 		try {
 			restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE,
 					otpGeneratorRequestDto, OtpGeneratorResponseDto.class);
-
 			otpGeneratorResponsetDto = restHelper.requestSync(restRequestDTO);
 			response = otpGeneratorResponsetDto.getOtp();
 			logger.info("NA", "NA", "NA", "otpGeneratorResponsetDto " + response);
-		} catch (RestServiceException | IDDataValidationException e) {
+		} catch (RestServiceException e) {
 			logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+		} catch (IDDataValidationException e) {
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.KERNEL_OTP_GENERATION_REQUEST_FAILED, e);
 		}
@@ -93,7 +105,21 @@ public class OTPManager {
 			otpvalidateresponsedto = restHelper.requestSync(restreqdto);
 			isValidOtp = Optional.ofNullable(otpvalidateresponsedto).map(OTPValidateResponseDTO::getStatus)
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
-		} catch (RestServiceException | IDDataValidationException e) {
+		} catch (RestServiceException e) {
+			Optional<Object> responseBody = e.getResponseBody();
+			if (responseBody.isPresent()) {
+				otpvalidateresponsedto = (OTPValidateResponseDTO) responseBody.get();
+				String status = otpvalidateresponsedto.getStatus();
+				String message = otpvalidateresponsedto.getMessage();
+				if (status.equalsIgnoreCase(STATUS_FAILURE)) {
+					if (message.equalsIgnoreCase(OTP_EXPIRED)) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
+					} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
+						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+					}
+				}
+			}
+		} catch (IDDataValidationException e) {
 			logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.KERNEL_OTP_VALIDATION_REQUEST_FAILED, e);
