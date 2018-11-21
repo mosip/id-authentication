@@ -7,13 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
+ * Response DTO for Device Type 
  * 
  * @author Megha Tanga
- * @version 1.0.0
+ * @since 1.0.0
+ *
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeviceTypeResponseDto {
-	private List<DeviceTypeDto> successfully_created_devices;
+	private List<DeviceTypeDto> successfullyCreatedDevices;
 }

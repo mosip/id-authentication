@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationCreateResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationResponseDto;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
@@ -53,7 +53,7 @@ public class DeviceSpecificationController {
 	}
 	
 	@PostMapping(value = "/add-devicespecification")
-	public DeviceSpecificationCreateResponseDto addDeviceType(@RequestBody List<DeviceSpecification> deviceSpecifications)
+	public DeviceSpecificationRequestDto addDeviceType(@RequestBody DeviceSpecificationRequestDto deviceSpecifications)
 	{
 		return deviceSpecificationService.addDeviceSpecification(deviceSpecifications);
 	}

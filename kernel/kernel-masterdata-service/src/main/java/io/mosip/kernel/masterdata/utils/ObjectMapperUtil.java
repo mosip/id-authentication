@@ -88,41 +88,47 @@ public class ObjectMapperUtil {
 		});
 		return deviceLangCodeDtypeDtoList;
 	}
-	
-	public List<DeviceTypeDto> mapDeviceTyepDto(List<DeviceType> deviceTypes){
+
+	public List<DeviceTypeDto> mapDeviceTypeDto(List<DeviceType> deviceTypes) {
 		List<DeviceTypeDto> deviceTypeDtoList = new ArrayList<>();
 		DeviceTypeDto deviceTypeDto = new DeviceTypeDto();
-		
-		for(DeviceType deviceType :deviceTypes) {
+
+		for (DeviceType deviceType : deviceTypes) {
 
 			deviceTypeDto.setName(deviceType.getName());
-			deviceTypeDto.setDescription(deviceType.getDescription());
-			deviceTypeDto.setCode(deviceType.getDeviceTypeId().getCode());
-			deviceTypeDto.setLangCode(deviceType.getDeviceTypeId().getLangCode());	
-			/*deviceTypeDto.setCode(deviceType.getCode());
-			deviceTypeDto.setLangCode(deviceType.getLangCode());*/
+			deviceTypeDto.setDescription(deviceType.getDescription());			
+			 deviceTypeDto.setCode(deviceType.getCode());
+			 deviceTypeDto.setLangCode(deviceType.getLangCode());
+			 
 		}
 		deviceTypeDtoList.add(deviceTypeDto);
 		return deviceTypeDtoList;
 	}
-	
-	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification>  deviceSpecificationList){
-		 List<DeviceSpecificationDto>  deviceSpecificationDtoList = new  ArrayList<>();
-		 DeviceSpecificationDto deviceSpecificationDto= new DeviceSpecificationDto();
-		
-		 for(DeviceSpecification deviceSpecification :deviceSpecificationList) {
 
-			 deviceSpecificationDto.setName(deviceSpecification.getName());
-			 deviceSpecificationDto.setDescription(deviceSpecification.getDescription());
-			 deviceSpecificationDto.setLangCode(deviceSpecification.getLangCode());	
-			 deviceSpecificationDto.setBrand(deviceSpecification.getBrand());
-			 deviceSpecificationDto.setDescription(deviceSpecification.getDescription());
-			 deviceSpecificationDto.setDeviceTypeCode(deviceSpecification.getDeviceTypeCode());
-			 deviceSpecificationDto.setModel(deviceSpecification.getModel());
-			 deviceSpecificationDto.setMinDriverversion(deviceSpecification.getMinDriverversion()); 
-			 
-			}
-		 deviceSpecificationDtoList.add(deviceSpecificationDto);
+	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {
+		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();
+		
+		
+		for (DeviceSpecification deviceSpecification : deviceSpecificationList) {
+			DeviceSpecificationDto deviceSpecificationDto = new DeviceSpecificationDto();
+
+			deviceSpecificationDto.setId(deviceSpecification.getId());
+			deviceSpecificationDto.setName(deviceSpecification.getName());
+			deviceSpecificationDto.setDescription(deviceSpecification.getDescription());
+			deviceSpecificationDto.setLangCode(deviceSpecification.getLangCode());
+			deviceSpecificationDto.setBrand(deviceSpecification.getBrand());
+			deviceSpecificationDto.setDeviceTypeCode(deviceSpecification.getDeviceTypeCode());
+			deviceSpecificationDto.setModel(deviceSpecification.getModel());
+			deviceSpecificationDto.setMinDriverversion(deviceSpecification.getMinDriverversion());
+			deviceSpecificationDto.setIsActive(deviceSpecification.getIsActive());
+			deviceSpecificationDtoList.add(deviceSpecificationDto);
+		}
+		
 		return deviceSpecificationDtoList;
 	}
+
+	
+
+	
+
 }
