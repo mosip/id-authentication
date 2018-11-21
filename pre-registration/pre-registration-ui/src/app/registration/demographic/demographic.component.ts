@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
   FormGroup,
   FormControl,
@@ -73,7 +73,7 @@ export class DemographicComponent implements OnInit {
   mobilePhone: '';
   pin: ' ';
 
-  constructor(private route: ActivatedRoute, private regService: RegistrationService) {}
+  constructor(private router: Router, private route: ActivatedRoute, private regService: RegistrationService) {}
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
@@ -94,19 +94,19 @@ export class DemographicComponent implements OnInit {
     }
     this.userForm = new FormGroup({
       isPrimary: new FormControl(this.isPrimary),
-      fullName: new FormControl(this.fullName),
-      gender: new FormControl(this.gender),
-      addressLine1: new FormControl(this.addressLine1),
+      fullName: new FormControl(this.fullName, Validators.required),
+      gender: new FormControl(this.gender, Validators.required),
+      addressLine1: new FormControl(this.addressLine1, Validators.required),
       addressLine2: new FormControl(this.addressLine2),
       addressLine3: new FormControl(this.addressLine3),
-      region: new FormControl(this.region),
-      province: new FormControl(this.province),
-      city: new FormControl(this.city),
-      localAdministrativeAuthority: new FormControl(this.localAdministrativeAuthority),
-      email: new FormControl(this.email),
+      region: new FormControl(this.region, Validators.required),
+      province: new FormControl(this.province, Validators.required),
+      city: new FormControl(this.city, Validators.required),
+      localAdministrativeAuthority: new FormControl(this.localAdministrativeAuthority, Validators.required),
+      email: new FormControl(this.email, Validators.email),
       age: new FormControl(''),
       dob: new FormControl(''),
-      postalCode: new FormControl(this.postalCode),
+      postalCode: new FormControl(this.postalCode, Validators.required),
       mobilePhone: new FormControl(''),
       pin: new FormControl('')
     });
@@ -179,12 +179,19 @@ export class DemographicComponent implements OnInit {
 
     this.regService.addUser(req).subscribe(
       response => {
-        console.log(response);
+        console.log(response['response'][0]['json']['FullName']);
+        const string = response['response'][0]['json'];
+        const json = JSON.parse(string);
+        console.log('JSON ', json.request);
+        console.log('value ' + json.request.demographicDetails.identity.FullName[0].value);
       },
       error => console.log(error),
       () => {
         this.isDisabled[this.step] = true;
         this.step++;
+        if (this.step === this.numberOfApplicants) {
+          this.router.navigate(['../../file-upload'], { relativeTo: this.route });
+        }
       }
     );
   }

@@ -8,19 +8,20 @@ import { CenterSelectionComponent } from './center-selection/center-selection.co
 import { ParentComponent } from './parent/parent.component';
 
 const registrationRoutes: Routes = [
-    {
-        path: 'registration/:id', component: ParentComponent, children: [
-            {path: '', component: DashBoardComponent},
-            { path: 'demographic/:id', component: DemographicComponent },
-            { path: 'file-upload', component: FileUploadComponent },
-            { path: 'pick-center', component: CenterSelectionComponent },
-        ]
-    }];
+  {
+    path: 'registration/:id',
+    component: ParentComponent,
+    children: [
+      { path: '', component: DashBoardComponent },
+      { path: 'demographic/:id', component: DemographicComponent },
+      { path: 'file-upload', component: FileUploadComponent },
+      { path: 'pick-center', component: CenterSelectionComponent }
+    ]
+  }
+];
 
 @NgModule({
-    imports: [RouterModule.forChild(registrationRoutes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(registrationRoutes)],
+  exports: [RouterModule]
 })
-export class RegistrationRoutingModule {
-
-}
+export class RegistrationRoutingModule {}

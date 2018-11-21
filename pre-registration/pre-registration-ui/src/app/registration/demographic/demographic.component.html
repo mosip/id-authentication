@@ -26,7 +26,8 @@
             <div class="user-container">
               <div>
                 <mat-form-field>
-                  <input matInput placeholder="{{demo.fullName}}" formControlName="fullName" />
+                  <input matInput #fullName maxlength="50" placeholder="{{demo.fullName}}" formControlName="fullName" />
+                  <mat-hint align="end">{{ fullName.value.length }} / 50</mat-hint>
                 </mat-form-field>
 
                 <span>
@@ -87,13 +88,34 @@
                 </div>
 
                 <mat-form-field>
-                  <input matInput placeholder="{{demo.addressLine1}}" formControlName="addressLine1" />
+                  <input
+                    matInput
+                    #addressLine1
+                    maxlength="50"
+                    placeholder="{{demo.addressLine1}}"
+                    formControlName="addressLine1"
+                  />
+                  <mat-hint align="end">{{ addressLine1.value.length }} / 50</mat-hint>
                 </mat-form-field>
                 <mat-form-field>
-                  <input matInput placeholder="{{demo.addressLine2}}" formControlName="addressLine2" />
+                  <input
+                    matInput
+                    #addressLine2
+                    maxlength="50"
+                    placeholder="{{demo.addressLine2}}"
+                    formControlName="addressLine2"
+                  />
+                  <mat-hint align="end">{{ addressLine2.value.length }} / 50</mat-hint>
                 </mat-form-field>
                 <mat-form-field>
-                  <input matInput placeholder="{{demo.addressLine3}}" formControlName="addressLine3" />
+                  <input
+                    matInput
+                    #addressLine3
+                    maxlength="50"
+                    placeholder="{{demo.addressLine3}}"
+                    formControlName="addressLine3"
+                  />
+                  <mat-hint align="end">{{ addressLine3.value.length }} / 50</mat-hint>
                 </mat-form-field>
 
                 <mat-form-field>
@@ -124,11 +146,25 @@
                 </mat-form-field>
 
                 <mat-form-field>
-                  <input matInput placeholder="{{demo.postalCode}}" formControlName="postalCode" />
+                  <input
+                    matInput
+                    #postalCode
+                    maxlength="5"
+                    placeholder="{{demo.postalCode}}"
+                    formControlName="postalCode"
+                  />
+                  <mat-hint align="end">{{ postalCode.value.length }} / 5</mat-hint>
                 </mat-form-field>
 
                 <mat-form-field>
-                  <input matInput placeholder="{{demo.mobileNumber}}" formControlName="mobilePhone" />
+                  <input
+                    matInput
+                    #mobilePhone
+                    maxlength="9"
+                    placeholder="{{demo.mobileNumber}}"
+                    formControlName="mobilePhone"
+                  />
+                  <mat-hint align="end">{{ mobilePhone.value.length }} / 9</mat-hint>
                 </mat-form-field>
 
                 <mat-form-field>

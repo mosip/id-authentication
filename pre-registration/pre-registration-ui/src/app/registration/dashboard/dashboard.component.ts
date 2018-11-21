@@ -45,17 +45,16 @@ export class DashBoardComponent implements OnInit {
 
   initUsers() {
     this.regService.getUsers(this.loginId).subscribe((applicants: Applicant[]) => {
-      for (const user of applicants) {
-        for (let index = 0; index < user['response'].length; index++) {
-          this.users.push(
-            new Applicant(
-              user['response'][index]['preId'],
-              user['response'][index]['firstname'],
-              user['response'][index]['appointmentDate'],
-              user['response'][index]['status_code']
-            )
-          );
-        }
+      console.log(applicants);
+      for (let index = 0; index < applicants['response'].length; index++) {
+        this.users.push(
+          new Applicant(
+            applicants['response'][index]['preId'],
+            applicants['response'][index]['firstname'],
+            applicants['response'][index]['appointmentDate'],
+            applicants['response'][index]['status_code']
+          )
+        );
       }
       this.isFetched = true;
     });
@@ -117,16 +116,26 @@ export class DashBoardComponent implements OnInit {
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             console.log(confirm);
-        //    this.regService.deleteRegistration()
-            const message = {
-              case: 'MESSAGE',
-              title: 'Success',
-              message: 'Action was completed successfully'
-            };
-            dialogRef = this.openDialog(message, '250px');
-            const index = this.users.indexOf(element);
-            this.users.splice(index, 1);
-            this.dataSource._updateChangeSubscription();
+            this.regService.deleteRegistration(element.applicationID).subscribe(response => {
+              console.log(response);
+              const message = {
+                case: 'MESSAGE',
+                title: 'Success',
+                message: 'Action was completed successfully'
+              };
+              dialogRef = this.openDialog(message, '250px');
+              const index = this.users.indexOf(element);
+              this.users.splice(index, 1);
+              this.dataSource._updateChangeSubscription();
+            }, error => {
+              console.log(error);
+              const message = {
+                case: 'MESSAGE',
+                title: 'Error',
+                message: 'Action could not be completed'
+              };
+              dialogRef = this.openDialog(message, '250px');
+            });
           } else {
             const message = {
               case: 'MESSAGE',
