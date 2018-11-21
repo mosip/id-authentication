@@ -131,9 +131,6 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 				| InterruptedException exception) {
 			Thread.currentThread().interrupt();
 
-			LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, "Exception occured in GPSBU343Connector");
-
 			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
 
 		}
@@ -215,8 +212,6 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 				}
 			} catch (IOException exception) {
 
-				LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
-						RegistrationConstants.APPLICATION_ID, "Exception occured while reading data from COM Port");
 				throw new RegBaseUncheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION,
 						exception.toString());
 			}
