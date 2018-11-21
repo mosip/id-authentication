@@ -2,9 +2,11 @@ package io.mosip.registration.device;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
+import static org.mockito.Matchers.contains;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +19,6 @@ import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.device.GPSUtill.GPSPosition;
 import io.mosip.registration.exception.RegBaseCheckedException;
-import io.mosip.registration.exception.RegBaseUncheckedException;
 
 /**
  * GPSIntegrationImpl class for GPS response parsing and getting
@@ -29,10 +30,10 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
  */
 @Service
 public class GPSIntegrationImpl implements IGPSIntegrator {
+	// need to chnage facade
 
-	/** Object for gpsConnection class. */
-	@Autowired
-	private IGPSConnector gpsConnection;
+	/** Object for gpsConnectionsList class. */
+	private List<IGPSConnector> gpsConnectionsList;
 
 	/** Object for gpsUtill class. */
 	@Autowired
@@ -60,7 +61,7 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 	 * @see io.mosip.registration.service.IGPSIntegrator#getLatLongDtls()
 	 */
 	@Override
-	public Map<String, Object> getLatLongDtls(double centerLat, double centerLngt) {
+	public Map<String, Object> getLatLongDtls(double centerLat, double centerLngt, String gpsConnectionDevice) {
 
 		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 				"Entering GPS fetch details methos");
@@ -72,11 +73,13 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 
 		Map<String, Object> gpsResponseMap = new HashMap<>();
 
-		// TODO: for now i am sending ==> serialPortConnected <== empty because we need
-		// to connect to GPS device
 		try {
 
-			String gpsRawData = gpsConnection.getComportGPSData(serialPortConnected, portThreadTime);
+			IGPSConnector gpsConnector = getConnectorFactory(gpsConnectionDevice);
+
+			String gpsRawData = gpsConnector != null
+					? gpsConnector.getComPortGPSData(serialPortConnected, portThreadTime)
+					: RegistrationConstants.GPS_CAPTURE_FAILURE;
 
 			System.out.println("GPS SIGNAL ============>" + gpsRawData);
 
@@ -139,20 +142,23 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 
 			}
 		} catch (RegBaseCheckedException exception) {
+
 			gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, exception.getMessage());
+
+			LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, exception.toString());
 		}
+
 		LOGGER.info(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID,
 				"GPS map details" + gpsResponseMap);
-		
+
 		// TODO: Hard codded because if gps device and signa is not connected and weak
 		// it wont allow for new registarion
-		
-		  gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, 12.9913);
-		  gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, 80.2457);
-		  gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, 180);
-		  gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG,
-		  RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
-		 
+
+		gpsResponseMap.put(RegistrationConstants.GPS_LATITUDE, 12.9913);
+		gpsResponseMap.put(RegistrationConstants.GPS_LONGITUDE, 80.2457);
+		gpsResponseMap.put(RegistrationConstants.GPS_DISTANCE, 180);
+		gpsResponseMap.put(RegistrationConstants.GPS_CAPTURE_ERROR_MSG, RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG);
 
 		System.out.println("GPS map details =========>" + gpsResponseMap);
 
@@ -197,8 +203,9 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 	 *
 	 * @param gpsData the gps data
 	 * @return the latitudeFromGps long
+	 * @throws RegBaseCheckedException
 	 */
-	private GPSPosition getGPRMCLatLong(String[] gpsData) {
+	private GPSPosition getGPRMCLatLong(String[] gpsData) throws RegBaseCheckedException {
 
 		LOGGER.debug(RegistrationConstants.GPS_LOGGER, APPLICATION_NAME, APPLICATION_ID, "Entering into GRPMC method");
 
@@ -223,10 +230,29 @@ public class GPSIntegrationImpl implements IGPSIntegrator {
 					"GPS Response after parsing" + geoLocation);
 
 		} catch (Exception exception) {
-			throw new RegBaseUncheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
+			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
 		}
 		return geoLocation;
 
+	}
+
+	@Autowired
+	public void setGpsConnectionsList(List<IGPSConnector> gpsConnectionsList) {
+		this.gpsConnectionsList = gpsConnectionsList;
+	}
+
+	private IGPSConnector getConnectorFactory(String gpsConnectionDevice) {
+		IGPSConnector igpsConnector = null;
+
+		if (!gpsConnectionsList.isEmpty()) {
+			for (IGPSConnector connector : gpsConnectionsList) {
+				if (connector.getClass().getName().contains(gpsConnectionDevice))
+					;
+				igpsConnector = connector;
+				break;
+			}
+		}
+		return igpsConnector;
 	}
 
 }

@@ -66,6 +66,8 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 	private double packetMaxCount;
 	@Value("${DIST_FRM_MACHN_TO_CENTER}")
 	private double machnToCenterDistance;
+	@Value("${GPS_DEVICE_MODEL}")
+	private String gpsDeviceModel;
 
 	/** Object for SyncJobDAO class. */
 	@Autowired
@@ -224,7 +226,7 @@ public class SyncStatusValidatorServiceImpl implements SyncStatusValidatorServic
 		LOGGER.debug(RegistrationConstants.OPT_TO_REG_LOGGER_SESSION_ID, APPLICATION_NAME, APPLICATION_ID,
 				"Getting the center latitude and longitudes from session conext");
 
-		Map<String, Object> gpsMapDetails = gpsIntegrator.getLatLongDtls(centerLatitude, centerLongitude);
+		Map<String, Object> gpsMapDetails = gpsIntegrator.getLatLongDtls(centerLatitude, centerLongitude,gpsDeviceModel);
 
 		if (RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG
 				.equals(gpsMapDetails.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG))) {

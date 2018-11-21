@@ -30,6 +30,7 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
  * @since 1.0.0
  */
 @Service
+
 public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener {
 
 	/** Object for serialPort. */
@@ -57,7 +58,7 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 	 * @throws RegBaseCheckedException
 	 */
 	@Override
-	public String getComportGPSData(String portNo, int portReadWaitTime) throws RegBaseCheckedException {
+	public String getComPortGPSData(String portNo, int portReadWaitTime) throws RegBaseCheckedException {
 
 		String gpsResponse = null;
 
@@ -67,7 +68,7 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 		try {
 
 			@SuppressWarnings("unchecked")
-			
+
 			Enumeration<CommPortIdentifier> portListEnumeration = CommPortIdentifier.getPortIdentifiers();
 
 			while (portListEnumeration.hasMoreElements()) {
@@ -129,7 +130,11 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 		} catch (IOException | PortInUseException | TooManyListenersException | UnsupportedCommOperationException
 				| InterruptedException exception) {
 			Thread.currentThread().interrupt();
-			throw new RegBaseUncheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
+
+			LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, "Exception occured in GPSBU343Connector");
+
+			throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
 
 		}
 
@@ -209,6 +214,9 @@ public class GPSBU343Connector implements IGPSConnector, SerialPortEventListener
 
 				}
 			} catch (IOException exception) {
+
+				LOGGER.debug(RegistrationConstants.GPS_LOGGER, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, "Exception occured while reading data from COM Port");
 				throw new RegBaseUncheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION,
 						exception.toString());
 			}

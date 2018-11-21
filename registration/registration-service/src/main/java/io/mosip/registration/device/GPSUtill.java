@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
-import io.mosip.registration.exception.RegBaseUncheckedException;
+import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
  * class for gps response parsing and getting latitude,longitude from gps
@@ -22,7 +22,6 @@ import io.mosip.registration.exception.RegBaseUncheckedException;
 public class GPSUtill {
 
 	/** Object for Logger. */
-	
 
 	private static final Logger LOGGER = AppConfig.getLogger(GPSUtill.class);
 
@@ -120,8 +119,9 @@ public class GPSUtill {
 	 *
 	 * @param line the line
 	 * @return the GPS position
+	 * @throws RegBaseCheckedException
 	 */
-	public GPSPosition parse(String line) {
+	public GPSPosition parse(String line) throws RegBaseCheckedException {
 
 		/** The position. */
 		GPSPosition position = new GPSPosition();
@@ -144,8 +144,7 @@ public class GPSUtill {
 				}
 
 			} catch (Exception exception) {
-				throw new RegBaseUncheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION,
-						exception.toString());
+				throw new RegBaseCheckedException(RegistrationConstants.GPS_CAPTURING_EXCEPTION, exception.toString());
 			}
 		}
 

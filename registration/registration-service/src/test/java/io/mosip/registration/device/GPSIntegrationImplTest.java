@@ -3,7 +3,9 @@ package io.mosip.registration.device;
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -17,7 +19,6 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.device.GPSUtill.GPSPosition;
@@ -32,6 +33,9 @@ public class GPSIntegrationImplTest {
 	private GPSIntegrationImpl gpsIntegrationImpl;
 
 	@Mock
+	private GPSBU343Connector GPSBU343Connector;
+
+	@Mock
 	private IGPSConnector gpsConnection;
 
 	@Mock
@@ -41,7 +45,9 @@ public class GPSIntegrationImplTest {
 	private GPSPosition gpsPosition;
 
 	@Mock
-	private AuditFactory auditFactory;
+	IGPSConnector gpsConnector;
+
+	List<IGPSConnector> gpsConnectionsList;
 
 	/**
 	 * @throws java.lang.Exception
@@ -59,7 +65,8 @@ public class GPSIntegrationImplTest {
 	/**
 	 * Test method for
 	 * {@link io.mosip.registration.device.GPSIntegrationImpl#getLatLongDtls(double, double)}.
-	 * @throws RegBaseCheckedException 
+	 * 
+	 * @throws RegBaseCheckedException
 	 */
 	@Test
 	public void testGetLatLongDtlsFailureCase() throws RegBaseCheckedException {
@@ -71,6 +78,7 @@ public class GPSIntegrationImplTest {
 
 		double centerLat = 72.8790;
 		double centerLngt = 12.3478;
+		String gpsDeviceName = "GPSBU343Connector";
 
 		ReflectionTestUtils.setField(gpsIntegrationImpl, "serialPortConnected", "COM4");
 
@@ -81,7 +89,12 @@ public class GPSIntegrationImplTest {
 				+ "$GPGSV,3,2,12,05,00,000,,06,00,000,,07,00,000,,08,00,000,*77$GPGSV,3,3,12,09,00,000,,10,00,000,,11,00,000,,12,00,000,*7,\r\n"
 				+ "$GPRMC,V,,,,,,,,,,N*53\r\n" + "$GPVTG,,TM,,,N,,K,N*2C";
 
-		Mockito.when(gpsConnection.getComportGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
+		gpsConnectionsList = new ArrayList<>();
+		gpsConnectionsList.add(GPSBU343Connector);
+
+		ReflectionTestUtils.setField(gpsIntegrationImpl, "gpsConnectionsList", gpsConnectionsList);
+
+		Mockito.when(GPSBU343Connector.getComPortGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
 
 		Mockito.when(gpsPosition.getLat()).thenReturn(0.0);
 
@@ -95,18 +108,20 @@ public class GPSIntegrationImplTest {
 
 		Mockito.when(gpsUtill.parse(Mockito.anyString())).thenReturn(gpsPosition);
 
-		map = gpsIntegrationImpl.getLatLongDtls(centerLat, centerLngt);
+		map = gpsIntegrationImpl.getLatLongDtls(centerLat, centerLngt, gpsDeviceName);
 
-		
-		  /*assertTrue( map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG).equals(
-		  RegistrationConstants.GPS_CAPTURE_FAILURE_MSG));*/
-		 
+		/*
+		 * assertTrue( map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG).equals(
+		 * RegistrationConstants.GPS_CAPTURE_FAILURE_MSG));
+		 */
+
 	}
 
 	/**
 	 * Test method for
 	 * {@link io.mosip.registration.device.GPSIntegrationImpl#getLatLongDtls(double, double)}.
-	 * @throws RegBaseCheckedException 
+	 * 
+	 * @throws RegBaseCheckedException
 	 */
 	@Test
 	public void testGetLatLongDtlsFailureCaseNoDeviceConnected() throws RegBaseCheckedException {
@@ -115,7 +130,7 @@ public class GPSIntegrationImplTest {
 
 		String serialPortConnected = "";
 		int portThreadTime = 1000;
-
+		String gpsDeviceName = "GPSBU343Connector";
 		double centerLat = 72.8790;
 		double centerLngt = 12.3478;
 
@@ -125,20 +140,27 @@ public class GPSIntegrationImplTest {
 
 		String mockgps = RegistrationConstants.GPS_CAPTURE_FAILURE;
 
-		Mockito.when(gpsConnection.getComportGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
+		gpsConnectionsList = new ArrayList<>();
+		gpsConnectionsList.add(GPSBU343Connector);
 
-		map = gpsIntegrationImpl.getLatLongDtls(centerLat, centerLngt);
+		ReflectionTestUtils.setField(gpsIntegrationImpl, "gpsConnectionsList", gpsConnectionsList);
 
-		
-		  /*assertTrue(map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG)
-		  .equals(RegistrationConstants.GPS_CAPTURE_FAILURE));*/
-		 
+		Mockito.when(GPSBU343Connector.getComPortGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
+
+		map = gpsIntegrationImpl.getLatLongDtls(centerLat, centerLngt, gpsDeviceName);
+
+		/*
+		 * assertTrue(map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG)
+		 * .equals(RegistrationConstants.GPS_CAPTURE_FAILURE));
+		 */
+
 	}
 
 	/**
 	 * Test method for
 	 * {@link io.mosip.registration.device.GPSIntegrationImpl#getLatLongDtls(double, double)}.
-	 * @throws RegBaseCheckedException 
+	 * 
+	 * @throws RegBaseCheckedException
 	 */
 	@Test
 	public void testGetLatLongDtlsSuccessCase() throws RegBaseCheckedException {
@@ -150,7 +172,7 @@ public class GPSIntegrationImplTest {
 
 		double centerLat = 72.8790;
 		double centerLngt = 12.3478;
-
+		String gpsDeviceName = "GPSBU343Connector";
 		ReflectionTestUtils.setField(gpsIntegrationImpl, "serialPortConnected", "COM4");
 
 		ReflectionTestUtils.setField(gpsIntegrationImpl, "portThreadTime", 1000);
@@ -160,7 +182,12 @@ public class GPSIntegrationImplTest {
 				+ "$GPGSV,3,2,12,05,00,000,,06,00,000,,07,00,000,,08,00,000,*77$GPGSV,3,3,12,09,00,000,,10,00,000,,11,00,000,,12,00,000,*7,\r\n"
 				+ "$GPRMC,V,,,,,,,,,,N*53\r\n" + "$GPVTG,,TM,,,N,,K,N*2C";
 
-		Mockito.when(gpsConnection.getComportGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
+		gpsConnectionsList = new ArrayList<>();
+		gpsConnectionsList.add(GPSBU343Connector);
+
+		ReflectionTestUtils.setField(gpsIntegrationImpl, "gpsConnectionsList", gpsConnectionsList);
+
+		Mockito.when(GPSBU343Connector.getComPortGPSData(serialPortConnected, portThreadTime)).thenReturn(mockgps);
 
 		Mockito.when(gpsPosition.getLat()).thenReturn(12.9913);
 
@@ -174,12 +201,11 @@ public class GPSIntegrationImplTest {
 
 		Mockito.when(gpsUtill.parse(Mockito.anyString())).thenReturn(gpsPosition);
 
-		map = gpsIntegrationImpl.getLatLongDtls(centerLat, centerLngt);
+		map = gpsIntegrationImpl.getLatLongDtls(centerLat, centerLngt, gpsDeviceName);
 
-		
-		  assertTrue( map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG).equals(
-		  RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG));
-		 
+		assertTrue(map.get(RegistrationConstants.GPS_CAPTURE_ERROR_MSG)
+				.equals(RegistrationConstants.GPS_CAPTURE_SUCCESS_MSG));
+
 	}
 
 }

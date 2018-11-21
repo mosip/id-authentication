@@ -110,7 +110,8 @@ public class SyncStatusValidatorServiceTest {
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
 
-		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble())).thenReturn(map);
+		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+				.thenReturn(map);
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
@@ -159,7 +160,8 @@ public class SyncStatusValidatorServiceTest {
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "machnToCenterDistance", 215);
 		ReflectionTestUtils.setField(syncStatusValidatorServiceImpl, "packetMaxCount", 100);
 
-		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble())).thenReturn(map);
+		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+				.thenReturn(map);
 
 		Mockito.when(syncJobDAO.getSyncStatus()).thenReturn(syncJobnfo);
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
@@ -200,7 +202,8 @@ public class SyncStatusValidatorServiceTest {
 		Mockito.when(syncJobnfo.getSyncControlList()).thenReturn(listSync);
 		Mockito.when(syncJobnfo.getYetToExportCount()).thenReturn((double) 20);
 
-		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble())).thenReturn(map);
+		Mockito.when(gpsIntegrator.getLatLongDtls(Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString()))
+				.thenReturn(map);
 
 		ResponseDTO responseDTO = syncStatusValidatorServiceImpl.validateSyncStatus();
 		List<ErrorResponseDTO> errorResponseDTOs = responseDTO.getErrorResponseDTOs();
