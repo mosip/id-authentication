@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.ApplicationErrorCode;
-import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
@@ -132,8 +131,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 		try {
 			applications = applicationRepository.saveAll(entities);
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getMessage());
+			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_INSERT_EXCEPTION.getErrorCode(),
+					e.getMessage());
 		}
 		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		applications.forEach(app -> {
@@ -141,8 +140,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 			try {
 				dataMapper.map(app, codeLangCodeId, true, null, null, true);
 			} catch (DataMapperException e) {
-				throw new MasterDataServiceException(
-						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
+				throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_MAPPING_EXCEPTION.getErrorCode(),
+						e.getMessage());
 			}
 			codeLangCodeIds.add(codeLangCodeId);
 		});
@@ -151,5 +150,3 @@ public class ApplicationServiceImpl implements ApplicationService {
 		return postResponseDto;
 	}
 }
-
-
