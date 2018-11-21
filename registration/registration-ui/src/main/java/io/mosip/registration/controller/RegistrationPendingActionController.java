@@ -170,9 +170,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 				if (map.get("registrationID") == pendingActionTable.getSelectionModel().getSelectedItem().getId()) {
 					if (map.get("statusCode") == RegistrationClientStatusCode.APPROVED.getCode()) {
 						approvalBtn.setSelected(true);
-						rejectionBtn.setSelected(false);
 					} else if (map.get("statusCode") == RegistrationClientStatusCode.REJECTED.getCode()) {
-						approvalBtn.setSelected(false);
 						rejectionBtn.setSelected(true);
 					}
 				}
@@ -223,7 +221,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 			pendingActionTable.setItems(oList);
 		} else {
 			pendingActionRegistrationRootSubPane.disableProperty().set(true);
-			pendingActionTable.getItems().removeAll(pendingActionTable.getSelectionModel().getSelectedItems());
+			pendingActionTable.getItems().removeAll();
 			pendingActionTable.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
 		}
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,

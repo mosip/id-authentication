@@ -197,15 +197,9 @@ public class RegistrationApprovalController extends BaseController implements In
 				if (map.get("registrationID") == table.getSelectionModel().getSelectedItem().getId()) {
 					if (map.get("statusCode") == RegistrationClientStatusCode.APPROVED.getCode()) {
 						approvalBtn.setSelected(true);
-						rejectionBtn.setSelected(false);
-						onHoldBtn.setSelected(false);
 					} else if (map.get("statusCode") == RegistrationClientStatusCode.REJECTED.getCode()) {
-						approvalBtn.setSelected(false);
 						rejectionBtn.setSelected(true);
-						onHoldBtn.setSelected(false);
 					} else if (map.get("statusCode") == RegistrationClientStatusCode.ON_HOLD.getCode()) {
-						approvalBtn.setSelected(false);
-						rejectionBtn.setSelected(false);
 						onHoldBtn.setSelected(true);
 					}
 				}
@@ -251,7 +245,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		} else {
 			approveRegistrationRootSubPane.disableProperty().set(true);
 			table.setPlaceholder(new Label(RegistrationConstants.PLACEHOLDER_LABEL));
-			table.getItems().removeAll(table.getSelectionModel().getSelectedItems());
+			table.getItems().removeAll();
 		}
 
 		LOGGER.debug("REGISTRATION_APPROVAL_CONTROLLER ", APPLICATION_NAME, APPLICATION_ID,
