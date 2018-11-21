@@ -40,4 +40,12 @@ public class GlobalContextParamDAOTest {
 		assertEquals(paramList, globalContextParamDAOImpl.findInvalidLoginCount(params));
 	}
 
+	@Test
+	public void findRejectionOnholdCommentsTest() {
+		GlobalContextParam globalContextParam1 = new GlobalContextParam();
+		globalContextParam1.setName("ONHOLD_COMMENTS");
+		globalContextParam1.setVal("Gender-photo mismatch,Age-photo mismatch,Name correction required");
+		Mockito.when(globalContextParamRepository.findByName("ONHOLD_COMMENTS")).thenReturn(globalContextParam1);
+		assertEquals(globalContextParam1 , globalContextParamDAOImpl.findRejectionOnholdComments("ONHOLD_COMMENTS"));
+	}
 }
