@@ -94,7 +94,6 @@ public class KycServiceImplTest {
 		
 	}
 	
-	@Ignore
 	@Test
 	public void validUIN() {
 		try {
@@ -105,11 +104,51 @@ public class KycServiceImplTest {
 		}
 	}
 	
+	@Test
+	public void validUIN1() {
+		try {
+			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, true, true);
+			assertNotNull(k);
+		} catch (IdAuthenticationBusinessException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	@Test
 	public void validUIN2() {
+		try {
+			KycInfo k = kycServiceImpl.retrieveKycInfo("12232323121", KycType.LIMITED, false, false);
+			assertNotNull(k);
+		} catch (IdAuthenticationBusinessException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	@Test
+	public void validUIN3() {
 		try {			
 			KycInfo k = kycServiceImpl.retrieveKycInfo("1223232345665", KycType.FULL, true, true);
+			assertNotNull(k);
+		} catch (IdAuthenticationBusinessException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void validUIN4() {
+		try {			
+			KycInfo k = kycServiceImpl.retrieveKycInfo("1223232345665", KycType.FULL, true, false);
+			assertNotNull(k);
+		} catch (IdAuthenticationBusinessException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void validUIN5() {
+		try {			
+			KycInfo k = kycServiceImpl.retrieveKycInfo("1223232345665", KycType.FULL, false, false);
 			assertNotNull(k);
 		} catch (IdAuthenticationBusinessException e) {
 			e.printStackTrace();
