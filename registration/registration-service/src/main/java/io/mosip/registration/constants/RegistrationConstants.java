@@ -444,7 +444,7 @@ public class RegistrationConstants {
 	// Upload Packet
 
 	public static List getStatus() {
-		String[] packetStatus = { "S", "resend", "E" };
+		String[] packetStatus = { "SYNCED", "resend", "E" };
 		return Arrays.asList(packetStatus);
 	}
 	// Exceptions
@@ -588,6 +588,10 @@ public class RegistrationConstants {
 
 	public static List getPorDocumentList() {
 		return Arrays.asList(new String[] { "Document1", "Document2", "Document3", "Document4" });
+	}
+	
+	public static List getPacketStatus() {
+		return Arrays.asList(new String[] { "APPROVED", "REJECTED", "RE_REGISTER_APPROVED"});
 	}
 
 }

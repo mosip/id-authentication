@@ -119,6 +119,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 		}
 		LOGGER.debug("REGISTRATION - SCAN_FINGER - SCAN_FINGER_COMPLETED", APPLICATION_NAME, APPLICATION_ID,
 				"Fingerprint scan done");
+		fingerprintProviderNew.uninitFingerPrintDevice();
 		fingerScannedImage.setImage(fingerprintFactory.getFingerPrintImage());
 		RegistrationUserDetail registrationUserDetail = loginService
 				.getUserDetail(SessionContext.getInstance().getUserContext().getUserId());

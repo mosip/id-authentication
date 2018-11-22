@@ -18,6 +18,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
@@ -53,7 +54,13 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 	private RestClientUtil restClientUtil;
 
 	@Value("${PACKET_UPLOAD_URL}")
-	String urlPath;
+	private String urlPath;
+	
+	@Value("${UPLOAD_API_READ_TIMEOUT}")
+	private int readTimeout;
+	
+	@Value("${UPLOAD_API_WRITE_TIMEOUT}")
+	private int connectTimeout; 
 
 	private static final Logger LOGGER = AppConfig.getLogger(PacketUploadServiceImpl.class);
 
@@ -90,7 +97,7 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
 		Object response = null;
 		try {
-			response = restClientUtil.invoke(requestHTTPDTO);
+			response = restClientUtil.invoke(setTimeout(requestHTTPDTO));
 		} catch (HttpClientErrorException e) {
 			LOGGER.error("REGISTRATION - PUSH_PACKET - PACKET_UPLOAD_SERVICE", APPLICATION_NAME, APPLICATION_ID,
 					e.getRawStatusCode() + "Http error while pushing packets to the server");
@@ -124,5 +131,14 @@ public class PacketUploadServiceImpl implements PacketUploadService {
 		}
 		return true;
 
+	}
+	
+	private RequestHTTPDTO  setTimeout(RequestHTTPDTO requestHTTPDTO) {
+		// Timeout in milli second
+		SimpleClientHttpRequestFactory requestFactory=new SimpleClientHttpRequestFactory(); 
+		requestFactory.setReadTimeout(readTimeout);
+		requestFactory.setConnectTimeout(connectTimeout);
+		requestHTTPDTO.setSimpleClientHttpRequestFactory(requestFactory);
+		return requestHTTPDTO;
 	}
 }

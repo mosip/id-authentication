@@ -23,11 +23,16 @@ public class MantraFingerprintProvider extends FingerprintProviderNew implements
 
 	public void captureFingerprint(int qualityScore, int captureTimeOut, String outputType) {
 		fingerPrintType = outputType;
-		if (fpDevice.Init() == 0) {
+		if (fpDevice.Init() == 0 && fpDevice.IsConnected()) {
 			minutia = "";
 			errorMessage = "";
 			fpDevice.StartCapture(qualityScore, captureTimeOut, false);
 		}
+	}
+	
+	public void uninitFingerPrintDevice() {
+		fpDevice.StopCapture();
+		fpDevice.Uninit();
 	}
 
 	@Override

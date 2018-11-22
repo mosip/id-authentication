@@ -66,6 +66,7 @@ public abstract class FingerprintProviderNew {
 	}
 
 	public abstract void captureFingerprint(int qualityScore, int captureTimeOut, String outputType);
+	public abstract void uninitFingerPrintDevice();
 
 	public String getMinutia() {
 		return minutia;

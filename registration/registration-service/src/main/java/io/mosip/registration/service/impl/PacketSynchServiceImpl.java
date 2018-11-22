@@ -7,7 +7,6 @@ import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import io.mosip.registration.config.AppConfig;
+import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
 import io.mosip.registration.dao.RegistrationDAO;
 import io.mosip.registration.dto.SyncRegistrationDTO;
@@ -44,9 +45,13 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	private RestClientUtil restClientUtil;
 
 	@Value("${PACKET_SYNC_URL}")
-	String urlPath;
-
-	private static final List<String> PACKET_STATUS = Arrays.asList("A", "I");
+	private String urlPath;
+	
+	@Value("${UPLOAD_API_READ_TIMEOUT}")
+	private int readTimeout;
+	
+	@Value("${UPLOAD_API_WRITE_TIMEOUT}")
+	private int connectTimeout; 
 
 	private static final Logger LOGGER = AppConfig.getLogger(PacketSynchServiceImpl.class);
 
@@ -58,11 +63,12 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 	 * )
 	 */
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Registration> fetchPacketsToBeSynched() {
 		LOGGER.debug("REGISTRATION - FETCH_PACKETS_TO_BE_SYNCHED - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 				APPLICATION_ID, "Fetch the packets that needs to be synched to the server");
-		return registrationDAO.getPacketsToBeSynched(PACKET_STATUS);
+		return registrationDAO.getPacketsToBeSynched(RegistrationConstants.getPacketStatus());
 	}
 
 	/*
@@ -90,7 +96,8 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 		requestHTTPDTO.setHttpMethod(HttpMethod.POST);
 		Object response = null;
 		try {
-			response = restClientUtil.invoke(requestHTTPDTO);
+			
+			response = restClientUtil.invoke(setTimeout(requestHTTPDTO));
 		} catch (HttpClientErrorException e) {
 			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, e.getRawStatusCode() + "Error in sync packets to the server");
@@ -126,5 +133,14 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 		}
 		return true;
 
+	}
+	
+	private RequestHTTPDTO  setTimeout(RequestHTTPDTO requestHTTPDTO) {
+		// Timeout in milli second
+		SimpleClientHttpRequestFactory requestFactory=new SimpleClientHttpRequestFactory(); 
+		requestFactory.setReadTimeout(readTimeout);
+		requestFactory.setConnectTimeout(connectTimeout);
+		requestHTTPDTO.setSimpleClientHttpRequestFactory(requestFactory);
+		return requestHTTPDTO;
 	}
 }

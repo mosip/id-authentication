@@ -121,19 +121,21 @@ public class PacketUploadController extends BaseController {
 					RegistrationConstants.PACKET_SYNC_REF_ID);
 			List<Registration> packetsToBeSynched = packetSynchService.fetchPacketsToBeSynched();
 			List<SyncRegistrationDTO> syncDtoList = new ArrayList<>();
+			Object response = null;
 			if (!packetsToBeSynched.isEmpty()) {
 				for (Registration packetToBeSynch : packetsToBeSynched) {
 					SyncRegistrationDTO syncDto = new SyncRegistrationDTO();
 					syncDto.setLangCode("ENG");
-					syncDto.setStatusComment("Pre synch");
+					syncDto.setStatusComment(packetToBeSynch.getClientStatusCode() + " " + "-" + " "
+							+ packetToBeSynch.getClientStatusComments());
 					syncDto.setRegistrationId(packetToBeSynch.getId());
 					syncDto.setParentRegistrationId(packetToBeSynch.getId());
 					syncDto.setSyncStatus(RegistrationConstants.PACKET_STATUS_PRE_SYNC);
 					syncDto.setSyncType(RegistrationConstants.PACKET_STATUS_SYNC_TYPE);
 					syncDtoList.add(syncDto);
 				}
+				response = packetSynchService.syncPacketsToServer(syncDtoList);
 			}
-			Object response = packetSynchService.syncPacketsToServer(syncDtoList);
 			if (response != null) {
 				packetSynchService.updateSyncStatus(packetsToBeSynched);
 			}
@@ -215,13 +217,14 @@ public class PacketUploadController extends BaseController {
 				@Override
 				protected String call() {
 
-					LOGGER.debug("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
+					LOGGER.debug("REGISTRATION - HANDLE_PACKET_UPLOAD_START - PACKET_UPLOAD_CONTROLLER", APPLICATION_NAME,
 							APPLICATION_ID, "Handling all the packet upload activities");
 					List<Registration> synchedPackets = packetUploadService.getSynchedPackets();
 					List<Registration> packetUploadList = new ArrayList<>();
 					String status = "";
 					if (!synchedPackets.isEmpty()) {
-						auditFactory.audit(AuditEvent.PACKET_UPLOAD, AppModule.PACKET_UPLOAD, "Upload packets to the server",
+						auditFactory.audit(AuditEvent.PACKET_UPLOAD, AppModule.PACKET_UPLOAD,
+								"Upload packets to the server",
 								SessionContext.getInstance().getUserContext().getUserId(),
 								RegistrationConstants.PACKET_UPLOAD_REF_ID);
 						progressIndicator.setVisible(true);
@@ -233,9 +236,11 @@ public class PacketUploadController extends BaseController {
 							String packetPath = ackFileName.substring(0, lastIndex);
 							File packet = new File(packetPath + RegistrationConstants.ZIP_FILE_EXTENSION);
 							try {
-								if (("R".equals(synchedPacket.getServerStatusCode()) && synchedPacket
+								if (("resend".equals(synchedPacket.getServerStatusCode()) && synchedPacket
 										.getServerStatusTimestamp().compareTo(synchedPacket.getUploadTimestamp()) == 1)
-										|| "S".equals(synchedPacket.getClientStatusCode())
+										|| (RegistrationClientStatusCode.META_INFO_SYN_SERVER.getCode()
+												.equals(synchedPacket.getClientStatusCode())
+												&& !"reregister".equals(synchedPacket.getServerStatusCode()))
 										|| "E".equals(synchedPacket.getFileUploadStatus())) {
 									Object response = packetUploadService.pushPacket(packet);
 									String responseCode = response.toString();
@@ -253,18 +258,18 @@ public class PacketUploadController extends BaseController {
 
 							} catch (URISyntaxException e) {
 
-								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
+								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_URI_ERROR - PACKET_UPLOAD_CONTROLLER",
 										APPLICATION_NAME, APPLICATION_ID, "Error in uri syntax");
 								status = "Error-Unable to push packets to the server.";
 							} catch (RegBaseCheckedException e) {
-								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
+								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_ERROR - PACKET_UPLOAD_CONTROLLER",
 										APPLICATION_NAME, APPLICATION_ID, "Error while pushing packets to the server");
 								synchedPacket.setFileUploadStatus(
 										RegistrationClientStatusCode.UPLOAD_ERROR_STATUS.getCode());
 								synchedPacket.setUploadCount((short) (synchedPacket.getUploadCount() + 1));
 								packetUploadList.add(synchedPacket);
 							} catch (RuntimeException e) {
-								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD - PACKET_UPLOAD_CONTROLLER",
+								LOGGER.error("REGISTRATION - HANDLE_PACKET_UPLOAD_RUNTIME_ERROR - PACKET_UPLOAD_CONTROLLER",
 										APPLICATION_NAME, APPLICATION_ID,
 										"Run time error while connecting to the server");
 								if (i == 0) {
@@ -281,7 +286,9 @@ public class PacketUploadController extends BaseController {
 								}
 								break;
 							}
-							packetUploadList.add(synchedPacket);
+							if (!"reregister".equals(synchedPacket.getServerStatusCode())) {
+								packetUploadList.add(synchedPacket);
+							}
 							this.updateProgress(i, synchedPackets.size());
 						}
 						packetUploadService.updateStatus(packetUploadList);
