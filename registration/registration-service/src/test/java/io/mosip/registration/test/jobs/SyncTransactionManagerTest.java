@@ -125,15 +125,7 @@ public class SyncTransactionManagerTest {
 		syncTransaction.setSyncTo("SERVER???");
 
 		syncTransaction.setMachmId(RegistrationSystemPropertiesChecker.getMachineId());
-		// syncTransaction.setCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
-		// .getRegistrationCenterId());
-
-		// TODO
-		/*
-		 * syncTransaction.setRefId("REFID"); syncTransaction.setRefType("REFTYPE");
-		 * syncTransaction.setSyncParam("SyncParam");
-		 */
-
+		
 		// TODO
 		syncTransaction.setLangCode("EN");
 
@@ -172,6 +164,46 @@ public class SyncTransactionManagerTest {
 		SyncTransaction syncTransaction = null;
 		Mockito.when(jobTransactionDAO.save(Mockito.any(SyncTransaction.class))).thenThrow(NullPointerException.class);
 		syncTransactionManagerImpl.createSyncTransaction("Completed", "Completed", "USER", "1");
+		
+		
+	}
+	
+	@Test
+	public void createSyncControlNullTest() {
+		SyncTransaction syncTransaction=new SyncTransaction();
+
+		String transactionId = Integer.toString(new Random().nextInt(10000));
+		syncTransaction.setId(transactionId);
+
+		syncTransaction.setSyncJobId(syncJob.getId());
+
+		syncTransaction.setSyncDateTime(new Timestamp(System.currentTimeMillis()));
+		syncTransaction.setStatusCode("Completed");
+		syncTransaction.setStatusComment("Completed");
+
+		// TODO
+		syncTransaction.setTriggerPoint("User");
+
+		syncTransaction.setSyncFrom(RegistrationSystemPropertiesChecker.getMachineId());
+
+		// TODO
+		syncTransaction.setSyncTo("SERVER???");
+
+		syncTransaction.setMachmId(RegistrationSystemPropertiesChecker.getMachineId());
+		
+		syncTransaction.setCntrId("CNTR123");
+		// TODO
+		syncTransaction.setLangCode("EN");
+
+		syncTransaction.setActive(true);
+
+		syncTransaction.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
+
+		syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
+		
+		SyncControl syncControl=null;
+		Mockito.when(syncJobDAO.findBySyncJobId(Mockito.any())).thenReturn(syncControl);
+		syncTransactionManagerImpl.createSyncControlTransaction(syncTransaction);
 		
 		
 	}

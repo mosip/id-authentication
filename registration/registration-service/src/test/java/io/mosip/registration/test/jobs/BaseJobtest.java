@@ -16,6 +16,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 
 import io.mosip.registration.dto.ErrorResponseDTO;
@@ -78,7 +79,7 @@ public class BaseJobtest {
 		syncJobList.forEach(job -> {
 			jobMap.put(job.getId(), job);
 		});
-		//JobConfigurationServiceImpl.SYNC_JOB_MAP = jobMap;
+		JobConfigurationServiceImpl.setSYNC_JOB_MAP(jobMap);
 
 	}
 
@@ -148,5 +149,28 @@ public class BaseJobtest {
 		Mockito.when(packetStatusService.packetSyncStatus()).thenReturn(responseDTO);
 		packetSyncStatusJob.executeJob("User");
 	}
+	
+	@Test(expected = RegBaseUncheckedException.class)
+	public void executejobNoSuchBeanDefinitionExceptionTest() {
+		ResponseDTO responseDTO=new ResponseDTO();
+		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		responseDTO.setSuccessResponseDTO(successResponseDTO);
+		Mockito.when(applicationContext.getBean(SyncManager.class)).thenThrow(NoSuchBeanDefinitionException.class);
+				packetSyncStatusJob.executeJob("User");
+	packetSyncStatusJob.executeInternal(context);
+	}
+	
+	@Test(expected = RegBaseUncheckedException.class)
+	public void executejobNullPointerExceptionTest() {
+		ResponseDTO responseDTO=new ResponseDTO();
+		SuccessResponseDTO successResponseDTO=new SuccessResponseDTO();
+		responseDTO.setSuccessResponseDTO(successResponseDTO);
+		Mockito.when(applicationContext.getBean(SyncManager.class)).thenThrow(NullPointerException.class);
+				packetSyncStatusJob.executeJob("User");
+	packetSyncStatusJob.executeInternal(context);
+	}
+	
+	
+
 
 }
