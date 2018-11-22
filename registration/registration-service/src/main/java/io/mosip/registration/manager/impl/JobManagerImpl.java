@@ -60,6 +60,7 @@ public class JobManagerImpl implements JobManager {
 				SyncJobDef syncJob = (SyncJobDef) value;
 				syncjobMap.put(syncJob.getId(), syncJob);
 			}
+			
 		});
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,

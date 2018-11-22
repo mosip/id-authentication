@@ -217,7 +217,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 			BaseJob job = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
 
 			// Job Invocation
-			responseDTO = job.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_USER);
+			responseDTO = job.executeJob(jobId);
 		} catch (NoSuchBeanDefinitionException | NullPointerException exception) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());

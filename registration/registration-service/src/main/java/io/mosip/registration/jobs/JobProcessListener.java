@@ -83,7 +83,6 @@ public class JobProcessListener extends JobListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be executed ended");
 
-		System.out.println("JOB STARTED");
 		
 	}
 
@@ -117,8 +116,7 @@ public class JobProcessListener extends JobListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Job to be rejected ended");
 
-		System.out.println("JOB REJECTED");
-
+		
 	}
 
 	/*
@@ -150,8 +148,7 @@ public class JobProcessListener extends JobListenerSupport {
 		/*
 		 * -------------------JOB EXECUTED--------------
 		 */
-		System.out.println("JOB REJECTED");
-
+		
 	}
 
 }

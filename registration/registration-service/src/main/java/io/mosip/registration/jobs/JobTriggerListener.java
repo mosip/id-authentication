@@ -65,8 +65,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger mis-fired ended");
 
-		System.out.println("Trigger REJECTED ");
-		
+	
 		
 	}
 
@@ -95,7 +94,6 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger fired ended");
 
-		System.out.println("Trigger Fired");
 		
 	}
 
@@ -124,7 +122,6 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_TRIGGER_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "trigger completed ended");
 
-		System.out.println("Trigger Completed");
 		
 	}
 

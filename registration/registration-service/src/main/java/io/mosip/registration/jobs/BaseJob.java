@@ -126,7 +126,7 @@ public abstract class BaseJob extends QuartzJobBean {
 					// Insert Sync Control transaction
 					syncManager.createSyncControlTransaction(syncTransaction);
 
-				} else if (responseDTO.getErrorResponseDTOs() == null) {
+				} else if (responseDTO.getErrorResponseDTOs() != null) {
 
 					// Insert Sync Transaction of executed with failure
 					syncManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILURE,
