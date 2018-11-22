@@ -1,5 +1,5 @@
 <mat-accordion class="example-headers-align" *ngFor="let applicant of applicants;let applicantIndex = index">
-  <mat-expansion-panel [expanded]="step === applicant.seq" (opened)="setStep(applicant.seq)">
+  <mat-expansion-panel [expanded]="step === applicant.seq" (opened)="setStep(applicant)">
     <mat-expansion-panel-header>
       <mat-panel-title>
         Document upload
@@ -11,8 +11,10 @@
 
     <mat-grid-list cols="3" rowHeight="4em">
       <mat-grid-tile [colspan]="1" [rowspan]="3">
-        <div class="draggableDiv" appDraggable (filesChangeEmiter)="onFilesChange($event)">
-          Drag files here
+        <div class="draggableDiv" appDraggable (filesChangeEmiter)="handleFileInput($event)">
+          <div class="text-wrapper">
+            <div class="centered">Drop your file here!</div>
+          </div>
         </div>
       </mat-grid-tile>
       <mat-grid-tile [colspan]="1" [rowspan]="4">
@@ -32,13 +34,13 @@
       </mat-grid-tile>
       <mat-grid-tile [colspan]="1" [rowspan]="4">
         <div class="docsContainer">
-          <p class="fileName" id="{{docs}}" *ngFor="let docs of documents; let i1 = index">
-            {{fileName[i1]}}
+          <p class="fileName" *ngFor="let file of applicant.files; let fileIndex = index ">
+            {{file.name}}<span *ngIf="file.name" class="cross" (click)="removeFile(applicantIndex,fileIndex)"> X</span>
           </p>
         </div>
       </mat-grid-tile>
       <mat-grid-tile [colspan]="1" [rowspan]="1">
-        <input type="file" id="file" (change)="handleFileInput($event.target.files)" style="display: none;">
+        <input type="file" id="file" (change)="handleFileInput($event)" style="display: none;">
         <input class="browseInput" value="{{browseDisabled? 'Select Document Type':'Browse'}}" type="button" onclick="document.getElementById('file').click();"
           [disabled]="browseDisabled" />
       </mat-grid-tile>
@@ -49,3 +51,5 @@
     </mat-action-row>
   </mat-expansion-panel>
 </mat-accordion>
+
+<!--<embed src="{{uploadedFile}}" width="100px" height="100px" />-->

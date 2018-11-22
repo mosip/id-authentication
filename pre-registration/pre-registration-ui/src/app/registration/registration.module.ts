@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { DashBoardComponent } from './dashboard/dashboard.component';
 import { ParentComponent } from './parent/parent.component';
 import { EscapeHtmlPipe } from '../shared/keep-html.pipe';
+import { DraggableDirective } from './file-upload/draggable.directive';
 
 @NgModule({
   imports: [
@@ -26,8 +27,7 @@ import { EscapeHtmlPipe } from '../shared/keep-html.pipe';
     MaterialModule,
     HttpClientModule
   ],
-  exports: [
-  ],
+  exports: [],
   entryComponents: [DialougComponent],
   declarations: [
     DemographicComponent,
@@ -37,7 +37,8 @@ import { EscapeHtmlPipe } from '../shared/keep-html.pipe';
     DialougComponent,
     DashBoardComponent,
     ParentComponent,
-    EscapeHtmlPipe
+    EscapeHtmlPipe,
+    DraggableDirective
   ]
 })
-export class RegistrationModule { }
+export class RegistrationModule {}
