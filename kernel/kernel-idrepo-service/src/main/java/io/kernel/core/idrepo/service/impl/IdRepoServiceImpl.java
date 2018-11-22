@@ -11,7 +11,10 @@ import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +46,9 @@ public class IdRepoServiceImpl implements IdRepoService {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     @Resource
     private Map<String, String> id;
 
@@ -52,8 +58,8 @@ public class IdRepoServiceImpl implements IdRepoService {
     @Override
     public IdResponseDTO addIdentity(IdRequestDTO request) throws IdRepoAppException {
 	try {
-	    return constructIdResponse("mosip.id.create", idRepo.addIdentity(request.getUin(),
-		    request.getRegistrationId(), convertToBytes(request.getRequest())));
+	    return constructIdResponse("mosip.id.create", idRepo.addIdentity(generateUIN(), request.getRegistrationId(),
+		    convertToBytes(request.getRequest())));
 	} catch (IdRepoAppException e) {
 	    throw new IdRepoAppException(IdRepoErrorConstants.UNKNOWN_ERROR, e, "mosip.id.create");
 	}
@@ -98,6 +104,16 @@ public class IdRepoServiceImpl implements IdRepoService {
 	    }
 	} catch (IdRepoAppException e) {
 	    throw new IdRepoAppException(IdRepoErrorConstants.UNKNOWN_ERROR, e, "mosip.id.update");
+	}
+    }
+
+    @Override
+    public String generateUIN() throws IdRepoAppException {
+	try {
+	    return restTemplate.exchange(env.getProperty("mosip.uingen.url"), HttpMethod.GET, null, String.class)
+		    .getBody();
+	} catch (RestClientException e) {
+	    throw new IdRepoAppException(IdRepoErrorConstants.UNKNOWN_ERROR, e);
 	}
     }
 

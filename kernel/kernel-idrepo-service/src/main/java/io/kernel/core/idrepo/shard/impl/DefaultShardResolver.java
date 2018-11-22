@@ -8,14 +8,14 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Component;
 
-import io.kernel.core.idrepo.shard.ShradResolver;
+import io.kernel.core.idrepo.shard.ShardResolver;
 
 /**
  * @author Manoj SP
  *
  */
 @Component
-public class DefaultShradResolver implements ShradResolver {
+public class DefaultShardResolver implements ShardResolver {
 
 	private static final Pattern pattern = Pattern.compile("[0-4].*");
 

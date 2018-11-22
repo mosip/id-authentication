@@ -12,7 +12,7 @@ public enum IdRepoErrorConstants {
 	UNSUPPORTED_LANG_CODE("KER-IDR-004", "Unsupported Language Code"),
 	INVALID_UIN("KER-IDR-005", "Invalid UIN"),
 	DATA_VALIDATION_FAILED("KER-IDR-006", "Input Data Validation Failed"),
-	INVALID_REQUEST("KER-IDR-007", "Invalid UIN"),
+	INVALID_REQUEST("KER-IDR-007", "Invalid Request"),
 	UNKNOWN_ERROR("KER-IDR-008", "Unknown error occured"),
 	CONNECTION_TIMED_OUT("KER-IDR-009", "Connection Timed out"),
 	DATABASE_ACCESS_ERROR("KER-IDR-010", "Error occured while performing DB operations"),

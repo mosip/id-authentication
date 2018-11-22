@@ -70,20 +70,20 @@ public class IdRequestValidator implements Validator {
 
     private void validateId(String id, Errors errors) {
 	if (Objects.isNull(id)) {
-	    errors.rejectValue(ID_FIELD, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), 
+	    errors.rejectValue(ID_FIELD, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), ID_FIELD));
 	} else if (!this.id.containsValue(id)) {
-	    errors.rejectValue(ID_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), 
+	    errors.rejectValue(ID_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), ID_FIELD));
 	}
     }
 
     private void validateVer(String ver, Errors errors) {
 	if (Objects.isNull(ver)) {
-	    errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), 
+	    errors.rejectValue(VER, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), VER));
 	} else if (!ver.equals(env.getProperty("mosip.idrepo.version"))) {
-	    errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), 
+	    errors.rejectValue(VER, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), VER));
 	}
 
@@ -91,45 +91,45 @@ public class IdRequestValidator implements Validator {
 
     private void validateUin(String uin, Errors errors) {
 	if (Objects.isNull(uin)) {
-	    errors.rejectValue(UIN, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), 
+	    errors.rejectValue(UIN, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), UIN));
 	} else {
 	    try {
 		uinValidator.validateId(uin);
 	    } catch (InvalidIDException e) {
-		errors.rejectValue(UIN, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), 
-			    String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), UIN));
+		errors.rejectValue(UIN, IdRepoErrorConstants.INVALID_UIN.getErrorCode(),
+			IdRepoErrorConstants.INVALID_UIN.getErrorMessage());
 	    }
 	}
     }
 
     private void validateStatus(String status, Errors errors) {
 	if (Objects.isNull(status)) {
-	    errors.rejectValue(STATUS_FIELD, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), 
+	    errors.rejectValue(STATUS_FIELD, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 	} else if (!this.status.containsValue(status)) {
-	    errors.rejectValue(STATUS_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), 
+	    errors.rejectValue(STATUS_FIELD, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), STATUS_FIELD));
 	}
     }
 
     private void validateRegId(String registrationId, Errors errors) {
 	if (Objects.isNull(registrationId)) {
-	    errors.rejectValue(REGISTRATION_ID, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), 
+	    errors.rejectValue(REGISTRATION_ID, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REGISTRATION_ID));
 	}
     }
 
     private void validateRequest(Object request, Errors errors) {
 	if (Objects.isNull(request)) {
-	    errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), 
+	    errors.rejectValue(REQUEST, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), REQUEST));
 	}
     }
 
     private void validateReqTime(String timestamp, Errors errors) {
 	if (Objects.isNull(timestamp)) {
-	    errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(), 
+	    errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 		    String.format(IdRepoErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 	} else {
 	    try {
@@ -137,8 +137,8 @@ public class IdRequestValidator implements Validator {
 		timestampFormat.setLenient(false);
 		timestampFormat.parse(timestamp);
 	    } catch (ParseException e) {
-		errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(), 
-			    String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
+		errors.rejectValue(TIMESTAMP, IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+			String.format(IdRepoErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), TIMESTAMP));
 	    }
 	}
     }

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -74,6 +75,11 @@ public class IdRepoConfig {
     @Bean 
     public Map<String, String> status() {
 	return Collections.unmodifiableMap(status);
+    }
+    
+    @Bean
+    public RestTemplate restTemplate() {
+	return new RestTemplate();
     }
 
     @Bean

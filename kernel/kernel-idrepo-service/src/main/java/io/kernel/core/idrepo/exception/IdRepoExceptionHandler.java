@@ -13,6 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -50,15 +51,13 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
 	IdRepoUnknownException e = new IdRepoUnknownException(IdRepoErrorConstants.UNKNOWN_ERROR);
-//	System.err.println(ExceptionUtils.getStackTrace(ex));
 	return new ResponseEntity<>(buildExceptionResponse((BaseCheckedException) e), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object errorMessage,
 	    HttpHeaders headers, HttpStatus status, WebRequest request) {
-//	System.err.println(ExceptionUtils.getStackTrace(ex));
-	if (ex instanceof ServletException || ex instanceof BeansException) {
+	if (ex instanceof ServletException || ex instanceof BeansException || ex instanceof HttpMessageConversionException) {
 	    ex = new IdRepoAppException(IdRepoErrorConstants.INVALID_REQUEST.getErrorCode(),
 		    IdRepoErrorConstants.INVALID_REQUEST.getErrorMessage());
 
@@ -66,7 +65,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	} else if (ex instanceof AsyncRequestTimeoutException) {
 	    ex = new IdRepoAppException(IdRepoErrorConstants.CONNECTION_TIMED_OUT.getErrorCode(),
 		    IdRepoErrorConstants.CONNECTION_TIMED_OUT.getErrorMessage());
-	    //
+
 	    return new ResponseEntity<>(buildExceptionResponse(ex), HttpStatus.REQUEST_TIMEOUT);
 	} else {
 	    return handleAllExceptions(ex, request);
@@ -75,7 +74,6 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IdRepoAppException.class)
     protected ResponseEntity<Object> handleIdAppException(IdRepoAppException ex, WebRequest request) {
-//	System.err.println(ExceptionUtils.getStackTrace(ex));
 
 	return new ResponseEntity<>(buildExceptionResponse((Exception) ex), HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -110,7 +108,7 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	if (Objects.isNull(response.getId())) {
 	    response.setId("mosip.id.error");
 	}
-	
+
 	response.setVer(env.getProperty("mosip.idrepo.version"));
 
 	if (e instanceof BaseCheckedException) {
@@ -125,9 +123,10 @@ public class IdRepoExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	response.setTimestamp(mapper.convertValue(new Date(), String.class));
+
 	mapper.setFilterProvider(new SimpleFilterProvider().addFilter("responseFilter",
 		SimpleBeanPropertyFilter.serializeAllExcept("registrationId", "status", "response")));
-	
+
 	return response;
     }
 }

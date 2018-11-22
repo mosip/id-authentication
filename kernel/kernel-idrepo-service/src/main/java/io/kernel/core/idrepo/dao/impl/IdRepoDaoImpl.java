@@ -21,7 +21,7 @@ import io.kernel.core.idrepo.dao.IdRepoDao;
 import io.kernel.core.idrepo.entity.Uin;
 import io.kernel.core.idrepo.entity.UinDetail;
 import io.kernel.core.idrepo.exception.IdRepoAppException;
-import io.kernel.core.idrepo.shard.ShradResolver;
+import io.kernel.core.idrepo.shard.ShardResolver;
 
 @Repository
 public class IdRepoDaoImpl implements IdRepoDao {
@@ -66,7 +66,7 @@ public class IdRepoDaoImpl implements IdRepoDao {
     private static final String UIN_DETAILS_UPDATE = "UPDATE uin.uin_detail SET uin_data=? WHERE uin_ref_id = ?";
 
     @Autowired
-    private ShradResolver shardResolver;
+    private ShardResolver shardResolver;
 
     public JdbcTemplate getJdbcTemplate(String uin) {
 	JdbcTemplate jdbcTemplate = new JdbcTemplate();
