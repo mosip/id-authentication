@@ -54,10 +54,10 @@ public interface JobConfigurationService {
 	 * @param applicationContext
 	 *            is a spring framework's application context used here to give
 	 *            beans
-	 * @param apiName
-	 *            the job class bean name
+	 * @param jobId
+	 *            the job id
 	 * @return responseDTO for execute job
 	 */
-	ResponseDTO executeJob(ApplicationContext applicationContext, String apiName);
+	ResponseDTO executeJob(ApplicationContext applicationContext, String jobId);
 
 }

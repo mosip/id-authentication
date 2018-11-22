@@ -102,6 +102,9 @@ public abstract class BaseJob extends QuartzJobBean {
 			});
 
 		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
+			LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, noSuchBeanDefinitionException.getMessage());
+			
 			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 					noSuchBeanDefinitionException.getMessage());
 		}
@@ -131,6 +134,10 @@ public abstract class BaseJob extends QuartzJobBean {
 
 				}
 			} catch (RegBaseUncheckedException regBaseUncheckedException) {
+				
+				LOGGER.error(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
+				
 				LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
 
 				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();

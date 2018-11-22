@@ -125,7 +125,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 				LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 						RegistrationConstants.APPLICATION_ID, exception.getMessage());
 				
-				setErrorResponseDTO(responseDTO, currentJob + RegistrationConstants.START_SCHEDULER_EXCEPTION);
+				setErrorResponseDTO(responseDTO, currentJob + RegistrationConstants.START_SCHEDULER_ERROR_MESSAGE);
 			} 
 		});
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -148,7 +148,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
 			
-			setErrorResponseDTO(responseDTO, RegistrationConstants.STOP_SCHEDULER_EXCEPTION);
+			setErrorResponseDTO(responseDTO, RegistrationConstants.STOP_SCHEDULER_ERROR_MESSAGE);
 		}
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "stop jobs invocation ended");
@@ -186,7 +186,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
 			
-			setErrorResponseDTO(responseDTO, RegistrationConstants.CURRENT_JOB_DETAILS_EXCEPTION);
+			setErrorResponseDTO(responseDTO, RegistrationConstants.CURRENT_JOB_DETAILS_ERROR_MESSAGE);
 
 		}
 
@@ -204,23 +204,26 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 	 * String)
 	 */
 	@Override
-	public ResponseDTO executeJob(ApplicationContext applicationContext, String apiName) {
+	public ResponseDTO executeJob(ApplicationContext applicationContext, String jobId) {
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job started");
 		ResponseDTO responseDTO = null;
 		try {
+			
+			SyncJobDef syncJobDef= SYNC_JOB_MAP.get(jobId);
+			
 			// Get Job using application context and api name
-			BaseJob job = (BaseJob) applicationContext.getBean(apiName);
+			BaseJob job = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
 
 			// Job Invocation
 			responseDTO = job.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_USER);
-		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
+		} catch (NoSuchBeanDefinitionException | NullPointerException exception) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
-					RegistrationConstants.APPLICATION_ID, noSuchBeanDefinitionException.getMessage());
+					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			
 			responseDTO = new ResponseDTO();
-			setErrorResponseDTO(responseDTO, RegistrationConstants.EXECUTE_JOB_EXCEPTION);
+			setErrorResponseDTO(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE);
 		}
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job ended");

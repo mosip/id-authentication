@@ -1,16 +1,8 @@
 package io.mosip.registration.manager.impl;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +13,6 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.SyncJobDAO;
 import io.mosip.registration.dao.SyncJobTransactionDAO;
 import io.mosip.registration.entity.SyncControl;
-import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.manager.SyncManager;
@@ -39,10 +30,10 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
 public class SyncManagerImpl implements SyncManager {
 
 	@Autowired
-	SyncJobTransactionDAO jobTransactionDAO;
+	private SyncJobTransactionDAO jobTransactionDAO;
 
 	@Autowired
-	SyncJobDAO syncJobDAO;
+	private SyncJobDAO syncJobDAO;
 
 	/**
 	 * LOGGER for logging
@@ -51,10 +42,10 @@ public class SyncManagerImpl implements SyncManager {
 
 	// Need to be removed if the transaction table's primary key ID is Auto -
 	// Generatable
-	Random random = new Random();
+	private Random random = new Random();
 
 	@Override
-	public SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) throws NullPointerException{
+	public SyncControl createSyncControlTransaction(final SyncTransaction syncTransaction) throws NullPointerException {
 
 		SyncControl syncControl = syncJobDAO.findBySyncJobId(syncTransaction.getSyncJobId());
 
@@ -65,10 +56,8 @@ public class SyncManagerImpl implements SyncManager {
 			syncControl.setSyncJobId(syncTransaction.getSyncJobId());
 			syncControl.setIsActive(true);
 			syncControl.setMachineId(RegistrationSystemPropertiesChecker.getMachineId());
-			/*
-			 * // syncControl.setCntrId(SessionContext.getInstance().getUserContext().
-			 * getRegistrationCenterDetailDTO() // .getRegistrationCenterId());
-			 */
+
+			syncControl.setRegcntrId(syncTransaction.getCntrId());
 			syncControl.setLangCode("EN");
 
 			syncControl.setCrBy(SessionContext.getInstance().getUserContext().getUserId());
@@ -99,11 +88,11 @@ public class SyncManagerImpl implements SyncManager {
 
 		SyncTransaction syncTransaction = new SyncTransaction();
 
-	
 		try {
 
 			// TODO to be auto generated and has to be remove from here
-			String transactionId = Integer.toString(random.nextInt(10000));
+			String transactionId = Integer.toString(random.nextInt(10000000));
+
 			syncTransaction.setId(transactionId);
 
 			syncTransaction.setSyncJobId(syncJobId);
@@ -117,21 +106,15 @@ public class SyncManagerImpl implements SyncManager {
 
 			syncTransaction.setSyncFrom(RegistrationSystemPropertiesChecker.getMachineId());
 
-			// TODO
-			syncTransaction.setSyncTo("SERVER???");
+			syncTransaction.setSyncTo(RegistrationConstants.JOB_SYNC_TO_SERVER);
 
 			syncTransaction.setMachmId(RegistrationSystemPropertiesChecker.getMachineId());
-			
-			// syncTransaction.setCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
-			// .getRegistrationCenterId());
 
-			// TODO
-			/*
-			 * syncTransaction.setRefId("REFID"); syncTransaction.setRefType("REFTYPE");
-			 * syncTransaction.setSyncParam("SyncParam");
-			 */
+			if (SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO() != null) {
+				syncTransaction.setCntrId(SessionContext.getInstance().getUserContext().getRegistrationCenterDetailDTO()
+						.getRegistrationCenterId());
+			}
 
-			// TODO
 			syncTransaction.setLangCode("EN");
 
 			syncTransaction.setActive(true);
@@ -140,16 +123,13 @@ public class SyncManagerImpl implements SyncManager {
 
 			syncTransaction.setCrDtime(new Timestamp(System.currentTimeMillis()));
 
-			// TODO
-			// update by and timez info
-
-			// TODO
-			// ISDeleted and Timez info
-
 			syncTransaction = jobTransactionDAO.save(syncTransaction);
 
-			
 		} catch (NullPointerException nullPointerException) {
+			LOGGER.error(RegistrationConstants.BATCH_JOBS_SYNC_TRANSC_LOGGER_TITLE,
+					RegistrationConstants.APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
+					nullPointerException.getMessage());
+
 			throw new RegBaseUncheckedException(RegistrationConstants.SYNC_TRANSACTION_NULL_POINTER_EXCEPTION,
 					nullPointerException.getMessage());
 
@@ -160,9 +140,5 @@ public class SyncManagerImpl implements SyncManager {
 
 		return syncTransaction;
 	}
-
-	
-
-	
 
 }

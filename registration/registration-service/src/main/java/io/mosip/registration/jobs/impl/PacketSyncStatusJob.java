@@ -116,7 +116,6 @@ public class PacketSyncStatusJob extends BaseJob {
 	@Override
 	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
-		System.out.println("Started Job Execution");
 		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 

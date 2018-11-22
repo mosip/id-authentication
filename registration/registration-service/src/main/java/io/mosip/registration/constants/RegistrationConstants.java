@@ -526,6 +526,7 @@ public class RegistrationConstants {
 	public static final String JOB_EXECUTION_REJECTED = "Execution Rejected";
 	public static final String JOB_TRIGGER_POINT_SYSTEM = "System";
 	public static final String JOB_TRIGGER_POINT_USER = "User";
+	public static final String JOB_SYNC_TO_SERVER = "Server";
 	public static final String BATCH_JOB_CODE = "Sync Job Alert";
 	public static final String BATCH_JOB_START_SUCCESS_MESSAGE = "Jobs started successfully";
 	public static final String BATCH_JOB_STOP_SUCCESS_MESSAGE = "Jobs stopped successfully";
@@ -537,10 +538,10 @@ public class RegistrationConstants {
 	public static final String PACKET_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Packet Sync Status Job";
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";
 	
-	public static final String START_SCHEDULER_EXCEPTION = " Job Not Found";
-	public static final String STOP_SCHEDULER_EXCEPTION = "Unable to stop JobScheduler";
-	public static final String CURRENT_JOB_DETAILS_EXCEPTION = "Unable to fetch current running job details";
-	public static final String EXECUTE_JOB_EXCEPTION = "Unable to execute job";
+	public static final String START_SCHEDULER_ERROR_MESSAGE = " Job Not Found";
+	public static final String STOP_SCHEDULER_ERROR_MESSAGE = "Unable to stop JobScheduler";
+	public static final String CURRENT_JOB_DETAILS_ERROR_MESSAGE = "Unable to fetch current running job details";
+	public static final String EXECUTE_JOB_ERROR_MESSAGE = "Unable to execute job";
 
 	// GPS Device
 	public static final String GPS_LOGGER = "GPS-Device-Information";
