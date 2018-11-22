@@ -29,6 +29,7 @@ import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.landingzone.scanner.job.stage.LandingzoneScannerStage;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FileNotFoundInDestinationException;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -43,7 +44,8 @@ public class LandingzoneScannerStageTest {
 
 	@Mock
 	private FileManager<DirectoryPathDto, InputStream> filemanager;
-
+	@Mock
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 	@Mock
 	private RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 

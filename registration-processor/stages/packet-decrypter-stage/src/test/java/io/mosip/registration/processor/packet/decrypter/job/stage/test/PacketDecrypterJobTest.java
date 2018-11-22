@@ -22,7 +22,9 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
+import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
 import io.mosip.registration.processor.packet.archiver.util.PacketArchiver;
@@ -32,6 +34,7 @@ import io.mosip.registration.processor.packet.decrypter.job.Decryptor;
 import io.mosip.registration.processor.packet.decrypter.job.stage.PacketDecrypterStage;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -46,7 +49,10 @@ public class PacketDecrypterJobTest {
 	
 	/** The packet decryptor tasklet. */
 	@InjectMocks
-	PacketDecrypterStage packetDecrypterStage;
+	PacketDecrypterStage packetDecrypterStage = new PacketDecrypterStage() {	
+		@Override
+		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {}
+	}; 
 
 	/** The registration status service. */
 	@Mock
@@ -56,6 +62,9 @@ public class PacketDecrypterJobTest {
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
+	@Mock
+	private AuditLogRequestBuilder auditLogRequestBuilder;
+	
 	/** The packet archiver. */
 	@Mock
 	private PacketArchiver packetArchiver;
