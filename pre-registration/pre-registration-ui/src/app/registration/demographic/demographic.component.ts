@@ -1,17 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  FormBuilder,
-  AbstractControl,
-  ValidatorFn,
-  ValidationErrors,
-  FormGroupDirective,
-  NgForm
-} from '@angular/forms';
-import { MatButtonToggleChange, MatDatepickerInputEvent, ErrorStateMatcher } from '@angular/material';
+import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { MatButtonToggleChange, MatDatepickerInputEvent } from '@angular/material';
 
 import { RegistrationService } from '../registration.service';
 import { DemoLabels } from './demographic.labels';
@@ -19,12 +11,20 @@ import { IdentityModel } from './identity.model';
 import { AttributeModel } from './attribute.model';
 import { RequestModel } from './request.model';
 import { DatePipe } from '@angular/common';
-import { DemoIdentityModel } from './Demo.Identity.model';
+
+import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { DemoIdentityModel } from './demo.identity.model';
+import { UserModel } from './user.model';
 
 @Component({
   selector: 'app-demographic',
   templateUrl: './demographic.component.html',
-  styleUrls: ['./demographic.component.css']
+  styleUrls: ['./demographic.component.css'],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'en-AU' },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS }
+  ]
 })
 export class DemographicComponent implements OnInit {
   step = 0;
@@ -45,20 +45,22 @@ export class DemographicComponent implements OnInit {
     'CNE/PIN Number',
     'Age'
   );
-  formBuilder: FormBuilder;
+  numberPattern = '^[1-9]+[0-9]*$';
+  textPattern = '^[a-zA-Z ]*$';
   ageOrDobPref = '';
   showCalender: boolean;
   dateSelected: Date;
-  showDate = false;
+  // showDate = false;
   numberOfApplicants: number;
   userForm: FormGroup;
   numbers: number[];
   isDisabled = [];
   checked = true;
-
+  maxDate = new Date(Date.now());
+  minDate = new Date(Date.now());
   editMode = false;
 
-  isPrimary = 'false';
+  isPrimary = false;
   fullName = '';
   gender = '';
   addressLine1 = '';
@@ -69,15 +71,21 @@ export class DemographicComponent implements OnInit {
   city = '';
   localAdministrativeAuthority = '';
   email = '';
-  dob: ' ';
-  age: ' ';
-  postalCode: '';
-  mobilePhone: '';
-  pin: ' ';
+  dob = '';
+  age = '';
+  postalCode = '';
+  mobilePhone = '';
+  pin = '';
 
-  constructor(private router: Router, private route: ActivatedRoute, private regService: RegistrationService) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private regService: RegistrationService,
+    private dataStorageService: DataStorageService
+  ) {}
 
   ngOnInit() {
+    this.minDate.setFullYear(this.maxDate.getFullYear() - 150);
     this.route.params.subscribe((params: Params) => {
       this.numberOfApplicants = +params['id'];
       this.numbers = Array(this.numberOfApplicants)
@@ -90,13 +98,13 @@ export class DemographicComponent implements OnInit {
 
   initForm() {
     if (this.step === 0) {
-      this.isPrimary = 'true';
+      this.isPrimary = true;
     } else {
-      this.isPrimary = 'false';
+      this.isPrimary = false;
     }
     this.userForm = new FormGroup({
       isPrimary: new FormControl(this.isPrimary),
-      fullName: new FormControl(this.fullName, Validators.required),
+      fullName: new FormControl(this.fullName, [Validators.required, Validators.pattern(this.textPattern)]),
       gender: new FormControl(this.gender, Validators.required),
       addressLine1: new FormControl(this.addressLine1, Validators.required),
       addressLine2: new FormControl(this.addressLine2),
@@ -106,11 +114,20 @@ export class DemographicComponent implements OnInit {
       city: new FormControl(this.city, Validators.required),
       localAdministrativeAuthority: new FormControl(this.localAdministrativeAuthority, Validators.required),
       email: new FormControl(this.email, Validators.email),
-      age: new FormControl(''),
-      dob: new FormControl(''),
-      postalCode: new FormControl(this.postalCode, Validators.required),
-      mobilePhone: new FormControl(''),
-      pin: new FormControl('')
+      age: new FormControl(this.age, [Validators.max(150), Validators.min(1), Validators.pattern(this.numberPattern)]),
+      dob: new FormControl(this.dob),
+      postalCode: new FormControl(this.postalCode, [
+        Validators.required,
+        Validators.maxLength(5),
+        Validators.minLength(5),
+        Validators.pattern(this.numberPattern)
+      ]),
+      mobilePhone: new FormControl(this.mobilePhone, [
+        Validators.maxLength(9),
+        Validators.minLength(9),
+        Validators.pattern(this.numberPattern)
+      ]),
+      pin: new FormControl(this.pin, [Validators.maxLength(30), Validators.pattern(this.numberPattern)])
     });
     this.userForm.setValidators([this.oneOfControlRequired(this.userForm.get('dob'), this.userForm.get('age'))]);
   }
@@ -121,6 +138,7 @@ export class DemographicComponent implements OnInit {
 
   nextStep() {
     this.onSubmit();
+    this.initForm();
   }
 
   prevStep() {
@@ -180,13 +198,17 @@ export class DemographicComponent implements OnInit {
       new DemoIdentityModel(identity)
     );
 
-    this.regService.addUser(req).subscribe(
+    this.dataStorageService.addUser(req).subscribe(
       response => {
-        console.log(response['response'][0]['json']['FullName']);
+        console.log(response['response']);
+        console.log('PREID ' + response['response'][0].prId);
+
         const string = response['response'][0]['json'];
         const json = JSON.parse(string);
         console.log('JSON ', json.request);
         console.log('value ' + json.request.demographicDetails.identity.FullName[0].value);
+        this.regService.addUser(new UserModel(response['response'][0].prId, json.request));
+        console.log(this.regService.getUsers());
       },
       error => console.log(error),
       () => {
@@ -210,7 +232,7 @@ export class DemographicComponent implements OnInit {
     const myFormattedDate = pipe.transform(this.dateSelected, 'dd/MM/yyyy');
 
     this.userForm.controls.dob.patchValue(myFormattedDate);
-    this.showDate = true;
+    // this.showDate = true;
   }
 
   onDOBChange(value) {
@@ -233,12 +255,5 @@ export class DemographicComponent implements OnInit {
       }
       return { oneOfRequired: true };
     };
-  }
-
-  test(selected) {
-    if (selected === undefined) {
-      this.checked = false;
-    }
-    console.log('inside test', selected);
   }
 }

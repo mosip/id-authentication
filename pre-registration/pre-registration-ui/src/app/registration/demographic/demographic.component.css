@@ -34,3 +34,25 @@
 .highlight {
   border: 1px solid red;
 }
+
+mat-form-field {
+  margin-top: 7px;
+}
+
+.age {
+  width: 3em;
+  margin-left: 15%;
+}
+
+.gender {
+  text-align: left;
+  width: 100%;
+}
+
+.img {
+  margin: 2px 0 0 10px;
+}
+
+.ageOrDobPref {
+  width: 150px;
+}

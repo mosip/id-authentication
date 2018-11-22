@@ -23,7 +23,6 @@ export class DraggableDirective {
     evt.preventDefault();
     evt.stopPropagation();
     this.background = '#eee';
-    // do some stuff
   }
 
   @HostListener('drop', ['$event'])
