@@ -72,7 +72,8 @@ public class JobConfigurationServiceTest {
 		syncJobList.forEach(job -> {
 			jobMap.put(job.getId(), job);
 		});
-		
+		JobConfigurationServiceImpl.setSYNC_JOB_MAP(jobMap);
+
 	}
 
 	@Test
