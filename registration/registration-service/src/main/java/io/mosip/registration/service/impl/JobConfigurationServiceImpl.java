@@ -42,7 +42,7 @@ import io.mosip.registration.service.JobConfigurationService;
 public class JobConfigurationServiceImpl implements JobConfigurationService {
 
 	@Autowired
-	SyncJobConfigDAO jobConfigDAO;
+	private SyncJobConfigDAO jobConfigDAO;
 
 	/**
 	 * Sheduler factory bean which will take Job and Trigger details and run jobs
@@ -59,7 +59,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 	/**
 	 * sync job map with key as jobID and value as SyncJob (Entity)
 	 */
-	public static Map<String, SyncJobDef> SYNC_JOB_MAP = new HashMap<>();
+	private  Map<String, SyncJobDef> SYNC_JOB_MAP = new HashMap<>();
 
 	private List<SyncJobDef> jobList;
 
