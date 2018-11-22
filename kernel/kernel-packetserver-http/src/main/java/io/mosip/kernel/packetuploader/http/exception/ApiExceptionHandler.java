@@ -63,18 +63,6 @@ public class ApiExceptionHandler {
 	}
 
 	/**
-	 * Exception handler to handle MosipInvalidFileName
-	 * 
-	 * @param e
-	 *            The InvalidRequestException
-	 * @return The Response entity with error response
-	 */
-	@ExceptionHandler(InvalidFileNameException.class)
-	public ResponseEntity<ErrorResponse<Error>> handle(InvalidFileNameException e) {
-		return new ResponseEntity<>(getErrorResponse(e), HttpStatus.BAD_REQUEST);
-	}
-
-	/**
 	 * Exception handler to handle FileUploadBase.FileSizeLimitExceededException
 	 * 
 	 * @param e
