@@ -536,6 +536,11 @@ public class RegistrationConstants {
 	public static final String BATCH_JOBS_PROCESS_LOGGER_TITLE = "REGISTRATION - Job Process Listener";
 	public static final String PACKET_SYNC_STATUS_JOB_TITLE = "REGISTRATION - Packet Sync Status Job";
 	public static final String BASE_JOB_TITLE = "REGISTRATION - Base Job";
+	
+	public static final String START_SCHEDULER_EXCEPTION = " Job Not Found";
+	public static final String STOP_SCHEDULER_EXCEPTION = "Unable to stop JobScheduler";
+	public static final String CURRENT_JOB_DETAILS_EXCEPTION = "Unable to fetch current running job details";
+	public static final String EXECUTE_JOB_EXCEPTION = "Unable to execute job";
 
 	// GPS Device
 	public static final String GPS_LOGGER = "GPS-Device-Information";
