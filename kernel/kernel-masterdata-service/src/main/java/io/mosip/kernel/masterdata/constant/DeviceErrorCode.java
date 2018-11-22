@@ -2,7 +2,7 @@
 package io.mosip.kernel.masterdata.constant;
 
 /**
- * Constants for device Details
+ * Constants for Device Details
  * 
  * @author Megha Tanga
  * @since 1.0.0
