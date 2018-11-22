@@ -90,14 +90,14 @@ public class DataProvider {
 		List<FingerprintDetailsDTO> fingerList = new ArrayList<>();
 
 		if (personType.equals(DataProvider.APPLICANT)) {
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "BothThumbs", 85.0, false,
+			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "BothThumbs.jpg", 85.0, false,
 					"BothThumbs", 0));
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "LeftPalm", 80.0, false,
+			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "LeftPalm.jpg", 80.0, false,
 					"LeftPalm", 3));
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "RightPalm", 95.0, false,
+			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, "RightPalm.jpg", 95.0, false,
 					"RightPalm", 2));
 		} else {
-			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, personType+"LeftThumb", 0, false,
+			fingerList.add(DataProvider.buildFingerPrintDetailsDTO(DataProvider.THUMB_JPG, personType+"LeftThumb.jpg", 0, false,
 					"LeftThumb", 0));
 		}
 
@@ -139,7 +139,7 @@ public class DataProvider {
 
 	private static List<IrisDetailsDTO> getIrisDetailsDTO() throws RegBaseCheckedException {
 		List<IrisDetailsDTO> irisList = new ArrayList<>();
-		irisList.add(DataProvider.buildIrisDetailsDTO("/eye.jpg", "LeftEye", "LeftEye", false, 79.0));
+		irisList.add(DataProvider.buildIrisDetailsDTO("/eye.jpg", "LeftEye.jpg", "LeftEye", false, 79.0));
 
 		return irisList;
 	}
@@ -172,7 +172,7 @@ public class DataProvider {
 		ApplicantDocumentDTO applicantDocumentDTO = new ApplicantDocumentDTO();
 		applicantDocumentDTO.setDocumentDetailsDTO(DataProvider.getDocumentDetailsDTO());
 		applicantDocumentDTO.setPhoto(DataProvider.getImageBytes("/applicantPhoto.jpg"));
-		applicantDocumentDTO.setPhotographName("ApplicantPhoto");
+		applicantDocumentDTO.setPhotographName("ApplicantPhoto.jpg");
 		applicantDocumentDTO.setHasExceptionPhoto(false);
 		applicantDocumentDTO.setQualityScore(89.0);
 		applicantDocumentDTO.setNumRetry(1);
@@ -187,14 +187,14 @@ public class DataProvider {
 
 		DocumentDetailsDTO documentDetailsDTO = new DocumentDetailsDTO();
 		documentDetailsDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsDTO.setDocumentName("ProofOfIdentity");
+		documentDetailsDTO.setDocumentName("ProofOfIdentity.jpg");
 		documentDetailsDTO.setDocumentCategory("PoI");
 		documentDetailsDTO.setDocumentOwner("Self");
 		documentDetailsDTO.setDocumentType("PAN");
 
 		DocumentDetailsDTO documentDetailsResidenceDTO = new DocumentDetailsDTO();
 		documentDetailsResidenceDTO.setDocument(DataProvider.getImageBytes("/proofOfAddress.jpg"));
-		documentDetailsResidenceDTO.setDocumentName("ProofOfAddress");
+		documentDetailsResidenceDTO.setDocumentName("ProofOfAddress.jpg");
 		documentDetailsResidenceDTO.setDocumentCategory("PoA");
 		documentDetailsResidenceDTO.setDocumentOwner("hof");
 		documentDetailsResidenceDTO.setDocumentType("passport");

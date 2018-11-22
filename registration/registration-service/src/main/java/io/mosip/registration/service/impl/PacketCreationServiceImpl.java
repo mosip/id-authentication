@@ -1,11 +1,14 @@
 package io.mosip.registration.service.impl;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import io.mosip.kernel.core.exception.IOException;
 import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.kernel.core.util.FileUtils;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.service.PacketCreationService;
 import io.mosip.registration.util.hmac.HMACGeneration;
+import io.mosip.registration.util.json.JSONConverter;
 import io.mosip.registration.service.ZipCreationService;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
@@ -84,7 +88,7 @@ public class PacketCreationServiceImpl implements PacketCreationService {
 
 			// Generating Demographic JSON as byte array
 			jsonsMap.put(DEMOGRPAHIC_JSON_NAME,
-					javaObjectToJsonString(MAPPER_FACADE.map(registrationDTO.getDemographicDTO(), Demographic.class))
+					javaObjectToJsonString(JSONConverter.jsonConvertor(registrationDTO.getDemographicDTO()))
 							.getBytes());
 
 			LOGGER.debug(LOG_PKT_CREATION, APPLICATION_NAME, APPLICATION_ID, "Demographic Json created successfully");

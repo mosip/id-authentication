@@ -59,6 +59,8 @@ import static io.mosip.registration.constants.RegistrationConstants.DEVICE_ONBOA
  */
 @Controller
 public class DeviceMappingController extends BaseController implements Initializable {
+	
+	private static final Logger LOGGER = AppConfig.getLogger(DeviceMappingController.class);
 
 	@FXML
 	private AnchorPane onBoardRoot;
@@ -92,7 +94,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 	private ImageView mapDevice;
 	@FXML
 	private ImageView unmapDevice;
-	private static final Logger LOGGER = AppConfig.getLogger(DeviceMappingController.class);
+
 	@Autowired
 	private MapMachineService mapMachineService;
 
@@ -117,7 +119,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			SessionContext.getInstance().getMapObject().put(RegistrationConstants.MACHINE_ID, "1947");
 
 			// Add 'All' option to Device Types dropdown
-			deviceTypes.getItems().add(0, RegistrationConstants.DEVICE_TYPES_ALL_OPTION);
+			deviceTypes.getItems().add(RegistrationConstants.DEVICE_TYPES_ALL_OPTION);
 
 			// Set the Device Types
 			deviceTypes.getItems().addAll(FXCollections.observableArrayList(mapMachineService.getAllDeviceTypes()));
@@ -162,6 +164,8 @@ public class DeviceMappingController extends BaseController implements Initializ
 					} else {
 						populateDevices(filterDevices(availableDevices.getItems()), mappedDevices.getItems());
 					}
+					LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+							"Searching the available devices based on search criteria completed");
 				} catch (RuntimeException runtimeException) {
 					LOGGER.error(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
 							RegistrationConstants.DEVICE_ONBOARD_SEARCH_DEVICE_EXCEPTION
@@ -169,9 +173,6 @@ public class DeviceMappingController extends BaseController implements Initializ
 									+ runtimeException.getMessage());
 
 					generateAlert(DEVICE_ONBOARD_EXCEPTION_ALERT, AlertType.ERROR, DEVICE_ONBOARD_ERROR_MSG);
-				} finally {
-					LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-							"Searching the available devices based on search criteria completed");
 				}
 			});
 
@@ -187,7 +188,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					"Exception while initializing device onboarding page: ".concat(runtimeException.getMessage()));
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Device Onboarding page initialization completed");
+					"Device Onboarding page initialization method execution completed");
 		}
 	}
 
@@ -235,7 +236,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 							.concat(runtimeException.getMessage()));
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Fetching and displaying all available and mapped devices from Service and UI completed");
+					"Fetching and displaying all available and mapped devices from Service and UI method execution completed");
 		}
 	}
 
@@ -282,7 +283,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			generateAlert(DEVICE_ONBOARD_EXCEPTION_ALERT, AlertType.ERROR, DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Loading list of available and mapped devices for selected device type completed");
+					"Loading list of available and mapped devices for selected device type method execution completed");
 		}
 	}
 
@@ -304,7 +305,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					"Exception while populating devices in UI: ".concat(runtimeException.getMessage()));
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Populating devices in UI completed");
+					"Populating devices in UI method execution completed");
 		}
 	}
 
@@ -342,7 +343,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			generateAlert(DEVICE_ONBOARD_EXCEPTION_ALERT, AlertType.ERROR, DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Mapping of selected devices completed");
+					"Mapping of selected devices method execution completed");
 		}
 	}
 
@@ -380,7 +381,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			generateAlert(DEVICE_ONBOARD_EXCEPTION_ALERT, AlertType.ERROR, DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Unmapping of selected devices completed");
+					"Unmapping of selected devices method execution completed");
 		}
 	}
 
@@ -414,7 +415,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			throw new RegBaseUncheckedException(RegistrationConstants.DEVICE_ONBOARD_DEVICE_GROUPING_EXCEPTION,
 					"Exception while mapping of devices: ".concat(runtimeException.getMessage()));
 		} finally {
-			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Mapping of devices completed");
+			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Mapping of devices method execution completed");
 		}
 
 		return selectedDevices;
@@ -440,7 +441,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			generateAlert(DEVICE_ONBOARD_EXCEPTION_ALERT, AlertType.ERROR, DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Navigation to Registration Home page completed");
+					"Navigation to Registration Home page method execution completed");
 		}
 	}
 
@@ -511,7 +512,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 			generateAlert(DEVICE_ONBOARD_EXCEPTION_ALERT, AlertType.ERROR, DEVICE_ONBOARD_ERROR_MSG);
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Mapping of onboarding devices for Registration Machine completed");
+					"Mapping of onboarding devices for Registration Machine method execution completed");
 		}
 	}
 
@@ -550,7 +551,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 							.concat(runtimeException.getMessage()));
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Searching the devices based on given search criteria completed");
+					"Searching the devices based on given search criteria method execution completed");
 		}
 
 		return filteredDevices;
@@ -575,7 +576,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 							.concat(runtimeException.getMessage()));
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Clearing Session Context objects used for Device Onboarding completed");
+					"Clearing Session Context objects used for Device Onboarding method execution completed");
 		}
 	}
 
@@ -632,7 +633,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 					"Exception while filtering the devices by deviceType: ".concat(runtimeException.getMessage()));
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Filtering the devices by deviceType completed");
+					"Filtering the devices by deviceType method execution completed");
 		}
 
 		return actualDevicesMap;
@@ -660,7 +661,7 @@ public class DeviceMappingController extends BaseController implements Initializ
 							.concat(runtimeException.getMessage()));
 		} finally {
 			LOGGER.debug(DEVICE_ONBOARD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
-					"Filtering the devices based on deviceType completed");
+					"Filtering the devices based on deviceType method execution completed");
 		}
 		return collection;
 	}

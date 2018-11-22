@@ -47,7 +47,9 @@ public enum RegistrationExceptions {
 	REG_UI_AUTHORIZATION_EXCEPTION("REG-ROA-010","You are not authorized to access this feature"),
 	REG_UI_APPROVE_SCREEN_EXCEPTION("REG-APS-011","Unable to load Approval screen"),
 	REG_PACKET_SYNC_EXCEPTION("REG-PSS-001","Unable to Sync Packets to the server"),
-	REG_PACKET_UPLOAD_ERROR("REG-PUS-001","Unable to Push Packets to the server");
+	REG_PACKET_UPLOAD_ERROR("REG-PUS-001","Unable to Push Packets to the server"),
+	REG_ID_JSON_ERROR("REG-JSC-001","Exception while parsing DemographicDTO to ID JSON"),
+	REG_ID_JSON_FIELD_ACCESS_ERROR("REG-JSC-002","Exception while accessing fields in DemographicDTO for ID JSON conversion");
 
 
 	/**

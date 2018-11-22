@@ -9,7 +9,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "device_type", schema = "reg")
-public class DeviceType extends RegistrationCommonFields{
+public class DeviceType extends RegistrationCommonFields {
+
 	@EmbeddedId
 	private RegDeviceTypeId regDeviceTypeId;
 	@Column(name = "name")
@@ -21,44 +22,79 @@ public class DeviceType extends RegistrationCommonFields{
 	@Column(name = "del_dtimes")
 	private Timestamp deletedTime;
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public Boolean getIsDeleted() {
-		return isDeleted;
-	}
-
-	public void setIsDeleted(Boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
-
-	public Timestamp getDeletedTime() {
-		return deletedTime;
-	}
-
-	public void setDeletedTime(Timestamp deletedTime) {
-		this.deletedTime = deletedTime;
-	}
-
+	/**
+	 * @return the regDeviceTypeId
+	 */
 	public RegDeviceTypeId getRegDeviceTypeId() {
 		return regDeviceTypeId;
 	}
 
+	/**
+	 * @param regDeviceTypeId
+	 *            the regDeviceTypeId to set
+	 */
 	public void setRegDeviceTypeId(RegDeviceTypeId regDeviceTypeId) {
 		this.regDeviceTypeId = regDeviceTypeId;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description
+	 *            the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @return the isDeleted
+	 */
+	public Boolean getIsDeleted() {
+		return isDeleted;
+	}
+
+	/**
+	 * @param isDeleted
+	 *            the isDeleted to set
+	 */
+	public void setIsDeleted(Boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
+	/**
+	 * @return the deletedTime
+	 */
+	public Timestamp getDeletedTime() {
+		return deletedTime;
+	}
+
+	/**
+	 * @param deletedTime
+	 *            the deletedTime to set
+	 */
+	public void setDeletedTime(Timestamp deletedTime) {
+		this.deletedTime = deletedTime;
 	}
 
 }

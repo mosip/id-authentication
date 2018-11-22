@@ -10,8 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Type;
-
 /**
  * RegCentreMachineDevice entity details
  * 
@@ -27,7 +25,6 @@ public class RegCentreMachineDevice extends RegistrationCommonFields implements 
 	@EmbeddedId
 	private RegCentreMachineDeviceId regCentreMachineDeviceId;
 	@Column(name = "is_deleted")
-	
 	private Boolean isDeleted;
 	@Column(name = "del_dtimes")
 	private Timestamp deletedTime;

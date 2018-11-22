@@ -79,6 +79,7 @@ public class BaseController {
 	 * @return
 	 */
 	public static <T> T load(URL url) throws IOException {
+		clearDeviceOnboardingContext();
 		FXMLLoader loader = new FXMLLoader(url);
 		loader.setControllerFactory(RegistrationAppInitialization.getApplicationContext()::getBean);
 		return loader.load();
@@ -256,6 +257,13 @@ public class BaseController {
 	 */
 	protected void clearPhoto(String imageType) {
 		// will be implemented in the derived class.
+	}
+	
+	private static void clearDeviceOnboardingContext() {
+		if (SessionContext.getInstance().getMapObject() != null) {
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.ONBOARD_DEVICES_MAP);
+			SessionContext.getInstance().getMapObject().remove(RegistrationConstants.ONBOARD_DEVICES_MAP_UPDATED);
+		}
 	}
 
 }

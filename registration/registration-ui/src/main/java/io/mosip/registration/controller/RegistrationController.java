@@ -506,6 +506,19 @@ public class RegistrationController extends BaseController {
 			demographicDTO.setDemoInUserLang(demographicInfoDTO);
 			osiDataDto.setOperatorID(SessionContext.getInstance().getUserContext().getUserId());
 
+			// local language
+			demographicInfoDTO = new DemographicInfoDTO();
+			locationDto = new LocationDTO();
+			addressDto = new AddressDTO();
+			addressDto.setLocationDTO(locationDto);
+			demographicInfoDTO.setAddressDTO(addressDto);
+			demographicInfoDTO.setFullName(fullName_lc.getText());
+			addressDto.setAddressLine1(addressLine1_lc.getText());
+			addressDto.setAddressLine2(addressLine2_lc.getText());
+			addressDto.setLine3(addressLine3_lc.getText());
+
+			demographicDTO.setDemoInLocalLang(demographicInfoDTO);
+
 			registrationDTO.setPreRegistrationId(preRegistrationId.getText());
 			registrationDTO.setOsiDataDTO(osiDataDto);
 			registrationDTO.setDemographicDTO(demographicDTO);
