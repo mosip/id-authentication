@@ -2,9 +2,6 @@ package io.mosip.kernel.masterdata.dto;
 
 import java.util.List;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,7 +21,5 @@ public class LanguageRequestResponseDto {
 	/**
 	 * List of Languages used for Create or Updated for languages.
 	 */
-	@NotNull(message = "{languages.notNull}")
-	@Valid
 	private List<LanguageDto> languages;
 }

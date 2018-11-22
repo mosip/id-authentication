@@ -124,7 +124,7 @@ public class MasterdataControllerTest {
 	private List<LanguageDto> languages;
 	private LanguageDto hin;
 
-	private final String LOCATION_JSON_EXPECTED = "{\"locations\":[{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
+	private final String LOCATION_JSON_EXPECTED = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
 
 	@MockBean
 	private LocationService locationService;
@@ -230,21 +230,21 @@ public class MasterdataControllerTest {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
 		locationResponseDto = new LocationResponseDto();
 		locationDto = new LocationDto();
-		locationDto.setLocationCode("IND");
-		locationDto.setLocationName("INDIA");
+		locationDto.setCode("IND");
+		locationDto.setName("INDIA");
 		locationDto.setHierarchyLevel(0);
 		locationDto.setHierarchyName(null);
-		locationDto.setParentLocationCode(null);
+		locationDto.setParentLocCode(null);
 		locationDto.setLanguageCode("HIN");
 		locationDto.setCreatedBy("dfs");
 		locationDto.setUpdatedBy("sdfsd");
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
-		locationDto.setLocationCode("KAR");
-		locationDto.setLocationName("KARNATAKA");
+		locationDto.setCode("KAR");
+		locationDto.setName("KARNATAKA");
 		locationDto.setHierarchyLevel(1);
 		locationDto.setHierarchyName(null);
-		locationDto.setParentLocationCode("IND");
+		locationDto.setParentLocCode("IND");
 		locationDto.setLanguageCode("KAN");
 		locationDto.setCreatedBy("dfs");
 		locationDto.setUpdatedBy("sdfsd");

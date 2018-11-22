@@ -906,7 +906,7 @@ public class MasterDataServiceTest {
 
 		LocationResponseDto locationHierarchyResponseDto = locationHierarchyService
 				.getLocationHierarchyByLangCode("IND", "HIN");
-		Assert.assertEquals(locationHierarchyResponseDto.getLocations().get(0).getLocationCode(), "IND");
+		Assert.assertEquals(locationHierarchyResponseDto.getLocations().get(0).getCode(), "IND");
 
 	}
 
