@@ -2,7 +2,7 @@ package io.mosip.registration.dao;
 
 import java.util.List;
 
-import io.mosip.registration.entity.SyncJob;
+import io.mosip.registration.entity.SyncJobDef;
 
 /**
  * DAO class for batch job configuration
@@ -13,17 +13,17 @@ import io.mosip.registration.entity.SyncJob;
 public interface SyncJobConfigDAO {
 
 	/**
-	 * To get the List of {@link SyncJob}
+	 * To get the List of {@link SyncJobDef}
 	 * 
 	 * @return list of sync jobs
 	 */
-	List<SyncJob> getAll();
+	List<SyncJobDef> getAll();
 
 	/**
-	 * To get the List of {@link SyncJob}
+	 * To get the List of {@link SyncJobDef}
 	 * 
 	 * @return list active sync jobs
 	 */
-	List<SyncJob> getActiveJobs();
+	List<SyncJobDef> getActiveJobs();
 
 }

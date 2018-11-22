@@ -1,6 +1,5 @@
 package io.mosip.registration.service.impl;
 
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,13 +7,17 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.SchedulerException;
+import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
-import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +28,7 @@ import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
-import io.mosip.registration.entity.SyncJob;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.service.JobConfigurationService;
 
@@ -56,9 +59,9 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 	/**
 	 * sync job map with key as jobID and value as SyncJob (Entity)
 	 */
-	public static Map<String, SyncJob> SYNC_JOB_MAP = new HashMap<>();
+	public static Map<String, SyncJobDef> SYNC_JOB_MAP = new HashMap<>();
 
-	private static Map<String, Object> JOBDATASMAP = new HashMap<>();
+	private List<SyncJobDef> jobList;
 
 	/*
 	 * (non-Javadoc)
@@ -70,8 +73,9 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
-		List<SyncJob> jobList = jobConfigDAO.getActiveJobs();
+		jobList = jobConfigDAO.getActiveJobs();
 		jobList.forEach(syncJob -> SYNC_JOB_MAP.put(syncJob.getId(), syncJob));
+
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was completed");
 
@@ -84,46 +88,43 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 	 * springframework.context.ApplicationContext)
 	 */
 	@SuppressWarnings("unchecked")
-	public ResponseDTO startJobs(ApplicationContext applicationContext) {
+	public ResponseDTO startScheduler(ApplicationContext applicationContext) {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "start jobs invocation started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 
+		Map<String, Object> jobDataAsMap = new HashMap<>();
+		jobDataAsMap.put("applicationContext", applicationContext);
+		jobDataAsMap.putAll(SYNC_JOB_MAP);
+		
+		JobDataMap jobDataMap =new JobDataMap(jobDataAsMap);
+
 		SYNC_JOB_MAP.forEach((jobId, syncJob) -> {
 			try {
 
 				if (syncJob.getParentSyncJobId() == null) {
-					JobDetailFactoryBean jobDetailBean = new JobDetailFactoryBean();
-					CronTriggerFactoryBean cronTriggerBean = new CronTriggerFactoryBean();
 
 					BaseJob baseJob = null;
 
 					// Get Job instance through application context
 					baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
 
-					jobDetailBean.setJobClass(baseJob.jobClass());
-					jobDetailBean.setName(syncJob.getId());
+					JobDetail jobDetail = JobBuilder.newJob(baseJob.jobClass()).withIdentity(syncJob.getId())
+							.usingJobData(jobDataMap).build();
 
-					JOBDATASMAP.put("applicationContext", applicationContext);
+					CronTrigger trigger = (CronTrigger) TriggerBuilder.newTrigger().forJob(jobDetail)
+							.withIdentity(syncJob.getId())
+							.withSchedule(CronScheduleBuilder.cronSchedule(syncJob.getSyncFrequency())).build();
 
-					// putting application context in job data map
-
-					jobDetailBean.setJobDataAsMap(JOBDATASMAP);
-					jobDetailBean.afterPropertiesSet();
-
-					cronTriggerBean.setJobDetail(jobDetailBean.getObject());
-					cronTriggerBean.setCronExpression(syncJob.getSyncFrequency());
-					cronTriggerBean.setName(syncJob.getId());
-					cronTriggerBean.afterPropertiesSet();
-
-					schedulerFactoryBean.getScheduler().scheduleJob(jobDetailBean.getObject(),
-							cronTriggerBean.getObject());
+					schedulerFactoryBean.getScheduler().scheduleJob(jobDetail, trigger);
 					setSuccessResponseDTO(responseDTO, RegistrationConstants.BATCH_JOB_START_SUCCESS_MESSAGE);
 
 				}
-			} catch (SchedulerException | ParseException | NoSuchBeanDefinitionException exception) {
+			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
 				setErrorResponseDTO(responseDTO, exception);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
@@ -133,18 +134,13 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see io.mosip.registration.service.JobConfigurationService#stopJobs()
-	 */
-	public ResponseDTO stopJobs() {
+	public ResponseDTO stopScheduler(boolean shutdown) {
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "stop jobs invocation started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		try {
-			schedulerFactoryBean.getScheduler().shutdown();
+			schedulerFactoryBean.getScheduler().shutdown(shutdown);
 			setSuccessResponseDTO(responseDTO, RegistrationConstants.BATCH_JOB_STOP_SUCCESS_MESSAGE);
 
 		} catch (SchedulerException schedulerException) {

@@ -19,12 +19,12 @@ import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.JobProcessListener;
 import io.mosip.registration.jobs.JobTriggerListener;
-import io.mosip.registration.manager.BaseTransactionManager;
+import io.mosip.registration.manager.SyncManager;
 
 public class JobTriggerTest {
 	
 	@Mock
-	BaseTransactionManager transactionManager;	
+	SyncManager transactionManager;	
 
 	@Mock
 	Trigger trigger;

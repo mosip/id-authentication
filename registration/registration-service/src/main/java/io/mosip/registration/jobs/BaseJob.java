@@ -1,27 +1,23 @@
 package io.mosip.registration.jobs;
 
-import java.text.ParseException;
+import java.util.LinkedList;
+import java.util.Map;
 
-import org.quartz.JobExecutionContext;
-import org.quartz.SchedulerException;
-import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
-import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.SyncJob;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.manager.BaseTransactionManager;
-import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
+import io.mosip.registration.manager.JobManager;
+import io.mosip.registration.manager.SyncManager;
 
 /**
  * The class BaseJob was a quartzJobBean which gives the information of job and
@@ -34,6 +30,19 @@ import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
 public abstract class BaseJob extends QuartzJobBean {
 
 	protected ApplicationContext applicationContext = null;
+
+	/**
+	 * Autowires job manager for to get Job id functionality
+	 */
+	@Autowired
+	protected JobManager jobManager;
+
+	/**
+	 * The SncTransactionManagerImpl, which Have the functionalities to get the job
+	 * and to create sync transaction
+	 */
+	@Autowired
+	protected SyncManager syncManager;
 
 	/**
 	 * LOGGER for logging
@@ -50,48 +59,6 @@ public abstract class BaseJob extends QuartzJobBean {
 		return this.getClass();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.springframework.scheduling.quartz.QuartzJobBean#executeInternal(org.
-	 * quartz.JobExecutionContext)
-	 */
-	@Async
-	@Override
-	public void executeInternal(JobExecutionContext context) {
-		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "job execute internal started");
-		BaseTransactionManager baseTransactionManager = null;
-
-		try {
-
-			/*
-			 * Get Application Context from JobExecutionContext's job detail
-			 */
-			this.applicationContext = (ApplicationContext) context.getJobDetail().getJobDataMap()
-					.get("applicationContext");
-
-			baseTransactionManager = this.applicationContext.getBean(BaseTransactionManager.class);
-
-			SyncJob syncJob=baseTransactionManager.getJob(context);
-			this.executeChildJob(syncJob.getId());
-
-		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
-			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
-					noSuchBeanDefinitionException.getMessage());
-		} catch (NullPointerException nullPointerException) {
-			nullPointerException.printStackTrace();
-
-			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
-					nullPointerException.getMessage());
-
-		}
-
-		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");
-
-	}
-
 	/**
 	 * To execute the specified Job invocation
 	 * 
@@ -99,7 +66,9 @@ public abstract class BaseJob extends QuartzJobBean {
 	 *            the triggered person
 	 * @return Response of execution
 	 */
-	public abstract ResponseDTO executeJob(String triggerPoint);
+	public abstract ResponseDTO executeJob(String triggerPoint, String jobId);
+
+	public abstract ResponseDTO executeJob(String jobId);
 
 	/**
 	 * Job Execution process
@@ -107,41 +76,38 @@ public abstract class BaseJob extends QuartzJobBean {
 	 * @param currentJobID
 	 *            current job executing
 	 */
-	public void executeChildJob(String currentJobID) {
+	public void executeChildJob(String currentJobID, Map<String, SyncJobDef> jobMap) {
+
 		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execution started");
 
-		if (JobConfigurationServiceImpl.SYNC_JOB_MAP.get(currentJobID) != null) {
+		if (jobMap.get(currentJobID) != null) {
 
 			// Get Current SyncJob
-			SyncJob syncJob = JobConfigurationServiceImpl.SYNC_JOB_MAP.get(currentJobID);
-			
-			/*if (syncJob.getParentSyncJobId() != null) {
-				executeParentJob(syncJob.getParentSyncJobId(), context);
-			}*/
+			SyncJobDef syncJob = jobMap.get(currentJobID);
 
-			try{
-				//Parent  SyncJob
-				BaseJob parentBaseJob = (BaseJob) this.applicationContext.getBean(syncJob.getApiName());
-				
-				//Response of parentBaseJob
-				ResponseDTO responseDTO=parentBaseJob.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM);
-				
-				//if parent job successfully executed, execute its next child job
-				if(responseDTO.getErrorResponseDTOs()==null && responseDTO.getSuccessResponseDTO()!=null) {
-					
-					//Check for current job's child
-					JobConfigurationServiceImpl.SYNC_JOB_MAP.forEach((jobId, childJob) ->
-					{
-						if(childJob.getParentSyncJobId()!=null && childJob.getParentSyncJobId().equals(syncJob.getId())) {
-							
-							//Execute its next child Job
-							executeChildJob(childJob.getId());
+			try {
+				// Parent SyncJob
+				BaseJob parentBaseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
+
+				// Response of parentBaseJob
+				ResponseDTO responseDTO = parentBaseJob.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
+						syncJob.getId());
+
+				// if parent job successfully executed, execute its next child job
+				if (responseDTO.getErrorResponseDTOs() == null && responseDTO.getSuccessResponseDTO() != null) {
+
+					// Check for current job's child
+					jobMap.forEach((jobId, childJob) -> {
+						if (childJob.getParentSyncJobId() != null
+								&& childJob.getParentSyncJobId().equals(syncJob.getId())) {
+
+							// Execute its next child Job
+							executeChildJob(childJob.getId(), jobMap);
 						}
 					});
 				}
-				
-			
+
 			} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
 				throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
 						noSuchBeanDefinitionException.getMessage());
@@ -153,4 +119,41 @@ public abstract class BaseJob extends QuartzJobBean {
 
 	}
 
+	public ResponseDTO syncTransactionUpdate(ResponseDTO responseDTO, String triggerPoint, String syncJobId) {
+		if (responseDTO != null) {
+			try {
+				if (responseDTO.getSuccessResponseDTO() != null) {
+
+					// Insert Sync Transaction of executed with Success
+					SyncTransaction syncTransaction = syncManager.createSyncTransaction(
+							RegistrationConstants.JOB_EXECUTION_SUCCESS, RegistrationConstants.JOB_EXECUTION_SUCCESS,
+							triggerPoint, syncJobId);
+
+					// Insert Sync Control transaction
+					syncManager.createSyncControlTransaction(syncTransaction);
+
+				} else if (responseDTO.getErrorResponseDTOs() == null) {
+
+					// Insert Sync Transaction of executed with failure
+					syncManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILURE,
+							RegistrationConstants.JOB_EXECUTION_FAILURE, triggerPoint, syncJobId);
+
+				}
+			} catch (RegBaseUncheckedException regBaseUncheckedException) {
+				LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
+
+				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+				errorResponseDTO.setInfoType(RegistrationConstants.ERROR);
+				errorResponseDTO.setCode(RegistrationConstants.BATCH_JOB_CODE);
+				errorResponseDTO.setMessage(regBaseUncheckedException.getMessage());
+
+				errorResponseDTOs.add(errorResponseDTO);
+
+				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
+			}
+
+		}
+		return responseDTO;
+
+	}
 }

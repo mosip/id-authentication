@@ -10,7 +10,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.manager.BaseTransactionManager;
+import io.mosip.registration.manager.JobManager;
+import io.mosip.registration.manager.SyncManager;
 import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
 
 /**
@@ -23,13 +24,20 @@ import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
 @Component
 public class JobProcessListener extends JobListenerSupport {
 
+	
+	/**
+	 * Autowires job manager for to get Job id functionality
+	 */
+	@Autowired
+	private JobManager jobManager;
+
 	/**
 	 * Autowires the SncTransactionManagerImpl, which Have the functionalities to
 	 * get the job and to create sync transaction
 	 */
 	@Autowired
-	private BaseTransactionManager baseTransactionManager;
-
+	private SyncManager syncTransactionManager;
+	
 	/**
 	 * LOGGER for logging
 	 */
@@ -63,10 +71,10 @@ public class JobProcessListener extends JobListenerSupport {
 
 		// Insert SYNC Transaction
 		try {
-			baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_STARTED,
+			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_STARTED,
 
 					RegistrationConstants.JOB_EXECUTION_STARTED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
-					baseTransactionManager.getJob(context));
+					jobManager.getJobId(context));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
@@ -99,9 +107,9 @@ public class JobProcessListener extends JobListenerSupport {
 		try {
 
 			// Insert SYNC Transaction
-			baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILED,
-					RegistrationConstants.JOB_EXECUTION_FAILED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
-					baseTransactionManager.getJob(context));
+			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_REJECTED,
+					RegistrationConstants.JOB_EXECUTION_REJECTED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
+					jobManager.getJobId(context));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
@@ -127,9 +135,9 @@ public class JobProcessListener extends JobListenerSupport {
 	
 		try {
 			// Insert SYNC Transaction
-			baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_COMPLETED,
+			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_COMPLETED,
 					RegistrationConstants.JOB_EXECUTION_COMPLETED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
-					baseTransactionManager.getJob(context));
+					jobManager.getJobId(context));
 
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,

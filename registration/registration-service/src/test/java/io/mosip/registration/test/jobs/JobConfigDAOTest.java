@@ -16,7 +16,7 @@ import org.mockito.junit.MockitoRule;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.dao.impl.JobConfigDAOImpl;
-import io.mosip.registration.entity.SyncJob;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.repositories.JobConfigRepository;
 
@@ -37,7 +37,7 @@ public class JobConfigDAOTest {
 		
 		@Test
 		public void saveTest()  {			
-			Mockito.when(jobConfigRepository.findAll()).thenReturn(new LinkedList<SyncJob>());
+			Mockito.when(jobConfigRepository.findAll()).thenReturn(new LinkedList<SyncJobDef>());
 			jobConfigDAOImpl.getAll();
 		}
 		
@@ -49,8 +49,8 @@ public class JobConfigDAOTest {
 		
 		@Test
 		public void getActiveJobsTest() {
-			Mockito.when(jobConfigRepository.findByIsActiveTrue()).thenReturn(new LinkedList<SyncJob>());
-			assertThat(jobConfigDAOImpl.getActiveJobs(), is(new LinkedList<SyncJob>()));
+			Mockito.when(jobConfigRepository.findByIsActiveTrue()).thenReturn(new LinkedList<SyncJobDef>());
+			assertThat(jobConfigDAOImpl.getActiveJobs(), is(new LinkedList<SyncJobDef>()));
 		}
 
 

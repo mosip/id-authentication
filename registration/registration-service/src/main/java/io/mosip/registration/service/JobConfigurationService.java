@@ -6,7 +6,7 @@ import org.quartz.JobExecutionContext;
 import org.springframework.context.ApplicationContext;
 
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.SyncJob;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseCheckedException;
 
 /**
@@ -19,7 +19,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 public interface JobConfigurationService {
 
 	/**
-	 * To get the list of {@link SyncJob}
+	 * To get the list of {@link SyncJobDef}
 	 * 
 	 */
 	void initiateJobs();
@@ -32,14 +32,14 @@ public interface JobConfigurationService {
 	 * @return responseDTO for start jobs
 	 * @throws RegBaseCheckedException
 	 */
-	ResponseDTO startJobs(ApplicationContext applicationContext);
+	ResponseDTO startScheduler(ApplicationContext applicationContext);
 
 	/**
 	 * Stop the jobs manually
 	 * 
 	 * @return responseDTO for stop jobs
 	 */
-	ResponseDTO stopJobs();
+	ResponseDTO stopScheduler(boolean shutdown);
 
 	/**
 	 * To fetch the details of currently running job details

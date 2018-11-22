@@ -11,7 +11,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.manager.BaseTransactionManager;
+import io.mosip.registration.manager.JobManager;
+import io.mosip.registration.manager.SyncManager;
 
 /**
  * This class gives the information of job trigger
@@ -24,11 +25,17 @@ import io.mosip.registration.manager.BaseTransactionManager;
 public class JobTriggerListener extends TriggerListenerSupport {
 
 	/**
+	 * Autowires job manager for to get Job id functionality
+	 */
+	@Autowired
+	private JobManager jobManager;
+
+	/**
 	 * Autowires the SncTransactionManagerImpl, which Have the functionalities to
 	 * get the job and to create sync transaction
 	 */
 	@Autowired
-	private BaseTransactionManager baseTransactionManager;
+	private SyncManager syncTransactionManager;
 
 	/**
 	 * LOGGER for logging
@@ -47,9 +54,9 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		 */
 		try {
 			//Insert SYNC Transaction
-			baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_TRIGGER_FAILED,
-					RegistrationConstants.JOB_TRIGGER_FAILED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
-					baseTransactionManager.getJob(trigger));
+			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_TRIGGER_MIS_FIRED,
+					RegistrationConstants.JOB_TRIGGER_MIS_FIRED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
+					jobManager.getJobId(trigger));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
@@ -65,7 +72,7 @@ public class JobTriggerListener extends TriggerListenerSupport {
 
 	@Override
 	public String getName() {
-		return "listener name";
+		return this.getClass().getName();
 	}
 
 	@Override
@@ -78,9 +85,9 @@ public class JobTriggerListener extends TriggerListenerSupport {
 		/* TRIGGER Fired */
 		try {
 			//Insert SYNC Transaction
-			baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_TRIGGER_STARTED,
+			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_TRIGGER_STARTED,
 					RegistrationConstants.JOB_TRIGGER_STARTED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
-					baseTransactionManager.getJob(context));
+					jobManager.getJobId(context));
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, regBaseUncheckedException.getMessage());
@@ -102,9 +109,9 @@ public class JobTriggerListener extends TriggerListenerSupport {
 
 		try {
 			//Insert SYNC Transaction
-			baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_TRIGGER_COMPLETED,
+			syncTransactionManager.createSyncTransaction(RegistrationConstants.JOB_TRIGGER_COMPLETED,
 					RegistrationConstants.JOB_TRIGGER_COMPLETED, RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
-					baseTransactionManager.getJob(context));
+					jobManager.getJobId(context));
 
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_PROCESS_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,

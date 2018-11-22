@@ -18,7 +18,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @Table(schema = "reg", name = "sync_job_def")
-public class SyncJob extends RegistrationCommonFields {
+public class SyncJobDef extends RegistrationCommonFields {
 	@Id
 	@Column(name = "id")
 	private String id;

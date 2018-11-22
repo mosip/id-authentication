@@ -13,13 +13,13 @@ import org.quartz.JobExecutionException;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.JobProcessListener;
-import io.mosip.registration.manager.BaseTransactionManager;
+import io.mosip.registration.manager.SyncManager;
 import static org.mockito.Mockito.doNothing;
 
 public class JobProcessorListenerTest {
 	
 	@Mock
-	BaseTransactionManager transactionManager;
+	SyncManager transactionManager;
 	
 
 	@Mock

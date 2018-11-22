@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.dao.SyncJobConfigDAO;
-import io.mosip.registration.entity.SyncJob;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.repositories.JobConfigRepository;
 
 /**
@@ -32,12 +32,12 @@ public class JobConfigDAOImpl implements SyncJobConfigDAO {
 	 * @see io.mosip.registration.dao.JobConfigDAO#getJob()
 	 */
 	@Override
-	public List<SyncJob> getAll() {
+	public List<SyncJobDef> getAll() {
 		return jobConfigRepository.findAll();
 	}
 
 	@Override
-	public List<SyncJob> getActiveJobs() {
+	public List<SyncJobDef> getActiveJobs() {
 		return jobConfigRepository.findByIsActiveTrue();
 	}
 

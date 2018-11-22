@@ -26,7 +26,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.SyncJob;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.jobs.BaseJob;
 import io.mosip.registration.jobs.impl.PacketSyncStatusJob;
 import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
@@ -55,14 +55,14 @@ public class JobConfigurationServiceTest {
 	@Mock
 	Scheduler scheduler;
 
-	List<SyncJob> syncJobList;
+	List<SyncJobDef> syncJobList;
 
-	HashMap<String, SyncJob> jobMap = new HashMap<>();
+	HashMap<String, SyncJobDef> jobMap = new HashMap<>();
 
 	@Before
 	public void intiate() {
 		syncJobList = new LinkedList<>();
-		SyncJob syncJob = new SyncJob();
+		SyncJobDef syncJob = new SyncJobDef();
 		syncJob.setId("1234");
 
 		syncJob.setApiName("packetSyncStatusJob");

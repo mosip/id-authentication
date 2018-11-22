@@ -1,19 +1,27 @@
 package io.mosip.registration.jobs.impl;
 
 import java.util.LinkedList;
+import java.util.Map;
 
+import org.quartz.JobExecutionContext;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
+import io.mosip.registration.entity.SyncJobDef;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.BaseJob;
-import io.mosip.registration.manager.BaseTransactionManager;
-import io.mosip.registration.manager.impl.SyncTransactionManagerImpl;
+import io.mosip.registration.manager.JobManager;
+import io.mosip.registration.manager.SyncManager;
+import io.mosip.registration.manager.impl.SyncManagerImpl;
 import io.mosip.registration.service.RegPacketStatusService;
 import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
 
@@ -27,13 +35,7 @@ import io.mosip.registration.service.impl.JobConfigurationServiceImpl;
 @Component(value = "packetSyncStatusJob")
 public class PacketSyncStatusJob extends BaseJob {
 
-	/**
-	 * The SncTransactionManagerImpl, which Have the functionalities to get the job
-	 * and to create sync transaction
-	 */
-	@Autowired
-	private BaseTransactionManager baseTransactionManager;
-
+	
 	/**
 	 * The RegPacketStatusServiceImpl
 	 */
@@ -43,60 +45,84 @@ public class PacketSyncStatusJob extends BaseJob {
 	/**
 	 * LOGGER for logging
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(SyncTransactionManagerImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(SyncManagerImpl.class);
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.springframework.scheduling.quartz.QuartzJobBean#executeInternal(org.
+	 * quartz.JobExecutionContext)
+	 */
+	@Async
+	@Override
+	public void executeInternal(JobExecutionContext context) {
+		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "job execute internal started");
+
+		try {
+
+			/*
+			 * Get Application Context from JobExecutionContext's job detail
+			 */
+			this.applicationContext = (ApplicationContext) context.getJobDetail().getJobDataMap()
+					.get("applicationContext");
+
+			//Sync Transaction Manager
+			syncManager = this.applicationContext.getBean(SyncManager.class);
+
+			//Job Manager
+			jobManager =this.applicationContext.getBean(JobManager.class);
+			
+			
+			// Get Current JobId
+			String syncJobId = jobManager.getJobId(context);
+
+			// Get Job Map
+			Map<String, SyncJobDef> jobMap = jobManager.getChildJobs(context);
+
+			executeChildJob(syncJobId, jobMap);
+
+		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
+			
+			LOGGER.error(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, noSuchBeanDefinitionException.getMessage());
+			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
+					noSuchBeanDefinitionException.getMessage());
+		} catch (NullPointerException nullPointerException) {
+			
+			LOGGER.error(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, nullPointerException.getMessage());
+			
+			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NULL_POINTER_EXCEPTION,
+					nullPointerException.getMessage());
+
+		}
+
+		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID, "job execute internal Ended");
+
+	}
 
 	@Override
-	public ResponseDTO executeJob(String triggerPoint) {
+	public ResponseDTO executeJob(String jobId) {
+		String triggerPoint = SessionContext.getInstance().getUserContext().getUserId();
+		return executeJob(triggerPoint, jobId);
+	}
+
+	@Override
+	public ResponseDTO executeJob(String triggerPoint, String jobId) {
 
 		System.out.println("Started Job Execution");
 		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute Job started");
 
-		if (this.applicationContext != null) {
-			/*
-			 * If it was system triggered Get the Beans of baseTransactionManager and
-			 * packetStatusService through application context
-			 */
-			this.baseTransactionManager = this.applicationContext.getBean(BaseTransactionManager.class);
-			this.packetStatusService = this.applicationContext.getBean(RegPacketStatusService.class);
-		}
-
 		ResponseDTO responseDTO = packetStatusService.packetSyncStatus();
-
-		if (responseDTO != null) {
-			try {
-				if (responseDTO.getSuccessResponseDTO() != null) {
-
-					// Insert Sync Transaction of executed with Success
-					baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_SUCCESS,
-							RegistrationConstants.JOB_EXECUTION_SUCCESS, triggerPoint,
-							JobConfigurationServiceImpl.SYNC_JOB_MAP.get("1"));
-				} else if (responseDTO.getErrorResponseDTOs() == null) {
-
-					// Insert Sync Transaction of executed with failure
-					baseTransactionManager.createSyncTransaction(RegistrationConstants.JOB_EXECUTION_FAILURE,
-							RegistrationConstants.JOB_EXECUTION_FAILURE, triggerPoint,
-							JobConfigurationServiceImpl.SYNC_JOB_MAP.get("1"));
-
-				}
-			} catch (RegBaseUncheckedException regBaseUncheckedException) {
-				LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
-
-				ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-				errorResponseDTO.setInfoType(RegistrationConstants.ERROR);
-				errorResponseDTO.setCode(RegistrationConstants.BATCH_JOB_CODE);
-				errorResponseDTO.setMessage(regBaseUncheckedException.getMessage());
-
-				errorResponseDTOs.add(errorResponseDTO);
-
-				responseDTO.setErrorResponseDTOs(errorResponseDTOs);
-			}
-
-		}
 
 		LOGGER.debug(RegistrationConstants.PACKET_SYNC_STATUS_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "execute job ended");
 
-		return responseDTO;
+		return syncTransactionUpdate(responseDTO, triggerPoint, jobId);
+
 	}
+
 }
