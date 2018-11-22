@@ -1249,7 +1249,7 @@ public class RegistrationController extends BaseController {
 		region.setText("Taramani");
 		city.setText("Chennai");
 		province.setText("Tamilnadu");
-		postalCode.setText("600111");
+		postalCode.setText("600112");
 		localAdminAuthority.setText("MindTree");
 		mobileNo.setText("866769383");
 		emailId.setText("taleev.aalam@mindtree.com");
