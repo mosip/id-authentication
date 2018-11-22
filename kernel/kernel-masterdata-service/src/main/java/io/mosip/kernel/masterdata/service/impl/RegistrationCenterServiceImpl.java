@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -49,7 +47,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * Reference to model mapper.
 	 */
 	@Autowired
-	ModelMapper modelMapper;
+	private ObjectMapperUtil objectMapperUtil;
+
 
 	/**
 	 * Reference to RegistrationCenterRepository.
@@ -100,7 +99,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			throw new DataNotFoundException(RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorCode(),
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
-			registrationCenterDto = modelMapper.map(registrationCenter, RegistrationCenterDto.class);
+			registrationCenterDto = objectMapperUtil.map(registrationCenter, RegistrationCenterDto.class);
 			try {
 				holidayLocationCode = registrationCenterDto.getHolidayLocationCode();
 				holidays = holidayRepository.findAllByLocationCodeYearAndLangCode(holidayLocationCode, langCode, year);
@@ -141,8 +140,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		List<RegistrationCenterDto> registrationCenters = null;
-		registrationCenters = modelMapper.map(centers, new TypeToken<List<RegistrationCenterDto>>() {
-		}.getType());
+		registrationCenters = objectMapperUtil.mapAll(centers, RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
 		return registrationCenterResponseDto;
@@ -174,9 +172,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		List<RegistrationCenterDto> registrationCentersDtoList = null;
-		registrationCentersDtoList = modelMapper.map(registrationCentersList,
-				new TypeToken<List<RegistrationCenterDto>>() {
-				}.getType());
+		registrationCentersDtoList = objectMapperUtil.mapAll(registrationCentersList,
+				RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);
 		return registrationCenterResponseDto;
@@ -206,7 +203,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		}
 		RegistrationCenterDto registrationCenterDto = null;
-		registrationCenterDto = modelMapper.map(registrationCenter, RegistrationCenterDto.class);
+		registrationCenterDto = objectMapperUtil.map(registrationCenter, RegistrationCenterDto.class);
 		registrationCenters.add(registrationCenterDto);
 		RegistrationCenterResponseDto response = new RegistrationCenterResponseDto();
 		response.setRegistrationCenters(registrationCenters);
@@ -237,8 +234,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 
 		List<RegistrationCenterDto> registrationCenters = null;
-		registrationCenters = modelMapper.map(registrationCentersList, new TypeToken<List<RegistrationCenterDto>>() {
-		}.getType());
+		registrationCenters = objectMapperUtil.mapAll(registrationCentersList, RegistrationCenterDto.class);
 		RegistrationCenterResponseDto registrationCenterResponseDto = new RegistrationCenterResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCenters);
 		return registrationCenterResponseDto;
@@ -271,9 +267,8 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		}
 		List<RegistrationCenterHierarchyLevelDto> registrationCentersDtoList = null;
 
-		registrationCentersDtoList = modelMapper.map(registrationCentersList,
-				new TypeToken<List<RegistrationCenterHierarchyLevelDto>>() {
-				}.getType());
+		registrationCentersDtoList = objectMapperUtil.mapAll(registrationCentersList,
+				RegistrationCenterHierarchyLevelDto.class);
 
 		RegistrationCenterHierarchyLevelResponseDto registrationCenterResponseDto = new RegistrationCenterHierarchyLevelResponseDto();
 		registrationCenterResponseDto.setRegistrationCenters(registrationCentersDtoList);

@@ -267,16 +267,16 @@ public class MasterDataServiceTest {
 
 		// creating language
 		hin = new Language();
-		hin.setLanguageCode("hin");
-		hin.setLanguageName("hindi");
-		hin.setLanguageFamily("hindi");
+		hin.setCode("hin");
+		hin.setName("hindi");
+		hin.setFamily("hindi");
 		hin.setNativeName("hindi");
 		hin.setIsActive(Boolean.TRUE);
 
 		eng = new Language();
-		eng.setLanguageCode("en");
-		eng.setLanguageName("english");
-		eng.setLanguageFamily("english");
+		eng.setCode("en");
+		eng.setName("english");
+		eng.setFamily("english");
 		eng.setNativeName("english");
 		eng.setIsActive(Boolean.TRUE);
 
@@ -287,15 +287,15 @@ public class MasterDataServiceTest {
 		languageDtos = new ArrayList<>();
 		// creating language
 		hinDto = new LanguageDto();
-		hinDto.setLanguageCode("hin");
-		hinDto.setLanguageName("hindi");
-		hinDto.setLanguageFamily("hindi");
+		hinDto.setCode("hin");
+		hinDto.setName("hindi");
+		hinDto.setFamily("hindi");
 		hinDto.setNativeName("hindi");
 
 		engDto = new LanguageDto();
-		engDto.setLanguageCode("en");
-		engDto.setLanguageName("english");
-		engDto.setLanguageFamily("english");
+		engDto.setCode("en");
+		engDto.setName("english");
+		engDto.setFamily("english");
 		engDto.setNativeName("english");
 
 		languageDtos.add(hinDto);

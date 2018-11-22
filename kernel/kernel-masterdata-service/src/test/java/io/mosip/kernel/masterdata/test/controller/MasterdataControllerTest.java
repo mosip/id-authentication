@@ -118,7 +118,7 @@ public class MasterdataControllerTest {
 	@MockBean
 	private LanguageService languageService;
 
-	private static final String LANGUAGE_JSON_STRING = "{ \"languages\": [   {      \"languageCode\": \"hin\", \"languageName\": \"hindi\",      \"languageFamily\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
+	private static final String LANGUAGE_JSON_STRING = "{ \"languages\": [   {      \"code\": \"hin\", \"name\": \"hindi\",      \"family\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
 
 	private LanguageRequestResponseDto respDto;
 	private List<LanguageDto> languages;
@@ -255,8 +255,8 @@ public class MasterdataControllerTest {
 
 	private void idTypeSetup() {
 		idType = new IdType();
-		idType.setActive(true);
-		idType.setCrBy("testCreation");
+		idType.setIsActive(true);
+		idType.setCreatedBy("testCreation");
 		idType.setLangCode("ENG");
 		idType.setCode("POA");
 		idType.setDescr("Proof Of Address");
@@ -529,9 +529,9 @@ public class MasterdataControllerTest {
 
 		// creating language
 		hin = new LanguageDto();
-		hin.setLanguageCode("hin");
-		hin.setLanguageName("hindi");
-		hin.setLanguageFamily("hindi");
+		hin.setCode("hin");
+		hin.setName("hindi");
+		hin.setFamily("hindi");
 		hin.setNativeName("hindi");
 
 		// adding language to list

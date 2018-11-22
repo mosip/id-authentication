@@ -2,7 +2,6 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -24,8 +23,6 @@ import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 @Service
 public class BiometricTypeServiceImpl implements BiometricTypeService {
 
-	@Autowired
-	private ModelMapper modelMapper;
 
 	@Autowired
 	private ObjectMapperUtil objectMapperUtil;
@@ -136,7 +133,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 		}
 
 		if (biometricType != null) {
-			biometricTypeDto = modelMapper.map(biometricType, BiometricTypeDto.class);
+			biometricTypeDto = objectMapperUtil.map(biometricType, BiometricTypeDto.class);
 		} else {
 			throw new DataNotFoundException(BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorCode(),
 					BiometricTypeErrorCode.BIOMETRIC_TYPE_NOT_FOUND.getErrorMessage());

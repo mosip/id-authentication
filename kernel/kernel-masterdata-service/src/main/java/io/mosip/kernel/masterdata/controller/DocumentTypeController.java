@@ -3,6 +3,8 @@ package io.mosip.kernel.masterdata.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,8 +46,7 @@ public class DocumentTypeController {
 	}
 
 	@PostMapping("/documenttypes")
-	public PostResponseDto addDocumentTypeList(@RequestBody DocumentTypeRequestDto types) {
-		System.out.println(types.getRequest().getDocumentTypes().get(0));
-		return documentTypeService.addDocumentTypes(types);
+	public ResponseEntity<PostResponseDto> addDocumentTypeList(@RequestBody DocumentTypeRequestDto types) {
+		return new ResponseEntity<>(documentTypeService.addDocumentTypes(types), HttpStatus.CREATED);
 	}
 }
