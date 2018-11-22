@@ -2,6 +2,7 @@ package io.mosip.registration.test.jobs;
 
 import static org.mockito.Mockito.doNothing;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,6 +20,7 @@ import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.JobProcessListener;
 import io.mosip.registration.jobs.JobTriggerListener;
+import io.mosip.registration.manager.JobManager;
 import io.mosip.registration.manager.SyncManager;
 
 public class JobTriggerTest {
@@ -28,6 +30,10 @@ public class JobTriggerTest {
 
 	@Mock
 	Trigger trigger;
+	
+	@Mock
+	JobManager jobManager;
+	
 	
 	@Rule
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -41,6 +47,12 @@ public class JobTriggerTest {
 	
 	@InjectMocks
 	JobTriggerListener jobTriggerListener;
+	
+	@Before
+	public void initiateTest() {
+		Mockito.when(jobManager.getJobId(jobExecutionContext)).thenReturn("1");
+	}
+	
 	
 	@Test
 	public void triggerMisFiredTest() {

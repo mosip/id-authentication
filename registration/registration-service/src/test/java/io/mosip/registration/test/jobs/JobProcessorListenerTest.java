@@ -1,5 +1,6 @@
 package io.mosip.registration.test.jobs;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -13,13 +14,16 @@ import org.quartz.JobExecutionException;
 import io.mosip.registration.entity.SyncTransaction;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.jobs.JobProcessListener;
+import io.mosip.registration.manager.JobManager;
 import io.mosip.registration.manager.SyncManager;
-import static org.mockito.Mockito.doNothing;
 
 public class JobProcessorListenerTest {
 	
 	@Mock
 	SyncManager transactionManager;
+	
+	@Mock
+	JobManager jobManager;
 	
 
 	@Mock
@@ -36,6 +40,11 @@ public class JobProcessorListenerTest {
 	
 	@InjectMocks
 	JobProcessListener processListener;
+	
+	@Before
+	public void initiateTest() {
+		Mockito.when(jobManager.getJobId(jobExecutionContext)).thenReturn("1");
+	}
 	
 	@Test
 	public void toBeExecutedTest() {

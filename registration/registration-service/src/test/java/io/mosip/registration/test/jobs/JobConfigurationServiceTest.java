@@ -96,7 +96,7 @@ public class JobConfigurationServiceTest {
 		Mockito.when(scheduler.scheduleJob(Mockito.any(), Mockito.any())).thenReturn(new Date());
 		initiateJobTest();
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
-		jobConfigurationService.startJobs(applicationContext);
+		jobConfigurationService.startScheduler(applicationContext);
 	}
 
 	@Test
@@ -108,7 +108,7 @@ public class JobConfigurationServiceTest {
 		
 		initiateJobTest();
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
-		jobConfigurationService.startJobs(applicationContext);
+		jobConfigurationService.startScheduler(applicationContext);
 	}
 
 	@Test
@@ -119,7 +119,7 @@ public class JobConfigurationServiceTest {
 		Mockito.when(scheduler.scheduleJob(Mockito.any(), Mockito.any())).thenThrow(ParseException.class);
 		initiateJobTest();
 		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
-		jobConfigurationService.startJobs(applicationContext);
+		jobConfigurationService.startScheduler(applicationContext);
 	}
 	
 	@Test
@@ -127,13 +127,13 @@ public class JobConfigurationServiceTest {
 		
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
 		doNothing().when(scheduler).shutdown();
-		jobConfigurationService.stopJobs();
+		jobConfigurationService.stopScheduler(true);
 	}
 	
 	@Test
 	public void stopJobsExceptionTest() throws SchedulerException {
 		Mockito.when(schedulerFactoryBean.getScheduler()).thenThrow(SchedulerException.class);
-		jobConfigurationService.stopJobs();
+		jobConfigurationService.stopScheduler(true);
 	}
 
 	@Test
