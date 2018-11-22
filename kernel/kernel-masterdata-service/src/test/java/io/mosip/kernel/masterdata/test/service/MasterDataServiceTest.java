@@ -24,6 +24,8 @@ import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureExcepti
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
+import io.mosip.kernel.masterdata.dto.ApplicationListDto;
+import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
@@ -33,7 +35,11 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatListDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatRequestDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
@@ -44,6 +50,7 @@ import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Template;
+import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
@@ -56,6 +63,7 @@ import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
+import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
@@ -66,7 +74,9 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * @author Bal Vikash Sharma
@@ -89,6 +99,11 @@ public class MasterDataServiceTest {
 	private Application application2;
 
 	private List<Application> applicationList;
+
+	private ApplicationRequestDto applicationRequestDto;
+
+	@MockBean
+	private MetaDataUtils metaUtils;
 
 	@MockBean
 	BiometricAttributeRepository biometricAttributeRepository;
@@ -161,6 +176,16 @@ public class MasterDataServiceTest {
 	@MockBean
 	private TemplateRepository templateRepository;
 
+	@MockBean
+	private TemplateFileFormatRepository templateFileFormatRepository;
+
+	@Autowired
+	private TemplateFileFormatService templateFileFormatService;
+
+	private List<TemplateFileFormat> templateFileFormatList;
+
+	private TemplateFileFormatRequestDto templateFileFormatRequestDto;
+
 	@Autowired
 	private TemplateService templateService;
 
@@ -170,6 +195,7 @@ public class MasterDataServiceTest {
 
 	@MockBean
 	DocumentTypeRepository documentTypeRepository;
+
 	@Autowired
 	DocumentTypeService documentTypeService;
 
@@ -200,6 +226,8 @@ public class MasterDataServiceTest {
 		// TO-DO machine history service not implemented
 
 		templateServiceSetup();
+
+		templateFileFormatSetup();
 
 		documentTypeSetup();
 
@@ -433,6 +461,35 @@ public class MasterDataServiceTest {
 		applicationList.add(application1);
 		applicationList.add(application2);
 
+		applicationRequestDto = new ApplicationRequestDto();
+		ApplicationListDto request = new ApplicationListDto();
+		ApplicationDto applicationDto = new ApplicationDto();
+		applicationDto.setCode("101");
+		applicationDto.setName("pre-registeration");
+		applicationDto.setDescription("Pre-registration Application Form");
+		applicationDto.setLangCode("ENG");
+		List<ApplicationDto> applicationDtos = new ArrayList<>();
+		applicationDtos.add(applicationDto);
+		request.setApplicationtypes(applicationDtos);
+		applicationRequestDto.setRequest(request);
+	}
+
+	private void templateFileFormatSetup() {
+		TemplateFileFormat templateFileFormat = new TemplateFileFormat();
+		templateFileFormatList = new ArrayList<>();
+		templateFileFormat.setCode("xml");
+		templateFileFormat.setLangCode("ENG");
+		templateFileFormatList.add(templateFileFormat);
+
+		templateFileFormatRequestDto = new TemplateFileFormatRequestDto();
+		TemplateFileFormatListDto request = new TemplateFileFormatListDto();
+		TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
+		templateFileFormatDto.setCode("xml");
+		templateFileFormatDto.setLangCode("ENG");
+		List<TemplateFileFormatDto> templateFileFormatDtos = new ArrayList<>();
+		templateFileFormatDtos.add(templateFileFormatDto);
+		request.setTemplateFileFormatDtos(templateFileFormatDtos);
+		templateFileFormatRequestDto.setRequest(request);
 	}
 
 	// ----------------------- ApplicationServiceTest ----------------
@@ -459,16 +516,31 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void getApplicationByCodeAndLangCodeSuccess() {
-		Mockito.when(applicationRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(application1);
-		ApplicationResponseDto applicationResponseDto = applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(),
-				Mockito.anyString());
+		Mockito.when(applicationRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(application1);
+		ApplicationResponseDto applicationResponseDto = applicationService
+				.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 		List<ApplicationDto> actual = applicationResponseDto.getApplicationtypes();
 		assertEquals(application1.getCode(), actual.get(0).getCode());
 		assertEquals(application1.getName(), actual.get(0).getName());
 	}
 
+	@Test
+	public void addApplicationDataSuccess() {
+		Mockito.when(applicationRepository.saveAll(Mockito.any())).thenReturn(applicationList);
+
+		PostResponseDto postResponseDto = applicationService.addApplicationData(applicationRequestDto);
+		assertEquals(applicationList.get(0).getCode(), postResponseDto.getResults().get(0).getCode());
+		assertEquals(applicationList.get(0).getLangCode(), postResponseDto.getResults().get(0).getLangCode());
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void addApplicationDataFetchException() {
+		Mockito.when(applicationRepository.saveAll(Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		applicationService.addApplicationData(applicationRequestDto);
+	}
+	
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllApplicationFetchException() {
 		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Application.class)))
@@ -500,17 +572,15 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getApplicationByCodeAndLangCodeFetchException() {
-		Mockito.when(applicationRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(applicationRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getApplicationByCodeAndLangCodeNotFoundException() {
-		Mockito.when(applicationRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(null);
+		Mockito.when(applicationRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(null);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}
 	// ------------------ BiometricAttributeServiceTest -----------------
@@ -729,7 +799,6 @@ public class MasterDataServiceTest {
 		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode))
 				.thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
-
 	}
 
 	@Test
@@ -901,7 +970,8 @@ public class MasterDataServiceTest {
 
 	@Test()
 	public void getLocationHierachyBasedOnLangAndLoc() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(locationHierarchies);
 
 		LocationResponseDto locationHierarchyResponseDto = locationHierarchyService
@@ -912,7 +982,8 @@ public class MasterDataServiceTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void getLocationHierarchyExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(null);
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 
@@ -920,7 +991,8 @@ public class MasterDataServiceTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void getLocationHierarchyExceptionTestWithEmptyList() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(new ArrayList<Location>());
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 
@@ -928,7 +1000,8 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void locationHierarchyDataAccessExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenThrow(DataRetrievalFailureException.class);
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 	}
@@ -1014,6 +1087,22 @@ public class MasterDataServiceTest {
 		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
 	}
 
+	// ------------------------------------TemplateFileFormatServiceTest---------------------------
+	@Test
+	public void addTemplateFileFormatSuccess() {
+		Mockito.when(templateFileFormatRepository.saveAll(Mockito.any())).thenReturn(templateFileFormatList);
+
+		PostResponseDto postResponseDto = templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+		assertEquals(templateFileFormatList.get(0).getCode(), postResponseDto.getResults().get(0).getCode());
+		assertEquals(templateFileFormatList.get(0).getLangCode(), postResponseDto.getResults().get(0).getLangCode());
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void addTemplateFileFormatInsertExceptionTest() {
+		Mockito.when(templateFileFormatRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+	}
+	
 	// ----------------------------------DocumentTypeServiceTest-------------------------
 
 	@Test

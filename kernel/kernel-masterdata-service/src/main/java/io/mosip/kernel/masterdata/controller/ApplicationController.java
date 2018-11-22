@@ -62,7 +62,7 @@ public class ApplicationController {
 	 * @return PostResponseDto
 	 */
 	@PostMapping
-	public PostResponseDto addDocumentCategories(@RequestBody ApplicationRequestDto application) {
+	public PostResponseDto addApplication(@RequestBody ApplicationRequestDto application) {
 		return applicationService.addApplicationData(application);
 		
 	}

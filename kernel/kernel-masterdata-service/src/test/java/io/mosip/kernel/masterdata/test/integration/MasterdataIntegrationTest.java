@@ -65,7 +65,6 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
-import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 
 /**
  * 

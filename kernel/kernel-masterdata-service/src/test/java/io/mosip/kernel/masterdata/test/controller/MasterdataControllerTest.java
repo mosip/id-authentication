@@ -20,12 +20,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
+import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
@@ -36,8 +38,11 @@ import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatRequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.IdType;
@@ -54,6 +59,7 @@ import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 
 /**
@@ -152,6 +158,9 @@ public class MasterdataControllerTest {
 			+ "    \"languageCode\": \"HIN\"\r\n" + "  }\r\n" + "]";
 
 	private List<TemplateDto> templateDtoList = new ArrayList<>();
+
+	@MockBean
+	private TemplateFileFormatService templateFileFormatService;
 
 	@Before
 	public void setUp() {
@@ -388,6 +397,27 @@ public class MasterdataControllerTest {
 				.thenReturn(applicationResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/applicationtypes/101/ENG"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void addApplication() throws Exception {
+		PostResponseDto postResponseDto = new PostResponseDto();
+		List<CodeAndLanguageCodeId> results = new ArrayList<>();
+		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId.setCode("101");
+		codeAndLanguageCodeId.setLangCode("ENG");
+		results.add(codeAndLanguageCodeId);
+		postResponseDto.setResults(results);
+		Mockito.when(applicationService.addApplicationData(Mockito.any(ApplicationRequestDto.class)))
+				.thenReturn(postResponseDto);
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(MediaType.APPLICATION_JSON)
+				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
+						+ "  \"timestamp\": \"string\",\n" + "  \"request\": {\n" + "    \"applicationtypes\": [\n"
+						+ "      {\n" + "        \"code\": \"101\",\n" + "        \"name\": \"pre-registeration\",\n"
+						+ "        \"description\": \"Pre-registration Application Form\",\n"
+						+ "        \"langCode\": \"ENG\"\n" + "      }\n" + "    ]\n" + "  }\n" + "}"))
+				.andExpect(status().isOk());
 	}
 
 	// -------------------------------BiometricAttributeControllerTest--------------------------
@@ -635,22 +665,42 @@ public class MasterdataControllerTest {
 	@Test
 	public void getAllTemplateByTest() throws Exception {
 		Mockito.when(templateService.getAllTemplate()).thenReturn(templateDtoList);
-		mockMvc.perform(MockMvcRequestBuilders.get("/templates"))
-				.andExpect(status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/templates")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeTest() throws Exception {
 		Mockito.when(templateService.getAllTemplateByLanguageCode(Mockito.anyString())).thenReturn(templateDtoList);
-		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN"))
-				.andExpect(status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeTest() throws Exception {
 		Mockito.when(templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(templateDtoList);
-		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN/EMAIL"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN/EMAIL")).andExpect(status().isOk());
+	}
+
+	// -----------------------------TemplateFileFormatControllerTest------------------------
+	@Test
+	public void addTemplateFileFormatTest() throws Exception {
+
+		PostResponseDto postResponseDto = new PostResponseDto();
+		List<CodeAndLanguageCodeId> results = new ArrayList<>();
+		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId.setCode("xml");
+		codeAndLanguageCodeId.setLangCode("ENG");
+		results.add(codeAndLanguageCodeId);
+		postResponseDto.setResults(results);
+		Mockito.when(templateFileFormatService.addTemplateFileFormat(Mockito.any(TemplateFileFormatRequestDto.class)))
+				.thenReturn(postResponseDto);
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/templatefileformats").contentType(MediaType.APPLICATION_JSON)
+				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
+						+ "  \"timestamp\": \"string\",\n" + "  \"request\": {\n"
+						+ "    \"templateFileFormatDtos\": [\n" + "      {\n" + "        \"code\": \"xml\",\n"
+						+ "        \"description\": \"xml format\",\n" + "        \"langCode\": \"ENG\"\n" + "      }\n"
+						+ "    ]\n" + "  }\n" + "}"))
 				.andExpect(status().isOk());
 	}
 }
