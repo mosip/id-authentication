@@ -42,7 +42,7 @@ The key solution considerations are -
 	getPotentialDuplicatesWithUnverifiedDob(Gender, starting dob range -> 1999, ending dob range -> 2001);
 	}
 ```
--  Above step will provide the list of potential matches to perform demo-dupe.  Iterate the list and for each record run algorithm with the applicant demographic information. Registration-processor will use levenshtein distance algorithm and perform demo dedupe on name and address. Do the following -
+-  Above step will provide the list of potential matches to perform demo-dupe.  Iterate the list and for each record run algorithm with the applicant demographic information. Create an interface in registration-processor-core and provide implementation in demo-dedupe-stage. Registration-processor will use levenshtein distance algorithm and perform demo dedupe on name and address. Do the following -
 	1. perform dedupe in local language.
 	2. perform dedupe on user language.
 	3. Calculate average score. (local language score + user language score) / 2
