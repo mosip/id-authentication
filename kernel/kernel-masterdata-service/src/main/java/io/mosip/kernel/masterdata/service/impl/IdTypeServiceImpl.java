@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.constant.IdTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.IdTypeDto;
 import io.mosip.kernel.masterdata.dto.IdTypeRequestDto;
@@ -40,13 +39,13 @@ public class IdTypeServiceImpl implements IdTypeService {
 	private MetaDataUtils metaUtils;
 
 	@Autowired
-	DataMapper dataMapper;
+	private DataMapper dataMapper;
 
 	/**
 	 * Reference to {@link ModelMapper}
 	 */
 	@Autowired
-	ModelMapper modelMapper;
+	private ModelMapper modelMapper;
 
 	/**
 	 * Reference to RegistrationCenterRepository.
@@ -82,6 +81,13 @@ public class IdTypeServiceImpl implements IdTypeService {
 		return idResponseDto;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * io.mosip.kernel.masterdata.service.IdTypeService#addIdType(io.mosip.kernel.
+	 * masterdata.dto.IdTypeRequestDto)
+	 */
 	@Override
 	public PostResponseDto addIdType(IdTypeRequestDto idTypeRequestDto) {
 		List<IdType> entities = metaUtils.setCreateMetaData(idTypeRequestDto.getRequest().getIdtypes(), IdType.class);
@@ -89,8 +95,8 @@ public class IdTypeServiceImpl implements IdTypeService {
 		try {
 			idTypes = idRepository.saveAll(entities);
 		} catch (DataAccessException e) {
-			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getMessage());
+			throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_INSERT_EXCEPTION.getErrorCode(),
+					e.getMessage());
 		}
 		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		idTypes.forEach(idType -> {
@@ -98,13 +104,13 @@ public class IdTypeServiceImpl implements IdTypeService {
 			try {
 				dataMapper.map(idType, codeLangCodeId, true, null, null, true);
 			} catch (DataMapperException e) {
-				throw new MasterDataServiceException(
-						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
+				throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_MAPPING_EXCEPTION.getErrorCode(),
+						e.getMessage());
 			}
 			codeLangCodeIds.add(codeLangCodeId);
 		});
 		PostResponseDto postResponseDto = new PostResponseDto();
-		postResponseDto.setSuccessfully_created(codeLangCodeIds);
+		postResponseDto.setResults(codeLangCodeIds);
 		return postResponseDto;
 	}
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
+import io.mosip.kernel.masterdata.constant.RegistrationCenterTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterTypeRequestDto;
 import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
@@ -20,26 +20,46 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterTypeService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
+/**
+ * Implementation class for {@link RegistrationCenterTypeService}.
+ * 
+ * @author Sagar Mahapatra
+ * @since 1.0.0
+ *
+ */
 @Service
 public class RegistrationCenterTypeServiceImpl implements RegistrationCenterTypeService {
+	/**
+	 * Autowired reference for {@link MetaDataUtils}
+	 */
 	@Autowired
 	private MetaDataUtils metaUtils;
 
+	/**
+	 * Autowired reference for {@link DataMapper}
+	 */
 	@Autowired
 	DataMapper dataMapper;
 
 	/**
-	 * Reference to {@link ModelMapper}
+	 * Autowired reference for {@link ModelMapper}
 	 */
 	@Autowired
 	ModelMapper modelMapper;
 
 	/**
-	 * Reference to RegistrationCenterRepository.
+	 * Autowired reference for RegistrationCenterRepository.
 	 */
 	@Autowired
 	private RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see io.mosip.kernel.masterdata.service.RegistrationCenterTypeService#
+	 * addRegistrationCenterType(io.mosip.kernel.masterdata.dto.
+	 * RegistrationCenterTypeRequestDto)
+	 */
 	@Override
 	public PostResponseDto addRegistrationCenterType(
 			RegistrationCenterTypeRequestDto registrationCenterTypeRequestDto) {
@@ -50,7 +70,8 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 			regCenterTypes = registrationCenterTypeRepository.saveAll(entities);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
-					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getMessage());
+					RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_INSERT_EXCEPTION.getErrorCode(),
+					e.getMessage());
 		}
 		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		regCenterTypes.forEach(regCenterType -> {
@@ -59,13 +80,13 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 				dataMapper.map(regCenterType, codeLangCodeId, true, null, null, true);
 			} catch (DataMapperException e) {
 				throw new MasterDataServiceException(
-						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
+						RegistrationCenterTypeErrorCode.REGISTRATION_CENTER_TYPE_MAPPING_EXCEPTION.getErrorCode(),
+						e.getMessage());
 			}
 			codeLangCodeIds.add(codeLangCodeId);
 		});
 		PostResponseDto postResponseDto = new PostResponseDto();
-		postResponseDto.setSuccessfully_created(codeLangCodeIds);
+		postResponseDto.setResults(codeLangCodeIds);
 		return postResponseDto;
 	}
-
 }
