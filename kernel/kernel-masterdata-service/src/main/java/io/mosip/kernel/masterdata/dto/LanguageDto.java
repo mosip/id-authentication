@@ -21,27 +21,27 @@ public class LanguageDto {
 	/**
 	 * Field for language code
 	 */
-	@NotNull(message = "{languageCode.notNull}")
-	@Size(max = 3, min = 3, message = "{languageCode.size}")
-	private String languageCode;
+	@NotNull(message = "{code.notNull}")
+	@Size(max = 3, min = 3, message = "{code.size}")
+	private String code;
 
 	/**
 	 * Field for language name
 	 */
-	@NotNull(message = "{languageName.notNull}")
-	@Size(max = 64, message = "{languageName.size}")
-	private String languageName;
+	@NotNull(message = "{name.notNull}")
+	@Size(max = 64, message = "{name.size}")
+	private String name;
 
 	/**
 	 * Field for language family
 	 */
-	@Size(max = 64, message = "{languageName.size}")
-	private String languageFamily;
+	@Size(max = 64, message = "{family.size}")
+	private String family;
 
 	/**
 	 * Field for language native name
 	 */
-	@Size(max = 64, message = "{languageName.size}")
+	@Size(max = 64, message = "{nativeName.size}")
 	private String nativeName;
 
 	/**

@@ -529,9 +529,9 @@ public class MasterdataControllerTest {
 
 		// creating language
 		hin = new LanguageDto();
-		hin.setLanguageCode("hin");
-		hin.setLanguageName("hindi");
-		hin.setLanguageFamily("hindi");
+		hin.setCode("hin");
+		hin.setName("hindi");
+		hin.setFamily("hindi");
 		hin.setNativeName("hindi");
 
 		// adding language to list
