@@ -115,7 +115,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	private IdInfoService idInfoService;
 
 	@Autowired
-	DemoAuthService demoAuthService;
+	private DemoAuthService demoAuthService;
 
 	/**
 	 * Process the authorisation type and authorisation response is returned.

@@ -24,7 +24,7 @@ import io.mosip.authentication.core.dto.indauth.MatchInfo;
 public class AuthResponseBuilder {
 
 	//FIXME get the date time pattern from configuration
-	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
 	/** The built. */
 	private boolean built;
@@ -144,7 +144,7 @@ public class AuthResponseBuilder {
 			responseDTO.setStatus("N");
 		}
 
-		responseDTO.setResTime(DATE_FORMAT.format(new Date()));
+		responseDTO.setResTime(dateFormat.format(new Date()));
 
 		AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);

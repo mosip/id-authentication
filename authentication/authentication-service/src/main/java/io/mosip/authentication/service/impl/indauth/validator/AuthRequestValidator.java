@@ -449,7 +449,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	if (dobList != null) {
 	    for (IdentityInfoDTO identityInfoDTO : dobList) {
 		try {
-		    DOBMatchingStrategy.DATE_FORMAT.parse(identityInfoDTO.getValue());
+		    DOBMatchingStrategy.getDateFormat().parse(identityInfoDTO.getValue());
 		} catch (ParseException e) {
 		    mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE,
 			    "Demographic data – DOB(pi) did not match");

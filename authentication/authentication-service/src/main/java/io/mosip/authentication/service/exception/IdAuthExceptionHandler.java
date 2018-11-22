@@ -226,7 +226,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 		    authResp.setErr(errors);
 		} else {
 		    List<AuthError> errors = IntStream.range(0, errorCodes.size())
-			    .mapToObj(i -> new AuthError(errorCodes.get(i),
+			    .mapToObj(i -> createAuthError(baseException, errorCodes.get(i),
 				    messageSource.getMessage(errorCodes.get(i), null, locale)))
 			    .distinct().collect(Collectors.toList());
 

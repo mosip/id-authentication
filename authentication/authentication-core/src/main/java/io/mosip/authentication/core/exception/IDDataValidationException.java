@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.exception;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,6 +80,6 @@ public class IDDataValidationException extends IdAuthenticationBusinessException
 	}
 	
 	public List<Object[]> getArgs() {
-		return args;
+		return Collections.unmodifiableList(args);
 	}
 }
