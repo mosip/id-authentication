@@ -16,12 +16,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Dinesh Karuppiah.T
  */
 public class IDAMappingFactory implements PropertySourceFactory {
-
 	/**
-	 *  To create Mapping Factory class for IDA Mapping Configuration
-	 * 
+	 * To create Mapping Factory class for IDA Mapping Configuration
 	 */
-
 	@Override
 	public PropertySource<?> createPropertySource(String name, EncodedResource resource) throws IOException {
 		Map readValue = new ObjectMapper().readValue(resource.getInputStream(), Map.class);

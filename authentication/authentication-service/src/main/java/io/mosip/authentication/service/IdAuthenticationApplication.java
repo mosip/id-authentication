@@ -15,7 +15,8 @@ import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
  * @author Dinesh Karuppiah
  */
 @SpringBootApplication
-@Import(value = { HibernateDaoConfig.class, UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class, PDFGeneratorImpl.class })
+@Import(value = { HibernateDaoConfig.class, UinValidatorImpl.class, VidValidatorImpl.class, IDAMappingConfig.class,
+		PDFGeneratorImpl.class })
 public class IdAuthenticationApplication {
 
 	/**

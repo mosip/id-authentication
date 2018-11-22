@@ -112,17 +112,7 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.setField(otpFacadeImpl, "dateHelper", dateHelper);
 	}
 
-	@Test
-	public void testMaskedEmail() {
-		String resultString = ReflectionTestUtils.invokeMethod(otpFacadeImpl, "maskEmail", "umamahesh@gmail.com");
-		assertEquals("XXaXXhXXh@gmail.com", resultString);
-	}
-
-	@Test
-	public void testMaskedMobile() {
-		String result = ReflectionTestUtils.invokeMethod(otpFacadeImpl, "maskMobile", "8347899201");
-		assertEquals("XXXXXX9201", result);
-	}
+	
 
 	@Ignore
 	@Test
@@ -300,6 +290,7 @@ public class OTPFacadeImplTest {
 				otpGenerationTime, email, mobileNumber);
 	}
 
+	
 	@Test
 	public void testEmail() throws IdAuthenticationDaoException {
 		String refId = "8765";
@@ -314,6 +305,7 @@ public class OTPFacadeImplTest {
 		ReflectionTestUtils.invokeMethod(otpFacadeImpl, "getEmail", refId);
 	}
 
+	
 	@Test
 	public void testMobileNumber() throws IdAuthenticationDaoException {
 		String refId = "8765";

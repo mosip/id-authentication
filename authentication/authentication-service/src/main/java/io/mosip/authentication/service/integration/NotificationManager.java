@@ -39,7 +39,7 @@ public class NotificationManager {
 
 	/** ID Template manager */
 	@Autowired
-	IdTemplateManager idTemplateManager;
+	private IdTemplateManager idTemplateManager;
 
 	/** Environment */
 	@Autowired
@@ -106,10 +106,13 @@ public class NotificationManager {
 		}
 
 		if (notificationtype.contains(NotificationType.SMS)) {
-			if (SenderType.AUTH == sender) {
+			switch (sender) {
+			case AUTH:
 				contentTemplate = environment.getProperty(AUTH_SMS_TEMPLATE);
-			} else if (SenderType.OTP == sender) {
+				break;
+			case OTP:
 				contentTemplate = environment.getProperty(OTP_SMS_TEMPLATE);
+				break;
 			}
 
 			try {
@@ -129,12 +132,15 @@ public class NotificationManager {
 		}
 		if (notificationtype.contains(NotificationType.EMAIL)) {
 
-			if (SenderType.AUTH == sender) {
+			switch (sender) {
+			case AUTH:
 				subjectTemplate = environment.getProperty(AUTH_EMAIL_SUBJECT_TEMPLATE);
 				contentTemplate = environment.getProperty(AUTH_EMAIL_CONTENT_TEMPLATE);
-			} else if (SenderType.OTP == sender) {
+				break;
+			case OTP:
 				subjectTemplate = environment.getProperty(OTP_SUBJECT_TEMPLATE);
 				contentTemplate = environment.getProperty(OTP_CONTENT_TEMPLATE);
+				break;
 			}
 
 			try {

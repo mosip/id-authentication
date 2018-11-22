@@ -56,7 +56,6 @@ public final class MatcherUtil {
 		List<String> entityInfoList = Collections.synchronizedList(new ArrayList<>(originalEntityInfoList));
 		List<String> matchedList = new ArrayList<>();
 		List<String> unmatchedList = new ArrayList<>();
-
 		refInfoList.forEach((String refInfo) -> {
 			if (entityInfoList.contains(refInfo)) {
 				matchedList.add(refInfo);
@@ -65,7 +64,6 @@ public final class MatcherUtil {
 				unmatchedList.add(refInfo);
 			}
 		});
-
 		new ArrayList<>(unmatchedList).stream().filter(str -> str.length() == 1).forEach((String s) -> {
 			Optional<String> matchingWord = entityInfoList.stream().filter(str -> str.startsWith(s)).findAny();
 			if (matchingWord.isPresent()) {
@@ -73,9 +71,7 @@ public final class MatcherUtil {
 				unmatchedList.remove(s);
 			}
 		});
-
 		matchvalue = matchedList.size() * EXACT_MATCH_VALUE / (originalEntityInfoList.size() + unmatchedList.size());
-
 		return matchvalue;
 	}
 
@@ -135,13 +131,10 @@ public final class MatcherUtil {
 
 	/**
 	 * 
-	 * @param refInfoName
-	 * @param entityInfoName
-	 * @return
-	 * @throws  
+	 * @param refInfoName @param entityInfoName @return @throws
 	 */
 	public static int doPhoneticsMatch(String refInfoName, String entityInfoName, String language) {
-		//TODO
+		// TODO
 		int value = 0;
 		try {
 			value = TextMatcherUtil.phoneticsMatch(refInfoName, entityInfoName, language);
@@ -149,7 +142,7 @@ public final class MatcherUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return value;
 	}
 

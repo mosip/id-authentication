@@ -45,7 +45,6 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatcher;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchInput;
 import io.mosip.authentication.service.impl.indauth.service.demo.MatchingStrategyType;
 import io.mosip.authentication.service.repository.DemoRepository;
-import io.mosip.authentication.service.repository.LocationRepository;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
@@ -55,7 +54,7 @@ public class DemoAuthServiceTest {
 
 	@Autowired
 	private Environment environment;
-	
+
 	@InjectMocks
 	private DemoHelper demoHelper;
 
@@ -73,20 +72,17 @@ public class DemoAuthServiceTest {
 	@Mock
 	private DemoRepository demoRepository;
 
-	@Mock
-	private LocationRepository locRepository;
-
 	@Before
 	public void before() {
-		
+
 		ReflectionTestUtils.setField(demoHelper, "environment", environment);
 		ReflectionTestUtils.setField(demoHelper, "idMappingConfig", idMappingConfig);
-		
+
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "environment", environment);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "demoHelper", demoHelper);
-		
+
 		ReflectionTestUtils.setField(demomatcher, "demoHelper", demoHelper);
-		
+
 	}
 
 	@Test

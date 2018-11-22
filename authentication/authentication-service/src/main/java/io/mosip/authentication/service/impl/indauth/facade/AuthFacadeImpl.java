@@ -128,14 +128,6 @@ public class AuthFacadeImpl implements AuthFacade {
 	public AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequestDTO)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
 
-		/** Property to get the email Notification type */
-		String emailproperty = env.getProperty("notification.email");
-
-		/** Property to get the sms Notification type */
-		String smsproperty = env.getProperty("notification.sms");
-
-		String ismaskRequired = env.getProperty("uin.masking.required");
-
 		String refId = processIdType(authRequestDTO);
 		List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, refId);
 
@@ -151,15 +143,22 @@ public class AuthFacadeImpl implements AuthFacade {
 				"authenticateApplicant status : " + authResponseDTO.getStatus());
 
 		//FIXME fix the mimetype issue
-		sendAuthNotification(authRequestDTO, emailproperty, smsproperty, ismaskRequired, refId, authResponseDTO);
+		sendAuthNotification(authRequestDTO, refId, authResponseDTO);
 
 		return authResponseDTO;
 
 	}
 
-	private void sendAuthNotification(AuthRequestDTO authRequestDTO, String emailproperty, String smsproperty,
-			String ismaskRequired, String refId, AuthResponseDTO authResponseDTO)
+	private void sendAuthNotification(AuthRequestDTO authRequestDTO, String refId, AuthResponseDTO authResponseDTO)
 			throws IdAuthenticationDaoException, IdAuthenticationBusinessException {
+		
+		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
+		
+		/** Property to get the email Notification type */
+		String emailproperty = env.getProperty("notification.email");
+
+		/** Property to get the sms Notification type */
+		String smsproperty = env.getProperty("notification.sms");
 		
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(refId);
 		Map<String, Object> values = new HashMap<>();
@@ -184,15 +183,24 @@ public class AuthFacadeImpl implements AuthFacade {
 		values.put(DATE, changedDate);
 		values.put(TIME, changedTime);
 		Optional<String> uinOpt = idAuthService.getUIN(refId);
-		String uin=uinOpt.get();
-		values.put(UIN2, MaskUtil.generateMaskValue(uin ,
-				Integer.parseInt(env.getProperty("uin.masking.charcount"))));
+		String uin="";
+		
+		if(uinOpt.isPresent()) {
+			uin=uinOpt.get();
+			if(ismaskRequired) {
+				uin = MaskUtil.generateMaskValue(uin ,
+						Integer.parseInt(env.getProperty("uin.masking.charcount")));
+			}
+		}
+		
+		
+		values.put(UIN2, uin);
 		values.put(AUTH_TYPE,
 
 				Stream.of(AuthType.values()).filter(authType -> authType.isAuthTypeEnabled(authRequestDTO))
 						.map(AuthType::getDisplayName).distinct().collect(Collectors.joining(",")));
-		if (authResponseDTO.getStatus().equals(STATUS_SUCCESS)) {
-			values.put(STATUS, "Success");
+		if (authResponseDTO.getStatus().equalsIgnoreCase(STATUS_SUCCESS)) {
+			values.put(STATUS, "Passed");
 		} else {
 			values.put(STATUS, "Failed");
 		}

@@ -54,7 +54,13 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @RestControllerAdvice
 public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
+<<<<<<< HEAD
     private static final String ID_AUTHENTICATION_APP_EXCEPTION = "IdAuthenticationAppException";
+=======
+	private static final String STATUS_FAILED = "N";
+
+	private static final String ID_AUTHENTICATION_APP_EXCEPTION = "IdAuthenticationAppException";
+>>>>>>> branch 'DEV_SPRINT5_LOGA_EKYC_AUTH' of https://github.com/mosip/mosip.git
 
     @Autowired
     private MessageSource messageSource;
@@ -263,4 +269,65 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 	return err;
     }
 
+<<<<<<< HEAD
+=======
+		mosipLogger.debug(DEFAULT_SESSION_ID, "Building exception response", "Entered buildExceptionResponse",
+				PREFIX_HANDLING_EXCEPTION + ex.getClass().toString());
+
+		BaseAuthResponseDTO authResp = new BaseAuthResponseDTO();
+
+		authResp.setStatus(STATUS_FAILED);
+
+		if (ex instanceof IdAuthenticationBaseException) {
+			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
+			Locale locale = LocaleContextHolder.getLocale();
+			List<String> errorCodes = ((BaseCheckedException) ex).getCodes();
+
+			try {
+				if (ex instanceof IDDataValidationException) {
+					IDDataValidationException validationException = (IDDataValidationException) ex;
+					List<Object[]> args = validationException.getArgs();
+
+					List<AuthError> errors = IntStream.range(0, errorCodes.size()).mapToObj(i -> createAuthError(validationException, errorCodes.get(i),
+							messageSource.getMessage(errorCodes.get(i), args.get(i), locale))).distinct().collect(Collectors.toList());
+
+					authResp.setErr(errors);
+				} else {
+					List<AuthError> errors = IntStream.range(0, errorCodes.size())
+							.mapToObj(i -> new AuthError(errorCodes.get(i),
+									messageSource.getMessage(errorCodes.get(i), null, locale)))
+							.distinct().collect(Collectors.toList());
+
+					authResp.setErr(errors);
+				}
+			} catch (NoSuchMessageException e) {
+				mosipLogger.error(DEFAULT_SESSION_ID, ID_AUTHENTICATION_APP_EXCEPTION, e.toString(),
+						"\n" + ExceptionUtils.getStackTrace(e));
+				authResp.setErr(Arrays
+						.<AuthError>asList(createAuthError(baseException, IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
+								IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorMessage())));
+			}
+		}
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat(env.getProperty("datetime.pattern"));
+		authResp.setResTime(dateFormat.format(new Date()));
+
+		mosipLogger.error(DEFAULT_SESSION_ID, "Response", ex.getClass().getName(), authResp.toString());
+
+		return authResp;
+	}
+
+	private AuthError createAuthError(IdAuthenticationBaseException authException, String errorCode, String errorMessage) {
+		String actionCode = authException.getActionCode();
+		AuthError err;
+		if(actionCode == null) {
+			err = new AuthError(errorCode, errorMessage);
+		} else {
+			err = new ActionableAuthError(errorCode, errorMessage, actionCode);
+		}
+		
+		return err;
+	}	
+	
+>>>>>>> branch 'DEV_SPRINT5_LOGA_EKYC_AUTH' of https://github.com/mosip/mosip.git
 }

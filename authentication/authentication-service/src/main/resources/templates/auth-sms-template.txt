@@ -1,1 +1,1 @@
-Your Authentication of UIN $uin using $authType on $date at $time  Hrs $status at a device deployed by "MOSIP Services".
+Your Authentication of UIN $uin using $authType on $date at $time Hrs $status at a device deployed by "MOSIP Services".
