@@ -118,8 +118,7 @@ public class FtpScannerStage extends MosipVerticleManager {
 			Stream<Path> deletepath = Files.walk(Paths.get(filepath));
 			deletepath.filter(Files::isDirectory).forEach(filepathName -> {
 				File file = new File(filepathName.toString());
-				if (file.isDirectory() && !(file.getName().equalsIgnoreCase(new File(filepath).getName()))
-						&& (file.list().length == 0)) {
+				if (file.isDirectory() && !(file.getName().equalsIgnoreCase(new File(filepath).getName())) && (file.list().length == 0)) {
 					try {
 						Files.delete(file.toPath());
 					} catch (IOException e) {

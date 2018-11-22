@@ -102,8 +102,8 @@ public class SyncRegistrationServiceTest {
 		syncRegistrationEntity.setCreatedBy("MOSIP");
 		syncRegistrationEntity.setUpdatedBy("MOSIP");
 
-		AuditResponseDto auditResponseDto=new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
+//		AuditResponseDto auditResponseDto=new AuditResponseDto();
+//		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
 
 
 		/*AuditRequestBuilder auditRequestBuilder = new AuditRequestBuilder();

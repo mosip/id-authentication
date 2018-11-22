@@ -39,6 +39,7 @@ import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 
+import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ JsonUtil.class, IOUtils.class })
 @PowerMockIgnore({ "javax.management.*", "javax.net.ssl.*" })
@@ -69,6 +70,10 @@ public class OSIValidatorStageTest {
 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 	byte[] data = "1234567890".getBytes();
 
+	@InjectMocks
+	private OSIValidator oSIValidator;
+
+	
 	@Before
 	public void setUp() throws Exception {
 
@@ -121,9 +126,9 @@ public class OSIValidatorStageTest {
 		FieldValue metadatavalue1 = new FieldValue();
 		FieldValue metadatavalue2 = new FieldValue();
 		metadatavalue1.setLabel(PacketFiles.OFFICERFINGERPRINTTYPE.name());
-		metadatavalue1.setValue("lefttumb");
+		metadatavalue1.setValue("RIGHTRING");
 		metadatavalue2.setLabel(PacketFiles.OFFICERIRISTYPE.name());
-		metadatavalue2.setValue("lefteye");
+		metadatavalue2.setValue("RIGHTEYE");
 
 		fieldValuemeta.add(metadatavalue1);
 		identity.setMetaData(fieldValuemeta);
@@ -164,6 +169,15 @@ public class OSIValidatorStageTest {
 
 	}
 
+	@Test(expected = ApisResourceAccessException.class )
+	public void validateBiometricTestFailureTest() throws ApisResourceAccessException {
+		
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(),any() )).thenThrow(ApisResourceAccessException.class);
+//		Mockito.when( oSIValidator.isValidOSI(anyString()).thenThrow(Exception.class);
+//		 osiValidator.isValidOSI(registrationId);	
+		boolean messageDto = oSIValidator.validateBiometric("2018701130000410092018110735", "FINGER", "LEFTTHUMB", data);	
+	}
+	
 	@Test
 	public void testisValidOSIFailure() throws Exception {
 

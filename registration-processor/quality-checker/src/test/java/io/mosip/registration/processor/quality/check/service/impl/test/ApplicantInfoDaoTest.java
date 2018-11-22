@@ -22,6 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantDemographicPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
+import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographPKEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdPKEntity;
@@ -147,6 +148,9 @@ public class ApplicantInfoDaoTest {
 		applicantPhotographEntity[0].setExcpPhotoName("new_image");
 		applicantPhotographEntity[0].setNoOfRetry(2);
 		applicantPhotographEntity[0].setHasExcpPhotograph(true);
+		ApplicantPhotographPKEntity pkid=new ApplicantPhotographPKEntity();
+		pkid.setRegId("2018782130000116102018124324");
+		applicantPhotographEntity[0].setId(pkid);
 		applicantPhotographEntity[0].setQualityScore(new BigDecimal(123456123456.78));
 		List<Object[]> applicantInfo2 = new ArrayList<>();
 		applicantInfo2.add(applicantPhotographEntity);

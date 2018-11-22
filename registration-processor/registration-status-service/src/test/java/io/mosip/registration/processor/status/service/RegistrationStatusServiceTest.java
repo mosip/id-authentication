@@ -60,7 +60,7 @@ public class RegistrationStatusServiceTest {
 	private RegistrationStatusDao registrationStatusDao;
 
 	@Mock
-	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder ;
 
 	@Before
 	public void setup()
@@ -87,8 +87,9 @@ public class RegistrationStatusServiceTest {
 		transactionEntity.setId("1001");
 		Mockito.when(transcationStatusService.addRegistrationTransaction(ArgumentMatchers.any()))
 				.thenReturn(transactionEntity);
-		AuditResponseDto auditResponseDto=new AuditResponseDto();
-		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
+//		AuditResponseDto auditResponseDto=new AuditResponseDto();
+//		auditResponseDto.setStatus(true);
+//		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder("test case description",EventId.RPR_401.toString(),EventName.ADD.toString(),EventType.BUSINESS.toString(), "1234testcase");
 
 
 		//Mockito.when(auditHandler.writeAudit(ArgumentMatchers.any())).thenReturn(true);
