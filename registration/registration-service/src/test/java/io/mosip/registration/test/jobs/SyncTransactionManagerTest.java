@@ -37,9 +37,7 @@ import io.mosip.registration.util.healthcheck.RegistrationSystemPropertiesChecke
 
 public class SyncTransactionManagerTest {
 
-	@Mock
-	private Logger logger;
-
+	
 	@Mock
 	private SyncTransactionRepository syncTranscRepository;
 
@@ -102,42 +100,7 @@ public class SyncTransactionManagerTest {
 		JobConfigurationServiceImpl.SYNC_JOB_MAP = jobMap;
 	}
 
-	/*@Test
-	public void getJobUsingJobContextTest() {
-		Mockito.when(jobExecutionContext.getJobDetail()).thenReturn(jobDetail);
-
-		JobKey jobKey = new JobKey("1");
-
-		// Mockito.doReturn(syncJob).when(transactionManagerImplSpy).getJob(jobDetail);
-		Mockito.when(jobDetail.getKey()).thenReturn(jobKey);
-
-		// SyncTransactionManagerImpl transactionManagerImplSpy = Mockito.spy(new
-		// SyncTransactionManagerImpl());
-
-		Assert.assertSame(syncTransactionManagerImpl.getJob(jobExecutionContext), syncJob);
-
-	}
-
-
-
-	@Test
-	public void getJobUsingTriggerTest() {
-		Mockito.when(trigger.getJobDataMap()).thenReturn(jobDataMap);
-		Mockito.when(jobDataMap.get(Mockito.any())).thenReturn(jobDetail);
-		JobKey jobKey = new JobKey("1");
-
-		// Mockito.doReturn(syncJob).when(transactionManagerImplSpy).getJob(jobDetail);
-		Mockito.when(jobDetail.getKey()).thenReturn(jobKey);
-
-		Assert.assertSame(syncTransactionManagerImpl.getJob(trigger).getId(), "1");
-
-	}
-
-	@Test
-	public void getJobUsingID() {
-		Assert.assertSame(syncTransactionManagerImpl.getJob("1").getId(), "1");
-
-	}*/
+	
 
 	
 	
