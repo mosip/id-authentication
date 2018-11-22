@@ -25,6 +25,8 @@ import io.mosip.authentication.service.helper.DateHelper;
 @Component
 public class InternalAuthRequestValidator implements Validator {
 
+	private static final String REQUEST = "request";
+
 	@Autowired
 	private IdAuthService idAuthService;
 
@@ -83,23 +85,23 @@ public class InternalAuthRequestValidator implements Validator {
 
 				boolean finger = validateFinger(authRequestDTO);
 				if (!finger) {
-					errors.reject("request", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+					errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 				}
 			}
 			if (authRequestDTO.getAuthType().isIris()) {
 				boolean iris = validateIris(authRequestDTO);
 				if (!iris) {
-					errors.reject("request", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+					errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 				}
 			}
 			if (authRequestDTO.getAuthType().isFace()) {
 				boolean face = validateFace(authRequestDTO);
 				if (!face) {
-					errors.reject("request", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+					errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 				}
 			}
 		} else {
-			errors.reject("request", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+			errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 		}
 
 	}
