@@ -111,16 +111,7 @@ public class JobConfigurationServiceTest {
 		jobConfigurationService.startScheduler(applicationContext);
 	}
 
-	@Test
-	public void startJobsParseExceptionTest() throws SchedulerException {
-		BaseJob job = new PacketSyncStatusJob();
 
-		Mockito.when(schedulerFactoryBean.getScheduler()).thenReturn(scheduler);
-		Mockito.when(scheduler.scheduleJob(Mockito.any(), Mockito.any())).thenThrow(ParseException.class);
-		initiateJobTest();
-		Mockito.when(applicationContext.getBean(Mockito.anyString())).thenReturn(job);
-		jobConfigurationService.startScheduler(applicationContext);
-	}
 	
 	@Test
 	public void stopJobsTest() throws SchedulerException {
