@@ -5,7 +5,10 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author M1043226
@@ -14,8 +17,6 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class DataSyncDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -24,6 +25,9 @@ public class DataSyncDTO implements Serializable {
 	private String ver;
 	private Timestamp reqTime;
 	
+	/**
+	 * object to accept json
+	 */
 	@JsonProperty("request")
 	private DataSyncRequestDTO dataSyncRequestDto;
 }

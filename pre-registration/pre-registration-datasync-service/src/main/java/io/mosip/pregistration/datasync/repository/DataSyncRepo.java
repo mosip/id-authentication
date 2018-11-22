@@ -11,6 +11,8 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.pregistration.datasync.entity.PreRegistrationEntity;
 
 /**
+ * DataSync Repository
+ * 
  * @author M1043226
  *
  */

@@ -35,7 +35,7 @@ import io.mosip.pregistration.datasync.entity.PreRegistrationProcessedEntity;
 import io.mosip.pregistration.datasync.entity.ReverseDataSyncEntity;
 import io.mosip.pregistration.datasync.exception.DataSyncRecordNotFoundException;
 import io.mosip.pregistration.datasync.exception.RecordNotFoundForDateRange;
-import io.mosip.pregistration.datasync.exception.ReverseDataSyncRecordNotFoundException;
+import io.mosip.pregistration.datasync.exception.ReverseDataFailedToStoreException;
 import io.mosip.pregistration.datasync.exception.ZipFileCreationException;
 import io.mosip.pregistration.datasync.repository.DataSyncRepo;
 import io.mosip.pregistration.datasync.repository.DataSyncRepository;
@@ -43,10 +43,11 @@ import io.mosip.pregistration.datasync.repository.ReverseDataSyncRepo;
 import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 
 /**
+ * DataSync Service
  * 
  * @version 1.0.0
  * 
- * @author M1046129
+ * @author M1046129 - Jagadishwari
  *
  */
 @Service
@@ -220,6 +221,10 @@ public class DataSyncService {
 		return byteArrayOutputStream.toByteArray();
 	}
 
+	/**
+	 * @param reverseDto
+	 * @return responseDTO
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ResponseDTO<ReverseDataSyncDTO> storeConsumedPreRegistrations(ReverseDataSyncDTO reverseDto) {
 		ResponseDTO<ReverseDataSyncDTO> responseDto = new ResponseDTO<>();
@@ -236,8 +241,6 @@ public class DataSyncService {
 				Ipprlst_PK ipprlst_PK = new Ipprlst_PK();
 				ipprlst_PK.setPrereg_id(preIdList.get(i));
 				ipprlst_PK.setReceived_dtimes(reverseDto.getReqTime());
-				// reverseEntity.setPreRegistrationId(preIdList.get(i));
-				// reverseEntity.setReceivedDTime(reverseDto.getReqTime());
 				reverseEntity.setIpprlst_PK(ipprlst_PK);
 				reverseEntity.setLangCode("AR");
 				reverseEntity.setCrBy("5766477466");
@@ -263,7 +266,6 @@ public class DataSyncService {
 				if (!reversedataSyncRepo.existsById(s.getPreRegistrationId()))
 					reversedataSyncRepo.save(s);
 			}
-			// reversedataSyncRepo.saveAll(processedEntityList);
 
 			status = "true";
 			exceptionJSONInfo = new ExceptionJSONInfo("", "");
@@ -273,7 +275,7 @@ public class DataSyncService {
 			responseDto.setResponse(responseList);
 
 		} else {
-			throw new ReverseDataSyncRecordNotFoundException(
+			throw new ReverseDataFailedToStoreException(
 					StatusCodes.FAILED_TO_STORE_PRE_REGISTRATION_IDS.toString());
 		}
 

@@ -57,6 +57,11 @@ public class DataSyncController {
 		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 	}
 	
+	/**
+	 * @param preId
+	 * @return zip file to download
+	 * @throws Exception
+	 */
 	@SuppressWarnings("rawtypes")
 	@GetMapping(path = "/datasync", produces = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Retrieve Pre-Registrations")
@@ -82,6 +87,13 @@ public class DataSyncController {
 		return new ResponseEntity<byte[]>(bytes, responseHeaders, HttpStatus.OK);
 	}
 
+	/**
+	 * @param consumedData
+	 * @return response object
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 */
 	@PostMapping(path = "/reverseDataSync", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "Store consumed Pre-Registrations")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Consumed Pre-Registrations saved"),

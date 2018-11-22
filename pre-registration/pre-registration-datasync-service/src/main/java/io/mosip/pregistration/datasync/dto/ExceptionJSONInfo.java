@@ -2,12 +2,17 @@ package io.mosip.pregistration.datasync.dto;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author M1046129 - Jagadishwari
  *
  */
+@Getter
+@Setter
 public class ExceptionJSONInfo implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 3999014525078508265L;
 
@@ -20,11 +25,4 @@ public class ExceptionJSONInfo implements Serializable {
 		this.message = message;
 	}
 
-	public String getErrorcode() {
-		return errorCode;
-	}
-
-	public String getMessage() {
-		return message;
-	}
 }

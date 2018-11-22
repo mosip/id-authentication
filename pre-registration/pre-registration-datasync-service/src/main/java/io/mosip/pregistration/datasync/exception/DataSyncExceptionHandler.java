@@ -25,6 +25,13 @@ import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 @RestControllerAdvice
 public class DataSyncExceptionHandler {
 
+	/** 
+	 * DataSyncRecordNotFoundException Handling
+	 * 
+	 * @param e
+	 * @param request
+	 * @return
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(DataSyncRecordNotFoundException.class)
 	public ResponseEntity<ResponseDTO> dataSyncRecordNotFound(final DataSyncRecordNotFoundException e,
@@ -43,9 +50,16 @@ public class DataSyncExceptionHandler {
 
 	}
 
+	/**
+	 * ReverseDataFailedToStoreException Handling
+	 * 
+	 * @param e
+	 * @param request
+	 * @return
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@ExceptionHandler(ReverseDataSyncRecordNotFoundException.class)
-	public ResponseEntity<ResponseDTO> reverseDataSyncRecordNotFound(final ReverseDataSyncRecordNotFoundException e,
+	@ExceptionHandler(ReverseDataFailedToStoreException.class)
+	public ResponseEntity<ResponseDTO> reverseDataSyncRecordNotFound(final ReverseDataFailedToStoreException e,
 			WebRequest request) {
 		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_REVESE_DATA_SYNC_001.toString(),
 				StatusCodes.FAILED_TO_STORE_PRE_REGISTRATION_IDS.toString());
@@ -61,6 +75,13 @@ public class DataSyncExceptionHandler {
 
 	}
 
+	/**
+	 * RecordNotFoundForDateRange hanlding
+	 * 
+	 * @param e
+	 * @param request
+	 * @return
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(RecordNotFoundForDateRange.class)
 	public ResponseEntity<ResponseDTO> databaseerror(final RecordNotFoundForDateRange e, WebRequest request) {
@@ -75,6 +96,13 @@ public class DataSyncExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.NOT_FOUND);
 	}
 
+	/**
+	 * TablenotAccessibleException handling
+	 * 
+	 * @param e
+	 * @param request
+	 * @return
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<ResponseDTO> databaseerror(final TablenotAccessibleException e, WebRequest request) {
@@ -89,6 +117,13 @@ public class DataSyncExceptionHandler {
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	/**
+	 * ZipFileCreationException handling
+	 * 
+	 * @param e
+	 * @param request
+	 * @return
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(ZipFileCreationException.class)
 	public ResponseEntity<ResponseDTO> zipNotCreated(final ZipFileCreationException e, WebRequest request) {

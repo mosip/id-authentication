@@ -16,6 +16,9 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.domain.Persistable;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * @author M1046129 - Jagadishwari
@@ -23,8 +26,9 @@ import lombok.Data;
  */
 @Entity
 @Table(name = "processed_prereg_list", schema = "prereg")
-@Data
-// @DynamicUpdate
+@Getter
+@Setter
+@NoArgsConstructor
 public class PreRegistrationProcessedEntity implements Serializable {
 
 	/**
@@ -33,16 +37,6 @@ public class PreRegistrationProcessedEntity implements Serializable {
 	private static final long serialVersionUID = -239434336226779852L;
 
 	@Id
-	/*
-	 * @SequenceGenerator(name = "processed_prereg_list_id_seq", sequenceName =
-	 * "processed_prereg_list_id_seq", allocationSize = 1)
-	 * 
-	 * @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
-	 * "processed_prereg_list_id_seq")
-	 * 
-	 * @Column(name = "id") private int processedId;
-	 */
-
 	@Column(name = "prereg_id")
 	private String preRegistrationId;
 
