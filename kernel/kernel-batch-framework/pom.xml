@@ -9,6 +9,9 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>kernel-batch-framework</artifactId>
+	<properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
 
 	<dependencies>
 		<dependency>
