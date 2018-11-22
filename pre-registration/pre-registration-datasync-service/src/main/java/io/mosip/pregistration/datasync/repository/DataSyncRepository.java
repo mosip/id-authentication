@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.pregistration.datasync.entity.DocumentEntity;
 import io.mosip.pregistration.datasync.entity.PreRegistrationEntity;
-import io.mosip.pregistration.datasync.entity.PreRegistrationProcessedEntity;
 import io.mosip.pregistration.datasync.entity.ReverseDataSyncEntity;
 
 @Repository("dataSyncRepository")
@@ -23,9 +22,10 @@ public interface DataSyncRepository extends BaseRepository<ReverseDataSyncEntity
 
 	@Query("SELECT d FROM DocumentEntity d WHERE d.preregId = :preRegId")
 	public List<DocumentEntity> findDocumentByPreId(@Param("preRegId") String preid);
-	
-	public void saveAll(List<PreRegistrationProcessedEntity> processedEntityList);
 
+	
+	
+	
 	
 	
 }

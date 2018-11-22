@@ -1,0 +1,115 @@
+<h1><b>Book Appointment</b></h1>
+<div class="expansionPanelPlacer">
+<mat-accordion>
+  <div class="spacer">
+      <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Center Selection
+            </mat-panel-title>
+            <mat-panel-description *ngIf="showDescription">
+              {{selectedCentre.name}}
+            </mat-panel-description>
+          </mat-expansion-panel-header>    
+          <div>
+              <mat-form-field>
+                  <mat-select [(ngModel)]="locationType" placeholder="Select Location Type">
+                    <mat-option *ngFor="let location of locationTypes" [value]="location.value">
+                      {{location.viewValue}}
+                    </mat-option>
+                  </mat-select>
+              </mat-form-field>
+              <span class="inlineSpacer"></span>
+              <mat-form-field>
+                  <input matInput placeholder="Search Registration Centre" [(ngModel)]="text" value="">     
+              </mat-form-field>
+              <span class="img-spacer"><i class="material-icons" (click)="showResults()">search</i></span>
+              <span class="inlineSpacer"></span>
+              <a class="hyperlink" (click)="getLocation()">Show nearby Centers</a>
+          </div>
+          <div *ngIf="showTable">
+            <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+              <!-- Radio Button Column -->
+              <ng-container matColumnDef="select">
+                <mat-header-cell *matHeaderCellDef>
+                  Select
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row; let i = index">
+                  <mat-radio-button
+                    [checked] = "i == 0"
+                    (change)="selectedRow(row)"></mat-radio-button>
+                </mat-cell>
+              </ng-container>
+            
+              <!-- Registration center name Column -->
+              <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef> Registration Center Name </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+              </ng-container>
+            
+              <!-- Address Column -->
+              <ng-container matColumnDef="address">
+                <mat-header-cell *matHeaderCellDef> Address </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.address}} </mat-cell>
+              </ng-container>
+            
+              <!-- Contact Person Column -->
+              <ng-container matColumnDef="contact_person">
+                <mat-header-cell *matHeaderCellDef> Contact Person </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.contact_person}} </mat-cell>
+              </ng-container>
+            
+              <!-- Center type Column -->
+              <ng-container matColumnDef="centre_type">
+                <mat-header-cell *matHeaderCellDef> Center Type </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.centre_type}} </mat-cell>
+              </ng-container>
+
+              <!-- Contact Number Column -->
+              <ng-container matColumnDef="contact">
+                <mat-header-cell *matHeaderCellDef> Contact Number </mat-header-cell>
+                <mat-cell *matCellDef="let element"> {{element.contact}} </mat-cell>
+              </ng-container>
+            
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns;"
+                  (click)="selection.toggle(row)">
+              </mat-row>
+            </mat-table>
+          </div>
+          <br />
+          <div *ngIf="showMap">
+            <p>Map will go here</p>
+            <p>{{selectedCentre.name}} will be plotted on the map</p>
+          </div>
+          <mat-action-row>
+            <button mat-button color="primary" [disabled]="!enableNextButton" (click)="nextStep()">Next</button>
+          </mat-action-row>
+        </mat-expansion-panel>
+  </div>
+  <div class="spacer">
+    <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Time Selection
+        </mat-panel-title>
+        <mat-panel-description *ngIf="step === 1">
+          Applicant 5/5
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+        <div *ngIf="selectedCentre !== null">
+          <app-time-selection></app-time-selection>
+        </div>
+        <div *ngIf="selectedCentre === null">
+          <p>Please select the centre first</p>
+        </div>
+          <mat-action-row>
+            <button mat-button color="warn" (click)="prevStep()">Previous</button>
+            <button mat-button color="primary" [disabled]="!enableNextButton" (click)="makeBooking()">Book</button>
+          </mat-action-row>
+  
+    </mat-expansion-panel>
+  </div>
+  </mat-accordion>
+</div>

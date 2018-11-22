@@ -10,6 +10,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.domain.Persistable;
 
 import lombok.Data;
 
@@ -18,30 +22,36 @@ import lombok.Data;
  *
  */
 @Entity
-@Table(name="processed_prereg_list", schema = "prereg")
+@Table(name = "processed_prereg_list", schema = "prereg")
 @Data
-public class PreRegistrationProcessedEntity implements Serializable{
+// @DynamicUpdate
+public class PreRegistrationProcessedEntity implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -239434336226779852L;
-	
+
 	@Id
-	@SequenceGenerator(name = "processed_prereg_list_id_seq", sequenceName = "processed_prereg_list_id_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "processed_prereg_list_id_seq")
-	@Column(name = "id")
-	private int processedId;
+	/*
+	 * @SequenceGenerator(name = "processed_prereg_list_id_seq", sequenceName =
+	 * "processed_prereg_list_id_seq", allocationSize = 1)
+	 * 
+	 * @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
+	 * "processed_prereg_list_id_seq")
+	 * 
+	 * @Column(name = "id") private int processedId;
+	 */
 
 	@Column(name = "prereg_id")
 	private String preRegistrationId;
 
 	@Column(name = "first_received_dtimes")
 	private Timestamp receivedDTime;
-	
+
 	@Column(name = "status_code")
 	private String statusCode;
-	
+
 	@Column(name = "status_comments")
 	private String statusComments;
 
@@ -65,6 +75,5 @@ public class PreRegistrationProcessedEntity implements Serializable{
 
 	@Column(name = "del_dtimes")
 	private Timestamp delTime;
-
 
 }
