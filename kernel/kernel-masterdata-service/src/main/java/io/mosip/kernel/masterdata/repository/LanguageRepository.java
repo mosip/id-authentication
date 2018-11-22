@@ -2,6 +2,8 @@ package io.mosip.kernel.masterdata.repository;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Language;
 
@@ -14,7 +16,7 @@ import io.mosip.kernel.masterdata.entity.Language;
  * @see BaseRepository
  *
  */
-
+@Repository
 public interface LanguageRepository extends BaseRepository<Language, String> {
 
 	/**
