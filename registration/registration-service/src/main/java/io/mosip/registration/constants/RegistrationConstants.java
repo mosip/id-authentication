@@ -379,7 +379,7 @@ public class RegistrationConstants {
 	public static final String REGION_EMPTY = "Please Provide Region";
 	public static final String POSTAL_CODE_EMPTY = "Please Provide Postal Code";
 	public static final String MOBILE_NUMBER_EMPTY = "Please Provide Mobile Number";
-	public static final String MOBILE_NUMBER_EXAMPLE = "Please provide 10 digit mobile no, Example : 9908542409";
+	public static final String MOBILE_NUMBER_EXAMPLE = "Please provide 9 digit mobile no, Example : 990854240";
 	public static final String EMAIL_ID_EMPTY = "Please Provide Email Id";
 	public static final String EMAIL_ID_EXAMPLE = "Example : xyz@xyz.com";
 	public static final String PARENT_NAME_EMPTY = "Please Provide Parent Name";
@@ -392,7 +392,9 @@ public class RegistrationConstants {
 	public static final String POR_DOCUMENT_EMPTY = "Please Provide POR Document";
 	public static final String ONLY_ALPHABETS="Only alphabets are allowed";
 	public static final String TEN_LETTER_INPUT_LIMT="Please provide in the range of 6 to 10 letters";
-	public static final String FIVE_DIGIT_INPUT_LIMT="Please provide 5 digit detail";
+	public static final String SIX_DIGIT_INPUT_LIMT="Please provide 5 digit detail";
+	public static final String THIRTY_DIGIT_INPUT_LIMT="Please provide 30 digit detail";
+
 
 	public static final String MACHINE_MAPPING_ACTIVE = "ACTIVE";
 	public static final String MACHINE_MAPPING_IN_ACTIVE = "IN-ACTIVE";

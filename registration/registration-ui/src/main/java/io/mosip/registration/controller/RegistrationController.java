@@ -1027,7 +1027,7 @@ public class RegistrationController extends BaseController {
 									if (validateRegex(postalCode, "\\d{6}")) {
 										generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 												RegistrationConstants.POSTAL_CODE_EMPTY,
-												RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
+												RegistrationConstants.SIX_DIGIT_INPUT_LIMT);
 										postalCode.requestFocus();
 									} else {
 										if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
@@ -1055,7 +1055,7 @@ public class RegistrationController extends BaseController {
 														generateAlert("Error",
 																AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 																RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,
-																RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
+																RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT);
 														cni_or_pin_number.requestFocus();
 													} else {
 														gotoNext = true;
