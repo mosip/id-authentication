@@ -9,9 +9,9 @@ import java.util.Map;
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
-public final class CheckUtils {
+public final class EmptyCheckUtils {
 
-	private CheckUtils() {
+	private EmptyCheckUtils() {
 		super();
 	}
 
@@ -36,8 +36,7 @@ public final class CheckUtils {
 	 *         Zero.
 	 */
 	public static boolean isNullEmpty(Object[] objectArray) {
-		Object[] arrayRef = objectArray;
-		return arrayRef == null || arrayRef.length == 0;
+		return objectArray == null || objectArray.length == 0;
 	}
 
 	/**
@@ -63,8 +62,7 @@ public final class CheckUtils {
 	 *         any element inside it.
 	 */
 	public static boolean isNullEmpty(Collection<?> collection) {
-		Collection<?> collectionRef = collection;
-		return collection == null || collectionRef.isEmpty();
+		return collection == null || collection.isEmpty();
 	}
 
 	/**
@@ -76,8 +74,7 @@ public final class CheckUtils {
 	 *         values pairs inside it.
 	 */
 	public static boolean isNullEmpty(Map<?, ?> map) {
-		Map<?, ?> mapRef = map;
-		return map == null || mapRef.isEmpty();
+		return map == null || map.isEmpty();
 	}
 
 }
