@@ -40,6 +40,7 @@
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 		<modelmapper.version>2.1.1</modelmapper.version>
 		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
+		<json.schema.validator.version>2.2.10</json.schema.validator.version>
 
 		<!-- Swagger -->
 		<swagger.version>2.9.2</swagger.version>
@@ -66,6 +67,7 @@
 		<commons.beanutils.version>1.9.2</commons.beanutils.version>
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<jackson.databind>2.9.6</jackson.databind>
+		<json.utility.version>20180130</json.utility.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.12</junit.version>
@@ -85,35 +87,39 @@
 
 	<modules>
 		<module>kernel-core</module>
+
 		<module>kernel-logger-logback</module>
 		<module>kernel-dataaccess-hibernate</module>
 		<module>kernel-auditmanager-api</module>
-		<module>kernel-auditmanager-service</module>
-		<module>kernel-otpmanager-service</module>
 		<module>kernel-idgenerator-prid</module>
 		<module>kernel-idgenerator-rid</module>
 		<module>kernel-idgenerator-uin</module>
 		<module>kernel-idgenerator-vid</module>
 		<module>kernel-idgenerator-tokenid</module>
-		<module>kernel-packetuploader-sftp</module>
-		<module>kernel-packetuploader-http</module>
-		<module>kernel-packetserver-sftp</module>
+		<module>kernel-packetuploader-sftp-jsch</module>
 		<module>kernel-idvalidator</module>
 		<module>kernel-datavalidator</module>
+		<module>kernel-json-validator</module>
 		<module>kernel-virusscanner-clamav</module>
-		<module>kernel-config-server</module>
-		<module>kernel-emailnotification-smtp</module>
 		<module>kernel-keygenerator-bouncycastle</module>
 		<module>kernel-crypto-bouncycastle</module>
 		<!-- <module>kernel-crypto-jce</module> -->
 		<module>kernel-templatemanager-velocity</module>
 		<module>kernel-templatemanager-freemarker</module>
 		<module>kernel-pdfgenerator-itext</module>
-		<module>kernel-smsnotification-msg91</module>
 		<module>kernel-datamapper-orika</module>
+
+		<module>kernel-masterdata-service</module>
+		<module>kernel-auditmanager-service</module>
+		<module>kernel-otpmanager-service</module>
+		<module>kernel-emailnotification-service</module>
+		<module>kernel-smsnotification-service</module>
+
 		<module>kernel-batch-framework</module>
 		<module>kernel-batch-server</module>
-		<module>kernel-json-validator</module>
+		<module>kernel-config-server</module>
+		<module>kernel-packetserver-sftp</module>
+		<module>kernel-packetserver-http</module>
 	</modules>
 
 	<dependencies>
