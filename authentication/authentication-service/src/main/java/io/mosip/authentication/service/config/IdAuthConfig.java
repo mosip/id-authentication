@@ -27,48 +27,45 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Configuration
 public class IdAuthConfig implements WebMvcConfigurer {
 
-	/** The environment. */
-	@Autowired
-	private Environment environment;
+    /** The environment. */
+    @Autowired
+    private Environment environment;
 
-	/** The mapper. */
-	@Autowired
-	private ObjectMapper mapper;
+    /** The mapper. */
+    @Autowired
+    private ObjectMapper mapper;
 
-	/**
-	 * Set the timestamp for request and response.
-	 */
-	@PostConstruct
-	public void setup() {
-		mapper.setDateFormat(new SimpleDateFormat(
-				environment.getProperty("datetime.pattern")));
-	}
+    /**
+     * Set the timestamp for request and response.
+     */
+    @PostConstruct
+    public void setup() {
+	mapper.setDateFormat(new SimpleDateFormat(environment.getProperty("datetime.pattern")));
+    }
 
-	/**
-	 * Locale resolver.
-	 *
-	 * @return the locale resolver
-	 */
-	@Bean
-	public LocaleResolver localeResolver() {
-		SessionLocaleResolver sessionLocaleResolver =
-				new SessionLocaleResolver();
-		Locale locale = new Locale(
-				environment.getProperty("mosip.errormessages.default-lang"));
-		LocaleContextHolder.setLocale(locale);
-		sessionLocaleResolver.setDefaultLocale(locale);
-		return sessionLocaleResolver;
-	}
+    /**
+     * Locale resolver.
+     *
+     * @return the locale resolver
+     */
+    @Bean
+    public LocaleResolver localeResolver() {
+	SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
+	Locale locale = new Locale(environment.getProperty("mosip.errormessages.default-lang"));
+	LocaleContextHolder.setLocale(locale);
+	sessionLocaleResolver.setDefaultLocale(locale);
+	return sessionLocaleResolver;
+    }
 
-	/**
-	 * Message source.
-	 *
-	 * @return the message source
-	 */
-	@Bean
-	public MessageSource messageSource() {
-		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-		source.addBasenames("errormessages", "eKycPDFTemplate");
-		return source;
-	}
+    /**
+     * Message source.
+     *
+     * @return the message source
+     */
+    @Bean
+    public MessageSource messageSource() {
+	ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+	source.addBasenames("errormessages", "eKycPDFTemplate");
+	return source;
+    }
 }

@@ -24,7 +24,6 @@ import io.mosip.authentication.service.entity.VIDEntity;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
-import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 import io.mosip.kernel.core.logger.spi.Logger;
 
@@ -53,10 +52,6 @@ public class IdAuthServiceImpl implements IdAuthService {
 	/** The audit factory. */
 	@Autowired
 	private AuditRequestFactory auditFactory;
-
-	/** The uin repository. */
-	@Autowired
-	private UinRepository uinRepository;
 
 	/** The vid repository. */
 	@Autowired

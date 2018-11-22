@@ -13,7 +13,7 @@ import org.apache.commons.codec.language.bm.NameType;
 import org.apache.commons.codec.language.bm.PhoneticEngine;
 import org.apache.commons.codec.language.bm.RuleType;
 
-import io.mosip.kernel.core.util.StringUtils;
+import ch.qos.logback.core.util.FileUtil;
 
 /**
  * The Class TextMatcherUtil is used to match two input strings and to provide
@@ -82,45 +82,7 @@ public final class TextMatcherUtil {
      * @return true, if successful
      */
     private static final boolean validateThreshold(Integer threshold) {
-	if (threshold >= 0 && threshold <= 100 && threshold != null) {
-	    return true;
-	} else {
-	    return false;
-	}
-    }
-
-    /**
-     * Checks whether two strings are exactly matching or not.
-     *
-     * @param inputString
-     *            the input string
-     * @param storedString
-     *            the stored string
-     * @return true, if successful, else false
-     */
-    public static final boolean exactMatch(String inputString, String storedString) {
-	if (StringUtils.equalsIgnoreCase(inputString, storedString)) {
-	    return true;
-	} else {
-	    return false;
-	}
-    }
-
-    /**
-     * Checks whether two strings are partially matching or not.
-     *
-     * @param inputString
-     *            the input string
-     * @param storedString
-     *            the stored string
-     * @return true, if successful
-     */
-    public static final boolean partialMatch(String inputString, String storedString) {
-	if (StringUtils.containsIgnoreCase(inputString, storedString)) {
-	    return true;
-	} else {
-	    return false;
-	}
+	return threshold >= 0 && threshold <= 100;
     }
 
     /**
@@ -153,11 +115,7 @@ public final class TextMatcherUtil {
 	    try {
 		Integer thresholdProbability = phoneticsMatch(inputString, storedString, language);
 
-		if (validateThreshold(thresholdProbability) && thresholdProbability >= threshold) {
-		    return true;
-		} else {
-		    return false;
-		}
+		return (validateThreshold(thresholdProbability) && (thresholdProbability >= threshold));
 	    } catch (EncoderException e) {
 		System.err.println(e.getMessage());
 	    }

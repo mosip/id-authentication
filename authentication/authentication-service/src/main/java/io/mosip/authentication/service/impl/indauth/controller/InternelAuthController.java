@@ -15,11 +15,9 @@ import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
-import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.InternalAuthRequestValidator;
-import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import springfox.documentation.annotations.ApiIgnore;
@@ -31,11 +29,6 @@ import springfox.documentation.annotations.ApiIgnore;
  */
 @RestController
 public class InternelAuthController {
-
-	/** The mosipLogger. */
-	private Logger mosipLogger = IdaLogger.getLogger(InternelAuthController.class);
-
-	/** The auth request validator. */
 
 	/** The auth facade. */
 	@Autowired

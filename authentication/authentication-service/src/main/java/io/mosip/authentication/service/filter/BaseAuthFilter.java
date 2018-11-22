@@ -110,8 +110,8 @@ public abstract class BaseAuthFilter implements Filter {
 		CharResponseWrapper responseWrapper =
 				new CharResponseWrapper((HttpServletResponse) response);
 
-		double requestSize = IOUtils.toString(requestWrapper.getInputStream(),
-				Charset.defaultCharset()).length() / 1024;
+		double requestSize = ((double) IOUtils.toString(requestWrapper.getInputStream(),
+				Charset.defaultCharset()).length()) / 1024;
 		mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 				"Request received at : " + requestTime + " with Request size : "
 						+ ((requestSize > 0) ? requestSize : 1) + " kb");
@@ -153,7 +153,7 @@ public abstract class BaseAuthFilter implements Filter {
 			responseWrapper =
 					sendErrorResponse(response, chain, requestWrapper);
 		} finally {
-			double responseSize = responseWrapper.toString().length() / 1024;
+			double responseSize = ((double) responseWrapper.toString().length()) / 1024;
 			mosipLogger.info(SESSION_ID, EVENT_FILTER, BASE_AUTH_FILTER,
 					"Response sent with Request size : "
 							+ ((responseSize > 0) ? responseSize : 1) + " kb");

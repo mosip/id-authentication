@@ -99,16 +99,16 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
     /** The Constant VALIDATE_REQUEST_TIMED_OUT. */
     private static final String VALIDATE_REQUEST_TIMED_OUT = "validateRequestTimedOut";
-    
+
     /** The Constant VALIDATE_CHECK_OTP_AUTH. */
     private static final String VALIDATE_CHECK_OTP_AUTH = "validate -> checkOTPAuth";
 
     /** The Constant REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS. */
     private static final String REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS = "authrequest.received-time-allowed.in-hours";
-    
+
     /** The Constant PRIMARY_LANG_CODE. */
     private static final String PRIMARY_LANG_CODE = "mosip.primary.lang-code";
-    
+
     /** The Constant SECONDARY_LANG_CODE. */
     private static final String SECONDARY_LANG_CODE = "mosip.secondary.lang-code";
 
@@ -146,16 +146,23 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     @Autowired
     private DateHelper dateHelper;
 
-    /* (non-Javadoc)
-     * @see io.mosip.authentication.service.impl.indauth.validator.BaseAuthRequestValidator#supports(java.lang.Class)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see io.mosip.authentication.service.impl.indauth.validator.
+     * BaseAuthRequestValidator#supports(java.lang.Class)
      */
     @Override
     public boolean supports(Class<?> clazz) {
 	return AuthRequestDTO.class.equals(clazz);
     }
 
-    /* (non-Javadoc)
-     * @see io.mosip.authentication.service.impl.indauth.validator.BaseAuthRequestValidator#validate(java.lang.Object, org.springframework.validation.Errors)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see io.mosip.authentication.service.impl.indauth.validator.
+     * BaseAuthRequestValidator#validate(java.lang.Object,
+     * org.springframework.validation.Errors)
      */
     @Override
     public void validate(Object target, Errors errors) {
@@ -194,8 +201,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Validate req hmac.
      *
-     * @param reqHmac the req hmac
-     * @param errors the errors
+     * @param reqHmac
+     *            the req hmac
+     * @param errors
+     *            the errors
      */
     private void validateReqHmac(String reqHmac, Errors errors) {
 	if (Objects.isNull(reqHmac)) {
@@ -209,8 +218,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Validate request timed out.
      *
-     * @param reqTime the req time
-     * @param errors the errors
+     * @param reqTime
+     *            the req time
+     * @param errors
+     *            the errors
      */
     private void validateRequestTimedOut(String reqTime, Errors errors) {
 	try {
@@ -243,8 +254,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Check auth request.
      *
-     * @param authRequest the auth request
-     * @param errors the errors
+     * @param authRequest
+     *            the auth request
+     * @param errors
+     *            the errors
      */
     private void checkAuthRequest(AuthRequestDTO authRequest, Errors errors) {
 	AuthTypeDTO authType = authRequest.getAuthType();
@@ -276,8 +289,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Check demo auth.
      *
-     * @param authRequest the auth request
-     * @param errors the errors
+     * @param authRequest
+     *            the auth request
+     * @param errors
+     *            the errors
      */
     private void checkDemoAuth(AuthRequestDTO authRequest, Errors errors) {
 	AuthType[] authTypes = AuthType.values();
@@ -286,8 +301,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	    if (authType.isAuthTypeEnabled(authRequest)) {
 		Set<MatchType> associatedMatchTypes = authType.getAssociatedMatchTypes();
 		for (MatchType matchType : associatedMatchTypes) {
-		    List<IdentityInfoDTO> identityInfos =
-			    matchType.getIdentityInfoFunction().apply(authRequest.getRequest().getIdentity());
+		    List<IdentityInfoDTO> identityInfos = matchType.getIdentityInfoFunction()
+			    .apply(authRequest.getRequest().getIdentity());
 		    if (identityInfos != null) {
 			hasMatch = true;
 			checkIdentityInfoValue(identityInfos, errors);
@@ -302,8 +317,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Check identity info value.
      *
-     * @param identityInfos the identity infos
-     * @param errors the errors
+     * @param identityInfos
+     *            the identity infos
+     * @param errors
+     *            the errors
      */
     private void checkIdentityInfoValue(List<IdentityInfoDTO> identityInfos, Errors errors) {
 	for (IdentityInfoDTO identityInfoDTO : identityInfos) {
@@ -321,9 +338,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Check other values.
      *
-     * @param authRequest the auth request
-     * @param errors the errors
-     * @param hasMatch the has match
+     * @param authRequest
+     *            the auth request
+     * @param errors
+     *            the errors
+     * @param hasMatch
+     *            the has match
      */
     private void checkOtherValues(AuthRequestDTO authRequest, Errors errors, boolean hasMatch) {
 	if (!hasMatch) {
@@ -342,12 +362,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Check gender.
      *
-     * @param authRequest the auth request
-     * @param errors the errors
+     * @param authRequest
+     *            the auth request
+     * @param errors
+     *            the errors
      */
     private void checkGender(AuthRequestDTO authRequest, Errors errors) {
-	List<IdentityInfoDTO> genderList =
-		DemoMatchType.GENDER.getIdentityInfoFunction().apply(authRequest.getRequest().getIdentity());
+	List<IdentityInfoDTO> genderList = DemoMatchType.GENDER.getIdentityInfoFunction()
+		.apply(authRequest.getRequest().getIdentity());
 	if (genderList != null) {
 	    for (IdentityInfoDTO identityInfoDTO : genderList) {
 		if (!GenderType.isTypePresent(identityInfoDTO.getValue())) {
@@ -365,12 +387,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Check DOB type.
      *
-     * @param authRequest the auth request
-     * @param errors the errors
+     * @param authRequest
+     *            the auth request
+     * @param errors
+     *            the errors
      */
     private void checkDOBType(AuthRequestDTO authRequest, Errors errors) {
-	List<IdentityInfoDTO> dobTypeList =
-		DemoMatchType.DOBTYPE.getIdentityInfoFunction().apply(authRequest.getRequest().getIdentity());
+	List<IdentityInfoDTO> dobTypeList = DemoMatchType.DOBTYPE.getIdentityInfoFunction()
+		.apply(authRequest.getRequest().getIdentity());
 	if (dobTypeList != null) {
 	    for (IdentityInfoDTO identityInfoDTO : dobTypeList) {
 		if (!DOBType.isTypePresent(identityInfoDTO.getValue())) {
@@ -388,12 +412,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Check age.
      *
-     * @param authRequest the auth request
-     * @param errors the errors
+     * @param authRequest
+     *            the auth request
+     * @param errors
+     *            the errors
      */
     private void checkAge(AuthRequestDTO authRequest, Errors errors) {
-	List<IdentityInfoDTO> ageList =
-		DemoMatchType.AGE.getIdentityInfoFunction().apply(authRequest.getRequest().getIdentity());
+	List<IdentityInfoDTO> ageList = DemoMatchType.AGE.getIdentityInfoFunction()
+		.apply(authRequest.getRequest().getIdentity());
 	if (ageList != null) {
 	    for (IdentityInfoDTO identityInfoDTO : ageList) {
 		try {
@@ -412,12 +438,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Check DOB.
      *
-     * @param authRequest the auth request
-     * @param errors the errors
+     * @param authRequest
+     *            the auth request
+     * @param errors
+     *            the errors
      */
     private void checkDOB(AuthRequestDTO authRequest, Errors errors) {
-	List<IdentityInfoDTO> dobList =
-		DemoMatchType.DOB.getIdentityInfoFunction().apply(authRequest.getRequest().getIdentity());
+	List<IdentityInfoDTO> dobList = DemoMatchType.DOB.getIdentityInfoFunction()
+		.apply(authRequest.getRequest().getIdentity());
 	if (dobList != null) {
 	    for (IdentityInfoDTO identityInfoDTO : dobList) {
 		try {
@@ -436,9 +464,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Check langauge details.
      *
-     * @param demoMatchType the demo match type
-     * @param identityInfos the identity infos
-     * @param errors the errors
+     * @param demoMatchType
+     *            the demo match type
+     * @param identityInfos
+     *            the identity infos
+     * @param errors
+     *            the errors
      */
     private void checkLangaugeDetails(MatchType demoMatchType, List<IdentityInfoDTO> identityInfos, Errors errors) {
 	String priLangCode = env.getProperty(PRIMARY_LANG_CODE);
@@ -474,24 +505,27 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Check seconday language.
      *
-     * @param demoMatchType the demo match type
-     * @param secCount the sec count
-     * @param errors the errors
+     * @param demoMatchType
+     *            the demo match type
+     * @param secCount
+     *            the sec count
+     * @param errors
+     *            the errors
      */
     private void checkSecondayLanguage(MatchType demoMatchType, long secCount, Errors errors) {
 	IdMapping idMapping = demoMatchType.getIdMapping();
-	boolean checkForSecondaryLanguage =
-		Stream.of(DemoMatchType.values()).filter(matchType -> matchType.getIdMapping().equals(idMapping))
-			.anyMatch(matchType -> matchType.getLanguageType().equals(LanguageType.SECONDARY_LANG));
-	if (checkForSecondaryLanguage) {
-	    if (secCount > 1) {
-		mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-			"Invalid or Multiple Seconday language code");
-		errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-			new Object[] { "SecondayLanguageCode" },
-			IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-	    }
-	} else if (secCount > 0) {
+	boolean checkForSecondaryLanguage = Stream.of(DemoMatchType.values())
+		.filter(matchType -> matchType.getIdMapping().equals(idMapping))
+		.anyMatch(matchType -> matchType.getLanguageType().equals(LanguageType.SECONDARY_LANG));
+	if (checkForSecondaryLanguage && secCount > 1) {
+	    mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+		    "Invalid or Multiple Seconday language code");
+	    errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+		    new Object[] { "SecondayLanguageCode" },
+		    IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+	}
+
+	if (secCount > 0) {
 	    mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER, "Invalid language code");
 	    errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
 		    new Object[] { "SecondayLanguageCode" },
@@ -503,8 +537,10 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Check OTP auth.
      *
-     * @param authRequest the auth request
-     * @param errors the errors
+     * @param authRequest
+     *            the auth request
+     * @param errors
+     *            the errors
      */
     private void checkOTPAuth(AuthRequestDTO authRequest, Errors errors) {
 	Optional<String> otp = getOtpValue(authRequest);
@@ -524,7 +560,8 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Gets the otp value.
      *
-     * @param authreqdto the authreqdto
+     * @param authreqdto
+     *            the authreqdto
      * @return the otp value
      */
     private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
@@ -536,11 +573,14 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     }
 
     /**
-     *  Adding IdAuthValidator Methods in AuthRequestValidator Class *.
+     * Adding IdAuthValidator Methods in AuthRequestValidator Class *.
      *
-     * @param id the id
-     * @param idType the id type
-     * @param errors the errors
+     * @param id
+     *            the id
+     * @param idType
+     *            the id type
+     * @param errors
+     *            the errors
      */
 
     /**
@@ -594,9 +634,12 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
     /**
      * Validate idtype uin vid.
      *
-     * @param id the id
-     * @param idType the id type
-     * @param errors the errors
+     * @param id
+     *            the id
+     * @param idType
+     *            the id type
+     * @param errors
+     *            the errors
      */
     private void validateIdtypeUinVid(String id, String idType, Errors errors) {
 	if (Objects.isNull(idType)) {
@@ -641,7 +684,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	    mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE, MISSING_INPUT_PARAMETER + TXN_ID);
 	    errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode(),
 		    new Object[] { TXN_ID }, IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorMessage());
-	} else if (!A_Z0_9_10.matcher(txnID).matches()) {
+	}
+
+	if (!A_Z0_9_10.matcher(txnID).matches()) {
 	    mosipLogger.error(SESSION_ID, ID_AUTH_VALIDATOR, VALIDATE,
 		    "INVALID_INPUT_PARAMETER - txnID - value -> " + txnID);
 	    errors.rejectValue(TXN_ID, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),

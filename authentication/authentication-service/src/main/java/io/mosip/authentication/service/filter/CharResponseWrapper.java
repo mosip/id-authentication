@@ -72,12 +72,11 @@ class CharResponseWrapper extends HttpServletResponseWrapper {
 			@Override
 			public void write(int b) throws IOException {
 				output.write(b);
-				// writer.write(b);
 			}
 
 			@Override
 			public void setWriteListener(WriteListener listener) {
-
+			    //override method
 			}
 
 			@Override

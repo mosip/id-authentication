@@ -25,6 +25,8 @@ import io.mosip.authentication.service.helper.DateHelper;
 @Component
 public class InternalAuthRequestValidator implements Validator {
 
+	private static final String REQUEST = "request";
+
 	@Autowired
 	private IdAuthService idAuthService;
 
@@ -56,24 +58,6 @@ public class InternalAuthRequestValidator implements Validator {
 
 	}
 
-	/** Validation for Pin Info */
-//	public void validatePin(AuthRequestDTO authRequestDTO) {
-//		List<PinInfo> pinlist = authRequestDTO.getPinInfo();
-//		boolean status=false;
-//		for (PinInfo type : pinlist) {
-//			String pintype = type.getValue();
-//			if (pintype.equalsIgnoreCase(PinType.OTP.getType())) {
-//					if(type.getValue().length()==6 && type.getValue()!=null)
-//					{
-//						status=true;
-//					}
-//				
-//			} else if (pintype.equalsIgnoreCase(PinType.PIN.getType())) {
-//			}
-//		}
-//
-//	}
-
 	/** Validation for Request AuthType */
 	public void validateRequest(AuthRequestDTO authRequestDTO, Errors errors) {
 		AuthTypeDTO authTypeDTO = authRequestDTO.getAuthType();
@@ -83,23 +67,23 @@ public class InternalAuthRequestValidator implements Validator {
 
 				boolean finger = validateFinger(authRequestDTO);
 				if (!finger) {
-					errors.reject("request", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+					errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 				}
 			}
 			if (authRequestDTO.getAuthType().isIris()) {
 				boolean iris = validateIris(authRequestDTO);
 				if (!iris) {
-					errors.reject("request", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+					errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 				}
 			}
 			if (authRequestDTO.getAuthType().isFace()) {
 				boolean face = validateFace(authRequestDTO);
 				if (!face) {
-					errors.reject("request", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+					errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 				}
 			}
 		} else {
-			errors.reject("request", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
+			errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
 		}
 
 	}

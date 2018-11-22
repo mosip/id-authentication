@@ -37,7 +37,6 @@ import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.RestHelper;
 import io.mosip.authentication.service.impl.id.service.impl.IdAuthServiceImpl;
-import io.mosip.authentication.service.repository.UinRepository;
 import io.mosip.authentication.service.repository.VIDRepository;
 
 /**
@@ -69,9 +68,6 @@ public class IdAuthServiceTest {
 	@InjectMocks
 	private IdAuthServiceImpl idAuthServiceImpl;
 
-	@Mock
-	private UinRepository uinRepository;
-
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
@@ -89,7 +85,7 @@ public class IdAuthServiceTest {
 	@Test(expected = IdValidationFailedException.class)
 	public void testValidateUIN() throws IdAuthenticationBusinessException {
 		String uin = "1234567890";
-		Mockito.when(uinRepository.findByUinRefId(Mockito.anyString())).thenReturn(null);
+//		Mockito.when(uinRepository.findByUinRefId(Mockito.anyString())).thenReturn(null);
 		idAuthServiceImpl.validateUIN(uin);
 	}
 
@@ -104,7 +100,7 @@ public class IdAuthServiceTest {
 		String uin = "1234567890";
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(false);
-		Mockito.when(uinRepository.findByUinRefId(uin)).thenReturn(Optional.of(uinEntity));
+//		Mockito.when(uinRepository.findByUinRefId(uin)).thenReturn(Optional.of(uinEntity));
 		idAuthServiceImpl.validateUIN(uin);
 	}
 
@@ -120,7 +116,7 @@ public class IdAuthServiceTest {
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(true);
 		uinEntity.setId("12345");
-		Mockito.when(uinRepository.findById(Mockito.anyString())).thenReturn(Optional.of(uinEntity));
+//		Mockito.when(uinRepository.findById(Mockito.anyString())).thenReturn(Optional.of(uinEntity));
 		String refId = null;
 		refId = idAuthServiceImpl.validateUIN(uin);
 		assertEquals(refId, uinEntity.getUinRefId());
@@ -179,7 +175,7 @@ public class IdAuthServiceTest {
 		vidEntity.setExpiryDate(new Date(2019, 1, 1));
 		UinEntity uinEntity = null;
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
-		Mockito.when(uinRepository.findById(Mockito.anyString())).thenReturn(Optional.ofNullable(uinEntity));
+//		Mockito.when(uinRepository.findById(Mockito.anyString())).thenReturn(Optional.ofNullable(uinEntity));
 		idAuthServiceImpl.validateVID(vid);
 	}
 
@@ -197,7 +193,7 @@ public class IdAuthServiceTest {
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(false);
 		Mockito.when(vidRepository.getOne(Mockito.anyString())).thenReturn(vidEntity);
-		Mockito.when(uinRepository.findById(Mockito.any())).thenReturn(Optional.of(uinEntity));
+//		Mockito.when(uinRepository.findById(Mockito.any())).thenReturn(Optional.of(uinEntity));
 		idAuthServiceImpl.validateVID(vid);
 
 	}
@@ -216,10 +212,10 @@ public class IdAuthServiceTest {
 		vidEntity.setExpiryDate(java.sql.Date.valueOf(LocalDate.now().plus(1, ChronoUnit.MONTHS)));
 		UinEntity uinEntity = new UinEntity();
 		uinEntity.setActive(true);
-		Mockito.when(uinRepository.findByUinRefId(Mockito.any())).thenReturn(Optional.of(uinEntity));
+//		Mockito.when(uinRepository.findByUinRefId(Mockito.any())).thenReturn(Optional.of(uinEntity));
 		Mockito.when(vidRepository.findById(Mockito.anyString())).thenReturn(Optional.of(vidEntity));
 
-		ReflectionTestUtils.setField(idAuthServiceImpl, "uinRepository", uinRepository);
+//		ReflectionTestUtils.setField(idAuthServiceImpl, "uinRepository", uinRepository);
 		String refId = idAuthServiceImpl.validateVID(vid);
 		assertEquals(vidEntity.getRefId(), refId);
 
