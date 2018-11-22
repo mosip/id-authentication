@@ -1,0 +1,9 @@
+2018-10-08T11:31:15+05:30 - INFO  - sessionid - idType - id - description
+2018-10-08T11:31:15+05:30 - ERROR - sessionid - idType - id - description
+2018-10-08T11:31:15+05:30 - WARN  - sessionid - idType - id - description
+2018-10-08T11:31:16+05:30 - DEBUG - sessionid - idType - id - description
+2018-10-09T11:22:43+05:30 - INFO  - sessionid - idType - id - description
+2018-10-09T11:22:43+05:30 - ERROR - sessionid - idType - id - description
+2018-10-09T11:22:43+05:30 - WARN  - sessionid - idType - id - description
+2018-10-09T11:22:45+05:30 - DEBUG - sessionid - idType - id - description
+2018-11-21T10:10:58+05:30 - [io.mosip.kernel.logger.logback.test.LogfactoryTest] - WARN  - sessionid - idType - id - description
