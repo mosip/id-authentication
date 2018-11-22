@@ -1,6 +1,9 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 
 /**
  * This interface provides methods to do CRUD operations on Language.
@@ -19,11 +22,21 @@ public interface LanguageService {
 	LanguageRequestResponseDto getAllLaguages();
 
 	/**
-	 * This method create all Languages present in <code>dto</code>.
+	 * This method save all {@link LanguageDto} provide by the user in
+	 * {@link LanguageRequestResponseDto}
 	 * 
-	 * @see LanguageRequestResponseDto
 	 * @param dto
-	 * @return LanguageRequestResponseDto
+	 *            request {@link LanguageRequestResponseDto} data contains list of
+	 *            languages provided by the user which is going to be persisted
+	 * 
+	 * @return a {@link LanguageRequestResponseDto} which has all the list of saved
+	 *         {@link LanguageDto}
+	 * 
+	 * @throws RequestException
+	 *             if any request data is null
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving languages
 	 */
 	LanguageRequestResponseDto saveAllLanguages(LanguageRequestResponseDto dto);
 

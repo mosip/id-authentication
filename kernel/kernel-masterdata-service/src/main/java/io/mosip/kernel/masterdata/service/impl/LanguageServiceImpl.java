@@ -48,12 +48,15 @@ public class LanguageServiceImpl implements LanguageService {
 	/**
 	 * This method fetch all Languages present in database.
 	 * 
-	 * @throws LanguageFetchException
-	 *             when exception raise during fetch of Language details.
-	 * @throws LanguageNotFoundException
-	 *             when no records found for given parameter(langCode).
-	 * @throws LanguageMappingException
-	 *             when error occurs while mapping.
+	 * @return {@link LanguageRequestResponseDto} which contains list of
+	 *         {@link LanguageDto}
+	 * 
+	 * @throws MasterDataServiceException
+	 *             when exception raise during fetch of {@link Language}
+	 * 
+	 * @throws DataNotFoundException
+	 *             when no records found
+	 *
 	 */
 	@Override
 	public LanguageRequestResponseDto getAllLaguages() {
@@ -79,6 +82,23 @@ public class LanguageServiceImpl implements LanguageService {
 		return languageRequestResponseDto;
 	}
 
+	/**
+	 * This method save all {@link LanguageDto} provide by the user in
+	 * {@link LanguageRequestResponseDto}
+	 * 
+	 * @param dto
+	 *            request {@link LanguageRequestResponseDto} data contains list of
+	 *            languages provided by the user which is going to be persisted
+	 * 
+	 * @return a {@link LanguageRequestResponseDto} which has all the list of saved
+	 *         {@link LanguageDto}
+	 * 
+	 * @throws RequestException
+	 *             if any request data is null
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving languages
+	 */
 	@Override
 	public LanguageRequestResponseDto saveAllLanguages(LanguageRequestResponseDto dto) {
 		if (EmptyCheckUtils.isNullEmpty(dto) || EmptyCheckUtils.isNullEmpty(dto.getLanguages())) {
