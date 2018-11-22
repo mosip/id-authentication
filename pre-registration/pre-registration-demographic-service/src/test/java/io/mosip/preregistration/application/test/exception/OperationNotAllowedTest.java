@@ -1,62 +1,78 @@
 package io.mosip.preregistration.application.test.exception;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.fail;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.preregistration.application.errorcodes.ErrorCodes;
+import io.mosip.preregistration.application.entity.PreRegistrationEntity;
 import io.mosip.preregistration.application.exception.OperationNotAllowedException;
 import io.mosip.preregistration.application.repository.PreRegistrationRepository;
 import io.mosip.preregistration.application.service.PreRegistrationService;
 
 @RunWith(SpringRunner.class)
+@SpringBootTest
 public class OperationNotAllowedTest {
 
-	private static final String OPERATION_NOT_ALLOWED="DELETE_OPERATION_NOT_ALLOWED_FOR_OTHERTHEN_DRAFT";
+	private static final String OPERATION_NOT_ALLOWED = "DELETE_OPERATION_NOT_ALLOWED_FOR_OTHERTHEN_DRAFT";
 
-	
-	@Mock
-	private PreRegistrationService 	preRegistrationService;
-	
+	@Autowired
+	private PreRegistrationService preRegistrationService;
+
 	@MockBean
 	private PreRegistrationRepository preRegistrationRepository;
+	private PreRegistrationEntity preRegistrationEntity = new PreRegistrationEntity();
 
-	
-	@Test
+	JSONParser parser = new JSONParser();
+	private JSONObject jsonObject;
+
+	private String preRegId;
+
+	@Before
+	public void setUp() throws java.text.ParseException, FileNotFoundException, IOException, ParseException {
+
+		ClassLoader classLoader = getClass().getClassLoader();
+
+		File file = new File(classLoader.getResource("pre-registration.json").getFile());
+		jsonObject = (JSONObject) parser.parse(new FileReader(file));
+
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = dateFormat.parse("08/10/2018");
+		long time = date.getTime();
+		Timestamp times = new Timestamp(time);
+		preRegistrationEntity.setCreateDateTime(times);
+
+		preRegistrationEntity.setStatusCode("");
+		preRegistrationEntity.setUpdateDateTime(times);
+		preRegistrationEntity.setApplicantDetailJson(jsonObject.toString().getBytes("UTF-8"));
+
+		preRegistrationEntity.setPreRegistrationId("1234");
+
+		preRegId = preRegistrationEntity.getPreRegistrationId();
+	}
+
+	@Test(expected = OperationNotAllowedException.class)
 	public void notAllowedTest() {
-		
-		OperationNotAllowedException operationnotallowedexception = new OperationNotAllowedException(OPERATION_NOT_ALLOWED);
 
-		
-//		ClassLoader classLoader = getClass().getClassLoader();
-//
-//		File file = new File(classLoader.getResource("pre-registration.json").getFile());
-//		
-//		jsonObject = (JSONObject) parser.parse(new FileReader(file));
-		
-	   Mockito.when(preRegistrationService.deleteIndividual("1234567"))
-				.thenThrow(operationnotallowedexception);
-	   Mockito.when(preRegistrationRepository.findBypreRegistrationId("1234567"))
-		.thenThrow(operationnotallowedexception);
-	   
-		try {
-
-			preRegistrationService.deleteIndividual("1234567");
-			fail();
-
-		} catch (OperationNotAllowedException e) {
-			assertThat("DELETE_OPERATION_NOT_ALLOWED_FOR_OTHERTHEN_DRAFT",
-					e.getErrorCode().equalsIgnoreCase(ErrorCodes.PRG_PAM_010.toString()));
-//			assertThat("DELETE_OPERATION_NOT_ALLOWED_FOR_OTHERTHEN_DRAFT",
-//					e.getErrorText().equalsIgnoreCase(OPERATION_NOT_ALLOWED));
-		}
+		Mockito.when(preRegistrationRepository.findBypreRegistrationId(preRegId)).thenReturn(preRegistrationEntity);
+		preRegistrationService.deleteIndividual(preRegId);
 
 	}
-	
+
 }

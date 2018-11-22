@@ -126,7 +126,7 @@ public class PreRegistrationService {
 			entity.setGroupId("1234567890");
 			entity.setCr_appuser_id((String) (applicantDetailJson.get("id")));
 			entity.setCreatedBy((String) (reqObject.get("createdBy")));
-
+			createDto.setDemographicDetails(demoObj.toJSONString());
 
 			if (prid == null || prid.equals("")) {
 				prid = pridGenerator.generateId();
@@ -144,10 +144,12 @@ public class PreRegistrationService {
 				PreRegistrationEntity entityDetail = preRegistrationRepository.findById(PreRegistrationEntity.class,
 						prid);
 				
+				
 				Timestamp crTime=null;
-				if(entityDetail!=null)
-					crTime= entityDetail.getCreateDateTime();
-				else throw new RecordNotFoundException(PreRegistrationErrorMessages.RECORD_NOT_FOUND);
+				if(entityDetail==null)
+					throw new RecordNotFoundException(PreRegistrationErrorMessages.RECORD_NOT_FOUND);
+				
+				else crTime= entityDetail.getCreateDateTime();
 				
 				
 				preRegistrationRepository.deleteByPreRegistrationId(prid);
@@ -160,9 +162,11 @@ public class PreRegistrationService {
 				entity.setPreRegistrationId(prid);
 				
 				preRegistrationDao.save(entity);
-				
+				createDto.setCreatedBy(entity.getCreatedBy());
 				createDto.setUpdateDateTime(new Timestamp(System.currentTimeMillis()));
 				createDto.setUpdatedBy((String) (reqObject.get("updatedBy")));
+				
+				createDto.setCreateDateTime(crTime);
 
 			}
 		}
@@ -178,24 +182,28 @@ public class PreRegistrationService {
 			throw new JsonValidationException("Json validation processing exception",e.getCause());
 		}
 		catch (JsonIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonSchemaIOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			throw new JsonValidationException("Json IO exception",e.getCause());	
+			
+			} catch (JsonSchemaIOException e) {
+				
+				throw new JsonValidationException("Json IO schema  exception",e.getCause());
+			
 		} catch (FileIOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
+			
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
+			
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 
 		createDto.setPrId(prid);
-		createDto.setJson(jsonObject);
+		
 		response.setResTime(new Timestamp(System.currentTimeMillis()));
 		response.setStatus("true");
 		saveList.add(createDto);

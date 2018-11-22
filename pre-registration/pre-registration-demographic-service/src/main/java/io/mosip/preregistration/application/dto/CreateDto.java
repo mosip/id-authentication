@@ -36,6 +36,6 @@ public class CreateDto implements Serializable {
 	/**
 	 * 
 	 */
-	private String json;
+	private String demographicDetails;
 
 }
