@@ -35,7 +35,7 @@
                             <TextField fx:id="uinId" layoutX="25.0" layoutY="75.0" prefHeight="30.0" prefWidth="320.0" />
                          </children>
                    </AnchorPane>
-                   <AnchorPane fx:id="documentFields" layoutX="36.0" layoutY="134.0" prefHeight="200.0" prefWidth="200.0">
+                   <AnchorPane fx:id="documentFields" layoutX="36.0" layoutY="134.0" prefHeight="123.0" prefWidth="389.0">
                       <children>
                       <ComboBox fx:id="poaDocuments" layoutX="10.0" layoutY="10.0" prefWidth="150.0" promptText="POA Document" />
                        <Label fx:id="poa_label" layoutX="220.0" layoutY="10.0" text="" />
@@ -49,7 +49,11 @@
                       </children>
                    </AnchorPane>
                    <Button fx:id="pane2NextBtn" layoutX="652.0" layoutY="369.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
-                 	<Button fx:id="pane2PrevBtn" layoutX="50.0" layoutY="369.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" text="Prev" />
+               	   <Button fx:id="pane2PrevBtn" layoutX="50.0" layoutY="369.0" mnemonicParsing="false" onAction="#gotoFirstDemographicPane" text="Prev" />
+                   <Label id="toggleLabel1" fx:id="bio_exception_toggleLabel1" layoutX="50.0" layoutY="260.0" prefHeight="15.0" prefWidth="15.0" />
+                   <Label id="toggleLabel2" fx:id="bio_exception_toggleLabel2" layoutX="60.0" layoutY="260.0" prefHeight="15.0" prefWidth="10.0" />
+                   <Label layoutX="90.0" layoutY="260.0" text="Biometric Exception" />
+                        <Line endX="560.0" layoutX="221.0" layoutY="10.0" startX="-200.0" />
                  	</children>
                   </AnchorPane>
                </children>

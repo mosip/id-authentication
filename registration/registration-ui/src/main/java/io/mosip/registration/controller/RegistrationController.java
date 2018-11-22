@@ -93,6 +93,12 @@ public class RegistrationController extends BaseController {
 	private TextField ageField;
 
 	@FXML
+	private Label bio_exception_toggleLabel1;
+
+	@FXML
+	private Label bio_exception_toggleLabel2;
+	
+	@FXML
 	private Label toggleLabel1;
 
 	@FXML
@@ -102,6 +108,8 @@ public class RegistrationController extends BaseController {
 	private AnchorPane childSpecificFields;
 
 	private SimpleBooleanProperty switchedOn = new SimpleBooleanProperty(true);
+	
+	private SimpleBooleanProperty switchedOnForBiometricException = new SimpleBooleanProperty(true);
 
 	@FXML
 	private ComboBox<String> gender;
@@ -223,6 +231,8 @@ public class RegistrationController extends BaseController {
 	public static DatePicker ageDatePickerContent;
 
 	private boolean toggleAgeOrDobField = false;
+	
+	private boolean toggleBiometricException = false;
 
 	private boolean isChild = true;
 
@@ -275,10 +285,12 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					"Entering the LOGIN_CONTROLLER");
 			switchedOn.set(false);
+			switchedOnForBiometricException.set(false);
 			ageDatePicker.setDisable(false);
 			ageField.setDisable(true);
 			disableFutureDays();
 			toggleFunction();
+			toggleFunctionForBiometricException();
 			ageFieldValidations();
 			ageValidationInDatePicker();
 			dateFormatter();
@@ -1015,7 +1027,7 @@ public class RegistrationController extends BaseController {
 									if (validateRegex(postalCode, "\\d{6}")) {
 										generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 												RegistrationConstants.POSTAL_CODE_EMPTY,
-												RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
+												RegistrationConstants.SIX_DIGIT_INPUT_LIMT);
 										postalCode.requestFocus();
 									} else {
 										if (validateRegex(localAdminAuthority, "^.{6,10}$")) {
@@ -1043,7 +1055,7 @@ public class RegistrationController extends BaseController {
 														generateAlert("Error",
 																AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 																RegistrationConstants.CNIE_OR_PIN_NUMBER_EMPTY,
-																RegistrationConstants.FIVE_DIGIT_INPUT_LIMT);
+																RegistrationConstants.THIRTY_DIGIT_INPUT_LIMT);
 														cni_or_pin_number.requestFocus();
 													} else {
 														gotoNext = true;
@@ -1099,12 +1111,12 @@ public class RegistrationController extends BaseController {
 		if (isChild) {
 			if (validateRegex(parentName, "[[A-z]+\\s?\\.?]+")) {
 				generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-						"Please provide parent name");
+						RegistrationConstants.PARENT_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
 				parentName.requestFocus();
 			} else {
 				if (validateRegex(uinId, "\\d{6,28}")) {
 					generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							"Please provide parent UIN Id");
+							RegistrationConstants.UIN_ID_EMPTY);
 					uinId.requestFocus();
 				} else {
 					gotoNext = true;
@@ -1265,5 +1277,40 @@ public class RegistrationController extends BaseController {
 		demoGraphicTitlePane.setExpanded(true);
 		anchor_pane_registration.setMaxHeight(900);
 	}
+	/**
+	 * Toggle functionality for biometric exception
+	 */
+	private void toggleFunctionForBiometricException() {
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID,
+				"Entering into toggle function for Biometric exception");
+		bio_exception_toggleLabel1.setId("toggleLabel1");
+		bio_exception_toggleLabel2.setId("toggleLabel2");
+		switchedOnForBiometricException.addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+				if (newValue) {
+					bio_exception_toggleLabel1.setId("toggleLabel2");
+					bio_exception_toggleLabel2.setId("toggleLabel1");
+					toggleBiometricException=true;
+				} else {
+					bio_exception_toggleLabel1.setId("toggleLabel1");
+					bio_exception_toggleLabel2.setId("toggleLabel2");
+					toggleBiometricException=false;
+				}
+			}
+		});
+
+		bio_exception_toggleLabel1.setOnMouseClicked((event) -> {
+			switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
+		});
+		bio_exception_toggleLabel2.setOnMouseClicked((event) -> {
+			switchedOnForBiometricException.set(!switchedOnForBiometricException.get());
+		});
+		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
+				RegistrationConstants.APPLICATION_ID,
+				"Exiting the toggle function for Biometric exception");
+	}
+
 
 }
