@@ -60,7 +60,7 @@
             </AnchorPane>
             <Accordion id="registrationAccordian" fx:id="accord" layoutX="80.0" layoutY="85.0" pickOnBounds="false" visible="true">
               <panes>
-                  <TitledPane fx:id="demoGraphicTitlePane" text="%titleDemographicPane">
+                  <TitledPane fx:id="demoGraphicTitlePane" text="%titleDemographicPane" >
                      <content>
                         <AnchorPane id="demographicPane" fx:id="demoGraphicPane1" prefHeight="400.0" prefWidth="806.0" visible="true">
                            <children>
@@ -106,6 +106,7 @@
                                     <TextField fx:id="province" layoutX="14.0" layoutY="232.0" prefHeight="30.0" prefWidth="153.0" />
                                     <Label layoutX="180.0" layoutY="220.0" text="%postal_code" />
                                     <TextField fx:id="postalCode" layoutX="180.0" layoutY="232.0" prefHeight="30.0" prefWidth="155.0" />
+                                     <Button fx:id="prevAddressButton" layoutX="350.0" layoutY="240.0" mnemonicParsing="false" text="Fetch address from last entry" onAction="#loadAddressFromPreviousEntry" visible="false"/>
                                     <Label layoutX="17.0" layoutY="270.0" text="%local_administrative_authority" />
                                     <TextField fx:id="localAdminAuthority" layoutX="14.0" layoutY="285.0" prefHeight="30.0" prefWidth="320.0" />
                                     <Label layoutX="17.0" layoutY="320.0" text="%mobile_number" />

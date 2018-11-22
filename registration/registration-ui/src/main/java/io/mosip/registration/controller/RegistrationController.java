@@ -221,6 +221,9 @@ public class RegistrationController extends BaseController {
 
 	@FXML
 	private AnchorPane anchor_pane_registration;
+	
+	@FXML
+	private Button prevAddressButton;
 
 	private static AnchorPane demoGraphicPane1Content;
 
@@ -265,6 +268,9 @@ public class RegistrationController extends BaseController {
 	protected BufferedImage exceptionBufferedImage;
 	private boolean applicantImageCaptured = false;
 	private Image defaultImage;
+	private Map<String, Object> sessionMapObject;
+	private AddressDTO addressDto;
+	
 
 	@FXML
 	private void initialize() {
@@ -288,20 +294,24 @@ public class RegistrationController extends BaseController {
 			switchedOnForBiometricException.set(false);
 			ageDatePicker.setDisable(false);
 			ageField.setDisable(true);
+			accord.setExpandedPane(demoGraphicTitlePane);
 			disableFutureDays();
 			toggleFunction();
 			toggleFunctionForBiometricException();
 			ageFieldValidations();
 			ageValidationInDatePicker();
 			dateFormatter();
-			loadAddressFromPreviousEntry();
 			populateTheLocalLangFields();
 			loadLanguageSpecificKeyboard();
 			demoGraphicPane1.getChildren().add(keyboardNode);
 			keyboardNode.setVisible(false);
 			loadLocalLanguageFields();
 			loadListOfDocuments();
-
+			sessionMapObject = SessionContext.getInstance().getMapObject();
+			addressDto = (AddressDTO) sessionMapObject.get("PrevAddress");
+			if(addressDto!=null) {
+				prevAddressButton.setVisible(true);
+			}
 			if (isEditPage && registrationDTOContent != null) {
 				DemographicDTO demographicDTO = registrationDTOContent.getDemographicDTO();
 				DemographicInfoDTO demographicInfoDTO = demographicDTO.getDemoInUserLang();
@@ -376,18 +386,15 @@ public class RegistrationController extends BaseController {
 	 * Loading the address detail from previous entry
 	 * 
 	 */
+	
 	public void loadAddressFromPreviousEntry() {
 		LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 				"Loading address from previous entry");
-		Map<String, Object> sessionMapObject = SessionContext.getInstance().getMapObject();
-		AddressDTO addressDto = (AddressDTO) sessionMapObject.get("PrevAddress");
-		if (addressDto != null) {
 			LocationDTO locationDto = addressDto.getLocationDTO();
 			region.setText(locationDto.getRegion());
 			city.setText(locationDto.getCity());
 			province.setText(locationDto.getProvince());
 			postalCode.setText(locationDto.getPostalCode());
-		}
 		LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Loaded address from previous entry");
 	}
