@@ -14,13 +14,13 @@
 ### 3- Usage Sample
  
  `Usage1:`
- `#### OTP Generation Request:`
+ `OTP Generation Request:`
  ```
  {
      "key":"testkey"
  }
  ```
-`#### OTP Generation Responses :`
+`OTP Generation Responses :`
 ##### Successful Generation :
 
 ```
@@ -39,11 +39,11 @@
 ```
 
 `Usage2:`
- `#### OTP Validation Request:`
+ `OTP Validation Request:`
  ```
 http://localhost:8085/otp/validate?key=testkey&otp=614491
  ```
-  `#### OTP Validation Responses:`
+  `OTP Validation Responses:`
   ##### Case : Validation Successful
  ```
  {
@@ -72,3 +72,4 @@ http://localhost:8085/otp/validate?key=testkey&otp=614491
     "message": "USER_BLOCKED"
 }
  ```
+ 
