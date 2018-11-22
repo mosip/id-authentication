@@ -112,7 +112,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 					// get the data for notification template
 					String notificationTemplate = templateService
 							.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
-					String alert = "";
+					String alert = RegistrationConstants.EMPTY;
 					if (!notificationTemplate.isEmpty()) {
 						// generate the notification template
 						Writer writeNotificationTemplate = velocityGenerator
@@ -143,7 +143,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 							}
 						}
 						// generate alert
-						if (alert != "") {
+						if (!alert.equals("")) {
 							String data = "Unable to send notification";
 							if (alert.equals("SMS")) {
 								data = "Unable to send SMS notification";

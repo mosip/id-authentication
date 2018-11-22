@@ -114,6 +114,7 @@ public class OnHoldController extends BaseController implements Initializable {
 		for (Map<String, String> registrationMap : onHoldMapList) {
 			if (registrationMap.containsValue(onHoldRegData.getId())) {
 				onHoldMapList.remove(registrationMap);
+				break;
 			}
 		}
 

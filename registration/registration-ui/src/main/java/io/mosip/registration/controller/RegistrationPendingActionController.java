@@ -239,6 +239,7 @@ public class RegistrationPendingActionController extends BaseController implemen
 		for (Map<String, String> registrationMap : approvalmapList) {
 			if (registrationMap.containsValue(pendingActionTable.getSelectionModel().getSelectedItem().getId())) {
 				approvalmapList.remove(registrationMap);
+				break;
 			}
 		}
 		Map<String, String> map = new HashMap<>();

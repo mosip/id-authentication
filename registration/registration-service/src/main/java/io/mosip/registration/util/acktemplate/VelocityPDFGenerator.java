@@ -191,6 +191,8 @@ public class VelocityPDFGenerator {
 				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine1());
 		velocityContext.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE2,
 				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine2());
+		velocityContext.put(RegistrationConstants.TEMPLATE_ADDRESS_LINE3,
+				registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getAddressLine3());
 		velocityContext.put(RegistrationConstants.TEMPLATE_CITY, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getCity());
 		velocityContext.put(RegistrationConstants.TEMPLATE_STATE, registration.getDemographicDTO().getDemoInUserLang().getAddressDTO().getLocationDTO().getProvince());
 		velocityContext.put(RegistrationConstants.TEMPLATE_COUNTRY,

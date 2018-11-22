@@ -117,6 +117,7 @@ public class RejectionController extends BaseController implements Initializable
 		for (Map<String, String> registrationMap : rejectionmapList) {
 			if (registrationMap.containsValue(rejRegData.getId())) {
 				rejectionmapList.remove(registrationMap);
+				break;
 			}
 		}
 

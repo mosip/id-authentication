@@ -263,6 +263,7 @@ public class RegistrationApprovalController extends BaseController implements In
 		for (Map<String, String> registrationMap : approvalmapList) {
 			if (registrationMap.containsValue(table.getSelectionModel().getSelectedItem().getId())) {
 				approvalmapList.remove(registrationMap);
+				break;
 			}
 		}
 
