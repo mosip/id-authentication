@@ -106,17 +106,25 @@ public class OTPManager {
 			isValidOtp = Optional.ofNullable(otpvalidateresponsedto).map(OTPValidateResponseDTO::getStatus)
 					.filter(status -> status.equalsIgnoreCase(STATUS_SUCCESS)).isPresent();
 		} catch (RestServiceException e) {
+			logger.error("NA", "NA", e.getErrorCode() + e.getErrorText(), e.getResponseBodyAsString().orElse(""));
+
 			Optional<Object> responseBody = e.getResponseBody();
 			if (responseBody.isPresent()) {
 				otpvalidateresponsedto = (OTPValidateResponseDTO) responseBody.get();
 				String status = otpvalidateresponsedto.getStatus();
 				String message = otpvalidateresponsedto.getMessage();
-				if (status.equalsIgnoreCase(STATUS_FAILURE)) {
-					if (message.equalsIgnoreCase(OTP_EXPIRED)) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
-					} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
-						throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+				if(status != null) {
+					if (status.equalsIgnoreCase(STATUS_FAILURE)) {
+						if (message.equalsIgnoreCase(OTP_EXPIRED)) {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
+						} else if (message.equalsIgnoreCase(VALIDATION_UNSUCCESSFUL)) {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_OTP);
+						} else {
+							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
+						}
 					}
+				} else {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR);
 				}
 			}
 		} catch (IDDataValidationException e) {

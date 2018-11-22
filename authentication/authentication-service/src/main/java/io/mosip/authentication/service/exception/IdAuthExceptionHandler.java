@@ -53,6 +53,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
 @RestControllerAdvice
 public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
+	private static final String STATUS_FAILED = "N";
+
 	private static final String ID_AUTHENTICATION_APP_EXCEPTION = "IdAuthenticationAppException";
 
 	@Autowired
@@ -194,7 +196,7 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		BaseAuthResponseDTO authResp = new BaseAuthResponseDTO();
 
-		authResp.setStatus("false");
+		authResp.setStatus(STATUS_FAILED);
 
 		if (ex instanceof IdAuthenticationBaseException) {
 			IdAuthenticationBaseException baseException = (IdAuthenticationBaseException) ex;
