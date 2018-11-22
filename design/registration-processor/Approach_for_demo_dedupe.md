@@ -66,6 +66,10 @@ Find attached sample code to perform levenshtein distance algorithm.
 - After auth-service validation -
 	1. If applicant is identified then reject the packet and update correct status in registration status DB. 
 	2. If the person is not identified then save the Applicant record and list of potential duplicates to manual adjudication table. Next step is to perform manual adjudication on record.
+- Route the request -
+	1. CASE - 1 : When no potential duplicates found - route request to bio dedupe stage.
+	2. CASE - 2 : When potential duplicates found - route request to manual adjudication.
+	3. CASE - 3 : When applicant found in AUTH - reject packet and update status accordingly.
 
 
 **Class Diagram**
