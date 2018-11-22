@@ -19,7 +19,8 @@ public class FingerprintFactory {
 	 *            the type
 	 * @return the fingerprint provider
 	 */
-	public FingerprintProvider getFingerprintProvider(String make, String type) {
+	public FingerprintProvider getFingerprintProvider(String make,
+			String type) {
 		return null;
 	}
 }

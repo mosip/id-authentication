@@ -46,18 +46,24 @@ public class RestRequestFactory {
 	private Environment env;
 
 	/** The logger. */
-	private static Logger mosipLogger = IdaLogger.getLogger(RestRequestFactory.class);
+	private static Logger mosipLogger =
+			IdaLogger.getLogger(RestRequestFactory.class);
 
 	/**
 	 * Builds the request.
 	 *
-	 * @param restService the rest service
-	 * @param requestBody the request body
-	 * @param returnType  the return type
+	 * @param restService
+	 *            the rest service
+	 * @param requestBody
+	 *            the request body
+	 * @param returnType
+	 *            the return type
 	 * @return the rest request DTO
-	 * @throws IDDataValidationException the ID data validation exception
+	 * @throws IDDataValidationException
+	 *             the ID data validation exception
 	 */
-	public RestRequestDTO buildRequest(RestServicesConstants restService, Object requestBody, Class<?> returnType)
+	public RestRequestDTO buildRequest(RestServicesConstants restService,
+			Object requestBody, Class<?> returnType)
 			throws IDDataValidationException {
 		RestRequestDTO request = new RestRequestDTO();
 		MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
@@ -67,23 +73,29 @@ public class RestRequestFactory {
 		String serviceName = restService.getServiceName();
 
 		String uri = env.getProperty(serviceName.concat(".rest.uri"));
-		String httpMethod = env.getProperty(serviceName.concat(".rest.httpMethod"));
+		String httpMethod =
+				env.getProperty(serviceName.concat(".rest.httpMethod"));
 		String timeout = env.getProperty(serviceName.concat(".rest.timeout"));
-		headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(".rest.headers.mediaType"))));
+		headers.setContentType(MediaType.valueOf(env
+				.getProperty(serviceName.concat(".rest.headers.mediaType"))));
 		checkUri(request, uri);
 
 		checkHttpMethod(request, httpMethod);
 
 		if (requestBody != null) {
-			if (headers != null && !headers.getContentType().includes(MediaType.MULTIPART_FORM_DATA)) {
+			if (headers != null && !headers.getContentType()
+					.includes(MediaType.MULTIPART_FORM_DATA)) {
 				request.setRequestBody(requestBody);
 			} else {
 				if (requestBody instanceof MultiValueMap) {
 					request.setRequestBody(requestBody);
 				} else {
 					throw new IDDataValidationException(
-							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER
+									.getErrorCode(),
+							String.format(
+									IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER
+											.getErrorMessage(),
 									"requestBody"));
 				}
 			}
@@ -113,92 +125,131 @@ public class RestRequestFactory {
 	/**
 	 * Construct params.
 	 *
-	 * @param paramMap      the param map
-	 * @param pathVariables the path variables
-	 * @param headers       the headers
-	 * @param serviceName   the service name
+	 * @param paramMap
+	 *            the param map
+	 * @param pathVariables
+	 *            the path variables
+	 * @param headers
+	 *            the headers
+	 * @param serviceName
+	 *            the service name
 	 */
-	private void constructParams(MultiValueMap<String, String> paramMap, Map<String, String> pathVariables,
-			HttpHeaders headers, String serviceName) {
-		((AbstractEnvironment) env).getPropertySources().forEach((PropertySource<?> source) -> {
-			if (source instanceof MapPropertySource) {
-				Map<String, Object> systemProperties = ((MapPropertySource) source).getSource();
+	private void constructParams(MultiValueMap<String, String> paramMap,
+			Map<String, String> pathVariables, HttpHeaders headers,
+			String serviceName) {
+		((AbstractEnvironment) env).getPropertySources()
+				.forEach((PropertySource<?> source) -> {
+					if (source instanceof MapPropertySource) {
+						Map<String, Object> systemProperties =
+								((MapPropertySource) source).getSource();
 
-				systemProperties.keySet().forEach((String property) -> {
-					if (property.startsWith(serviceName.concat(".rest.headers"))) {
-						headers.add(property.replace(serviceName.concat(".rest.headers."), ""),
-								env.getProperty(property));
-					}
-					if (property.startsWith(serviceName.concat(".rest.uri.queryparam."))) {
-						paramMap.put(property.replace(serviceName.concat(".rest.uri.queryparam."), ""),
-								Collections.singletonList(env.getProperty(property)));
-					}
-					if (property.startsWith(serviceName.concat(".rest.uri.pathparam."))) {
-						pathVariables.put(property.replace(serviceName.concat(".rest.uri.pathparam."), ""),
-								env.getProperty(property));
+						systemProperties.keySet().forEach((String property) -> {
+							if (property.startsWith(
+									serviceName.concat(".rest.headers"))) {
+								headers.add(
+										property.replace(serviceName
+												.concat(".rest.headers."), ""),
+										env.getProperty(property));
+							}
+							if (property.startsWith(serviceName
+									.concat(".rest.uri.queryparam."))) {
+								paramMap.put(
+										property.replace(serviceName.concat(
+												".rest.uri.queryparam."), ""),
+										Collections.singletonList(
+												env.getProperty(property)));
+							}
+							if (property.startsWith(serviceName
+									.concat(".rest.uri.pathparam."))) {
+								pathVariables
+										.put(property.replace(
+												serviceName.concat(
+														".rest.uri.pathparam."),
+												""), env.getProperty(property));
+							}
+						});
 					}
 				});
-			}
-		});
 	}
 
 	/**
 	 * Check return type.
 	 *
-	 * @param returnType the return type
-	 * @param request    the request
-	 * @throws IDDataValidationException the ID data validation exception
+	 * @param returnType
+	 *            the return type
+	 * @param request
+	 *            the request
+	 * @throws IDDataValidationException
+	 *             the ID data validation exception
 	 */
-	private void checkReturnType(Class<?> returnType, RestRequestDTO request) throws IDDataValidationException {
+	private void checkReturnType(Class<?> returnType, RestRequestDTO request)
+			throws IDDataValidationException {
 		if (returnType != null) {
 			request.setResponseType(returnType);
 		} else {
 
-			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
-					"throwing IDDataValidationException - INVALID_RETURN_TYPE" + returnType);
-			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_RETURN_TYPE);
+			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST,
+					"returnType",
+					"throwing IDDataValidationException - INVALID_RETURN_TYPE"
+							+ returnType);
+			throw new IDDataValidationException(
+					IdAuthenticationErrorConstants.INVALID_RETURN_TYPE);
 		}
 	}
 
 	/**
 	 * Check http method.
 	 *
-	 * @param request    the request
-	 * @param httpMethod the http method
-	 * @throws IDDataValidationException the ID data validation exception
+	 * @param request
+	 *            the request
+	 * @param httpMethod
+	 *            the http method
+	 * @throws IDDataValidationException
+	 *             the ID data validation exception
 	 */
-	private void checkHttpMethod(RestRequestDTO request, String httpMethod) throws IDDataValidationException {
+	private void checkHttpMethod(RestRequestDTO request, String httpMethod)
+			throws IDDataValidationException {
 		if (checkIfEmptyOrWhiteSpace(httpMethod)) {
 			request.setHttpMethod(HttpMethod.valueOf(httpMethod));
 		} else {
 
-			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "httpMethod",
-					"throwing IDDataValidationException - INVALID_HTTP_METHOD" + httpMethod);
-			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_HTTP_METHOD);
+			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST,
+					"httpMethod",
+					"throwing IDDataValidationException - INVALID_HTTP_METHOD"
+							+ httpMethod);
+			throw new IDDataValidationException(
+					IdAuthenticationErrorConstants.INVALID_HTTP_METHOD);
 		}
 	}
 
 	/**
 	 * Check uri.
 	 *
-	 * @param request the request
-	 * @param uri     the uri
-	 * @throws IDDataValidationException the ID data validation exception
+	 * @param request
+	 *            the request
+	 * @param uri
+	 *            the uri
+	 * @throws IDDataValidationException
+	 *             the ID data validation exception
 	 */
-	private void checkUri(RestRequestDTO request, String uri) throws IDDataValidationException {
+	private void checkUri(RestRequestDTO request, String uri)
+			throws IDDataValidationException {
 		if (checkIfEmptyOrWhiteSpace(uri)) {
 			request.setUri(uri);
 		} else {
 			mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "uri",
-					"throwing IDDataValidationException - uri is empty or whitespace" + uri);
-			throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_URI);
+					"throwing IDDataValidationException - uri is empty or whitespace"
+							+ uri);
+			throw new IDDataValidationException(
+					IdAuthenticationErrorConstants.INVALID_URI);
 		}
 	}
 
 	/**
 	 * Check if empty or white space.
 	 *
-	 * @param string the string
+	 * @param string
+	 *            the string
 	 * @return true, if successful
 	 */
 	private boolean checkIfEmptyOrWhiteSpace(String string) {

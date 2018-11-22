@@ -25,25 +25,32 @@ import lombok.NoArgsConstructor;
 @Component
 @NoArgsConstructor
 public class AuditRequestFactory {
-	
+
 	/** The mosipLogger. */
-	private static Logger mosipLogger = IdaLogger.getLogger(AuditRequestFactory.class);
+	private static Logger mosipLogger =
+			IdaLogger.getLogger(AuditRequestFactory.class);
 
 	/** The env. */
 	@Autowired
 	private Environment env;
-	
+
 	/**
 	 * Builds the request.
 	 *
-	 * @param module the module
-	 * @param event the event
-	 * @param id the id
-	 * @param idType the id type
-	 * @param desc the desc
+	 * @param module
+	 *            the module
+	 * @param event
+	 *            the event
+	 * @param id
+	 *            the id
+	 * @param idType
+	 *            the id type
+	 * @param desc
+	 *            the desc
 	 * @return the audit request dto
 	 */
-	public AuditRequestDto buildRequest(AuditModules module, AuditEvents event, String id, IdType idType, String desc) {
+	public AuditRequestDto buildRequest(AuditModules module, AuditEvents event,
+			String id, IdType idType, String desc) {
 		AuditRequestDto request = new AuditRequestDto();
 		String hostName;
 		String hostAddress;
@@ -53,7 +60,8 @@ public class AuditRequestFactory {
 			hostName = inetAddress.getHostName();
 			hostAddress = inetAddress.getHostAddress();
 		} catch (UnknownHostException ex) {
-			mosipLogger.error("sessionId", "AuditRequestFactory", ex.getClass().getName(), "Exception : " + ex);
+			mosipLogger.error("sessionId", "AuditRequestFactory",
+					ex.getClass().getName(), "Exception : " + ex);
 			hostName = env.getProperty("audit.defaultHostName");
 			hostAddress = env.getProperty("audit.defaultHostAddress");
 		}

@@ -15,10 +15,16 @@ import io.mosip.authentication.service.filter.OTPFilter;
  */
 @Configuration
 public class FilterConfig {
-	
+
+	/**
+	 * Gets the otp filter.
+	 *
+	 * @return the otp filter
+	 */
 	@Bean
 	public FilterRegistrationBean<OTPFilter> getOtpFilter() {
-		FilterRegistrationBean<OTPFilter> registrationBean = new FilterRegistrationBean<>();
+		FilterRegistrationBean<OTPFilter> registrationBean =
+				new FilterRegistrationBean<>();
 		registrationBean.setFilter(new OTPFilter());
 		registrationBean.addUrlPatterns("/otp");
 
@@ -32,13 +38,14 @@ public class FilterConfig {
 	 */
 	@Bean
 	public FilterRegistrationBean<IdAuthFilter> getIdAuthFilter() {
-		FilterRegistrationBean<IdAuthFilter> registrationBean = new FilterRegistrationBean<>();
+		FilterRegistrationBean<IdAuthFilter> registrationBean =
+				new FilterRegistrationBean<>();
 		registrationBean.setFilter(new IdAuthFilter());
 		registrationBean.addUrlPatterns("/auth");
 
 		return registrationBean;
 	}
-	
+
 	/**
 	 * Gets the eKyc filter.
 	 *
@@ -46,7 +53,8 @@ public class FilterConfig {
 	 */
 	@Bean
 	public FilterRegistrationBean<KycAuthFilter> getEkycFilter() {
-		FilterRegistrationBean<KycAuthFilter> registrationBean = new FilterRegistrationBean<>();
+		FilterRegistrationBean<KycAuthFilter> registrationBean =
+				new FilterRegistrationBean<>();
 		registrationBean.setFilter(new KycAuthFilter());
 		registrationBean.addUrlPatterns("/ekyc");
 

@@ -12,9 +12,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
- * 
- * To expose the documentation for entire API
- * 
+ * To expose the documentation for entire API.
+ *
  * @author Dinesh Karuppiah
  */
 
@@ -22,20 +21,34 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig {
 
+	/**
+	 * Set the api info.
+	 *
+	 * @return the api info
+	 */
 	ApiInfo getApiInfo() {
-		return new ApiInfoBuilder().title("Id Authentication Service").description("Id Authentication Service").build();
+		return new ApiInfoBuilder()
+				.title("Id Authentication Service")
+				.description("Id Authentication Service")
+				.build();
 	}
 
 	/**
-	 * 
-	 * Docket bean provides more control over the API for Documentation Generation
-	 * 
+	 * Docket bean provides more control over the API for Documentation
+	 * Generation.
+	 *
+	 * @return the docket
 	 */
 
 	@Bean
 	public Docket api() {
-		return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.any())
-				.paths(PathSelectors.regex("(?!/(error|actuator).*).*")).build().apiInfo(getApiInfo());
+		return new Docket(DocumentationType.SWAGGER_2)
+				.select()
+				.apis(
+				RequestHandlerSelectors.any())
+				.paths(PathSelectors.regex("(?!/(error|actuator).*).*"))
+				.build()
+				.apiInfo(getApiInfo());
 	}
 
 }
