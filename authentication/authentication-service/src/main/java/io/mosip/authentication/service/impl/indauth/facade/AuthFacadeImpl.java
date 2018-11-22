@@ -3,9 +3,11 @@
  */
 package io.mosip.authentication.service.impl.indauth.facade;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -59,6 +61,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
  */
 @Service
 public class AuthFacadeImpl implements AuthFacade {
+
+	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	private static final String STATUS_SUCCESS = "y";
 
@@ -129,21 +133,23 @@ public class AuthFacadeImpl implements AuthFacade {
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException {
 
 		String refId = processIdType(authRequestDTO);
-		List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, refId);
-
+		
 		AuthResponseBuilder authResponseBuilder = AuthResponseBuilder.newInstance();
 		authResponseBuilder.setTxnID(authRequestDTO.getTxnID()).setIdType(authRequestDTO.getIdvIdType())
 				.setReqTime(authRequestDTO.getReqTime()).setVersion(authRequestDTO.getVer());
 
-		authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
-
-		auditData();
-		AuthResponseDTO authResponseDTO = authResponseBuilder.build();
-		logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
-				"authenticateApplicant status : " + authResponseDTO.getStatus());
-
-		//FIXME fix the mimetype issue
-		sendAuthNotification(authRequestDTO, refId, authResponseDTO);
+		AuthResponseDTO authResponseDTO;
+		
+		try {
+			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, refId);
+			authStatusList.forEach(authResponseBuilder::addAuthStatusInfo);
+		} finally {
+			authResponseDTO = authResponseBuilder.build();
+			logger.info(DEFAULT_SESSION_ID, IDA, AUTH_FACADE,
+					"authenticateApplicant status : " + authResponseDTO.getStatus());
+			sendAuthNotification(authRequestDTO, refId, authResponseDTO);
+			auditData();
+		}
 
 		return authResponseDTO;
 
@@ -154,31 +160,20 @@ public class AuthFacadeImpl implements AuthFacade {
 		
 		boolean ismaskRequired = Boolean.parseBoolean(env.getProperty("uin.masking.required"));
 		
-		/** Property to get the email Notification type */
-		String emailproperty = env.getProperty("notification.email");
-
-		/** Property to get the sms Notification type */
-		String smsproperty = env.getProperty("notification.sms");
-		
 		Map<String, List<IdentityInfoDTO>> idInfo = idInfoService.getIdInfo(refId);
 		Map<String, Object> values = new HashMap<>();
 		values.put(NAME, demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, idInfo).getValue());
-		String dateTime = authResponseDTO.getResTime();
-		DateFormat formatter = new SimpleDateFormat(env.getProperty("datetime.pattern"));
-		Date date1; 
-		String changedTime = "";
-		String changedDate = "";
+		String resTime = authResponseDTO.getResTime();
+		
+		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
+		
+		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(authRequestDTO.getReqTime(), isoPattern);
+		ZoneId zone = zonedDateTime2.getZone();
 
-		try {
-			date1 = formatter.parse(dateTime);
-			SimpleDateFormat time = new SimpleDateFormat(env.getProperty("notification.time.format"));
-			SimpleDateFormat date = new SimpleDateFormat(env.getProperty("notification.date.format"));
-			changedTime = time.format(date1);
-			changedDate = date.format(date1);
-		} catch (ParseException e) {
-			logger.error(DEFAULT_SESSION_ID, IDA, AUTH_FACADE, e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER, e);
-		}
+		ZonedDateTime dateTimeReq = ZonedDateTime.parse(resTime, isoPattern);
+		ZonedDateTime dateTimeConvertedToReqZone = dateTimeReq.withZoneSameInstant(zone);
+		String changedDate = dateTimeConvertedToReqZone.format(DateTimeFormatter.ofPattern(env.getProperty("notification.date.format")));
+		String changedTime = dateTimeConvertedToReqZone.format(DateTimeFormatter.ofPattern(env.getProperty("notification.time.format")));
 
 		values.put(DATE, changedDate);
 		values.put(TIME, changedTime);
@@ -291,7 +286,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	@Override
 	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO) {
 
-		String resTime = new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date());
+		String resTime = new SimpleDateFormat(env.getProperty(DATETIME_PATTERN)).format(new Date());
 		AuthResponseDTO authResponseTspDto = new AuthResponseDTO();
 		authResponseTspDto.setStatus(STATUS_SUCCESS);
 		authResponseTspDto.setErr(Collections.emptyList());
@@ -321,7 +316,7 @@ public class AuthFacadeImpl implements AuthFacade {
 		kycAuthResponseDTO.setTtl(env.getProperty("ekyc.ttl.hours"));
 
 		kycAuthResponseDTO.setStatus(authResponseDTO.getStatus());
-		String resTime = new SimpleDateFormat(env.getProperty("datetime.pattern")).format(new Date());
+		String resTime = new SimpleDateFormat(env.getProperty(DATETIME_PATTERN)).format(new Date());
 		kycAuthResponseDTO.setResTime(resTime);
 		return kycAuthResponseDTO;
 	}
