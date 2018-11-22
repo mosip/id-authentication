@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -57,10 +56,9 @@ public class PacketSynchServiceImplTest {
 
 	@Test
 	public void testFetchPacketsToBeSynched() {
-		List<String> PACKET_STATUS = Arrays.asList("A", "I");
 		List<Registration> syncList = new ArrayList<>();
 		syncList.add(new Registration());
-		Mockito.when(registrationDAO.getPacketsToBeSynched(PACKET_STATUS)).thenReturn(syncList);
+		Mockito.when(registrationDAO.getPacketsToBeSynched(Mockito.anyList())).thenReturn(syncList);
 		assertEquals(syncList, packetSynchServiceImpl.fetchPacketsToBeSynched());
 	}
 

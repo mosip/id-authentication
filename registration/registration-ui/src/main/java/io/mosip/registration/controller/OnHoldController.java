@@ -1,8 +1,8 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_ONHOLD_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_ONHOLD_CONTROLLER;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -10,16 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
-import io.mosip.registration.entity.GlobalContextParam;
-import io.mosip.registration.service.GlobalContextParamService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -46,10 +44,6 @@ public class OnHoldController extends BaseController implements Initializable {
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(OnHoldController.class);
-
-	/** The global context param service. */
-	@Autowired
-	private GlobalContextParamService globalContextParamService;
 
 	/**
 	 * Combobox for for on hold reason
@@ -81,11 +75,10 @@ public class OnHoldController extends BaseController implements Initializable {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
-		GlobalContextParam globalContextParam = globalContextParamService
-				.findRejectionOnholdComments(RegistrationConstants.ONHOLD_COMMENTS);
+
 		submit.disableProperty().set(true);
 		onHoldComboBox.getItems().clear();
-		onHoldComboBox.setItems(FXCollections.observableArrayList(globalContextParam.getVal().split(",")));
+		onHoldComboBox.setItems(FXCollections.observableArrayList(String.valueOf(ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.ONHOLD_COMMENTS)).split(",")));
 		LOGGER.debug(LOG_REG_ONHOLD_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 

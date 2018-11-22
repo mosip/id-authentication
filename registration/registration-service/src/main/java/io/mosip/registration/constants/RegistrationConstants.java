@@ -510,7 +510,7 @@ public class RegistrationConstants {
 	public static final String EMAIL_SERVICE = "email";
 	public static final String SMS_SERVICE = "sms";
 	public static final String NOTIFICATION_SERVICE="REGISTRATION - NOTIFICATION SERVICE ";
-	public static final List<String> MODE_OF_COMMUNICATION=Arrays.asList("MODE_OF_COMMUNICATION");
+	public static final String MODE_OF_COMMUNICATION="MODE_OF_COMMUNICATION";
 	public static final String NOTIFICATION_CODE = "NOTIFICATION ALERT";
 	
 	// Packet Reregister
@@ -518,7 +518,6 @@ public class RegistrationConstants {
 
 
 	// Global configuration parameters
-	public static final List<String> INVALID_LOGIN_PARAMS = Arrays.asList("INVALID_LOGIN_COUNT", "INVALID_LOGIN_TIME");
 	public static final String INVALID_LOGIN_COUNT = "INVALID_LOGIN_COUNT";
 	public static final String INVALID_LOGIN_TIME = "INVALID_LOGIN_TIME";
 

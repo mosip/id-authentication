@@ -5,9 +5,6 @@ import static io.mosip.registration.constants.RegistrationConstants.REG_UI_LOGIN
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +13,13 @@ import org.springframework.stereotype.Component;
 import io.mosip.registration.audit.AuditFactory;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.ResponseDTO;
-import io.mosip.registration.entity.GlobalContextParam;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
 import io.mosip.registration.scheduler.SchedulerUtil;
-import io.mosip.registration.service.GlobalContextParamService;
+import io.mosip.registration.service.GlobalParamService;
 import io.mosip.registration.service.SyncStatusValidatorService;
 import javafx.animation.PauseTransition;
 import javafx.event.Event;
@@ -53,7 +50,7 @@ public class BaseController {
 	@Autowired
 	protected AuditFactory auditFactory;
 	@Autowired
-	private GlobalContextParamService globalContextParamService;
+	private GlobalParamService globalParamService;
 
 	protected static Stage stage;
 
@@ -197,19 +194,8 @@ public class BaseController {
 	 * {@code globalParams} is to retrieve required global config parameters for
 	 * login from config table
 	 */
-	protected Map<String, Object> globalParams() {
-		List<GlobalContextParam> globalContextParam = globalContextParamService
-				.findInvalidLoginCount(RegistrationConstants.INVALID_LOGIN_PARAMS);
-		Map<String, Object> globalParamMap = new LinkedHashMap<>();
-		globalContextParam.forEach(param -> {
-			if (param.getName().equals(RegistrationConstants.INVALID_LOGIN_COUNT)) {
-				globalParamMap.put(RegistrationConstants.INVALID_LOGIN_COUNT, param.getVal());
-			}
-			if (param.getName().equals(RegistrationConstants.INVALID_LOGIN_TIME)) {
-				globalParamMap.put(RegistrationConstants.INVALID_LOGIN_TIME, param.getVal());
-			}
-		});
-		return globalParamMap;
+	protected void getGlobalParams() {
+		ApplicationContext.getInstance().setApplicationMap(globalParamService.getGlobalParams());
 	}
 
 	/**

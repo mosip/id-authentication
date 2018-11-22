@@ -7,21 +7,19 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-
-
 /**
- * Global context parameter entity details
+ * Global parame entity details
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
  */
 @Entity
 @Table(schema = "master", name = "global_param")
-public class GlobalContextParam extends RegistrationCommonFields {
+public class GlobalParam extends RegistrationCommonFields {
 
 	@EmbeddedId
 	@Column(name = "pk_glbp_code")
-	private GlobalContextParamId globalContextParamId;
+	private GlobalParamId globalParamId;
 
 	@Column(name = "name")
 	private String name;
@@ -37,16 +35,16 @@ public class GlobalContextParam extends RegistrationCommonFields {
 	/**
 	 * @return the globalContextParamId
 	 */
-	public GlobalContextParamId getGlobalContextParamId() {
-		return globalContextParamId;
+	public GlobalParamId getGlobalParamId() {
+		return globalParamId;
 	}
 
 	/**
 	 * @param globalContextParamId
 	 *            the globalContextParamId to set
 	 */
-	public void setGlobalContextParamId(GlobalContextParamId globalContextParamId) {
-		this.globalContextParamId = globalContextParamId;
+	public void setGlobalParamId(GlobalParamId globalParamId) {
+		this.globalParamId = globalParamId;
 	}
 
 	/**

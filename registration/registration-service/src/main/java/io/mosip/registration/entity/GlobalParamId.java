@@ -7,13 +7,13 @@ import javax.persistence.Embeddable;
 
 
 /**
- * Composite key for GlobalContextParam entity
+ * Composite key for GlobalParam entity
  * 
  * @author Sravya Surampalli
  * @since 1.0.0
  */
 @Embeddable
-public class GlobalContextParamId implements Serializable{
+public class GlobalParamId implements Serializable{
 
 	private static final long serialVersionUID = 4798525506099635089L;
 	

@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -20,14 +19,13 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.constants.RegistrationExceptions;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dto.RegistrationDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.demographic.AddressDTO;
-import io.mosip.registration.entity.GlobalContextParam;
 import io.mosip.registration.exception.RegBaseCheckedException;
 import io.mosip.registration.exception.RegBaseUncheckedException;
-import io.mosip.registration.service.GlobalContextParamService;
 import io.mosip.registration.service.NotificationService;
 import io.mosip.registration.service.PacketHandlerService;
 import io.mosip.registration.service.TemplateService;
@@ -61,9 +59,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private TemplateService templateService;
 	@Autowired
 	private NotificationService notificationService;
-	@Autowired
-	private GlobalContextParamService globalContextParamService;
-
+	
 	private VelocityPDFGenerator velocityGenerator = new VelocityPDFGenerator();
 
 	private RegistrationDTO registrationData;
@@ -103,10 +99,10 @@ public class AckReceiptController extends BaseController implements Initializabl
 			// network availability check
 			if (RegistrationAppHealthCheckUtil.isNetworkAvailable()) {
 				// get the mode of communication
-				List<GlobalContextParam> globalContextParam = globalContextParamService
-						.findInvalidLoginCount(RegistrationConstants.MODE_OF_COMMUNICATION);
-				if (!globalContextParam.isEmpty() && globalContextParam.get(0).getVal() != null
-						&& !globalContextParam.get(0).getVal().equals("NONE")) {
+				
+				String notificationServiceName = String.valueOf(ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.MODE_OF_COMMUNICATION));
+				
+				if (notificationServiceName != null && !notificationServiceName.equals("NONE")) {
 					ResponseDTO responseDTO = null;
 
 					// get the data for notification template
@@ -121,7 +117,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 						String number = getRegistrationData().getDemographicDTO().getDemoInUserLang().getMobile();
 						String rid = getRegistrationData() == null ? "RID" : getRegistrationData().getRegistrationId();
 
-						if (!number.isEmpty() && globalContextParam.get(0).getVal().contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
+						if (!number.isEmpty() && notificationServiceName.contains(RegistrationConstants.SMS_SERVICE.toUpperCase())) {
 							// send sms
 							responseDTO = notificationService.sendSMS(writeNotificationTemplate.toString(), number,
 									rid);
@@ -133,7 +129,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 
 						String emailId = getRegistrationData().getDemographicDTO().getDemoInUserLang().getEmailId();
 
-						if (!emailId.isEmpty() && globalContextParam.get(0).getVal().contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
+						if (!emailId.isEmpty() && notificationServiceName.contains(RegistrationConstants.EMAIL_SERVICE.toUpperCase())) {
 							// send email
 							responseDTO = notificationService.sendEmail(writeNotificationTemplate.toString(), emailId,
 									rid);

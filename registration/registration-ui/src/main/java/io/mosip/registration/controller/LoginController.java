@@ -190,6 +190,8 @@ public class LoginController extends BaseController implements Initializable, MF
 				loadLoginScreen(loginMode);
 			}
 
+			getGlobalParams();
+			
 			ClassLoader loader = Thread.currentThread().getContextClassLoader();
 			scene = new Scene(loginRoot, 950, 630);
 			scene.getStylesheets().add(loader.getResource(RegistrationConstants.CSS_FILE_PATH).toExternalForm());
@@ -878,13 +880,11 @@ public class LoginController extends BaseController implements Initializable, MF
 
 			Timestamp loginTime = registrationUserDetail.getUserlockTillDtimes();
 
-			Map<String, Object> globalParamsMap = globalParams();
-
 			int invalidLoginCount = Integer
-					.parseInt(globalParamsMap.get(RegistrationConstants.INVALID_LOGIN_COUNT).toString());
+					.parseInt(String.valueOf(ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.INVALID_LOGIN_COUNT)));
 			
 			int invalidLoginTime = Integer
-					.parseInt(globalParamsMap.get(RegistrationConstants.INVALID_LOGIN_TIME).toString());
+					.parseInt(String.valueOf(ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.INVALID_LOGIN_TIME)));
 
 			LOGGER.debug("REGISTRATION - LOGIN - LOCKUSER", APPLICATION_NAME, APPLICATION_ID,
 					"validating invalid login params");

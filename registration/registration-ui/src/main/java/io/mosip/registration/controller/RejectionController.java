@@ -1,24 +1,23 @@
 package io.mosip.registration.controller;
 
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_REJECT_CONTROLLER;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-import static io.mosip.registration.constants.LoggerConstants.LOG_REG_REJECT_CONTROLLER;
+
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationClientStatusCode;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.ApplicationContext;
 import io.mosip.registration.dto.RegistrationApprovalDTO;
-import io.mosip.registration.entity.GlobalContextParam;
-import io.mosip.registration.service.GlobalContextParamService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -44,10 +43,6 @@ public class RejectionController extends BaseController implements Initializable
 	 * Instance of {@link Logger}
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(RejectionController.class);
-
-	/** The global context param service. */
-	@Autowired
-	private GlobalContextParamService globalContextParamService;
 
 	/**
 	 * Combobox for for rejection reason
@@ -81,11 +76,9 @@ public class RejectionController extends BaseController implements Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
-		GlobalContextParam globalContextParam = globalContextParamService
-				.findRejectionOnholdComments(RegistrationConstants.REJECTION_COMMENTS);
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
-		rejectionComboBox.setItems(FXCollections.observableArrayList(globalContextParam.getVal().split(",")));
+		rejectionComboBox.setItems(FXCollections.observableArrayList(String.valueOf(ApplicationContext.getInstance().getApplicationMap().get(RegistrationConstants.REJECTION_COMMENTS)).split(",")));
 		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 
