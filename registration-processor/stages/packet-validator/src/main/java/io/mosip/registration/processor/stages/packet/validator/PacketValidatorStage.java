@@ -6,7 +6,6 @@ package io.mosip.registration.processor.stages.packet.validator;
 import java.io.IOException;
 import java.io.InputStream;
 
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -19,6 +18,7 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
@@ -116,7 +116,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 				CheckSumValidation checkSumValidation = new CheckSumValidation(adapter);
 				isCheckSumValidated = checkSumValidation.checksumvalidation(registrationId,
 						packetMetaInfo.getIdentity());
-				// isCheckSumValidated = true;
+
 				if (!isCheckSumValidated) {
 					registrationStatusDto.setStatusComment(StatusMessage.PACKET_CHECKSUM_VALIDATION_FAILURE);
 				}
@@ -126,11 +126,10 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			if (isFilesValidated && isCheckSumValidated) {
 				object.setIsValid(Boolean.TRUE);
 				registrationStatusDto.setStatusComment(StatusMessage.PACKET_STRUCTURAL_VALIDATION_SUCCESS);
-				registrationStatusDto
-						.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
 				packetInfoManager.savePacketData(packetMetaInfo.getIdentity());
 				InputStream demographicInfoStream = adapter.getFile(registrationId,
-						PacketFiles.DEMOGRAPHIC.name() + PacketFiles.DEMOGRAPHICINFO.name());
+						PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name());
 				packetInfoManager.saveDemographicInfoJson(demographicInfoStream,
 						packetMetaInfo.getIdentity().getMetaData());
 
@@ -142,7 +141,7 @@ public class PacketValidatorStage extends MosipVerticleManager {
 					registrationStatusDto.setRetryCount(registrationStatusDto.getRetryCount() + 1);
 				}
 
-				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_SUCCESS.toString());
+				registrationStatusDto.setStatusCode(RegistrationStatusCode.STRUCTURE_VALIDATION_FAILED.toString());
 
 			}
 			if (!isFilesValidated) {
@@ -169,7 +168,8 @@ public class PacketValidatorStage extends MosipVerticleManager {
 			String eventId = "";
 			String eventName = "";
 			String eventType = "";
-			description = isTransactionSuccessful ? "Packet uploaded to file system" : "Packet uploading to file system is unsuccessful";
+			description = isTransactionSuccessful ? "Packet uploaded to file system"
+					: "Packet uploading to file system is unsuccessful";
 			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
 			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
 					: EventName.EXCEPTION.toString();
