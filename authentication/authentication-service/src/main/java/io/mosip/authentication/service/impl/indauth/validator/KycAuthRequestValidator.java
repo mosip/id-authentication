@@ -1,11 +1,14 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.EkycAuthType;
 import io.mosip.authentication.core.dto.indauth.KycAuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.KycType;
@@ -44,7 +47,7 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 
 	private static final String CONSENT_REQ = "consentReq";
 
-	private static final String ACCESS_LEVEL = "ekyc.mua.accesslevel";
+	private static final String ACCESS_LEVEL = "ekyc.mua.accesslevel.";
 
 	private static final String INVALID_AUTH_REQUEST = "Invalid Auth Request";
 
@@ -97,8 +100,9 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	}
 
 	private void validateMUAPermission(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
-		String accesslevel = env.getProperty(ACCESS_LEVEL);
-		if (accesslevel.equals(KycType.NONE.getType())) {
+		String key = ACCESS_LEVEL + Optional.ofNullable(kycAuthRequestDTO.getAuthRequest()).map(AuthRequestDTO::getTxnID).orElse("");
+		String accesslevel = env.getProperty(key);
+		if (accesslevel == null || accesslevel.equals(KycType.NONE.getType())) {
 			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorMessage(), AUTH_REQUEST));
