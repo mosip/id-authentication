@@ -269,6 +269,7 @@ public class PacketInfoMapper {
 	 */
 	public static RegOsiEntity convertOsiDataToEntity(List<FieldValue> osiData, Introducer introducer,
 			List<FieldValue> metaData) {
+
 		RegOsiEntity regOsiEntity = new RegOsiEntity();
 
 		RegOsiPkEntity regOsiPkEntity = new RegOsiPkEntity();
@@ -283,8 +284,24 @@ public class PacketInfoMapper {
 			} else if (field.getLabel().matches("introducerUIN")) {
 				regOsiEntity.setIntroducerRegId(field.getValue());
 				regOsiEntity.setIntroducerUin(field.getValue());
+			} else if (field.getLabel().matches("introducerRIDHash")) {
+				regOsiEntity.setIntroducerRegId(field.getValue());
 			} else if (field.getLabel().matches("introducerType")) {
 				regOsiEntity.setIntroducerTyp(field.getValue());
+			} else if (field.getLabel().matches("supervisorFingerprintType")) {
+				regOsiEntity.setSupervisorFingerType(field.getValue());
+			} else if (field.getLabel().matches("introducerFingerprintType")) {
+				regOsiEntity.setIntroducerFingerpType(field.getValue());
+			} else if (field.getLabel().matches("introducerIrisType")) {
+				regOsiEntity.setIntroducerIrisType(field.getValue());
+			} else if (field.getLabel().matches("officerFingerprintType")) {
+				regOsiEntity.setOfficerfingerType(field.getValue());
+			} else if (field.getLabel().matches("officerIrisType")) {
+				regOsiEntity.setOfficerIrisType(field.getValue());
+			} else if (field.getLabel().matches("officerPIN")) {
+				regOsiEntity.setOfficerHashedPin(field.getValue());
+			} else if (field.getLabel().matches("supervisorIrisType")) {
+				regOsiEntity.setSupervisorIrisType(field.getValue());
 			}
 
 		}
@@ -302,6 +319,18 @@ public class PacketInfoMapper {
 				regOsiEntity.setSupervisorIrisImageName(field.getValue());
 			} else if (field.getLabel().matches("supervisorId")) {
 				regOsiEntity.setSupervisorId(field.getValue());
+			}
+			// Added
+			else if (field.getLabel().matches("officerAuthenticationImage")) {
+				regOsiEntity.setOfficerPhotoName(field.getValue());
+			} else if (field.getLabel().matches("officerPassword")) {
+				regOsiEntity.setOfficerHashedPwd(field.getValue());
+			} else if (field.getLabel().matches("supervisorAuthenticationImage")) {
+				regOsiEntity.setSupervisorPhotoName(field.getValue());
+			} else if (field.getLabel().matches("supervisorPassword")) {
+				regOsiEntity.setSupervisorHashedPwd(field.getValue());
+			} else if (field.getLabel().matches("supervisorPIN")) {
+				regOsiEntity.setSupervisorHashedPin(field.getValue());
 			}
 		}
 		if (introducer.getIntroducerFingerprint() != null)

@@ -1,4 +1,4 @@
-package io.mosip.registration.processor.packet.storage.entity;
+	package io.mosip.registration.processor.packet.storage.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -70,7 +70,7 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	private String supervisorFingerType;
 
 	@Column(name = "supervisor_iris_typ")
-	private String supervisorTrisType;
+	private String supervisorIrisType;
 
 	@Column(name = "supervisor_hashed_pwd")
 	private String supervisorHashedPwd;
@@ -109,6 +109,7 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	/** The introducer uin. */
 	@Column(name = "introducer_uin")
 	private String introducerUin;
+
 
 	/** The is active. */
 	@Column(name = "is_active", nullable = false)
@@ -526,6 +527,103 @@ public class RegOsiEntity extends BasePacketEntity<RegOsiPkEntity> implements Se
 	 */
 	public void setDelDtimesz(LocalDateTime delDtimesz) {
 		this.delDtimes = delDtimesz;
+	}
+	
+
+	public String getOfficerfingerType() {
+		return officerfingerType;
+	}
+
+	public void setOfficerfingerType(String officerfingerType) {
+		this.officerfingerType = officerfingerType;
+	}
+
+	public String getOfficerIrisType() {
+		return officerIrisType;
+	}
+
+	public void setOfficerIrisType(String officerIrisType) {
+		this.officerIrisType = officerIrisType;
+	}
+
+	public String getOfficerPhotoName() {
+		return officerPhotoName;
+	}
+
+	public void setOfficerPhotoName(String officerPhotoName) {
+		this.officerPhotoName = officerPhotoName;
+	}
+
+	public String getOfficerHashedPin() {
+		return officerHashedPin;
+	}
+
+	public void setOfficerHashedPin(String officerHashedPin) {
+		this.officerHashedPin = officerHashedPin;
+	}
+
+	public String getOfficerHashedPwd() {
+		return officerHashedPwd;
+	}
+
+	public void setOfficerHashedPwd(String officerHashedPwd) {
+		this.officerHashedPwd = officerHashedPwd;
+	}
+
+	public String getSupervisorFingerType() {
+		return supervisorFingerType;
+	}
+
+	public void setSupervisorFingerType(String supervisorFingerType) {
+		this.supervisorFingerType = supervisorFingerType;
+	}
+
+	public String getSupervisorIrisType() {
+		return supervisorIrisType;
+	}
+
+	public void setSupervisorIrisType(String supervisorTrisType) {
+		this.supervisorIrisType = supervisorTrisType;
+	}
+
+	public String getSupervisorHashedPwd() {
+		return supervisorHashedPwd;
+	}
+
+	public void setSupervisorHashedPwd(String supervisorHashedPwd) {
+		this.supervisorHashedPwd = supervisorHashedPwd;
+	}
+
+	public String getSupervisorHashedPin() {
+		return supervisorHashedPin;
+	}
+
+	public void setSupervisorHashedPin(String supervisorHashedPin) {
+		this.supervisorHashedPin = supervisorHashedPin;
+	}
+
+	public String getSupervisorPhotoName() {
+		return supervisorPhotoName;
+	}
+
+	public void setSupervisorPhotoName(String supervisorPhotoName) {
+		this.supervisorPhotoName = supervisorPhotoName;
+	}
+
+	public String getIntroducerFingerpType() {
+		return introducerFingerpType;
+	}
+
+	public void setIntroducerFingerpType(String introducerFingerpType) {
+		this.introducerFingerpType = introducerFingerpType;
+	}
+
+	public String getIntroducerIrisType() {
+		return introducerIrisType;
+	}
+
+	public void setIntroducerIrisType(String introducerIrisType) {
+		this.introducerIrisType = introducerIrisType;
 	}
 
 }

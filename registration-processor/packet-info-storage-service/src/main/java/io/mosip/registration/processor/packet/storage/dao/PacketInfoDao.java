@@ -6,12 +6,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.packet.storage.dto.PhotographDto;
 import io.mosip.registration.processor.packet.storage.entity.ApplicantPhotographEntity;
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.QcuserRegistrationIdEntity;
+import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.repository.BasePacketRepository;
 
 @Component
@@ -21,6 +23,9 @@ public class PacketInfoDao {
 	private BasePacketRepository<QcuserRegistrationIdEntity, String> qcuserRegRepositary;
 
 	private List<Object[]> applicantInfo = new ArrayList<>();
+
+	@Autowired
+	private BasePacketRepository<RegOsiEntity, String> regOsiRepository;
 
 	public List<ApplicantInfoDto> getPacketsforQCUser(String qcuserId) {
 		List<ApplicantInfoDto> applicantInfoDtoList = new ArrayList<>();
@@ -53,6 +58,50 @@ public class PacketInfoDao {
 		return applicantInfoDtoList;
 	}
 
+	public RegOsiDto getEntitiesforRegOsi(String regId) {
+		RegOsiDto regOsiDto = null;
+		List<RegOsiEntity> osiEntityList = regOsiRepository.findByRegOsiId(regId);
+		if (osiEntityList != null) {
+			regOsiDto = convertRegOsiEntityToDto(osiEntityList.get(0));
+		}
+		return regOsiDto;
+	}
+
+	private RegOsiDto convertRegOsiEntityToDto(RegOsiEntity regOsiEntity) {
+		RegOsiDto regOsiDto = new RegOsiDto();
+		regOsiDto.setRegId(regOsiEntity.getId().getRegId());
+		regOsiDto.setPreregId(regOsiEntity.getPreregId());
+		regOsiDto.setOfficerId(regOsiEntity.getOfficerId());
+		regOsiDto.setOfficerIrisImageName(regOsiEntity.getOfficerIrisImageName());
+		regOsiDto.setOfficerfingerType(regOsiEntity.getOfficerfingerType());
+		regOsiDto.setOfficerIrisType(regOsiEntity.getOfficerIrisType());
+		regOsiDto.setOfficerPhotoName(regOsiEntity.getOfficerPhotoName());
+		regOsiDto.setOfficerHashedPin(regOsiEntity.getOfficerHashedPin());
+		regOsiDto.setOfficerHashedPwd(regOsiEntity.getOfficerHashedPwd());
+		regOsiDto.setOfficerFingerpImageName(regOsiEntity.getOfficerFingerpImageName());
+		regOsiDto.setSupervisorId(regOsiEntity.getSupervisorId());
+		regOsiDto.setSupervisorFingerpImageName(regOsiEntity.getSupervisorFingerpImageName());
+		regOsiDto.setSupervisorIrisImageName(regOsiEntity.getSupervisorIrisImageName());
+		regOsiDto.setSupervisorFingerType(regOsiEntity.getSupervisorFingerType());
+		regOsiDto.setSupervisorIrisType(regOsiEntity.getSupervisorIrisType());
+		regOsiDto.setSupervisorHashedPwd(regOsiEntity.getSupervisorHashedPwd());
+		regOsiDto.setSupervisorHashedPin(regOsiEntity.getSupervisorHashedPin());
+		regOsiDto.setSupervisorPhotoName(regOsiEntity.getSupervisorPhotoName());
+		regOsiDto.setIntroducerId(regOsiEntity.getIntroducerId());
+		regOsiDto.setIntroducerTyp(regOsiEntity.getIntroducerTyp());
+		regOsiDto.setIntroducerRegId(regOsiEntity.getIntroducerRegId());
+		regOsiDto.setIntroducerIrisImageName(regOsiEntity.getIntroducerIrisImageName());
+		regOsiDto.setIntroducerFingerpType(regOsiEntity.getIntroducerFingerpType());
+		regOsiDto.setIntroducerIrisType(regOsiEntity.getIntroducerIrisType());
+		regOsiDto.setIntroducerFingerpImageName(regOsiEntity.getIntroducerFingerpImageName());
+		regOsiDto.setIntroducerUin(regOsiEntity.getIntroducerUin());
+		regOsiDto.setIsActive(true);
+		regOsiDto.setIsDeleted(false);
+
+		return regOsiDto;
+
+	}
+
 	private PhotographDto convertEntityToPhotographDto(ApplicantPhotographEntity object) {
 		PhotographDto photographDto = new PhotographDto();
 
@@ -70,7 +119,6 @@ public class PacketInfoDao {
 
 		return photographDto;
 	}
-
 
 	private DemographicDedupeDto convertEntityToDemographicDto(IndividualDemographicDedupeEntity object) {
 		DemographicDedupeDto demo = new DemographicDedupeDto();

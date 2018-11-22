@@ -2,10 +2,11 @@ package io.mosip.registration.processor.packet.storage.repository;
 
 import java.util.List;
 
-import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.registration.processor.packet.storage.entity.BasePacketEntity;
 
 /**
@@ -26,4 +27,7 @@ public interface BasePacketRepository<E extends BasePacketEntity<?>, T> extends 
 	@Query("SELECT ape,ide FROM ApplicantPhotographEntity ape, IndividualDemographicDedupeEntity ide"
 			+ " WHERE ide.id.refId=:refId")
 	public List<Object[]> getApplicantInfo(@Param("refId") String regId);
+
+	@Query("SELECT osi FROM RegOsiEntity osi WHERE osi.id.regId=:regId")
+	public List<E> findByRegOsiId(@Param("regId") String regId);
 }

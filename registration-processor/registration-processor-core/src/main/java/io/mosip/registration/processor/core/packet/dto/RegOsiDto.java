@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class RegOsiDto {
+	private String regId;
 
 	private String preregId;
 
@@ -31,7 +32,7 @@ public class RegOsiDto {
 
 	private String supervisorFingerType;
 
-	private String supervisorTrisType;
+	private String supervisorIrisType;
 
 	private String supervisorHashedPwd;
 
