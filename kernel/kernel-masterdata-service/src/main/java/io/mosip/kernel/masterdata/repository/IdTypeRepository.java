@@ -6,7 +6,7 @@ import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.IdType;
 
 /**
- * Interface for {@link IdTypeRepository}.
+ * Interface for idtype repository.
  * 
  * @author Sagar Mahapatra
  * @since 1.0.0

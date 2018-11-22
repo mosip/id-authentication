@@ -137,13 +137,13 @@ public class MasterdataControllerTest {
 	@MockBean
 	private LanguageService languageService;
 
-	private static final String LANGUAGE_JSON_STRING = "{ \"languages\": [   {      \"languageCode\": \"hin\", \"languageName\": \"hindi\",      \"languageFamily\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
+	private static final String LANGUAGE_JSON_STRING = "{ \"languages\": [   {      \"code\": \"hin\", \"name\": \"hindi\",      \"family\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
 
 	private LanguageRequestResponseDto respDto;
 	private List<LanguageDto> languages;
 	private LanguageDto hin;
 
-	private final String LOCATION_JSON_EXPECTED = "{\"locations\":[{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
+	private final String LOCATION_JSON_EXPECTED = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
 
 	@MockBean
 	private LocationService locationService;
@@ -274,21 +274,21 @@ public class MasterdataControllerTest {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
 		locationResponseDto = new LocationResponseDto();
 		locationDto = new LocationDto();
-		locationDto.setLocationCode("IND");
-		locationDto.setLocationName("INDIA");
+		locationDto.setCode("IND");
+		locationDto.setName("INDIA");
 		locationDto.setHierarchyLevel(0);
 		locationDto.setHierarchyName(null);
-		locationDto.setParentLocationCode(null);
+		locationDto.setParentLocCode(null);
 		locationDto.setLanguageCode("HIN");
 		locationDto.setCreatedBy("dfs");
 		locationDto.setUpdatedBy("sdfsd");
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
-		locationDto.setLocationCode("KAR");
-		locationDto.setLocationName("KARNATAKA");
+		locationDto.setCode("KAR");
+		locationDto.setName("KARNATAKA");
 		locationDto.setHierarchyLevel(1);
 		locationDto.setHierarchyName(null);
-		locationDto.setParentLocationCode("IND");
+		locationDto.setParentLocCode("IND");
 		locationDto.setLanguageCode("KAN");
 		locationDto.setCreatedBy("dfs");
 		locationDto.setUpdatedBy("sdfsd");
@@ -299,8 +299,8 @@ public class MasterdataControllerTest {
 
 	private void idTypeSetup() {
 		idType = new IdType();
-		idType.setActive(true);
-		idType.setCrBy("testCreation");
+		idType.setIsActive(true);
+		idType.setCreatedBy("testCreation");
 		idType.setLangCode("ENG");
 		idType.setCode("POA");
 		idType.setDescr("Proof Of Address");
@@ -620,9 +620,9 @@ public class MasterdataControllerTest {
 
 		// creating language
 		hin = new LanguageDto();
-		hin.setLanguageCode("hin");
-		hin.setLanguageName("hindi");
-		hin.setLanguageFamily("hindi");
+		hin.setCode("hin");
+		hin.setName("hindi");
+		hin.setFamily("hindi");
 		hin.setNativeName("hindi");
 
 		// adding language to list

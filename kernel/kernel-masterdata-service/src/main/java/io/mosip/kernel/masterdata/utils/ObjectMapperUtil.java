@@ -1,3 +1,4 @@
+
 package io.mosip.kernel.masterdata.utils;
 
 import java.lang.reflect.Field;
@@ -11,10 +12,10 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EmbeddedId;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
@@ -32,15 +33,21 @@ import io.mosip.kernel.masterdata.entity.ReasonList;
 
 @Component
 public class ObjectMapperUtil {
+
 	@Autowired
-	private ModelMapper mapper;
+	private DataMapper dataMapper;
+
+	public <E, D> D map(final E entity, D object) {
+		dataMapper.map(entity, object, true, null, null, true);
+		return object;
+	}
 
 	public <D, T> D map(final T entity, Class<D> outCLass) {
-		return mapper.map(entity, outCLass);
+		return dataMapper.map(entity, outCLass, true, null, null, true);
 	}
 
 	public <D, T> List<D> mapAll(final Collection<T> entityList, Class<D> outCLass) {
-		return entityList.stream().map(entity -> mapper.map(entity, outCLass)).collect(Collectors.toList());
+		return entityList.stream().map(entity -> map(entity, outCLass)).collect(Collectors.toList());
 	}
 
 	public List<HolidayDto> mapHolidays(List<Holiday> holidays) {
@@ -179,7 +186,7 @@ public class ObjectMapperUtil {
 				if (f.isAnnotationPresent(EmbeddedId.class)) {
 					// copy dto values to embedded id fields
 					// make sure dto field name equal to embedded id fields name
-					embeddedId = mapper.map(dto, f.getType());
+					embeddedId = map(dto, f.getType());
 					break;// not required to check any other
 				}
 			}
@@ -190,9 +197,9 @@ public class ObjectMapperUtil {
 
 			D destination = entity.getConstructor().newInstance();// important to create object of entity type
 
-			mapper.map(embeddedId, destination);// adding embedded id to entity object
+			map(embeddedId, destination);// adding embedded id to entity object
 
-			mapper.map(dto, destination);// adding values other then embedded id to entity object
+			map(dto, destination);// adding values other then embedded id to entity object
 
 			// adding values meta data
 			setMetaDataValues(dto, destination);

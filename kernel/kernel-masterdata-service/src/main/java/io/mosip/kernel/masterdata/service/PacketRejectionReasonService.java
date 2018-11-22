@@ -1,7 +1,10 @@
 package io.mosip.kernel.masterdata.service;
 
-import io.mosip.kernel.masterdata.dto.PacketRejectionReasonRequestDto;
 import io.mosip.kernel.masterdata.dto.PacketRejectionReasonResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.dto.ReasonCategoryRequestDto;
+import io.mosip.kernel.masterdata.dto.ReasonListRequestDto;
+import io.mosip.kernel.masterdata.dto.ReasonListResponseDto;
 
 /**
  * 
@@ -9,8 +12,8 @@ import io.mosip.kernel.masterdata.dto.PacketRejectionReasonResponseDto;
  *
  */
 public interface PacketRejectionReasonService {
-    public PacketRejectionReasonResponseDto saveReasonCategories(PacketRejectionReasonRequestDto reasonRequestDto);
-    public PacketRejectionReasonResponseDto saveReasonList(PacketRejectionReasonRequestDto reasonRequestDto);
+    public PostResponseDto saveReasonCategories(ReasonCategoryRequestDto reasonRequestDto);
+    public ReasonListResponseDto saveReasonList(ReasonListRequestDto reasonRequestDto);
 	public PacketRejectionReasonResponseDto getAllReasons();
 	public PacketRejectionReasonResponseDto getReasonsBasedOnLangCodeAndCategoryCode(String categoryCode,String langCode);
 }
