@@ -1,7 +1,7 @@
 package io.mosip.kernel.masterdata.constant;
 
 /**
- * Constants for Template
+ * Error code for Template
  * 
  * @author Neha
  * @since 1.0.0

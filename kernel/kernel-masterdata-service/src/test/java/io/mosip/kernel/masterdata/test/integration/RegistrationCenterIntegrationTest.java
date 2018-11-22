@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
@@ -39,7 +40,7 @@ public class RegistrationCenterIntegrationTest {
 	RegistrationCenterRepository repository;
 
 	RegistrationCenter center;
-	
+
 	RegistrationCenter centerBangaloreCentral;
 
 	List<RegistrationCenter> centers = new ArrayList<>();
@@ -62,7 +63,7 @@ public class RegistrationCenterIntegrationTest {
 
 	@Test
 	public void getSpecificRegistrationCenterByIdTest() throws Exception {
-		when(repository.findByIdAndLanguageCode("1", "ENG")).thenReturn(center);
+		when(repository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("1", "ENG")).thenReturn(center);
 
 		MvcResult result = mockMvc.perform(get("/registrationcenters/1/ENG").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
@@ -89,14 +90,14 @@ public class RegistrationCenterIntegrationTest {
 		assertThat(returnResponse.getRegistrationCenters().get(0).getLatitude(), is("12.9180722"));
 		assertThat(returnResponse.getRegistrationCenters().get(0).getLongitude(), is("77.5028792"));
 	}
-	
+
 	@Test
 	public void getLocationSpecificRegistrationCentersTest() throws Exception {
 		centers.add(center);
-		when(repository.findByLocationCodeAndLanguageCode("BLR", "ENG")).thenReturn(centers);
+		when(repository.findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("BLR", "ENG"))
+				.thenReturn(centers);
 		MvcResult result = mockMvc
-				.perform(get("/getlocspecificregistrationcenters/ENG/BLR")
-						.contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		RegistrationCenterResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
@@ -104,19 +105,47 @@ public class RegistrationCenterIntegrationTest {
 		assertThat(returnResponse.getRegistrationCenters().get(0).getName(), is("bangalore"));
 		assertThat(returnResponse.getRegistrationCenters().get(0).getLongitude(), is("77.5028792"));
 	}
-	
+
 	@Test
 	public void getLocationSpecificMultipleRegistrationCentersTest() throws Exception {
 		centers.add(center);
 		centers.add(centerBangaloreCentral);
-		when(repository.findByLocationCodeAndLanguageCode("BLR", "ENG")).thenReturn(centers);
+		when(repository.findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("BLR", "ENG"))
+				.thenReturn(centers);
 		MvcResult result = mockMvc
-				.perform(get("/getlocspecificregistrationcenters/ENG/BLR")
-						.contentType(MediaType.APPLICATION_JSON))
+				.perform(get("/getlocspecificregistrationcenters/ENG/BLR").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		ObjectMapper mapper = new ObjectMapper();
 		RegistrationCenterResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
 				RegistrationCenterResponseDto.class);
+		assertThat(returnResponse.getRegistrationCenters().get(0).getName(), is("bangalore"));
+		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("Bangalore Central"));
+	}
+
+	@Test
+	public void getAllRegistrationCenterTest() throws Exception {
+		centers.add(center);
+		centers.add(centerBangaloreCentral);
+		when(repository.findAllByIsActiveTrueAndIsDeletedFalse(RegistrationCenter.class)).thenReturn(centers);
+		MvcResult result = mockMvc.perform(get("/registrationcenters").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+		ObjectMapper mapper = new ObjectMapper();
+		RegistrationCenterResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
+				RegistrationCenterResponseDto.class);
+		assertThat(returnResponse.getRegistrationCenters().get(0).getName(), is("bangalore"));
+		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("Bangalore Central"));
+	}
+
+	@Test
+	public void getRegistrationCenterByHierarchylevelAndTextAndLanguageCodeTest() throws Exception {
+		centers.add(center);
+		when(repository.findRegistrationCenterHierarchyLevelName("CITY", "BANGALORE", "ENG")).thenReturn(centers);
+		MvcResult result = mockMvc
+				.perform(get("/registrationcenters/COUNTRY/INDIA/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+		ObjectMapper mapper = new ObjectMapper();
+		RegistrationCenterHierarchyLevelResponseDto returnResponse = mapper.readValue(
+				result.getResponse().getContentAsString(), RegistrationCenterHierarchyLevelResponseDto.class);
 		assertThat(returnResponse.getRegistrationCenters().get(0).getName(), is("bangalore"));
 		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("Bangalore Central"));
 	}

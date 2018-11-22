@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { RegistrationService } from '../registration.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 
 @Component({
   selector: 'app-file-upload',
@@ -9,24 +9,66 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./file-upload.component.css']
 })
 export class FileUploadComponent implements OnInit {
-  fileName = ['', '', '', ''];
+  numberOfApplicants = 0;
+  fileType;
+  fileName = [];
   documentIndex;
   LOD = [
     {
       document_name: 'POA',
-      valid_docs: ['passport', 'Electricity Bill']
+      valid_docs: [
+        {
+          name: 'passport',
+          value: 'passport'
+        },
+        {
+          name: 'Electricity Bill',
+          value: 'Electricity Bill'
+        },
+        {
+          name: 'Passbook',
+          value: 'Passbook'
+        }
+      ]
     },
     {
       document_name: 'POI',
-      valid_docs: ['passport', 'Bank Pass Book']
+      valid_docs: [
+        {
+          name: 'passport',
+          value: 'passport'
+        },
+        {
+          name: 'Bank Account',
+          value: 'Bank Account'
+        }
+      ]
     },
     {
       document_name: 'POB',
-      valid_docs: ['passport', 'Bank Pass Book']
+      valid_docs: [
+        {
+          name: 'passport',
+          value: 'passport'
+        },
+        {
+          name: 'Voter ID Card',
+          value: 'Voter ID Card'
+        }
+      ]
     },
     {
       document_name: 'POR',
-      valid_docs: ['passport', 'Bank Pass Book']
+      valid_docs: [
+        {
+          name: 'passport',
+          value: 'passport'
+        },
+        {
+          name: 'Birth Certificate',
+          value: 'Birth Certificate'
+        }
+      ]
     }
   ];
   documentString = {
@@ -105,7 +147,15 @@ export class FileUploadComponent implements OnInit {
     this.step--;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.route.params.subscribe((params: Params) => {
+      this.numberOfApplicants = +params['id'];
+    });
+
+    for (const i of this.LOD) {
+      this.fileName.push('');
+    }
+  }
 
   handleFileInput(files: FileList) {
     console.log('files', files, ' number:', this.documentIndex, 'name: ', files.item(0).name);
@@ -115,11 +165,21 @@ export class FileUploadComponent implements OnInit {
     // this.registration.sendFile(formData).subscribe(response => {
     //   console.log(response);
     // });
-    this.browseDisabled = true;
+    this.browseDisabled = false;
+    // this.fileName.push(files.item(0).name);
     this.fileName[this.documentIndex] = files.item(0).name;
   }
 
   selectChange(event, index: number) {
+    console.log('event from select :', event);
+    this.fileType = event.source._id;
+    this.browseDisabled = false;
+    this.documentIndex = index;
+  }
+
+  openedChange(event, index: number) {
+    console.log('event from select :', event);
+    this.fileType = event.source._id;
     this.browseDisabled = false;
     this.documentIndex = index;
   }

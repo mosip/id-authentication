@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
@@ -100,6 +101,25 @@ public class RegistrationCenterController {
 	public RegistrationCenterResponseDto getSpecificRegistrationCenterById(
 			@PathVariable("id") String registrationCenterId, @PathVariable("languagecode") String langCode) {
 		return registrationCenterService.getRegistrationCentersByIDAndLangCode(registrationCenterId, langCode);
+	}
+
+	/**
+	 * Function to fetch all registration centers.
+	 * 
+	 * @return {@link RegistrationCenterResponseDto}
+	 */
+	@GetMapping("/registrationcenters")
+	public RegistrationCenterResponseDto getAllRegistrationCentersDetails() {
+		return registrationCenterService.getAllRegistrationCenters();
+	}
+
+	@GetMapping("/registrationcenters/{lang_code}/{hierarchy_level_name}/{name}")
+	public RegistrationCenterHierarchyLevelResponseDto getRegistrationCenterByHierarchyLevelAndTextAndLanguageCode(
+			@PathVariable("lang_code") String languageCode, @PathVariable("hierarchy_level_name") String hierarchyLevel,
+			@PathVariable("name") String text) {
+		return registrationCenterService.findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(languageCode,
+				hierarchyLevel, text);
+
 	}
 
 }

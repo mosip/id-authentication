@@ -18,9 +18,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
-import io.mosip.kernel.masterdata.exception.BlacklistedWordsFetchException;
-import io.mosip.kernel.masterdata.exception.BlacklistedWordsIllegalArgException;
-import io.mosip.kernel.masterdata.exception.NoBlacklistedWordsFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 
@@ -46,12 +46,12 @@ public class BlacklistedServiceTest {
 		words.add(blacklistedWords);
 	}
 
-	@Test(expected = BlacklistedWordsIllegalArgException.class)
+	@Test(expected = RequestException.class)
 	public void testGetAllBlacklistedWordsNullvalue() {
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode(null);
 	}
 
-	@Test(expected = BlacklistedWordsIllegalArgException.class)
+	@Test(expected = RequestException.class)
 	public void testGetAllBlacklistedWordsEmptyvalue() {
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("");
 	}
@@ -64,19 +64,19 @@ public class BlacklistedServiceTest {
 		assertEquals(actual.getBlacklistedwords().size(), expected);
 	}
 
-	@Test(expected = BlacklistedWordsFetchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void testGetAllBlackListedWordsFetchException() {
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
 	}
 
-	@Test(expected = NoBlacklistedWordsFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void testGetAllBlackListedWordsNoDataFound() {
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(null);
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
 	}
 
-	@Test(expected = NoBlacklistedWordsFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void testGetAllBlackListedWordsEmptyData() {
 		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(new ArrayList<>());
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");

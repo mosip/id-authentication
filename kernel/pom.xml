@@ -23,7 +23,7 @@
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
 		<maven.surefire.plugin.version>2.9</maven.surefire.plugin.version>
 		<maven.jacoco.plugin.version>0.8.1</maven.jacoco.plugin.version>
-		<maven.sonar.plugin.version>3.5.0.1254</maven.sonar.plugin.version>
+		<maven.sonar.plugin.version>3.2</maven.sonar.plugin.version>
 		<maven.javadoc.version>3.0.1</maven.javadoc.version>
 
 		<!-- Core -->
@@ -116,35 +116,6 @@
 		<module>kernel-json-validator</module>
 	</modules>
 
-	<profiles>
-		<profile>
-			<id>LOCAL</id>
-			<properties>
-				<sonar.host.url>
-					http://104.215.158.154:9000
-				</sonar.host.url>
-				<sonar.login>810793386f5e1c82252f900fe5c4cb99653eefd6</sonar.login>
-				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-				<sonar.jacoco.reportPaths>
-					target/jacoco.exec
-				</sonar.jacoco.reportPaths>
-			</properties>
-		</profile>
-		<profile>
-			<id>DEV</id>
-			<properties>
-				<sonar.host.url>
-					http://13.76.43.109:9000
-				</sonar.host.url>
-				<sonar.login>d9be047d5a47b63c4e9d5a5d0dc2511fa46ea624</sonar.login>
-				<sonar.ws.timeout>90000</sonar.ws.timeout>
-				<sonar.test.exclusions>**/test/**/*.*</sonar.test.exclusions>
-				<sonar.jacoco.reportPaths>
-					target/jacoco.exec
-				</sonar.jacoco.reportPaths>
-			</properties>
-		</profile>
-	</profiles>
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -280,3 +251,4 @@
 		</plugins>
 	</build>
 </project>
+

@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -54,7 +53,7 @@ public class RegistrationCenterControllerTest {
 		registrationCenter.setAddressLine1("7th Street");
 		registrationCenter.setAddressLine2("Lane 2");
 		registrationCenter.setAddressLine3("Mylasandra-560001");
-		registrationCenter.setActive(true);
+		registrationCenter.setIsActive(true);
 		registrationCenter.setCenterTypeCode("PAR");
 		registrationCenter.setContactPhone("987654321");
 		registrationCenter.setCreatedBy("John");
@@ -74,9 +73,9 @@ public class RegistrationCenterControllerTest {
 		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
-		holiday.setCreatedtime(specificDate);
+		holiday.setCreatedtimes(specificDate);
 		holiday.setHolidayDesc("Diwali");
-		holiday.setActive(true);
+		holiday.setIsActive(true);
 
 		holidays.add(holiday);
 
@@ -84,8 +83,8 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
-				.thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
+				anyString())).thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenReturn(holidays);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
@@ -100,19 +99,19 @@ public class RegistrationCenterControllerTest {
 
 	@Test
 	public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
+				anyString())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-				"REG_CR_001", 2017)).andExpect(status().isNotAcceptable());
+				"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCode(anyString(), anyString()))
-				.thenReturn(registrationCenter);
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
+				anyString())).thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
-				"REG_CR_001", 2018)).andExpect(status().isNotAcceptable());
+				"REG_CR_001", 2018)).andExpect(status().isInternalServerError());
 	}
 }

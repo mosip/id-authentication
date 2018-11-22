@@ -21,7 +21,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -117,7 +116,7 @@ public class RegistrationStatusControllerTest {
 		objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		arrayToJson = objectMapper.writeValueAsString(list);
 
-		mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
+	
 
 		Mockito.doReturn(registrationDtoList).when(registrationStatusService).getByIds(ArgumentMatchers.any());
 
@@ -130,7 +129,7 @@ public class RegistrationStatusControllerTest {
 	 */
 	@Test
 	public void searchSuccessTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders
+		this.mockMvc.perform(MockMvcRequestBuilders
 				.get("/v0.1/registration-processor/registration-status/registrationstatus")
 				.param("registrationIds", registrationIds).accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
 				.andExpect(MockMvcResultMatchers.status().isOk());
@@ -143,7 +142,7 @@ public class RegistrationStatusControllerTest {
 	 */
 	@Test
 	public void searchFailureTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders
+		this.mockMvc.perform(MockMvcRequestBuilders
 				.get("/v0.1/registration-processor/registration-status/registrationstatus").accept(MediaType.ALL_VALUE).contentType(MediaType.ALL_VALUE))
 				.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
@@ -157,7 +156,7 @@ public class RegistrationStatusControllerTest {
 	public void syncRegistrationControllerSuccessTest() throws Exception {
 
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(list);
-		mockMvc.perform(post("/v0.1/registration-processor/registration-status/sync").accept(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(post("/v0.1/registration-processor/registration-status/sync").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(arrayToJson)).andExpect(status().isOk());
 	}
 
@@ -170,7 +169,7 @@ public class RegistrationStatusControllerTest {
 	public void syncRegistrationControllerFailureTest() throws Exception {
 
 		Mockito.when(syncRegistrationService.sync(ArgumentMatchers.any())).thenReturn(list);
-		mockMvc.perform(post("/v0.1/registration-processor/registration-status/sync").accept(MediaType.APPLICATION_JSON)
+		this.mockMvc.perform(post("/v0.1/registration-processor/registration-status/sync").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
 	}
 

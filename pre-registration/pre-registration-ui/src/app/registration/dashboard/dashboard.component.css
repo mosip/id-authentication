@@ -100,3 +100,9 @@ ul {
     line-height: 0px;
     margin-bottom: 10px;
 }
+
+@media(min-width: 990px) {
+    .addButtonPlacer{
+        right: 300px;
+    }
+}

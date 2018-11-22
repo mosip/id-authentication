@@ -1,0 +1,94 @@
+node {
+ def server = Artifactory.server 'ART'
+ def rtMaven = Artifactory.newMavenBuild()
+ def buildInfo
+ def branch = 'DEV'
+ def projectToBuild = 'registration-processor'
+ def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
+ def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
+
+ stage('------- Checkout --------') {
+  // Checkout only Registration-Processor Module
+  dir(branch) {
+   checkout([$class: 'GitSCM',
+    branches: [
+     [name: branch]
+    ],
+    userRemoteConfigs: [
+     [url: 'https://github.com/mosip/mosip', credentialsId: '4c9741a2-4c15-4aad-a13d-3a1206u05321']
+    ],
+    extensions: [
+
+     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*'],
+     [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
+      [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
+     ]]
+
+    ],
+   ])
+  }
+ }
+
+ stage('--------- Artifactory configuration ----------------') {
+  rtMaven.tool = 'M2_HOME' // Tool name from Jenkins configuration
+  rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
+  rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+  buildInfo = Artifactory.newBuildInfo()
+  buildInfo.env.capture = true
+ }
+ 
+stage ('---------- mvn-clean-install ---------------') {
+        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+}
+
+stage('---------- SonarQube Analysis --------------') {
+  def mvnHome = tool name: 'M2_HOME', type: 'maven'
+  withSonarQubeEnv('sonar') {
+   sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
+  }
+ }
+
+stage('----------- Publish build info -------------') {
+  server.publishBuildInfo buildInfo
+ }
+ 
+stage('-----------Docker image push and cleanup-----------') {
+	dir(branch) {
+			sh "find . -name 'Dockerfile'> directoryDockerFiles"
+			locationOfDockerFiles = readFile( "directoryDockerFiles" ).split( "\\r?\\n" );
+			sh "rm -f directoryDockerFiles"
+			for (int i=0; i < locationOfDockerFiles.size(); i++) {
+			if(locationOfDockerFiles[i].equals("")){
+			echo "No Dockerfile found"
+			break;
+			}
+			echo locationOfDockerFiles[i]
+			def currentModule = locationOfDockerFiles[i]
+			sh "basename `dirname $currentModule` > parentDirectoryName"
+			parentDirectoryName = readFile('parentDirectoryName').trim()
+			sh "rm -f parentDirectoryName"
+			sh "dirname $currentModule > parentDirectoryPath"
+			parentDirectoryPath = readFile('parentDirectoryPath').trim()
+			sh "rm -f parentDirectoryPath"
+			docker.withRegistry(registryUrl) {
+			echo "$currentModule"
+			echo "$parentDirectoryName"
+			echo "$parentDirectoryPath"
+			def buildName = "$parentDirectoryName:$BUILD_NUMBER"
+			newApp = docker.build(buildName, '-f '+locationOfDockerFiles[i]+' '+parentDirectoryPath)
+			    newApp.push()
+			    newApp.push 'latest'
+			 }
+			sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
+			sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
+			sh "docker rmi $registryName/$parentDirectoryName"
+
+			}
+
+	}
+
+
+}
+ 
+
+}

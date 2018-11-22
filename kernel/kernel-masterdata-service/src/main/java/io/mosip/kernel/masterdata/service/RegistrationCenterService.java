@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.service;
 
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHolidayDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 
@@ -72,4 +73,13 @@ public interface RegistrationCenterService {
 	 */
 	RegistrationCenterResponseDto getRegistrationCentersByLocationCodeAndLanguageCode(String locationCode,
 			String langCode);
+
+	/**
+	 * Function to fetch all registration centers list.
+	 * 
+	 * @return the list of all registration centers.
+	 */
+	public RegistrationCenterResponseDto getAllRegistrationCenters();
+	
+	public RegistrationCenterHierarchyLevelResponseDto findRegistrationCenterByHierarchyLevelandTextAndLanguageCode(String hierarchyLevel,String text,String languageCode);
 }

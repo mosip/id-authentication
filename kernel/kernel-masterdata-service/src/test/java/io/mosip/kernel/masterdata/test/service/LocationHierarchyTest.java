@@ -45,7 +45,7 @@ public class LocationHierarchyTest {
 		locationHierarchy.setLanguageCode("HIN");
 		locationHierarchy.setCreatedBy("dfs");
 		locationHierarchy.setUpdatedBy("sdfsd");
-		locationHierarchy.setActive(true);
+		locationHierarchy.setIsActive(true);
 		locationHierarchies.add(locationHierarchy);
 		Location locationHierarchy1 = new Location();
 		locationHierarchy1.setCode("KAR");
@@ -56,7 +56,7 @@ public class LocationHierarchyTest {
 		locationHierarchy1.setLanguageCode("KAN");
 		locationHierarchy1.setCreatedBy("dfs");
 		locationHierarchy1.setUpdatedBy("sdfsd");
-		locationHierarchy1.setActive(true);
+		locationHierarchy1.setIsActive(true);
 		locationHierarchies.add(locationHierarchy1);
 
 	}

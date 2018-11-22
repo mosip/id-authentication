@@ -5,8 +5,6 @@ VOLUME /tmp
 
 ADD target/kernel-auditmanager-service-1.0.0-SNAPSHOT.jar /KernelAuditManagerService.jar
 
-RUN bash -c 'touch /KernelAuditManagerService.jar'
-
 EXPOSE 8081
 
 ENTRYPOINT ["java","-jar","/KernelAuditManagerService.jar"]

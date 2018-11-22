@@ -126,16 +126,26 @@ export class DashBoardComponent implements OnInit {
         dialogRef.afterClosed().subscribe(confirm => {
           if (confirm) {
             console.log(confirm);
-            // Api will be called here, status will be checked and then message displayed
-            const message = {
-              case: 'MESSAGE',
-              title: 'Success',
-              message: 'Action was completed successfully'
-            };
-            dialogRef = this.openDialog(message, '250px');
-            const index = this.users.indexOf(element);
-            this.users.splice(index, 1);
-            this.dataSource._updateChangeSubscription();
+            this.regService.deleteRegistration(element.applicationID).subscribe(response => {
+              console.log(response);
+              const message = {
+                case: 'MESSAGE',
+                title: 'Success',
+                message: 'Action was completed successfully'
+              };
+              dialogRef = this.openDialog(message, '250px');
+              const index = this.users.indexOf(element);
+              this.users.splice(index, 1);
+              this.dataSource._updateChangeSubscription();
+            }, error => {
+              console.log(error);
+              const message = {
+                case: 'MESSAGE',
+                title: 'Error',
+                message: 'Action could not be completed'
+              };
+              dialogRef = this.openDialog(message, '250px');
+            });
           } else {
             const message = {
               case: 'MESSAGE',

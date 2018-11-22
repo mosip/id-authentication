@@ -47,19 +47,19 @@ public class BiometricTypeServiceTest {
 		biometricType1.setName("DNA MATCHING");
 		biometricType1.setDescription(null);
 		biometricType1.setLangCode("ENG");
-		biometricType1.setActive(true);
+		biometricType1.setIsActive(true);
 		biometricType1.setCreatedBy("Neha");
 		biometricType1.setUpdatedBy(null);
-		biometricType1.setDeleted(false);
+		biometricType1.setIsDeleted(false);
 
 		biometricType2.setCode("3");
 		biometricType2.setName("EYE SCAN");
 		biometricType2.setDescription(null);
 		biometricType2.setLangCode("ENG");
-		biometricType2.setActive(true);
+		biometricType2.setIsActive(true);
 		biometricType2.setCreatedBy("Neha");
 		biometricType2.setUpdatedBy(null);
-		biometricType2.setDeleted(false);
+		biometricType2.setIsDeleted(false);
 
 		biometricTypeList.add(biometricType1);
 		biometricTypeList.add(biometricType2);
@@ -67,7 +67,7 @@ public class BiometricTypeServiceTest {
 
 	@Test
 	public void getAllBiometricTypesSuccess() {
-		Mockito.when(biometricTypeRepository.findAll(Mockito.eq(BiometricType.class))).thenReturn(biometricTypeList);
+		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(BiometricType.class))).thenReturn(biometricTypeList);
 		List<BiometricTypeDto> biometricTypeDtoList = biometricTypeService.getAllBiometricTypes();
 		assertEquals(biometricTypeList.get(0).getCode(), biometricTypeDtoList.get(0).getCode());
 		assertEquals(biometricTypeList.get(0).getName(), biometricTypeDtoList.get(0).getName());
@@ -75,7 +75,7 @@ public class BiometricTypeServiceTest {
 
 	@Test
 	public void getAllBiometricTypesByLanguageCodeSuccess() {
-		Mockito.when(biometricTypeRepository.findAllByLangCode(Mockito.anyString())).thenReturn(biometricTypeList);
+		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(biometricTypeList);
 		List<BiometricTypeDto> biometricTypeDtoList = biometricTypeService
 				.getAllBiometricTypesByLanguageCode(Mockito.anyString());
 		assertEquals(biometricTypeList.get(0).getCode(), biometricTypeDtoList.get(0).getCode());
@@ -84,7 +84,7 @@ public class BiometricTypeServiceTest {
 
 	@Test
 	public void getBiometricTypeByCodeAndLangCodeSuccess() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
+		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(biometricType1);
 		BiometricTypeDto actual = biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(),
 				Mockito.anyString());

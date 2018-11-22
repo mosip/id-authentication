@@ -185,6 +185,9 @@ public enum DemoMatchType implements MatchType {
 	}
 
 	private static Optional<Object> getInfo(List<IdentityInfoDTO> identityInfos, String language) {
+		if(identityInfos == null) {
+			return Optional.empty();
+		}
 		return identityInfos.parallelStream()
 				.filter(id -> id.getLanguage() != null && language.equalsIgnoreCase(id.getLanguage()))
 				.<Object>map(IdentityInfoDTO::getValue).findAny();
