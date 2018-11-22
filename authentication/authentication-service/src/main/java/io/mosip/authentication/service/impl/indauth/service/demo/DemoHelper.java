@@ -33,7 +33,7 @@ public class DemoHelper {
 		String languagName = null;
 		String key = null;
 		if (languageCode != null) {
-			key = "mosip.phonetic.lang.".concat(languageCode.toLowerCase());
+			key = "mosip.phonetic.lang.".concat(languageCode.toLowerCase()); // mosip.phonetic.lang.
 			String property = environment.getProperty(key);
 			if (property != null && !property.isEmpty()) {
 				String[] split = property.split("-");
