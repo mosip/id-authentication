@@ -3,7 +3,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -44,8 +43,7 @@ public class RegistrationCenterTypeServiceImpl implements RegistrationCenterType
 	/**
 	 * Autowired reference for {@link ModelMapper}
 	 */
-	@Autowired
-	ModelMapper modelMapper;
+	
 
 	/**
 	 * Autowired reference for RegistrationCenterRepository.
