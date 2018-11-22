@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
@@ -99,17 +100,16 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	ReasonCategoryRepository reasonRepository;
-	
+
 	@MockBean
 	ReasonListRepository reasonListRepository;
 
 	private List<ReasonCategory> reasoncategories;
-	
+
 	private List<ReasonList> reasonList;
-	
-	private static final String REASON_LIST_REQUEST="{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }";
-	private static final String REASON_EMPTY_LIST_REQUEST="{ \"reasonList\": [] }";
-	
+
+	private static final String REASON_LIST_REQUEST = "{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }";
+	private static final String REASON_EMPTY_LIST_REQUEST = "{ \"reasonList\": [] }";
 
 	@MockBean
 	RegistrationCenterHistoryRepository repository;
@@ -540,53 +540,73 @@ public class MasterdataIntegrationTest {
 				.thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isNotFound());
 	}
-	
+
 	@Test
-	public void createReasonCateogryTest() throws Exception{
+	public void createReasonCateogryTest() throws Exception {
 		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(reasoncategories);
-		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonCategories\": [ { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" } ] }".getBytes())).andExpect(status().isOk());
+		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content(
+				"{ \"reasonCategories\": [ { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" } ] }"
+						.getBytes()))
+				.andExpect(status().isOk());
 	}
-	
+
 	@Test
-	public void createReasonList() throws Exception{
+	public void createReasonList() throws Exception {
 		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(reasonList);
-		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }".getBytes())).andExpect(status().isOk());
+		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content(
+				"{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }"
+						.getBytes()))
+				.andExpect(status().isOk());
 	}
-	
+
 	@Test
-	public void createReasonCateogryFetchExceptionTest() throws Exception{
+	public void createReasonCateogryFetchExceptionTest() throws Exception {
 		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonCategories\": [ { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" } ] }".getBytes())).andExpect(status().isInternalServerError());
+		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content(
+				"{ \"reasonCategories\": [ { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" } ] }"
+						.getBytes()))
+				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
-	public void createReasonCateogryDataNotFoundTest() throws Exception{
+	public void createReasonCateogryDataNotFoundTest() throws Exception {
 		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(reasoncategories);
-		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonCategories\": [ ] }".getBytes())).andExpect(status().isNotFound());
+		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"reasonCategories\": [ ] }".getBytes())).andExpect(status().isNotFound());
 	}
-	
+
 	@Test
-	public void createReasonCateogryDataNotFoundInDbTest() throws Exception{
+	public void createReasonCateogryDataNotFoundInDbTest() throws Exception {
 		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(new ArrayList<ReasonCategory>());
-		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonCategories\": [ { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" } ] }".getBytes())).andExpect(status().isNotFound());
+		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content(
+				"{ \"reasonCategories\": [ { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" } ] }"
+						.getBytes()))
+				.andExpect(status().isNotFound());
 	}
-	
+
 	@Test
-	public void createReasonListFetchExceptionTest() throws Exception{
+	public void createReasonListFetchExceptionTest() throws Exception {
 		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }".getBytes())).andExpect(status().isInternalServerError());
+		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content(
+				"{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }"
+						.getBytes()))
+				.andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
-	public void createReasonListDataNotFoundTest() throws Exception{
+	public void createReasonListDataNotFoundTest() throws Exception {
 		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(reasonList);
-		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonList\": [ ] }".getBytes())).andExpect(status().isNotFound());
+		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"reasonList\": [ ] }".getBytes())).andExpect(status().isNotFound());
 	}
-	
+
 	@Test
-	public void createReasonListDataNotFoundInDbTest() throws Exception{
+	public void createReasonListDataNotFoundInDbTest() throws Exception {
 		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(new ArrayList<ReasonList>());
-		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }".getBytes())).andExpect(status().isNotFound());
+		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content(
+				"{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }"
+						.getBytes()))
+				.andExpect(status().isNotFound());
 	}
 
 	// -----------------------------RegistrationCenterTest----------------------------------
@@ -791,6 +811,44 @@ public class MasterdataIntegrationTest {
 				RegistrationCenterResponseDto.class);
 		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("bangalore"));
 		assertThat(returnResponse.getRegistrationCenters().get(2).getName(), is("Bangalore Central"));
+	}
+
+	@Test
+	public void getRegistrationCenterByHierarchylevelAndTextAndLanguageCodeTest() throws Exception {
+		centers.add(center);
+		when(registrationCenterRepository.findRegistrationCenterHierarchyLevelName("COUNTRY", "INDIA", "ENG"))
+				.thenReturn(registrationCenters);
+		MvcResult result = mockMvc
+				.perform(get("/registrationcenters/COUNTRY/INDIA/ENG").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+		ObjectMapper mapper = new ObjectMapper();
+		RegistrationCenterHierarchyLevelResponseDto returnResponse = mapper.readValue(
+				result.getResponse().getContentAsString(), RegistrationCenterHierarchyLevelResponseDto.class);
+		assertThat(returnResponse.getRegistrationCenters().get(1).getName(), is("bangalore"));
+		assertThat(returnResponse.getRegistrationCenters().get(2).getName(), is("Bangalore Central"));
+	}
+
+	@Test
+	public void getSpecificRegistrationCenterHierarchyLevelFetchExceptionTest() throws Exception {
+
+		when(registrationCenterRepository.findRegistrationCenterHierarchyLevelName("ENG", "CITY", "BANGALORE"))
+				.thenThrow(DataAccessLayerException.class);
+
+		mockMvc.perform(get("/registrationcenters/ENG/CITY/BANGALORE").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void getRegistrationCenterHierarchyLevelNotFoundExceptionTest() throws Exception {
+
+		List<RegistrationCenter> emptyList = new ArrayList<>();
+		when(registrationCenterRepository.findRegistrationCenterHierarchyLevelName("ENG", "CITY", "BANGALORE"))
+				.thenReturn(emptyList);
+
+		mockMvc.perform(get("/registrationcenters/ENG/CITY/BANGALORE").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+
 	}
 
 	// -----------------------------RegistrationCenterIntegrationTest----------------------------------
