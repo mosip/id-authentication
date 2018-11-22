@@ -19,6 +19,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class DataSyncConfig {
 
+	/**
+	 * @return docket
+	 */
 	@Bean
 	public Docket registrationStatusBean() {
 		return new Docket(DocumentationType.SWAGGER_2).groupName("Pre-Registration-Datasync").select()

@@ -18,7 +18,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Registration entity
+ * PreRegistration entity
  * 
  * @author M1046129
  *
@@ -29,7 +29,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class PreRegistrationEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

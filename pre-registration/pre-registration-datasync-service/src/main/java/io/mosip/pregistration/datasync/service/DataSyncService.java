@@ -1,37 +1,53 @@
 package io.mosip.pregistration.datasync.service;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.pregistration.datasync.code.StatusCodes;
+import io.mosip.pregistration.datasync.dto.DataSyncRequestDTO;
 import io.mosip.pregistration.datasync.dto.ExceptionJSONInfo;
-import io.mosip.pregistration.datasync.dto.ReverseDataSyncRequestDTO;
 import io.mosip.pregistration.datasync.dto.ResponseDTO;
+import io.mosip.pregistration.datasync.dto.ResponseDataSyncDTO;
 import io.mosip.pregistration.datasync.dto.ReverseDataSyncDTO;
+import io.mosip.pregistration.datasync.dto.ReverseDataSyncRequestDTO;
 import io.mosip.pregistration.datasync.entity.DocumentEntity;
+import io.mosip.pregistration.datasync.entity.Ipprlst_PK;
 import io.mosip.pregistration.datasync.entity.PreRegistrationEntity;
 import io.mosip.pregistration.datasync.entity.PreRegistrationProcessedEntity;
 import io.mosip.pregistration.datasync.entity.ReverseDataSyncEntity;
 import io.mosip.pregistration.datasync.exception.DataSyncRecordNotFoundException;
-import io.mosip.pregistration.datasync.exception.ReverseDataSyncRecordNotFoundException;
+import io.mosip.pregistration.datasync.exception.RecordNotFoundForDateRange;
+import io.mosip.pregistration.datasync.exception.ReverseDataFailedToStoreException;
+import io.mosip.pregistration.datasync.exception.ZipFileCreationException;
+import io.mosip.pregistration.datasync.repository.DataSyncRepo;
 import io.mosip.pregistration.datasync.repository.DataSyncRepository;
+import io.mosip.pregistration.datasync.repository.ReverseDataSyncRepo;
+import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 
 /**
+ * DataSync Service
  * 
  * @version 1.0.0
  * 
- * @author M1046129
+ * @author M1046129 - Jagadishwari
  *
  */
 @Service
@@ -41,96 +57,174 @@ public class DataSyncService {
 	@Qualifier("dataSyncRepository")
 	private DataSyncRepository dataSyncRepository;
 
+	@Autowired
+	private DataSyncRepo dataSyncRepo;
+
+	@Autowired
+	private ReverseDataSyncRepo reversedataSyncRepo;
+
 	List<ExceptionJSONInfo> errlist = new ArrayList<>();
 	ExceptionJSONInfo exceptionJSONInfo = new ExceptionJSONInfo("", "");
 	String status = "true";
 
 	Timestamp resTime = new Timestamp(System.currentTimeMillis());
 
+	/**
+	 * @param preId
+	 * @return Zipped File
+	 * @throws Exception
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public ResponseDTO getPreRegistration(String preId) throws Exception {
-
+		List responseList = new ArrayList<>();
 		PreRegistrationEntity demography = dataSyncRepository.findDemographyByPreId(preId);
 		ResponseDTO responseDto = new ResponseDTO<>();
-		List responseList = new ArrayList<>();
 		if (demography != null) {
 			System.out.println("Pre id: " + demography.getPreRegistrationId());
-			new DataSyncService().archiving(demography);
-
 			List<DocumentEntity> documentlist = dataSyncRepository.findDocumentByPreId(preId);
-			if (documentlist != null && documentlist.size() > 0) {
-				new DataSyncService().archiving(documentlist);
-				status = "true";
-				exceptionJSONInfo = new ExceptionJSONInfo("", "");
-				responseDto.setResponse(responseList);
-
-			}
-			// else {
-			//
-			// status = "false";
-			// exceptionJSONInfo = new
-			// ExceptionJSONInfo(ErrorCodes.PRG_DATA_SYNC_006.toString(),
-			// "Document not found");
-			// errlist.add(exceptionJSONInfo);
-			// throw new
-			// DocumentNotFoundException(StatusCodes.DOCUMENT_IS_MISSING.toString());
-			// }
-
+			byte[] bytes = DataSyncService.archivingFiles(demography, documentlist);
+			responseList.add(bytes);
+			responseList.add(demography.getPreRegistrationId().toString());
 		} else {
 			throw new DataSyncRecordNotFoundException(StatusCodes.RECORDS_NOT_FOUND_FOR_REQUESTED_PREREGID.toString());
-
 		}
 
 		responseDto.setStatus(status);
 		responseDto.setResTime(resTime);
 		responseDto.setErr(errlist);
+		responseDto.setResponse(responseList);
 		return responseDto;
 	}
 
-	public List archiving(List<DocumentEntity> documentlist) throws Exception {
-		/*------------------------------------Document part--------------------------------------*/
-		Path pathDoc = null;
-
-		for (int i = 0; i < documentlist.size(); i++) {
-			pathDoc = Paths.get("src" + File.separator + "main" + File.separator + "resources" + File.separator
-					+ documentlist.get(i).getPreregId().toString() +"_"+ documentlist.get(i).getDoc_name());
-			File fileDoc = new File(pathDoc.toString());
-			byte[] docBytes = documentlist.get(i).getDoc_store();
-			if (!fileDoc.exists() && !fileDoc.isDirectory()) {
-				fileDoc.createNewFile();
-			}
-			if (fileDoc.exists()) {
-				FileOutputStream fileOutputStream = new FileOutputStream(fileDoc);
-				fileOutputStream.write(docBytes);
-				fileOutputStream.flush();
-			}
-		}
-		return null;
-	}
-
+	/**
+	 * @param preRegistrationEntity
+	 * @param documentEntityList
+	 * @return zipped file's byte array
+	 * @throws IOException
+	 */
 	@SuppressWarnings("unchecked")
-	public List archiving(PreRegistrationEntity entity) throws Exception {
+	public static byte[] archivingFiles(PreRegistrationEntity preRegistrationEntity,
+			List<DocumentEntity> documentEntityList) throws IOException {
+		FileOutputStream fileOutputStream = null;
+		FileOutputStream demofileOutputStream = null;
+		File jsonFile = null;
+		File fileDoc = null;
+		List<String> inputMultiFileList = new ArrayList<>();
+		Path pathDoc = null;
+		byte[] inputStream = null;
+		byte[] returnInputStream = null;
+		if (preRegistrationEntity != null) {
+			try {
+				JSONObject responseJson = new JSONObject();
+				responseJson.put("Pre-registration Id", preRegistrationEntity.getPreRegistrationId());
+				responseJson.put("Appointment Date", preRegistrationEntity.getCreateDateTime().toString());
+				responseJson.put("Identity", new String(preRegistrationEntity.getApplicantDetailJson(), "UTF-8"));
+				pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator
+						+ preRegistrationEntity.getPreRegistrationId().toString() + ".json");
+				jsonFile = new File(pathDoc.toString());
+				if (jsonFile.exists()) {
+					jsonFile.delete();
+				}
+				jsonFile.createNewFile();
 
-		JSONObject responseJson = new JSONObject();
-		responseJson.put("Pre-registration Id", entity.getPreRegistrationId());
-		responseJson.put("Appointment Date", entity.getCreateDateTime().toString());
-		responseJson.put("Identity", new String(entity.getApplicantDetailJson(), "UTF-8"));
+				demofileOutputStream = new FileOutputStream(jsonFile);
+				demofileOutputStream.write(responseJson.toJSONString().getBytes());
+				demofileOutputStream.close();
 
-		Path path = Paths.get("src" + File.separator + "main" + File.separator + "resources" + File.separator
-				+ entity.getPreRegistrationId().toString() + ".json");
-		File demo = new File(path.toString());
+				System.out.println("Demography path: " + jsonFile.getAbsolutePath());
+				inputMultiFileList.add(jsonFile.getAbsolutePath());
+				if (documentEntityList != null && documentEntityList.size() > 0) {
+					for (int i = 0; i < documentEntityList.size(); i++) {
+						pathDoc = Paths.get(System.getProperty("java.io.tmpdir") + File.separator
+								+ documentEntityList.get(i).getPreregId().toString() + "_"
+								+ documentEntityList.get(i).getDoc_name());
 
-		if (!demo.exists() && !demo.isDirectory()) {
-			demo.createNewFile();
+						fileDoc = new File(pathDoc.toString());
+						byte[] docBytes = documentEntityList.get(i).getDoc_store();
+						if (fileDoc.exists()) {
+							fileDoc.delete();
+						}
+						fileDoc.createNewFile();
+						fileOutputStream = new FileOutputStream(fileDoc);
+						fileOutputStream.write(docBytes);
+						fileOutputStream.close();
+						System.out.println("FileDoc path: " + fileDoc.getAbsolutePath());
+						inputMultiFileList.add(fileDoc.getAbsolutePath());
+
+					}
+
+				}
+				inputStream = getCompressed(inputMultiFileList);
+				returnInputStream = inputStream;
+			} catch (Exception e) {
+				throw new ZipFileCreationException(StatusCodes.FAILED_TO_CREATE_A_ZIP_FILE.toString());
+			} finally {
+				inputStream = new byte[1024];
+				if (inputMultiFileList != null && !inputMultiFileList.equals(null) && inputMultiFileList.size() > 0) {
+					for (String s : inputMultiFileList) {
+						Path path = Paths.get(s);
+						Files.deleteIfExists(path);
+					}
+				}
+				inputMultiFileList.clear();
+				;
+			}
 		}
-		if (demo.exists()) {
-			FileWriter fileWriter = new FileWriter(demo);
-			fileWriter.write(responseJson.toJSONString());
-			fileWriter.flush();
-		}
-		return null;
+		return returnInputStream;
 	}
 
+	/**
+	 * @param zipOut
+	 * @param fis
+	 * @throws IOException
+	 */
+	private static void readFile(ZipOutputStream zipOut, FileInputStream fis) throws IOException {
+		final byte[] bytes = new byte[1024];
+		int length;
+		while ((length = fis.read(bytes)) >= 0) {
+			zipOut.write(bytes, 0, length);
+		}
+
+	}
+
+	/**
+	 * @param inputFIle
+	 * @return compressed Zip
+	 * @throws IOException
+	 */
+	public static byte[] getCompressed(List<String> inputFIle) throws IOException {
+		File fileToZip = null;
+		List<String> srcFiles = new ArrayList<>();
+		srcFiles.addAll(inputFIle);
+		FileInputStream fileInputStream = null;
+		ByteArrayOutputStream byteArrayOutputStream = null;
+		ZipOutputStream zipOutputStream = null;
+		BufferedInputStream bufferedInputStream = null;
+		byteArrayOutputStream = new ByteArrayOutputStream();
+		zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+
+		for (String srcFile : srcFiles) {
+			fileToZip = new File(srcFile);
+			fileInputStream = new FileInputStream(fileToZip);
+			bufferedInputStream = new BufferedInputStream(fileInputStream, 1024);
+			ZipEntry entry = new ZipEntry(fileToZip.getName());
+			zipOutputStream.putNextEntry(entry);
+			readFile(zipOutputStream, fileInputStream);
+
+			bufferedInputStream.close();
+		}
+		byteArrayOutputStream.close();
+
+		zipOutputStream.close();
+		fileInputStream.close();
+
+		return byteArrayOutputStream.toByteArray();
+	}
+
+	/**
+	 * @param reverseDto
+	 * @return responseDTO
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ResponseDTO<ReverseDataSyncDTO> storeConsumedPreRegistrations(ReverseDataSyncDTO reverseDto) {
 		ResponseDTO<ReverseDataSyncDTO> responseDto = new ResponseDTO<>();
@@ -141,26 +235,37 @@ public class DataSyncService {
 
 		ReverseDataSyncRequestDTO reverseRequestDTO = reverseDto.getRequest();
 		List<String> preIdList = reverseRequestDTO.getPre_registration_ids();
-		for (int i = 0; i < preIdList.size(); i++) {
-			reverseEntity = new ReverseDataSyncEntity();
-			reverseEntity.setPreRegistrationId(preIdList.get(i));
-			reverseEntity.setReceivedDTime(reverseDto.getReqTime());
-			entityList.add(reverseEntity);
+		if (preIdList != null && preIdList.size() > 0 && !preIdList.equals(null)) {
+			for (int i = 0; i < preIdList.size(); i++) {
+				reverseEntity = new ReverseDataSyncEntity();
+				Ipprlst_PK ipprlst_PK = new Ipprlst_PK();
+				ipprlst_PK.setPrereg_id(preIdList.get(i));
+				ipprlst_PK.setReceived_dtimes(reverseDto.getReqTime());
+				reverseEntity.setIpprlst_PK(ipprlst_PK);
+				reverseEntity.setLangCode("AR");
+				reverseEntity.setCrBy("5766477466");
+				reverseEntity.setCrDate(new Timestamp(System.currentTimeMillis()));
+				entityList.add(reverseEntity);
 
-			processedEntity = new PreRegistrationProcessedEntity();
-			processedEntity.setPreRegistrationId(preIdList.get(i));
-			processedEntity.setReceivedDTime(reverseDto.getReqTime());
-			processedEntity.setStatusCode("Processed");
-			processedEntity.setStatusComments("Processed by registration processor");
-
-			processedEntityList.add(processedEntity);
+				processedEntity = new PreRegistrationProcessedEntity();
+				processedEntity.setPreRegistrationId(preIdList.get(i));
+				processedEntity.setReceivedDTime(reverseDto.getReqTime());
+				processedEntity.setStatusCode("Processed");
+				processedEntity.setStatusComments("Processed by registration processor");
+				processedEntity.setLangCode("AR");
+				processedEntity.setCrBy("5766477466");
+				processedEntity.setCrDate(new Timestamp(System.currentTimeMillis()));
+				processedEntityList.add(processedEntity);
+			}
 		}
 
 		List<ReverseDataSyncEntity> savedList = dataSyncRepository.saveAll(entityList);
 
 		if (savedList != null && !savedList.equals(null) && savedList.size() > 0) {
-
-			dataSyncRepository.saveAll(processedEntityList);
+			for (PreRegistrationProcessedEntity s : processedEntityList) {
+				if (!reversedataSyncRepo.existsById(s.getPreRegistrationId()))
+					reversedataSyncRepo.save(s);
+			}
 
 			status = "true";
 			exceptionJSONInfo = new ExceptionJSONInfo("", "");
@@ -170,7 +275,7 @@ public class DataSyncService {
 			responseDto.setResponse(responseList);
 
 		} else {
-			throw new ReverseDataSyncRecordNotFoundException(
+			throw new ReverseDataFailedToStoreException(
 					StatusCodes.FAILED_TO_STORE_PRE_REGISTRATION_IDS.toString());
 		}
 
@@ -180,6 +285,44 @@ public class DataSyncService {
 
 		return responseDto;
 
+	}
+
+	public ResponseDTO<ResponseDataSyncDTO> retrieveAllPreRegid(DataSyncRequestDTO dataSyncRequestDTO) {
+
+		Timestamp fromDate = dataSyncRequestDTO.getFromDate();
+		Timestamp toDate = dataSyncRequestDTO.getToDate();
+
+		ResponseDataSyncDTO responseDataSyncDTO = new ResponseDataSyncDTO();
+		ResponseDTO<ResponseDataSyncDTO> responseDto = new ResponseDTO<>();
+		List<PreRegistrationEntity> preRegIdEntitylist;
+		List<ExceptionJSONInfo> err = new ArrayList<>();
+		List<ResponseDataSyncDTO> responseDataSyncList = new ArrayList<>();
+
+		try {
+			preRegIdEntitylist = dataSyncRepo.findBycreateDateTimeBetween(fromDate, toDate);
+			if (preRegIdEntitylist == null || preRegIdEntitylist.size() == 0) {
+				throw new RecordNotFoundForDateRange(StatusCodes.RECORDS_NOT_FOUND_FOR_DATE_RANGE.toString());
+			} else {
+
+				List<String> preregIds = new ArrayList<>();
+				for (PreRegistrationEntity preRegistrationEntity : preRegIdEntitylist) {
+					preregIds.add(preRegistrationEntity.getPreRegistrationId());
+				}
+				responseDataSyncDTO.setPreRegistrationIds(preregIds);
+				responseDataSyncDTO.setTransactionId("337324416082");
+				responseDataSyncList.add(responseDataSyncDTO);
+				responseDto.setStatus("True");
+				responseDto.setErr(err);
+				responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+				responseDto.setResponse(responseDataSyncList);
+			}
+		} catch (DataAccessLayerException e) {
+
+			throw new TablenotAccessibleException(StatusCodes.REGISTRATION_TABLE_NOT_ACCESSIBLE.toString());
+
+		}
+
+		return responseDto;
 	}
 
 }

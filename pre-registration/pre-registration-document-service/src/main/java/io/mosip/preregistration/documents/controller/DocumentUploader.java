@@ -1,3 +1,4 @@
+
 package io.mosip.preregistration.documents.controller;
 
 import org.json.JSONException;
@@ -25,11 +26,8 @@ import io.mosip.preregistration.documents.dto.DocResponseDto;
 import io.mosip.preregistration.documents.dto.DocumentDto;
 import io.mosip.preregistration.documents.dto.DocumentGetAllDto;
 import io.mosip.preregistration.documents.dto.ResponseDto;
-import io.mosip.preregistration.documents.entity.DocumentEntity;
 import io.mosip.preregistration.documents.service.DocumentUploadService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
 
 /**
  * Document upload controller

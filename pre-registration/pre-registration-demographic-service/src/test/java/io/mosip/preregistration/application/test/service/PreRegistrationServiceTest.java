@@ -1,3 +1,4 @@
+
 package io.mosip.preregistration.application.test.service;
 
 import static org.junit.Assert.assertEquals;
@@ -13,8 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -40,7 +39,7 @@ import org.springframework.web.client.RestTemplate;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.core.idgenerator.spi.PridGenerator;
-import io.mosip.kernel.jsonvalidator.dto.JsonValidatorResponseDto;
+import io.mosip.kernel.jsonvalidator.exception.HttpRequestException;
 import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
 import io.mosip.preregistration.application.dao.PreRegistrationDao;
 import io.mosip.preregistration.application.dto.CreateDto;
@@ -50,6 +49,7 @@ import io.mosip.preregistration.application.dto.ResponseDto;
 import io.mosip.preregistration.application.dto.StatusDto;
 import io.mosip.preregistration.application.dto.ViewDto;
 import io.mosip.preregistration.application.entity.PreRegistrationEntity;
+import io.mosip.preregistration.application.exception.JsonValidationException;
 import io.mosip.preregistration.application.exception.utils.PreRegistrationErrorMessages;
 import io.mosip.preregistration.application.repository.PreRegistrationRepository;
 import io.mosip.preregistration.application.service.PreRegistrationService;
@@ -268,5 +268,15 @@ public class PreRegistrationServiceTest {
 				.thenReturn(preRegistrationEntity);
 		preRegistrationService.addRegistration(jsonTestObject.toString());
 
+	}
+	@Test(expected = JsonValidationException.class)
+	public void updateFailureCheck() throws Exception {
+		HttpRequestException exception = new HttpRequestException(
+				PreRegistrationErrorMessages.JSON_VALIDATION_FAIL, null);
+		Mockito.when(jsonValidator.validateJson(jsonObject.toString(), "mosip-prereg-identity-json-schema.json"))
+				.thenReturn(null);
+		Mockito.when(preRegistrationDao.save(Mockito.any())).thenThrow(exception);
+
+		preRegistrationService.addRegistration(jsonObject.toString());
 	}
 }
