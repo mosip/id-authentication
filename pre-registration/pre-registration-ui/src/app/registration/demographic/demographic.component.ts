@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import {
   FormGroup,
@@ -7,11 +9,9 @@ import {
   FormBuilder,
   AbstractControl,
   ValidatorFn,
-  ValidationErrors,
-  FormGroupDirective,
-  NgForm
+  ValidationErrors
 } from '@angular/forms';
-import { MatButtonToggleChange, MatDatepickerInputEvent, ErrorStateMatcher } from '@angular/material';
+import { MatButtonToggleChange, MatDatepickerInputEvent } from '@angular/material';
 
 import { RegistrationService } from '../registration.service';
 import { DemoLabels } from './demographic.labels';
@@ -19,12 +19,20 @@ import { IdentityModel } from './identity.model';
 import { AttributeModel } from './attribute.model';
 import { RequestModel } from './request.model';
 import { DatePipe } from '@angular/common';
-import { DemoIdentityModel } from './Demo.Identity.model';
+
+import { DataStorageService } from 'src/app/shared/data-storage.service';
+import { DemoIdentityModel } from './demo.identity.model';
+import { UserModel } from './user.model';
 
 @Component({
   selector: 'app-demographic',
   templateUrl: './demographic.component.html',
-  styleUrls: ['./demographic.component.css']
+  styleUrls: ['./demographic.component.css'],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'en-AU' },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS }
+  ]
 })
 export class DemographicComponent implements OnInit {
   step = 0;
@@ -55,7 +63,7 @@ export class DemographicComponent implements OnInit {
   numbers: number[];
   isDisabled = [];
   checked = true;
-
+  maxDate = new Date(Date.now());
   editMode = false;
 
   isPrimary = 'false';
@@ -75,9 +83,17 @@ export class DemographicComponent implements OnInit {
   mobilePhone: '';
   pin: ' ';
 
-  constructor(private router: Router, private route: ActivatedRoute, private regService: RegistrationService) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private regService: RegistrationService,
+    private dataStorageService: DataStorageService,
+    private adapter: DateAdapter<any>
+  ) {}
 
   ngOnInit() {
+    console.log(this.maxDate);
+
     this.route.params.subscribe((params: Params) => {
       this.numberOfApplicants = +params['id'];
       this.numbers = Array(this.numberOfApplicants)
@@ -171,7 +187,7 @@ export class DemographicComponent implements OnInit {
 
     const req = new RequestModel(
       '',
-      'shashank',
+      '8680958867',
       '',
       '',
       '',
@@ -180,13 +196,16 @@ export class DemographicComponent implements OnInit {
       new DemoIdentityModel(identity)
     );
 
-    this.regService.addUser(req).subscribe(
+    this.dataStorageService.addUser(req).subscribe(
       response => {
-        console.log(response['response'][0]['json']['FullName']);
+        console.log(response['response']);
+        console.log('PREID ' + response['response'][0].prId);
+
         const string = response['response'][0]['json'];
         const json = JSON.parse(string);
         console.log('JSON ', json.request);
         console.log('value ' + json.request.demographicDetails.identity.FullName[0].value);
+        this.regService.addUser(new UserModel(response['response'][0].prId, json.request));
       },
       error => console.log(error),
       () => {
@@ -194,7 +213,7 @@ export class DemographicComponent implements OnInit {
         this.step++;
         this.checked = true;
         if (this.step === this.numberOfApplicants) {
-          this.router.navigate(['../../file-upload'], { relativeTo: this.route });
+          // this.router.navigate(['../../file-upload'], { relativeTo: this.route });
         }
       }
     );
