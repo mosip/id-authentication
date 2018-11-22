@@ -1,4 +1,4 @@
-package io.mosip.kernel.masterdata.exceptionhandler;
+package io.mosip.kernel.masterdata.exception;
 
 import lombok.Data;
 
