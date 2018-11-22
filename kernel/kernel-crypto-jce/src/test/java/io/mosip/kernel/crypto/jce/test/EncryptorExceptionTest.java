@@ -17,18 +17,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.core.crypto.exception.InvalidDataException;
-import io.mosip.kernel.core.crypto.exception.InvalidKeyException;
-import io.mosip.kernel.core.crypto.exception.NullDataException;
 import io.mosip.kernel.core.crypto.spi.Encryptor;
+import io.mosip.kernel.core.exception.NoSuchAlgorithmException;
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EncryptorTest {
+@TestPropertySource("classpath:/application-exception.properties")
+public class EncryptorExceptionTest {
 
 	@Autowired
 	private Encryptor<PrivateKey, PublicKey, SecretKey> encryptorImpl;
+
 
 	private KeyPair rsaPair;
 
@@ -52,19 +53,19 @@ public class EncryptorTest {
 		return new SecretKeySpec(keyBytes, algo);
 	}
 
-	@Test
+	@Test(expected=NoSuchAlgorithmException.class)
 	public void testRSAPKS1AsymmetricPrivateEncrypt() {
 		assertThat(encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(),
 				data), isA(byte[].class));
 	}
 
-	@Test
+	@Test(expected=NoSuchAlgorithmException.class)
 	public void testRSAPKS1AsymmetricPublicEncrypt() {
 		assertThat(encryptorImpl.asymmetricPublicEncrypt(rsaPair.getPublic(),
 				data), isA(byte[].class));
 	}
 
-	@Test
+	@Test(expected=NoSuchAlgorithmException.class)
 	public void testAESSymmetricEncrypt()
 			throws java.security.NoSuchAlgorithmException {
 		assertThat(
@@ -72,27 +73,5 @@ public class EncryptorTest {
 				isA(byte[].class));
 	}
 
-	@Test(expected = InvalidKeyException.class)
-	public void testRSAPKS1AsymmetricInvalidKey() {
-		encryptorImpl.asymmetricPrivateEncrypt(null, data);
-	}
-
-	@Test(expected = NullDataException.class)
-	public void testRSAPKS1AsymmetricNullData() {
-		encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(), null);
-	}
-
-	@Test(expected = InvalidDataException.class)
-	public void testRSAPKS1AsymmetricInvalidData() {
-		encryptorImpl.asymmetricPrivateEncrypt(rsaPair.getPrivate(),
-				"".getBytes());
-	}
-
-	@Test(expected = InvalidKeyException.class)
-	public void testAESSymmetricEncryptInvalidKey()
-			throws java.security.NoSuchAlgorithmException {
-		assertThat(encryptorImpl.symmetricEncrypt(null, data),
-				isA(byte[].class));
-	}
-
+	
 }

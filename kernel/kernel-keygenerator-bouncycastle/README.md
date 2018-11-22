@@ -1,36 +1,38 @@
-## kernel-keygenerator-bouncycastle
+## KEYGENERATOR-BOUNCYCASTLE module for kernel
+This folder has KEYGENERATOR-BOUNCYCASTLE module which can be used to generate [SecretKey](https://docs.oracle.com/javase/8/docs/api/javax/crypto/SecretKey.html) and [KeyPair](https://docs.oracle.com/javase/8/docs/api/index.html?java/security/KeyPair.html).
 
- 
- 1- [Background & Design](../../design/kernel/kernel-keygenerator.md)
- 
+####[Background & Design](../../design/kernel/kernel-keygenerator.md)
 
- 2- [API Documentation <TBA>](TBA)
- 
- ```
- mvn javadoc:javadoc
+### Api Documentation
+[API Documentation <TBA>](TBA)
 
- ```
- 
- 3- Usage Sample
- 
- Usage1:
- 
- ```
-<TBA>
- 
- ```
+```
+mvn javadoc:javadoc
+```
 
- Usage2:
+### Properties to be added in parent Spring Application environment 
+[kernel-keygenerator-bouncycastle-dev.properties](../../config/kernel-keygenerator-bouncycastle-dev.properties)
+
+##### The response will be [SecretKey](https://docs.oracle.com/javase/8/docs/api/javax/crypto/SecretKey.html) and [KeyPair](https://docs.oracle.com/javase/8/docs/api/index.html?java/security/KeyPair.html) for symmetric key generation and asymmetric key generation respectively.
+
+
+### Usage Sample
+  Usage Symmetric Key Generation:
  
  ```
-<TBA>
- 
+@Autowired
+	KeyGenerator keyGenerator;
+	
+	SecretKey secretKey=keyGenerator.getSymmetricKey();
+		
  ```
 
-
-
-
-
-
-
-
+ Usage Asymmetric Key Generation:
+ 
+ ```
+@Autowired
+	KeyGenerator keyGenerator;
+	
+	KeyPair keyPair=keyGenerator.getAsymmetricKey();
+ 
+ ```

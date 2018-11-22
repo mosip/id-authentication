@@ -2,6 +2,9 @@ package io.mosip.kernel.core.crypto.spi;
 
 /**
  * Decryptor factory interface for security
+ * @param <K> the type of private key
+ * @param <P> the type of public key
+ * @param <S> the type of symmetric key
  * 
  * @author Urvil Joshi
  *
