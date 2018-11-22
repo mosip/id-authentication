@@ -21,26 +21,21 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = "appl_form_type", schema = "master")
-public class Application extends BaseEntity implements Serializable {
-	/**
-	 * Generated serial version id
-	 */
-	private static final long serialVersionUID = 893244317356416503L;
+@Table(name = "template_file_format", schema = "master")
+@EqualsAndHashCode(callSuper = false)
+public class TemplateFileFormat extends BaseEntity implements Serializable {
+	
+	private static final long serialVersionUID = 1051422672381211978L;
 
 	@Id
 	@Column(name = "code")
 	private String code;
-
-	@Column(name = "name")
-	private String name;
 
 	@Column(name = "descr")
 	private String description;
 
 	@Column(name = "lang_code")
 	private String langCode;
-
+	
 }

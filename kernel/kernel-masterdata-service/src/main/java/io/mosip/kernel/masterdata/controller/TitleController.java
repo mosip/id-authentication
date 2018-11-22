@@ -34,14 +34,14 @@ public class TitleController {
 	/**
 	 * Method to return list of titles for a particular language code
 	 * 
-	 * @param languageCode
+	 * @param langCode
 	 *            input to fetch all titles belonging to the particular language
 	 *            code
 	 * @return list of all titles for the particular language code
 	 */
-	@GetMapping(value = "/title/{languageCode}")
-	public TitleResponseDto getTitlesByLanguageCode(@PathVariable String languageCode) {
-		return titleService.getByLanguageCode(languageCode);
+	@GetMapping(value = "/title/{langCode}")
+	public TitleResponseDto getTitlesBylangCode(@PathVariable String langCode) {
+		return titleService.getByLanguageCode(langCode);
 	}
 
 }

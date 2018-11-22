@@ -13,7 +13,7 @@ import io.mosip.kernel.masterdata.constant.DocumentCategoryErrorCode;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
-import io.mosip.kernel.masterdata.entity.CodeLangCodeId;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
@@ -85,9 +85,9 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_INSERT_EXCEPTION.getErrorCode(), e.getMessage());
 		}
-		List<CodeLangCodeId> codeLangCodeIds = new ArrayList<>();
+		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		documentTypes.forEach(documentType -> {
-			CodeLangCodeId codeLangCodeId = new CodeLangCodeId();
+			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
 			try {
 				dataMapper.map(documentType, codeLangCodeId, true, null, null, true);
 			} catch (DataMapperException e) {
@@ -97,7 +97,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			codeLangCodeIds.add(codeLangCodeId);
 		});
 		PostResponseDto postResponseDto = new PostResponseDto();
-		postResponseDto.setSuccessfully_created(codeLangCodeIds);
+		postResponseDto.setResults(codeLangCodeIds);
 		return postResponseDto;
 	}
 }
