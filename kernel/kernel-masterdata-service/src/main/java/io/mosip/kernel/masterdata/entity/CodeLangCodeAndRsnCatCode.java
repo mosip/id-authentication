@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class ReasonListId implements Serializable {
+public class CodeLangCodeAndRsnCatCode implements Serializable {
 
 	/**
 	 * 

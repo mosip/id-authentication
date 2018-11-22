@@ -6,18 +6,20 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+/**
+ * 
+ * @author Srinivasan
+ *
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PacketRejectionReasonRequestDto implements Serializable {
-
+public class ReasonCategoryRequestDto implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6392015742386472560L;
+	private static final long serialVersionUID = 7207202901342908222L;
 	
-	public List<ReasonListDto> reasonList;
-	
-	public List<ReasonCategoryDto> reasonCategories;
-
+	private List<PostReasonCategoryDto> reasonCategories;
 }
