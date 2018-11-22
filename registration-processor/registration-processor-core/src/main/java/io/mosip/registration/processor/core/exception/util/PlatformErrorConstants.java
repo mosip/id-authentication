@@ -37,13 +37,12 @@ public final class PlatformErrorConstants {
 	public static final String RPR_PACKET_SCANNER_JOB_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PSJ-";
 	
 	/** The Constant RPR_PACKET_DECRYPTION_JOB_MODULE. */
-	public static final String RPR_PACKET_DECRYPTION_JOB_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PDJ-";
+	public static final String RPR_PACKET_DECRYPTION_JOB_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "PDS-";
+	
+	public static final String RPR_REST_CLIENT_MODULE = RPR_REGISTRATION_PROCESSOR_PREFIX + "RCT-";
+	
+	public static final String RPR_SYSTEM_EXCEPTION = RPR_REGISTRATION_PROCESSOR_PREFIX + "SYS";
 
-	public static final String IIS_EPU_ATU_UNKNOWN_RESOURCE_EXCEPTION = null;
-	public static final String MAPPING_JSON_EXCEPTION = null;
-	public static final String IDENTITY_NOT_FOUND = null;
-	public static final String UNABLE_TO_INSERT_DATA = null;
-	public static final String FILE_NOT_FOUND = null;
 
 	/**
 	 * Instantiates a new RPR platform error codes.

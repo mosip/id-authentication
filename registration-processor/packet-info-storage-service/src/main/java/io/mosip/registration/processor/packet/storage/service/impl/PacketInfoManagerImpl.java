@@ -8,8 +8,6 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Optional;
 
-import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,10 +21,12 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.registration.processor.core.code.AuditLogConstant;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.Applicant;
 import io.mosip.registration.processor.core.packet.dto.Biometric;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
@@ -54,11 +54,13 @@ import io.mosip.registration.processor.packet.storage.entity.BiometricExceptionE
 import io.mosip.registration.processor.packet.storage.entity.IndividualDemographicDedupeEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
+import io.mosip.registration.processor.packet.storage.exception.FieldNotFoundException;
 import io.mosip.registration.processor.packet.storage.exception.FileNotFoundInPacketStore;
 import io.mosip.registration.processor.packet.storage.exception.IdentityNotFoundException;
+import io.mosip.registration.processor.packet.storage.exception.InstantanceCreationException;
 import io.mosip.registration.processor.packet.storage.exception.MappingJsonException;
 import io.mosip.registration.processor.packet.storage.exception.ParsingException;
-import io.mosip.registration.processor.packet.storage.exception.RPR_PLATFORM_ERROR_MESSAGES;
+import io.mosip.registration.processor.packet.storage.exception.StreamToBytesConversionException;
 import io.mosip.registration.processor.packet.storage.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.packet.storage.exception.UnableToInsertData;
 import io.mosip.registration.processor.packet.storage.mapper.PacketInfoMapper;
@@ -233,7 +235,8 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			isTransactionSuccessful = true;
 			return applicantInfoDtoList;
 		} catch (DataAccessLayerException e) {
-			throw new TablenotAccessibleException(PlatformErrorMessages.RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
+			throw new TablenotAccessibleException(
+					PlatformErrorMessages.RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE.getMessage(), e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
@@ -320,19 +323,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 				metaData);
 
 		String fileName = "";
-		if (PacketFiles.APPLICANTPHOTO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
-			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.APPLICANTPHOTO.name();
-		} else if (PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
-			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.REGISTRATIONACKNOWLEDGEMENT.name();
-		} else if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
+		if (PacketFiles.DEMOGRAPHICINFO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
 			fileName = PacketFiles.DEMOGRAPHIC.name() + FILE_SEPARATOR + PacketFiles.DEMOGRAPHICINFO.name();
-		} else if (PacketFiles.PROOFOFADDRESS.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
-			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.PROOFOFADDRESS.name();
-		} else if (PacketFiles.EXCEPTIONPHOTO.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
-			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.EXCEPTIONPHOTO.name();
-		} else if (PacketFiles.PROOFOFIDENTITY.name().equalsIgnoreCase(documentDetail.getDocumentName())) {
-			fileName = DEMOGRAPHIC_APPLICANT + PacketFiles.PROOFOFIDENTITY.name();
+		} else {
+			fileName = DEMOGRAPHIC_APPLICANT + documentDetail.getDocumentName().toUpperCase();
 		}
+
 		Optional<FieldValue> filterRegId = metaData.stream().filter(m -> "registrationId".equals(m.getLabel()))
 				.findFirst();
 
@@ -397,7 +393,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 	 */
 	private byte[] getDocumentAsByteArray(String registrationId, String documentName) {
 		try {
-			LOGGER.info(LOG_FORMATTER,"Packet-Name : "+registrationId+" FilePath "+documentName );
+			LOGGER.info(LOG_FORMATTER, "Packet-Name : " + registrationId + " FilePath " + documentName);
 			@Cleanup
 			InputStream in = filesystemCephAdapterImpl.getFile(registrationId, documentName);
 			byte[] buffer = new byte[1024];
@@ -447,11 +443,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			}
 		} catch (InstantiationException | IllegalAccessException e) {
 			LOGGER.error("Error while Creating Instance of generic type", e);
-			throw new MappingJsonException(RPR_PLATFORM_ERROR_MESSAGES.INSTANTIATION_EXCEPTION.getValue(), e);
+			throw new InstantanceCreationException(PlatformErrorMessages.RPR_SYS_INSTANTIATION_EXCEPTION.getMessage(),
+					e);
 
 		} catch (NoSuchFieldException | SecurityException e) {
 			LOGGER.error("no such field exception", e);
-			throw new MappingJsonException(RPR_PLATFORM_ERROR_MESSAGES.NO_SUCH_FIELD_EXCEPTION.getValue(), e);
+			throw new FieldNotFoundException(PlatformErrorMessages.RPR_SYS_NO_SUCH_FIELD_EXCEPTION.getMessage(), e);
 
 		}
 
@@ -482,7 +479,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			JSONObject demographicJson = (JSONObject) parser.parse(demographicJsonString);
 			demographicIdentity = (JSONObject) demographicJson.get(utility.getGetRegProcessorDemographicIdentity());
 			if (demographicIdentity == null)
-				throw new IdentityNotFoundException(RPR_PLATFORM_ERROR_MESSAGES.IDENTITY_NOT_FOUND.getValue());
+				throw new IdentityNotFoundException(PlatformErrorMessages.RPR_PIS_IDENTITY_NOT_FOUND.getMessage());
 
 			demographicData.setFirstName(getJsonValues(regProcessorIdentityJson.getIdentity().getFirstName()));
 			demographicData.setMiddleName(getJsonValues(regProcessorIdentityJson.getIdentity().getMiddleName()));
@@ -499,11 +496,12 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			demographicData.setZipcode(getJsonValues(regProcessorIdentityJson.getIdentity().getPincode()));
 		} catch (IOException e) {
 			LOGGER.error("Error while mapping Identity Json  ", e);
-			throw new MappingJsonException(RPR_PLATFORM_ERROR_MESSAGES.IDENTITY_JSON_MAPPING_EXCEPTION.getValue(), e);
+			throw new MappingJsonException(PlatformErrorMessages.RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION.getMessage(),
+					e);
 
 		} catch (ParseException e) {
 			LOGGER.error("Error while parsing Json file", e);
-			throw new ParsingException(RPR_PLATFORM_ERROR_MESSAGES.JSON_PARSING_EXCEPTION.getValue(), e);
+			throw new ParsingException(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getMessage(), e);
 		}
 		return demographicData;
 
@@ -538,7 +536,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			}
 			isTransactionSuccessful = true;
 		} catch (DataAccessLayerException e) {
-			throw new UnableToInsertData(RPR_PLATFORM_ERROR_MESSAGES.UNABLE_TO_INSERT_DATA.getValue() + regId, e);
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();
@@ -562,7 +560,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 		getRegistrationId(metaData);
 		boolean isTransactionSuccessful = false;
 		if (demographicJsonStream == null)
-			throw new FileNotFoundInPacketStore(RPR_PLATFORM_ERROR_MESSAGES.FILE_NOT_FOUND_IN_DFS.getValue());
+			throw new FileNotFoundInPacketStore(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.getMessage());
 
 		try {
 			byte[] bytes = IOUtils.toByteArray(demographicJsonStream);
@@ -579,9 +577,10 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 			isTransactionSuccessful = true;
 		} catch (IOException e) {
 			LOGGER.error("Unable to convert InputStream to bytes", e);
-			throw new ParsingException(RPR_PLATFORM_ERROR_MESSAGES.UNABLE_TO_CONVERT_STREAM_TO_BYTES.getValue(), e);
+			throw new StreamToBytesConversionException(
+					PlatformErrorMessages.RPR_SYS_UNABLE_TO_CONVERT_STREAM_TO_BYTES.getMessage(), e);
 		} catch (DataAccessLayerException e) {
-			throw new UnableToInsertData(RPR_PLATFORM_ERROR_MESSAGES.UNABLE_TO_INSERT_DATA.getValue() + regId, e);
+			throw new UnableToInsertData(PlatformErrorMessages.RPR_PIS_UNABLE_TO_INSERT_DATA.getMessage() + regId, e);
 		} finally {
 
 			eventId = isTransactionSuccessful ? EventId.RPR_407.toString() : EventId.RPR_405.toString();

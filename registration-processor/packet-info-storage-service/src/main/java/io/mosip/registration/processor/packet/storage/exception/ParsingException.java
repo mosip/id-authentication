@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.storage.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorConstants;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 public class ParsingException extends BaseUncheckedException{
 
@@ -15,11 +15,11 @@ public class ParsingException extends BaseUncheckedException{
 	}
 	
 	public ParsingException(String errorMessage) {
-		super(PlatformErrorConstants.MAPPING_JSON_EXCEPTION+ EMPTY_SPACE, errorMessage);
+		super(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getCode()+ EMPTY_SPACE, errorMessage);
 	}
 
 	public ParsingException(String message, Throwable cause) {
-		super(PlatformErrorConstants.MAPPING_JSON_EXCEPTION + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_SYS_JSON_PARSING_EXCEPTION.getCode() + EMPTY_SPACE, message, cause);
 	}
 
 }

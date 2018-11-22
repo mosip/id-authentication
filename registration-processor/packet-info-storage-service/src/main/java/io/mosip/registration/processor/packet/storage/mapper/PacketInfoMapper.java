@@ -11,6 +11,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.packet.dto.BiometricDetails;
 import io.mosip.registration.processor.core.packet.dto.BiometricException;
 import io.mosip.registration.processor.core.packet.dto.Document;
@@ -38,8 +39,7 @@ import io.mosip.registration.processor.packet.storage.entity.RegCenterMachineEnt
 import io.mosip.registration.processor.packet.storage.entity.RegCenterMachinePKEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiEntity;
 import io.mosip.registration.processor.packet.storage.entity.RegOsiPkEntity;
-import io.mosip.registration.processor.packet.storage.exception.ParsingException;
-import io.mosip.registration.processor.packet.storage.exception.RPR_PLATFORM_ERROR_MESSAGES;
+import io.mosip.registration.processor.packet.storage.exception.DateParseException;
 
 /**
  * The Class PacketInfoMapper.
@@ -409,7 +409,7 @@ public class PacketInfoMapper {
 					entity.setDob(date);
 				} catch (ParseException e) {
 					LOGGER.error("ErrorWhile Parsing Date");
-					throw new ParsingException(RPR_PLATFORM_ERROR_MESSAGES.PARSING_DATE_EXCEPTION.getValue(), e);
+					throw new DateParseException(PlatformErrorMessages.RPR_SYS_PARSING_DATE_EXCEPTION.getMessage(), e);
 				}
 			}
 			entity.setGenderCode(getJsonValues(demoDto.getGender(), languageArray[i]));

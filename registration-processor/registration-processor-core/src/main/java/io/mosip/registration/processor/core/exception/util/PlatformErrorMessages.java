@@ -32,6 +32,9 @@ public enum PlatformErrorMessages {
 
 	//Packet Info Storage Exception error code and message
 	RPR_PIS_REGISTRATION_TABLE_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "001","The Registration Table is not accessible"),
+	RPR_PIS_IDENTITY_NOT_FOUND(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "002","Identity field not found in DemographicInfo Json"),
+	RPR_PIS_UNABLE_TO_INSERT_DATA(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "003","Unable to insert data in db for registration Id :"),
+	RPR_PIS_FILE_NOT_FOUND_IN_DFS(PlatformErrorConstants.RPR_PACKET_INFO_STORAGE_MODULE + "004","File not found in DFS"),
 	
 	//File adaptor ceph Exception error code and message
 	RPR_FAC_CONNECTION_NOT_AVAILABLE(PlatformErrorConstants.RPR_FILESYSTEM_ADAPTOR_CEPH_MODULE + "001" ,"The connection Parameters to create a Packet Store connection are not Found"),
@@ -104,8 +107,18 @@ public enum PlatformErrorMessages {
 	
 	RPR_PDJ_FILE_PATH_NOT_ACCESSIBLE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "002", "The File path set by the System is not accessible"),
 	
-	RPR_PDJ_PACKET_DECRYPTION_FAILURE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "003","The Decryption for the Packet has failed");
+	RPR_PDJ_PACKET_DECRYPTION_FAILURE(PlatformErrorConstants.RPR_PACKET_DECRYPTION_JOB_MODULE + "003","The Decryption for the Packet has failed"),
 	
+	RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION(PlatformErrorConstants.RPR_REST_CLIENT_MODULE + "001","Unknown resource provided"),
+	
+	
+	/*****System Exception*****/
+	RPR_SYS_IDENTITY_JSON_MAPPING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "001","Error while mapping Identity Json"),
+	RPR_SYS_INSTANTIATION_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "002","Error while creating object of JsonValue class"),
+	RPR_SYS_NO_SUCH_FIELD_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "003","Could not find the field"),
+	RPR_SYS_JSON_PARSING_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "004","Error while parsing Json"),
+	RPR_SYS_UNABLE_TO_CONVERT_STREAM_TO_BYTES(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "005","Error while converting inputstream to bytes"),
+	RPR_SYS_PARSING_DATE_EXCEPTION(PlatformErrorConstants.RPR_SYSTEM_EXCEPTION + "007","Error while parsing date ");
 	
 	/** The error message. */
 	private final String errorMessage;

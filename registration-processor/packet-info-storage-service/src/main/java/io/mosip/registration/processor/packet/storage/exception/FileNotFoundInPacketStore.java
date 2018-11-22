@@ -1,7 +1,7 @@
 package io.mosip.registration.processor.packet.storage.exception;
 
 import io.mosip.kernel.core.exception.BaseUncheckedException;
-import io.mosip.registration.processor.core.exception.util.PlatformErrorConstants;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 
 public class FileNotFoundInPacketStore extends BaseUncheckedException {
 
@@ -14,11 +14,11 @@ public class FileNotFoundInPacketStore extends BaseUncheckedException {
 	}
 	
 	public FileNotFoundInPacketStore(String errorMessage) {
-		super(PlatformErrorConstants.FILE_NOT_FOUND+ EMPTY_SPACE, errorMessage);
+		super(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.getCode()+ EMPTY_SPACE, errorMessage);
 	}
 
 	public FileNotFoundInPacketStore(String message, Throwable cause) {
-		super(PlatformErrorConstants.FILE_NOT_FOUND + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_PIS_FILE_NOT_FOUND_IN_DFS.getCode() + EMPTY_SPACE, message, cause);
 	}
 	
 

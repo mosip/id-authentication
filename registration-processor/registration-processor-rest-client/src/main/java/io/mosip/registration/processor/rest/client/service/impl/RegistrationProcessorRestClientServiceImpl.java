@@ -9,6 +9,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.exception.util.PlatformErrorMessages;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.rest.client.utils.RestApiClient;
 
@@ -61,7 +62,7 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 
 		}catch(ResourceAccessException e) {
 
-			throw new ApisResourceAccessException(e.getMessage());
+			throw new ApisResourceAccessException(PlatformErrorMessages.RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION.getCode());
 
 		}
 
@@ -100,7 +101,8 @@ public class RegistrationProcessorRestClientServiceImpl implements RegistrationP
 
 		}catch(ResourceAccessException e) {
 
-			throw new ApisResourceAccessException(e.getMessage());
+			throw new ApisResourceAccessException(PlatformErrorMessages.RPR_RCT_UNKNOWN_RESOURCE_EXCEPTION.getMessage(),
+					e);
 
 		}
 
