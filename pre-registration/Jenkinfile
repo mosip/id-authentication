@@ -56,12 +56,10 @@ stage ('---------- build ---------------') {
 			echo parentDirectoryPath
 			sh "rm -f parentDirectoryPath"
 			// installing node modules and building the angular project
-			sh '''
-			pushd $parentDirectoryPath
-			npm install
-			npm run-script build
-			popd
-			'''
+			sh "pushd $parentDirectoryPath"
+			sh "npm install"
+			sh "npm run-script build"
+			sh "popd"
 		}
 	}
 }
