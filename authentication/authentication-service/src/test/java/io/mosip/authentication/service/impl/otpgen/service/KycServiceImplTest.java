@@ -105,7 +105,7 @@ public class KycServiceImplTest {
 		}
 	}
 	
-	@Ignore
+	
 	@Test
 	public void validUIN2() {
 		try {			
