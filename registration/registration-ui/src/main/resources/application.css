@@ -75,8 +75,6 @@
 
 #anchor-pane-registration{
 	-fx-background-color: white;
-	-fx-border-color: red;
-	
 }
 
 #anchor-pane-registration .text-field:focused{

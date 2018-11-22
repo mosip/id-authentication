@@ -383,7 +383,7 @@ public class RegistrationConstants {
 	public static final String EMAIL_ID_EMPTY = "Please Provide Email Id";
 	public static final String EMAIL_ID_EXAMPLE = "Example : xyz@xyz.com";
 	public static final String PARENT_NAME_EMPTY = "Please Provide Parent Name";
-	public static final String UIN_ID_EMPTY = "Please Provide Uin Id Of The Parent";
+	public static final String UIN_ID_EMPTY = "Please provide Uin/Rid  of the parent, the detail should be numbers only from 6 to 28 letters";
 	public static final String ADDRESS_LINE_WARNING = "Address should be between 6 and 50 characters";
 	public static final String LOCAL_ADMIN_AUTHORITY_EMPTY = "Please Provide Local Admin Authority";
 	public static final String CNIE_OR_PIN_NUMBER_EMPTY = "Please Provide CNIE OR PIN NUMBER";

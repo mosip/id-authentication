@@ -1111,12 +1111,12 @@ public class RegistrationController extends BaseController {
 		if (isChild) {
 			if (validateRegex(parentName, "[[A-z]+\\s?\\.?]+")) {
 				generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-						"Please provide parent name");
+						RegistrationConstants.PARENT_NAME_EMPTY, RegistrationConstants.ONLY_ALPHABETS);
 				parentName.requestFocus();
 			} else {
 				if (validateRegex(uinId, "\\d{6,28}")) {
 					generateAlert("Error", AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-							"Please provide parent UIN Id");
+							RegistrationConstants.UIN_ID_EMPTY);
 					uinId.requestFocus();
 				} else {
 					gotoNext = true;
