@@ -1,7 +1,7 @@
 package io.mosip.kernel.core.exception;
 
 /**
- * Class for any exception occurred while parsing.
+ * Signals that an error has been reached unexpectedly while parsing.
  * 
  * @author Bal Vikash Sharma
  * @since 1.0.0
