@@ -81,41 +81,32 @@ public abstract class BaseJob extends QuartzJobBean {
 		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "job execution started");
 
-		if (jobMap.get(currentJobID) != null) {
+		try {
 
-			// Get Current SyncJob
-			SyncJobDef syncJob = jobMap.get(currentJobID);
+			// Check for current job's child
+			jobMap.forEach((jobId, childJob) -> {
+				if (childJob.getParentSyncJobId() != null && childJob.getParentSyncJobId().equals(currentJobID)) {
 
-			try {
-				// Parent SyncJob
-				BaseJob parentBaseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
+					// Parent SyncJob
+					BaseJob parentBaseJob = (BaseJob) applicationContext.getBean(childJob.getApiName());
 
-				// Response of parentBaseJob
-				ResponseDTO responseDTO = parentBaseJob.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
-						syncJob.getId());
+					// Response of parentBaseJob
+					ResponseDTO responseDTO = parentBaseJob.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_SYSTEM,
+							childJob.getId());
 
-				// if parent job successfully executed, execute its next child job
-				if (responseDTO.getErrorResponseDTOs() == null && responseDTO.getSuccessResponseDTO() != null) {
-
-					// Check for current job's child
-					jobMap.forEach((jobId, childJob) -> {
-						if (childJob.getParentSyncJobId() != null
-								&& childJob.getParentSyncJobId().equals(syncJob.getId())) {
-
-							// Execute its next child Job
-							executeChildJob(childJob.getId(), jobMap);
-						}
-					});
+					if (responseDTO.getSuccessResponseDTO() != null) {
+						// Execute its next child Job
+						executeChildJob(childJob.getId(), jobMap);
+					}
 				}
+			});
 
-			} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
-				throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
-						noSuchBeanDefinitionException.getMessage());
-			}
-
+		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
+			throw new RegBaseUncheckedException(RegistrationConstants.BASE_JOB_NO_SUCH_BEAN_DEFINITION_EXCEPTION,
+					noSuchBeanDefinitionException.getMessage());
 		}
-		LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE, RegistrationConstants.APPLICATION_NAME,
-				RegistrationConstants.APPLICATION_ID, "job execution Ended");
+
+	LOGGER.debug(RegistrationConstants.BASE_JOB_TITLE,RegistrationConstants.APPLICATION_NAME,RegistrationConstants.APPLICATION_ID,"job execution Ended");
 
 	}
 

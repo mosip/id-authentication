@@ -74,8 +74,10 @@ public class RegPacketStatusController extends BaseController implements Initial
 	 */
 	@SuppressWarnings("unchecked")
 	private void packetSyncStatus() {
+		
 		ResponseDTO response = jobConfigurationService.executeJob(RegistrationAppInitialization.getApplicationContext(),
 				"packetSyncStatusJob");
+		
 		if (response.getSuccessResponseDTO() != null) {
 			List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) response
 					.getSuccessResponseDTO().getOtherAttributes()

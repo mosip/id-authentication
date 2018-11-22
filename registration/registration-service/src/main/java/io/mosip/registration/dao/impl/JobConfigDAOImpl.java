@@ -36,6 +36,9 @@ public class JobConfigDAOImpl implements SyncJobConfigDAO {
 		return jobConfigRepository.findAll();
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.SyncJobConfigDAO#getActiveJobs()
+	 */
 	@Override
 	public List<SyncJobDef> getActiveJobs() {
 		return jobConfigRepository.findByIsActiveTrue();

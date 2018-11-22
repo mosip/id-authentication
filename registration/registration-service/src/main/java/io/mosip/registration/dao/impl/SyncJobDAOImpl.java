@@ -82,6 +82,9 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.SyncJobDAO#update(io.mosip.registration.entity.SyncControl)
+	 */
 	@Override
 	public SyncControl update(SyncControl syncControl) {
 		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
@@ -89,6 +92,9 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 		return syncStatusRepository.update(syncControl);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.SyncJobDAO#save(io.mosip.registration.entity.SyncControl)
+	 */
 	@Override
 	public SyncControl save(SyncControl syncControl) {
 		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
@@ -96,6 +102,9 @@ public class SyncJobDAOImpl implements SyncJobDAO {
 		return syncStatusRepository.save(syncControl);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.dao.SyncJobDAO#findBySyncJobId(java.lang.String)
+	 */
 	@Override
 	public SyncControl findBySyncJobId(String syncJobId) {	
 		LOGGER.debug("REGISTRATION - SYNC - VALIDATION", APPLICATION_NAME, APPLICATION_ID,
