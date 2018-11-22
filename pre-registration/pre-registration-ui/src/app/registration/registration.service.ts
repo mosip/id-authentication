@@ -9,6 +9,14 @@ export class RegistrationService {
   private users: UserModel[] = [];
   usersChanged = new Subject<UserModel[]>();
 
+  getUsers() {
+    return this.users.slice();
+  }
+
+  getUsersByIndex(index: number) {
+    return this.users[index];
+  }
+
   addUser(user: UserModel) {
     this.users.push(user);
     this.usersChanged.next(this.users.slice());
@@ -27,13 +35,5 @@ export class RegistrationService {
   deleteUser(index: number) {
     this.users.splice(index, 1);
     this.usersChanged.next(this.users.slice());
-  }
-
-  getUsers() {
-    return this.users.slice();
-  }
-
-  getUsersByIndex(index: number) {
-    return this.users[index];
   }
 }

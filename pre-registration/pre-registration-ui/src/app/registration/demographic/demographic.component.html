@@ -14,8 +14,8 @@
               <img
                 *ngIf="applicant === 0"
                 src="../../../assets/primary.png"
-                alt="Smiley face"
-                style="margin: 2px 0 0 10px ;"
+                alt="primary"
+                class="img"
                 height="20"
                 width="60"
               />
@@ -31,7 +31,7 @@
                 </mat-form-field>
 
                 <span>
-                  <mat-form-field style="width:150px;">
+                  <mat-form-field class="ageOrDobPref">
                     <mat-select
                       [ngClass]="{ highlight: !checked }"
                       [(value)]="ageOrDobPref"
@@ -68,6 +68,7 @@
                         [matDatepicker]="picker"
                         placeholder="{{demo.dateOfBirth}}"
                         [max]="maxDate"
+                        [min]="minDate"
                       />
                       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                       <mat-datepicker #picker></mat-datepicker>
@@ -77,18 +78,20 @@
 
                 <ng-template #age>
                   <span *ngIf="ageOrDobPref !== ''">
-                    <mat-form-field style="width:3em; margin-left: 15%;">
-                      <input matInput type="number" placeholder="{{demo.age}}" formControlName="age" />
+                    <mat-form-field class="age">
+                      <input matInput type="text" placeholder="{{demo.age}}" formControlName="age" />
                     </mat-form-field>
                   </span>
                 </ng-template>
 
-                <ng-template #hidden>
-                  <div style="width : 100px">{{ demo.dateOfBirth }}</div>
-                </ng-template>
-                <ng-template #show> {{ dateSelected | date: 'dd/MM/yyyy' }} </ng-template>
+                <!--
+                  <ng-template #hidden>
+                    <div style="width : 100px">{{ demo.dateOfBirth }}</div>
+                  </ng-template>
+                  <ng-template #show> {{ dateSelected | date: 'dd/MM/yyyy' }} </ng-template>
+                -->
 
-                <div style="text-align: left; width:100%">
+                <div class="gender">
                   <mat-button-toggle-group
                     formControlName="gender"
                     (change)="onGenderChange($event)"
@@ -162,7 +165,7 @@
                 <mat-form-field>
                   <input
                     matInput
-                    type="number"
+                    type="text"
                     #postalCode
                     maxlength="5"
                     placeholder="{{demo.postalCode}}"
@@ -175,7 +178,7 @@
                   <input
                     matInput
                     #mobilePhone
-                    type="number"
+                    type="text"
                     maxlength="9"
                     placeholder="{{demo.mobileNumber}}"
                     formControlName="mobilePhone"
@@ -189,7 +192,15 @@
                 </mat-form-field>
 
                 <mat-form-field>
-                  <input matInput type="number" placeholder="{{demo.CNEOrPINNumber}}" formControlName="pin" />
+                  <input
+                    #pin
+                    maxlength="30"
+                    matInput
+                    type="text"
+                    placeholder="{{demo.CNEOrPINNumber}}"
+                    formControlName="pin"
+                  />
+                  <mat-hint align="end">{{ pin.value.length }} / 30</mat-hint>
                 </mat-form-field>
               </div>
             </div>
@@ -197,7 +208,9 @@
 
           <mat-action-row>
             <button *ngIf="step !== 0" mat-button color="warn" (click)="prevStep()">Previous</button>
-            <button type="button" mat-button color="primary" (click)="nextStep()">Next</button>
+            <button type="button" mat-button color="primary" [disabled]="!userForm.valid" (click)="nextStep()">
+              Next
+            </button>
           </mat-action-row>
         </mat-expansion-panel>
       </div>

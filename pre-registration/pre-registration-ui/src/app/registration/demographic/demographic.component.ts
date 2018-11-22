@@ -2,15 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  FormBuilder,
-  AbstractControl,
-  ValidatorFn,
-  ValidationErrors
-} from '@angular/forms';
+import { FormGroup, FormControl, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { MatButtonToggleChange, MatDatepickerInputEvent } from '@angular/material';
 
 import { RegistrationService } from '../registration.service';
@@ -53,20 +45,22 @@ export class DemographicComponent implements OnInit {
     'CNE/PIN Number',
     'Age'
   );
-  formBuilder: FormBuilder;
+  numberPattern = '^[1-9]+[0-9]*$';
+  textPattern = '^[a-zA-Z ]*$';
   ageOrDobPref = '';
   showCalender: boolean;
   dateSelected: Date;
-  showDate = false;
+  // showDate = false;
   numberOfApplicants: number;
   userForm: FormGroup;
   numbers: number[];
   isDisabled = [];
   checked = true;
   maxDate = new Date(Date.now());
+  minDate = new Date(Date.now());
   editMode = false;
 
-  isPrimary = 'false';
+  isPrimary = false;
   fullName = '';
   gender = '';
   addressLine1 = '';
@@ -77,23 +71,21 @@ export class DemographicComponent implements OnInit {
   city = '';
   localAdministrativeAuthority = '';
   email = '';
-  dob: ' ';
-  age: ' ';
-  postalCode: '';
-  mobilePhone: '';
-  pin: ' ';
+  dob = '';
+  age = '';
+  postalCode = '';
+  mobilePhone = '';
+  pin = '';
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private regService: RegistrationService,
-    private dataStorageService: DataStorageService,
-    private adapter: DateAdapter<any>
+    private dataStorageService: DataStorageService
   ) {}
 
   ngOnInit() {
-    console.log(this.maxDate);
-
+    this.minDate.setFullYear(this.maxDate.getFullYear() - 150);
     this.route.params.subscribe((params: Params) => {
       this.numberOfApplicants = +params['id'];
       this.numbers = Array(this.numberOfApplicants)
@@ -106,13 +98,13 @@ export class DemographicComponent implements OnInit {
 
   initForm() {
     if (this.step === 0) {
-      this.isPrimary = 'true';
+      this.isPrimary = true;
     } else {
-      this.isPrimary = 'false';
+      this.isPrimary = false;
     }
     this.userForm = new FormGroup({
       isPrimary: new FormControl(this.isPrimary),
-      fullName: new FormControl(this.fullName, Validators.required),
+      fullName: new FormControl(this.fullName, [Validators.required, Validators.pattern(this.textPattern)]),
       gender: new FormControl(this.gender, Validators.required),
       addressLine1: new FormControl(this.addressLine1, Validators.required),
       addressLine2: new FormControl(this.addressLine2),
@@ -122,11 +114,20 @@ export class DemographicComponent implements OnInit {
       city: new FormControl(this.city, Validators.required),
       localAdministrativeAuthority: new FormControl(this.localAdministrativeAuthority, Validators.required),
       email: new FormControl(this.email, Validators.email),
-      age: new FormControl(''),
-      dob: new FormControl(''),
-      postalCode: new FormControl(this.postalCode, Validators.required),
-      mobilePhone: new FormControl(''),
-      pin: new FormControl('')
+      age: new FormControl(this.age, [Validators.max(150), Validators.min(1), Validators.pattern(this.numberPattern)]),
+      dob: new FormControl(this.dob),
+      postalCode: new FormControl(this.postalCode, [
+        Validators.required,
+        Validators.maxLength(5),
+        Validators.minLength(5),
+        Validators.pattern(this.numberPattern)
+      ]),
+      mobilePhone: new FormControl(this.mobilePhone, [
+        Validators.maxLength(9),
+        Validators.minLength(9),
+        Validators.pattern(this.numberPattern)
+      ]),
+      pin: new FormControl(this.pin, [Validators.maxLength(30), Validators.pattern(this.numberPattern)])
     });
     this.userForm.setValidators([this.oneOfControlRequired(this.userForm.get('dob'), this.userForm.get('age'))]);
   }
@@ -137,6 +138,7 @@ export class DemographicComponent implements OnInit {
 
   nextStep() {
     this.onSubmit();
+    this.initForm();
   }
 
   prevStep() {
@@ -206,6 +208,7 @@ export class DemographicComponent implements OnInit {
         console.log('JSON ', json.request);
         console.log('value ' + json.request.demographicDetails.identity.FullName[0].value);
         this.regService.addUser(new UserModel(response['response'][0].prId, json.request));
+        console.log(this.regService.getUsers());
       },
       error => console.log(error),
       () => {
@@ -213,7 +216,7 @@ export class DemographicComponent implements OnInit {
         this.step++;
         this.checked = true;
         if (this.step === this.numberOfApplicants) {
-          // this.router.navigate(['../../file-upload'], { relativeTo: this.route });
+          this.router.navigate(['../../file-upload'], { relativeTo: this.route });
         }
       }
     );
@@ -229,7 +232,7 @@ export class DemographicComponent implements OnInit {
     const myFormattedDate = pipe.transform(this.dateSelected, 'dd/MM/yyyy');
 
     this.userForm.controls.dob.patchValue(myFormattedDate);
-    this.showDate = true;
+    // this.showDate = true;
   }
 
   onDOBChange(value) {
@@ -252,12 +255,5 @@ export class DemographicComponent implements OnInit {
       }
       return { oneOfRequired: true };
     };
-  }
-
-  test(selected) {
-    if (selected === undefined) {
-      this.checked = false;
-    }
-    console.log('inside test', selected);
   }
 }
