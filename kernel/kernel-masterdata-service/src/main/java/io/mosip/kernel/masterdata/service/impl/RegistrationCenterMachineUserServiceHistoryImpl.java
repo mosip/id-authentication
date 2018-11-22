@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +16,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistoryService;
+import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 
 /**
  * Implementation class for user machine mapping service
@@ -33,7 +32,8 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 	 * ModelMapper instance
 	 */
 	@Autowired
-	ModelMapper modelMapper;
+	private ObjectMapperUtil objectMapperUtil;
+
 	/**
 	 * {@link RegistrationCenterUserMachineHistoryRepository} instance
 	 */
@@ -73,9 +73,8 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 		}
 
 		List<RegistrationCenterUserMachineMappingHistoryDto> registrationCenters = null;
-		registrationCenters = modelMapper.map(registrationCenterUserMachines,
-				new TypeToken<List<RegistrationCenterUserMachineMappingHistoryDto>>() {
-				}.getType());
+		registrationCenters = objectMapperUtil.mapAll(registrationCenterUserMachines,
+				RegistrationCenterUserMachineMappingHistoryDto.class);
 		RegistrationCenterUserMachineMappingHistoryResponseDto centerUserMachineMappingResponseDto = new RegistrationCenterUserMachineMappingHistoryResponseDto();
 		centerUserMachineMappingResponseDto.setRegistrationCenters(registrationCenters);
 		return centerUserMachineMappingResponseDto;

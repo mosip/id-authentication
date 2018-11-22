@@ -8,7 +8,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -43,8 +42,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	/**
 	 * Field to hold ModelMapper object
 	 */
-	@Autowired
-	ModelMapper modelMapper;
+	
 
 	/**
 	 * Field to hold ObjectMapperUtil object
