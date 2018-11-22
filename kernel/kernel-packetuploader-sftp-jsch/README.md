@@ -1,7 +1,7 @@
 ## kernel-packetuploader-sftp-jsch
 This folder has kernel-packetuploader-sftp-jsch module which can be used to upload a packet using SFTP protocol.
 
-####[Background & Design](../../design/kernel/kernel-packetuploader.md)
+[Background & Design](../../design/kernel/kernel-packetuploader.md)
 
 ### Api Documentation
 [API Documentation <TBA>](TBA)

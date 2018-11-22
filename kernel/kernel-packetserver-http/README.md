@@ -2,7 +2,7 @@
 This folder has kernel-packetserver-http module which can be used to upload packet.
 
  
-### [Background & Design](../../design/kernel/kernel-packetserver-http.md)
+[Background & Design](../../design/kernel/kernel-packetserver-http.md)
  
 
 ### Api Documentation

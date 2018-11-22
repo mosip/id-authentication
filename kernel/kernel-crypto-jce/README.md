@@ -1,7 +1,7 @@
 ## kernel-crypto-jce
 This folder has kernel-crypto-jce module which can be used to encrypt and decrypt data.
 
-####[Background & Design](../../design/kernel/kernel-crypto.md)
+[Background & Design](../../design/kernel/kernel-crypto.md)
 
 ### Api Documentation
 [API Documentation <TBA>](TBA)

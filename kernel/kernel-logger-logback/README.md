@@ -1,7 +1,7 @@
 ## kernel-logger-logback
 This folder has kernel-logger-logback module which can be used for logging functionalities.
 
-####[Background & Design](../../design/kernel/kernel-logger.md)
+[Background & Design](../../design/kernel/kernel-logger.md)
 
 ### Api Documentation
 [API Documentation <TBA>](TBA)
