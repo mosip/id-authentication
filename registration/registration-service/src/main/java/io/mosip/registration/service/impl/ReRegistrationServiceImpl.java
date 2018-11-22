@@ -62,7 +62,7 @@ public class ReRegistrationServiceImpl implements ReRegistrationService {
 		for (Map.Entry<String, String> reRegistration : reRegistrationStatus.entrySet()) {
 			Registration registration = new Registration();
 			registration.setId(reRegistration.getKey());
-			registration.setClientStatusCode(RegistrationClientStatusCode.APPROVED.getCode());
+			registration.setClientStatusCode(RegistrationClientStatusCode.RE_REGISTER.getCode());
 			registration.setClientStatusComments("Re-Register-" + reRegistration.getValue());
 			registrationDAO.updateRegStatus(registration);
 		}

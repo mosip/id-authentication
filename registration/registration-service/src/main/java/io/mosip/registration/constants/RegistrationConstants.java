@@ -500,6 +500,10 @@ public class RegistrationConstants {
 	public static final String NOTIFICATION_SERVICE="REGISTRATION - NOTIFICATION SERVICE ";
 	public static final List<String> MODE_OF_COMMUNICATION=Arrays.asList("MODE_OF_COMMUNICATION");
 	public static final String NOTIFICATION_CODE = "NOTIFICATION ALERT";
+	
+	// Packet Reregister
+		public static final String FINGER_TYPE_MINUTIA = "minutia";
+
 
 	// Global configuration parameters
 	public static final List<String> INVALID_LOGIN_PARAMS = Arrays.asList("INVALID_LOGIN_COUNT", "INVALID_LOGIN_TIME");

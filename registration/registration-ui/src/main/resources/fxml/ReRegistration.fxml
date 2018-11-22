@@ -23,7 +23,7 @@
                   <TableColumn fx:id="acknowledgementFormPath" prefWidth="199.0" text="Registrtion ID" visible="false" />
                </columns>
             </TableView>
-            <Button fx:id="submitBtn" layoutX="806.0" layoutY="263.0" mnemonicParsing="false" onAction="#submitReRegistration" prefHeight="10.0" prefWidth="80.0" text="Submit">
+            <Button fx:id="submitBtn" layoutX="806.0" layoutY="263.0" mnemonicParsing="false" onAction="#authenticateReregister" prefHeight="10.0" prefWidth="80.0" text="Submit">
                <font>
                   <Font size="10.0" />
                </font>

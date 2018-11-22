@@ -3,29 +3,21 @@ package io.mosip.registration.controller;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 
-import com.machinezoo.sourceafis.FingerprintTemplate;
-
-import MFS100.FingerData;
-import MFS100.MFS100;
-import MFS100.MFS100Event;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
+import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.service.LoginService;
-import io.mosip.registration.util.biometric.FingerprintProvider;
+import io.mosip.registration.util.biometric.FingerprintFacade;
+import io.mosip.registration.util.biometric.FingerprintProviderNew;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,13 +28,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 @Controller
-public class FingerPrintAuthenticationController extends BaseController implements MFS100Event, Initializable {
+public class FingerPrintAuthenticationController extends BaseController implements Initializable {
 
 	@FXML
 	private AnchorPane authenticateRootPane;
@@ -72,8 +62,6 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	@Value("${FINGER_PRINT_SCORE}")
 	private long fingerPrintScore;
 
-	private FingerprintProvider fingerprintProvider = new FingerprintProvider();
-
 	/**
 	 * Instance of {@link MosipLogger}
 	 */
@@ -82,7 +70,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	/**
 	 * Stage
 	 */
-	private Stage primarystage;
+	private Stage primaryStage;
 
 	@Value("${QUALITY_SCORE}")
 	private int qualityScore;
@@ -90,130 +78,72 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	@Value("${CAPTURE_TIME_OUT}")
 	private int captureTimeOut;
 
-	private MFS100 fpDevice = new MFS100(this, "");
-
-	private String minutia = "";
+	@Value("${DEVICE_NAME}")
+	private String deviceName;
 
 	@Autowired
-	BaseController baseController;
+	private BaseController baseController;
 
-	public void init(BaseController parentControllerObj) throws IOException {
+	private FingerprintFacade fingerprintFactory = new FingerprintFacade();
+
+	public void init(BaseController parentControllerObj) {
 		baseController = parentControllerObj;
 	}
 
-	private FingerData fingerDataContent;
-	private String errorMessage;
-
+	/**
+	 * Scan the finger and validate with the database
+	 * 
+	 * @param event
+	 */
 	public void scanFinger(ActionEvent event) {
-		primarystage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
-		if (fpDevice.Init() != 0) {
-			generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
-					RegistrationConstants.DEVICE_INFO_MESSAGE, RegistrationConstants.DEVICE_FP_NOT_FOUND);
-		} else {
-			fingerDataContent = null;
-			errorMessage = "";
-			int scanoutput = fpDevice.StartCapture(qualityScore, captureTimeOut, false);
-			int count = 0;
-
-			if (scanoutput != 0) {
-				generateAlert(RegistrationConstants.LOGIN_ALERT_TITLE,
-						AlertType.valueOf(RegistrationConstants.ALERT_ERROR), RegistrationConstants.DEVICE_INFO_MESSAGE,
-						fpDevice.GetLastError());
-			}
-
-			while (count < 10) {
-				if (fingerDataContent != null || errorMessage != "") {
-					break;
-				} else {
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						LOGGER.error("FINGERPRINT_AUTHENTICATION_CONTROLLER - ERROR_SCANNING_FINGER", APPLICATION_NAME,
-								APPLICATION_ID, e.getMessage());
-					}
-				}
-				count++;
-			}
-			fingerPrintCheck(fingerDataContent, errorMessage);
-
-		}
-	}
-
-	@Override
-	public void OnCaptureCompleted(boolean status, int errorCode, String errorMsg, FingerData fingerData) {
-		fingerDataContent = fingerData;
-		errorMessage = errorMsg;
-		if (fingerData != null) {
-			FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().convert(fingerData.ISOTemplate());
-			minutia = fingerprintTemplate.serialize();
-
-		}
-	}
-
-	private void fingerPrintCheck(FingerData fingerDataContent, String errorMessage) {
-		if (fingerDataContent != null) {
-			OnPreview(fingerDataContent);
-			FingerprintTemplate fingerprintTemplate = new FingerprintTemplate()
-					.convert(fingerDataContent.ISOTemplate());
-			minutia = fingerprintTemplate.serialize();
-			validateFingerPrint(minutia);
-			primarystage.close();
-		}
-	}
-
-	/**
-	 * Validate the Scanned Finger print
-	 * 
-	 * @param minutia
-	 * @param detail
-	 */
-	public void validateFingerPrint(String minutia) {// String minutia, RegistrationUserDetail detail) {
-		RegistrationUserDetail detail = loginService.getUserDetail("mosip");
-
-		if (validateBiometric(minutia, detail)) {
-			generateAlert("Info", AlertType.INFORMATION, "Records approved Successfully.");
-			baseController.getFingerPrintStatus();
-		} else {
-			generateAlert("Info", AlertType.INFORMATION, "Records approved Successfully.");
-			baseController.getFingerPrintStatus();
-		}
-	}
-
-	/**
-	 * Compare the scanned finger print with the database
-	 * 
-	 * @param minutia
-	 * @param registrationUserDetail
-	 * @return
-	 */
-	private boolean validateBiometric(String minutia, RegistrationUserDetail registrationUserDetail) {
-
-		return registrationUserDetail.getUserBiometric().stream()
-				.anyMatch(bio -> fingerprintProvider.scoreCalculator(minutia, bio.getBioMinutia()) > fingerPrintScore);
-	}
-
-	@Override
-	public void OnPreview(FingerData fingerData) {
-		if (null != fingerData.FingerImage()) {
-			BufferedImage l_objBufferImg = null;
-			try {
-				l_objBufferImg = ImageIO.read(new ByteArrayInputStream(fingerData.FingerImage()));
-			} catch (IOException ex) {
-				System.out.println("Image failed to load.");
-			}
-
-			WritableImage l_objWritableImg = null;
-			if (l_objBufferImg != null) {
-				l_objWritableImg = new WritableImage(l_objBufferImg.getWidth(), l_objBufferImg.getHeight());
-				PixelWriter pw = l_objWritableImg.getPixelWriter();
-				for (int x = 0; x < l_objBufferImg.getWidth(); x++) {
-					for (int y = 0; y < l_objBufferImg.getHeight(); y++) {
-						pw.setArgb(x, y, l_objBufferImg.getRGB(x, y));
-					}
+		LOGGER.debug("REGISTRATION - SCAN_FINGER - USER_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
+				"Start the device to scan the finger");
+		primaryStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
+		FingerprintProviderNew fingerprintProviderNew = fingerprintFactory.getFingerprintProviderFactory(deviceName);
+		fingerprintProviderNew.captureFingerprint(qualityScore, captureTimeOut,
+				RegistrationConstants.FINGER_TYPE_MINUTIA);
+		int count = 0;
+		while (count < 5) {
+			if (!RegistrationConstants.EMPTY.equals(fingerprintFactory.getMinutia())
+					|| !RegistrationConstants.EMPTY.equals(fingerprintFactory.getErrorMessage())) {
+				break;
+			} else {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					LOGGER.error("FINGERPRINT_AUTHENTICATION_CONTROLLER - ERROR_SCANNING_FINGER", APPLICATION_NAME,
+							APPLICATION_ID, e.getMessage());
 				}
 			}
-			this.fingerScannedImage.setImage(l_objWritableImg);
+			count++;
 		}
+		LOGGER.debug("REGISTRATION - SCAN_FINGER - SCAN_FINGER_COMPLETED", APPLICATION_NAME, APPLICATION_ID,
+				"Fingerprint scan done");
+		fingerScannedImage.setImage(fingerprintFactory.getFingerPrintImage());
+		RegistrationUserDetail registrationUserDetail = loginService
+				.getUserDetail(SessionContext.getInstance().getUserContext().getUserId());
+		if (!RegistrationConstants.EMPTY.equals(fingerprintFactory.getMinutia())) {
+			boolean isValidFingerPrint = registrationUserDetail.getUserBiometric().stream()
+					.anyMatch(bio -> fingerprintProviderNew.scoreCalculator(fingerprintFactory.getMinutia(),
+							bio.getBioMinutia()) > fingerPrintScore);
+			if (isValidFingerPrint) {
+				generateAlert("Info", AlertType.INFORMATION, "Records approved Successfully.");
+				primaryStage.close();
+				baseController.getFingerPrintStatus();
+			} else {
+				generateAlert("Info", AlertType.INFORMATION, "Fingerprint Mismatch");
+				primaryStage.close();
+			}
+		} else if (!RegistrationConstants.EMPTY.equals(fingerprintFactory.getErrorMessage())) {
+			if (fingerprintFactory.getErrorMessage().equals("Timeout")) {
+				generateAlert("Info", AlertType.INFORMATION, "Fingerprint got timedout. Please try again.");
+			} else {
+				generateAlert("Info", AlertType.INFORMATION, "Error in fingerprint scan");
+			}
+		}
+		LOGGER.debug("REGISTRATION - SCAN_FINGER - FINGER_VALIDATION", APPLICATION_NAME, APPLICATION_ID,
+				"Fingerprint validation done");
+
 	}
 
 	@Override
@@ -229,8 +159,8 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 	 * @param event
 	 */
 	public void exitWindow(ActionEvent event) {
-		primarystage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
-		primarystage.close();
+		primaryStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
+		primaryStage.close();
 
 	}
 

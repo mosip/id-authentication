@@ -20,8 +20,6 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.dto.PacketStatusDTO;
-import io.mosip.registration.service.LoginService;
-import io.mosip.registration.service.impl.LoginServiceImpl;
 import io.mosip.registration.service.impl.ReRegistrationService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,7 +32,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -58,9 +55,6 @@ public class ReRegistrationController extends BaseController implements Initiali
 	@Autowired
 	private ReRegistrationService reRegistrationServiceImpl;
 
-	@Autowired
-	LoginService loginService;
-
 	/**
 	 * Table to display the created packets
 	 */
@@ -82,8 +76,6 @@ public class ReRegistrationController extends BaseController implements Initiali
 
 	@FXML
 	private ToggleButton notInformedBtn;
-	@FXML
-	private ToggleGroup informedStatus;
 
 	@FXML
 	private Button submitBtn;
@@ -96,12 +88,9 @@ public class ReRegistrationController extends BaseController implements Initiali
 	private AnchorPane imageAnchorPane;
 
 	@FXML
-	private LoginServiceImpl loginServiceImpl;
-
-	@FXML
 	private AnchorPane reRegistrationRootPane;
 
-	private Map<String, String> contactStatusMap = new HashMap<>();
+	private Map<String, String> reRegisterStatusMap = new HashMap<>();
 
 	/*
 	 * (non-Javadoc)
@@ -120,14 +109,14 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * This method is used to load the ui table
 	 * 
 	 */
-	public void reloadTableView() {
+	private void reloadTableView() {
 		LOGGER.debug("REGISTRATION - LOADING_TABLE - RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Loading the table in the ui");
-		contactStatusMap.clear();
+		reRegisterStatusMap.clear();
 		setInvisible();
 		id.setCellValueFactory(new PropertyValueFactory<PacketStatusDTO, String>("fileName"));
 		acknowledgementFormPath.setCellValueFactory(new PropertyValueFactory<PacketStatusDTO, String>("sourcePath"));
-		tablePagination();
+		showReregisterdPackets();
 		table.setOnMouseClicked((MouseEvent event) -> {
 			if (event.getClickCount() == 1) {
 				viewAck();
@@ -138,7 +127,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	/**
 	 * Viewing RegistrationAcknowledgement on selecting the ReRegistration record
 	 */
-	public void viewAck() {
+	private void viewAck() {
 		LOGGER.debug("RE_REGISTRATION_CONTROLLER", APPLICATION_NAME, APPLICATION_ID,
 				"Displaying the Acknowledgement form image beside the Table");
 		if (table.getSelectionModel().getSelectedItem() != null) {
@@ -147,7 +136,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 			imageAnchorPane.setVisible(true);
 			informedBtn.setSelected(false);
 			notInformedBtn.setSelected(false);
-			for (Map.Entry<String, String> statusMap : contactStatusMap.entrySet()) {
+			for (Map.Entry<String, String> statusMap : reRegisterStatusMap.entrySet()) {
 				if (statusMap.getKey().equals(table.getSelectionModel().getSelectedItem().getFileName())) {
 					if (statusMap.getValue().equals("informed")) {
 						informedBtn.setSelected(true);
@@ -173,7 +162,7 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 */
 	public void informedToUser() {
 		submitBtn.setVisible(true);
-		contactStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "informed");
+		reRegisterStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "informed");
 		informedBtn.setSelected(true);
 		notInformedBtn.setSelected(false);
 	}
@@ -183,27 +172,15 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 */
 	public void notInformedToUser() {
 		submitBtn.setVisible(true);
-		contactStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "notinformed");
+		reRegisterStatusMap.put(table.getSelectionModel().getSelectedItem().getFileName(), "notinformed");
 		informedBtn.setSelected(false);
 		notInformedBtn.setSelected(true);
 	}
 
 	/**
-	 * On click on Authenticate button this method will call which in turn call the
-	 * Authentication UI page
-	 */
-	public void submitReRegistration() {
-		LOGGER.debug("RE_REGISTRATION_CONTROLLER - SUBMIT_RE_REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
-				"Updating the table after the authentication finished successfully");
-		authenticateUser();
-		System.out.println("Map values are********** mosip" + contactStatusMap);
-		// reRegistrationServiceImpl.updateReRegistrationStatus(contactStatusMap);
-	}
-
-	/**
 	 * To display the Authentication UI page
 	 */
-	private void authenticateUser() {
+	public void authenticateReregister() {
 		LOGGER.debug("RE_REGISTRATION_CONTROLLER - AUTHENTICATE_USER", APPLICATION_NAME, APPLICATION_ID,
 				"Updating the table after the authentication finished successfully");
 
@@ -236,17 +213,12 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * 
 	 * @throws IOException
 	 */
-	/*
-	 * public void scanFinger() throws IOException {
-	 * LOGGER.debug("RE_REGISTRATION_CONTROLLER - SCAN_FINGER", APPLICATION_NAME,
-	 * APPLICATION_ID, "Scanning the finger for biometric authentication");
-	 * authenticationController.init(new ReRegistrationController()); }
-	 */
 
 	@Override
 	public void getFingerPrintStatus() {
-
-		reRegistrationServiceImpl.updateReRegistrationStatus(contactStatusMap);
+		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
+				"Pagination has been started");
+		reRegistrationServiceImpl.updateReRegistrationStatus(reRegisterStatusMap);
 		reloadTableView();
 	}
 
@@ -254,15 +226,14 @@ public class ReRegistrationController extends BaseController implements Initiali
 	 * {@code Pagination} method is used for paginating packet data
 	 * 
 	 */
-	private void tablePagination() {
+	private void showReregisterdPackets() {
 		LOGGER.debug("REGISTRATION - PAGINATION - REGISTRATION", APPLICATION_NAME, APPLICATION_ID,
 				"Pagination has been started");
-		List<PacketStatusDTO> listData = null;
-		listData = reRegistrationServiceImpl.getAllReRegistrationPackets();
+		List<PacketStatusDTO> reRegistrationPacketsList = reRegistrationServiceImpl.getAllReRegistrationPackets();
 		setInvisible();
-		if (!listData.isEmpty()) {
-			ObservableList<PacketStatusDTO> oListStavaka = FXCollections.observableArrayList(listData);
-			table.setItems(oListStavaka);
+		if (!reRegistrationPacketsList.isEmpty()) {
+			ObservableList<PacketStatusDTO> observableList = FXCollections.observableArrayList(reRegistrationPacketsList);
+			table.setItems(observableList);
 		} else {
 			reRegistrationRootPane.disableProperty().set(true);
 			table.getItems().clear();
