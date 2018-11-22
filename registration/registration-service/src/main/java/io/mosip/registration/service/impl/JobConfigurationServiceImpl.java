@@ -93,19 +93,19 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 				RegistrationConstants.APPLICATION_ID, "start jobs invocation started");
 
 		ResponseDTO responseDTO = new ResponseDTO();
-
 		Map<String, Object> jobDataAsMap = new HashMap<>();
 		jobDataAsMap.put("applicationContext", applicationContext);
 		jobDataAsMap.putAll(SYNC_JOB_MAP);
 		
-		JobDataMap jobDataMap =new JobDataMap(jobDataAsMap);
+		JobDataMap jobDataMap =new JobDataMap(jobDataAsMap);		
 
 		SYNC_JOB_MAP.forEach((jobId, syncJob) -> {
+			String currentJob = null;
 			try {
-
 				if (syncJob.getParentSyncJobId() == null) {
 
 					BaseJob baseJob = null;
+					currentJob = syncJob.getName();
 
 					// Get Job instance through application context
 					baseJob = (BaseJob) applicationContext.getBean(syncJob.getApiName());
@@ -122,10 +122,11 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 
 				}
 			} catch (SchedulerException | NoSuchBeanDefinitionException exception) {
-				setErrorResponseDTO(responseDTO, exception);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+				LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+						RegistrationConstants.APPLICATION_ID, exception.getMessage());
+				
+				setErrorResponseDTO(responseDTO, currentJob + RegistrationConstants.START_SCHEDULER_EXCEPTION);
+			} 
 		});
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "start jobs invocation ended");
@@ -144,7 +145,10 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 			setSuccessResponseDTO(responseDTO, RegistrationConstants.BATCH_JOB_STOP_SUCCESS_MESSAGE);
 
 		} catch (SchedulerException schedulerException) {
-			setErrorResponseDTO(responseDTO, schedulerException);
+			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
+			
+			setErrorResponseDTO(responseDTO, RegistrationConstants.STOP_SCHEDULER_EXCEPTION);
 		}
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "stop jobs invocation ended");
@@ -179,7 +183,10 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 			responseDTO.setSuccessResponseDTO(successResponseDTO);
 
 		} catch (SchedulerException schedulerException) {
-			setErrorResponseDTO(responseDTO, schedulerException);
+			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, schedulerException.getMessage());
+			
+			setErrorResponseDTO(responseDTO, RegistrationConstants.CURRENT_JOB_DETAILS_EXCEPTION);
 
 		}
 
@@ -209,21 +216,24 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 			// Job Invocation
 			responseDTO = job.executeJob(RegistrationConstants.JOB_TRIGGER_POINT_USER);
 		} catch (NoSuchBeanDefinitionException noSuchBeanDefinitionException) {
+			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
+					RegistrationConstants.APPLICATION_ID, noSuchBeanDefinitionException.getMessage());
+			
 			responseDTO = new ResponseDTO();
-			setErrorResponseDTO(responseDTO, noSuchBeanDefinitionException);
+			setErrorResponseDTO(responseDTO, RegistrationConstants.EXECUTE_JOB_EXCEPTION);
 		}
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job ended");
 		return responseDTO;
 	}
 
-	private ResponseDTO setErrorResponseDTO(ResponseDTO responseDTO, Exception exception) {
+	private ResponseDTO setErrorResponseDTO(ResponseDTO responseDTO, String message) {
 		LinkedList<ErrorResponseDTO> errorResponseDTOs = new LinkedList<>();
 
 		ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
 		errorResponseDTO.setCode(RegistrationConstants.ALERT_ERROR);
 		errorResponseDTO.setInfoType(RegistrationConstants.BATCH_JOB_CODE);
-		errorResponseDTO.setMessage(exception.getMessage());
+		errorResponseDTO.setMessage(message);
 		errorResponseDTOs.add(errorResponseDTO);
 		responseDTO.setErrorResponseDTOs(errorResponseDTOs);
 
