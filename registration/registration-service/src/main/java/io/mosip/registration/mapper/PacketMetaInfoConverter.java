@@ -312,6 +312,9 @@ public class PacketMetaInfoConverter extends CustomConverter<RegistrationDTO, Pa
 		// Add Supervisor Biometrics
 		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getOperatorBiometricDTO(), "supervisor",
 				RegistrationConstants.BIOMETRIC_TYPE));
+		// Add Introducer Biometrics
+		metaData.addAll(getOfficerBiometric(registrationDTO.getBiometricDTO().getIntroducerBiometricDTO(), "introducer",
+				RegistrationConstants.BIOMETRIC_TYPE));
 
 		return metaData;
 	}

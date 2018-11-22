@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
-import io.mosip.kernel.masterdata.exception.LocationDatabaseException;
-import io.mosip.kernel.masterdata.exception.LocationRecordsNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.service.LocationService;
 
 @SpringBootTest
@@ -27,8 +27,8 @@ import io.mosip.kernel.masterdata.service.LocationService;
 @AutoConfigureMockMvc
 public class LocationControllerTest {
 
-	private final String EXPECTED = "{\"locations\":[{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"active\":true},{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"active\":true}]}";
-	
+	private final String EXPECTED = "{\"locations\":[{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
+
 	@Autowired
 	MockMvc mockMvc;
 
@@ -52,7 +52,7 @@ public class LocationControllerTest {
 		locationHierarchyDto.setLanguageCode("HIN");
 		locationHierarchyDto.setCreatedBy("dfs");
 		locationHierarchyDto.setUpdatedBy("sdfsd");
-		locationHierarchyDto.setActive(true);
+		locationHierarchyDto.setIsActive(true);
 		locationHierarchies.add(locationHierarchyDto);
 		locationHierarchyDto.setLocationCode("KAR");
 		locationHierarchyDto.setLocationName("KARNATAKA");
@@ -62,7 +62,7 @@ public class LocationControllerTest {
 		locationHierarchyDto.setLanguageCode("KAN");
 		locationHierarchyDto.setCreatedBy("dfs");
 		locationHierarchyDto.setUpdatedBy("sdfsd");
-		locationHierarchyDto.setActive(true);
+		locationHierarchyDto.setIsActive(true);
 		locationHierarchies.add(locationHierarchyDto);
 		locationHierarchyResponseDto.setLocations(locationHierarchies);
 
@@ -80,8 +80,8 @@ public class LocationControllerTest {
 
 	@Test
 	public void testGetLocatonHierarchyByLocCodeAndLangCode() throws Exception {
-		Mockito.doReturn(locationHierarchyResponseDto).when(service)
-				.getLocationHierarchyByLangCode(Mockito.anyString(), Mockito.anyString());
+		Mockito.doReturn(locationHierarchyResponseDto).when(service).getLocationHierarchyByLangCode(Mockito.anyString(),
+				Mockito.anyString());
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/KAR/KAN"))
 				.andExpect(MockMvcResultMatchers.content().json(EXPECTED))
@@ -92,34 +92,33 @@ public class LocationControllerTest {
 	@Test
 	public void testGetAllLocationsNoRecordsFoundException() throws Exception {
 		Mockito.when(service.getLocationDetails())
-				.thenThrow(new LocationDatabaseException("1111111", "Error from database"));
+				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void testGetAllLocationsDataBaseException() throws Exception {
 		Mockito.when(service.getLocationDetails())
-				.thenThrow(new LocationRecordsNotFoundException("3333333", "Location Hierarchy does not exist"));
+				.thenThrow(new DataNotFoundException("3333333", "Location Hierarchy does not exist"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 
 	@Test
 	public void testGetLocationsByLangCodeAndLocCodeDataBaseException() throws Exception {
 		Mockito.when(service.getLocationHierarchyByLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new LocationDatabaseException("1111111", "Error from database"));
+				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/KAR/KAN"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 
 	@Test
 	public void testGetLocationsByLangCodeAndLocCodeNoRecordsFoundException() throws Exception {
 		Mockito.when(service.getLocationHierarchyByLangCode(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new LocationRecordsNotFoundException("3333333", "Location Hierarchy does not exist"));
+				.thenThrow(new DataNotFoundException("3333333", "Location Hierarchy does not exist"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/KAR/KAN"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
-
 
 }

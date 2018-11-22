@@ -278,14 +278,14 @@ public class MapMachineServiceImpl implements MapMachineService {
 	}
 
 	/**
-	 * get all active device names
+	 * Get all active device names
 	 * 
 	 * @return list of device names
 	 */
 	@Override
 	public List<String> getAllDeviceTypes() {
 		LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"getAllDeviceTypes() method is strarted");
+				"getAllDeviceTypes() method is started");
 
 		List<String> list = new ArrayList<>();
 
@@ -300,7 +300,9 @@ public class MapMachineServiceImpl implements MapMachineService {
 	}
 
 	/**
-	 * it feteches the mappeddevices
+	 * it fetches the list of devices mapped to the Machine and the list of devices
+	 * available to the Registration Center (already mapped devices to the requested
+	 * machine will be excluded)
 	 * 
 	 * @param centerID
 	 *            primary key of Regcenter table
@@ -340,29 +342,30 @@ public class MapMachineServiceImpl implements MapMachineService {
 				mappedDeviceDtoList.add(mappedDeviceDto);
 			}
 
-		availableDevicesList = machineMappingDAO.getAllDeviceBasedOnCenterId(centerId);
-		for (RegCenterDevice regCenterDevice : availableDevicesList) {
-			DeviceDTO availableDeviceDto = new DeviceDTO();
-			availableDeviceDto.setSerialNo(regCenterDevice.getRegDeviceMaster().getSerialNumber());
-			availableDeviceDto.setManufacturerName(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getBrand());
-			availableDeviceDto.setModelName(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getModel());
-			availableDeviceDto.setDeviceType(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getRegDeviceType()
-					.getRegDeviceTypeId().getCode());
-			availableDeviceDto.setRegCenterId(regCenterDevice.getRegCenterDeviceId().getRegCenterId());
-			availableDeviceDto.setDeviceId(regCenterDevice.getRegCenterDeviceId().getDeviceId());
+			availableDevicesList = machineMappingDAO.getAllDeviceBasedOnCenterId(centerId);
+			for (RegCenterDevice regCenterDevice : availableDevicesList) {
+				DeviceDTO availableDeviceDto = new DeviceDTO();
+				availableDeviceDto.setSerialNo(regCenterDevice.getRegDeviceMaster().getSerialNumber());
+				availableDeviceDto
+						.setManufacturerName(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getBrand());
+				availableDeviceDto.setModelName(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec().getModel());
+				availableDeviceDto.setDeviceType(regCenterDevice.getRegDeviceMaster().getRegDeviceSpec()
+						.getRegDeviceType().getRegDeviceTypeId().getCode());
+				availableDeviceDto.setRegCenterId(regCenterDevice.getRegCenterDeviceId().getRegCenterId());
+				availableDeviceDto.setDeviceId(regCenterDevice.getRegCenterDeviceId().getDeviceId());
 
-			availableDeviceDtoList.add(availableDeviceDto);
-		}
-		if (!mappedDeviceDtoList.isEmpty()) {
-			availableDeviceDtoList.removeAll(mappedDeviceDtoList);
-		}
+				availableDeviceDtoList.add(availableDeviceDto);
+			}
+			if (!mappedDeviceDtoList.isEmpty()) {
+				availableDeviceDtoList.removeAll(mappedDeviceDtoList);
+			}
 
-		map.put(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES, availableDeviceDtoList);
-		map.put(RegistrationConstants.ONBOARD_MAPPED_DEVICES, mappedDeviceDtoList);
+			map.put(RegistrationConstants.ONBOARD_AVAILABLE_DEVICES, availableDeviceDtoList);
+			map.put(RegistrationConstants.ONBOARD_MAPPED_DEVICES, mappedDeviceDtoList);
 
-		LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
-				"getDeviceMappingList(String,String) method is ended");
-		
+			LOGGER.debug(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
+					"getDeviceMappingList(String,String) method is ended");
+
 		} catch (RegBaseUncheckedException regBaseUncheckedException) {
 			LOGGER.error(DEVICE_MAPPING_LOGGER_TITLE, APPLICATION_NAME, APPLICATION_ID,
 					regBaseUncheckedException.getMessage());
@@ -373,7 +376,7 @@ public class MapMachineServiceImpl implements MapMachineService {
 	}
 
 	/**
-	 * it delets the un-mapped devices and saves the newly mapped devices
+	 * it deletes the un-mapped devices and saves the newly mapped devices
 	 * 
 	 * 
 	 * @param deletedList

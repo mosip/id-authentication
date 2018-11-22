@@ -1,7 +1,7 @@
 package io.mosip.preregistration.application.code;
 
 public enum StateManagment {
-	Pending_Appointmemt,
+	Pending_Appointment,
 	Booked,
 	Expired,
 	Consumed,

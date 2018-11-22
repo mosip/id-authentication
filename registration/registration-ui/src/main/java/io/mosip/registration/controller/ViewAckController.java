@@ -93,8 +93,8 @@ public class ViewAckController extends BaseController {
 			primaryStage.resizableProperty().set(false);
 			primaryStage.show();
 		} catch (IOException ioException) {
-			LOGGER.error("REGISTRATION_APPROVAL_CONTROLLER - REGSITRATION_ACKNOWLEDGEMNT_PAGE_LOADING_FAILED",
-					APPLICATION_NAME, APPLICATION_ID, ioException.getMessage());
+			LOGGER.error("REGISTRATION - REGISTRATION_APPROVAL - VIEW_ACKNOWLEDGEMNT_CONTROLLER", APPLICATION_NAME,
+					APPLICATION_ID, ioException.getMessage());
 		}
 	}
 }

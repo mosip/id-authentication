@@ -44,7 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
 	/**
 	 * Instance of LOGGER
 	 */
-	private static final Logger LOGGER = AppConfig.getLogger(LoginServiceImpl.class);
+	private static final Logger LOGGER = AppConfig.getLogger(NotificationServiceImpl.class);
 
 	/**
 	 * Instance of {@code AuditFactory}

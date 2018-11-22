@@ -254,11 +254,13 @@ public class RegistrationController extends BaseController {
 	protected BufferedImage applicantBufferedImage;
 	protected BufferedImage exceptionBufferedImage;
 	private boolean applicantImageCaptured = false;
+	private Image defaultImage;
 
 	@FXML
 	private void initialize() {
 
 		if (capturePhotoUsingDevice.equals("Y")) {
+			defaultImage = applicantImage.getImage();
 			biometrics.setVisible(false);
 			biometricsNext.setVisible(false);
 			biometricsPane.setVisible(true);
@@ -587,11 +589,11 @@ public class RegistrationController extends BaseController {
 				RegistrationConstants.APPLICATION_ID, "clearing the image that is captured");
 
 		if (photoType.equals(RegistrationConstants.APPLICANT_IMAGE) && applicantBufferedImage != null) {
-			applicantImage.setImage(null);
+			applicantImage.setImage(defaultImage);
 			applicantBufferedImage = null;
 			applicantImageCaptured = false;
 		} else if (photoType.equals(RegistrationConstants.EXCEPTION_IMAGE) && exceptionBufferedImage != null) {
-			exceptionImage.setImage(null);
+			exceptionImage.setImage(defaultImage);
 			exceptionBufferedImage = null;
 		}
 	}
@@ -1247,7 +1249,7 @@ public class RegistrationController extends BaseController {
 		region.setText("Taramani");
 		city.setText("Chennai");
 		province.setText("Tamilnadu");
-		postalCode.setText("600111");
+		postalCode.setText("600112");
 		localAdminAuthority.setText("MindTree");
 		mobileNo.setText("866769383");
 		emailId.setText("taleev.aalam@mindtree.com");

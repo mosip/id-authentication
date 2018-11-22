@@ -16,6 +16,6 @@ import lombok.ToString;
 public class ExceptionInfoDto {
 	private Boolean status;
 	private List<ExceptionJSONInfo> err= new ArrayList<>();
-	private List<ViewRegistrationResponseDto> response=new ArrayList<>();
+	private List<ViewDto> response=new ArrayList<>();
 
 }

@@ -37,12 +37,10 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.WritableImage;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 
 /**
  * Class for showing the Acknowledgement Receipt
@@ -56,9 +54,9 @@ public class AckReceiptController extends BaseController implements Initializabl
 	private static final Logger LOGGER = AppConfig.getLogger(RegistrationOfficerPacketController.class);
 
 	@Autowired
-	private PacketHandlerService packetHandlerService;
+	private RegistrationOfficerPacketController packetController;
 	@Autowired
-	private RegistrationController registrationController;
+	private PacketHandlerService packetHandlerService;
 	@Autowired
 	private TemplateService templateService;
 	@Autowired
@@ -114,7 +112,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 					// get the data for notification template
 					String notificationTemplate = templateService
 							.getHtmlTemplate(RegistrationConstants.NOTIFICATION_TEMPLATE);
-					String alert = null;
+					String alert = "";
 					if (!notificationTemplate.isEmpty()) {
 						// generate the notification template
 						Writer writeNotificationTemplate = velocityGenerator
@@ -145,7 +143,7 @@ public class AckReceiptController extends BaseController implements Initializabl
 							}
 						}
 						// generate alert
-						if (alert != null) {
+						if (alert != "") {
 							String data = "Unable to send notification";
 							if (alert.equals("SMS")) {
 								data = "Unable to send SMS notification";
@@ -199,16 +197,18 @@ public class AckReceiptController extends BaseController implements Initializabl
 			SessionContext.getInstance().setMapObject(addr);
 		}
 
-		Stage stage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
-		stage.close();
-
-		registrationController.goToHomePage();
+		goToHomePage();
 	}
 
 	private void generateAlert(String alertMessage) {
 		/* Generate Alert */
-		generateAlert(RegistrationConstants.MACHINE_MAPPING_CODE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
+		generateAlert(RegistrationConstants.NOTIFICATION_CODE, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 				alertMessage);
+	}
+	
+	@FXML
+	public void goToNewRegistrationPage() {
+		packetController.createPacket();
 	}
 
 }

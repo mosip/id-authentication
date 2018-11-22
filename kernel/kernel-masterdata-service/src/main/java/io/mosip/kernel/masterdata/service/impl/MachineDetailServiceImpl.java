@@ -2,18 +2,17 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import io.mosip.kernel.masterdata.constant.MachineDetailErrorCode;
 import io.mosip.kernel.masterdata.dto.MachineDetailDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseDto;
+import io.mosip.kernel.masterdata.dto.MachineDetailResponseIdDto;
 import io.mosip.kernel.masterdata.entity.MachineDetail;
-import io.mosip.kernel.masterdata.exception.MachineDetailFetchException;
-import io.mosip.kernel.masterdata.exception.MachineDetailMappingException;
-import io.mosip.kernel.masterdata.exception.MachineDetailNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.MachineDetailRepository;
 import io.mosip.kernel.masterdata.service.MachineDetailService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -65,28 +64,25 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 	 * 
 	 */
 	@Override
-	public MachineDetailDto getMachineDetailIdLang(String id, String langCode) {
+	public MachineDetailResponseIdDto getMachineDetailIdLang(String id, String langCode) {
 		MachineDetail machineDetail = null;
 		MachineDetailDto machineDetailDto = null;
+		MachineDetailResponseIdDto machineDetailResponseIdDto = new MachineDetailResponseIdDto();
 		try {
-			machineDetail = machineDetailRepository.findAllByIdAndLangCode(id, langCode);
+			machineDetail = machineDetailRepository.findAllByIdAndLangCodeAndIsActiveTrueAndIsDeletedFalse(id,
+					langCode);
 		} catch (DataAccessException dataAccessLayerException) {
-			throw new MachineDetailFetchException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
 		if (machineDetail != null) {
-			try {
 			machineDetailDto = objectMapperUtil.map(machineDetail, MachineDetailDto.class);
-			} catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new MachineDetailMappingException(
-						MachineDetailErrorCode.MACHINE_DETAIL_MAPPING_EXCEPTION.getErrorCode(),
-						MachineDetailErrorCode.MACHINE_DETAIL_MAPPING_EXCEPTION.getErrorMessage());
-			}
 		} else {
-			throw new MachineDetailNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return machineDetailDto;
+		machineDetailResponseIdDto.setMachineDetail(machineDetailDto);
+		return machineDetailResponseIdDto;
 
 	}
 
@@ -108,29 +104,25 @@ public class MachineDetailServiceImpl implements MachineDetailService {
 	 */
 
 	@Override
-	public List<MachineDetailDto> getMachineDetailAll() {
+	public MachineDetailResponseDto getMachineDetailAll() {
 		List<MachineDetail> machineDetailList = null;
 		List<MachineDetailDto> machineDetailDtoList = null;
+		MachineDetailResponseDto machineDetailResponseDto = new MachineDetailResponseDto();
 		try {
-			machineDetailList = machineDetailRepository.findAll();
+			machineDetailList = machineDetailRepository.findAllByIsActiveTrueAndIsDeletedFalse();
 
 		} catch (DataAccessException dataAccessLayerException) {
-			throw new MachineDetailFetchException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_FETCH_EXCEPTION.getErrorMessage());
 		}
-		if (machineDetailList != null) {
-			try {
+		if (machineDetailList != null && !machineDetailList.isEmpty()) {
 			machineDetailDtoList = objectMapperUtil.mapAll(machineDetailList, MachineDetailDto.class);
-			}catch (IllegalArgumentException | ConfigurationException | MappingException exception) {
-				throw new MachineDetailMappingException(
-						MachineDetailErrorCode.MACHINE_DETAIL_MAPPING_EXCEPTION.getErrorCode(),
-						MachineDetailErrorCode.MACHINE_DETAIL_MAPPING_EXCEPTION.getErrorMessage());
-			}
 		} else {
-			throw new MachineDetailNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorCode(),
 					MachineDetailErrorCode.MACHINE_DETAIL_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		return machineDetailDtoList;
+		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
+		return machineDetailResponseDto;
 	}
 
 }

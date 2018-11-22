@@ -15,7 +15,27 @@ import io.mosip.kernel.masterdata.entity.DeviceSpecification;
  */
 @Repository
 public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpecification, String> {
-	List<DeviceSpecification> findByLangCode(String languageCode);
-
-	List<DeviceSpecification> findByLangCodeAndDeviceTypeCode(String languageCode, String deviceTypeCode);
+	/**
+	 * This method trigger query to fetch the Device specific detail for the given language
+	 * code.
+	 *
+	 * @param langCode
+	 *            languageCode provided by user
+	 *            
+	 * @return Device specific Details fetched from database
+	 */
+	List<DeviceSpecification> findByLangCodeAndIsActiveTrueAndIsDeletedFalse(String languageCode);
+	
+	/**
+	 * This method trigger query to fetch the Device specific detail for the given language
+	 * code and device Type Code.
+	 *
+	 * @param langCode
+	 *            LanguageCode provided by user
+	 * @param deviceTypeCode
+	 *            Device Type Code provided by user
+	 *            
+	 * @return Device specific Details fetched from database
+	 */
+	List<DeviceSpecification> findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(String languageCode, String deviceTypeCode);
 }

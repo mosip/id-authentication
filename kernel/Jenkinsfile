@@ -3,7 +3,7 @@ node {
  def rtMaven = Artifactory.newMavenBuild()
  def buildInfo
  def branch = 'DEV'
- def projectToBuild = 'kernel'
+ projectToBuild = 'kernel'
  def registryUrl = 'http://mosip-dev-admin.southindia.cloudapp.azure.com:5000'
  def registryName = 'mosip-dev-admin.southindia.cloudapp.azure.com:5000'
 
@@ -19,7 +19,7 @@ node {
     ],
     extensions: [
 
-     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild +'/.*'],
+     [$class: 'PathRestriction', excludedRegions: '', includedRegions: projectToBuild + '/.*'],
      [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
       [$class: 'SparseCheckoutPath', path: projectToBuild + '/']
      ]]
@@ -36,55 +36,88 @@ node {
   buildInfo = Artifactory.newBuildInfo()
   buildInfo.env.capture = true
  }
- 
-stage ('---------- mvn-clean-install ---------------') {
-        rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
-}
 
-stage('---------- SonarQube Analysis --------------') {
+ stage('---------- mvn-clean-install ---------------') {
+  rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
+ }
+
+ stage('---------- SonarQube Analysis --------------') {
   def mvnHome = tool name: 'M2_HOME', type: 'maven'
   withSonarQubeEnv('sonar') {
    sh "${mvnHome}/bin/mvn -f '$branch/$projectToBuild/' sonar:sonar"
   }
  }
 
-stage('----------- Publish build info -------------') {
+ stage('----------- Publish build info -------------') {
   server.publishBuildInfo buildInfo
  }
- 
-stage('-----------Docker image push and cleanup-----------') {
-	dir(branch) {
-			sh "find . -name 'Dockerfile'> directoryDockerFiles"
-			locationOfDockerFiles = readFile( "directoryDockerFiles" ).split( "\\r?\\n" );
-			sh "rm -f directoryDockerFiles"
-			for (int i=0; i < locationOfDockerFiles.size(); i++) {
-			echo locationOfDockerFiles[i]
-			def currentModule = locationOfDockerFiles[i]
-			sh "basename `dirname $currentModule` > parentDirectoryName"
-			parentDirectoryName = readFile('parentDirectoryName').trim()
-			sh "rm -f parentDirectoryName"
-			sh "dirname $currentModule > parentDirectoryPath"
-			parentDirectoryPath = readFile('parentDirectoryPath').trim()
-			sh "rm -f parentDirectoryPath"
-			docker.withRegistry(registryUrl) {
-			echo "$currentModule"
-			echo "$parentDirectoryName"
-			echo "$parentDirectoryPath"
-			def buildName = "$parentDirectoryName:$BUILD_NUMBER"
-			newApp = docker.build(buildName, '-f '+locationOfDockerFiles[i]+' '+parentDirectoryPath)
-			    newApp.push()
-			    newApp.push 'latest'
-			 }
-			sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
-			sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
-			sh "docker rmi $registryName/$parentDirectoryName"
 
-			}
+ stage('-----------Docker image push and cleanup-----------') {
+  dir(branch) {
+   sh "find . -name 'Dockerfile'> directoryDockerFiles"
+   locationOfDockerFiles = readFile("directoryDockerFiles").split("\\r?\\n");
+   sh "rm -f directoryDockerFiles"
+   showChangeLogs();
+   for (int j = 0; j < changedModules.size(); j++) {
+    for (int i = 0; i < locationOfDockerFiles.size(); i++) {
+     if(locationOfDockerFiles[i].equals("")){
+     break;
+     }
+     echo locationOfDockerFiles[i]
+     def currentModule = locationOfDockerFiles[i]
+     sh "basename `dirname $currentModule` > parentDirectoryName"
+     parentDirectoryName = readFile('parentDirectoryName').trim()
+     sh "rm -f parentDirectoryName"
+     sh "dirname $currentModule > parentDirectoryPath"
+     parentDirectoryPath = readFile('parentDirectoryPath').trim()
+     sh "rm -f parentDirectoryPath"
 
-	}
+     parentDirectoryPathForamtted = parentDirectoryPath.substring(2);
+
+     echo "------------------------" + changedModules[j]
+     echo ">>>>>>>>>>>>>>>>>>>>>>>>" + parentDirectoryPathForamtted
+
+     if (changedModules[j].contains(parentDirectoryPathForamtted)) {
+      echo parentDirectoryPathForamtted + " will be built"
+      docker.withRegistry(registryUrl) {
+      def buildName = "$parentDirectoryName:$BUILD_NUMBER"
+      newApp = docker.build(buildName, '-f ' + locationOfDockerFiles[i] + ' ' + parentDirectoryPath)
+      newApp.push()
+      newApp.push 'latest'
+      }
+      sh "docker rmi $parentDirectoryName:$BUILD_NUMBER"
+      sh "docker rmi $registryName/$parentDirectoryName:$BUILD_NUMBER"
+      sh "docker rmi $registryName/$parentDirectoryName"
+
+     }
+    }
+
+
+   }
+
+  }
+ }
 
 
 }
- 
 
+@NonCPS
+def showChangeLogs() {
+ def changeLogSets = currentBuild.changeSets
+ changedModules = []
+ for (int i = 0; i < changeLogSets.size(); i++) {
+  def entries = changeLogSets[i].items
+  for (int j = 0; j < entries.length; j++) {
+   def entry = entries[j]
+   echo "${entry.commitId} by ${entry.author} on ${new Date(entry.timestamp)}: ${entry.msg}"
+   def paths = new ArrayList(entry.affectedPaths)
+   for (int k = 0; k < paths.size(); k++) {
+    def path = paths[k]
+    if (path.startsWith(projectToBuild)) {
+     changedModules.add(path);
+    }
+
+   }
+  }
+ }
 }

@@ -23,7 +23,7 @@ public interface IGPSConnector {
 	 * @return
 	 * @throws RegBaseCheckedException
 	 */
-	String getComportGPSData(String comPortNo, int portReadWaitTime) throws RegBaseCheckedException;
+	String getComPortGPSData(String comPortNo, int portReadWaitTime) throws RegBaseCheckedException;
 
 	/**
 	 * This method parse GPS data and get latitude and logitude from gps information

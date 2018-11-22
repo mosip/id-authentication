@@ -8,7 +8,7 @@ import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MA
 import static io.mosip.registration.constants.RegistrationExceptions.REG_USER_MACHINE_MAP_MACHINE_MASTER_CODE;
 
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -244,6 +244,7 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 
 		return machineMapping;
 	}
+
 	/**
 	 * (non-javadoc) get all active devices
 	 * 
@@ -271,26 +272,25 @@ public class MachineMappingDAOImpl implements MachineMappingDAO {
 
 		return registrationCenterDeviceRepository
 				.findByRegCenterDeviceIdRegCenterIdAndIsActiveTrueAndRegDeviceMasterValidityEndDtimesGreaterThan(
-						centerId, new Timestamp(new Date().getTime()));
+						centerId, Timestamp.valueOf(LocalDate.now().minusDays(1).atStartOfDay()));
 
 	}
 
 	@Override
 	public List<RegCentreMachineDevice> getAllMappedDevices(String centerId, String machineId) {
-		return registrationCenterMachineDeviceRepository.findByRegCentreMachineDeviceIdRegCentreIdAndRegCentreMachineDeviceIdMachineId(centerId, machineId);
+		return registrationCenterMachineDeviceRepository
+				.findByRegCentreMachineDeviceIdRegCentreIdAndRegCentreMachineDeviceIdMachineId(centerId, machineId);
 	}
 
 	@Override
 	public void deleteUnMappedDevice(RegCentreMachineDeviceId regCentreMachineDeviceId) {
 		registrationCenterMachineDeviceRepository.deleteById(regCentreMachineDeviceId);
-		
+
 	}
 
 	@Override
 	public void addedMappedDevice(RegCentreMachineDevice regCentreMachineDevice) {
-		 registrationCenterMachineDeviceRepository.save(regCentreMachineDevice);
+		registrationCenterMachineDeviceRepository.save(regCentreMachineDevice);
 	}
-
-
 
 }

@@ -1,6 +1,7 @@
 package io.mosip.registration.test.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,15 @@ public class GlobalContextParamServiceTest {
 		Mockito.when(globalContextParamDAOImpl.findInvalidLoginCount(params)).thenReturn(paramList);
 		assertEquals(paramList, gloablContextParamServiceImpl.findInvalidLoginCount(params));
 	}
-
+	
+	@Test
+	public void findRejectionOnholdCommentsTest() {
+		GlobalContextParam globalContextParam1 = new GlobalContextParam();
+		globalContextParam1.setName("ONHOLD_COMMENTS");
+		globalContextParam1.setVal("Gender-photo mismatch,Age-photo mismatch,Name correction required");
+		Mockito.when(globalContextParamDAOImpl.findRejectionOnholdComments("ONHOLD_COMMENTS")).thenReturn(globalContextParam1);
+		GlobalContextParam globalContextParam = gloablContextParamServiceImpl.findRejectionOnholdComments("ONHOLD_COMMENTS");
+		assertEquals(globalContextParam1,globalContextParam);
+	}
 
 }

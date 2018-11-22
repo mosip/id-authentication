@@ -54,18 +54,18 @@ public class BlacklistedWordsTest {
 	@Test
 	public void testGetAllWordsBylangCodeNullResponse() throws Exception {
 		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(null);
-		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotAcceptable());
+		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void testGetAllWordsBylangCodeEmptyArrayResponse() throws Exception {
 		when(wordsRepository.findAllByLangCode(anyString())).thenReturn(new ArrayList<>());
-		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotAcceptable());
+		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void testGetAllWordsBylangCodeFetchException() throws Exception {
 		when(wordsRepository.findAllByLangCode(anyString())).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isNotAcceptable());
+		mockMvc.perform(get("/blacklistedwords/{langcode}", "ENG")).andExpect(status().isInternalServerError());
 	}
 }

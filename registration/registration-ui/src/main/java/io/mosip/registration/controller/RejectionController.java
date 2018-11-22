@@ -2,7 +2,7 @@ package io.mosip.registration.controller;
 
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_ID;
 import static io.mosip.registration.constants.RegistrationConstants.APPLICATION_NAME;
-
+import static io.mosip.registration.constants.LoggerConstants.LOG_REG_REJECT_CONTROLLER;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -22,7 +22,6 @@ import io.mosip.registration.service.GlobalContextParamService;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
@@ -46,7 +45,7 @@ public class RejectionController extends BaseController implements Initializable
 	 */
 	private static final Logger LOGGER = AppConfig.getLogger(RejectionController.class);
 
-
+	/** The global context param service. */
 	@Autowired
 	private GlobalContextParamService globalContextParamService;
 
@@ -67,6 +66,7 @@ public class RejectionController extends BaseController implements Initializable
 	@FXML
 	private Hyperlink rejectionExit;
 
+	/** The rejectionmap list. */
 	private List<Map<String, String>> rejectionmapList;
 
 	/** The rej reg data. */
@@ -80,13 +80,13 @@ public class RejectionController extends BaseController implements Initializable
 	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_REJECTION_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Page loading has been started");
+		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been started");
 		GlobalContextParam globalContextParam = globalContextParamService
-				.findRejectionOnholdComments("REJECT_COMMENTS");
+				.findRejectionOnholdComments(RegistrationConstants.REJECTION_COMMENTS);
 		rejectionSubmit.disableProperty().set(true);
 		rejectionComboBox.getItems().clear();
 		rejectionComboBox.setItems(FXCollections.observableArrayList(globalContextParam.getVal().split(",")));
+		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Page loading has been ended");
 	}
 
 	/**
@@ -105,14 +105,14 @@ public class RejectionController extends BaseController implements Initializable
 	}
 
 	/**
-	 * {@code updatePacketStatus} is event class for updating packet status to
+	 * {@code updatePacketStatus} is for updating packet status to
 	 * reject
 	 * 
 	 * @param event
 	 */
 	public void packetUpdateStatus() {
-		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Packet updation as rejection has been started");
+		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+				"Packet updation as rejection has been started");
 
 		for (Map<String, String> registrationMap : rejectionmapList) {
 			if (registrationMap.containsValue(rejRegData.getId())) {
@@ -126,12 +126,10 @@ public class RejectionController extends BaseController implements Initializable
 		map.put("statusComment", rejectionComboBox.getSelectionModel().getSelectedItem());
 		rejectionmapList.add(map);
 
-		generateAlert(RegistrationConstants.STATUS, AlertType.INFORMATION,
-				RegistrationConstants.REJECTED_STATUS_MESSAGE);
 		rejectionSubmit.disableProperty().set(true);
 		rejPrimarystage.close();
-		LOGGER.debug("REGISTRATION - UPDATE_PACKET_STATUS - REGISTRATION_REJECTION_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Packet updation as rejection has been started");
+		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID,
+				"Packet updation as rejection has been ended");
 	}
 
 	/**
@@ -141,8 +139,7 @@ public class RejectionController extends BaseController implements Initializable
 	 * @param event
 	 */
 	public void rejectionWindowExit() {
-		LOGGER.debug("REGISTRATION - PAGE_LOADING - REGISTRATION_REJECTION_CONTROLLER", APPLICATION_NAME,
-				APPLICATION_ID, "Rejection Popup window is closed");
+		LOGGER.debug(LOG_REG_REJECT_CONTROLLER, APPLICATION_NAME, APPLICATION_ID, "Rejection Popup window is closed");
 		rejPrimarystage.close();
 	}
 

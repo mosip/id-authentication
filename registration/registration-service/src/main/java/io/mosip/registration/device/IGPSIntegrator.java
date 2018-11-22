@@ -16,6 +16,6 @@ public interface IGPSIntegrator {
 	 * @return the latitudeFromGps long details
 	 */
 	
-	Map<String, Object> getLatLongDtls(double centerLat, double centerLngt);
+	Map<String, Object> getLatLongDtls(double centerLat, double centerLngt, String gpsConnDevice);
 
 }

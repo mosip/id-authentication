@@ -1,7 +1,6 @@
 package io.mosip.kernel.masterdata.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +9,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -19,12 +19,13 @@ import lombok.NoArgsConstructor;
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
-@Table(name = "language", schema = "master")
-@Entity
+@EqualsAndHashCode(callSuper = false)
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class Language implements Serializable {
+@AllArgsConstructor
+@Entity
+@Table(name = "language", schema = "master")
+public class Language extends BaseEntity implements Serializable {
 
 	/**
 	 * 
@@ -55,47 +56,5 @@ public class Language implements Serializable {
 	 */
 	@Column(name = "native_name", length = 64)
 	private String nativeName;
-
-	/**
-	 * Field for is active
-	 */
-	@Column(name = "is_active", nullable = false)
-	private boolean isActive;
-
-	/**
-	 * Field to hold creator name
-	 */
-	@Column(name = "cr_by", nullable = false, length = 32)
-	private String createdBy;
-
-	/**
-	 * Field to hold created dated and time
-	 */
-	@Column(name = "cr_dtimes", nullable = false)
-	private LocalDateTime createdtime;
-
-	/**
-	 * Field to hold updater name
-	 */
-	@Column(name = "upd_by", length = 32)
-	private String updatedBy;
-
-	/**
-	 * Field to hold updated name and date
-	 */
-	@Column(name = "upd_dtimes")
-	private LocalDateTime updatedtime;
-
-	/**
-	 * Field to hold true or false for is deleted
-	 */
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
-
-	/**
-	 * Field to hold deleted date and time
-	 */
-	@Column(name = "del_dtimes")
-	private LocalDateTime deletedtime;
 
 }

@@ -1,6 +1,7 @@
 package io.mosip.registration.device;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 
 import java.io.ByteArrayInputStream;
@@ -9,6 +10,7 @@ import java.util.Enumeration;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -25,9 +27,14 @@ import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
+import io.mosip.kernel.core.logger.spi.Logger;
+import io.mosip.registration.audit.AuditFactoryImpl;
+import io.mosip.registration.constants.AppModule;
+import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ CommPortIdentifier.class })
 public class GPSBU343ConnectorTest {
@@ -46,6 +53,12 @@ public class GPSBU343ConnectorTest {
 
 	@Mock
 	private StringBuilder deviceData;
+
+	@Mock
+	private AuditFactoryImpl auditFactory;
+	
+	@Mock
+	private Logger logger;
 
 	/**
 	 * Sets the up before class.
@@ -69,6 +82,8 @@ public class GPSBU343ConnectorTest {
 
 		mockSerialPort();
 		mockPortName("COM4");
+		doNothing().when(logger).debug(Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString());
 	}
 
 	/**
@@ -102,7 +117,7 @@ public class GPSBU343ConnectorTest {
 
 		gpsU343Connector.serialEvent(event);
 
-		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+		String gpsVale = gpsU343Connector.getComPortGPSData(serialPortConnected, portThreadTime);
 
 		assertTrue(gpsVale.contains("$GP"));
 
@@ -138,7 +153,7 @@ public class GPSBU343ConnectorTest {
 
 		gpsU343Connector.serialEvent(event);
 
-		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+		String gpsVale = gpsU343Connector.getComPortGPSData(serialPortConnected, portThreadTime);
 
 		assertTrue(gpsVale.contains("$GP"));
 
@@ -174,7 +189,7 @@ public class GPSBU343ConnectorTest {
 
 		gpsU343Connector.serialEvent(event);
 
-		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+		String gpsVale = gpsU343Connector.getComPortGPSData(serialPortConnected, portThreadTime);
 
 		assertTrue(gpsVale.equals(RegistrationConstants.GPS_CAPTURE_FAILURE_MSG));
 
@@ -205,7 +220,7 @@ public class GPSBU343ConnectorTest {
 
 		gpsU343Connector.serialEvent(event);
 
-		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+		String gpsVale = gpsU343Connector.getComPortGPSData(serialPortConnected, portThreadTime);
 
 		assertTrue(gpsVale.equals(RegistrationConstants.GPS_CAPTURE_FAILURE));
 
@@ -236,7 +251,7 @@ public class GPSBU343ConnectorTest {
 
 		gpsU343Connector.serialEvent(event);
 
-		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+		String gpsVale = gpsU343Connector.getComPortGPSData(serialPortConnected, portThreadTime);
 
 		assertTrue(gpsVale.equals(RegistrationConstants.GPS_CAPTURE_PORT_FAILURE_MSG));
 
@@ -270,7 +285,7 @@ public class GPSBU343ConnectorTest {
 
 		gpsU343Connector.serialEvent(event);
 
-		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+		String gpsVale = gpsU343Connector.getComPortGPSData(serialPortConnected, portThreadTime);
 
 		assertTrue(gpsVale.equals(RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE));
 
@@ -286,12 +301,12 @@ public class GPSBU343ConnectorTest {
 		Mockito.when(portListEnumeration.hasMoreElements()).thenReturn(false);
 		ReflectionTestUtils.setField(gpsU343Connector, "portEnumList", null);
 
-		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+		String gpsVale = gpsU343Connector.getComPortGPSData(serialPortConnected, portThreadTime);
 
 		assertTrue(gpsVale.equals(RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE));
 
 	}
-	
+
 	/**
 	 * Test GPSBU 343 connector port failure case 6.
 	 *
@@ -322,7 +337,7 @@ public class GPSBU343ConnectorTest {
 
 		gpsU343Connector.serialEvent(event);
 
-		String gpsVale = gpsU343Connector.getComportGPSData(serialPortConnected, portThreadTime);
+		String gpsVale = gpsU343Connector.getComPortGPSData(serialPortConnected, portThreadTime);
 
 		assertTrue(gpsVale.equals(RegistrationConstants.GPS_DEVICE_CONNECTION_FAILURE));
 
