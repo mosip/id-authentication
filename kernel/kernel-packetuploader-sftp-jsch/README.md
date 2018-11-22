@@ -1,5 +1,5 @@
-## PACKETUPLOADER-SFTP-JSCH module for kernel
-This folder has PACKETUPLOADER-SFTP-JSCH module which can be used to upload a packet using SFTP protocol.
+## kernel-packetuploader-sftp-jsch
+This folder has kernel-packetuploader-sftp-jsch module which can be used to upload a packet using SFTP protocol.
 
 ####[Background & Design](../../design/kernel/kernel-packetuploader.md)
 

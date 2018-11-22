@@ -1,5 +1,5 @@
-## CRYPTO-JCE module for kernel
-This folder has CRYPTO-JCE module which can be used to encrypt and decrypt data.
+## kernel-crypto-jce
+This folder has kernel-crypto-jce module which can be used to encrypt and decrypt data.
 
 ####[Background & Design](../../design/kernel/kernel-crypto.md)
 

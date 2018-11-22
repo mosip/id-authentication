@@ -1,5 +1,5 @@
-## PACKETSERVER-HTTP module for kernel
-This folder has PACKETSERVER-HTTP module which can be used to upload packet.
+## kernel-packetserver-http
+This folder has kernel-packetserver-http module which can be used to upload packet.
 
  
 ### [Background & Design](../../design/kernel/kernel-packetserver-http.md)

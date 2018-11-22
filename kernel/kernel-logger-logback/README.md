@@ -1,5 +1,5 @@
-## LOGGER-LOGBACK module for kernel
-This folder has LOGGER-LOGBACK module which can be used for logging functionalities.
+## kernel-logger-logback
+This folder has kernel-logger-logback module which can be used for logging functionalities.
 
 ####[Background & Design](../../design/kernel/kernel-logger.md)
 
