@@ -24,17 +24,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "template_file_format", schema = "master")
 @EqualsAndHashCode(callSuper = false)
-public class TemplateFileFormat extends BaseEntity implements Serializable {/**
-	 * 
-	 */
+public class TemplateFileFormat extends BaseEntity implements Serializable {
+	
 	private static final long serialVersionUID = 1051422672381211978L;
 
 	@Id
 	@Column(name = "code")
 	private String code;
-
-	@Column(name = "name")
-	private String name;
 
 	@Column(name = "descr")
 	private String description;

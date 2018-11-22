@@ -8,12 +8,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.mosip.kernel.masterdata.dto.PacketRejectionReasonRequestDto;
 import io.mosip.kernel.masterdata.dto.PacketRejectionReasonResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
+import io.mosip.kernel.masterdata.dto.ReasonCategoryRequestDto;
+import io.mosip.kernel.masterdata.dto.ReasonListRequestDto;
+import io.mosip.kernel.masterdata.dto.ReasonListResponseDto;
 import io.mosip.kernel.masterdata.service.PacketRejectionReasonService;
 
 @RestController
-@RequestMapping(value = "/packetRejectionReasons")
+@RequestMapping(value = "/packetrejectionreasons")
 public class PacketRejectionReasonController {
 	/**
 	 * creates instance of service class {@link PacketRejectionReasonService}
@@ -21,14 +24,15 @@ public class PacketRejectionReasonController {
 	@Autowired
 	PacketRejectionReasonService reasonService;
 	
-	@PostMapping("/reasonCategory")
-	public PacketRejectionReasonResponseDto saveReasonCategories(@RequestBody PacketRejectionReasonRequestDto requestDto) {
+	@PostMapping("/reasoncategory")
+	public PostResponseDto saveReasonCategories(@RequestBody ReasonCategoryRequestDto requestDto) {
                 
 		return reasonService.saveReasonCategories(requestDto);
 	}
 	
-	@PostMapping("/reasonList")
-	public PacketRejectionReasonResponseDto saveReasonLists(@RequestBody PacketRejectionReasonRequestDto requestDto) {
+	
+	@PostMapping("/reasonlist")
+	public ReasonListResponseDto saveReasonLists(@RequestBody ReasonListRequestDto requestDto) {
                 
 		return reasonService.saveReasonList(requestDto);
 	}

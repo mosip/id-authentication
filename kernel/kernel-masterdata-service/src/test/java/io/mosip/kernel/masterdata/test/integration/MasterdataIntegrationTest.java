@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
@@ -54,6 +55,7 @@ import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.IdTypeRepository;
 import io.mosip.kernel.masterdata.repository.ReasonCategoryRepository;
+import io.mosip.kernel.masterdata.repository.ReasonListRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
@@ -97,8 +99,19 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	ReasonCategoryRepository reasonRepository;
+	
+	@MockBean
+	ReasonListRepository reasonListRepository;
 
 	private List<ReasonCategory> reasoncategories;
+	
+	private List<ReasonList> reasonList;
+	
+	private static final String REASON_LIST_REQUEST="{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }";
+	private static final String REASON_EMPTY_LIST_REQUEST="{ \"reasonList\": [] }";
+	private static final String REASON_CATEGORY_REQUEST= "{ \"reasonCategories\": [ { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" } ] }";
+	private static final String REASON_EMPTY_CATEGORY_LIST="{ \"reasonCategories\": [] }";
+	
 
 	@MockBean
 	RegistrationCenterHistoryRepository repository;
@@ -219,13 +232,13 @@ public class MasterdataIntegrationTest {
 
 	private void packetRejectionSetup() {
 		ReasonCategory reasonCategory = new ReasonCategory();
-		ReasonList reasonList = new ReasonList();
-		List<ReasonList> reasonListSet = new ArrayList<>();
-		reasonList.setCode("RL1");
-		reasonList.setLangCode("ENG");
-		reasonList.setDescription("reasonList");
-		reasonListSet.add(reasonList);
-		reasonCategory.setReasonList(reasonListSet);
+		ReasonList reasonListObj = new ReasonList();
+		reasonList = new ArrayList<>();
+		reasonListObj.setCode("RL1");
+		reasonListObj.setLangCode("ENG");
+		reasonListObj.setDescription("reasonList");
+		reasonList.add(reasonListObj);
+		reasonCategory.setReasonList(reasonList);
 		reasonCategory.setCode("RC1");
 		reasonCategory.setName("reasonCategory");
 		reasonCategory.setDescription("reason_category");
@@ -476,58 +489,106 @@ public class MasterdataIntegrationTest {
 	@Test
 	public void getAllRjectionReasonTest() throws Exception {
 		Mockito.when(reasonRepository.findReasonCategoryByIsActiveTrueAndIsDeletedFalse()).thenReturn(reasoncategories);
-		mockMvc.perform(get("/packetRejectionReasons")).andExpect(status().isOk());
+		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeTest() throws Exception {
 		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(reasoncategories);
-		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG")).andExpect(status().isOk());
+		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllRjectionReasonFetchExceptionTest() throws Exception {
 		Mockito.when(reasonRepository.findReasonCategoryByIsActiveTrueAndIsDeletedFalse())
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/packetRejectionReasons")).andExpect(status().isInternalServerError());
+		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void getAllRejectionReasonByCodeAndLangCodeFetchExceptionTest() throws Exception {
 		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
+		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
 				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void getAllRjectionReasonRecordsNotFoundTest() throws Exception {
 		Mockito.when(reasonRepository.findReasonCategoryByIsActiveTrueAndIsDeletedFalse()).thenReturn(null);
-		mockMvc.perform(get("/packetRejectionReasons")).andExpect(status().isNotFound());
+		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsNotFoundExceptionTest() throws Exception {
 		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(null);
-		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
-				.andExpect(status().isNotFound());
+		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	public void getRjectionReasonByCodeAndLangCodeRecordsEmptyExceptionTest() throws Exception {
 		Mockito.when(reasonRepository.findReasonCategoryByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(
 				ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(new ArrayList<ReasonCategory>());
-		mockMvc.perform(get("/packetRejectionReasons/{code}/{languageCode}", "RC1", "ENG"))
-				.andExpect(status().isNotFound());
+		mockMvc.perform(get("/packetrejectionreasons/{code}/{languageCode}", "RC1", "ENG"))
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
 	public void getAllRjectionReasonRecordsEmptyExceptionTest() throws Exception {
 		Mockito.when(reasonRepository.findReasonCategoryByIsActiveTrueAndIsDeletedFalse())
 				.thenReturn(new ArrayList<ReasonCategory>());
-		mockMvc.perform(get("/packetRejectionReasons")).andExpect(status().isNotFound());
+		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void createReasonCateogryTest() throws Exception{
+		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(reasoncategories);
+		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content(REASON_CATEGORY_REQUEST.getBytes())).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void createReasonList() throws Exception{
+		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(reasonList);
+		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content(REASON_LIST_REQUEST.getBytes())).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void createReasonCateogryFetchExceptionTest() throws Exception{
+		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content(REASON_CATEGORY_REQUEST.getBytes())).andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void createReasonCateogryDataNotFoundTest() throws Exception{
+		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(reasoncategories);
+		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content(REASON_EMPTY_CATEGORY_LIST.getBytes())).andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void createReasonCateogryDataNotFoundInDbTest() throws Exception{
+		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(new ArrayList<ReasonCategory>());
+		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content(REASON_CATEGORY_REQUEST.getBytes())).andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void createReasonListFetchExceptionTest() throws Exception{
+		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content(REASON_LIST_REQUEST.getBytes())).andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void createReasonListDataNotFoundTest() throws Exception{
+		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(reasonList);
+		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content(REASON_EMPTY_LIST_REQUEST.getBytes())).andExpect(status().isNotFound());
+	}
+	
+	@Test
+	public void createReasonListDataNotFoundInDbTest() throws Exception{
+		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(new ArrayList<ReasonList>());
+		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content(REASON_LIST_REQUEST.getBytes())).andExpect(status().isNotFound());
 	}
 
 	// -----------------------------RegistrationCenterTest----------------------------------

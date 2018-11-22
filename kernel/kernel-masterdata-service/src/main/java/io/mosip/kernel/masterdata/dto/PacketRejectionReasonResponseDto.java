@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import io.mosip.kernel.masterdata.entity.ReasonCategoryId;
-import io.mosip.kernel.masterdata.entity.ReasonListId;
+import io.mosip.kernel.masterdata.entity.CodeLangCodeAndRsnCatCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,12 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PacketRejectionReasonResponseDto {
-	@JsonInclude(Include.NON_NULL)
+	
 	private List<ReasonCategoryDto> reasonCategories;
 	
-	@JsonInclude(Include.NON_NULL)
-	private List<ReasonCategoryId>  reasonCategoryCodes;
-	
-	@JsonInclude(Include.NON_NULL)
-	private List<ReasonListId>  reasonListCodes;
+
 }
