@@ -25,24 +25,6 @@ import io.mosip.preregistration.core.exceptions.TablenotAccessibleException;
 @RestControllerAdvice
 public class DataSyncExceptionHandler {
 
-	// @SuppressWarnings({ "rawtypes", "unchecked" })
-	// @ExceptionHandler(DocumentNotFoundException.class)
-	// public ResponseEntity<ResponseDTO> documentNotFound(final
-	// DocumentNotFoundException e, WebRequest request) {
-	// ExceptionJSONInfo errorDetails = new
-	// ExceptionJSONInfo(ErrorCodes.PRG_DATA_SYNC_006.toString(),
-	// StatusCodes.DOCUMENT_IS_MISSING.toString());
-	// ResponseDTO responseDto = new ResponseDTO();
-	//
-	// List<ExceptionJSONInfo> err = new ArrayList<>();
-	// responseDto.setStatus("false");
-	// err.add(errorDetails);
-	// responseDto.setErr(err);
-	// responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
-	// System.out.println("responseDto::" + responseDto);
-	// return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
-	// }
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(DataSyncRecordNotFoundException.class)
 	public ResponseEntity<ResponseDTO> dataSyncRecordNotFound(final DataSyncRecordNotFoundException e,
@@ -78,7 +60,7 @@ public class DataSyncExceptionHandler {
 		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
 
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(RecordNotFoundForDateRange.class)
 	public ResponseEntity<ResponseDTO> databaseerror(final RecordNotFoundForDateRange e, WebRequest request) {
@@ -92,7 +74,8 @@ public class DataSyncExceptionHandler {
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.NOT_FOUND);
 	}
-	
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ExceptionHandler(TablenotAccessibleException.class)
 	public ResponseEntity<ResponseDTO> databaseerror(final TablenotAccessibleException e, WebRequest request) {
 		ArrayList<ExceptionJSONInfo> err = new ArrayList<>();
@@ -104,6 +87,23 @@ public class DataSyncExceptionHandler {
 		errorRes.setStatus("false");
 		errorRes.setResTime(new Timestamp(System.currentTimeMillis()));
 		return new ResponseEntity<>(errorRes, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@ExceptionHandler(ZipFileCreationException.class)
+	public ResponseEntity<ResponseDTO> zipNotCreated(final ZipFileCreationException e, WebRequest request) {
+		ExceptionJSONInfo errorDetails = new ExceptionJSONInfo(ErrorCodes.PRG_DATA_SYNC_005.toString(),
+				StatusCodes.FAILED_TO_CREATE_A_ZIP_FILE.toString());
+
+		ResponseDTO responseDto = new ResponseDTO();
+
+		List<ExceptionJSONInfo> err = new ArrayList<>();
+		responseDto.setStatus("false");
+		err.add(errorDetails);
+		responseDto.setErr(err);
+		responseDto.setResTime(new Timestamp(System.currentTimeMillis()));
+		return new ResponseEntity<>(responseDto, HttpStatus.NOT_FOUND);
+
 	}
 
 }
