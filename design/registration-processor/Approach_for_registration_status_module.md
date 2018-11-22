@@ -26,7 +26,7 @@ The key solution considerations are
 -	2 new tables -
 	“registration”table : this table stores current registration status. Example below -
 	![Registration table](_images/registration.PNG)
-	“registration_transaction” table : this table holds all the transactions for a registration id. For example there can be multiple transactions against one registration id. All the transactions will be recorded in this table with parent transaction id so that we can trace all transactions for a particular registration id. In below example there are multiple  transactions for same registration id which indicates what are the stages it has went through -
+	“registration_transaction” table : this table holds all the transactions for a registration id. There can be multiple transactions against one registration id. All the transactions will be recorded in this table with parent transaction id so that we can trace all transactions for a particular registration id. In below example there are multiple  transactions for same registration id which indicates what are the stages it has went through -
 	![Registration transaction table](_images/reg_transaction.PNG)
 -	Create Registration and Transaction entity and create dao layer for below crud operations:
 o	Add new registration status.
