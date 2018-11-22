@@ -5,7 +5,6 @@
 
 package io.mosip.kernel.masterdata.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,8 +41,8 @@ public class MachineHistoryController {
 	 * @param langCode
 	 *            Language Code
 	 * @param effdatetimes
-	 * 				effective date and time 
-	 *  
+	 *            effective date and time
+	 * 
 	 * @return returning machine history detail based on given Machine ID, Language
 	 *         code and effective date time
 	 */

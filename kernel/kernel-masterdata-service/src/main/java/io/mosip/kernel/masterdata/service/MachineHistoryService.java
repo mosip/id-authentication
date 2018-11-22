@@ -5,7 +5,6 @@
 
 package io.mosip.kernel.masterdata.service;
 
-
 import io.mosip.kernel.masterdata.dto.MachineHistoryResponseDto;
 
 /**
