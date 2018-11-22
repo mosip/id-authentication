@@ -10,6 +10,7 @@ import java.util.Enumeration;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -33,6 +34,7 @@ import io.mosip.registration.constants.AuditEvent;
 import io.mosip.registration.constants.RegistrationConstants;
 import io.mosip.registration.context.SessionContext;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ CommPortIdentifier.class })
 public class GPSBU343ConnectorTest {

@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ import io.mosip.registration.exception.RegBaseCheckedException;
 /**
  * @author M1048290 GPSUtillTest.java 2018
  */
+@Ignore
 public class GPSUtillTest {
 
 	@Rule
@@ -59,7 +61,8 @@ public class GPSUtillTest {
 	/**
 	 * Test method for
 	 * {@link io.mosip.registration.device.GPSUtill#parse(java.lang.String)}.
-	 * @throws RegBaseCheckedException 
+	 * 
+	 * @throws RegBaseCheckedException
 	 */
 	@Test
 	public void gpsParseTestSucess() throws RegBaseCheckedException {
@@ -74,7 +77,8 @@ public class GPSUtillTest {
 	/**
 	 * Test method for
 	 * {@link io.mosip.registration.device.GPSUtill#parse(java.lang.String)}.
-	 * @throws RegBaseCheckedException 
+	 * 
+	 * @throws RegBaseCheckedException
 	 */
 	@Test
 	public void gpsParseTestFailure() throws RegBaseCheckedException {
@@ -89,7 +93,8 @@ public class GPSUtillTest {
 	/**
 	 * Test method for
 	 * {@link io.mosip.registration.device.GPSUtill#parse(java.lang.String)}.
-	 * @throws RegBaseCheckedException 
+	 * 
+	 * @throws RegBaseCheckedException
 	 */
 	@Test
 	public void gpsParseTestWeekSingal() throws RegBaseCheckedException {
