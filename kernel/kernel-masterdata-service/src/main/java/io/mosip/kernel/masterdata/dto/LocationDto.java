@@ -12,15 +12,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LocationDto {
 
-	private String locationCode;
+	private String code;
 
-	private String locationName;
+	private String name;
 
 	private int hierarchyLevel;
 
 	private String hierarchyName;
 
-	private String parentLocationCode;
+	private String parentLocCode;
 
 	private String languageCode;
 
