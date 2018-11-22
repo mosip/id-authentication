@@ -53,6 +53,7 @@ stage ('---------- build ---------------') {
 			def currentModule = locationOfAngularFiles[i]
 			sh "dirname $currentModule > parentDirectoryPath"
 			parentDirectoryPath = readFile('parentDirectoryPath').trim()
+			echo parentDirectoryPath
 			sh "rm -f parentDirectoryPath"
 			// installing node modules and building the angular project
 			sh '''
