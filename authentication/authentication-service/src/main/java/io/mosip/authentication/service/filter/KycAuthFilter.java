@@ -67,7 +67,7 @@ public class KycAuthFilter extends BaseAuthFilter {
 
 	@Override
 	protected Map<String, Object> setTxnId(Map<String, Object> requestBody, Map<String, Object> responseBody) {
-		Map<String, Object> authReq = (Map<String, Object>) requestBody.get("authRequest");
+		Map<String, Object> authReq = (Map<String, Object>) requestBody.get(AUTH_REQUEST);
 		responseBody.replace("txnID", authReq.get("txnID"));
 		return responseBody;
 	}

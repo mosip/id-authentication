@@ -1,7 +1,6 @@
 package io.mosip.authentication.core.util.dto;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;

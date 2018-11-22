@@ -166,8 +166,6 @@ public class IdAuthExceptionHandler extends ResponseEntityExceptionHandler {
 
 		if (ex instanceof ServletException || ex instanceof BeansException
 				|| ex instanceof HttpMessageConversionException) {
-			// FIXME needs to be invalid request as it is response for both otp
-			// and auth
 			ex = new IdAuthenticationAppException(
 					IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST
 							.getErrorCode(),

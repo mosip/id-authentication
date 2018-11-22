@@ -47,197 +47,189 @@ import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
  */
 
 @Service
-public class KycServiceImpl implements KycService{
-	
-	private static final String LABEL = "_label";
+public class KycServiceImpl implements KycService {
 
-	private static final String LABEL_SEC = LABEL + "_sec";
+    private static final String LABEL = "_label";
 
-	private static final String LABEL_PRI = LABEL + "_pri";
+    private static final String LABEL_SEC = LABEL + "_sec";
 
-	@Autowired
-	Environment env;
-	
-	@Autowired
-	private MessageSource messageSource;
-	
-	@Autowired
-	private IdInfoService idInfoService;
-	
+    private static final String LABEL_PRI = LABEL + "_pri";
 
-	@Autowired
-	private IdAuthService idAuthService;
-	
-	@Autowired
-	private IdTemplateManager idTemplateManager;
-	
-	@Autowired
-	private DemoHelper demoHelper;
-	
-	@Autowired
-	private PDFGenerator pdfGenerator;
-	
-	/** The mosip logger. */
-	private static Logger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);
-	
-	/** The Constant DEFAULT_SESSION_ID. */
-	private static final String DEFAULT_SESSION_ID = "sessionId";
+    @Autowired
+    Environment env;
 
-	@Override
-	public KycInfo retrieveKycInfo(String refId, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired) throws IdAuthenticationBusinessException {
-		KycInfo kycInfo = new KycInfo();
-		Map<String, List<IdentityInfoDTO>> identityInfo = retrieveIdentityFromIdRepo(refId);
-		Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo, isSecLangInfoRequired);
-		kycInfo.setIdentity(filteredIdentityInfo);
-		String uin = idAuthService.getUIN(refId).get();			
-		Object maskedUin = uin;
-		if(ePrintReq) {		
-			if(env.getProperty("uin.masking.required", Boolean.class)) {
-				maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
-			}
-			Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
-			String ePrintInfo = generatePrintableKyc(eKycType,pdfDetails,isSecLangInfoRequired);
-			kycInfo.setEPrint(ePrintInfo);			
-		}
-		kycInfo.setIdvId(maskedUin.toString());
-		return kycInfo;
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private IdInfoService idInfoService;
+
+    @Autowired
+    private IdAuthService idAuthService;
+
+    @Autowired
+    private IdTemplateManager idTemplateManager;
+
+    @Autowired
+    private DemoHelper demoHelper;
+
+    @Autowired
+    private PDFGenerator pdfGenerator;
+
+    /** The mosip logger. */
+    private static Logger mosipLogger = IdaLogger.getLogger(KycServiceImpl.class);
+
+    /** The Constant DEFAULT_SESSION_ID. */
+    private static final String DEFAULT_SESSION_ID = "sessionId";
+
+    @Override
+    public KycInfo retrieveKycInfo(String refId, KycType eKycType, boolean ePrintReq, boolean isSecLangInfoRequired)
+	    throws IdAuthenticationBusinessException {
+	KycInfo kycInfo = new KycInfo();
+	Map<String, List<IdentityInfoDTO>> identityInfo = retrieveIdentityFromIdRepo(refId);
+	Map<String, List<IdentityInfoDTO>> filteredIdentityInfo = constructIdentityInfo(eKycType, identityInfo,
+		isSecLangInfoRequired);
+	kycInfo.setIdentity(filteredIdentityInfo);
+	String uin = idAuthService.getUIN(refId).get();
+	Object maskedUin = uin;
+	if (ePrintReq) {
+	    if (env.getProperty("uin.masking.required", Boolean.class)) {
+		maskedUin = MaskUtil.generateMaskValue(uin, env.getProperty("uin.masking.charcount", Integer.class));
+	    }
+	    Map<String, Object> pdfDetails = generatePDFDetails(filteredIdentityInfo, maskedUin);
+	    String ePrintInfo = generatePrintableKyc(eKycType, pdfDetails, isSecLangInfoRequired);
+	    kycInfo.setEPrint(ePrintInfo);
+	}
+	kycInfo.setIdvId(maskedUin.toString());
+	return kycInfo;
+    }
+
+    private Map<String, List<IdentityInfoDTO>> retrieveIdentityFromIdRepo(String refId)
+	    throws IdAuthenticationBusinessException {
+	Map<String, List<IdentityInfoDTO>> identity = null;
+	try {
+	    identity = idInfoService.getIdInfo(refId);
+	} catch (IdAuthenticationDaoException e) {
+	    mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
+	    throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
+	}
+	return identity;
+    }
+
+    private Map<String, List<IdentityInfoDTO>> constructIdentityInfo(KycType eKycType,
+	    Map<String, List<IdentityInfoDTO>> identity, boolean isSecLangInfoRequired) {
+	Map<String, List<IdentityInfoDTO>> identityInfo;
+	String kycTypeKey;
+
+	if (eKycType == KycType.LIMITED) {
+	    kycTypeKey = "ekyc.type.limitedkyc";
+	} else {
+	    kycTypeKey = "ekyc.type.fullkyc";
 	}
 
-	private Map<String, List<IdentityInfoDTO>> retrieveIdentityFromIdRepo(String refId) throws IdAuthenticationBusinessException{
-		Map<String, List<IdentityInfoDTO>> identity = null;
-		try {
-			identity = idInfoService.getIdInfo(refId);
-		} catch (IdAuthenticationDaoException e) {
-			mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getErrorText());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_UIN, e);
-		}
-		return identity;
-	}
-	
-	private Map<String, List<IdentityInfoDTO>> constructIdentityInfo(KycType eKycType, Map<String, List<IdentityInfoDTO>> identity, boolean isSecLangInfoRequired){
-		Map<String, List<IdentityInfoDTO>> identityInfo;
-		String kycTypeKey;
+	List<String> limitedKycDetail = Arrays.asList(env.getProperty(kycTypeKey).split(","));
+	identityInfo = identity.entrySet().stream().filter(id -> limitedKycDetail.contains(id.getKey()))
+		.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-		if(eKycType == KycType.LIMITED) {
-			 kycTypeKey = "ekyc.type.limitedkyc";
-		}else {
-			kycTypeKey = "ekyc.type.fullkyc";
-		}
-		
-		List<String> limitedKycDetail = Arrays.asList(env.getProperty(kycTypeKey).split(","));
-		identityInfo = identity.entrySet().stream()
-				.filter(id -> limitedKycDetail.contains(id.getKey()))
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-		
-		if(!isSecLangInfoRequired) {
-			String primaryLanguage = env.getProperty("mosip.primary.lang-code");
-			identityInfo = identityInfo.entrySet()
-            .stream()
-            .collect(Collectors.toMap(Map.Entry::getKey,
-              entry -> entry.getValue()
-                           .stream()
-                           .filter((IdentityInfoDTO info) -> {
-							return info.getLanguage() == null ||  info.getLanguage().equalsIgnoreCase("null") || info.getLanguage().equalsIgnoreCase(primaryLanguage);
-						})
-                           .collect(Collectors.toList()))
-             );
-		}
-		return identityInfo;
+	if (!isSecLangInfoRequired) {
+	    String primaryLanguage = env.getProperty("mosip.primary.lang-code");
+	    identityInfo = identityInfo.entrySet().stream()
+		    .collect(Collectors.toMap(Map.Entry::getKey,
+			    entry -> entry.getValue().stream()
+				    .filter((IdentityInfoDTO info) -> info.getLanguage() == null
+					    || info.getLanguage().equalsIgnoreCase("null")
+					    || info.getLanguage().equalsIgnoreCase(primaryLanguage))
+				    .collect(Collectors.toList())));
 	}
-	
+	return identityInfo;
+    }
 
-	private Map<String, Object> generatePDFDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Object maskedUin) throws IdAuthenticationBusinessException {
-		String primaryLanguage = env.getProperty("mosip.primary.lang-code");
-		String secondaryLanguage = env.getProperty("mosip.secondary.lang-code");
-		Map<String, Object> pdfDetails = new HashMap<>();
-		filteredIdentityInfo
-			    .entrySet()
-			    .stream()
-			    .forEach(e -> e.getValue().stream().forEach(v -> {
-			    	if(v.getLanguage().equalsIgnoreCase(primaryLanguage)) {
-			    		pdfDetails.put(e.getKey().concat("_pri"), v.getValue());
-			    		pdfDetails.put(e.getKey().concat(LABEL_PRI), 
-			    				messageSource.getMessage(e.getKey().concat(LABEL), null, LocaleContextHolder.getLocale()));
-			    	}else if(v.getLanguage().equalsIgnoreCase(secondaryLanguage)) {
-			    		pdfDetails.put(e.getKey().concat("_sec"), v.getValue());
-			    		pdfDetails.put(e.getKey().concat(LABEL_SEC), 
-			    				messageSource.getMessage(e.getKey().concat(LABEL), null, new Locale(secondaryLanguage)));
-			    	}
-			    }));
-		pdfDetails.put("uin_pri", maskedUin);
-		pdfDetails.put("uin_label_pri", messageSource.getMessage("uin_label", null, LocaleContextHolder.getLocale()));
-		pdfDetails.put("uin_sec", maskedUin);
-		pdfDetails.put("uin_label_sec", messageSource.getMessage("uin_label", null, new Locale(secondaryLanguage)));
-		pdfDetails.put("name_label_pri", messageSource.getMessage("name_label", null, LocaleContextHolder.getLocale()));
-		pdfDetails.put("name_label_sec", messageSource.getMessage("name_label", null, new Locale(secondaryLanguage)));
-		pdfDetails.put("name_pri", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, filteredIdentityInfo).getValue());
-		pdfDetails.put("name_sec", demoHelper.getEntityInfo(DemoMatchType.NAME_SEC, filteredIdentityInfo).getValue());
-		faceDetails(filteredIdentityInfo, maskedUin, pdfDetails);
-		return pdfDetails;
-	}
+    private Map<String, Object> generatePDFDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo,
+	    Object maskedUin) throws IdAuthenticationBusinessException {
+	String primaryLanguage = env.getProperty("mosip.primary.lang-code");
+	String secondaryLanguage = env.getProperty("mosip.secondary.lang-code");
+	Map<String, Object> pdfDetails = new HashMap<>();
+	filteredIdentityInfo.entrySet().stream().forEach(e -> e.getValue().stream().forEach(v -> {
+	    if (v.getLanguage().equalsIgnoreCase(primaryLanguage)) {
+		pdfDetails.put(e.getKey().concat("_pri"), v.getValue());
+		pdfDetails.put(e.getKey().concat(LABEL_PRI),
+			messageSource.getMessage(e.getKey().concat(LABEL), null, LocaleContextHolder.getLocale()));
+	    } else if (v.getLanguage().equalsIgnoreCase(secondaryLanguage)) {
+		pdfDetails.put(e.getKey().concat("_sec"), v.getValue());
+		pdfDetails.put(e.getKey().concat(LABEL_SEC),
+			messageSource.getMessage(e.getKey().concat(LABEL), null, new Locale(secondaryLanguage)));
+	    }
+	}));
+	pdfDetails.put("uin_pri", maskedUin);
+	pdfDetails.put("uin_label_pri", messageSource.getMessage("uin_label", null, LocaleContextHolder.getLocale()));
+	pdfDetails.put("uin_sec", maskedUin);
+	pdfDetails.put("uin_label_sec", messageSource.getMessage("uin_label", null, new Locale(secondaryLanguage)));
+	pdfDetails.put("name_label_pri", messageSource.getMessage("name_label", null, LocaleContextHolder.getLocale()));
+	pdfDetails.put("name_label_sec", messageSource.getMessage("name_label", null, new Locale(secondaryLanguage)));
+	pdfDetails.put("name_pri", demoHelper.getEntityInfo(DemoMatchType.NAME_PRI, filteredIdentityInfo).getValue());
+	pdfDetails.put("name_sec", demoHelper.getEntityInfo(DemoMatchType.NAME_SEC, filteredIdentityInfo).getValue());
+	faceDetails(filteredIdentityInfo, maskedUin, pdfDetails);
+	return pdfDetails;
+    }
 
-	private void faceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Object maskedUin,
-			Map<String, Object> pdfDetails) throws IdAuthenticationBusinessException {
-		Optional<String> faceValue = getFaceDetails(filteredIdentityInfo);
-		if(faceValue.isPresent()) {
-			byte[] bytearray = Base64.getDecoder().decode(faceValue.get());
-			Path path = null;
-			BufferedImage imag;
-			try {
-				imag = ImageIO.read(new ByteArrayInputStream(bytearray));
-				File facePath = File.createTempFile(String.valueOf(maskedUin), ".jpg");
-				ImageIO.write(imag, "jpg", facePath);
-				path = facePath.toPath();
-			} catch (IOException e) {
-				mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
-				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-			}
-			pdfDetails.put("photoUrl", path);
-		}
+    private void faceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo, Object maskedUin,
+	    Map<String, Object> pdfDetails) throws IdAuthenticationBusinessException {
+	Optional<String> faceValue = getFaceDetails(filteredIdentityInfo);
+	if (faceValue.isPresent()) {
+	    byte[] bytearray = Base64.getDecoder().decode(faceValue.get());
+	    Path path = null;
+	    BufferedImage imag;
+	    try {
+		imag = ImageIO.read(new ByteArrayInputStream(bytearray));
+		File facePath = File.createTempFile(String.valueOf(maskedUin), ".jpg");
+		ImageIO.write(imag, "jpg", facePath);
+		path = facePath.toPath();
+	    } catch (IOException e) {
+		mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
+		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+	    }
+	    pdfDetails.put("photoUrl", path);
 	}
+    }
 
-	private Optional<String> getFaceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {
-		return filteredIdentityInfo.entrySet()
-				.stream()
-				.filter(e -> e.getKey().equals("face"))
-		.flatMap(val -> val.getValue().stream())
-		.findAny()
-		.map(IdentityInfoDTO::getValue);
-	}
+    private Optional<String> getFaceDetails(Map<String, List<IdentityInfoDTO>> filteredIdentityInfo) {
+	return filteredIdentityInfo.entrySet().stream().filter(e -> e.getKey().equals("face"))
+		.flatMap(val -> val.getValue().stream()).findAny().map(IdentityInfoDTO::getValue);
+    }
 
-	private String generatePrintableKyc(KycType eKycType, Map<String, Object> identity, boolean isSecLangInfoRequired) throws IdAuthenticationBusinessException {
-		String pdfDetails = null;
-		try {
-			String template = null;
-			if(eKycType == KycType.LIMITED && isSecLangInfoRequired) {
-				template =  idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.full"), identity);
-			}else if(eKycType == KycType.LIMITED && !isSecLangInfoRequired) {
-				template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.pri"), identity);
-			}else if(eKycType == KycType.FULL && isSecLangInfoRequired) {
-				template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.full"), identity);
-			}else {
-				template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.pri"), identity);
-			}
-			
-			ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(template);
-			deleteFileOnExit(identity);
-			pdfDetails = Base64.getEncoder().encodeToString(bos.toByteArray());
-		} catch (IOException e) {
-			mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
-			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-		}
-		return pdfDetails;
-	}
-	
-	private void deleteFileOnExit(Map<String, Object> identity) {
-		Path path = (Path) identity.get("photoUrl");
-		if(path!=null) {
-			File file = path.toFile();
-			if(file.exists()) {
-				file.deleteOnExit();			
-			}			
-		}		
-	}
+    private String generatePrintableKyc(KycType eKycType, Map<String, Object> identity, boolean isSecLangInfoRequired)
+	    throws IdAuthenticationBusinessException {
+	String pdfDetails = null;
+	try {
+	    String template = null;
+	    if (eKycType == KycType.LIMITED && isSecLangInfoRequired) {
+		template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.full"), identity);
+	    } else if (eKycType == KycType.LIMITED && !isSecLangInfoRequired) {
+		template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.limitedkyc.pri"), identity);
+	    } else if (eKycType == KycType.FULL && isSecLangInfoRequired) {
+		template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.full"), identity);
+	    } else {
+		template = idTemplateManager.applyTemplate(env.getProperty("ekyc.template.fullkyc.pri"), identity);
+	    }
 
+	    ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(template);
+	    deleteFileOnExit(identity);
+	    pdfDetails = Base64.getEncoder().encodeToString(bos.toByteArray());
+	} catch (IOException e) {
+	    mosipLogger.error(DEFAULT_SESSION_ID, null, null, e.getMessage());
+	    throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+	}
+	return pdfDetails;
+    }
+
+    private void deleteFileOnExit(Map<String, Object> identity) {
+	Path path = (Path) identity.get("photoUrl");
+	if (path != null) {
+	    File file = path.toFile();
+	    if (file.exists()) {
+		file.deleteOnExit();
+	    }
+	}
+    }
 
 }

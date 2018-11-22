@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -37,11 +36,9 @@ import io.mosip.authentication.service.impl.indauth.service.demo.DemoMatchType;
 import io.mosip.authentication.service.integration.NotificationManager;
 import io.mosip.authentication.service.integration.SenderType;
 import io.mosip.authentication.service.repository.AutnTxnRepository;
-import io.mosip.authentication.service.repository.DemoRepository;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.DateUtils;
-import io.mosip.kernel.core.util.StringUtils;
 
 /**
  * Facade implementation of OTPfacade to generate OTP.
@@ -50,6 +47,8 @@ import io.mosip.kernel.core.util.StringUtils;
  */
 @Service
 public class OTPFacadeImpl implements OTPFacade {
+
+	private static final String DATETIME_PATTERN = "datetime.pattern";
 
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SessionID";
@@ -61,10 +60,6 @@ public class OTPFacadeImpl implements OTPFacade {
 	/** The otp service. */
 	@Autowired
 	private OTPService otpService;
-
-	/** The demo repository. */
-	@Autowired
-	private DemoRepository demoRepository;
 
 	/** The id auth service. */
 	@Autowired
@@ -146,13 +141,13 @@ public class OTPFacadeImpl implements OTPFacade {
 			mobileNumber = getMobileNumber(refId);
 			email = getEmail(refId);
 
-			String responseTime = formatDate(new Date(), env.getProperty("datetime.pattern"));
+			String responseTime = formatDate(new Date(), env.getProperty(DATETIME_PATTERN));
 			otpResponseDTO.setResTime(responseTime);
 
 			otpResponseDTO.setMaskedEmail(MaskUtil.maskEmail(email));
 			otpResponseDTO.setMaskedMobile(MaskUtil.maskMobile(mobileNumber));
 			// -- send otp notification --
-			String otpGenerationTime = formatDate(otpGenerateTime, env.getProperty("datetime.pattern"));
+			String otpGenerationTime = formatDate(otpGenerateTime, env.getProperty(DATETIME_PATTERN));
 			sendOtpNotification(otpRequestDto, otp, refId, otpGenerationTime, email, mobileNumber);
 
 			saveAutnTxn(otpRequestDto, status, comment, refId);
@@ -278,7 +273,7 @@ public class OTPFacadeImpl implements OTPFacade {
 	private void sendOtpNotification(OtpRequestDTO otpRequestDto, String otp, String refId, String otpGenerationTime,
 			String email, String mobileNumber) {
 
-		Map<String, Object> values = new HashMap<String, Object>();
+		Map<String, Object> values = new HashMap<>();
 		try {
 			Optional<String> uinOpt = idAuthService.getUIN(refId);
 			String uin = uinOpt.get();
@@ -287,7 +282,7 @@ public class OTPFacadeImpl implements OTPFacade {
 			values.put("otp", otp);
 			values.put("validTime", env.getProperty("otp.expiring.time"));
 
-			DateFormat formatter = new SimpleDateFormat(env.getProperty("datetime.pattern"));
+			DateFormat formatter = new SimpleDateFormat(env.getProperty(DATETIME_PATTERN));
 
 			Date date1;
 			String changedTime = "";

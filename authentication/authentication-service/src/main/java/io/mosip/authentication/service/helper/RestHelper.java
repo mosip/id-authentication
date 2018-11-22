@@ -2,7 +2,6 @@ package io.mosip.authentication.service.helper;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 

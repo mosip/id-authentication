@@ -1,6 +1,5 @@
 package io.mosip.authentication.core.dto.otpgen;
 
-import java.util.Date;
 import java.util.List;
 
 import io.mosip.authentication.core.dto.indauth.AuthError;
