@@ -200,13 +200,13 @@ public class MasterDataServiceTest {
 	
 	//-----------------------------DeviceSpecification----------------------------------
 
-	List<DeviceSpecification> deviceSpecificationList ;
-	DeviceSpecification deviceSpecification;
+	private List<DeviceSpecification> deviceSpecificationList ;
+	private DeviceSpecification deviceSpecification;
 	
-	DeviceSpecificationRequestDto deviceSpecificationRequestDto ;
-	DeviceSpecificationListDto deviceSpecificationListDto;
-	List<DeviceSpecificationDto> deviceSpecificationDtos ;
-	DeviceSpecificationDto deviceSpecificationDto ;
+	private DeviceSpecificationRequestDto deviceSpecificationRequestDto ;
+	private DeviceSpecificationListDto deviceSpecificationListDto;
+	private List<DeviceSpecificationDto> deviceSpecificationDtos ;
+	private DeviceSpecificationDto deviceSpecificationDto ;
 	
 	
 	@Before
@@ -491,18 +491,18 @@ public class MasterDataServiceTest {
 
 	}
 	
-	DeviceTypeRequestDto reqTypeDto;
-	DeviceTypeListDto request;
-	List<DeviceTypeDto> deviceTypeDtoList;
-	DeviceTypeDto deviceTypeDto;
+	private DeviceTypeRequestDto reqTypeDto;
+	private DeviceTypeListDto request;
+	private List<DeviceTypeDto> deviceTypeDtoList;
+	private DeviceTypeDto deviceTypeDto;
 
-	List<DeviceType> deviceTypeList;
-	DeviceType deviceType;
-	List<CodeAndLanguageCodeId> codeLangCodeIds;
-	CodeAndLanguageCodeId codeAndLanguageCodeId;
+	private List<DeviceType> deviceTypeList;
+	private DeviceType deviceType;
+	private List<CodeAndLanguageCodeId> codeLangCodeIds;
+	private CodeAndLanguageCodeId codeAndLanguageCodeId;
 
 	
-	public void deviceTypeSetUp() {
+	private void deviceTypeSetUp() {
 
 		reqTypeDto = new DeviceTypeRequestDto();
 		request = new DeviceTypeListDto();
