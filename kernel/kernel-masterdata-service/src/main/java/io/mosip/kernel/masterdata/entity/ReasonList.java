@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "reason_list", schema = "master")
-@IdClass(ReasonListId.class)
+@IdClass(CodeLangCodeAndRsnCatCode.class)
 public class ReasonList extends BaseEntity implements Serializable {
 
 	/**

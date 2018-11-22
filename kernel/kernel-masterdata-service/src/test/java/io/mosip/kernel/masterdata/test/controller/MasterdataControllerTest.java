@@ -73,15 +73,6 @@ public class MasterdataControllerTest {
 	@MockBean
 	private BiometricTypeService biometricTypeService;
 
-	private static final String BIOMETRICTYPE_EXPECTED_LIST = "[\n" + "  {\n" + "    \"code\": \"1\",\n"
-			+ "    \"name\": \"DNA MATCHING\",\n" + "    \"description\": null,\n" + "    \"langCode\": \"ENG\"\n"
-			+ "  },\n" + "  {\n" + "    \"code\": \"3\",\n" + "    \"name\": \"EYE SCAN\",\n"
-			+ "    \"description\": null,\n" + "    \"langCode\": \"ENG\"\n" + "  }\n" + "]";
-
-	private static final String BIOMETRICTYPE_EXPECTED_OBJECT = "{\n" + "    \"code\": \"1\",\n"
-			+ "    \"name\": \"DNA MATCHING\",\n" + "    \"description\": null,\n" + "    \"langCode\": \"ENG\"\n"
-			+ "  }";
-
 	private BiometricTypeDto biometricTypeDto1 = new BiometricTypeDto();
 	private BiometricTypeDto biometricTypeDto2 = new BiometricTypeDto();
 
@@ -89,14 +80,6 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private ApplicationService applicationService;
-
-	private static final String APPLIACTION_EXPECTED_LIST = "[\n" + "  {\n" + "    \"code\": \"101\",\n"
-			+ "    \"name\": \"pre-registeration\",\n" + "    \"description\": \"Pre-registration Application Form\",\n"
-			+ "    \"languageCode\": \"ENG\"\n" + "  }\n" + "]";
-
-	private static final String APPLIACTION_EXPECTED_OBJECT = "{\n" + "    \"code\": \"101\",\n"
-			+ "    \"name\": \"pre-registeration\",\n" + "    \"description\": \"Pre-registration Application Form\",\n"
-			+ "    \"languageCode\": \"ENG\"\n" + "  }";
 
 	private ApplicationDto applicationDto = new ApplicationDto();
 
@@ -107,16 +90,8 @@ public class MasterdataControllerTest {
 
 	private final String BIOMETRIC_ATTRIBUTE_EXPECTED = "{ \"biometricattributes\": [ { \"code\": \"iric_black\", \"name\": \"black\", \"description\": null, \"isActive\": true},{\"code\": \"iric_brown\", \"name\": \"brown\", \"description\": null,\"isActive\": true } ] }";
 
-	BiometricTypeResponseDto biometricTypeResponseDto = null;
-	List<BiometricAttributeDto> biometricattributes = null;
-
-	private static final String DOCUMENT_CATEGORY_EXPECTED_LIST = "[\n" + "  {\n" + "    \"code\": \"101\",\n"
-			+ "    \"name\": \"POI\",\n" + "    \"description\": null,\n" + "    \"langCode\": \"ENG\"\n" + "  },\n"
-			+ "  {\n" + "    \"code\": \"102\",\n" + "    \"name\": \"POR\",\n" + "    \"description\": null,\n"
-			+ "    \"langCode\": \"ENG\"\n" + "  }\n" + "]";
-
-	private static final String DOCUMENT_CATEGORY_EXPECTED_OBJECT = "{\n" + "    \"code\": \"101\",\n"
-			+ "    \"name\": \"POI\",\n" + "    \"description\": null,\n" + "    \"langCode\": \"ENG\"\n" + "  }";
+	private BiometricTypeResponseDto biometricTypeResponseDto;
+	private List<BiometricAttributeDto> biometricattributes;
 
 	private DocumentCategoryDto documentCategoryDto1;
 	private DocumentCategoryDto documentCategoryDto2;
@@ -362,14 +337,11 @@ public class MasterdataControllerTest {
 		biometricTypeDtoList.add(biometricTypeDto2);
 	}
 
+	// -------------------------------BiometricTypeControllerTest--------------------------
 	@Test
 	public void fetchAllBioMetricTypeTest() throws Exception {
-
 		Mockito.when(biometricTypeService.getAllBiometricTypes()).thenReturn(biometricTypeDtoList);
-
-		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes"))
-				.andExpect(MockMvcResultMatchers.content().json(BIOMETRICTYPE_EXPECTED_LIST))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
@@ -377,7 +349,6 @@ public class MasterdataControllerTest {
 		Mockito.when(biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString()))
 				.thenReturn(biometricTypeDtoList);
 		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/ENG"))
-				.andExpect(MockMvcResultMatchers.content().json(BIOMETRICTYPE_EXPECTED_LIST))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
@@ -386,12 +357,10 @@ public class MasterdataControllerTest {
 		Mockito.when(biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(biometricTypeDto1);
 		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/1/ENG"))
-				.andExpect(MockMvcResultMatchers.content().json(BIOMETRICTYPE_EXPECTED_OBJECT))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	// -------------------------------ApplicationControllerTest--------------------------
-
 	@Test
 	public void fetchAllApplicationTest() throws Exception {
 		applicationResponseDto.setApplicationtypes(applicationDtoList);
@@ -628,7 +597,6 @@ public class MasterdataControllerTest {
 	}
 
 	// -------------------------------RegistrationCenterControllerTest--------------------------
-
 	@Test
 	public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
 		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
@@ -664,33 +632,25 @@ public class MasterdataControllerTest {
 	}
 
 	// -------------------------------TemplateControllerTest--------------------------
-
 	@Test
 	public void getAllTemplateByTest() throws Exception {
-
 		Mockito.when(templateService.getAllTemplate()).thenReturn(templateDtoList);
-
 		mockMvc.perform(MockMvcRequestBuilders.get("/templates"))
-				.andExpect(MockMvcResultMatchers.content().json(TEMPLATE_EXPECTED_LIST)).andExpect(status().isOk());
-
+				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeTest() throws Exception {
-
 		Mockito.when(templateService.getAllTemplateByLanguageCode(Mockito.anyString())).thenReturn(templateDtoList);
-
 		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN"))
-				.andExpect(MockMvcResultMatchers.content().json(TEMPLATE_EXPECTED_LIST)).andExpect(status().isOk());
+				.andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeTest() throws Exception {
-
 		Mockito.when(templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(templateDtoList);
-
 		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN/EMAIL"))
-				.andExpect(MockMvcResultMatchers.content().json(TEMPLATE_EXPECTED_LIST)).andExpect(status().isOk());
+				.andExpect(status().isOk());
 	}
 }

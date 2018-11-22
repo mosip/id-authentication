@@ -97,7 +97,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 			codeLangCodeIds.add(codeLangCodeId);
 		});
 		PostResponseDto postResponseDto = new PostResponseDto();
-		postResponseDto.setSuccessfully_created(codeLangCodeIds);
+		postResponseDto.setResults(codeLangCodeIds);
 		return postResponseDto;
 	}
 }
