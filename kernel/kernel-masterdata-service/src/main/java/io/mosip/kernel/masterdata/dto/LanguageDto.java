@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Dto class for Language.
+ * Data transfer object class for Language.
  * 
  * @author Bal Vikash Sharma
  * @since 1.0.0
