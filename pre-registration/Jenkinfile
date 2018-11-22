@@ -29,7 +29,7 @@ node {
   }
  }
 
- stage('---------Jfrog Artifactory configuration ----------------') {
+ stage('--------- Artifactory configuration ----------------') {
   rtMaven.tool = 'M2_HOME' // Tool name from Jenkins configuration
   rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
   rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
@@ -37,28 +37,8 @@ node {
   buildInfo.env.capture = true
  }
  
-stage ('---------- build ---------------') {
+stage ('---------- mvn-clean-install ---------------') {
         rtMaven.run pom: branch + '/' + projectToBuild + '/pom.xml', goals: 'clean install', buildInfo: buildInfo
-	// For building angular project
-	dir(branch) {
-		echo "Looking for angular projects to build"
-		sh "find . -name 'angular.json'> directoryAngularFiles"
-		locationOfAngularFiles = readFile( "directoryAngularFiles" ).split( "\\r?\\n" );
-		sh "rm -f directoryAngularFiles"
-		for (int i=0; i < locationOfAngularFiles.size(); i++) {
-			if(locationOfAngularFiles[i].equals("")){
-			break;
-			}
-			echo locationOfAngularFiles[i]
-			def currentModule = locationOfAngularFiles[i]
-			sh "dirname $currentModule > parentDirectoryPath"
-			parentDirectoryPath = readFile('parentDirectoryPath').trim()
-			echo parentDirectoryPath
-			sh "rm -f parentDirectoryPath"
-			// installing node modules and building the angular project
-			sh "pushd $parentDirectoryPath && npm install && npm run-script build && popd"
-		}
-	}
 }
 
 stage('---------- SonarQube Analysis --------------') {
