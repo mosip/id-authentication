@@ -15,8 +15,8 @@ import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryRequestDto;
 import io.mosip.kernel.masterdata.dto.ReasonListRequestDto;
 import io.mosip.kernel.masterdata.dto.ReasonListResponseDto;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.CodeLangCodeAndRsnCatCode;
-import io.mosip.kernel.masterdata.entity.CodeLangCodeId;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.ReasonList;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
@@ -105,9 +105,9 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 	public PostResponseDto saveReasonCategories(ReasonCategoryRequestDto reasonRequestDto) {
 		List<ReasonCategory> reasonCategories = metaDataUtils.setCreateMetaData(reasonRequestDto.getReasonCategories(),
 				ReasonCategory.class);
-		List<CodeLangCodeId> reasonCategoryIds = new ArrayList<>();
+		List<CodeAndLanguageCodeId> reasonCategoryIds = new ArrayList<>();
 		PostResponseDto reasonResponseDto = new PostResponseDto();
-		CodeLangCodeId reasonCategoryId = new CodeLangCodeId();
+		CodeAndLanguageCodeId reasonCategoryId = new CodeAndLanguageCodeId();
 		List<ReasonCategory> resultantReasonCategory = null;
 		if (!reasonCategories.isEmpty()) {
 			try {
@@ -133,7 +133,7 @@ public class PacketRejectionReasonServiceImpl implements PacketRejectionReasonSe
 						PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
 						PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorMessage());
 			}
-			reasonResponseDto.setSuccessfully_created(reasonCategoryIds);
+			reasonResponseDto.setResults(reasonCategoryIds);
 		} else {
 			throw new DataNotFoundException(
 					PacketRejectionReasonErrorCode.NO_PACKET_REJECTION_REASONS_FOUND.getErrorCode(),
