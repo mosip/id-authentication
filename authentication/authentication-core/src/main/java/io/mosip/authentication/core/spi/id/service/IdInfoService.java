@@ -10,7 +10,5 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
  * @author Dinesh Karuppiah.T
  */
 public interface IdInfoService {
-
 	Map<String, List<IdentityInfoDTO>> getIdInfo(String uinRefId) throws IdAuthenticationDaoException;
-
 }

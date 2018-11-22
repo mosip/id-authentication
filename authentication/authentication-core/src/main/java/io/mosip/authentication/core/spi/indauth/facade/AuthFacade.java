@@ -17,18 +17,21 @@ import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
 
 @Service
 public interface AuthFacade {
-	 
+
 	/**
 	 * Authenticate applicant.
 	 *
 	 * @param authRequest the auth request
 	 * @return the auth response DTO
-	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
 	 */
-	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest) throws IdAuthenticationBusinessException,IdAuthenticationDaoException;
-	
-	public AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO);
-	
-	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO) throws IdAuthenticationBusinessException;
+	AuthResponseDTO authenticateApplicant(AuthRequestDTO authRequest)
+			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
+
+	AuthResponseDTO authenticateTsp(AuthRequestDTO authRequestDTO);
+
+	KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO)
+			throws IdAuthenticationBusinessException;
 
 }
