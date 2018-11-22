@@ -14,6 +14,7 @@ The key requirements are
 -	Update registration status.
 -	Add registration status.
 -	Provide rest API to get the registration statuses for list of registration ids.
+-	Add registration transaction record for each transaction.
 
 The key non-functional requirements are
 -	Performance: Should fetch information from DB in less time for millions of records. Should be able to support processing multiple status requests per second.
@@ -22,7 +23,11 @@ The key non-functional requirements are
 
 **Solution**
 The key solution considerations are
--	Create “registration” and “registration_transaction” table by executing attached DB scripts.
+-	2 new tables -
+	“registration”table : this table stores current registration status. Example below -
+	![Registration table](_images/registration.PNG)
+	“registration_transaction” table : this table holds all the transactions for a registration id. For example there can be multiple transactions against one registration id. All the transactions will be recorded in this table with parent transaction id so that we can trace all transactions for a particular registration id. In below example there are multiple  transactions for same registration id which indicates what are the stages it has went through -
+	![Registration transaction table](_images/reg_transaction.PNG)
 -	Create Registration and Transaction entity and create dao layer for below crud operations:
 o	Add new registration status.
 o	Add Transaction details with transaction type code and status code (TRANSACTION_STARTED, TRANSACTION_SUCCESSFUL, and TRANSACTION_FAILED).
