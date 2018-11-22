@@ -28,17 +28,26 @@ import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationListDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeListDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
+import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Language;
@@ -52,6 +61,7 @@ import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
+import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
@@ -62,11 +72,13 @@ import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
 import io.mosip.kernel.masterdata.service.TemplateService;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * @author Bal Vikash Sharma
@@ -174,7 +186,29 @@ public class MasterDataServiceTest {
 	DocumentTypeService documentTypeService;
 
 	List<DocumentType> documents = null;
+	
+	
+	//-----------------------------DeviceType-------------------------------------------------
+	@MockBean
+	private DeviceTypeRepository deviceTypeRepository;
+	
+	@Autowired
+	private DeviceTypeService deviceTypeService;
+	
+	@MockBean
+	private MetaDataUtils metaUtils;
+	
+	//-----------------------------DeviceSpecification----------------------------------
 
+	List<DeviceSpecification> deviceSpecificationList ;
+	DeviceSpecification deviceSpecification;
+	
+	DeviceSpecificationRequestDto deviceSpecificationRequestDto ;
+	DeviceSpecificationListDto deviceSpecificationListDto;
+	List<DeviceSpecificationDto> deviceSpecificationDtos ;
+	DeviceSpecificationDto deviceSpecificationDto ;
+	
+	
 	@Before
 	public void setUp() {
 		appSetup();
@@ -202,6 +236,8 @@ public class MasterDataServiceTest {
 		templateServiceSetup();
 
 		documentTypeSetup();
+		
+		deviceTypeSetUp();
 
 	}
 
@@ -356,6 +392,26 @@ public class MasterDataServiceTest {
 		deviceSpecifications.add(deviceSpecification1);
 		deviceSpecificationListWithDeviceTypeCode = new ArrayList<DeviceSpecification>();
 		deviceSpecificationListWithDeviceTypeCode.add(deviceSpecification);
+		
+		
+
+		deviceSpecificationList = new ArrayList<>();
+		deviceSpecification = new DeviceSpecification();
+		deviceSpecification.setId("100");
+		deviceSpecification.setDeviceTypeCode("Laptop");
+		deviceSpecification.setLangCode("ENG");
+		deviceSpecificationList.add(deviceSpecification);
+		
+		deviceSpecificationRequestDto = new DeviceSpecificationRequestDto();
+		deviceSpecificationListDto = new DeviceSpecificationListDto();
+		deviceSpecificationDtos = new ArrayList<>();
+		deviceSpecificationDto = new DeviceSpecificationDto();
+		deviceSpecificationDto.setId("100");
+		deviceSpecificationDto.setDeviceTypeCode("Laptop");
+		deviceSpecificationDto.setLangCode("ENG");
+		deviceSpecificationDtos.add(deviceSpecificationDto);
+		deviceSpecificationListDto.setDeviceSpecificationDtos(deviceSpecificationDtos);
+		deviceSpecificationRequestDto.setRequest(deviceSpecificationListDto);
 	}
 
 	private void blackListedSetup() {
@@ -432,6 +488,49 @@ public class MasterDataServiceTest {
 
 		applicationList.add(application1);
 		applicationList.add(application2);
+
+	}
+	
+	DeviceTypeRequestDto reqTypeDto;
+	DeviceTypeListDto request;
+	List<DeviceTypeDto> deviceTypeDtoList;
+	DeviceTypeDto deviceTypeDto;
+
+	List<DeviceType> deviceTypeList;
+	DeviceType deviceType;
+	List<CodeAndLanguageCodeId> codeLangCodeIds;
+	CodeAndLanguageCodeId codeAndLanguageCodeId;
+
+	
+	public void deviceTypeSetUp() {
+
+		reqTypeDto = new DeviceTypeRequestDto();
+		request = new DeviceTypeListDto();
+		deviceTypeDtoList = new ArrayList<>();
+		deviceTypeDto = new DeviceTypeDto();
+
+		deviceTypeDto.setCode("Laptop");
+		deviceTypeDto.setCode("Laptop");
+		deviceTypeDto.setLangCode("ENG");
+		deviceTypeDto.setName("HP");
+		deviceTypeDto.setDescription("Laptop Desc");
+		deviceTypeDtoList.add(deviceTypeDto);
+		request.setDeviceTypeDtos(deviceTypeDtoList);
+		reqTypeDto.setRequest(request);
+
+		deviceTypeList = new ArrayList<>();
+		deviceType = new DeviceType();
+		deviceType.setCode("Laptop");
+		deviceType.setLangCode("ENG");
+		deviceType.setName("HP");
+		deviceType.setDescription("Laptop Desc");
+		deviceTypeList.add(deviceType);
+
+		codeLangCodeIds = new ArrayList<>();
+		codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId.setCode("Laptop");
+		codeAndLanguageCodeId.setLangCode("ENG");
+		codeLangCodeIds.add(codeAndLanguageCodeId);
 
 	}
 
@@ -783,6 +882,20 @@ public class MasterDataServiceTest {
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 
 	}
+	
+	@Test
+	public void addDeviceSpecificationsTest() {
+		Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any())).thenReturn(deviceSpecificationList);
+		DeviceSpecPostResponseDto deviceSpecPostResponseDto = deviceSpecificationService.addDeviceSpecifications(deviceSpecificationRequestDto);
+		assertEquals(deviceSpecificationListDto.getDeviceSpecificationDtos().get(0).getId(), deviceSpecPostResponseDto.getResults().get(0).getId());
+	}
+	
+	
+	@Test(expected = MasterDataServiceException.class)
+	public void testaddSpecificationThrowsDataAccessException() {
+		Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		deviceSpecificationService.addDeviceSpecifications(deviceSpecificationRequestDto);
+	}
 
 	// ------------------ DocumentCategoryServiceTest -----------------
 
@@ -1061,4 +1174,19 @@ public class MasterDataServiceTest {
 
 	}
 
+	//----------------------------------------DeviceTypeServiceImplTest------------------------------------------------
+	
+	@Test
+	public void addDeviceTypesTest() {
+		Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenReturn(deviceTypeList);
+		PostResponseDto postResponseDto = deviceTypeService.addDeviceTypes(reqTypeDto);
+		assertEquals(request.getDeviceTypeDtos().get(0).getCode(), postResponseDto.getResults().get(0).getCode());
+	}
+
+	
+	@Test(expected = MasterDataServiceException.class)
+	public void testaddDeviceTypesThrowsDataAccessException() {
+		Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		deviceTypeService.addDeviceTypes(reqTypeDto);
+	}
 }
