@@ -118,7 +118,7 @@ public class MasterdataControllerTest {
 	@MockBean
 	private LanguageService languageService;
 
-	private static final String LANGUAGE_JSON_STRING = "{ \"languages\": [   {      \"languageCode\": \"hin\", \"languageName\": \"hindi\",      \"languageFamily\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
+	private static final String LANGUAGE_JSON_STRING = "{ \"languages\": [   {      \"code\": \"hin\", \"name\": \"hindi\",      \"family\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
 
 	private LanguageRequestResponseDto respDto;
 	private List<LanguageDto> languages;
