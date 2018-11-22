@@ -13,17 +13,17 @@ The key requirements are -
 
 -   Booking an appointment should have the detail of:
 
-    -   Pre-Registartion Id
+    -   Pre-Registration Id
 
-    -   Registartion center Id
+    -   Registration center Id
 
     -   DateTime
 
     -   Time slot
 
-- This ablove details need to store in a pre-registartion database. Once storing the data is completed then syatem need to update the cache server.
+- This ablove details need to store in a pre-registration database. Once storing the data is completed then syatem need to update the cache server.
 
-- A key should get generate with Registartion center id, date and a time slot. with this generated key cache should get update the value.
+- A key should get generate with Registration center id, date and a time slot. with this generated key cache should get update the value.
 
 -  Once the cache get updated successfully then an status need to update in the applicant_demographic table to "Booked".
 
@@ -36,7 +36,7 @@ The key non-functional requirements are
 
 -   Audit :
 
-    -   Each state of the Pre-Registration creation should be stored into the DB
+    -   Each state of the Pre-Registration booking appointment should be stored into the DB
         for audit purpose.
 
     -   Pre-reg Id and important detail of the applicant should not be audited.
@@ -50,13 +50,13 @@ The key non-functional requirements are
 
 **Booking an appointment :**
 
--   Create a REST API as '/book' accept the PreRegistartionId,Registartion center id, booking date time and slot from the pre-registration application portal.
+-   Create a REST API as '/booking' accept the PreRegistrationId,Registration center id, booking date time and slot from the pre-registration application portal.
 
--   Generate an cache key using Registartion center id, booking date time and slot.
+-   Generate an cache key using Registration center id, booking date time and slot.
 
 -   Once the key generated successfully update the cache using the generated key by decrementing the value by 1.
 
--   Save the booking data in the pre-registartion booking table. after inserting the booking data system need to update the main table (applicant_demographic) with the status code "Booked"
+-   Save the booking data in the pre-registration booking table. after inserting the booking data system need to update the main table (applicant_demographic) with the status code "Booked"
 
 -   Audit the exception/start/exit of the each stages of the Pre-registration create mechanism using AuditManager component.
 
@@ -74,7 +74,6 @@ The key non-functional requirements are
 
   Code   |       Type  | Message|
 -----|----------|-------------|
-  0000      |             Success |   Packet Successfully created
   PRG_PAM_RCI-001 |  Error   |   User has not been selected any time slot.
   PRG_PAM_RCI_002  | Error   |   Appointment time slot is already booked.
 
