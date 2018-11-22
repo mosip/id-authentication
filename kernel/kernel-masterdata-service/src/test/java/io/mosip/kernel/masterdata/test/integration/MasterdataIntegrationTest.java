@@ -37,6 +37,7 @@ import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.GenderType;
 import io.mosip.kernel.masterdata.entity.GenderTypeId;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -51,6 +52,7 @@ import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistoryId;
 import io.mosip.kernel.masterdata.entity.Title;
 import io.mosip.kernel.masterdata.entity.TitleId;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
+import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.IdTypeRepository;
@@ -60,6 +62,7 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
+import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 
 /**
  * 
@@ -75,6 +78,16 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	private BlacklistedWordsRepository wordsRepository;
+
+	@MockBean
+	private DocumentCategoryRepository documentCategoryRepository;
+
+	@Autowired
+	DocumentCategoryService documentCategoryService;
+
+	List<DocumentCategory> entities;
+
+	DocumentCategory category;
 
 	List<BlacklistedWords> words;
 
@@ -99,17 +112,16 @@ public class MasterdataIntegrationTest {
 
 	@MockBean
 	ReasonCategoryRepository reasonRepository;
-	
+
 	@MockBean
 	ReasonListRepository reasonListRepository;
 
 	private List<ReasonCategory> reasoncategories;
-	
+
 	private List<ReasonList> reasonList;
-	
-	private static final String REASON_LIST_REQUEST="{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }";
-	private static final String REASON_EMPTY_LIST_REQUEST="{ \"reasonList\": [] }";
-	
+
+	private static final String REASON_LIST_REQUEST = "{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }";
+	private static final String REASON_EMPTY_LIST_REQUEST = "{ \"reasonList\": [] }";
 
 	@MockBean
 	RegistrationCenterHistoryRepository repository;
@@ -165,6 +177,14 @@ public class MasterdataIntegrationTest {
 
 		titleIntegrationSetup();
 
+		documentCategorySetUp();
+	}
+
+	private void documentCategorySetUp() {
+		category = new DocumentCategory();
+		category.setCode("DC001");
+		entities = new ArrayList<>();
+		entities.add(category);
 	}
 
 	private void titleIntegrationSetup() {
@@ -540,7 +560,7 @@ public class MasterdataIntegrationTest {
 				.thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(get("/packetrejectionreasons")).andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	public void createReasonCateogryTest() throws Exception{
 		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(reasoncategories);
@@ -552,37 +572,37 @@ public class MasterdataIntegrationTest {
 		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(reasonList);
 		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }".getBytes())).andExpect(status().isOk());
 	}
-	
+
 	@Test
 	public void createReasonCateogryFetchExceptionTest() throws Exception{
 		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonCategories\": [ { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" } ] }".getBytes())).andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void createReasonCateogryDataNotFoundTest() throws Exception{
 		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(reasoncategories);
 		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonCategories\": [ ] }".getBytes())).andExpect(status().isNotFound());
 	}
-	
 	@Test
 	public void createReasonCateogryDataNotFoundInDbTest() throws Exception{
 		Mockito.when(reasonRepository.saveAll(Mockito.any())).thenReturn(new ArrayList<ReasonCategory>());
 		mockMvc.perform(post("/packetrejectionreasons/reasoncategory").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonCategories\": [ { \"code\": \"RC9\", \"name\": \"reason_category\", \"description\": \"reason categroy\", \"langCode\": \"ENG\" } ] }".getBytes())).andExpect(status().isNotFound());
 	}
-	
+
 	@Test
 	public void createReasonListFetchExceptionTest() throws Exception{
 		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonList\": [ { \"code\": \"RL1\", \"name\": \"reas_list\", \"description\": \"reason List\", \"reasonCategoryCode\": \"RC5\", \"langCode\": \"ENG\", \"isActive\": true, \"deleted\": false }] }".getBytes())).andExpect(status().isInternalServerError());
 	}
-	
+
 	@Test
 	public void createReasonListDataNotFoundTest() throws Exception{
 		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(reasonList);
 		mockMvc.perform(post("/packetrejectionreasons/reasonlist").contentType(MediaType.APPLICATION_JSON).content("{ \"reasonList\": [ ] }".getBytes())).andExpect(status().isNotFound());
 	}
 	
+
 	@Test
 	public void createReasonListDataNotFoundInDbTest() throws Exception{
 		Mockito.when(reasonListRepository.saveAll(Mockito.any())).thenReturn(new ArrayList<ReasonList>());
@@ -882,6 +902,24 @@ public class MasterdataIntegrationTest {
 		Mockito.when(titleRepository.getThroughLanguageCode(Mockito.anyString())).thenReturn(titleList);
 		mockMvc.perform(get("/title/{languageCode}", "ENG")).andExpect(status().isOk());
 
+	}
+	// ----------------------------------------document
+	// category----------------------------------------
+
+	@Test
+	public void addDocumentCategoryListTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategories\":[{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}]}}";
+		when(documentCategoryRepository.saveAll(Mockito.any())).thenReturn(entities);
+		mockMvc.perform(post("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addDocumentCategoryDatabaseConnectionExceptionTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentCategories\":[{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}]}}";
+		when(documentCategoryRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(post("/documentcategories").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
 	}
 
 }
