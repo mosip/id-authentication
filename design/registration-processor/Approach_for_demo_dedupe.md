@@ -68,4 +68,13 @@ Find attached sample code to perform levenshtein distance algorithm.
 	2. If the person is not identified then save the Applicant record and list of potential duplicates to manual adjudication table. Next step is to perform manual adjudication on record.
 
 
+**Class Diagram**
+
+![Demo dedupe class diagram](_images/demo_dedupe_class_diagram.png)
+
+**Sequence Diagram**
+
+![Demo dedupe sequence diagram](_images/demo_dedupe_seq_diagram.png)
+
+
 
