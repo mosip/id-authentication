@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.filter;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -14,8 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -55,17 +56,14 @@ public class KycFilterTest{
 
 	KycAuthFilter kycAuthFilter = new KycAuthFilter();
 
-	{
-		try {
-			kycAuthFilter.init(null);
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	@Autowired
 	ObjectMapper mapper;
+	
+	  @Before
+	    public void before() {
+		ReflectionTestUtils.setField(kycAuthFilter, "mapper", mapper);
+		ReflectionTestUtils.setField(kycAuthFilter, "env", env);
+	    }
 
 	@Test
 	public void testValidDecodedRequest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, IOException, NoSuchMethodException, SecurityException {

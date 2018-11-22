@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -29,11 +28,14 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthError;
 import io.mosip.authentication.core.dto.indauth.BaseAuthResponseDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
+import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.util.DataValidationUtil;
 
 /**
@@ -51,6 +53,9 @@ import io.mosip.authentication.core.util.DataValidationUtil;
 public class IDAuthExceptionHandlerTest {
 	@Autowired
 	Environment environment;
+	
+	@Autowired
+	ObjectMapper mapper;
 
 	@InjectMocks
 	private IdAuthExceptionHandler handler;
@@ -60,7 +65,7 @@ public class IDAuthExceptionHandlerTest {
 		ResourceBundleMessageSource source = new ResourceBundleMessageSource();
 		source.setBasename("errormessages");
 		ReflectionTestUtils.setField(handler, "messageSource", source);
-		ReflectionTestUtils.setField(handler, "env", environment);
+		ReflectionTestUtils.setField(handler, "mapper", mapper);
 	}
 
 	@Test
@@ -126,7 +131,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testHandleDataException() {
 		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus("false");
+		expectedResponse.setStatus("N");
 		expectedResponse.setTxnID(null);
 		expectedResponse.setErr(Collections
 				.singletonList(new AuthError(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED.getErrorCode(),
@@ -149,7 +154,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testAsyncRequestTimeoutException() {
 		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus("false");
+		expectedResponse.setStatus("N");
 		expectedResponse.setTxnID(null);
 		expectedResponse.setErr(Collections
 				.singletonList(new AuthError(IdAuthenticationErrorConstants.CONNECTION_TIMED_OUT.getErrorCode(),
@@ -164,7 +169,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testNoSuchMessageException() {
 		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus("false");
+		expectedResponse.setStatus("N");
 		expectedResponse.setTxnID(null);
 		expectedResponse.setErr(
 				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
@@ -179,7 +184,7 @@ public class IDAuthExceptionHandlerTest {
 	@Test
 	public void testhandleAllExceptionsUnknownError() {
 		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
-		expectedResponse.setStatus("false");
+		expectedResponse.setStatus("N");
 		expectedResponse.setTxnID(null);
 		expectedResponse.setErr(Collections
 				.singletonList(new AuthError(IdAuthenticationErrorConstants.UNKNOWN_ERROR.getErrorCode(),
@@ -197,5 +202,20 @@ public class IDAuthExceptionHandlerTest {
 			actualResponse.setResTime(null);
 			assertEquals(expectedResponse, actualResponse);
 		}
+	}
+	
+	@Test
+	public void testCreateAuthError() {
+		BaseAuthResponseDTO expectedResponse = new BaseAuthResponseDTO();
+		expectedResponse.setStatus("N");
+		expectedResponse.setTxnID(null);
+		expectedResponse.setErr(
+				Collections.singletonList(new AuthError(IdAuthenticationErrorConstants.INVALID_TXN_ID.getErrorCode(),
+						IdAuthenticationErrorConstants.INVALID_TXN_ID.getErrorMessage())));
+		ResponseEntity<Object> handleExceptionInternal = handler
+				.handleIdAppException(new IdAuthenticationBaseException(IdAuthenticationErrorConstants.INVALID_TXN_ID), null);
+		BaseAuthResponseDTO actualResponse = (BaseAuthResponseDTO) handleExceptionInternal.getBody();
+		actualResponse.setResTime(null);
+		assertEquals(expectedResponse, actualResponse);
 	}
 }
