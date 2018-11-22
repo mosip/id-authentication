@@ -3,8 +3,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +15,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
+import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 
 /**
  * Service class with function to fetch details of registration center history
@@ -29,7 +28,7 @@ import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
 public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterHistoryService {
 
 	@Autowired
-	ModelMapper modelMapper;
+	private ObjectMapperUtil objectMapperUtil;
 
 	@Autowired
 	private RegistrationCenterHistoryRepository registrationCenterHistoryRepository;
@@ -62,8 +61,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_NOT_FOUND.getErrorMessage());
 		} else {
 			registrationCenterDto.setRegistrationCenters(
-					modelMapper.map(registrationCenter, new TypeToken<List<RegistrationCenterDto>>() {
-					}.getType()));
+					objectMapperUtil.mapAll(registrationCenter, RegistrationCenterDto.class));
 		}
 		return registrationCenterDto;
 	}

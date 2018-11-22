@@ -1,5 +1,7 @@
 package io.mosip.kernel.masterdata.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,8 +48,9 @@ public class LanguageController {
 	 * @return ResponseEntity
 	 */
 	@PostMapping
-	public ResponseEntity<?> saveAllLaguages(@RequestBody LanguageRequestResponseDto dto) {
-		return new ResponseEntity<>(languageService.saveAllLanguages(dto), HttpStatus.CREATED);
+	public ResponseEntity<?> saveAllLaguages(
+			@Valid @RequestBody LanguageRequestResponseDto languageRequestResponseDto) {
+		return new ResponseEntity<>(languageService.saveAllLanguages(languageRequestResponseDto), HttpStatus.CREATED);
 	}
 
 }

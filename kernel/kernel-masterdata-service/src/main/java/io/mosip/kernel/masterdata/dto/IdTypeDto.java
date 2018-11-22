@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO class for IdType.
+ * DTO class for IdType fetch response.
  * 
  * @author Sagar Mahapatra
  * @since 1.0.0
@@ -16,15 +16,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IdTypeDto {
 	/**
-	 * the id code.
+	 * The id code.
 	 */
 	private String code;
 	/**
-	 * the id description.
+	 * The id description.
 	 */
 	private String descr;
 	/**
-	 * the language code.
+	 * The language code.
 	 */
 	private String langCode;
 }

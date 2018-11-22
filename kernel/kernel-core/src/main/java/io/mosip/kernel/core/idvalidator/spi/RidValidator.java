@@ -6,6 +6,7 @@ package io.mosip.kernel.core.idvalidator.spi;
  * @author Ritesh Sinha
  *
  * @param <T>
+ *            is of custom type
  */
 public interface RidValidator<T> {
 	/**
