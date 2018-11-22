@@ -17,10 +17,14 @@ import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManager;
+import io.mosip.registration.processor.core.code.EventId;
+import io.mosip.registration.processor.core.code.EventName;
+import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FilePathNotAccessibleException;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -49,7 +53,10 @@ public class VirusScannerStage extends MosipVerticleManager {
 
 	@Value("${registration.processor.vertx.localhost}")
 	private String localhost;
-
+	
+	@Autowired
+	AuditLogRequestBuilder auditLogRequestBuilder;
+	
 	@Autowired
 	VirusScanner<Boolean, String> virusScannerService;
 
@@ -70,6 +77,10 @@ public class VirusScannerStage extends MosipVerticleManager {
 	private static final String VIRUS_SCAN_FAILED = "The Virus Scan for the Packet Failed";
 	private static final String UNABLE_TO_DELETE = "unable to delete after sending to DFS.";
 
+	String description = "";
+	boolean isTransactionSuccessful = false;
+	String registrationId ="";
+	
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		this.consume(mosipEventBus, MessageBusAddress.LANDING_ZONE_BUS_OUT);
@@ -86,7 +97,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 			return object;
 		}
 		for (InternalRegistrationStatusDto entry : registrationStatusDtoList) {
-
+			
 			String filepath = env.getProperty(DirectoryPathDto.VIRUS_SCAN.toString()) + File.separator
 					+ getFileName(entry.getRegistrationId());
 			File file = new File(filepath);
@@ -96,6 +107,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 				isClean = virusScannerService.scanFile(filepath);
 				if (isClean) {
 					sendToDFS(file, entry);
+					
 				} else {
 					sendToRetry(entry);
 				}
@@ -114,6 +126,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	 *            the entry
 	 */
 	private void sendToRetry(InternalRegistrationStatusDto entry) {
+		registrationId=entry.getRegistrationId();
 		try {
 			if (entry.getRetryCount() == null)
 				entry.setRetryCount(0);
@@ -125,12 +138,29 @@ public class VirusScannerStage extends MosipVerticleManager {
 			registrationStatusService.updateRegistrationStatus(entry);
 			fileManager.cleanUpFile(DirectoryPathDto.VIRUS_SCAN, DirectoryPathDto.VIRUS_SCAN_RETRY,
 					entry.getRegistrationId());
+			description =  registrationId + " packet is infected. It has been sent" + " to RETRY_FOLDER.";
 			LOGGER.info(LOGDISPLAY, entry.getRegistrationId(),
 					"File is infected. It has been sent" + " to RETRY_FOLDER.");
 		} catch (IOException | FilePathNotAccessibleException e) {
 			LOGGER.error(LOGDISPLAY, RETRY_FOLDER_NOT_ACCESSIBLE, e);
+			description =  "RETRY_FOLDER is not accessible for packet  " +registrationId ;
 		} catch (TablenotAccessibleException e) {
 			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
+			description =  "The Registration Status table is not accessible for packet " +registrationId ;
+		}finally {
+
+			String eventId = "";
+			String eventName = "";
+			String eventType = "";
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					registrationId);
+
 		}
 
 	}
@@ -146,6 +176,7 @@ public class VirusScannerStage extends MosipVerticleManager {
 	private void sendToDFS(File file, InternalRegistrationStatusDto entry) {
 		String filename = file.getName();
 		filename = filename.substring(0, filename.lastIndexOf('.'));
+		registrationId=entry.getRegistrationId();
 		try {
 			adapter.storePacket(filename, file);
 			if (adapter.isPacketPresent(entry.getRegistrationId())) {
@@ -158,11 +189,35 @@ public class VirusScannerStage extends MosipVerticleManager {
 			}
 			entry.setStatusCode(RegistrationStatusCode.PACKET_UPLOADED_TO_FILESYSTEM.toString());
 			registrationStatusService.updateRegistrationStatus(entry);
+			isTransactionSuccessful = true;
+			
+			description =  registrationId + " packet successfully  scanned for virus. I thas been send to DFS";
 		} catch (DFSNotAccessibleException e) {
 			LOGGER.error(LOGDISPLAY, DFS_NOT_ACCESSIBLE, e);
+			description =  "FileSytem is not accessible for packet " +registrationId ;
 		} catch (IOException | FilePathNotAccessibleException e) {
 			LOGGER.error(LOGDISPLAY, entry.getRegistrationId() + UNABLE_TO_DELETE, e);
+			description =  "Virus scan path is not accessible for packet " +registrationId ;
 		}
+		catch (TablenotAccessibleException e) {
+			LOGGER.error(LOGDISPLAY, REGISTRATION_STATUS_TABLE_NOT_ACCESSIBLE, e);
+			description =  "The Registration Status table is not accessible for packet " +registrationId ;
+		}finally {
+
+			String eventId = "";
+			String eventName = "";
+			String eventType = "";
+			eventId = isTransactionSuccessful ? EventId.RPR_402.toString() : EventId.RPR_405.toString();
+			eventName = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventName.UPDATE.toString()
+					: EventName.EXCEPTION.toString();
+			eventType = eventId.equalsIgnoreCase(EventId.RPR_402.toString()) ? EventType.BUSINESS.toString()
+					: EventType.SYSTEM.toString();
+
+			auditLogRequestBuilder.createAuditRequestBuilder(description, eventId, eventName, eventType,
+					registrationId);
+
+		}
+
 	}
 
 	private String getFileName(String fileName) {

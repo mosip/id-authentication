@@ -64,11 +64,6 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.registrationprocessor</groupId>
-			<artifactId>registration-processor-auditmanager-client</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.registrationprocessor</groupId>
 			<artifactId>filesystem-adapter-ceph</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
@@ -82,7 +77,11 @@
 			<artifactId>registration-status</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-
+		<dependency>
+			<groupId>io.mosip.registrationprocessor</groupId>
+			<artifactId>registration-processor-rest-client</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

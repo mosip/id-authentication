@@ -262,7 +262,7 @@ public class OSIValidator {
 		pinList.add(pinInfo);
 		authRequestDTO.setPinInfo(pinList);
 
-		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTH, "", "",
+		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
 
 		if (authResponseDTO.isStatus())
@@ -328,7 +328,7 @@ public class OSIValidator {
 		request.setIdentity(identityDTO);
 		authRequestDTO.setRequest(request);
 
-		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTH, "", "",
+		AuthResponseDTO authResponseDTO = (AuthResponseDTO) restClientService.postApi(ApiName.AUTHINTERNAL, "", "",
 				authRequestDTO, AuthResponseDTO.class);
 		if (authResponseDTO.isStatus())
 			isValidBiometric = true;

@@ -9,7 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.mosip.registration.processor.stages.quality.check.assignment.QualityCheckerAssignmentStage;
 
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.stages",
-		"io.mosip.registration.processor.quality.check","io.mosip.registration.processor.auditmanager"  })
+		"io.mosip.registration.processor.quality.check", "io.mosip.registration.processor.auditmanager",
+		"io.mosip.registration.processor.rest.client" })
 public class QualityMatchnessCheckerStageApplication {
 
 	@Autowired

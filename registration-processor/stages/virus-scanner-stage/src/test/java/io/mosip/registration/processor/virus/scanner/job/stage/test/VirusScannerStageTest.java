@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.groups.Tuple;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,31 +20,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import io.mosip.kernel.core.virusscanner.spi.VirusScanner;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
 import io.mosip.registration.processor.core.spi.filesystem.manager.FileManager;
 import io.mosip.registration.processor.packet.manager.dto.DirectoryPathDto;
 import io.mosip.registration.processor.packet.manager.exception.FilePathNotAccessibleException;
+import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
 import io.mosip.registration.processor.status.exception.TablenotAccessibleException;
 import io.mosip.registration.processor.status.service.RegistrationStatusService;
 import io.mosip.registration.processor.virus.scanner.job.exceptions.DFSNotAccessibleException;
-import io.mosip.registration.processor.virus.scanner.job.exceptions.RetryFolderNotAccessibleException;
 import io.mosip.registration.processor.virus.scanner.job.exceptions.VirusScanFailedException;
 import io.mosip.registration.processor.virus.scanner.job.stage.VirusScannerStage;
-
-import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-import org.assertj.core.api.Assertions;
-import org.assertj.core.groups.Tuple;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VirusScannerStageTest {
@@ -50,6 +49,9 @@ public class VirusScannerStageTest {
 	@InjectMocks
 	private VirusScannerStage virusScannerStage;
 
+	@Mock
+	private AuditLogRequestBuilder auditLogRequestBuilder;
+	
 	@Mock
 	private Environment env;
 
@@ -121,6 +123,7 @@ public class VirusScannerStageTest {
 		.containsExactly(Tuple.tuple( Level.INFO, "1000.zip - File is infected. It has been sent to RETRY_FOLDER.")); 
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testRegistrationStatusTableIsNotAccessible() throws Exception {
         listAppender.start();
