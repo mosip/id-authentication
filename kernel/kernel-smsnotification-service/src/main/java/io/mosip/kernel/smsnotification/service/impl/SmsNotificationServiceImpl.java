@@ -50,12 +50,9 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 	@Value("${mosip.kernel.sms.number.length}")
 	String length;
 
-	/**
-	 * SendSmsNotification
-	 * 
-	 * @param contactNumber
-	 * @param contentMessage
-	 * @return
+	
+	/* (non-Javadoc)
+	 * @see io.mosip.kernel.core.notification.spi.SmsNotification#sendSmsNotification(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public SmsResponseDto sendSmsNotification(String contactNumber, String contentMessage)  {

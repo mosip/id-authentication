@@ -1,4 +1,5 @@
 package io.mosip.kernel.masterdata.constant;
+
 /**
  * Constants for Biometric Attribute
  * 
@@ -7,9 +8,8 @@ package io.mosip.kernel.masterdata.constant;
  *
  */
 public enum BiometricAttributeErrorCode {
-	BIOMETRICATTRIBUTE_NOT_FOUND_EXCEPTION("KER-MSD-031",
-			"No biometric attributes found for specified biometric code type and language code"), BIOMETRIC_TYPE_FETCH_EXCEPTION(
-					"KER-MSD-031", "exception during fatching data from db");
+	BIOMETRICATTRIBUTE_NOT_FOUND_EXCEPTION("KER-MSD-004", "BiometricAttribute not found"), BIOMETRIC_TYPE_FETCH_EXCEPTION(
+			"KER-MSD-003", "Error occurred while fetching BiometricAttributes");
 
 	private final String errorCode;
 	private final String errorMessage;

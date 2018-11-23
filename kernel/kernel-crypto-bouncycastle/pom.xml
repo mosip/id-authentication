@@ -10,6 +10,9 @@
 	<artifactId>kernel-crypto-bouncycastle</artifactId>
 	<packaging>jar</packaging>
 	<name>kernel-crypto-bouncycastle</name>
+	<properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>

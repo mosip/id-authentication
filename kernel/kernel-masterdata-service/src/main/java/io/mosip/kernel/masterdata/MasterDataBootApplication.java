@@ -15,8 +15,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MasterDataBootApplication {
 
-
-
 	/**
 	 * Function to run the Master-Data-Service application
 	 * 
