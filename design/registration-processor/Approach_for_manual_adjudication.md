@@ -27,9 +27,9 @@ The key non-functional requirements are
 **Solution**
 
 The key solution considerations are -
-- Create vertical "Manual-adjudication" with rest endpoints to -
-	1. Provide applicant demographic, document and biometric information to manual adjudicator for verification.
-	2. Receive decision from manual adjudicator on packets either approved or rejected and save it to table.
+- Create vertical "Manual-adjudication-stage" with rest endpoints to -
+	1. GET : Provide applicant demographic, document and biometric information to manual adjudicator for verification.
+	2. POST : Receive decision from manual adjudicator on packets either approved or rejected and save it to table.
 - Create ManualAdjudicationController and add 2 new methods -
 	1. HTTP method GET. URI : /manualadjudicationrequest. This is to provide applicant information to initiate manual adjudication.
 	2. HTTP method POST. URI : /manualadjudicationresponse. This is to get the response from manual adjudicator.
