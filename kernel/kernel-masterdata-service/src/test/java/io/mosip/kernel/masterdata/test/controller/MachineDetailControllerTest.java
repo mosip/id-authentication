@@ -76,4 +76,27 @@ public class MachineDetailControllerTest {
 		Assert.assertNotNull(actual);
 		Assert.assertTrue(actual.getMachineDetails().size() > 0);
 	}
+	
+	@Test
+	public void testGetMachineDetailLang() {
+		MachineDetailResponseDto machineDetailResponseDto =  new MachineDetailResponseDto();
+		List<MachineDetailDto> machineDetailDtoList = new ArrayList<>();
+		MachineDetailDto machineDetailDto = new MachineDetailDto();
+		machineDetailDto.setId("1000");
+		machineDetailDto.setName("HP");
+		machineDetailDto.setSerialNum("1234567890");
+		machineDetailDto.setMacAddress("100.100.100.80");
+		machineDetailDto.setLangCode("ENG");
+		machineDetailDto.setIsActive(true);
+		machineDetailDtoList.add(machineDetailDto);
+		machineDetailResponseDto.setMachineDetails(machineDetailDtoList);
+		Mockito.when(macService.getMachineDetailLang(Mockito.anyString()))
+				.thenReturn(machineDetailResponseDto);
+		MachineDetailResponseDto actual = machineDetailController.getMachineDetailLang(Mockito.anyString());
+
+		Assert.assertNotNull(actual);
+		Assert.assertTrue(actual.getMachineDetails().size() > 0);
+
+	}
 }
+

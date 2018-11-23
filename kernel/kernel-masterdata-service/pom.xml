@@ -13,6 +13,7 @@
 	<name>kernel-masterdata-service</name>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <sonar.skip>true</sonar.skip>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -73,11 +74,6 @@
 			<version>${spring.boot.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.modelmapper</groupId>
-			<artifactId>modelmapper</artifactId>
-			<version>${modelmapper.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
 			<version>2.0.0-beta.5</version>
@@ -94,6 +90,7 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 			<version>${spring.boot.version}</version>
 		</dependency>
+
 	</dependencies>
 
 </project>

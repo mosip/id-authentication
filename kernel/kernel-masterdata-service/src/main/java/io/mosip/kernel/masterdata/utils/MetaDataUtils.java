@@ -39,8 +39,8 @@ public class MetaDataUtils {
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(),
 						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorMessage());
 			}
-			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC") );
-			LocalDateTime utime = LocalDateTime.now(ZoneId.of("UTC") );
+			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
+			LocalDateTime utime = LocalDateTime.now(ZoneId.of("UTC"));
 			entity.setIsActive(true);
 			entity.setDeletedtimes(null);
 			entity.setUpdatedBy(contextUser);

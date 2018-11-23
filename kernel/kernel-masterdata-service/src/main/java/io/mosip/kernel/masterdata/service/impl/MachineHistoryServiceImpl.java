@@ -8,7 +8,6 @@ package io.mosip.kernel.masterdata.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -43,8 +42,7 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 	/**
 	 * Field to hold ModelMapper object
 	 */
-	@Autowired
-	ModelMapper modelMapper;
+	
 
 	/**
 	 * Field to hold ObjectMapperUtil object
@@ -94,7 +92,8 @@ public class MachineHistoryServiceImpl implements MachineHistoryService {
 		List<MachineHistoryDto> machineHistoryDtoList = null;
 		MachineHistoryResponseDto machineHistoryResponseDto = new MachineHistoryResponseDto();
 		try {
-			macHistoryList = macRepo.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(id, langCode, lDateAndTime);
+			macHistoryList = macRepo.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(id,
+					langCode, lDateAndTime);
 		} catch (DataAccessException dataAccessLayerException) {
 			throw new MasterDataServiceException(MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorCode(),
 					MachineHistoryErrorCode.MACHINE_HISTORY_FETCH_EXCEPTION.getErrorMessage());

@@ -12,6 +12,9 @@
 	<artifactId>kernel-packetserver-http</artifactId>
 
 	<packaging>jar</packaging>
+	<properties>
+    <sonar.skip>true</sonar.skip>
+  </properties>
 
 	<name>kernel-packetserver-http</name>
 	<dependencies>

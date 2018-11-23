@@ -1,5 +1,6 @@
 package io.mosip.kernel.masterdata.test.controller;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -20,24 +21,40 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationListDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCode;
+import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeListDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.IdType;
@@ -50,6 +67,8 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
+import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
@@ -118,13 +137,13 @@ public class MasterdataControllerTest {
 	@MockBean
 	private LanguageService languageService;
 
-	private static final String LANGUAGE_JSON_STRING = "{ \"languages\": [   {      \"languageCode\": \"hin\", \"languageName\": \"hindi\",      \"languageFamily\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
+	private static final String LANGUAGE_JSON_STRING = "{ \"languages\": [   {      \"code\": \"hin\", \"name\": \"hindi\",      \"family\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
 
 	private LanguageRequestResponseDto respDto;
 	private List<LanguageDto> languages;
 	private LanguageDto hin;
 
-	private final String LOCATION_JSON_EXPECTED = "{\"locations\":[{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"locationCode\":\"KAR\",\"locationName\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocationCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
+	private final String LOCATION_JSON_EXPECTED = "{\"locations\":[{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true},{\"code\":\"KAR\",\"name\":\"KARNATAKA\",\"hierarchyLevel\":1,\"hierarchyName\":null,\"parentLocCode\":\"IND\",\"languageCode\":\"KAN\",\"createdBy\":\"dfs\",\"updatedBy\":\"sdfsd\",\"isActive\":true}]}";
 
 	@MockBean
 	private LocationService locationService;
@@ -144,6 +163,18 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private TemplateService templateService;
+	
+	@MockBean
+	DeviceTypeService deviceTypeService;
+	
+	DeviceTypeRequestDto reqTypeDto;
+	DeviceTypeListDto devTypeListDto;
+	List<DeviceTypeDto> devTypeList;
+	DeviceTypeDto devTypeDto;
+	
+	PostResponseDto resDto;
+	List<CodeAndLanguageCodeId> codeLangCodeList ;
+	CodeAndLanguageCodeId codeLangCode ;
 
 	private static final String TEMPLATE_EXPECTED_LIST = "[\r\n" + "  {\r\n" + "	\"id\": \"3\",\r\n"
 			+ "    \"name\": \"Email template\",\r\n" + "    \"description\": null,\r\n"
@@ -152,6 +183,17 @@ public class MasterdataControllerTest {
 			+ "    \"languageCode\": \"HIN\"\r\n" + "  }\r\n" + "]";
 
 	private List<TemplateDto> templateDtoList = new ArrayList<>();
+	
+	@MockBean
+	DeviceSpecificationService deviceSpecificationService;
+	
+	private DeviceSpecificationRequestDto requestDto ;
+	private DeviceSpecificationListDto devSepcList;
+	private List<DeviceSpecificationDto> devDecDtoList;
+	private DeviceSpecificationDto devSpecDto;
+	private DeviceSpecPostResponseDto responseDto;
+	private List<DeviceTypeCodeAndLanguageCode> devTypes;
+	private DeviceTypeCodeAndLanguageCode devType;
 
 	@Before
 	public void setUp() {
@@ -162,7 +204,7 @@ public class MasterdataControllerTest {
 		biometricAttributeSetup();
 
 		// TODO DeviceControllerTest
-		// TODO DeviceSpecificationControllerTest
+		deviceSpecificationSetUp();
 
 		documentCategorySetup();
 
@@ -177,6 +219,8 @@ public class MasterdataControllerTest {
 		registrationCenterController();
 
 		templateSetup();
+		
+		deviceTypeSetUp();
 
 	}
 
@@ -230,21 +274,21 @@ public class MasterdataControllerTest {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
 		locationResponseDto = new LocationResponseDto();
 		locationDto = new LocationDto();
-		locationDto.setLocationCode("IND");
-		locationDto.setLocationName("INDIA");
+		locationDto.setCode("IND");
+		locationDto.setName("INDIA");
 		locationDto.setHierarchyLevel(0);
 		locationDto.setHierarchyName(null);
-		locationDto.setParentLocationCode(null);
+		locationDto.setParentLocCode(null);
 		locationDto.setLanguageCode("HIN");
 		locationDto.setCreatedBy("dfs");
 		locationDto.setUpdatedBy("sdfsd");
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
-		locationDto.setLocationCode("KAR");
-		locationDto.setLocationName("KARNATAKA");
+		locationDto.setCode("KAR");
+		locationDto.setName("KARNATAKA");
 		locationDto.setHierarchyLevel(1);
 		locationDto.setHierarchyName(null);
-		locationDto.setParentLocationCode("IND");
+		locationDto.setParentLocCode("IND");
 		locationDto.setLanguageCode("KAN");
 		locationDto.setCreatedBy("dfs");
 		locationDto.setUpdatedBy("sdfsd");
@@ -255,8 +299,8 @@ public class MasterdataControllerTest {
 
 	private void idTypeSetup() {
 		idType = new IdType();
-		idType.setActive(true);
-		idType.setCrBy("testCreation");
+		idType.setIsActive(true);
+		idType.setCreatedBy("testCreation");
 		idType.setLangCode("ENG");
 		idType.setCode("POA");
 		idType.setDescr("Proof Of Address");
@@ -335,6 +379,53 @@ public class MasterdataControllerTest {
 
 		biometricTypeDtoList.add(biometricTypeDto1);
 		biometricTypeDtoList.add(biometricTypeDto2);
+	}
+	
+	private void deviceTypeSetUp() {
+		reqTypeDto = new DeviceTypeRequestDto();
+		devTypeListDto = new DeviceTypeListDto();
+		devTypeList = new ArrayList<>();
+		devTypeDto =new DeviceTypeDto();
+		devTypeDto.setCode("laptop");
+		devTypeDto.setLangCode("ENG");
+		devTypeDto.setName("HP");
+		devTypeDto.setDescription("Laptop disc");
+		devTypeList.add(devTypeDto);
+		devTypeListDto.setDeviceTypeDtos(devTypeList);
+		reqTypeDto.setRequest(devTypeListDto);
+		
+		resDto = new PostResponseDto();
+		codeLangCodeList = new ArrayList<>();
+		codeLangCode = new CodeAndLanguageCodeId();
+		codeLangCode.setCode("laptop");
+		codeLangCode.setLangCode("ENG");
+		codeLangCodeList.add(codeLangCode);
+		resDto.setResults(codeLangCodeList);
+		
+	}
+	
+	private void deviceSpecificationSetUp() {
+		requestDto = new DeviceSpecificationRequestDto();
+		devSepcList = new DeviceSpecificationListDto();
+		devDecDtoList = new ArrayList<>();
+		devSpecDto = new DeviceSpecificationDto();
+		devSpecDto.setId("100");
+		devSpecDto.setName("HP");
+		devSpecDto.setLangCode("ENG");
+		devSpecDto.setDeviceTypeCode("laptop");
+		devDecDtoList.add(devSpecDto);
+		devSepcList.setDeviceSpecificationDtos(devDecDtoList);
+		requestDto.setRequest(devSepcList);
+		
+		
+		responseDto = new DeviceSpecPostResponseDto();
+		devTypes = new ArrayList<>();
+		devType = new DeviceTypeCodeAndLanguageCode();
+		devType.setId("100");
+		devType.setLangCode("ENG");
+		devType.setDeviceTypeCode("laptop");
+		devTypes.add(devType);
+		responseDto.setResults(devTypes);
 	}
 
 	// -------------------------------BiometricTypeControllerTest--------------------------
@@ -529,9 +620,9 @@ public class MasterdataControllerTest {
 
 		// creating language
 		hin = new LanguageDto();
-		hin.setLanguageCode("hin");
-		hin.setLanguageName("hindi");
-		hin.setLanguageFamily("hindi");
+		hin.setCode("hin");
+		hin.setName("hindi");
+		hin.setFamily("hindi");
 		hin.setNativeName("hindi");
 
 		// adding language to list
@@ -653,4 +744,43 @@ public class MasterdataControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN/EMAIL"))
 				.andExpect(status().isOk());
 	}
+	
+	//--------------------------------DeviceType------------------------
+	@Test
+	public void testAddDeviceTypes() throws Exception {
+	
+		String inputJson = this.maptoJson(reqTypeDto);
+		Mockito.when(deviceTypeService.addDeviceTypes(reqTypeDto)).thenReturn(resDto);
+		
+		MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post("/devicetypes/")
+				.accept(MediaType.APPLICATION_JSON).content(inputJson)
+				.contentType(MediaType.APPLICATION_JSON)).andReturn();
+		
+		MockHttpServletResponse response =result.getResponse();
+		String outputJson = response.getContentAsString();
+		assertNotNull(outputJson);	
+	}
+	private String maptoJson(Object object)throws  JsonProcessingException{
+		ObjectMapper objectMap = new ObjectMapper();
+		return objectMap.writeValueAsString(object);
+	}
+	
+	
+	//---------------------------------DeviceSpecification-------------------
+	@Test
+	public void testAddDeviceSpecifications() throws Exception {
+
+		String inputJson = this.maptoJson(requestDto);
+		Mockito.when(
+				deviceSpecificationService.addDeviceSpecifications(Mockito.any(DeviceSpecificationRequestDto.class)))
+				.thenReturn(responseDto);
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications/")
+				.accept(MediaType.APPLICATION_JSON).content(inputJson).contentType(MediaType.APPLICATION_JSON))
+				.andReturn();
+
+		MockHttpServletResponse response = result.getResponse();
+		String outputJson = response.getContentAsString();
+		assertNotNull(outputJson);
+	}
+	
 }

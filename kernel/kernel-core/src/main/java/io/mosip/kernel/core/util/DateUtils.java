@@ -72,7 +72,7 @@ public final class DateUtils {
 	 * @param days
 	 *            the number of days to add, may be negative
 	 * @return the new Date with the number of days added
-	 * @throws IllegalArgumentException
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the date is null
 	 */
 	public static Date addDays(final Date date, final int days) {
@@ -95,7 +95,7 @@ public final class DateUtils {
 	 * @param hours
 	 *            the hours to add, may be negative
 	 * @return the new Date with the hours added
-	 * @throws IllegalArgumentException
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the date is null
 	 */
 	public static Date addHours(final Date date, final int hours) {
@@ -118,7 +118,7 @@ public final class DateUtils {
 	 * @param minutes
 	 *            the minutes to add, may be negative
 	 * @return the new Date with the minutes added
-	 * @throws IllegalArgumentException
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the date is null
 	 */
 	public static Date addMinutes(final Date date, final int minutes) {
@@ -141,7 +141,7 @@ public final class DateUtils {
 	 * @param seconds
 	 *            the seconds to add, may be negative
 	 * @return the new Date with the seconds added
-	 * @throws IllegalArgumentException
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the date is null
 	 */
 	public static Date addSeconds(final Date date, final int seconds) {
@@ -164,7 +164,7 @@ public final class DateUtils {
 	 * @param pattern
 	 *            the pattern to use to format the date, not null
 	 * @return the formatted date
-	 * @throws IllegalArgumentException
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the date/pattern is null
 	 */
 	public static String formatDate(final Date date, final String pattern) {
@@ -189,7 +189,7 @@ public final class DateUtils {
 	 * @param timeZone
 	 *            the time zone to use, may be null
 	 * @return the formatted date
-	 * @throws IllegalArgumentException
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the date/pattern/timeZone is null
 	 */
 	public static String formatDate(final Date date, final String pattern, final TimeZone timeZone) {
@@ -216,7 +216,7 @@ public final class DateUtils {
 	 * @param locale,
 	 *            the locale to use, may be null
 	 * @return the formatted date
-	 * @throws IllegalArgumentException
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the date/pattern/timeZone is null
 	 */
 	public static String formatDate(final Date date, final String pattern, final TimeZone timeZone,
@@ -238,7 +238,7 @@ public final class DateUtils {
 	 * @param pattern,
 	 *            the pattern to use to format the calendar, not null
 	 * @return the formatted calendar
-	 * @throws IllegalArgumentException
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the calendar/pattern is null
 	 */
 	public static String formatCalendar(final Calendar calendar, final String pattern) {
@@ -261,7 +261,7 @@ public final class DateUtils {
 	 * @param timeZone,
 	 *            the time zone to use, may be null
 	 * @return the formatted calendar
-	 * @throws IllegalArgumentException
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the calendar/pattern/timeZone is null
 	 */
 	public static String formatCalendar(final Calendar calendar, final String pattern, final TimeZone timeZone) {
@@ -284,7 +284,7 @@ public final class DateUtils {
 	 * @param locale,
 	 *            the locale to use, may be null
 	 * @return the formatted calendar
-	 * @throws IllegalArgumentException
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the calendar/pattern/locale is null
 	 */
 	public static String formatCalendar(final Calendar calendar, final String pattern, final Locale locale) {
@@ -309,7 +309,7 @@ public final class DateUtils {
 	 * @param locale,
 	 *            the locale to use, may be null
 	 * @return the formatted calendar
-	 * @throws IllegalArgumentException
+	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the calendar/pattern/timeZone is null
 	 */
 	public static String formatCalendar(final Calendar calendar, final String pattern, final TimeZone timeZone,
@@ -327,14 +327,21 @@ public final class DateUtils {
 	 * Tests if this date is after the specified date.
 	 * 
 	 * @param d1
-	 *            a java.util.Date
+	 *            a Date by which we will compare
+	 * 
 	 * @param d2
-	 *            a java.util.Date
-	 * @return <code>true</code> if and only if the instant represented by d1
+	 *            a Date with which we want to compare
+	 * 
+	 * @return <b>true</b> if and only if the instant represented by d1
 	 *         <tt>Date</tt> object is strictly later than the instant represented
-	 *         by <tt>d2</tt>; <code>false</code> otherwise.
+	 *         by <tt>d2</tt>; <b>false</b> otherwise.
+	 * 
 	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the <code>d1</code> , <code>d2</code> is null
+	 * 
+	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
+	 * 
+	 * @see java.util.Date
 	 */
 	public static boolean after(Date d1, Date d2) {
 		try {
@@ -349,15 +356,20 @@ public final class DateUtils {
 	 * Tests if this date is before the specified date.
 	 * 
 	 * @param d1
-	 *            a java.util.Date
+	 *            a Date by which we will compare
 	 * @param d2
-	 *            a java.util.Date
-	 * @return <code>true</code> if and only if the instant of time represented by
-	 *         d1 <tt>Date</tt> object is strictly earlier than the instant
-	 *         represented by <tt>d2</tt>; <code>false</code> otherwise.
+	 *            a Date with which we want to compare
+	 * 
+	 * @return <b>true</b> if and only if the instant of time represented by d1
+	 *         <tt>Date</tt> object is strictly earlier than the instant represented
+	 *         by <tt>d2</tt>; <b>false</b> otherwise.
+	 * 
 	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the <code>d1</code> , <code>d2</code> is null
 	 * 
+	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
+	 * 
+	 * @see java.util.Date
 	 */
 	public static boolean before(Date d1, Date d2) {
 		try {
@@ -374,12 +386,19 @@ public final class DateUtils {
 	 * 28 Mar 2002 13:45 and 12 Mar 2002 13:45 would return false.
 	 * 
 	 * @param d1
-	 *            a java.util.Date
+	 *            a Date by which we will compare
+	 * 
 	 * @param d2
-	 *            a java.util.Date
-	 * @return <code>true</code> if they represent the same day
+	 *            a Date with which we want to compare
+	 * 
+	 * @return <b>true</b> if they represent the same day
+	 * 
 	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the <code>d1</code> , <code>d2</code> is null
+	 * 
+	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
+	 * 
+	 * @see java.util.Date
 	 * 
 	 */
 	public static boolean isSameDay(Date d1, Date d2) {
@@ -396,13 +415,19 @@ public final class DateUtils {
 	 * This method compares the long millisecond time of the two objects.
 	 * 
 	 * @param d1
-	 *            a java.util.Date
+	 *            a Date by which we will compare
+	 * 
 	 * @param d2
-	 *            a java.util.Date
+	 *            a Date with which we want compare
+	 * 
 	 * @return <code>true</code> if they represent the same millisecond instant
 	 * 
 	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the <code>d1</code> , <code>d2</code> is null
+	 * 
+	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
+	 * 
+	 * @see java.util.Date
 	 */
 	public static boolean isSameInstant(Date d1, Date d2) {
 		try {
@@ -419,14 +444,21 @@ public final class DateUtils {
 	 * java.time.LocalDateTime.
 	 * 
 	 * @param d1
-	 *            a java.time.LocalDateTime
+	 *            a LocalDateTime which is going to be compared
+	 * 
 	 * @param d2
-	 *            a java.time.LocalDateTime
-	 * @return <code>true</code> if and only if the instant represented by d1
+	 *            a LocalDateTime by which we will compare
+	 * 
+	 * @return <b>true</b> if and only if the instant represented by d1
 	 *         <tt>LocalDateTime</tt> object is strictly later than the instant
-	 *         represented by <tt>d2</tt>; <code>false</code> otherwise.
+	 *         represented by <tt>d2</tt>; <b>false</b> otherwise.
+	 * 
 	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the <code>d1</code> , <code>d2</code> is null
+	 * 
+	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
+	 * 
+	 * @see java.time.LocalDateTime
 	 */
 	public static boolean after(LocalDateTime d1, LocalDateTime d2) {
 		try {
@@ -441,15 +473,21 @@ public final class DateUtils {
 	 * Tests if this LocalDateTime is before the specified LocalDateTime.
 	 * 
 	 * @param d1
-	 *            a java.time.LocalDateTime
+	 *            a LocalDateTime which is going to be compared
+	 * 
 	 * @param d2
-	 *            a java.time.LocalDateTime
-	 * @return <code>true</code> if and only if the instant of time represented by
-	 *         d1 <tt>LocalDateTime</tt> object is strictly earlier than the instant
-	 *         represented by <tt>d2</tt>; <code>false</code> otherwise.
+	 *            a LocalDateTime by which we will compare
+	 * 
+	 * @return <b>true</b> if and only if the instant of time represented by d1
+	 *         <tt>LocalDateTime</tt> object is strictly earlier than the instant
+	 *         represented by <tt>d2</tt>; <b>false</b> otherwise.
+	 * 
 	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the <code>d1</code> , <code>d2</code> is null
 	 * 
+	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
+	 * 
+	 * @see java.time.LocalDateTime
 	 */
 	public static boolean before(LocalDateTime d1, LocalDateTime d2) {
 		try {
@@ -467,13 +505,18 @@ public final class DateUtils {
 	 * 28 Mar 2002 13:45 and 12 Mar 2002 13:45 would return false.
 	 * 
 	 * @param d1
-	 *            a java.time.LocalDateTime
+	 *            a LocalDateTime which is going to be compared
 	 * @param d2
-	 *            a java.time.LocalDateTime
-	 * @return <code>true</code> if they represent the same day
+	 *            a LocalDateTime by which we will compare
+	 * 
+	 * @return <b>true</b> if they represent the same day
+	 * 
 	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the <code>d1</code> , <code>d2</code> is null
 	 * 
+	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
+	 * 
+	 * @see java.time.LocalDateTime
 	 */
 	public static boolean isSameDay(LocalDateTime d1, LocalDateTime d2) {
 		try {
@@ -490,13 +533,19 @@ public final class DateUtils {
 	 * This method compares the long millisecond time of the two objects.
 	 * 
 	 * @param d1
-	 *            a java.time.LocalDateTime
+	 *            a LocalDateTime which is going to be compared
+	 * 
 	 * @param d2
-	 *            a java.time.LocalDateTime
-	 * @return <code>true</code> if they represent the same millisecond instant
+	 *            a LocalDateTime by which we will compare
+	 * 
+	 * @return <b>true</b> if they represent the same millisecond instant
 	 * 
 	 * @throws io.mosip.kernel.core.exception.IllegalArgumentException
 	 *             if the <code>d1</code> , <code>d2</code> is null
+	 * 
+	 * @see io.mosip.kernel.core.exception.IllegalArgumentException
+	 * 
+	 * @see java.time.LocalDateTime
 	 */
 	public static boolean isSameInstant(LocalDateTime d1, LocalDateTime d2) {
 		try {
@@ -513,12 +562,19 @@ public final class DateUtils {
 	 * pattern string.
 	 * 
 	 * @param utcDateTime
-	 *            is of type java.lang.String
+	 *            is of type String
+	 * 
 	 * @param pattern
-	 *            is of type java.lang.String
-	 * @return java.time.LocalDateTime
+	 *            is of type String
+	 * 
+	 * @return LocalDateTime
+	 * 
 	 * @throws io.mosip.kernel.core.exception.ParseException
 	 *             if can not able to parse the utcDateTime string for the pattern.
+	 * 
+	 * @see io.mosip.kernel.core.exception.ParseException
+	 * 
+	 * @see java.time.LocalDateTime
 	 */
 	public static LocalDateTime parseUTCToLocalDateTime(String utcDateTime, String pattern) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -537,7 +593,8 @@ public final class DateUtils {
 	 * This method returns LocalDateTime without UTC for given Date object with UTC.
 	 * 
 	 * @param date
-	 *            if of type java.util.Date
+	 *            if of type Date
+	 * 
 	 * @return java.time.LocalDateTime
 	 */
 	public static LocalDateTime parseUTCToLocalDateTime(Date date) {
@@ -549,15 +606,20 @@ public final class DateUtils {
 	 * pattern.
 	 * 
 	 * @param utcDateTime
-	 *            is of type java.lang.String
+	 *            is of type String
+	 * 
 	 * @param pattern
-	 *            is of type java.lang.String
-	 * @return java.util.Date
-	 * @throws io.mosip.kernel.core.exception.ParseExceptioneException
+	 *            is of type String
+	 * 
+	 * @return a Date
+	 * 
+	 * @throws io.mosip.kernel.core.exception.ParseException
 	 *             if can not able to parse the dateTime string in given string
 	 *             pattern.
+	 * 
+	 * @see io.mosip.kernel.core.exception.ParseException
 	 */
-	public static Date parseUTCToDate(String utcDateTime, String pattern) throws ParseException {
+	public static Date parseUTCToDate(String utcDateTime, String pattern) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		simpleDateFormat.setTimeZone(DateUtils.UTC_TIME_ZONE);
 		try {
@@ -574,15 +636,23 @@ public final class DateUtils {
 	 * timeZone.
 	 * 
 	 * @param dateTime
-	 *            is of type java.lang.String
+	 *            is of type String
+	 * 
 	 * @param pattern
-	 *            is of type java.lang.String
+	 *            is of type String
+	 * 
 	 * @param timeZone
 	 *            is of type java.util.TimeZone
-	 * @return java.util.Date
-	 * @throws io.mosip.kernel.core.exception.ParseExceptioneException
+	 * 
+	 * @return a Date
+	 * 
+	 * @throws io.mosip.kernel.core.exception.ParseException
 	 *             if can not able to parse the dateTime string in given string
 	 *             pattern.
+	 * 
+	 * @see io.mosip.kernel.core.exception.ParseException
+	 * 
+	 * @see java.util.TimeZone
 	 */
 	public static Date parseToDate(String dateTime, String pattern, TimeZone timeZone) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
@@ -601,8 +671,9 @@ public final class DateUtils {
 	 * provided by the user.
 	 * 
 	 * @param pattern
-	 *            is of type java.lang.String
-	 * @return java.lang.String
+	 *            is of type String
+	 * 
+	 * @return date String
 	 */
 	public static String getUTCCurrentDateTimeString(String pattern) {
 		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern(pattern));
@@ -611,7 +682,9 @@ public final class DateUtils {
 	/**
 	 * This method return a current UTC java.time.LocalDateTime.
 	 * 
-	 * @return java.time.LocalDateTime
+	 * @return LocalDateTime
+	 * 
+	 * @see java.time.LocalDateTime
 	 */
 	public static LocalDateTime getUTCCurrentDateTime() {
 		return ZonedDateTime.now(ZoneOffset.UTC).toLocalDateTime();
@@ -621,7 +694,7 @@ public final class DateUtils {
 	 * This method return a date string of current UTC date for given Default
 	 * utcDateTime pattern - <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b>.
 	 * 
-	 * @return java.lang.String
+	 * @return a date String
 	 */
 	public static String getDefaultUTCCurrentDateTimeString() {
 		return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ofPattern(DateUtils.DEFAULT_UTC_PATTERN));
@@ -633,11 +706,18 @@ public final class DateUtils {
 	 * <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b>.
 	 * 
 	 * @param utcDateTime
-	 * @return java.time.LocalDateTime
-	 * @throws io.mosip.kernel.core.exception.ParseExceptioneException
+	 *            is of type String
+	 * 
+	 * @return a LocalDateTime
+	 * 
+	 * @throws io.mosip.kernel.core.exception.ParseException
 	 *             if can not able to parse the <code>utcDateTime</code> string in
 	 *             given Default utcDateTime pattern -
 	 *             <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b>.
+	 * 
+	 * @see io.mosip.kernel.core.exception.ParseException
+	 * 
+	 * @see java.time.LocalDateTime
 	 */
 	public static LocalDateTime parseDefaultUTCToLocalDateTime(String utcDateTime) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtils.DEFAULT_UTC_PATTERN);
@@ -657,11 +737,16 @@ public final class DateUtils {
 	 * with Default utcDateTime pattern - <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b>.
 	 * 
 	 * @param utcDateTime
-	 * @return java.util.Date
-	 * @throws io.mosip.kernel.core.exception.ParseExceptioneException
+	 *            is of type String
+	 * 
+	 * @return a Date
+	 * 
+	 * @throws io.mosip.kernel.core.exception.ParseException
 	 *             if can not able to parse the <code>utcDateTime</code> string in
 	 *             given Default utcDateTime pattern -
 	 *             <b>yyyy-MM-dd'T'HH:mm:ss.SSS</b>.
+	 * 
+	 * @see io.mosip.kernel.core.exception.ParseException
 	 */
 	public static Date parseDefaultUTCToDate(String utcDateTime) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DateUtils.DEFAULT_UTC_PATTERN);

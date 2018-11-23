@@ -1,6 +1,5 @@
 package io.mosip.kernel.masterdata.config;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
@@ -15,15 +14,6 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 @Configuration
 public class Config {
 
-	/**
-	 * Produce modelmapper bean
-	 * 
-	 * @return Modelmapper instance
-	 */
-	@Bean
-	public ModelMapper modelMapper() {
-		return new ModelMapper();
-	}
 
 	/**
 	 * Produce Request Logging bean
@@ -40,4 +30,6 @@ public class Config {
 		filter.setAfterMessagePrefix("REQUEST DATA : ");
 		return filter;
 	}
+
+
 }

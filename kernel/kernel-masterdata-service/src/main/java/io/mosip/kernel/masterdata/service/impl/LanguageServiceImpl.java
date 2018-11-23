@@ -15,7 +15,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
-import io.mosip.kernel.masterdata.utils.CheckUtils;
+import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 
@@ -48,12 +48,15 @@ public class LanguageServiceImpl implements LanguageService {
 	/**
 	 * This method fetch all Languages present in database.
 	 * 
-	 * @throws LanguageFetchException
-	 *             when exception raise during fetch of Language details.
-	 * @throws LanguageNotFoundException
-	 *             when no records found for given parameter(langCode).
-	 * @throws LanguageMappingException
-	 *             when error occurs while mapping.
+	 * @return {@link LanguageRequestResponseDto} which contains list of
+	 *         {@link LanguageDto}
+	 * 
+	 * @throws MasterDataServiceException
+	 *             when exception raise during fetch of {@link Language}
+	 * 
+	 * @throws DataNotFoundException
+	 *             when no records found
+	 *
 	 */
 	@Override
 	public LanguageRequestResponseDto getAllLaguages() {
@@ -79,9 +82,26 @@ public class LanguageServiceImpl implements LanguageService {
 		return languageRequestResponseDto;
 	}
 
+	/**
+	 * This method save all {@link LanguageDto} provide by the user in
+	 * {@link LanguageRequestResponseDto}
+	 * 
+	 * @param dto
+	 *            request {@link LanguageRequestResponseDto} data contains list of
+	 *            languages provided by the user which is going to be persisted
+	 * 
+	 * @return a {@link LanguageRequestResponseDto} which has all the list of saved
+	 *         {@link LanguageDto}
+	 * 
+	 * @throws RequestException
+	 *             if any request data is null
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving languages
+	 */
 	@Override
 	public LanguageRequestResponseDto saveAllLanguages(LanguageRequestResponseDto dto) {
-		if (CheckUtils.isNullEmpty(dto) || CheckUtils.isNullEmpty(dto.getLanguages())) {
+		if (EmptyCheckUtils.isNullEmpty(dto) || EmptyCheckUtils.isNullEmpty(dto.getLanguages())) {
 			throw new RequestException(LanguageErrorCode.LANGUAGE_REQUEST_PARAM_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.LANGUAGE_REQUEST_PARAM_EXCEPTION.getErrorMessage());
 		}
@@ -91,7 +111,7 @@ public class LanguageServiceImpl implements LanguageService {
 		try {
 			List<Language> languages = metaDataUtils.setCreateMetaData(languageDtos, Language.class);
 			List<Language> createdLanguages = languageRepository.saveAll(languages);
-			if (CheckUtils.isNullEmpty(createdLanguages)) {
+			if (EmptyCheckUtils.isNullEmpty(createdLanguages)) {
 				throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
 						LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage());
 			}

@@ -19,7 +19,8 @@ public interface DeviceService {
 	 * @return Returning all Devices Details
 	 *
 	 */
-	DeviceResponseDto getDeviceLangCode(String langCode);
+	public DeviceResponseDto getDeviceLangCode(String langCode);
 
-	DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(String langCode, String devideTypeCode);
+	public DeviceLangCodeResponseDto getDeviceLangCodeAndDeviceType(String langCode, String devideTypeCode);
+
 }

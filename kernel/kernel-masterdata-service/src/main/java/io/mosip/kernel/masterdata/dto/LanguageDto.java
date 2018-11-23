@@ -1,35 +1,34 @@
 package io.mosip.kernel.masterdata.dto;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * Dto class for Language.
+ * Data transfer object class for Language.
  * 
  * @author Bal Vikash Sharma
  * @since 1.0.0
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LanguageDto {
 
 	/**
 	 * Field for language code
 	 */
-	@NotNull
-	@NotEmpty
-	private String languageCode;
+	private String code;
 
 	/**
 	 * Field for language name
 	 */
-	private String languageName;
+	private String name;
 
 	/**
 	 * Field for language family
 	 */
-	private String languageFamily;
+	private String family;
 
 	/**
 	 * Field for language native name

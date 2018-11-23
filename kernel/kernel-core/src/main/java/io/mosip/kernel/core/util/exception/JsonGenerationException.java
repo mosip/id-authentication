@@ -10,19 +10,12 @@ import io.mosip.kernel.core.exception.BaseCheckedException;
 public class JsonGenerationException extends BaseCheckedException {
 	private static final long serialVersionUID = 7464354823823756787L;
 
-	/**
-	 * @param errorCode
-	 * @param errorMessage
-	 * @param rootCause
-	 */
+
 	public JsonGenerationException(String errorCode, String errorMessage, Throwable rootCause) {
 		super(errorCode, errorMessage, rootCause);
 
 	}
 
-	/**
-	 * @param string
-	 */
 	public JsonGenerationException(String string) {
 
 	}

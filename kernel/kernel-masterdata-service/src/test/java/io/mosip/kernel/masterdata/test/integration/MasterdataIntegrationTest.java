@@ -34,6 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.kernel.core.dataaccess.exception.DataAccessLayerException;
 import io.mosip.kernel.masterdata.dto.IdTypeResponseDto;
+import io.mosip.kernel.masterdata.dto.LanguageDto;
+import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterHierarchyLevelResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterResponseDto;
 import io.mosip.kernel.masterdata.dto.RegistrationCenterUserMachineMappingHistoryResponseDto;
@@ -45,10 +47,12 @@ import io.mosip.kernel.masterdata.entity.GenderTypeId;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.IdType;
+import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 import io.mosip.kernel.masterdata.entity.ReasonList;
 import io.mosip.kernel.masterdata.entity.RegistrationCenter;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterHistory;
+import io.mosip.kernel.masterdata.entity.RegistrationCenterType;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistory;
 import io.mosip.kernel.masterdata.entity.RegistrationCenterUserMachineHistoryId;
 import io.mosip.kernel.masterdata.entity.Title;
@@ -59,17 +63,25 @@ import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.GenderTypeRepository;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.IdTypeRepository;
+import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.ReasonCategoryRepository;
 import io.mosip.kernel.masterdata.repository.ReasonListRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
+import io.mosip.kernel.masterdata.repository.RegistrationCenterTypeRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
-import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 
 /**
  * 
+ * @author Sidhant Agarwal
+ * @author Urvil Joshi
+ * @author Dharmesh Khandelwal
+ * @author Sagar Mahapatra
+ * @author Ritesh Sinha
+ * @author Abhishek Kumar
  * @author Bal Vikash Sharma
+ * 
  * @since 1.0.0
  */
 @SpringBootTest
@@ -91,6 +103,14 @@ public class MasterdataIntegrationTest {
 	List<DocumentType> documentTypes;
 
 	DocumentType type;
+
+	List<RegistrationCenterType> regCenterTypes;
+
+	RegistrationCenterType regCenterType;
+
+	List<IdType> idTypes;
+
+	IdType idType;
 
 	List<DocumentCategory> entities;
 
@@ -115,13 +135,14 @@ public class MasterdataIntegrationTest {
 	@MockBean
 	IdTypeRepository idTypeRepository;
 
-	IdType idType;
-
 	@MockBean
 	ReasonCategoryRepository reasonRepository;
 
 	@MockBean
 	ReasonListRepository reasonListRepository;
+
+	@MockBean
+	RegistrationCenterTypeRepository registrationCenterTypeRepository;
 
 	private List<ReasonCategory> reasoncategories;
 
@@ -166,6 +187,15 @@ public class MasterdataIntegrationTest {
 
 	private TitleId titleId;
 
+	@MockBean
+	private LanguageRepository languageRepository;
+
+	private List<Language> languages;
+
+	private LanguageRequestResponseDto languageRequestResponseDto;
+
+	private List<LanguageDto> languageDtos;
+
 	@Before
 	public void setUp() {
 		blacklistedSetup();
@@ -189,6 +219,29 @@ public class MasterdataIntegrationTest {
 		documentCategorySetUp();
 
 		documentTypeSetUp();
+
+		registrationCenterTypeSetUp();
+
+		languageTestSetup();
+	}
+
+	private void languageTestSetup() {
+		// creating data coming from user
+		languageRequestResponseDto = new LanguageRequestResponseDto();
+		languageDtos = new ArrayList<>();
+		LanguageDto hindiDto = new LanguageDto();
+		hindiDto.setCode("ter");
+		hindiDto.setName("terman");
+		hindiDto.setIsActive(Boolean.TRUE);
+		languageDtos.add(hindiDto);
+		languageRequestResponseDto.setLanguages(languageDtos);
+
+		languages = new ArrayList<>();
+		Language hindi = new Language();
+		hindi.setCode("ter");
+		hindi.setName("terman");
+		hindi.setIsActive(Boolean.TRUE);
+		languages.add(hindi);
 	}
 
 	private void documentTypeSetUp() {
@@ -196,6 +249,14 @@ public class MasterdataIntegrationTest {
 		type.setCode("DT001");
 		documentTypes = new ArrayList<>();
 		documentTypes.add(type);
+	}
+
+	private void registrationCenterTypeSetUp() {
+		regCenterType = new RegistrationCenterType();
+		regCenterType.setCode("T01");
+		regCenterTypes = new ArrayList<>();
+		regCenterTypes.add(regCenterType);
+
 	}
 
 	private void documentCategorySetUp() {
@@ -287,11 +348,13 @@ public class MasterdataIntegrationTest {
 
 	private void idTypeSetup() {
 		idType = new IdType();
-		idType.setActive(true);
-		idType.setCrBy("testCreation");
+		idType.setIsActive(true);
+		idType.setCreatedBy("testCreation");
 		idType.setLangCode("ENG");
 		idType.setCode("POA");
 		idType.setDescr("Proof Of Address");
+		idTypes = new ArrayList<>();
+		idTypes.add(idType);
 	}
 
 	private void holidaySetup() {
@@ -346,6 +409,54 @@ public class MasterdataIntegrationTest {
 		blacklistedWords.setDescription("no description available");
 
 		words.add(blacklistedWords);
+	}
+
+	// -----------------------------LanguageImplementationTest----------------------------------
+	@Test
+	public void testSaveAllLanguages() throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		String content = mapper.writeValueAsString(languageRequestResponseDto);
+		when(languageRepository.saveAll(Mockito.any())).thenReturn(languages);
+		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isCreated());
+
+	}
+
+	@Test
+	public void testSaveAllLanguagesMasterDataServiceException() throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		String content = mapper.writeValueAsString(languageRequestResponseDto);
+		when(languageRepository.saveAll(Mockito.any())).thenThrow(DataAccessLayerException.class);
+		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void testSaveAllLanguagesMasterDataServiceExceptionWhenNoneCreated() throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		String content = mapper.writeValueAsString(languageRequestResponseDto);
+		when(languageRepository.saveAll(Mockito.any())).thenReturn(new ArrayList<>());
+		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isInternalServerError());
+
+	}
+
+	@Test
+	public void testSaveAllLanguagesRequestExceptionNullLanguageRequestResponseDto() throws Exception {
+		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content("{}"))
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	public void testSaveAllLanguagesRequestExceptionNullLanguageDtos() throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		LanguageRequestResponseDto dto = new LanguageRequestResponseDto();
+		String content = mapper.writeValueAsString(dto);
+		when(languageRepository.saveAll(Mockito.any())).thenReturn(languages);
+		mockMvc.perform(post("/languages").contentType(MediaType.APPLICATION_JSON).content(content))
+				.andExpect(status().isBadRequest());
+
 	}
 
 	// -----------------------------BlacklistedWordsTest----------------------------------
@@ -491,7 +602,6 @@ public class MasterdataIntegrationTest {
 	}
 
 	// -----------------------------IdTypeTest----------------------------------
-
 	@Test
 	public void getIdTypesByLanguageCodeFetchExceptionTest() throws Exception {
 		when(idTypeRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse("ENG"))
@@ -519,6 +629,22 @@ public class MasterdataIntegrationTest {
 		IdTypeResponseDto returnResponse = mapper.readValue(result.getResponse().getContentAsString(),
 				IdTypeResponseDto.class);
 		assertThat(returnResponse.getIdtypes().get(0).getCode(), is("POA"));
+	}
+
+	@Test
+	public void addIdTypeListTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"idtypes\":[{\"name\":\"IDTEST\",\"langCode\":\"ICT\",\"code\":\"IDT001\",\"descr\":\"ID Type  Test 1\"}]}}";
+		when(idTypeRepository.saveAll(Mockito.any())).thenReturn(idTypes);
+		mockMvc.perform(post("/idtypes").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addIdTypeListTestExceptionTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"idtypes\":[{\"name\":\"IDTEST\",\"langCode\":\"ICT\",\"code\":\"IDT001\",\"descr\":\"ID Type  Test 1\"}]}}";
+		when(idTypeRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(post("/idtypes").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
 	}
 
 	// -----------------------------PacketRejectionTest----------------------------------
@@ -683,7 +809,7 @@ public class MasterdataIntegrationTest {
 				get("/registrationcentershistory/1/ENG/2018-10-30T19:20:30.45").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isInternalServerError()).andReturn();
 	}
-	
+
 	@Test
 	public void getRegistrationCenterByHierarchylevelAndTextAndLanguageCodeTest() throws Exception {
 		centers.add(center);
@@ -1001,6 +1127,23 @@ public class MasterdataIntegrationTest {
 		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"documentTypes\":[{\"name\":\"POI\",\"langCode\":\"ENG\",\"code\":\"D001\",\"description\":\"Proof Of Identity\"}]}}";
 		when(documentTypeRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(post("/documenttypes").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isInternalServerError());
+	}
+
+	// -----------------------------------registration-center-type----------------------------------------
+	@Test
+	public void addRegistrationCenterTypeListTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"regcentertypes\":[{\"name\":\"RCTEST\",\"langCode\":\"LCT\",\"code\":\"RCT001\",\"descr\":\"Registration Center Type  Test 1\"}]}}";
+		when(registrationCenterTypeRepository.saveAll(Mockito.any())).thenReturn(regCenterTypes);
+		mockMvc.perform(post("/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
+				.andExpect(status().isCreated());
+	}
+
+	@Test
+	public void addRegistrationCenterTypeListTestExceptionTest() throws Exception {
+		String json = "{\"id\":\"mosip.documentcategories.create\",\"ver\":\"1.0\",\"timestamp\":\"\",\"request\":{\"regcentertypes\":[{\"name\":\"RCTEST\",\"langCode\":\"LCT\",\"code\":\"RCT001\",\"descr\":\"Registration Center Type  Test 1\"}]}}";
+		when(registrationCenterTypeRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		mockMvc.perform(post("/registrationcentertypes").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(status().isInternalServerError());
 	}
 }
