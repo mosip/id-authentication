@@ -17,7 +17,7 @@ import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.entity.RegistrationUserDetail;
 import io.mosip.registration.service.LoginService;
 import io.mosip.registration.util.biometric.FingerprintFacade;
-import io.mosip.registration.util.biometric.FingerprintProviderNew;
+import io.mosip.registration.util.biometric.MosipFingerprintProvider;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -99,7 +99,7 @@ public class FingerPrintAuthenticationController extends BaseController implemen
 		LOGGER.debug("REGISTRATION - SCAN_FINGER - USER_AUTHENTICATION", APPLICATION_NAME, APPLICATION_ID,
 				"Start the device to scan the finger");
 		primaryStage = (Stage) ((Node) event.getSource()).getParent().getScene().getWindow();
-		FingerprintProviderNew fingerprintProviderNew = fingerprintFactory.getFingerprintProviderFactory(deviceName);
+		MosipFingerprintProvider fingerprintProviderNew = fingerprintFactory.getFingerprintProviderFactory(deviceName);
 		fingerprintProviderNew.captureFingerprint(qualityScore, captureTimeOut,
 				RegistrationConstants.FINGER_TYPE_MINUTIA);
 		int count = 0;

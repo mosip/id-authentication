@@ -99,16 +99,16 @@ public class PacketSynchServiceImpl implements PacketSynchService {
 			
 			response = restClientUtil.invoke(setTimeout(requestHTTPDTO));
 		} catch (HttpClientErrorException e) {
-			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_CLIENT_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, e.getRawStatusCode() + "Error in sync packets to the server");
 			throw new RegBaseCheckedException(Integer.toString(e.getRawStatusCode()), e.getStatusText());
 		} catch (RuntimeException e) {
-			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_RUNTIME - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, e.getMessage() + "Error in sync and push packets to the server");
 			throw new RegBaseUncheckedException(RegistrationExceptions.REG_PACKET_SYNC_EXCEPTION.getErrorCode(),
 					RegistrationExceptions.REG_PACKET_SYNC_EXCEPTION.getErrorMessage());
 		} catch (SocketTimeoutException e) {
-			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER - PACKET_SYNC_SERVICE", APPLICATION_NAME,
+			LOGGER.error("REGISTRATION - SYNCH_PACKETS_TO_SERVER_SOCKET_ERROR - PACKET_SYNC_SERVICE", APPLICATION_NAME,
 					APPLICATION_ID, e.getMessage() + "Error in sync packets to the server");
 			throw new RegBaseCheckedException((e.getMessage()), e.getLocalizedMessage());
 		}

@@ -37,10 +37,13 @@ public class MantraFingerprintProvider extends FingerprintProviderNew implements
 
 	@Override
 	public void OnCaptureCompleted(boolean status, int erroeCode, String errorMsg, FingerData fingerData) {
+		fingerData.Quality();
 		errorMessage = errorMsg;
 		if (fingerPrintType.equals("minutia")) {
 			FingerprintTemplate fingerprintTemplate = new FingerprintTemplate().convert(fingerData.ISOTemplate());
 			minutia = fingerprintTemplate.serialize();
+		} else {
+			byte[] isoTemplate=fingerData.ISOTemplate();
 		}
 		OnPreview(fingerData);
 	}
@@ -52,20 +55,19 @@ public class MantraFingerprintProvider extends FingerprintProviderNew implements
 			try {
 				l_objBufferImg = ImageIO.read(new ByteArrayInputStream(fingerData.FingerImage()));
 			} catch (IOException ex) {
-				System.out.println("Image failed to load.");
 			}
 
-			WritableImage l_objWritableImg = null;
+			WritableImage writableImage = null;
 			if (l_objBufferImg != null) {
-				l_objWritableImg = new WritableImage(l_objBufferImg.getWidth(), l_objBufferImg.getHeight());
-				PixelWriter pw = l_objWritableImg.getPixelWriter();
+				writableImage = new WritableImage(l_objBufferImg.getWidth(), l_objBufferImg.getHeight());
+				PixelWriter pw = writableImage.getPixelWriter();
 				for (int x = 0; x < l_objBufferImg.getWidth(); x++) {
 					for (int y = 0; y < l_objBufferImg.getHeight(); y++) {
 						pw.setArgb(x, y, l_objBufferImg.getRGB(x, y));
 					}
 				}
 			}
-			fingerPrintImage = l_objWritableImg;
+			fingerPrintImage = writableImage;
 		}
 
 	}

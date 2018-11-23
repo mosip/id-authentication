@@ -482,7 +482,7 @@ public class RegistrationConstants {
 	public static final String PACKET_STATUS_SYNC_TYPE = "NEW_REGISTRATION";
 	public static final String ACKNOWLEDGEMENT_FILE = "_Ack";
 	public static final String PACKET_SYNC_ERROR = "Error";
-	public static final String RE_REGISTRATION_STATUS = "reregister";
+	public static final String RE_REGISTRATION_STATUS = "Re-Register";
 	public static final String PACKET_SYNC_REF_ID = "packetsync";
 	public static final String PACKET_UPLOAD_REF_ID = "packetUpload";
 

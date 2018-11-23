@@ -11,7 +11,7 @@ import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.registration.config.AppConfig;
 import javafx.scene.image.WritableImage;
 
-public abstract class FingerprintProviderNew {
+public abstract class FingerprintProviderNew implements MosipFingerprintProvider {
 
 	protected String minutia = "";
 	protected byte isoTemplate[] = null;
@@ -30,6 +30,10 @@ public abstract class FingerprintProviderNew {
 	 * 
 	 * MosipFingerprintProvider#scoreCalculator(byte[], byte[])
 	 */
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#scoreCalculator(byte[], byte[])
+	 */
+	@Override
 	public double scoreCalculator(byte[] isoImage1, byte[] isoImage2) {
 		double score = 0;
 		try {
@@ -51,6 +55,10 @@ public abstract class FingerprintProviderNew {
 	 * MosipFingerprintProvider#scoreCalculator(java.lang.String, java.lang.String)
 	 * 
 	 */
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#scoreCalculator(java.lang.String, java.lang.String)
+	 */
+	@Override
 	public double scoreCalculator(String fingerImage1, String fingerImage2) {
 		double score = 0.0;
 		try {
@@ -65,21 +73,45 @@ public abstract class FingerprintProviderNew {
 		return score;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#captureFingerprint(int, int, java.lang.String)
+	 */
+	@Override
 	public abstract void captureFingerprint(int qualityScore, int captureTimeOut, String outputType);
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#uninitFingerPrintDevice()
+	 */
+	@Override
 	public abstract void uninitFingerPrintDevice();
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#getMinutia()
+	 */
+	@Override
 	public String getMinutia() {
 		return minutia;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#getIsoTemplate()
+	 */
+	@Override
 	public byte[] getIsoTemplate() {
 		return isoTemplate;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#getErrorMessage()
+	 */
+	@Override
 	public String getErrorMessage() {
 		return errorMessage;
 	}
 
+	/* (non-Javadoc)
+	 * @see io.mosip.registration.util.biometric.MosipFingerprintProvider#getFingerPrintImage()
+	 */
+	@Override
 	public WritableImage getFingerPrintImage() {
 		return fingerPrintImage;
 	}

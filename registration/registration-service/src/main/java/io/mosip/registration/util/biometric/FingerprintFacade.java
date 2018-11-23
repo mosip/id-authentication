@@ -7,9 +7,9 @@ import javafx.scene.image.WritableImage;
 public class FingerprintFacade {
 	
 	@Autowired
-	FingerprintProviderNew fingerprintProvider;
+	MosipFingerprintProvider fingerprintProvider;
 
-	public FingerprintProviderNew getFingerprintProviderFactory(String make) {
+	public MosipFingerprintProvider getFingerprintProviderFactory(String make) {
 		fingerprintProvider=null;
 		if(make.equals("Mantra")) {
 			fingerprintProvider =new MantraFingerprintProvider();
