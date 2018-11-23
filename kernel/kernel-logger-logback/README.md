@@ -1,28 +1,29 @@
 ## kernel-logger-logback
-This folder has kernel-logger-logback module which can be used for logging functionalities.
-
 [Background & Design](../../design/kernel/kernel-logger.md)
 
 **Api Documentation**
+
 [API Documentation <TBA>](TBA)
 
 ```
 mvn javadoc:javadoc
 ```
-
-**The flow to be followed is:**
   
-  Flow 1:
 
-1. Create an appender's object and provide configuration 
-2. Pass that object and class name in *Logfactory* to get logger instance.
-
-  Flow 2:
   
-1. Create an XML file and provide configuration 
-2. Pass that file and class name in *Logfactory* to get logger instance.  
+**Maven dependency**
+  
+ ```
+    <dependency>
+		<groupId>io.mosip.kernel</groupId>
+		<artifactId>kernel-logger-logback</artifactId>
+		<version>${project.version}</</version>
+	</dependency>
+ ```
+  
+ 
 
-**All the supported logging systems can have the logger levels set in the Spring Environment (for example, in application.properties) by using logging.level.<logger-name> = level where level is one of *TRACE, DEBUG, INFO, WARN, ERROR, FATAL, or OFF*.**
+All the supported logging systems can have the logger levels set in the Spring Environment (for example, in application.properties) by using logging.level.<logger-name> = level where level is one of *TRACE, DEBUG, INFO, WARN, ERROR, FATAL, or OFF*.
 
 **The root log level can be configured by using**  
 
@@ -49,7 +50,11 @@ logging.level.io.mosip.authentication.service.*=debug
 
 **Usage Sample**
 
+
   *Usage 1:*
+
+1. Create an appender's object and provide configuration 
+2. Pass that object and class name in *Logfactory* to get logger instance.
  
  ```
 RollingFileAppender rollingFileAppender = new RollingFileAppender();
@@ -72,8 +77,22 @@ Logger logger=Logfactory.getDefaultRollingFileLogger(rollingFileAppender, Kernel
        logger.trace(sessionId,idType,id,description); 		
  
  ```
+ 
+  *Output*
+ 
+ ```
+2018-11-23T17:20:05+05:30 - [Kernel] - ERROR  - sessionid - idType - id - description
+2018-11-23T17:20:05+05:30 - [Kernel] - INFO - sessionid - idType - id - description
+2018-11-23T17:20:05+05:30 - [Kernel] - WARN - sessionid - idType - id - description
+2018-11-23T17:20:05+05:30 - [Kernel] - DEBUG - sessionid - idType - id - description
+2018-11-23T17:20:05+05:30 - [Kernel] - TRACE  - sessionid - idType - id - description
+ ```
 
  *Usage 2:*
+ 
+
+1. Create an XML file and provide configuration 
+2. Pass that file and class name in *Logfactory* to get logger instance. 
  
  ```
  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -90,6 +109,8 @@ Logger logger=Logfactory.getDefaultRollingFileLogger(rollingFileAppender, Kernel
 </rollingFileAppender>
  ```
  
+
+ 
  ```
 Logger logger= Logfactory.getDefaultRollingFileLogger(rollingFileAppenderXMLFile,Kernel.class); 
        logger.error(sessionId,idType,id,description);
@@ -98,5 +119,15 @@ Logger logger= Logfactory.getDefaultRollingFileLogger(rollingFileAppenderXMLFile
        logger.info(sessionId,idType,id,description);
        logger.trace(sessionId,idType,id,description); 		
     
+ ```
+ 
+  *Output*
+ 
+ ```
+2018-11-23T17:20:05+05:30 - [Kernel] - ERROR  - sessionid - idType - id - description
+2018-11-23T17:20:05+05:30 - [Kernel] - INFO - sessionid - idType - id - description
+2018-11-23T17:20:05+05:30 - [Kernel] - WARN - sessionid - idType - id - description
+2018-11-23T17:20:05+05:30 - [Kernel] - DEBUG - sessionid - idType - id - description
+2018-11-23T17:20:05+05:30 - [Kernel] - TRACE  - sessionid - idType - id - description
  ```
 
