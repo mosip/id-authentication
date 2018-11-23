@@ -78,7 +78,7 @@ public class HolidayServiceImpl implements HolidayService {
 		List<HolidayDto> holidayList = null;
 		List<Holiday> holidays = null;
 		try {
-			holidays = holidayRepository.findHolidayByHolidayIdIdAndHolidayIdLangCodeAndIsDeletedFalse(id, langCode);
+			holidays = holidayRepository.findHolidayByHolidayIdIdAndHolidayIdLangCode(id, langCode);
 		} catch (DataAccessException dataAccessException) {
 			throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 					HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());

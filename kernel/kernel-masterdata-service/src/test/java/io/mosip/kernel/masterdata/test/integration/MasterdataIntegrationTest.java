@@ -583,14 +583,14 @@ public class MasterdataIntegrationTest {
 
 	@Test
 	public void getHolidayByIdAndLangCodeSuccessTest() throws Exception {
-		when(holidayRepository.findHolidayByHolidayIdIdAndHolidayIdLangCodeAndIsDeletedFalse(any(Integer.class), anyString()))
+		when(holidayRepository.findHolidayByHolidayIdIdAndHolidayIdLangCode(any(Integer.class), anyString()))
 				.thenReturn(holidays);
 		mockMvc.perform(get("/holidays/{holidayId}/{languagecode}", 1, "ENG")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getHolidayByIdAndLangCodeHolidayFetchExceptionTest() throws Exception {
-		when(holidayRepository.findHolidayByHolidayIdIdAndHolidayIdLangCodeAndIsDeletedFalse(any(Integer.class), anyString()))
+		when(holidayRepository.findHolidayByHolidayIdIdAndHolidayIdLangCode(any(Integer.class), anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/holidays/{holidayId}/{languagecode}", 1, "ENG"))
 				.andExpect(status().isInternalServerError());

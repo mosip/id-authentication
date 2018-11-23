@@ -704,7 +704,7 @@ public class MasterdataControllerTest {
 	public void getRegistraionCenterHolidaysSuccessTest() throws Exception {
 		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
 				anyString())).thenReturn(registrationCenter);
-		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCodeAndIsDeletedFalse(anyString(), anyString(), anyInt()))
+		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenReturn(holidays);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
 				"REG_CR_001", 2018)).andExpect(status().isOk());
@@ -728,7 +728,7 @@ public class MasterdataControllerTest {
 	public void getRegistraionCenterHolidaysHolidayFetchExceptionTest() throws Exception {
 		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
 				anyString())).thenReturn(registrationCenter);
-		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCodeAndIsDeletedFalse(anyString(), anyString(), anyInt()))
+		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
 				"REG_CR_001", 2018)).andExpect(status().isInternalServerError());
