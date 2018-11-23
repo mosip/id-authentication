@@ -1,12 +1,14 @@
 
 package io.mosip.registration.processor.file.system.connector.service.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -125,6 +127,34 @@ public class CleanUpServiceTest {
 
 		fileManager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN, fileNameWithoutExtn,
 				"child");
+	}
+	
+	@Test
+	public void deleteSuccess() throws FileNotFoundException, IOException {
+		String fileName = file.getName();
+		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
+		
+		fileManager.deletePacket(DirectoryPathDto.LANDING_ZONE, fileNameWithoutExtn);
+		
+		boolean exists = fileManager.checkIfFileExists(DirectoryPathDto.LANDING_ZONE,fileNameWithoutExtn);
+		assertEquals("Deleted file",false, exists);
+	}
+	
+	@Test(expected = FileNotFoundInSourceException.class)
+	public void deleteFail() throws FileNotFoundException, IOException {
+		fileManager.deletePacket(DirectoryPathDto.FTP_ZONE, "test");
+
+	}
+	
+	@Test
+	public void copyTest() throws FileNotFoundException, IOException {
+		String fileName = file.getName();
+		String fileNameWithoutExtn = FilenameUtils.removeExtension(fileName);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.LANDING_ZONE);
+		fileManager.put(fileNameWithoutExtn, new FileInputStream(file), DirectoryPathDto.VIRUS_SCAN);
+		fileManager.copy(fileNameWithoutExtn,DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN);
 	}
 
 }

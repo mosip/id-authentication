@@ -156,8 +156,7 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
-	
-	@Autowired
+
 	private RegOsiDto regOsiDto;
 
 	/** The meta data. */
@@ -255,9 +254,6 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					AuditLogConstant.NO_ID.toString());
 		}
 	}
-	
-	
-	 
 
 	/**
 	 * Save bio metric data.
@@ -607,9 +603,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Override
 	public RegOsiDto getOsi(String regid) {
-		
-		regOsiDto = packetInfoDao.getEntitiesforRegOsi(regid);			
+
+		regOsiDto = packetInfoDao.getEntitiesforRegOsi(regid);
 		return regOsiDto;
 	}
-	
+
 }

@@ -20,11 +20,14 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
+import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
+import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
@@ -51,7 +54,22 @@ public class OSIValidatorStageTest {
 	private RegistrationProcessorRestClientService<Object> restClientService;
 
 	@InjectMocks
-	private OSIValidatorStage osiValidatorStage;
+	private OSIValidatorStage osiValidatorStage = new OSIValidatorStage() {
+		@Override
+		public MosipEventBus getEventBus(Class<?> verticleName, String clusterAddress, String localhost) {
+			return null;
+		}
+
+		@Override
+		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,
+				MessageBusAddress toAddress) {
+		}
+	};
+
+	@Test
+	public void testDeployVerticle() {
+		osiValidatorStage.deployVerticle();
+	}
 
 	@Mock
 	RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
@@ -60,7 +78,7 @@ public class OSIValidatorStageTest {
 	private AuditLogRequestBuilder auditLogRequestBuilder;
 
 	@Mock
-	private PacketInfoManager<?, ?> packetInfoManager;
+	PacketInfoManager<Identity, RegOsiDto> packetInfoManager;
 
 	@Mock
 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
@@ -69,8 +87,10 @@ public class OSIValidatorStageTest {
 	@InjectMocks
 	private OSIValidator oSIValidator;
 
-	@Mock
-	RegOsiDto regOsiDto;
+	private RegOsiDto regOsiDto = new RegOsiDto();
+
+	MessageDTO dto = new MessageDTO();
+	InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
 
 	@Before
 	public void setUp() throws Exception {
@@ -97,7 +117,12 @@ public class OSIValidatorStageTest {
 		regOsiDto.setIntroducerIrisImageName("introducerIrisImageName");
 		regOsiDto.setIntroducerIrisType("RIGHTEYE");
 
-		Mockito.when(packetInfoManager.getOsi(any())).thenReturn(regOsiDto);
+		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
+		Mockito.when(adapter.checkFileExistence(anyString(), anyString())).thenReturn(true);
+
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
+		@SuppressWarnings("unchecked")
 		RegistrationProcessorRestClientService<Object> mockObj = Mockito
 				.mock(RegistrationProcessorRestClientService.class);
 
@@ -109,26 +134,16 @@ public class OSIValidatorStageTest {
 				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
 				EventType.BUSINESS.toString(), "1234testcase");
 
-		authResponseDTO.setStatus(true);
+		dto.setRid("reg1234");
+
+		registrationStatusDto.setRegistrationId("reg1234");
 
 	}
 
 	@Test
 	public void testisValidOSISuccess() throws Exception {
-
-		Mockito.when(adapter.getFile(any(), any())).thenReturn(inputStream);
-		PowerMockito.mockStatic(JsonUtil.class);
-
-		Mockito.when(adapter.getFile(anyString(), anyString())).thenReturn(inputStream);
-		Mockito.when(adapter.checkFileExistence(anyString(), anyString())).thenReturn(true);
-
-		PowerMockito.mockStatic(IOUtils.class);
-		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
-
-		MessageDTO dto = new MessageDTO();
-		dto.setRid("2018701130000410092018110735");
-		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
-		registrationStatusDto.setRegistrationId("2018701130000410092018110735");
+		authResponseDTO.setStatus(true);
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 
 		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
 		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
@@ -152,6 +167,13 @@ public class OSIValidatorStageTest {
 
 	@Test
 	public void testisValidOSIFailure() throws Exception {
+		authResponseDTO.setStatus(false);
+		Mockito.when(packetInfoManager.getOsi(anyString())).thenReturn(regOsiDto);
 
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		Mockito.when(restClientService.postApi(any(), anyString(), anyString(), anyString(), any()))
+				.thenReturn(authResponseDTO);
+		MessageDTO messageDto = osiValidatorStage.process(dto);
+		assertTrue(messageDto.getIsValid());
 	}
 }

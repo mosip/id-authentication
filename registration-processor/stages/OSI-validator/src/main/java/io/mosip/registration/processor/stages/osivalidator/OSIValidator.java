@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -23,13 +22,13 @@ import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAda
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 public class OSIValidator {
 
-	@Autowired
-	PacketInfoManager<Identity, RegOsiDto> packetInfoManager;
+	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	/** The Constant FILE_SEPARATOR. */
 	public static final String FILE_SEPARATOR = "\\";
@@ -52,8 +51,9 @@ public class OSIValidator {
 	PinInfo pinInfo = new PinInfo();
 
 	public OSIValidator(FileSystemAdapter<InputStream, Boolean> adapter,
-			RegistrationProcessorRestClientService<Object> restClientService) {
-
+			RegistrationProcessorRestClientService<Object> restClientService,
+			PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager) {
+		this.packetInfoManager = packetInfoManager;
 		this.adapter = adapter;
 		this.restClientService = restClientService;
 	}
