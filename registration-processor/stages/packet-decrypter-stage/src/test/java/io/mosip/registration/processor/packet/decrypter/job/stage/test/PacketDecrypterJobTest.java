@@ -34,7 +34,6 @@ import io.mosip.registration.processor.packet.decrypter.job.Decryptor;
 import io.mosip.registration.processor.packet.decrypter.job.stage.PacketDecrypterStage;
 import io.mosip.registration.processor.packet.decryptor.job.exception.PacketDecryptionFailureException;
 import io.mosip.registration.processor.packet.decryptor.job.exception.constant.PacketDecryptionFailureExceptionConstant;
-import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.status.code.RegistrationStatusCode;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 import io.mosip.registration.processor.status.dto.RegistrationStatusDto;
@@ -52,7 +51,7 @@ public class PacketDecrypterJobTest {
 	PacketDecrypterStage packetDecrypterStage = new PacketDecrypterStage() {	
 		@Override
 		public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {}
-	}; 
+	};
 
 	/** The registration status service. */
 	@Mock
@@ -62,9 +61,6 @@ public class PacketDecrypterJobTest {
 	@Mock
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
-	@Mock
-	private AuditLogRequestBuilder auditLogRequestBuilder;
-	
 	/** The packet archiver. */
 	@Mock
 	private PacketArchiver packetArchiver;

@@ -51,6 +51,8 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 	private String eventType = "";
 
 	String description = "";
+	
+	private final String LANG_CODE= "eng";
 
 	@Override
 	public QCUserDto assignQCUser(String applicantRegistrationId) {
@@ -153,6 +155,8 @@ public class QualityCheckManagerImpl implements QualityCheckManager<String, QCUs
 		qcuserPKEntity.setRegId(qcUserDto.getRegId());
 		qcuserPKEntity.setUsrId(qcUserDto.getQcUserId());
 
+		qcUserEntity.setLang_code(LANG_CODE);
+		qcUserEntity.setIsActive(true);
 		qcUserEntity.setId(qcuserPKEntity);
 		qcUserEntity.setStatus_code(qcUserDto.getDecisionStatus().name());
 
