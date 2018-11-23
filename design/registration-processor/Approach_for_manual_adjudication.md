@@ -10,7 +10,7 @@ Server application which will process the packets.
 Administrator of the platform who may need to verify the packets.
 The manual adjudicator who will consume registration-processor services.
 
-The key requirements are -\
+The key requirements are -
 - Expose rest API to provide -
 	1. Complete applicant demographic information.
 	2. Applicant documents.
@@ -39,11 +39,11 @@ Create DTOs to send information to manual adjudicator.
 	1. Applicant demographic json file.
 	2. Applicant documents.
 	3. Encoded Applicant biometrics.
-		1. face
-		2. fingerprint
+		1. face.
+		2. fingerprint.
 		3. iris
 	4. Execption photo (if any).
-- When the decision comes from manual adjudicator by consuming rest URL /manualadjudicationresponse then save it to table and send an event to -
-	1. Bio dedupe if manual adjudicator approves packet
-	2. Error queue if manual adjudicator rejects packet
-- Update correct status to registration table and add transaction record. Add audit log.
+- When the decision comes from manual adjudicator, save it to table and send an event to -
+	1. Bio dedupe : when manual adjudicator approves packet.
+	2. Error queue : when manual adjudicator rejects packet.
+- Update correct status to registration table and add transaction records. Add audit logs(wherever applicable).
