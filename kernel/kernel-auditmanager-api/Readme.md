@@ -1,5 +1,5 @@
 ## kernel-auditmanager-api
-kernel-auditmanager-api is used to audit data.
+This api can be used to audit events and operations. Event details are saved as audit in database.
 
 [Background & Design](../../design/kernel/kernel-auditmanager.md)
 
@@ -8,6 +8,16 @@ kernel-auditmanager-api is used to audit data.
 
 ```
 mvn javadoc:javadoc
+```
+
+To use this api, add this to dependency list:
+
+```
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-auditmanager-api</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 ```
 
 

@@ -1,6 +1,6 @@
 ## kernel-dataaccess-hibernate
 
-kernel-dataaccess-hibernate module can be used for database operations.
+This module is used by modules that have to use the DAO layer. There can be multiple databases and multiple DAO framework implementation can be used in various applications in the MOSIP platform.
  
  1- [Background & Design](../../design/kernel/kernel-dataaccess.md)
  
@@ -11,6 +11,16 @@ kernel-dataaccess-hibernate module can be used for database operations.
  mvn javadoc:javadoc
 
  ```
+ 
+ To use this api, add this to dependency list:
+
+```
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-dataaccess-hibernate</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+```
 
 3- Usage Sample
 
