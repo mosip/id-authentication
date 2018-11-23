@@ -34,7 +34,6 @@ mvn javadoc:javadoc
 
 **The response will be true is audit request is successful, otherwise false** 
 
-**If there is any error which occurs while encryption and decryption, it will be thrown as Exception.** 
 
 **Exceptions to be handled while using this functionality:**
 

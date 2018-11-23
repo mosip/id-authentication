@@ -37,14 +37,13 @@ mvn javadoc:javadoc
 
 **The response will be true is audit request is successful, otherwise false** 
 
-**If there is any error which occurs while encryption and decryption, it will be thrown as Exception.** 
-
 **Exceptions to be handled while using this functionality:**
 
 1. AuditHandlerException ("KER-AUD-001", "Invalid Audit Request. Required parameters must be present")
 2. InvalidFormatException ("KER-AUD-002", "Audit Request format is invalid");
 
 **Usage Sample**
+
 
   *Usage 1:*
   
@@ -54,22 +53,21 @@ mvn javadoc:javadoc
 OkHttpClient client = new OkHttpClient();
 
 MediaType mediaType = MediaType.parse("application/json");
-RequestBody body = RequestBody.create(mediaType, "{\r\n  \"eventId\": \"string\",\r\n  \"eventName\": \"string\",\r\n  \"eventType\": \"string\",\r\n  \"actionTimeStamp\": \"2018-11-23T08:42:59.632Z\",\r\n  \"hostName\": \"string\",\r\n  \"hostIp\": \"string\",\r\n  \"applicationId\": \"string\",\r\n  \"applicationName\": \"string\",\r\n  \"sessionUserId\": \"string\",\r\n  \"sessionUserName\": \"string\",\r\n  \"id\": \"string\",\r\n  \"idType\": \"string\",\r\n  \"createdBy\": \"string\",\r\n  \"moduleName\": \"string\",\r\n  \"moduleId\": \"string\",\r\n  \"description\": \"string\"\r\n}");
+RequestBody body = RequestBody.create(mediaType, "{\r\n  \"eventId\": \"EventId12333\",\r\n  \"eventName\": \"Event Name1\",\r\n  \"eventType\": \"EventType3\",\r\n  \"actionTimeStamp\": \"2018-11-04T10:52:48.838Z\",\r\n  \"hostName\": \"Host Name6\",\r\n  \"hostIp\": \"10.89.213.89\",\r\n  \"applicationId\": \"ApplicationId89\",\r\n  \"applicationName\": \"Application Name22\",\r\n  \"sessionUserId\": \"SessionUserId22\",\r\n  \"sessionUserName\": \"Session UserName22\",\r\n  \"id\": \"id3333\",\r\n  \"idType\": \"idType333\",\r\n  \"createdBy\": \"user1\",\r\n  \"moduleName\": \"Module Name22\",\r\n  \"moduleId\": \"ModuleId22\",\r\n  \"description\": \"Description for event\"\r\n}");
 Request request = new Request.Builder()
   .url("http://104.211.214.143:8081/auditmanager/audits")
   .post(body)
   .addHeader("Content-Type", "application/json")
-  .addHeader("Cache-Control", "no-cache")
-  .addHeader("Postman-Token", "c8e0b189-346c-47ac-89dc-4b2ab5650e00")
   .build();
 
 Response response = client.newCall(request).execute();
   ```
   
   *Response*
+  Status: 200
   
   ```
-Status: 200
+
 {
   "status": true
 }
