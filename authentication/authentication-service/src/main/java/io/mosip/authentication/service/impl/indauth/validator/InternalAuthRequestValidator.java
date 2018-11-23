@@ -1,6 +1,7 @@
 package io.mosip.authentication.service.impl.indauth.validator;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,8 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthTypeDTO;
 import io.mosip.authentication.core.dto.indauth.IdType;
+import io.mosip.authentication.core.dto.indauth.IdentityDTO;
+import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.id.service.IdAuthService;
@@ -24,6 +27,12 @@ import io.mosip.authentication.service.helper.DateHelper;
  */
 @Component
 public class InternalAuthRequestValidator implements Validator {
+
+
+
+	private static final String REQ_TIME = "reqTime";
+
+	
 
 	private static final String REQUEST = "request";
 	
@@ -63,34 +72,30 @@ public class InternalAuthRequestValidator implements Validator {
 	/** Validation for Request AuthType */
 	public void validateRequest(AuthRequestDTO authRequestDTO, Errors errors) {
 		AuthTypeDTO authTypeDTO = authRequestDTO.getAuthType();
-		if (authTypeDTO != null && !errors.hasErrors()) {
+		if (authTypeDTO != null) {
 
-			if (authRequestDTO.getAuthType().isFingerPrint()) {
-
-				boolean finger = validateFinger(authRequestDTO);
-				if (!finger&&!errors.hasErrors()) {
-					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-									AUTH_REQUEST));					}
+			if (authRequestDTO.getAuthType().isFingerPrint() && !validateFinger(authRequestDTO)) {
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+								REQUEST));
 			}
-			if (authRequestDTO.getAuthType().isIris()) {
-				boolean iris = validateIris(authRequestDTO);
-				if (!iris &&!errors.hasErrors()) {
-					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-									AUTH_REQUEST));					}
+			
+			if (authRequestDTO.getAuthType().isIris() && !validateIris(authRequestDTO)) {
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+								REQUEST));
 			}
-			if (authRequestDTO.getAuthType().isFace()) {
-				boolean face = validateFace(authRequestDTO);
-				if (!face &&!errors.hasErrors()) {
-					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-									AUTH_REQUEST));					}
-			}
+			
+			if (authRequestDTO.getAuthType().isFace() && !validateFace(authRequestDTO)) {
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+								REQUEST));
+			} 
+			
 		} else {
-			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-							AUTH_REQUEST));			}
+			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+		}
 
 	}
 
@@ -100,41 +105,41 @@ public class InternalAuthRequestValidator implements Validator {
 			try {
 				Date reqDate = datehelper.convertStringToDate(authRequestDTO.getReqTime());
 				if (reqDate.after(new Date())) {
-					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-									AUTH_REQUEST));					}
+									REQ_TIME));					}
 
 			} catch (IDDataValidationException e) {
-				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-								AUTH_REQUEST));				}
+								REQ_TIME));				}
 
 		}
 	}
 
 	public boolean validateFinger(AuthRequestDTO authRequestDTO) {
 
-		return 
-				 (authRequestDTO.getRequest().getIdentity().getLeftIndex() != null && !authRequestDTO.getRequest().getIdentity().getLeftIndex().isEmpty())
-				|| (authRequestDTO.getRequest().getIdentity().getLeftLittle() != null && !authRequestDTO.getRequest().getIdentity().getLeftLittle().isEmpty())
-				|| (authRequestDTO.getRequest().getIdentity().getLeftMiddle() != null && !authRequestDTO.getRequest().getIdentity().getLeftMiddle().isEmpty())
-				|| (authRequestDTO.getRequest().getIdentity().getLeftRing() != null && !authRequestDTO.getRequest().getIdentity().getLeftRing().isEmpty())
-				|| (authRequestDTO.getRequest().getIdentity().getLeftThumb() != null && !authRequestDTO.getRequest().getIdentity().getLeftThumb().isEmpty())
-				|| (authRequestDTO.getRequest().getIdentity().getRightIndex() != null && !authRequestDTO.getRequest().getIdentity().getRightIndex().isEmpty())
-				|| (authRequestDTO.getRequest().getIdentity().getRightLittle() != null && !authRequestDTO.getRequest().getIdentity().getRightLittle().isEmpty())
-				|| (authRequestDTO.getRequest().getIdentity().getRightMiddle() != null && !authRequestDTO.getRequest().getIdentity().getRightMiddle().isEmpty())
-				|| (authRequestDTO.getRequest().getIdentity().getRightRing() != null && !authRequestDTO.getRequest().getIdentity().getRightRing().isEmpty())
-				|| (authRequestDTO.getRequest().getIdentity().getRightThumb() != null && !authRequestDTO.getRequest().getIdentity().getRightThumb().isEmpty());
-				
+		return  Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getLeftIndex).filter(list -> !list.isEmpty()).isPresent() 
+				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getLeftLittle).filter(list -> !list.isEmpty()).isPresent() 
+				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getLeftMiddle).filter(list -> !list.isEmpty()).isPresent() 
+				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getLeftRing).filter(list -> !list.isEmpty()).isPresent() 
+				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getLeftThumb).filter(list -> !list.isEmpty()).isPresent() 
+				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getRightIndex).filter(list -> !list.isEmpty()).isPresent() 
+				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getRightLittle).filter(list -> !list.isEmpty()).isPresent() 
+				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getRightMiddle).filter(list -> !list.isEmpty()).isPresent() 
+				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getRightRing).filter(list -> !list.isEmpty()).isPresent() 
+				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getRightThumb).filter(list -> !list.isEmpty()).isPresent() ;
+					
 	}
 
 	public boolean validateIris(AuthRequestDTO authRequestDTO) {
-		return (!authRequestDTO.getRequest().getIdentity().getLeftEye().isEmpty()
-				|| !authRequestDTO.getRequest().getIdentity().getRightEye().isEmpty());
+		return (authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null&& authRequestDTO.getRequest().getIdentity().getLeftEye()!=null && !authRequestDTO.getRequest().getIdentity().getLeftEye().isEmpty()
+				|| authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null && authRequestDTO.getRequest().getIdentity().getRightEye()!=null&& !authRequestDTO.getRequest().getIdentity().getRightEye().isEmpty());
 	}
 
 	public boolean validateFace(AuthRequestDTO authRequestDTO) {
-		return (!authRequestDTO.getRequest().getIdentity().getFace().isEmpty());
+		return authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null
+				&& authRequestDTO.getRequest().getIdentity().getFace() != null;
 	}
 
 	public void validateUinVin(AuthRequestDTO authRequestDTO, String refId, Errors errors)  {
