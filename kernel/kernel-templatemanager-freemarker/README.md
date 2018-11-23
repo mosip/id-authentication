@@ -35,7 +35,7 @@ public TemplateManager templateManager(TemplateManagerBuilder templateManagerBui
 }
 
 //Create Map for templateValues and put all values
-Map<Strinfg,Object> templateValues=new HashMap<>();
+Map<String,Object> templateValues=new HashMap<>();
 templateValues.put("name","nick");
 ..
 
@@ -72,7 +72,7 @@ public TemplateManager templateManager(TemplateManagerBuilder templateManagerBui
 
 
 //Create Map for template values and put all values
-Map<Strinfg,Object> templateValues=new HashMap<>();
+Map<String,Object> templateValues=new HashMap<>();
 templateValues.put("name","nick");
 ..
 
@@ -110,7 +110,7 @@ public TemplateManager templateManager(TemplateManagerBuilder templateManagerBui
 
 
 //Create Map for template values and put all values
-Map<Strinfg,Object> templateValues=new HashMap<>();
+Map<String,Object> templateValues=new HashMap<>();
 templateValues.put("name","nick");
 ..
 
@@ -124,7 +124,7 @@ Writer writer=new StringWriter();
 //TemplatePath , relative path from classPath
 String templatePath="templates/email_template.vm";
 
-//Call merge() method by passing templatePath and template value
+//Call merge() method by passing templatePath and template value,writer and encoding type
 InputStream resultedTemplate = templateManager.merge(templatePath,writer, templateValues,encodingType);
  
  ```
