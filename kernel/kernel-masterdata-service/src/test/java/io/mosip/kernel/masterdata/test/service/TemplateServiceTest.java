@@ -53,7 +53,7 @@ public class TemplateServiceTest {
 		template.setLanguageCode("HIN");
 		template.setCreatedBy("Neha");
 		template.setCreatedtimes(LocalDateTime.of(2018, Month.NOVEMBER, 12, 0, 0, 0));
-		template.setActive(true);
+		template.setIsActive(true);
 		template.setIsDeleted(false);
 
 		templateList.add(template);
@@ -61,7 +61,7 @@ public class TemplateServiceTest {
 
 	@Test
 	public void getAllTemplateTest() {
-		Mockito.when(templateRepository.findAll(Template.class)).thenReturn(templateList);
+		Mockito.when(templateRepository.findAllByIsActiveTrueAndIsDeletedFalse(Template.class)).thenReturn(templateList);
 		templateDtoList = templateService.getAllTemplate();
 		
 		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
@@ -70,7 +70,7 @@ public class TemplateServiceTest {
 	
 	@Test
 	public void getAllTemplateByLanguageCodeTest() {
-		Mockito.when(templateRepository.findAllByLanguageCode(Mockito.anyString())).thenReturn(templateList);
+		Mockito.when(templateRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString())).thenReturn(templateList);
 		templateDtoList = templateService.getAllTemplateByLanguageCode(Mockito.anyString());
 		
 		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());
@@ -79,7 +79,7 @@ public class TemplateServiceTest {
 	
 	@Test
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeTest() {
-		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCode(Mockito.anyString(), Mockito.anyString())).thenReturn(templateList);
+		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString())).thenReturn(templateList);
 		templateDtoList = templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(), Mockito.anyString());
 		
 		assertEquals(templateList.get(0).getId(), templateDtoList.get(0).getId());

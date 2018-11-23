@@ -17,8 +17,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.entity.DocumentType;
-import io.mosip.kernel.masterdata.exception.DocumentCategoryFetchException;
-import io.mosip.kernel.masterdata.exception.DocumentCategoryNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 
@@ -41,13 +41,13 @@ public class DocumentTypeServiceTest {
 		documentType.setCode("addhar");
 		documentType.setName("addhar_card");
 		documentType.setDescription("adhar_card_desc");
-		documentType.setActive(true);
+		documentType.setIsActive(true);
 		documents.add(documentType);
 		DocumentType documentType1 = new DocumentType();
 		documentType1.setCode("residensial");
 		documentType1.setName("residensial_proof");
 		documentType1.setDescription("residensial_proof_desc");
-		documentType1.setActive(true);
+		documentType1.setIsActive(true);
 		documents.add(documentType1);
 
 	}
@@ -67,7 +67,7 @@ public class DocumentTypeServiceTest {
 
 	}
 
-	@Test(expected = DocumentCategoryNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void noRecordsFoudExceptionTest() {
 		String documentCategoryCode = "poc";
 		String langCode = "eng";
@@ -78,7 +78,7 @@ public class DocumentTypeServiceTest {
 
 	}
 	
-	@Test(expected = DocumentCategoryNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void noRecordsFoudExceptionForNullTest() {
 		String documentCategoryCode = "poc";
 		String langCode = "eng";
@@ -88,7 +88,7 @@ public class DocumentTypeServiceTest {
 
 	}
 
-	@Test(expected = DocumentCategoryFetchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void dataAccessExceptionInGetAllTest() {
 		String documentCategoryCode = "poc";
 		String langCode = "eng";

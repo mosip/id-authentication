@@ -18,7 +18,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
-import io.mosip.kernel.masterdata.exception.DocumentCategoryNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 
 @RunWith(SpringRunner.class)
@@ -31,7 +32,7 @@ public class DocumentTypeControllerTest {
 	@MockBean
 	private DocumentTypeService documentTypeService;
 
-	private final String expected = "{ \"documents\": [ { \"code\": \"addhar\", \"name\": \"adhar card\", \"description\": \"Uid\", \"langCode\": \"eng\", \"active\": true }, { \"code\": \"residensial\", \"name\": \"residensial_prof\", \"description\": \"document for residential prof\", \"langCode\": \"eng\", \"active\": true } ] }";
+	private final String expected = "{ \"documents\": [ { \"code\": \"addhar\", \"name\": \"adhar card\", \"description\": \"Uid\", \"langCode\": \"eng\", \"isActive\": true }, { \"code\": \"residensial\", \"name\": \"residensial_prof\", \"description\": \"document for residential prof\", \"langCode\": \"eng\", \"isActive\": true } ] }";
 
 	ValidDocumentTypeResponseDto validDocumentTypeResponseDto = null;
 
@@ -46,14 +47,14 @@ public class DocumentTypeControllerTest {
 		documentType.setName("adhar card");
 		documentType.setDescription("Uid");
 		documentType.setLangCode("eng");
-		documentType.setActive(true);
+		documentType.setIsActive(true);
 		documents.add(documentType);
 		DocumentTypeDto documentType1 = new DocumentTypeDto();
 		documentType1.setCode("residensial");
 		documentType1.setName("residensial_prof");
 		documentType1.setDescription("document for residential prof");
 		documentType1.setLangCode("eng");
-		documentType1.setActive(true);
+		documentType1.setIsActive(true);
 		documents.add(documentType1);
 		validDocumentTypeResponseDto = new ValidDocumentTypeResponseDto(documents);
 
@@ -73,17 +74,17 @@ public class DocumentTypeControllerTest {
 	@Test
 	public void testDocumentCategoryNotFoundException() throws Exception {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(new DocumentCategoryNotFoundException("KER-DOC-10001",
+				.thenThrow(new DataNotFoundException("KER-DOC-10001",
 						"No documents found for specified document category code and language code"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poc/eng"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 	}
 
 	@Test
 	public void testDocumentCategoryFetchException() throws Exception {
-		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString())).thenThrow(
-				new DocumentCategoryNotFoundException("KER-DOC-10000", "exception during fatching data from db"));
+		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
+				.thenThrow(new MasterDataServiceException("KER-DOC-10000", "exception during fatching data from db"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poc/eng"))
-				.andExpect(MockMvcResultMatchers.status().isNotAcceptable());
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 }

@@ -5,8 +5,6 @@ VOLUME /tmp
 
 ADD target/kernel-otpmanager-service-1.0.0-SNAPSHOT.jar /KernelOtpManagerService.jar
 
-RUN bash -c 'touch /KernelOtpManagerService.jar'
-
 EXPOSE 8085
 
 ENTRYPOINT ["java","-jar","/KernelOtpManagerService.jar"]

@@ -18,9 +18,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
-import io.mosip.kernel.masterdata.exception.LanguageFetchException;
-import io.mosip.kernel.masterdata.exception.LanguageMappingException;
-import io.mosip.kernel.masterdata.exception.LanguageNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
+
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.service.LanguageService;
 
 @RunWith(SpringRunner.class)
@@ -34,9 +34,7 @@ public class LanguageControllerTest {
 	@MockBean
 	private LanguageService languageService;
 
-	private static final String RESPONSE_BODY_ALL = "{ \"languages\": [   {"
-			+ "      \"languageCode\": \"hin\", \"languageName\": \"hindi\","
-			+ "      \"languageFamily\": \"hindi\",   \"nativeName\": \"hindi\", \"active\": true } " + "]}";
+	private static final String RESPONSE_BODY_ALL = "{ \"languages\": [   {      \"languageCode\": \"hin\", \"languageName\": \"hindi\",      \"languageFamily\": \"hindi\",   \"nativeName\": \"hindi\" } ]}";
 
 	private LanguageResponseDto respDto;
 	private List<LanguageDto> languages;
@@ -56,28 +54,18 @@ public class LanguageControllerTest {
 	@Test
 	public void testGetAllLanguagesForLanguageNotFoundException() throws Exception {
 		Mockito.when(languageService.getAllLaguages())
-				.thenThrow(new LanguageNotFoundException("KER-MAS-0987", "No Language found"));
+				.thenThrow(new DataNotFoundException("KER-MAS-0987", "No Language found"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/languages"))
-				.andExpect(MockMvcResultMatchers.status().isNoContent());
+				.andExpect(MockMvcResultMatchers.status().isNotFound());
 
 	}
 
 	@Test
 	public void testGetAllLanguagesForLanguageFetchException() throws Exception {
 		Mockito.when(languageService.getAllLaguages())
-				.thenThrow(new LanguageFetchException("KER-MAS-0988", "Error occured while fetching language"));
+				.thenThrow(new MasterDataServiceException("KER-MAS-0988", "Error occured while fetching language"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/languages"))
-				.andExpect(MockMvcResultMatchers.status().isServiceUnavailable());
-	}
-
-	@Test
-	public void testGetAllLanguagesForLanguageMatchingException() throws Exception {
-		Mockito.when(languageService.getAllLaguages())
-				.thenThrow(new LanguageMappingException("KER-MAS-0999", "Error occured while mapping language"));
-
-		mockMvc.perform(MockMvcRequestBuilders.get("/languages"))
-				.andExpect(MockMvcResultMatchers.status().isServiceUnavailable());
-
+				.andExpect(MockMvcResultMatchers.status().isInternalServerError());
 	}
 
 	private void loadSuccessData() {
@@ -90,7 +78,6 @@ public class LanguageControllerTest {
 		hin.setLanguageName("hindi");
 		hin.setLanguageFamily("hindi");
 		hin.setNativeName("hindi");
-		hin.setActive(Boolean.TRUE);
 
 		// adding language to list
 		languages.add(hin);
@@ -98,4 +85,5 @@ public class LanguageControllerTest {
 		respDto.setLanguages(languages);
 
 	}
+
 }

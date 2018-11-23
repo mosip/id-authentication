@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -18,12 +19,13 @@ import lombok.NoArgsConstructor;
  * @since 1.0.0
  *
  */
-@Entity
-@Table(name = "registration_center_h", schema = "master")
+@EqualsAndHashCode(callSuper = false)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationCenterHistory implements Serializable {
+@Entity
+@Table(name = "registration_center_h", schema = "master")
+public class RegistrationCenterHistory extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -8541947587557590379L;
 

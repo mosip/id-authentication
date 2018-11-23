@@ -51,17 +51,17 @@ public class HolidayIntegrationTest {
 		holiday.setHolidayId(new HolidayId(1, "KAR", date, "ENG"));
 		holiday.setHolidayName("Diwali");
 		holiday.setCreatedBy("John");
-		holiday.setCreatedtime(specificDate);
+		holiday.setCreatedtimes(specificDate);
 		holiday.setHolidayDesc("Diwali");
-		holiday.setActive(true);
+		holiday.setIsActive(true);
 
 		Holiday holiday2 = new Holiday();
 		holiday2.setHolidayId(new HolidayId(1, "KAH", date, "ENG"));
 		holiday2.setHolidayName("Durga Puja");
 		holiday2.setCreatedBy("John");
-		holiday2.setCreatedtime(specificDate);
+		holiday2.setCreatedtimes(specificDate);
 		holiday2.setHolidayDesc("Diwali");
-		holiday2.setActive(true);
+		holiday2.setIsActive(true);
 
 		holidays.add(holiday);
 		holidays.add(holiday2);
@@ -76,13 +76,13 @@ public class HolidayIntegrationTest {
 
 	@Test
 	public void testGetAllHolidaNoHolidayFound() throws Exception {
-		mockMvc.perform(get("/holidays")).andExpect(status().isOk());
+		mockMvc.perform(get("/holidays")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void testGetAllHolidaysHolidayFetchException() throws Exception {
 		when(holidayRepository.findAll(Mockito.any(Class.class))).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/holidays")).andExpect(status().isNotAcceptable());
+		mockMvc.perform(get("/holidays")).andExpect(status().isInternalServerError());
 	}
 
 	@Test
@@ -94,12 +94,12 @@ public class HolidayIntegrationTest {
 	@Test
 	public void testGetHolidayByIdHolidayFetchException() throws Exception {
 		when(holidayRepository.findAllByHolidayIdId(any(Integer.class))).thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/holidays/{holidayId}", 1)).andExpect(status().isNotAcceptable());
+		mockMvc.perform(get("/holidays/{holidayId}", 1)).andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void testGetHolidayByIdNoHolidayFound() throws Exception {
-		mockMvc.perform(get("/holidays/{holidayId}", 1)).andExpect(status().isOk());
+		mockMvc.perform(get("/holidays/{holidayId}", 1)).andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -113,11 +113,12 @@ public class HolidayIntegrationTest {
 	public void testGetHolidayByIdAndLangCodeHolidayFetchException() throws Exception {
 		when(holidayRepository.findHolidayByHolidayIdIdAndHolidayIdLangCode(any(Integer.class), anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
-		mockMvc.perform(get("/holidays/{holidayId}/{languagecode}", 1, "ENG")).andExpect(status().isNotAcceptable());
+		mockMvc.perform(get("/holidays/{holidayId}/{languagecode}", 1, "ENG"))
+				.andExpect(status().isInternalServerError());
 	}
 
 	@Test
 	public void testGetHolidayByIdAndLangCodeHolidayNoDataFound() throws Exception {
-		mockMvc.perform(get("/holidays/{holidayId}/{languagecode}", 1, "ENG")).andExpect(status().isNotAcceptable());
+		mockMvc.perform(get("/holidays/{holidayId}/{languagecode}", 1, "ENG")).andExpect(status().isNotFound());
 	}
 }

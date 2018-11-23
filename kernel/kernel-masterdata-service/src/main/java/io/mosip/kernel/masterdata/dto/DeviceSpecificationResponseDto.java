@@ -15,5 +15,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeviceSpecificationResponseDto {
-	List<DeviceSpecificationDto> devicespecifications;
+	private List<DeviceSpecificationDto> devicespecifications;
 }

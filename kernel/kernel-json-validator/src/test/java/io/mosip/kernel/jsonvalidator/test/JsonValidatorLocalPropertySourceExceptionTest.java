@@ -2,6 +2,9 @@ package io.mosip.kernel.jsonvalidator.test;
 
 import static org.junit.Assert.assertEquals;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,13 +32,24 @@ import io.mosip.kernel.jsonvalidator.validator.JsonValidator;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JsonValidatorLocalPropertySourceExceptionTest {
-
+	
+	String propertySourceString= "propertySource";
+	
 	@InjectMocks
 	JsonValidator jsonValidator;
 
 	@Before
 	public void setup() {
-		ReflectionTestUtils.setField(jsonValidator, "propertySource", "LOCAL");
+		InputStream config = getClass().getClassLoader().getResourceAsStream("application-local.properties");
+		Properties propObj = new Properties();
+		try {
+			propObj.load(config);
+			String propertySource = propObj.getProperty("mosip.kernel.jsonvalidator.property-source");
+			ReflectionTestUtils.setField(jsonValidator, propertySourceString, propertySource);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Test
@@ -46,7 +60,7 @@ public class JsonValidatorLocalPropertySourceExceptionTest {
 		String schemaName = "schema.json";
 		JsonValidatorResponseDto validationResponse = jsonValidator.validateJson(jsonString, schemaName);
 		Boolean isValid =  validationResponse.isValid();
-		assertEquals(isValid, true);
+		assertEquals(true,isValid);
 	}
 
 	@Test(expected = NullJsonNodeException.class)

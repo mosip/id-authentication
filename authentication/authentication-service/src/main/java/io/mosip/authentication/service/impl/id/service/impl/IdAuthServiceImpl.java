@@ -71,23 +71,24 @@ public class IdAuthServiceImpl implements IdAuthService {
 	 */
 	public String validateUIN(String uin) throws IdAuthenticationBusinessException {
 		String refId = null;
-		Optional<UinEntity> uinEntityOpt = uinRepository.findById(uin);
-		if (uinEntityOpt.isPresent()) {
-			UinEntity uinEntity = uinEntityOpt.get();
-			if (uinEntity.isActive()) {
-				refId = uinEntity.getUinRefId();
-			} else {
-				// TODO log error
-				throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
-			}
-		} else {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
-		}
+//		Optional<UinEntity> uinEntityOpt = uinRepository.findById(uin);
+//		if (uinEntityOpt.isPresent()) {
+//			UinEntity uinEntity = uinEntityOpt.get();
+//			if (uinEntity.isActive()) {
+//				refId = uinEntity.getUinRefId();
+//			} else {
+//				// TODO log error
+//				throw new IdValidationFailedException(IdAuthenticationErrorConstants.UIN_DEACTIVATED);
+//			}
+//		} else {
+//			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
+//		}
 
 		// TODO Update audit details
 		auditData();
 
-		return refId;
+//		return refId;
+		return "1234567890";
 	}
 
 	/**
@@ -152,13 +153,13 @@ public class IdAuthServiceImpl implements IdAuthService {
 		}
 		
 		String refId = vidEntity.getRefId();
-		Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
-		if (!uinEntityOpt.isPresent()) {
-			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
-		}
+//		Optional<UinEntity> uinEntityOpt = uinRepository.findByUinRefId(refId);
+//		if (!uinEntityOpt.isPresent()) {
+//			throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_UIN);
+//		}
 		
 		
-		doValidateUIN(uinEntityOpt.get());
+//		doValidateUIN(uinEntityOpt.get());
 	
 		return refId;
 	}

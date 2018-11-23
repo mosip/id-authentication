@@ -4,11 +4,13 @@
 *.war
 *.ear
 hs_err_pid*
+node_modules
 target/
 .metadata
 .classpath
 .project
 .settings/
+.vscode/
 bin/
 tmp/
 *.tmp
@@ -25,3 +27,4 @@ local.properties
 *.useq
 /Key_Store/
 /Packet_Store/
+dist/*
