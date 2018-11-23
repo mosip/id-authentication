@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,8 +110,7 @@ public class KycAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setReqTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setVer("1.1");
@@ -202,7 +202,7 @@ public class KycAuthRequestValidatorTest {
 	public void TestMUAPermissionisNotAvail() {
 		MockEnvironment mockenv = new MockEnvironment();
 		mockenv.merge(((AbstractEnvironment) mockenv));
-		mockenv.setProperty("ekyc.mua.accesslevel", "none");
+		mockenv.setProperty("ekyc.mua.accesslevel.1234567890", "none");
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", mockenv);
 		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		kycAuthRequestDTO.setConsentReq(true);
@@ -261,8 +261,7 @@ public class KycAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setReqTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setVer("1.1");
@@ -328,8 +327,7 @@ public class KycAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setReqTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setVer("1.1");
@@ -388,8 +386,7 @@ public class KycAuthRequestValidatorTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setIdvId("234567890123");
-		ZoneOffset offset = ZoneOffset.MAX;
-		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
+		authRequestDTO.setReqTime(ZonedDateTime.now()
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		authRequestDTO.setId("id");
 		authRequestDTO.setVer("1.1");

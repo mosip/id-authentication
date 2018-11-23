@@ -102,11 +102,12 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 	private void validateMUAPermission(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {
 		String key = ACCESS_LEVEL + Optional.ofNullable(kycAuthRequestDTO.getAuthRequest()).map(AuthRequestDTO::getTxnID).orElse("");
 		String accesslevel = env.getProperty(key);
-		if (accesslevel == null || accesslevel.equals(KycType.NONE.getType())) {
+		if (accesslevel != null && accesslevel.equals(KycType.NONE.getType())) {
 			mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_INPUT_PARAMETER + AUTH_REQUEST);
 			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.UNAUTHORISED_KUA.getErrorMessage(), AUTH_REQUEST));
 		}
+		//FIXME handle accesslevel being null for the KUA
 	}
 
 	private void validateAuthType(Errors errors, KycAuthRequestDTO kycAuthRequestDTO) {

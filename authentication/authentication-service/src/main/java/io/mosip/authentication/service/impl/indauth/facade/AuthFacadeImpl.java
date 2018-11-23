@@ -64,20 +64,21 @@ public class AuthFacadeImpl implements AuthFacade {
 
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
+	/** The Constant STATUS_SUCCESS. */
 	private static final String STATUS_SUCCESS = "y";
-
+	/** The Constant IDA. */
 	private static final String IDA = "IDA";
-
+	/** The Constant STATUS. */
 	private static final String STATUS = "status";
-
+	/** The Constant AUTH_TYPE. */
 	private static final String AUTH_TYPE = "authType";
-
+	/** The Constant NAME. */
 	private static final String NAME = "name";
-
+	/** The Constant UIN2. */
 	private static final String UIN2 = "uin";
-
+	/** The Constant TIME. */
 	private static final String TIME = "time";
-
+	/** The Constant DATE. */
 	private static final String DATE = "date";
 
 	/** The Constant AUTH_FACADE. */
@@ -104,16 +105,16 @@ public class AuthFacadeImpl implements AuthFacade {
 	/** The Kyc Service */
 	@Autowired
 	private KycService kycService;
-
+	/** The Environment */
 	@Autowired
 	private Environment env;
-
+	/** The Notification Manager */
 	@Autowired
 	private NotificationManager notificationManager;
-
+	/** The Id Info Service */
 	@Autowired
 	private IdInfoService idInfoService;
-
+	/** The Demo Auth Service */
 	@Autowired
 	private DemoAuthService demoAuthService;
 
