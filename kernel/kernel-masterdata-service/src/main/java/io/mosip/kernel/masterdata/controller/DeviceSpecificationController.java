@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
@@ -29,7 +28,6 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @RestController
-@RequestMapping("/devicespecifications")
 public class DeviceSpecificationController {
 
 	@Autowired
@@ -44,7 +42,7 @@ public class DeviceSpecificationController {
 	 * @return {@link DeviceSpecificationResponseDto}
 	 * 
 	 */
-	@GetMapping("/{langCode}")
+	@GetMapping("/devicespecifications/{langCode}")
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCode(
 			@PathVariable("langCode") String langCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -65,7 +63,7 @@ public class DeviceSpecificationController {
 	 */
 
 	@ApiOperation(value = "Fetch all the device specification avialbale for specific langCode and DeviceTypeCode")
-	@GetMapping("/{langCode}/{devicetypecode}")
+	@GetMapping("/devicespecifications/{langCode}/{devicetypecode}")
 	public DeviceSpecificationResponseDto getDeviceSpecificationByLanguageCodeAndDeviceTypeCode(
 			@PathVariable("langCode") String langCode, @PathVariable("devicetypecode") String deviceTypeCode) {
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -74,16 +72,16 @@ public class DeviceSpecificationController {
 	}
 
 	/**
-	 * Save list of device specification details to the DB
+	 * Save list of device specification details to the database table
 	 * 
 	 * @param deviceSpecifications
 	 *            input from user Device specification DTO
 	 * @return {@link DeviceSpecificationRequestDto}
 	 */
-	@PostMapping(value = "/")
+	@PostMapping("/devicespecifications")
 	public DeviceSpecPostResponseDto addDeviceType(
 			@RequestBody DeviceSpecificationRequestDto deviceSpecifications) {
-		return deviceSpecificationService.addDeviceSpecifications(deviceSpecifications);
+		return deviceSpecificationService.saveDeviceSpecifications(deviceSpecifications);
 	}
 
 }

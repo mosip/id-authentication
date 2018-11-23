@@ -19,14 +19,14 @@ public interface ReasonCategoryRepository extends BaseRepository<ReasonCategory,
 	 * 
 	 * @return
 	 */
-	List<ReasonCategory> findReasonCategoryByIsActiveTrueAndIsDeletedFalse();
+	List<ReasonCategory> findReasonCategoryByIsDeletedFalse();
 	/**
 	 * 
 	 * @param code
 	 * @param languageCode
 	 * @return
 	 */
-	List<ReasonCategory> findReasonCategoryByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(String code, String languageCode);
+	List<ReasonCategory> findReasonCategoryByCodeAndLangCodeAndIsDeletedFalse(String code, String languageCode);
 
 	
 }

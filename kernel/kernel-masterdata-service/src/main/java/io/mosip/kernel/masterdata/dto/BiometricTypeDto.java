@@ -23,5 +23,7 @@ public class BiometricTypeDto {
 	private String description;
 
 	private String langCode;
+	
+	private Boolean isActive;
 
 }

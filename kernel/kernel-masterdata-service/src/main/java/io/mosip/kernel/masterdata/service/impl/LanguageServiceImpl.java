@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -65,7 +66,7 @@ public class LanguageServiceImpl implements LanguageService {
 		List<Language> languages = null;
 
 		try {
-			languages = languageRepository.findAllByIsActiveTrueAndIsDeletedFalse();
+			languages = languageRepository.findAllByIsDeletedFalse();
 		} catch (DataAccessException dataAccessException) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage());
@@ -115,8 +116,9 @@ public class LanguageServiceImpl implements LanguageService {
 				throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
 						LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage());
 			}
-			List<LanguageDto> createdLanguageDtos = mapperUtil.mapAll(createdLanguages, LanguageDto.class);
-			languageRequestResponseDto.setLanguages(createdLanguageDtos);
+			List<String> successfullyCreatedLanguages = createdLanguages.stream().map(e -> e.getCode())
+					.collect(Collectors.toList());
+			languageRequestResponseDto.setSuccessfullyCreatedLanguages(successfullyCreatedLanguages);
 
 		} catch (Exception e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),

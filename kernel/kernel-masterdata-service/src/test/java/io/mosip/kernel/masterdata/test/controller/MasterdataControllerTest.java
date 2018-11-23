@@ -22,39 +22,26 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
+import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeResponseDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationListDto;
-import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeCodeAndLanguageCode;
-import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeListDto;
-import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentCategoryDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
-import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatRequestDto;
 import io.mosip.kernel.masterdata.dto.ValidDocumentTypeResponseDto;
 import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.Holiday;
@@ -69,12 +56,11 @@ import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
-import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
-import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
 
 /**
@@ -152,8 +138,6 @@ public class MasterdataControllerTest {
 
 	LocationDto locationDto = null;
 	LocationResponseDto locationResponseDto = null;
-	LocationHierarchyDto locationHierarchyDto=null;
-	LocationHierarchyResponseDto locationHierarchyResponseDto=null;
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -167,18 +151,6 @@ public class MasterdataControllerTest {
 
 	@MockBean
 	private TemplateService templateService;
-	
-	@MockBean
-	DeviceTypeService deviceTypeService;
-	
-	DeviceTypeRequestDto reqTypeDto;
-	DeviceTypeListDto devTypeListDto;
-	List<DeviceTypeDto> devTypeList;
-	DeviceTypeDto devTypeDto;
-	
-	PostResponseDto resDto;
-	List<CodeAndLanguageCodeId> codeLangCodeList ;
-	CodeAndLanguageCodeId codeLangCode ;
 
 	private static final String TEMPLATE_EXPECTED_LIST = "[\r\n" + "  {\r\n" + "	\"id\": \"3\",\r\n"
 			+ "    \"name\": \"Email template\",\r\n" + "    \"description\": null,\r\n"
@@ -187,17 +159,9 @@ public class MasterdataControllerTest {
 			+ "    \"languageCode\": \"HIN\"\r\n" + "  }\r\n" + "]";
 
 	private List<TemplateDto> templateDtoList = new ArrayList<>();
-	
+
 	@MockBean
-	DeviceSpecificationService deviceSpecificationService;
-	
-	private DeviceSpecificationRequestDto requestDto ;
-	private DeviceSpecificationListDto devSepcList;
-	private List<DeviceSpecificationDto> devDecDtoList;
-	private DeviceSpecificationDto devSpecDto;
-	private DeviceSpecPostResponseDto responseDto;
-	private List<DeviceTypeCodeAndLanguageCode> devTypes;
-	private DeviceTypeCodeAndLanguageCode devType;
+	private TemplateFileFormatService templateFileFormatService;
 
 	@Before
 	public void setUp() {
@@ -208,7 +172,7 @@ public class MasterdataControllerTest {
 		biometricAttributeSetup();
 
 		// TODO DeviceControllerTest
-		deviceSpecificationSetUp();
+		// TODO DeviceSpecificationControllerTest
 
 		documentCategorySetup();
 
@@ -223,8 +187,6 @@ public class MasterdataControllerTest {
 		registrationCenterController();
 
 		templateSetup();
-		
-		deviceTypeSetUp();
 
 	}
 
@@ -276,9 +238,7 @@ public class MasterdataControllerTest {
 
 	private void locationSetup() {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
-		List<LocationHierarchyDto> locationHierarchyDtos=new ArrayList<>();
 		locationResponseDto = new LocationResponseDto();
-		locationHierarchyResponseDto = new LocationHierarchyResponseDto();
 		locationDto = new LocationDto();
 		locationDto.setCode("IND");
 		locationDto.setName("INDIA");
@@ -301,13 +261,6 @@ public class MasterdataControllerTest {
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
 		locationResponseDto.setLocations(locationHierarchies);
-		
-		locationHierarchyDto= new LocationHierarchyDto();
-		locationHierarchyDto.setLocationHierarchylevel((short)0);
-		locationHierarchyDto.setLocationHierarchyName("COUNTRY");
-		locationHierarchyDtos.add(locationHierarchyDto);
-		locationHierarchyResponseDto.setLocationHierarchyResponseDto(locationHierarchyDtos);
-		
 	}
 
 	private void idTypeSetup() {
@@ -393,53 +346,6 @@ public class MasterdataControllerTest {
 		biometricTypeDtoList.add(biometricTypeDto1);
 		biometricTypeDtoList.add(biometricTypeDto2);
 	}
-	
-	private void deviceTypeSetUp() {
-		reqTypeDto = new DeviceTypeRequestDto();
-		devTypeListDto = new DeviceTypeListDto();
-		devTypeList = new ArrayList<>();
-		devTypeDto =new DeviceTypeDto();
-		devTypeDto.setCode("laptop");
-		devTypeDto.setLangCode("ENG");
-		devTypeDto.setName("HP");
-		devTypeDto.setDescription("Laptop disc");
-		devTypeList.add(devTypeDto);
-		devTypeListDto.setDeviceTypeDtos(devTypeList);
-		reqTypeDto.setRequest(devTypeListDto);
-		
-		resDto = new PostResponseDto();
-		codeLangCodeList = new ArrayList<>();
-		codeLangCode = new CodeAndLanguageCodeId();
-		codeLangCode.setCode("laptop");
-		codeLangCode.setLangCode("ENG");
-		codeLangCodeList.add(codeLangCode);
-		resDto.setResults(codeLangCodeList);
-		
-	}
-	
-	private void deviceSpecificationSetUp() {
-		requestDto = new DeviceSpecificationRequestDto();
-		devSepcList = new DeviceSpecificationListDto();
-		devDecDtoList = new ArrayList<>();
-		devSpecDto = new DeviceSpecificationDto();
-		devSpecDto.setId("100");
-		devSpecDto.setName("HP");
-		devSpecDto.setLangCode("ENG");
-		devSpecDto.setDeviceTypeCode("laptop");
-		devDecDtoList.add(devSpecDto);
-		devSepcList.setDeviceSpecificationDtos(devDecDtoList);
-		requestDto.setRequest(devSepcList);
-		
-		
-		responseDto = new DeviceSpecPostResponseDto();
-		devTypes = new ArrayList<>();
-		devType = new DeviceTypeCodeAndLanguageCode();
-		devType.setId("100");
-		devType.setLangCode("ENG");
-		devType.setDeviceTypeCode("laptop");
-		devTypes.add(devType);
-		responseDto.setResults(devTypes);
-	}
 
 	// -------------------------------BiometricTypeControllerTest--------------------------
 	@Test
@@ -492,6 +398,27 @@ public class MasterdataControllerTest {
 				.thenReturn(applicationResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/applicationtypes/101/ENG"))
 				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void addApplication() throws Exception {
+		PostResponseDto postResponseDto = new PostResponseDto();
+		List<CodeAndLanguageCodeId> results = new ArrayList<>();
+		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId.setCode("101");
+		codeAndLanguageCodeId.setLangCode("ENG");
+		results.add(codeAndLanguageCodeId);
+		postResponseDto.setResults(results);
+		Mockito.when(applicationService.addApplicationData(Mockito.any(ApplicationRequestDto.class)))
+				.thenReturn(postResponseDto);
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/applicationtypes").contentType(MediaType.APPLICATION_JSON)
+				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
+						+ "  \"timestamp\": \"string\",\n" + "  \"request\": {\n" + "    \"applicationtypes\": [\n"
+						+ "      {\n" + "        \"code\": \"101\",\n" + "        \"name\": \"pre-registeration\",\n"
+						+ "        \"description\": \"Pre-registration Application Form\",\n"
+						+ "        \"langCode\": \"ENG\"\n" + "      }\n" + "    ]\n" + "  }\n" + "}"))
+				.andExpect(status().isOk());
 	}
 
 	// -------------------------------BiometricAttributeControllerTest--------------------------
@@ -594,7 +521,7 @@ public class MasterdataControllerTest {
 	public void testIdTypeController() throws Exception {
 		List<IdType> idTypeList = new ArrayList<>();
 		idTypeList.add(idType);
-		Mockito.when(repository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(anyString())).thenReturn(idTypeList);
+		Mockito.when(repository.findByLangCodeAndIsDeletedFalse(anyString())).thenReturn(idTypeList);
 		mockMvc.perform(get("/idtypes/{languagecode}", "ENG")).andExpect(status().isOk());
 	}
 
@@ -647,14 +574,15 @@ public class MasterdataControllerTest {
 
 	// -------------------------------LocationControllerTest--------------------------
 
-	@Test
-	public void testGetAllLocationHierarchy() throws Exception {
-
-		Mockito.when(locationService.getLocationDetails()).thenReturn(locationHierarchyResponseDto);
-		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
-			.andExpect(MockMvcResultMatchers.status().isOk());
-
-	}
+//	@Test
+//	public void testGetAllLocationHierarchy() throws Exception {
+//
+//		Mockito.when(locationService.getLocationDetails()).thenReturn(locationResponseDto);
+//		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
+//				.andExpect(MockMvcResultMatchers.content().json(LOCATION_JSON_EXPECTED))
+//				.andExpect(MockMvcResultMatchers.status().isOk());
+//
+//	}
 
 	@Test
 	public void testGetLocatonHierarchyByLocCodeAndLangCode() throws Exception {
@@ -702,7 +630,7 @@ public class MasterdataControllerTest {
 	// -------------------------------RegistrationCenterControllerTest--------------------------
 	@Test
 	public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
 				anyString())).thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenReturn(holidays);
@@ -718,7 +646,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
 				anyString())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
 				"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
@@ -726,7 +654,7 @@ public class MasterdataControllerTest {
 
 	@Test
 	public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
 				anyString())).thenReturn(registrationCenter);
 		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
@@ -738,61 +666,42 @@ public class MasterdataControllerTest {
 	@Test
 	public void getAllTemplateByTest() throws Exception {
 		Mockito.when(templateService.getAllTemplate()).thenReturn(templateDtoList);
-		mockMvc.perform(MockMvcRequestBuilders.get("/templates"))
-				.andExpect(status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/templates")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeTest() throws Exception {
 		Mockito.when(templateService.getAllTemplateByLanguageCode(Mockito.anyString())).thenReturn(templateDtoList);
-		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN"))
-				.andExpect(status().isOk());
+		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN")).andExpect(status().isOk());
 	}
 
 	@Test
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeTest() throws Exception {
 		Mockito.when(templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(templateDtoList);
-		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN/EMAIL"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/templates/HIN/EMAIL")).andExpect(status().isOk());
+	}
+
+	// -----------------------------TemplateFileFormatControllerTest------------------------
+	@Test
+	public void addTemplateFileFormatTest() throws Exception {
+
+		PostResponseDto postResponseDto = new PostResponseDto();
+		List<CodeAndLanguageCodeId> results = new ArrayList<>();
+		CodeAndLanguageCodeId codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId.setCode("xml");
+		codeAndLanguageCodeId.setLangCode("ENG");
+		results.add(codeAndLanguageCodeId);
+		postResponseDto.setResults(results);
+		Mockito.when(templateFileFormatService.addTemplateFileFormat(Mockito.any(TemplateFileFormatRequestDto.class)))
+				.thenReturn(postResponseDto);
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/templatefileformats").contentType(MediaType.APPLICATION_JSON)
+				.content("{\n" + "  \"id\": \"string\",\n" + "  \"ver\": \"string\",\n"
+						+ "  \"timestamp\": \"string\",\n" + "  \"request\": {\n"
+						+ "    \"templateFileFormatDtos\": [\n" + "      {\n" + "        \"code\": \"xml\",\n"
+						+ "        \"description\": \"xml format\",\n" + "        \"langCode\": \"ENG\"\n" + "      }\n"
+						+ "    ]\n" + "  }\n" + "}"))
 				.andExpect(status().isOk());
 	}
-	
-	//--------------------------------DeviceType------------------------
-	@Test
-	public void testAddDeviceTypes() throws Exception {
-	
-		String inputJson = this.maptoJson(reqTypeDto);
-		Mockito.when(deviceTypeService.addDeviceTypes(reqTypeDto)).thenReturn(resDto);
-		
-		MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post("/devicetypes/")
-				.accept(MediaType.APPLICATION_JSON).content(inputJson)
-				.contentType(MediaType.APPLICATION_JSON)).andReturn();
-		
-		MockHttpServletResponse response =result.getResponse();
-		String outputJson = response.getContentAsString();
-		assertNotNull(outputJson);	
-	}
-	private String maptoJson(Object object)throws  JsonProcessingException{
-		ObjectMapper objectMap = new ObjectMapper();
-		return objectMap.writeValueAsString(object);
-	}
-	
-	
-	//---------------------------------DeviceSpecification-------------------
-	@Test
-	public void testAddDeviceSpecifications() throws Exception {
-
-		String inputJson = this.maptoJson(requestDto);
-		Mockito.when(
-				deviceSpecificationService.addDeviceSpecifications(Mockito.any(DeviceSpecificationRequestDto.class)))
-				.thenReturn(responseDto);
-		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications/")
-				.accept(MediaType.APPLICATION_JSON).content(inputJson).contentType(MediaType.APPLICATION_JSON))
-				.andReturn();
-
-		MockHttpServletResponse response = result.getResponse();
-		String outputJson = response.getContentAsString();
-		assertNotNull(outputJson);
-	}
-	
 }

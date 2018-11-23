@@ -12,10 +12,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.model.IncludeDataField;
-import io.mosip.kernel.datamapper.orika.impl.DataMapperImpl;
+import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.datamapper.orika.test.model.DestinationModel;
 import io.mosip.kernel.datamapper.orika.test.model.Person;
 import io.mosip.kernel.datamapper.orika.test.model.Person2;
@@ -29,7 +30,8 @@ import io.mosip.kernel.datamapper.orika.test.model.SourceModel;
 
 public class DataMapperImplTest {
 
-	DataMapperImpl dataMapper = new DataMapperImpl();
+	@Autowired
+	DataMapper dataMapper;
 
 	@Test
 	public void personConverterListTest() {

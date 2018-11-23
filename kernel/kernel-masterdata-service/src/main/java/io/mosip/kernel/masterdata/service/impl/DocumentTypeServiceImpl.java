@@ -50,7 +50,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		List<DocumentTypeDto> listOfDocumentTypeDto = null;
 		List<DocumentType> documents = null;
 		try {
-			documents = documentTypeRepository.findByCodeAndLangCode(code, langCode);
+			documents = documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),
@@ -88,12 +88,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		documentTypes.forEach(documentType -> {
 			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			try {
-				dataMapper.map(documentType, codeLangCodeId, true, null, null, true);
-			} catch (DataMapperException e) {
-				throw new MasterDataServiceException(
-						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
-			}
+			dataMapper.map(documentType, codeLangCodeId, true, null, null, true);
 			codeLangCodeIds.add(codeLangCodeId);
 		});
 		PostResponseDto postResponseDto = new PostResponseDto();

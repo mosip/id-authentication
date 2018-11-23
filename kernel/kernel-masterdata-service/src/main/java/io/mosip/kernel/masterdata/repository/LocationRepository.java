@@ -16,13 +16,13 @@ import io.mosip.kernel.masterdata.entity.Location;
 @Repository
 public interface LocationRepository extends BaseRepository<Location, String> {
 	
-	List<Location> findLocationHierarchyByIsActiveTrueAndIsDeletedFalse();
+	List<Location> findLocationHierarchyByIsDeletedFalse();
 
-	List<Location> findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String locCode,String languagecode);
+	List<Location> findLocationHierarchyByCodeAndLanguageCodeAndIsDeletedFalse(String locCode,String languagecode);
 	
-	List<Location> findLocationHierarchyByParentLocCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String parentLocCode,
+	List<Location> findLocationHierarchyByParentLocCodeAndLanguageCodeAndIsDeletedFalse(String parentLocCode,
 			String languageCode);
-	@Query(value="select distinct hierarchy_level,hierarchy_level_name from master.location where is_active='t' and is_deleted='f'",nativeQuery=true)
-	List<Object[]> findDistinctLocationHierarchyByIsActiveTrueAndIsDeletedFalse();
+	@Query(value="select distinct hierarchy_level,hierarchy_level_name from master.location where and is_deleted='f'",nativeQuery=true)
+	List<Object[]> findDistinctLocationHierarchyByIsDeletedFalse();
 
 }

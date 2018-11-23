@@ -10,11 +10,13 @@ import lombok.NoArgsConstructor;
 public class ApplicationDto {
 
 	private String code;
-	
+
 	private String name;
-	
+
 	private String description;
-	
+
 	private String langCode;
 	
+	private Boolean isActive;
+
 }

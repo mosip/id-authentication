@@ -45,7 +45,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public ApplicationResponseDto getAllApplication() {
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			applicationList = applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Application.class);
+			applicationList = applicationRepository.findAllByIsDeletedFalse(Application.class);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					e.getMessage());
@@ -53,12 +53,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		if (!(applicationList.isEmpty())) {
 			applicationList.forEach(application -> {
 				ApplicationDto applicationDto = new ApplicationDto();
-				try {
-					dataMapper.map(application, applicationDto, true, null, null, true);
-				} catch (DataMapperException e) {
-					throw new MasterDataServiceException(
-							ApplicationErrorCode.APPLICATION_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
-				}
+				dataMapper.map(application, applicationDto, true, null, null, true);
 				applicationDtoList.add(applicationDto);
 			});
 		} else {
@@ -74,7 +69,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 	public ApplicationResponseDto getAllApplicationByLanguageCode(String languageCode) {
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			applicationList = applicationRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode);
+			applicationList = applicationRepository.findAllByLangCodeAndIsDeletedFalse(languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
 					ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorMessage());
@@ -82,12 +77,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		if (!(applicationList.isEmpty())) {
 			applicationList.forEach(application -> {
 				ApplicationDto applicationDto = new ApplicationDto();
-				try {
-					dataMapper.map(application, applicationDto, true, null, null, true);
-				} catch (DataMapperException e) {
-					throw new MasterDataServiceException(
-							ApplicationErrorCode.APPLICATION_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
-				}
+				dataMapper.map(application, applicationDto, true, null, null, true);
 				applicationDtoList.add(applicationDto);
 			});
 		} else {
@@ -105,7 +95,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		ApplicationDto applicationDto = new ApplicationDto();
 		List<ApplicationDto> applicationDtoList = new ArrayList<>();
 		try {
-			application = applicationRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(code,
+			application = applicationRepository.findByCodeAndLangCodeAndIsDeletedFalse(code,
 					languageCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_FETCH_EXCEPTION.getErrorCode(),
@@ -137,12 +127,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		applications.forEach(app -> {
 			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			try {
-				dataMapper.map(app, codeLangCodeId, true, null, null, true);
-			} catch (DataMapperException e) {
-				throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_MAPPING_EXCEPTION.getErrorCode(),
-						e.getMessage());
-			}
+			dataMapper.map(app, codeLangCodeId, true, null, null, true);
 			codeLangCodeIds.add(codeLangCodeId);
 		});
 		PostResponseDto postResponseDto = new PostResponseDto();

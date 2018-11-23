@@ -23,6 +23,6 @@ public class DocumentTypeDto {
 
 	private String langCode;
 
-	//private Boolean isActive;
+	private Boolean isActive;
 
 }
