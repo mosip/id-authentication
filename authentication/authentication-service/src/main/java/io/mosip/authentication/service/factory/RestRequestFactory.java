@@ -11,6 +11,7 @@ import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -66,14 +67,15 @@ public class RestRequestFactory {
 	RestRequestDTO request = new RestRequestDTO();
 	MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
 	Map<String, String> pathVariables = new HashMap<>();
-	HttpHeaders headers = new HttpHeaders();
 
 	String serviceName = restService.getServiceName();
 
 	String uri = env.getProperty(serviceName.concat(".rest.uri"));
 	String httpMethod = env.getProperty(serviceName.concat(".rest.httpMethod"));
 	String timeout = env.getProperty(serviceName.concat(".rest.timeout"));
-	headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(".rest.headers.mediaType"))));
+
+	HttpHeaders headers = constructHttpHeaders(serviceName);
+
 	checkUri(request, uri);
 
 	checkHttpMethod(request, httpMethod);
@@ -112,6 +114,21 @@ public class RestRequestFactory {
 	}
 
 	return request;
+    }
+
+    private HttpHeaders constructHttpHeaders(String serviceName) throws IDDataValidationException {
+	try {
+	    HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.valueOf(env.getProperty(serviceName.concat(".rest.headers.mediaType"))));
+	    return headers;
+	} catch (InvalidMediaTypeException e) {
+	    mosipLogger.error(DEFAULT_SESSION_ID, METHOD_BUILD_REQUEST, "returnType",
+		    "throwing IDDataValidationException - INVALID_INPUT_PARAMETER"
+			    + env.getProperty(serviceName.concat(".rest.headers.mediaType")));
+	    throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+		    String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(),
+			    serviceName.concat(".rest.headers.mediaType")));
+	}
     }
 
     /**

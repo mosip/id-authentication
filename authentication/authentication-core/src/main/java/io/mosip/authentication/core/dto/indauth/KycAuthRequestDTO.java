@@ -7,7 +7,6 @@ import lombok.Data;
  * @author Prem Kumar
  *
  */
-
 @Data
 public class KycAuthRequestDTO extends BaseAuthRequestDTO {
 

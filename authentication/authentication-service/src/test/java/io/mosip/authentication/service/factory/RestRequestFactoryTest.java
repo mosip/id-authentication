@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -16,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.env.MockEnvironment;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -87,6 +87,24 @@ public class RestRequestFactoryTest {
 		assertEquals(testRequest, request);
 
 	}
+	
+	@Test(expected=IDDataValidationException.class)
+	public void testBuildRequestWithMultiValueMap() throws IDDataValidationException {
+	    
+		MockEnvironment environment = new MockEnvironment();
+		environment.merge(env);
+		environment.setProperty("audit.rest.headers.mediaType", "multipart/form-data");
+
+		ReflectionTestUtils.setField(restFactory, "env", environment);
+		AuditRequestDto auditRequest = auditFactory.buildRequest(AuditModules.OTP_AUTH,
+				AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc");
+		auditRequest.setActionTimeStamp(null);
+
+		RestRequestDTO request = restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditRequest,
+				AuditResponseDto.class);
+
+
+	}
 
 	@Test(expected = IDDataValidationException.class)
 	public void testBuildRequestEmptyUri() throws IDDataValidationException {
@@ -102,8 +120,8 @@ public class RestRequestFactoryTest {
 				AuditResponseDto.class);
 	}
 
-	@Ignore
 	@Test(expected = IDDataValidationException.class)
+	@DirtiesContext
 	public void testBuildRequestNullProperties() throws IDDataValidationException {
 
 		MockEnvironment environment = new MockEnvironment();
