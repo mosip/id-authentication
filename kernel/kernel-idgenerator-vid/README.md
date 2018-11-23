@@ -31,6 +31,7 @@ Schema : ids
 
 Table : vid
 
+
 **Description**
 
 1.**ADMIN** _can only configure the length_ 
@@ -49,16 +50,16 @@ Table : vid
     
       //Autowire the interface class vidGenerator
 	  @Autowired
-	  private VidGenerator<String> vidGenerator;
+	  private VidGenerator<String> vidGeneratorImpl;
 	
      //Call generateId from autowired vidGenerator instance to generateId.
      //The input parameter would be UIN in String format.
      
-	  String generatedVid=vidGenerator.generateId(uin));
+	  String generatedVid = vidGeneratorImpl.generateId("375326789911"));
 	  
 	  
 	 
-**Sample Output**
+**Sample VID**
 	  
 _Generated vid_: 5916983045841801  
   

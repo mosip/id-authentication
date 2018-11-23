@@ -202,9 +202,6 @@
 					<configuration>
 						<skip>false</skip>
 						<useFile>false</useFile>
-						<excludes>
-							<exclude>**/*IntegrationTest.java</exclude>
-						</excludes>
 					</configuration>
 				</plugin>
 				<plugin>

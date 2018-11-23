@@ -8,6 +8,18 @@
  mvn javadoc:javadoc
 
  ```
+ 
+ **Properties to be added in Spring application environment using this component**
+
+[kernel-idgenerator-prid-dev.properties](../../config/kernel-idgenerator-prid-dev.properties)
+ 
+ **Database properties**
+ 
+schema:ids
+
+table:prid 
+ 
+ 
 **Maven Dependency**
 
 ```
@@ -34,17 +46,15 @@
   
 **Sample Usage**
   
-    
       //Autowire the interface class PridGenerator
 	  @Autowired
-	  private PridGenerator<String> pridGenerator;
+	  private PridGenerator<String> pridGeneratorImpl;
 	
      //Call generateId from autowired PridGenerator instance to generateId.
-	  String generatedPrid = pridGenerator.generateId());
+	  String generatedPrid = pridGeneratorImpl.generateId());
 	  
 	  
-	 
-**Sample Output**
+**Sample PRId**
 	  
 _Generated Prid_: 58361782748604
 	

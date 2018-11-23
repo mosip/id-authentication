@@ -1,16 +1,17 @@
 ## kernel-datamapper-orika
 
-This folder has data mapper module which can be used to do the mapping between two different type of objects.
- 
  1- [Background & Design](../../design/kernel/kernel-datamapper.md)
  
 
+
  2- [API Documentation <TBA>](TBA)
+ 
  
  ```
  mvn javadoc:javadoc
 
  ```
+ 
  
 **Maven Dependency**
 
@@ -22,6 +23,7 @@ This folder has data mapper module which can be used to do the mapping between t
 	</dependency>
 
 ```
+ 
  
 **Use cases**
 
@@ -35,6 +37,8 @@ Input Parameters:-
 7. dataConverter - customize converter need to be created
 8. applyDefault - true/false to apply default configuration or not (default configuration will map the rest fields too)
  
+ 
+ 
 ** Usage1: **
  
 ###### public <S, D> D map(S source, Class<D> destinationClass, boolean mapNull, List<IncludeDataField> includeDataField, List<String> excludeDataField, boolean applyDefault);
@@ -43,20 +47,23 @@ Example1:-
 
 ```
 		@Autowired
-		DataMapper dataMapper;
+		DataMapper dataMapperImpl;
+		
 		SourceModel sourceObject = new SourceModel("Mosip", 10);
-		DestinationModel destinationObject = dataMapper.map(sourceObject, DestinationModel.class, true, null, null, true);
+		DestinationModel destinationObject = dataMapperImpl.map(sourceObject, DestinationModel.class, true, null, null, true);
 ```
 
 Example2:-
 
 ```
 		@Autowired
-		DataMapper dataMapper;
+		DataMapper dataMapperImpl;
+		
+		
 		List<String> excludeField = Arrays.asList("nom");
 		List<IncludeDataField> includeField = Arrays.asList(new IncludeDataField("surnom", "nickName", true));
 		Personne french = new Personne("Claire", "cla", 2);
-		Person2 english = dataMapper.map(french, Person2.class, true, includeField, excludeField, true);
+		Person2 english = dataMapperImpl.map(french, Person2.class, true, includeField, excludeField, true);
 ```
 
 ** Usage2: **
@@ -67,11 +74,13 @@ Example:-
  
  ```
 		@Autowired
-		DataMapper dataMapper;
+		DataMapper dataMapperImpl;
+		
 		SourceModel src = new SourceModel(null, 10);
 		DestinationModel dest = new DestinationModel("Neha", 25);
-		dataMapper.map(src, dest, true, null, null, true);
+		dataMapperImpl.map(src, dest, true, null, null, true);
  ```
+
 
 ** Usage3: **
 
@@ -99,7 +108,9 @@ Example for creating customize converter:-
 
 ```
 		@Autowired
-		DataMapper dataMapper;
+		DataMapper dataMapperImpl;
+		
+		
 		PersonListConverter personListConverter = new PersonListConverter();
 		Person person = new Person();
 		LocalDate dob = LocalDate.of(1994, Month.JANUARY, 1);
@@ -107,5 +118,5 @@ Example for creating customize converter:-
 		List<Person> personList = new ArrayList<>();
 		personList.add(person);
 		List<Personne> personneList = new ArrayList<Personne>();
-		dataMapper.map(personList, personneList, personListConverter);
+		dataMapperImpl.map(personList, personneList, personListConverter);
 ```
