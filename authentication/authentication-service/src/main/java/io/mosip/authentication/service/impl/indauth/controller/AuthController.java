@@ -23,6 +23,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.util.DataValidationUtil;
 import io.mosip.authentication.service.impl.indauth.validator.AuthRequestValidator;
+import io.mosip.authentication.service.impl.indauth.validator.InternalAuthRequestValidator;
 import io.mosip.authentication.service.impl.indauth.validator.KycAuthRequestValidator;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.swagger.annotations.ApiOperation;
@@ -41,117 +42,128 @@ import springfox.documentation.annotations.ApiIgnore;
 @RestController
 public class AuthController {
 
-    private static final String SUCCESS_STATUS = "Y";
+	private static final String SUCCESS_STATUS = "Y";
 
-    private static final String SESSION_ID = "sessionId";
+	private static final String SESSION_ID = "sessionId";
 
-    /** The mosipLogger. */
-    private Logger mosipLogger = IdaLogger.getLogger(AuthController.class);
+	/** The mosipLogger. */
+	private Logger mosipLogger = IdaLogger.getLogger(AuthController.class);
 
-    /** The auth request validator. */
-    @Autowired
-    private AuthRequestValidator authRequestValidator;
+	/** The auth request validator. */
+	@Autowired
+	private AuthRequestValidator authRequestValidator;
 
-    @Autowired
-    private KycAuthRequestValidator kycReqValidator;
+	@Autowired
+	private KycAuthRequestValidator kycReqValidator;
 
-    /** The auth facade. */
-    @Autowired
-    private AuthFacade authFacade;
+	/** The auth facade. */
+	@Autowired
+	private AuthFacade authFacade;
 
-    /**
-     *
-     * @param binder
-     *            the binder
-     */
-    @InitBinder("authRequestDTO")
-    private void initAuthRequestBinder(WebDataBinder binder) {
-	binder.setValidator(authRequestValidator);
-    }
+	
+	/** The internal Auth Request Validator */
+	@Autowired
+	private InternalAuthRequestValidator internalAuthRequestValidator;
 
-    /**
-     *
-     * @param binder
-     *            the binder
-     */
-    @InitBinder("kycAuthRequestDTO")
-    private void initKycBinder(WebDataBinder binder) {
-	binder.addValidators(kycReqValidator);
-    }
+	
 
-    /**
-     * authenticateRequest - method to authenticate request.
-     *
-     * @param authrequestdto
-     *            - Authenticate Request
-     * @param errors
-     *            the errors
-     * @return AuthResponseDTO
-     * @throws IdAuthenticationAppException
-     *             the id authentication app exception
-     * @throws IdAuthenticationDaoException
-     */
-
-    @PostMapping(path = "/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
-	    @ApiResponse(code = 400, message = "Request authenticated failed") })
-    public AuthResponseDTO authenticateApplication(@Validated @RequestBody AuthRequestDTO authrequestdto,
-	    @ApiIgnore Errors errors) throws IdAuthenticationAppException, IdAuthenticationDaoException {
-	AuthResponseDTO authResponsedto = null;
-
-	try {
-	    DataValidationUtil.validate(errors);
-
-	    authResponsedto = authFacade.authenticateApplicant(authrequestdto);
-	} catch (IDDataValidationException e) {
-	    mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-	    throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-	} catch (IdAuthenticationBusinessException e) {
-	    mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-	    throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
+	/**
+	 *
+	 * @param binder
+	 *            the binder
+	 */
+	@InitBinder("authRequestDTO")
+	private void initAuthRequestBinder(WebDataBinder binder) {
+		binder.setValidator(authRequestValidator);
 	}
 
-	return authResponsedto;
-    }
-
-    /**
-     * 
-     * Method to auhtentication for eKyc-Details
-     * 
-     * @throws IdAuthenticationBusinessException
-     * @throws IdAuthenticationAppException
-     * @throws IdAuthenticationDaoException
-     * 
-     * 
-     */
-    @PostMapping(path = "/ekyc", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "eKyc Request", response = IdAuthenticationAppException.class)
-    @ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
-	    @ApiResponse(code = 400, message = "Request authenticated failed") })
-    public KycAuthResponseDTO processKyc(@Validated @RequestBody KycAuthRequestDTO kycAuthRequestDTO,
-	    @ApiIgnore Errors errors)
-	    throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
-	AuthResponseDTO authResponseDTO = null;
-	KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
-
-	try {
-
-	    DataValidationUtil.validate(errors);
-
-	    authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest());
-	    if (authResponseDTO != null && authResponseDTO.getStatus().equals(SUCCESS_STATUS)) {
-		kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO);
-	    }
-	} catch (IDDataValidationException e) {
-	    mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-	    throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
-	} catch (IdAuthenticationBusinessException e) {
-	    mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
-	    throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
+	/**
+	 *
+	 * @param binder
+	 *            the binder
+	 */
+	@InitBinder("kycAuthRequestDTO")
+	private void initKycBinder(WebDataBinder binder) {
+		binder.addValidators(kycReqValidator);
 	}
 
-	return kycAuthResponseDTO;
-    }
+	/**
+	 * authenticateRequest - method to authenticate request.
+	 *
+	 * @param authrequestdto
+	 *            - Authenticate Request
+	 * @param errors
+	 *            the errors
+	 * @return AuthResponseDTO
+	 * @throws IdAuthenticationAppException
+	 *             the id authentication app exception
+	 * @throws IdAuthenticationDaoException
+	 */
+
+	@PostMapping(path = "/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "Authenticate Request", response = IdAuthenticationAppException.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
+			@ApiResponse(code = 400, message = "Request authenticated failed") })
+	public AuthResponseDTO authenticateApplication(@Validated @RequestBody AuthRequestDTO authrequestdto,
+			@ApiIgnore Errors errors) throws IdAuthenticationAppException, IdAuthenticationDaoException {
+		AuthResponseDTO authResponsedto = null;
+
+		try {
+			DataValidationUtil.validate(errors);
+
+			authResponsedto = authFacade.authenticateApplicant(authrequestdto);
+		} catch (IDDataValidationException e) {
+			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+		} catch (IdAuthenticationBusinessException e) {
+			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
+		}
+
+		return authResponsedto;
+	}
+
+	/**
+	 * 
+	 * Controller Method to auhtentication for eKyc-Details
+	 * 
+	 * @throws IdAuthenticationBusinessException
+	 * @throws IdAuthenticationAppException
+	 * @throws IdAuthenticationDaoException
+	 * 
+	 * 
+	 */
+	@PostMapping(path = "/ekyc", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "eKyc Request", response = IdAuthenticationAppException.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
+			@ApiResponse(code = 400, message = "Request authenticated failed") })
+	public KycAuthResponseDTO processKyc(@Validated @RequestBody KycAuthRequestDTO kycAuthRequestDTO,
+			@ApiIgnore Errors errors)
+			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+		AuthResponseDTO authResponseDTO = null;
+		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
+
+		try {
+
+			DataValidationUtil.validate(errors);
+
+			authResponseDTO = authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest());
+			if (authResponseDTO != null) {
+				if (authResponseDTO.getStatus().equals(SUCCESS_STATUS)) {
+					kycAuthResponseDTO = authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO);
+				}
+			}
+		} catch (IDDataValidationException e) {
+			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e);
+		} catch (IdAuthenticationBusinessException e) {
+			mosipLogger.error(SESSION_ID, null, null, e.getErrorTexts().isEmpty() ? "" : e.getErrorText());
+			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, e);
+		}
+
+		return kycAuthResponseDTO;
+	}
+
+
 
 }

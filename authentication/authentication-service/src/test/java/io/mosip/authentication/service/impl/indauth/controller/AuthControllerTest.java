@@ -1,12 +1,13 @@
 package io.mosip.authentication.service.impl.indauth.controller;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Before;
@@ -43,7 +44,6 @@ import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.service.factory.AuditRequestFactory;
 import io.mosip.authentication.service.factory.RestRequestFactory;
 import io.mosip.authentication.service.helper.DateHelper;
@@ -55,57 +55,59 @@ import io.mosip.authentication.service.impl.indauth.validator.KycAuthRequestVali
 import io.mosip.authentication.service.repository.UinRepository;
 
 /**
- * This code tests the AuthController 
+ * This code tests the AuthController
+ * 
  * @author Arun Bose
+ * 
+ * @author Prem Kumar
  */
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@ContextConfiguration(classes= {TestContext.class, WebApplicationContext.class})
+@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class AuthControllerTest {
-	
+
 	@Mock
-	RestHelper restHelper;
-	
+	private RestHelper restHelper;
+
 	@Autowired
 	Environment env;
-	
+
 	@InjectMocks
-	private RestRequestFactory  restFactory;
-	
+	private RestRequestFactory restFactory;
+
 	@InjectMocks
 	private AuditRequestFactory auditFactory;
-	
+
 	@Mock
 	private AuthFacadeImpl authFacade;
 
 	@InjectMocks
 	private AuthController authController;
-	
+
 	@Mock
 	WebDataBinder binder;
-	
-	@InjectMocks
-	DateHelper dateHelper;
-	
-	@InjectMocks
-	KycAuthRequestValidator KycAuthRequestValidator;
 
-	
 	@InjectMocks
-	AuthRequestValidator authRequestValidator;
+	private DateHelper dateHelper;
 
+	@InjectMocks
+	private KycAuthRequestValidator KycAuthRequestValidator;
+
+	@InjectMocks
+	private AuthRequestValidator authRequestValidator;
 
 	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
 	Errors errors = new BindException(KycAuthRequestDTO.class, "kycAuthReqDTO");
-	
+
 	@Mock
 	private UinRepository uinRepository;
-	
+
 	/** The Kyc Service */
-	@Mock 
+	@Mock
 	private KycServiceImpl kycService;
-	
+
+
 	@Before
 	public void before() {
 		ReflectionTestUtils.setField(auditFactory, "env", env);
@@ -113,62 +115,70 @@ public class AuthControllerTest {
 		ReflectionTestUtils.invokeMethod(authController, "initAuthRequestBinder", binder);
 		ReflectionTestUtils.invokeMethod(authController, "initKycBinder", binder);
 		ReflectionTestUtils.setField(authController, "authFacade", authFacade);
+
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "env", env);
 		ReflectionTestUtils.setField(authFacade, "kycService", kycService);
+		ReflectionTestUtils.setField(authFacade, "env", env);
 		ReflectionTestUtils.setField(dateHelper, "env", env);
 		ReflectionTestUtils.setField(KycAuthRequestValidator, "authRequestValidator", authRequestValidator);
-	} 
-	
+	}
+
 	/*
 	 * 
 	 * Errors in the AuthRequestValidator is handled here and exception is thrown
 	 */
-	@Test(expected=IdAuthenticationAppException.class)
-	public void showRequestValidator() throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
-		AuthRequestDTO authReqDTO=new AuthRequestDTO();
+	@Test(expected = IdAuthenticationAppException.class)
+	public void showRequestValidator()
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		Errors error = new BindException(authReqDTO, "authReqDTO");
 		error.rejectValue("id", "errorCode", "defaultMessage");
 		authController.authenticateApplication(authReqDTO, error);
-		
+
 	}
-	
-	@Test(expected=IdAuthenticationAppException.class)
-	public void authenticationFailed() throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
-		AuthRequestDTO authReqDTO=new AuthRequestDTO();
-		Mockito.when(authFacade.authenticateApplicant(authReqDTO)).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
+
+	@Test(expected = IdAuthenticationAppException.class)
+	public void authenticationFailed()
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		AuthRequestDTO authReqDTO = new AuthRequestDTO();
+		Mockito.when(authFacade.authenticateApplicant(authReqDTO))
+				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UIN_DEACTIVATED));
 		authController.authenticateApplication(authReqDTO, error);
-		
+
 	}
-  
+
 	@Test
-	public void authenticationSuccess() throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
-		AuthRequestDTO authReqDTO=new AuthRequestDTO();
+	public void authenticationSuccess()
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		Mockito.when(authFacade.authenticateApplicant(authReqDTO)).thenReturn(new AuthResponseDTO());
 		authController.authenticateApplication(authReqDTO, error);
-		
+
 	}
-	
-	@Test(expected=IdAuthenticationAppException.class)
-	public void showProcessKyc() throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException{
-		KycAuthRequestDTO kycAuthReqDTO=new KycAuthRequestDTO();
-		Errors errors =new BindException(kycAuthReqDTO, "kycAuthReqDTO");
+
+	@Test(expected = IdAuthenticationAppException.class)
+	public void showProcessKycValidator()
+			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+		KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO();
+		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
 		errors.rejectValue("id", "errorCode", "defaultMessage");
 		authFacade.authenticateApplicant(kycAuthReqDTO.getAuthRequest());
 		authController.processKyc(kycAuthReqDTO, errors);
-	} 
-//		
+	}
 	
+
 	@Test
-	public void processKycSuccess() throws  IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException{
-	
-		KycAuthRequestDTO kycAuthRequestDTO=new KycAuthRequestDTO();
+	public void processKycSuccess()
+			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+
+		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 		kycAuthRequestDTO.setConsentReq(true);
 		kycAuthRequestDTO.setEPrintReq(true);
 		kycAuthRequestDTO.setId("id");
 		kycAuthRequestDTO.setVer("1.1");
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
-		authRequestDTO.setIdvId("234567890123"); 
+		authRequestDTO.setIdvId("234567890123");
 		ZoneOffset offset = ZoneOffset.MAX;
 		authRequestDTO.setReqTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
@@ -203,13 +213,13 @@ public class AuthControllerTest {
 		List<PinInfo> otplist = new ArrayList<>();
 		otplist.add(pinInfo);
 		authRequestDTO.setPinInfo(otplist);
-	 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-	 	authResponseDTO.setErr(null);
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		authResponseDTO.setErr(null);
 		authResponseDTO.setInfo(null);
 		authResponseDTO.setResTime("");
-		authResponseDTO.setStatus("n");
-		authResponseDTO.setTxnID("34567"); 
-				AuthRequestDTO authRequestDTOs = new AuthRequestDTO();
+		authResponseDTO.setStatus("Y");
+		authResponseDTO.setTxnID("34567");
+		AuthRequestDTO authRequestDTOs = new AuthRequestDTO();
 		authRequestDTOs.setIdvIdType(IdType.UIN.getType());
 		authRequestDTOs.setId("1234567");
 		AuthTypeDTO authTypeDTOs = new AuthTypeDTO();
@@ -217,31 +227,30 @@ public class AuthControllerTest {
 		authRequestDTOs.setAuthType(authTypeDTO);
 		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
 		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest())).thenReturn(authResponseDTO);
-		KycAuthResponseDTO kycAuthResponseDTO=new KycAuthResponseDTO();
+		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setResTime(Instant.now().atOffset(offset)
 				.format(DateTimeFormatter.ofPattern(env.getProperty("datetime.pattern"))).toString());
 		kycAuthResponseDTO.setStatus("Y");
 		kycAuthResponseDTO.setTxnID("34567");
 		kycAuthResponseDTO.setErr(null);
-		KycResponseDTO response=new KycResponseDTO();
-		response.setAuth(null);;
+		KycResponseDTO response = new KycResponseDTO();
+		response.setAuth(null);
 		response.setKyc(null);
-		kycAuthResponseDTO.setResponse(response);;
+		kycAuthResponseDTO.setResponse(response);
 		kycAuthResponseDTO.setTtl("2");
-		Mockito.when( authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO)).thenReturn(kycAuthResponseDTO);
-		//kycAuthResponseDTO.getResponse().setAuth(authResponseDTO); 
-		//kycAuthResponseDTO.getResponse().setAuth(authResponseDTO); 
-		authController.processKyc(kycAuthRequestDTO, error);
+		Mockito.when(authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO)).thenReturn(kycAuthResponseDTO);
+		authController.processKyc(kycAuthRequestDTO, errors);
 		assertFalse(error.hasErrors());
 	}
 
-	@Ignore
-	@Test(expected=IdAuthenticationAppException.class)
-	public void processKycFailure()throws  IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException{
-		KycAuthRequestDTO kycAuthRequestDTO=new KycAuthRequestDTO();
-		AuthResponseDTO authResponseDto = null;
-	 	AuthResponseDTO authResponseDTO = new AuthResponseDTO();
-		authResponseDTO.setStatus("n");
+	@Test(expected = IdAuthenticationAppException.class)
+	public void processKycFailure()
+			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+		KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
+
+		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
+		authResponseDTO.setStatus("Y");
+		authResponseDTO.setResTime(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()));
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIdvIdType(IdType.UIN.getType());
 		authRequestDTO.setId("1234567");
@@ -250,18 +259,36 @@ public class AuthControllerTest {
 		authRequestDTO.setAuthType(authTypeDTO);
 		kycAuthRequestDTO.setAuthRequest(authRequestDTO);
 		Mockito.when(authFacade.authenticateApplicant(kycAuthRequestDTO.getAuthRequest())).thenReturn(authResponseDTO);
-		KycAuthResponseDTO kycAuthResponseDTO=new KycAuthResponseDTO();
+		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
 		kycAuthResponseDTO.setStatus("Y");
 		kycAuthResponseDTO.setTxnID("34567");
 		kycAuthResponseDTO.setErr(null);
-		KycResponseDTO response=new KycResponseDTO();
-		response.setAuth(null);;
+		KycResponseDTO response = new KycResponseDTO();
+		response.setAuth(null);
 		response.setKyc(null);
-		kycAuthResponseDTO.setResponse(response);;
+		kycAuthResponseDTO.setResponse(response);
 		kycAuthResponseDTO.setTtl("2");
-		Mockito.when(authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO)).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
-		authController.processKyc(kycAuthRequestDTO, error);
-		assertTrue(error.hasErrors()); 
+		Mockito.when(authFacade.processKycAuth(kycAuthRequestDTO, authResponseDTO))
+				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED));
+		authController.processKyc(kycAuthRequestDTO, errors);
+	}
+	@Ignore
+	@Test(expected=IdAuthenticationAppException.class)
+	public void showAuthenticateTspValidator() throws IdAuthenticationAppException, IdAuthenticationDaoException{
+	
+		AuthRequestDTO authReqestsDTO = new AuthRequestDTO();
+		Errors error = new BindException(authReqestsDTO, "authReqDTO");
+		error.rejectValue("id", "errorCode", "defaultMessage");
+		//authController.authenticateTsp(authReqestsDTO, error);
+	}
+	@Ignore
+	@Test
+	public void auhtenticationTspSuccess() throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException{
+		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
+		Mockito.when(authFacade.authenticateTsp(authReqestDTO)).thenReturn(new AuthResponseDTO());
+	//	authController.authenticateTsp(authReqestDTO, error);
+
+		
 	}
 
 }

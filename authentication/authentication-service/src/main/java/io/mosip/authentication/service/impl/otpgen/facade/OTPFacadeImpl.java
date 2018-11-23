@@ -51,9 +51,6 @@ public class OTPFacadeImpl implements OTPFacade {
 
 	private static final String DATETIME_PATTERN = "datetime.pattern";
 
-	private static final String ISO_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-	private static final DateTimeFormatter ISO_PATTERN = DateTimeFormatter.ofPattern(ISO_FORMAT);
-
 	/** The Constant SESSION_ID. */
 	private static final String SESSION_ID = "SessionID";
 
@@ -327,8 +324,10 @@ public class OTPFacadeImpl implements OTPFacade {
 	private String[] getDateAndTime(String reqquestTime) {
 
 		String[] dateAndTime = new String[2];
+		
+		DateTimeFormatter isoPattern = DateTimeFormatter.ofPattern(env.getProperty(DATETIME_PATTERN));
 
-		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqquestTime, ISO_PATTERN);
+		ZonedDateTime zonedDateTime2 = ZonedDateTime.parse(reqquestTime, isoPattern);
 		ZoneId zone = zonedDateTime2.getZone();
 		ZonedDateTime dateTime3 = ZonedDateTime.now(zone);
 		ZonedDateTime dateTime = dateTime3.withZoneSameInstant(zone);

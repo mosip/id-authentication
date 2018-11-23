@@ -26,6 +26,8 @@ import io.mosip.authentication.service.helper.DateHelper;
 public class InternalAuthRequestValidator implements Validator {
 
 	private static final String REQUEST = "request";
+	
+	private static final String AUTH_REQUEST = "authRequest";
 
 	@Autowired
 	private IdAuthService idAuthService;
@@ -61,30 +63,34 @@ public class InternalAuthRequestValidator implements Validator {
 	/** Validation for Request AuthType */
 	public void validateRequest(AuthRequestDTO authRequestDTO, Errors errors) {
 		AuthTypeDTO authTypeDTO = authRequestDTO.getAuthType();
-		if (authTypeDTO != null) {
+		if (authTypeDTO != null && !errors.hasErrors()) {
 
 			if (authRequestDTO.getAuthType().isFingerPrint()) {
 
 				boolean finger = validateFinger(authRequestDTO);
-				if (!finger) {
-					errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
-				}
+				if (!finger&&!errors.hasErrors()) {
+					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+									AUTH_REQUEST));					}
 			}
 			if (authRequestDTO.getAuthType().isIris()) {
 				boolean iris = validateIris(authRequestDTO);
-				if (!iris) {
-					errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
-				}
+				if (!iris &&!errors.hasErrors()) {
+					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+									AUTH_REQUEST));					}
 			}
 			if (authRequestDTO.getAuthType().isFace()) {
 				boolean face = validateFace(authRequestDTO);
-				if (!face) {
-					errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
-				}
+				if (!face &&!errors.hasErrors()) {
+					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+									AUTH_REQUEST));					}
 			}
 		} else {
-			errors.reject(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
-		}
+			errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+							AUTH_REQUEST));			}
 
 	}
 
@@ -94,12 +100,14 @@ public class InternalAuthRequestValidator implements Validator {
 			try {
 				Date reqDate = datehelper.convertStringToDate(authRequestDTO.getReqTime());
 				if (reqDate.after(new Date())) {
-					errors.reject("reqTime", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
-				}
+					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+									AUTH_REQUEST));					}
 
 			} catch (IDDataValidationException e) {
-				errors.reject("reqTime", IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode());
-			}
+				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+								AUTH_REQUEST));				}
 
 		}
 	}
@@ -134,14 +142,16 @@ public class InternalAuthRequestValidator implements Validator {
 				try {
 					idAuthService.validateUIN(authRequestDTO.getIdvId());
 				} catch (IdAuthenticationBusinessException e) {
-					errors.reject(refId, IdAuthenticationErrorConstants.INVALID_UIN.getErrorCode());
-				}
+					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+									AUTH_REQUEST));					}
 			} else if (refId.equals(IdType.VID.getType())) {
 				try {
 					idAuthService.validateVID(authRequestDTO.getIdvId());
 				} catch (IdAuthenticationBusinessException e) {
-					errors.reject(refId, IdAuthenticationErrorConstants.INVALID_VID.getErrorCode());
-				}
+					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+									AUTH_REQUEST));					}
 			}
 	}
 
