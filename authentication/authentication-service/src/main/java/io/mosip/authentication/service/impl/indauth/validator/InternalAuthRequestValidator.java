@@ -28,15 +28,11 @@ import io.mosip.authentication.service.helper.DateHelper;
 @Component
 public class InternalAuthRequestValidator implements Validator {
 
-
+	private static final String IDV_ID = "idvId";
 
 	private static final String REQ_TIME = "reqTime";
 
-	
-
 	private static final String REQUEST = "request";
-	
-	private static final String AUTH_REQUEST = "authRequest";
 
 	@Autowired
 	private IdAuthService idAuthService;
@@ -76,22 +72,19 @@ public class InternalAuthRequestValidator implements Validator {
 
 			if (authRequestDTO.getAuthType().isFingerPrint() && !validateFinger(authRequestDTO)) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-								REQUEST));
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
 			}
-			
+
 			if (authRequestDTO.getAuthType().isIris() && !validateIris(authRequestDTO)) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-								REQUEST));
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
 			}
-			
+
 			if (authRequestDTO.getAuthType().isFace() && !validateFace(authRequestDTO)) {
 				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-								REQUEST));
-			} 
-			
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
+			}
+
 		} else {
 			errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 					String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQUEST));
@@ -107,34 +100,49 @@ public class InternalAuthRequestValidator implements Validator {
 				if (reqDate.after(new Date())) {
 					errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
 							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-									REQ_TIME));					}
+									REQ_TIME));
+				}
 
 			} catch (IDDataValidationException e) {
 				errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-								REQ_TIME));				}
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), REQ_TIME));
+			}
 
 		}
 	}
 
 	public boolean validateFinger(AuthRequestDTO authRequestDTO) {
 
-		return  Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getLeftIndex).filter(list -> !list.isEmpty()).isPresent() 
-				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getLeftLittle).filter(list -> !list.isEmpty()).isPresent() 
-				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getLeftMiddle).filter(list -> !list.isEmpty()).isPresent() 
-				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getLeftRing).filter(list -> !list.isEmpty()).isPresent() 
-				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getLeftThumb).filter(list -> !list.isEmpty()).isPresent() 
-				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getRightIndex).filter(list -> !list.isEmpty()).isPresent() 
-				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getRightLittle).filter(list -> !list.isEmpty()).isPresent() 
-				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getRightMiddle).filter(list -> !list.isEmpty()).isPresent() 
-				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getRightRing).filter(list -> !list.isEmpty()).isPresent() 
-				||Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity).map(IdentityDTO::getRightThumb).filter(list -> !list.isEmpty()).isPresent() ;
-					
+		return Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+				.map(IdentityDTO::getLeftIndex).filter(list -> !list.isEmpty()).isPresent()
+				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+						.map(IdentityDTO::getLeftLittle).filter(list -> !list.isEmpty()).isPresent()
+				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+						.map(IdentityDTO::getLeftMiddle).filter(list -> !list.isEmpty()).isPresent()
+				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+						.map(IdentityDTO::getLeftRing).filter(list -> !list.isEmpty()).isPresent()
+				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+						.map(IdentityDTO::getLeftThumb).filter(list -> !list.isEmpty()).isPresent()
+				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+						.map(IdentityDTO::getRightIndex).filter(list -> !list.isEmpty()).isPresent()
+				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+						.map(IdentityDTO::getRightLittle).filter(list -> !list.isEmpty()).isPresent()
+				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+						.map(IdentityDTO::getRightMiddle).filter(list -> !list.isEmpty()).isPresent()
+				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+						.map(IdentityDTO::getRightRing).filter(list -> !list.isEmpty()).isPresent()
+				|| Optional.ofNullable(authRequestDTO.getRequest()).map(RequestDTO::getIdentity)
+						.map(IdentityDTO::getRightThumb).filter(list -> !list.isEmpty()).isPresent();
+
 	}
 
 	public boolean validateIris(AuthRequestDTO authRequestDTO) {
-		return (authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null&& authRequestDTO.getRequest().getIdentity().getLeftEye()!=null && !authRequestDTO.getRequest().getIdentity().getLeftEye().isEmpty()
-				|| authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null && authRequestDTO.getRequest().getIdentity().getRightEye()!=null&& !authRequestDTO.getRequest().getIdentity().getRightEye().isEmpty());
+		return (authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null
+				&& authRequestDTO.getRequest().getIdentity().getLeftEye() != null
+				&& !authRequestDTO.getRequest().getIdentity().getLeftEye().isEmpty()
+				|| authRequestDTO.getRequest() != null && authRequestDTO.getRequest().getIdentity() != null
+						&& authRequestDTO.getRequest().getIdentity().getRightEye() != null
+						&& !authRequestDTO.getRequest().getIdentity().getRightEye().isEmpty());
 	}
 
 	public boolean validateFace(AuthRequestDTO authRequestDTO) {
@@ -142,22 +150,23 @@ public class InternalAuthRequestValidator implements Validator {
 				&& authRequestDTO.getRequest().getIdentity().getFace() != null;
 	}
 
-	public void validateUinVin(AuthRequestDTO authRequestDTO, String refId, Errors errors)  {
-			if (refId.equals(IdType.UIN.getType())) {
-				try {
-					idAuthService.validateUIN(authRequestDTO.getIdvId());
-				} catch (IdAuthenticationBusinessException e) {
-					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-									AUTH_REQUEST));					}
-			} else if (refId.equals(IdType.VID.getType())) {
-				try {
-					idAuthService.validateVID(authRequestDTO.getIdvId());
-				} catch (IdAuthenticationBusinessException e) {
-					errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-							String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
-									AUTH_REQUEST));					}
+	public void validateUinVin(AuthRequestDTO authRequestDTO, String refId, Errors errors) {
+		String idvIdType = authRequestDTO.getIdvIdType();
+		if (idvIdType.equals(IdType.UIN.getType())) {
+			try {
+				idAuthService.validateUIN(authRequestDTO.getIdvId());
+			} catch (IdAuthenticationBusinessException e) {
+				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), IDV_ID));
 			}
+		} else if (idvIdType.equals(IdType.VID.getType())) {
+			try {
+				idAuthService.validateVID(authRequestDTO.getIdvId());
+			} catch (IdAuthenticationBusinessException e) {
+				errors.rejectValue(IDV_ID, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
+						String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(), IDV_ID));
+			}
+		}
 	}
 
 }
