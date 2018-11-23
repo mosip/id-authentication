@@ -50,7 +50,7 @@ public class MachineHistoryServiceImplTest {
 	public List<MachineHistory> machineHistoryList = new ArrayList<MachineHistory>();
 
 	@Test
-	public void testGetMachineHistoryIdLangEffectDtimes() throws InterruptedException {
+	public void getMachineHistoryIdLangEffectDtimesTest() throws InterruptedException {
 		MachineHistoryResponseDto machineHistoryResponseDto = new MachineHistoryResponseDto();
 		List<MachineHistoryDto> machineHistoryDtoList = new ArrayList<MachineHistoryDto>();
 		MachineHistoryDto machineHistoryDto = new MachineHistoryDto();
@@ -86,7 +86,7 @@ public class MachineHistoryServiceImplTest {
 		machineHistoryList.add(machineHistory);
 		machineHistoryResponseDto.setMachineHistoryDetails(machineHistoryDtoList);
 		Mockito.when(machineHistoryRepository
-				.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(Mockito.anyString(),
 						Mockito.anyString(), Mockito.any(LocalDateTime.class)))
 				.thenReturn(machineHistoryList);
 		Mockito.when(stringToLocalDateTimeConverter.convert(Mockito.anyString())).thenReturn(localDateTime);
@@ -99,10 +99,10 @@ public class MachineHistoryServiceImplTest {
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testGetMachineHistoryIdLangThrowsExcetion() {
+	public void getMachineHistoryIdLangThrowsExcetionTest() {
 		Mockito.when(stringToLocalDateTimeConverter.convert(Mockito.anyString())).thenReturn(localDateTime);
 		Mockito.when(machineHistoryRepository
-				.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(Mockito.anyString(),
 						Mockito.anyString(), Mockito.any()))
 				.thenReturn(null);
 
@@ -111,10 +111,10 @@ public class MachineHistoryServiceImplTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void testGetMachineHistoryIdLangThrowsDataAccessExcetion() {
+	public void getMachineHistoryIdLangThrowsDataAccessExcetionTest() {
 		Mockito.when(stringToLocalDateTimeConverter.convert(Mockito.anyString())).thenReturn(localDateTime);
 		Mockito.when(machineHistoryRepository
-				.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				.findByIdAndLangCodeAndEffectDtimesLessThanEqualAndIsDeletedFalse(Mockito.anyString(),
 						Mockito.anyString(), Mockito.any(LocalDateTime.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 		machineHistoryServiceImpl.getMachineHistroyIdLangEffDTime("1000", "ENG", "2018-10-29T00:00:05");

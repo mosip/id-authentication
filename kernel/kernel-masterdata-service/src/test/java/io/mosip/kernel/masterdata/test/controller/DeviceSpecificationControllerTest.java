@@ -50,7 +50,7 @@ public class DeviceSpecificationControllerTest {
 	}
 
 	@Test
-	public void testGetDeviceSpecificationByLanguageCode() {
+	public void getDeviceSpecificationByLanguageCodeTest() {
 		Mockito.when(deviceSpecificationService.findDeviceSpecificationByLangugeCode("ENG"))
 				.thenReturn(deviceSpecificationDtoList);
 		DeviceSpecificationResponseDto actual = deviceSpecificationController
@@ -61,7 +61,7 @@ public class DeviceSpecificationControllerTest {
 	}
 
 	@Test
-	public void testGetDeviceSpecificationByLanguageCodeAndDeviceTypeCode() {
+	public void getDeviceSpecificationByLanguageCodeAndDeviceTypeCodeTest() {
 
 		Mockito.when(deviceSpecificationService
 				.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(Mockito.anyString(), Mockito.anyString()))

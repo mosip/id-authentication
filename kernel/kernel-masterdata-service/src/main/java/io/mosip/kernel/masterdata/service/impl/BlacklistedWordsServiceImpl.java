@@ -45,7 +45,7 @@ public class BlacklistedWordsServiceImpl implements BlacklistedWordsService {
 		List<BlacklistedWords> words = null;
 		if (langCode != null && !langCode.isEmpty()) {
 			try {
-				words = blacklistedWordsRepository.findAllByLangCode(langCode);
+				words = blacklistedWordsRepository.findAllByLangCodeAndIsDeletedFalse(langCode);
 			} catch (DataAccessException accessException) {
 				throw new MasterDataServiceException(
 						BlacklistedWordsErrorCode.BLACKLISTED_WORDS_FETCH_EXCEPTION.getErrorCode(),

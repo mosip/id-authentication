@@ -50,7 +50,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 		List<DocumentTypeDto> listOfDocumentTypeDto = null;
 		List<DocumentType> documents = null;
 		try {
-			documents = documentTypeRepository.findByCodeAndLangCode(code, langCode);
+			documents = documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(code, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_FETCH_EXCEPTION.getErrorCode(),

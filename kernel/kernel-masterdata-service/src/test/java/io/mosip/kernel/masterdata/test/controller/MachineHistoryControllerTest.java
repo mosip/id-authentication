@@ -54,7 +54,7 @@ public class MachineHistoryControllerTest {
 	}
 
 	@Test
-	public void testGetMachineHistoryIdLangEffDTim() {
+	public void getMachineHistoryIdLangEffDTimTest() {
 		List<MachineHistoryDto> machineHistoryDtoList = new ArrayList<>();
 		MachineHistoryDto machineHistoryDto = new MachineHistoryDto();
 		machineHistoryDto.setId("1000");

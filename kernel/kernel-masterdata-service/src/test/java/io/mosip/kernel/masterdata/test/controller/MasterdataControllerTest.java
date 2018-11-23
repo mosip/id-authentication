@@ -444,7 +444,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void fetchBiometricTypeUsingCodeAndLangCode() throws Exception {
+	public void fetchBiometricTypeUsingCodeAndLangCodeTest() throws Exception {
 		Mockito.when(biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(biometricTypeDto1);
 		mockMvc.perform(MockMvcRequestBuilders.get("/biometrictypes/1/ENG"))
@@ -471,7 +471,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void fetchApplicationUsingCodeAndLangCode() throws Exception {
+	public void fetchApplicationUsingCodeAndLangCodeTest() throws Exception {
 		List<ApplicationDto> applicationDtos = new ArrayList<>();
 		applicationDtos.add(applicationDto);
 		applicationResponseDto.setApplicationtypes(applicationDtos);
@@ -484,7 +484,7 @@ public class MasterdataControllerTest {
 	// -------------------------------BiometricAttributeControllerTest--------------------------
 
 	@Test
-	public void testGetBiometricAttributesByBiometricType() throws Exception {
+	public void getBiometricAttributesByBiometricTypeTest() throws Exception {
 
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn((biometricattributes));
@@ -495,7 +495,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testBiometricTypeBiometricAttributeNotFoundException() throws Exception {
+	public void biometricTypeBiometricAttributeNotFoundExceptionTest() throws Exception {
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("KER-MAS-00000",
 						"No biometric attributes found for specified biometric code type and language code"));
@@ -504,7 +504,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testBiometricTypeFetchException() throws Exception {
+	public void biometricTypeFetchExceptionTest() throws Exception {
 		Mockito.when(biometricAttributeService.getBiometricAttribute(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new MasterDataServiceException("KER-DOC-00000", "exception duringfatching data from db"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/getbiometricattributesbyauthtype/eng/iric"))
@@ -549,7 +549,7 @@ public class MasterdataControllerTest {
 
 	// -------------------------------DocumentTypeControllerTest--------------------------
 	@Test
-	public void testGetDoucmentTypesForDocumentCategoryAndLangCode() throws Exception {
+	public void getDoucmentTypesForDocumentCategoryAndLangCodeTest() throws Exception {
 
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn((documentTypeDtos));
@@ -560,7 +560,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testDocumentCategoryNotFoundException() throws Exception {
+	public void documentCategoryNotFoundExceptionTest() throws Exception {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("KER-DOC-10001",
 						"No documents found for specified document category code and language code"));
@@ -569,7 +569,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testDocumentCategoryFetchException() throws Exception {
+	public void documentCategoryFetchExceptionTest() throws Exception {
 		Mockito.when(documentTypeService.getAllValidDocumentType(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new MasterDataServiceException("KER-DOC-10000", "exception during fatching data from db"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/documenttypes/poc/eng"))
@@ -578,16 +578,16 @@ public class MasterdataControllerTest {
 	// -------------------------------IdTypesControllerTest--------------------------
 
 	@Test
-	public void testIdTypeController() throws Exception {
+	public void idTypeControllerTest() throws Exception {
 		List<IdType> idTypeList = new ArrayList<>();
 		idTypeList.add(idType);
-		Mockito.when(repository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(anyString())).thenReturn(idTypeList);
+		Mockito.when(repository.findByLangCodeAndIsDeletedFalse(anyString())).thenReturn(idTypeList);
 		mockMvc.perform(get("/idtypes/{languagecode}", "ENG")).andExpect(status().isOk());
 	}
 
 	// -------------------------------LanguageControllerTest--------------------------
 	@Test
-	public void testGetAllLanguages() throws Exception {
+	public void getAllLanguagesTest() throws Exception {
 		loadSuccessData();
 		Mockito.when(languageService.getAllLaguages()).thenReturn(respDto);
 
@@ -598,7 +598,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testGetAllLanguagesForLanguageNotFoundException() throws Exception {
+	public void getAllLanguagesForLanguageNotFoundExceptionTest() throws Exception {
 		Mockito.when(languageService.getAllLaguages())
 				.thenThrow(new DataNotFoundException("KER-MAS-0987", "No Language found"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/languages"))
@@ -607,7 +607,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testGetAllLanguagesForLanguageFetchException() throws Exception {
+	public void getAllLanguagesForLanguageFetchExceptionTest() throws Exception {
 		Mockito.when(languageService.getAllLaguages())
 				.thenThrow(new MasterDataServiceException("KER-MAS-0988", "Error occured while fetching language"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/languages"))
@@ -635,7 +635,7 @@ public class MasterdataControllerTest {
 	// -------------------------------LocationControllerTest--------------------------
 
 	@Test
-	public void testGetAllLocationHierarchy() throws Exception {
+	public void getAllLocationHierarchyTest() throws Exception {
 
 		Mockito.when(locationService.getLocationDetails()).thenReturn(locationResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
@@ -645,7 +645,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testGetLocatonHierarchyByLocCodeAndLangCode() throws Exception {
+	public void getLocatonHierarchyByLocCodeAndLangCodeTest() throws Exception {
 		Mockito.doReturn(locationResponseDto).when(locationService).getLocationHierarchyByLangCode(Mockito.anyString(),
 				Mockito.anyString());
 
@@ -656,7 +656,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testGetAllLocationsNoRecordsFoundException() throws Exception {
+	public void getAllLocationsNoRecordsFoundExceptionTest() throws Exception {
 		Mockito.when(locationService.getLocationDetails())
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
@@ -664,7 +664,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testGetAllLocationsDataBaseException() throws Exception {
+	public void getAllLocationsDataBaseExceptionTest() throws Exception {
 		Mockito.when(locationService.getLocationDetails())
 				.thenThrow(new DataNotFoundException("3333333", "Location Hierarchy does not exist"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
@@ -672,7 +672,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testGetLocationsByLangCodeAndLocCodeDataBaseException() throws Exception {
+	public void getLocationsByLangCodeAndLocCodeDataBaseExceptionTest() throws Exception {
 		Mockito.when(locationService.getLocationHierarchyByLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new MasterDataServiceException("1111111", "Error from database"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/KAR/KAN"))
@@ -680,7 +680,7 @@ public class MasterdataControllerTest {
 	}
 
 	@Test
-	public void testGetLocationsByLangCodeAndLocCodeNoRecordsFoundException() throws Exception {
+	public void getLocationsByLangCodeAndLocCodeNoRecordsFoundExceptionTest() throws Exception {
 		Mockito.when(locationService.getLocationHierarchyByLangCode(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(new DataNotFoundException("3333333", "Location Hierarchy does not exist"));
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations/KAR/KAN"))
@@ -689,34 +689,34 @@ public class MasterdataControllerTest {
 
 	// -------------------------------RegistrationCenterControllerTest--------------------------
 	@Test
-	public void testGetRegistraionCenterHolidaysSuccess() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
+	public void getRegistraionCenterHolidaysSuccessTest() throws Exception {
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
 				anyString())).thenReturn(registrationCenter);
-		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
+		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCodeAndIsDeletedFalse(anyString(), anyString(), anyInt()))
 				.thenReturn(holidays);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
 				"REG_CR_001", 2018)).andExpect(status().isOk());
 	}
 
 	@Test
-	public void testGetRegistraionCenterHolidaysNoRegCenterFound() throws Exception {
+	public void getRegistraionCenterHolidaysNoRegCenterFoundTest() throws Exception {
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
 				"REG_CR_001", 2017)).andExpect(status().isNotFound());
 	}
 
 	@Test
-	public void testGetRegistraionCenterHolidaysRegistrationCenterFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
+	public void getRegistraionCenterHolidaysRegistrationCenterFetchExceptionTest() throws Exception {
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
 				anyString())).thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
 				"REG_CR_001", 2017)).andExpect(status().isInternalServerError());
 	}
 
 	@Test
-	public void testGetRegistraionCenterHolidaysHolidayFetchException() throws Exception {
-		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(anyString(),
+	public void getRegistraionCenterHolidaysHolidayFetchExceptionTest() throws Exception {
+		Mockito.when(registrationCenterRepository.findByIdAndLanguageCodeAndIsDeletedFalse(anyString(),
 				anyString())).thenReturn(registrationCenter);
-		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCode(anyString(), anyString(), anyInt()))
+		Mockito.when(holidayRepository.findAllByLocationCodeYearAndLangCodeAndIsDeletedFalse(anyString(), anyString(), anyInt()))
 				.thenThrow(DataRetrievalFailureException.class);
 		mockMvc.perform(get("/getregistrationcenterholidays/{languagecode}/{registrationcenterid}/{year}", "ENG",
 				"REG_CR_001", 2018)).andExpect(status().isInternalServerError());
@@ -747,7 +747,7 @@ public class MasterdataControllerTest {
 	
 	//--------------------------------DeviceType------------------------
 	@Test
-	public void testAddDeviceTypes() throws Exception {
+	public void addDeviceTypesTest() throws Exception {
 	
 		String inputJson = this.maptoJson(reqTypeDto);
 		Mockito.when(deviceTypeService.addDeviceTypes(reqTypeDto)).thenReturn(resDto);
@@ -768,7 +768,7 @@ public class MasterdataControllerTest {
 	
 	//---------------------------------DeviceSpecification-------------------
 	@Test
-	public void testAddDeviceSpecifications() throws Exception {
+	public void addDeviceSpecificationsTest() throws Exception {
 
 		String inputJson = this.maptoJson(requestDto);
 		Mockito.when(

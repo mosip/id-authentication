@@ -536,8 +536,8 @@ public class MasterDataServiceTest {
 
 	// ----------------------- ApplicationServiceTest ----------------
 	@Test
-	public void getAllApplicationSuccess() {
-		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Application.class)))
+	public void getAllApplicationSuccessTest() {
+		Mockito.when(applicationRepository.findAllByIsDeletedFalse(Mockito.eq(Application.class)))
 				.thenReturn(applicationList);
 		ApplicationResponseDto applicationResponseDto = applicationService.getAllApplication();
 		List<ApplicationDto> applicationDtos = applicationResponseDto.getApplicationtypes();
@@ -546,8 +546,8 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void getAllApplicationByLanguageCodeSuccess() {
-		Mockito.when(applicationRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+	public void getAllApplicationByLanguageCodeSuccessTest() {
+		Mockito.when(applicationRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(applicationList);
 		ApplicationResponseDto applicationResponseDto = applicationService
 				.getAllApplicationByLanguageCode(Mockito.anyString());
@@ -557,9 +557,9 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void getApplicationByCodeAndLangCodeSuccess() {
+	public void getApplicationByCodeAndLangCodeSuccessTest() {
 		Mockito.when(applicationRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
+				.findByCodeAndLangCodeAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(application1);
 		ApplicationResponseDto applicationResponseDto = applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(),
 				Mockito.anyString());
@@ -569,46 +569,46 @@ public class MasterDataServiceTest {
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void getAllApplicationFetchException() {
-		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Application.class)))
+	public void getAllApplicationFetchExceptionTest() {
+		Mockito.when(applicationRepository.findAllByIsDeletedFalse(Mockito.eq(Application.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 		applicationService.getAllApplication();
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getAllApplicationNotFoundException() {
+	public void getAllApplicationNotFoundExceptionTest() {
 		applicationList = new ArrayList<>();
-		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Application.class))
+		Mockito.when(applicationRepository.findAllByIsDeletedFalse(Application.class))
 				.thenReturn(applicationList);
 		applicationService.getAllApplication();
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void getAllApplicationByLanguageCodeFetchException() {
-		Mockito.when(applicationRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+	public void getAllApplicationByLanguageCodeFetchExceptionTest() {
+		Mockito.when(applicationRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		applicationService.getAllApplicationByLanguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getAllApplicationByLanguageCodeNotFoundException() {
-		Mockito.when(applicationRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+	public void getAllApplicationByLanguageCodeNotFoundExceptionTest() {
+		Mockito.when(applicationRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(new ArrayList<Application>());
 		applicationService.getAllApplicationByLanguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void getApplicationByCodeAndLangCodeFetchException() {
+	public void getApplicationByCodeAndLangCodeFetchExceptionTest() {
 		Mockito.when(applicationRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
+				.findByCodeAndLangCodeAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getApplicationByCodeAndLangCodeNotFoundException() {
+	public void getApplicationByCodeAndLangCodeNotFoundExceptionTest() {
 		Mockito.when(applicationRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
+				.findByCodeAndLangCodeAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}
@@ -618,7 +618,7 @@ public class MasterDataServiceTest {
 	public void getBiometricAttributeTest() {
 		String biometricTypeCode = "iric";
 		String langCode = "eng";
-		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCode(biometricTypeCode, langCode))
+		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalse(biometricTypeCode, langCode))
 				.thenReturn(biometricattributes);
 
 		List<BiometricAttributeDto> attributes = biometricAttributeService.getBiometricAttribute(biometricTypeCode,
@@ -633,7 +633,7 @@ public class MasterDataServiceTest {
 		List<BiometricAttribute> empityList = new ArrayList<BiometricAttribute>();
 		String biometricTypeCode = "face";
 		String langCode = "eng";
-		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCode(biometricTypeCode, langCode))
+		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalse(biometricTypeCode, langCode))
 				.thenReturn(empityList);
 		biometricAttributeService.getBiometricAttribute(biometricTypeCode, langCode);
 
@@ -643,7 +643,7 @@ public class MasterDataServiceTest {
 	public void noRecordsFoudExceptionForNullTest() {
 		String biometricTypeCode = "face";
 		String langCode = "eng";
-		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCode(biometricTypeCode, langCode))
+		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalse(biometricTypeCode, langCode))
 				.thenReturn(null);
 		biometricAttributeService.getBiometricAttribute(biometricTypeCode, langCode);
 
@@ -653,7 +653,7 @@ public class MasterDataServiceTest {
 	public void dataAccessExceptionInGetAllTest() {
 		String biometricTypeCode = "face";
 		String langCode = "eng";
-		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCode(biometricTypeCode, langCode))
+		Mockito.when(biometricAttributeRepository.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalse(biometricTypeCode, langCode))
 				.thenThrow(DataAccessResourceFailureException.class);
 		biometricAttributeService.getBiometricAttribute(biometricTypeCode, langCode);
 
@@ -662,51 +662,51 @@ public class MasterDataServiceTest {
 	// ------------------ BiometricTypeServiceTest -----------------
 
 	@Test(expected = MasterDataServiceException.class)
-	public void getAllBiometricTypesFetchException() {
-		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(BiometricType.class)))
+	public void getAllBiometricTypesFetchExceptionTest() {
+		Mockito.when(biometricTypeRepository.findAllByIsDeletedFalse(Mockito.eq(BiometricType.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getAllBiometricTypes();
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getAllBiometricTypesNotFoundException() {
+	public void getAllBiometricTypesNotFoundExceptionTest() {
 		biometricTypeList = new ArrayList<>();
-		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(BiometricType.class))
+		Mockito.when(biometricTypeRepository.findAllByIsDeletedFalse(BiometricType.class))
 				.thenReturn(biometricTypeList);
 		biometricTypeService.getAllBiometricTypes();
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void getAllBiometricTypesByLanguageCodeFetchException() {
-		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+	public void getAllBiometricTypesByLanguageCodeFetchExceptionTest() {
+		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getAllBiometricTypesByLanguageCodeNotFoundException() {
-		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+	public void getAllBiometricTypesByLanguageCodeNotFoundExceptionTest() {
+		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(new ArrayList<BiometricType>());
 		biometricTypeService.getAllBiometricTypesByLanguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void getBiometricTypeByCodeAndLangCodeFetchException() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+	public void getBiometricTypeByCodeAndLangCodeFetchExceptionTest() {
+		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getBiometricTypeByCodeAndLangCodeNotFoundException() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+	public void getBiometricTypeByCodeAndLangCodeNotFoundExceptionTest() {
+		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(null);
 		biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test
-	public void getAllBioTypesSuccess() {
-		Mockito.when(biometricTypeRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(BiometricType.class)))
+	public void getAllBioTypesSuccessTest() {
+		Mockito.when(biometricTypeRepository.findAllByIsDeletedFalse(Mockito.eq(BiometricType.class)))
 				.thenReturn(biometricTypeList);
 		List<BiometricTypeDto> biometricTypeDtoList = biometricTypeService.getAllBiometricTypes();
 		assertEquals(biometricTypeList.get(0).getCode(), biometricTypeDtoList.get(0).getCode());
@@ -714,8 +714,8 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void getAllBioTypesByLanguageCodeSuccess() {
-		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+	public void getAllBioTypesByLanguageCodeSuccessTest() {
+		Mockito.when(biometricTypeRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(biometricTypeList);
 		List<BiometricTypeDto> biometricTypeDtoList = biometricTypeService
 				.getAllBiometricTypesByLanguageCode(Mockito.anyString());
@@ -724,8 +724,8 @@ public class MasterDataServiceTest {
 	}
 
 	@Test
-	public void getBioTypeByCodeAndLangCodeSuccess() {
-		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+	public void getBioTypeByCodeAndLangCodeSuccessTest() {
+		Mockito.when(biometricTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(Mockito.anyString(),
 				Mockito.anyString())).thenReturn(biometricType1);
 		BiometricTypeDto actual = biometricTypeService.getBiometricTypeByCodeAndLangCode(Mockito.anyString(),
 				Mockito.anyString());
@@ -736,56 +736,56 @@ public class MasterDataServiceTest {
 	// ------------------ BlacklistedServiceTest -----------------
 
 	@Test(expected = RequestException.class)
-	public void testGetAllBlacklistedWordsNullvalue() {
+	public void getAllBlacklistedWordsNullvalueTest() {
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode(null);
 	}
 
 	@Test(expected = RequestException.class)
-	public void testGetAllBlacklistedWordsEmptyvalue() {
+	public void getAllBlacklistedWordsEmptyvalueTest() {
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("");
 	}
 
 	@Test
-	public void testGetAllBlackListedWordsSuccess() {
+	public void getAllBlackListedWordsSuccessTest() {
 		int expected = 1;
-		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(words);
+		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString())).thenReturn(words);
 		BlacklistedWordsResponseDto actual = blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
 		assertEquals(actual.getBlacklistedwords().size(), expected);
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void testGetAllBlackListedWordsFetchException() {
-		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+	public void getAllBlackListedWordsFetchExceptionTest() {
+		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testGetAllBlackListedWordsNoDataFound() {
-		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(null);
+	public void getAllBlackListedWordsNoDataFoundTest() {
+		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString())).thenReturn(null);
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testGetAllBlackListedWordsEmptyData() {
-		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(new ArrayList<>());
+	public void getAllBlackListedWordsEmptyDataTest() {
+		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString())).thenReturn(new ArrayList<>());
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testGetAllBlackListedWordsDataNotFoundException() {
-		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(null);
+	public void getAllBlackListedWordsDataNotFoundExceptionTest() {
+		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString())).thenReturn(null);
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testGetAllBlackListedWordsEmptyDataException() {
-		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenReturn(new ArrayList<>());
+	public void getAllBlackListedWordsEmptyDataExceptionTest() {
+		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString())).thenReturn(new ArrayList<>());
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void testGetAllBlackListedWordsServiceException() {
-		when(wordsRepository.findAllByLangCode(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
+	public void getAllBlackListedWordsServiceExceptionTest() {
+		when(wordsRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("ENG");
 	}
 
@@ -794,7 +794,7 @@ public class MasterDataServiceTest {
 	@Test
 	public void findDeviceSpecificationByLangugeCodeTest() {
 		String languageCode = "ENG";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode))
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalse(languageCode))
 				.thenReturn(deviceSpecifications);
 
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -808,7 +808,7 @@ public class MasterDataServiceTest {
 	public void noDeviceSpecRecordsFoudExceptionTest() {
 		List<DeviceSpecification> empityList = new ArrayList<DeviceSpecification>();
 		String languageCode = "FRN";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode))
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalse(languageCode))
 				.thenReturn(empityList);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
 	}
@@ -816,7 +816,7 @@ public class MasterDataServiceTest {
 	@Test(expected = DataNotFoundException.class)
 	public void noDeviceSpecRecordsFoudExceptionForNullTest() {
 		String languageCode = "FRN";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode))
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalse(languageCode))
 				.thenReturn(null);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
 
@@ -825,7 +825,7 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void dataDeviceSpecAccessExceptionInGetAllTest() {
 		String languageCode = "eng";
-		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode))
+		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsDeletedFalse(languageCode))
 				.thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
 
@@ -836,7 +836,7 @@ public class MasterDataServiceTest {
 		String languageCode = "ENG";
 		String deviceTypeCode = "operating_sys";
 		Mockito.when(deviceSpecificationRepository
-				.findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(languageCode, deviceTypeCode))
+				.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalse(languageCode, deviceTypeCode))
 				.thenReturn(deviceSpecificationListWithDeviceTypeCode);
 
 		List<DeviceSpecificationDto> deviceSpecificationDtos = deviceSpecificationService
@@ -856,7 +856,7 @@ public class MasterDataServiceTest {
 		String languageCode = "FRN";
 		String deviceTypeCode = "operating_sys";
 		Mockito.when(deviceSpecificationRepository
-				.findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(deviceTypeCode, deviceTypeCode))
+				.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalse(deviceTypeCode, deviceTypeCode))
 				.thenReturn(empityList);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 	}
@@ -866,7 +866,7 @@ public class MasterDataServiceTest {
 		String languageCode = "FRN";
 		String deviceTypeCode = "operating_sys";
 		Mockito.when(deviceSpecificationRepository
-				.findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(deviceTypeCode, deviceTypeCode))
+				.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalse(deviceTypeCode, deviceTypeCode))
 				.thenReturn(null);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 
@@ -877,7 +877,7 @@ public class MasterDataServiceTest {
 		String languageCode = "ENG";
 		String deviceTypeCode = "operating_sys";
 		Mockito.when(deviceSpecificationRepository
-				.findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(languageCode, deviceTypeCode))
+				.findByLangCodeAndDeviceTypeCodeAndIsDeletedFalse(languageCode, deviceTypeCode))
 				.thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 
@@ -892,7 +892,7 @@ public class MasterDataServiceTest {
 	
 	
 	@Test(expected = MasterDataServiceException.class)
-	public void testaddSpecificationThrowsDataAccessException() {
+	public void addSpecificationThrowsDataAccessExceptionTest() {
 		Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		deviceSpecificationService.addDeviceSpecifications(deviceSpecificationRequestDto);
 	}
@@ -900,46 +900,46 @@ public class MasterDataServiceTest {
 	// ------------------ DocumentCategoryServiceTest -----------------
 
 	@Test(expected = MasterDataServiceException.class)
-	public void getAllDocumentCategorysFetchException() {
+	public void getAllDocumentCategorysFetchExceptionTest() {
 		Mockito.when(
-				documentCategoryRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(DocumentCategory.class)))
+				documentCategoryRepository.findAllByIsDeletedFalse(Mockito.eq(DocumentCategory.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 		documentCategoryService.getAllDocumentCategory();
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getAllDocumentCategoryNotFoundException() {
-		Mockito.when(documentCategoryRepository.findAllByIsActiveTrueAndIsDeletedFalse(DocumentCategory.class))
+	public void getAllDocumentCategoryNotFoundExceptionTest() {
+		Mockito.when(documentCategoryRepository.findAllByIsDeletedFalse(DocumentCategory.class))
 				.thenReturn(new ArrayList<DocumentCategory>());
 		documentCategoryService.getAllDocumentCategory();
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void getAllDocumentCategoryByLaguageCodeFetchException() {
-		Mockito.when(documentCategoryRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+	public void getAllDocumentCategoryByLaguageCodeFetchExceptionTest() {
+		Mockito.when(documentCategoryRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		documentCategoryService.getAllDocumentCategoryByLaguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getAllDocumentCategoryByLaguageCodeNotFound() {
-		Mockito.when(documentCategoryRepository.findAllByLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+	public void getAllDocumentCategoryByLaguageCodeNotFoundTest() {
+		Mockito.when(documentCategoryRepository.findAllByLangCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(new ArrayList<DocumentCategory>());
 		documentCategoryService.getAllDocumentCategoryByLaguageCode(Mockito.anyString());
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void getDocumentCategoryByCodeAndLangCodeFetchException() {
+	public void getDocumentCategoryByCodeAndLangCodeFetchExceptionTest() {
 		Mockito.when(documentCategoryRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
+				.findByCodeAndLangCodeAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 		documentCategoryService.getDocumentCategoryByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getDocumentCategoryByCodeAndLangCodeNotFoundException() {
+	public void getDocumentCategoryByCodeAndLangCodeNotFoundExceptionTest() {
 		Mockito.when(documentCategoryRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
+				.findByCodeAndLangCodeAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
 				.thenReturn(null);
 		documentCategoryService.getDocumentCategoryByCodeAndLangCode(Mockito.anyString(), Mockito.anyString());
 	}
@@ -984,28 +984,28 @@ public class MasterDataServiceTest {
 	// ------------------ LanguageServiceTest -----------------
 
 	@Test
-	public void testSucessGetAllLaguages() {
-		Mockito.when(languageRepository.findAllByIsActiveTrueAndIsDeletedFalse()).thenReturn(languages);
+	public void sucessGetAllLaguagesTest() {
+		Mockito.when(languageRepository.findAllByIsDeletedFalse()).thenReturn(languages);
 		LanguageRequestResponseDto dto = languageService.getAllLaguages();
 		assertNotNull(dto);
 		assertEquals(2, dto.getLanguages().size());
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testLanguageNotFoundException() {
-		Mockito.when(languageRepository.findAllByIsActiveTrueAndIsDeletedFalse()).thenReturn(null);
+	public void languageNotFoundExceptionTest() {
+		Mockito.when(languageRepository.findAllByIsDeletedFalse()).thenReturn(null);
 		languageService.getAllLaguages();
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void testLanguageNotFoundExceptionWhenNoLanguagePresent() {
-		Mockito.when(languageRepository.findAllByIsActiveTrueAndIsDeletedFalse()).thenReturn(new ArrayList<Language>());
+	public void languageNotFoundExceptionWhenNoLanguagePresentTest() {
+		Mockito.when(languageRepository.findAllByIsDeletedFalse()).thenReturn(new ArrayList<Language>());
 		languageService.getAllLaguages();
 	}
 
 	@Test(expected = MasterDataServiceException.class)
-	public void testLanguageFetchException() {
-		Mockito.when(languageRepository.findAllByIsActiveTrueAndIsDeletedFalse())
+	public void languageFetchExceptionTest() {
+		Mockito.when(languageRepository.findAllByIsDeletedFalse())
 				.thenThrow(HibernateObjectRetrievalFailureException.class);
 		languageService.getAllLaguages();
 	}
@@ -1013,8 +1013,8 @@ public class MasterDataServiceTest {
 	// ------------------ LocationServiceTest -----------------
 
 	@Test()
-	public void getLocationHierachyBasedOnLangAndLoc() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+	public void getLocationHierachyBasedOnLangAndLocTest() {
+		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(locationHierarchies);
 
 		LocationResponseDto locationHierarchyResponseDto = locationHierarchyService
@@ -1025,15 +1025,15 @@ public class MasterDataServiceTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void getLocationHierarchyExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(null);
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 
 	}
 
 	@Test(expected = DataNotFoundException.class)
-	public void getLocationHierarchyExceptionTestWithEmptyList() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+	public void getLocationHierarchyExceptionWithEmptyListTest() {
+		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(new ArrayList<Location>());
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 
@@ -1041,7 +1041,7 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void locationHierarchyDataAccessExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsDeletedFalse("IND", "HIN"))
 				.thenThrow(DataRetrievalFailureException.class);
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 	}
@@ -1050,7 +1050,7 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllTemplateFetchExceptionTest() {
-		Mockito.when(templateRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Template.class)))
+		Mockito.when(templateRepository.findAllByIsDeletedFalse(Mockito.eq(Template.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 
 		templateService.getAllTemplate();
@@ -1059,14 +1059,14 @@ public class MasterDataServiceTest {
 	@Test(expected = DataNotFoundException.class)
 	public void getAllTemplateNotFoundExceptionTest() {
 		templateList = new ArrayList<>();
-		Mockito.when(templateRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Template.class)))
+		Mockito.when(templateRepository.findAllByIsDeletedFalse(Mockito.eq(Template.class)))
 				.thenReturn(templateList);
 		templateService.getAllTemplate();
 	}
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllTemplateByLanguageCodeFetchExceptionTest() {
-		Mockito.when(templateRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(templateRepository.findAllByLanguageCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 
 		templateService.getAllTemplateByLanguageCode("HIN");
@@ -1075,7 +1075,7 @@ public class MasterDataServiceTest {
 	@Test(expected = DataNotFoundException.class)
 	public void getAllTemplateByLanguageCodeNotFoundExceptionTest() {
 		templateList = new ArrayList<>();
-		Mockito.when(templateRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(templateRepository.findAllByLanguageCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(templateList);
 
 		templateService.getAllTemplateByLanguageCode("HIN");
@@ -1083,7 +1083,7 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeFetchExceptionTest() {
-		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsActiveTrueAndIsDeletedFalse(
+		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsDeletedFalse(
 				Mockito.anyString(), Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode("HIN", "EMAIL");
 	}
@@ -1091,14 +1091,14 @@ public class MasterDataServiceTest {
 	@Test(expected = DataNotFoundException.class)
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeNotFoundExceptionTest() {
 		templateList = new ArrayList<>();
-		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsActiveTrueAndIsDeletedFalse(
+		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsDeletedFalse(
 				Mockito.anyString(), Mockito.anyString())).thenReturn(templateList);
 		templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode("HIN", "EMAIL");
 	}
 
 	@Test
 	public void getAllTemplateTest() {
-		Mockito.when(templateRepository.findAllByIsActiveTrueAndIsDeletedFalse(Template.class))
+		Mockito.when(templateRepository.findAllByIsDeletedFalse(Template.class))
 				.thenReturn(templateList);
 		templateDtoList = templateService.getAllTemplate();
 
@@ -1108,7 +1108,7 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void getAllTemplateByLanguageCodeTest() {
-		Mockito.when(templateRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+		Mockito.when(templateRepository.findAllByLanguageCodeAndIsDeletedFalse(Mockito.anyString()))
 				.thenReturn(templateList);
 		templateDtoList = templateService.getAllTemplateByLanguageCode(Mockito.anyString());
 
@@ -1118,7 +1118,7 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeTest() {
-		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsActiveTrueAndIsDeletedFalse(
+		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsDeletedFalse(
 				Mockito.anyString(), Mockito.anyString())).thenReturn(templateList);
 		templateDtoList = templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode(Mockito.anyString(),
 				Mockito.anyString());
@@ -1134,7 +1134,7 @@ public class MasterDataServiceTest {
 		String documentCategoryCode = "iric";
 		String langCode = "eng";
 
-		Mockito.when(documentTypeRepository.findByCodeAndLangCode(documentCategoryCode, langCode))
+		Mockito.when(documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(documentCategoryCode, langCode))
 				.thenReturn(documents);
 
 		List<DocumentTypeDto> documentTypes = documentTypeService.getAllValidDocumentType(documentCategoryCode,
@@ -1149,7 +1149,7 @@ public class MasterDataServiceTest {
 		String documentCategoryCode = "poc";
 		String langCode = "eng";
 		List<DocumentType> entitydocuments = new ArrayList<DocumentType>();
-		Mockito.when(documentTypeRepository.findByCodeAndLangCode(documentCategoryCode, langCode))
+		Mockito.when(documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(documentCategoryCode, langCode))
 				.thenReturn(entitydocuments);
 		documentTypeService.getAllValidDocumentType(documentCategoryCode, langCode);
 
@@ -1159,7 +1159,7 @@ public class MasterDataServiceTest {
 	public void documentTypeNoRecordsFoudExceptionForNullTest() {
 		String documentCategoryCode = "poc";
 		String langCode = "eng";
-		Mockito.when(documentTypeRepository.findByCodeAndLangCode(documentCategoryCode, langCode)).thenReturn(null);
+		Mockito.when(documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(documentCategoryCode, langCode)).thenReturn(null);
 		documentTypeService.getAllValidDocumentType(documentCategoryCode, langCode);
 
 	}
@@ -1168,7 +1168,7 @@ public class MasterDataServiceTest {
 	public void documentTypeDataAccessExceptionInGetAllTest() {
 		String documentCategoryCode = "poc";
 		String langCode = "eng";
-		Mockito.when(documentTypeRepository.findByCodeAndLangCode(documentCategoryCode, langCode))
+		Mockito.when(documentTypeRepository.findByCodeAndLangCodeAndIsDeletedFalse(documentCategoryCode, langCode))
 				.thenThrow(DataAccessResourceFailureException.class);
 		documentTypeService.getAllValidDocumentType(documentCategoryCode, langCode);
 
@@ -1185,7 +1185,7 @@ public class MasterDataServiceTest {
 
 	
 	@Test(expected = MasterDataServiceException.class)
-	public void testaddDeviceTypesThrowsDataAccessException() {
+	public void addDeviceTypesThrowsDataAccessExceptionTest() {
 		Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
 		deviceTypeService.addDeviceTypes(reqTypeDto);
 	}

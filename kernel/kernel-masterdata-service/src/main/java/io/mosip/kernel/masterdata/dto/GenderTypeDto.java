@@ -17,5 +17,6 @@ import lombok.NoArgsConstructor;
 public class GenderTypeDto {
 	private String genderCode;
 	private String genderName;
+	private Boolean isActive;
 
 }

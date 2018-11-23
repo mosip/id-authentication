@@ -35,7 +35,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 		List<BiometricAttributeDto> attributesDto = null;
 		List<BiometricAttribute> attributes = null;
 		try {
-			attributes = biometricAttributeRepository.findByBiometricTypeCodeAndLangCode(biometricTypeCode, langCode);
+			attributes = biometricAttributeRepository.findByBiometricTypeCodeAndLangCodeAndIsDeletedFalse(biometricTypeCode, langCode);
 		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(
 					BiometricAttributeErrorCode.BIOMETRIC_TYPE_FETCH_EXCEPTION.getErrorCode(),

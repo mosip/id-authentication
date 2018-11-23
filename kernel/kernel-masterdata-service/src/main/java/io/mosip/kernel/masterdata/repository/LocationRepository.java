@@ -17,9 +17,9 @@ public interface LocationRepository extends BaseRepository<Location, String> {
 	
 	List<Location> findLocationHierarchyByIsActiveTrueAndIsDeletedFalse();
 
-	List<Location> findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String locCode,String languagecode);
+	List<Location> findLocationHierarchyByCodeAndLanguageCodeAndIsDeletedFalse(String locCode,String languagecode);
 	
-	List<Location> findLocationHierarchyByParentLocCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(String parentLocCode,
+	List<Location> findLocationHierarchyByParentLocCodeAndLanguageCodeAndIsDeletedFalse(String parentLocCode,
 			String languageCode);
 
 }

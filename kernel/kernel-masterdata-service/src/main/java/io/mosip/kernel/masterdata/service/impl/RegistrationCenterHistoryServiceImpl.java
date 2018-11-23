@@ -49,7 +49,7 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 		LocalDateTime localDateTime = LocalDateTime.parse(effectiveDate);
 		try {
 			registrationCenter = registrationCenterHistoryRepository
-					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsActiveTrueAndIsDeletedFalse(registrationCenterId, langCode,
+					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse(registrationCenterId, langCode,
 							localDateTime);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(

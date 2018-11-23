@@ -89,7 +89,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		Objects.requireNonNull(langCode);
 		try {
 			registrationCenter = registrationCenterRepository
-					.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(registrationCenterId, langCode);
+					.findByIdAndLanguageCodeAndIsDeletedFalse(registrationCenterId, langCode);
 		} catch (DataAccessException dataAccessException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
@@ -102,7 +102,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			registrationCenterDto = objectMapperUtil.map(registrationCenter, RegistrationCenterDto.class);
 			try {
 				holidayLocationCode = registrationCenterDto.getHolidayLocationCode();
-				holidays = holidayRepository.findAllByLocationCodeYearAndLangCode(holidayLocationCode, langCode, year);
+				holidays = holidayRepository.findAllByLocationCodeYearAndLangCodeAndIsDeletedFalse(holidayLocationCode, langCode, year);
 			} catch (DataAccessException dataAccessException) {
 				throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
@@ -160,7 +160,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		List<RegistrationCenter> registrationCentersList = null;
 		try {
 			registrationCentersList = registrationCenterRepository
-					.findByLocationCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(locationCode, langCode);
+					.findByLocationCodeAndLanguageCodeAndIsDeletedFalse(locationCode, langCode);
 
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
@@ -192,7 +192,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 		RegistrationCenter registrationCenter = null;
 		try {
 			registrationCenter = registrationCenterRepository
-					.findByIdAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse(registrationCenterId, langCode);
+					.findByIdAndLanguageCodeAndIsDeletedFalse(registrationCenterId, langCode);
 		} catch (DataAccessLayerException dataAccessLayerException) {
 			throw new MasterDataServiceException(
 					RegistrationCenterErrorCode.REGISTRATION_CENTER_FETCH_EXCEPTION.getErrorCode(),
