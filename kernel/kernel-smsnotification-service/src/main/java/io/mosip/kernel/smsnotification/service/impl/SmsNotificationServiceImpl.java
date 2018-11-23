@@ -64,7 +64,7 @@ public class SmsNotificationServiceImpl implements SmsNotification<SmsResponseDt
 				|| contactNumber.length() > Integer.parseInt(length)) {
 			throw new InvalidNumberException(SmsExceptionConstant.SMS_INVALID_CONTACT_NUMBER.getErrorCode(),
 					SmsExceptionConstant.SMS_INVALID_CONTACT_NUMBER.getErrorMessage() + length
-							+ SmsPropertyConstant.EXCEPTION_DIGITS.getProperty());
+							+ SmsPropertyConstant.SUFFIX_MESSAGE.getProperty());
 		}
 
 		RestTemplate restTemplate = restTemplateBuilder.build();
