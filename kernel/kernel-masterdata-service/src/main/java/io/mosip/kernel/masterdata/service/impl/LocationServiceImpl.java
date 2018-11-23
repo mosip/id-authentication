@@ -67,7 +67,7 @@ public class LocationServiceImpl implements LocationService {
 			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-		locationHierarchyResponseDto.setLocationHierarchyResponseDto(responseList);
+		locationHierarchyResponseDto.setLocations(responseList);
 		return locationHierarchyResponseDto;
 	}
 

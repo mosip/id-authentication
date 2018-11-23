@@ -1087,7 +1087,7 @@ public class MasterDataServiceTest {
 	public void getLocationHierarchyTest() {
 		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsDeletedFalse()).thenReturn(locObjList);
 		LocationHierarchyResponseDto locationHierarchyResponseDto=locationHierarchyService.getLocationDetails();
-		Assert.assertEquals("COUNTRY",locationHierarchyResponseDto.getLocationHierarchyResponseDto().get(0).getLocationHierarchyName());
+		Assert.assertEquals("COUNTRY",locationHierarchyResponseDto.getLocations().get(0).getLocationHierarchyName());
 	}
 	
 	@Test(expected=DataNotFoundException.class)
