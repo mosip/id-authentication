@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -63,7 +64,7 @@
 			<groupId>io.mosip.kernel</groupId>
 			<artifactId>kernel-core</artifactId>
 		</dependency>
-		
+
 
 		<dependency>
 			<groupId>ma.glasnost.orika</groupId>
@@ -144,7 +145,7 @@
 			<artifactId>slf4j-jdk14</artifactId>
 			<version>1.7.13</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>javafx</artifactId>
@@ -167,7 +168,7 @@
 			<artifactId>MFS100</artifactId>
 			<version>1.0</version>
 		</dependency>
-		
+
 		<!-- QuartzJobBean in spring-context-support.jar -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -179,15 +180,21 @@
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 		</dependency>
-		
-		<!-- Webcam Device-->
+
+		<!-- Webcam Device -->
 		<dependency>
 			<groupId>com.github.sarxos</groupId>
 			<artifactId>webcam-capture</artifactId>
 			<version>0.3.12</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-templatemanager-velocity</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>local-maven-repo</id>
