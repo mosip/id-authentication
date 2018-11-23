@@ -3,21 +3,22 @@ This folder has kernel-keygenerator-bouncycastle module which can be used to gen
 
 [Background & Design](../../design/kernel/kernel-keygenerator.md)
 
-### Api Documentation
+**Api Documentation**
 [API Documentation <TBA>](TBA)
 
 ```
 mvn javadoc:javadoc
 ```
 
-### Properties to be added in parent Spring Application environment 
+**Properties to be added in parent Spring Application environment** 
 [kernel-keygenerator-bouncycastle-dev.properties](../../config/kernel-keygenerator-bouncycastle-dev.properties)
 
-##### The response will be [SecretKey](https://docs.oracle.com/javase/8/docs/api/javax/crypto/SecretKey.html) and [KeyPair](https://docs.oracle.com/javase/8/docs/api/index.html?java/security/KeyPair.html) for symmetric key generation and asymmetric key generation respectively.
+**The response will be [SecretKey](https://docs.oracle.com/javase/8/docs/api/javax/crypto/SecretKey.html) and [KeyPair](https://docs.oracle.com/javase/8/docs/api/index.html?java/security/KeyPair.html) for symmetric key generation and asymmetric key generation respectively.**
 
 
-### Usage Sample
-  Usage Symmetric Key Generation:
+**Usage Sample**
+
+  *Usage Symmetric Key Generation:*
  
  ```
 @Autowired
@@ -27,7 +28,7 @@ mvn javadoc:javadoc
 		
  ```
 
- Usage Asymmetric Key Generation:
+ *Usage Asymmetric Key Generation:*
  
  ```
 @Autowired

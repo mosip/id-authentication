@@ -3,14 +3,15 @@ This folder has kernel-logger-logback module which can be used for logging funct
 
 [Background & Design](../../design/kernel/kernel-logger.md)
 
-### Api Documentation
+**Api Documentation**
 [API Documentation <TBA>](TBA)
 
 ```
 mvn javadoc:javadoc
 ```
 
-### The flow to be followed is:
+**The flow to be followed is:**
+  
   Flow 1:
 
 1. Create an appender's object and provide configuration 
@@ -21,20 +22,22 @@ mvn javadoc:javadoc
 1. Create an XML file and provide configuration 
 2. Pass that file and class name in *Logfactory* to get logger instance.  
 
-##### All the supported logging systems can have the logger levels set in the Spring Environment (for example, in application.properties) by using logging.level.<logger-name> = level where level is one of *TRACE, DEBUG, INFO, WARN, ERROR, FATAL, or OFF*. 
+**All the supported logging systems can have the logger levels set in the Spring Environment (for example, in application.properties) by using logging.level.<logger-name> = level where level is one of *TRACE, DEBUG, INFO, WARN, ERROR, FATAL, or OFF*.**
 
-#####The root log level can be configured by using  
+**The root log level can be configured by using**  
+
 ```
 logging.level.root=debug
 ```
-#####For any application log level can be configured by using logging.level.<logger-name> = level, For Example
+**For any application log level can be configured by using logging.level.<logger-name> = level, For Example**
+
 ```
 logging.level.io.mosip.authentication.service.*=debug 
 ```
 
-##### If there is any error which occurs while configuration in log factory, it will be thrown as Exception. 
+**If there is any error which occurs while configuration in log factory, it will be thrown as Exception.** 
 
-### Exceptions to be handled while using this functionality:
+**Exceptions to be handled while using this functionality:**
 1. ClassNameNotFoundException
 2. EmptyPatternException
 3. FileNameNotProvided
@@ -44,8 +47,9 @@ logging.level.io.mosip.authentication.service.*=debug
 7. IllegalStateException
 8. IllegalArgumentException
 
-### Usage Sample
-  Usage 1:
+**Usage Sample**
+
+  *Usage 1:*
  
  ```
 RollingFileAppender rollingFileAppender = new RollingFileAppender();
@@ -69,7 +73,7 @@ Logger logger=Logfactory.getDefaultRollingFileLogger(rollingFileAppender, Kernel
  
  ```
 
- Usage 2:
+ *Usage 2:*
  
  ```
  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>

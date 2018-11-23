@@ -3,7 +3,7 @@ This folder has kernel-packetuploader-sftp-jsch module which can be used to uplo
 
 [Background & Design](../../design/kernel/kernel-packetuploader.md)
 
-### Api Documentation
+**Api Documentation**
 [API Documentation <TBA>](TBA)
 
 ```
@@ -11,16 +11,16 @@ mvn javadoc:javadoc
 ```
 
 
-### The Flow to be followed is:
+**The Flow to be followed is:**
 1. Create an object of SftpServer configurations.
 2. Pass this object to create SFTP channel.
 3. Use this channel to upload file.
 4. Release the connection.
 
 
-###### If there is any error which occurs while channel creation,upload and release connection, it will be thrown as Exception. 
+**If there is any error which occurs while channel creation,upload and release connection, it will be thrown as Exception.** 
 
-### Exceptions to be handled while using this functionality:
+**Exceptions to be handled while using this functionality:**
 1.  ConnectionException
 2.  SftpException
 3.  NoSessionException
@@ -32,8 +32,9 @@ mvn javadoc:javadoc
 9.  NullConfigurationException
 10. IllegalConfigurationException
 
-### Usage Sample
-  Usage 1:
+**Usage Sample**
+
+ *Usage 1:*
  
  ```
  SFTPServer configuration = new SFTPServer("http://104.211.212.28",22,username,password, remoteLocation);
@@ -47,7 +48,7 @@ mvn javadoc:javadoc
  
  ```
 
- Usage 2:
+*Usage 2:*
  
  ```
 SFTPServer configuration = new SFTPServer("http://104.211.212.28",22,username,privateKeyFileName, privateKeyPassphrase, remoteLocation);
