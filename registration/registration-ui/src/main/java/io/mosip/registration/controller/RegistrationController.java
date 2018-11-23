@@ -542,6 +542,7 @@ public class RegistrationController extends BaseController {
 			}
 
 			biometricTitlePane.setExpanded(true);
+			
 			if (capturePhotoUsingDevice.equals("N")) {
 				biometricsNext.setDisable(false);
 			}
@@ -1313,10 +1314,12 @@ public class RegistrationController extends BaseController {
 					bio_exception_toggleLabel1.setId("toggleLabel2");
 					bio_exception_toggleLabel2.setId("toggleLabel1");
 					toggleBiometricException=true;
+					captureExceptionImage.setDisable(false);
 				} else {
 					bio_exception_toggleLabel1.setId("toggleLabel1");
 					bio_exception_toggleLabel2.setId("toggleLabel2");
 					toggleBiometricException=false;
+					captureExceptionImage.setDisable(true);
 				}
 			}
 		});
