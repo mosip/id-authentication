@@ -57,7 +57,6 @@ import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.ApplicationRepository;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
@@ -376,7 +375,7 @@ public class MasterDataServiceTest {
 
 	private void deviceSpecSetup() {
 		deviceSpecifications = new ArrayList<>();
-		DeviceSpecification deviceSpecification = new DeviceSpecification();
+		deviceSpecification = new DeviceSpecification();
 		deviceSpecification.setId("lp");
 		deviceSpecification.setName("laptop");
 		deviceSpecification.setBrand("hp");
@@ -743,12 +742,12 @@ public class MasterDataServiceTest {
 
 	// ------------------ BlacklistedServiceTest -----------------
 
-	@Test(expected = RequestException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void testGetAllBlacklistedWordsNullvalue() {
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode(null);
 	}
 
-	@Test(expected = RequestException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void testGetAllBlacklistedWordsEmptyvalue() {
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("");
 	}
@@ -894,7 +893,7 @@ public class MasterDataServiceTest {
 	@Test
 	public void addDeviceSpecificationsTest() {
 		Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any())).thenReturn(deviceSpecificationList);
-		DeviceSpecPostResponseDto deviceSpecPostResponseDto = deviceSpecificationService.addDeviceSpecifications(deviceSpecificationRequestDto);
+		DeviceSpecPostResponseDto deviceSpecPostResponseDto = deviceSpecificationService.saveDeviceSpecifications(deviceSpecificationRequestDto);
 		assertEquals(deviceSpecificationListDto.getDeviceSpecificationDtos().get(0).getId(), deviceSpecPostResponseDto.getResults().get(0).getId());
 	}
 	
@@ -902,7 +901,7 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void testaddSpecificationThrowsDataAccessException() {
 		Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		deviceSpecificationService.addDeviceSpecifications(deviceSpecificationRequestDto);
+		deviceSpecificationService.saveDeviceSpecifications(deviceSpecificationRequestDto);
 	}
 
 	// ------------------ DocumentCategoryServiceTest -----------------
@@ -1207,7 +1206,7 @@ public class MasterDataServiceTest {
 	@Test
 	public void addDeviceTypesTest() {
 		Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenReturn(deviceTypeList);
-		PostResponseDto postResponseDto = deviceTypeService.addDeviceTypes(reqTypeDto);
+		PostResponseDto postResponseDto = deviceTypeService.saveDeviceTypes(reqTypeDto);
 		assertEquals(request.getDeviceTypeDtos().get(0).getCode(), postResponseDto.getResults().get(0).getCode());
 	}
 
@@ -1215,6 +1214,6 @@ public class MasterDataServiceTest {
 	@Test(expected = MasterDataServiceException.class)
 	public void testaddDeviceTypesThrowsDataAccessException() {
 		Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
-		deviceTypeService.addDeviceTypes(reqTypeDto);
+		deviceTypeService.saveDeviceTypes(reqTypeDto);
 	}
 }

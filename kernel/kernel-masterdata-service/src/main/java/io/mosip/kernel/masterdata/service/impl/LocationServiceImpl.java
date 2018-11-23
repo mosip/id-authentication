@@ -57,20 +57,17 @@ public class LocationServiceImpl implements LocationService {
 		try {
 
 			locations = locationRepository.findDistinctLocationHierarchyByIsActiveTrueAndIsDeletedFalse();
-
 		} catch (DataAccessException e) {
-			e.printStackTrace();
-			throw new MasterDataServiceException(LocationErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					LocationErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
 		}
-
 		if (!locations.isEmpty()) {
 			responseList = objectMapperUtil.objectToDtoConverter(locations);
 		} else {
-			throw new DataNotFoundException(LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorCode(),
-					LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorMessage());
+			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-        locationHierarchyResponseDto.setLocationHierarchyResponseDto(responseList);
+		locationHierarchyResponseDto.setLocationHierarchyResponseDto(responseList);
 		return locationHierarchyResponseDto;
 	}
 
@@ -106,15 +103,15 @@ public class LocationServiceImpl implements LocationService {
 				locationHierarchyResponseDto.setLocations(locationHierarchies);
 
 			} else {
-				throw new DataNotFoundException(LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorCode(),
-						LocationErrorCode.RECORDS_NOT_FOUND_EXCEPTION.getErrorMessage());
+				throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
+						LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 			}
 		}
 
 		catch (DataAccessException e) {
 
-			throw new MasterDataServiceException(LocationErrorCode.DATABASE_EXCEPTION.getErrorCode(),
-					LocationErrorCode.DATABASE_EXCEPTION.getErrorMessage());
+			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
+					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
 
 		}
 		return locationHierarchyResponseDto;
