@@ -218,13 +218,13 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 
 			// Job Invocation
 			responseDTO = job.executeJob(jobId);
-		} catch (NoSuchBeanDefinitionException | NullPointerException exception) {
+		} catch (NoSuchBeanDefinitionException | NullPointerException |IllegalArgumentException exception) {
 			LOGGER.error(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 					RegistrationConstants.APPLICATION_ID, exception.getMessage());
 			
 			responseDTO = new ResponseDTO();
 			setErrorResponseDTO(responseDTO, RegistrationConstants.EXECUTE_JOB_ERROR_MESSAGE);
-		}
+		} 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Execute job ended");
 		return responseDTO;
