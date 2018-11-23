@@ -25,7 +25,7 @@ public class ServiceUnavailableException extends BaseUncheckedException{
 	 * @param message the message
 	 */
 	public ServiceUnavailableException(String message) {
-		super(PlatformErrorMessages.RPR_PKM_SERVICE_UNAVAILABLE.getCode(), message);
+		super(PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getCode(), message);
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class ServiceUnavailableException extends BaseUncheckedException{
 	 * @param cause the cause
 	 */
 	public ServiceUnavailableException(String message, Throwable cause) {
-		super(PlatformErrorMessages.RPR_PKM_SERVICE_UNAVAILABLE.getCode() + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getCode() + EMPTY_SPACE, message, cause);
 	}
 
 }

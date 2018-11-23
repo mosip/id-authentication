@@ -25,7 +25,7 @@ public class UnexpectedException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public UnexpectedException(String message) {
-		super(PlatformErrorMessages.RPR_PKR_UNEXCEPTED_ERROR.getCode(), message);
+		super(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getCode(), message);
 	}
 
 	/**
@@ -35,6 +35,6 @@ public class UnexpectedException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public UnexpectedException(String message, Throwable cause) {
-		super(PlatformErrorMessages.RPR_PKR_UNEXCEPTED_ERROR.getCode() + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getCode() + EMPTY_SPACE, message, cause);
 	}
 }

@@ -33,7 +33,7 @@ public class UnexceptedExceptionTest {
 	@Test
 	public void TestUnexceptedException() throws IOException {
 		String fileName = "sample";
-		UnexpectedException ex = new UnexpectedException(PlatformErrorMessages.RPR_PKM_UNEXCEPTED_EXCEPTION.getMessage());
+		UnexpectedException ex = new UnexpectedException(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage());
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
 		try {
@@ -41,9 +41,9 @@ public class UnexceptedExceptionTest {
 			fail();
 		} catch (UnexpectedException e) {
 			assertThat("Should throw  Unexpected Exception  with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_UNEXCEPTED_EXCEPTION.getCode()));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getCode()));
 			assertThat("Should throw  Unexpected Exception  with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_UNEXCEPTED_EXCEPTION.getMessage()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage()));
 		}
 
 	}

@@ -41,7 +41,7 @@ public class InternalServerExceptionTest {
 	@Test
 	public void TestInternalServerException() throws IOException {
 		String fileName = "sample";
-		InternalServerException ex = new InternalServerException(PlatformErrorMessages.RPR_PKM_SERVER_ERROR.getMessage());
+		InternalServerException ex = new InternalServerException(PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage());
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
 		try {
@@ -49,9 +49,9 @@ public class InternalServerExceptionTest {
 			fail();
 		} catch (InternalServerException e) {
 			assertThat("Should throw Server error with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_SERVER_ERROR.getCode()));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getCode()));
 			assertThat("Should throw Server error with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_SERVER_ERROR.getMessage()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getMessage()));
 		}
 
 	}

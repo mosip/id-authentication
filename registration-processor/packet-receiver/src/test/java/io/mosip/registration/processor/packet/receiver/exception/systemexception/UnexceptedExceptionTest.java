@@ -31,7 +31,7 @@ public class UnexceptedExceptionTest {
 	@Test
 	public void TestUnexceptedException() {
 
-		UnexpectedException ex = new UnexpectedException(PlatformErrorMessages.RPR_PKR_UNEXCEPTED_ERROR.getMessage());
+		UnexpectedException ex = new UnexpectedException(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -51,9 +51,9 @@ public class UnexceptedExceptionTest {
 			packetHandlerService.storePacket(file);
 		} catch (UnexpectedException e) {
 			assertThat("Should throw Unexpected Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_UNEXCEPTED_ERROR.getCode()));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getCode()));
 			assertThat("Should throw Unexpected Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_UNEXCEPTED_ERROR.getMessage()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getMessage()));
 		}
 	}
 }

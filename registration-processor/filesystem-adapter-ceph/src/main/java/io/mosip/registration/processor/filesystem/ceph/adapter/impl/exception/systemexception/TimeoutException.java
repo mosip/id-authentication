@@ -19,11 +19,11 @@ public class TimeoutException extends BaseUncheckedException {
 	}
 
 	public TimeoutException(String message) {
-		super(PlatformErrorMessages.RPR_FAC_TIMEOUT.getCode(), message);
+		super(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getCode(), message);
 	}
 	
 	public TimeoutException(String message,Throwable cause) {
-		super(PlatformErrorMessages.RPR_FAC_TIMEOUT.getCode() + EMPTY_SPACE, message,cause);
+		super(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getCode() + EMPTY_SPACE, message,cause);
 	}
 	
 	

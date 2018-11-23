@@ -33,7 +33,7 @@ public class TimeoutExceptionTest {
 	@Test
 	public void TestTimeoutException() throws IOException {
 		String fileName = "sample";
-		TimeoutException ex = new TimeoutException(PlatformErrorMessages.RPR_PKM_TIMEOUT_EXCEPTION.getMessage());
+		TimeoutException ex = new TimeoutException(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getMessage());
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
 		try {
@@ -41,9 +41,9 @@ public class TimeoutExceptionTest {
 			fail();
 		} catch (TimeoutException e) {
 			assertThat("Should throw  Timeout Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_TIMEOUT_EXCEPTION.getCode()));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getCode()));
 			assertThat("Should throw   Timeout Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_TIMEOUT_EXCEPTION.getMessage()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getMessage()));
 		}
 
 	}

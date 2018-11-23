@@ -33,7 +33,7 @@ public class ServiceUnavailableExceptionTest {
 	@Test
 	public void TestServiceUnavailableException() throws IOException {
 		String fileName = "sample";
-		ServiceUnavailableException ex = new ServiceUnavailableException(PlatformErrorMessages.RPR_PKM_SERVICE_UNAVAILABLE.getMessage());
+		ServiceUnavailableException ex = new ServiceUnavailableException(PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getMessage());
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
 		try {
@@ -42,9 +42,9 @@ public class ServiceUnavailableExceptionTest {
 
 		} catch (ServiceUnavailableException e) {
 			assertThat("Should throw ServiceUnavailable Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_SERVICE_UNAVAILABLE.getCode()));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getCode()));
 			assertThat("Should throw ServiceUnavailable Exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_SERVICE_UNAVAILABLE.getMessage()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_SERVICE_UNAVAILABLE.getMessage()));
 		}
 
 	}

@@ -32,7 +32,7 @@ public class TimeoutExceptionTest {
 	@Test
 	public void TestTimeoutException() {
 
-		TimeoutException ex = new TimeoutException(PlatformErrorMessages.RPR_PKR_TIMEOUT.getMessage());
+		TimeoutException ex = new TimeoutException(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getMessage());
 
 		Path path = Paths.get("src/test/resource/Client.zip");
 		String name = "Client.zip";
@@ -55,9 +55,9 @@ public class TimeoutExceptionTest {
 
 		} catch (TimeoutException e) {
 			assertThat("Should throw Timeout Exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_TIMEOUT.getCode()));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getCode()));
 			assertThat("Should throw Timeout Exception  with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKR_TIMEOUT.getMessage()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_TIMEOUT_EXCEPTION.getMessage()));
 
 		}
 	}

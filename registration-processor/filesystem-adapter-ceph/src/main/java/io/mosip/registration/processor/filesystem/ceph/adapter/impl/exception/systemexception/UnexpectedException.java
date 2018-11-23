@@ -16,10 +16,10 @@ public class UnexpectedException extends BaseUncheckedException {
 	}
 
 	public UnexpectedException(String message) {
-		super(PlatformErrorMessages.RPR_FAC_UNEXCEPTED_ERROR.getCode(), message);
+		super(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getCode(), message);
 	}
 
 	public UnexpectedException(String message, Throwable cause) {
-		super(PlatformErrorMessages.RPR_FAC_UNEXCEPTED_ERROR.getCode() + EMPTY_SPACE, message, cause);
+		super(PlatformErrorMessages.RPR_SYS_UNEXCEPTED_EXCEPTION.getCode() + EMPTY_SPACE, message, cause);
 	}
 }

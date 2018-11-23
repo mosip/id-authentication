@@ -26,7 +26,7 @@ public class InternalServerException extends BaseUncheckedException {
 	 * @param message the message
 	 */
 	public InternalServerException(String message) {
-		super(PlatformErrorMessages.RPR_PKM_SERVER_ERROR.getCode(), message);
+		super(PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getCode(), message);
 	}
 
 	/**
@@ -36,6 +36,6 @@ public class InternalServerException extends BaseUncheckedException {
 	 * @param cause the cause
 	 */
 	public InternalServerException(String msg, Throwable cause) {
-		super(PlatformErrorMessages.RPR_PKM_SERVER_ERROR.getCode() + EMPTY_SPACE, msg, cause);
+		super(PlatformErrorMessages.RPR_SYS_SERVER_ERROR.getCode() + EMPTY_SPACE, msg, cause);
 	}
 }

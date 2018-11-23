@@ -42,7 +42,7 @@ public class BadGatewayExceptionTest {
 	@Test
 	public void TestBadGatewayException() throws FileNotFoundException, IOException {
 		String fileName = "sample";
-		BadGatewayException ex = new BadGatewayException(PlatformErrorMessages.RPR_PKM_BAD_GATEWAY.getMessage());
+		BadGatewayException ex = new BadGatewayException(PlatformErrorMessages.RPR_SYS_BAD_GATEWAY.getMessage());
 
 		doThrow(ex).when(fileManager).put(fileName, file, DirectoryPathDto.LANDING_ZONE);
 
@@ -51,9 +51,9 @@ public class BadGatewayExceptionTest {
 			fail();
 		} catch (BadGatewayException e) {
 			assertThat("Should throw Bad Gateway exception with correct error codes",
-					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_BAD_GATEWAY.getCode()));
+					e.getErrorCode().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_BAD_GATEWAY.getCode()));
 			assertThat("Should throw  Bad Gateway exception with correct messages",
-					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_PKM_BAD_GATEWAY.getMessage()));
+					e.getErrorText().equalsIgnoreCase(PlatformErrorMessages.RPR_SYS_BAD_GATEWAY.getMessage()));
 		}
 
 	}
