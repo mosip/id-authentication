@@ -1,6 +1,5 @@
 package io.mosip.authentication.service.impl.indauth.controller;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.Errors;
@@ -38,21 +37,21 @@ public class InternelAuthController {
 	/** The auth facade. */
 	@Autowired
 	private AuthFacade authFacade;
-	
-	/** The internal Auth Request Validator*/
+
+	/** The internal Auth Request Validator */
 	@Autowired
 	private InternalAuthRequestValidator internalAuthRequestValidator;
-	
+
 	private static final String SESSION_ID = "sessionId";
 
 	/** The mosipLogger. */
 	private Logger mosipLogger = IdaLogger.getLogger(AuthController.class);
 
-
 	/**
 	 * Inits the binder.
 	 *
-	 * @param binder the binder
+	 * @param binder
+	 *            the binder
 	 */
 	@InitBinder
 	private void initBinder(WebDataBinder binder) {
@@ -60,30 +59,27 @@ public class InternelAuthController {
 	}
 
 	/**
-	 * @throws IdAuthenticationAppException 
+	 * @throws IdAuthenticationAppException
 	 * 
 	 * 
 	 * 
 	 */
-	@PostMapping(path="/auth/internal",consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,produces=MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping(path = "/auth/internal", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ApiOperation(value = "Authenticate Internal Request", response = IdAuthenticationAppException.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Request authenticated successfully"),
 			@ApiResponse(code = 400, message = "Request authenticated failed") })
-	public AuthResponseDTO authenticateTsp(@Validated @RequestBody AuthRequestDTO authRequestDTO,@ApiIgnore Errors e) throws IdAuthenticationAppException,IdAuthenticationBusinessException
-	{
-		AuthResponseDTO authResponseDTO=null;
+	public AuthResponseDTO authenticateTsp(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors e)
+			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		AuthResponseDTO authResponseDTO = null;
 		try {
 			DataValidationUtil.validate(e);
-			 authResponseDTO=authFacade.authenticateTsp(authRequestDTO);
+			authResponseDTO = authFacade.authenticateTsp(authRequestDTO);
 		} catch (IDDataValidationException e1) {
-			
+			mosipLogger.error(SESSION_ID, null, null, e1.getErrorTexts().isEmpty() ? "" : e1.getErrorText());
 			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, e1);
-		
-		}catch (IdAuthenticationBusinessException exception) {
-			mosipLogger.error(SESSION_ID, null, null, exception.getErrorTexts().isEmpty() ? "" : exception.getErrorText());
-			throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.AUTHENTICATION_FAILED, exception);
+
 		}
-		
+
 		return authResponseDTO;
 	}
 }

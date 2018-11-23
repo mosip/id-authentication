@@ -228,7 +228,7 @@ public class AuthFacadeImplTest {
 		identityValue.setValue("Prem.Kumar4@mindtree.com");
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.EMAIL, idInfo)).thenReturn(identityValue);
 		identityValue.setLanguage("en");
-		identityValue.setValue("8056365346");
+		identityValue.setValue("1234567890");
 		Mockito.when(demoHelper.getEntityInfo(DemoMatchType.PHONE, idInfo)).thenReturn(identityValue);
 		
 		ReflectionTestUtils.invokeMethod(authFacadeImpl, "sendAuthNotification", authRequestDTO, 
