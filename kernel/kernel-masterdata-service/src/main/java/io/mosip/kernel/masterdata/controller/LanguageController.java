@@ -50,9 +50,7 @@ public class LanguageController {
 	@PostMapping
 	public ResponseEntity<?> saveAllLaguages(
 			@Valid @RequestBody LanguageRequestResponseDto languageRequestResponseDto) {
-		return new ResponseEntity<>(
-				languageService.saveAllLanguages(languageRequestResponseDto).getSuccessfullyCreatedLanguages(),
-				HttpStatus.CREATED);
+		return new ResponseEntity<>(languageService.saveAllLanguages(languageRequestResponseDto), HttpStatus.CREATED);
 	}
 
 }
