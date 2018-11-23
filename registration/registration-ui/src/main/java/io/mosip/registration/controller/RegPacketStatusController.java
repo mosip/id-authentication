@@ -76,7 +76,7 @@ public class RegPacketStatusController extends BaseController implements Initial
 	private void packetSyncStatus() {
 		
 		ResponseDTO response = jobConfigurationService.executeJob(RegistrationAppInitialization.getApplicationContext(),
-				"packetSyncStatusJob");
+				"RPS_J00006");
 		
 		if (response.getSuccessResponseDTO() != null) {
 			List<LinkedHashMap<String, String>> registrations = (List<LinkedHashMap<String, String>>) response
