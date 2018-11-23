@@ -6,17 +6,25 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.templatemanager.exception.TemplateConfigurationException;
-import io.mosip.kernel.templatemanager.freemarker.builder.TemplateConfigureBuilder;
+import io.mosip.kernel.core.templatemanager.spi.TemplateManagerBuilder;
+import io.mosip.kernel.templatemanager.freemarker.builder.TemplateManagerBuilderImpl;
 
 @RunWith(SpringRunner.class)
+
+@SpringBootTest(classes= {TemplateManagerBuilderImpl.class})
 public class TemplateConfigureBuilderTest {
 
+	@Autowired
+	private TemplateManagerBuilder templateManagerBuilder;
+	
 	@Test
 	public void buildDefaultConfiguration() {
-		TemplateConfigureBuilder builder = new TemplateConfigureBuilder();
+	 TemplateManagerBuilderImpl builder = new TemplateManagerBuilderImpl();
 		builder.build();
 		assertEquals("UTF-8", builder.getDefaultEncoding());
 		assertEquals("classpath", builder.getResourceLoader());
@@ -27,7 +35,7 @@ public class TemplateConfigureBuilderTest {
 
 	@Test(expected = TemplateConfigurationException.class)
 	public void buildFileTemplateConfigurationFailure() {
-		TemplateConfigureBuilder builder = new TemplateConfigureBuilder().resourceLoader("file")
+		TemplateManagerBuilderImpl builder = (TemplateManagerBuilderImpl) templateManagerBuilder.resourceLoader("file")
 				.resourcePath("/templates");
 		builder.build();
 		assertEquals("UTF-8", builder.getDefaultEncoding());
@@ -39,7 +47,7 @@ public class TemplateConfigureBuilderTest {
 
 	@Test
 	public void buildFileTemplateConfiguration() {
-		TemplateConfigureBuilder builder = new TemplateConfigureBuilder().resourceLoader("file").resourcePath("/");
+		TemplateManagerBuilderImpl builder = new TemplateManagerBuilderImpl().resourceLoader("file").resourcePath("/");
 		builder.build();
 		assertEquals("UTF-8", builder.getDefaultEncoding());
 		assertEquals("file", builder.getResourceLoader());
@@ -50,7 +58,7 @@ public class TemplateConfigureBuilderTest {
 
 	@Test
 	public void buildWithCustomConfiguration() {
-		TemplateConfigureBuilder builder = new TemplateConfigureBuilder().encodingType("UTF-16").enableCache(false)
+		TemplateManagerBuilderImpl builder = (TemplateManagerBuilderImpl) templateManagerBuilder.encodingType("UTF-16").enableCache(false)
 				.resourceLoader("classpath").resourcePath("/templates");
 		builder.build();
 		assertEquals("UTF-16", builder.getDefaultEncoding());
