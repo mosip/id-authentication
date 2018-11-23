@@ -1,22 +1,23 @@
 ## kernel-packetuploader-sftp-jsch
-This folder has kernel-packetuploader-sftp-jsch module which can be used to upload a packet using SFTP protocol.
-
 [Background & Design](../../design/kernel/kernel-packetuploader.md)
 
 **Api Documentation**
+
 [API Documentation <TBA>](TBA)
 
 ```
 mvn javadoc:javadoc
 ```
 
-
-**The Flow to be followed is:**
-1. Create an object of SftpServer configurations.
-2. Pass this object to create SFTP channel.
-3. Use this channel to upload file.
-4. Release the connection.
-
+**Maven dependency**
+  
+ ```
+    <dependency>
+		<groupId>io.mosip.kernel</groupId>
+		<artifactId>kernel-packetuploader-sftp-jsch</artifactId>
+		<version>${project.version}</</version>
+	</dependency>
+ ```
 
 **If there is any error which occurs while channel creation,upload and release connection, it will be thrown as Exception.** 
 
@@ -34,14 +35,21 @@ mvn javadoc:javadoc
 
 **Usage Sample**
 
+
+
  *Usage 1:*
  
+1. Create an object of SftpServer configurations.
+2. Pass this object to create SFTP channel.
+3. Use this channel to upload file.
+4. Release the connection.
+ 
  ```
+ @Autowired
+	private PacketUploader<SFTPServer,SFTPChannel> packetUploader;
+ 
  SFTPServer configuration = new SFTPServer("http://104.211.212.28",22,username,password, remoteLocation);
  
-@Autowired
-	private PacketUploader<SFTPServer,SFTPChannel> packetUploader;
-	
   SFTPChannel channel = packetUploader.createSFTPChannel(configuration);//create channel
   packetUploader.upload(channel, filePath));//upload file
   packetUploader.releaseConnection(channel);// release connection
@@ -50,13 +58,19 @@ mvn javadoc:javadoc
 
 *Usage 2:*
  
+ 1. Create an object of SftpServer configurations.
+ 2. Pass this object to create SFTP channel.
+ 3. Use this channel to upload file.
+ 4. Release the connection.
+
  ```
-SFTPServer configuration = new SFTPServer("http://104.211.212.28",22,username,privateKeyFileName, privateKeyPassphrase, remoteLocation);
- 
+  
 @Autowired
 	private PacketUploader<SFTPServer,SFTPChannel> packetUploader;
-	
-  SFTPChannel channel = packetUploader.createSFTPChannel(configuration);//create channel
+
+SFTPServer configuration = new SFTPServer("http://104.211.212.28",22,username,privateKeyFileName, privateKeyPassphrase, remoteLocation);
+
+ SFTPChannel channel = packetUploader.createSFTPChannel(configuration);//create channel
   packetUploader.upload(channel, filePath));//upload file
   packetUploader.releaseConnection(channel);// release connection
  

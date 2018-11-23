@@ -1,16 +1,27 @@
 ## kernel-crypto-jce
-This folder has kernel-crypto-jce module which can be used to encrypt and decrypt data.
-
 [Background & Design](../../design/kernel/kernel-crypto.md)
 
 **Api Documentation**
+
 [API Documentation <TBA>](TBA)
 
 ```
 mvn javadoc:javadoc
 ```
 
+**Maven dependency**
+  
+ ```
+    <dependency>
+		<groupId>io.mosip.kernel</groupId>
+		<artifactId>kernel-crypto-jce</artifactId>
+		<version>${project.version}</version>
+	</dependency>
+ ```
+
+
 **Properties to be added in parent Spring Application environment** 
+
 [kernel-crypto-jce-dev.properties](../../config/kernel-crypto-jce-dev.properties)
 
 **The inputs which have to be provided are:**
@@ -27,6 +38,9 @@ mvn javadoc:javadoc
 2. InvalidDataException
 
 **Usage Sample**
+
+
+
   
 *Usage Encryption:*
  
@@ -35,8 +49,27 @@ mvn javadoc:javadoc
 	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
 	
    byte[] encryptedData = encryptor.symmetricEncrypt(secretKey, dataToEncrypt);
-   byte[] encryptedData =  encryptor.asymmetricPublicEncrypt(publicKey, dataToEncrypt);
+```
  
+ *Output*
+ 
+ ```
+8��ޡ����'��P�ր��|sN#�lY;����4(\M�M9�c�J
+ ```
+ 
+ ```
+ @Autowired
+	Encryptor<PrivateKey, PublicKey, SecretKey> encryptor;
+	
+	
+ ```
+ 
+  *Output*
+ 
+ ```
+S݄=Җ[<C&!r��˅Б�ɦ-�	�T��	�$0�P����e�T7����M���S��
+�Ɯ�����>��T���a�Z3��0n�ɐ&F��7�[eܕ̺5#͉y�����l����t�f���𲞊�J�3�hk�Y�9�e�7i�k����
+)&�������Ϩ8�H���=a�l�Fʷ���'d��؆x��K���0�x�ۦ.m��Պd"Q��C�����c��hvϟi�S��q�Q��
  ```
 
  *Usage Decryption:*
@@ -46,6 +79,24 @@ mvn javadoc:javadoc
 	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
 	
 	byte[] decryptedData = decryptor.symmetricDecrypt(secretKey, encryptedData);
-	byte[] decryptedData = decryptor.asymmetricPrivateDecrypt(privatekey, encryptedData);
- 
- ```
+```
+
+
+*Output*
+
+```
+This is Plain Text
+```
+
+```
+@Autowired 
+	Decryptor<PrivateKey, PublicKey, SecretKey> decryptor;
+	
+byte[] decryptedData = decryptor.asymmetricPrivateDecrypt(privatekey, encryptedData);
+```
+
+*Output*
+
+```
+This is Plain Text
+```

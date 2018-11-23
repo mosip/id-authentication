@@ -2,10 +2,10 @@
 <rollingFileAppender
 	appenderName="fileappenderRollingFile">
 	<append>true</append>
-	<fileName>src/test/resources/test.txt</fileName>
+	<fileName>src/test/resources/test/test.txt</fileName>
 	<immediateFlush>true</immediateFlush>
 	<prudent>false</prudent>
-	<fileNamePattern>src/test/resources/%d{yyyy-MM-dd_HH-mm-ss}-%i.txt</fileNamePattern>
+	<fileNamePattern>src/test/resources/test/%d{yyyy-MM-dd_HH-mm-ss}-%i.txt</fileNamePattern>
 	<maxFileSize>1kb</maxFileSize>
 	<maxHistory>3</maxHistory>
 	<totalCap>10mb</totalCap>
