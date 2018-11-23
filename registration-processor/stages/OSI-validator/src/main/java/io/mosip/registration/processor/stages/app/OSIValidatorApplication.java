@@ -8,13 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import io.mosip.registration.processor.stages.osivalidator.OSIValidatorStage;
 
-/**
- * Hello world!
- *
- */
 @SpringBootApplication(scanBasePackages = { "io.mosip.registration.processor.status",
 		"io.mosip.registration.processor.filesystem.ceph.adapter.impl", "io.mosip.registration.processor.core",
-		"io.mosip.registration.processor.rest.client", "io.mosip.registration.processor.stages.osivalidator" })
+		"io.mosip.registration.processor.rest.client", "io.mosip.registration.processor.stages.osivalidator",
+		"io.mosip.registration.processor.packet.storage" })
 public class OSIValidatorApplication {
 
 	/** The validatebean. */

@@ -14,8 +14,11 @@ import io.mosip.registration.processor.core.abstractverticle.MosipVerticleManage
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
+import io.mosip.registration.processor.core.packet.dto.Identity;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
+import io.mosip.registration.processor.packet.storage.dto.ApplicantInfoDto;
 import io.mosip.registration.processor.rest.client.audit.builder.AuditLogRequestBuilder;
 import io.mosip.registration.processor.stages.osivalidator.exception.utils.ExceptionMessages;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
@@ -53,6 +56,9 @@ public class OSIValidatorStage extends MosipVerticleManager {
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
 
+	@Autowired
+	PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
+
 	/**
 	 * Deploy verticle.
 	 */
@@ -63,6 +69,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 
 	@Override
 	public MessageDTO process(MessageDTO object) {
+
 		object.setMessageBusAddress(MessageBusAddress.OSI_BUS_IN);
 		object.setIsValid(Boolean.FALSE);
 		object.setInternalError(Boolean.FALSE);
@@ -73,7 +80,7 @@ public class OSIValidatorStage extends MosipVerticleManager {
 		boolean isValidOSI = false;
 		InternalRegistrationStatusDto registrationStatusDto = registrationStatusService
 				.getRegistrationStatus(registrationId);
-		OSIValidator osiValidator = new OSIValidator(adapter, restClientService);
+		OSIValidator osiValidator = new OSIValidator(adapter, restClientService, packetInfoManager);
 		osiValidator.registrationStatusDto = registrationStatusDto;
 
 		try {
