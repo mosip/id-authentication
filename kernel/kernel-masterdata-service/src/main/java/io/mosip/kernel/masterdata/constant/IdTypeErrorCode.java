@@ -10,16 +10,15 @@ import io.mosip.kernel.masterdata.service.impl.IdTypeServiceImpl;
  *
  */
 public enum IdTypeErrorCode {
-	ID_TYPE_FETCH_EXCEPTION("KER-MSD-II1","Error occured while fetching id types"), 
-	ID_TYPE_INSERT_EXCEPTION("KER-MSD-II2","exception during inserting data into db"),
-	ID_TYPE_MAPPING_EXCEPTION("KER-MSD-II3","Error occured while mapping id types"),
-	ID_TYPE_NOT_FOUND("KER-MSD-II4", "No id types found");
+	ID_TYPE_FETCH_EXCEPTION("KER-MSD-021", "Error occured while fetching Id Types"), ID_TYPE_INSERT_EXCEPTION(
+			"KER-MSD-444",
+			"Exception during inserting data into db"), ID_TYPE_NOT_FOUND("KER-MSD-022", "Id Type found");
 
 	/**
 	 * The error code.
 	 */
 	private final String errorCode;
-	
+
 	/**
 	 * The error message.
 	 */
@@ -28,8 +27,10 @@ public enum IdTypeErrorCode {
 	/**
 	 * Constructor for IdTypeErrorCode.
 	 * 
-	 * @param errorCode the error code.
-	 * @param errorMessage the error message.
+	 * @param errorCode
+	 *            the error code.
+	 * @param errorMessage
+	 *            the error message.
 	 */
 	private IdTypeErrorCode(final String errorCode, final String errorMessage) {
 		this.errorCode = errorCode;

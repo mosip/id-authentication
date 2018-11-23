@@ -11,6 +11,10 @@
 	</parent>
 
 	<artifactId>kernel-auditmanager-api</artifactId>
+	
+<properties>
+    <sonar.skip>true</sonar.skip>
+</properties>
 
 	<dependencies>
 		<dependency>

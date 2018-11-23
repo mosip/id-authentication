@@ -4,7 +4,9 @@
  */
 package io.mosip.kernel.masterdata.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Response dto for Machine Detail
@@ -15,6 +17,8 @@ import lombok.Data;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MachineDetailDto {
 
 	/**

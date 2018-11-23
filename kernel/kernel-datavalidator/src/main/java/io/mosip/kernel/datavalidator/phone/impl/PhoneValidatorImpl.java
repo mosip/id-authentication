@@ -63,7 +63,7 @@ public class PhoneValidatorImpl implements PhoneValidator<String> {
 	/**
 	 * Method used for Validate Phone number against acceptance Criteria
 	 * 
-	 * @param phonenum
+	 * @param phoneNum
 	 *            pass a Phone number in String format
 	 * 
 	 * @return return boolean value true or false

@@ -18,55 +18,76 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.masterdata.dto.ApplicationDto;
+import io.mosip.kernel.masterdata.dto.ApplicationListDto;
+import io.mosip.kernel.masterdata.dto.ApplicationRequestDto;
 import io.mosip.kernel.masterdata.dto.ApplicationResponseDto;
 import io.mosip.kernel.masterdata.dto.BiometricAttributeDto;
 import io.mosip.kernel.masterdata.dto.BiometricTypeDto;
 import io.mosip.kernel.masterdata.dto.BlacklistedWordsResponseDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecPostResponseDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationListDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationRequestDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeListDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
+import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatListDto;
+import io.mosip.kernel.masterdata.dto.TemplateFileFormatRequestDto;
 import io.mosip.kernel.masterdata.entity.Application;
 import io.mosip.kernel.masterdata.entity.BiometricAttribute;
 import io.mosip.kernel.masterdata.entity.BiometricType;
 import io.mosip.kernel.masterdata.entity.BlacklistedWords;
+import io.mosip.kernel.masterdata.entity.CodeAndLanguageCodeId;
 import io.mosip.kernel.masterdata.entity.DeviceSpecification;
+import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.DocumentCategory;
 import io.mosip.kernel.masterdata.entity.DocumentType;
 import io.mosip.kernel.masterdata.entity.Language;
 import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Template;
+import io.mosip.kernel.masterdata.entity.TemplateFileFormat;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.ApplicationRepository;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
 import io.mosip.kernel.masterdata.repository.BlacklistedWordsRepository;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
+import io.mosip.kernel.masterdata.repository.DeviceTypeRepository;
 import io.mosip.kernel.masterdata.repository.DocumentCategoryRepository;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
+import io.mosip.kernel.masterdata.repository.TemplateFileFormatRepository;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.ApplicationService;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
 import io.mosip.kernel.masterdata.service.BlacklistedWordsService;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
+import io.mosip.kernel.masterdata.service.DeviceTypeService;
 import io.mosip.kernel.masterdata.service.DocumentCategoryService;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.service.LocationService;
+import io.mosip.kernel.masterdata.service.TemplateFileFormatService;
 import io.mosip.kernel.masterdata.service.TemplateService;
+import io.mosip.kernel.masterdata.utils.MetaDataUtils;
 
 /**
  * @author Bal Vikash Sharma
@@ -89,6 +110,11 @@ public class MasterDataServiceTest {
 	private Application application2;
 
 	private List<Application> applicationList;
+
+	private ApplicationRequestDto applicationRequestDto;
+
+	@MockBean
+	private MetaDataUtils metaUtils;
 
 	@MockBean
 	BiometricAttributeRepository biometricAttributeRepository;
@@ -157,9 +183,20 @@ public class MasterDataServiceTest {
 	LocationService locationHierarchyService;
 
 	List<Location> locationHierarchies = null;
+	List<Object[]> locObjList=null;
 
 	@MockBean
 	private TemplateRepository templateRepository;
+
+	@MockBean
+	private TemplateFileFormatRepository templateFileFormatRepository;
+
+	@Autowired
+	private TemplateFileFormatService templateFileFormatService;
+
+	private List<TemplateFileFormat> templateFileFormatList;
+
+	private TemplateFileFormatRequestDto templateFileFormatRequestDto;
 
 	@Autowired
 	private TemplateService templateService;
@@ -170,11 +207,34 @@ public class MasterDataServiceTest {
 
 	@MockBean
 	DocumentTypeRepository documentTypeRepository;
+
 	@Autowired
 	DocumentTypeService documentTypeService;
 
 	List<DocumentType> documents = null;
+	
+	
+	//-----------------------------DeviceType-------------------------------------------------
+	@MockBean
+	private DeviceTypeRepository deviceTypeRepository;
+	
+	@Autowired
+	private DeviceTypeService deviceTypeService;
+	
+	@MockBean
+	private MetaDataUtils metaUtils;
+	
+	//-----------------------------DeviceSpecification----------------------------------
 
+	private List<DeviceSpecification> deviceSpecificationList ;
+	private DeviceSpecification deviceSpecification;
+	
+	private DeviceSpecificationRequestDto deviceSpecificationRequestDto ;
+	private DeviceSpecificationListDto deviceSpecificationListDto;
+	private List<DeviceSpecificationDto> deviceSpecificationDtos ;
+	private DeviceSpecificationDto deviceSpecificationDto ;
+	
+	
 	@Before
 	public void setUp() {
 		appSetup();
@@ -201,7 +261,11 @@ public class MasterDataServiceTest {
 
 		templateServiceSetup();
 
+		templateFileFormatSetup();
+
 		documentTypeSetup();
+		
+		deviceTypeSetUp();
 
 	}
 
@@ -260,6 +324,11 @@ public class MasterDataServiceTest {
 		locationHierarchy1.setUpdatedBy("sdfsd");
 		locationHierarchy1.setIsActive(true);
 		locationHierarchies.add(locationHierarchy1);
+		Object[] objectArray=new Object[2];
+		objectArray[0]=(short)0;
+		objectArray[1]="COUNTRY";
+	    locObjList=new ArrayList<>();
+		locObjList.add(objectArray);
 	}
 
 	private void langServiceSetup() {
@@ -332,7 +401,7 @@ public class MasterDataServiceTest {
 
 	private void deviceSpecSetup() {
 		deviceSpecifications = new ArrayList<>();
-		DeviceSpecification deviceSpecification = new DeviceSpecification();
+		deviceSpecification = new DeviceSpecification();
 		deviceSpecification.setId("lp");
 		deviceSpecification.setName("laptop");
 		deviceSpecification.setBrand("hp");
@@ -356,6 +425,26 @@ public class MasterDataServiceTest {
 		deviceSpecifications.add(deviceSpecification1);
 		deviceSpecificationListWithDeviceTypeCode = new ArrayList<DeviceSpecification>();
 		deviceSpecificationListWithDeviceTypeCode.add(deviceSpecification);
+		
+		
+
+		deviceSpecificationList = new ArrayList<>();
+		deviceSpecification = new DeviceSpecification();
+		deviceSpecification.setId("100");
+		deviceSpecification.setDeviceTypeCode("Laptop");
+		deviceSpecification.setLangCode("ENG");
+		deviceSpecificationList.add(deviceSpecification);
+		
+		deviceSpecificationRequestDto = new DeviceSpecificationRequestDto();
+		deviceSpecificationListDto = new DeviceSpecificationListDto();
+		deviceSpecificationDtos = new ArrayList<>();
+		deviceSpecificationDto = new DeviceSpecificationDto();
+		deviceSpecificationDto.setId("100");
+		deviceSpecificationDto.setDeviceTypeCode("Laptop");
+		deviceSpecificationDto.setLangCode("ENG");
+		deviceSpecificationDtos.add(deviceSpecificationDto);
+		deviceSpecificationListDto.setDeviceSpecificationDtos(deviceSpecificationDtos);
+		deviceSpecificationRequestDto.setRequest(deviceSpecificationListDto);
 	}
 
 	private void blackListedSetup() {
@@ -433,6 +522,78 @@ public class MasterDataServiceTest {
 		applicationList.add(application1);
 		applicationList.add(application2);
 
+		applicationRequestDto = new ApplicationRequestDto();
+		ApplicationListDto request = new ApplicationListDto();
+		ApplicationDto applicationDto = new ApplicationDto();
+		applicationDto.setCode("101");
+		applicationDto.setName("pre-registeration");
+		applicationDto.setDescription("Pre-registration Application Form");
+		applicationDto.setLangCode("ENG");
+		List<ApplicationDto> applicationDtos = new ArrayList<>();
+		applicationDtos.add(applicationDto);
+		request.setApplicationtypes(applicationDtos);
+		applicationRequestDto.setRequest(request);
+	}
+
+	private void templateFileFormatSetup() {
+		TemplateFileFormat templateFileFormat = new TemplateFileFormat();
+		templateFileFormatList = new ArrayList<>();
+		templateFileFormat.setCode("xml");
+		templateFileFormat.setLangCode("ENG");
+		templateFileFormatList.add(templateFileFormat);
+
+		templateFileFormatRequestDto = new TemplateFileFormatRequestDto();
+		TemplateFileFormatListDto request = new TemplateFileFormatListDto();
+		TemplateFileFormatDto templateFileFormatDto = new TemplateFileFormatDto();
+		templateFileFormatDto.setCode("xml");
+		templateFileFormatDto.setLangCode("ENG");
+		List<TemplateFileFormatDto> templateFileFormatDtos = new ArrayList<>();
+		templateFileFormatDtos.add(templateFileFormatDto);
+		request.setTemplateFileFormatDtos(templateFileFormatDtos);
+		templateFileFormatRequestDto.setRequest(request);
+	}
+	
+	private DeviceTypeRequestDto reqTypeDto;
+	private DeviceTypeListDto request;
+	private List<DeviceTypeDto> deviceTypeDtoList;
+	private DeviceTypeDto deviceTypeDto;
+
+	private List<DeviceType> deviceTypeList;
+	private DeviceType deviceType;
+	private List<CodeAndLanguageCodeId> codeLangCodeIds;
+	private CodeAndLanguageCodeId codeAndLanguageCodeId;
+
+	
+	private void deviceTypeSetUp() {
+
+		reqTypeDto = new DeviceTypeRequestDto();
+		request = new DeviceTypeListDto();
+		deviceTypeDtoList = new ArrayList<>();
+		deviceTypeDto = new DeviceTypeDto();
+
+		deviceTypeDto.setCode("Laptop");
+		deviceTypeDto.setCode("Laptop");
+		deviceTypeDto.setLangCode("ENG");
+		deviceTypeDto.setName("HP");
+		deviceTypeDto.setDescription("Laptop Desc");
+		deviceTypeDtoList.add(deviceTypeDto);
+		request.setDeviceTypeDtos(deviceTypeDtoList);
+		reqTypeDto.setRequest(request);
+
+		deviceTypeList = new ArrayList<>();
+		deviceType = new DeviceType();
+		deviceType.setCode("Laptop");
+		deviceType.setLangCode("ENG");
+		deviceType.setName("HP");
+		deviceType.setDescription("Laptop Desc");
+		deviceTypeList.add(deviceType);
+
+		codeLangCodeIds = new ArrayList<>();
+		codeAndLanguageCodeId = new CodeAndLanguageCodeId();
+		codeAndLanguageCodeId.setCode("Laptop");
+		codeAndLanguageCodeId.setLangCode("ENG");
+		codeLangCodeIds.add(codeAndLanguageCodeId);
+
 	}
 
 	// ----------------------- ApplicationServiceTest ----------------
@@ -459,16 +620,31 @@ public class MasterDataServiceTest {
 
 	@Test
 	public void getApplicationByCodeAndLangCodeSuccess() {
-		Mockito.when(applicationRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(application1);
-		ApplicationResponseDto applicationResponseDto = applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(),
-				Mockito.anyString());
+		Mockito.when(applicationRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(application1);
+		ApplicationResponseDto applicationResponseDto = applicationService
+				.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 		List<ApplicationDto> actual = applicationResponseDto.getApplicationtypes();
 		assertEquals(application1.getCode(), actual.get(0).getCode());
 		assertEquals(application1.getName(), actual.get(0).getName());
 	}
 
+	@Test
+	public void addApplicationDataSuccess() {
+		Mockito.when(applicationRepository.saveAll(Mockito.any())).thenReturn(applicationList);
+
+		PostResponseDto postResponseDto = applicationService.addApplicationData(applicationRequestDto);
+		assertEquals(applicationList.get(0).getCode(), postResponseDto.getResults().get(0).getCode());
+		assertEquals(applicationList.get(0).getLangCode(), postResponseDto.getResults().get(0).getLangCode());
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void addApplicationDataFetchException() {
+		Mockito.when(applicationRepository.saveAll(Mockito.any()))
+				.thenThrow(DataRetrievalFailureException.class);
+		applicationService.addApplicationData(applicationRequestDto);
+	}
+	
 	@Test(expected = MasterDataServiceException.class)
 	public void getAllApplicationFetchException() {
 		Mockito.when(applicationRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Application.class)))
@@ -500,17 +676,15 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void getApplicationByCodeAndLangCodeFetchException() {
-		Mockito.when(applicationRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(applicationRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}
 
 	@Test(expected = DataNotFoundException.class)
 	public void getApplicationByCodeAndLangCodeNotFoundException() {
-		Mockito.when(applicationRepository
-				.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(null);
+		Mockito.when(applicationRepository.findByCodeAndLangCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString(),
+				Mockito.anyString())).thenReturn(null);
 		applicationService.getApplicationByCodeAndLanguageCode(Mockito.anyString(), Mockito.anyString());
 	}
 	// ------------------ BiometricAttributeServiceTest -----------------
@@ -636,12 +810,12 @@ public class MasterDataServiceTest {
 
 	// ------------------ BlacklistedServiceTest -----------------
 
-	@Test(expected = RequestException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void testGetAllBlacklistedWordsNullvalue() {
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode(null);
 	}
 
-	@Test(expected = RequestException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void testGetAllBlacklistedWordsEmptyvalue() {
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("");
 	}
@@ -729,7 +903,6 @@ public class MasterDataServiceTest {
 		Mockito.when(deviceSpecificationRepository.findByLangCodeAndIsActiveTrueAndIsDeletedFalse(languageCode))
 				.thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCode(languageCode);
-
 	}
 
 	@Test
@@ -782,6 +955,20 @@ public class MasterDataServiceTest {
 				.thenThrow(DataAccessResourceFailureException.class);
 		deviceSpecificationService.findDeviceSpecificationByLangugeCodeAndDeviceTypeCode(languageCode, deviceTypeCode);
 
+	}
+	
+	@Test
+	public void addDeviceSpecificationsTest() {
+		Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any())).thenReturn(deviceSpecificationList);
+		DeviceSpecPostResponseDto deviceSpecPostResponseDto = deviceSpecificationService.saveDeviceSpecifications(deviceSpecificationRequestDto);
+		assertEquals(deviceSpecificationListDto.getDeviceSpecificationDtos().get(0).getId(), deviceSpecPostResponseDto.getResults().get(0).getId());
+	}
+	
+	
+	@Test(expected = MasterDataServiceException.class)
+	public void testaddSpecificationThrowsDataAccessException() {
+		Mockito.when(deviceSpecificationRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		deviceSpecificationService.saveDeviceSpecifications(deviceSpecificationRequestDto);
 	}
 
 	// ------------------ DocumentCategoryServiceTest -----------------
@@ -900,8 +1087,29 @@ public class MasterDataServiceTest {
 	// ------------------ LocationServiceTest -----------------
 
 	@Test()
+	public void getLocationHierarchyTest() {
+		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsActiveTrueAndIsDeletedFalse()).thenReturn(locObjList);
+		LocationHierarchyResponseDto locationHierarchyResponseDto=locationHierarchyService.getLocationDetails();
+		Assert.assertEquals("COUNTRY",locationHierarchyResponseDto.getLocationHierarchyResponseDto().get(0).getLocationHierarchyName());
+	}
+	
+	@Test(expected=DataNotFoundException.class)
+	public void getLocationHierarchyNoDataFoundExceptionTest() {
+		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsActiveTrueAndIsDeletedFalse()).thenReturn(new ArrayList<Object[]>());
+		LocationHierarchyResponseDto locationHierarchyResponseDto=locationHierarchyService.getLocationDetails();
+		
+	}
+	
+	@Test(expected=MasterDataServiceException.class)
+	public void getLocationHierarchyFetchExceptionTest() {
+		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsActiveTrueAndIsDeletedFalse()).thenThrow(DataRetrievalFailureException.class);
+		LocationHierarchyResponseDto locationHierarchyResponseDto=locationHierarchyService.getLocationDetails();
+		
+	}
+	@Test()
 	public void getLocationHierachyBasedOnLangAndLoc() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(locationHierarchies);
 
 		LocationResponseDto locationHierarchyResponseDto = locationHierarchyService
@@ -912,7 +1120,8 @@ public class MasterDataServiceTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void getLocationHierarchyExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(null);
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 
@@ -920,7 +1129,8 @@ public class MasterDataServiceTest {
 
 	@Test(expected = DataNotFoundException.class)
 	public void getLocationHierarchyExceptionTestWithEmptyList() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenReturn(new ArrayList<Location>());
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 
@@ -928,7 +1138,8 @@ public class MasterDataServiceTest {
 
 	@Test(expected = MasterDataServiceException.class)
 	public void locationHierarchyDataAccessExceptionTest() {
-		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
+		Mockito.when(locationHierarchyRepository
+				.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))
 				.thenThrow(DataRetrievalFailureException.class);
 		locationHierarchyService.getLocationHierarchyByLangCode("IND", "HIN");
 	}
@@ -1014,6 +1225,22 @@ public class MasterDataServiceTest {
 		assertEquals(templateList.get(0).getName(), templateDtoList.get(0).getName());
 	}
 
+	// ------------------------------------TemplateFileFormatServiceTest---------------------------
+	@Test
+	public void addTemplateFileFormatSuccess() {
+		Mockito.when(templateFileFormatRepository.saveAll(Mockito.any())).thenReturn(templateFileFormatList);
+
+		PostResponseDto postResponseDto = templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+		assertEquals(templateFileFormatList.get(0).getCode(), postResponseDto.getResults().get(0).getCode());
+		assertEquals(templateFileFormatList.get(0).getLangCode(), postResponseDto.getResults().get(0).getLangCode());
+	}
+
+	@Test(expected = MasterDataServiceException.class)
+	public void addTemplateFileFormatInsertExceptionTest() {
+		Mockito.when(templateFileFormatRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		templateFileFormatService.addTemplateFileFormat(templateFileFormatRequestDto);
+	}
+	
 	// ----------------------------------DocumentTypeServiceTest-------------------------
 
 	@Test
@@ -1061,4 +1288,19 @@ public class MasterDataServiceTest {
 
 	}
 
+	//----------------------------------------DeviceTypeServiceImplTest------------------------------------------------
+	
+	@Test
+	public void addDeviceTypesTest() {
+		Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenReturn(deviceTypeList);
+		PostResponseDto postResponseDto = deviceTypeService.saveDeviceTypes(reqTypeDto);
+		assertEquals(request.getDeviceTypeDtos().get(0).getCode(), postResponseDto.getResults().get(0).getCode());
+	}
+
+	
+	@Test(expected = MasterDataServiceException.class)
+	public void testaddDeviceTypesThrowsDataAccessException() {
+		Mockito.when(deviceTypeRepository.saveAll(Mockito.any())).thenThrow(DataRetrievalFailureException.class);
+		deviceTypeService.saveDeviceTypes(reqTypeDto);
+	}
 }

@@ -9,10 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
-import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
+import io.mosip.kernel.core.idvalidator.spi.IdValidator;
 
 /**
- * Test class for VIDValidator class
+ * Test class for vidValidatorImpl class
  * 
  * @author M1037462 since 1.0.0
  * 
@@ -20,21 +20,23 @@ import io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class VidValidatorTest {
-
+	
 	@Autowired
-	VidValidatorImpl vidValidator;
+	private IdValidator<String> vidValidatorImpl;
+
+	
 
 	@Test(expected = InvalidIDException.class)
 	public void nullTest() {
 		String id = null;
-		vidValidator.validateId(id);
+		vidValidatorImpl.validateId(id);
 
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void lengthTest() {
 		String id = "537184361359820";
-		vidValidator.validateId(id);
+		vidValidatorImpl.validateId(id);
 
 	}
 
@@ -42,50 +44,50 @@ public class VidValidatorTest {
 	public void firstDigitZeroTest() {
 		String id = "0247389354374855";
 
-		vidValidator.validateId(id);
+		vidValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void firstDigitOneTest() {
 		String id = "1247389354374855";
-		vidValidator.validateId(id);
+		vidValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void ChecksumTest() {
 		String id = "5371843613598205";
-		vidValidator.validateId(id);
+		vidValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void alphaNumericTest() {
 
 		String id = "53718A3613598206";
-		vidValidator.validateId(id);
+		vidValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void repeatingBlockTest() {
 		String id = "8241239351234855";
-		vidValidator.validateId(id);
+		vidValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void sequentialNumberTest() {
 		String id = "8245679354374855";
-		vidValidator.validateId(id);
+		vidValidatorImpl.validateId(id);
 	}
 
 	@Test(expected = InvalidIDException.class)
 	public void repeatingNumberTest() {
 		String id = "5371143613598206";
-		vidValidator.validateId(id);
+		vidValidatorImpl.validateId(id);
 	}
 
 	@Test
 	public void ValidIdTest() {
 		String id = "5371843613598206";
-		assertEquals(true, vidValidator.validateId(id));
+		assertEquals(true, vidValidatorImpl.validateId(id));
 	}
 
 }

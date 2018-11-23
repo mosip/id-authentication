@@ -39,15 +39,13 @@ public class IdTypeServiceImpl implements IdTypeService {
 
 	@Autowired
 	private DataMapper dataMapper;
-	
+
 	@Autowired
 	private ObjectMapperUtil objectMapperUtil;
-
 
 	/**
 	 * Reference to {@link ModelMapper}
 	 */
-	
 
 	/**
 	 * Reference to RegistrationCenterRepository.
@@ -102,12 +100,7 @@ public class IdTypeServiceImpl implements IdTypeService {
 		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		idTypes.forEach(idType -> {
 			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			try {
-				dataMapper.map(idType, codeLangCodeId, true, null, null, true);
-			} catch (DataMapperException e) {
-				throw new MasterDataServiceException(IdTypeErrorCode.ID_TYPE_MAPPING_EXCEPTION.getErrorCode(),
-						e.getMessage());
-			}
+			dataMapper.map(idType, codeLangCodeId, true, null, null, true);
 			codeLangCodeIds.add(codeLangCodeId);
 		});
 		PostResponseDto postResponseDto = new PostResponseDto();

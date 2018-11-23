@@ -18,14 +18,17 @@ import org.springframework.stereotype.Component;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
+import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
+import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
 import io.mosip.kernel.masterdata.dto.HolidayDto;
-import io.mosip.kernel.masterdata.dto.PacketRejectionReasonResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
 import io.mosip.kernel.masterdata.dto.ReasonCategoryDto;
 import io.mosip.kernel.masterdata.dto.ReasonListDto;
+import io.mosip.kernel.masterdata.entity.DeviceSpecification;
+import io.mosip.kernel.masterdata.entity.DeviceType;
 import io.mosip.kernel.masterdata.entity.Holiday;
 import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
-import io.mosip.kernel.masterdata.entity.ReasonList;
 
 @Component
 public class ObjectMapperUtil {
@@ -60,7 +63,7 @@ public class ObjectMapperUtil {
 			dto.setHolidayYear(String.valueOf(date.getYear()));
 			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
-
+			dto.setIsActive(holiday.getIsActive());
 			holidayDtos.add(dto);
 		});
 
@@ -80,32 +83,17 @@ public class ObjectMapperUtil {
 
 	}
 
-	public List<ReasonCategory> reasonConvertDtoToEntity(PacketRejectionReasonResponseDto reasonCategories) {
+	public List<LocationHierarchyDto> objectToDtoConverter(List<Object[]> locationList) {
 
-		Objects.requireNonNull(reasonCategories, "list cannot be null");
-		List<ReasonCategory> reasonCategoryDtos = null;
-
-		reasonCategoryDtos = reasonCategories.getReasonCategories().stream()
-				.map(reasonCategory -> new ReasonCategory(reasonCategory.getCode(), reasonCategory.getName(),
-						reasonCategory.getDescription(), reasonCategory.getLangCode(),
-						reasonListDtoToEntity(reasonCategory.getReasonList()), true, false, "system", "system",
-						LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now()))
-				.collect(Collectors.toList());
-
-		return reasonCategoryDtos;
-
-	}
-
-	public List<ReasonList> reasonListDtoToEntity(List<ReasonListDto> reasonListDto) {
-		Objects.requireNonNull(reasonListDto, "list cannot be null");
-		List<ReasonList> reasonLists = null;
-		reasonLists = reasonListDto.stream()
-				.map(reasonDto -> new ReasonList(reasonDto.getCode(), reasonDto.getRsnCatCode(),
-						reasonDto.getLangCode(), reasonDto.getName(), reasonDto.getDescription(), true, false, "system",
-						"system", LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now()))
-				.collect(Collectors.toList());
-		return reasonLists;
-
+		
+		List<LocationHierarchyDto> locationHierarchyDtos = new ArrayList<>();
+		for (Object[] object : locationList) {
+			LocationHierarchyDto locationHierarchyDto = new LocationHierarchyDto();
+			locationHierarchyDto.setLocationHierarchylevel((Short) object[0]);
+			locationHierarchyDto.setLocationHierarchyName((String) object[1]);
+			locationHierarchyDtos.add(locationHierarchyDto);
+		}
+		return locationHierarchyDtos;
 	}
 
 	public List<DeviceLangCodeDtypeDto> mapDeviceDto(List<Object[]> objects) {
@@ -125,6 +113,43 @@ public class ObjectMapperUtil {
 			deviceLangCodeDtypeDtoList.add(deviceLangCodeDtypeDto);
 		});
 		return deviceLangCodeDtypeDtoList;
+	}
+
+	public List<DeviceTypeDto> mapDeviceTypeDto(List<DeviceType> deviceTypes) {
+		List<DeviceTypeDto> deviceTypeDtoList = new ArrayList<>();
+		DeviceTypeDto deviceTypeDto = new DeviceTypeDto();
+
+		for (DeviceType deviceType : deviceTypes) {
+
+			deviceTypeDto.setName(deviceType.getName());
+			deviceTypeDto.setDescription(deviceType.getDescription());
+			deviceTypeDto.setCode(deviceType.getCode());
+			deviceTypeDto.setLangCode(deviceType.getLangCode());
+
+		}
+		deviceTypeDtoList.add(deviceTypeDto);
+		return deviceTypeDtoList;
+	}
+
+	public List<DeviceSpecificationDto> mapDeviceSpecification(List<DeviceSpecification> deviceSpecificationList) {
+		List<DeviceSpecificationDto> deviceSpecificationDtoList = new ArrayList<>();
+
+		for (DeviceSpecification deviceSpecification : deviceSpecificationList) {
+			DeviceSpecificationDto deviceSpecificationDto = new DeviceSpecificationDto();
+
+			deviceSpecificationDto.setId(deviceSpecification.getId());
+			deviceSpecificationDto.setName(deviceSpecification.getName());
+			deviceSpecificationDto.setDescription(deviceSpecification.getDescription());
+			deviceSpecificationDto.setLangCode(deviceSpecification.getLangCode());
+			deviceSpecificationDto.setBrand(deviceSpecification.getBrand());
+			deviceSpecificationDto.setDeviceTypeCode(deviceSpecification.getDeviceTypeCode());
+			deviceSpecificationDto.setModel(deviceSpecification.getModel());
+			deviceSpecificationDto.setMinDriverversion(deviceSpecification.getMinDriverversion());
+			deviceSpecificationDto.setIsActive(deviceSpecification.getIsActive());
+			deviceSpecificationDtoList.add(deviceSpecificationDto);
+		}
+
+		return deviceSpecificationDtoList;
 	}
 
 	/**

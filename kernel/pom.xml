@@ -83,7 +83,7 @@
 		<!--sshd server -->
 		<sshd.version>1.4.0</sshd.version>
 
-		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/cache/**,**/dto/**,**/entity/**,**/exception/**,**/repository/**,**/*BootApplication.java</sonar.coverage.exclusions>
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/cache/**,**/dto/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/security/**,**/*Config.java,**/*BootApplication.java</sonar.coverage.exclusions>
 	</properties>
 
 	<modules>
@@ -103,7 +103,7 @@
 		<module>kernel-json-validator</module>
 		<module>kernel-virusscanner-clamav</module>
 		<module>kernel-keygenerator-bouncycastle</module>
-		<module>kernel-crypto-bouncycastle</module>
+		<!--<module>kernel-crypto-bouncycastle</module> -->
 		<!-- <module>kernel-crypto-jce</module> -->
 		<module>kernel-templatemanager-velocity</module>
 		<module>kernel-templatemanager-freemarker</module>

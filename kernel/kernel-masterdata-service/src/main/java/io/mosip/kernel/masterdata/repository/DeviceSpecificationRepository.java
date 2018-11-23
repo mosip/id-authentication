@@ -24,7 +24,8 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 *            
 	 * @return Device specific Details fetched from database
 	 */
-	List<DeviceSpecification> findByLangCodeAndIsActiveTrueAndIsDeletedFalse(String languageCode);
+
+	List<DeviceSpecification> findByLangCodeAndIsActiveTrueAndIsDeletedFalse(String langcode);
 	
 	/**
 	 * This method trigger query to fetch the Device specific detail for the given language
@@ -39,3 +40,5 @@ public interface DeviceSpecificationRepository extends BaseRepository<DeviceSpec
 	 */
 	List<DeviceSpecification> findByLangCodeAndDeviceTypeCodeAndIsActiveTrueAndIsDeletedFalse(String languageCode, String deviceTypeCode);
 }
+
+
