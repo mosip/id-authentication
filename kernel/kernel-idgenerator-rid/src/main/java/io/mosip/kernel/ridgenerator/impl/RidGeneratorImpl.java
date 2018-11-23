@@ -108,7 +108,6 @@ public class RidGeneratorImpl implements RidGenerator<String> {
 			entity.setSequenceId(entity.getSequenceId() + 1);
 
 		}
-		System.out.println(entity.getSequenceId());
 		ridRepository.save(entity);
 		return String.format("%05d", entity.getSequenceId());
 	}

@@ -4,6 +4,7 @@ package io.mosip.kernel.masterdata.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
 import io.mosip.kernel.masterdata.entity.Device;
@@ -16,6 +17,7 @@ import io.mosip.kernel.masterdata.entity.Device;
  *
  */
 
+@Repository
 public interface DeviceRepository extends BaseRepository<Device, String> {
 	/**
 	 * This method trigger query to fetch the Device detail for the given language

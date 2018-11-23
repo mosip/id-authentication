@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @MappedSuperclass
 public class BaseEntity {
+	
 
 	@Column(name = "is_active")
 	private Boolean isActive;
