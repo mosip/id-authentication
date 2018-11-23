@@ -13,7 +13,6 @@ import org.apache.commons.codec.language.bm.NameType;
 import org.apache.commons.codec.language.bm.PhoneticEngine;
 import org.apache.commons.codec.language.bm.RuleType;
 
-import ch.qos.logback.core.util.FileUtil;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 
