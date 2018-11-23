@@ -1,6 +1,6 @@
 ## kernel-dataaccess-hibernate
 
-This folder has kernel-dataaccess-hibernate module which can be used for database operations.
+kernel-dataaccess-hibernate module can be used for database operations.
  
  1- [Background & Design](../../design/kernel/kernel-dataaccess.md)
  

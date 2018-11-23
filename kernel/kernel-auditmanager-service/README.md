@@ -1,5 +1,5 @@
 ## kernel-auditmanager-service
-This folder has kernel-auditmanager-service module which can be used to audit data.
+kernel-auditmanager-service is used to audit data.
 
 [Background & Design](../../design/kernel/kernel-auditmanager.md)
 

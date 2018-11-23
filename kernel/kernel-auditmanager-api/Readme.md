@@ -1,5 +1,5 @@
 ## kernel-auditmanager-api
-This folder has kernel-auditmanager-api module which can be used to audit data.
+kernel-auditmanager-api is used to audit data.
 
 [Background & Design](../../design/kernel/kernel-auditmanager.md)
 
