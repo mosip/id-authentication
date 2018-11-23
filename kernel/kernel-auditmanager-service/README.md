@@ -64,10 +64,10 @@ Response response = client.newCall(request).execute();
   ```
   
   *Response*
+  
   Status: 200
   
   ```
-
 {
   "status": true
 }
