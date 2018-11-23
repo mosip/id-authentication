@@ -74,7 +74,14 @@ import io.mosip.kernel.masterdata.repository.TitleRepository;
 
 /**
  * 
+ * @author Sidhant Agarwal
+ * @author Urvil Joshi
+ * @author Dharmesh Khandelwal
+ * @author Sagar Mahapatra
+ * @author Ritesh Sinha
+ * @author Abhishek Kumar
  * @author Bal Vikash Sharma
+ * 
  * @since 1.0.0
  */
 @SpringBootTest
