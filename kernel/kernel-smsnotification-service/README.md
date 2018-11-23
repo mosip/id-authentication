@@ -1,5 +1,4 @@
-## kernel-smsnotification-msg91-service
-This folder has smsnotification module which sends **SMS** on mobile number provided. 
+## kernel-smsnotification-service
  
  1- [Background & Design](../../design/kernel/kernel-smsnotification.md)
  
@@ -19,13 +18,13 @@ Request
 OkHttpClient client = new OkHttpClient();
 
 MediaType mediaType = MediaType.parse("application/json");
+
 RequestBody body = RequestBody.create(mediaType, "{\n\"message\": \"OTP-432467\",\n\"number\": \"98*****897\"\n}");
+
 Request request = new Request.Builder()
   .url("http://104.211.214.143:8084/notifier/sms")
   .post(body)
   .addHeader("content-type", "application/json")
-  .addHeader("cache-control", "no-cache")
-  .addHeader("postman-token", "c8a5a772-0538-e68c-b8fa-d15626f6de8e")
   .build();
 
 Response response = client.newCall(request).execute();
@@ -34,6 +33,7 @@ Response response = client.newCall(request).execute();
 
 
 Response body model for POST **/notifier/sms**
+Status: 202
   
  ```
 {
