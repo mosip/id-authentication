@@ -2,8 +2,6 @@ package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
 
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -12,9 +10,8 @@ import io.mosip.kernel.masterdata.constant.LanguageErrorCode;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageResponseDto;
 import io.mosip.kernel.masterdata.entity.Language;
-import io.mosip.kernel.masterdata.exception.LanguageFetchException;
-import io.mosip.kernel.masterdata.exception.LanguageMappingException;
-import io.mosip.kernel.masterdata.exception.LanguageNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -58,19 +55,14 @@ public class LanguageServiceImpl implements LanguageService {
 		try {
 			languages = languageRepository.findAll(Language.class);
 		} catch (DataAccessException dataAccessException) {
-			throw new LanguageFetchException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
+			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.LANGUAGE_FETCH_EXCEPTION.getErrorMessage());
 		}
 
 		if (languages != null && !languages.isEmpty()) {
-			try {
-				languageDtos = mapperUtil.mapAll(languages, LanguageDto.class);
-			} catch (MappingException | ConfigurationException | IllegalArgumentException e) {
-				throw new LanguageMappingException(LanguageErrorCode.LANGUAGE_MAPPING_EXCEPTION.getErrorCode(),
-						LanguageErrorCode.LANGUAGE_MAPPING_EXCEPTION.getErrorCode());
-			}
+			languageDtos = mapperUtil.mapAll(languages, LanguageDto.class);
 		} else {
-			throw new LanguageNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
+			throw new DataNotFoundException(LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorCode(),
 					LanguageErrorCode.NO_LANGUAGE_FOUND_EXCEPTION.getErrorMessage());
 		}
 

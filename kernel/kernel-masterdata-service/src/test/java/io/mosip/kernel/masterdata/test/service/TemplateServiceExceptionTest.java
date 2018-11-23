@@ -13,8 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.modelmapper.ConfigurationException;
-import org.modelmapper.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,11 +20,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import io.mosip.kernel.masterdata.dto.TemplateDto;
 import io.mosip.kernel.masterdata.entity.Template;
-import io.mosip.kernel.masterdata.exception.TemplateFetchException;
-import io.mosip.kernel.masterdata.exception.TemplateMappingException;
-import io.mosip.kernel.masterdata.exception.TemplateNotFoundException;
+import io.mosip.kernel.masterdata.exception.DataNotFoundException;
+import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TemplateRepository;
 import io.mosip.kernel.masterdata.service.TemplateService;
 import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
@@ -34,7 +30,6 @@ import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@SuppressWarnings("unchecked")
 public class TemplateServiceExceptionTest {
 
 	@MockBean
@@ -60,87 +55,57 @@ public class TemplateServiceExceptionTest {
 		template.setLanguageCode("HIN");
 		template.setCreatedBy("Neha");
 		template.setCreatedtimes(LocalDateTime.of(2018, Month.NOVEMBER, 12, 0, 0, 0));
-		template.setActive(true);
+		template.setIsActive(true);
 		template.setIsDeleted(false);
 
 		templateList.add(template);
 	}
 
-	@Test(expected = TemplateFetchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void getAllTemplateFetchExceptionTest() {
-		Mockito.when(templateRepository.findAll(Mockito.eq(Template.class)))
+		Mockito.when(templateRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Template.class)))
 				.thenThrow(DataRetrievalFailureException.class);
 
 		templateService.getAllTemplate();
 	}
 
-	@Test(expected = TemplateMappingException.class)
-	public void getAllTemplateMappingExceptionTest() {
-		Mockito.when(templateRepository.findAll(Template.class)).thenReturn(templateList);
-
-		Mockito.when(objectMapperUtil.mapAll(templateList, TemplateDto.class))
-				.thenThrow(IllegalArgumentException.class, ConfigurationException.class, MappingException.class);
-
-		templateService.getAllTemplate();
-	}
-
-	@Test(expected = TemplateNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getAllTemplateNotFoundExceptionTest() {
 		templateList = new ArrayList<>();
-		Mockito.when(templateRepository.findAll(Mockito.eq(Template.class))).thenReturn(templateList);
+		Mockito.when(templateRepository.findAllByIsActiveTrueAndIsDeletedFalse(Mockito.eq(Template.class)))
+				.thenReturn(templateList);
 		templateService.getAllTemplate();
 	}
 
-	@Test(expected = TemplateFetchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void getAllTemplateByLanguageCodeFetchExceptionTest() {
-		Mockito.when(templateRepository.findAllByLanguageCode(Mockito.anyString()))
+		Mockito.when(templateRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
 				.thenThrow(DataRetrievalFailureException.class);
 
 		templateService.getAllTemplateByLanguageCode("HIN");
 	}
 
-	@Test(expected = TemplateMappingException.class)
-	public void getAllTemplateByLanguageCodeMappingExceptionTest() {
-
-		Mockito.when(templateRepository.findAllByLanguageCode(Mockito.anyString())).thenReturn(templateList);
-		Mockito.when(objectMapperUtil.mapAll(templateList, TemplateDto.class)).thenThrow(IllegalArgumentException.class,
-				ConfigurationException.class, MappingException.class);
-
-		templateService.getAllTemplateByLanguageCode("HIN");
-	}
-
-	@Test(expected = TemplateNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getAllTemplateByLanguageCodeNotFoundExceptionTest() {
 		templateList = new ArrayList<>();
-		Mockito.when(templateRepository.findAllByLanguageCode(Mockito.anyString())).thenReturn(templateList);
+		Mockito.when(templateRepository.findAllByLanguageCodeAndIsActiveTrueAndIsDeletedFalse(Mockito.anyString()))
+				.thenReturn(templateList);
 
 		templateService.getAllTemplateByLanguageCode("HIN");
 	}
 
-	@Test(expected = TemplateFetchException.class)
+	@Test(expected = MasterDataServiceException.class)
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeFetchExceptionTest() {
-		Mockito.when(
-				templateRepository.findAllByLanguageCodeAndTemplateTypeCode(Mockito.anyString(), Mockito.anyString()))
-				.thenThrow(DataRetrievalFailureException.class);
+		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsActiveTrueAndIsDeletedFalse(
+				Mockito.anyString(), Mockito.anyString())).thenThrow(DataRetrievalFailureException.class);
 		templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode("HIN", "EMAIL");
 	}
 
-	@Test(expected = TemplateMappingException.class)
-	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeMappingExceptionTest() {
-		Mockito.when(
-				templateRepository.findAllByLanguageCodeAndTemplateTypeCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(templateList);
-		Mockito.when(objectMapperUtil.mapAll(templateList, TemplateDto.class)).thenThrow(IllegalArgumentException.class,
-				ConfigurationException.class, MappingException.class);
-		templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode("HIN", "EMAIL");
-	}
-
-	@Test(expected = TemplateNotFoundException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void getAllTemplateByLanguageCodeAndTemplateTypeCodeNotFoundExceptionTest() {
 		templateList = new ArrayList<>();
-		Mockito.when(
-				templateRepository.findAllByLanguageCodeAndTemplateTypeCode(Mockito.anyString(), Mockito.anyString()))
-				.thenReturn(templateList);
+		Mockito.when(templateRepository.findAllByLanguageCodeAndTemplateTypeCodeAndIsActiveTrueAndIsDeletedFalse(
+				Mockito.anyString(), Mockito.anyString())).thenReturn(templateList);
 		templateService.getAllTemplateByLanguageCodeAndTemplateTypeCode("HIN", "EMAIL");
 	}
 }

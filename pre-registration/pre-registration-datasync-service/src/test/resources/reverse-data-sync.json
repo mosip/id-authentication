@@ -1,0 +1,16 @@
+{
+		"id": "mosip.pre-registration.reverse.datasync",
+		"ver" : "1.0",
+		"reqTime" : "2018-10-17T07:22:57.086+0000",
+		"request" :
+		{
+			"CountOfPreRegIds":"5",
+			"pre_registration_ids":[
+				"59276903416082",
+				"79276903416082",
+				"89276903416082",
+				"99276903416082",
+				"59276616044482"
+			]
+		}
+} 

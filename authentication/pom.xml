@@ -147,7 +147,7 @@
 		</plugins>
 	</build>
 
-	<profiles>
+	<!--<profiles>
 		<profile>
 			<id>DEV</id>
 			<properties>
@@ -178,6 +178,6 @@
 				</sonar.jacoco.reportPaths>
 			</properties>
 		</profile>
-	</profiles>
+	</profiles>-->
 
 </project>

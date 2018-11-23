@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Timestamp;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,8 +39,7 @@ public class DocumentNotFoundTest {
 
 		DocumentNotFoundException documentNotFoundException = new DocumentNotFoundException(DOCUMENT_Not_FOUND);
 
-		DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Draft", "ENG",
-				"Jagadishwari", "Jagadishwari");
+		DocumentDto documentDto = new DocumentDto("48690172097498", "address", "POA", "PDF", "Draft",new Timestamp(System.currentTimeMillis()), "Jagadishwari");
 
 		ClassLoader classLoader = getClass().getClassLoader();
 

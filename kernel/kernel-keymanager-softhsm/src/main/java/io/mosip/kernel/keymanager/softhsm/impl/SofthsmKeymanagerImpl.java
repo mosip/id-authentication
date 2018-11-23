@@ -116,8 +116,7 @@ public class SofthsmKeymanagerImpl implements KeymanagerInterface {
 		try {
 			provider = new SunPKCS11(configPath);
 		} catch (ProviderException providerException) {
-			throw new NoSuchSecurityProviderException(
-					SofthsmKeymanagerErrorCode.INVALID_CONFIG_FILE.getErrorCode(),
+			throw new NoSuchSecurityProviderException(SofthsmKeymanagerErrorCode.INVALID_CONFIG_FILE.getErrorCode(),
 					SofthsmKeymanagerErrorCode.INVALID_CONFIG_FILE.getErrorMessage());
 		}
 		return provider;

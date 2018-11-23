@@ -24,7 +24,7 @@ public class LocationDto {
 
 	private String languageCode;
 
-	private boolean isActive;
+	private Boolean isActive;
 
 	private String createdBy;
 
