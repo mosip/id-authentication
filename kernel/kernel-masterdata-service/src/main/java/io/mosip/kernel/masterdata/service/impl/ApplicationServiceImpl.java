@@ -53,12 +53,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		if (!(applicationList.isEmpty())) {
 			applicationList.forEach(application -> {
 				ApplicationDto applicationDto = new ApplicationDto();
-				try {
-					dataMapper.map(application, applicationDto, true, null, null, true);
-				} catch (DataMapperException e) {
-					throw new MasterDataServiceException(
-							ApplicationErrorCode.APPLICATION_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
-				}
+				dataMapper.map(application, applicationDto, true, null, null, true);
 				applicationDtoList.add(applicationDto);
 			});
 		} else {
@@ -82,12 +77,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		if (!(applicationList.isEmpty())) {
 			applicationList.forEach(application -> {
 				ApplicationDto applicationDto = new ApplicationDto();
-				try {
-					dataMapper.map(application, applicationDto, true, null, null, true);
-				} catch (DataMapperException e) {
-					throw new MasterDataServiceException(
-							ApplicationErrorCode.APPLICATION_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
-				}
+				dataMapper.map(application, applicationDto, true, null, null, true);
 				applicationDtoList.add(applicationDto);
 			});
 		} else {
@@ -137,12 +127,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		applications.forEach(app -> {
 			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			try {
-				dataMapper.map(app, codeLangCodeId, true, null, null, true);
-			} catch (DataMapperException e) {
-				throw new MasterDataServiceException(ApplicationErrorCode.APPLICATION_MAPPING_EXCEPTION.getErrorCode(),
-						e.getMessage());
-			}
+			dataMapper.map(app, codeLangCodeId, true, null, null, true);
 			codeLangCodeIds.add(codeLangCodeId);
 		});
 		PostResponseDto postResponseDto = new PostResponseDto();

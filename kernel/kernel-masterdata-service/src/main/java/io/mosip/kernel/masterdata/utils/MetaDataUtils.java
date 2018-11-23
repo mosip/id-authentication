@@ -23,8 +23,6 @@ public class MetaDataUtils {
 	@Autowired
 	private DataMapper dataMapper;
 
-
-
 	public <T, D extends BaseEntity> List<D> setCreateMetaData(final Collection<T> dtoList,
 			Class<? extends BaseEntity> entityClass) {
 		Authentication authN = SecurityContextHolder.getContext().getAuthentication();
@@ -32,15 +30,7 @@ public class MetaDataUtils {
 		List<D> entities = new ArrayList<>();
 
 		dtoList.forEach(dto -> {
-
-			D entity;
-			try {
-				entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
-			} catch (DataMapperException e) {
-				throw new MasterDataServiceException(
-						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(),
-						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorMessage());
-			}
+			D entity = (D) dataMapper.map(dto, entityClass, true, null, null, true);
 			LocalDateTime time = LocalDateTime.now(ZoneId.of("UTC"));
 			LocalDateTime utime = LocalDateTime.now(ZoneId.of("UTC"));
 			entity.setIsActive(true);
@@ -53,9 +43,6 @@ public class MetaDataUtils {
 			entities.add(entity);
 
 		});
-		// ForEach DTO to Entity
-		// Set createdBy
-		// SEt createdAt
 		return entities;
 
 	}

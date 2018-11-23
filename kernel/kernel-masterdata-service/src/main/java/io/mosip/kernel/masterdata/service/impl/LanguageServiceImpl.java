@@ -1,6 +1,7 @@
 package io.mosip.kernel.masterdata.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -48,12 +49,15 @@ public class LanguageServiceImpl implements LanguageService {
 	/**
 	 * This method fetch all Languages present in database.
 	 * 
-	 * @throws LanguageFetchException
-	 *             when exception raise during fetch of Language details.
-	 * @throws LanguageNotFoundException
-	 *             when no records found for given parameter(langCode).
-	 * @throws LanguageMappingException
-	 *             when error occurs while mapping.
+	 * @return {@link LanguageRequestResponseDto} which contains list of
+	 *         {@link LanguageDto}
+	 * 
+	 * @throws MasterDataServiceException
+	 *             when exception raise during fetch of {@link Language}
+	 * 
+	 * @throws DataNotFoundException
+	 *             when no records found
+	 *
 	 */
 	@Override
 	public LanguageRequestResponseDto getAllLaguages() {
@@ -79,6 +83,23 @@ public class LanguageServiceImpl implements LanguageService {
 		return languageRequestResponseDto;
 	}
 
+	/**
+	 * This method save all {@link LanguageDto} provide by the user in
+	 * {@link LanguageRequestResponseDto}
+	 * 
+	 * @param dto
+	 *            request {@link LanguageRequestResponseDto} data contains list of
+	 *            languages provided by the user which is going to be persisted
+	 * 
+	 * @return a {@link LanguageRequestResponseDto} which has all the list of saved
+	 *         {@link LanguageDto}
+	 * 
+	 * @throws RequestException
+	 *             if any request data is null
+	 * 
+	 * @throws MasterDataServiceException
+	 *             if any error occurred while saving languages
+	 */
 	@Override
 	public LanguageRequestResponseDto saveAllLanguages(LanguageRequestResponseDto dto) {
 		if (EmptyCheckUtils.isNullEmpty(dto) || EmptyCheckUtils.isNullEmpty(dto.getLanguages())) {
@@ -95,8 +116,9 @@ public class LanguageServiceImpl implements LanguageService {
 				throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),
 						LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorMessage());
 			}
-			List<LanguageDto> createdLanguageDtos = mapperUtil.mapAll(createdLanguages, LanguageDto.class);
-			languageRequestResponseDto.setLanguages(createdLanguageDtos);
+			List<String> successfullyCreatedLanguages = createdLanguages.stream().map(e -> e.getCode())
+					.collect(Collectors.toList());
+			languageRequestResponseDto.setSuccessfullyCreatedLanguages(successfullyCreatedLanguages);
 
 		} catch (Exception e) {
 			throw new MasterDataServiceException(LanguageErrorCode.LANGUAGE_CREATE_EXCEPTION.getErrorCode(),

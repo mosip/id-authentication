@@ -22,4 +22,10 @@ public class LanguageRequestResponseDto {
 	 * List of Languages used for Create or Updated for languages.
 	 */
 	private List<LanguageDto> languages;
+
+	/**
+	 * List of successfully language created.
+	 */
+	private List<String> successfullyCreatedLanguages;
+
 }

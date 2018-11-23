@@ -1,10 +1,8 @@
 package io.mosip.kernel.masterdata.constant;
 
 public enum PacketRejectionReasonErrorCode {
- NO_PACKET_REJECTION_REASONS_FOUND("22222222","rejection reason does not exist for the given input"), 
- PACKET_REJECTION_REASONS_MAPPING_EXCEPTION("3333333","Error occured while mapping reasons"), 
- PACKET_REJECTION_REASONS_FETCH_EXCEPTION("4444444", "exception while fetching data from db"),
- PACKET_REJECTION_REASONS_ARGUMENT_NOT_FOUND_EXCEPTION("55555555","arguments either null or empty");
+	NO_PACKET_REJECTION_REASONS_FOUND("KER-MSD-036", "Reason not found"), PACKET_REJECTION_REASONS_FETCH_EXCEPTION(
+			"KER-MSD-035", "Error occured while fetching Reasons");
 
 	private final String errorCode;
 	private final String errorMessage;
