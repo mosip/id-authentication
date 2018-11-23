@@ -235,11 +235,11 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 			"Time difference in min : " + Duration.between(reqTimeInstance, now).toMinutes());
 		mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
 			"INVALID_AUTH_REQUEST_TIMESTAMP -- "
-				+ String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage(),
+				+ String.format(IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage(),
 					Duration.between(reqTimeInstance, now).toMinutes()
 						- env.getProperty(REQUESTDATE_RECEIVED_IN_MAX_TIME_MINS, Long.class)));
-		errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
-			IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorMessage());
+		errors.rejectValue(REQ_TIME, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorCode(),new Object[] {"24"},
+			IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST_TIMESTAMP.getErrorMessage());
 	    }
 	} catch (DateTimeParseException | IDDataValidationException e) {
 	    mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, VALIDATE_REQUEST_TIMED_OUT,
@@ -517,19 +517,21 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	boolean checkForSecondaryLanguage = Stream.of(DemoMatchType.values())
 		.filter(matchType -> matchType.getIdMapping().equals(idMapping))
 		.anyMatch(matchType -> matchType.getLanguageType().equals(LanguageType.SECONDARY_LANG));
-	if (checkForSecondaryLanguage && secCount > 1) {
-	    mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
-		    "Invalid or Multiple Seconday language code");
-	    errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-		    new Object[] { "SecondayLanguageCode" },
-		    IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
-	}
-
-	if (secCount > 0) {
-	    mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER, "Invalid language code");
-	    errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
-		    new Object[] { "SecondayLanguageCode" },
-		    IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+		if (checkForSecondaryLanguage) {
+			if (secCount > 1) {
+				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER,
+						"Invalid or Multiple Seconday language code");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { "SecondayLanguageCode" },
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			}
+		} else {
+			if (secCount > 0) {
+				mosipLogger.error(SESSION_ID, AUTH_REQUEST_VALIDATOR, INVALID_INPUT_PARAMETER, "Invalid language code");
+				errors.rejectValue(REQUEST, IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+						new Object[] { "SecondayLanguageCode" },
+						IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
+			}
 	}
 
     }
