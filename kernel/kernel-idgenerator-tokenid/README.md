@@ -3,33 +3,57 @@
 [API Documentation](doc/index.html)
 
 
+```
+ mvn javadoc:javadoc
+
+ ```
+ 
+ **Maven Dependency**
+
+```
+	<dependencies>
+		<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idgenerator-tokenid</artifactId>
+			<version>${project.version}</version>
+	</dependency>
+
+```
 
 ** Properties to be added in parent Spring Application environment **
 
 [kernel-idgenerator-tokenid-dev.properties](../../config/kernel-idgenerator-tokenid-dev.properties)
 
+**Database properties**
+schema:ids
 
-
-** Database Properties **
-
-Schema : ids
-
-Table : token_id
+table:tokenId
 
 
 ** Description **
 
-1._Token Id generator is solely used for generating an id which will be used by the TSP as an alternative for the UIN_
+1.**ADMIN** _can only configure the length_ 
 
-2.**ADMIN** _can only configure the length_ 
+2._The Token Id should not be generated sequentially,cannot not have repeated numbers and cannot contain alphanumeric values_
 
-3._The Token Id should be generated sequentially,cannot not have repeated numbers and cannot contain alphanumeric values_
-
-4._The last digit of the generated token id should have checksum_  
+3._The last digit of the generated token id should be reserved checksum_ .
 
 
-##Sample##
 
+**Sample**
+ 
+  ```
+//Autowire the interface class tokenIdGenerator
+  @Autowired
+  private TokenIdGenerator<String> tokenIdGenerator;
+
+ //Call generateId from autowired tokenIdGenerator instance to generateId.
+  String tokenId=tokenIdGenerator.generateId());
+  
+```
+**Sample output**
+
+_Generated tokenId_ : 526900409300563849276960763148952762
 
 
 
