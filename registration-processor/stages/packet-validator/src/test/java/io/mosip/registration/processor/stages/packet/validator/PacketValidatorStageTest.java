@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import io.mosip.kernel.core.util.HMACUtils;
+import io.mosip.registration.processor.core.abstractverticle.MessageBusAddress;
 import io.mosip.registration.processor.core.abstractverticle.MessageDTO;
+import io.mosip.registration.processor.core.abstractverticle.MosipEventBus;
 import io.mosip.registration.processor.core.code.EventId;
 import io.mosip.registration.processor.core.code.EventName;
 import io.mosip.registration.processor.core.code.EventType;
@@ -59,7 +62,22 @@ public class PacketValidatorStageTest {
 	private PacketInfoManager<Identity, ApplicantInfoDto> packetInfoManager;
 
 	@InjectMocks
-	private PacketValidatorStage packetValidatorStage;
+	private PacketValidatorStage packetValidatorStage = new PacketValidatorStage() {
+		@Override
+		public MosipEventBus getEventBus(Class<?> verticleName, String clusterAddress, String localhost) {
+			return null;
+		}
+
+		@Override
+		public void consumeAndSend(MosipEventBus mosipEventBus, MessageBusAddress fromAddress,
+				MessageBusAddress toAddress) {
+		}
+	};
+
+	@Test
+	public void testDeployVerticle() {
+		packetValidatorStage.deployVerticle();
+	}
 
 	@Mock
 	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
@@ -99,7 +117,7 @@ public class PacketValidatorStageTest {
 		packetMetaInfo.setIdentity(identity);
 		AuditResponseDto auditResponseDto = new AuditResponseDto();
 		Mockito.doReturn(auditResponseDto).when(auditLogRequestBuilder).createAuditRequestBuilder(
-				"test case description", EventId.RPR_401.toString(), EventName.ADD.toString(),
+				"test case description", EventId.RPR_405.toString(), EventName.UPDATE.toString(),
 				EventType.BUSINESS.toString(), "1234testcase");
 
 	}
@@ -134,6 +152,7 @@ public class PacketValidatorStageTest {
 				packetMetaInfo.getIdentity().getMetaData());
 
 		MessageDTO messageDto = packetValidatorStage.process(dto);
+
 		assertTrue(messageDto.getIsValid());
 
 	}
@@ -209,6 +228,62 @@ public class PacketValidatorStageTest {
 		MessageDTO messageDto = packetValidatorStage.process(dto);
 
 		assertEquals(true, messageDto.getInternalError());
+
+	}
+
+	@Test
+	public void testIOExceptions() throws Exception {
+
+		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenThrow(new IOException());
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("2018701130000410092018110735");
+
+		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
+		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
+
+		MessageDTO messageDto = packetValidatorStage.process(dto);
+
+		assertEquals(true, messageDto.getInternalError());
+
+	}
+
+	@Test
+	public void testCheckSumValidationFailureWithRetryCount() throws Exception {
+		String test = "123456789";
+		byte[] data = "1234567890".getBytes();
+
+		Mockito.when(filesystemCephAdapterImpl.getFile(anyString(), anyString())).thenReturn(inputStream);
+		PowerMockito.mockStatic(JsonUtil.class);
+		PowerMockito.when(JsonUtil.class, "inputStreamtoJavaObject", inputStream, PacketMetaInfo.class)
+				.thenReturn(packetMetaInfo);
+
+		MessageDTO dto = new MessageDTO();
+		dto.setRid("2018701130000410092018110735");
+
+		InternalRegistrationStatusDto registrationStatusDto = new InternalRegistrationStatusDto();
+		registrationStatusDto.setRetryCount(1);
+		Mockito.when(registrationStatusService.getRegistrationStatus(anyString())).thenReturn(registrationStatusDto);
+		Mockito.doNothing().when(registrationStatusService).updateRegistrationStatus(registrationStatusDto);
+		Mockito.when(filesystemCephAdapterImpl.checkFileExistence(anyString(), anyString())).thenReturn(Boolean.TRUE);
+
+		PowerMockito.mockStatic(IOUtils.class);
+		PowerMockito.when(IOUtils.class, "toByteArray", inputStream).thenReturn(data);
+
+		PowerMockito.mockStatic(HMACUtils.class);
+		PowerMockito.doNothing().when(HMACUtils.class, "update", data);
+		PowerMockito.when(HMACUtils.class, "digestAsPlainText", anyString().getBytes()).thenReturn(test);
+
+		MessageDTO messageDto = packetValidatorStage.process(dto);
+		assertFalse(messageDto.getIsValid());
 
 	}
 
