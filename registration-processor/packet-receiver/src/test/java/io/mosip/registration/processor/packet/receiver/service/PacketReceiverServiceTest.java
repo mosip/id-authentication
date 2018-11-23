@@ -1,6 +1,8 @@
 package io.mosip.registration.processor.packet.receiver.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
@@ -15,9 +17,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
 import org.mockito.ArgumentMatchers;
@@ -65,16 +65,11 @@ public class PacketReceiverServiceTest {
 	@Mock
 	private InternalRegistrationStatusDto mockDto;
 
-
-
 	@Mock
     private SyncRegistrationService<SyncRegistrationDto> syncRegistrationService;
 
-	@Rule
-	public ExpectedException exceptionRule = ExpectedException.none();
-
 	@Mock
-	private AuditLogRequestBuilder auditLogRequestBuilder = new AuditLogRequestBuilder();
+	private AuditLogRequestBuilder auditLogRequestBuilder;
 	
 	@InjectMocks
 	private PacketReceiverService<MultipartFile, Boolean> packetReceiverService = new PacketReceiverServiceImpl() {
@@ -231,6 +226,17 @@ public class PacketReceiverServiceTest {
 						.contains("Registration Packet is Not yet sync in Sync table");
 			}
 		}));
+	}
+	
+	@Test
+	public void testIoException() throws IOException {
+		
+		Mockito.doReturn(null).when(registrationStatusService).getRegistrationStatus("0000");
+		Mockito.doThrow(new IOException()).when(fileManager).put(any(), any(), any());
+		
+		boolean result = packetReceiverService.storePacket(mockMultipartFile);
+		
+		assertFalse(result);
 	}
 
 }
