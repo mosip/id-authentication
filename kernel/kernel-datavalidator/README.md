@@ -1,13 +1,21 @@
 ## kernel-datavalidator
 
- 
- This folder has Data Validator module which can be used to validate Phone number and Email Id based on policy.
- 
 
  [API Documentation ]
  
  ```
  mvn javadoc:javadoc
+
+ ```
+ 
+  **Maven Dependency**
+ 
+ ```
+ 	<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-datavalidator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
  ```
  
@@ -39,37 +47,53 @@
 7. Domain extension should have only alphabets(a-zA-Z)
 
 
-Properties to be added in Spring application environment using this component
+**Properties to be added in Spring application environment using this component**
 
 [kernel-datavalidator-dev.properties](../../config/kernel-datavalidator-dev.properties)
+
+**The response will be true is case if it pass the all validation condition otherwise it will throw respective error message**
 
  
 Usage Sample
  
- Example for Phone Number
+ Valid Phone Number Example 
  
  ```
 	@Autowired
-	PhoneValidatorImpl phonevalidator;
+	PhoneValidator phonevalidatorImpl;
 	
-	boolean return = phonevalidator.validatePhone("+78 789-567");
+	boolean isValid = phonevalidatorImpl.validatePhone("+78 789-567"); // returns true
 	
-	System.out.println("Validation Result for the given Phone Number = "+return);
+ ```
+ 
+ Invalid Phone Number Example 
  
  ```
+	@Autowired
+	PhoneValidator phonevalidatorImpl;
+	
+	boolean isValid = phonevalidatorImpl.validatePhone("+78@789-567"); //Throws Exception "Phone number should not contain any special characters except specified characters."
+	
+```
 
-  Example for Email ID
+Valid Email Id Example 
  
  ```
 	@Autowired
-	EmailValidatorImpl emailvalidator;
+	EmailValidator emailvalidatorImpl;
 	
-	boolean return = phonevalidator.validatePhone("mosip@gmail.com");
+	boolean isValid = emailvalidatorImpl.validatePhone("mosip@gmail.com"); // returns true
 	
-	System.out.println("Validation Result for the given Email Id = "+return);
-	
-	
+ ```
  
+Invalid Email Id Example 
+ 
+ ```
+	@Autowired
+	EmailValidator emailvalidatorImpl;
+	
+	boolean isValid = emailvalidatorImpl.validatePhone("mosip@@gmail.com"); //Throws Exception "Invalid Email Id"
+	
  ```
 
 

@@ -1,17 +1,28 @@
 ## kernel-idvalidator
 
  
- This folder has ID Validator module which can be used to validate UIN, VID, RID and PRID as numeric string based on policy.
-
  [API Documentation ]
  
  ```
  mvn javadoc:javadoc
 
  ```
+ 
+ **Maven Dependency**
+ 
+ ```
+ 	<dependency>
+			<groupId>io.mosip.kernel</groupId>
+			<artifactId>kernel-idvalidator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+ ```
+ 
+ 
 ### The inputs which have to be provided are:
 
-**Input Format for UIN, VIN and PRID**
+**Input Format for UIN, VID and PRID**
 
 1. Input String should be numeric string
 
@@ -57,53 +68,86 @@ Autowired interface IdValidator and call the method validateId(Id)
 
 Usage Sample
  
-UIN Example:
+Valid UIN  Example:
  
  ```
 	@Autowired
 	private IdValidator<String> uinValidatorImpl;
 	
-	Boolean return = uinValidatorImpl.validateId("426789089018");
+	boolean isValid = uinValidatorImpl.validateId("426789089018"); //return true
+	
+```
+	
+Invalid UIN Example
 
-	System.out.println("Validation Result for the given UIN = "+return);
+```
+	@Autowired
+	private IdValidator<String> uinValidatorImpl;
+	
+	boolean isValid = uinValidatorImpl.validateId("026789089018"); //throw Exception "UIN should not contain Zero or One as first digit."
+
  
  ```
 
-VIN Example:
+Valid VID Example:
  
  ```
 	@Autowired
 	private IdValidator<String> vinValidatorImpl;
 	
-	Boolean return = vinValidatorImpl.validateId("537184361359820");
+	boolean return = vinValidatorImpl.validateId("537184361359820"); //return true
 
-	System.out.println("Validation Result for the given VIN = "+return);
+```
+	
+Invalid VID Example:
+	
+```
+	@Autowired
+	private IdValidator<String> vinValidatorImpl;
+	
+	boolean isValid = vinValidatorImpl.validateId("037184361359820"); //Throws Exception "VID should not contain Zero or One as first digit."
  
- ```
-RID Example:
+```
+
+Valid RID Example:
 
 ```
 	@Autowired
 	private RidValidator<String> rinValidatorImpl;
 	
-	Boolean return = ridValidatorImpl.validateId("27847657360002520181208183050");
+	boolean return = ridValidatorImpl.validateId("27847657360002520181208183050"); //return true
 
-	System.out.println("Validation Result for the given RID = "+return);
  
  ```
- PRID Example:
+ Invalid RID Example:
  
-  ```
+ ```
+	@Autowired
+	private RidValidator<String> rinValidatorImpl;
+	
+	boolean return = ridValidatorImpl.validateId("27847657360002520181208183070"); //Throws Exception "Invalid Time Stamp Found"
+	
+ ```
+ 
+ Valid PRID Example:
+ 
+```
 	@Autowired
 	private IdValidator<String> pridValidatorImpl;
 	
-	Boolean return = pridValidatorImpl.validateId("537184361359820");
+	boolean return = pridValidatorImpl.validateId("537184361359820"); //return true
 
-	System.out.println("Validation Result for the given PRID = "+return);
+```
  
- ```
+  Invalid PRID Example:
  
-
+```
+ 	@Autowired
+	private IdValidator<String> pridValidatorImpl;
+	
+ 	boolean isValid = pridValidatorImpl.validateId("037184361359820"); //Throws Exception "PRID should not contain Zero or One as first digit."
+ 	
+```
 
 
 
