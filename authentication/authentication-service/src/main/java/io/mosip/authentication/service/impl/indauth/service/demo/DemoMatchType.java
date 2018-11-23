@@ -49,7 +49,7 @@ public enum DemoMatchType implements MatchType {
 			AuthUsageDataBit.USED_PI_AGE, AuthUsageDataBit.MATCHED_PI_AGE, demoValue -> {
 				int age = -1;
 				try {
-					age = Period.between(DOBMatchingStrategy.DATE_FORMAT.parse(demoValue).toInstant()
+					age = Period.between(DOBMatchingStrategy.getDateFormat().parse(demoValue).toInstant()
 							.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
 				} catch (ParseException e) {
 					// FIXME log the exception

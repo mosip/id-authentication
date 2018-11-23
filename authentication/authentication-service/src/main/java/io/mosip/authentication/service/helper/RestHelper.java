@@ -42,7 +42,7 @@ import reactor.core.publisher.Mono;
 public class RestHelper {
 
 	@Autowired
-	ObjectMapper mapper;
+	private ObjectMapper mapper;
 
 	/** The Constant METHOD_REQUEST_SYNC. */
 	private static final String METHOD_REQUEST_SYNC = "requestSync";

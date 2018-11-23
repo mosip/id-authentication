@@ -178,7 +178,7 @@ public enum AuthType {
 	}
 	
 	public Set<MatchType> getAssociatedMatchTypes() {
-		return associatedMatchTypes;
+		return Collections.unmodifiableSet(associatedMatchTypes);
 	}
 
 }
