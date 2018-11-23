@@ -8,9 +8,9 @@
 		<artifactId>kernel-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>kernel-cryptography-service</artifactId>
+	<artifactId>kernel-crypto-service</artifactId>
 	<packaging>jar</packaging>
-	<name>kernel-cryptography-service</name>
+	<name>kernel-crypto-service</name>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

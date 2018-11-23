@@ -124,7 +124,7 @@
 		
 		<module>kernel-keymanager-softhsm</module>
 		<module>kernel-keymanager-service</module>
-		<module>kernel-cryptography-service</module> 
+		<module>kernel-crypto-service</module> 
 	</modules>
 
 	<dependencies>
