@@ -36,6 +36,7 @@ import io.mosip.registration.processor.core.packet.dto.FieldValueArray;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicDedupeDto;
 import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.FilesystemCephAdapterImpl;
@@ -581,5 +582,18 @@ public class PacketInfoManagerImplTest {
 		Mockito.when(demographicJsonRepository.save(ArgumentMatchers.any())).thenThrow(exp);
 		packetInfoManagerImpl.saveDemographicInfoJson(demographicJsonStream, metaDataList);
 
+	}
+	
+	@Test
+	public void getOsiTest() {
+		RegOsiDto regOsi = new RegOsiDto();
+		regOsi.setRegId("2018782130000224092018121229");
+		regOsi.setPreregId("PET431");
+		regOsi.setIsActive(true);
+		Mockito.when(packetInfoDao.getEntitiesforRegOsi(ArgumentMatchers.anyString())).thenReturn(regOsi);
+		
+		 RegOsiDto regOsiDto = packetInfoManagerImpl.getOsi("2018782130000224092018121229");
+		 
+		 assertEquals("verifing regOsi dto", "2018782130000224092018121229",regOsiDto.getRegId());
 	}
 }
