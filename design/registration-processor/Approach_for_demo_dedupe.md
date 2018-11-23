@@ -61,7 +61,7 @@ registration.processor.demo.dedupe.addressline6.weight=5
 registration.processor.demo.dedupe.pincode.weight=10
 registration.processor.demo.dedupe.overall.weight=90
 ```
-Find attached sample code to perform levenshtein distance algorithm. 
+Find attached sample code to perform [levenshtein distance algorithm](https://en.wikipedia.org/wiki/Levenshtein_distance). 
 - The above step will provide the final list of potential duplicates. Call [Auth-rest-service](https://github.com/mosip/mosip/blob/DEV/design/authentication/Auth_Request_REST_service.md) to authenticate the applicant biometrics against the list of potential duplicates. The service accepts the refid(UIN reference id) and the biometrics and validates if the record is present in Auth DB. For example - applicant p has a potential duplicate as p' and p''. Select the refId of p' and the biometrics of p. If the service returns status as true(means person is present) that means p and p' is same person.  No need to check p'' as already match found with p'. Fail the demo dedupe and Reject the packet with proper reason.
 - After auth-service validation -
 	1. If applicant is identified then reject the packet and update correct status in registration status DB. 
