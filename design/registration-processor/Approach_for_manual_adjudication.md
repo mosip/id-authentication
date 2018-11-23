@@ -33,12 +33,16 @@ The key solution considerations are -
 - Create ManualAdjudicationController and add 2 new methods -
 	1. HTTP method GET. URI : /manualadjudicationrequest. This is to provide applicant information to initiate manual adjudication.
 	2. HTTP method POST. URI : /manualadjudicationresponse. This is to get the response from manual adjudicator.
-Create DTOs to send information to manual adjudicator
-- Call packet-info-storage-service to get the potential duplicate records from manual adjudication table.
-- Call call filesystem-adapter-ceph to get -
+Create DTOs to send information to manual adjudicator.
+- Call packet-info-storage-service to get the potential duplicate records against the applicant from manual adjudication table.
+- Above step will provide the applicant and list of potential duplicates. Call call filesystem-adapter-ceph to get below information for both applicant and potential duplicate -
 	1. Applicant demographic json file.
 	2. Applicant documents.
 	3. Encoded Applicant biometrics.
+		1. face
+		2. fingerprint
+		3. iris
+	4. Execption photo (if any).
 - When the decision comes from manual adjudicator by consuming rest URL /manualadjudicationresponse then save it to table and send an event to -
 	1. Bio dedupe if manual adjudicator approves packet
 	2. Error queue if manual adjudicator rejects packet
