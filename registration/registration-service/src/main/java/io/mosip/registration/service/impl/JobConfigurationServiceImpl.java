@@ -59,7 +59,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 	/**
 	 * sync job map with key as jobID and value as SyncJob (Entity)
 	 */
-	private static  Map<String, SyncJobDef> SYNC_JOB_MAP = new HashMap<>();
+	private   Map<String, SyncJobDef> SYNC_JOB_MAP = new HashMap<>();
 
 	private List<SyncJobDef> jobList;
 
@@ -74,7 +74,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was started");
 
 		jobList = jobConfigDAO.getActiveJobs();
-		jobList.forEach(syncJob -> getSYNC_JOB_MAP().put(syncJob.getId(), syncJob));
+		jobList.forEach(syncJob -> SYNC_JOB_MAP.put(syncJob.getId(), syncJob));
 
 		LOGGER.debug(RegistrationConstants.BATCH_JOBS_CONFIG_LOGGER_TITLE, RegistrationConstants.APPLICATION_NAME,
 				RegistrationConstants.APPLICATION_ID, "Jobs initiation was completed");
@@ -95,11 +95,11 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		ResponseDTO responseDTO = new ResponseDTO();
 		Map<String, Object> jobDataAsMap = new HashMap<>();
 		jobDataAsMap.put("applicationContext", applicationContext);
-		jobDataAsMap.putAll(getSYNC_JOB_MAP());
+		jobDataAsMap.putAll(SYNC_JOB_MAP);
 		
 		JobDataMap jobDataMap =new JobDataMap(jobDataAsMap);		
 
-		getSYNC_JOB_MAP().forEach((jobId, syncJob) -> {
+		SYNC_JOB_MAP.forEach((jobId, syncJob) -> {
 			String currentJob = null;
 			try {
 				if (syncJob.getParentSyncJobId() == null) {
@@ -211,7 +211,7 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		ResponseDTO responseDTO = null;
 		try {
 			
-			SyncJobDef syncJobDef= getSYNC_JOB_MAP().get(jobId);
+			SyncJobDef syncJobDef= SYNC_JOB_MAP.get(jobId);
 			
 			// Get Job using application context and api name
 			BaseJob job = (BaseJob) applicationContext.getBean(syncJobDef.getApiName());
@@ -255,12 +255,5 @@ public class JobConfigurationServiceImpl implements JobConfigurationService {
 		return responseDTO;
 	}
 
-	public Map<String, SyncJobDef> getSYNC_JOB_MAP() {
-		return SYNC_JOB_MAP;
-	}
-
-	public static void setSYNC_JOB_MAP(Map<String, SyncJobDef> sYNC_JOB_MAP) {
-		SYNC_JOB_MAP = sYNC_JOB_MAP;
-	}
 
 }

@@ -19,6 +19,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 
+import io.mosip.registration.dao.SyncJobConfigDAO;
 import io.mosip.registration.dto.ErrorResponseDTO;
 import io.mosip.registration.dto.ResponseDTO;
 import io.mosip.registration.dto.SuccessResponseDTO;
@@ -38,6 +39,9 @@ public class BaseJobtest {
 
 	@Mock
 	SyncManager syncManager;
+	
+	@Mock
+	private SyncJobConfigDAO jobConfigDAO;
 	
 	@Mock
 	JobManager jobManager;
@@ -70,7 +74,7 @@ public class BaseJobtest {
 	public void intiate() {
 		syncJobList = new LinkedList<>();
 		SyncJobDef syncJob = new SyncJobDef();
-		syncJob.setId("1");
+		syncJob.setId("1234");
 
 		syncJob.setApiName("packetSyncStatusJob");
 		syncJob.setSyncFrequency("0/5 * * * * ?");
@@ -79,8 +83,8 @@ public class BaseJobtest {
 		syncJobList.forEach(job -> {
 			jobMap.put(job.getId(), job);
 		});
-		JobConfigurationServiceImpl.setSYNC_JOB_MAP(jobMap);
-
+		Mockito.when(jobConfigDAO.getActiveJobs()).thenReturn(syncJobList);
+		
 	}
 
 	@Test
@@ -170,7 +174,10 @@ public class BaseJobtest {
 	packetSyncStatusJob.executeInternal(context);
 	}
 	
-	
+	@Test
+	public void executeChildJobsTest() {
+		
+	}
 
 
 }

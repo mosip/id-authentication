@@ -72,13 +72,13 @@ public class JobConfigurationServiceTest {
 		syncJobList.forEach(job -> {
 			jobMap.put(job.getId(), job);
 		});
-		JobConfigurationServiceImpl.setSYNC_JOB_MAP(jobMap);
-
+		Mockito.when(jobConfigDAO.getActiveJobs()).thenReturn(syncJobList);
+		
 	}
 
 	@Test
 	public void initiateJobTest() {
-		Mockito.when(jobConfigDAO.getAll()).thenReturn(syncJobList);
+		intiate();
 		jobConfigurationService.initiateJobs();
 
 	}
