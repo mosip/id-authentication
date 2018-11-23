@@ -57,7 +57,7 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 
 	@Autowired
 	private IdInfoService idInfoService;
-	
+
 	@Autowired
 	private DemoHelper demoHelper;
 
@@ -87,10 +87,11 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 			AuthType authType) {
 		Integer matchValue = DEFAULT_EXACT_MATCH_VALUE;
 		String matchingStrategy = MatchingStrategyType.DEFAULT_MATCHING_STRATEGY.getType();
-		Optional<String> matchingStrategyOpt = authType.getMatchingStrategy(authRequestDTO, demoHelper::getLanguageCode);
+		Optional<String> matchingStrategyOpt = authType.getMatchingStrategy(authRequestDTO,
+				demoHelper::getLanguageCode);
 		if (matchingStrategyOpt.isPresent()) {
 			matchingStrategy = matchingStrategyOpt.get();
-			if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType()) 
+			if (matchingStrategyOpt.get().equals(MatchingStrategyType.PARTIAL.getType())
 					|| matchingStrategyOpt.get().equals(MatchingStrategyType.PHONETICS.getType())) {
 				Optional<Integer> matchThresholdOpt = authType.getMatchingThreshold(authRequestDTO,
 						demoHelper::getLanguageCode);
@@ -202,11 +203,9 @@ public class DemoAuthServiceImpl implements DemoAuthService {
 		try {
 			return idInfoService.getIdInfo(refId);
 		} catch (IdAuthenticationDaoException e) {
-			// FIXME wrap business exception
-			throw new IdAuthenticationBusinessException();
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.SERVER_ERROR, e);
 		}
 
 	}
 
-	
 }

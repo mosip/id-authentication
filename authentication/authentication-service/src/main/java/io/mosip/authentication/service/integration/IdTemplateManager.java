@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.exception.FileNotFoundException;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
-import io.mosip.kernel.core.templatemanager.exception.TemplateResourceNotFoundException;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateConfigureBuilder;
 
