@@ -16,6 +16,9 @@ import io.mosip.authentication.core.dto.indauth.AuthUsageDataBit;
 import io.mosip.authentication.core.dto.indauth.IdentityDTO;
 import io.mosip.authentication.core.dto.indauth.IdentityInfoDTO;
 import io.mosip.authentication.core.dto.indauth.LanguageType;
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.authentication.service.impl.indauth.service.OTPAuthServiceImpl;
+import io.mosip.kernel.core.logger.spi.Logger;
 
 /**
  * @author Arun Bose The Enum DemoMatchType.
@@ -52,7 +55,7 @@ public enum DemoMatchType implements MatchType {
 					age = Period.between(DOBMatchingStrategy.getDateFormat().parse(demoValue).toInstant()
 							.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
 				} catch (ParseException e) {
-					// FIXME log the exception
+					getLogger().error("sessionId", "IdType", "Id", e.getMessage());
 				}
 				return String.valueOf(Math.abs(age));
 			}),
@@ -141,6 +144,10 @@ public enum DemoMatchType implements MatchType {
 
 	// @formatter:on
 	;
+	
+	/** The mosipLogger. */
+	private static final Logger mosipLogger = IdaLogger.getLogger(DemoMatchType.class);
+
 
 	/** The allowed matching strategy. */
 	private Set<MatchingStrategy> allowedMatchingStrategy;
@@ -180,7 +187,8 @@ public enum DemoMatchType implements MatchType {
 		this.usedBit = usedBit;
 		this.matchedBit = matchedBit;
 	}
-
+	
+	
 	public LanguageType getLanguageType() {
 		return langType;
 	}
@@ -241,6 +249,10 @@ public enum DemoMatchType implements MatchType {
 	@Override
 	public Function<IdentityDTO, List<IdentityInfoDTO>> getIdentityInfoFunction() {
 		return identityInfoFunction;
+	}
+	
+	private static Logger getLogger() {
+		return mosipLogger;
 	}
 
 }

@@ -88,7 +88,7 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 			}
 		} else {
-			// FIXME throw otp is not specified
+			throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_NOT_PRESENT);
 		}
 
 		return constructAuthStatusInfo(isOtpValid);
@@ -96,10 +96,10 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 
 	private Optional<String> getOtpValue(AuthRequestDTO authreqdto) {
 		return Optional.ofNullable(authreqdto.getPinInfo())
-				.flatMap(pinInfos -> 
-						pinInfos.stream()
-								.filter(pinInfo -> pinInfo.getType() != null && pinInfo.getType().equalsIgnoreCase(PinType.OTP.getType()))
-								.findAny())
+				.flatMap(pinInfos -> pinInfos.stream()
+						.filter(pinInfo -> pinInfo.getType() != null
+								&& pinInfo.getType().equalsIgnoreCase(PinType.OTP.getType()))
+						.findAny())
 				.map(PinInfo::getValue);
 	}
 

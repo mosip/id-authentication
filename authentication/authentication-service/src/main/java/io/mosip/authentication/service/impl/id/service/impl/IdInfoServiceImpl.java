@@ -60,7 +60,6 @@ public class IdInfoServiceImpl implements IdInfoService {
 					}));
 		} catch (IOException e) {
 			throw new IdAuthenticationDaoException();
-			// FIXME throw specific exception
 		}
 
 	}
