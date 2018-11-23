@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
 import io.mosip.kernel.masterdata.constant.DeviceTypeErrorCode;
 import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
@@ -34,15 +33,15 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 
 	@Autowired
 	DeviceTypeRepository deviceTypeRepository;
-	
+
 	@Autowired
 	private DataMapper dataMapper;
 
 	@Override
-	public PostResponseDto addDeviceTypes(DeviceTypeRequestDto deviceTypes) {
+	public PostResponseDto saveDeviceTypes(DeviceTypeRequestDto deviceTypes) {
 		PostResponseDto postResponseDto = new PostResponseDto();
 		List<DeviceType> renDeviceTypeList = null;
-		
+
 		List<DeviceType> entities = metaUtils.setCreateMetaData(deviceTypes.getRequest().getDeviceTypeDtos(),
 				DeviceType.class);
 
@@ -55,12 +54,8 @@ public class DeviceTypeServiceImpl implements DeviceTypeService {
 		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		renDeviceTypeList.forEach(renDeviceType -> {
 			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			try {
-				dataMapper.map(renDeviceType, codeLangCodeId, true, null, null, true);
-			} catch (DataMapperException e) {
-				throw new MasterDataServiceException(
-						DeviceTypeErrorCode.DEVICE_TYPE_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
-			}
+			dataMapper.map(renDeviceType, codeLangCodeId, true, null, null, true);
+
 			codeLangCodeIds.add(codeLangCodeId);
 		});
 		postResponseDto.setResults(codeLangCodeIds);

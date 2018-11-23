@@ -46,7 +46,14 @@ public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterH
 		List<RegistrationCenterHistory> registrationCenter = null;
 		RegistrationCenterResponseDto registrationCenterDto = new RegistrationCenterResponseDto();
 
-		LocalDateTime localDateTime = LocalDateTime.parse(effectiveDate);
+		LocalDateTime localDateTime = null;
+		try {
+			localDateTime = LocalDateTime.parse(effectiveDate);
+		} catch (Exception e) {
+			throw new MasterDataServiceException(
+					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorCode(),
+					RegistrationCenterErrorCode.DATE_TIME_PARSE_EXCEPTION.getErrorMessage());
+		}
 		try {
 			registrationCenter = registrationCenterHistoryRepository
 					.findByIdAndLanguageCodeAndEffectivetimesLessThanEqualAndIsDeletedFalse(registrationCenterId, langCode,

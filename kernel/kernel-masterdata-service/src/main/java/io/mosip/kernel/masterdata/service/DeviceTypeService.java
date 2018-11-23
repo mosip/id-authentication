@@ -13,12 +13,12 @@ import io.mosip.kernel.masterdata.dto.PostResponseDto;
  */
 public interface DeviceTypeService {
 	/**
-	 * Function to save Device Type Details to the Database
+	 * Abstract method to save Device Type Details to the Database
 	 * 
 	 * @param deviceTypes
 	 * 
-	 * @return {@link DeviceTypeResponseDto}
+	 * @return {@link PostResponseDto}
 	 */
-	public PostResponseDto addDeviceTypes(DeviceTypeRequestDto deviceTypes);
+	public PostResponseDto saveDeviceTypes(DeviceTypeRequestDto deviceTypes);
 
 }

@@ -50,6 +50,8 @@ import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
@@ -150,6 +152,8 @@ public class MasterdataControllerTest {
 
 	LocationDto locationDto = null;
 	LocationResponseDto locationResponseDto = null;
+	LocationHierarchyDto locationHierarchyDto=null;
+	LocationHierarchyResponseDto locationHierarchyResponseDto=null;
 
 	@MockBean
 	private HolidayRepository holidayRepository;
@@ -272,7 +276,9 @@ public class MasterdataControllerTest {
 
 	private void locationSetup() {
 		List<LocationDto> locationHierarchies = new ArrayList<>();
+		List<LocationHierarchyDto> locationHierarchyDtos=new ArrayList<>();
 		locationResponseDto = new LocationResponseDto();
+		locationHierarchyResponseDto = new LocationHierarchyResponseDto();
 		locationDto = new LocationDto();
 		locationDto.setCode("IND");
 		locationDto.setName("INDIA");
@@ -295,6 +301,13 @@ public class MasterdataControllerTest {
 		locationDto.setIsActive(true);
 		locationHierarchies.add(locationDto);
 		locationResponseDto.setLocations(locationHierarchies);
+		
+		locationHierarchyDto= new LocationHierarchyDto();
+		locationHierarchyDto.setLocationHierarchylevel((short)0);
+		locationHierarchyDto.setLocationHierarchyName("COUNTRY");
+		locationHierarchyDtos.add(locationHierarchyDto);
+		locationHierarchyResponseDto.setLocationHierarchyResponseDto(locationHierarchyDtos);
+		
 	}
 
 	private void idTypeSetup() {
@@ -637,10 +650,9 @@ public class MasterdataControllerTest {
 	@Test
 	public void getAllLocationHierarchyTest() throws Exception {
 
-		Mockito.when(locationService.getLocationDetails()).thenReturn(locationResponseDto);
+		Mockito.when(locationService.getLocationDetails()).thenReturn(locationHierarchyResponseDto);
 		mockMvc.perform(MockMvcRequestBuilders.get("/locations"))
-				.andExpect(MockMvcResultMatchers.content().json(LOCATION_JSON_EXPECTED))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+			.andExpect(MockMvcResultMatchers.status().isOk());
 
 	}
 
@@ -750,9 +762,9 @@ public class MasterdataControllerTest {
 	public void addDeviceTypesTest() throws Exception {
 	
 		String inputJson = this.maptoJson(reqTypeDto);
-		Mockito.when(deviceTypeService.addDeviceTypes(reqTypeDto)).thenReturn(resDto);
+		Mockito.when(deviceTypeService.saveDeviceTypes(reqTypeDto)).thenReturn(resDto);
 		
-		MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post("/devicetypes/")
+		MvcResult result =mockMvc.perform(MockMvcRequestBuilders.post("/devicetypes")
 				.accept(MediaType.APPLICATION_JSON).content(inputJson)
 				.contentType(MediaType.APPLICATION_JSON)).andReturn();
 		
@@ -772,9 +784,9 @@ public class MasterdataControllerTest {
 
 		String inputJson = this.maptoJson(requestDto);
 		Mockito.when(
-				deviceSpecificationService.addDeviceSpecifications(Mockito.any(DeviceSpecificationRequestDto.class)))
+				deviceSpecificationService.saveDeviceSpecifications(Mockito.any(DeviceSpecificationRequestDto.class)))
 				.thenReturn(responseDto);
-		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications/")
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/devicespecifications")
 				.accept(MediaType.APPLICATION_JSON).content(inputJson).contentType(MediaType.APPLICATION_JSON))
 				.andReturn();
 

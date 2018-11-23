@@ -78,13 +78,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		if (!(documentCategoryList.isEmpty())) {
 			documentCategoryList.forEach(documentCategory -> {
 				DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
-				try {
-					dataMapper.map(documentCategory, documentCategoryDto, true, null, null, true);
-				} catch (DataMapperException e) {
-					throw new MasterDataServiceException(
-							DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(),
-							e.getMessage());
-				}
+				dataMapper.map(documentCategory, documentCategoryDto, true, null, null, true);
 				documentCategoryDtoList.add(documentCategoryDto);
 			});
 		} else {
@@ -128,13 +122,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		if (!(documentCategoryList.isEmpty())) {
 			documentCategoryList.forEach(documentCategoryList -> {
 				DocumentCategoryDto documentCategoryDto = new DocumentCategoryDto();
-				try {
-					dataMapper.map(documentCategoryList, documentCategoryDto, true, null, null, true);
-				} catch (DataMapperException e) {
-					throw new MasterDataServiceException(
-							DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(),
-							e.getMessage());
-				}
+				dataMapper.map(documentCategoryList, documentCategoryDto, true, null, null, true);
 				documentCategoryDtoList.add(documentCategoryDto);
 			});
 		} else {
@@ -181,13 +169,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		}
 
 		if (documentCategory != null) {
-			try {
-				documentCategoryDto = dataMapper.map(documentCategory, DocumentCategoryDto.class, true, null, null,
-						true);
-			} catch (DataMapperException e) {
-				throw new MasterDataServiceException(
-						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
-			}
+			documentCategoryDto = dataMapper.map(documentCategory, DocumentCategoryDto.class, true, null, null, true);
 		} else {
 			throw new DataNotFoundException(
 					DocumentCategoryErrorCode.DOCUMENT_CATEGORY_NOT_FOUND_EXCEPTION.getErrorCode(),
@@ -221,12 +203,7 @@ public class DocumentCategoryServiceImpl implements DocumentCategoryService {
 		List<CodeAndLanguageCodeId> codeLangCodeIds = new ArrayList<>();
 		documentCategories.forEach(documentCategory -> {
 			CodeAndLanguageCodeId codeLangCodeId = new CodeAndLanguageCodeId();
-			try {
-				dataMapper.map(documentCategory, codeLangCodeId, true, null, null, true);
-			} catch (DataMapperException e) {
-				throw new MasterDataServiceException(
-						DocumentCategoryErrorCode.DOCUMENT_CATEGORY_MAPPING_EXCEPTION.getErrorCode(), e.getMessage());
-			}
+			dataMapper.map(documentCategory, codeLangCodeId, true, null, null, true);
 			codeLangCodeIds.add(codeLangCodeId);
 		});
 		PostResponseDto postResponseDto = new PostResponseDto();
