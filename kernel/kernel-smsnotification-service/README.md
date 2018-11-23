@@ -1,5 +1,5 @@
 ## kernel-smsnotification-msg91-service
-
+This folder has smsnotification module which sends sms on mobile number provided. 
  
  1- [Background & Design](../../design/kernel/kernel-smsnotification.md)
  
@@ -13,18 +13,23 @@
  
  3- Usage Sample
  
- Usage1:
+Request body model for POST **/notification/sms**
  
  ```
-<TBA>
+{
+  "message": "OTP-432467",
+  "number": "98******79"
+}
  
  ```
 
- Usage2:
- 
+Response body model for POST **/notification/sms**
+  
  ```
-<TBA>
- 
+{
+  "message": "Sms Request Sent",
+  "status": "success"
+}
  ```
 
 

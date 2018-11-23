@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureException;
@@ -38,6 +39,7 @@ import io.mosip.kernel.masterdata.dto.DeviceTypeRequestDto;
 import io.mosip.kernel.masterdata.dto.DocumentTypeDto;
 import io.mosip.kernel.masterdata.dto.LanguageDto;
 import io.mosip.kernel.masterdata.dto.LanguageRequestResponseDto;
+import io.mosip.kernel.masterdata.dto.LocationHierarchyResponseDto;
 import io.mosip.kernel.masterdata.dto.LocationResponseDto;
 import io.mosip.kernel.masterdata.dto.PostResponseDto;
 import io.mosip.kernel.masterdata.dto.TemplateDto;
@@ -169,6 +171,7 @@ public class MasterDataServiceTest {
 	LocationService locationHierarchyService;
 
 	List<Location> locationHierarchies = null;
+	List<Object[]> locObjList=null;
 
 	@MockBean
 	private TemplateRepository templateRepository;
@@ -296,6 +299,11 @@ public class MasterDataServiceTest {
 		locationHierarchy1.setUpdatedBy("sdfsd");
 		locationHierarchy1.setIsActive(true);
 		locationHierarchies.add(locationHierarchy1);
+		Object[] objectArray=new Object[2];
+		objectArray[0]=(short)0;
+		objectArray[1]="COUNTRY";
+	    locObjList=new ArrayList<>();
+		locObjList.add(objectArray);
 	}
 
 	private void langServiceSetup() {
@@ -1012,6 +1020,26 @@ public class MasterDataServiceTest {
 
 	// ------------------ LocationServiceTest -----------------
 
+	@Test()
+	public void getLocationHierarchyTest() {
+		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsActiveTrueAndIsDeletedFalse()).thenReturn(locObjList);
+		LocationHierarchyResponseDto locationHierarchyResponseDto=locationHierarchyService.getLocationDetails();
+		Assert.assertEquals("COUNTRY",locationHierarchyResponseDto.getLocationHierarchyResponseDto().get(0).getLocationHierarchyName());
+	}
+	
+	@Test(expected=DataNotFoundException.class)
+	public void getLocationHierarchyNoDataFoundExceptionTest() {
+		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsActiveTrueAndIsDeletedFalse()).thenReturn(new ArrayList<Object[]>());
+		LocationHierarchyResponseDto locationHierarchyResponseDto=locationHierarchyService.getLocationDetails();
+		
+	}
+	
+	@Test(expected=MasterDataServiceException.class)
+	public void getLocationHierarchyFetchExceptionTest() {
+		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsActiveTrueAndIsDeletedFalse()).thenThrow(DataRetrievalFailureException.class);
+		LocationHierarchyResponseDto locationHierarchyResponseDto=locationHierarchyService.getLocationDetails();
+		
+	}
 	@Test()
 	public void getLocationHierachyBasedOnLangAndLoc() {
 		Mockito.when(locationHierarchyRepository.findLocationHierarchyByCodeAndLanguageCodeAndIsActiveTrueAndIsDeletedFalse("IND", "HIN"))

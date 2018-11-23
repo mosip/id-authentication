@@ -23,11 +23,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "location", schema = "master")
+
 public class Location extends BaseEntity implements Serializable {
 
 	/**
 	 * 
 	 */
+	
+	public Location(Integer hierarchyLevel, String hierarchyLevelName ) {
+		this.hierarchyLevel=hierarchyLevel;
+		this.hierarchyName=hierarchyLevelName;
+		
+	}
 	private static final long serialVersionUID = -5585825705521742941L;
 
 	@Id
