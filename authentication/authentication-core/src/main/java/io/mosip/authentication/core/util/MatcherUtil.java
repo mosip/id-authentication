@@ -10,6 +10,9 @@ import java.util.stream.Stream;
 
 import org.apache.commons.codec.EncoderException;
 
+import io.mosip.authentication.core.logger.IdaLogger;
+import io.mosip.kernel.core.logger.spi.Logger;
+
 /**
  * 
  * @author Dinesh Karuppiah
@@ -19,6 +22,9 @@ public final class MatcherUtil {
 
 	private static final String SPLIT_REGEX = "\\s+";
 	private static final Integer EXACT_MATCH_VALUE = 100;
+
+	private static Logger mosipLogger = IdaLogger.getLogger(MatcherUtil.class);
+	private static final String SESSION_ID = "sessionId";
 
 	private MatcherUtil() {
 
@@ -134,13 +140,11 @@ public final class MatcherUtil {
 	 * @param refInfoName @param entityInfoName @return @throws
 	 */
 	public static int doPhoneticsMatch(String refInfoName, String entityInfoName, String language) {
-		// TODO
 		int value = 0;
 		try {
 			value = TextMatcherUtil.phoneticsMatch(refInfoName, entityInfoName, language);
 		} catch (EncoderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			mosipLogger.error(SESSION_ID, "doPhoneticsMatch", "EncoderException", e.getMessage());
 		}
 
 		return value;

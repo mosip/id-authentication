@@ -30,10 +30,6 @@ public final class TextMatcherUtil {
 	/** The Constant THRESHOLD_PROPERTY. */
 	private static final String THRESHOLD_PROPERTY = "mosip.textmatcher.threshold";
 
-	private static Logger mosipLogger = IdaLogger.getLogger(TextMatcherUtil.class);
-
-	private static final String SESSION_ID = "sessionId";
-
 	private TextMatcherUtil() {
 	}
 
@@ -42,15 +38,11 @@ public final class TextMatcherUtil {
 	 *
 	 * @return the threshold
 	 */
-	private static final Integer getThreshold() {
-		Integer threshold = null;
-		threshold = Integer.parseInt(getProperty(THRESHOLD_PROPERTY));
-		if (validateThreshold(threshold)) {
-			return threshold;
-		} else {
-			return null;
-		}
-	}
+	/*
+	 * private static final Integer getThreshold() { Integer threshold = null;
+	 * threshold = Integer.parseInt(getProperty(THRESHOLD_PROPERTY)); if
+	 * (validateThreshold(threshold)) { return threshold; } else { return null; } }
+	 */
 
 	/**
 	 * Gets the properties from property file.
@@ -58,20 +50,20 @@ public final class TextMatcherUtil {
 	 * @param property the property
 	 * @return the property
 	 */
-	private static final String getProperty(String property) {
-		InputStream propertiesFileStream = null;
-
-		Properties textMatcherProp = new Properties();
-
-		try {
-			propertiesFileStream = TextMatcherUtil.class.getClass().getResourceAsStream(MOSIP_PROPERTIES_FILE);
-			textMatcherProp.load(propertiesFileStream);
-		} catch (IOException e) {
-			mosipLogger.error(SESSION_ID, "file not found", "IOException", e.getMessage());
-		}
-
-		return textMatcherProp.getProperty(property);
-	}
+	/*
+	 * private static final String getProperty(String property) { InputStream
+	 * propertiesFileStream = null;
+	 * 
+	 * Properties textMatcherProp = new Properties();
+	 * 
+	 * try { propertiesFileStream =
+	 * TextMatcherUtil.class.getClass().getResourceAsStream(MOSIP_PROPERTIES_FILE);
+	 * textMatcherProp.load(propertiesFileStream); } catch (IOException e) {
+	 * mosipLogger.error(SESSION_ID, "file not found", "IOException",
+	 * e.getMessage()); }
+	 * 
+	 * return textMatcherProp.getProperty(property); }
+	 */
 
 	/**
 	 * Validates whether threshold is between 0 and 100 and is not null.
@@ -79,9 +71,10 @@ public final class TextMatcherUtil {
 	 * @param threshold the threshold
 	 * @return true, if successful
 	 */
-	private static final boolean validateThreshold(Integer threshold) {
-		return threshold >= 0 && threshold <= 100;
-	}
+	/*
+	 * private static final boolean validateThreshold(Integer threshold) { return
+	 * threshold >= 0 && threshold <= 100; }
+	 */
 
 	/**
 	 * This method gets two strings as input along with their language and gets
@@ -98,22 +91,17 @@ public final class TextMatcherUtil {
 	 * @param language     the language
 	 * @return true, if successful
 	 */
-	public static final boolean phoneticMatch(String inputString, String storedString, Integer threshold,
-			String language) {
-		if (threshold == null) {
-			threshold = getThreshold();
-		}
-		if (validateThreshold(threshold)) {
-			try {
-				Integer thresholdProbability = phoneticsMatch(inputString, storedString, language);
-
-				return (validateThreshold(thresholdProbability) && (thresholdProbability >= threshold));
-			} catch (EncoderException e) {
-				mosipLogger.error(SESSION_ID, "Encoding", "EncoderException", e.getMessage());
-			}
-		}
-		return false;
-	}
+	/*
+	 * public static final boolean phoneticMatch(String inputString, String
+	 * storedString, Integer threshold, String language) { if (threshold == null) {
+	 * threshold = getThreshold(); } if (validateThreshold(threshold)) { try {
+	 * Integer thresholdProbability = phoneticsMatch(inputString, storedString,
+	 * language);
+	 * 
+	 * return (validateThreshold(thresholdProbability) && (thresholdProbability >=
+	 * threshold)); } catch (EncoderException e) { mosipLogger.error(SESSION_ID,
+	 * "Encoding", "EncoderException", e.getMessage()); } } return false; }
+	 */
 
 	public static Integer phoneticsMatch(String inputString, String storedString, String language)
 			throws EncoderException {
