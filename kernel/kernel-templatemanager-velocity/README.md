@@ -82,7 +82,7 @@ Writer writer=new StringWriter();
 //TemplatePath , relative path from classPath
 String templatePath="templates/email_template.vm";
 
-//Call merge() method by passing templatePath and template value
+//Call merge() method by passing templatePath ,writer and template value
 InputStream resultedTemplate = templateManager.merge(templatePath,writer, templateValues);
  
  ```

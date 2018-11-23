@@ -102,13 +102,17 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 			registrationCenterDto = objectMapperUtil.map(registrationCenter, RegistrationCenterDto.class);
 			try {
 				holidayLocationCode = registrationCenterDto.getHolidayLocationCode();
-				holidays = holidayRepository.findAllByLocationCodeYearAndLangCodeAndIsDeletedFalse(holidayLocationCode, langCode, year);
+				holidays = holidayRepository.findAllByLocationCodeYearAndLangCode(holidayLocationCode, langCode, year);
+				if (holidayLocationCode != null)
+					holidays = holidayRepository.findAllByLocationCodeYearAndLangCode(holidayLocationCode, langCode,
+							year);
 			} catch (DataAccessException dataAccessException) {
 				throw new MasterDataServiceException(HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorCode(),
 						HolidayErrorCode.HOLIDAY_FETCH_EXCEPTION.getErrorMessage());
 
 			}
-			holidayDto = mapperUtil.mapHolidays(holidays);
+			if (holidays != null)
+				holidayDto = mapperUtil.mapHolidays(holidays);
 		}
 		registrationCenterHolidayResponse = new RegistrationCenterHolidayDto();
 		registrationCenterHolidayResponse.setRegistrationCenter(registrationCenterDto);
