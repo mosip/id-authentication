@@ -57,18 +57,17 @@ public class LocationServiceImpl implements LocationService {
 		try {
 
 			locations = locationRepository.findDistinctLocationHierarchyByIsActiveTrueAndIsDeletedFalse();
-		}catch (DataAccessException e) {
+		} catch (DataAccessException e) {
 			throw new MasterDataServiceException(LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_FETCH_EXCEPTION.getErrorMessage());
-
-
+		}
 		if (!locations.isEmpty()) {
 			responseList = objectMapperUtil.objectToDtoConverter(locations);
 		} else {
 			throw new DataNotFoundException(LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorCode(),
 					LocationErrorCode.LOCATION_NOT_FOUND_EXCEPTION.getErrorMessage());
 		}
-        locationHierarchyResponseDto.setLocationHierarchyResponseDto(responseList);
+		locationHierarchyResponseDto.setLocationHierarchyResponseDto(responseList);
 		return locationHierarchyResponseDto;
 	}
 
