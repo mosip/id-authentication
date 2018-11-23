@@ -17,7 +17,8 @@ public enum SmsPropertyConstant {
 	SENDER_ID("sender"),
 	VENDOR_RESPONSE_SUCCESS("success"),
 	SUCCESS_RESPONSE("Sms Request Sent"), 
-	PROJECT_NAME("kernel-notification-sms");
+	PROJECT_NAME("kernel-notification-sms"),
+	EXCEPTION_DIGITS(" digits");
 
 	/**
 	 * The property for sms notification.
