@@ -15,6 +15,7 @@ import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.PinType;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
+import io.mosip.authentication.core.exception.IdValidationFailedException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.service.OTPAuthService;
 import io.mosip.authentication.core.util.OTPUtil;
@@ -78,13 +79,13 @@ public class OTPAuthServiceImpl implements OTPAuthService {
 				mosipLogger.info("SESSION_ID", METHOD_VALIDATE_OTP, "Inside Validate Otp Request", "");
 				String otpKey = OTPUtil.generateKey(env.getProperty("application.id"), refId, txnId, tspCode);
 				String key = Optional.ofNullable(otpKey).orElseThrow(
-						() -> new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
+						() -> new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_OTP_KEY));
 				isOtpValid = otpManager.validateOtp(otp.get(), key);
 			} else {
 				mosipLogger.debug(DEAFULT_SESSSION_ID, METHOD_VALIDATE_OTP, "Inside Invalid Txn ID",
 						getClass().toString());
 				mosipLogger.error(DEAFULT_SESSSION_ID, "NA", "NA", "Key Invalid");
-				throw new IDDataValidationException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
+				throw new IdValidationFailedException(IdAuthenticationErrorConstants.INVALID_TXN_ID);
 			}
 		} else {
 			// FIXME throw otp is not specified

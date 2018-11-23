@@ -108,7 +108,7 @@ public class OTPManager {
 				otpvalidateresponsedto = (OTPValidateResponseDTO) responseBody.get();
 				String status = otpvalidateresponsedto.getStatus();
 				String message = otpvalidateresponsedto.getMessage();
-				if(status != null) {
+				if (status != null) {
 					if (status.equalsIgnoreCase(STATUS_FAILURE)) {
 						if (message.equalsIgnoreCase(OTP_EXPIRED)) {
 							throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.EXPIRED_OTP);
@@ -123,7 +123,7 @@ public class OTPManager {
 				}
 			}
 		} catch (IDDataValidationException e) {
-			logger.error("NA", "NA", e.getErrorCode(), e.getErrorText());
+			logger.error("NA", "NA", "Inside validateOtp", null);
 			throw new IdAuthenticationBusinessException(
 					IdAuthenticationErrorConstants.KERNEL_OTP_VALIDATION_REQUEST_FAILED, e);
 		}

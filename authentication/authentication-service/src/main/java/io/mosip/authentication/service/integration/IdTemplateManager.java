@@ -59,11 +59,7 @@ public class IdTemplateManager {
 		Objects.requireNonNull(values);
 		StringWriter writer = new StringWriter();
 		boolean isTemplateAvail = false;
-		try {
-			isTemplateAvail = templateManager.merge(TEMPLATES + templateName, writer, values);
-		} catch (TemplateResourceNotFoundException e) {
-			logger.error("session id", "Id Type", e.getErrorCode(), e.getErrorText());
-		}
+		isTemplateAvail = templateManager.merge(TEMPLATES + templateName, writer, values);
 		if (isTemplateAvail) {
 			return writer.toString();
 		} else {
