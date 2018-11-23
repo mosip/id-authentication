@@ -64,7 +64,7 @@
                                     <Label layoutX="37.0" layoutY="193.0" text="Individual Photo" />
                                     <ImageView fx:id="individualPhoto" fitHeight="150.0" fitWidth="200.0" layoutX="23.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/ApplicantPhoto.PNG" />
+                                          <Image url="@../images/ApplicantPhoto.png" />
                                        </image>
                                     </ImageView>
                                  </children>
@@ -74,7 +74,7 @@
                                     <Label layoutX="33.0" layoutY="192.0" text="Exception Photo" />
                                     <ImageView fx:id="exceptionPhoto" fitHeight="150.0" fitWidth="200.0" layoutX="19.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../images/ApplicantPhoto.PNG" />
+                                          <Image url="@../images/ApplicantPhoto.png" />
                                        </image>
                                     </ImageView>
                                  </children>
