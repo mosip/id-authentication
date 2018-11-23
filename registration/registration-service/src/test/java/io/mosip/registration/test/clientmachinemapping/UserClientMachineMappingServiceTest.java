@@ -123,6 +123,26 @@ public class UserClientMachineMappingServiceTest {
 	}
 
 	@Test
+	public void viewRegBaseUncheckedExceptionTest() throws RegBaseCheckedException {
+		Mockito.when(machineMappingDAO.getStationID(Mockito.anyString())).thenThrow(RegBaseUncheckedException.class);
+		try {
+			mapMachineServiceImpl.view();
+		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+			Assert.assertNotNull(regBaseUncheckedException);
+		}
+	}
+
+	@Test
+	public void viewRegBaseCheckedExceptionTest() throws RegBaseCheckedException {
+		Mockito.when(machineMappingDAO.getStationID(Mockito.anyString())).thenThrow(RegBaseCheckedException.class);
+		try {
+			mapMachineServiceImpl.view();
+		} catch (RegBaseUncheckedException regBaseUncheckedException) {
+			Assert.assertNotNull(regBaseUncheckedException);
+		}
+	}
+
+	@Test
 	public void updateTest() {
 		UserMachineMappingDTO machineMappingDTO = new UserMachineMappingDTO("ID123", "Nm123", "ADmin", "ACTIVE",
 				"CNTR123", "STN123", "MCHN123");

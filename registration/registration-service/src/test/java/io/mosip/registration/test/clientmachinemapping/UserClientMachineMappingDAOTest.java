@@ -124,7 +124,7 @@ public class UserClientMachineMappingDAOTest {
 		Mockito.when(machineMasterRepository.findByMacAddress(Mockito.anyString()))
 				.thenThrow(new RegBaseUncheckedException());
 		machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0B");
-	}
+	} 
 
 	@Test
 	public void getStationID() throws RegBaseCheckedException {
@@ -321,6 +321,35 @@ public class UserClientMachineMappingDAOTest {
 				.thenReturn(new ArrayList<>());
 
 		machineMappingDAOImpl.addedMappedDevice(new ArrayList<>());
+	}
+	
+	
+	@Test
+	public void getCenterIDNullTest()  {
+		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(null);
+		try {
+		machineMappingDAOImpl.getCenterID("StationID1947");
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			Assert.assertNotNull(regBaseCheckedException);
+		}
+	}
+	@Test
+	public void getStationIDNullTest()  {
+		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(null);
+		try {
+			machineMappingDAOImpl.getStationID("8C-16-45-88-E7-0C");
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			Assert.assertNotNull(regBaseCheckedException);
+		}
+	}
+	@Test
+	public void getUsersNullTest()  {
+		Mockito.when(centerMachineRepository.findByCenterMachineIdId(Mockito.anyString())).thenReturn(null);
+		try {
+			machineMappingDAOImpl.getUsers("8C-16-45-88-E7-0C");
+		} catch (RegBaseCheckedException regBaseCheckedException) {
+			Assert.assertNotNull(regBaseCheckedException);
+		}
 	}
 
 }
