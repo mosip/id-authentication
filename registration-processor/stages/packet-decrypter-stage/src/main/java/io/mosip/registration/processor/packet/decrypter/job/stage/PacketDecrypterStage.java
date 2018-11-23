@@ -198,7 +198,8 @@ public class PacketDecrypterStage extends MosipVerticleManager {
 	public void deployVerticle() {
 		mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
 		mosipEventBus.getEventbus().setPeriodic(secs  * 1000, msg -> 
-			sendMessage(mosipEventBus, new MessageDTO())
+//			sendMessage(mosipEventBus, new MessageDTO())
+			process(new MessageDTO())
 		);
 	}
 	

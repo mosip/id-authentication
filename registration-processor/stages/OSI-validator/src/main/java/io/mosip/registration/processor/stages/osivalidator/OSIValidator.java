@@ -3,11 +3,10 @@ package io.mosip.registration.processor.stages.osivalidator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.authentication.core.dto.indauth.AuthRequestDTO;
 import io.mosip.authentication.core.dto.indauth.AuthResponseDTO;
@@ -18,32 +17,32 @@ import io.mosip.authentication.core.dto.indauth.PinInfo;
 import io.mosip.authentication.core.dto.indauth.RequestDTO;
 import io.mosip.registration.processor.core.code.ApiName;
 import io.mosip.registration.processor.core.exception.ApisResourceAccessException;
-import io.mosip.registration.processor.core.packet.dto.Biometric;
-import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
-import io.mosip.registration.processor.core.packet.dto.PacketMetaInfo;
+import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.spi.filesystem.adapter.FileSystemAdapter;
+import io.mosip.registration.processor.core.spi.packetmanager.PacketInfoManager;
 import io.mosip.registration.processor.core.spi.restclient.RegistrationProcessorRestClientService;
-import io.mosip.registration.processor.core.util.JsonUtil;
 import io.mosip.registration.processor.filesystem.ceph.adapter.impl.utils.PacketFiles;
 import io.mosip.registration.processor.stages.osivalidator.utils.StatusMessage;
 import io.mosip.registration.processor.status.dto.InternalRegistrationStatusDto;
 
 public class OSIValidator {
 
-	// @Autowired
-	// FilesystemCephAdapterImpl adapter;
+	@Autowired
+	PacketInfoManager<Identity, RegOsiDto> packetInfoManager;
 
-	/** The adapter. */
+	/** The Constant FILE_SEPARATOR. */
+	public static final String FILE_SEPARATOR = "\\";
+	/** The Constant BIOMETRIC_INTRODUCER. */
+	public static final String BIOMETRIC_INTRODUCER = PacketFiles.BIOMETRIC.name() + FILE_SEPARATOR
+			+ PacketFiles.INTRODUCER.name() + FILE_SEPARATOR;
+
 	private FileSystemAdapter<InputStream, Boolean> adapter;
 
 	private RegistrationProcessorRestClientService<Object> restClientService;
 	private String message = null;
 
-
-
 	InternalRegistrationStatusDto registrationStatusDto;
-
 
 	AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 	AuthTypeDTO authTypeDTO = new AuthTypeDTO();
@@ -51,13 +50,7 @@ public class OSIValidator {
 	IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
 	RequestDTO request = new RequestDTO();
 	PinInfo pinInfo = new PinInfo();
-	
-	/**
-	 * Instantiates a new files validation.
-	 *
-	 * @param adapter
-	 *            the adapter
-	 */
+
 	public OSIValidator(FileSystemAdapter<InputStream, Boolean> adapter,
 			RegistrationProcessorRestClientService<Object> restClientService) {
 
@@ -68,109 +61,92 @@ public class OSIValidator {
 	public boolean isValidOSI(String registrationId) throws IOException, ApisResourceAccessException {
 
 		boolean isValidOsi = false;
-		InputStream packetMetaInfoStream = adapter.getFile(registrationId, PacketFiles.PACKETMETAINFO.name());
+		RegOsiDto regOsi = packetInfoManager.getOsi(registrationId);
 
-		PacketMetaInfo packetMetaInfo = (PacketMetaInfo) JsonUtil.inputStreamtoJavaObject(packetMetaInfoStream,
-				PacketMetaInfo.class);
-		Identity identity = packetMetaInfo.getIdentity();
-		List<FieldValue> osiData = identity.getOsiData();
-		Map<String, String> osiDataMap = new HashMap<>();
-		for (FieldValue fieldValue : osiData) {
-			osiDataMap.put(fieldValue.getLabel().toUpperCase(), fieldValue.getValue());
-		}
-
-		List<FieldValue> metaData = identity.getMetaData();
-		Map<String, String> metaDataMap = new HashMap<>();
-		for (FieldValue fieldValue : metaData) {
-			metaDataMap.put(fieldValue.getLabel().toUpperCase(), fieldValue.getValue());
-		}
-
-		if ((isValidOperator(osiDataMap, metaDataMap, registrationId))
-				&& (isValidSupervisor(osiDataMap, metaDataMap, registrationId))
-				&& (isValidIntroducer(metaDataMap, identity.getBiometric(), registrationId)))
+		if ((isValidOperator(regOsi, registrationId)) && (isValidSupervisor(regOsi, registrationId))
+				&& (isValidIntroducer(regOsi, registrationId)))
 			isValidOsi = true;
 
 		return isValidOsi;
 
 	}
 
-	private boolean isValidOperator(Map<String, String> osiDataMap, Map<String, String> metaDataMap,
-			String registrationId) throws IOException, ApisResourceAccessException {
-
-		String uin = osiDataMap.get(PacketFiles.OFFICERID.name());
-		if (uin == null)
-			return true;
-		else {
-
-			String fingerPrint = osiDataMap.get(PacketFiles.OFFICERFINGERPRINTIMAGE.name());
-			String fingerPrintType = metaDataMap.get(PacketFiles.OFFICERFINGERPRINTTYPE.name());
-			String iris = osiDataMap.get(PacketFiles.OFFICERIRISIMAGE.name());
-			String irisType = metaDataMap.get(PacketFiles.OFFICERIRISTYPE.name());
-			String face = osiDataMap.get(PacketFiles.OFFICERAUTHENTICATIONIMAGE.name());
-			String pin = osiDataMap.get(PacketFiles.OFFICERPIN.name());
-
-			if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
-				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
-				return false;
-			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
-					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
-					&& (validatePin(uin, pin))) {
-				return true;
-			}
-
-		}
-
-		registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
-		return false;
-	}
-
-	private boolean isValidSupervisor(Map<String, String> osiDataMap, Map<String, String> metaDataMap,
-			String registrationId) throws IOException, ApisResourceAccessException {
-		String uin = osiDataMap.get(PacketFiles.SUPERVISORID.name());
-		if (uin == null)
-			return true;
-		else {
-
-			String fingerPrint = osiDataMap.get(PacketFiles.SUPERVISORFINGERPRINTIMAGE.name());
-			String fingerPrintType = metaDataMap.get(PacketFiles.SUPERVISORFINGERPRINTTYPE.name());
-			String iris = osiDataMap.get(PacketFiles.SUPERVISORIRISIMAGE.name());
-			String irisType = metaDataMap.get(PacketFiles.SUPERVISORIRISTYPE.name());
-			String face = osiDataMap.get(PacketFiles.SUPERVISORAUTHENTICATIONIMAGE.name());
-			String pin = osiDataMap.get(PacketFiles.SUPERVISORPIN.name());
-			if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
-				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
-				return false;
-			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
-					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
-					&& (validatePin(uin, pin))) {
-				return true;
-			}
-
-		}
-
-		registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
-		return false;
-	}
-
-	private boolean isValidIntroducer(Map<String, String> metaData, Biometric biometric, String registrationId)
+	private boolean isValidOperator(RegOsiDto regOsi, String registrationId)
 			throws IOException, ApisResourceAccessException {
-		String uin = metaData.get(PacketFiles.INTRODUCERUIN.toString());
+
+		String uin = regOsi.getOfficerId();
 		if (uin == null)
 			return true;
-
 		else {
-			String fingerPrint = biometric.getIntroducer().getIntroducerFingerprint().toString();
-			String iris = biometric.getIntroducer().getIntroducerIris().toString();
-			String face = biometric.getIntroducer().getIntroducerImage().toString();
-			String fingerPrintType = metaData.get(PacketFiles.INTRODUCERFINGERPRINTYPE.name());
 
-			String irisType = metaData.get(PacketFiles.INTRODUCERIRISTYPE.name());
-		
+			String fingerPrint = regOsi.getOfficerFingerpImageName();
+			String fingerPrintType = regOsi.getOfficerfingerType();
+			String iris = regOsi.getOfficerIrisImageName();
+			String irisType = regOsi.getOfficerIrisType();
+			String face = regOsi.getOfficerPhotoName();
+			String pin = regOsi.getOfficerHashedPin();
 
-			if ((fingerPrint == null) && (iris == null) && (face == null)) {
+			if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
 				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
 				return false;
 			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
+					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
+					&& (validatePin(uin, pin))) {
+				return true;
+			}
+
+		}
+
+		registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
+		return false;
+	}
+
+	private boolean isValidSupervisor(RegOsiDto regOsi, String registrationId)
+			throws IOException, ApisResourceAccessException {
+		String uin = regOsi.getSupervisorId();
+		if (uin == null)
+			return false;
+		else {
+
+			String fingerPrint = regOsi.getSupervisorFingerpImageName();
+			String fingerPrintType = regOsi.getSupervisorFingerType();
+			String iris = regOsi.getSupervisorIrisImageName();
+			String irisType = regOsi.getSupervisorIrisType();
+			String face = regOsi.getSupervisorPhotoName();
+			String pin = regOsi.getSupervisorHashedPin();
+			if ((fingerPrint == null) && (iris == null) && (face == null) && (pin == null)) {
+				registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
+				return false;
+			} else if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
+					&& (validateIris(uin, iris, irisType, registrationId)) && (validateFace(uin, face, registrationId))
+					&& (validatePin(uin, pin))) {
+				return true;
+			}
+
+		}
+
+		registrationStatusDto.setStatusComment(StatusMessage.OPERATOR + message);
+		return false;
+	}
+
+	private boolean isValidIntroducer(RegOsiDto regOsi, String registrationId)
+			throws IOException, ApisResourceAccessException {
+		String uin = regOsi.getIntroducerUin();
+		if (uin == null)
+			return true;
+
+		if ((regOsi.getIntroducerFingerpImageName() == null) && (regOsi.getIntroducerIrisImageName() == null)
+				&& (regOsi.getIntroducerFingerpImageName() == null)) {
+			registrationStatusDto.setStatusComment(StatusMessage.VALIDATION_DETAILS);
+			return false;
+		} else {
+			String fingerPrint = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName();
+			String fingerPrintType = regOsi.getIntroducerFingerpType();
+			String iris = BIOMETRIC_INTRODUCER + regOsi.getIntroducerIrisImageName();
+			String irisType = regOsi.getIntroducerIrisType();
+			String face = BIOMETRIC_INTRODUCER + regOsi.getIntroducerFingerpImageName();
+
+			if ((validateUIN(uin)) && (validateFingerprint(uin, fingerPrint, fingerPrintType, registrationId))
 					&& (validateIris(uin, iris, irisType, registrationId)
 							&& (validateFace(uin, face, registrationId)))) {
 				return true;
@@ -188,8 +164,8 @@ public class OSIValidator {
 			return true;
 
 		else {
-			if (adapter.checkFileExistence(registrationId, fingerprint)) {
-				InputStream fingerPrintFileName = adapter.getFile(registrationId, fingerprint);
+			if (adapter.checkFileExistence(registrationId, fingerprint.toUpperCase())) {
+				InputStream fingerPrintFileName = adapter.getFile(registrationId, fingerprint.toUpperCase());
 				byte[] fingerPrintByte = IOUtils.toByteArray(fingerPrintFileName);
 				if (validateBiometric(uin, PacketFiles.FINGER.name(), type, fingerPrintByte))
 					return true;
@@ -200,12 +176,13 @@ public class OSIValidator {
 
 	}
 
-	private boolean validateIris(String uin, String iris, String type, String registrationId) throws IOException, ApisResourceAccessException {
+	private boolean validateIris(String uin, String iris, String type, String registrationId)
+			throws IOException, ApisResourceAccessException {
 		if (iris == null)
 			return true;
 		else {
-			if (adapter.checkFileExistence(registrationId, iris)) {
-				InputStream irisFileName = adapter.getFile(registrationId, iris);
+			if (adapter.checkFileExistence(registrationId, iris.toUpperCase())) {
+				InputStream irisFileName = adapter.getFile(registrationId, iris.toUpperCase());
 				byte[] irisByte = IOUtils.toByteArray(irisFileName);
 				if (validateBiometric(uin, PacketFiles.IRIS.name(), type, irisByte))
 					return true;
@@ -216,13 +193,14 @@ public class OSIValidator {
 
 	}
 
-	private boolean validateFace(String uin, String face, String registrationId) throws IOException, ApisResourceAccessException {
+	private boolean validateFace(String uin, String face, String registrationId)
+			throws IOException, ApisResourceAccessException {
 		if (face == null)
 			return true;
 
 		else {
-			if (adapter.checkFileExistence(registrationId, face)) {
-				InputStream faceFile = adapter.getFile(registrationId, face);
+			if (adapter.checkFileExistence(registrationId, face.toUpperCase())) {
+				InputStream faceFile = adapter.getFile(registrationId, face.toUpperCase());
 				byte[] faceByte = IOUtils.toByteArray(faceFile);
 				if (validateBiometric(uin, PacketFiles.FACE.name(), null, faceByte))
 					return true;
@@ -233,7 +211,7 @@ public class OSIValidator {
 
 	}
 
-	private boolean validateUIN(String input) {
+	private boolean validateUIN(String uin) {
 		// todo To call IAM rest API for UNI validation
 		return true;
 
@@ -258,7 +236,7 @@ public class OSIValidator {
 
 		pinInfo.setValue(pin);
 
-		List<PinInfo> pinList = new ArrayList<PinInfo>();
+		List<PinInfo> pinList = new ArrayList<>();
 		pinList.add(pinInfo);
 		authRequestDTO.setPinInfo(pinList);
 
@@ -271,7 +249,8 @@ public class OSIValidator {
 		return isValidPin;
 	}
 
-	boolean validateBiometric(String uin, String biometricType, String identity, byte[] biometricFileHashByte) throws ApisResourceAccessException {
+	boolean validateBiometric(String uin, String biometricType, String identity, byte[] biometricFileHashByte)
+			throws ApisResourceAccessException {
 
 		Boolean isValidBiometric = false;
 

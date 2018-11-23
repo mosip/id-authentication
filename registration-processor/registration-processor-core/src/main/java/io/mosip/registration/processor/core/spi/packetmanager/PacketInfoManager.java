@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import io.mosip.registration.processor.core.packet.dto.FieldValue;
+import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 
 
 /**
@@ -38,5 +39,6 @@ public interface PacketInfoManager<T,/** D, M,*/ A> {
 	 * @param qcUserId the qc user id
 	 * @return the packetsfor QC user
 	 */
+	public RegOsiDto getOsi(String regid);
 	public List<A> getPacketsforQCUser(String qcUserId);
 }

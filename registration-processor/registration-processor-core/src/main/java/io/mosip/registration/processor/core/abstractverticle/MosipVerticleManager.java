@@ -121,7 +121,6 @@ public abstract class MosipVerticleManager extends AbstractVerticle
 	public void send(MosipEventBus mosipEventBus, MessageBusAddress toAddress, MessageDTO message) {
 		Vertx vertx = mosipEventBus.getEventbus();
 		JsonObject jsonObject = JsonObject.mapFrom(message);
-		process(message);
 		vertx.eventBus().send(toAddress.getAddress(), jsonObject);
 		logger.debug("sent to " + toAddress.toString() + " message " + jsonObject);
 	}

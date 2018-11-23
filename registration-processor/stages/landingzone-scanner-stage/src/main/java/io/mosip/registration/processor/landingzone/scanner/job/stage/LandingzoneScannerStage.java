@@ -48,22 +48,22 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 
 	@Autowired
 	AuditLogRequestBuilder auditLogRequestBuilder;
-	
+
 	@Autowired
 	protected FileManager<DirectoryPathDto, InputStream> filemanager;
 
 	@Autowired
 	protected RegistrationStatusService<String, InternalRegistrationStatusDto, RegistrationStatusDto> registrationStatusService;
 
-	 
-
 	private static final String VIRUS_SCAN_NOT_ACCESSIBLE = "The Virus Scan Path set by the System is not accessible";
 	private static final String ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE = "The Enrolment Status table is not accessible";
 
 	public void deployVerticle() {
 		MosipEventBus mosipEventBus = this.getEventBus(this.getClass(), clusterAddress, localhost);
-		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg -> 
-			this.send(mosipEventBus, MessageBusAddress.LANDING_ZONE_BUS_OUT, new MessageDTO())
+		mosipEventBus.getEventbus().setPeriodic(secs * 1000, msg -> {
+			process(new MessageDTO());
+			this.send(mosipEventBus, MessageBusAddress.LANDING_ZONE_BUS_OUT, new MessageDTO());
+		}
 
 		);
 	}
@@ -75,7 +75,7 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 
 			getEnrols = this.registrationStatusService
 					.findbyfilesByThreshold(RegistrationStatusCode.PACKET_UPLOADED_TO_LANDING_ZONE.toString());
-			
+
 			if (!(getEnrols.isEmpty())) {
 				getEnrols.forEach(dto -> {
 					String description = "";
@@ -94,18 +94,19 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 
 							this.filemanager.cleanUpFile(DirectoryPathDto.LANDING_ZONE, DirectoryPathDto.VIRUS_SCAN,
 									dto.getRegistrationId());
-							
+
 							isTransactionSuccessful = true;
-							description =  registrationId + "moved successfully to virus scan.";
+							description = registrationId + "moved successfully to virus scan.";
 							LOGGER.info(LOGDISPLAY, dto.getRegistrationId(), "moved successfully to virus scan.");
 						}
 					} catch (TablenotAccessibleException e) {
 						LOGGER.error(LOGDISPLAY, ENROLMENT_STATUS_TABLE_NOT_ACCESSIBLE, e);
-						description = "Registration status table not accessible for packet "+registrationId;
+						description = "Registration status table not accessible for packet " + registrationId;
 					} catch (IOException | FileNotFoundInDestinationException e) {
 						LOGGER.error(LOGDISPLAY, VIRUS_SCAN_NOT_ACCESSIBLE, e);
-						description = "Virus scan path set by the system is not accessible for packet "+registrationId;
-					}finally {
+						description = "Virus scan path set by the system is not accessible for packet "
+								+ registrationId;
+					} finally {
 
 						String eventId = "";
 						String eventName = "";
@@ -133,5 +134,4 @@ public class LandingzoneScannerStage extends MosipVerticleManager {
 		return object;
 	}
 
-	
 }

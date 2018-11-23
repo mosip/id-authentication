@@ -36,6 +36,7 @@ import io.mosip.registration.processor.core.packet.dto.FieldValue;
 import io.mosip.registration.processor.core.packet.dto.Identity;
 import io.mosip.registration.processor.core.packet.dto.Introducer;
 import io.mosip.registration.processor.core.packet.dto.Photograph;
+import io.mosip.registration.processor.core.packet.dto.RegOsiDto;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.DemographicInfoJson;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.IndividualDemographicDedupe;
 import io.mosip.registration.processor.core.packet.dto.demographicinfo.JsonValue;
@@ -155,6 +156,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	@Autowired
 	private RegistrationProcessorIdentity regProcessorIdentityJson;
+	
+	@Autowired
+	private RegOsiDto regOsiDto;
 
 	/** The meta data. */
 	private List<FieldValue> metaData;
@@ -251,6 +255,9 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 					AuditLogConstant.NO_ID.toString());
 		}
 	}
+	
+	
+	 
 
 	/**
 	 * Save bio metric data.
@@ -598,4 +605,11 @@ public class PacketInfoManagerImpl implements PacketInfoManager<Identity, Applic
 
 	}
 
+	@Override
+	public RegOsiDto getOsi(String regid) {
+		
+		regOsiDto = packetInfoDao.getEntitiesforRegOsi(regid);			
+		return regOsiDto;
+	}
+	
 }
