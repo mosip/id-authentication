@@ -65,7 +65,7 @@ Exception Scenario-
    "errors": [
         {
             "errorCode": "KER-NOS-002",
-            "errorMessage": "Contact number cannot contains alphabet,special character or                  less than 10 digits"
+            "errorMessage": "Contact number cannot contains alphabet,special character or less than 10 digits"
         }
     ]
 }
