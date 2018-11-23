@@ -2,10 +2,8 @@ package io.mosip.registration.test.packetStatusSync;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,13 +11,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import io.mosip.registration.constants.RegistrationClientStatusCode;
-import io.mosip.registration.constants.RegistrationTransactionType;
-import io.mosip.registration.context.SessionContext;
 import io.mosip.registration.dao.impl.RegPacketStatusDAOImpl;
 import io.mosip.registration.dto.RegPacketStatusDTO;
 import io.mosip.registration.entity.Registration;
@@ -50,15 +45,19 @@ public class RegPacketStatusDaoImplTest {
 		assertThat(packetStatusDao.getPacketIdsByStatusUploaded(), is(regIds));
 	}
 	
-	@Test(expected = RegBaseUncheckedException.class)
+	@Test
 	public void updatePacketIdsByServerStatusTest() {
 		Registration registration = new Registration();
 		registration.setId("12345");
 		registration.setAckFilename("12345_Ack.png");
+		List<RegistrationTransaction> transactionList = new ArrayList<>();
+		RegistrationTransaction regTxn = new RegistrationTransaction();
+		regTxn.setRegId(registration.getId());
+		registration.setRegistrationTransaction(transactionList);
 		when(registrationRepository.findById(Registration.class, "12345")).thenReturn(registration);
 		List<RegPacketStatusDTO> packetStatus = new ArrayList<>();
 		RegPacketStatusDTO packetStatusDTO = new RegPacketStatusDTO("12345", "PROCESSED");
-		packetStatus.add(packetStatusDTO);
+		packetStatus.add(packetStatusDTO);		
 		packetStatusDao.updatePacketIdsByServerStatus(packetStatus);
 	}
 	
@@ -66,11 +65,12 @@ public class RegPacketStatusDaoImplTest {
 	public void updatePacketIdsByServerStatusTest1() {
 		Registration registration = new Registration();
 		registration.setId("78965");
-		registration.setAckFilename("78965_Ack.png");
 		when(registrationRepository.findById(Registration.class, "78965")).thenReturn(registration);
 		List<RegPacketStatusDTO> packetStatus = new ArrayList<>();
 		RegPacketStatusDTO packetStatusDTO = new RegPacketStatusDTO("78965", "RESEND");
 		packetStatus.add(packetStatusDTO);
+		
+		
 		packetStatusDao.updatePacketIdsByServerStatus(packetStatus);
 	}
 }
