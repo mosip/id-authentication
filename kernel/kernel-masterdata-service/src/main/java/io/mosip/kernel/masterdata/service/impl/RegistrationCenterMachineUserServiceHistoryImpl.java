@@ -16,7 +16,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterUserMachineHistoryRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterMachineUserHistoryService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * Implementation class for user machine mapping service
@@ -32,7 +32,7 @@ public class RegistrationCenterMachineUserServiceHistoryImpl implements Registra
 	 * ModelMapper instance
 	 */
 	@Autowired
-	private ObjectMapperUtil objectMapperUtil;
+	private MapperUtils objectMapperUtil;
 
 	/**
 	 * {@link RegistrationCenterUserMachineHistoryRepository} instance

@@ -1,22 +1,17 @@
 
 package io.mosip.kernel.masterdata.utils;
 
-import java.lang.reflect.Field;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.persistence.EmbeddedId;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.core.datamapper.spi.DataMapper;
-import io.mosip.kernel.core.exception.BaseCheckedException;
 import io.mosip.kernel.masterdata.dto.DeviceLangCodeDtypeDto;
 import io.mosip.kernel.masterdata.dto.DeviceSpecificationDto;
 import io.mosip.kernel.masterdata.dto.DeviceTypeDto;
@@ -31,18 +26,18 @@ import io.mosip.kernel.masterdata.entity.HolidayId;
 import io.mosip.kernel.masterdata.entity.ReasonCategory;
 
 @Component
-public class ObjectMapperUtil {
+public class MapperUtils {
 
 	@Autowired
-	private DataMapper dataMapper;
+	private DataMapper dataMapperImpl;
 
 	public <E, D> D map(final E entity, D object) {
-		dataMapper.map(entity, object, true, null, null, true);
+		dataMapperImpl.map(entity, object, true, null, null, true);
 		return object;
 	}
 
 	public <D, T> D map(final T entity, Class<D> outCLass) {
-		return dataMapper.map(entity, outCLass, true, null, null, true);
+		return dataMapperImpl.map(entity, outCLass, true, null, null, true);
 	}
 
 	public <D, T> List<D> mapAll(final Collection<T> entityList, Class<D> outCLass) {
@@ -66,7 +61,6 @@ public class ObjectMapperUtil {
 			dto.setIsActive(holiday.getIsActive());
 			holidayDtos.add(dto);
 		});
-
 		return holidayDtos;
 	}
 
@@ -85,7 +79,6 @@ public class ObjectMapperUtil {
 
 	public List<LocationHierarchyDto> objectToDtoConverter(List<Object[]> locationList) {
 
-		
 		List<LocationHierarchyDto> locationHierarchyDtos = new ArrayList<>();
 		for (Object[] object : locationList) {
 			LocationHierarchyDto locationHierarchyDto = new LocationHierarchyDto();
@@ -97,7 +90,6 @@ public class ObjectMapperUtil {
 	}
 
 	public List<DeviceLangCodeDtypeDto> mapDeviceDto(List<Object[]> objects) {
-
 		List<DeviceLangCodeDtypeDto> deviceLangCodeDtypeDtoList = new ArrayList<>();
 		objects.forEach(arr -> {
 			DeviceLangCodeDtypeDto deviceLangCodeDtypeDto = new DeviceLangCodeDtypeDto();
@@ -125,7 +117,6 @@ public class ObjectMapperUtil {
 			deviceTypeDto.setDescription(deviceType.getDescription());
 			deviceTypeDto.setCode(deviceType.getCode());
 			deviceTypeDto.setLangCode(deviceType.getLangCode());
-
 		}
 		deviceTypeDtoList.add(deviceTypeDto);
 		return deviceTypeDtoList;
@@ -136,7 +127,6 @@ public class ObjectMapperUtil {
 
 		for (DeviceSpecification deviceSpecification : deviceSpecificationList) {
 			DeviceSpecificationDto deviceSpecificationDto = new DeviceSpecificationDto();
-
 			deviceSpecificationDto.setId(deviceSpecification.getId());
 			deviceSpecificationDto.setName(deviceSpecification.getName());
 			deviceSpecificationDto.setDescription(deviceSpecification.getDescription());
@@ -148,126 +138,6 @@ public class ObjectMapperUtil {
 			deviceSpecificationDto.setIsActive(deviceSpecification.getIsActive());
 			deviceSpecificationDtoList.add(deviceSpecificationDto);
 		}
-
 		return deviceSpecificationDtoList;
 	}
-
-	/**
-	 * 
-	 * @param dto
-	 * @param entity
-	 * @return return the entity object
-	 * @throws BaseCheckedException
-	 */
-	public <D, S> D mapDtoToEntity(final S dto, Class<D> entity) throws BaseCheckedException {
-		try {
-
-			Field allField[] = entity.getDeclaredFields();
-
-			Object embeddedId = null;
-
-			for (Field f : allField) {
-				if (f.isAnnotationPresent(EmbeddedId.class)) {
-					// copy dto values to embedded id fields
-					// make sure dto field name equal to embedded id fields name
-					embeddedId = map(dto, f.getType());
-					break;// not required to check any other
-				}
-			}
-
-			if (Objects.isNull(embeddedId)) {
-				throw new NullPointerException("EmbeddedId is null. Check Dto.");
-			}
-
-			D destination = entity.getConstructor().newInstance();// important to create object of entity type
-
-			map(embeddedId, destination);// adding embedded id to entity object
-
-			map(dto, destination);// adding values other then embedded id to entity object
-
-			// adding values meta data
-			setMetaDataValues(dto, destination);
-
-			return destination;
-		} catch (Exception e) {
-			throw new BaseCheckedException("M1048916", "Error while mapping dto to entity", e);
-		}
-
-	}
-
-	private <D, S> void setMetaDataValues(final S dto, D destination)
-			throws NoSuchFieldException, IllegalAccessException {
-		if (destination.getClass().getSuperclass() != null) {
-			Field baseFields[] = destination.getClass().getSuperclass().getDeclaredFields();
-			for (Field field : baseFields) {
-				field.setAccessible(true);
-
-				switch (field.getName()) {
-
-				case "isActive":
-					if (!setMetadataByUser(dto, destination, field)) {
-						field.set(destination, Boolean.TRUE);
-					}
-					break;
-				case "createdBy":
-					if (!setMetadataByUser(dto, destination, field)) {
-						field.set(destination, "bantiz");
-					}
-					break;
-				case "createdtimes":
-					if (!setMetadataByUser(dto, destination, field)) {
-						field.set(destination, LocalDateTime.now());
-					}
-					break;
-				case "updatedBy":
-					if (!setMetadataByUser(dto, destination, field)) {
-						// field.set(destination, "bantiz");
-					}
-					break;
-				case "updatedtimes":
-					if (!setMetadataByUser(dto, destination, field)) {
-						// field.set(destination, LocalDateTime.now());
-					}
-					break;
-				case "isDeleted":
-					if (!setMetadataByUser(dto, destination, field)) {
-						// field.set(destination, Boolean.FALSE);
-					}
-					break;
-				case "deletedtimes":
-					if (!setMetadataByUser(dto, destination, field)) {
-						// field.set(destination, LocalDateTime.now());
-					}
-					break;
-
-				}
-
-				field.setAccessible(false);
-			}
-		}
-	}
-
-	private <S, D> boolean setMetadataByUser(final S dto, D destination, Field field)
-			throws NoSuchFieldException, IllegalAccessException {
-		Field temp = null;
-		try {
-
-			temp = dto.getClass().getDeclaredField(field.getName());
-
-		} catch (NoSuchFieldException e) {
-			return false;
-		}
-
-		if (Objects.nonNull(temp)) {
-			temp.setAccessible(true);
-			if (temp.get(dto) != null) {
-				field.set(destination, temp.get(dto));
-				temp.setAccessible(false);
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 }

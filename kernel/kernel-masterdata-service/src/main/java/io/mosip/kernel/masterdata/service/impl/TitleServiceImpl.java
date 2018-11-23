@@ -15,7 +15,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.TitleRepository;
 import io.mosip.kernel.masterdata.service.TitleService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * Implementing service class for fetching titles from master db
@@ -31,7 +31,7 @@ public class TitleServiceImpl implements TitleService {
 	private TitleRepository titleRepository;
 	
 	@Autowired
-	private ObjectMapperUtil objectMapperUtil;
+	private MapperUtils objectMapperUtil;
 
 	
 

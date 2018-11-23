@@ -20,7 +20,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DocumentTypeRepository;
 import io.mosip.kernel.masterdata.service.DocumentTypeService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * This class have methods to fetch list of valid document types and to create
@@ -43,7 +43,7 @@ public class DocumentTypeServiceImpl implements DocumentTypeService {
 	@Autowired
 	private DocumentTypeRepository documentTypeRepository;
 	@Autowired
-	private ObjectMapperUtil mapperUtil;
+	private MapperUtils mapperUtil;
 
 	@Override
 	public List<DocumentTypeDto> getAllValidDocumentType(String code, String langCode) {

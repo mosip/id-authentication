@@ -19,7 +19,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceSpecificationRepository;
 import io.mosip.kernel.masterdata.service.DeviceSpecificationService;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * Service class has methods to save and fetch DeviceSpecification Details
@@ -36,7 +36,7 @@ public class DeviceSpecificationServiceImpl implements DeviceSpecificationServic
 	DeviceSpecificationRepository deviceSpecificationRepository;
 	
 	@Autowired
-	ObjectMapperUtil objMapper;
+	MapperUtils objMapper;
 
 	@Autowired
 	private MetaDataUtils metaUtils;

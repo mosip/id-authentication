@@ -13,7 +13,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.service.BiometricAttributeService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * This class have methods to fetch a biomettic attribute
@@ -28,7 +28,7 @@ public class BiometricAttributeServiecImpl implements BiometricAttributeService 
 	@Autowired
 	private BiometricAttributeRepository biometricAttributeRepository;
 	@Autowired
-	private ObjectMapperUtil mapperUtil;
+	private MapperUtils mapperUtil;
 
 	@Override
 	public List<BiometricAttributeDto> getBiometricAttribute(String biometricTypeCode, String langCode) {

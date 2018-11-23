@@ -13,7 +13,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
 import io.mosip.kernel.masterdata.service.BiometricTypeService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * 
@@ -25,7 +25,7 @@ public class BiometricTypeServiceImpl implements BiometricTypeService {
 
 
 	@Autowired
-	private ObjectMapperUtil objectMapperUtil;
+	private MapperUtils objectMapperUtil;
 
 	@Autowired
 	private BiometricTypeRepository biometricTypeRepository;

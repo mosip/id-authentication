@@ -15,7 +15,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterHistoryRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterHistoryService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * Service class with function to fetch details of registration center history
@@ -28,7 +28,7 @@ import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
 public class RegistrationCenterHistoryServiceImpl implements RegistrationCenterHistoryService {
 
 	@Autowired
-	private ObjectMapperUtil objectMapperUtil;
+	private MapperUtils objectMapperUtil;
 
 	@Autowired
 	private RegistrationCenterHistoryRepository registrationCenterHistoryRepository;

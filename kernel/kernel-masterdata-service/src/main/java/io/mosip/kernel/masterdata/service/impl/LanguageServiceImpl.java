@@ -18,7 +18,7 @@ import io.mosip.kernel.masterdata.repository.LanguageRepository;
 import io.mosip.kernel.masterdata.service.LanguageService;
 import io.mosip.kernel.masterdata.utils.EmptyCheckUtils;
 import io.mosip.kernel.masterdata.utils.MetaDataUtils;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  *
@@ -38,7 +38,7 @@ public class LanguageServiceImpl implements LanguageService {
 	 * Helper class to map objects.
 	 */
 	@Autowired
-	private ObjectMapperUtil mapperUtil;
+	private MapperUtils mapperUtil;
 
 	/**
 	 * Helper class to map dto to entity.

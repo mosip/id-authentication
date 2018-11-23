@@ -18,7 +18,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.LocationRepository;
 import io.mosip.kernel.masterdata.service.LocationService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * Class will fetch Location details based on various parameters this class is
@@ -37,10 +37,10 @@ public class LocationServiceImpl implements LocationService {
 	LocationRepository locationRepository;
 
 	/**
-	 * creates an instance of repository class {@link ObjectMapperUtil}}
+	 * creates an instance of repository class {@link MapperUtils}}
 	 */
 	@Autowired
-	private ObjectMapperUtil objectMapperUtil;
+	private MapperUtils objectMapperUtil;
 
 	private List<Location> childHierarchyList = null;
 	private List<Location> parentHierarchyList = null;

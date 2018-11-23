@@ -26,7 +26,7 @@ import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.DeviceRepository;
 import io.mosip.kernel.masterdata.service.impl.DeviceServiceImpl;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DeviceServiceImplTest {
@@ -38,7 +38,7 @@ public class DeviceServiceImplTest {
 	private DeviceRepository deviceRepository;
 
 	@Mock
-	private ObjectMapperUtil objectMapperUtil;
+	private MapperUtils objectMapperUtil;
 
 	@Before
 	public void setUp() {

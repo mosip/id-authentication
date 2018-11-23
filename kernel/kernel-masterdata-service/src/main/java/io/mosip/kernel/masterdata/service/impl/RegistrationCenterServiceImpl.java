@@ -25,7 +25,7 @@ import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
 import io.mosip.kernel.masterdata.repository.HolidayRepository;
 import io.mosip.kernel.masterdata.repository.RegistrationCenterRepository;
 import io.mosip.kernel.masterdata.service.RegistrationCenterService;
-import io.mosip.kernel.masterdata.utils.ObjectMapperUtil;
+import io.mosip.kernel.masterdata.utils.MapperUtils;
 
 /**
  * This service class contains methods that provides registration centers
@@ -47,7 +47,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * Reference to model mapper.
 	 */
 	@Autowired
-	private ObjectMapperUtil objectMapperUtil;
+	private MapperUtils objectMapperUtil;
 
 
 	/**
@@ -66,7 +66,7 @@ public class RegistrationCenterServiceImpl implements RegistrationCenterService 
 	 * Reference to ObjectMapperUtil.
 	 */
 	@Autowired
-	private ObjectMapperUtil mapperUtil;
+	private MapperUtils mapperUtil;
 
 	/*
 	 * (non-Javadoc)
