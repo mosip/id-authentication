@@ -63,7 +63,7 @@ public class ObjectMapperUtil {
 			dto.setHolidayYear(String.valueOf(date.getYear()));
 			dto.setHolidayMonth(String.valueOf(date.getMonth().getValue()));
 			dto.setHolidayDay(String.valueOf(date.getDayOfWeek().getValue()));
-
+			dto.setIsActive(holiday.getIsActive());
 			holidayDtos.add(dto);
 		});
 

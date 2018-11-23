@@ -18,4 +18,5 @@ public class BlacklistedWordsDto {
 	private String word;
 	private String description;
 	private String langCode;
+	private Boolean isActive;
 }
