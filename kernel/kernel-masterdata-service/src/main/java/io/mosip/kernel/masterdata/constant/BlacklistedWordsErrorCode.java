@@ -9,15 +9,8 @@ package io.mosip.kernel.masterdata.constant;
  *
  */
 public enum BlacklistedWordsErrorCode {
-	BLACKLISTED_WORDS_LANG_CODE_ARG_MISSING("KER-MSD-XX1",
-			"One or more input parameter is missing"), 
-	NO_BLACKLISTED_WORDS_FOUND("KER-MSD-XX2",
-					"List of Blacklisted words for the requested language not exist"), 
-	BLACKLISTED_WORDS_MAPPING_EXCEPTION(
-							"KER-MSD-XX3",
-							"Error occured while mapping blacklisted words"), 
-	BLACKLISTED_WORDS_FETCH_EXCEPTION(
-									"KER-MSD-XX4", "exception during fatching data from db");
+	NO_BLACKLISTED_WORDS_FOUND("KER-MSD-008", "Blacklisted word not found"), BLACKLISTED_WORDS_FETCH_EXCEPTION(
+			"KER-MSD-007", "Error occurred while fetching Blacklisted words");
 
 	private final String errorCode;
 	private final String errorMessage;

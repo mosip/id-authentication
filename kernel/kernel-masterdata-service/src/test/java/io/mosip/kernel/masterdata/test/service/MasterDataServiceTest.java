@@ -57,7 +57,6 @@ import io.mosip.kernel.masterdata.entity.Location;
 import io.mosip.kernel.masterdata.entity.Template;
 import io.mosip.kernel.masterdata.exception.DataNotFoundException;
 import io.mosip.kernel.masterdata.exception.MasterDataServiceException;
-import io.mosip.kernel.masterdata.exception.RequestException;
 import io.mosip.kernel.masterdata.repository.ApplicationRepository;
 import io.mosip.kernel.masterdata.repository.BiometricAttributeRepository;
 import io.mosip.kernel.masterdata.repository.BiometricTypeRepository;
@@ -743,12 +742,12 @@ public class MasterDataServiceTest {
 
 	// ------------------ BlacklistedServiceTest -----------------
 
-	@Test(expected = RequestException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void testGetAllBlacklistedWordsNullvalue() {
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode(null);
 	}
 
-	@Test(expected = RequestException.class)
+	@Test(expected = DataNotFoundException.class)
 	public void testGetAllBlacklistedWordsEmptyvalue() {
 		blacklistedWordsService.getAllBlacklistedWordsBylangCode("");
 	}
