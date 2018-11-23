@@ -263,7 +263,22 @@ public class RegistrationController extends BaseController {
 	@FXML
 	protected Button captureExceptionImage;
 	@FXML
-	protected Button saveBiometricDetails;
+	protected Button saveBiometricDetailsBtn;	
+	@FXML
+	protected Button biometricPrevBtn;	
+	@FXML
+	protected Button pane2PrevBtn;		
+	@FXML
+	protected Button autoFillBtn;
+	@FXML
+	protected Button fetchBtn;
+	@FXML
+	protected Button scanBtn1;		
+	@FXML
+	protected Button scanBtn2;
+	@FXML
+	protected Button scanBtn3;
+	
 	protected BufferedImage applicantBufferedImage;
 	protected BufferedImage exceptionBufferedImage;
 	private boolean applicantImageCaptured = false;
@@ -313,64 +328,7 @@ public class RegistrationController extends BaseController {
 				prevAddressButton.setVisible(true);
 			}
 			if (isEditPage && registrationDTOContent != null) {
-				DemographicDTO demographicDTO = registrationDTOContent.getDemographicDTO();
-				DemographicInfoDTO demographicInfoDTO = demographicDTO.getDemoInUserLang();
-
-				AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
-				LocationDTO locationDTO = addressDTO.getLocationDTO();
-				fullName.setText(demographicInfoDTO.getFullName());
-				if (demographicInfoDTO.getDateOfBirth() != null && ageDatePickerContent != null) {
-					ageDatePicker.setValue(ageDatePickerContent.getValue());
-				} else {
-					switchedOn.set(true);
-					ageDatePicker.setDisable(true);
-					ageField.setDisable(false);
-					ageField.setText(demographicInfoDTO.getAge());
-
-				}
-				gender.setValue(demographicInfoDTO.getGender());
-				addressLine1.setText(addressDTO.getAddressLine1());
-				addressLine2.setText(addressDTO.getAddressLine2());
-				addressLine3.setText(addressDTO.getAddressLine3());
-				province.setText(locationDTO.getProvince());
-				city.setText(locationDTO.getCity());
-				region.setText(locationDTO.getRegion());
-				postalCode.setText(locationDTO.getPostalCode());
-				mobileNo.setText(demographicInfoDTO.getMobile());
-				emailId.setText(demographicInfoDTO.getEmailId());
-				cni_or_pin_number.setText(demographicInfoDTO.getCneOrPINNumber());
-				localAdminAuthority.setText(demographicInfoDTO.getLocalAdministrativeAuthority());
-				if (demographicDTO.getIntroducerRID() != null) {
-					uinId.setText(demographicDTO.getIntroducerRID());
-				} else {
-					uinId.setText(demographicDTO.getIntroducerUIN());
-				}
-				parentName.setText(demographicInfoDTO.getParentOrGuardianName());
-				preRegistrationId.setText(registrationDTOContent.getPreRegistrationId());
-
-				// for applicant biometrics
-				if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO() != null) {
-					if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto() != null) {
-						byte[] photoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
-								.getPhoto();
-						if (photoInBytes != null) {
-							ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(photoInBytes);
-							applicantImage.setImage(new Image(byteArrayInputStream));
-						}
-					}
-					if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
-							.getExceptionPhoto() != null) {
-						byte[] exceptionPhotoInBytes = registrationDTOContent.getDemographicDTO()
-								.getApplicantDocumentDTO().getExceptionPhoto();
-						if (exceptionPhotoInBytes != null) {
-							ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
-							exceptionImage.setImage(new Image(inputStream));
-						}
-					}
-				}
-				isEditPage = false;
-				ageFieldValidations();
-				ageValidationInDatePicker();
+				prepareEditPageContent();
 			}
 		} catch (IOException | RuntimeException exception) {
 			LOGGER.error("REGISTRATION - LOGIN_MODE - LOGIN_CONTROLLER", APPLICATION_NAME,
@@ -379,6 +337,68 @@ public class RegistrationController extends BaseController {
 			generateAlert(RegistrationConstants.ALERT_ERROR, AlertType.valueOf(RegistrationConstants.ALERT_ERROR),
 					REG_UI_LOGIN_INITIALSCREEN_NULLPOINTER_EXCEPTION.getErrorMessage());
 		}
+	}
+
+	/**
+	 * This method is to prepopulate all the values for edit operation
+	 */
+	private void prepareEditPageContent() {
+		DemographicDTO demographicDTO = registrationDTOContent.getDemographicDTO();
+		DemographicInfoDTO demographicInfoDTO = demographicDTO.getDemoInUserLang();
+
+		AddressDTO addressDTO = demographicInfoDTO.getAddressDTO();
+		LocationDTO locationDTO = addressDTO.getLocationDTO();
+		fullName.setText(demographicInfoDTO.getFullName());
+		if (demographicInfoDTO.getDateOfBirth() != null && ageDatePickerContent != null) {
+			ageDatePicker.setValue(ageDatePickerContent.getValue());
+		} else {
+			switchedOn.set(true);
+			ageDatePicker.setDisable(true);
+			ageField.setDisable(false);
+			ageField.setText(demographicInfoDTO.getAge());
+
+		}
+		gender.setValue(demographicInfoDTO.getGender());
+		addressLine1.setText(addressDTO.getAddressLine1());
+		addressLine2.setText(addressDTO.getAddressLine2());
+		addressLine3.setText(addressDTO.getAddressLine3());
+		province.setText(locationDTO.getProvince());
+		city.setText(locationDTO.getCity());
+		region.setText(locationDTO.getRegion());
+		postalCode.setText(locationDTO.getPostalCode());
+		mobileNo.setText(demographicInfoDTO.getMobile());
+		emailId.setText(demographicInfoDTO.getEmailId());
+		cni_or_pin_number.setText(demographicInfoDTO.getCneOrPINNumber());
+		localAdminAuthority.setText(demographicInfoDTO.getLocalAdministrativeAuthority());
+		if (demographicDTO.getIntroducerRID() != null) {
+			uinId.setText(demographicDTO.getIntroducerRID());
+		} else {
+			uinId.setText(demographicDTO.getIntroducerUIN());
+		}
+		parentName.setText(demographicInfoDTO.getParentOrGuardianName());
+		preRegistrationId.setText(registrationDTOContent.getPreRegistrationId());
+
+		// for applicant biometrics
+		if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO() != null) {
+			if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto() != null) {
+				byte[] photoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getPhoto();
+				if (photoInBytes != null) {
+					ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(photoInBytes);
+					applicantImage.setImage(new Image(byteArrayInputStream));
+				}
+			}
+			if (registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO().getExceptionPhoto() != null) {
+				byte[] exceptionPhotoInBytes = registrationDTOContent.getDemographicDTO().getApplicantDocumentDTO()
+						.getExceptionPhoto();
+				if (exceptionPhotoInBytes != null) {
+					ByteArrayInputStream inputStream = new ByteArrayInputStream(exceptionPhotoInBytes);
+					exceptionImage.setImage(new Image(inputStream));
+				}
+			}
+		}
+		isEditPage = false;
+		ageFieldValidations();
+		ageValidationInDatePicker();
 	}
 
 	/**
@@ -533,8 +553,6 @@ public class RegistrationController extends BaseController {
 			LOGGER.debug("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
 					"Saved the demographic fields to DTO");
 
-			demoGraphicPane1Content = demoGraphicPane1;
-			demoGraphicPane2Content = demoGraphicPane2;
 			registrationDTOContent = registrationDTO;
 			if (ageDatePicker.getValue() != null) {
 				ageDatePickerContent = new DatePicker();
@@ -661,7 +679,8 @@ public class RegistrationController extends BaseController {
 					registrationDTOContent.getDemographicDTO().setApplicantDocumentDTO(applicantDocumentDTO);
 					LOGGER.debug("REGISTRATION_CONTROLLER", RegistrationConstants.APPLICATION_NAME,
 							RegistrationConstants.APPLICATION_ID, "showing demographic preview");
-
+					
+					setPreviewContent();
 					loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 				} catch (IOException ioException) {
 					LOGGER.error("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -671,6 +690,7 @@ public class RegistrationController extends BaseController {
 
 		} else {
 			try {
+				setPreviewContent();
 				loadScreen(RegistrationConstants.DEMOGRAPHIC_PREVIEW);
 			} catch (IOException ioException) {
 				LOGGER.error("REGISTRATION_CONTROLLER", APPLICATION_NAME, RegistrationConstants.APPLICATION_ID,
@@ -678,6 +698,22 @@ public class RegistrationController extends BaseController {
 			}
 		}
 
+	}
+
+	private void setPreviewContent() {
+		saveBiometricDetailsBtn.setVisible(false);
+		biometricPrevBtn.setVisible(false);
+		nextBtn.setVisible(false);
+		pane2NextBtn.setVisible(false);
+		pane2PrevBtn.setVisible(false);
+		autoFillBtn.setVisible(false);
+		fetchBtn.setVisible(false);
+		scanBtn1.setVisible(false);
+		scanBtn2.setVisible(false);
+		scanBtn3.setVisible(false);
+		prevAddressButton.setVisible(false);
+		demoGraphicPane1Content = demoGraphicPane1;
+		demoGraphicPane2Content = demoGraphicPane2;
 	}
 
 	private boolean validateApplicantImage() {

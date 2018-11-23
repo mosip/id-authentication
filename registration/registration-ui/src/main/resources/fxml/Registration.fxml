@@ -39,13 +39,13 @@
                       <children>
                       <ComboBox fx:id="poaDocuments" layoutX="10.0" layoutY="10.0" prefWidth="150.0" promptText="POA Document" />
                        <Label fx:id="poa_label" layoutX="220.0" layoutY="10.0" text="" />
-                       <Button layoutX="300.0" layoutY="10.0" mnemonicParsing="false" onAction="#scanPoaDocument" text="%scan" />
+                       <Button fx:id="scanBtn1" layoutX="300.0" layoutY="10.0" mnemonicParsing="false" onAction="#scanPoaDocument" text="%scan" />
                        <ComboBox fx:id="poiDocuments" layoutX="10.0" layoutY="40.0" prefWidth="150.0" promptText="POI Document" />
                        <Label fx:id="poi_label" layoutX="220.0" layoutY="40.0" text="" />
-                       <Button layoutX="300.0" layoutY="40.0" mnemonicParsing="false" onAction="#scanPoiDocument" text="%scan" />
+                       <Button fx:id="scanBtn2" layoutX="300.0" layoutY="40.0" mnemonicParsing="false" onAction="#scanPoiDocument" text="%scan" />
                        <ComboBox fx:id="porDocuments" layoutX="10.0" layoutY="70.0" prefWidth="150.0" promptText="POR Document" />
                        <Label fx:id="por_label" layoutX="220.0" layoutY="70.0" text="" />
-                       <Button layoutX="300.0" layoutY="70.0" mnemonicParsing="false" onAction="#scanPorDocument" text="%scan" />
+                       <Button fx:id="scanBtn3" layoutX="300.0" layoutY="70.0" mnemonicParsing="false" onAction="#scanPorDocument" text="%scan" />
                       </children>
                    </AnchorPane>
                    <Button fx:id="pane2NextBtn" layoutX="652.0" layoutY="369.0" mnemonicParsing="false" onAction="#saveDetail" text="Next" />
@@ -66,7 +66,7 @@
                            <children>
                               <Label layoutX="45.0" layoutY="30.0" prefHeight="10.0" prefWidth="320.0" text="%search_for_Pre_registration_id" />
                               <TextField fx:id="preRegistrationId" layoutX="44.0" layoutY="45.0" prefHeight="10.0" prefWidth="220.00" />
-                              <Button layoutX="292.0" layoutY="45.0" mnemonicParsing="false" prefHeight="5.0" prefWidth="70.0" text="%fetch" />
+                              <Button fx:id="fetchBtn" layoutX="292.0" layoutY="45.0" mnemonicParsing="false" prefHeight="5.0" prefWidth="70.0" text="%fetch" />
                               <Label layoutX="44.0" layoutY="75" prefHeight="10.0" prefWidth="320.0" text="%full_name" />
                               <TextField id="fullName" fx:id="fullName" layoutX="44.0" layoutY="90.0" prefHeight="10.0" prefWidth="320.0" />
                               <AnchorPane layoutX="40.0" layoutY="115.0" prefHeight="59.0" prefWidth="365.0">
@@ -148,7 +148,7 @@
                                 
                                                 </ImageView>
                               <Line endX="550.0" layoutX="227.0" layoutY="14.0" startX="-200.0" />
-                              <Button layoutX="435.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
+                              <Button fx:id="autoFillBtn" layoutX="435.0" layoutY="30.0" mnemonicParsing="false" onAction="#clickMe" text="Click Me To Fill The Form!!" />
                            </children>
                         </AnchorPane>
                      </content></TitledPane>
@@ -213,8 +213,8 @@
                                        </children>
                                     </HBox>
                                     <Label layoutX="104.0" layoutY="54.0" text="Image" />
-                                    <Button layoutX="616.0" layoutY="486.0" mnemonicParsing="false" onAction="#goToPreviousPane" text="Previous" />
-                                    <Button fx:id="saveBiometricDetails" layoutX="712.0" layoutY="486.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
+                                    <Button fx:id="biometricPrevBtn" layoutX="616.0" layoutY="486.0" mnemonicParsing="false" onAction="#goToPreviousPane" text="Previous" />
+                                    <Button fx:id="saveBiometricDetailsBtn" layoutX="712.0" layoutY="486.0" mnemonicParsing="false" onAction="#saveBiometricDetails" text="Next" />
                                  </children>
                               </AnchorPane>
                               <Line endX="840.0" startX="10.0" />
