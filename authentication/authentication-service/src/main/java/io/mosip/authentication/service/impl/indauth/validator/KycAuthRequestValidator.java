@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -71,7 +72,10 @@ public class KycAuthRequestValidator extends BaseAuthRequestValidator {
 		if (kycAuthRequestDTO != null) {
 
 			if (kycAuthRequestDTO.getAuthRequest() != null) {
-				authRequestValidator.validate(kycAuthRequestDTO.getAuthRequest(), errors);
+				AuthRequestDTO authRequest = kycAuthRequestDTO.getAuthRequest();
+				BeanPropertyBindingResult authErrors = new BeanPropertyBindingResult(authRequest, errors.getObjectName());
+				authRequestValidator.validate(authRequest, authErrors);
+				errors.addAllErrors(authErrors);
 			} else {
 				mosipLogger.error(SESSION_ID, KYC_REQUEST_VALIDATOR, VALIDATE, INVALID_AUTH_REQUEST + AUTH_REQUEST);
 				errors.rejectValue(AUTH_REQUEST, IdAuthenticationErrorConstants.INVALID_AUTH_REQUEST.getErrorCode(),
