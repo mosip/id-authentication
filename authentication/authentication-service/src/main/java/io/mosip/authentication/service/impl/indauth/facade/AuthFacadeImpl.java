@@ -306,7 +306,7 @@ public class AuthFacadeImpl implements AuthFacade {
 	public KycAuthResponseDTO processKycAuth(KycAuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO)
 			throws IdAuthenticationBusinessException {
 		String refId = processIdType(kycAuthRequestDTO.getAuthRequest());
-		String key = "ekyc.mua.accesslevel." + kycAuthRequestDTO.getAuthRequest().getTxnID();
+		String key = "ekyc.mua.accesslevel." + kycAuthRequestDTO.getAuthRequest().getMuaCode();
 		KycInfo info = kycService.retrieveKycInfo(refId, KycType.getEkycAuthType(env.getProperty(key)),
 				kycAuthRequestDTO.isEPrintReq(), kycAuthRequestDTO.isSecLangReq());
 		KycAuthResponseDTO kycAuthResponseDTO = new KycAuthResponseDTO();
