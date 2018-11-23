@@ -27,5 +27,6 @@ public class HolidayDto {
 	private String holidayYear;
 	private String holidayName;
 	private String languageCode;
+	private Boolean isActive;
 
 }
