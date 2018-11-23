@@ -13,11 +13,21 @@ kernel-dataaccess-hibernate module can be used for database operations.
  ```
 
 3- Usage Sample
+
+Create repository using BaseRepository
+
+```
+public interface TestRepository extends BaseRepository<Person, Long>{
+
+}
+
+```
  
 Create:
  
- ```
-HibernateRepositoryImpl<Person, Integer> repository;
+```
+@Autowired
+TestRepository repository;
 
 Person baseEntity = new Person("personName");
 		repository.create(baseEntity);
@@ -26,8 +36,9 @@ Person baseEntity = new Person("personName");
  
  Update:
  
- ```
-HibernateRepositoryImpl<Person, Integer> repository;
+```
+@Autowired
+TestRepository repository;
 
 Person baseEntity = new Person("personName");
 		repository.update(baseEntity);
@@ -36,8 +47,9 @@ Person baseEntity = new Person("personName");
  
   FindById:
  
- ```
-HibernateRepositoryImpl<Person, Integer> repository;
+```
+@Autowired
+TestRepository repository;
 
 Person baseEntity = new Person("personName");
 		repository.create(baseEntity);
@@ -47,8 +59,9 @@ Person baseEntity = new Person("personName");
  
 FindAll:
  
- ```
-HibernateRepositoryImpl<Person, Integer> repository;
+```
+@Autowired
+TestRepository repository;
 
 Person baseEntity = new Person("personName");
 		repository.create(baseEntity);
@@ -58,8 +71,9 @@ Person baseEntity = new Person("personName");
  
  Delete:
  
- ```
-HibernateRepositoryImpl<Person, Integer> repository;
+```
+@Autowired
+TestRepository repository;
 
 Person baseEntity = new Person("personName");
 		repository.create(baseEntity);
@@ -70,7 +84,7 @@ Person baseEntity = new Person("personName");
  CreateQuery:
  
  ```
- HibernateRepositoryImpl<Person, Integer> repository;
+ TestRepository repository;
  
 		String qlString = "SELECT c FROM Person c WHERE c.name LIKE :personName";
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
@@ -85,7 +99,7 @@ Person baseEntity = new Person("personName");
  CreateNamedQuery:
  
  ```
- HibernateRepositoryImpl<Person, Integer> repository;
+ TestRepository repository;
  
 		String name = "findAllCustomersWithName";
 		Map<String, Object> parameterMap = new HashMap<String, Object>();
