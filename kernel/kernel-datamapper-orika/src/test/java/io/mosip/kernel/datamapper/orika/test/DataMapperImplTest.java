@@ -12,7 +12,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import io.mosip.kernel.core.datamapper.exception.DataMapperException;
 import io.mosip.kernel.core.datamapper.model.IncludeDataField;
@@ -28,10 +32,13 @@ import io.mosip.kernel.datamapper.orika.test.model.PersonNameParts;
 import io.mosip.kernel.datamapper.orika.test.model.Personne;
 import io.mosip.kernel.datamapper.orika.test.model.SourceModel;
 
+@SpringBootTest
+@AutoConfigureMockMvc
+@RunWith(SpringRunner.class)
 public class DataMapperImplTest {
 
 	@Autowired
-	DataMapper dataMapper;
+	DataMapper dataMapperImpl;
 
 	@Test
 	public void personConverterListTest() {
@@ -42,7 +49,7 @@ public class DataMapperImplTest {
 		List<Person> personList = new ArrayList<>();
 		personList.add(person);
 		List<Personne> personneList = new ArrayList<Personne>();
-		dataMapper.map(personList, personneList, personListConverter);
+		dataMapperImpl.map(personList, personneList, personListConverter);
 		assertEquals(24, personneList.get(0).getAge());
 	}
 
@@ -50,7 +57,7 @@ public class DataMapperImplTest {
 	public void givenSrcAndDest_whenMaps_thenCorrect() {
 
 		SourceModel sourceObject = new SourceModel("Mosip", 10);
-		DestinationModel destinationObject = dataMapper.map(sourceObject, DestinationModel.class, true, null, null,
+		DestinationModel destinationObject = dataMapperImpl.map(sourceObject, DestinationModel.class, true, null, null,
 				true);
 		assertEquals(destinationObject.getName(), sourceObject.getName());
 		assertEquals(destinationObject.getAge(), sourceObject.getAge());
@@ -63,7 +70,7 @@ public class DataMapperImplTest {
 				new IncludeDataField("surnom", "nickName", true));
 		Personne french = new Personne("Claire", "cla", 2);
 
-		Person2 english = dataMapper.map(french, Person2.class, true, includeField, null, true);
+		Person2 english = dataMapperImpl.map(french, Person2.class, true, includeField, null, true);
 
 		assertEquals(french.getNom(), english.getName());
 		assertEquals(french.getSurnom(), english.getNickName());
@@ -77,7 +84,7 @@ public class DataMapperImplTest {
 		List<IncludeDataField> includeField = Arrays.asList(new IncludeDataField("surnom", "nickName", true));
 
 		Personne french = new Personne("Claire", "cla", 2);
-		Person2 english = dataMapper.map(french, Person2.class, true, includeField, excludeField, true);
+		Person2 english = dataMapperImpl.map(french, Person2.class, true, includeField, excludeField, true);
 
 		assertNull(english.getName());
 		assertEquals(french.getSurnom(), english.getNickName());
@@ -95,7 +102,7 @@ public class DataMapperImplTest {
 
 		PersonNameList src = new PersonNameList(nameList);
 
-		PersonNameParts dest = dataMapper.map(src, PersonNameParts.class, true, includeField, null, true);
+		PersonNameParts dest = dataMapperImpl.map(src, PersonNameParts.class, true, includeField, null, true);
 
 		assertEquals("Sylvester", dest.getFirstName());
 		assertEquals("Stallone", dest.getLastName());
@@ -113,7 +120,7 @@ public class DataMapperImplTest {
 		nameMap.put("last", "DiCaprio");
 
 		PersonNameMap src = new PersonNameMap(nameMap);
-		PersonNameParts dest = dataMapper.map(src, PersonNameParts.class, true, includeField, null, true);
+		PersonNameParts dest = dataMapperImpl.map(src, PersonNameParts.class, true, includeField, null, true);
 
 		assertEquals("Leornado", dest.getFirstName());
 		assertEquals("DiCaprio", dest.getLastName());
@@ -123,7 +130,7 @@ public class DataMapperImplTest {
 	public void givenSrcWithNullField_whenMapsThenCorrect() {
 
 		SourceModel src = new SourceModel(null, 10);
-		DestinationModel dest = dataMapper.map(src, DestinationModel.class, true, null, null, true);
+		DestinationModel dest = dataMapperImpl.map(src, DestinationModel.class, true, null, null, true);
 
 		assertEquals(src.getAge(), dest.getAge());
 		assertEquals(src.getName(), dest.getName());
@@ -136,7 +143,7 @@ public class DataMapperImplTest {
 		DestinationModel dest = new DestinationModel("Neha", 25);
 
 		// global configuration for no null
-		dataMapper.map(src, dest, true, null, null, true);
+		dataMapperImpl.map(src, dest, true, null, null, true);
 
 		assertEquals(src.getAge(), dest.getAge());
 		assertNull(dest.getName());
@@ -149,7 +156,7 @@ public class DataMapperImplTest {
 		SourceModel src = new SourceModel(null, 10);
 		DestinationModel dest = new DestinationModel("Neha", 25);
 
-		dataMapper.map(src, dest, false, null, null, true);
+		dataMapperImpl.map(src, dest, false, null, null, true);
 
 		assertEquals(src.getAge(), dest.getAge());
 		assertEquals("Neha", dest.getName());
@@ -165,7 +172,7 @@ public class DataMapperImplTest {
 		Personne french = new Personne(null, null, 2);
 		Person2 english = new Person2("Mosip", "Project", 10);
 
-		dataMapper.map(french, english, true, includeField, null, true);
+		dataMapperImpl.map(french, english, true, includeField, null, true);
 
 		assertEquals("Mosip", english.getName());
 		assertNull(english.getNickName());
@@ -181,7 +188,7 @@ public class DataMapperImplTest {
 		Personne french = new Personne(null, "cla", 2);
 		Person2 english = new Person2("Mosip", "Project", 10);
 
-		dataMapper.map(french, english, true, includeField, null, true);
+		dataMapperImpl.map(french, english, true, includeField, null, true);
 
 		assertNull(english.getName());
 		assertEquals(french.getSurnom(), english.getNickName());
@@ -197,7 +204,7 @@ public class DataMapperImplTest {
 		Personne french = new Personne(null, "cla", 2);
 		Person2 english = new Person2("Mosip", "Project", 10);
 
-		dataMapper.map(french, english, false, includeField, excludeField, true);
+		dataMapperImpl.map(french, english, false, includeField, excludeField, true);
 
 		assertEquals("Mosip", english.getName());
 		assertEquals(french.getSurnom(), english.getNickName());
@@ -212,7 +219,7 @@ public class DataMapperImplTest {
 		Personne french = new Personne(null, "cla", 2);
 		Person2 english = new Person2("Mosip", "Project", 10);
 
-		dataMapper.map(french, english, true, includeField, excludeField, true);
+		dataMapperImpl.map(french, english, true, includeField, excludeField, true);
 
 		assertEquals("Mosip", english.getName());
 		assertEquals(french.getSurnom(), english.getNickName());
@@ -228,7 +235,7 @@ public class DataMapperImplTest {
 		Personne french = null;
 		Person2 english = new Person2("Mosip", "Project", 10);
 
-		dataMapper.map(french, english, true, includeField, excludeField, true);
+		dataMapperImpl.map(french, english, true, includeField, excludeField, true);
 	}
 
 	@Test(expected = DataMapperException.class)
@@ -240,14 +247,14 @@ public class DataMapperImplTest {
 		Personne french = new Personne(null, "cla", 2);
 		Person english = null;
 
-		dataMapper.map(french, english, true, includeField, excludeField, true);
+		dataMapperImpl.map(french, english, true, includeField, excludeField, true);
 	}
 
 	@Test(expected = DataMapperException.class)
 	public void givenSrcAndDestAsInterface_whenMaps_thenFails() {
 
 		Personne french = new Personne("Claire", "cla", 2);
-		dataMapper.map(french, PersonInterface.class, true, null, null, true);
+		dataMapperImpl.map(french, PersonInterface.class, true, null, null, true);
 	}
 
 }
