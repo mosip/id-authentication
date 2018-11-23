@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.orm.hibernate5.HibernateObjectRetrievalFailureException;
@@ -1094,14 +1093,14 @@ public class MasterDataServiceTest {
 	@Test(expected=DataNotFoundException.class)
 	public void getLocationHierarchyNoDataFoundExceptionTest() {
 		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsDeletedFalse()).thenReturn(new ArrayList<Object[]>());
-		LocationHierarchyResponseDto locationHierarchyResponseDto=locationHierarchyService.getLocationDetails();
+		locationHierarchyService.getLocationDetails();
 		
 	}
 	
 	@Test(expected=MasterDataServiceException.class)
 	public void getLocationHierarchyFetchExceptionTest() {
 		Mockito.when(locationHierarchyRepository.findDistinctLocationHierarchyByIsDeletedFalse()).thenThrow(DataRetrievalFailureException.class);
-		LocationHierarchyResponseDto locationHierarchyResponseDto=locationHierarchyService.getLocationDetails();
+		locationHierarchyService.getLocationDetails();
 		
 	}
 	@Test()
